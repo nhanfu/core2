@@ -1,0 +1,11 @@
+[
+  {
+    "outputFileName": "wwwRoot/css/all.min.css",
+    "inputFiles": [
+      "wwwroot/css/font-awesome.css",
+      "wwwroot/css/metro-all.css",
+      "wwwroot/css/main.css",
+      "wwwroot/css/style.css"
+    ]
+  }
+]

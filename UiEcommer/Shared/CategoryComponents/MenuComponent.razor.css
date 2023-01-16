@@ -1,0 +1,9 @@
+﻿.ctRRBS .block .list .item {
+    font-size: 13px;
+    color: rgb(36, 36, 36);
+    padding: 0px 0px 8px;
+    line-height: 20px;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+}

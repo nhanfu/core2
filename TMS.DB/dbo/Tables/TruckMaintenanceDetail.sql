@@ -1,0 +1,27 @@
+﻿CREATE TABLE [dbo].[TruckMaintenanceDetail] (
+    [Id]                      INT             IDENTITY (1, 1) NOT NULL,
+    [MaintenanceId]           INT             NULL,
+    [AccessoryId]             INT             NOT NULL,
+    [Image]                   NVARCHAR (500)  NULL,
+    [Detail]                  NVARCHAR (200)  NULL,
+    [UomId]                   INT             NULL,
+    [AlteredPrice]            DECIMAL (20, 5) NOT NULL,
+    [AlteredQuantity]         DECIMAL (20, 5) NOT NULL,
+    [NewQuantity]             DECIMAL (20, 5) NOT NULL,
+    [NewPrice]                DECIMAL (20, 5) NOT NULL,
+    [ExpiredKm]               DECIMAL (20, 5) NOT NULL,
+    [Active]                  BIT             NOT NULL,
+    [InsertedDate]            DATETIME2 (7)   NOT NULL,
+    [InsertedBy]              INT             NOT NULL,
+    [UpdatedDate]             DATETIME2 (7)   NULL,
+    [UpdatedBy]               INT             NULL,
+    [ExpiredDate]             DATETIME2 (7)   DEFAULT (getdate()) NULL,
+    [NextMaintenanceDate]     DATETIME2 (7)   DEFAULT (getdate()) NULL,
+    [DepreciationCreditAccId] INT             NULL,
+    [DepreciationDebitAccId]  INT             NULL,
+    [TanentId]                INT             NOT NULL,
+    CONSTRAINT [PK_TruckMaintenanceDetail] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_TruckMaintenanceDetail_Accessory] FOREIGN KEY ([AccessoryId]) REFERENCES [dbo].[Accessory] ([Id]),
+    CONSTRAINT [FK_TruckMaintenanceDetail_TruckMaintenance] FOREIGN KEY ([MaintenanceId]) REFERENCES [dbo].[TruckMaintenance] ([Id])
+);
+

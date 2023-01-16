@@ -1,0 +1,25 @@
+﻿@using UiEcommer.Models
+@inject IConfiguration Configuration
+@inject IJSRuntime JS
+<div class="bg-tophome">
+    <div class="home-slider big-campaign" id="owl-home">
+        <div class="slider-banner home-top owl-carousel">
+            <a aria-label="slide" data-cate="0" data-place="2053" href="/dtdd-samsung-galaxy-a">
+                <img width="600" src="/images/720-220-720x220-123.png" alt="SS Week" />
+            </a>
+            <a aria-label="slide" data-cate="0" data-place="2053" href="/dtdd-apple-iphone-13-series">
+                <img width="600" loading="lazy" class="lazyload owl-lazy" data-src="/images/720-220-720x220-123.png" alt="iPhone 13 Pro" />
+            </a>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public List<Category> categorys { get; set; }
+    private bool _loading { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JS.InvokeVoidAsync("initOwlCarousel");
+    }
+}

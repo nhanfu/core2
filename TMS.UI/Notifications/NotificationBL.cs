@@ -1,0 +1,355 @@
+﻿using Bridge.Html5;
+using Core.ViewModels;
+using Core.Clients;
+using Core.Components;
+using Core.Components.Extensions;
+using Core.Components.Forms;
+using Core.Enums;
+using Core.Extensions;
+using Core.MVVM;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using TMS.API.Models;
+using TMS.UI.Business.Authentication;
+using ElementType = Core.MVVM.ElementType;
+using Notification = Retyped.dom.Notification;
+using System.Collections.Generic;
+
+namespace TMS.UI.Notifications
+{
+    public class NotificationBL : EditableComponent
+    {
+        private static NotificationBL _instance;
+        private static Observable<string> _countNtf;
+        private HTMLElement _profile;
+        private HTMLElement _task;
+        private HTMLElement _countBadge;
+
+        public static ObservableList<TaskNotification> Notifications { get; private set; }
+        private Token CurrentUser { get; set; }
+
+        private NotificationBL() : base(null)
+        {
+            Notifications = new ObservableList<TaskNotification>();
+            _countNtf = new Observable<string>();
+            EditForm.NotificationClient?.AddListener(nameof(TaskNotification), ProcessIncomMessage);
+        }
+
+        public void ProcessIncomMessage(object obj)
+        {
+            if (obj is null)
+            {
+                return;
+            }
+
+            var task = (TaskNotification)obj;
+            if (task is null)
+            {
+                return;
+            }
+
+            var existTask = Notifications.Data.FirstOrDefault(x => x.Id == task.Id);
+            if (existTask == null)
+            {
+                Notifications.Add(task, 0);
+                ToggleBageCount(Notifications.Data.Count);
+                PopupNotification(task);
+            }
+            SetBadgeNumber();
+            var entity = Utils.GetEntity(task.EntityId ?? 0);
+            task.Entity = new Entity { Id = entity.Id, Name = entity.Name };
+            /*@
+            if (typeof(Notification) !== 'undefined' && Notification.permission === "granted") {
+                this.ShowNativeNtf(task);
+            } else if (typeof(Notification) !== 'undefined' && Notification.permission !== "denied") {
+                Notification.requestPermission().then((permission) => {
+                    if (permission !== 'granted') {
+                        this.ShowToast(task);
+                    }
+                    else this.ShowNativeNtf(task);
+                });
+            } else this.ShowToast(task);
+            */
+        }
+
+        private int SetBadgeNumber()
+        {
+            var unreadCount = Notifications.Data.Count(x => x.StatusId == (int)TaskStateEnum.UnreadStatus);
+            _countNtf.Data = unreadCount > 9 ? "9+" : unreadCount.ToString();
+            var badge = unreadCount > 9 ? 9 : unreadCount;
+            /*@
+            if (typeof(cordova) !== 'undefined' &&
+                typeof(cordova.plugins) !== 'undefined' &&
+                typeof(cordova.plugins.notification) !== 'undefined') {
+                cordova.plugins.notification.badge.set(badge);
+            }
+            */
+            return badge;
+        }
+
+        private void ShowNativeNtf(TaskNotification task)
+        {
+            if (task is null)
+            {
+                return;
+            }
+
+            Notification nativeNtf = null;
+            /*@
+            var nativeNtf = new Notification(task.Title,
+            {
+                body: task.Description,
+                icon: task.Attachment,
+                vibrate: [200, 100, 200],
+                badge: "./favicon.ico"
+            });
+            nativeNtf.addEventListener('click', () => this.OpenNotification(task));
+            */
+            Window.SetTimeout(() =>
+            {
+                nativeNtf.close();
+            }, 7000);
+        }
+
+        private void ShowToast(TaskNotification task)
+        {
+            Toast.Success($"Notifications from the system <br /> {task.Title} - {task.Description}");
+        }
+
+        public static NotificationBL Instance
+        {
+            get
+            {
+                if (_instance is null)
+                {
+                    _instance = new NotificationBL();
+                }
+                return _instance;
+            }
+        }
+
+        public override void Render()
+        {
+            Task.Run(RenderAsync);
+        }
+
+        public async Task RenderAsync()
+        {
+            Html.Take("#notification-list").Clear();
+            var notifications = await new Client(nameof(TaskNotification)).GetRawList<TaskNotification>($"?$expand=Entity&$orderby=InsertedDate desc&$top=50");
+            Notifications.Data = notifications;
+            SetBadgeNumber();
+            CurrentUser = Client.Token;
+            CurrentUser.Avatar = Client.Origin + (CurrentUser.Avatar.IsNullOrWhiteSpace() ? "./image/chinese.jfif" : CurrentUser.Avatar);
+            RenderNotification();
+            RenderProfile(".profile-info1");
+        }
+
+        public void RenderProfile(string classname)
+        {
+            var has = Document.QuerySelector("body").HasClass("theme-1");
+            var isSave = Window.LocalStorage.GetItem("isSave");
+            Html.Take(classname).Clear();
+            var html = Html.Take(classname);
+            html.A.ClassName("navbar-nav-link d-flex align-items-center dropdown-toggle").DataAttr("toggle", "dropdown").Span.ClassName("text-truncate").Text(CurrentUser.FullName).EndOf(ElementType.a)
+                .Div.ClassName("dropdown-menu dropdown-menu-right notClose mt-0 border-0").Style("border-top-left-radius: 0;border-top-right-radius: 0")
+                    .A.ClassName("dropdown-item").AsyncEvent(EventType.Click, ViewProfile).I.ClassName("far fa-user").End.Text("Account (" + CurrentUser.UserName + ")").EndOf(ElementType.a);
+            html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
+            if (has)
+            {
+                html.A.ClassName("dropdown-item ui-mode").Event(EventType.Click, DarkMode).I.ClassName("fal fa-moon").End.Text("Dark mode").EndOf(ElementType.a);
+            }
+            else
+            {
+                html.A.ClassName("dropdown-item ui-mode").Event(EventType.Click, LightMode).I.ClassName("fal fa-adjust").End.Text("Light mode").EndOf(ElementType.a);
+            }
+            if (isSave is null)
+            {
+                html.A.ClassName("dropdown-item ui-mode").Event(EventType.Click, RemoveSetting).I.ClassName("fal fa-trash").End.Text("Remove settings").EndOf(ElementType.a);
+            }
+            else
+            {
+                html.A.ClassName("dropdown-item ui-mode").Event(EventType.Click, SaveSetting).I.ClassName("fal fa-save").End.Text("Save settings").EndOf(ElementType.a);
+            }
+            html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
+            var langSelect = new LangSelect(new Core.Models.Component(), html.GetContext());
+            langSelect.Render();
+            html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
+            html.A.AsyncEvent(EventType.Click, SignOut).ClassName("dropdown-item").I.ClassName("far fa-power-off").End.Text("Logout").EndOf(ElementType.a);
+
+            Html.Take(".btn-logout").AsyncEvent(EventType.Click, SignOut);
+        }
+
+        private void LightMode()
+        {
+            Document.QuerySelector("body").ReplaceClass("theme-2", "theme-1");
+            RenderProfile(".profile-info1");
+            LocalStorage.SetItem("theme", "theme-1");
+            App.InitTheme();
+        }
+
+        private void DarkMode()
+        {
+            Document.QuerySelector("body").ReplaceClass("theme-1", "theme-2");
+            RenderProfile(".profile-info1");
+            LocalStorage.SetItem("theme", "theme-2");
+            App.InitTheme();
+        }
+
+        private void RemoveSetting()
+        {
+            Window.LocalStorage.SetItem("isSave", true);
+            RenderProfile(".profile-info1");
+        }
+
+        private void SaveSetting()
+        {
+            Window.LocalStorage.RemoveItem("isSave");
+            RenderProfile(".profile-info1");
+        }
+
+        private void ShowProfile()
+        {
+            _profile.Style.Display = Display.Block;
+            _profile.Focus();
+        }
+
+        private async Task SignOut(Event e)
+        {
+            e.PreventDefault();
+            var client = new Client(nameof(User));
+            await client.CreateAsync<bool>(Client.Token, "SignOut");
+            Toast.Success("Logout success!");
+            Client.Token = null;
+            LocalStorage.RemoveItem("UserInfo");
+            Window.Location.Reload();
+        }
+
+        private async Task ViewProfile(Event e)
+        {
+            var user = await new Client(nameof(User)).FirstOrDefaultAsync<User>($"?$filter=Active eq true and Id eq {CurrentUser.UserId}");
+            await this.OpenPopup(featureName: "UserProfile",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.User.UserProfileBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "User Profile";
+                    instance.Entity = user;
+                    return instance;
+                });
+        }
+
+        private void RenderNotification()
+        {
+            var html = Html.Take("#notification-list").A.ClassName("navbar-nav-link").DataAttr("toggle", "dropdown").I.ClassName("far fa-bell fa-lg").EndOf(ElementType.i);
+            if (_countNtf.Data != string.Empty)
+            {
+                html.Span.ClassName("badge badge-pill bg-warning-400 ml-auto ml-md-0").Text(_countNtf);
+                _countBadge = Html.Context;
+            };
+            html.EndOf(ElementType.a);
+            html.Div.Style("border-top-left-radius: 0;border-top-right-radius: 0").ClassName("dropdown-menu dropdown-menu-right dropdown-content wmin-md-300 mt-0").Style("border-top-left-radius: 0;border-top-right-radius: 0");
+            html.Ul.Id("notifyBox").ClassName("media-list pt-2 pb-2")
+                    .ForEach(Notifications, (task, index) =>
+                    {
+                        if (task is null)
+                        {
+                            return;
+                        }
+
+                        var className = task.StatusId == (int)TaskStateEnum.UnreadStatus ? "far fa-bell mr-1" : "fal fa-bell-slash mr-1";
+                        html.Li.ClassName("dropdown-item");
+                        html.A.ClassName("media-title noticeItem font-weight-semibold text-default").Event(EventType.Click, async (e) =>
+                        {
+                            await OpenNotification(task, e);
+                        });
+                        html.I.ClassName(className).End.Text(task.Title + ", " + task.Description + ", lúc " + task.Deadline.ToString("dd/MM/yyyy HH:mm")).EndOf(ElementType.li);
+                    });
+            html.EndOf(ElementType.ul);
+            html.Div.ClassName("dropdown-content-footer");
+            html.A.ClassName("text-grey mr-auto cur").AsyncEvent(EventType.Click, SeeMore).Text("See more").EndOf(ElementType.a);
+            html.A.ClassName("text-grey").DataAttr("toggle", "tooltip").AsyncEvent(EventType.Click, MarkAllAsRead).Text("Mark as read").EndOf(ElementType.a);
+            Notifications.Data.ForEach(PopupNotification);
+        }
+
+        private void ToggleBageCount(int count)
+        {
+            _countBadge.Style.Display = count == 0 ? Display.None : Display.InlineBlock;
+        }
+
+        private void PopupNotification(TaskNotification task)
+        {
+            if (task.StatusId != (int)TaskStateEnum.UnreadStatus)
+            {
+                return;
+            }
+        }
+
+        private void ToggleNotification()
+        {
+            _task.Style.Display = Display.Block;
+            _task.Focus();
+        }
+
+        private async Task SeeMore(Event e)
+        {
+            var lastSeenTask = Notifications.Data.LastOrDefault();
+            var lastSeenDate = lastSeenTask?.InsertedDate ?? DateTime.Now;
+            var olderTasks = await new Client(nameof(TaskNotification)).GetRawList<TaskNotification>(
+                $"?$filter=InsertedDate lt {lastSeenDate.ToISOFormat()}&$expand=Entity&$orderby=InsertedDate desc&$top=50");
+            var taskList = Notifications.Data.Union(olderTasks).ToList();
+            Notifications.Data = taskList;
+        }
+
+        private async Task MarkAllAsRead(Event e)
+        {
+            e.PreventDefault();
+            Client client = new Client(nameof(TaskNotification));
+            var res = await client.PostAsync<bool>(client, "MarkAllAsRead");
+            ToggleBageCount(Notifications.Data.Count);
+            _task.QuerySelectorAll(".task-unread").ForEach(task =>
+            {
+                task.ReplaceClass("task-unread", "task-read");
+            });
+        }
+
+        public async Task OpenNotification(TaskNotification notification, Event e)
+        {
+            await MarkAsRead(notification);
+            var element = e.Target as HTMLElement;
+            element.FirstChild.ReplaceClass("fa-bell", "fa-bell-slash");
+            if (notification.EntityId == Utils.GetEntity(nameof(TransportationPlan)).Id)
+            {
+                var entity = await new Client(nameof(TransportationPlan)).GetRawAsync(notification.RecordId.Value);
+                await this.OpenPopup(
+                featureName: "TransportationPlan Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationPlanEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Chỉnh sửa kế hoạch vận chuyển";
+                    instance.Entity = entity;
+                    return instance;
+                });
+            }
+        }
+
+        protected override void RemoveDOM()
+        {
+            Html.Take("#notification").Clear();
+        }
+
+        private async Task MarkAsRead(TaskNotification task)
+        {
+            task.StatusId = (int)TaskStateEnum.Read;
+            await new Client(nameof(TaskNotification)).UpdateAsync<TaskNotification>(task);
+            SetBadgeNumber();
+        }
+
+        public override void Dispose()
+        {
+            _task.AddClass("hide");
+        }
+    }
+}

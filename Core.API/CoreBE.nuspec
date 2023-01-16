@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+	<metadata>
+		<id>CoreBE</id>
+		<version>1.0.50</version>
+		<authors>Nhan Nguyen</authors>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<license type="expression">MIT</license>
+		<projectUrl>https://github.com/nhanfu/htmljs</projectUrl>
+		<description>Core BE library</description>
+		<releaseNotes>Update EmailVM property, add attachements.</releaseNotes>
+		<copyright>Copyright ©2022 NhanJS</copyright>
+		<tags>JS engine, JS Component</tags>
+	</metadata>
+	<files>
+		<file src="bin\Debug\net6.0\Core.API.dll" target="lib" />
+	</files>
+</package>

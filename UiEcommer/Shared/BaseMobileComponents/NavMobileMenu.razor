@@ -1,0 +1,61 @@
+﻿@using UiEcommer.Models
+@using UiEcommer.Shared.BaseComponents
+@using UiEcommer.Client
+
+@inject IConfiguration Configuration
+
+<div class="show-menu__main">
+    <nav class="nav-list">
+        <a href="/dtdd">Điện thoại</a>
+        <a href="/laptop-ldp">Laptop</a>
+        <a href="/may-tinh-bang">Tablet</a>
+        <a href="/phu-kien">Phụ kiện</a>
+        <a href="/dong-ho-thong-minh-ldp">Đồng hồ <br />thông minh</a>
+        <a href="/may-tinh-de-ban">Máy tính bộ</a>
+        <a href="/man-hinh-may-tinh">Màn hình máy tính</a>
+        <a href="/may-in">Máy in</a>
+        <a href="/muc-in">Mực in</a>
+        <a href="/dong-ho">Đồng hồ <br />thời trang</a>
+        <a href="/sac-dtdd">Sạc dự<br />phòng</a>
+        <a href="/tai-nghe">Tai nghe</a>
+        <a href="/may-doi-tra">Máy cũ<br />giá rẻ</a>
+        <a href="/sim-so-dep">Sim,<br />thẻ cào<span class="item__label">- 3%</span></a>
+        <a href="/tien-ich">Dịch vụ, <br />tiện ích</a>
+    </nav>
+    <div class="show-menu__link clearfix">
+        <div class="link-item">
+            <p>Nhóm hàng mới</p>
+
+            <ul>
+                <li><a href="/phu-kien-oto">Phụ kiện ô tô</a></li>
+                <li><a href="/thiet-bi-nha-thong-minh">Thiết bị nhà thông minh</a></li>
+                <li><a href="/man-hinh-may-tinh">Màn hình máy tính</a></li>
+                <li><a href="/sim-so-dep">Thẻ cào giảm đến 3%</a></li>
+            </ul>
+
+        </div>
+        <div class="link-item">
+            <p>Thế giới công nghệ</p>
+            <ul>
+                <li><a href="/tin-tuc">24h Công nghệ</a></li>
+                <li><a href="/game-app">Game App</a></li>
+                <li><a href="/hoi-dap">Hỏi đáp</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="border border--pad"></div>
+    <a href="/lich-su-mua-hang" class="txt-history">Lịch sử mua hàng</a>
+    <p class="txt-tel">
+        Tổng đài <a href="tel:18001060">1800.1060</a>
+        (7:30 - 22:00)
+    </p>
+    <p class="txt-tel">
+        Xem <a href="/he-thong-sieu-thi-the-gioi-di-dong">3165</a> siêu thị
+        (8:00 - 22:00)
+    </p>
+</div>
+
+@code {
+    [Parameter]
+    public List<Category> categorys { get; set; }
+}

@@ -1,0 +1,197 @@
+﻿@using UiEcommer.Models
+@using UiEcommer.Shared.BaseComponents
+<div class="Container-sc-itwfbd-0 hfMLFx">
+    <div class="CategoryViewstyle__ContentWrap-sc-bhstkd-0 goUqEt">
+        <div class="SideBar__Root-sc-18bme9p-0 ctRRBS">
+            <div>
+                <div class="block" data-view-id="search_filter_container" data-view-label="Danh Mục Sản Phẩm" data-view-content='{"click_data":{"trace_id":"xXSS6JBNnVIo3LG1"}}'>
+                    <h4 class="title">Danh Mục Sản Phẩm</h4>
+                    <MenuComponent categorys="@category.InverseParent.ToList()" />
+                </div>
+                <div class="block">
+                    <h4 class="title">THƯƠNG HIỆU</h4>
+                    <div class="list collapsed">
+                        @foreach (var item in brands.Take(5))
+                        {
+                            <label class="item item--brand">
+                                <label class="style__CheckboxFake-sc-1ewjwu4-3 bHTjmp">
+                                    <input type="checkbox" style="display: none;" value="@item.Id" @onchange="eventArgs => { SelectedCheckbox(item.Id, eventArgs.Value); }" />
+                                    <span class="box">
+                                        <img class="icon-check-on" src="https://frontend.tikicdn.com/_desktop-next/static/img/pdp_revamp_v2/checked.svg" alt="" />
+                                        <img class="icon-check-off" src="https://frontend.tikicdn.com/_desktop-next/static/img/pdp_revamp_v2/unchecked.svg" alt="" />
+                                    </span>
+                                    <div><span>@item.Name</span></div>
+                                </label>
+                            </label>
+                        }
+                    </div>
+                    @if (brands.Count > 5)
+                    {
+                        <a class="toggler">
+                            Xem thêm
+                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" color="#0d5cb6" style="color: #0d5cb6;" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M256 294.1L383 167c9.4-9.4 24.6-9.4 33.9 0s9.3 24.6 0 34L273 345c-9.1 9.1-23.7 9.3-33.1.7L95 201.1c-4.7-4.7-7-10.9-7-17s2.3-12.3 7-17c9.4-9.4 24.6-9.4 33.9 0l127.1 127z"></path>
+                            </svg>
+                        </a>
+                    }
+                </div>
+                <div class="block">
+                    <h4 class="title">NHÀ CUNG CẤP</h4>
+                    <div class="list collapsed">
+                        @foreach (var item in vendors.Take(5))
+                        {
+                            <label class="item item--brand">
+                                <label class="style__CheckboxFake-sc-1ewjwu4-3 bHTjmp">
+                                    <input type="checkbox" style="display: none;" />
+                                    <span class="box">
+                                        <img class="icon-check-on" src="https://frontend.tikicdn.com/_desktop-next/static/img/pdp_revamp_v2/checked.svg" alt="" />
+                                        <img class="icon-check-off" src="https://frontend.tikicdn.com/_desktop-next/static/img/pdp_revamp_v2/unchecked.svg" alt="" />
+                                    </span>
+                                    <div><span>@item.Name</span></div>
+                                </label>
+                            </label>
+                        }
+                    </div>
+                    @if (vendors.Count > 5)
+                    {
+                        <a class="toggler">
+                            Xem thêm
+                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" color="#0d5cb6" style="color: #0d5cb6;" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M256 294.1L383 167c9.4-9.4 24.6-9.4 33.9 0s9.3 24.6 0 34L273 345c-9.1 9.1-23.7 9.3-33.1.7L95 201.1c-4.7-4.7-7-10.9-7-17s2.3-12.3 7-17c9.4-9.4 24.6-9.4 33.9 0l127.1 127z"></path>
+                            </svg>
+                        </a>
+                    }
+                </div>
+                <div class="block">
+                    <h4 class="title">Đánh giá</h4>
+                    <div class="rating-list">
+                        <a class="item" rel="nofollow" href="javascript:;">
+                            <p class="Stars__Wrapper-sc-1t6kjxa-0 hlnKeG" style="font-size: 12px; display: inline-block;">
+                                <Star />
+                                <Star />
+                                <Star />
+                                <Star />
+                                <Star />
+                            </p>
+                            <span class="text">từ 5 sao</span>
+                        </a>
+                        <a class="item" rel="nofollow" href="javascript:;">
+                            <p class="Stars__Wrapper-sc-1t6kjxa-0 hlnKeG" style="font-size: 12px; display: inline-block;">
+                                <Star />
+                                <Star />
+                                <Star />
+                                <Star />
+                                <StarDark />
+                            </p>
+                            <span class="text">từ 4 sao</span>
+                        </a>
+                        <a class="item" rel="nofollow" href="javascript:;">
+                            <p class="Stars__Wrapper-sc-1t6kjxa-0 hlnKeG" style="font-size: 12px; display: inline-block;">
+                                <Star />
+                                <Star />
+                                <Star />
+                                <StarDark />
+                                <StarDark />
+                            </p>
+                            <span class="text">từ 3 sao</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="block">
+                    <h4 class="title">Giá</h4>
+                    <div class="fast-price-filter">
+                        <div class="item"><span class="selected">Từ 40.000 đến 120.000</span></div>
+                        <div class="item"><span class="">Dưới 40.000</span></div>
+                        <div class="item"><span class="">Từ 120.000 đến 400.000</span></div>
+                        <div class="item"><span class="">Trên 400.000</span></div>
+                    </div>
+                    <div class="price-small-text">Chọn khoảng giá</div>
+                    <div class="input-group"><input placeholder="Giá từ" value="0" /><span>-</span><input pattern="[0-9]*" placeholder="Giá đến" value="0" /></div>
+                </div>
+            </div>
+        </div>
+        <div class="CategoryViewstyle__Right-sc-bhstkd-1 jxmsjJ">
+            <div class="inner">
+                <div class="search-summary">
+                    <div class="title"><h1>@category.Name</h1></div>
+                    <div class="Sorter__Root-sc-1u1tc3w-0 bPvyTV">
+                        <div class="Sorter__Bottom-sc-1u1tc3w-2 ishnWO">
+                            <div class="Sorter__Tabs-sc-1u1tc3w-3 dfCYMA">
+                                <div class="sort-list">
+                                    <a class="active"
+                                       rel="nofollow"
+                                       href="@url?sort=default">
+                                        Phổ biến
+                                    </a>
+                                    <a class=""
+                                       rel="nofollow"
+                                       href="@url?sort=top_seller">
+                                        Bán chạy
+                                    </a>
+                                    <a class=""
+                                       rel="nofollow"
+                                       href="@url?sort=newest">
+                                        Hàng mới
+                                    </a>
+                                    <a class=""
+                                       rel="nofollow"
+                                       href="@url?sort=price%2Casc">
+                                        Giá thấp
+                                    </a>
+                                    <a class=""
+                                       rel="nofollow"
+                                       href="@url?sort=price%2Cdesc">
+                                        Giá cao
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <CategoryViewComponent products="@filterProducts" />
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public List<Category> pathCategory { get; set; }
+    [Parameter]
+    public Category category { get; set; }
+    [Parameter]
+    public string url { get; set; }
+    [Parameter]
+    public List<Product> products { get; set; }
+    public List<Product> filterProducts { get; set; }
+    [Parameter]
+    public List<Brand> brands { get; set; }
+    [Parameter]
+    public List<Vendor> vendors { get; set; }
+    public List<int> selectedBrands { get; set; } = new List<int>();
+
+    protected override void OnParametersSet()
+    {
+        filterProducts = products;
+    }
+
+    private void SelectedCheckbox(int aSelectedId, object aChecked)
+    {
+        if ((bool)aChecked)
+        {
+            selectedBrands.Add(aSelectedId);
+        }
+        else
+        {
+            selectedBrands.Remove(aSelectedId);
+        }
+        FilterCategory();
+    }
+
+    private void FilterCategory()
+    {
+        if (selectedBrands.Any())
+        {
+            filterProducts = products.Where(x => selectedBrands.Contains(x.BrandId.Value)).ToList();
+        }
+    }
+}

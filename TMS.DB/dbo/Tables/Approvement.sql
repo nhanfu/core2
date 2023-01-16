@@ -1,0 +1,26 @@
+﻿CREATE TABLE [dbo].[Approvement] (
+    [Id]             INT             IDENTITY (1, 1) NOT NULL,
+    [ReasonOfChange] NVARCHAR (200)  NULL,
+    [EntityId]       INT             NULL,
+    [LevelName]      NVARCHAR (50)   NULL,
+    [RecordId]       INT             NULL,
+    [StatusId]       INT             NULL,
+    [Amount]         DECIMAL (20, 5) NOT NULL,
+    [UserApproveId]  INT             NOT NULL,
+    [IsEnd]          BIT             CONSTRAINT [DF_Approvement_IsEnd] DEFAULT ((0)) NOT NULL,
+    [NextLevel]      INT             NULL,
+    [CurrentLevel]   INT             NOT NULL,
+    [Approved]       BIT             NOT NULL,
+    [ApprovedBy]     INT             NULL,
+    [ApprovedDate]   DATETIME2 (7)   NULL,
+    [RejectBy]       INT             NULL,
+    [RejectDate]     DATETIME2 (7)   NULL,
+    [Active]         BIT             NOT NULL,
+    [InsertedDate]   DATETIME2 (7)   NOT NULL,
+    [InsertedBy]     INT             NOT NULL,
+    [UpdatedDate]    DATETIME2 (7)   NULL,
+    [UpdatedBy]      INT             NULL,
+    [TanentId]       INT             NOT NULL,
+    CONSTRAINT [PK_Approvement] PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+

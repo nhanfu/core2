@@ -1,0 +1,49 @@
+﻿@using UiEcommer.Models
+
+@inject IConfiguration Configuration
+
+<div class="col2-tech">
+    <div class="tech-new">
+        <strong class="name-box">
+            24h công nghệ
+            <a href="/tin-tuc">Xem tất cả</a>
+        </strong>
+        <ul>
+            <li>
+                <a href="/tin-tuc/dau-la-loat-dien-thoai-samsung-cu-tam-gia-2-trieu-1441028">
+                    <img data-src="https://cdn.tgdd.vn/Files/2022/06/20/1441028/galaxy-a03-1611_1280x720-200x200.jpg" class="lazyload" alt="&#x110;&#xE2;u l&#xE0; lo&#x1EA1;t &#x111;i&#x1EC7;n tho&#x1EA1;i Samsung c&#x169; t&#x1EA7;m gi&#xE1; 2 tri&#x1EC7;u &#x111;&#x1ED3;ng &#x111;&#xE1;ng s&#x1EAF;m nh&#x1EA5;t th&#xE1;ng 6 n&#xE0;y?" width="270" height="151">
+                    <div class="text-tech">
+                        <span>
+                            &#x110;&#xE2;u l&#xE0; lo&#x1EA1;t &#x111;i&#x1EC7;n tho&#x1EA1;i Samsung c&#x169; t&#x1EA7;m gi&#xE1; 2 tri&#x1EC7;u &#x111;&#x1ED3;ng &#x111;&#xE1;ng s&#x1EAF;m nh&#x1EA5;t th&#xE1;ng 6 n&#xE0;y?
+                        </span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="/tin-tuc/co-nen-mua-amazfit-gtr-3-series-1440450">
+                    <img data-src="https://cdn.tgdd.vn/Files/2022/06/17/1440450/co-nen-mua-amazfit-gtr3-series-12_1280x720-200x200.jpg" class="lazyload" alt="Amazfit GTR 3 series: B&#x1ED9; &#x111;&#xF4;i vi di&#x1EC7;u d&#xE0;nh cho m&#x1ECD;i ng&#x1B0;&#x1EDD;i d&#xF9;ng, v&#x1EDB;i m&#x1EE9;c gi&#xE1; si&#xEA;u t&#x1ED1;t!" width="270" height="151">
+                    <div class="text-tech">
+                        <span>
+                            Amazfit GTR 3 series: B&#x1ED9; &#x111;&#xF4;i vi di&#x1EC7;u d&#xE0;nh cho m&#x1ECD;i ng&#x1B0;&#x1EDD;i d&#xF9;ng, v&#x1EDB;i m&#x1EE9;c gi&#xE1; si&#xEA;u t&#x1ED1;t!
+                        </span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="/tin-tuc/cach-dat-truoc-macbook-pro-m2-tai-the-gioi-di-dong-1440866">
+                    <img data-src="https://cdn.tgdd.vn/Files/2022/06/19/1440866/cach-dat-truoc-macbook-pro-m2-tai-the-gioi-di-dong-22_800x450-200x200.jpg" class="lazyload" alt="C&#xE1;ch &#x111;&#x1EB7;t tr&#x1B0;&#x1EDB;c MacBook Pro M2 t&#x1EA1;i Th&#x1EBF; Gi&#x1EDB;i Di &#x110;&#x1ED9;ng &#x111;&#x1EC3; &#x111;&#x1B0;&#x1EE3;c gi&#x1EA3;m ngay 3 tri&#x1EC7;u" width="270" height="151">
+                    <div class="text-tech">
+                        <span>
+                            C&#xE1;ch &#x111;&#x1EB7;t tr&#x1B0;&#x1EDB;c MacBook Pro M2 t&#x1EA1;i Th&#x1EBF; Gi&#x1EDB;i Di &#x110;&#x1ED9;ng &#x111;&#x1EC3; &#x111;&#x1B0;&#x1EE3;c gi&#x1EA3;m ngay 3 tri&#x1EC7;u
+                        </span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <a class="bg-ctv" aria-label="slide" data-cate="0" data-place="2006" href="https://www.thegioididong.com/daily" onclick="jQuery.ajax({ url: '/bannertracking?bid=51903&r='+ (new Date).getTime(), async: true, cache: false });"><img width='285' height='350' loading="lazy" class="lazyload" data-src="//cdn.tgdd.vn/2022/03/banner/DesktopTGDD-285x350.png" alt="Bán hàng Nội Bộ"></a>
+</div>
+@code {
+    [Parameter]
+    public List<Category> categorys { get; set; }
+}

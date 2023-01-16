@@ -1,0 +1,49 @@
+﻿CREATE TABLE [dbo].[Terminal] (
+    [Id]               INT             IDENTITY (1, 1) NOT NULL,
+    [FullName]         NVARCHAR (200)  NULL,
+    [ShortName]        NVARCHAR (200)  NULL,
+    [Address]          NVARCHAR (1000) NULL,
+    [Address2]         NVARCHAR (1000) NULL,
+    [EnterAddress1]    NVARCHAR (1000) NULL,
+    [EnterAddress2]    NVARCHAR (1000) NULL,
+    [ExitAddress1]     NVARCHAR (1000) NULL,
+    [ExitAddress2]     NVARCHAR (1000) NULL,
+    [NationalityId]    INT             NOT NULL,
+    [Long]             FLOAT (53)      NOT NULL,
+    [Lat]              FLOAT (53)      NOT NULL,
+    [ContactNumber]    VARCHAR (50)    NULL,
+    [ContactFirstName] NVARCHAR (50)   NULL,
+    [ContactLastName]  NVARCHAR (100)  NULL,
+    [ContactZalo]      NVARCHAR (50)   NULL,
+    [ContactSkype]     NVARCHAR (50)   NULL,
+    [ContactOther]     NVARCHAR (50)   NULL,
+    [StartEnter]       NVARCHAR (5)    NULL,
+    [EndEnter]         NVARCHAR (5)    NULL,
+    [StartExit]        NVARCHAR (5)    NULL,
+    [EndExit]          NVARCHAR (5)    NULL,
+    [UnloadingMinute]  INT             NULL,
+    [Note]             NVARCHAR (1000) NULL,
+    [RegionId]         INT             NULL,
+    [TerminalGroupId]  INT             NULL,
+    [LocalAddress]     NVARCHAR (1000) NULL,
+    [LocalAddress2]    NVARCHAR (1000) NULL,
+    [InterAddress1]    NVARCHAR (1000) NULL,
+    [InterAddress2]    NVARCHAR (1000) NULL,
+    [Reported]         BIT             CONSTRAINT [DF__Terminal__Report__7DF8932B] DEFAULT ((0)) NOT NULL,
+    [Radius]           INT             NOT NULL,
+    [RegoinId]         INT             NULL,
+    [Active]           BIT             NOT NULL,
+    [InsertedDate]     DATETIME2 (7)   NOT NULL,
+    [InsertedBy]       INT             NOT NULL,
+    [UpdatedDate]      DATETIME2 (7)   NULL,
+    [UpdatedBy]        INT             NULL,
+    [TanentId]         INT             NOT NULL,
+    CONSTRAINT [PK_Terminal] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_Terminal_TerminalGroup] FOREIGN KEY ([TerminalGroupId]) REFERENCES [dbo].[MasterData] ([Id])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [UQ_FullName]
+    ON [dbo].[Terminal]([FullName] ASC) WHERE ([Active]=(1));
+

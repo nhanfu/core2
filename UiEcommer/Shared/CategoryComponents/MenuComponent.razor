@@ -1,0 +1,13 @@
+﻿@using UiEcommer.Models
+<div class="list collapsed">
+    @foreach (var item in categorys)
+    {
+        <a class="item item--category" href="@item.Link">
+            @item.Name
+        </a>
+    }
+</div>
+@code {
+    [Parameter]
+    public List<Category> categorys { get; set; }
+}

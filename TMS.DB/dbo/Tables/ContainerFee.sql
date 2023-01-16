@@ -1,0 +1,27 @@
+﻿CREATE TABLE [dbo].[ContainerFee] (
+    [Id]              INT             IDENTITY (1, 1) NOT NULL,
+    [OrderDetailId]   INT             NULL,
+    [VendorId]        INT             NULL,
+    [ContainerTypeId] INT             NULL,
+    [SurchargeTypeId] INT             NULL,
+    [Min]             INT             NULL,
+    [Max]             INT             NULL,
+    [Surcharge]       DECIMAL (20, 5) NOT NULL,
+    [CurrencyId]      INT             NULL,
+    [Vat]             DECIMAL (4, 2)  NOT NULL,
+    [ExchangeRate]    DECIMAL (20, 5) NOT NULL,
+    [CreditAccId]     INT             NULL,
+    [DebitAccId]      INT             NULL,
+    [EffectiveDate]   DATETIME2 (7)   NULL,
+    [ExpiredDate]     DATETIME2 (7)   NULL,
+    [Active]          BIT             NOT NULL,
+    [InsertedDate]    DATETIME2 (7)   NOT NULL,
+    [InsertedBy]      INT             NOT NULL,
+    [UpdatedDate]     DATETIME2 (7)   NULL,
+    [UpdatedBy]       INT             NULL,
+    [TanentId]        INT             NOT NULL,
+    CONSTRAINT [PK_ContainerFee] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_ContainerFee_Vendor] FOREIGN KEY ([VendorId]) REFERENCES [dbo].[Vendor] ([Id]),
+    CONSTRAINT [FK_OrderDetail_ContainerFee] FOREIGN KEY ([OrderDetailId]) REFERENCES [dbo].[OrderDetail] ([Id])
+);
+

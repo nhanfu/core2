@@ -1,0 +1,92 @@
+﻿using Bridge.Html5;
+using Core.Clients;
+using Core.Components;
+using Core.Components.Extensions;
+using Core.Components.Forms;
+using Core.Enums;
+using Core.Extensions;
+using Core.MVVM;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using TMS.API.Models;
+using TMS.API.ViewModels;
+
+namespace TMS.UI.Business.Accountant
+{
+    public class ObjectListBL : TabEditor
+    {
+        private HTMLInputElement _uploader;
+        public ObjectListBL() : base(nameof(Vendor))
+        {
+            Name = "Object List";
+            DOMContentLoaded += () =>
+            {
+                Html.Take("Body").Form.Attr("method", "POST").Attr("enctype", "multipart/form-data")
+                .Display(false).Input.Event(EventType.Change, async (ev) => await SelectedExcel(ev)).Type("file").Id($"id_{GetHashCode()}").Attr("name", "fileImport").Attr("accept", ".xlsx");
+                _uploader = Html.Context as HTMLInputElement;
+            };
+        }
+
+        public async Task AddObject()
+        {
+            await this.OpenPopup(
+                featureName: "Object Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Accountant.ObjectEditBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Thêm mới đối tượng công nợ";
+                    instance.Entity = new Vendor()
+                    {
+                        TypeId = 23741
+                    };
+                    return instance;
+                });
+        }
+
+        public async Task EditObject(Vendor vendor)
+        {
+            await this.OpenPopup(
+                featureName: "Object Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Accountant.ObjectEditBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Chỉnh sửa đối tượng công nợ";
+                    instance.Entity = vendor;
+                    return instance;
+                });
+        }
+
+        public void BeforeCreatedObject(Vendor vendor)
+        {
+            vendor.TypeId = 23741;
+        }
+
+        private async Task SelectedExcel(Event e)
+        {
+            var files = e.Target["files"] as FileList;
+            if (files.Nothing())
+            {
+                return;
+            }
+
+            var uploadForm = _uploader.ParentElement as HTMLFormElement;
+            var formData = new FormData(uploadForm);
+            var response = await Client.SubmitAsync<List<Vendor>>(new XHRWrapper
+            {
+                FormData = formData,
+                Url = "ImportObject",
+                Method = HttpMethod.POST,
+                ResponseMimeType = Utils.GetMimeType("xlsx")
+            });
+        }
+
+        public void ImportObject()
+        {
+            _uploader.Click();
+        }
+    }
+}

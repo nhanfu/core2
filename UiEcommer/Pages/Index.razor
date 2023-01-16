@@ -1,0 +1,80 @@
+﻿@page "/"
+@using UiEcommer.Models
+@using UiEcommer.Shared.IndexComponents
+@using UiEcommer.Client
+@inject IConfiguration Configuration
+@inject IJSRuntime JS
+@if (MyApp == null)
+{
+    <PageTitle>Mobile</PageTitle>
+}
+else
+{
+    <PageTitle>Desktop</PageTitle>
+}
+<BigBanner />
+<section class="main-container home">
+    <BgTopHome />
+    <OptionPromo promos="@optionPromos" />
+    <FlashSaleBlock promos="@flashSalepromos" currentPromo="@currentPromo" currentPromoDetails="@currentPromoDetails" />
+    <ShopingTrends categorys="@categoryTrendings" />
+    <CateFeature categorys="@categoryHightLights" />
+    <Daily promos="@dailys" currentPromo="@currentDaily" currentPromoDetails="@currentDailyDetails" />
+    <Tech />
+</section>
+@code {
+    public List<Promo> optionPromos { get; set; } = new List<Promo>();
+    public List<Promo> flashSalepromos { get; set; } = new List<Promo>();
+    public List<Promo> dailys { get; set; } = new List<Promo>();
+    public List<PromoDetail> currentPromoDetails { get; set; } = new List<PromoDetail>();
+    public List<PromoDetail> currentDailyDetails { get; set; } = new List<PromoDetail>();
+    public List<Category> categoryTrendings { get; set; } = new List<Category>();
+    public List<Category> categoryHightLights { get; set; } = new List<Category>();
+    private bool shouldRender;
+    private DateTime now => DateTime.Now;
+    private Promo currentPromo = new Promo();
+    private Promo currentDaily = new Promo();
+    protected override bool ShouldRender() => shouldRender;
+    [CascadingParameter] public App MyApp { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JS.InvokeVoidAsync("SliderFlashsale");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var optionId = int.Parse(Configuration["OptionPromo"]);
+        var flashSaleId = int.Parse(Configuration["SaleDaily"]);
+        var dailyId = int.Parse(Configuration["Daily"]);
+        var data = new Client(nameof(Promo), Configuration).GetList<Promo>($"?$filter=Active eq true and TypeId in ({optionId},{flashSaleId},{dailyId})");
+        var dataIs = new Client(nameof(Category), Configuration).GetList<Category>($"?$filter=Active eq true and (IsTrending eq true or IsHighLight eq true)");
+        await Task.WhenAll(data, dataIs);
+        categoryTrendings = dataIs.Result.Where(x => x.IsTrending).ToList();
+        categoryHightLights = dataIs.Result.Where(x => x.IsHighLight).ToList();
+        if (data.Result != null)
+        {
+            optionPromos = data.Result.Where(x => x.TypeId == optionId).ToList();
+            flashSalepromos = data.Result.Where(x => x.TypeId == flashSaleId).OrderBy(x => x.From).ToList();
+            dailys = data.Result.Where(x => x.TypeId == dailyId).OrderBy(x => x.From).ToList();
+            currentDaily = dailys.FirstOrDefault();
+            flashSalepromos.ForEach(x =>
+            {
+                if (x.IsLoop)
+                {
+                    x.From = new DateTime(now.Year, now.Month, now.Day, x.From.Value.Hour, x.From.Value.Minute, 0, 0);
+                    x.To = new DateTime(now.Year, now.Month, now.Day, x.To.Value.Hour, x.To.Value.Minute, 0, 0);
+                }
+            });
+            flashSalepromos = flashSalepromos.Where(x => x.To > now).ToList();
+            currentPromo = flashSalepromos.FirstOrDefault(x => x.From <= now && x.To >= now);
+            if (currentPromo.Id > 0 && currentDaily.Id > 0)
+            {
+                var datas = await new Client(nameof(PromoDetail), Configuration).GetList<PromoDetail>($"?$expand=Product($select=Id,Name,Avatar,Link)&$filter=Active eq true and PromoId in ({currentPromo.Id},{currentDaily.Id})");
+                currentPromoDetails = datas.Where(x => x.PromoId == currentPromo.Id).ToList();
+                currentDailyDetails = datas.Where(x => x.PromoId == currentDaily.Id).ToList();
+            }
+        }
+        shouldRender = true;
+    }
+}
+

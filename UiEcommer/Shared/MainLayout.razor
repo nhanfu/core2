@@ -1,0 +1,48 @@
+﻿@using UiEcommer.Models
+@using UiEcommer.Client
+@using UiEcommer.Shared.BaseComponents
+@inherits LayoutComponentBase
+@inject IConfiguration Configuration
+
+<PageTitle>UiEcommer</PageTitle>
+<NavHeader categorys="@treeCategorys" />
+@Body
+<NavFooter />
+@code {
+    public List<Category> categorys { get; set; } = new List<Category>();
+    public List<Category> treeCategorys { get; set; } = new List<Category>();
+    private bool shouldRender;
+    protected override bool ShouldRender() => shouldRender;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await new Client(nameof(Category), Configuration).GetList<Category>("?$filter=Active eq true");
+        if (data != null)
+        {
+            categorys = data;
+            BuildFeatureTree();
+        }
+        shouldRender = true;
+    }
+
+    private void BuildFeatureTree()
+    {
+        var dic = categorys.ToDictionary(f => f.Id);
+        foreach (var menu in dic.Values)
+        {
+            if (menu.ParentId != null && dic.ContainsKey(menu.ParentId.Value))
+            {
+                var parent = dic[menu.ParentId.Value];
+                if (parent.InverseParent is null)
+                {
+                    parent.InverseParent = new List<Category>();
+                }
+                else
+                {
+                    parent.InverseParent.Add(menu);
+                }
+            }
+        }
+        treeCategorys = categorys.Where(f => f.ParentId is null).ToList();
+    }
+}

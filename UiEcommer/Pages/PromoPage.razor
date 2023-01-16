@@ -1,0 +1,45 @@
+﻿@page "/promo/{Slug}"
+@using UiEcommer.Models
+@using UiEcommer.Client
+@using System.Text.Json
+@using UiEcommer.Shared.PromoComponents
+
+@inject NavigationManager UriHelper
+@inject IHttpClientFactory ClientFactory
+@inject IConfiguration Configuration
+<WrapperComponent optionPromos="@optionPromos" url="@Slug" />
+<PromoDetailComponent promo="@promo" categorys="@categorys" />
+@code {
+    [Parameter]
+    public string Slug { get; set; }
+    public List<Promo> optionPromos { get; set; } = new List<Promo>();
+    public List<Category> categorys { get; set; } = new List<Category>();
+    private Promo promo = new Promo();
+    private bool shouldRender;
+    protected override bool ShouldRender() => shouldRender;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var optionId = int.Parse(Configuration["OptionPromo"]);
+        var url = UriHelper.ToAbsoluteUri(UriHelper.Uri).LocalPath;
+        if (url != null && url != "/")
+        {
+            Slug = url;
+            var data = await new Client(nameof(Promo), Configuration).FirstOfDefault<Promo>($"?$expand=PromoDetail($expand=Product)&$filter=contains('{url}',Link)");
+            var datas = await new Client(nameof(Promo), Configuration).GetList<Promo>($"?$filter=Active eq true and TypeId eq {data.TypeId}");
+            if (data != null)
+            {
+                promo = data;
+                var categoryIds = promo.PromoDetail.Select(x => x.Product.CategoryId).ToList();
+                categorys = await new Client(nameof(Category), Configuration).GetList<Category>($"?$filter=Active eq true and Id in ({string.Join(",", categoryIds)})");
+            }
+            if (datas != null)
+            {
+                optionPromos = datas;
+            }
+            shouldRender = true;
+        }
+    }
+}
+
+

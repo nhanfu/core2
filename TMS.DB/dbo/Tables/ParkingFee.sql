@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[ParkingFee] (
+    [Id]               INT             IDENTITY (1, 1) NOT NULL,
+    [PaybackPaymentId] INT             NULL,
+    [TruckId]          INT             NULL,
+    [SupplierId]       INT             NULL,
+    [CurrencyId]       INT             NULL,
+    [InvoiceNo]        NVARCHAR (50)   NULL,
+    [InvoiceDate]      DATETIME2 (7)   NOT NULL,
+    [InvoiceForm]      NVARCHAR (30)   NULL,
+    [Attachments]      NVARCHAR (500)  NULL,
+    [IsPayable]        BIT             NOT NULL,
+    [Odometer]         DECIMAL (20, 5) NOT NULL,
+    [ExchangeRate]     DECIMAL (20, 5) NOT NULL,
+    [Price]            DECIMAL (20, 5) NOT NULL,
+    [EnteredDate]      DATETIME2 (7)   NULL,
+    [ExitedDate]       DATETIME2 (7)   NULL,
+    [CreditAccId]      INT             NULL,
+    [DebitAccId]       INT             NULL,
+    [Active]           BIT             NOT NULL,
+    [InsertedDate]     DATETIME2 (7)   NOT NULL,
+    [InsertedBy]       INT             NOT NULL,
+    [UpdatedDate]      DATETIME2 (7)   NULL,
+    [UpdatedBy]        INT             NULL,
+    [TanentId]         INT             NOT NULL,
+    CONSTRAINT [PK_ParkingFee] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_ParkingFee_Truck] FOREIGN KEY ([TruckId]) REFERENCES [dbo].[Truck] ([Id])
+);
+

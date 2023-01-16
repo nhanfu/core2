@@ -1,0 +1,39 @@
+﻿@using UiEcommer.Models
+<header class="header header-v2   " data-sub="0">
+    <a href="/" class="header__logo">
+        <i class="iconnewglobal-logo"></i>
+    </a>
+    <form action="/tim-kiem" onsubmit="return suggestSearch(event);" class="header__search">
+        <input id="skw" type="text" class="input-search" onkeyup="suggestSearch(event);" placeholder="Bạn tìm gì..." name="key" autocomplete="off" maxlength="100">
+        <button type="submit" class="btn-search">
+            <i class="icon-search"></i>
+        </button>
+    </form>
+    <div id="search-result"></div>
+    <a href="javascript:;" class="header__address" onclick="OpenLocation()">
+        <span data-province="3" class="default" data-district="0" data-ward="0">
+            <i class="icon-address"></i>H&#x1ED3; Ch&#xED; Minh
+        </span>
+    </a>
+    <a href="/lich-su-mua-hang" class="header__orderhis name-order">
+        Lịch sử đơn hàng
+    </a>
+    <a href="/cart" class="header__cart">
+        <i class="iconnewglobal-cart"></i>
+        <span class="cart-number hide"></span>
+    </a>
+
+    <div class="open-menu">
+        <i class="iconnewglobal-menu"></i>
+    </div>
+    <div class="show-menu">
+        <div class="box-fixed">
+            <a href="javascript:void(0)" class="btn-closemenu">Đóng</a>
+        </div>
+        <NavMobileHeader />
+    </div>
+</header>
+@code {
+    [Parameter]
+    public List<Category> categorys { get; set; }
+}

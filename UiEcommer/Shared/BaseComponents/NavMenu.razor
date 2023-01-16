@@ -1,0 +1,24 @@
+﻿@using UiEcommer.Models
+@using UiEcommer.Shared.BaseComponents
+@using UiEcommer.Client
+
+@inject IConfiguration Configuration
+
+<div class="header__main">
+    <div>
+        <ul class="main-menu">
+            @if (categorys != null)
+            {
+                foreach (var item in categorys)
+                {
+                    <ItemMenu category="@item" />
+                }
+            }
+        </ul>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<Category> categorys { get; set; }
+}

@@ -1,0 +1,49 @@
+.option-promo {
+    display: flex;
+    overflow: hidden;
+    text-align: center;
+    margin: 30px 0;
+    border-radius: 12px;
+    margin: 0 0 30px;
+    position: relative;
+    z-index: 1;
+}
+
+    .option-promo li {
+        display: inline-block;
+        vertical-align: middle;
+        width: 20%;
+        margin-right: 2%;
+        width: calc(100%/3 - 16px);
+        margin-right: 20px;
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 15px 0;
+    }
+
+        .option-promo li:last-child {
+            margin-right: 0;
+        }
+
+        .option-promo li a {
+            display: block;
+            overflow: hidden;
+        }
+
+        .option-promo li img {
+            display: inline-block;
+            vertical-align: middle;
+            height: 70px;
+        }
+
+        .option-promo li span {
+            display: inline-block;
+            vertical-align: middle;
+            overflow: hidden;
+            color: #222;
+            font-size: 22px;
+            line-height: 28px;
+            text-align: left;
+            margin-left: 10px;
+            max-width: 65%;
+        }

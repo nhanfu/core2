@@ -1,0 +1,25 @@
+﻿@using UiEcommer.Models
+
+@inject IConfiguration Configuration
+
+<div class="shopping-trends">
+    <strong class="name-box">Xu hướng mua sắm</strong>
+    <ul>
+        @foreach (var item in categorys)
+        {
+            <li>
+                <a aria-label="slide" href="@item.Link">
+                    <img width="280" height="236" loading="lazy" class="lazyload" data-src="@Configuration["Api"]/@item.Icon" alt="@item.Name">
+                    <div class="bg-none">
+                        <span>@item.Name</span>
+                        <strong>@item.TrendingLabel</strong>
+                    </div>
+                </a>
+            </li>
+        }
+    </ul>
+</div>
+@code {
+    [Parameter]
+    public List<Category> categorys { get; set; }
+}

@@ -1,0 +1,82 @@
+﻿@using UiEcommer.Models
+@inject IConfiguration Configuration
+<section id="99k" class="wrapper  page">
+    <div class="container">
+        <div class="wrapper-groups">
+            <a class="@(currentCategory is null ? "active" : "")" href="javascript:;" @onclick="()=>FilterPromo(null)">
+                <h3>Tất cả</h3>
+            </a>
+            @foreach (var item in categorys)
+            {
+                <a href="javascript:;" @onclick="()=>FilterPromo(item)" class="@(currentCategory == item ? "active" : "")">
+                    <h3>@item.Name</h3>
+                </a>
+            }
+        </div>
+        <div class="listing-products">
+            <div class="listproduct">
+                @foreach (var item in currentPromo)
+                {
+                    <div class="item" data-id="208853">
+                        <a href="@item.Product.Link" class=" main-contain">
+                            <div class="item-label">
+                            </div>
+                            <div class="item-img">
+                                <img data-src="@Configuration["Api"]/@item.Product.Avatar" class="lazyload" alt="@item.Product.Name" width="210" height="210">
+                            </div>
+                            <p class='result-label temp1'>
+                                <img width='20' height='20' class='lazyload' alt='XẢ HÀNG GIẢM SỐC' data-src='https://cdn.tgdd.vn/2020/10/content/icon1-50x50.png'>
+                                <span>XẢ HÀNG GIẢM SỐC</span>
+                            </p>
+                            <h3>@item.Product.Name</h3>
+                            <div class="box-p">
+                                @if (@item.Percent > 0)
+                                {
+                                    <p class="price-old black">@item.UnitPrice.ToString("N0")&#x20AB;</p>
+                                    <span class="percent">-@item.Percent.ToString("N0")%</span>
+                                }
+                            </div>
+                            <strong class="price">@item.UnitPricePromo.ToString("N0")&#x20AB;</strong>
+                            <div class="item-rating">
+                                <p>
+                                    <i class="icon-star"></i>
+                                    <i class="icon-star"></i>
+                                    <i class="icon-star-dark"></i>
+                                    <i class="icon-star-dark"></i>
+                                    <i class="icon-star-dark"></i>
+                                </p>
+                                <p class="item-rating-total">9</p>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+@code {
+    [Parameter]
+    public Promo promo { get; set; } = new Promo();
+    [Parameter]
+    public List<Category> categorys { get; set; } = new List<Category>();
+    public List<PromoDetail> currentPromo { get; set; }
+    public Category currentCategory { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        currentPromo = promo.PromoDetail.ToList();
+    }
+
+    public void FilterPromo(Category category)
+    {
+        currentCategory = category;
+        if (category != null)
+        {
+            currentPromo = promo.PromoDetail.Where(x => x.Product.CategoryId == category.Id).ToList();
+        }
+        else
+        {
+            currentPromo = promo.PromoDetail.ToList();
+        }
+    }
+}

@@ -1,0 +1,69 @@
+﻿@page "/{Slug}"
+@using UiEcommer.Models
+@using UiEcommer.Client
+@using System.Text.Json
+@using UiEcommer.Shared.CategoryComponents
+
+@inject NavigationManager UriHelper
+@inject IHttpClientFactory ClientFactory
+@inject IConfiguration Configuration
+<PageTitle>@category.Name</PageTitle>
+<section class="page">
+    <BreadcrumbComponent pathCategory="@pathCategory" category="@category" />
+    <ContainerComponent category="@category" url="@Slug" products="@products" vendors="@vendors" brands="@brands" />
+</section>
+@code {
+    [Parameter]
+    public string Slug { get; set; }
+    [Parameter]
+    public string sort { get; set; }
+    private Category category = new Category();
+    private List<Category> pathCategory = new List<Category>();
+    private List<Product> products = new List<Product>();
+    private List<Brand> brands = new List<Brand>();
+    private List<Vendor> vendors = new List<Vendor>();
+    private List<Category> childCategory = new List<Category>();
+    private bool shouldRender;
+
+    protected override bool ShouldRender() => shouldRender;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var url = UriHelper.ToAbsoluteUri(UriHelper.Uri).LocalPath;
+        if (url != null && url != "/")
+        {
+            Slug = url;
+            var data = await new Client(nameof(Category), Configuration).FirstOfDefault<Category>($"?$expand=InverseParent($select=Name,Link,Icon)&$select=Name,Link,Icon,Path,Id&$filter=Link eq '{url}'");
+            if (data != null)
+            {
+                category = data;
+                if (category.Path != null)
+                {
+                    var pathIds = category.Path.Split(@"\").Where(x => x != null && x != "").ToList();
+                    pathCategory = await new Client(nameof(Category), Configuration).GetList<Category>($"?$select=Name,Link,Icon&$filter=Id in ({string.Join(",", pathIds)})");
+                }
+                else
+                {
+                    pathCategory = new List<Category>();
+                }
+                var childCategory = await new Client(nameof(Category), Configuration).GetList<Category>(@"?$expand=Product&$select=Name,Link,Icon&$filter=contains(Path,'\" + data.Id + @"\') or Id eq " + data.Id);
+                products = childCategory.SelectMany(x => x.Product).ToList();
+                var brandIds = products.Select(x => x.BrandId).Distinct().ToList();
+                if (brandIds != null)
+                {
+                    brands = await new Client(nameof(Brand), Configuration).GetList<Brand>($"?$filter=Id in ({string.Join(",", brandIds)})");
+                }
+                var vendorIds = products.Select(x => x.VendorId).Distinct().ToList();
+                if (vendorIds != null)
+                {
+                    vendors = await new Client(nameof(Vendor), Configuration).GetList<Vendor>($"?$filter=Id in ({string.Join(",", vendorIds)})");
+                }
+            }
+            else
+            {
+                UriHelper.NavigateTo("/404");
+            }
+            shouldRender = true;
+        }
+    }
+}
