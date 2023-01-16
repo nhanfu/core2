@@ -12,6 +12,8 @@ namespace Core.Components
 {
     public class VirtualGrid : GridView
     {
+        private const string RowNo = "_index";
+
         public List<object> CacheData { get; set; } = new List<object>();
         public int LastStartIndexCache { get; set; }
         public int LastEndIndexCache { get; set; }
@@ -22,43 +24,44 @@ namespace Core.Components
         protected override void DOMContentLoadedHandler()
         {
             base.DOMContentLoadedHandler();
-            Task.Run(LoadCache);
+            Task.Run(() => PrepareCache(0));
         }
 
-        private async Task LoadCache()
+        private async Task PrepareCache(int skip = 0)
         {
             if (AllListViewItem.Nothing())
             {
                 return;
             }
-            var bottomTask = LoadBottomCache(AllListViewItem.LastOrDefault().Index);
-            var topTask = LoadTopCache(AllListViewItem.FirstOrDefault().Index);
+            var bottomTask = LoadBottomCache(AllListViewItem.LastOrDefault().RowNo + 1);
+            var topTask = LoadTopCache(AllListViewItem.FirstOrDefault().RowNo - 1);
             await Task.WhenAll(bottomTask, topTask);
             if (bottomTask.Result.Nothing() && topTask.Result.Nothing())
             {
                 return;
             }
             CacheData.Clear();
-            topTask.Result.Union(bottomTask.Result).Union(RowData.Data).ForEach(CacheData.Add);
+            CacheData.AddRange(topTask.Result.Concat(FormattedRowData).Concat(bottomTask.Result));
+            CacheData.ForEach((x, index) => x[RowNo] = skip + index + 1);
             await LoadMasterData(CacheData, spinner: false);
         }
 
-        private async Task<IEnumerable<object>> LoadTopCache(int startIndex)
+        private async Task<IEnumerable<object>> LoadTopCache(int startNum)
         {
-            if (startIndex < viewPortCount * 10 || startIndex >= LastStartIndexCache)
+            if (startNum <= 0 || startNum < viewPortCount * 10 || startNum >= LastStartIndexCache)
             {
                 return Enumerable.Empty<object>();
             }
-            var source = CalcDatasourse(viewPortCount * 10, startIndex - viewPortCount * 10, "false");
+            var source = CalcDatasourse(viewPortCount * 10, startNum - viewPortCount * 10, "false");
             var data = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
             data.Value.Reverse();
-            LastStartIndexCache = startIndex - viewPortCount * 10;
+            LastStartIndexCache = startNum - viewPortCount * 10;
             return data.Value;
         }
 
         private async Task<IEnumerable<object>> LoadBottomCache(int endIndex)
         {
-            if (endIndex <= LastEndIndexCache)
+            if (endIndex < LastEndIndexCache)
             {
                 return Enumerable.Empty<object>();
             }
@@ -83,18 +86,18 @@ namespace Core.Components
             {
                 viewPortCount = GuiInfo.Row ?? 20;
             }
-            var rows = new List<object>();
+            List<object> rows;
             if (firstLoad)
             {
-                rows = await FirstLoad(count, skip);
+                rows = await FirstLoadData(count, skip);
             }
             else
             {
-                rows = CacheData.Skip(skip).Take(viewPortCount).ToList();
+                rows = ReadCache(skip);
                 if (rows.Count < viewPortCount)
                 {
-                    rows = await FirstLoad(count, skip);
-                    await LoadCache();
+                    rows = await FirstLoadData(count, skip);
+                    await PrepareCache(skip);
                 }
                 FormattedRowData = rows;
             }
@@ -109,7 +112,22 @@ namespace Core.Components
             _renderingViewPort = false;
         }
 
-        private async Task<List<object>> FirstLoad(bool count, int skip)
+        private List<object> ReadCache(int skip)
+        {
+            List<object> rows = new List<object>();
+            var index = CacheData.IndexOf(x => (int)x[RowNo] == skip + 1);
+            if (index < 0)
+            {
+                return rows;
+            }
+            for (int i = index; i < index + viewPortCount && CacheData.Count > index + i; i++)
+            {
+                rows.Add(CacheData[i]);
+            }
+            return rows;
+        }
+
+        private async Task<List<object>> FirstLoadData(bool count, int skip)
         {
             List<object> rows;
             var source = CalcDatasourse(viewPortCount, skip, count ? "true" : "false");
@@ -121,6 +139,7 @@ namespace Core.Components
                 Paginator.Options.Total = oDataRows.Odata.Count ?? rows.Count;
             }
             FormattedRowData = rows;
+            rows.ForEach((x, index) => x[RowNo] = skip + index + 1);
             await LoadMasterData(FormattedRowData, spinner: false);
             return rows;
         }

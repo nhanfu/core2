@@ -347,7 +347,7 @@ namespace Core.Components
                     else
                     {
                         previous.InnerHTML = (index + 1).ToString();
-                        row.Index = indexRow;
+                        row.RowNo = indexRow;
                         indexRow++;
                         index++;
                     }

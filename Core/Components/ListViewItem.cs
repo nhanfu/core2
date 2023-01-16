@@ -32,7 +32,7 @@ namespace Core.Components
         protected bool _selected;
         protected bool _focused;
         private bool _emptyRow;
-        public int Index { get; set; }
+        public int RowNo { get; set; }
         public virtual bool Selected
         {
             get => _selected;
@@ -306,7 +306,7 @@ namespace Core.Components
             var focusing = this.FirstOrDefault(x => x.Element == target || x.ParentElement.Contains(target)) != null;
             HotKeySelectRow(ctrl, shift, focusing);
             ListViewSection.ListView.LastListViewItem = this;
-            ListViewSection.ListView.LastIndex = Index;
+            ListViewSection.ListView.LastIndex = RowNo;
             ListViewSection.ListView.RowClick?.Invoke(Entity);
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity);
         }
@@ -332,10 +332,10 @@ namespace Core.Components
                     var allListView = ListViewSection.ListView.AllListViewItem;
                     if (ListViewSection.ListView.LastListViewItem is null)
                     {
-                        ListViewSection.ListView.LastIndex = Index;
+                        ListViewSection.ListView.LastIndex = RowNo;
                     }
                     var _lastIndex = ListViewSection.ListView.LastIndex;
-                    var currentIndex = Index;
+                    var currentIndex = RowNo;
                     if (_lastIndex > currentIndex)
                     {
                         (_lastIndex, currentIndex) = (currentIndex, _lastIndex);
@@ -416,8 +416,8 @@ namespace Core.Components
 
         private void SetSeletedListViewItem(IEnumerable<ListViewItem> allListView, int _lastIndex, int currentIndex)
         {
-            var start = allListView.FirstOrDefault().Index > _lastIndex ? allListView.FirstOrDefault().Index : _lastIndex;
-            var items = ListViewSection.ListView.AllListViewItem.Where(x => x.Index >= start && x.Index <= currentIndex).ToList();
+            var start = allListView.FirstOrDefault().RowNo > _lastIndex ? allListView.FirstOrDefault().RowNo : _lastIndex;
+            var items = ListViewSection.ListView.AllListViewItem.Where(x => x.RowNo >= start && x.RowNo <= currentIndex).ToList();
             if (!ListViewSection.ListView.VirtualScroll)
             {
                 ListViewSection.ListView.SelectedIds = items.Select(x => x.Entity[IdField].As<int>()).As<HashSet<int>>();
@@ -484,7 +484,7 @@ namespace Core.Components
             visited.Add(this);
             if (!buildFromRow)
             {
-                builder.Append(Utils.Indent).Append(BasicUpdateText).Append(" dòng ").Append(Index + 1).Append(":").Append(Utils.NewLine);
+                builder.Append(Utils.Indent).Append(BasicUpdateText).Append(" dòng ").Append(RowNo + 1).Append(":").Append(Utils.NewLine);
             }
             Children.ForEach(x =>
             {

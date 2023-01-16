@@ -979,11 +979,11 @@ namespace Core.Components
                     break;
                 case KeyCodeEnum.UpArrow:
                     var currentItemUp = GetItemFocus();
-                    if (currentItemUp.Index == 0)
+                    if (currentItemUp.RowNo == 0)
                     {
                         return;
                     }
-                    var upItemUp = AllListViewItem.FirstOrDefault(x => x.Index == (currentItemUp.Index - 1));
+                    var upItemUp = AllListViewItem.FirstOrDefault(x => x.RowNo == (currentItemUp.RowNo - 1));
                     if (upItemUp is null)
                     {
                         currentItemUp.Focus();
@@ -997,7 +997,7 @@ namespace Core.Components
                     break;
                 case KeyCodeEnum.DownArrow:
                     var currentItemDown = GetItemFocus();
-                    var upItemDown = AllListViewItem.FirstOrDefault(x => x.Index == (currentItemDown.Index + 1));
+                    var upItemDown = AllListViewItem.FirstOrDefault(x => x.RowNo == (currentItemDown.RowNo + 1));
                     if (upItemDown is null)
                     {
                         currentItemDown.Focus();
@@ -1105,11 +1105,11 @@ namespace Core.Components
                         e.StopPropagation();
                         e.PreventDefault();
                         var currentItemD = GetItemFocus();
-                        if (currentItemD.Index == 0)
+                        if (currentItemD.RowNo == 0)
                         {
                             return;
                         }
-                        var upItemD = AllListViewItem.FirstOrDefault(x => x.Index == (currentItemD.Index - 1));
+                        var upItemD = AllListViewItem.FirstOrDefault(x => x.RowNo == (currentItemD.RowNo - 1));
                         currentItemD.Entity.SetComplexPropValue(fieldName, upItemD.Entity.GetPropValue(com.GuiInfo.FieldName));
                         var updated = currentItemD.FilterChildren(x => x.GuiInfo.FieldName == com.GuiInfo.FieldName).FirstOrDefault();
                         updated.Dirty = true;
@@ -1585,18 +1585,13 @@ namespace Core.Components
             {
                 child.Entity.CopyPropFrom(updatedData[index]);
                 child.Entity = updatedData[index];
-                child.FilterChildren(x => true).ForEach(x =>
+                child.Children.Flattern(x => x.Children).ForEach(x =>
                 {
                     x.Entity = updatedData[index];
                 });
+                child.UpdateView();
             });
             var shouldAddRow = AllListViewItem.Count() <= updatedData.Length;
-            if (!shouldAddRow)
-            {
-                dataSections.Skip(updatedData.Length).ForEach(x => x.Dispose());
-            }
-
-            RowAction(row => !row.EmptyRow, row => row.UpdateView());
             if (shouldAddRow)
             {
                 updatedData.Skip(dataSections.Length).ForEach(newRow =>
@@ -2378,7 +2373,7 @@ namespace Core.Components
                 var index = skip + rowIndex;
                 previous.InnerHTML = index.ToString();
                 row.Selected = SelectedIds.Contains(row.Entity[IdField].As<int>());
-                row.Index = index.Value;
+                row.RowNo = index.Value;
             });
         }
 
