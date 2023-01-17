@@ -125,7 +125,7 @@ namespace TMS.API.Controllers
                 if (oldEntity.Name != null && oldEntity.Name != "")
                 {
                     var name = patch.Changes.FirstOrDefault(x => x.Field == nameof(oldEntity.Name));
-                    var vendorDB = await db.Vendor.Where(x => x.Active && x.TypeId == entity.TypeId && x.Name.ToLower().IndexOf(name.Value.ToLower()) == name.Value.ToLower().Length && (x.Id != id.TryParseInt() || (int)entity.GetPropValue(IdField) <= 0)).FirstOrDefaultAsync();
+                    var vendorDB = await db.Vendor.Where(x => x.Active && x.TypeId == entity.TypeId && x.NameSys.ToLower().Contains(entity.Name) && (x.Id != id.TryParseInt() || (int)entity.GetPropValue(IdField) <= 0)).FirstOrDefaultAsync();
                     if (vendorDB != null)
                     {
                         throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
@@ -168,7 +168,7 @@ namespace TMS.API.Controllers
         {
             if (entity.Name != null && entity.Name != "")
             {
-                var vendorDB = await db.Vendor.Where(x => x.Name.ToLower() == entity.Name.ToLower()).FirstOrDefaultAsync();
+                var vendorDB = await db.Vendor.Where(x => x.NameSys.ToLower() == entity.Name.ToLower()).FirstOrDefaultAsync();
                 if (vendorDB != null)
                 {
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };

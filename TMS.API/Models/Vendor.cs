@@ -58,6 +58,7 @@ namespace TMS.API.Models
         public string CityName { get; set; }
         public int? DepartmentId { get; set; }
         public int? SaleId { get; set; }
+        public string NameSys { get; set; }
 
         public virtual ICollection<ErrorLog> ErrorLog { get; set; }
         public virtual ICollection<User> User { get; set; }
