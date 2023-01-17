@@ -753,6 +753,12 @@ namespace TMS.API.Controllers
                 x++;
             }
             var url = $"{component.RefName}{DateTime.Now:ddMMyyyyhhmm}.xlsx";
+            var j = 1;
+            foreach (var item in gridPolicy)
+            {
+                worksheet.AutoFitColumn(j);
+                j++;
+            }
             workbook.Save($"wwwroot\\excel\\Download\\{url}", new OoxmlSaveOptions(SaveFormat.Xlsx));
             return url;
         }
