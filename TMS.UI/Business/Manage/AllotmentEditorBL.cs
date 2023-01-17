@@ -58,6 +58,7 @@ namespace TMS.UI.Business.Manage
             await grid?.ApplyFilter(true);
             var gridTran = ParentForm.FindComponentByName<GridView>(nameof(Transportation));
             await gridTran?.ApplyFilter(true);
+            gridTran?.ClearSelected();
             Dirty = false;
             Dispose();
             return rs;
