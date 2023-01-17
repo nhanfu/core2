@@ -192,6 +192,8 @@ namespace TMS.UI.Business.Manage
                 SealNo = x.SealNo,
                 BossId = x.BossId,
                 CommodityId = x.CommodityId,
+                ClosingDate = x.ClosingDate,
+                ReturnDate = x.ReturnDate,
                 TransportationId = x.Id
             }).ToList();
             await this.OpenPopup(

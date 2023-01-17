@@ -56,6 +56,8 @@ namespace TMS.API.Models
         public bool UrgentTerms { get; set; }
         public bool BreakTerms { get; set; }
         public bool ColdContTerms { get; set; }
+        public DateTime? ClosingDate { get; set; }
+        public DateTime? ReturnDate { get; set; }
 
         public virtual Allotment Allotment { get; set; }
         public virtual Transportation Transportation { get; set; }
