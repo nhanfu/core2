@@ -194,6 +194,7 @@ namespace TMS.UI.Business.Manage
                 CommodityId = x.CommodityId,
                 TransportationId = x.Id
             }).ToList();
+            gridView.ClearSelected();
             await this.OpenPopup(
                 featureName: "Allotment Editor",
                 factory: () =>
