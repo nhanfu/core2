@@ -81,7 +81,26 @@ namespace Core.Components
                 userSetting.Value = JsonConvert.SerializeObject(exportExcel);
                 await new Client(nameof(UserSetting)).UpdateAsync<UserSetting>(userSetting);
             }
-            var path = await new Client(ParentListView.GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}&sql={ParentListView.Sql}&where={ParentListView.Wheres.Combine(" and ")}&custom=true&featureId={Parent.EditForm.Feature.Id}");
+            var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"[{ParentListView.GuiInfo.RefName}].[{orderby.Field.FieldName}] {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
+            var finalFilter = string.Empty;
+            if (orderbyList.HasElement())
+            {
+                finalFilter = orderbyList.Combine();
+            }
+            if (finalFilter.IsNullOrWhiteSpace())
+            {
+                finalFilter = OdataExt.GetClausePart(ParentListView.FormattedDataSource, OdataExt.OrderByKeyword);
+                if (finalFilter.Contains(","))
+                {
+                    var k = finalFilter.Split(",").ToList();
+                    finalFilter = k.Select(x => $"[{ParentListView.GuiInfo.RefName}].{x}").Combine();
+                }
+                else
+                {
+                    finalFilter = $"[{ParentListView.GuiInfo.RefName}].{finalFilter}";
+                }
+            }
+            var path = await new Client(ParentListView.GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}&sql={ParentListView.Sql}&where={ParentListView.Wheres.Combine(" and ")}&custom=true&featureId={Parent.EditForm.Feature.Id}&orderby={finalFilter}");
             Client.Download($"/excel/Download/{path}");
             Toast.Success("Xuất file thành công");
         }

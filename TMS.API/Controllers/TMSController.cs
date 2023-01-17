@@ -587,7 +587,7 @@ namespace TMS.API.Controllers
         }
 
         [HttpGet("api/[Controller]/ExportExcel")]
-        public async Task<string> ExportExcel([FromServices] IServiceProvider serviceProvider, [FromServices] IConfiguration config, [FromQuery] int componentId, [FromQuery] string sql, [FromQuery] string where, [FromQuery] bool custom, [FromQuery] int featureId, [FromQuery] string order)
+        public async Task<string> ExportExcel([FromServices] IServiceProvider serviceProvider, [FromServices] IConfiguration config, [FromQuery] int componentId, [FromQuery] string sql, [FromQuery] string where, [FromQuery] bool custom, [FromQuery] int featureId, [FromQuery] string order, [FromQuery] string orderby)
         {
             var component = await db.Component.FindAsync(componentId);
             var userSetting = await db.UserSetting.FirstOrDefaultAsync(x => x.Name == $"{(custom ? "Export" : "ListView")}-" + componentId && x.UserId == UserId);
@@ -645,6 +645,10 @@ namespace TMS.API.Controllers
                                   from [{component.RefName}] as [{component.RefName}]
                                   {joins.Combine(" ")}
                                   where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
+            }
+            if (!sql.IsNullOrWhiteSpace())
+            {
+                reportQuery += $" order by {orderby}";
             }
             var connectionStr = Startup.GetConnectionString(serviceProvider, config, "Default");
             using var con = new SqlConnection(connectionStr);
