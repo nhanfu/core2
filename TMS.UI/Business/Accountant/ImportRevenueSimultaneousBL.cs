@@ -32,7 +32,7 @@ namespace TMS.UI.Business.Accountant
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in {ids.Combine()}");
+            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()})");
             var listViewItems = transportations.Where(x => x.IsLocked == false && x.IsSubmit == false).ToList();
             if (listViewItems.Count <= 0)
             {
@@ -47,28 +47,31 @@ namespace TMS.UI.Business.Accountant
             confirm.YesConfirmed += async () =>
             {
                 Spinner.AppendTo(this.Element, true);
-                foreach (var x in listViewItems)
+                foreach (var item in listViewItems)
                 {
-                    x.LotNo = transportationEntity.LotNo;
-                    x.LotDate = transportationEntity.LotDate;
-                    x.InvoinceNo = transportationEntity.InvoinceNo;
-                    x.InvoinceDate = transportationEntity.InvoinceDate;
-                    x.UnitPriceBeforeTax = transportationEntity.UnitPriceBeforeTax;
-                    x.UnitPriceAfterTax = transportationEntity.UnitPriceAfterTax;
-                    x.ReceivedPrice = transportationEntity.ReceivedPrice;
-                    x.CollectOnBehaftPrice = transportationEntity.CollectOnBehaftPrice;
-                    x.Vat = transportationEntity.Vat;
-                    x.TotalPriceBeforTax = transportationEntity.TotalPriceBeforTax;
-                    x.VatPrice = transportationEntity.VatPrice;
-                    x.TotalPrice = transportationEntity.TotalPrice;
-                    x.Cp1 = transportationEntity.Cp1;
-                    x.Cp2 = transportationEntity.Cp2;
-                    x.NotePayment = transportationEntity.NotePayment;
-                    x.VendorVatId = transportationEntity.VendorVatId;
-                    await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(x));
+                    var newRevenue = new Revenue()
+                    {
+                        LotNo = transportationEntity.LotNo,
+                        LotDate = transportationEntity.LotDate,
+                        InvoinceNo = transportationEntity.InvoinceNo,
+                        InvoinceDate = transportationEntity.InvoinceDate,
+                        UnitPriceBeforeTax = transportationEntity.UnitPriceBeforeTax,
+                        UnitPriceAfterTax = transportationEntity.UnitPriceAfterTax,
+                        ReceivedPrice = transportationEntity.ReceivedPrice,
+                        CollectOnBehaftPrice = transportationEntity.CollectOnBehaftPrice,
+                        Vat = transportationEntity.Vat,
+                        TotalPriceBeforTax = transportationEntity.TotalPriceBeforTax,
+                        VatPrice = transportationEntity.VatPrice,
+                        TotalPrice = transportationEntity.TotalPrice,
+                        NotePayment = transportationEntity.NotePayment,
+                        VendorVatId = transportationEntity.VendorVatId,
+                        TransportationId = item.Id,
+                        Active = true,
+                        InsertedDate = DateTime.Now.Date,
+                        InsertedBy = Client.Token.UserId
+                    };
+                    await new Client(nameof(Revenue)).CreateAsync<Revenue>(newRevenue);
                 }
-                await gridView.ApplyFilter(true);
-                gridView.Dirty = false;
                 Dispose();
                 Toast.Success("Đã nhập thành công");
             };
