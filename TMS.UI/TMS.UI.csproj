@@ -172,6 +172,9 @@
     <Compile Include="..\TMS.API\Models\ReturnPlan.cs">
       <Link>Models\ReturnPlan.cs</Link>
     </Compile>
+    <Compile Include="..\TMS.API\Models\Revenue.cs">
+      <Link>Models\Revenue.cs</Link>
+    </Compile>
     <Compile Include="..\TMS.API\Models\Role.cs">
       <Link>Models\Role.cs</Link>
     </Compile>

@@ -51,6 +51,7 @@ namespace TMS.API.Models
         public virtual DbSet<QuotationService> QuotationService { get; set; }
         public virtual DbSet<QuotationUpdate> QuotationUpdate { get; set; }
         public virtual DbSet<ReturnPlan> ReturnPlan { get; set; }
+        public virtual DbSet<Revenue> Revenue { get; set; }
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<Route> Route { get; set; }
         public virtual DbSet<RouteUser> RouteUser { get; set; }
@@ -1058,6 +1059,38 @@ namespace TMS.API.Models
                 entity.Property(e => e.SealNo).HasMaxLength(50);
 
                 entity.Property(e => e.Trip).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Revenue>(entity =>
+            {
+                entity.Property(e => e.CollectOnBehaftPrice).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.InvoinceNo).HasMaxLength(250);
+
+                entity.Property(e => e.LotNo).HasMaxLength(250);
+
+                entity.Property(e => e.Note).HasMaxLength(250);
+
+                entity.Property(e => e.NotePayment).HasMaxLength(250);
+
+                entity.Property(e => e.ReceivedPrice).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.TotalPrice).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.TotalPriceBeforTax).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.UnitPriceAfterTax).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.UnitPriceBeforeTax).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Vat).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.VatPrice).HasColumnType("decimal(20, 5)");
+
+                entity.HasOne(d => d.Transportation)
+                    .WithMany(p => p.Revenue)
+                    .HasForeignKey(d => d.TransportationId)
+                    .HasConstraintName("FK_Revenue_Transportation");
             });
 
             modelBuilder.Entity<Role>(entity =>

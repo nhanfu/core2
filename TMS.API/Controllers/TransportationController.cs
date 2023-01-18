@@ -413,8 +413,10 @@ namespace TMS.API.Controllers
             {
                 var sql = $@"select distinct * from [{typeof(Transportation).Name}] where Id in ({string.Join(",", ids)})";
                 var data = await db.Set<Transportation>().FromSqlRaw(sql).ToListAsync();
-                var deleteCommand = $"delete from [{typeof(Expense).Name}] where TransportationId in ({string.Join(",", ids)}) delete from [{typeof(Transportation).Name}] where Id in ({string.Join(",", ids)})";
-                await ctx.Database.ExecuteSqlRawAsync(deleteCommand);
+                var deleteExpense = $"delete from [{typeof(Expense).Name}] where TransportationId in ({string.Join(",", ids)}) delete from [{typeof(Transportation).Name}] where Id in ({string.Join(",", ids)})";
+                await ctx.Database.ExecuteSqlRawAsync(deleteExpense);
+                var deleteRevenue = $"delete from [{typeof(Revenue).Name}] where TransportationId in ({string.Join(",", ids)}) delete from [{typeof(Transportation).Name}] where Id in ({string.Join(",", ids)})";
+                await ctx.Database.ExecuteSqlRawAsync(deleteRevenue);
                 var sql1 = $@"select * from [{typeof(TransportationPlan).Name}] where Id in ({string.Join(",", data.Select(x => x.TransportationPlanId).ToList())})";
                 var data1 = await db.Set<TransportationPlan>().FromSqlRaw(sql1).ToListAsync();
                 data1.ForEach(async x =>

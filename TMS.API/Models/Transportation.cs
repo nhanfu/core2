@@ -8,6 +8,7 @@ namespace TMS.API.Models
         public Transportation()
         {
             Expense = new HashSet<Expense>();
+            Revenue = new HashSet<Revenue>();
         }
 
         public int Id { get; set; }
@@ -283,5 +284,6 @@ namespace TMS.API.Models
         public int? SaleId { get; set; }
 
         public virtual ICollection<Expense> Expense { get; set; }
+        public virtual ICollection<Revenue> Revenue { get; set; }
     }
 }
