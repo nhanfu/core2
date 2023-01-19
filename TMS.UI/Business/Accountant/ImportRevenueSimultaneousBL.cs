@@ -89,6 +89,14 @@ namespace TMS.UI.Business.Accountant
             base.CancelWithoutAsk();
         }
 
+        public void CalcRevenue(Transportation revenue)
+        {
+            revenue.Vat = revenue.Vat == null ? 10 : revenue.Vat;
+            revenue.TotalPriceBeforTax = Math.Round(revenue.TotalPrice == null ? 0 : (decimal)revenue.TotalPrice / (1 + ((decimal)revenue.Vat / 100)));
+            revenue.VatPrice = Math.Round(revenue.TotalPriceBeforTax == null ? 0 : (decimal)revenue.TotalPriceBeforTax * (decimal)revenue.Vat / 100);
+            this.UpdateView(false, nameof(Transportation.Vat), nameof(Transportation.TotalPriceBeforTax), nameof(Transportation.VatPrice));
+        }
+
         public PatchUpdate GetPatchEntity(Transportation transportation)
         {
             var details = new List<PatchUpdateDetail>();
