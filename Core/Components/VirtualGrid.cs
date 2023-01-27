@@ -137,7 +137,7 @@ namespace Core.Components
             var index = CacheData.IndexOf(x => (int)x[RowNo] == skip + 1);
             if (index < 0)
             {
-                index = 0;
+                yield break;
             }
             while (viewPortCount > 0 && CacheData.Count > index)
             {
