@@ -93,7 +93,7 @@ namespace Core.Components
             }
             else
             {
-                rows = ReadCache(skip);
+                rows = ReadCache(skip, viewPortCount).ToList();
                 if (rows.Count < viewPortCount)
                 {
                     rows = await FirstLoadData(count, skip);
@@ -112,11 +112,15 @@ namespace Core.Components
             _renderingViewPort = false;
         }
 
-        private List<object> ReadCache(int skip)
+        private IEnumerable<object> ReadCache(int skip, int viewPortCount)
         {
-            List<object> rows = new List<object>();
-            rows.AddRange(CacheData.Skip(skip).Take(viewPortCount));
-            return rows;
+            var index = CacheData.IndexOf(x => (int)x[RowNo] == skip + 1);
+            while (viewPortCount > 0 && CacheData.Count > index)
+            {
+                yield return CacheData[index];
+                index++;
+                viewPortCount--;
+            }
         }
 
         private async Task<List<object>> FirstLoadData(bool count, int skip)
