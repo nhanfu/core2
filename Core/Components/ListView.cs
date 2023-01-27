@@ -20,6 +20,7 @@ namespace Core.Components
 {
     public class ListView : EditableComponent
     {
+        internal int _rowHeight = 40;
         private const string PermissionLoaded = "PermissionLoaded";
         private const string IsOwner = "IsOwner";
         private const string CmdUrl = "Cmd";
@@ -1703,6 +1704,30 @@ namespace Core.Components
                 dirty.ForEach(x => x.BuildTextHistory(builder));
             }
             return builder;
+        }
+
+        internal int GetViewPortItem()
+        {
+            if (Element is null || !Element.HasClass(Position.sticky.ToString()))
+            {
+                return RowData.Data.Count();
+            }
+            var mainSectionHeight = Element.ClientHeight - (ListViewSearch.Element?.ClientHeight ?? 0) - Paginator.Element.ClientHeight;
+            return GetRowCountByHeight(mainSectionHeight);
+        }
+
+        internal int GetRowCountByHeight(double scrollTop)
+        {
+            return (int)Math.Round(scrollTop / _rowHeight, 0, MidpointRounding.TowardsZero);
+        }
+
+        internal void SetRowHeight()
+        {
+            var existRow = AllListViewItem.FirstOrDefault()?.Element;
+            if (existRow != null)
+            {
+                _rowHeight = existRow.ScrollHeight > 0 ? existRow.ScrollHeight : _rowHeight;
+            }
         }
     }
 }

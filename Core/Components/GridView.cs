@@ -26,7 +26,6 @@ namespace Core.Components
     {
         public ListViewSection EmptyRowSection { get; set; }
         private const string SummaryClass = "summary";
-        private const string VirtualRow = "virtualRow";
         private const int CellCountNoSticky = 50;
         private HTMLElement _summary;
         private bool _showSummary;
@@ -225,27 +224,8 @@ namespace Core.Components
 
             HeaderSection = new ListViewSection(EmptyRowSection.Element.PreviousElementSibling) { ParentElement = DataTable };
             AddChild(HeaderSection);
-
-            DataTable.ParentElement.AddEventListener(EventType.Scroll.ToString(), RenderViewPortWrapper);
-            DataTable.ParentElement.AddEventListener(EventType.Resize.ToString(), (e) =>
-            {
-                _lastScrollTop = -1;
-                RenderViewPortWrapper(e);
-            });
             Html.Instance.EndOf(".table-wrapper");
             RenderPaginator();
-        }
-
-        private void RenderViewPortWrapper(Event e)
-        {
-            if (_renderingViewPort || !VirtualScroll)
-            {
-                _renderingViewPort = false;
-                e.PreventDefault();
-                return;
-            }
-            Window.ClearTimeout(_renderViewPortAwaiter);
-            _renderViewPortAwaiter = Window.SetTimeout(async () => await RenderViewPort(false), 100);
         }
 
         public void SwapList(int oldIndex, int newIndex)
@@ -1060,7 +1040,10 @@ namespace Core.Components
                 case KeyCodeEnum.Home:
                     var lastSelected = GetSelectedRows().LastOrDefault();
                     var currentItemHome = AllListViewItem.FirstOrDefault();
-                    currentItemHome.Focused = false;
+                    if (currentItemHome != null)
+                    {
+                        currentItemHome.Focused = false;
+                    }
                     DataTable.ParentElement.ScrollTop = 0;
                     Task.Run(async () =>
                     {
@@ -1079,7 +1062,10 @@ namespace Core.Components
                 case KeyCodeEnum.End:
                     var lastSelectedEnd = GetSelectedRows().LastOrDefault();
                     var currentItemEnd = AllListViewItem.FirstOrDefault(x => x.Entity == lastSelectedEnd);
-                    currentItemEnd.Focused = false;
+                    if (currentItemEnd!= null)
+                    {
+                        currentItemEnd.Focused = false;
+                    }
                     DataTable.ParentElement.ScrollTop = DataTable.ParentElement.ScrollHeight;
                     Task.Run(async () =>
                     {
@@ -1139,6 +1125,11 @@ namespace Core.Components
                 default:
                     break;
             }
+        }
+
+        internal virtual async Task RenderViewPort(bool count = true, bool firstLoad = false)
+        {
+            // not to do anything
         }
 
         protected void HotKeyF6Handler(Event e)
@@ -1433,72 +1424,10 @@ namespace Core.Components
                 RenderRowData(Header, rowData, MainSection);
             });
             MainSection.Show = true;
-            RenderVirtualRow(MainSection.Element as HTMLTableSectionElement, 0, viewPort);
+            RenderIndex();
+            DomLoaded();
         }
 
-        internal int GetViewPortItem()
-        {
-            if (Element is null || !Element.HasClass(Position.sticky.ToString()))
-            {
-                return RowData.Data.Count();
-            }
-            var mainSectionHeight = Element.ClientHeight - (ListViewSearch.Element?.ClientHeight ?? 0) - Paginator.Element.ClientHeight;
-            return GetRowCountByHeight(mainSectionHeight);
-        }
-
-        public override async Task<List<object>> ReloadData(string dataSource = null, bool cache = false, int? skip = null, int? pageSize = null)
-        {
-            DisposeNoRecord();
-            VirtualScroll = GuiInfo.GroupBy.Nothing() && GuiInfo.VirtualScroll && Element.Style.Display.ToString() != Display.None.ToString();
-            if (VirtualScroll)
-            {
-                _lastScrollTop = -1;
-                await RenderViewPort(firstLoad: true);
-                return FormattedRowData;
-            }
-            else
-            {
-                return await base.ReloadData(dataSource, cache, skip, pageSize);
-            }
-        }
-
-        private int _renderViewPortAwaiter;
-        internal bool _renderingViewPort;
-        internal int viewPortCount;
-        internal virtual async Task RenderViewPort(bool count = true, bool firstLoad = false)
-        {
-            _renderingViewPort = true;
-            viewPortCount = GetViewPortItem();
-            var scrollTop = DataTable.ParentElement.ScrollTop;
-            if (scrollTop == _lastScrollTop)
-            {
-                return;
-            }
-            SetRowHeight();
-            var skip = GetRowCountByHeight(scrollTop);
-            if (viewPortCount <= 0)
-            {
-                viewPortCount = GuiInfo.Row ?? 20;
-            }
-            var source = CalcDatasourse(viewPortCount, skip, count ? "true" : "false");
-            var oDataRows = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
-            Sql = oDataRows.Sql;
-            var rows = oDataRows.Value;
-            if (Paginator != null && count)
-            {
-                Paginator.Options.Total = oDataRows.Odata.Count ?? rows.Count;
-            }
-            FormattedRowData = rows;
-            await LoadMasterData(FormattedRowData, spinner: false);
-            UpdateExistRows(false);
-            RowData.Data.Clear();
-            rows.ForEach(RowData.Data.Add);
-            Entity?.SetComplexPropValue(GuiInfo.FieldName, rows);
-            SetRowHeight();
-            RenderVirtualRow(MainSection.Element as HTMLTableSectionElement, skip, viewPortCount);
-            RowAction(x => x.Focused = false);
-            SetFocusingCom();
-        }
 
         protected void SetFocusingCom()
         {
@@ -1514,52 +1443,6 @@ namespace Core.Components
             }
         }
 
-        internal int GetRowCountByHeight(double scrollTop)
-        {
-            return (int)Math.Round(scrollTop / _rowHeight, 0, MidpointRounding.TowardsZero);
-        }
-
-        internal void SetRowHeight()
-        {
-            var existRow = AllListViewItem.FirstOrDefault()?.Element;
-            if (existRow != null)
-            {
-                _rowHeight = existRow.ScrollHeight > 0 ? existRow.ScrollHeight : _rowHeight;
-            }
-        }
-
-        internal void RenderVirtualRow(HTMLTableSectionElement tbody, int skip, int viewPort)
-        {
-            if (!VirtualScroll)
-            {
-                RenderIndex();
-                DomLoaded();
-                return;
-            }
-            var existTopEle = tbody.Children.FirstOrDefault(x => x.GetAttribute(VirtualRow) == Direction.top.ToString());
-            var topVirtualRow = existTopEle ?? Document.CreateElement(ElementType.tr.ToString());
-            topVirtualRow.Style.Height = skip * _rowHeight + Utils.Pixel;
-            topVirtualRow.SetAttribute(VirtualRow, Direction.top.ToString());
-            tbody.InsertBefore(topVirtualRow, tbody.FirstChild);
-
-            var existBottomEle = tbody.Children.LastOrDefault(x => x.GetAttribute(VirtualRow) == Direction.bottom.ToString());
-            var bottomVirtualRow = existBottomEle ?? Document.CreateElement(ElementType.tr.ToString());
-            var bottomHeight = (Paginator.Options.Total - viewPort - skip) * _rowHeight;
-            bottomHeight = bottomHeight >= _rowHeight ? bottomHeight : 0;
-            bottomVirtualRow.Style.Height = bottomHeight + Utils.Pixel;
-            bottomVirtualRow.SetAttribute(VirtualRow, Direction.bottom.ToString());
-            tbody.AppendChild(bottomVirtualRow);
-            MainSection.Element.ParentElement.ParentElement.ScrollTop = skip * _rowHeight;
-            _lastScrollTop = skip * _rowHeight;
-            Paginator.Options.PageSize = Paginator.Options.Total;
-            Paginator.Options.StartIndex = skip + 1;
-            Paginator.Options.EndIndex = skip + viewPort;
-            Paginator.Element.AddClass("infinite-scroll");
-            Paginator.Children.ForEach(child => child.UpdateView());
-            RenderIndex();
-            DomLoaded();
-        }
-
         private bool _hasFirstLoad = false;
         protected async Task UpdateExistRowsWrapper(bool loadMasterData, bool? dirty, int skip, int viewPort)
         {
@@ -1573,8 +1456,8 @@ namespace Core.Components
                 await LoadMasterData(FormattedRowData);
             }
             UpdateExistRows(dirty);
-            SetRowHeight();
-            RenderVirtualRow(MainSection.Element as HTMLTableSectionElement, skip, viewPort);
+            RenderIndex();
+            DomLoaded();
         }
 
         protected void UpdateExistRows(bool? dirty)
@@ -1854,7 +1737,6 @@ namespace Core.Components
                 {
                     MainSection.Children.Insert(0, EmptyRowSection.FirstChild);
                 }
-                _renderingViewPort = true;
                 MainSection.Element.Prepend(EmptyRowSection.Element.FirstElementChild);
             }
             else
@@ -2345,7 +2227,6 @@ namespace Core.Components
         }
 
         protected int _renderIndexAwaiter;
-        private int _rowHeight = 40;
         internal int _lastScrollTop;
 
         protected virtual void RenderIndex(int? skip = null)
