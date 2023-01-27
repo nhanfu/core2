@@ -1583,7 +1583,6 @@ namespace Core.Components
             var dataSections = AllListViewItem.Take(updatedData.Length).ToArray();
             dataSections.ForEach((child, index) =>
             {
-                child.Entity.CopyPropFrom(updatedData[index]);
                 child.Entity = updatedData[index];
                 child.Children.Flattern(x => x.Children).ForEach(x =>
                 {

@@ -48,14 +48,14 @@ namespace Core.Components
 
         private async Task<IEnumerable<object>> LoadTopCache(int startNum)
         {
-            if (startNum <= 0 || startNum < viewPortCount * 10 || startNum >= LastStartIndexCache)
+            if (startNum <= 0 || startNum < viewPortCount * 15 || startNum >= LastStartIndexCache)
             {
                 return Enumerable.Empty<object>();
             }
-            var source = CalcDatasourse(viewPortCount * 10, startNum - viewPortCount * 10, "false");
+            var source = CalcDatasourse(viewPortCount * 15, startNum - viewPortCount * 15, "false");
             var data = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
             data.Value.Reverse();
-            LastStartIndexCache = startNum - viewPortCount * 10;
+            LastStartIndexCache = startNum - viewPortCount * 15;
             return data.Value;
         }
 
@@ -65,9 +65,9 @@ namespace Core.Components
             {
                 return Enumerable.Empty<object>();
             }
-            var source = CalcDatasourse(viewPortCount * 10, endIndex, "false");
+            var source = CalcDatasourse(viewPortCount * 15, endIndex, "false");
             var data = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
-            LastEndIndexCache = endIndex + viewPortCount * 10;
+            LastEndIndexCache = endIndex + viewPortCount * 15;
             return data.Value;
         }
 
@@ -115,15 +115,7 @@ namespace Core.Components
         private List<object> ReadCache(int skip)
         {
             List<object> rows = new List<object>();
-            var index = CacheData.IndexOf(x => (int)x[RowNo] == skip + 1);
-            if (index < 0)
-            {
-                return rows;
-            }
-            for (int i = index; i < index + viewPortCount && CacheData.Count > index + i; i++)
-            {
-                rows.Add(CacheData[i]);
-            }
+            rows.AddRange(CacheData.Skip(skip).Take(viewPortCount));
             return rows;
         }
 
