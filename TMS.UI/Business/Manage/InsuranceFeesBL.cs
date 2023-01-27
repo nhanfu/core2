@@ -361,7 +361,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and Id in {ids.Combine()}");
+            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and Id in ({ids.Combine()})");
             var listViewItems = expenses.Where(x => x.IsPurchasedInsurance == false).ToList();
             if (listViewItems.Count <= 0)
             {
@@ -398,7 +398,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and Id in {ids.Combine()}");
+            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and Id in ({ids.Combine()})");
             var listViewItems = expenses.Where(x => x.IsClosing == false).ToList();
             if (listViewItems.Count <= 0)
             {
