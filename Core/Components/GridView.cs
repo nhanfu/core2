@@ -29,7 +29,7 @@ namespace Core.Components
         private const int CellCountNoSticky = 50;
         private HTMLElement _summary;
         private bool _showSummary;
-        private bool _sum = false;
+        public bool _sum = false;
         protected HTMLElement DataTable { get; set; }
 
         private UserSetting _settings { get; set; }

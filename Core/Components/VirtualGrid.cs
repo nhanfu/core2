@@ -14,6 +14,7 @@ namespace Core.Components
     public class VirtualGrid : GridView
     {
         private const string RowNo = "_index";
+        private int _lastSkip = 0;
         private const string VirtualRow = "virtualRow";
         private int _renderViewPortAwaiter;
         internal bool _renderingViewPort;
@@ -40,7 +41,18 @@ namespace Core.Components
         protected override void DOMContentLoadedHandler()
         {
             base.DOMContentLoadedHandler();
-            Task.Run(() => PrepareCache(0));
+            Task.Run(() => PrepareCache(_lastSkip));
+        }
+
+        public override async Task ApplyFilter(bool searching = true)
+        {
+            _sum = false;
+            CacheData.Clear();
+            LastEndIndexCache = 0;
+            LastStartIndexCache = 0;
+            var calcFilter = CalcFilterQuery(searching);
+            DataTable.ParentElement.ScrollTop = 0;
+            await ReloadData(calcFilter, cache: false);
         }
 
         private async Task PrepareCache(int skip = 0)
@@ -81,7 +93,7 @@ namespace Core.Components
             {
                 return Enumerable.Empty<object>();
             }
-            var source = CalcDatasourse(viewPortCount * domLoad, endIndex, "false");
+            var source = CalcDatasourse(viewPortCount * domLoad, endIndex - 1, "false");
             var data = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
             LastEndIndexCache = endIndex + viewPortCount * domLoad;
             return data.Value;
@@ -113,7 +125,7 @@ namespace Core.Components
                 if (rows.Count < viewPortCount)
                 {
                     rows = await FirstLoadData(count, skip);
-                    await PrepareCache(skip);
+                    _lastSkip = skip;
                 }
                 FormattedRowData = rows;
             }
@@ -138,6 +150,7 @@ namespace Core.Components
             var index = CacheData.IndexOf(x => (int)x[RowNo] == skip + 1);
             if (index < 0)
             {
+                CacheData.Clear();
                 yield break;
             }
             while (viewPortCount > 0 && CacheData.Count > index)
