@@ -47,6 +47,7 @@ namespace Core.Components
 
         private async Task PrepareCache(int skip = 0)
         {
+            Toast.Success("Đang tải thêm 10 trang...");
             if (CacheData.HasElement())
             {
                 var firstRowNo = (int)CacheData.First()[RowNo];
@@ -70,7 +71,8 @@ namespace Core.Components
             CacheData.Clear();
             CacheData.AddRange(data.Value);
             CacheData.ForEach((x, index) => x[RowNo] = start + index + 1);
-            await LoadMasterData(CacheData, spinner: true);
+            await LoadMasterData(data.Value, spinner: true);
+            Toast.Success("Đã tải xong");
         }
 
         internal override async Task RenderViewPort(bool count = true, bool firstLoad = false)
@@ -146,8 +148,9 @@ namespace Core.Components
                 Paginator.Options.Total = oDataRows.Odata.Count ?? rows.Count;
             }
             FormattedRowData = rows;
+            await LoadMasterData(FormattedRowData, spinner: true);
             rows.ForEach((x, index) => x[RowNo] = skip + index + 1);
-            await PrepareCache(skip);
+            _ = Task.Run(async () => await PrepareCache(skip));
             return rows;
         }
 
