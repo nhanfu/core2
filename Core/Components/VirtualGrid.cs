@@ -18,6 +18,7 @@ namespace Core.Components
         private int _renderViewPortAwaiter;
         internal bool _renderingViewPort;
         internal int viewPortCount;
+        internal static int domLoad = 10;
 
         public List<object> CacheData { get; set; } = new List<object>();
         public int LastStartIndexCache { get; set; }
@@ -63,14 +64,14 @@ namespace Core.Components
 
         private async Task<IEnumerable<object>> LoadTopCache(int startNum)
         {
-            if (startNum <= 0 || startNum < viewPortCount * 15 || startNum >= LastStartIndexCache)
+            if (startNum <= 0 || startNum < viewPortCount * domLoad || startNum >= LastStartIndexCache)
             {
                 return Enumerable.Empty<object>();
             }
-            var source = CalcDatasourse(viewPortCount * 15, startNum - viewPortCount * 15, "false");
+            var source = CalcDatasourse(viewPortCount * domLoad, startNum - viewPortCount * domLoad, "false");
             var data = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
             data.Value.Reverse();
-            LastStartIndexCache = startNum - viewPortCount * 15;
+            LastStartIndexCache = startNum - viewPortCount * domLoad;
             return data.Value;
         }
 
@@ -80,9 +81,9 @@ namespace Core.Components
             {
                 return Enumerable.Empty<object>();
             }
-            var source = CalcDatasourse(viewPortCount * 15, endIndex, "false");
+            var source = CalcDatasourse(viewPortCount * domLoad, endIndex, "false");
             var data = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
-            LastEndIndexCache = endIndex + viewPortCount * 15;
+            LastEndIndexCache = endIndex + viewPortCount * domLoad;
             return data.Value;
         }
 
