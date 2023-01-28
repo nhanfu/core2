@@ -179,12 +179,28 @@ namespace Core.Components
         {
             var existTopEle = tbody.Children.FirstOrDefault(x => x.GetAttribute(VirtualRow) == Direction.top.ToString());
             var topVirtualRow = existTopEle ?? Document.CreateElement(ElementType.tr.ToString());
+            if (!topVirtualRow.HasClass("demo"))
+            {
+                topVirtualRow.AddClass("demo");
+                for (int i = 0; i < Header.Count; i++)
+                {
+                    topVirtualRow.AppendChild(Document.CreateElement(ElementType.td.ToString()));
+                }
+            }
             topVirtualRow.Style.Height = skip * _rowHeight + Utils.Pixel;
             topVirtualRow.SetAttribute(VirtualRow, Direction.top.ToString());
             tbody.InsertBefore(topVirtualRow, tbody.FirstChild);
 
             var existBottomEle = tbody.Children.LastOrDefault(x => x.GetAttribute(VirtualRow) == Direction.bottom.ToString());
             var bottomVirtualRow = existBottomEle ?? Document.CreateElement(ElementType.tr.ToString());
+            if (!bottomVirtualRow.HasClass("demo"))
+            {
+                bottomVirtualRow.AddClass("demo");
+                for (int i = 0; i < Header.Count; i++)
+                {
+                    bottomVirtualRow.AppendChild(Document.CreateElement(ElementType.td.ToString()));
+                }
+            }
             var bottomHeight = (Paginator.Options.Total - viewPort - skip) * _rowHeight;
             bottomHeight = bottomHeight >= _rowHeight ? bottomHeight : 0;
             bottomVirtualRow.Style.Height = bottomHeight + Utils.Pixel;
