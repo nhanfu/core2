@@ -14,16 +14,13 @@ namespace Core.Components
     public class VirtualGrid : GridView
     {
         private const string RowNo = "_index";
-        private int _lastSkip = 0;
         private const string VirtualRow = "virtualRow";
         private int _renderViewPortAwaiter;
         internal bool _renderingViewPort;
         internal int viewPortCount;
-        internal static int domLoad = 10;
+        internal static int cacheAhead = 10;
 
         public List<object> CacheData { get; set; } = new List<object>();
-        public int LastStartIndexCache { get; set; }
-        public int LastEndIndexCache { get; set; }
         public VirtualGrid(Component ui) : base(ui)
         {
         }
@@ -38,18 +35,11 @@ namespace Core.Components
                 RenderViewPortWrapper(e);
             });
         }
-        protected override void DOMContentLoadedHandler()
-        {
-            base.DOMContentLoadedHandler();
-            Task.Run(() => PrepareCache(_lastSkip));
-        }
 
         public override async Task ApplyFilter(bool searching = true)
         {
             _sum = false;
             CacheData.Clear();
-            LastEndIndexCache = 0;
-            LastStartIndexCache = 0;
             var calcFilter = CalcFilterQuery(searching);
             DataTable.ParentElement.ScrollTop = 0;
             await ReloadData(calcFilter, cache: false);
@@ -57,46 +47,30 @@ namespace Core.Components
 
         private async Task PrepareCache(int skip = 0)
         {
-            if (AllListViewItem.Nothing())
+            if (CacheData.HasElement())
             {
-                return;
+                var firstRowNo = (int)CacheData.First()[RowNo];
+                var shouldEndNo = firstRowNo + viewPortCount * cacheAhead;
+                if (skip > firstRowNo && skip < shouldEndNo)
+                {
+                    return;
+                }
             }
-            var bottomTask = LoadBottomCache(AllListViewItem.LastOrDefault().RowNo + 1);
-            var topTask = LoadTopCache(AllListViewItem.FirstOrDefault().RowNo - 1);
-            await Task.WhenAll(bottomTask, topTask);
-            if (bottomTask.Result.Nothing() && topTask.Result.Nothing())
+            var start = skip - viewPortCount * cacheAhead;
+            if (start < 0)
+            {
+                start = 0;
+            }
+            var source = CalcDatasourse(viewPortCount + viewPortCount * cacheAhead * 2, start, "false");
+            var data = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
+            if (data.Value.Nothing())
             {
                 return;
             }
             CacheData.Clear();
-            CacheData.AddRange(topTask.Result.Concat(FormattedRowData).Concat(bottomTask.Result));
-            CacheData.ForEach((x, index) => x[RowNo] = skip + index + 1);
-            await LoadMasterData(CacheData, spinner: false);
-        }
-
-        private async Task<IEnumerable<object>> LoadTopCache(int startNum)
-        {
-            if (startNum <= 0 || startNum < viewPortCount * domLoad || startNum >= LastStartIndexCache)
-            {
-                return Enumerable.Empty<object>();
-            }
-            var source = CalcDatasourse(viewPortCount * domLoad, startNum - viewPortCount * domLoad, "false");
-            var data = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
-            data.Value.Reverse();
-            LastStartIndexCache = startNum - viewPortCount * domLoad;
-            return data.Value;
-        }
-
-        private async Task<IEnumerable<object>> LoadBottomCache(int endIndex)
-        {
-            if (endIndex < LastEndIndexCache)
-            {
-                return Enumerable.Empty<object>();
-            }
-            var source = CalcDatasourse(viewPortCount * domLoad, endIndex - 1, "false");
-            var data = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
-            LastEndIndexCache = endIndex + viewPortCount * domLoad;
-            return data.Value;
+            CacheData.AddRange(data.Value);
+            CacheData.ForEach((x, index) => x[RowNo] = start + index + 1);
+            await LoadMasterData(CacheData, spinner: true);
         }
 
         internal override async Task RenderViewPort(bool count = true, bool firstLoad = false)
@@ -125,7 +99,6 @@ namespace Core.Components
                 if (rows.Count < viewPortCount)
                 {
                     rows = await FirstLoadData(count, skip);
-                    _lastSkip = skip;
                 }
                 FormattedRowData = rows;
             }
@@ -174,7 +147,7 @@ namespace Core.Components
             }
             FormattedRowData = rows;
             rows.ForEach((x, index) => x[RowNo] = skip + index + 1);
-            await LoadMasterData(FormattedRowData, spinner: false);
+            await PrepareCache(skip);
             return rows;
         }
 
