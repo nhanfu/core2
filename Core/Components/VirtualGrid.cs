@@ -47,7 +47,10 @@ namespace Core.Components
 
         private async Task PrepareCache(int skip = 0)
         {
-            Toast.Warning("Đang tải thêm 10 trang...");
+            if (Header.Count > 30)
+            {
+                Toast.Warning("Đang tải thêm 10 trang...");
+            }
             if (CacheData.HasElement())
             {
                 var firstRowNo = (int)CacheData.First()[RowNo];
@@ -72,7 +75,10 @@ namespace Core.Components
             CacheData.AddRange(data.Value);
             CacheData.ForEach((x, index) => x[RowNo] = start + index + 1);
             await LoadMasterData(data.Value, spinner: true);
-            Toast.Success("Đã tải xong");
+            if (Header.Count > 30)
+            {
+                Toast.Success("Đã tải xong");
+            }
         }
 
         internal override async Task RenderViewPort(bool count = true, bool firstLoad = false)
