@@ -47,7 +47,7 @@ namespace Core.Components
 
         protected virtual void DOMContentLoadedHandler()
         {
-            if (!_sum && GuiInfo.ComponentType == nameof(GridView))
+            if (!_sum && (GuiInfo.ComponentType == nameof(GridView) || GuiInfo.ComponentType == nameof(VirtualGrid)))
             {
                 Task.Run(async () =>
                 {
