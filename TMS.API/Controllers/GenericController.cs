@@ -462,12 +462,12 @@ namespace TMS.API.Controllers
         {
             if (ids.Nothing())
             {
-                return true;
+                return false;
             }
             ids = ids.Where(x => x > 0).ToList();
             if (ids.Nothing())
             {
-                return true;
+                return false;
             }
             try
             {

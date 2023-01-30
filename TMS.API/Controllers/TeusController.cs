@@ -291,5 +291,17 @@ namespace TMS.API.Controllers
         {
             return text is null || text == "" ? "" : Regex.Replace(text.Trim(), @"\s+", " ");
         }
+
+        public override async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<int> ids)
+        {
+            var rs = await base.HardDeleteAsync(ids);
+            if (rs.Value)
+            {
+                var bookings = await db.Booking.Where(x => ids.Contains(x.TeusId.Value) && x.Teus20Using == 0 && x.Teus40Using == 0).ToListAsync();
+                db.RemoveRange(bookings);
+                await db.SaveChangesAsync();
+            }
+            return rs;
+        }
     }
 }
