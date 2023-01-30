@@ -254,6 +254,10 @@ namespace Core.Components
                 }
                 var rs = await new Client(GuiInfo.Reference.Name).PatchAsync<object>(pathModel, ig: $"&disableTrigger={ignoreSync}");
                 Entity.CopyPropFrom(rs);
+                if (GuiInfo.ComponentType == nameof(VirtualGrid))
+                {
+                    ListViewSection.ListView.CacheData.FirstOrDefault(x => x[IdField] == rs[IdField]).CopyPropFrom(rs);
+                }
                 await ListViewSection.ListView.LoadMasterData(new object[] { rs });
                 EmptyRow = false;
                 UpdateView(true);
@@ -263,13 +267,16 @@ namespace Core.Components
                 }
             }
             var changing = BuildTextHistory().ToString();
-            await new Client(nameof(Models.History)).CreateAsync<Models.History>(new Models.History
+            if (!changing.IsNullOrWhiteSpace())
             {
-                ReasonOfChange = "Auto update",
-                TextHistory = changing.ToString(),
-                RecordId = EntityId,
-                EntityId = Utils.GetEntity(GuiInfo.RefName).Id
-            });
+                await new Client(nameof(Models.History)).CreateAsync<Models.History>(new Models.History
+                {
+                    ReasonOfChange = "Auto update",
+                    TextHistory = changing.ToString(),
+                    RecordId = EntityId,
+                    EntityId = Utils.GetEntity(GuiInfo.RefName).Id
+                });
+            }
             Dirty = false;
         }
 

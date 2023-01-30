@@ -78,6 +78,12 @@ namespace Core.Components
         {
             var val = (bool?)Entity?.GetComplexPropValue(GuiInfo.FieldName);
             Value = val;
+            if (!Dirty)
+            {
+                OriginalText = _input.Value;
+                DOMContentLoaded?.Invoke();
+                OldValue = _input.Value;
+            }
         }
 
         protected override void SetDisableUI(bool value)

@@ -20,7 +20,6 @@ namespace Core.Components
         internal int viewPortCount;
         internal static int cacheAhead = 10;
 
-        public List<object> CacheData { get; set; } = new List<object>();
         public VirtualGrid(Component ui) : base(ui)
         {
         }

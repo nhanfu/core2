@@ -212,6 +212,12 @@ namespace Core.Components
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
             Value = GetDecimalValue();
+            if (!Dirty)
+            {
+                OriginalText = _input.Value;
+                DOMContentLoaded?.Invoke();
+                OldValue = _input.Value;
+            }
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously

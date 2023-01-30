@@ -31,7 +31,6 @@ namespace Core.Components
         private bool _showSummary;
         public bool _sum = false;
         protected HTMLElement DataTable { get; set; }
-
         private UserSetting _settings { get; set; }
         public static GridPolicy ToolbarColumn = new GridPolicy
         {
@@ -1062,7 +1061,7 @@ namespace Core.Components
                 case KeyCodeEnum.End:
                     var lastSelectedEnd = GetSelectedRows().LastOrDefault();
                     var currentItemEnd = AllListViewItem.FirstOrDefault(x => x.Entity == lastSelectedEnd);
-                    if (currentItemEnd!= null)
+                    if (currentItemEnd != null)
                     {
                         currentItemEnd.Focused = false;
                     }

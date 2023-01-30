@@ -204,6 +204,12 @@ namespace Core.Components
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
             Value = Entity?.GetComplexPropValue(GuiInfo.FieldName);
+            if (!Dirty)
+            {
+                OriginalText = _text;
+                DOMContentLoaded?.Invoke();
+                OldValue = _text;
+            }
         }
 
         public override async Task<bool> ValidateAsync()

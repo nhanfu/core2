@@ -637,10 +637,15 @@ namespace Core.Components
             {
                 this.SetAutoWidth(_input.Value, _input.GetComputedStyle().Font, 48);
             }
+            UpdateValue();
+        }
+
+        private void UpdateValue()
+        {
             if (!Dirty)
             {
-                DOMContentLoaded?.Invoke();
                 OriginalText = _input.Value;
+                DOMContentLoaded?.Invoke();
                 OldValue = _value.ToString();
             }
         }
@@ -765,6 +770,7 @@ namespace Core.Components
             {
                 Matched = null;
                 _input.Value = null;
+                UpdateValue();
                 return;
             }
             Task.Run(async () => await FindMatchTextAsync(force));
