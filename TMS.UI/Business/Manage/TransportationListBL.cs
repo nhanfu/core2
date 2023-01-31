@@ -1364,11 +1364,6 @@ namespace TMS.UI.Business.Manage
                 expense.TransportationTypeId = transportation.TransportationTypeId;
                 expense.CommodityId = transportation.CommodityId;
                 expense.ContainerTypeId = transportation.ContainerTypeId;
-                var contType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq {expense.ContainerTypeId}");
-                if (contType != null && contType.Description.Contains("lạnh"))
-                {
-                    expense.ColdContTerms = true;
-                }
                 if (expense.IsPurchasedInsurance == false)
                 {
                     containerId = await CheckContainerType(expense);
@@ -1407,11 +1402,6 @@ namespace TMS.UI.Business.Manage
                     expenseSOC = await new Client(nameof(Expense)).FirstOrDefaultAsync<Expense>($"?$filter=Active eq true and TransportationId eq {transportation.Id} and ExpenseTypeId eq {expenseTypeSOC.Id} and RequestChangeId eq null");
                     expenseSOC.TransportationTypeId = expense.TransportationTypeId;
                     expenseSOC.ContainerTypeId = expense.ContainerTypeId;
-                    var contTypeSOC = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq {expenseSOC.ContainerTypeId}");
-                    if (contTypeSOC != null && contTypeSOC.Description.Contains("lạnh"))
-                    {
-                        expenseSOC.ColdContTerms = true;
-                    }
                     if (expenseSOC.IsPurchasedInsurance == false)
                     {
                         var commodityValue = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {expenseSOC.BossId} and CommodityId eq {expenseSOC.CommodityId} and ContainerId eq {containerId}");

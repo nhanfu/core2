@@ -56,13 +56,13 @@ namespace TMS.API.Controllers
                 db.Add(entity);
             }
             if (patch.Changes.Any(x => x.Field == nameof(oldEntity.IsWet) ||
-            x.Field == nameof(oldEntity.UrgentTerms) ||
+            x.Field == nameof(oldEntity.SteamingTerms) ||
             x.Field == nameof(oldEntity.BreakTerms)) &&
             (oldEntity.IsWet != entity.IsWet) ||
-            (oldEntity.UrgentTerms != entity.UrgentTerms) ||
+            (oldEntity.SteamingTerms != entity.SteamingTerms) ||
             (oldEntity.BreakTerms != entity.BreakTerms))
             {
-                if (entity.IsWet && entity.UrgentTerms && entity.BreakTerms)
+                if (entity.IsWet && entity.SteamingTerms && entity.BreakTerms)
                 {
                     throw new ApiException("Không thể cùng lúc có nhiều hơn 2 điều khoản") { StatusCode = HttpStatusCode.BadRequest };
                 }

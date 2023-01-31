@@ -54,9 +54,7 @@ namespace TMS.API.Models
         public int? StatusId { get; set; }
         public bool isDelete { get; set; }
         public bool SteamingTerms { get; set; }
-        public bool UrgentTerms { get; set; }
         public bool BreakTerms { get; set; }
-        public bool ColdContTerms { get; set; }
         public DateTime? ClosingDate { get; set; }
         public DateTime? ReturnDate { get; set; }
 

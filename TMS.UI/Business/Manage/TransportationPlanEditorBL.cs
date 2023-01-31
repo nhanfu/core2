@@ -234,11 +234,6 @@ namespace TMS.UI.Business.Manage
                 item.CommodityId = item.ExpenseTypeId == expenseType.Id ? listViewItem.CommodityId : item.CommodityId;
                 item.RouteId = listViewItem.RouteId;
                 item.ContainerTypeId = listViewItem.ContainerTypeId;
-                var contType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq {item.ContainerTypeId}");
-                if (contType != null && contType.Description.Contains("lạnh"))
-                {
-                    item.ColdContTerms = true;
-                }
                 if (item.JourneyId == 12114 || item.JourneyId == 16001)
                 {
                     item.StartShip = listViewItem.ClosingDate;
