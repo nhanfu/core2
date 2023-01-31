@@ -1,0 +1,16 @@
+﻿using Core.Components.Extensions;
+using Core.Components.Forms;
+using System;
+using System.Threading.Tasks;
+using TMS.API.Models;
+
+namespace TMS.UI.Business.Manage
+{
+    public class ExtraInsuranceFeesRateBL : PopupEditor
+    {
+        public ExtraInsuranceFeesRateBL() : base(nameof(MasterData))
+        {
+            Name = "ExtraInsuranceFeesRate List";
+        }
+    }
+}

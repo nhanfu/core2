@@ -6,6 +6,7 @@ using Core.Components.Forms;
 using Core.Extensions;
 using Core.Notifications;
 using Core.ViewModels;
+using Retyped.Primitive;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,12 +58,22 @@ namespace TMS.UI.Business.Setting
 
         public async Task UpdateTransportationPlan()
         {
+            if (transportationPlanEntity.IsWet && transportationPlanEntity.SteamingTerms && transportationPlanEntity.BreakTerms)
+            {
+                Toast.Warning("Không thể cùng lúc có nhiều hơn 2 điều khoản");
+                return;
+            }
             if (transportationPlanEntity.JourneyId is null)
             {
                 Toast.Warning("Hành trình vận chuyển không được trống");
                 return;
             }
-            var insuranceFeesRate = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {transportationPlanEntity.TransportationTypeId} and JourneyId eq {transportationPlanEntity.JourneyId} and IsWet eq {transportationPlanEntity.IsWet.ToString().ToLower()} and IsBought eq {transportationPlanEntity.IsBought.ToString().ToLower()} and IsSOC eq false");
+            bool isSubRatio = false;
+            if (((transportationPlanEntity.IsWet || transportationPlanEntity.SteamingTerms || transportationPlanEntity.BreakTerms) && transportationPlanEntity.IsBought == false) || (transportationPlanEntity.IsBought && transportationPlanEntity.IsWet))
+            {
+                isSubRatio = true;
+            }
+            var insuranceFeesRate = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {transportationPlanEntity.TransportationTypeId} and JourneyId eq {transportationPlanEntity.JourneyId} and IsBought eq {transportationPlanEntity.IsBought.ToString().ToLower()} and IsSubRatio eq {isSubRatio.ToString().ToLower()} and IsSOC eq false");
             if (insuranceFeesRate is null)
             {
                 Toast.Warning("Hiện tại chưa có mức tỷ lệ phí phù hợp cho các điều kiện này. Vui lòng cấu hình lại !!!");
@@ -240,6 +251,8 @@ namespace TMS.UI.Business.Setting
             details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.CommodityValue), Value = transportationPlan.CommodityValue.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.IsCompany), Value = transportationPlan.IsCompany.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.IsSettingsInsurance), Value = transportationPlan.IsSettingsInsurance.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.SteamingTerms), Value = transportationPlan.SteamingTerms.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.BreakTerms), Value = transportationPlan.BreakTerms.ToString() });
             return new PatchUpdate { Changes = details };
         }
     }

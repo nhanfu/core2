@@ -518,10 +518,39 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-                var insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {expense.TransportationTypeId} and JourneyId eq {expense.JourneyId} and IsWet eq {expense.IsWet.ToString().ToLower()} and IsBought eq {expense.IsBought.ToString().ToLower()} and IsSOC eq {isSOC.ToLower()}");
+            bool isSubRatio = false;
+            if (((expense.IsWet || expense.SteamingTerms || expense.BreakTerms) && expense.IsBought == false) || (expense.IsBought && expense.IsWet))
+            {
+                isSubRatio = true;
+            }
+            var insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {expense.TransportationTypeId} and JourneyId eq {expense.JourneyId} and IsBought eq {expense.IsBought.ToString().ToLower()} and IsSubRatio eq {isSubRatio.ToString().ToLower()} and IsSOC eq {isSOC.ToLower()}");
             if (insuranceFeesRateDB != null)
             {
-                expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                var getContainerType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq {expense.ContainerTypeId}");
+                if (getContainerType != null && getContainerType.Description.Contains("Lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
+                {
+                    var insuranceFeesRateColdDB = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 25391");
+                    expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? decimal.Parse(insuranceFeesRateColdDB.Name) : 0;
+                }
+                else
+                {
+                    expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                }
+                if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
+                {
+                    var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
+                    extraInsuranceFeesRateDB.ForEach(x =>
+                    {
+                        foreach (var prop in expense.GetType().GetProperties())
+                        {
+                            if (prop.Name == x.Name && bool.Parse(prop.GetValue(expense, null).ToString()))
+                            {
+                                expense.InsuranceFeeRate += decimal.Parse(x.Code);
+                                break;
+                            }
+                        }
+                    });
+                }
             }
             else
             {

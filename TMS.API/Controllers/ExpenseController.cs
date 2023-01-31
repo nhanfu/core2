@@ -64,7 +64,7 @@ namespace TMS.API.Controllers
             {
                 if (entity.IsWet && entity.UrgentTerms && entity.BreakTerms)
                 {
-                    throw new ApiException("Không thể có nhiều hơn cùng lúc 2 điều khoản") { StatusCode = HttpStatusCode.BadRequest };
+                    throw new ApiException("Không thể cùng lúc có nhiều hơn 2 điều khoản") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
             if (patch.Changes.Any(x => x.Field == nameof(oldEntity.TransportationTypeId) ||
@@ -190,10 +190,39 @@ namespace TMS.API.Controllers
             var containerId = await CheckContainerType(expense);
             if (expense.IsPurchasedInsurance == false && expense.RequestChangeId == null)
             {
-                var insuranceFeesRateDB = await db.InsuranceFeesRate.Where(x => x.TransportationTypeId == expense.TransportationTypeId && x.JourneyId == expense.JourneyId && x.IsWet == expense.IsWet && x.IsBought == expense.IsBought && x.IsSOC == isSOC).FirstOrDefaultAsync();
+                bool isSubRatio = false;
+                if (((expense.IsWet || expense.SteamingTerms || expense.BreakTerms) && expense.IsBought == false) || (expense.IsBought && expense.IsWet))
+                {
+                    isSubRatio = true;
+                }
+                var insuranceFeesRateDB = await db.InsuranceFeesRate.Where(x => x.TransportationTypeId == expense.TransportationTypeId && x.JourneyId == expense.JourneyId && x.IsBought == expense.IsBought && x.IsSubRatio == isSubRatio && x.IsSOC == isSOC).FirstOrDefaultAsync();
                 if (insuranceFeesRateDB != null)
                 {
-                    expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                    var getContainerType = await db.MasterData.Where(x => x.Id == expense.ContainerTypeId).FirstOrDefaultAsync();
+                    if (getContainerType != null && getContainerType.Description.Contains("Lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
+                    {
+                        var insuranceFeesRateColdDB = await db.MasterData.Where(x => x.Id == 25391).FirstOrDefaultAsync();
+                        expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? decimal.Parse(insuranceFeesRateColdDB.Name) : 0;
+                    }
+                    else
+                    {
+                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                    }
+                    if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
+                    {
+                        var extraInsuranceFeesRateDB = await db.MasterData.Where(x => x.Active == true && x.ParentId == 25374).ToListAsync();
+                        extraInsuranceFeesRateDB.ForEach(x =>
+                        {
+                            foreach (var prop in expense.GetType().GetProperties())
+                            {
+                                if (prop.Name == x.Name && bool.Parse(prop.GetValue(expense, null).ToString()))
+                                {
+                                    expense.InsuranceFeeRate += decimal.Parse(x.Code);
+                                    break;
+                                }
+                            }
+                        });
+                    }
                 }
                 else
                 {

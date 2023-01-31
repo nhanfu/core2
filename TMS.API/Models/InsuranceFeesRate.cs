@@ -13,6 +13,7 @@ namespace TMS.API.Models
         public bool? IsVAT { get; set; }
         public bool? IsSOC { get; set; }
         public decimal Rate { get; set; }
+        public bool IsSubRatio { get; set; }
         public bool Active { get; set; }
         public DateTime InsertedDate { get; set; }
         public int InsertedBy { get; set; }

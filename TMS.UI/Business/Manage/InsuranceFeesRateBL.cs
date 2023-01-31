@@ -40,5 +40,19 @@ namespace TMS.UI.Business.Manage
                     return instance;
                 });
         }
+
+        public async Task EditExtraInsuranceFeesRate()
+        {
+            await this.OpenPopup(
+                featureName: "ExtraInsuranceFeesRate List",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.ExtraInsuranceFeesRateBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Cập nhật tỷ lệ phí phụ";
+                    instance.Entity = new MasterData();
+                    return instance;
+                });
+        }
     }
 }

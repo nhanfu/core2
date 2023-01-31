@@ -23,5 +23,7 @@ namespace TMS.API.Models
         public bool IsBought { get; set; }
         public int? CustomerTypeId { get; set; }
         public int? JourneyId { get; set; }
+        public bool SteamingTerms { get; set; }
+        public bool BreakTerms { get; set; }
     }
 }

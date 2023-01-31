@@ -14,6 +14,8 @@ using Core.Enums;
 using Core.ViewModels;
 using static Retyped.dom.Literals.Types;
 using Event = Bridge.Html5.Event;
+using static Retyped.es5;
+using Math = System.Math;
 
 namespace TMS.UI.Business.Manage
 {
@@ -286,7 +288,7 @@ namespace TMS.UI.Business.Manage
             var isWets = selected.Select(x => x.IsWet.ToLower()).Distinct().ToList();
             var isBoughts = selected.Select(x => x.IsBought.ToLower()).Distinct().ToList();
 
-            var insuranceFeesRates = new Client(nameof(InsuranceFeesRate)).GetRawList<InsuranceFeesRate>($"?$filter=Active eq true and IsWet in ({isWets.Combine()}) and IsBought in ({isBoughts.Combine()}) and IsSOC eq false");
+            var insuranceFeesRates = new Client(nameof(InsuranceFeesRate)).GetRawList<InsuranceFeesRate>($"?$filter=Active eq true and IsSOC eq false");
             await Task.WhenAll(containerTypeDb, containers, commodityValueDB, expenseTypeDB, masterDataDB, insuranceFeesRates);
             var cont20Rs = containers.Result.FirstOrDefault(x => x.Name.Contains("20DC"));
             var cont40Rs = containers.Result.FirstOrDefault(x => x.Name.Contains("40HC"));
@@ -336,14 +338,43 @@ namespace TMS.UI.Business.Manage
                 {
                     expense.StartShip = item.ClosingDate;
                 }
+                bool isSubRatio = false;
+                if (((expense.IsWet || expense.SteamingTerms || expense.BreakTerms) && expense.IsBought == false) || (expense.IsBought && expense.IsWet))
+                {
+                    isSubRatio = true;
+                }
                 var insuranceFeesRateDB = insuranceFeesRates.Result.FirstOrDefault(x => x.TransportationTypeId == expense.TransportationTypeId
                 && x.JourneyId == expense.JourneyId
-                && x.IsWet == expense.IsWet
                 && x.IsBought == expense.IsBought
+                && x.IsSubRatio == isSubRatio
                 && x.IsSOC == false);
                 if (insuranceFeesRateDB != null)
                 {
-                    expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                    var getContainerType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq {expense.ContainerTypeId}");
+                    if (getContainerType != null && getContainerType.Description.Contains("Lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
+                    {
+                        var insuranceFeesRateColdDB = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 25391");
+                        expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? decimal.Parse(insuranceFeesRateColdDB.Name) : 0;
+                    }
+                    else
+                    {
+                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                    }
+                    if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
+                    {
+                        var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
+                        extraInsuranceFeesRateDB.ForEach(x =>
+                        {
+                            foreach (var prop in expense.GetType().GetProperties())
+                            {
+                                if (prop.Name == x.Name && bool.Parse(prop.GetValue(expense, null).ToString()))
+                                {
+                                    expense.InsuranceFeeRate += decimal.Parse(x.Code);
+                                    break;
+                                }
+                            }
+                        });
+                    }
                 }
                 else
                 {
@@ -358,11 +389,6 @@ namespace TMS.UI.Business.Manage
                 {
                     expense.TotalPriceBeforeTax = (decimal)expense.InsuranceFeeRate * (decimal)expense.CommodityValue / 100;
                     expense.TotalPriceAfterTax = expense.TotalPriceBeforeTax + Math.Round(expense.TotalPriceBeforeTax * expense.Vat / 100, 0);
-                }
-                var contType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq {expense.ContainerTypeId}");
-                if (contType != null && contType.Description.Contains("lạnh"))
-                {
-                    expense.ColdContTerms = true;
                 }
                 for (int i = 0; i < item.TotalContainerRemain; i++)
                 {

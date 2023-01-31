@@ -49,5 +49,7 @@ namespace TMS.API.Models
         public DateTime? ReturnDate { get; set; }
         public string ReturnNotes { get; set; }
         public bool IsQuotation { get; set; }
+        public bool SteamingTerms { get; set; }
+        public bool BreakTerms { get; set; }
     }
 }
