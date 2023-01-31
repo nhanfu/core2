@@ -171,6 +171,41 @@ namespace TMS.UI.Business.Manage
             }
         }
 
+        public void RequestUnClosingRevenue(Revenue revenue, PatchUpdate patch)
+        {
+            if (selected.IsLocked == false && selected.IsSubmit == false)
+            {
+                return;
+            }
+            if (patch.Changes.Any(x => x.Field == nameof(revenue.LotNo)
+                || x.Field == nameof(revenue.LotDate)
+                || x.Field == nameof(revenue.Vat)
+                || x.Field == nameof(revenue.UnitPriceAfterTax)
+                || x.Field == nameof(revenue.UnitPriceBeforeTax)
+                || x.Field == nameof(revenue.ReceivedPrice)
+                || x.Field == nameof(revenue.CollectOnBehaftPrice)
+                || x.Field == nameof(revenue.NotePayment)
+                || x.Field == nameof(revenue.VendorVatId)))
+            {
+                if (selected.IsSubmit)
+                {
+                    var confirm = new ConfirmDialog
+                    {
+                        NeedAnswer = true,
+                        ComType = nameof(Textbox),
+                        Content = $"DSVC này đã bị khóa (Kế toán). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                        "Hãy nhập lý do",
+                    };
+                    confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        selected.ReasonUnLockAccountant = confirm.Textbox?.Text;
+                        await new Client(nameof(Transportation)).PostAsync<Transportation>(selected, "RequestUnLockAccountant");
+                    };
+                }
+            }
+        }
+
         public async Task ApproveUnLock()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLock");
@@ -788,7 +823,23 @@ namespace TMS.UI.Business.Manage
         {
             if (selected is null)
             {
-                Toast.Warning("Vui lòng chọn cont cần nhập");
+                return;
+            }
+            if (selected.IsSubmit)
+            {
+                var confirm = new ConfirmDialog
+                {
+                    NeedAnswer = true,
+                    ComType = nameof(Textbox),
+                    Content = $"DSVC này đã bị khóa (Kế toán). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                        "Hãy nhập lý do",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    selected.ReasonUnLockAccountant = confirm.Textbox?.Text;
+                    await new Client(nameof(Transportation)).PostAsync<Transportation>(selected, "RequestUnLockAccountant");
+                };
                 return;
             }
             revenue.TransportationId = selected.Id;
