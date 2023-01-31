@@ -46,10 +46,6 @@ namespace Core.Components
 
         private async Task PrepareCache(int skip = 0)
         {
-            if (Header.Count > 30)
-            {
-                Toast.Warning("Đang tải thêm 10 trang...");
-            }
             if (CacheData.HasElement())
             {
                 var firstRowNo = (int)CacheData.First()[RowNo];
