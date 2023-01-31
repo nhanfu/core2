@@ -58,6 +58,20 @@ namespace TMS.UI.Business.Manage
                 });
         }
 
+        public async Task ExportCheckFee()
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+            var selected = (await gridView.GetRealTimeSelectedRows()).Cast<Transportation>().Where(x => x.Id > 0).ToList();
+            if (selected.Nothing())
+            {
+                Toast.Warning("Vui lòng chọn cont cần phân bổ");  
+                return;
+            }
+            var path = await new Client(nameof(Transportation)).PostAsync<string>(selected, "ExportCheckFee");
+            Client.Download($"/excel/Download/{path}");
+            Toast.Success("Xuất file thành công");
+        }
+
         private async Task SelectedExcelCheckFee(Event e)
         {
             Html.Take((TabEditor.Name == "Transportation List" ? "#Child11120" : "#Child11129")).Clear();

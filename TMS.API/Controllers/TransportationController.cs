@@ -564,11 +564,11 @@ namespace TMS.API.Controllers
             worksheet.Cells["AA9"].PutValue($"Ghi chú");
             SetBackgroundColor(workbook, "AA9");
             SetBorder(workbook, "AA10");
-            worksheet.Cells["M10"].PutValue($"HĐ xuất cho ĐA (phí cân ở cảng, hạ ngoài)");
+            worksheet.Cells["M10"].PutValue($"HĐ xuất cho ĐA");
             SetBackgroundColor(workbook, "M10");
             worksheet.Cells["N10"].PutValue($"HĐ xuất cho KH");
             SetBackgroundColor(workbook, "N10");
-            worksheet.Cells["O10"].PutValue($"Phí vé cầu đường, cao tốc, trạm thu phí... (giá có VAT nhưng ko có HĐ),");
+            worksheet.Cells["O10"].PutValue($"Phí vé cầu đường, cao tốc, trạm thu phí...");
             SetBackgroundColor(workbook, "O10");
             worksheet.Cells["P10"].PutValue($"Bốc xếp");
             SetBackgroundColor(workbook, "P10");
@@ -578,7 +578,7 @@ namespace TMS.API.Controllers
             SetBackgroundColor(workbook, "R10");
             worksheet.Cells["S10"].PutValue($"Neo xe/Cân");
             SetBackgroundColor(workbook, "S10");
-            worksheet.Cells["T10"].PutValue($"CP phát sinh khác (máy phát, chống ẩm, bạt, vé cổng, vé bãi, phụ kho lót bạt, cò công an,...)");
+            worksheet.Cells["T10"].PutValue($"CP phát sinh khác");
             SetBackgroundColor(workbook, "T10");
             worksheet.Cells["U10"].PutValue($"Chênh lệch hạ vỏ");
             SetBackgroundColor(workbook, "U10");
@@ -603,59 +603,70 @@ namespace TMS.API.Controllers
                     left join Vendor b on b.Id = t.BossId
                     left join Location r on r.Id = t.ReceivedId
                     left join Location pi on pi.Id = t.PickupEmptyId
-                    left join Location po on po.Id = t.PortLoadingId
-                    where CheckFeeHistoryId = {transportations.FirstOrDefault().CheckFeeHistoryId}";
+                    left join Location po on po.Id = t.PortLoadingId";
+            if (transportations.FirstOrDefault().CheckFeeHistoryId != null)
+            {
+                sql += $" where t.CheckFeeHistoryId = { transportations.FirstOrDefault().CheckFeeHistoryId }";
+            }
+            else
+            {
+                sql += $" where t.Id in ({string.Join(",", transportations.Select(x => x.Id).ToList())})";
+            }
             var data = await ConverSqlToDataSet(sql);
             var start = 11;
             foreach (var item in data[0])
             {
                 worksheet.Cells["A" + start].PutValue(start - 10);
-                worksheet.Cells["B" + start].PutValue(DateTime.Parse(item[nameof(Transportation.ClosingDate)].ToString()).ToString("dd/MM/yyyy"));
-                worksheet.Cells["C" + start].PutValue(item["Boss"].ToString());
-                worksheet.Cells["D" + start].PutValue(item["ContainerNo"].ToString());
-                var seal = item["SealNo"] is null ? "" : item["SealNo"].ToString();
-                var sealUpload = item["SealCheckUpload"] is null ? "" : item["SealCheckUpload"].ToString();
+                worksheet.Cells["B" + start].PutValue(item[nameof(Transportation.ClosingDate)]);
+                worksheet.Cells["C" + start].PutValue(item["Boss"]);
+                worksheet.Cells["D" + start].PutValue(item["ContainerNo"]);
+                var seal = item["SealNo"];
+                var sealUpload = item["SealCheckUpload"];
                 worksheet.Cells["E" + start].PutValue(seal);
-                if (seal.ToLower() != sealUpload.ToLower())
+                if (seal != sealUpload)
                 {
                     SetColor(workbook, "E" + start);
                 }
                 worksheet.Cells["F" + start].PutValue(item["Cont20"]);
                 worksheet.Cells["G" + start].PutValue(item["Cont40"]);
-                worksheet.Cells["H" + start].PutValue(item["Received"].ToString());
-                var pick = item["PickupEmpty"] is null ? "" : item["PickupEmpty"].ToString();
-                var pickUpload = item["PickupEmptyUpload"] is null ? "" : item["PickupEmptyUpload"].ToString();
+                worksheet.Cells["H" + start].PutValue(item["Received"]);
+                var pick = item["PickupEmpty"];
+                var pickUpload = item["PickupEmptyUpload"];
                 worksheet.Cells["I" + start].PutValue(pick);
-                if (pick.ToLower() != pickUpload.ToLower())
+                if (pick != pickUpload)
                 {
                     SetColor(workbook, "I" + start);
                 }
-                var port = item["PortLoading"] is null ? "" : item["PortLoading"].ToString();
-                var portUpload = item["PortLoadingUpload"] is null ? "" : item["PortLoadingUpload"].ToString();
-                worksheet.Cells["J" + start].PutValue(item["PortLoading"] is null ? "" : item["PortLoading"].ToString());
-                if (port.ToLower() != portUpload.ToLower())
+                var port = item["PortLoading"];
+                var portUpload = item["PortLoadingUpload"];
+                worksheet.Cells["J" + start].PutValue(item["PortLoading"]);
+                if (port != portUpload)
                 {
                     SetColor(workbook, "J" + start);
                 }
-                worksheet.Cells["K" + start].PutValue(item["LiftFee"] is null ? "" : item["LiftFee"].ToString());
-                worksheet.Cells["L" + start].PutValue(item["LandingFee"] is null ? "" : item["LandingFee"].ToString());
-                worksheet.Cells["O" + start].PutValue(item["CollectOnBehaftInvoinceNoFee"] is null ? "" : item["CollectOnBehaftInvoinceNoFee"].ToString());
-                worksheet.Cells["P" + start].PutValue(item["CollectOnBehaftFee"] is null ? "" : item["CollectOnBehaftFee"].ToString());
-                var closingPercent = item["ClosingPercent"] is null ? "" : item["ClosingPercent"].ToString();
-                var closingPercentUpload = item["ClosingPercentUpload"] is null ? "" : item["ClosingPercentUpload"].ToString();
+                worksheet.Cells["K" + start].PutValue(item["LiftFee"]);
+                worksheet.Cells["L" + start].PutValue(item["LandingFee"]);
+                worksheet.Cells["O" + start].PutValue(item["CollectOnBehaftInvoinceNoFee"]);
+                worksheet.Cells["P" + start].PutValue(item["CollectOnBehaftFee"]);
+                var closingPercent = item["ClosingPercent"];
+                var closingPercentUpload = item["ClosingPercentUpload"];
                 worksheet.Cells["W" + start].PutValue(closingPercent);
-                if (closingPercent.ToLower() != closingPercentUpload.ToLower())
+                if (closingPercent != closingPercentUpload)
                 {
                     SetColor(workbook, "W" + start);
                 }
-                var closingCombinationUnitPrice = item["ClosingCombinationUnitPrice"] is null ? "" : item["ClosingCombinationUnitPrice"].ToString();
-                var closingCombinationUnitPriceUpload = item["ClosingCombinationUnitPriceUpload"] is null ? "" : item["ClosingCombinationUnitPriceUpload"].ToString();
+                var closingCombinationUnitPrice = item["ClosingCombinationUnitPrice"];
+                var closingCombinationUnitPriceUpload = item["ClosingCombinationUnitPriceUpload"];
                 worksheet.Cells["X" + start].PutValue(closingCombinationUnitPrice);
-                if (closingCombinationUnitPrice.ToLower() != closingCombinationUnitPriceUpload.ToLower())
+                if (closingCombinationUnitPrice != closingCombinationUnitPriceUpload)
                 {
                     SetColor(workbook, "X" + start);
                 }
                 start++;
+            }
+            for (int i = 1; i < 25; i++)
+            {
+                worksheet.AutoFitColumn(i);
             }
             var url = $"BangKe{closing.Name}{transportations.FirstOrDefault().ClosingDate.Value.ToString("dd-MM-yyyy")}Den{transportations.LastOrDefault().ClosingDate.Value.ToString("dd-MM-yyyy")}.xlsx";
             workbook.Save($"wwwroot\\excel\\Download\\{url}", new OoxmlSaveOptions(SaveFormat.Xlsx));
