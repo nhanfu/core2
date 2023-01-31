@@ -99,7 +99,7 @@ namespace Core.Components
             else
             {
                 rows = ReadCache(skip, viewPortCount).ToList();
-                if (rows.Count < viewPortCount)
+                if (rows.Count < viewPortCount && rows.Count < Paginator.Options.Total)
                 {
                     rows = await FirstLoadData(count, skip);
                 }

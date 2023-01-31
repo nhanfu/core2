@@ -745,6 +745,9 @@ namespace TMS.API.Controllers
                             vl = vl is null ? null : vl.ToString().DecodeSpecialChar();
                             worksheet.Cells.Rows[x][y].PutValue(vl);
                             break;
+                        case "Checkbox":
+                            worksheet.Cells.Rows[x][y].PutValue(vl.ToString() == "false" ? null : 1);
+                            break;
                         default:
                             break;
                     }
