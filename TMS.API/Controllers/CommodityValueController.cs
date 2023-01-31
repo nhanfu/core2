@@ -198,13 +198,10 @@ namespace TMS.API.Controllers
                     var extraInsuranceFeesRateDB = await db.MasterData.Where(x => x.Active == true && x.ParentId == 25374).ToListAsync();
                     extraInsuranceFeesRateDB.ForEach(x =>
                     {
-                        foreach (var prop in expense.GetType().GetProperties())
+                        var prop = expense.GetType().GetProperties().Where(y => y.Name == x.Name && bool.Parse(y.GetValue(expense, null).ToString())).FirstOrDefault();
+                        if (prop != null)
                         {
-                            if (prop.Name == x.Name && bool.Parse(prop.GetValue(expense, null).ToString()))
-                            {
-                                expense.InsuranceFeeRate += decimal.Parse(x.Code);
-                                break;
-                            }
+                            expense.InsuranceFeeRate += decimal.Parse(x.Code);
                         }
                     });
                 }
