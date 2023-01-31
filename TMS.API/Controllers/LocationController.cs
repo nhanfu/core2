@@ -58,6 +58,11 @@ namespace TMS.API.Controllers
             {
                 return false;
             }
+            var check = await db.TransportationPlan.AnyAsync(x => ids.Contains(x.ReceivedId.Value));
+            if (check)
+            {
+                return false;
+            }
             try
             {
                 var deleteCommand = $"delete VendorContact where LocationId in ({string.Join(",", ids)}); delete VendorLocation where LocationId in ({string.Join(",", ids)}); delete LocationService where LocationId in ({string.Join(",", ids)}); delete from [{typeof(Location).Name}] where Id in ({string.Join(",", ids)})";
