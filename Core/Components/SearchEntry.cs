@@ -761,10 +761,6 @@ namespace Core.Components
             {
                 updatedValue = null;
             }
-            if (updatedValue == Value && !_input.Value.IsNullOrWhiteSpace())
-            {
-                return;
-            }
             _value = updatedValue;
             if (updatedValue is null)
             {
