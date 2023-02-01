@@ -18,7 +18,7 @@ namespace Core.Components
         private int _renderViewPortAwaiter;
         internal bool _renderingViewPort;
         internal int viewPortCount;
-        internal static int cacheAhead = 10;
+        internal static int cacheAhead = 5;
 
         public VirtualGrid(Component ui) : base(ui)
         {
