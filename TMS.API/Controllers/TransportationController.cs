@@ -1,4 +1,5 @@
 ﻿using Aspose.Cells;
+using ClosedXML.Excel;
 using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
@@ -7,13 +8,8 @@ using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Rename;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OData.Edm;
-using MimeKit;
-using Newtonsoft.Json;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -27,8 +23,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.ViewModels;
-using Windows.Data.Html;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 using FileIO = System.IO.File;
 
 namespace TMS.API.Controllers
@@ -468,137 +462,247 @@ namespace TMS.API.Controllers
         public async Task<string> ExportCheckFee([FromBody] List<Transportation> transportations)
         {
             transportations = transportations.OrderBy(x => x.ClosingDate).ToList();
-            Workbook workbook = new Workbook();
-            Worksheet worksheet = workbook.Worksheets[0];
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add(nameof(Transportation));
             var closingId = transportations.FirstOrDefault().ClosingId;
             var closing = await db.Vendor.FirstOrDefaultAsync(x => x.Id == closingId);
-            worksheet.Cells["A1"].PutValue(closing.Name);
-            worksheet.Cells["A3"].PutValue("Địa chỉ");
-            worksheet.Cells["A4"].PutValue("MST");
-            worksheet.Cells["A6"].PutValue($"BẢNG KÊ ĐỐI CHIẾU CƯỚC VC XE TỪ NGÀY {transportations.FirstOrDefault().ClosingDate} ĐẾN {transportations.LastOrDefault().ClosingDate}");
-            worksheet.Cells["A7"].PutValue($"Kính gửi: Công Ty Cổ Phần Logistics Đông Á");
-            worksheet.Cells["A9"].PutValue($"STT");
-            SetBackgroundColor(workbook, "A9");
-            SetBorder(workbook, "A10");
-            worksheet.Cells.Merge(8, 0, 2, 1);
-            worksheet.Cells["B9"].PutValue($"Ngày đóng hàng");
-            SetBackgroundColor(workbook, "B9");
-            SetBorder(workbook, "B10");
-            worksheet.Cells["C9"].PutValue($"Chủ hàng");
-            worksheet.Cells.Merge(8, 1, 2, 1);
-            SetBackgroundColor(workbook, "C9");
-            SetBorder(workbook, "C10");
-            worksheet.Cells["D9"].PutValue($"Số cont");
-            worksheet.Cells.Merge(8, 2, 2, 1);
-            SetBackgroundColor(workbook, "D9");
-            SetBorder(workbook, "D10");
-            worksheet.Cells["E9"].PutValue($"Số seal");
-            worksheet.Cells.Merge(8, 3, 2, 1);
-            SetBackgroundColor(workbook, "E9");
-            SetBorder(workbook, "E10");
-            worksheet.Cells["F9"].PutValue($"Cont 20");
-            worksheet.Cells.Merge(8, 4, 2, 1);
-            SetBackgroundColor(workbook, "F9");
-            SetBorder(workbook, "F10");
-            worksheet.Cells["G9"].PutValue($"Cont 40");
-            worksheet.Cells.Merge(8, 5, 2, 1);
-            SetBackgroundColor(workbook, "G9");
-            SetBorder(workbook, "G10");
-            worksheet.Cells["H9"].PutValue($"Địa điểm nhận hàng");
-            worksheet.Cells.Merge(8, 6, 2, 1);
-            SetBackgroundColor(workbook, "H9");
-            SetBorder(workbook, "H10");
-            worksheet.Cells["I9"].PutValue($"Nơi lấy rỗng");
-            worksheet.Cells.Merge(8, 7, 2, 1);
-            SetBackgroundColor(workbook, "I9");
-            SetBorder(workbook, "I10");
-            worksheet.Cells["J9"].PutValue($"Cảng hạ hàng");
-            worksheet.Cells.Merge(8, 8, 2, 1);
-            SetBorder(workbook, "J10");
-            SetBackgroundColor(workbook, "J9");
-            worksheet.Cells["K9"].PutValue($"Phí nâng");
-            worksheet.Cells.Merge(8, 9, 2, 1);
-            SetBackgroundColor(workbook, "K9");
-            SetBorder(workbook, "K10");
-            worksheet.Cells["L9"].PutValue($"Phí hạ");
-            worksheet.Cells.Merge(8, 10, 2, 1);
-            SetBackgroundColor(workbook, "L9");
-            SetBorder(workbook, "L10");
-            worksheet.Cells.Merge(8, 12, 1, 3);
-            worksheet.Cells["M9"].PutValue($"Chi phí (có HĐ - VAT hiện hành)");
-            worksheet.Cells.Merge(8, 11, 2, 1);
-            SetAlign(workbook, "M9");
-            SetBackgroundColor(workbook, "M9");
-            SetBorder(workbook, "N9");
-            SetBorder(workbook, "O9");
-            worksheet.Cells.Merge(8, 15, 1, 6);
-            worksheet.Cells["P9"].PutValue($"Chi phí (không HĐ)");
-            worksheet.Cells.Merge(8, 21, 2, 1);
-            SetBackgroundColor(workbook, "P9");
-            SetAlign(workbook, "P9");
-            SetBorder(workbook, "Q9");
-            SetBorder(workbook, "R9");
-            SetBorder(workbook, "S9");
-            SetBorder(workbook, "T9");
-            SetBorder(workbook, "U9");
-            worksheet.Cells["V9"].PutValue($"Thu lại tiền nhà xe (lưu vỏ, lưu cont, sửa chữa…) nhập số âm");
-            worksheet.Cells.Merge(8, 22, 2, 1);
-            SetBackgroundColor(workbook, "V9");
-            SetBorder(workbook, "V10");
-            worksheet.Cells["W9"].PutValue($"% kết hợp");
-            worksheet.Cells.Merge(8, 23, 2, 1);
-            SetBackgroundColor(workbook, "W9");
-            SetBorder(workbook, "W10");
-            worksheet.Cells["X9"].PutValue($"Cước VC 10 % ");
-            worksheet.Cells.Merge(8, 24, 2, 1);
-            SetBackgroundColor(workbook, "X9");
-            SetBorder(workbook, "X10");
-            worksheet.Cells["Y9"].PutValue($"Cước VC 8 % ");
-            worksheet.Cells.Merge(8, 25, 2, 1);
-            SetBackgroundColor(workbook, "Y9");
-            SetBorder(workbook, "Y10");
-            worksheet.Cells["Z9"].PutValue($"Tổng Cước VC(theo thuế hiện hành");
-            worksheet.Cells.Merge(8, 26, 2, 1);
-            SetBackgroundColor(workbook, "Z9");
-            SetBorder(workbook, "Z10");
-            worksheet.Cells["AA9"].PutValue($"Ghi chú");
-            SetBackgroundColor(workbook, "AA9");
-            SetBorder(workbook, "AA10");
-            worksheet.Cells["M10"].PutValue($"HĐ xuất cho ĐA");
-            SetBackgroundColor(workbook, "M10");
-            worksheet.Cells["N10"].PutValue($"HĐ xuất cho KH");
-            SetBackgroundColor(workbook, "N10");
-            worksheet.Cells["O10"].PutValue($"Phí vé cầu đường, cao tốc, trạm thu phí...");
-            SetBackgroundColor(workbook, "O10");
-            worksheet.Cells["P10"].PutValue($"Bốc xếp");
-            SetBackgroundColor(workbook, "P10");
-            worksheet.Cells["Q10"].PutValue($"Phí hạ xa (HP, SP, …)");
-            SetBackgroundColor(workbook, "Q10");
-            worksheet.Cells["R10"].PutValue($"2 kho, chuyển kho");
-            SetBackgroundColor(workbook, "R10");
-            worksheet.Cells["S10"].PutValue($"Neo xe/Cân");
-            SetBackgroundColor(workbook, "S10");
-            worksheet.Cells["T10"].PutValue($"CP phát sinh khác");
-            SetBackgroundColor(workbook, "T10");
-            worksheet.Cells["U10"].PutValue($"Chênh lệch hạ vỏ");
-            SetBackgroundColor(workbook, "U10");
+            worksheet.Style.Font.SetFontName("Times New Roman");
+            worksheet.Cell("A1").Value = closing.Name;
+            worksheet.Cell("A2").Value = "Địa chỉ";
+            worksheet.Cell("A3").Value = "MST";
+            worksheet.Cell("A4").Value = $"BẢNG KÊ ĐỐI CHIẾU CƯỚC VC XE TỪ NGÀY {transportations.FirstOrDefault().ClosingDate?.ToString("dd/MM/yyyy")} ĐẾN {transportations.LastOrDefault().ClosingDate?.ToString("dd/MM/yyyy")}";
+            worksheet.Cell("A4").Style.Font.Bold = true;
+            worksheet.Cell("A4").Style.Font.FontSize = 20;
+            worksheet.Cell("A4").Style.Font.FontColor = XLColor.Red;
+            worksheet.Cell("A4").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("A4").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("A4:AA4").Row(1).Merge();
+            worksheet.Cell("A5").Value = $"Kính gửi: Công Ty Cổ Phần Logistics Đông Á";
+            worksheet.Cell("A5").Style.Font.Italic = true;
+            worksheet.Cell("A5").Style.Font.Bold = true;
+
+            worksheet.Row(6).Style.Fill.BackgroundColor = XLColor.LightGreen;
+            worksheet.Row(7).Style.Fill.BackgroundColor = XLColor.LightGreen;
+            worksheet.Row(6).Height = 30;
+            worksheet.Row(6).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(6).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(6).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(6).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(7).Height = 70;
+            worksheet.Row(7).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(7).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(7).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(7).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell("A6").Value = $"STT";
+            worksheet.Cell("A6").Style.Alignment.WrapText = true;
+            worksheet.Cell("A6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("A6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("A6:B7").Column(1).Merge();
+
+            worksheet.Cell("B6").Value = $"Ngày đóng hàng(ĐỀ NGHỊ ĐỂ ĐÚNG ĐỊNH DẠNG DD/MM/YYYY)";
+            worksheet.Cell("B6").Style.Alignment.WrapText = true;
+            worksheet.Cell("B6").Style.Font.Bold = true;
+            worksheet.Cell("B6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("B6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("B6:C7").Column(1).Merge();
+
+            worksheet.Cell("C6").Value = $"Chủ hàng";
+            worksheet.Cell("C6").Style.Alignment.WrapText = true;
+            worksheet.Cell("C6").Style.Font.Bold = true;
+            worksheet.Cell("C6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("P6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("C6:D7").Column(1).Merge();
+
+            worksheet.Cell("D6").Value = $"Số cont";
+            worksheet.Cell("D6").Style.Font.Bold = true;
+            worksheet.Cell("D6").Style.Alignment.WrapText = true;
+            worksheet.Cell("D6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("D6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("D6:E7").Column(1).Merge();
+
+            worksheet.Cell("E6").Value = $"Số seal";
+            worksheet.Cell("E6").Style.Font.Bold = true;
+            worksheet.Cell("E6").Style.Alignment.WrapText = true;
+            worksheet.Cell("E6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("E6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("E6:F7").Column(1).Merge();
+
+            worksheet.Cell("F6").Value = $"Cont 20";
+            worksheet.Cell("F6").Style.Font.Bold = true;
+            worksheet.Cell("F6").Style.Alignment.WrapText = true;
+            worksheet.Cell("F6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("F6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("F6:G7").Column(1).Merge();
+
+            worksheet.Cell("G6").Value = $"Cont 40";
+            worksheet.Cell("G6").Style.Font.Bold = true;
+            worksheet.Cell("G6").Style.Alignment.WrapText = true;
+            worksheet.Cell("G6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("G6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("G6:H7").Column(1).Merge();
+
+            worksheet.Cell("H6").Value = $"Địa điểm nhận hàng";
+            worksheet.Cell("H6").Style.Alignment.WrapText = true;
+            worksheet.Cell("H6").Style.Font.Bold = true;
+            worksheet.Cell("H6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("H6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("H6:I7").Column(1).Merge();
+
+            worksheet.Cell("I6").Value = $"Nơi lấy rỗng";
+            worksheet.Cell("I6").Style.Font.Bold = true;
+            worksheet.Cell("I6").Style.Alignment.WrapText = true;
+            worksheet.Cell("I6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("I6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("I6:J7").Column(1).Merge();
+
+            worksheet.Cell("J6").Value = $"Cảng hạ hàng";
+            worksheet.Cell("J6").Style.Font.Bold = true;
+            worksheet.Cell("J6").Style.Alignment.WrapText = true;
+            worksheet.Cell("J6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("J6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("J6:K7").Column(1).Merge();
+
+            worksheet.Cell("K6").Value = $"Phí nâng";
+            worksheet.Cell("K6").Style.Font.Bold = true;
+            worksheet.Cell("K6").Style.Alignment.WrapText = true;
+            worksheet.Cell("K6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("K6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("K6:L7").Column(1).Merge();
+
+            worksheet.Cell("L6").Value = $"Phí hạ";
+            worksheet.Cell("L6").Style.Alignment.WrapText = true;
+            worksheet.Cell("L6").Style.Font.Bold = true;
+            worksheet.Cell("L6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("L6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("L6:M7").Column(1).Merge();
+
+            worksheet.Cell("M6").Value = $"Chi phí (có HĐ - VAT hiện hành)";
+            worksheet.Cell("M6").Style.Font.Bold = true;
+            worksheet.Cell("M6").Style.Alignment.WrapText = true;
+            worksheet.Cell("M6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("M6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("M6:O6").Row(1).Merge();
+
+            worksheet.Cell("P6").Value = $"Chi phí (không HĐ)";
+            worksheet.Cell("P6").Style.Font.Bold = true;
+            worksheet.Cell("P6").Style.Alignment.WrapText = true;
+            worksheet.Cell("P6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("P6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("P6:U6").Row(1).Merge();
+
+            worksheet.Cell("V6").Value = $"Thu lại tiền nhà xe (lưu vỏ, lưu cont, sửa chữa…) nhập số âm";
+            worksheet.Cell("V6").Style.Font.Bold = true;
+            worksheet.Cell("V6").Style.Alignment.WrapText = true;
+            worksheet.Cell("V6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("V6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("V6:W7").Column(1).Merge();
+
+            worksheet.Cell("W6").Value = $"% kết hợp";
+            worksheet.Cell("W6").Style.Font.Bold = true;
+            worksheet.Cell("W6").Style.Alignment.WrapText = true;
+            worksheet.Cell("W6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("W6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("W6:X7").Column(1).Merge();
+
+            worksheet.Cell("X6").Value = $"Cước vc 10%";
+            worksheet.Cell("X6").Style.Alignment.WrapText = true;
+            worksheet.Cell("X6").Style.Font.Bold = true;
+            worksheet.Cell("X6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("X6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("X6:Y7").Column(1).Merge();
+
+            worksheet.Cell("Y6").Value = $"Cước 8%";
+            worksheet.Cell("Y6").Style.Alignment.WrapText = true;
+            worksheet.Cell("Y6").Style.Font.Bold = true;
+            worksheet.Cell("Y6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("Y6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("Y6:Z7").Column(1).Merge();
+
+            worksheet.Cell("Z6").Value = $"Tổng Cước VC(theo thuế hiện hành";
+            worksheet.Cell("Z6").Style.Font.Bold = true;
+            worksheet.Cell("Z6").Style.Alignment.WrapText = true;
+            worksheet.Cell("Z6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("Z6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("Z6:AA7").Column(1).Merge();
+
+            worksheet.Cell("AA6").Value = $"Ghi chú";
+            worksheet.Cell("AA6").Style.Alignment.WrapText = true;
+            worksheet.Cell("AA6").Style.Font.Bold = true;
+            worksheet.Cell("AA6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("AA6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("AA6:AB7").Column(1).Merge();
+
+            worksheet.Cell("M7").Value = $"HĐ xuất cho ĐA (phí cân ở cảng, hạ ngoài)";
+            worksheet.Cell("M7").Style.Alignment.WrapText = true;
+            worksheet.Cell("M7").Style.Font.Bold = true;
+            worksheet.Cell("M7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("M7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            worksheet.Cell("N7").Value = $"HĐ xuất cho KH";
+            worksheet.Cell("N7").Style.Alignment.WrapText = true;
+            worksheet.Cell("N7").Style.Font.Bold = true;
+            worksheet.Cell("N7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("N7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            worksheet.Cell("O7").Value = $"Phí vé cầu đường, cao tốc, trạm thu phí... (giá có VAT nhưng ko có HĐ),";
+            worksheet.Cell("O7").Style.Alignment.WrapText = true;
+            worksheet.Cell("O7").Style.Font.Bold = true;
+            worksheet.Cell("O7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("O7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            worksheet.Cell("P7").Value = $"Bốc xếp";
+            worksheet.Cell("P7").Style.Alignment.WrapText = true;
+            worksheet.Cell("P7").Style.Font.Bold = true;
+            worksheet.Cell("P7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("P7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            worksheet.Cell("Q7").Value = $"Phí hạ xa (HP, SP, …)";
+            worksheet.Cell("Q7").Style.Alignment.WrapText = true;
+            worksheet.Cell("Q7").Style.Font.Bold = true;
+            worksheet.Cell("Q7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("Q7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            worksheet.Cell("R7").Value = $"2 kho, chuyển kho";
+            worksheet.Cell("R7").Style.Alignment.WrapText = true;
+            worksheet.Cell("R7").Style.Font.Bold = true;
+            worksheet.Cell("R7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("R7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            worksheet.Cell("S7").Value = $"Neo xe/Cân";
+            worksheet.Cell("S7").Style.Alignment.WrapText = true;
+            worksheet.Cell("S7").Style.Font.Bold = true;
+            worksheet.Cell("S7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("S7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            worksheet.Cell("T7").Value = $"CP phát sinh khác (máy phát, chống ẩm, bạt, vé cổng, vé bãi, phụ kho lót bạt, cò công an,...)";
+            worksheet.Cell("T7").Style.Alignment.WrapText = true;
+            worksheet.Cell("T7").Style.Font.Bold = true;
+            worksheet.Cell("T7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("T7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            worksheet.Cell("U7").Value = $"Chênh lệch hạ vỏ";
+            worksheet.Cell("U7").Style.Alignment.WrapText = true;
+            worksheet.Cell("U7").Style.Font.Bold = true;
+            worksheet.Cell("U7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("U7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
             var sql = @$"select ClosingDate, ClosingDateCheck, ClosingDateUpload
                     ,ClosingDate, ClosingDateCheck, ClosingDateUpload
                     ,b.Name as Boss, BossCheck, BossCheckUpload
                     ,ContainerNo, ContainerNoCheck, ContainerNoUpload
                     ,SealNo, SealCheck, SealCheckUpload
-                    ,FORMAT(Cont20,'#,#') as Cont20, Cont20Check, Cont20CheckUpload
-                    ,FORMAT(Cont40,'#,#') as Cont40, Cont40Check, Cont40CheckUpload
+                    ,Cont20 as Cont20, Cont20Check, Cont20CheckUpload
+                    ,Cont40 as Cont40, Cont40Check, Cont40CheckUpload
                     ,r.Description as Received, ReceivedCheck, ReceivedCheckUpload
-                    ,FORMAT(CollectOnBehaftInvoinceNoFee,'#,#') as CollectOnBehaftInvoinceNoFee, CollectOnBehaftInvoinceNoFeeCheck, CollectOnBehaftInvoinceNoFeeUpload
-                    ,FORMAT(CollectOnBehaftFee,'#,#') as CollectOnBehaftFee, CollectOnBehaftFeeCheck, CollectOnBehaftFeeUpload
+                    ,CollectOnBehaftInvoinceNoFee as CollectOnBehaftInvoinceNoFee, CollectOnBehaftInvoinceNoFeeCheck, CollectOnBehaftInvoinceNoFeeUpload
+                    ,CollectOnBehaftFee as CollectOnBehaftFee, CollectOnBehaftFeeCheck, CollectOnBehaftFeeUpload
                     ,pi.Description as PickupEmpty, PickupEmptyCheck, PickupEmptyUpload
                     ,po.Description as PortLoading, PortLoadingCheck, PortLoadingUpload
-                    ,FORMAT(LiftFee,'#,#') as LiftFee, LiftFeeCheck, LiftFeeCheckUpload
-                    ,FORMAT(LandingFee,'#,#') as LandingFee, LandingFeeCheck, LandingFeeUpload
-                    ,FORMAT(CollectOnSupPrice,'#,#') as CollectOnSupPrice, CollectOnSupPriceCheck, CollectOnSupPriceUpload
-                    ,FORMAT(ClosingPercent,'#,#') as ClosingPercent, ClosingPercentCheck, ClosingPercentUpload
-                    ,FORMAT(ClosingCombinationUnitPrice,'#,#') as ClosingCombinationUnitPrice, ClosingCombinationUnitPriceCheck, ClosingCombinationUnitPriceUpload
+                    ,LiftFee as LiftFee, LiftFeeCheck, LiftFeeCheckUpload
+                    ,LandingFee as LandingFee, LandingFeeCheck, LandingFeeUpload
+                    ,CollectOnSupPrice as CollectOnSupPrice, CollectOnSupPriceCheck, CollectOnSupPriceUpload
+                    ,ClosingPercent as ClosingPercent, ClosingPercentCheck, ClosingPercentUpload
+                    ,ClosingCombinationUnitPrice as ClosingCombinationUnitPrice, ClosingCombinationUnitPriceCheck, ClosingCombinationUnitPriceUpload
                     from Transportation t
                     left join Vendor b on b.Id = t.BossId
                     left join Location r on r.Id = t.ReceivedId
@@ -613,63 +717,119 @@ namespace TMS.API.Controllers
                 sql += $" where t.Id in ({string.Join(",", transportations.Select(x => x.Id).ToList())})";
             }
             var data = await ConverSqlToDataSet(sql);
-            var start = 11;
+            var start = 8;
             foreach (var item in data[0])
             {
-                worksheet.Cells["A" + start].PutValue(start - 10);
-                worksheet.Cells["B" + start].PutValue(item[nameof(Transportation.ClosingDate)]);
-                worksheet.Cells["C" + start].PutValue(item["Boss"]);
-                worksheet.Cells["D" + start].PutValue(item["ContainerNo"]);
+                worksheet.Cell("A" + start).SetValue(start - 7);
+                worksheet.Cell("B" + start).SetValue(DateTime.Parse(item[nameof(Transportation.ClosingDate)].ToString()));
+                worksheet.Cell("C" + start).SetValue(item["Boss"] is null ? null : item["Boss"].ToString().DecodeSpecialChar());
+                worksheet.Cell("D" + start).SetValue(item["ContainerNo"] is null ? null : item["ContainerNo"].ToString());
                 var seal = item["SealNo"];
                 var sealUpload = item["SealCheckUpload"];
-                worksheet.Cells["E" + start].PutValue(seal);
+                worksheet.Cell("E" + start).SetValue(seal is null ? null : seal.ToString());
                 if (seal != sealUpload)
                 {
-                    SetColor(workbook, "E" + start);
+                    worksheet.Cell("E" + start).Style.Font.FontColor = XLColor.Red;
                 }
-                worksheet.Cells["F" + start].PutValue(item["Cont20"]);
-                worksheet.Cells["G" + start].PutValue(item["Cont40"]);
-                worksheet.Cells["H" + start].PutValue(item["Received"]);
+                worksheet.Cell("F" + start).SetValue(item["Cont20"] is null ? default(decimal) : decimal.Parse(item["Cont20"].ToString()));
+                worksheet.Cell("G" + start).SetValue(item["Cont40"] is null ? default(decimal) : decimal.Parse(item["Cont40"].ToString()));
+                worksheet.Cell("H" + start).SetValue(item["Received"] is null ? null : item["Received"].ToString().DecodeSpecialChar());
                 var pick = item["PickupEmpty"];
                 var pickUpload = item["PickupEmptyUpload"];
-                worksheet.Cells["I" + start].PutValue(pick);
+                worksheet.Cell("I" + start).SetValue(pick is null ? null : pick.ToString().DecodeSpecialChar());
                 if (pick != pickUpload)
                 {
-                    SetColor(workbook, "I" + start);
+                    worksheet.Cell("I" + start).Style.Font.FontColor = XLColor.Red;
                 }
                 var port = item["PortLoading"];
                 var portUpload = item["PortLoadingUpload"];
-                worksheet.Cells["J" + start].PutValue(item["PortLoading"]);
+                worksheet.Cell("J" + start).SetValue(port is null ? null : port.ToString().DecodeSpecialChar());
                 if (port != portUpload)
                 {
-                    SetColor(workbook, "J" + start);
+                    worksheet.Cell("J" + start).Style.Font.FontColor = XLColor.Red;
                 }
-                worksheet.Cells["K" + start].PutValue(item["LiftFee"]);
-                worksheet.Cells["L" + start].PutValue(item["LandingFee"]);
-                worksheet.Cells["O" + start].PutValue(item["CollectOnBehaftInvoinceNoFee"]);
-                worksheet.Cells["P" + start].PutValue(item["CollectOnBehaftFee"]);
+                worksheet.Cell("K" + start).SetValue(item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()));
+                worksheet.Cell("K" + start).Style.NumberFormat.Format = "#,##";
+                worksheet.Cell("L" + start).SetValue(item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()));
+                worksheet.Cell("L" + start).Style.NumberFormat.Format = "#,##";
+                worksheet.Cell("O" + start).SetValue(item["CollectOnBehaftInvoinceNoFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()));
+                worksheet.Cell("O" + start).Style.NumberFormat.Format = "#,##";
+                worksheet.Cell("P" + start).SetValue(item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()));
+                worksheet.Cell("P" + start).Style.NumberFormat.Format = "#,##";
                 var closingPercent = item["ClosingPercent"];
                 var closingPercentUpload = item["ClosingPercentUpload"];
-                worksheet.Cells["W" + start].PutValue(closingPercent);
+                worksheet.Cell("W" + start).SetValue(closingPercent is null ? default(decimal) : decimal.Parse(closingPercent.ToString()));
+                worksheet.Cell("W" + start).Style.NumberFormat.Format = "#,##";
                 if (closingPercent != closingPercentUpload)
                 {
-                    SetColor(workbook, "W" + start);
+                    worksheet.Cell("W" + start).Style.Font.FontColor = XLColor.Red;
                 }
                 var closingCombinationUnitPrice = item["ClosingCombinationUnitPrice"];
                 var closingCombinationUnitPriceUpload = item["ClosingCombinationUnitPriceUpload"];
-                worksheet.Cells["X" + start].PutValue(closingCombinationUnitPrice);
+                worksheet.Cell("X" + start).SetValue(closingCombinationUnitPrice is null ? default(decimal) : decimal.Parse(closingCombinationUnitPrice.ToString()));
+                worksheet.Cell("X" + start).Style.NumberFormat.Format = "#,##";
                 if (closingCombinationUnitPrice != closingCombinationUnitPriceUpload)
                 {
-                    SetColor(workbook, "X" + start);
+                    worksheet.Cell("X" + start).Style.Font.FontColor = XLColor.Red;
                 }
+                var sum = (item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()))
+                    + (closingCombinationUnitPrice is null ? default(decimal) : decimal.Parse(closingCombinationUnitPrice.ToString()))
+                    + (item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()))
+                    + (item["CollectOnBehaftInvoinceNoFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()))
+                    + (item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()));
+                worksheet.Cell("Z" + start).SetValue(sum);
+                worksheet.Cell("Z" + start).Style.NumberFormat.Format = "#,##";
+                worksheet.Row(start).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                worksheet.Row(start).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                worksheet.Row(start).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                worksheet.Row(start).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                 start++;
             }
-            for (int i = 1; i < 25; i++)
-            {
-                worksheet.AutoFitColumn(i);
-            }
+            var tt = 8 + data[0].Count;
+            worksheet.Row(tt).Style.Fill.BackgroundColor = XLColor.LightGreen;
+            worksheet.Cell("A" + tt).Value = $"Tổng cộng";
+            worksheet.Cell("F" + tt).Value = data[0].Sum(item => item["Cont20"] is null ? default(decimal) : decimal.Parse(item["Cont20"].ToString()));
+            worksheet.Cell("F" + tt).Style.NumberFormat.Format = "#,##";
+            worksheet.Cell("F" + tt).Style.Font.Bold = true;
+            worksheet.Cell("G" + tt).Value = data[0].Sum(item => item["Cont40"] is null ? default(decimal) : decimal.Parse(item["Cont40"].ToString()));
+            worksheet.Cell("G" + tt).Style.NumberFormat.Format = "#,##";
+            worksheet.Cell("G" + tt).Style.Font.Bold = true;
+            worksheet.Cell("K" + tt).Value = data[0].Sum(item => item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()));
+            worksheet.Cell("K" + tt).Style.NumberFormat.Format = "#,##";
+            worksheet.Cell("K" + tt).Style.Font.Bold = true;
+            var tt1 = data[0].Sum(item => item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()));
+            worksheet.Cell("L" + tt).Value = tt1;
+            worksheet.Cell("L" + tt).Style.NumberFormat.Format = "#,##";
+            worksheet.Cell("L" + tt).Style.Font.Bold = true;
+            var tt2 = data[0].Sum(item => item["CollectOnBehaftInvoinceNoFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()));
+            worksheet.Cell("O" + tt).Value = tt2;
+            worksheet.Cell("O" + tt).Style.NumberFormat.Format = "#,##";
+            worksheet.Cell("O" + tt).Style.Font.Bold = true;
+            var tt3 = data[0].Sum(item => item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()));
+            worksheet.Cell("P" + tt).Value = data[0].Sum(item => item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()));
+            worksheet.Cell("P" + tt).Style.NumberFormat.Format = "#,##";
+            worksheet.Cell("P" + tt).Style.Font.Bold = true;
+            var tt4 = data[0].Sum(item => item["ClosingCombinationUnitPrice"] is null ? default(decimal) : decimal.Parse(item["ClosingCombinationUnitPrice"].ToString()));
+            worksheet.Cell("X" + tt).Value = tt4;
+            worksheet.Cell("Z" + tt).Value = tt1 + tt2 + tt3 + tt4;
+            worksheet.Cell("Z" + tt).Style.NumberFormat.Format = "#,##";
+            worksheet.Cell("X" + tt).Style.NumberFormat.Format = "#,##";
+            worksheet.Cell("X" + tt).Style.Font.Bold = true;
+            worksheet.Cell("Z" + tt).Style.Font.Bold = true;
+            worksheet.Cell("A" + tt).Style.Font.Bold = true;
+            worksheet.Cell("A" + tt).Style.Alignment.WrapText = true;
+            worksheet.Cell("A" + tt).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("A" + tt).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range($"A{tt}:E{tt}").Row(1).Merge();
+            worksheet.Column(2).AdjustToContents();
+            worksheet.Column(4).AdjustToContents();
+            worksheet.Column(11).AdjustToContents();
+            worksheet.Column(12).AdjustToContents();
+            worksheet.Column(16).AdjustToContents();
+            worksheet.Column(24).AdjustToContents();
+            worksheet.Column(26).AdjustToContents();
             var url = $"BangKe{closing.Name}{transportations.FirstOrDefault().ClosingDate.Value.ToString("dd-MM-yyyy")}Den{transportations.LastOrDefault().ClosingDate.Value.ToString("dd-MM-yyyy")}.xlsx";
-            workbook.Save($"wwwroot\\excel\\Download\\{url}", new OoxmlSaveOptions(SaveFormat.Xlsx));
+            workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
             return url;
         }
 
