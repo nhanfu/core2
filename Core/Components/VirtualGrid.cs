@@ -151,7 +151,11 @@ namespace Core.Components
             FormattedRowData = rows;
             await LoadMasterData(FormattedRowData, spinner: false);
             rows.ForEach((x, index) => x[RowNo] = skip + index + 1);
-            _ = Task.Run(async () => await PrepareCache(skip));
+
+            if(rows.Count < Paginator.Options.Total)
+            {
+                _ = Task.Run(async () => await PrepareCache(skip));
+            }
             return rows;
         }
 

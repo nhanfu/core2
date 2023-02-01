@@ -60,6 +60,7 @@ namespace Core.Components
                 return;
             }
             Element.InnerHTML = cellText;
+            Element.SetAttribute("title", cellText);
         }
 
         private void RenderNewEle(string cellText, object cellData, bool isBool)
@@ -95,11 +96,6 @@ namespace Core.Components
                 Html.Instance.AsyncEvent(EventType.Click, LabelClickHandler).ClassName("cell-text").InnerHTML(cellText);
             }
             Element = Html.Context;
-            if (!GuiInfo.MaxWidth.IsNullOrWhiteSpace())
-            {
-                Element.SetAttribute("title", cellText);
-            }
-
             Html.Instance.End.Render();
         }
 

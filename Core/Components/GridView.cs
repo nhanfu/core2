@@ -46,6 +46,11 @@ namespace Core.Components
 
         protected virtual void DOMContentLoadedHandler()
         {
+            if (GuiInfo.IsSumary)
+            {
+                AddSummaries();
+            }
+            PopulateFields();
             if (!_sum && (GuiInfo.ComponentType == nameof(GridView) || GuiInfo.ComponentType == nameof(VirtualGrid)))
             {
                 Task.Run(async () =>
@@ -54,11 +59,6 @@ namespace Core.Components
                     _sum = true;
                 });
             }
-            if (GuiInfo.IsSumary)
-            {
-                AddSummaries();
-            }
-            PopulateFields();
         }
 
         private async Task AddSubTotal()
@@ -1697,7 +1697,6 @@ namespace Core.Components
 
         internal override async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
         {
-            await Task.Delay(CellCountNoSticky);
             if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
@@ -1717,10 +1716,13 @@ namespace Core.Components
                 Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
-            AddSummaries();
             PopulateFields();
             RenderIndex();
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, rowData);
+            if (GuiInfo.IsSumary)
+            {
+                AddSummaries();
+            }
         }
 
         private void MoveEmptyRow(ListViewItem rowSection)
