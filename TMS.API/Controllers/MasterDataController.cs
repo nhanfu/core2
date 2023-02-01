@@ -50,13 +50,10 @@ namespace TMS.API.Controllers
             await CheckDuplicatesSettingsTrainSchedule(entity);
             if (patch.Changes.Any(x => x.Field == nameof(oldEntity.Description)))
             {
-                if (oldEntity.Description != null && oldEntity.Description != "" && oldEntity.ParentId == 7651)
+                var masterDataDB = await db.MasterData.Where(x => x.ParentId == entity.ParentId && x.Description.ToLower() == entity.Description.ToLower() && (x.Id != id.TryParseInt())).FirstOrDefaultAsync();
+                if (masterDataDB != null)
                 {
-                    var masterDataDB = await db.MasterData.Where(x => (x.ParentId == 7651 || x.Path.Contains(@"\7651\")) && x.Description.ToLower() == entity.Description.ToLower() && (x.Id != id.TryParseInt())).FirstOrDefaultAsync();
-                    if (masterDataDB != null)
-                    {
-                        throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
-                    }
+                    throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
             patch.ApplyTo(entity);
@@ -99,13 +96,10 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<MasterData>> UpdateAsync([FromBody] MasterData entity, string reasonOfChange = "")
         {
-            if (entity.Description != null && entity.Description != "" && entity.ParentId == 7651)
+            var masterDataDB = await db.MasterData.Where(x => x.ParentId == entity.ParentId && x.Description.ToLower() == entity.Description.ToLower() && (x.Id != entity.Id)).FirstOrDefaultAsync();
+            if (masterDataDB != null)
             {
-                var masterDataDB = await db.MasterData.Where(x => (x.ParentId == 7651 || x.Path.Contains(@"\7651\")) && x.Id != entity.Id && x.Description.ToLower() == entity.Description.ToLower()).FirstOrDefaultAsync();
-                if (masterDataDB != null)
-                {
-                    throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
-                }
+                throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
             }
             return await UpdateTreeNodeAsync(entity, reasonOfChange);
         }
@@ -113,13 +107,10 @@ namespace TMS.API.Controllers
         public override async Task<ActionResult<MasterData>> CreateAsync([FromBody] MasterData entity)
         {
             await CheckDuplicatesSettingsTrainSchedule(entity);
-            if (entity.Description != null && entity.Description != "" && entity.ParentId == 7651)
+            var masterDataDB = await db.MasterData.Where(x => x.ParentId == entity.ParentId && x.Description.ToLower() == entity.Description.ToLower()).FirstOrDefaultAsync();
+            if (masterDataDB != null)
             {
-                var masterDataDB = await db.MasterData.Where(x => (x.ParentId == 7651 || x.Path.Contains(@"\7651\")) && x.Description == entity.Description).FirstOrDefaultAsync();
-                if (masterDataDB != null)
-                {
-                    throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
-                }
+                throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
             }
             var rs = await base.CreateAsync(entity);
             if (entity.ParentId != null)
