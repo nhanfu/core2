@@ -64,7 +64,7 @@ namespace TMS.UI.Business.Manage
             var selected = (await gridView.GetRealTimeSelectedRows()).Cast<Transportation>().Where(x => x.Id > 0).ToList();
             if (selected.Nothing())
             {
-                Toast.Warning("Vui lòng chọn cont cần phân bổ");  
+                Toast.Warning("Vui lòng chọn cont cần phân bổ");
                 return;
             }
             var path = await new Client(nameof(Transportation)).PostAsync<string>(selected, "ExportCheckFee");
@@ -256,15 +256,20 @@ namespace TMS.UI.Business.Manage
             }
             gridView.BodyContextMenuShow += () =>
             {
-                ContextMenu.Instance.MenuItems = new List<ContextMenuItem>
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fas fa-pen", Text = "Cập nhật giá", Click = UpdateQuotation });
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
                 {
-                        new ContextMenuItem { Icon = "fas fa-pen", Text = "Cập nhật giá", Click = UpdateQuotation},
-                        new ContextMenuItem { Icon = "fal fa-ship", Text = "Cập cước tàu", Click = UpdateShipQuotation},
-                        new ContextMenuItem { Icon = "fal fa-person-carry", Text = "Cập phí nâng", Click = UpdateLiftQuotation},
-                        new ContextMenuItem { Icon = "fal fa-truck-loading", Text = "Cập phí hạ", Click = UpdateLadingQuotation},
-                        new ContextMenuItem { Icon = "fal fa-binoculars", Text = "Xem booking", Click = ViewBooking },
-                        new ContextMenuItem { Icon = "fal fa-download", Text = "Tải đính kèm", Click = DownLoadPackingList },
-                };
+                    Icon = "fas fa-pen",
+                    Text = "Cập nhật phí",
+                    MenuItems = new List<ContextMenuItem>
+                    {
+                        new ContextMenuItem { Text = "Cập cước tàu", Click = UpdateShipQuotation },
+                        new ContextMenuItem { Text = "Cập phí nâng", Click = UpdateLiftQuotation },
+                        new ContextMenuItem { Text = "Cập phí hạ", Click = UpdateLadingQuotation },
+                        new ContextMenuItem { Text = "Xem booking", Click = ViewBooking },
+                        new ContextMenuItem { Text = "Tải đính kèm", Click = DownLoadPackingList },
+                    }
+                });
             };
             var listViewItems = gridView.RowData.Data.Cast<Transportation>().ToList();
             listViewItems.ForEach(x =>
