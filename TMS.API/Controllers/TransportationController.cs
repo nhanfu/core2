@@ -1795,25 +1795,27 @@ namespace TMS.API.Controllers
             }
             else
             {
+                reportQuery = $@"select {sum}
+                                  from [{tablename}] where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
                 if (RoleIds.Contains(10))
                 {
-                    reportQuery += @$" and (UserId = {UserId})";
+                    reportQuery += @$" and ([{tablename}].UserId = {UserId})";
                 }
                 else if (RoleIds.Contains(43))
                 {
-                    reportQuery += @$" and (UserId = {UserId} or UserId = 78)";
+                    reportQuery += @$" and ([{tablename}].UserId = {UserId} or UserId = 78)";
                 }
                 else if (RoleIds.Contains(17))
                 {
-                    reportQuery += @$" and (UserId = {UserId} or UserId = 78)";
+                    reportQuery += @$" and ([{tablename}].UserId = {UserId} or UserId = 78)";
                 }
                 else if (RoleIds.Contains(25))
                 {
-                    reportQuery += @$" and (RouteId in (select RouteId from UserRoute where TypeId = 25045 and UserId = {UserId}))";
+                    reportQuery += @$" and ([{tablename}].RouteId in (select RouteId from UserRoute where TypeId = 25045 and UserId = {UserId}))";
                 }
                 else if (RoleIds.Contains(27))
                 {
-                    reportQuery += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
+                    reportQuery += @$" and ([{tablename}].RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
                 }
             }
             var sqlCmd = new SqlCommand(reportQuery, con)
