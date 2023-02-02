@@ -58,13 +58,26 @@ namespace TMS.API.Controllers
             }
             patch.ApplyTo(entity);
             SetAuditInfo(entity);
-            if ((int)entity.GetPropValue(IdField) <= 0)
+            await db.SaveChangesAsync();
+            if (entity.ParentId != null)
             {
-                db.Add(entity);
+                var parentEntity = await db.MasterData.FirstOrDefaultAsync(x => x.Id == entity.ParentId);
+                var pathParent = parentEntity.Path;
+                entity.Path = @$"\{pathParent}\{entity.ParentId}\".Replace("/", @"\").Replace(@"\\", @"\");
+            }
+            else
+            {
+                entity.Path = null;
+            }
+            SetLevel(entity);
+            if (entity.InverseParent.Any())
+            {
+                entity.InverseParent.ForEach(x =>
+                {
+                    x.Path = @$"\{entity.Path}\{x.ParentId}\".Replace("/", @"\").Replace(@"\\", @"\");
+                });
             }
             await db.SaveChangesAsync();
-            await db.Entry(entity).ReloadAsync();
-            await UpdateTreeNodeAsync(entity, null);
             return entity;
         }
 
