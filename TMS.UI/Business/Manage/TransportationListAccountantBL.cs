@@ -846,6 +846,24 @@ namespace TMS.UI.Business.Manage
             revenue.Id = 0;
         }
 
+        public async Task ExportTransportationAndRevenue()
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+            if (gridView is null)
+            {
+                return;
+            }
+            var listViewItems = gridView.SelectedIds.ToList();
+            if (listViewItems.Count <= 0)
+            {
+                Toast.Warning("Bạn chưa chọn dữ liệu");
+                return;
+            }
+            var path = await new Client(nameof(Transportation)).PostAsync<string>(listViewItems, "ExportTransportationAndRevenue");
+            Client.Download($"/excel/Download/{path}");
+            Toast.Success("Xuất file thành công");
+        }
+
         public PatchUpdate GetPatchEntity(Transportation transportation)
         {
             var details = new List<PatchUpdateDetail>();

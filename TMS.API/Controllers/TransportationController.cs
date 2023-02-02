@@ -19,6 +19,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TMS.API.Models;
@@ -2105,6 +2106,306 @@ namespace TMS.API.Controllers
                 await db.SaveChangesAsync();
                 await _taskService.NotifyAsync(tasks);
             }
+        }
+
+        [HttpPost("api/Transportation/ExportTransportationAndRevenue")]
+        public async Task<string> ExportTransportationAndRevenue([FromBody] List<int> tranIds)
+        {
+            var trans = await db.Transportation.Where(x => tranIds.Contains(x.Id)).ToListAsync();
+            Workbook workbook = new Workbook();
+            Worksheet worksheet = workbook.Worksheets[0];
+            worksheet.Cells["A1"].PutValue($"STT");
+            SetBackgroundColor(workbook, "A1");
+            SetBorder(workbook, "A2");
+            worksheet.Cells.Merge(0, 0, 2, 1);
+            worksheet.Cells["B1"].PutValue($"Khóa hệ thống");
+            SetBackgroundColor(workbook, "B1");
+            SetBorder(workbook, "B2");
+            worksheet.Cells["C1"].PutValue($"Tháng");
+            worksheet.Cells.Merge(0, 1, 2, 1);
+            SetBackgroundColor(workbook, "C1");
+            SetBorder(workbook, "C2");
+            worksheet.Cells["D1"].PutValue($"Năm");
+            worksheet.Cells.Merge(0, 2, 2, 1);
+            SetBackgroundColor(workbook, "D1");
+            SetBorder(workbook, "D2");
+            worksheet.Cells["E1"].PutValue($"List xuất");
+            worksheet.Cells.Merge(0, 3, 2, 1);
+            SetBackgroundColor(workbook, "E1");
+            SetBorder(workbook, "E2");
+            worksheet.Cells["F1"].PutValue($"Tuyến vận chuyển");
+            worksheet.Cells.Merge(0, 4, 2, 1);
+            SetBackgroundColor(workbook, "F1");
+            SetBorder(workbook, "F2");
+            worksheet.Cells["G1"].PutValue($"SOC");
+            worksheet.Cells.Merge(0, 5, 2, 1);
+            SetBackgroundColor(workbook, "G1");
+            SetBorder(workbook, "G2");
+            worksheet.Cells["H1"].PutValue($"Tên tàu");
+            worksheet.Cells.Merge(0, 6, 2, 1);
+            SetBackgroundColor(workbook, "H1");
+            SetBorder(workbook, "H2");
+            worksheet.Cells["I1"].PutValue($"Số chuyến");
+            worksheet.Cells.Merge(0, 7, 2, 1);
+            SetBackgroundColor(workbook, "I1");
+            SetBorder(workbook, "I2");
+            worksheet.Cells["J1"].PutValue($"Ngày đóng hàng");
+            worksheet.Cells.Merge(0, 8, 2, 1);
+            SetBorder(workbook, "J2");
+            SetBackgroundColor(workbook, "J1");
+            worksheet.Cells["K1"].PutValue($"Ngày tàu chạy");
+            worksheet.Cells.Merge(0, 9, 2, 1);
+            SetBackgroundColor(workbook, "K1");
+            SetBorder(workbook, "K2");
+            worksheet.Cells["L1"].PutValue($"Loại container");
+            worksheet.Cells.Merge(0, 10, 2, 1);
+            SetBackgroundColor(workbook, "L1");
+            SetBorder(workbook, "L2");
+            worksheet.Cells["M1"].PutValue($"Số cont");
+            worksheet.Cells.Merge(0, 11, 2, 1);
+            SetBackgroundColor(workbook, "M1");
+            SetBorder(workbook, "M2");
+            worksheet.Cells["N1"].PutValue($"Số seal");
+            worksheet.Cells.Merge(0, 12, 2, 1);
+            SetBackgroundColor(workbook, "N1");
+            SetBorder(workbook, "N2");
+            worksheet.Cells["O1"].PutValue($"Chủ hàng");
+            worksheet.Cells.Merge(0, 13, 2, 1);
+            SetBackgroundColor(workbook, "O1");
+            SetBorder(workbook, "O2");
+            worksheet.Cells["P1"].PutValue($"Nhân viên bán hàng");
+            worksheet.Cells.Merge(0, 14, 2, 1);
+            SetBackgroundColor(workbook, "P1");
+            SetBorder(workbook, "P2");
+            worksheet.Cells["Q1"].PutValue($"Vật tư hàng hóa");
+            worksheet.Cells.Merge(0, 15, 2, 1);
+            SetBackgroundColor(workbook, "Q1");
+            SetBorder(workbook, "Q2");
+            worksheet.Cells["R1"].PutValue($"Cont 20");
+            worksheet.Cells.Merge(0, 16, 2, 1);
+            SetBackgroundColor(workbook, "R1");
+            SetBorder(workbook, "R2");
+            worksheet.Cells["S1"].PutValue($"Cont 40");
+            worksheet.Cells.Merge(0, 17, 2, 1);
+            SetBackgroundColor(workbook, "S1");
+            SetBorder(workbook, "S2");
+            worksheet.Cells["T1"].PutValue($"Trọng lượng");
+            worksheet.Cells.Merge(0, 18, 2, 1);
+            SetBackgroundColor(workbook, "T1");
+            SetBorder(workbook, "T2");
+            worksheet.Cells["U1"].PutValue($"Địa điểm nhận hàng");
+            worksheet.Cells.Merge(0, 19, 2, 1);
+            SetBackgroundColor(workbook, "U1");
+            SetBorder(workbook, "U2");
+            worksheet.Cells["V1"].PutValue($"Phát sinh đóng hàng");
+            worksheet.Cells.Merge(0, 20, 2, 1);
+            SetBackgroundColor(workbook, "V1");
+            SetBorder(workbook, "V2");
+            worksheet.Cells["W1"].PutValue($"Phí bảo hiểm");
+            worksheet.Cells.Merge(0, 21, 2, 1);
+            SetBackgroundColor(workbook, "W1");
+            SetBorder(workbook, "W2");
+            worksheet.Cells["X1"].PutValue($"Ngày tàu cập");
+            worksheet.Cells.Merge(0, 22, 2, 1);
+            SetBackgroundColor(workbook, "X1");
+            SetBorder(workbook, "X2");
+            worksheet.Cells["Y1"].PutValue($"Ngày trả hàng");
+            worksheet.Cells.Merge(0, 23, 2, 1);
+            SetBackgroundColor(workbook, "Y1");
+            SetBorder(workbook, "Y2");
+            worksheet.Cells["Z1"].PutValue($"Địa điểm trả hàng");
+            worksheet.Cells.Merge(0, 24, 2, 1);
+            SetBackgroundColor(workbook, "Z1");
+            SetBorder(workbook, "Z2");
+            worksheet.Cells["AA1"].PutValue($"Phát sinh trả hàng");
+            worksheet.Cells.Merge(0, 25, 2, 1);
+            SetBackgroundColor(workbook, "AA1");
+            SetBorder(workbook, "AA2");
+            worksheet.Cells["AB1"].PutValue($"Khóa khai thác");
+            worksheet.Cells.Merge(0, 26, 2, 1);
+            SetBackgroundColor(workbook, "AB1");
+            SetBorder(workbook, "AB2");
+            worksheet.Cells["AC1"].PutValue($"Khóa kế toán");
+            worksheet.Cells.Merge(0, 27, 2, 1);
+            SetBackgroundColor(workbook, "AC1");
+            SetBorder(workbook, "AC2");
+            worksheet.Cells["AD1"].PutValue($"Số bảng kê");
+            worksheet.Cells.Merge(0, 28, 2, 1);
+            SetBackgroundColor(workbook, "AD1");
+            SetBorder(workbook, "AD2");
+            worksheet.Cells["AE1"].PutValue($"Ngày bảng kê");
+            worksheet.Cells.Merge(0, 29, 2, 1);
+            SetBackgroundColor(workbook, "AE1");
+            SetBorder(workbook, "AE2");
+            worksheet.Cells["AF1"].PutValue($"Số hóa đơn");
+            worksheet.Cells.Merge(0, 30, 2, 1);
+            SetBackgroundColor(workbook, "AF1");
+            SetBorder(workbook, "AF2");
+            worksheet.Cells["AG1"].PutValue($"Ngày hóa đơn");
+            worksheet.Cells.Merge(0, 31, 2, 1);
+            SetBackgroundColor(workbook, "AG1");
+            SetBorder(workbook, "AG2");
+            worksheet.Cells["AH1"].PutValue($"% GTGT");
+            worksheet.Cells.Merge(0, 32, 2, 1);
+            SetBackgroundColor(workbook, "AH1");
+            SetBorder(workbook, "AH2");
+            worksheet.Cells["AI1"].PutValue($"Đơn giá (chưa VAT)");
+            worksheet.Cells.Merge(0, 33, 2, 1);
+            SetBackgroundColor(workbook, "AI1");
+            SetBorder(workbook, "AI2");
+            worksheet.Cells["AJ1"].PutValue($"Đơn giá (có VAT)");
+            worksheet.Cells.Merge(0, 34, 2, 1);
+            SetBackgroundColor(workbook, "AJ1");
+            SetBorder(workbook, "AJ2");
+            worksheet.Cells["AK1"].PutValue($"Thu khác");
+            worksheet.Cells.Merge(0, 35, 2, 1);
+            SetBackgroundColor(workbook, "AK1");
+            SetBorder(workbook, "AK2");
+            worksheet.Cells["AL1"].PutValue($"Thu chi hộ");
+            worksheet.Cells.Merge(0, 36, 2, 1);
+            SetBackgroundColor(workbook, "AL1");
+            SetBorder(workbook, "AL2");
+            worksheet.Cells["AM1"].PutValue($"Ghi chú doanh thu");
+            worksheet.Cells.Merge(0, 37, 2, 1);
+            SetBackgroundColor(workbook, "AM1");
+            SetBorder(workbook, "AM2");
+            worksheet.Cells["AN1"].PutValue($"Giá trị (chưa VAT)");
+            worksheet.Cells.Merge(0, 38, 2, 1);
+            SetBackgroundColor(workbook, "AN1");
+            SetBorder(workbook, "AN2");
+            worksheet.Cells["AO1"].PutValue($"Thuế GTGT");
+            worksheet.Cells.Merge(0, 39, 2, 1);
+            SetBackgroundColor(workbook, "AO1");
+            SetBorder(workbook, "AO2");
+            worksheet.Cells["AP1"].PutValue($"Tổng giá trị");
+            worksheet.Cells.Merge(0, 40, 2, 1);
+            SetBackgroundColor(workbook, "AP1");
+            SetBorder(workbook, "AP2");
+            worksheet.Cells["AQ1"].PutValue($"Đơn vị xuất hóa đơn");
+            worksheet.Cells.Merge(0, 41, 2, 1);
+            SetBackgroundColor(workbook, "AQ1");
+            SetBorder(workbook, "AQ2");
+            worksheet.Cells["AR1"].PutValue($"Ghi chú");
+            worksheet.Cells.Merge(0, 42, 2, 1);
+            SetBackgroundColor(workbook, "AR1");
+            SetBorder(workbook, "AR2");
+            worksheet.Cells["AS1"].PutValue($"Thanh toán");
+            worksheet.Cells.Merge(0, 43, 2, 1);
+            SetBackgroundColor(workbook, "AS1");
+            SetBorder(workbook, "AS2");
+            worksheet.Cells.Merge(0, 44, 2, 1);
+            var ids = trans.Select(x => x.Id).ToList();
+            var sql = @$"select t.Id,
+            t.IsLocked,
+            replace(t.MonthText, '%2F', '/') as MonthText,
+            t.YearText,
+            v.Name as ExportList,
+            r.Name as Route,
+            v2.Name as Soc,
+            s.Name as Ship,
+            t.Trip,
+            t.ClosingDate,
+            t.StartShip,
+            m.Description as ContainerType,
+            t.ContainerNo,
+            t.SealNo,
+            v3.Name as Boss,
+            u.FullName as [User],
+            m2.Description as Commodity,
+            t.Cont20,
+            t.Cont40,
+            t.Weight,
+            l.Description as Received,
+            t.FreeText2,
+            t.InsuranceFee,
+            t.ShipDate,
+            t.ReturnDate,
+            l2.Description as [Return],
+            t.FreeText3,
+            t.IsKt,
+            t.IsSubmit,
+            [dbo].Get_Revenue(t.Id, 'LotNo') as LotNo,
+            [dbo].Get_Revenue(t.Id, 'LotDate') as LotDate,
+            [dbo].Get_Revenue(t.Id, 'InvoinceNo') as InvoinceNo,
+            [dbo].Get_Revenue(t.Id, 'InvoinceDate') as InvoinceDate,
+            [dbo].Get_Revenue(t.Id, 'Vat') as Vat,
+            t.UnitPriceBeforeTax,
+            t.UnitPriceAfterTax,
+            t.ReceivedPrice,
+            t.CollectOnBehaftPrice,
+            [dbo].Get_Revenue(t.Id, 'NotePayment') as NotePayment,
+            t.TotalPriceBeforTax,
+            t.VatPrice,
+            t.TotalPrice,
+            [dbo].Get_Revenue(t.Id, 'VendorVatId') as VendorVat,
+            [dbo].Get_Revenue(t.Id, 'Note') as Note,
+            t.IsPayment
+            from Transportation t 
+            left join Vendor v on t.ExportListId = v.Id
+            left join Route r on t.RouteId = r.Id
+            left join Vendor v2 on t.SocId = v2.Id
+            left join Ship s on t.ShipId = s.Id
+            left join MasterData m on t.ContainerTypeId = m.Id
+            left join Vendor v3 on t.BossId = v3.Id
+            left join [User] u on t.UserId = u.Id
+            left join MasterData m2 on t.CommodityId = m2.Id
+            left join Location l on t.ReceivedId = l.Id
+            left join Location l2 on t.ReturnId = l2.Id
+            where t.Id in ({ids.Combine()})";
+            var data = await ConverSqlToDataSet(sql);
+            var start = 3;
+            foreach (var item in data[0])
+            {
+                worksheet.Cells["A" + start].PutValue(start - 2);
+                worksheet.Cells["B" + start].PutValue(item["IsLocked"].ToString().Contains("False") ? "Không" : "Có");
+                worksheet.Cells["C" + start].PutValue(item["MonthText"] is null ? "" : item["MonthText"].ToString());
+                worksheet.Cells["D" + start].PutValue(item["YearText"] is null ? "" : item["YearText"].ToString());
+                worksheet.Cells["E" + start].PutValue(item["ExportList"] is null ? "" : item["ExportList"].ToString());
+                worksheet.Cells["F" + start].PutValue(item["Route"] is null ? "" : item["Route"].ToString());
+                worksheet.Cells["G" + start].PutValue(item["Soc"] is null ? "" : item["Soc"].ToString());
+                worksheet.Cells["H" + start].PutValue(item["Ship"] is null ? "" : item["Ship"].ToString());
+                worksheet.Cells["I" + start].PutValue(item["Trip"] is null ? "" : item["Trip"].ToString());
+                worksheet.Cells["J" + start].PutValue(item["ClosingDate"] is null ? "" : DateTime.Parse(item["ClosingDate"].ToString()).ToString("dd/MM/yyyy"));
+                worksheet.Cells["K" + start].PutValue(item["StartShip"] is null ? "" : DateTime.Parse(item["StartShip"].ToString()).ToString("dd/MM/yyyy"));
+                worksheet.Cells["L" + start].PutValue(item["ContainerType"] is null ? "" : item["ContainerType"].ToString());
+                worksheet.Cells["M" + start].PutValue(item["ContainerNo"] is null ? "" : item["ContainerNo"].ToString());
+                worksheet.Cells["N" + start].PutValue(item["SealNo"] is null ? "" : item["SealNo"].ToString());
+                worksheet.Cells["O" + start].PutValue(item["Boss"] is null ? "" : item["Boss"].ToString());
+                worksheet.Cells["P" + start].PutValue(item["User"] is null ? "" : item["User"].ToString());
+                worksheet.Cells["Q" + start].PutValue(item["Commodity"] is null ? "" : item["Commodity"].ToString());
+                worksheet.Cells["R" + start].PutValue(item["Cont20"] is null ? "" : item["Cont20"].ToString());
+                worksheet.Cells["S" + start].PutValue(item["Cont40"] is null ? "" : item["Cont40"].ToString());
+                worksheet.Cells["T" + start].PutValue(item["Weight"] is null ? "0" : item["Weight"].ToString());
+                worksheet.Cells["U" + start].PutValue(item["Received"] is null ? "0" : item["Received"].ToString());
+                worksheet.Cells["V" + start].PutValue(item["FreeText2"] is null ? "0" : item["FreeText2"].ToString());
+                worksheet.Cells["W" + start].PutValue(item["InsuranceFee"] is null ? "0" : $"{decimal.Parse(item["InsuranceFee"].ToString()):n0}");
+                worksheet.Cells["X" + start].PutValue(item["ShipDate"] is null ? "" : DateTime.Parse(item["ShipDate"].ToString()).ToString("dd/MM/yyyy"));
+                worksheet.Cells["Y" + start].PutValue(item["ReturnDate"] is null ? "" : DateTime.Parse(item["ReturnDate"].ToString()).ToString("dd/MM/yyyy"));
+                worksheet.Cells["Z" + start].PutValue(item["Return"] is null ? "" : item["Return"].ToString());
+                worksheet.Cells["AA" + start].PutValue(item["FreeText3"] is null ? "" : item["FreeText3"].ToString());
+                worksheet.Cells["AB" + start].PutValue(item["IsKt"].ToString().Contains("False") ? "Không" : "Có");
+                worksheet.Cells["AC" + start].PutValue(item["IsSubmit"].ToString().Contains("False") ? "Không" : "Có");
+                worksheet.Cells["AD" + start].PutValue(item["LotNo"] is null ? "" : item["LotNo"].ToString());
+                worksheet.Cells["AE" + start].PutValue(item["LotDate"] is null ? "" : item["LotDate"].ToString());
+                worksheet.Cells["AF" + start].PutValue(item["InvoinceNo"] is null ? "" : item["InvoinceNo"].ToString());
+                worksheet.Cells["AG" + start].PutValue(item["InvoinceDate"] is null ? "" : item["InvoinceDate"].ToString());
+                worksheet.Cells["AH" + start].PutValue(item["Vat"] is null ? "" : item["Vat"].ToString());
+                worksheet.Cells["AI" + start].PutValue(item["UnitPriceBeforeTax"] is null ? "0" : $"{decimal.Parse(item["UnitPriceBeforeTax"].ToString()):n0}");
+                worksheet.Cells["AJ" + start].PutValue(item["UnitPriceAfterTax"] is null ? "0" : $"{decimal.Parse(item["UnitPriceAfterTax"].ToString()):n0}");
+                worksheet.Cells["AK" + start].PutValue(item["ReceivedPrice"] is null ? "0" : $"{decimal.Parse(item["ReceivedPrice"].ToString()):n0}");
+                worksheet.Cells["AL" + start].PutValue(item["CollectOnBehaftPrice"] is null ? "0" : $"{decimal.Parse(item["CollectOnBehaftPrice"].ToString()):n0}");
+                worksheet.Cells["AM" + start].PutValue(item["NotePayment"] is null ? "" : item["NotePayment"].ToString());
+                worksheet.Cells["AN" + start].PutValue(item["TotalPriceBeforTax"] is null ? "0" : $"{decimal.Parse(item["TotalPriceBeforTax"].ToString()):n0}");
+                worksheet.Cells["AO" + start].PutValue(item["VatPrice"] is null ? "0" : $"{decimal.Parse(item["VatPrice"].ToString()):n0}");
+                worksheet.Cells["AP" + start].PutValue(item["TotalPrice"] is null ? "0" : $"{decimal.Parse(item["TotalPrice"].ToString()):n0}");
+                worksheet.Cells["AQ" + start].PutValue(item["VendorVat"] is null ? "" : item["VendorVat"].ToString());
+                worksheet.Cells["AR" + start].PutValue(item["Note"] is null ? "" : item["Note"].ToString());
+                worksheet.Cells["AS" + start].PutValue(item["IsPayment"].ToString().Contains("False") ? "Không" : "Có");
+                start++;
+            }
+            var url = $"Transportation.xlsx";
+            workbook.Save($"wwwroot\\excel\\Download\\{url}", new OoxmlSaveOptions(SaveFormat.Xlsx));
+            return url;
         }
     }
 }
