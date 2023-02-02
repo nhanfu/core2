@@ -677,6 +677,7 @@ namespace TMS.API.Controllers
 
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add(typeof(T).Name);
+            worksheet.Style.Font.SetFontName("Times New Roman");
             var i = 1;
             foreach (var item in gridPolicy)
             {
@@ -767,6 +768,10 @@ namespace TMS.API.Controllers
                 }
                 k++;
             }
+            worksheet.Row(last).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(last).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(last).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(last).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             var url = $"{component.RefName}{DateTime.Now:ddMMyyyyhhmm}.xlsx";
             worksheet.Columns().AdjustToContents();
             workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");

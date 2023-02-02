@@ -409,6 +409,7 @@ namespace TMS.API.ViewModels
         public decimal? Fee4 { get; set; }
         public decimal? Fee4DB { get; set; }
         public decimal? Fee5 { get; set; }
+        public decimal? Fee6 { get; set; }
         public decimal? Fee5DB { get; set; }
         public decimal? TotalPriceAfterTax { get; set; }
         public decimal? TotalPriceAfterTaxDB { get; set; }

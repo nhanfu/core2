@@ -702,6 +702,10 @@ namespace TMS.API.Controllers
                     ,LandingFee as LandingFee, LandingFeeCheck, LandingFeeUpload
                     ,CollectOnSupPrice as CollectOnSupPrice, CollectOnSupPriceCheck, CollectOnSupPriceUpload
                     ,ClosingPercent as ClosingPercent, ClosingPercentCheck, ClosingPercentUpload
+                    ,Fee1, Fee2, Fee3,Fee4, Fee5, Fee6
+                    ,Fee1Upload, Fee2Upload, Fee3Upload,Fee4Upload, Fee5Upload, Fee6Upload
+                    ,FeeVat1,FeeVat2,FeeVat3
+                    ,FeeVat1Upload,FeeVat1Upload,FeeVat1Upload
                     ,ClosingCombinationUnitPrice as ClosingCombinationUnitPrice, ClosingCombinationUnitPriceCheck, ClosingCombinationUnitPriceUpload
                     from Transportation t
                     left join Vendor b on b.Id = t.BossId
@@ -752,10 +756,34 @@ namespace TMS.API.Controllers
                 worksheet.Cell("K" + start).Style.NumberFormat.Format = "#,##";
                 worksheet.Cell("L" + start).SetValue(item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()));
                 worksheet.Cell("L" + start).Style.NumberFormat.Format = "#,##";
-                worksheet.Cell("O" + start).SetValue(item["CollectOnBehaftInvoinceNoFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()));
+
+                worksheet.Cell("M" + start).SetValue(item["FeeVat1"] is null ? default(decimal) : decimal.Parse(item["FeeVat1"].ToString()));
+                worksheet.Cell("M" + start).Style.NumberFormat.Format = "#,##";
+
+                worksheet.Cell("N" + start).SetValue(item["FeeVat2"] is null ? default(decimal) : decimal.Parse(item["FeeVat2"].ToString()));
+                worksheet.Cell("N" + start).Style.NumberFormat.Format = "#,##";
+
+                worksheet.Cell("O" + start).SetValue(item["FeeVat3"] is null ? default(decimal) : decimal.Parse(item["FeeVat3"].ToString()));
                 worksheet.Cell("O" + start).Style.NumberFormat.Format = "#,##";
-                worksheet.Cell("P" + start).SetValue(item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()));
+
+                worksheet.Cell("P" + start).SetValue(item["Fee1"] is null ? default(decimal) : decimal.Parse(item["Fee1"].ToString()));
                 worksheet.Cell("P" + start).Style.NumberFormat.Format = "#,##";
+
+                worksheet.Cell("Q" + start).SetValue(item["Fee2"] is null ? default(decimal) : decimal.Parse(item["Fee2"].ToString()));
+                worksheet.Cell("Q" + start).Style.NumberFormat.Format = "#,##";
+
+                worksheet.Cell("R" + start).SetValue(item["Fee3"] is null ? default(decimal) : decimal.Parse(item["Fee3"].ToString()));
+                worksheet.Cell("R" + start).Style.NumberFormat.Format = "#,##";
+
+                worksheet.Cell("S" + start).SetValue(item["Fee4"] is null ? default(decimal) : decimal.Parse(item["Fee4"].ToString()));
+                worksheet.Cell("S" + start).Style.NumberFormat.Format = "#,##";
+
+                worksheet.Cell("T" + start).SetValue(item["Fee5"] is null ? default(decimal) : decimal.Parse(item["Fee5"].ToString()));
+                worksheet.Cell("T" + start).Style.NumberFormat.Format = "#,##";
+
+                worksheet.Cell("U" + start).SetValue(item["Fee6"] is null ? default(decimal) : decimal.Parse(item["Fee6"].ToString()));
+                worksheet.Cell("U" + start).Style.NumberFormat.Format = "#,##";
+
                 var closingPercent = item["ClosingPercent"];
                 var closingPercentUpload = item["ClosingPercentUpload"];
                 worksheet.Cell("W" + start).SetValue(closingPercent is null ? default(decimal) : decimal.Parse(closingPercent.ToString()));
@@ -937,6 +965,7 @@ namespace TMS.API.Controllers
                     }
                     var datetimes = worksheet.Cells.Rows[row][1].Value.ToString();
                     var datetime = DateTime.Parse(datetimes);
+                    var per = decimal.Parse(worksheet.Cells.Rows[row][22].Value is null || worksheet.Cells.Rows[row][22].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][22].Value.ToString().Replace("%", "").Replace(",", "").Trim());
                     var entity = new CheckCompineTransportationVM()
                     {
                         No = worksheet.Cells.Rows[row][0].Value.ToString().Trim(),
@@ -960,8 +989,9 @@ namespace TMS.API.Controllers
                         Fee3 = decimal.Parse(worksheet.Cells.Rows[row][17].Value is null || worksheet.Cells.Rows[row][17].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][17].Value.ToString().Replace(",", "").Trim()),
                         Fee4 = decimal.Parse(worksheet.Cells.Rows[row][18].Value is null || worksheet.Cells.Rows[row][18].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][18].Value.ToString().Replace(",", "").Trim()),
                         Fee5 = decimal.Parse(worksheet.Cells.Rows[row][19].Value is null || worksheet.Cells.Rows[row][19].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][19].Value.ToString().Replace(",", "").Trim()),
+                        Fee6 = decimal.Parse(worksheet.Cells.Rows[row][20].Value is null || worksheet.Cells.Rows[row][20].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][20].Value.ToString().Replace(",", "").Trim()),
                         CollectOnSupPrice = decimal.Parse(worksheet.Cells.Rows[row][21].Value is null || worksheet.Cells.Rows[row][21].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][21].Value.ToString().Replace(",", "").Trim()),
-                        ClosingPercentCheck = decimal.Parse(worksheet.Cells.Rows[row][22].Value is null || worksheet.Cells.Rows[row][22].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][22].Value.ToString().Replace("%", "").Replace(",", "").Trim()),
+                        ClosingPercentCheck = per > 0 && per < 10 ? per * 100 : per,
                         TotalPriceAfterTax = decimal.Parse(worksheet.Cells.Rows[row][23].Value is null || worksheet.Cells.Rows[row][23].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][23].Value.ToString().Replace(",", "").Trim())
                     };
                     list.Add(entity);
@@ -1016,10 +1046,32 @@ namespace TMS.API.Controllers
                         tran.LiftFeeCheck = x.LiftFee;
                         tran.LandingFeeCheck = x.LandingFee;
                         tran.CollectOnBehaftInvoinceNoFeeCheck = x.FeeVat1 + x.FeeVat2 + x.FeeVat3;
-                        tran.CollectOnBehaftFeeCheck = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5;
+
+                        tran.FeeVat1 = x.FeeVat1;
+                        tran.FeeVat2 = x.FeeVat2;
+                        tran.FeeVat3 = x.FeeVat3;
+
+                        tran.FeeVat1Upload = x.FeeVat1;
+                        tran.FeeVat2Upload = x.FeeVat2;
+                        tran.FeeVat3Upload = x.FeeVat3;
+
+                        tran.Fee1 = x.Fee1;
+                        tran.Fee2 = x.Fee2;
+                        tran.Fee3 = x.Fee3;
+                        tran.Fee4 = x.Fee4;
+                        tran.Fee5 = x.Fee5;
+                        tran.Fee6 = x.Fee6;
+
+                        tran.Fee1Upload = x.Fee1;
+                        tran.Fee2Upload = x.Fee2;
+                        tran.Fee3Upload = x.Fee3;
+                        tran.Fee4Upload = x.Fee4;
+                        tran.Fee5Upload = x.Fee5;
+                        tran.Fee6Upload = x.Fee6;
+
+                        tran.CollectOnBehaftFeeCheck = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5 + x.Fee6;
                         tran.CollectOnSupPriceCheck = x.CollectOnSupPrice;
                         tran.TotalPriceAfterTaxCheck = x.TotalPriceAfterTax;
-
                         tran.ReceivedCheckUpload = x.Received;
                         tran.ClosingDateUpload = x.ClosingDate;
                         tran.SealCheckUpload = x.SealNo;
@@ -1032,17 +1084,11 @@ namespace TMS.API.Controllers
                         tran.LiftFeeCheckUpload = x.LiftFee;
                         tran.LandingFeeUpload = x.LandingFee;
                         tran.CollectOnBehaftInvoinceNoFeeUpload = x.FeeVat1 + x.FeeVat2 + x.FeeVat3;
-                        tran.CollectOnBehaftFeeUpload = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5;
+                        tran.CollectOnBehaftFeeUpload = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5 + x.Fee6;
                         tran.CollectOnSupPriceUpload = x.CollectOnSupPrice;
                         tran.TotalPriceAfterTaxUpload = x.TotalPriceAfterTax;
-                        if (tran.IsSeftPayment || tran.IsEmptyLift || (x.PickupEmpty != null && x.PickupEmpty.Contains("kết hợp")))
-                        {
-                            tran.LiftFee = 0;
-                        }
-                        if (tran.IsSeftPaymentLand || tran.IsLanding)
-                        {
-                            tran.LandingFee = 0;
-                        }
+                        tran.LiftFee = 0;
+                        tran.LandingFee = 0;
                     }
                     else
                     {
@@ -1062,7 +1108,7 @@ namespace TMS.API.Controllers
                             LiftFeeCheck = x.LiftFee,
                             LandingFeeCheck = x.LandingFee,
                             CollectOnBehaftInvoinceNoFeeCheck = x.FeeVat1 + x.FeeVat2 + x.FeeVat3,
-                            CollectOnBehaftFeeCheck = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5,
+                            CollectOnBehaftFeeCheck = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5 + x.Fee6,
                             CollectOnSupPriceCheck = x.CollectOnSupPrice,
                             TotalPriceAfterTaxCheck = x.TotalPriceAfterTax,
                         };

@@ -282,6 +282,24 @@ namespace TMS.API.Models
         public int? ClosingUser { get; set; }
         public int? ReturnUser { get; set; }
         public int? SaleId { get; set; }
+        public decimal? FeeVat1 { get; set; }
+        public decimal? FeeVat2 { get; set; }
+        public decimal? FeeVat3 { get; set; }
+        public decimal? Fee1 { get; set; }
+        public decimal? Fee2 { get; set; }
+        public decimal? Fee3 { get; set; }
+        public decimal? Fee4 { get; set; }
+        public decimal? Fee5 { get; set; }
+        public decimal? Fee6 { get; set; }
+        public decimal? Fee1Upload { get; set; }
+        public decimal? Fee2Upload { get; set; }
+        public decimal? Fee3Upload { get; set; }
+        public decimal? Fee4Upload { get; set; }
+        public decimal? Fee5Upload { get; set; }
+        public decimal? Fee6Upload { get; set; }
+        public decimal? FeeVat1Upload { get; set; }
+        public decimal? FeeVat2Upload { get; set; }
+        public decimal? FeeVat3Upload { get; set; }
 
         public virtual ICollection<Expense> Expense { get; set; }
         public virtual ICollection<Revenue> Revenue { get; set; }

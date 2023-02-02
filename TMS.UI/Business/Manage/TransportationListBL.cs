@@ -256,8 +256,12 @@ namespace TMS.UI.Business.Manage
             }
             gridView.BodyContextMenuShow += () =>
             {
-                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fas fa-pen", Text = "Cập nhật giá", Click = UpdateQuotation });
-                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
+                var menus = new List<ContextMenuItem>();
+                menus.Clear();
+                menus.Add(new ContextMenuItem { Icon = "fas fa-pen", Text = "Cập nhật giá", Click = UpdateQuotation });
+                menus.Add(new ContextMenuItem { Icon = "fal fa-binoculars", Text = "Xem booking", Click = ViewBooking });
+                menus.Add(new ContextMenuItem { Icon = Icon = "fal fa-download", Text = "Tải đính kèm", Click = DownLoadPackingList });
+                menus.Add(new ContextMenuItem
                 {
                     Icon = "fas fa-pen",
                     Text = "Cập nhật phí",
@@ -266,10 +270,9 @@ namespace TMS.UI.Business.Manage
                         new ContextMenuItem { Text = "Cập cước tàu", Click = UpdateShipQuotation },
                         new ContextMenuItem { Text = "Cập phí nâng", Click = UpdateLiftQuotation },
                         new ContextMenuItem { Text = "Cập phí hạ", Click = UpdateLadingQuotation },
-                        new ContextMenuItem { Text = "Xem booking", Click = ViewBooking },
-                        new ContextMenuItem { Text = "Tải đính kèm", Click = DownLoadPackingList },
                     }
                 });
+                ContextMenu.Instance.MenuItems = menus;
             };
             var listViewItems = gridView.RowData.Data.Cast<Transportation>().ToList();
             listViewItems.ForEach(x =>

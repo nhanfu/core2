@@ -390,7 +390,7 @@ namespace TMS.UI.Business.Manage
                 for (int i = 0; i < item.TotalContainerRemain; i++)
                 {
                     var transportation = new Transportation();
-                    transportation.CopyPropFrom(item);
+                    transportation.CopyPropFrom(item, nameof(Transportation.Contact2Id));
                     transportation.Id = 0;
                     transportation.Cont20 = cont20;
                     transportation.Cont40 = cont40;

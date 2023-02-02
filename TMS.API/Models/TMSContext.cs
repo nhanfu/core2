@@ -1337,6 +1337,42 @@ namespace TMS.API.Models
                     .HasColumnType("decimal(20, 5)")
                     .HasDefaultValueSql("((0))");
 
+                entity.Property(e => e.Fee1).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Fee1Upload).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Fee2).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Fee2Upload).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Fee3).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Fee3Upload).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Fee4).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Fee4Upload).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Fee5).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Fee5Upload).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Fee6).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Fee6Upload).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.FeeVat1).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.FeeVat1Upload).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.FeeVat2).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.FeeVat2Upload).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.FeeVat3).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.FeeVat3Upload).HasColumnType("decimal(20, 5)");
+
                 entity.Property(e => e.FreeText).HasMaxLength(250);
 
                 entity.Property(e => e.FreeText1).HasMaxLength(250);
