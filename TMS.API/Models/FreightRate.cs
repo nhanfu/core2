@@ -19,6 +19,7 @@ namespace TMS.API.Models
         public decimal? UnitPriceNoVatTon { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public string GCContainerType { get; set; }
         public string Notes { get; set; }
         public int? RouteId { get; set; }
         public bool IsClosing { get; set; }

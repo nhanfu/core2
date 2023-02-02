@@ -567,6 +567,8 @@ namespace TMS.API.Models
 
             modelBuilder.Entity<FreightRate>(entity =>
             {
+                entity.Property(e => e.GCContainerType).HasMaxLength(250);
+
                 entity.Property(e => e.InsuranceFee)
                     .HasColumnType("decimal(20, 5)")
                     .HasDefaultValueSql("((0))");
