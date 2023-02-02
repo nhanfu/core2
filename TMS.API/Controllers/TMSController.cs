@@ -646,7 +646,7 @@ namespace TMS.API.Controllers
                                   {joins.Combine(" ")}
                                   where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
             }
-            if (!sql.IsNullOrWhiteSpace())
+            if (!orderby.IsNullOrWhiteSpace())
             {
                 reportQuery += $" order by {orderby}";
             }
