@@ -1087,8 +1087,6 @@ namespace TMS.API.Controllers
                         tran.CollectOnBehaftFeeUpload = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5 + x.Fee6;
                         tran.CollectOnSupPriceUpload = x.CollectOnSupPrice;
                         tran.TotalPriceAfterTaxUpload = x.TotalPriceAfterTax;
-                        tran.LiftFee = 0;
-                        tran.LandingFee = 0;
                     }
                     else
                     {
