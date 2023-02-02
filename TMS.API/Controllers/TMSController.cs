@@ -1,5 +1,5 @@
-﻿using Core.Enums;
-using Core.ViewModels;
+﻿using ClosedXML.Excel;
+using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
@@ -13,6 +13,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -29,11 +31,6 @@ using FileIO = System.IO.File;
 using HttpMethod = Core.Enums.HttpMethod;
 using ResponseApproveEnum = Core.Enums.ResponseApproveEnum;
 using SystemHttpMethod = System.Net.Http.HttpMethod;
-using Microsoft.AspNetCore.Hosting;
-using Aspose.Cells;
-using System.Drawing;
-using System.Data.SqlClient;
-using System.Data;
 
 namespace TMS.API.Controllers
 {
@@ -677,92 +674,102 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException(e.Message);
             }
-            Workbook workbook = new Workbook();
-            Worksheet worksheet = workbook.Worksheets[0];
-            worksheet.Name = component.RefName;
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add(typeof(T).Name);
             var i = 1;
-            worksheet.Cells.Rows[0][0].PutValue("STT");
-            Style style = worksheet.Cells.Rows[0][0].GetStyle();
-            style.Pattern = BackgroundType.Solid;
-            style.ForegroundColor = Color.LightGreen;
-            style.Font.Name = "Times New Roman";
-            style.SetBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.Black);
-            style.SetBorder(BorderType.LeftBorder, CellBorderType.Thin, Color.Black);
-            style.SetBorder(BorderType.RightBorder, CellBorderType.Thin, Color.Black);
-            style.SetBorder(BorderType.TopBorder, CellBorderType.Thin, Color.Black);
-            worksheet.Cells.Rows[0][0].SetStyle(style);
             foreach (var item in gridPolicy)
             {
-                worksheet.Cells.Rows[0][i].PutValue(item.ShortDesc);
-                worksheet.Cells.Rows[0][i].SetStyle(style);
+                worksheet.Cell(1, i).SetValue(item.ShortDesc);
+                worksheet.Cell(1, i).Style.Font.Bold = true;
                 i++;
             }
-            var x = 1;
+            worksheet.Row(1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Row(1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            var x = 2;
             foreach (var item in tables[0])
             {
                 var y = 1;
-                worksheet.Cells.Rows[x][0].PutValue(x);
-                Style styletd = worksheet.Cells.Rows[x][0].GetStyle();
-                styletd.SetBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.Black);
-                styletd.SetBorder(BorderType.LeftBorder, CellBorderType.Thin, Color.Black);
-                styletd.Font.Name = "Times New Roman";
-                styletd.SetBorder(BorderType.RightBorder, CellBorderType.Thin, Color.Black);
-                styletd.SetBorder(BorderType.TopBorder, CellBorderType.Thin, Color.Black);
-                worksheet.Cells.Rows[x][0].SetStyle(styletd);
+                worksheet.Cell(x, 1).SetValue(x);
                 foreach (var itemDetail in gridPolicy)
                 {
                     var vl = item.GetValueOrDefault(itemDetail.FieldName);
-                    worksheet.Cells.Rows[x][y].SetStyle(styletd);
                     switch (itemDetail.ComponentType)
                     {
                         case "Input":
-                            vl = vl is null ? null : vl.ToString().DecodeSpecialChar();
-                            worksheet.Cells.Rows[x][y].PutValue(vl);
+                            var vl1 = vl is null ? null : vl.ToString().DecodeSpecialChar();
+                            worksheet.Cell(x, y).SetValue(vl1);
                             break;
                         case "Textarea":
-                            vl = vl is null ? null : vl.ToString().DecodeSpecialChar();
-                            worksheet.Cells.Rows[x][y].PutValue(vl);
+                            var vl2 = vl is null ? null : vl.ToString().DecodeSpecialChar();
+                            worksheet.Cell(x, y).SetValue(vl2);
                             break;
                         case "Label":
-                            vl = vl is null ? null : vl.ToString().DecodeSpecialChar();
-                            worksheet.Cells.Rows[x][y].PutValue(vl);
+                            var vl3 = vl is null ? null : vl.ToString().DecodeSpecialChar();
+                            worksheet.Cell(x, y).SetValue(vl3);
                             break;
                         case "Datepicker":
-                            worksheet.Cells.Rows[x][y].PutValue(vl);
-                            Style datepicker = worksheet.Cells.Rows[x][y].GetStyle();
-                            datepicker.Custom = "dd/MM/yyyy";
-                            worksheet.Cells.Rows[x][y].SetStyle(datepicker);
+                            worksheet.Cell(x, y).SetValue((DateTime?)vl);
                             break;
                         case "Number":
-                            worksheet.Cells.Rows[x][y].PutValue(vl);
-                            Style number = worksheet.Cells.Rows[x][y].GetStyle();
-                            number.Number = 3;
-                            worksheet.Cells.Rows[x][y].SetStyle(number);
+                            if (vl is int)
+                            {
+                                worksheet.Cell(x, y).SetValue(vl is null ? default(int) : (int)vl);
+                            }
+                            else
+                            {
+                                worksheet.Cell(x, y).SetValue(vl is null ? default(decimal) : (decimal)vl);
+                                worksheet.Cell(x, y).Style.NumberFormat.Format = "#,##";
+                            }
                             break;
                         case "Dropdown":
                             var objField = itemDetail.FieldName.Substring(0, itemDetail.FieldName.Length - 2);
                             vl = item.GetValueOrDefault(objField);
-                            vl = vl is null ? null : vl.ToString().DecodeSpecialChar();
-                            worksheet.Cells.Rows[x][y].PutValue(vl);
+                            var vl4 = vl is null ? null : vl.ToString().DecodeSpecialChar();
+                            worksheet.Cell(x, y).SetValue(vl4);
                             break;
                         case "Checkbox":
-                            worksheet.Cells.Rows[x][y].PutValue(vl.ToString() == "False" ? null : 1);
+                            worksheet.Cell(x, y).SetValue(vl.ToString() == "False" ? default(int) : 1);
                             break;
                         default:
                             break;
                     }
                     y++;
                 }
+                worksheet.Row(x).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                worksheet.Row(x).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                worksheet.Row(x).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                worksheet.Row(x).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                 x++;
             }
-            var url = $"{component.RefName}{DateTime.Now:ddMMyyyyhhmm}.xlsx";
-            var j = 1;
+            var k = 1;
+            var last = tables[0].Count + 2;
             foreach (var item in gridPolicy)
             {
-                worksheet.AutoFitColumn(j);
-                j++;
+                if (item.ComponentType == "Number")
+                {
+                    var value = tables[0].Select(x => x[item.FieldName]).Where(x => x != null).Sum(x =>
+                    {
+                        if (x is int)
+                        {
+                            return x is null ? default(int) : (int)x;
+                        }
+                        else
+                        {
+                            return x is null ? default(decimal) : (decimal)x;
+                        }
+                    });
+                    worksheet.Cell(last, k).SetValue(value);
+                    worksheet.Cell(last, k).Style.Font.Bold = true;
+                    worksheet.Cell(last, k).Style.NumberFormat.Format = "#,##";
+                }
+                k++;
             }
-            workbook.Save($"wwwroot\\excel\\Download\\{url}", new OoxmlSaveOptions(SaveFormat.Xlsx));
+            var url = $"{component.RefName}{DateTime.Now:ddMMyyyyhhmm}.xlsx";
+            worksheet.Columns().AdjustToContents();
+            workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
             return url;
         }
     }
