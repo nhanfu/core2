@@ -82,6 +82,11 @@ namespace TMS.UI.Business.Setting
                 });
         }
 
+        public async Task UpdatePath()
+        {
+            await new Client(nameof(MasterData)).PostAsync<bool>(null, $"UpdatePath");
+        }
+
         public async Task EditMasterDataParent(MasterData parent)
         {
             var masterData = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Id eq {parent.ParentId}");

@@ -30,6 +30,7 @@ namespace TMS.API.Models
         public int? Click { get; set; }
         public int? Length { get; set; }
         public string Additional2 { get; set; }
+        public int? ActId { get; set; }
 
         public virtual MasterData Parent { get; set; }
         public virtual ICollection<MasterData> InverseParent { get; set; }

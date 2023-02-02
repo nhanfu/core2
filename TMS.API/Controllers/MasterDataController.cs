@@ -64,28 +64,8 @@ namespace TMS.API.Controllers
             }
             await db.SaveChangesAsync();
             await db.Entry(entity).ReloadAsync();
-            RealTimeUpdate(entity);
+            await UpdateTreeNodeAsync(entity, null);
             return entity;
-        }
-
-        private void RealTimeUpdate(MasterData entity)
-        {
-            var thead = new Thread(async () =>
-            {
-                try
-                {
-                    await _taskService.SendMessageAllUser(new WebSocketResponse<MasterData>
-                    {
-                        EntityId = _entitySvc.GetEntity(typeof(MasterData).Name).Id,
-                        Data = entity
-                    });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("RealtimeUpdate error at {0}: {1} {2}", DateTimeOffset.Now, ex.Message, ex.StackTrace);
-                }
-            });
-            thead.Start();
         }
 
         [AllowAnonymous]
@@ -145,6 +125,17 @@ namespace TMS.API.Controllers
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
+        }
+
+        [HttpPost("api/MasterData/UpdatePath")]
+        public async Task<IActionResult> UpdatePath()
+        {
+            var ms = await db.MasterData.OrderByDescending(x=>x.Id).ToListAsync();
+            foreach (var item in ms)
+            {
+                await UpdateTreeNodeAsync(item);
+            }
+            return Ok(true);
         }
 
         [HttpPost("api/MasterData/ImportExpenseType")]

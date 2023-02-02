@@ -73,15 +73,6 @@ namespace Core.Components
             };
             node.AddChild(rowSection);
             rowSection.Element.AddClass("tree-node");
-            if (count > 0)
-            {
-                Html.Take(rowSection.Element).I.ClassName("fas fa-folder mr-2").End.Render();
-            }
-            else
-            {
-                Html.Take(rowSection.Element).Span.Text("- ").End.Render();
-            }
-
             Html.Instance.Div.ClassName("d-inline-flex-fs").Table.ClassName("table").TRow.Render();
             var tr = Html.Context;
             var width = 95 / headers.Count();
