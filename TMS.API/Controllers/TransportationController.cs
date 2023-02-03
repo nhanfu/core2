@@ -137,7 +137,7 @@ namespace TMS.API.Controllers
 
             var expenseTypes = await db.MasterData.Where(x => x.ParentId == 7577 && (x.Name.Contains("Bảo hiểm") || x.Name.Contains("BH SOC"))).ToListAsync();
             var expenseTypeIds = expenseTypes.Select(x => x.Id.ToString()).ToList();
-            var expense = await db.Expense.Where(x => x.TransportationId == entity.Id && expenseTypeIds.Contains(x.ExpenseTypeId.ToString()) && x.RequestChangeId == null && x.IsPurchasedInsurance && x.Active).ToListAsync();
+            var expense = await db.Expense.Where(x => x.TransportationId == entity.Id && expenseTypeIds.Contains(x.ExpenseTypeId.ToString()) && x.RequestChangeId == null && x.Active).ToListAsync();
             if (expense != null)
             {
                 var oldEntity = await db.Transportation.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
@@ -161,29 +161,54 @@ namespace TMS.API.Controllers
                 (oldEntity.StartShip != entity.StartShip) ||
                 (oldEntity.ClosingDate != entity.ClosingDate))
                 {
-                    expense.ForEach(x =>
+                    var expenseNoPurchased = expense.Where(x => x.IsPurchasedInsurance == false).ToList();
+                    var expensePurchased = expense.Where(x => x.IsPurchasedInsurance).ToList();
+                    if (expensePurchased != null)
                     {
-                        var newExpense = new Expense();
-                        newExpense.CopyPropFrom(x);
-                        newExpense.Id = 0;
-                        newExpense.StatusId = 1;
-                        newExpense.RequestChangeId = x.Id;
-                        db.Add(newExpense);
-                        x.ShipId = entity.ShipId;
-                        x.SaleId = entity.SaleId;
-                        x.Trip = entity.Trip;
-                        x.SealNo = entity.SealNo;
-                        x.ContainerNo = entity.ContainerNo;
-                        x.Notes = entity.Notes;
-                        if (x.JourneyId == 12114 || x.JourneyId == 16001)
+                        expensePurchased.ForEach(x =>
                         {
-                            x.StartShip = entity.ClosingDate;
-                        }
-                        else
+                            var newExpense = new Expense();
+                            newExpense.CopyPropFrom(x);
+                            newExpense.Id = 0;
+                            newExpense.StatusId = 1;
+                            newExpense.RequestChangeId = x.Id;
+                            db.Add(newExpense);
+                            x.ShipId = entity.ShipId;
+                            x.SaleId = entity.SaleId;
+                            x.Trip = entity.Trip;
+                            x.SealNo = entity.SealNo;
+                            x.ContainerNo = entity.ContainerNo;
+                            x.Notes = entity.Notes;
+                            if (x.JourneyId == 12114 || x.JourneyId == 16001)
+                            {
+                                x.StartShip = entity.ClosingDate;
+                            }
+                            else
+                            {
+                                x.StartShip = entity.StartShip;
+                            }
+                        });
+                    }
+                    if(expenseNoPurchased != null)
+                    {
+                        expenseNoPurchased.ForEach(x =>
                         {
-                            x.StartShip = entity.StartShip;
-                        }
-                    });
+                            x.ShipId = entity.ShipId;
+                            x.SaleId = entity.SaleId;
+                            x.Trip = entity.Trip;
+                            x.SealNo = entity.SealNo;
+                            x.ContainerNo = entity.ContainerNo;
+                            x.Notes = entity.Notes;
+                            if (x.JourneyId == 12114 || x.JourneyId == 16001)
+                            {
+                                x.StartShip = entity.ClosingDate;
+                            }
+                            else
+                            {
+                                x.StartShip = entity.StartShip;
+                            }
+                        });
+                    }
                 }
             }
             if (disableTrigger)
