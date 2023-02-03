@@ -610,10 +610,11 @@ namespace TMS.API.Controllers
                     {
                         x.IsExport = current.IsExport;
                         x.Order = current.Order;
+                        x.OrderExport = current.OrderExport;
                     }
                 });
             }
-            gridPolicy = gridPolicy.Where(x => x.ComponentType != "Button" && !x.ShortDesc.IsNullOrWhiteSpace() && ((custom && x.IsExport) || !custom)).OrderBy(x => x.Order).ToList().ToList();
+            gridPolicy = gridPolicy.Where(x => x.ComponentType != "Button" && !x.ShortDesc.IsNullOrWhiteSpace() && ((custom && x.IsExport) || !custom)).OrderBy(x => custom ? x.OrderExport : x.Order).ToList().ToList();
             var reportQuery = string.Empty;
             var pros = typeof(T).GetProperties().Where(x => x.CanRead && x.PropertyType.IsSimple()).Select(x => x.Name).ToList();
             var selects = gridPolicy.Where(x => x.ComponentType == "Dropdown" && pros.Contains(x.FieldName)).ToList().Select(x =>
@@ -629,16 +630,17 @@ namespace TMS.API.Controllers
                 return $"left join [{x.RefName}] as [{objField}] on [{objField}].Id = [{component.RefName}].{x.FieldName}";
             }).Distinct().ToList();
             var select1s = gridPolicy.Where(x => x.ComponentType != "Dropdown").Distinct().ToList().Select(x => $"[{component.RefName}].[{x.FieldName}]").Distinct().ToList();
+            var fieldNames = select1s.Union(selects).ToList();
             if (!sql.IsNullOrWhiteSpace())
             {
-                reportQuery = $@"select {select1s.Combine()}{(selects.Nothing() ? "" : $",{selects.Combine()}")}
+                reportQuery = $@"select {fieldNames.Combine()}
                                   from ({sql})  as [{component.RefName}]
                                   {joins.Combine(" ")}
                                   where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
             }
             else
             {
-                reportQuery = $@"select {select1s.Combine()}{(selects.Nothing() ? "" : $",{selects.Combine()}")}
+                reportQuery = $@"select {fieldNames.Combine()}
                                   from [{component.RefName}] as [{component.RefName}]
                                   {joins.Combine(" ")}
                                   where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
