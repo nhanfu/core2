@@ -14,6 +14,7 @@ namespace TMS.UI.Business.Manage
 {
     public class CheckFeeEditorBL : TabEditor
     {
+        public CheckFeeHistory CheckFeeHistoryEntity => Entity as CheckFeeHistory;
         public CheckFeeEditorBL() : base(nameof(CheckFeeHistory))
         {
             Name = "CheckFee Editor";
@@ -54,8 +55,18 @@ namespace TMS.UI.Business.Manage
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
+                        Field = nameof(Transportation.ContainerNoUpload),
+                        Value = transportation.ContainerNoUpload,
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
                         Field = nameof(Transportation.ReceivedCheck),
                         Value = transportation.ReceivedCheck,
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.ReceivedCheckUpload),
+                        Value = transportation.ReceivedCheckUpload,
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
@@ -64,13 +75,28 @@ namespace TMS.UI.Business.Manage
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
+                        Field = nameof(Transportation.ClosingDateUpload),
+                        Value = transportation.ClosingDateUpload.Value.ToString("yyyy-MM-dd"),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
                         Field = nameof(Transportation.SealCheck),
                         Value = transportation.SealCheck,
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
+                        Field = nameof(Transportation.SealCheckUpload),
+                        Value = transportation.SealCheckUpload,
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
                         Field = nameof(Transportation.BossCheck),
                         Value = transportation.BossCheck,
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.BossCheckUpload),
+                        Value = transportation.BossCheckUpload,
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
@@ -89,8 +115,23 @@ namespace TMS.UI.Business.Manage
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
+                        Field = nameof(Transportation.PickupEmptyUpload),
+                        Value = transportation.PickupEmptyUpload,
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
                         Field = nameof(Transportation.PortLoadingCheck),
                         Value = transportation.PortLoadingCheck,
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.PortLoadingUpload),
+                        Value = transportation.PortLoadingUpload,
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.LiftFeeCheckUpload),
+                        Value = transportation.LiftFeeCheckUpload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
@@ -104,8 +145,23 @@ namespace TMS.UI.Business.Manage
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
+                        Field = nameof(Transportation.LandingFeeUpload),
+                        Value = transportation.LandingFeeUpload is null ? "0" : transportation.LandingFeeUpload.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
                         Field = nameof(Transportation.CollectOnBehaftInvoinceNoFeeCheck),
                         Value = transportation.CollectOnBehaftInvoinceNoFeeCheck is null ? "0" : transportation.CollectOnBehaftInvoinceNoFeeCheck.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.CollectOnBehaftInvoinceNoFeeUpload),
+                        Value = transportation.CollectOnBehaftInvoinceNoFeeUpload is null ? "0" : transportation.CollectOnBehaftInvoinceNoFeeUpload.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.CollectOnBehaftFeeUpload),
+                        Value = transportation.CollectOnBehaftFeeUpload is null ? "0" : transportation.CollectOnBehaftFeeUpload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
@@ -119,8 +175,115 @@ namespace TMS.UI.Business.Manage
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
+                        Field = nameof(Transportation.CollectOnSupPriceUpload),
+                        Value = transportation.CollectOnSupPriceUpload is null ? "0" : transportation.CollectOnSupPriceUpload.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
                         Field = nameof(Transportation.TotalPriceAfterTaxCheck),
                         Value = transportation.TotalPriceAfterTaxCheck is null ? "0" : transportation.TotalPriceAfterTaxCheck.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.TotalPriceAfterTaxUpload),
+                        Value = transportation.TotalPriceAfterTaxUpload is null ? "0" : transportation.TotalPriceAfterTaxUpload.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.FeeVat1),
+                        Value = transportation.FeeVat1 is null ? "0" : transportation.FeeVat1.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.FeeVat2),
+                        Value = transportation.FeeVat2 is null ? "0" : transportation.FeeVat2.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.FeeVat3),
+                        Value = transportation.FeeVat3 is null ? "0" : transportation.FeeVat3.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.FeeVat1Upload),
+                        Value = transportation.FeeVat1Upload is null ? "0" : transportation.FeeVat1Upload.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.FeeVat2Upload),
+                        Value = transportation.FeeVat2Upload is null ? "0" : transportation.FeeVat2Upload.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.FeeVat3Upload),
+                        Value = transportation.FeeVat3Upload is null ? "0" : transportation.FeeVat3Upload.ToString(),
+                    });
+                    //
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.Fee1),
+                        Value = transportation.Fee1 is null ? "0" : transportation.Fee1.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.Fee2),
+                        Value = transportation.Fee2 is null ? "0" : transportation.Fee2.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.Fee3),
+                        Value = transportation.Fee3 is null ? "0" : transportation.Fee3.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.Fee4),
+                        Value = transportation.Fee4 is null ? "0" : transportation.Fee4.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.Fee5),
+                        Value = transportation.Fee5 is null ? "0" : transportation.Fee5.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.Fee6),
+                        Value = transportation.Fee6 is null ? "0" : transportation.Fee6.ToString(),
+                    });
+                    //
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.Fee1Upload),
+                        Value = transportation.Fee1Upload is null ? "0" : transportation.Fee1Upload.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.Fee2Upload),
+                        Value = transportation.Fee2Upload is null ? "0" : transportation.Fee2Upload.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.Fee3Upload),
+                        Value = transportation.Fee3Upload is null ? "0" : transportation.Fee3Upload.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.Fee4Upload),
+                        Value = transportation.Fee4Upload is null ? "0" : transportation.Fee4Upload.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.Fee5Upload),
+                        Value = transportation.Fee5 is null ? "0" : transportation.Fee5Upload.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.Fee6Upload),
+                        Value = transportation.Fee6Upload is null ? "0" : transportation.Fee6Upload.ToString(),
+                    });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.CheckFeeHistoryId),
+                        Value = CheckFeeHistoryEntity.Id.ToString(),
                     });
                     patchUpdate.Changes = changes;
                     var rs = await new Client(nameof(Transportation)).PatchAsync<Transportation>(patchUpdate);
@@ -151,77 +314,31 @@ namespace TMS.UI.Business.Manage
                         CollectOnBehaftFeeCheck = transportation.CollectOnBehaftFeeCheck,
                         CollectOnSupPriceCheck = transportation.CollectOnSupPriceCheck,
                         TotalPriceAfterTaxCheck = transportation.TotalPriceAfterTaxCheck,
+                        FeeVat1 = transportation.FeeVat1,
+                        FeeVat2 = transportation.FeeVat2,
+                        FeeVat3 = transportation.FeeVat3,
+                        FeeVat1Upload = transportation.FeeVat1,
+                        FeeVat2Upload = transportation.FeeVat2,
+                        FeeVat3Upload = transportation.FeeVat3,
+                        Fee1 = transportation.Fee1,
+                        Fee2 = transportation.Fee2,
+                        Fee3 = transportation.Fee3,
+                        Fee4 = transportation.Fee4,
+                        Fee5 = transportation.Fee5,
+                        Fee6 = transportation.Fee6,
+                        Fee1Upload = transportation.Fee1,
+                        Fee2Upload = transportation.Fee2,
+                        Fee3Upload = transportation.Fee3,
+                        Fee4Upload = transportation.Fee4,
+                        Fee5Upload = transportation.Fee5,
+                        Fee6Upload = transportation.Fee6,
+                        CheckFeeHistoryId = CheckFeeHistoryEntity.Id
                     };
                     listViewItem.Entity.CopyPropFrom(tran);
                     await listViewItem.PatchUpdate();
                     Toast.Warning("Không tìm thấy cont!");
                 }
                 return;
-            }
-        }
-
-        public async Task SetTransportation(Transportation transportation)
-        {
-            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.FieldName == "TransportationList").FirstOrDefault();
-            var listViewItem = gridView.GetListViewItems(transportation).FirstOrDefault();
-            var tran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter={nameof(Transportation.ClosingId)} eq {transportation.ClosingId} and {nameof(Transportation.ContainerNo)} eq '{transportation.ContainerNoCheck}' and (cast({nameof(Transportation.ClosingDate)},Edm.DateTimeOffset) eq cast({transportation.ClosingDateCheck.Value.Date.ToISOFormat()},Edm.DateTimeOffset))");
-            if (tran != null)
-            {
-                tran.CheckFeeHistoryId = Entity[IdField].As<int>();
-                tran.ReceivedCheck = transportation.ReceivedCheck;
-                tran.ClosingDateCheck = transportation.ClosingDateCheck;
-                tran.SealCheck = transportation.SealCheck;
-                tran.ContainerNoCheck = transportation.ContainerNoCheck;
-                tran.BossCheck = transportation.BossCheck;
-                tran.Cont20Check = transportation.Cont20Check;
-                tran.Cont40Check = transportation.Cont40Check;
-                tran.PickupEmptyCheck = transportation.PickupEmptyCheck;
-                tran.PortLoadingCheck = transportation.PortLoadingCheck;
-                tran.LiftFeeCheck = transportation.LiftFeeCheck;
-                tran.LandingFeeCheck = transportation.LandingFeeCheck;
-                tran.CollectOnBehaftInvoinceNoFeeCheck = transportation.CollectOnBehaftInvoinceNoFeeCheck;
-                tran.CollectOnBehaftFeeCheck = transportation.CollectOnBehaftFeeCheck;
-                tran.CollectOnSupPriceCheck = transportation.CollectOnSupPriceCheck;
-                tran.TotalPriceAfterTaxCheck = transportation.TotalPriceAfterTaxCheck;
-                if (tran.IsSeftPayment || tran.IsEmptyLift || tran.PickupEmptyCheck.Contains("kết hợp"))
-                {
-                    tran.LiftFee = 0;
-                }
-                if (tran.IsSeftPaymentLand || tran.IsLanding)
-                {
-                    tran.LandingFee = 0;
-                }
-                listViewItem.Entity.CopyPropFrom(tran);
-                await gridView.LoadMasterData(new object[] { tran });
-                listViewItem.UpdateView();
-                await new Client(nameof(Transportation)).UpdateAsync<Transportation>(tran);
-                Toast.Success("Đã tìm thấy cont!");
-            }
-            else
-            {
-                tran = new Transportation()
-                {
-                    ClosingId = transportation.ClosingId,
-                    ReceivedCheck = transportation.ReceivedCheck,
-                    ClosingDateCheck = transportation.ClosingDateCheck,
-                    SealCheck = transportation.SealCheck,
-                    BossCheck = transportation.BossCheck,
-                    ContainerNoCheck = transportation.ContainerNoCheck,
-                    Cont20Check = transportation.Cont20Check,
-                    Cont40Check = transportation.Cont40Check,
-                    PickupEmptyCheck = transportation.PickupEmptyCheck,
-                    PortLoadingCheck = transportation.PortLoadingCheck,
-                    ClosingPercentCheck = transportation.ClosingPercentCheck,
-                    LiftFeeCheck = transportation.LiftFeeCheck,
-                    LandingFeeCheck = transportation.LandingFeeCheck,
-                    CollectOnBehaftInvoinceNoFeeCheck = transportation.CollectOnBehaftInvoinceNoFeeCheck,
-                    CollectOnBehaftFeeCheck = transportation.CollectOnBehaftFeeCheck,
-                    CollectOnSupPriceCheck = transportation.CollectOnSupPriceCheck,
-                    TotalPriceAfterTaxCheck = transportation.TotalPriceAfterTaxCheck,
-                };
-                listViewItem.Entity.CopyPropFrom(tran);
-                listViewItem.UpdateView(true);
-                Toast.Warning("Không tìm thấy cont!");
             }
         }
     }

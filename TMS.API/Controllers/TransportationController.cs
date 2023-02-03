@@ -1047,29 +1047,24 @@ namespace TMS.API.Controllers
                         tran.LiftFeeCheck = x.LiftFee;
                         tran.LandingFeeCheck = x.LandingFee;
                         tran.CollectOnBehaftInvoinceNoFeeCheck = x.FeeVat1 + x.FeeVat2 + x.FeeVat3;
-
                         tran.FeeVat1 = x.FeeVat1;
                         tran.FeeVat2 = x.FeeVat2;
                         tran.FeeVat3 = x.FeeVat3;
-
                         tran.FeeVat1Upload = x.FeeVat1;
                         tran.FeeVat2Upload = x.FeeVat2;
                         tran.FeeVat3Upload = x.FeeVat3;
-
                         tran.Fee1 = x.Fee1;
                         tran.Fee2 = x.Fee2;
                         tran.Fee3 = x.Fee3;
                         tran.Fee4 = x.Fee4;
                         tran.Fee5 = x.Fee5;
                         tran.Fee6 = x.Fee6;
-
                         tran.Fee1Upload = x.Fee1;
                         tran.Fee2Upload = x.Fee2;
                         tran.Fee3Upload = x.Fee3;
                         tran.Fee4Upload = x.Fee4;
                         tran.Fee5Upload = x.Fee5;
                         tran.Fee6Upload = x.Fee6;
-
                         tran.CollectOnBehaftFeeCheck = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5 + x.Fee6;
                         tran.CollectOnSupPriceCheck = x.CollectOnSupPrice;
                         tran.TotalPriceAfterTaxCheck = x.TotalPriceAfterTax;
@@ -1095,21 +1090,55 @@ namespace TMS.API.Controllers
                         {
                             ClosingId = first.Id,
                             ReceivedCheck = x.Received,
+                            ReceivedCheckUpload = x.Received,
                             ClosingDateCheck = x.ClosingDate,
+                            ClosingDateUpload = x.ClosingDate,
                             SealCheck = x.SealNo,
+                            SealCheckUpload = x.SealNo,
                             BossCheck = x.Boss,
+                            BossCheckUpload = x.Boss,
                             ContainerNoCheck = x.ContainerNo,
+                            ContainerNoUpload = x.ContainerNo,
                             Cont20Check = x.Cont20,
+                            Cont20CheckUpload = x.Cont20,
                             Cont40Check = x.Cont40,
+                            Cont40CheckUpload = x.Cont40,
                             PickupEmptyCheck = x.PickupEmpty,
+                            PickupEmptyUpload = x.PickupEmpty,
                             PortLoadingCheck = x.PortLoading,
+                            PortLoadingUpload = x.PortLoading,
                             ClosingPercentCheck = x.ClosingPercentCheck,
+                            ClosingPercentUpload = x.ClosingPercentCheck,
                             LiftFeeCheck = x.LiftFee,
+                            LiftFeeCheckUpload = x.LiftFee,
                             LandingFeeCheck = x.LandingFee,
+                            LandingFeeUpload = x.LandingFee,
+                            FeeVat1 = x.FeeVat1,
+                            FeeVat2 = x.FeeVat2,
+                            FeeVat3 = x.FeeVat3,
+                            FeeVat1Upload = x.FeeVat1,
+                            FeeVat2Upload = x.FeeVat2,
+                            FeeVat3Upload = x.FeeVat3,
+                            Fee1 = x.Fee1,
+                            Fee2 = x.Fee2,
+                            Fee3 = x.Fee3,
+                            Fee4 = x.Fee4,
+                            Fee5 = x.Fee5,
+                            Fee6 = x.Fee6,
+                            Fee1Upload = x.Fee1,
+                            Fee2Upload = x.Fee2,
+                            Fee3Upload = x.Fee3,
+                            Fee4Upload = x.Fee4,
+                            Fee5Upload = x.Fee5,
+                            Fee6Upload = x.Fee6,
                             CollectOnBehaftInvoinceNoFeeCheck = x.FeeVat1 + x.FeeVat2 + x.FeeVat3,
+                            CollectOnBehaftInvoinceNoFeeUpload = x.FeeVat1 + x.FeeVat2 + x.FeeVat3,
                             CollectOnBehaftFeeCheck = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5 + x.Fee6,
+                            CollectOnBehaftFeeUpload = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5 + x.Fee6,
                             CollectOnSupPriceCheck = x.CollectOnSupPrice,
+                            CollectOnSupPriceUpload = x.CollectOnSupPrice,
                             TotalPriceAfterTaxCheck = x.TotalPriceAfterTax,
+                            TotalPriceAfterTaxUpload = x.TotalPriceAfterTax,
                         };
                     }
                     return tran;
