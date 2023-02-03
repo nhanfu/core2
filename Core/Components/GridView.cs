@@ -1439,6 +1439,14 @@ namespace Core.Components
                     element.Focus();
                     element.ParentElement.Focus();
                 }
+                else
+                {
+                    ListViewSearch.Element.Focus();
+                }
+            }
+            else
+            {
+                ListViewSearch.Element.Focus();
             }
         }
 
