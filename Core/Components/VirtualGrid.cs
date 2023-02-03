@@ -19,6 +19,7 @@ namespace Core.Components
         internal bool _renderingViewPort;
         internal int viewPortCount;
         internal static int cacheAhead = 5;
+        private int _renderPrepareCacheAwaiter;
 
         public VirtualGrid(Component ui) : base(ui)
         {
@@ -70,10 +71,6 @@ namespace Core.Components
             CacheData.AddRange(data.Value);
             CacheData.ForEach((x, index) => x[RowNo] = start + index + 1);
             await LoadMasterData(data.Value, spinner: false);
-            if (Header.Count > 30)
-            {
-                Toast.Success("Đã tải xong");
-            }
         }
 
         internal override async Task RenderViewPort(bool count = true, bool firstLoad = false)
@@ -151,10 +148,10 @@ namespace Core.Components
             FormattedRowData = rows;
             await LoadMasterData(FormattedRowData, spinner: false);
             rows.ForEach((x, index) => x[RowNo] = skip + index + 1);
-
-            if(rows.Count < Paginator.Options.Total)
+            if (rows.Count < Paginator.Options.Total)
             {
-                _ = Task.Run(async () => await PrepareCache(skip));
+                Window.ClearTimeout(_renderPrepareCacheAwaiter);
+                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(skip), 3000);
             }
             return rows;
         }
