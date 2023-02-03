@@ -57,6 +57,8 @@ namespace TMS.API.Models
         public bool BreakTerms { get; set; }
         public DateTime? ClosingDate { get; set; }
         public DateTime? ReturnDate { get; set; }
+        public decimal Cont20 { get; set; }
+        public decimal Cont40 { get; set; }
 
         public virtual Allotment Allotment { get; set; }
         public virtual Transportation Transportation { get; set; }

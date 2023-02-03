@@ -450,6 +450,10 @@ namespace TMS.API.Models
 
                 entity.Property(e => e.CommodityValueNotes).HasMaxLength(250);
 
+                entity.Property(e => e.Cont20).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Cont40).HasColumnType("decimal(20, 5)");
+
                 entity.Property(e => e.ContainerNo).HasMaxLength(250);
 
                 entity.Property(e => e.InsuranceFeeNotes).HasMaxLength(250);
