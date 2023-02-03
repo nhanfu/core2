@@ -1144,16 +1144,16 @@ namespace TMS.UI.Business.Manage
                                         if (child.Any())
                                         {
                                             var childIds = child.Select(x => x.Id).ToList();
-                                            ids = listMasterData.Select(x => x.Id).Cast<int>().ToList().Union(listMasterData.Select(x => x.ParentId).Cast<int>().ToList()).Union(childIds).Combine();
+                                            ids = listMasterData.Select(x => x.Id).Cast<int>().ToList().Union(listMasterData.Where(x => x.ParentId != null).Select(x => x.ParentId).Cast<int>().ToList()).Union(childIds).Combine();
                                         }
                                         else
                                         {
-                                            ids = listMasterData.Select(x => x.Id).Cast<int>().ToList().Union(listMasterData.Select(x => x.ParentId).Cast<int>().ToList()).Combine();
+                                            ids = listMasterData.Select(x => x.Id).Cast<int>().ToList().Union(listMasterData.Where(x => x.ParentId != null).Select(x => x.ParentId).Cast<int>().ToList()).Where(x => x > 0).Combine();
                                         }
                                     }
                                     else
                                     {
-                                        ids = rsdynamic.Select(x => x.Id).Cast<int>().Combine();
+                                        ids = rsdynamic.Select(x => x.Id).Cast<int>().Where(x => x > 0).Combine();
                                     }
                                     var format = component.FormatCell.Split("}")[0].Replace("{", "");
                                     if (ope.Description == "Chứa" || ope.Description == "Bằng")
