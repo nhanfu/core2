@@ -232,6 +232,7 @@ namespace Core.Components
                     UserInput.Invoke(new ObservableArgs { NewData = ListValues, OldData = oldList });
                 }
                 await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, ListValues, oldList);
+                tag.Remove();
             }).End.Render();
         }
 
