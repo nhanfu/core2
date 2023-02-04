@@ -132,8 +132,8 @@ namespace TMS.API.Controllers
             {
                 var trans = await db.Transportation.Where(x => item.TransportationIds.Contains(x.Id.ToString())).ToListAsync();
                 trans.ForEach(x => x.BookingListId = item.Id);
+                await db.SaveChangesAsync();
             }
-            await db.SaveChangesAsync();
             return true;
         }
 
@@ -285,6 +285,8 @@ namespace TMS.API.Controllers
                                               ShipPolicyPrice = tranGroup.Where(x => x.ShipPolicyPrice != null).Sum(x => x.ShipPolicyPrice.Value),
                                               TransportationIds = tranGroup.Select(x => x.Id).Combine()
                                           }).ToList();
+            SetAuditInfo(groupByPercentileQuery);
+            groupByPercentileQuery.ForEach(x => { CalcTotalPriceAndTotalFee(x); });
             foreach (var item in groupByPercentileQuery)
             {
                 var checkBookingList = await db.BookingList.Where(x =>
@@ -304,11 +306,8 @@ namespace TMS.API.Controllers
                 && x.Submit == false).FirstOrDefaultAsync();
                 if (checkBookingList == null)
                 {
-                    SetAuditInfo(item);
                     db.Add(item);
                     await db.SaveChangesAsync();
-                    var trans = await db.Transportation.Where(x => item.TransportationIds.Contains(x.Id.ToString())).ToListAsync();
-                    trans.ForEach(x => x.BookingListId = item.Id);
                 }
                 else
                 {
@@ -320,8 +319,10 @@ namespace TMS.API.Controllers
                         CalcTotalPriceAndTotalFee(checkBookingList);
                     }
                 }
+                var trans = await db.Transportation.Where(x => item.TransportationIds.Contains(x.Id.ToString())).ToListAsync();
+                trans.ForEach(x => x.BookingListId = item.Id);
+                await db.SaveChangesAsync();
             }
-            await db.SaveChangesAsync();
             return true;
         }
 
