@@ -61,49 +61,5 @@ namespace TMS.API.Controllers
             }
             return res;
         }
-
-        public List<ComponentGroup> BuildTree(List<ComponentGroup> componentGroup)
-        {
-            var componentGroupMap = componentGroup.ToDictionary(x => x.Id);
-            ComponentGroup parent;
-            foreach (var item in componentGroup)
-            {
-                if (item.ParentId is null)
-                {
-                    continue;
-                }
-                if (!componentGroupMap.ContainsKey(item.ParentId.Value))
-                {
-                    continue;
-                }
-                parent = componentGroupMap[item.ParentId.Value];
-                if (parent.InverseParent == null)
-                {
-                    parent.InverseParent = new List<ComponentGroup>();
-                }
-                if (!parent.InverseParent.Contains(item))
-                {
-                    parent.InverseParent.Add(item);
-                }
-                item.Parent = parent;
-            }
-            foreach (var item in componentGroup)
-            {
-                if (item.Component == null || !item.Component.Any())
-                {
-                    continue;
-                }
-                foreach (var ui in item.Component)
-                {
-                    ui.ComponentGroup = item;
-                }
-                if (item.InverseParent != null)
-                {
-                    item.InverseParent = item.InverseParent.OrderBy(x => x.Order).ToList();
-                }
-            }
-            var res = componentGroup.Where(x => x.ParentId is null);
-            return res.ToList();
-        }
     }
 }
