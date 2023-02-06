@@ -178,6 +178,8 @@ namespace TMS.API.ViewModels
         public string JourneyText { get; set; }
         public string IsBoughtText { get; set; }
         public string CustomerTypeText { get; set; }
+        public string SteamingTerms { get; set; }
+        public string BreakTerms { get; set; }
     }
 
     public class ImportBooking

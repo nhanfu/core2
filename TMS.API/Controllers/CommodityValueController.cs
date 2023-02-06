@@ -242,12 +242,10 @@ namespace TMS.API.Controllers
             {
                 return null;
             }
-
             if (!Path.GetExtension(formFile.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }
-
             var path = GetUploadPath(formFile.FileName, host.WebRootPath);
             EnsureDirectoryExist(path);
             path = IncreaseFileName(path);
@@ -260,7 +258,7 @@ namespace TMS.API.Controllers
             var noOfCol = worksheet.Dimension.End.Column;
             var noOfRow = worksheet.Dimension.End.Row;
             var list = new List<ImportCommodityValue>();
-            for (int row = 3; row <= noOfRow; row++)
+            for (int row = 2; row <= noOfRow; row++)
             {
                 if ((worksheet.Cells[row, 2].Value == null || worksheet.Cells[row, 2].Value?.ToString() == "") &&
                     (worksheet.Cells[row, 3].Value == null || worksheet.Cells[row, 3].Value?.ToString() == ""))
@@ -278,11 +276,13 @@ namespace TMS.API.Controllers
                     CommodityTextEn = ConvertTextEn(commodity),
                     TotalPrice1 = worksheet.Cells[row, 4].Value?.ToString().Trim(),
                     TotalPrice2 = worksheet.Cells[row, 5].Value?.ToString().Trim(),
-                    IsWetText = worksheet.Cells[row, 6].Value?.ToString().Trim(),
-                    Notes = worksheet.Cells[row, 7].Value?.ToString().Trim(),
-                    JourneyText = worksheet.Cells[row, 8].Value?.ToString().Trim(),
-                    IsBoughtText = worksheet.Cells[row, 9].Value?.ToString().Trim(),
-                    CustomerTypeText = worksheet.Cells[row, 10].Value?.ToString().Trim()
+                    Notes = worksheet.Cells[row, 6].Value?.ToString().Trim(),
+                    IsWetText = worksheet.Cells[row, 7].Value?.ToString().Trim(),
+                    SteamingTerms = worksheet.Cells[row, 8].Value?.ToString().Trim(),
+                    BreakTerms = worksheet.Cells[row, 9].Value?.ToString().Trim(),
+                    IsBoughtText = worksheet.Cells[row, 10].Value?.ToString().Trim(),
+                    CustomerTypeText = worksheet.Cells[row, 11].Value?.ToString().Trim(),
+                    JourneyText = worksheet.Cells[row, 12].Value?.ToString().Trim(),
                 };
                 list.Add(commodityValue);
             }
@@ -292,14 +292,12 @@ namespace TMS.API.Controllers
             var rsBoss = await db.Vendor.ToListAsync();
             var vendorDB = rsBoss.Where(x => listBossCodes.Contains(ConvertTextEn(x.Name)) && x.TypeId == 7551).ToDictionary(x => ConvertTextEn(x.Name));
             var rsCommodity = await db.MasterData.ToListAsync();
-            var commodityDB = rsCommodity.Where(x => listCommodityCodes.Contains(ConvertTextEn(x.Description)) && x.Path.Contains(@"\7651\") && x.ParentId != 7651).ToDictionary(x => ConvertTextEn(x.Description));
+            var commodityDB = rsCommodity.Where(x => listCommodityCodes.Contains(ConvertTextEn(x.Description)) && x.Path.Contains(@"\7651\") && x.ParentId != 7651).ToDictionaryDistinct(x => ConvertTextEn(x.Description));
             var userDB = await db.User.Where(x => listSaleCodes.Contains(x.UserName)).ToDictionaryAsync(x => x.UserName.ToLower());
             var listJourneyCodes = list.Select(x => x.JourneyText).Where(x => x != null && x != "").Distinct().ToList();
             var listCustomerTypeCodes = list.Select(x => x.CustomerTypeText).Where(x => x != null && x != "").Distinct().ToList();
             var journeyDB = rsCommodity.Where(x => x.ParentId == 12095 && listJourneyCodes.Contains(x.Name)).ToDictionary(x => x.Name);
             var customerTypeDB = rsCommodity.Where(x => x.ParentId == 12085 && listCustomerTypeCodes.Contains(x.Description)).ToDictionary(x => x.Description);
-            var startDate1 = new DateTime(DateTime.Now.Year, 1, 1);
-            var startDate2 = new DateTime(DateTime.Now.Year, 6, 30);
             var endDate1 = new DateTime(DateTime.Now.Year, 7, 1);
             var endDate2 = new DateTime(DateTime.Now.Year, 12, 31);
             foreach (var item in list)
@@ -308,26 +306,6 @@ namespace TMS.API.Controllers
                 if (item.SaleText != null && item.SaleText != "")
                 {
                     user = userDB.Count == 0 ? null : userDB.GetValueOrDefault(item.SaleText.ToLower());
-                }
-                if (user is null && item.SaleText != null && item.SaleText != "")
-                {
-                    user = new User()
-                    {
-                        FullName = item.SaleText,
-                        UserName = item.SaleText,
-                        VendorId = 65,
-                        HasVerifiedEmail = true,
-                        GenderId = 390,
-                        Active = true,
-                        InsertedBy = 1,
-                        InsertedDate = DateTime.Now.Date
-                    };
-                    user.Salt = _userSvc.GenerateRandomToken();
-                    var randomPassword = "123";
-                    user.Password = _userSvc.GetHash(UserUtils.sHA256, randomPassword + user.Salt);
-                    db.Add(user);
-                    await db.SaveChangesAsync();
-                    userDB.Add(user.UserName.ToLower(), user);
                 }
                 Vendor vendor = null;
                 if (item.BossText != null && item.BossText != "")
@@ -385,19 +363,8 @@ namespace TMS.API.Controllers
                 }
                 if (commodity != null && vendor != null)
                 {
-                    if (item.TotalPrice1 != "x")
+                    if (item.TotalPrice1 != "x" && item.TotalPrice1 != "X" && item.TotalPrice1 != "" && item.TotalPrice1 != null)
                     {
-                        if (item.TotalPrice1 == null || item.TotalPrice1 == "")
-                        {
-                            if (item.Notes != null && item.Notes != "")
-                            {
-                                item.TotalPrice1 = "0";
-                            }
-                            else
-                            {
-                                item.TotalPrice1 = GetDefaultCommodityValue(commodity, "Cont 20").ToString();
-                            }
-                        }
                         commodityValue = new CommodityValue()
                         {
                             BossId = vendor.Id,
@@ -408,6 +375,7 @@ namespace TMS.API.Controllers
                             Notes = item.Notes,
                             JourneyId = journey is null ? null : journey.Id,
                             CustomerTypeId = customerType is null ? null : customerType.Id,
+                            StartDate = DateTime.Now.Date,
                             Active = true,
                             InsertedBy = 1,
                             InsertedDate = DateTime.Now.Date
@@ -416,49 +384,45 @@ namespace TMS.API.Controllers
                         {
                             commodityValue.IsWet = true;
                         }
-                        else if (item.IsWetText == "KHÔNG")
+                        else if (item.IsWetText == "KHÔNG" || item.IsWetText == "" || item.IsWetText is null)
                         {
                             commodityValue.IsWet = false;
                         }
-                        if (item.IsBoughtText == "X")
+                        if (item.IsBoughtText == "CÓ")
                         {
                             commodityValue.IsBought = true;
                         }
-                        else
+                        else if (item.IsBoughtText == "KHÔNG" || item.IsBoughtText == "" || item.IsBoughtText is null)
                         {
                             commodityValue.IsBought = false;
                         }
-                        if (DateTime.Now >= startDate1 && DateTime.Now <= startDate2)
+                        if (item.SteamingTerms == "CÓ")
                         {
-                            commodityValue.StartDate = startDate1;
+                            commodityValue.SteamingTerms = true;
                         }
-                        else if (DateTime.Now >= endDate1 && DateTime.Now <= endDate2)
+                        else if (item.SteamingTerms == "KHÔNG" || item.SteamingTerms == "" || item.SteamingTerms is null)
+                        {
+                            commodityValue.SteamingTerms = false;
+                        }
+                        if (item.BreakTerms == "CÓ")
+                        {
+                            commodityValue.BreakTerms = true;
+                        }
+                        else if (item.BreakTerms == "KHÔNG" || item.BreakTerms == "" || item.BreakTerms is null)
+                        {
+                            commodityValue.BreakTerms = false;
+                        }if (DateTime.Now >= endDate1 && DateTime.Now <= endDate2)
                         {
                             commodityValue.StartDate = endDate1;
                         }
-                        if (DateTime.Now >= startDate1 && DateTime.Now <= startDate2)
-                        {
-                            commodityValue.EndDate = startDate2;
-                        }
-                        else if (DateTime.Now >= endDate1 && DateTime.Now <= endDate2)
+                        if (DateTime.Now >= endDate1 && DateTime.Now <= endDate2)
                         {
                             commodityValue.EndDate = endDate2;
                         }
                         db.Add(commodityValue);
                     }
-                    if (item.TotalPrice2 != "x")
+                    if (item.TotalPrice2 != "x" && item.TotalPrice2 != "X" && item.TotalPrice2 != "" && item.TotalPrice2 != null)
                     {
-                        if (item.TotalPrice2 == null || item.TotalPrice2 == "")
-                        {
-                            if (item.Notes != null && item.Notes != "")
-                            {
-                                item.TotalPrice2 = "0";
-                            }
-                            else
-                            {
-                                item.TotalPrice2 = GetDefaultCommodityValue(commodity, "Cont 40").ToString();
-                            }
-                        }
                         commodityValue2 = new CommodityValue()
                         {
                             BossId = vendor.Id,
@@ -469,6 +433,7 @@ namespace TMS.API.Controllers
                             Notes = item.Notes,
                             JourneyId = journey is null ? null : journey.Id,
                             CustomerTypeId = customerType is null ? null : customerType.Id,
+                            StartDate = DateTime.Now.Date,
                             Active = true,
                             InsertedBy = 1,
                             InsertedDate = DateTime.Now.Date
@@ -481,27 +446,35 @@ namespace TMS.API.Controllers
                         {
                             commodityValue2.IsWet = false;
                         }
-                        if (item.IsBoughtText == "X")
+                        if (item.IsBoughtText == "CÓ")
                         {
                             commodityValue2.IsBought = true;
                         }
-                        else
+                        else if (item.IsBoughtText == "KHÔNG" || item.IsBoughtText == "" || item.IsBoughtText is null)
                         {
                             commodityValue2.IsBought = false;
                         }
-                        if (DateTime.Now >= startDate1 && DateTime.Now <= startDate2)
+                        if (item.SteamingTerms == "CÓ")
                         {
-                            commodityValue2.StartDate = startDate1;
+                            commodityValue2.SteamingTerms = true;
                         }
-                        else if (DateTime.Now >= endDate1 && DateTime.Now <= endDate2)
+                        else if (item.SteamingTerms == "KHÔNG" || item.SteamingTerms == "" || item.SteamingTerms is null)
+                        {
+                            commodityValue2.SteamingTerms = false;
+                        }
+                        if (item.BreakTerms == "CÓ")
+                        {
+                            commodityValue2.BreakTerms = true;
+                        }
+                        else if (item.BreakTerms == "KHÔNG" || item.BreakTerms == "" || item.BreakTerms is null)
+                        {
+                            commodityValue2.BreakTerms = false;
+                        }
+                        if (DateTime.Now >= endDate1 && DateTime.Now <= endDate2)
                         {
                             commodityValue2.StartDate = endDate1;
                         }
-                        if (DateTime.Now >= startDate1 && DateTime.Now <= startDate2)
-                        {
-                            commodityValue2.EndDate = startDate2;
-                        }
-                        else if (DateTime.Now >= endDate1 && DateTime.Now <= endDate2)
+                        if (DateTime.Now >= endDate1 && DateTime.Now <= endDate2)
                         {
                             commodityValue2.EndDate = endDate2;
                         }
@@ -557,12 +530,12 @@ namespace TMS.API.Controllers
 
         public static string ConvertTextEn(string text)
         {
-            return text is null || text == "" ? "" : Regex.Replace(text.ToLower().Trim(), @"\s+", " ");
+            return (text is null || text == "") ? "" : Regex.Replace(text.ToLower().Trim(), @"\s+", " ");
         }
 
         public static string ConvertTextVn(string text)
         {
-            return text is null || text == "" ? "" : Regex.Replace(text.Trim(), @"\s+", " ");
+            return (text is null || text == "") ? "" : Regex.Replace(text.Trim(), @"\s+", " ");
         }
     }
 }
