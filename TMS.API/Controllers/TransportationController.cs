@@ -140,6 +140,7 @@ namespace TMS.API.Controllers
             var expense = await db.Expense.Where(x => x.TransportationId == entity.Id && expenseTypeIds.Contains(x.ExpenseTypeId.ToString()) && x.RequestChangeId == null && x.Active).ToListAsync();
             if (expense != null)
             {
+                expense.ForEach(x => { x.Cont20 = entity.Cont20; x.Cont40 = entity.Cont40; });
                 var oldEntity = await db.Transportation.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
                 if (patch.Changes.Any(x =>
                 x.Field == nameof(oldEntity.BookingId) ||
