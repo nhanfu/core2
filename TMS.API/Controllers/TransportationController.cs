@@ -57,25 +57,25 @@ namespace TMS.API.Controllers
             x.Field != nameof(entity.UserReturnId)))
             {
                 var oldEntity = await db.Transportation.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
-                if (oldEntity.IsLocked && entity.IsLocked)
+                if (oldEntity.IsLocked)
                 {
                     throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
                 }
-                if (patch.Changes.Any(x => x.Field == nameof(entity.ShipPrice) ||
-                x.Field == nameof(entity.PolicyId) ||
-                x.Field == nameof(entity.RouteId) ||
-                x.Field == nameof(entity.BrandShipId) ||
-                x.Field == nameof(entity.ShipId) ||
-                x.Field == nameof(entity.Trip) ||
-                x.Field == nameof(entity.StartShip) ||
-                x.Field == nameof(entity.ContainerTypeId) ||
-                x.Field == nameof(entity.BookingId)))
-                {
-                    if (entity.LockShip)
-                    {
-                        throw new ApiException("DSVC này đã được khóa cước tàu.") { StatusCode = HttpStatusCode.BadRequest };
-                    }
-                }
+                //if (patch.Changes.Any(x => x.Field == nameof(entity.ShipPrice) ||
+                //x.Field == nameof(entity.PolicyId) ||
+                //x.Field == nameof(entity.RouteId) ||
+                //x.Field == nameof(entity.BrandShipId) ||
+                //x.Field == nameof(entity.ShipId) ||
+                //x.Field == nameof(entity.Trip) ||
+                //x.Field == nameof(entity.StartShip) ||
+                //x.Field == nameof(entity.ContainerTypeId) ||
+                //x.Field == nameof(entity.BookingId)))
+                //{
+                //    if (oldEntity.LockShip)
+                //    {
+                //        throw new ApiException("DSVC này đã được khóa cước tàu.") { StatusCode = HttpStatusCode.BadRequest };
+                //    }
+                //}
                 if (patch.Changes.Any(x => x.Field == nameof(entity.MonthText)
                 || x.Field == nameof(entity.YearText)
                 || x.Field == nameof(entity.ExportListId)
@@ -138,7 +138,7 @@ namespace TMS.API.Controllers
             var expenseTypes = await db.MasterData.Where(x => x.ParentId == 7577 && (x.Name.Contains("Bảo hiểm") || x.Name.Contains("BH SOC"))).ToListAsync();
             var expenseTypeIds = expenseTypes.Select(x => x.Id.ToString()).ToList();
             var expense = await db.Expense.Where(x => x.TransportationId == entity.Id && expenseTypeIds.Contains(x.ExpenseTypeId.ToString()) && x.RequestChangeId == null && x.Active).ToListAsync();
-            if (expense != null)
+            if (expense.Count > 0)
             {
                 expense.ForEach(x => { x.Cont20 = entity.Cont20; x.Cont40 = entity.Cont40; });
                 var oldEntity = await db.Transportation.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
@@ -190,7 +190,7 @@ namespace TMS.API.Controllers
                             }
                         });
                     }
-                    if(expenseNoPurchased != null)
+                    if (expenseNoPurchased != null)
                     {
                         expenseNoPurchased.ForEach(x =>
                         {
@@ -741,7 +741,7 @@ namespace TMS.API.Controllers
                     left join Location po on po.Id = t.PortLoadingId";
             if (transportations.FirstOrDefault().CheckFeeHistoryId != null)
             {
-                sql += $" where t.CheckFeeHistoryId = { transportations.FirstOrDefault().CheckFeeHistoryId }";
+                sql += $" where t.CheckFeeHistoryId = {transportations.FirstOrDefault().CheckFeeHistoryId}";
             }
             else
             {
