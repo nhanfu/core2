@@ -346,7 +346,6 @@ namespace TMS.UI.Business.Manage
                 var insuranceFeesRateDB = insuranceFeesRates.Result.FirstOrDefault(x => x.TransportationTypeId == expense.TransportationTypeId
                 && x.JourneyId == expense.JourneyId
                 && x.IsBought == expense.IsBought
-                && x.IsSubRatio == isSubRatio
                 && x.IsSOC == false);
                 if (insuranceFeesRateDB != null)
                 {
@@ -360,7 +359,7 @@ namespace TMS.UI.Business.Manage
                     {
                         expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
                     }
-                    if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
+                    if (isSubRatio && insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
                     {
                         var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
                         extraInsuranceFeesRateDB.ForEach(x =>

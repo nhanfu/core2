@@ -227,7 +227,7 @@ namespace TMS.UI.Business.Manage
             {
                 isSubRatio = true;
             }
-            var insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {expense.TransportationTypeId} and JourneyId eq {expense.JourneyId} and IsBought eq {expense.IsBought.ToString().ToLower()} and IsSubRatio eq {isSubRatio.ToString().ToLower()} and IsSOC eq {isSOC.ToLower()}");
+            var insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {expense.TransportationTypeId} and JourneyId eq {expense.JourneyId} and IsBought eq {expense.IsBought.ToString().ToLower()} and IsSOC eq {isSOC.ToLower()}");
             if (insuranceFeesRateDB != null)
             {
                 var getContainerType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq {expense.ContainerTypeId}");
@@ -240,7 +240,7 @@ namespace TMS.UI.Business.Manage
                 {
                     expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
                 }
-                if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
+                if (isSubRatio && insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
                 {
                     var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
                     extraInsuranceFeesRateDB.ForEach(x =>

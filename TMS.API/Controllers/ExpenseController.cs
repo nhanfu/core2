@@ -195,7 +195,7 @@ namespace TMS.API.Controllers
                 {
                     isSubRatio = true;
                 }
-                var insuranceFeesRateDB = await db.InsuranceFeesRate.Where(x => x.TransportationTypeId == expense.TransportationTypeId && x.JourneyId == expense.JourneyId && x.IsBought == expense.IsBought && x.IsSubRatio == isSubRatio && x.IsSOC == isSOC).FirstOrDefaultAsync();
+                var insuranceFeesRateDB = await db.InsuranceFeesRate.Where(x => x.TransportationTypeId == expense.TransportationTypeId && x.JourneyId == expense.JourneyId && x.IsBought == expense.IsBought && x.IsSOC == isSOC).FirstOrDefaultAsync();
                 if (insuranceFeesRateDB != null)
                 {
                     var getContainerType = await db.MasterData.Where(x => x.Id == expense.ContainerTypeId).FirstOrDefaultAsync();
@@ -208,7 +208,7 @@ namespace TMS.API.Controllers
                     {
                         expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
                     }
-                    if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
+                    if (isSubRatio && insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
                     {
                         var extraInsuranceFeesRateDB = await db.MasterData.Where(x => x.Active == true && x.ParentId == 25374).ToListAsync();
                         extraInsuranceFeesRateDB.ForEach(x =>
