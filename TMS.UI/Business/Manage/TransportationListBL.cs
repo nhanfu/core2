@@ -68,7 +68,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var path = await new Client(nameof(Transportation)).PostAsync<string>(selected, "ExportCheckFee");
-            Client.Download($"/excel/Download/{path}");
+            Client.Download($"/excel/Download/{path.EncodeSpecialChar()}");
             Toast.Success("Xuất file thành công");
         }
 
@@ -336,7 +336,7 @@ namespace TMS.UI.Business.Manage
                 var newPath = booking.Files.Split("    ").Where(x => x.HasAnyChar()).Distinct().ToList();
                 foreach (var path in newPath)
                 {
-                    Client.Download(path);
+                    Client.Download(path.EncodeSpecialChar());
                 }
             });
         }
@@ -1051,7 +1051,7 @@ namespace TMS.UI.Business.Manage
             || x.Field == nameof(Transportation.StartShip)
             || x.Field == nameof(Transportation.ShipId)
             || x.Field == nameof(Transportation.RouteId)
-            || x.Field == nameof(Transportation.LockShip)))
+            || x.Field == nameof(Transportation.LockShip)) && transportation.PolicyId is null)
             {
                 Toast.Warning("Hệ thống đang lấy chính sách hãng tàu");
                 var components = new Client(nameof(GridPolicy)).GetRawList<GridPolicy>("?$filter=ComponentId eq 16016");

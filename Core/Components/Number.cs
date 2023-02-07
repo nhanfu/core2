@@ -92,6 +92,7 @@ namespace Core.Components
             _input.SetAttribute("autocorrect", "off");
             _input.SetAttribute("spellcheck", "false");
             _input.AddEventListener(EventType.Input, SetValue);
+            _input.AddEventListener(EventType.KeyDown, async (e) => await KeyDownNumber(e));
             _input.AddEventListener(EventType.Change, ChangeSetValue);
             _input.AutoComplete = AutoComplete.Off;
             Value = _value; // set again to render in correct format
@@ -107,6 +108,49 @@ namespace Core.Components
                 }
             }
             DOMContentLoaded?.Invoke();
+        }
+
+        private async Task KeyDownNumber(Event evt)
+        {
+            if (!(Parent is ListViewItem))
+            {
+                return;
+            }
+            var check = evt.KeyCodeEnum() == KeyCodeEnum.V && evt.CtrlOrMetaKey();
+            var tcs = new TaskCompletionSource<string>();
+            if (check)
+            {
+                /*@
+                 navigator.clipboard.readText().then(clipText => tcs.setResult(clipText));
+                */
+                var te = await tcs.Task;
+                var checkMulti = te.Contains("\r\n");
+                if (checkMulti)
+                {
+                    var values = te.Split("\r\n").ToList();
+                    _input.Value = values[0];
+                    SetValue();
+                    var current = this.FindClosest<ListViewItem>();
+                    var gridView = this.FindClosest<GridView>();
+                    var i = 0;
+                    foreach (var item in values)
+                    {
+                        var upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == current.RowNo + i);
+                        var updated = upItem.FilterChildren<Number>(x => x.GuiInfo.FieldName == GuiInfo.FieldName).FirstOrDefault();
+                        updated.Dirty = true;
+                        updated.Value = item.Replace(",", "").IsNullOrWhiteSpace() ? default(decimal) :  decimal.Parse(item.Replace(",", ""));
+                        updated.UpdateView();
+                        updated.PopulateFields();
+                        await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
+                        await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
+                        if (gridView.GuiInfo.IsRealtime)
+                        {
+                            await upItem.PatchUpdate();
+                        }
+                        i++;
+                    }
+                }
+            }
         }
 
         private bool IsNullable<T>() where T : struct => Utils.IsNullable<T>(Entity.GetType(), GuiInfo.FieldName, Entity);
