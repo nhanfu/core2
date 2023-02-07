@@ -1679,13 +1679,13 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (UserId = {UserId} or InsertedBy = {UserId})";
             }
-            else if (RoleIds.Contains(25) || RoleIds.Contains(22))
-            {
-                sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId} and TypeId = 25044))";
-            }
             else if (RoleIds.Contains(27))
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
+            }
+            else if (RoleIds.Contains(25) || RoleIds.Contains(22))
+            {
+                sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId} and TypeId = 25044))";
             }
             var qr = db.Transportation.AsNoTracking();
             if (RoleIds.Contains(10))

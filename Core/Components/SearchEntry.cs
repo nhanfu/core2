@@ -191,10 +191,6 @@ namespace Core.Components
             {
                 EnterKeydownTableStillShow(code);
             }
-            else if (_gv != null && !_gv.Show)
-            {
-                GridResultDomLoaded();
-            }
             else
             {
                 Search(timeout: 0);

@@ -18,6 +18,8 @@ namespace TMS.UI.Business.Manage
             {
                 return false;
             }
+            transportationPlanEntity.TotalContainerRemain = transportationPlanEntity.TotalContainerRemain ?? transportationPlanEntity.TotalContainer;
+            transportationPlanEntity.TotalContainerUsing = transportationPlanEntity.TotalContainerUsing ?? 0;
             var rs = await base.Save(entity);
             Dispose();
             return rs;
