@@ -895,6 +895,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.CollectOnBehaftPrice).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.InvoinceNo).HasMaxLength(250);
             entity.Property(e => e.LotNo).HasMaxLength(250);
+            entity.Property(e => e.Name).HasMaxLength(250);
             entity.Property(e => e.Note).HasMaxLength(250);
             entity.Property(e => e.NotePayment).HasMaxLength(250);
             entity.Property(e => e.ReceivedPrice).HasColumnType("decimal(20, 5)");
