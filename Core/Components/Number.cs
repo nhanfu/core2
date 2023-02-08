@@ -100,13 +100,16 @@ namespace Core.Components
             {
                 this.SetAutoWidth(_input.Value, _input.GetComputedStyle().Font);
             }
-            if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace())
+            Window.SetTimeout(() =>
             {
-                if (Utils.IsFunction(GuiInfo.ChildStyle, out var fn))
+                if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace())
                 {
-                    fn.Call(this, Entity, _input).ToString();
+                    if (Utils.IsFunction(GuiInfo.ChildStyle, out var fn))
+                    {
+                        fn.Call(this, Entity, _input).ToString();
+                    }
                 }
-            }
+            },100);
             DOMContentLoaded?.Invoke();
         }
 

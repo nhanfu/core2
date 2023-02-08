@@ -27,6 +27,7 @@ namespace Core.Components
         protected static List<object> _copiedRows;
         public Action<object> RowClick;
         protected bool _isFocusCell;
+        protected bool _firstCache;
         protected Section _noRecord;
         public Action BodyContextMenuShow;
         private HTMLElement _history;
@@ -195,7 +196,7 @@ namespace Core.Components
             var pagingQuery = dataSource + $"&$skip={skip}&$top={pageSize}&$count=true";
             OdataResult<object> result;
             var val = (Entity?.GetComplexPropValue(GuiInfo.FieldName) as IEnumerable<object>)?.ToList();
-            if (GuiInfo.CanCache && val != null && val.Any())
+            if (GuiInfo.CanCache && val != null && val.Any() && !_firstCache)
             {
                 result = new OdataResult<object>
                 {
@@ -206,6 +207,10 @@ namespace Core.Components
             else
             {
                 result = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(pageSize > 0 ? pagingQuery : dataSource, true);
+            }
+            if (GuiInfo.CanCache)
+            {
+                _firstCache = true;
             }
             Sql = result.Sql;
             UpdatePagination(result.Odata.Count ?? result.Value.Count, result.Value.Count);
