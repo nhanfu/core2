@@ -130,8 +130,12 @@ namespace TMS.API.Controllers
                 }
             }
             if (patch.Changes.Any(x => x.Field == nameof(oldEntity.IsWet) ||
+            x.Field == nameof(oldEntity.SteamingTerms) ||
+            x.Field == nameof(oldEntity.BreakTerms) ||
             x.Field == nameof(oldEntity.IsBought)) &&
             (oldEntity.IsWet != entity.IsWet) ||
+            (oldEntity.SteamingTerms != entity.SteamingTerms) ||
+            (oldEntity.BreakTerms != entity.BreakTerms) ||
             (oldEntity.IsBought != entity.IsBought))
             {
                 await CalcInsuranceFees(entity, false);
