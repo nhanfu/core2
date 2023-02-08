@@ -300,6 +300,7 @@ namespace TMS.API.Models
         public decimal? FeeVat1Upload { get; set; }
         public decimal? FeeVat2Upload { get; set; }
         public decimal? FeeVat3Upload { get; set; }
+        public int? OrderExcel { get; set; }
 
         public virtual ICollection<Expense> Expense { get; set; }
         public virtual ICollection<Revenue> Revenue { get; set; }

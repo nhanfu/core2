@@ -1051,6 +1051,7 @@ namespace TMS.API.Controllers
                     && y.ClosingDate.Value.Date == x.ClosingDate.Value.Date);
                     if (tran != null)
                     {
+                        tran.OrderExcel = int.Parse(x.No);
                         tran.CheckFeeHistoryId = lastHis.Id;
                         tran.ReceivedCheck = x.Received;
                         tran.ClosingDateCheck = x.ClosingDate;
@@ -1107,6 +1108,7 @@ namespace TMS.API.Controllers
                         tran = new Transportation()
                         {
                             ClosingId = ClosingId,
+                            OrderExcel = int.Parse(x.No),
                             ReceivedCheck = x.Received,
                             ReceivedCheckUpload = x.Received,
                             ClosingDateCheck = x.ClosingDate,

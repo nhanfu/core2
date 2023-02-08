@@ -195,7 +195,7 @@ namespace Core.Components
             var pagingQuery = dataSource + $"&$skip={skip}&$top={pageSize}&$count=true";
             OdataResult<object> result;
             var val = (Entity?.GetComplexPropValue(GuiInfo.FieldName) as IEnumerable<object>)?.ToList();
-            if (GuiInfo.CanCache && val.Any())
+            if (GuiInfo.CanCache && val != null && val.Any())
             {
                 result = new OdataResult<object>
                 {
