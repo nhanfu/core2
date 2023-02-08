@@ -1773,7 +1773,7 @@ namespace TMS.API.Controllers
                                  from [{refname}] 
                                  where Id in (select distinct {group}
                                               from [{tablename}]
-                                 where 1 = 1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")} ";
+                                 where 1 = 1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")})";
 
                     if (RoleIds.Contains(10))
                     {
