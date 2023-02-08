@@ -1180,9 +1180,13 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.Note2).HasMaxLength(250);
             entity.Property(e => e.Note3).HasMaxLength(250);
             entity.Property(e => e.Note4).HasMaxLength(250);
+            entity.Property(e => e.NoteInvoinceDate).HasMaxLength(500);
+            entity.Property(e => e.NoteLotDate).HasMaxLength(500);
             entity.Property(e => e.NotePayment).HasMaxLength(250);
             entity.Property(e => e.NoteReturnReport).HasMaxLength(250);
             entity.Property(e => e.NoteReturnReport2).HasMaxLength(250);
+            entity.Property(e => e.NoteVat).HasMaxLength(500);
+            entity.Property(e => e.NoteVendorVatId).HasMaxLength(500);
             entity.Property(e => e.Notes).HasMaxLength(250);
             entity.Property(e => e.NotificationCount).HasMaxLength(250);
             entity.Property(e => e.OrtherFee).HasColumnType("decimal(20, 5)");

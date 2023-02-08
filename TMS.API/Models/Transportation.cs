@@ -113,9 +113,12 @@ namespace TMS.API.Models
         public bool IsSubmit { get; set; }
         public string LotNo { get; set; }
         public DateTime? LotDate { get; set; }
+        public string NoteLotDate { get; set; }
         public string InvoinceNo { get; set; }
         public DateTime? InvoinceDate { get; set; }
+        public string NoteInvoinceDate { get; set; }
         public decimal? Vat { get; set; }
+        public string NoteVat { get; set; }
         public decimal? UnitPriceBeforeTax { get; set; }
         public decimal? UnitPriceAfterTax { get; set; }
         public decimal? ReceivedPrice { get; set; }
@@ -125,6 +128,7 @@ namespace TMS.API.Models
         public decimal? TotalPrice { get; set; }
         public decimal? TotalPriceAfterTax { get; set; }
         public int? VendorVatId { get; set; }
+        public string NoteVendorVatId { get; set; }
         public string NotePayment { get; set; }
         public string Note { get; set; }
         public decimal Cp1 { get; set; }
