@@ -214,7 +214,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in {ids.Combine()} and IsKt eq true");
+            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsKt eq true");
             if (transportations.Count <= 0)
             {
                 Toast.Warning("Không có cont nào bị khóa !!!");
@@ -272,7 +272,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in {ids.Combine()} and IsSubmit eq true");
+            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsSubmit eq true");
             if (transportations.Count <= 0)
             {
                 Toast.Warning("Không có cont nào bị khóa !!!");
@@ -330,7 +330,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in {ids.Combine()} and IsLocked eq true");
+            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLocked eq true");
             if (transportations.Count <= 0)
             {
                 Toast.Warning("Không có cont nào bị khóa !!!");
@@ -369,7 +369,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in {ids.Combine()} and IsKt eq false");
+            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsKt eq false");
             if (listViewItems.Count <= 0)
             {
                 Toast.Warning("Không DSVC nào cần khóa");
@@ -429,7 +429,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in {ids.Combine()} and IsSubmit eq false");
+            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsSubmit eq false");
             if (listViewItems.Count <= 0)
             {
                 Toast.Warning("Không DSVC nào cần khóa");
@@ -489,7 +489,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in {ids.Combine()} and IsLocked eq false");
+            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLocked eq false");
             if (listViewItems.Count <= 0)
             {
                 Toast.Warning("Không DSVC nào cần khóa");
@@ -519,7 +519,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in {ids.Combine()} and IsKt eq true");
+            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsKt eq true");
             if (listViewItems.Count <= 0)
             {
                 Toast.Warning("Không DSVC nào cần mở khóa");
@@ -571,7 +571,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in {ids.Combine()} and IsSubmit eq true");
+            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsSubmit eq true");
             if (listViewItems.Count <= 0)
             {
                 Toast.Warning("Không DSVC nào cần mở khóa");
@@ -623,7 +623,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in {ids.Combine()} and IsLocked eq true");
+            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLocked eq true");
             if (listViewItems.Count <= 0)
             {
                 Toast.Warning("Không DSVC nào cần mở khóa");
