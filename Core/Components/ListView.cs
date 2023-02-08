@@ -193,11 +193,10 @@ namespace Core.Components
             }
 
             var pagingQuery = dataSource + $"&$skip={skip}&$top={pageSize}&$count=true";
-            var hasCacheLoaded = await LoadCache(dataSource, cache, pageSize.Value);
             OdataResult<object> result;
-            if (hasCacheLoaded)
+            var val = (Entity?.GetComplexPropValue(GuiInfo.FieldName) as IEnumerable<object>)?.ToList();
+            if (GuiInfo.CanCache && val.Any())
             {
-                var val = (Entity?.GetComplexPropValue(GuiInfo.FieldName) as IEnumerable<object>)?.ToList();
                 result = new OdataResult<object>
                 {
                     Value = val,
@@ -264,17 +263,6 @@ namespace Core.Components
             if (cache || addNew)
             {
                 RowData["_data"] = rows;
-                RowData.NotifyArrayChanged(new ObservableListArgs<object>
-                {
-                    Action = ObservableAction.Render,
-                    ListData = RowData._data
-                });
-
-                var countQuery = dataSource + $"&$skip={0}&$top={0}&$count=true";
-                Spinner.AppendTo(Element);
-                var countResult = await new Client(GuiInfo.RefName).GetList<object>(pageSize > 0 ? countQuery : dataSource, true);
-                UpdatePagination((int)(countResult.Odata.Count == 0 ? countResult.Value.Count() : countResult.Odata.Count), RowData.Data.Count);
-                Spinner.Hide();
                 return true;
             }
             return false;

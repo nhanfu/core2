@@ -60,23 +60,30 @@ namespace TMS.UI.Business.Manage
                 ResponseMimeType = Utils.GetMimeType("xlsx")
             });
             Dispose();
-            if (rs != null)
+            Window.SetTimeout(async () =>
             {
-                var entity = await new Client(nameof(CheckFeeHistory)).FirstOrDefaultAsync<CheckFeeHistory>($"?$filter=Id eq {rs.FirstOrDefault(x => x.CheckFeeHistoryId != null).CheckFeeHistoryId}");
-                await this.OpenTab(
-                id: "CheckFee Editor" + rs.FirstOrDefault().CheckFeeHistoryId,
-                featureName: "CheckFee Editor",
-                factory: () =>
+                if (rs != null)
                 {
-                    var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeEditorBL");
-                    var instance = Activator.CreateInstance(type) as TabEditor;
-                    instance.Icon = "fal fa-sitemap mr-1";
-                    instance.Title = "Kiểm tra phí đóng hàng";
-                    instance.Entity = entity;
-                    instance.Entity["TransportationList"] = rs;
-                    return instance;
-                });
-            }
+                    var entity = await new Client(nameof(CheckFeeHistory)).FirstOrDefaultAsync<CheckFeeHistory>($"?$filter=Id eq {rs.FirstOrDefault(x => x.CheckFeeHistoryId != null).CheckFeeHistoryId}");
+                    if (entity.Id > 0)
+                    {
+                        await this.OpenTab(
+                        id: "CheckFee Editor" + rs.FirstOrDefault().CheckFeeHistoryId,
+                        featureName: "CheckFee Editor",
+                        factory: () =>
+                        {
+                            var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeEditorBL");
+                            var instance = Activator.CreateInstance(type) as TabEditor;
+                            instance.Icon = "fal fa-sitemap mr-1";
+                            instance.Title = "Kiểm tra phí đóng hàng";
+                            instance.Entity = entity;
+                            instance.Entity.SetPropValue("TransportationList", rs);
+                            return instance;
+                        });
+                    }
+                }
+            }, 2000);
+
         }
     }
 }
