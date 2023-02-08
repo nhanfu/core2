@@ -44,6 +44,9 @@ namespace Core.Components
         {
             var td = e.Target as HTMLElement;
             td.Closest(ElementType.td.ToString()).AddClass("cell-selected");
+            ListViewSection.ListView.LastListViewItem = this;
+            ListViewSection.ListView.LastIndex = RowNo;
+            ListViewSection.ListView.LastElementFocus = td;
             ListViewSection.ListView.LastComponentFocus = header;
             ListViewSection.ListView.EntityFocusId = Entity[IdField].As<int>();
         }
@@ -52,8 +55,6 @@ namespace Core.Components
         {
             var td = e.Target as HTMLElement;
             td.Closest(ElementType.td.ToString()).RemoveClass("cell-selected");
-            ListViewSection.ListView.LastComponentFocus = null;
-            ListViewSection.ListView.EntityFocusId = null;
         }
     }
 }

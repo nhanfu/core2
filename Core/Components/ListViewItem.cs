@@ -312,8 +312,6 @@ namespace Core.Components
             var target = e.Target as Node;
             var focusing = this.FirstOrDefault(x => x.Element == target || x.ParentElement.Contains(target)) != null;
             HotKeySelectRow(ctrl, shift, focusing);
-            ListViewSection.ListView.LastListViewItem = this;
-            ListViewSection.ListView.LastIndex = RowNo;
             ListViewSection.ListView.RowClick?.Invoke(Entity);
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity);
         }

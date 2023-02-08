@@ -36,6 +36,7 @@ namespace Core.Components
         public bool Editable { get; set; }
         public ListViewItem LastListViewItem { get; set; }
         public int LastIndex { get; set; }
+        public HTMLElement LastElementFocus { get; set; }
         public ListViewSearch ListViewSearch { get; set; }
         public Paginator Paginator { get; set; }
         public SortedField SortedField { get; set; }

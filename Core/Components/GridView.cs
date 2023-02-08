@@ -1451,8 +1451,9 @@ namespace Core.Components
                     .FirstOrDefault(x => x.Entity[IdField].As<int>() == EntityFocusId && x.GuiInfo.Id == LastComponentFocus.Id);
                 if (element != null)
                 {
-                    element.Focus();
+                    LastListViewItem.Focused = true;
                     element.ParentElement.Focus();
+                    element.Focus();
                 }
                 else
                 {

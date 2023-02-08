@@ -947,7 +947,7 @@ namespace TMS.API.Controllers
         }
 
         [HttpPost("api/Transportation/CheckFee")]
-        public async Task<List<Transportation>> CheckFee([FromServices] IWebHostEnvironment host, List<IFormFile> fileCheckFee, int type)
+        public async Task<List<Transportation>> CheckFee([FromBody] DateTime FromDate, [FromBody] DateTime ToDate, [FromBody] int VendorId, [FromServices] IWebHostEnvironment host, List<IFormFile> fileCheckFee, int type)
         {
             var formFile = fileCheckFee.FirstOrDefault();
             if (formFile == null || formFile.Length <= 0)
@@ -1028,24 +1028,16 @@ namespace TMS.API.Controllers
                     throw new ApiException($"Dòng {row} bị lỗi: {e.Message}") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
-            var vendor = list.Where(x => x.Vendor != null).Select(x => x.Vendor.ToLower()).Distinct().ToList();
-            var containerNo = list.Where(x => x.ContainerNo != null).Select(x => x.ContainerNo.ToLower()).Distinct().ToList();
-            var closingDay = list.Where(x => x.ClosingDate != null).Select(x => x.ClosingDate.Value.Date).Distinct().ToList();
-            var vendorDB = await db.Vendor.Where(x => vendor.Contains(x.Name.ToLower())).ToListAsync();
-            var first = vendorDB.FirstOrDefault();
-            if (first is null)
-            {
-                throw new ApiException("Tên công ty không trùng với hệ thống!") { StatusCode = HttpStatusCode.BadRequest };
-            }
             if (type == 1)
             {
                 var qr = db.Transportation.Where(x =>
-               containerNo.Contains(x.ContainerNo.ToLower().Trim())
-               && closingDay.Contains(x.ClosingDate.Value.Date) && x.ClosingId == first.Id).OrderBy(x => x.ClosingDate).AsQueryable();
+                x.ClosingDate.Value.Date >= FromDate
+                && x.ClosingDate.Value.Date <= ToDate
+                && x.ClosingId == VendorId).OrderBy(x => x.ClosingDate).AsQueryable();
                 var transportations = await qr.ToListAsync();
                 var lastHis = new CheckFeeHistory()
                 {
-                    ClosingId = first.Id,
+                    ClosingId = VendorId,
                     FromDate = transportations.FirstOrDefault().ClosingDate,
                     ToDate = transportations.LastOrDefault().ClosingDate,
                     TypeId = type
@@ -1114,7 +1106,7 @@ namespace TMS.API.Controllers
                     {
                         tran = new Transportation()
                         {
-                            ClosingId = first.Id,
+                            ClosingId = VendorId,
                             ReceivedCheck = x.Received,
                             ReceivedCheckUpload = x.Received,
                             ClosingDateCheck = x.ClosingDate,
@@ -1174,66 +1166,7 @@ namespace TMS.API.Controllers
             }
             else
             {
-                var qr = db.Transportation.Where(x =>
-               containerNo.Contains(x.ContainerNo.ToLower().Trim())
-               && closingDay.Contains(x.ReturnDate.Value.Date)).AsQueryable();
-                var transportations = await qr.ToListAsync();
-                var checks = list.Select(x =>
-                {
-                    var tran = transportations.FirstOrDefault(y => y.ContainerNo.ToLower().Trim() == x.ContainerNo.ToLower()
-                    && y.ReturnDate.Value.Date == x.ClosingDate.Value.Date);
-                    if (tran != null)
-                    {
-                        tran.ReceivedReturnCheck = x.Received;
-                        tran.ClosingDateReturnCheck = x.ClosingDate;
-                        tran.SealReturnCheck = x.SealNo;
-                        tran.ContainerNoReturnCheck = x.ContainerNo;
-                        tran.BossReturnCheck = x.Boss;
-                        tran.Cont20ReturnCheck = x.Cont20;
-                        tran.Cont40ReturnCheck = x.Cont40;
-                        //tran.ClosingPercentReturnCheck = x.ClosingPercentCheck;
-                        tran.PickupEmptyReturnCheck = x.PickupEmpty;
-                        tran.PortLoadingReturnCheck = x.PortLoading;
-                        tran.LiftFeeReturnCheck = x.LiftFee;
-                        tran.LandingFeeReturnCheck = x.LandingFee;
-                        tran.CollectOnBehaftInvoinceNoFeeReturnCheck = x.FeeVat1 + x.FeeVat2 + x.FeeVat3;
-                        tran.CollectOnBehaftFeeReturnCheck = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5;
-                        tran.CollectOnSupPriceReturnCheck = x.CollectOnSupPrice;
-                        tran.TotalPriceAfterTaxReturnCheck = x.TotalPriceAfterTax;
-                        if (tran.IsSeftPaymentReturn || tran.IsLiftFee)
-                        {
-                            tran.ReturnLiftFee = 0;
-                        }
-                        if (tran.IsSeftPaymentLandReturn || tran.IsClosingEmptyFee)
-                        {
-                            tran.ReturnClosingFee = 0;
-                        }
-                    }
-                    else
-                    {
-                        tran = new Transportation()
-                        {
-                            ReceivedReturnCheck = x.Received,
-                            ClosingDateReturnCheck = x.ClosingDate,
-                            SealReturnCheck = x.SealNo,
-                            BossReturnCheck = x.Boss,
-                            ContainerNoReturnCheck = x.ContainerNo,
-                            Cont20ReturnCheck = x.Cont20,
-                            Cont40ReturnCheck = x.Cont40,
-                            PickupEmptyReturnCheck = x.PickupEmpty,
-                            PortLoadingReturnCheck = x.PortLoading,
-                            //ClosingPercentReturnCheck = x.ClosingPercentCheck,
-                            LiftFeeReturnCheck = x.LiftFee,
-                            LandingFeeReturnCheck = x.LandingFee,
-                            CollectOnBehaftInvoinceNoFeeReturnCheck = x.FeeVat1 + x.FeeVat2 + x.FeeVat3,
-                            CollectOnBehaftFeeReturnCheck = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5,
-                            CollectOnSupPriceReturnCheck = x.CollectOnSupPrice,
-                            TotalPriceAfterTaxReturnCheck = x.TotalPriceAfterTax,
-                        };
-                    }
-                    return tran;
-                }).ToList();
-                return checks;
+                return null;
             }
         }
 
@@ -2520,7 +2453,7 @@ namespace TMS.API.Controllers
                 worksheet.Cell("H" + start).SetValue(item["Ship"] is null ? "" : item["Ship"].ToString());
                 worksheet.Cell("I" + start).SetValue(item["Trip"] is null ? "" : item["Trip"].ToString());
                 worksheet.Cell("J" + start).SetValue(item["ClosingDate"] is null ? "" : DateTime.Parse(item["ClosingDate"].ToString()));
-                worksheet.Cell("K" + start).SetValue(item["StartShip"] is null ? "" :  DateTime.Parse(item["StartShip"].ToString()));
+                worksheet.Cell("K" + start).SetValue(item["StartShip"] is null ? "" : DateTime.Parse(item["StartShip"].ToString()));
                 worksheet.Cell("L" + start).SetValue(item["ContainerType"] is null ? "" : item["ContainerType"].ToString());
                 worksheet.Cell("M" + start).SetValue(item["ContainerNo"] is null ? "" : item["ContainerNo"].ToString());
                 worksheet.Cell("N" + start).SetValue(item["SealNo"] is null ? "" : item["SealNo"].ToString());
