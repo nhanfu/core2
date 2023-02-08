@@ -1,12 +1,10 @@
-﻿using Bridge;
-using Bridge.Html5;
+﻿using Bridge.Html5;
 using Core.Clients;
 using Core.Components;
 using Core.Components.Extensions;
 using Core.Components.Forms;
 using Core.Enums;
 using Core.Extensions;
-using Core.MVVM;
 using Core.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -14,7 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.ViewModels;
-using static Retyped.dom.Literals.Types;
 using Event = Bridge.Html5.Event;
 
 namespace TMS.UI.Business.Manage
@@ -24,8 +21,6 @@ namespace TMS.UI.Business.Manage
         public bool openPopup;
         public GridView gridViewExpense;
         public Transportation selected;
-        private HTMLInputElement _uploader;
-        private HTMLInputElement _uploaderCheckFee;
 
         public TransportationListBL() : base(nameof(Transportation))
         {
@@ -33,12 +28,6 @@ namespace TMS.UI.Business.Manage
             DOMContentLoaded += () =>
             {
                 NotificationClient?.AddListener(Utils.GetEntity(nameof(Expense)).Id, RealtimeUpdate);
-                Html.Take("Body").Form.Attr("method", "POST").Attr("enctype", "multipart/form-data")
-                .Display(false).Input.Event(EventType.Change, async (ev) => await SelectedExcel(ev)).Type("file").Id($"id_{GetHashCode()}").Attr("name", "fileImport").Attr("accept", ".xlsx");
-                _uploader = Html.Context as HTMLInputElement;
-                Html.Take(ParentElement).Form.Attr("method", "POST").Attr("enctype", "multipart/form-data")
-                .Display(false).Input.Event(EventType.Change, async (ev) => await SelectedExcelCheckFee(ev)).Type("file").Id($"id_{GetHashCode()}").Attr("name", "fileCheckFee").Attr("accept", ".xlsx");
-                _uploaderCheckFee = Html.Context as HTMLInputElement;
             };
         }
 
@@ -72,72 +61,18 @@ namespace TMS.UI.Business.Manage
             Toast.Success("Xuất file thành công");
         }
 
-        private async Task SelectedExcelCheckFee(Event e)
+        public async Task CheckFee()
         {
-            Html.Take((TabEditor.Name == "Transportation List" ? "#Child11120" : "#Child11129")).Clear();
-            var files = e.Target["files"] as FileList;
-            if (files.Nothing())
-            {
-                return;
-            }
-
-            var uploadForm = _uploaderCheckFee.ParentElement as HTMLFormElement;
-            var formData = new FormData(uploadForm);
-            _uploaderCheckFee.Value = null;
-            var rs = await Client.SubmitAsync<List<Transportation>>(new XHRWrapper
-            {
-                FormData = formData,
-                Url = "CheckFee?type=" + (TabEditor.Name == "Transportation List" ? "1" : "0"),
-                Method = HttpMethod.POST,
-                ResponseMimeType = Utils.GetMimeType("xlsx")
-            });
-            if (rs != null)
-            {
-                var entity = await new Client(nameof(CheckFeeHistory)).FirstOrDefaultAsync<CheckFeeHistory>($"?$filter=Id eq {rs.FirstOrDefault(x => x.CheckFeeHistoryId != null).CheckFeeHistoryId}");
-                await this.OpenTab(
-                id: "CheckFee Editor" + rs.FirstOrDefault().CheckFeeHistoryId,
-                featureName: "CheckFee Editor",
+            await this.OpenPopup(
+                featureName: "CheckFee Form",
                 factory: () =>
                 {
-                    var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeEditorBL");
-                    var instance = Activator.CreateInstance(type) as TabEditor;
-                    instance.Icon = "fal fa-sitemap mr-1";
-                    instance.Title = "Kiểm tra phí đóng hàng";
-                    instance.Entity = entity;
-                    instance.Entity["TransportationList"] = rs;
+                    var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeFormBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Kiểm tra bảng kê";
+                    instance.Entity = new CheckFeeHistory();
                     return instance;
                 });
-            }
-
-        }
-
-        private async Task SelectedExcel(Event e)
-        {
-            var files = e.Target["files"] as FileList;
-            if (files.Nothing())
-            {
-                return;
-            }
-
-            var uploadForm = _uploader.ParentElement as HTMLFormElement;
-            var formData = new FormData(uploadForm);
-            var rs = await Client.SubmitAsync<List<CheckCompineTransportationVM>>(new XHRWrapper
-            {
-                FormData = formData,
-                Url = "ImportExcel",
-                Method = HttpMethod.POST,
-                ResponseMimeType = Utils.GetMimeType("xlsx")
-            });
-        }
-
-        public void ImportExcel()
-        {
-            _uploader.Click();
-        }
-
-        public void CheckFee()
-        {
-            _uploaderCheckFee.Click();
         }
 
         public async Task EditTransportation(Transportation entity)

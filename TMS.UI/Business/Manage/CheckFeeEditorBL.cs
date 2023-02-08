@@ -27,20 +27,15 @@ namespace TMS.UI.Business.Manage
             Toast.Success("Xuất file thành công");
         }
 
-        public async void UpdateColor(Transportation transportation)
+        public async Task ChangeTransportationList(Transportation transportation, ListViewItem listViewItem)
         {
-            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.FieldName == "TransportationList").FirstOrDefault();
-            var listViewItem = gridView.GetItemFocus();
-            await BeforePatchUpdateTransportationList(transportation, listViewItem, gridView);
-        }
-
-        public async Task BeforePatchUpdateTransportationList(Transportation transportation, ListViewItem listViewItem, GridView gridView)
-        {
-            if (transportation.Id <= 0)
+            var pathModel = listViewItem.GetPathEntity();
+            if (pathModel.Changes.Any(x => x.Field == nameof(Transportation.ContainerNoCheck) || x.Field == nameof(Transportation.ClosingDateCheck)) && (pathModel.Changes.FirstOrDefault(x => x.Field == IdField).Value.IsNullOrWhiteSpace() || transportation.Id <= 0))
             {
                 PatchUpdate patchUpdate = new PatchUpdate();
                 var tran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter={nameof(Transportation.ClosingId)} eq {transportation.ClosingId} and {nameof(Transportation.ContainerNo)} eq '{transportation.ContainerNoCheck}' and (cast({nameof(Transportation.ClosingDate)},Edm.DateTimeOffset) eq cast({transportation.ClosingDateCheck.Value.Date.ToISOFormat()},Edm.DateTimeOffset))");
                 var changes = new List<PatchUpdateDetail>();
+                var gridView = listViewItem.FindClosest<GridView>();
                 if (tran != null)
                 {
                     changes.Add(new PatchUpdateDetail()
@@ -335,10 +330,15 @@ namespace TMS.UI.Business.Manage
                         CheckFeeHistoryId = CheckFeeHistoryEntity.Id
                     };
                     listViewItem.Entity.CopyPropFrom(tran);
-                    await listViewItem.PatchUpdate();
+                    await gridView.LoadMasterData(new List<Transportation>() { tran });
+                    listViewItem.EmptyRow = true;
+                    listViewItem.UpdateView(true);
                     Toast.Warning("Không tìm thấy cont!");
                 }
-                return;
+            }
+            else
+            {
+                await listViewItem.PatchUpdate();
             }
         }
     }

@@ -947,7 +947,7 @@ namespace TMS.API.Controllers
         }
 
         [HttpPost("api/Transportation/CheckFee")]
-        public async Task<List<Transportation>> CheckFee([FromBody] DateTime FromDate, [FromBody] DateTime ToDate, [FromBody] int VendorId, [FromServices] IWebHostEnvironment host, List<IFormFile> fileCheckFee, int type)
+        public async Task<List<Transportation>> CheckFee([FromForm] DateTime FromDate, [FromForm] DateTime ToDate, [FromForm] int ClosingId, [FromServices] IWebHostEnvironment host, List<IFormFile> fileCheckFee, int type)
         {
             var formFile = fileCheckFee.FirstOrDefault();
             if (formFile == null || formFile.Length <= 0)
@@ -1033,13 +1033,13 @@ namespace TMS.API.Controllers
                 var qr = db.Transportation.Where(x =>
                 x.ClosingDate.Value.Date >= FromDate
                 && x.ClosingDate.Value.Date <= ToDate
-                && x.ClosingId == VendorId).OrderBy(x => x.ClosingDate).AsQueryable();
+                && x.ClosingId == ClosingId).OrderBy(x => x.ClosingDate).AsQueryable();
                 var transportations = await qr.ToListAsync();
                 var lastHis = new CheckFeeHistory()
                 {
-                    ClosingId = VendorId,
-                    FromDate = transportations.FirstOrDefault().ClosingDate,
-                    ToDate = transportations.LastOrDefault().ClosingDate,
+                    ClosingId = ClosingId,
+                    FromDate = FromDate,
+                    ToDate = ToDate,
                     TypeId = type
                 };
                 SetAuditInfo(lastHis);
@@ -1106,7 +1106,7 @@ namespace TMS.API.Controllers
                     {
                         tran = new Transportation()
                         {
-                            ClosingId = VendorId,
+                            ClosingId = ClosingId,
                             ReceivedCheck = x.Received,
                             ReceivedCheckUpload = x.Received,
                             ClosingDateCheck = x.ClosingDate,

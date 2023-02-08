@@ -226,11 +226,17 @@ namespace Core.Components
                 return;
             }
             var pathModel = GetPathEntity();
-            if (pathModel is null)
+            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, pathModel, this);
+            if (pathModel.Changes.FirstOrDefault(x => x.Field == IdField).Value.IsNullOrWhiteSpace())
             {
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
                 return;
             }
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, pathModel, this);
+            if (pathModel is null)
+            {
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
+                return;
+            }
             if (PreQueryFn != null)
             {
                 pathModel["Entity"] = GuiInfo.RefName;

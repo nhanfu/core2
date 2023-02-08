@@ -1652,6 +1652,7 @@ namespace Core.Components
             {
                 return null;
             }
+            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchCreate, Entity, null, this);
             var updatedRows = await new Client(GuiInfo.Reference.Name).BulkUpdateAsync(UpdatedRows);
             await InternalUpdateRows(updateView, updatedRows);
             return updatedRows;

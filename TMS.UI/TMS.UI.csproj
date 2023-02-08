@@ -282,6 +282,7 @@
     <Compile Include="Business\Accountant\FreightTransportationEditBL.cs" />
     <Compile Include="Business\Accountant\FreightTransportationListBL.cs" />
     <Compile Include="Business\Accountant\FreightShipListBL.cs" />
+    <Compile Include="Business\Manage\CheckFeeFormBL.cs" />
     <Compile Include="Business\Manage\ExtraInsuranceFeesRateBL.cs" />
     <Compile Include="Business\Manage\TransportationPlanEditorMobileBL - Copy.cs" />
     <Compile Include="Business\Manage\TransportationPlanEditorMobileBL.cs" />

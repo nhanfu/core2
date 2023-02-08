@@ -1743,7 +1743,7 @@ namespace Core.Components
             }
             PopulateFields();
             RenderIndex();
-            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, rowData);
+            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, rowData, rowSection);
             if (GuiInfo.IsSumary)
             {
                 AddSummaries();
