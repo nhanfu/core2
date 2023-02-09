@@ -47,16 +47,16 @@ namespace TMS.UI.Business.Manage
 
         public async Task ExportCheckFeeSelected()
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
-            var selected = (await gridView.GetRealTimeSelectedRows()).Cast<Transportation>().Where(x => x.Id > 0).ToList();
-            if (selected.Nothing())
-            {
-                Toast.Warning("Vui lòng chọn cont xuất bảng kê");
-                return;
-            }
-            var path = await new Client(nameof(Transportation)).PostAsync<string>(selected, "ExportCheckFee");
-            Client.Download($"/excel/Download/{path.EncodeSpecialChar()}");
-            Toast.Success("Xuất file thành công");
+            await this.OpenPopup(
+                featureName: "CheckFee Form",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeFormBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Xuất bảng kê";
+                    instance.Entity = new CheckFeeHistory();
+                    return instance;
+                });
         }
 
         public async Task CheckFee()

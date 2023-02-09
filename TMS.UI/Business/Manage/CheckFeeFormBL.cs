@@ -1,5 +1,6 @@
 ﻿using Bridge.Html5;
 using Core.Clients;
+using Core.Components;
 using Core.Components.Extensions;
 using Core.Components.Forms;
 using Core.Enums;
@@ -17,7 +18,7 @@ namespace TMS.UI.Business.Manage
     {
         public CheckFeeHistory AEntity => Entity as CheckFeeHistory;
         private HTMLInputElement _uploaderCheckFee;
-        public CheckFeeFormBL() : base(nameof(Allotment))
+        public CheckFeeFormBL() : base(nameof(CheckFeeHistory))
         {
             Name = "CheckFee Form";
             DOMContentLoaded += () =>
@@ -36,6 +37,23 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             _uploaderCheckFee.Click();
+        }
+
+        public async Task ExportCheckFeeSelected()
+        {
+            if (!(await IsFormValid()))
+            {
+                return;
+            }
+            var selected = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=cast(ClosingDate,Edm.DateTimeOffset) ge cast({AEntity.FromDate.Value.ToISOFormat()},Edm.DateTimeOffset) and cast(ClosingDate,Edm.DateTimeOffset) le cast({AEntity.ToDate.Value.ToISOFormat()},Edm.DateTimeOffset) and ClosingId eq {AEntity.ClosingId}");
+            if (selected.Nothing())
+            {
+                Toast.Warning("Vui lòng chọn cont xuất bảng kê");
+                return;
+            }
+            var path = await new Client(nameof(Transportation)).PostAsync<string>(selected, "ExportCheckFee");
+            Client.Download($"/excel/Download/{path.EncodeSpecialChar()}");
+            Toast.Success("Xuất file thành công");
         }
 
         private async Task SelectedExcelCheckFee(Event e)

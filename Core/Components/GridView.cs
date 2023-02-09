@@ -548,7 +548,7 @@ namespace Core.Components
                         {
                             try
                             {
-                                var va = DateTime.ParseExact(cell.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToISOFormat();
+                                var va = DateTime.ParseExact(cell.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                                 if (cell.Operator == "not in" || cell.Operator == "in")
                                 {
                                     where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} != '{va:yyyy-MM-dd}'" : $"[{GuiInfo.RefName}].{cell.FieldName} = '{va:yyyy-MM-dd}'";
@@ -557,7 +557,7 @@ namespace Core.Components
                             }
                             catch
                             {
-                                var va = DateTime.ParseExact(cell.Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture).ToISOFormat();
+                                var va = DateTime.ParseExact(cell.Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                                 where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} != '{va:yyyy-MM-dd}'" : $"[{GuiInfo.RefName}].{cell.FieldName} = '{va:yyyy-MM-dd}'";
                                 advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqualDatime : AdvSearchOperation.EqualDatime;
                             }
@@ -567,14 +567,14 @@ namespace Core.Components
                     {
                         if (!isNUll)
                         {
-                            string va;
+                            DateTime va;
                             try
                             {
-                                va = DateTime.ParseExact(cell.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToISOFormat();
+                                va = DateTime.ParseExact(cell.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                             }
                             catch
                             {
-                                va = DateTime.ParseExact(cell.Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture).ToISOFormat();
+                                va = DateTime.ParseExact(cell.Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                             }
                             if (cell.Operator == "gt" || cell.Operator == "lt")
                             {
