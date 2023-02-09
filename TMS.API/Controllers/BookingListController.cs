@@ -287,6 +287,7 @@ namespace TMS.API.Controllers
                                           }).ToList();
             SetAuditInfo(groupByPercentileQuery);
             groupByPercentileQuery.ForEach(x => { CalcTotalPriceAndTotalFee(x); });
+            var listAdd = new List<int>();
             foreach (var item in groupByPercentileQuery)
             {
                 var checkBookingList = await db.BookingList.Where(x =>
@@ -303,11 +304,13 @@ namespace TMS.API.Controllers
                 && x.ExportListId == item.ExportListId
                 && x.PolicyId == item.PolicyId
                 && x.ShipUnitPrice == item.ShipUnitPrice
-                && x.Submit == false).FirstOrDefaultAsync();
+                && x.Submit == false
+                && x.Active).FirstOrDefaultAsync();
                 if (checkBookingList == null)
                 {
                     db.Add(item);
                     await db.SaveChangesAsync();
+                    listAdd.Add(item.Id);
                 }
                 else
                 {
@@ -318,10 +321,20 @@ namespace TMS.API.Controllers
                         checkBookingList.ShipPolicyPrice = item.ShipPolicyPrice;
                         CalcTotalPriceAndTotalFee(checkBookingList);
                     }
+                    listAdd.Add(checkBookingList.Id);
                 }
                 var trans = await db.Transportation.Where(x => item.TransportationIds.Contains(x.Id.ToString())).ToListAsync();
                 trans.ForEach(x => x.BookingListId = item.Id);
                 await db.SaveChangesAsync();
+            }
+            if (listAdd.Count > 0)
+            {
+                var bookingListSuperfluous = await db.BookingList.Where(x => x.Submit == false && x.StartShip.Value.Date >= entity.FromDate.Value.Date && x.StartShip.Value.Date <= entity.ToDate.Value.Date && !listAdd.Any(y => y == x.Id) && x.Active).ToListAsync();
+                if (bookingListSuperfluous.Count > 0)
+                {
+                    bookingListSuperfluous.ForEach(x => { x.Active = false; });
+                    await db.SaveChangesAsync();
+                }
             }
             return true;
         }
