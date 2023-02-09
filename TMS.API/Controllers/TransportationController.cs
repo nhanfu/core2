@@ -2287,7 +2287,7 @@ namespace TMS.API.Controllers
             worksheet.Cell("AC1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("AC1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("AC1:AD2").Column(1).Merge();
-            worksheet.Cell("AD1").Value = $"Tên daonh thu";
+            worksheet.Cell("AD1").Value = $"Tên doanh thu";
             worksheet.Cell("AD1").Style.Alignment.WrapText = true;
             worksheet.Cell("AD1").Style.Font.Bold = true;
             worksheet.Cell("AD1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
