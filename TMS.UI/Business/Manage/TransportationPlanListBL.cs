@@ -621,9 +621,9 @@ namespace TMS.UI.Business.Manage
                 var listViewItem = gridView.GetListViewItems(transportationPlan).FirstOrDefault();
                 if (transportationPlan.RouteId != null || transportationPlan.BossId != null)
                 {
-                    var components = new Client(nameof(GridPolicy)).GetRawList<GridPolicy>("?$filter=Id in (20511, 17793)");
+                    var components = new Client(nameof(GridPolicy)).GetRawList<GridPolicy>("?$filter=Id in (20511)");
                     var operators = new Client(nameof(MasterData)).GetRawList<MasterData>("?$filter=Parent/Name eq 'Operator'");
-                    var settingPolicys = new Client(nameof(SettingPolicy)).GetRawList<SettingPolicy>($"?$expand=SettingPolicyDetail&$filter=TypeId eq 2");
+                    var settingPolicys = new Client(nameof(SettingPolicy)).GetRawList<SettingPolicy>($"?$expand=SettingPolicyDetail&$filter=TypeId eq 2 and TransportationTypeId ne 11677");
                     await Task.WhenAll(components, operators, settingPolicys);
                     var listpolicy = settingPolicys.Result;
                     var componentrs = components.Result;

@@ -1194,9 +1194,10 @@ namespace TMS.UI.Business.Manage
             var listViewItem = gridView.GetListViewItems(transportation).FirstOrDefault();
             if (transportation.RouteId != null || transportation.ClosingId != null)
             {
-                var components = new Client(nameof(GridPolicy)).GetRawList<GridPolicy>("?$filter=Id in (20347, 20332, 20342)");
+                transportation.TransportationTypeId = null;
+                var components = new Client(nameof(GridPolicy)).GetRawList<GridPolicy>("?$filter=Id in (20347, 20342)");
                 var operators = new Client(nameof(MasterData)).GetRawList<MasterData>("?$filter=Parent/Name eq 'Operator'");
-                var settingPolicys = new Client(nameof(SettingPolicy)).GetRawList<SettingPolicy>($"?$orderby=Id desc&$expand=SettingPolicyDetail&$filter=TypeId eq 2");
+                var settingPolicys = new Client(nameof(SettingPolicy)).GetRawList<SettingPolicy>($"?$orderby=Id asc&$expand=SettingPolicyDetail&$filter=TypeId eq 2");
                 await Task.WhenAll(components, operators, settingPolicys);
                 var listpolicy = settingPolicys.Result;
                 var componentrs = components.Result;
@@ -1286,17 +1287,10 @@ namespace TMS.UI.Business.Manage
                     {
                         check = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportation.Id} and ({str})");
                     }
-                }
-                var checks = query.Where(x => !x.IsNullOrWhiteSpace()).Select(x => new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportation.Id} and ({x})")).ToList();
-                var data1 = await Task.WhenAll(checks);
-                var indexOf = data1.IndexOf(x => x != null);
-                if (indexOf == -1)
-                {
-                    transportation.TransportationTypeId = null;
-                }
-                else
-                {
-                    transportation.TransportationTypeId = listpolicy[indexOf].TransportationTypeId;
+                    if (check != null)
+                    {
+                        transportation.TransportationTypeId = item.TransportationTypeId;
+                    }
                 }
                 await ActionAnalysis(transportation);
             }
