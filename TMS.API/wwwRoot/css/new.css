@@ -30022,8 +30022,8 @@ input[class*=bg-]:not(.bg-light):not(.bg-white):not(.bg-transparent) + .form-con
 
 .card-header:not([class*=bg-]):not([class*=alpha-]) {
     background-color: transparent;
-    padding-top: 1.25rem;
-    padding-bottom: 1.25rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
     border-bottom-width: 0
 }
 

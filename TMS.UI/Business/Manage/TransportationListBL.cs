@@ -872,6 +872,15 @@ namespace TMS.UI.Business.Manage
             }
         }
 
+        public async void UpdateViewSelected()
+        {
+            var grid = this.FindComponentByName<GridView>(nameof(Transportation));
+            var listViewItem = grid.GetListViewItems(selected).FirstOrDefault();
+            var tran = await new Client(nameof(Transportation)).GetAsync<Transportation>(selected.Id);
+            listViewItem.Entity.CopyPropFrom(tran);
+            listViewItem.UpdateView(true);
+        }
+
         private async Task UpdateTotalFee()
         {
             var grid = this.FindComponentByName<GridView>(nameof(Transportation));

@@ -2249,6 +2249,10 @@ namespace Core.Components
         {
             var res = base.HardDeleteConfirmed();
             RenderIndex();
+            if (GuiInfo.IsSumary)
+            {
+                AddSummaries();
+            }
             return res;
         }
 
