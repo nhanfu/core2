@@ -485,7 +485,7 @@ ul.tabs-list {
 #tabs {
     overflow: auto;
     margin: 0;
-    height: 50px;
+    height: 40px;
     .overflowOverlayHover;
 
     li {
@@ -499,6 +499,7 @@ ul.tabs-list {
         cursor: pointer;
         justify-content: center;
         align-items: center;
+        height: 37px;
 
         &.active {
             border-bottom: 2px solid @greenLogo;
@@ -522,6 +523,11 @@ ul.tabs-list {
 
         .title {
             margin-right: 8px;
+        }
+
+        a {
+            height: 36px;
+            padding: 8px;
         }
     }
 
@@ -589,7 +595,7 @@ td {
     display: flex;
     flex-flow: column;
     background-color: white;
-    padding: 1rem;
+    padding: 0.4rem;
     border-radius: 1px;
     box-shadow: 0px 0 3px #27432c80;
     overflow: hidden;
@@ -609,8 +615,8 @@ td {
         &.search > * {
             max-width: 300px;
             width: 100%;
-            margin-right: 1rem;
-            margin-bottom: 1rem;
+            margin-right: 0.7rem;
+            margin-bottom: 0.3rem;
             position: relative
         }
 
@@ -864,7 +870,7 @@ td {
 
     tbody {
         tr {
-            height: 2.5rem;
+            height: 2.3rem;
             line-height: 1rem;
             transition: all ease-in 0.05s;
             cursor: pointer;
@@ -1284,15 +1290,14 @@ form {
 
 .backdrop {
     background-color: #00000033 !important;
-    position: fixed !important;
+    position: absolute !important;
     top: 0;
     left: 0;
     width: 100%;
-    height: calc(100vh - 1rem) !important;
+    height: calc(100vh) !important;
     z-index: 1000;
     display: flex;
     justify-content: center;
-    z-index: 700;
 }
 
 .login-backdrop {
@@ -1448,6 +1453,7 @@ form {
     align-items: center;
     min-width: 250px;
     max-width: 100%;
+    top: 20px;
 
     .popup-title {
         display: flex;
@@ -1971,7 +1977,7 @@ form {
 .properties {
     position: fixed;
     right: 0;
-    height: calc(100vh - 6rem);
+    height: calc(100vh - 1rem);
 }
 
 .ribbon-group {
@@ -1999,7 +2005,7 @@ form {
     }
 
     button {
-        min-height: calc(@buttonHeight - 1px);
+        min-height: calc(@buttonHeight - 6px);
         min-width: 4rem;
         border-radius: 5px;
         color: #4b6b7a;
@@ -3573,7 +3579,10 @@ div > [class*="cell"]:last-child {
 }
 
 #header {
-    height: 50px
+    height: 40px;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
 }
 
 .nav-tabs .nav-link.active {
@@ -3661,4 +3670,46 @@ div > [class*="cell"]:last-child {
 
 .choose-files {
     color: #000;
+}
+
+
+@media (min-width:1200px) {
+    .page-header {
+        position: fixed;
+        top: 40px;
+        width: 100%;
+        z-index: 999;
+    }
+
+    #tab-content {
+        position: fixed;
+        width: 100%;
+        top: 77px;
+        height: calc(100vh - 77px);
+        overflow: auto;
+    }
+}
+
+.nav-config {
+    height: 30px;
+
+    li {
+        height: 28px;
+
+        a {
+            height: 27px;
+            padding: 2px 18px 0px 16px;
+            font-size: 14px;
+        }
+    }
+}
+
+.grid-toolbar {
+    input:not([type="checkbox"]) {
+        height: 1.8rem;
+    }
+
+    .btn-sm {
+        line-height: 1.2667;
+    }
 }

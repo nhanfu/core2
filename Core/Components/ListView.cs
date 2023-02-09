@@ -196,7 +196,7 @@ namespace Core.Components
             var pagingQuery = dataSource + $"&$skip={skip}&$top={pageSize}&$count=true";
             OdataResult<object> result;
             var val = (Entity?.GetComplexPropValue(GuiInfo.FieldName) as IEnumerable<object>)?.ToList();
-            if (GuiInfo.CanCache && val != null && val.Any() && !_firstCache)
+            if (GuiInfo.CanCache && val != null && val.Any())
             {
                 result = new OdataResult<object>
                 {
@@ -207,10 +207,6 @@ namespace Core.Components
             else
             {
                 result = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(pageSize > 0 ? pagingQuery : dataSource, true);
-            }
-            if (GuiInfo.CanCache)
-            {
-                _firstCache = true;
             }
             Sql = result.Sql;
             UpdatePagination(result.Odata.Count ?? result.Value.Count, result.Value.Count);
