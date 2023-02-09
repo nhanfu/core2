@@ -11,8 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
-using TMS.API.ViewModels;
-using Event = Bridge.Html5.Event;
 
 namespace TMS.UI.Business.Manage
 {
@@ -47,13 +45,13 @@ namespace TMS.UI.Business.Manage
                 });
         }
 
-        public async Task ExportCheckFee()
+        public async Task ExportCheckFeeSelected()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
             var selected = (await gridView.GetRealTimeSelectedRows()).Cast<Transportation>().Where(x => x.Id > 0).ToList();
             if (selected.Nothing())
             {
-                Toast.Warning("Vui lòng chọn cont cần phân bổ");
+                Toast.Warning("Vui lòng chọn cont xuất bảng kê");
                 return;
             }
             var path = await new Client(nameof(Transportation)).PostAsync<string>(selected, "ExportCheckFee");
@@ -144,7 +142,7 @@ namespace TMS.UI.Business.Manage
 
         public virtual async Task Allotment()
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
             var selected = (await gridView.GetRealTimeSelectedRows()).Cast<Transportation>().Where(x => x.Id > 0).ToList();
             if (selected.Nothing())
             {

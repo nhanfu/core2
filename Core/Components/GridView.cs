@@ -1340,7 +1340,7 @@ namespace Core.Components
             _sum = false;
             var calcFilter = CalcFilterQuery(searching);
             DataTable.ParentElement.ScrollTop = 0;
-            await ReloadData(calcFilter, cache: false);
+            await ReloadData(calcFilter, cache: false, search: searching);
         }
 
         private void ColumnResizeHandler()
@@ -2285,7 +2285,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            if (!Editable)
+            if (!Editable && !GuiInfo.CanCache)
             {
                 if (force)
                 {

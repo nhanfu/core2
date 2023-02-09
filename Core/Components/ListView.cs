@@ -158,7 +158,7 @@ namespace Core.Components
             return source;
         }
 
-        public virtual async Task<List<object>> ReloadData(string dataSource = null, bool cache = false, int? skip = null, int? pageSize = null)
+        public virtual async Task<List<object>> ReloadData(string dataSource = null, bool cache = false, int? skip = null, int? pageSize = null, bool search = false)
         {
             if (GuiInfo.LocalRender && GuiInfo.LocalData != null)
             {
@@ -196,7 +196,7 @@ namespace Core.Components
             var pagingQuery = dataSource + $"&$skip={skip}&$top={pageSize}&$count=true";
             OdataResult<object> result;
             var val = (Entity?.GetComplexPropValue(GuiInfo.FieldName) as IEnumerable<object>)?.ToList();
-            if (GuiInfo.CanCache && val != null && val.Any())
+            if (GuiInfo.CanCache && val != null && val.Any() && !search)
             {
                 result = new OdataResult<object>
                 {
@@ -1157,11 +1157,11 @@ namespace Core.Components
         /// </summary>
         /// <param name="rowData">The row object to update</param>
         /// <param name="fieldName">Left this default to update all cells</param>
-        public virtual void UpdateRow(object rowData, params string[] fieldName)
+        public virtual void UpdateRow(object rowData, bool force = false, params string[] fieldName)
         {
             RowAction(
                 row => row.Entity == rowData,
-                row => row.Children.Where(x => fieldName.Nothing() || fieldName.Contains(x.GuiInfo.FieldName)).ForEach(x => x.UpdateView())
+                row => row.Children.Where(x => fieldName.Nothing() || fieldName.Contains(x.GuiInfo.FieldName)).ForEach(x => x.UpdateView(force))
             );
         }
 

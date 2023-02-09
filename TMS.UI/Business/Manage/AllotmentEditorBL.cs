@@ -1,4 +1,5 @@
-﻿using Core.Clients;
+﻿using Bridge.Html5;
+using Core.Clients;
 using Core.Components;
 using Core.Components.Extensions;
 using Core.Components.Forms;
@@ -20,7 +21,7 @@ namespace TMS.UI.Business.Manage
             Name = "Allotment Editor";
         }
 
-        public async Task UpdateExpenses()
+        public void UpdateExpenses()
         {
             if (AEntity.UnitPrice == null)
             {
@@ -28,7 +29,6 @@ namespace TMS.UI.Business.Manage
             }
             var list = AEntity.Expense.ToList();
             var count = list.Count;
-            gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
             list.ForEach(x =>
             {
                 x.ExpenseTypeId = AEntity.ExpenseTypeId;
@@ -46,14 +46,20 @@ namespace TMS.UI.Business.Manage
                 }
                 x.TotalPriceBeforeTax = x.UnitPrice * x.Quantity;
                 x.TotalPriceAfterTax = x.TotalPriceBeforeTax;
-                gridView.UpdateRow(x);
+            });
+            gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
+            gridView.AllListViewItem.ForEach(item =>
+            {
+                var ent = list.FirstOrDefault(x => x.TransportationId == (int)item.Entity["TransportationId"]);
+                item.Entity.CopyPropFrom(ent);
+                item.UpdateView(true);
             });
         }
 
         public override async Task<bool> Save(object entity = null)
         {
             var rs = await base.Save(entity);
-            await UpdateTotalFee();
+            Window.SetTimeout(async () => { await UpdateTotalFee(); }, 500);
             var grid = ParentForm.FindComponentByName<GridView>(nameof(Expense));
             await grid?.ApplyFilter(true);
             var gridTran = ParentForm.FindComponentByName<GridView>(nameof(Transportation));

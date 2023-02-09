@@ -27,6 +27,47 @@ namespace TMS.UI.Business.Manage
             Toast.Success("Xuất file thành công");
         }
 
+        public virtual async Task Allotment()
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
+            var selected = (await gridView.GetRealTimeSelectedRows()).Cast<Transportation>().Where(x => x.Id > 0).ToList();
+            if (selected.Nothing())
+            {
+                Toast.Warning("Vui lòng chọn cont cần phân bổ");
+                return;
+            }
+            var fees = selected.Select(x => new Expense
+            {
+                ExpenseTypeId = null,
+                UnitPrice = 0,
+                Quantity = 1,
+                TotalPriceAfterTax = 0,
+                TotalPriceBeforeTax = 0,
+                Vat = 0,
+                ContainerNo = x.ContainerNo,
+                SealNo = x.SealNo,
+                BossId = x.BossId,
+                CommodityId = x.CommodityId,
+                ClosingDate = x.ClosingDate,
+                ReturnDate = x.ReturnDate,
+                TransportationId = x.Id
+            }).ToList();
+            await this.OpenPopup(
+                featureName: "Allotment Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.AllotmentEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Phân bổ chi phí đóng hàng";
+                    instance.Entity = new Allotment
+                    {
+                        UnitPrice = 0,
+                        Expense = fees
+                    };
+                    return instance;
+                });
+        }
+
         public async Task ChangeTransportationList(Transportation transportation, ListViewItem listViewItem)
         {
             var pathModel = listViewItem.GetPathEntity();
