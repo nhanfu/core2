@@ -716,15 +716,6 @@ namespace TMS.UI.Business.Manage
                             await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(patchModel);
                         }
                     }
-                    var checks = query.Where(x => !x.IsNullOrWhiteSpace()).Select(x => new Client(nameof(TransportationPlan)).FirstOrDefaultAsync<TransportationPlan>($"?$filter=Active eq true and Id eq {transportationPlan.Id} and ({x}) and RequestChangeId eq null")).ToList();
-                    var data1 = await Task.WhenAll(checks);
-                    var indexOf = data1.IndexOf(x => x != null);
-                    if (indexOf == -1)
-                    {
-                        transportationPlan.TransportationTypeId = null;
-                        var patchModel = GetPatchEntity(transportationPlan);
-                        await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(patchModel);
-                    }
                 }
                 Analysis(transportationPlan);
             }, 500);
