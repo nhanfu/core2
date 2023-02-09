@@ -109,7 +109,7 @@ namespace Core.Components
                         fn.Call(this, Entity, _input).ToString();
                     }
                 }
-            },100);
+            }, 100);
             DOMContentLoaded?.Invoke();
         }
 
@@ -119,7 +119,7 @@ namespace Core.Components
             {
                 return;
             }
-            var check = evt.KeyCodeEnum() == KeyCodeEnum.V && evt.CtrlOrMetaKey();
+            var check = evt.KeyCodeEnum() == KeyCodeEnum.V && evt.CtrlOrMetaKey() && evt.ShiftKey();
             var tcs = new TaskCompletionSource<string>();
             if (check)
             {
@@ -134,14 +134,23 @@ namespace Core.Components
                     _input.Value = values[0];
                     SetValue();
                     var current = this.FindClosest<ListViewItem>();
-                    var gridView = this.FindClosest<GridView>();
-                    var i = 0;
+                    var startNo = current.RowNo;
+                    var gridView = this.FindClosest<VirtualGrid>();
                     foreach (var item in values)
                     {
-                        var upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == current.RowNo + i);
+                        var upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
+                        if (upItem is null)
+                        {
+                            if (startNo + 1 <= values.Count())
+                            {
+                                gridView.DataTable.ParentElement.ScrollTop += 37 * 5;
+                            }
+                            await Task.Delay(500);
+                            upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo + 1);
+                        }
                         var updated = upItem.FilterChildren<Number>(x => x.GuiInfo.FieldName == GuiInfo.FieldName).FirstOrDefault();
                         updated.Dirty = true;
-                        updated.Value = item.Replace(",", "").IsNullOrWhiteSpace() ? default(decimal) :  decimal.Parse(item.Replace(",", ""));
+                        updated.Value = item.Replace(",", "").IsNullOrWhiteSpace() ? default(decimal) : decimal.Parse(item.Replace(",", ""));
                         updated.UpdateView();
                         updated.PopulateFields();
                         await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
@@ -150,7 +159,10 @@ namespace Core.Components
                         {
                             await upItem.PatchUpdate();
                         }
-                        i++;
+                        upItem.Focused = true;
+                        updated.Focus();
+                        gridView.DataTable.ParentElement.ScrollTop += 37;
+                        startNo++;
                     }
                 }
             }

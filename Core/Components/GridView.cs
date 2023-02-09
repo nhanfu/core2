@@ -30,7 +30,7 @@ namespace Core.Components
         private HTMLElement _summary;
         private bool _showSummary;
         public bool _sum = false;
-        protected HTMLElement DataTable { get; set; }
+        public HTMLElement DataTable { get; set; }
         private UserSetting _settings { get; set; }
         public static GridPolicy ToolbarColumn = new GridPolicy
         {
