@@ -65,6 +65,7 @@ namespace TMS.UI.Business.Accountant
                         TotalPrice = transportationEntity.TotalPrice,
                         NotePayment = transportationEntity.NotePayment,
                         VendorVatId = transportationEntity.VendorVatId,
+                        BossId= item.BossId,
                         TransportationId = item.Id,
                         Active = true,
                         InsertedDate = DateTime.Now.Date,

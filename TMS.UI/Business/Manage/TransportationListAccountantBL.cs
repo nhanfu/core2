@@ -842,6 +842,7 @@ namespace TMS.UI.Business.Manage
                 };
                 return;
             }
+            revenue.BossId = selected.BossId;
             revenue.TransportationId = selected.Id;
             revenue.Id = 0;
         }
