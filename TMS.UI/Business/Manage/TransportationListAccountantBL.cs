@@ -843,6 +843,10 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             revenue.BossId = selected.BossId;
+            revenue.ContainerNo = selected.ContainerNo;
+            revenue.SealNo = selected.SealNo;
+            revenue.ContainerTypeId = selected.ContainerTypeId;
+            revenue.ClosingDate= selected.ClosingDate;
             revenue.TransportationId = selected.Id;
             revenue.Id = 0;
         }
