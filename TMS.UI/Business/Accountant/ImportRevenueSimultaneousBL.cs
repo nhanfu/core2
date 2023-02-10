@@ -13,13 +13,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.ViewModels;
+using static Retyped.dom.Literals.Types;
 
 namespace TMS.UI.Business.Accountant
 {
     public class ImportRevenueSimultaneousBL : PopupEditor
     {
-        public Transportation transportationEntity => Entity as Transportation;
-        public ImportRevenueSimultaneousBL() : base(nameof(Transportation))
+        public Revenue revenueEntity => Entity as Revenue;
+        public ImportRevenueSimultaneousBL() : base(nameof(Revenue))
         {
             Name = "Import Revenue Simultaneous";
         }
@@ -52,20 +53,20 @@ namespace TMS.UI.Business.Accountant
                 {
                     var newRevenue = new Revenue()
                     {
-                        LotNo = transportationEntity.LotNo,
-                        LotDate = transportationEntity.LotDate,
-                        InvoinceNo = transportationEntity.InvoinceNo,
-                        InvoinceDate = transportationEntity.InvoinceDate,
-                        UnitPriceBeforeTax = transportationEntity.UnitPriceBeforeTax,
-                        UnitPriceAfterTax = transportationEntity.UnitPriceAfterTax,
-                        ReceivedPrice = transportationEntity.ReceivedPrice,
-                        CollectOnBehaftPrice = transportationEntity.CollectOnBehaftPrice,
-                        Vat = transportationEntity.Vat,
-                        TotalPriceBeforTax = transportationEntity.TotalPriceBeforTax,
-                        VatPrice = transportationEntity.VatPrice,
-                        TotalPrice = transportationEntity.TotalPrice,
-                        NotePayment = transportationEntity.NotePayment,
-                        VendorVatId = transportationEntity.VendorVatId,
+                        LotNo = revenueEntity.LotNo,
+                        LotDate = revenueEntity.LotDate,
+                        InvoinceNo = revenueEntity.InvoinceNo,
+                        InvoinceDate = revenueEntity.InvoinceDate,
+                        UnitPriceBeforeTax = revenueEntity.UnitPriceBeforeTax,
+                        UnitPriceAfterTax = revenueEntity.UnitPriceAfterTax,
+                        ReceivedPrice = revenueEntity.ReceivedPrice,
+                        CollectOnBehaftPrice = revenueEntity.CollectOnBehaftPrice,
+                        Vat = revenueEntity.Vat,
+                        TotalPriceBeforTax = revenueEntity.TotalPriceBeforTax,
+                        VatPrice = revenueEntity.VatPrice,
+                        TotalPrice = revenueEntity.TotalPrice,
+                        NotePayment = revenueEntity.NotePayment,
+                        VendorVatId = revenueEntity.VendorVatId,
                         BossId= item.BossId,
                         ContainerNo= item.ContainerNo,
                         SealNo= item.SealNo,
@@ -119,20 +120,20 @@ namespace TMS.UI.Business.Accountant
                 Spinner.AppendTo(this.Element, true);
                 foreach (var item in revenues)
                 {
-                    item.LotNo = item.LotNo == null || item.LotNo == "" ? transportationEntity.LotNo : item.LotNo;
-                    item.LotDate = item.LotDate == null ? transportationEntity.LotDate : item.LotDate;
-                    item.InvoinceNo = item.InvoinceNo == null || item.InvoinceNo == "" ? transportationEntity.InvoinceNo : item.InvoinceNo;
-                    item.InvoinceDate = item.InvoinceDate == null ? transportationEntity.InvoinceDate : item.InvoinceDate;
-                    item.UnitPriceBeforeTax = item.UnitPriceBeforeTax == null || item.UnitPriceBeforeTax == 0 ? transportationEntity.UnitPriceBeforeTax : item.UnitPriceBeforeTax;
-                    item.UnitPriceAfterTax = item.UnitPriceAfterTax == null || item.UnitPriceAfterTax == 0 ? transportationEntity.UnitPriceAfterTax : item.UnitPriceAfterTax;
-                    item.ReceivedPrice = item.ReceivedPrice == null || item.ReceivedPrice == 0 ? transportationEntity.ReceivedPrice : item.ReceivedPrice;
-                    item.CollectOnBehaftPrice = item.CollectOnBehaftPrice == null || item.CollectOnBehaftPrice == 0  ? transportationEntity.CollectOnBehaftPrice : item.CollectOnBehaftPrice;
-                    item.Vat = item.Vat == null || item.Vat == 0  ? transportationEntity.Vat : item.Vat;
-                    item.TotalPriceBeforTax = item.TotalPriceBeforTax == null || item.TotalPriceBeforTax == 0 ? transportationEntity.TotalPriceBeforTax : item.TotalPriceBeforTax;  
-                    item.VatPrice = item.VatPrice == null || item.VatPrice == 0  ? transportationEntity.VatPrice : item.VatPrice;
-                    item.TotalPrice = item.TotalPrice == null || item.TotalPrice == 0  ? transportationEntity.TotalPrice : item.TotalPrice;
-                    item.NotePayment = item.NotePayment == null || item.NotePayment == "" ? transportationEntity.NotePayment : item.NotePayment;
-                    item.VendorVatId = item.VendorVatId == null ? transportationEntity.VendorVatId : item.VendorVatId;
+                    item.LotNo = item.LotNo == null || item.LotNo == "" ? revenueEntity.LotNo : item.LotNo;
+                    item.LotDate = item.LotDate == null ? revenueEntity.LotDate : item.LotDate;
+                    item.InvoinceNo = item.InvoinceNo == null || item.InvoinceNo == "" ? revenueEntity.InvoinceNo : item.InvoinceNo;
+                    item.InvoinceDate = item.InvoinceDate == null ? revenueEntity.InvoinceDate : item.InvoinceDate;
+                    item.UnitPriceBeforeTax = item.UnitPriceBeforeTax == null || item.UnitPriceBeforeTax == 0 ? revenueEntity.UnitPriceBeforeTax : item.UnitPriceBeforeTax;
+                    item.UnitPriceAfterTax = item.UnitPriceAfterTax == null || item.UnitPriceAfterTax == 0 ? revenueEntity.UnitPriceAfterTax : item.UnitPriceAfterTax;
+                    item.ReceivedPrice = item.ReceivedPrice == null || item.ReceivedPrice == 0 ? revenueEntity.ReceivedPrice : item.ReceivedPrice;
+                    item.CollectOnBehaftPrice = item.CollectOnBehaftPrice == null || item.CollectOnBehaftPrice == 0  ? revenueEntity.CollectOnBehaftPrice : item.CollectOnBehaftPrice;
+                    item.Vat = item.Vat == null || item.Vat == 0  ? revenueEntity.Vat : item.Vat;
+                    item.TotalPriceBeforTax = item.TotalPriceBeforTax == null || item.TotalPriceBeforTax == 0 ? revenueEntity.TotalPriceBeforTax : item.TotalPriceBeforTax;  
+                    item.VatPrice = item.VatPrice == null || item.VatPrice == 0  ? revenueEntity.VatPrice : item.VatPrice;
+                    item.TotalPrice = item.TotalPrice == null || item.TotalPrice == 0  ? revenueEntity.TotalPrice : item.TotalPrice;
+                    item.NotePayment = item.NotePayment == null || item.NotePayment == "" ? revenueEntity.NotePayment : item.NotePayment;
+                    item.VendorVatId = item.VendorVatId == null ? revenueEntity.VendorVatId : item.VendorVatId;
                 }
                 var res = await new Client(nameof(Revenue)).BulkUpdateAsync<Revenue>(revenues);
                 if (res != null)
@@ -174,20 +175,20 @@ namespace TMS.UI.Business.Accountant
                 Spinner.AppendTo(this.Element, true);
                 foreach (var item in revenues)
                 {
-                    item.LotNo = item.LotNo == null || item.LotNo == "" ? transportationEntity.LotNo : item.LotNo;
-                    item.LotDate = item.LotDate == null ? transportationEntity.LotDate : item.LotDate;
-                    item.InvoinceNo = item.InvoinceNo == null || item.InvoinceNo == "" ? transportationEntity.InvoinceNo : item.InvoinceNo;
-                    item.InvoinceDate = item.InvoinceDate == null ? transportationEntity.InvoinceDate : item.InvoinceDate;
-                    item.UnitPriceBeforeTax = item.UnitPriceBeforeTax == null || item.UnitPriceBeforeTax == 0 ? transportationEntity.UnitPriceBeforeTax : item.UnitPriceBeforeTax;
-                    item.UnitPriceAfterTax = item.UnitPriceAfterTax == null || item.UnitPriceAfterTax == 0 ? transportationEntity.UnitPriceAfterTax : item.UnitPriceAfterTax;
-                    item.ReceivedPrice = item.ReceivedPrice == null || item.ReceivedPrice == 0 ? transportationEntity.ReceivedPrice : item.ReceivedPrice;
-                    item.CollectOnBehaftPrice = item.CollectOnBehaftPrice == null || item.CollectOnBehaftPrice == 0 ? transportationEntity.CollectOnBehaftPrice : item.CollectOnBehaftPrice;
-                    item.Vat = item.Vat == null || item.Vat == 0 ? transportationEntity.Vat : item.Vat;
-                    item.TotalPriceBeforTax = item.TotalPriceBeforTax == null || item.TotalPriceBeforTax == 0 ? transportationEntity.TotalPriceBeforTax : item.TotalPriceBeforTax;
-                    item.VatPrice = item.VatPrice == null || item.VatPrice == 0 ? transportationEntity.VatPrice : item.VatPrice;
-                    item.TotalPrice = item.TotalPrice == null || item.TotalPrice == 0 ? transportationEntity.TotalPrice : item.TotalPrice;
-                    item.NotePayment = item.NotePayment == null || item.NotePayment == "" ? transportationEntity.NotePayment : item.NotePayment;
-                    item.VendorVatId = item.VendorVatId == null ? transportationEntity.VendorVatId : item.VendorVatId;
+                    item.LotNo = item.LotNo == null || item.LotNo == "" ? revenueEntity.LotNo : item.LotNo;
+                    item.LotDate = item.LotDate == null ? revenueEntity.LotDate : item.LotDate;
+                    item.InvoinceNo = item.InvoinceNo == null || item.InvoinceNo == "" ? revenueEntity.InvoinceNo : item.InvoinceNo;
+                    item.InvoinceDate = item.InvoinceDate == null ? revenueEntity.InvoinceDate : item.InvoinceDate;
+                    item.UnitPriceBeforeTax = item.UnitPriceBeforeTax == null || item.UnitPriceBeforeTax == 0 ? revenueEntity.UnitPriceBeforeTax : item.UnitPriceBeforeTax;
+                    item.UnitPriceAfterTax = item.UnitPriceAfterTax == null || item.UnitPriceAfterTax == 0 ? revenueEntity.UnitPriceAfterTax : item.UnitPriceAfterTax;
+                    item.ReceivedPrice = item.ReceivedPrice == null || item.ReceivedPrice == 0 ? revenueEntity.ReceivedPrice : item.ReceivedPrice;
+                    item.CollectOnBehaftPrice = item.CollectOnBehaftPrice == null || item.CollectOnBehaftPrice == 0 ? revenueEntity.CollectOnBehaftPrice : item.CollectOnBehaftPrice;
+                    item.Vat = item.Vat == null || item.Vat == 0 ? revenueEntity.Vat : item.Vat;
+                    item.TotalPriceBeforTax = item.TotalPriceBeforTax == null || item.TotalPriceBeforTax == 0 ? revenueEntity.TotalPriceBeforTax : item.TotalPriceBeforTax;
+                    item.VatPrice = item.VatPrice == null || item.VatPrice == 0 ? revenueEntity.VatPrice : item.VatPrice;
+                    item.TotalPrice = item.TotalPrice == null || item.TotalPrice == 0 ? revenueEntity.TotalPrice : item.TotalPrice;
+                    item.NotePayment = item.NotePayment == null || item.NotePayment == "" ? revenueEntity.NotePayment : item.NotePayment;
+                    item.VendorVatId = item.VendorVatId == null ? revenueEntity.VendorVatId : item.VendorVatId;
                 }
                 var res = await new Client(nameof(Revenue)).BulkUpdateAsync<Revenue>(revenues);
                 if (res != null)
@@ -215,34 +216,41 @@ namespace TMS.UI.Business.Accountant
             base.CancelWithoutAsk();
         }
 
-        public void CalcRevenue(Transportation revenue)
+        public void CalcRevenue()
         {
-            revenue.Vat = revenue.Vat == null ? 10 : revenue.Vat;
-            revenue.TotalPriceBeforTax = Math.Round(revenue.TotalPrice == null ? 0 : (decimal)revenue.TotalPrice / (1 + ((decimal)revenue.Vat / 100)));
-            revenue.VatPrice = Math.Round(revenue.TotalPriceBeforTax == null ? 0 : (decimal)revenue.TotalPriceBeforTax * (decimal)revenue.Vat / 100);
+            revenueEntity.Vat = revenueEntity.Vat == null ? 10 : revenueEntity.Vat;
+            revenueEntity.TotalPriceBeforTax = Math.Round(revenueEntity.TotalPrice == null ? 0 : (decimal)revenueEntity.TotalPrice / (1 + ((decimal)revenueEntity.Vat / 100)));
+            revenueEntity.VatPrice = Math.Round(revenueEntity.TotalPriceBeforTax == null ? 0 : (decimal)revenueEntity.TotalPriceBeforTax * (decimal)revenueEntity.Vat / 100);
             this.UpdateView(false, nameof(Transportation.Vat), nameof(Transportation.TotalPriceBeforTax), nameof(Transportation.VatPrice));
         }
 
-        public PatchUpdate GetPatchEntity(Transportation transportation)
+        public void CalcRevenueTotalPrice()
+        {
+            revenueEntity.UnitPriceAfterTax = revenueEntity.UnitPriceAfterTax == null ? 0 : revenueEntity.UnitPriceAfterTax;
+            revenueEntity.ReceivedPrice = revenueEntity.ReceivedPrice == null ? 0 : revenueEntity.ReceivedPrice;
+            revenueEntity.TotalPrice = revenueEntity.UnitPriceAfterTax + revenueEntity.ReceivedPrice;
+            this.UpdateView(false, nameof(Transportation.TotalPrice));
+            CalcRevenue();
+        }
+
+        public PatchUpdate GetPatchEntity(Revenue revenue)
         {
             var details = new List<PatchUpdateDetail>();
-            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.LotNo), Value = transportation.LotNo?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.LotDate), Value = transportation.LotDate?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.InvoinceNo), Value = transportation.InvoinceNo?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.InvoinceDate), Value = transportation.InvoinceDate?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.UnitPriceBeforeTax), Value = transportation.UnitPriceBeforeTax?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.UnitPriceAfterTax), Value = transportation.UnitPriceAfterTax?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.ReceivedPrice), Value = transportation.ReceivedPrice?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.CollectOnBehaftPrice), Value = transportation.CollectOnBehaftPrice?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.Vat), Value = transportation.Vat?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.TotalPriceBeforTax), Value = transportation.TotalPriceBeforTax?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.VatPrice), Value = transportation.VatPrice?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.TotalPrice), Value = transportation.TotalPrice?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.Cp1), Value = transportation.Cp1.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.Cp2), Value = transportation.Cp2.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.NotePayment), Value = transportation.NotePayment?.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.VendorVatId), Value = transportation.VendorVatId?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = revenue.Id.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.LotNo), Value = revenue.LotNo?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.LotDate), Value = revenue.LotDate?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.InvoinceNo), Value = revenue.InvoinceNo?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.InvoinceDate), Value = revenue.InvoinceDate?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.UnitPriceBeforeTax), Value = revenue.UnitPriceBeforeTax?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.UnitPriceAfterTax), Value = revenue.UnitPriceAfterTax?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.ReceivedPrice), Value = revenue.ReceivedPrice?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.CollectOnBehaftPrice), Value = revenue.CollectOnBehaftPrice?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.Vat), Value = revenue.Vat?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.TotalPriceBeforTax), Value = revenue.TotalPriceBeforTax?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.VatPrice), Value = revenue.VatPrice?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.TotalPrice), Value = revenue.TotalPrice?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.NotePayment), Value = revenue.NotePayment?.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.VendorVatId), Value = revenue.VendorVatId?.ToString() });
             return new PatchUpdate { Changes = details };
         }
     }

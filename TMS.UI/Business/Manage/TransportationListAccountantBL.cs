@@ -35,7 +35,7 @@ namespace TMS.UI.Business.Manage
                     var type = Type.GetType("TMS.UI.Business.Accountant.ImportRevenueSimultaneousBL");
                     var instance = Activator.CreateInstance(type) as PopupEditor;
                     instance.Title = "Nhập đồng loạt doanh thu";
-                    instance.Entity = new Transportation();
+                    instance.Entity = new Revenue();
                     return instance;
                 });
         }
@@ -171,8 +171,18 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public void RequestUnClosingRevenue(Revenue revenue, PatchUpdate patch)
+        public async void RequestUnClosingRevenue(Revenue revenue, PatchUpdate patch)
         {
+            if (patch.Changes.Any(x => x.Field == nameof(revenue.UnitPriceAfterTax)
+                || x.Field == nameof(revenue.ReceivedPrice)))
+            {
+                await CalcRevenueTotalPriceAsync(revenue);
+            }
+            if (patch.Changes.Any(x => x.Field == nameof(revenue.Vat)
+                || x.Field == nameof(revenue.TotalPrice)))
+            {
+                await CalcRevenueAsync(revenue);
+            }
             if (selected.IsLocked == false && selected.IsSubmit == false)
             {
                 return;
@@ -783,32 +793,20 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        private int calcRevenue;
-
-        public void CalcRevenue(Revenue revenue)
-        {
-            Window.ClearTimeout(calcRevenue);
-            calcRevenue = Window.SetTimeout(async () =>
-            {
-                await CalcRevenueAsync(revenue);
-            }, 500);
-        }
-
         public async Task CalcRevenueAsync(Revenue revenue)
         {
-            var gridView = this.FindComponentByName<GridView>(nameof(Revenue));
-            if (gridView is null)
-            {
-                return;
-            }
-            revenue.Vat = revenue.Vat == null ? 10 : revenue.Vat;
-            revenue.TotalPriceBeforTax = Math.Round(revenue.TotalPrice == null ? 0 : (decimal)revenue.TotalPrice / (1 + ((decimal)revenue.Vat / 100)));
-            revenue.VatPrice = Math.Round(revenue.TotalPriceBeforTax == null ? 0 : (decimal)revenue.TotalPriceBeforTax * (decimal)revenue.Vat / 100);
-            var res = await new Client(nameof(Revenue)).PatchAsync<Revenue>(GetPatchEntityCalcRevenue(revenue));
-            if (res != null)
-            {
-                await gridView.ApplyFilter(true);
-            }
+            revenue.Vat = revenue.Vat == null || revenue.Vat == 0 ? 10 : revenue.Vat;
+            revenue.TotalPriceBeforTax = Math.Round((decimal)revenue.TotalPrice / (1 + ((decimal)revenue.Vat / 100)));
+            revenue.VatPrice = Math.Round((decimal)revenue.TotalPriceBeforTax * (decimal)revenue.Vat / 100);
+            await new Client(nameof(Revenue)).PatchAsync<Revenue>(GetPatchEntityCalcRevenue(revenue));
+        }
+
+        public async Task CalcRevenueTotalPriceAsync(Revenue revenue)
+        {
+            revenue.UnitPriceAfterTax = revenue.UnitPriceAfterTax == null ? 0 : revenue.UnitPriceAfterTax;
+            revenue.ReceivedPrice = revenue.ReceivedPrice == null ? 0 : revenue.ReceivedPrice;
+            revenue.TotalPrice = revenue.UnitPriceAfterTax + revenue.ReceivedPrice;
+            await CalcRevenueAsync(revenue);
         }
 
         public async Task ReloadRevenue(Transportation transportation)
@@ -907,6 +905,9 @@ namespace TMS.UI.Business.Manage
             details.Add(new PatchUpdateDetail { Field = nameof(Revenue.TotalPriceBeforTax), Value = revenue.TotalPriceBeforTax.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Revenue.VatPrice), Value = revenue.VatPrice.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Revenue.TotalPrice), Value = revenue.TotalPrice.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.UnitPriceBeforeTax), Value = revenue.UnitPriceBeforeTax.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.UnitPriceAfterTax), Value = revenue.UnitPriceAfterTax.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.ReceivedPrice), Value = revenue.ReceivedPrice.ToString() });
             return new PatchUpdate { Changes = details };
         }
     }
