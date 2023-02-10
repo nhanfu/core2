@@ -482,11 +482,11 @@ namespace Core.Components
                         if (rsdynamic.Any())
                         {
                             ids = rsdynamic.Select(x => x.Id).Cast<int>().Combine();
-                            where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} not in ({ids})" : $"[{GuiInfo.RefName}].{cell.FieldName} in ({ids})";
+                            where = cell.Operator == "not in" ? $"([{GuiInfo.RefName}].{cell.FieldName} not in ({ids}) or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $"[{GuiInfo.RefName}].{cell.FieldName} in ({ids})";
                         }
                         else
                         {
-                            where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} != {cell.Value}" : $"[{GuiInfo.RefName}].{cell.FieldName} = {cell.Value}";
+                            where = cell.Operator == "not in" ? $"([{GuiInfo.RefName}].{cell.FieldName} != {cell.Value} or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $"[{GuiInfo.RefName}].{cell.FieldName} = {cell.Value}";
                         }
                         index++;
                     }
@@ -597,7 +597,7 @@ namespace Core.Components
                 var value = ids ?? cell.Value;
                 if (!AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.Value == value && x.CompareOperatorId == advo))
                 {
-                    if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo))
+                    if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo && x.CompareOperatorId == AdvSearchOperation.In))
                     {
                         AdvSearchVM.Conditions.FirstOrDefault(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo).Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value;
                     }
@@ -706,7 +706,7 @@ namespace Core.Components
             _showSummary = true;
             Task.Run(async () =>
             {
-                var gridPolicy = BasicHeader.Where(x => x.ComponentType == nameof(Number)).ToList();
+                var gridPolicy = BasicHeader.Where(x => x.ComponentType == nameof(Number) && x.FieldName != header.FieldName).ToList();
                 var sum = gridPolicy.Select(x => $"FORMAT(SUM(isnull([{GuiInfo.RefName}].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
                 var dataSet = await new Client(GuiInfo.RefName).PostAsync<object[][]>(sum.Combine(), $"ViewSumary?group={header.FieldName}&tablename={GuiInfo.RefName}&refname={header.RefName}&formatsumary={GuiInfo.FormatSumaryField}&sql={Sql}&orderby={GuiInfo.OrderBySumary}&where={Wheres.Combine(" and ")} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {GuiInfo.PreQuery}")}");
                 var sumarys = dataSet[0];
@@ -755,13 +755,20 @@ namespace Core.Components
                         value = datetime?.ToString("dd/MM/yyyy");
                         valueText = datetime?.ToString("dd/MM/yyyy");
                     }
+                    else if (header.ComponentType == nameof(Number))
+                    {
+                        var datetime = (item[header.FieldName] is null || item[header.FieldName].ToString() == "") ? default(decimal) : decimal.Parse(item[header.FieldName].ToString());
+                        dataHeader = datetime == default(decimal) ? "" : datetime.ToString("N0");
+                        value = item[header.FieldName].ToString();
+                        valueText = dataHeader;
+                    }
                     else
                     {
                         value = item[header.FieldName].ToString();
                         valueText = item[header.FieldName].ToString();
                     }
                     Html.Instance.TRow.Event(EventType.Click, () => FilterSumary(header, value, valueText)).Render();
-                    Html.Instance.TData.Style("max-width: 100%;").ClassName("text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
+                    Html.Instance.TData.Style("max-width: 100%;").ClassName(header.ComponentType == nameof(Number) ? "text-right" : "text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
                     Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item["TotalRecord"].ToString()).End.Render();
                     foreach (var itemDetail in gridPolicy)
                     {
@@ -832,14 +839,25 @@ namespace Core.Components
                 if (!header.Editable)
                 {
                     fieldName = com.GuiInfo.FieldName;
-                    value = com.GuiInfo.ComponentType == "Dropdown" ? (focusedRow.Entity.GetPropValue(header.FieldName) is null ? null : focusedRow.Entity.GetPropValue(header.FieldName).ToString().EncodeSpecialChar()) : (com.GetValue() is null ? null : com.GetValue().ToString().EncodeSpecialChar());
+                    switch (com.GuiInfo.ComponentType)
+                    {
+                        case "Dropdown":
+                            value = focusedRow.Entity.GetPropValue(header.FieldName) is null ? null : focusedRow.Entity.GetPropValue(header.FieldName).ToString().EncodeSpecialChar();
+                            break;
+                        case nameof(Number):
+                            value = focusedRow.Entity.GetPropValue(header.FieldName) is null ? null : focusedRow.Entity.GetPropValue(header.FieldName).ToString().Replace(",", "");
+                            break;
+                        default:
+                            value = com.GetValue() is null ? null : com.GetValue().ToString().EncodeSpecialChar();
+                            break;
+                    }
                     if (value is null)
                     {
                         text = null;
                     }
                     else
                     {
-                        text = com.GetValue() is null ? null : com.GetValue().ToString().EncodeSpecialChar();
+                        text = com.GetValue() is null ? null : com.GetValue().ToString().DecodeSpecialChar();
                     }
                 }
                 else
@@ -1452,8 +1470,6 @@ namespace Core.Components
                 if (element != null)
                 {
                     LastListViewItem.Focused = true;
-                    element.ParentElement.Focus();
-                    element.Focus();
                 }
                 else
                 {
@@ -2065,7 +2081,6 @@ namespace Core.Components
                         var selectedIds = selectedOdataIds.Value.Select(x => x[IdField]).Cast<int>().ToList();
                         SelectedIds = selectedIds.As<HashSet<int>>();
                     }
-                    Toast.Success($"Bạn đã chọn {SelectedIds.Count} dữ liệu");
                 });
             }
         }
