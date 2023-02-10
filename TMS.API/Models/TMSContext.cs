@@ -1147,6 +1147,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.FeeVat2Upload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FeeVat3).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FeeVat3Upload).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.ShipUnitPriceQuotation).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FreeText).HasMaxLength(250);
             entity.Property(e => e.FreeText1).HasMaxLength(250);
             entity.Property(e => e.FreeText2).HasMaxLength(250);

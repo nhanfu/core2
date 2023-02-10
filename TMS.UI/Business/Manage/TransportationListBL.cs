@@ -992,8 +992,7 @@ namespace TMS.UI.Business.Manage
             || x.Field == nameof(Transportation.CommodityId)
             || x.Field == nameof(Transportation.StartShip)
             || x.Field == nameof(Transportation.ShipId)
-            || x.Field == nameof(Transportation.RouteId)
-            || x.Field == nameof(Transportation.LockShip)) && transportation.PolicyId is null)
+            || x.Field == nameof(Transportation.RouteId)) && transportation.PolicyId is null && !patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ShipPrice)))
             {
                 Toast.Warning("Hệ thống đang lấy chính sách hãng tàu");
                 var components = new Client(nameof(GridPolicy)).GetRawList<GridPolicy>("?$filter=ComponentId eq 16016");
@@ -1168,7 +1167,7 @@ namespace TMS.UI.Business.Manage
                         transportation.ShipPolicyPrice = listpolicy[indexOf].UnitPrice;
                     }
                 }
-                transportation.ShipPrice = (transportation.ShipUnitPrice is null ? default(decimal) : transportation.ShipUnitPrice.Value) - (transportation.ShipPolicyPrice is null ? default(decimal) : transportation.ShipPolicyPrice.Value);
+                transportation.ShipPrice = (transportation.ShipUnitPriceQuotation is null ? default(decimal) : transportation.ShipUnitPriceQuotation.Value) - (transportation.ShipPolicyPrice is null ? default(decimal) : transportation.ShipPolicyPrice.Value);
                 var patchModel = GetPatchEntity(transportation);
                 var patch = await new Client(nameof(Transportation)).PatchAsync<object>(patchModel);
                 listViewItem.Entity.CopyPropFrom(patch);
@@ -1180,11 +1179,12 @@ namespace TMS.UI.Business.Manage
 
         public PatchUpdate GetPatchEntity(Transportation transportation)
         {
-            var details = new List<PatchUpdateDetail>();
-            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.PolicyId), Value = transportation.PolicyId is null ? null : transportation.PolicyId.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.ShipPolicyPrice), Value = transportation.ShipPolicyPrice is null ? "0" : transportation.ShipPolicyPrice.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.ShipUnitPrice), Value = transportation.ShipUnitPrice is null ? null : transportation.ShipUnitPrice.ToString() });
+            var details = new List<PatchUpdateDetail>
+            {
+                new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() },
+                new PatchUpdateDetail { Field = nameof(Transportation.PolicyId), Value = transportation.PolicyId is null ? null : transportation.PolicyId.ToString() },
+                new PatchUpdateDetail { Field = nameof(Transportation.ShipPolicyPrice), Value = transportation.ShipPolicyPrice is null ? "0" : transportation.ShipPolicyPrice.ToString() }
+            };
             return new PatchUpdate { Changes = details };
         }
 
