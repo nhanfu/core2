@@ -851,6 +851,23 @@ namespace TMS.UI.Business.Manage
             revenue.Id = 0;
         }
 
+        private int updateRevenue;
+
+        public void UpdateTransportationWhenUpdateRevenue()
+        {
+            Window.ClearTimeout(updateRevenue);
+            updateRevenue = Window.SetTimeout(async () =>
+            {
+                await UpdateTransportationWhenUpdateRevenueAsync();
+            }, 1000);
+        }
+
+        public async Task UpdateTransportationWhenUpdateRevenueAsync()
+        {
+            var grid = this.FindComponentByName<GridView>("TransportationAccountant");
+            await grid.ApplyFilter(true);
+        }
+
         public async Task ExportTransportationAndRevenue()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
