@@ -448,9 +448,9 @@ namespace Core.Components
 
         private void ToastSelected()
         {
-            if (ListViewSection.ListView.SelectedIds.Count > 1)
+            if (ListViewSection.ListView.SelectedIds.Count % 10 == 0 && ListViewSection.ListView.SelectedIds.Count > 0)
             {
-                Toast.Success($"Bạn đã chọn {ListViewSection.ListView.SelectedIds.Count} dữ liệu");
+                Toast.Success($"Bạn đã chọn {ListViewSection.ListView.SelectedIds.Count} dữ liệu", 100);
             }
         }
 

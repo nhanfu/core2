@@ -21,7 +21,7 @@ namespace Core.Extensions
                  new PNotify({
                             title: options.Message,
                             delay: options.Timeout,
-                            type: options.ClassName
+                            type: options.ClassName,
                         });
                 return;
             }
