@@ -24,6 +24,10 @@ namespace TMS.API.Models
         public string Note { get; set; }
         public string Name { get; set; }
         public int? BossId { get; set; }
+        public string ContainerNo { get; set; }
+        public string SealNo { get; set; }
+        public int? ContainerTypeId { get; set; }
+        public DateTime? ClosingDate { get; set; }
         public bool Active { get; set; }
         public DateTime InsertedDate { get; set; }
         public int InsertedBy { get; set; }

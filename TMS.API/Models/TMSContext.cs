@@ -893,12 +893,14 @@ public partial class TMSContext : DbContext
             entity.ToTable(tb => tb.HasTrigger("tr_Revenue_UpdateTransportation"));
 
             entity.Property(e => e.CollectOnBehaftPrice).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.ContainerNo).HasMaxLength(250);
             entity.Property(e => e.InvoinceNo).HasMaxLength(250);
             entity.Property(e => e.LotNo).HasMaxLength(250);
             entity.Property(e => e.Name).HasMaxLength(250);
             entity.Property(e => e.Note).HasMaxLength(250);
             entity.Property(e => e.NotePayment).HasMaxLength(250);
             entity.Property(e => e.ReceivedPrice).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.SealNo).HasMaxLength(250);
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.TotalPriceBeforTax).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.UnitPriceAfterTax).HasColumnType("decimal(20, 5)");
@@ -1061,6 +1063,7 @@ public partial class TMSContext : DbContext
                     tb.HasTrigger("tr_Transportation_ReturnVs");
                     tb.HasTrigger("tr_Transportation_ShellDate");
                     tb.HasTrigger("tr_Transportation_ShipUnitPrice");
+                    tb.HasTrigger("tr_Transportation_ShipUnitPriceQuotation");
                     tb.HasTrigger("tr_Transportation_TotalBet");
                     tb.HasTrigger("tr_Transportation_TotalContainerUsing");
                     tb.HasTrigger("tr_Transportation_UpdateBooking");
@@ -1147,7 +1150,6 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.FeeVat2Upload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FeeVat3).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FeeVat3Upload).HasColumnType("decimal(20, 5)");
-            entity.Property(e => e.ShipUnitPriceQuotation).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FreeText).HasMaxLength(250);
             entity.Property(e => e.FreeText1).HasMaxLength(250);
             entity.Property(e => e.FreeText2).HasMaxLength(250);
