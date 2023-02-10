@@ -421,7 +421,6 @@ namespace Core.Components
                         }
                     }
                 }
-                Toast.Success($"Bạn đã chọn {ListViewSection.ListView.SelectedIds.Count} dữ liệu");
             }
         }
 
