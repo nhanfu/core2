@@ -892,21 +892,37 @@ public partial class TMSContext : DbContext
         {
             entity.ToTable(tb => tb.HasTrigger("tr_Revenue_UpdateTransportation"));
 
-            entity.Property(e => e.CollectOnBehaftPrice).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.CollectOnBehaftPrice)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ContainerNo).HasMaxLength(250);
             entity.Property(e => e.InvoinceNo).HasMaxLength(250);
             entity.Property(e => e.LotNo).HasMaxLength(250);
             entity.Property(e => e.Name).HasMaxLength(250);
             entity.Property(e => e.Note).HasMaxLength(250);
             entity.Property(e => e.NotePayment).HasMaxLength(250);
-            entity.Property(e => e.ReceivedPrice).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.ReceivedPrice)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("decimal(20, 5)");
             entity.Property(e => e.SealNo).HasMaxLength(250);
-            entity.Property(e => e.TotalPrice).HasColumnType("decimal(20, 5)");
-            entity.Property(e => e.TotalPriceBeforTax).HasColumnType("decimal(20, 5)");
-            entity.Property(e => e.UnitPriceAfterTax).HasColumnType("decimal(20, 5)");
-            entity.Property(e => e.UnitPriceBeforeTax).HasColumnType("decimal(20, 5)");
-            entity.Property(e => e.Vat).HasColumnType("decimal(20, 5)");
-            entity.Property(e => e.VatPrice).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.TotalPrice)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.TotalPriceBeforTax)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.UnitPriceAfterTax)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.UnitPriceBeforeTax)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.Vat)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.VatPrice)
+                .HasDefaultValueSql("((0))")
+                .HasColumnType("decimal(20, 5)");
 
             entity.HasOne(d => d.Transportation).WithMany(p => p.Revenue)
                 .HasForeignKey(d => d.TransportationId)
@@ -1248,6 +1264,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.ShipPrice).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ShipRoses).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ShipUnitPrice).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.ShipUnitPriceQuotation).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.SplitBill).HasMaxLength(250);
             entity.Property(e => e.TotalBet)
                 .HasDefaultValueSql("((0))")
