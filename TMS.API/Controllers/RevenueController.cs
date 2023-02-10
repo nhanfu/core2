@@ -100,5 +100,32 @@ namespace TMS.API.Controllers
             }
             return base.CreateAsync(entity);
         }
+
+        public override async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<int> ids)
+        {
+            if (ids.Nothing())
+            {
+                return true;
+            }
+            ids = ids.Where(x => x > 0).ToList();
+            if (ids.Nothing())
+            {
+                return true;
+            }
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var revenue = await db.Revenue.Where(x => x.Id == id).FirstOrDefaultAsync();
+                    db.Revenue.Remove(revenue);
+                    await db.SaveChangesAsync();
+                }
+                return true;
+            }
+            catch
+            {
+                throw new ApiException("Không thể xóa dữ liệu!") { StatusCode = HttpStatusCode.BadRequest };
+            }
+        }
     }
 }
