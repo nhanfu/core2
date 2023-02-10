@@ -44,6 +44,7 @@ namespace TMS.UI.Business.Accountant
                 Content = "Bạn có chắc chắn muốn nhập doanh thu cho " + listViewItems.Count + " DSVC ?",
             };
             confirm.Render();
+            var revenues = new List<Revenue>();
             confirm.YesConfirmed += async () =>
             {
                 Spinner.AppendTo(this.Element, true);
@@ -71,14 +72,24 @@ namespace TMS.UI.Business.Accountant
                         ContainerTypeId= item.ContainerTypeId,
                         ClosingDate= item.ClosingDate,
                         TransportationId = item.Id,
+                        Id = 0,
                         Active = true,
                         InsertedDate = DateTime.Now.Date,
                         InsertedBy = Client.Token.UserId
                     };
-                    await new Client(nameof(Revenue)).CreateAsync<Revenue>(newRevenue);
+                    revenues.Add(newRevenue);
                 }
-                Dispose();
-                Toast.Success("Đã nhập thành công");
+                var res = await new Client(nameof(Revenue)).BulkUpdateAsync<Revenue>(revenues);
+                if (res != null)
+                {
+                    await gridView.ApplyFilter(true);
+                    Dispose();
+                    Toast.Success("Đã nhập thành công");
+                }
+                else
+                {
+                    Toast.Success("Đã có lỗi trong quá trình xử lý");
+                }
             };
         }
 
@@ -97,16 +108,16 @@ namespace TMS.UI.Business.Accountant
                 Toast.Warning("Không có DSVC nào có thể nhập");
                 return;
             }
-            var revenue = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and TransportationId in ({ids.Combine()})");
+            var revenues = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and TransportationId in ({ids.Combine()})");
             var confirm = new ConfirmDialog
             {
-                Content = "Bạn có chắc chắn muốn nhập doanh thu cho " + listViewItems.Count + " DSVC với " + revenue.Count + " dòng doanh thu ?",
+                Content = "Bạn có chắc chắn muốn nhập doanh thu cho " + listViewItems.Count + " DSVC với " + revenues.Count + " dòng doanh thu ?",
             };
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
                 Spinner.AppendTo(this.Element, true);
-                foreach (var item in revenue)
+                foreach (var item in revenues)
                 {
                     item.LotNo = item.LotNo == null || item.LotNo == "" ? transportationEntity.LotNo : item.LotNo;
                     item.LotDate = item.LotDate == null ? transportationEntity.LotDate : item.LotDate;
@@ -122,10 +133,73 @@ namespace TMS.UI.Business.Accountant
                     item.TotalPrice = item.TotalPrice == null || item.TotalPrice == 0  ? transportationEntity.TotalPrice : item.TotalPrice;
                     item.NotePayment = item.NotePayment == null || item.NotePayment == "" ? transportationEntity.NotePayment : item.NotePayment;
                     item.VendorVatId = item.VendorVatId == null ? transportationEntity.VendorVatId : item.VendorVatId;
-                    await new Client(nameof(Revenue)).UpdateAsync<Revenue>(item);
                 }
-                Dispose();
-                Toast.Success("Đã nhập thành công");
+                var res = await new Client(nameof(Revenue)).BulkUpdateAsync<Revenue>(revenues);
+                if (res != null)
+                {
+                    await gridView.ApplyFilter(true);
+                    Dispose();
+                    Toast.Success("Đã nhập thành công");
+                }
+                else
+                {
+                    Toast.Success("Đã có lỗi trong quá trình xử lý");
+                }
+            };
+        }
+
+        public async Task UpdateRevenueSimultaneousByRevenue()
+        {
+            var gridView = Parent.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "Revenue");
+            if (gridView is null)
+            {
+                return;
+            }
+            var ids = gridView.SelectedIds.ToList();
+            var revenues = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and Id in ({ids.Combine()})");
+            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({revenues.Select(x => x.TransportationId).Combine()})");
+            var listViewItems = transportations.Where(x => x.IsLocked == false && x.IsSubmit == false).ToList();
+            if (listViewItems.Count <= 0)
+            {
+                Toast.Warning("Không có doanh thu nào có thể nhập");
+                return;
+            }
+            var confirm = new ConfirmDialog
+            {
+                Content = "Bạn có chắc chắn muốn nhập doanh thu cho " + revenues.Count + " dòng doanh thu ?",
+            };
+            confirm.Render();
+            confirm.YesConfirmed += async () =>
+            {
+                Spinner.AppendTo(this.Element, true);
+                foreach (var item in revenues)
+                {
+                    item.LotNo = item.LotNo == null || item.LotNo == "" ? transportationEntity.LotNo : item.LotNo;
+                    item.LotDate = item.LotDate == null ? transportationEntity.LotDate : item.LotDate;
+                    item.InvoinceNo = item.InvoinceNo == null || item.InvoinceNo == "" ? transportationEntity.InvoinceNo : item.InvoinceNo;
+                    item.InvoinceDate = item.InvoinceDate == null ? transportationEntity.InvoinceDate : item.InvoinceDate;
+                    item.UnitPriceBeforeTax = item.UnitPriceBeforeTax == null || item.UnitPriceBeforeTax == 0 ? transportationEntity.UnitPriceBeforeTax : item.UnitPriceBeforeTax;
+                    item.UnitPriceAfterTax = item.UnitPriceAfterTax == null || item.UnitPriceAfterTax == 0 ? transportationEntity.UnitPriceAfterTax : item.UnitPriceAfterTax;
+                    item.ReceivedPrice = item.ReceivedPrice == null || item.ReceivedPrice == 0 ? transportationEntity.ReceivedPrice : item.ReceivedPrice;
+                    item.CollectOnBehaftPrice = item.CollectOnBehaftPrice == null || item.CollectOnBehaftPrice == 0 ? transportationEntity.CollectOnBehaftPrice : item.CollectOnBehaftPrice;
+                    item.Vat = item.Vat == null || item.Vat == 0 ? transportationEntity.Vat : item.Vat;
+                    item.TotalPriceBeforTax = item.TotalPriceBeforTax == null || item.TotalPriceBeforTax == 0 ? transportationEntity.TotalPriceBeforTax : item.TotalPriceBeforTax;
+                    item.VatPrice = item.VatPrice == null || item.VatPrice == 0 ? transportationEntity.VatPrice : item.VatPrice;
+                    item.TotalPrice = item.TotalPrice == null || item.TotalPrice == 0 ? transportationEntity.TotalPrice : item.TotalPrice;
+                    item.NotePayment = item.NotePayment == null || item.NotePayment == "" ? transportationEntity.NotePayment : item.NotePayment;
+                    item.VendorVatId = item.VendorVatId == null ? transportationEntity.VendorVatId : item.VendorVatId;
+                }
+                var res = await new Client(nameof(Revenue)).BulkUpdateAsync<Revenue>(revenues);
+                if (res != null)
+                {
+                    await gridView.ApplyFilter(true);
+                    Dispose();
+                    Toast.Success("Đã nhập thành công");
+                }
+                else
+                {
+                    Toast.Success("Đã có lỗi trong quá trình xử lý");
+                }
             };
         }
 

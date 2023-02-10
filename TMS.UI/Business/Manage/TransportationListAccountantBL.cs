@@ -23,7 +23,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task ImportRevenueSimultaneous()
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant" || x.GuiInfo.FieldName == "Revenue");
             if (gridView is null)
             {
                 return;
