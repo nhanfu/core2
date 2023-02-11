@@ -211,7 +211,7 @@ namespace Core.Components
                 var per = (decimal)outerColumn / parentColumn * 100;
                 per = decimal.Round(per, 2, MidpointRounding.AwayFromZero);
                 var padding = decimal.Round((groupInfo.ItemInRow - 1m) / groupInfo.ItemInRow, 2, MidpointRounding.AwayFromZero);
-                width = "100%";
+                width = (outerColumn == parentColumn || groupInfo.Responsive) ? "100%" : $"calc({per}% - {padding}rem)";
             }
 
             Html.Take(parent.Element).Panel(groupInfo.Label)
