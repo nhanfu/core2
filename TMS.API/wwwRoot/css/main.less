@@ -712,12 +712,12 @@ td {
     &::-webkit-scrollbar {
         width: 0;
         height: 0;
-        border-right: 1px solid @grayNormal;
     }
 
     &:hover::-webkit-scrollbar {
-        width: 8px;
+        width: 10px;
         height: 10px;
+        all: unset;
     }
 
     thead {
@@ -2664,19 +2664,6 @@ div > [class*="cell"]:last-child {
     > div.passed::before {
         background-color: @greenLogo;
     }
-}
-
-::-webkit-scrollbar {
-    height: 10px;
-    width: 6px;
-    border: 0;
-    background-color: @ribbon;
-    transition: all 0.45s ease;
-}
-
-::-webkit-scrollbar-thumb {
-    background: @grayDark;
-    border-radius: 7px;
 }
 
 .rate {

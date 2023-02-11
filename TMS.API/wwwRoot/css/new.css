@@ -55831,15 +55831,6 @@ textarea.ta-row-1 {
 #tableTop-paginator li a, #tableTop-paginator li span {
     padding: 0 6px
 }
-/*!* từ item thứ 7 sẽ hiện submenu bên trên*!*/
-::-webkit-scrollbar {
-    width: 6px;
-    height: 10px
-}
-
-::-webkit-scrollbar-thumb {
-    background: #bebebe
-}
 
 @-moz-document url-prefix() {
     * {
