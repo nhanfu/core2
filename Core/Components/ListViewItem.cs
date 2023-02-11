@@ -138,7 +138,17 @@ namespace Core.Components
             Html.Take(Element)
                 .AsyncEvent(EventType.Click, RowItemClick)
                 .AsyncEvent(EventType.DblClick, RowDblClick)
-                .Event(EventType.FocusIn, () => Focused = true)
+                .Event(EventType.FocusIn, () =>
+                {
+                    ListView.AllListViewItem.ForEach(x =>
+                    {
+                        if (x.Focused)
+                        {
+                            x.Focused = false;
+                        }
+                    });
+                    Focused = true;
+                })
                 .Event(EventType.FocusOut, RowFocusOut)
                 .Event(EventType.MouseEnter, MouseEnter)
                 .Event(EventType.MouseLeave, MouseLeave);
