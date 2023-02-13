@@ -42,4 +42,36 @@ namespace TMS.API.Models
         [NotMapped]
         public string TransportationIds { get; set; }
     }
+
+    public partial class Revenue
+    {
+        [NotMapped]
+        public bool IsLotNo { get; set; }
+        [NotMapped]
+        public bool IsLotDate { get; set; }
+        [NotMapped]
+        public bool IsInvoinceNo { get; set; }
+        [NotMapped]
+        public bool IsInvoinceDate { get; set; }
+        [NotMapped]
+        public bool IsUnitPriceBeforeTax { get; set; }
+        [NotMapped]
+        public bool IsUnitPriceAfterTax { get; set; }
+        [NotMapped]
+        public bool IsReceivedPrice { get; set; }
+        [NotMapped]
+        public bool IsCollectOnBehaftPrice { get; set; }
+        [NotMapped]
+        public bool IsVat { get; set; }
+        [NotMapped]
+        public bool IsTotalPriceBeforTax { get; set; }
+        [NotMapped]
+        public bool IsVatPrice { get; set; }
+        [NotMapped]
+        public bool IsTotalPrice { get; set; }
+        [NotMapped]
+        public bool IsNotePayment { get; set; }
+        [NotMapped]
+        public bool IsVendorVatId { get; set; }
+    }
 }

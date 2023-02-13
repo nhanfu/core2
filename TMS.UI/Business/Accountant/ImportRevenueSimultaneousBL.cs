@@ -53,31 +53,31 @@ namespace TMS.UI.Business.Accountant
                 {
                     var newRevenue = new Revenue()
                     {
-                        LotNo = revenueEntity.LotNo,
-                        LotDate = revenueEntity.LotDate,
-                        InvoinceNo = revenueEntity.InvoinceNo,
-                        InvoinceDate = revenueEntity.InvoinceDate,
-                        UnitPriceBeforeTax = revenueEntity.UnitPriceBeforeTax,
-                        UnitPriceAfterTax = revenueEntity.UnitPriceAfterTax,
-                        ReceivedPrice = revenueEntity.ReceivedPrice,
-                        CollectOnBehaftPrice = revenueEntity.CollectOnBehaftPrice,
-                        Vat = revenueEntity.Vat,
-                        TotalPriceBeforTax = revenueEntity.TotalPriceBeforTax,
-                        VatPrice = revenueEntity.VatPrice,
-                        TotalPrice = revenueEntity.TotalPrice,
-                        NotePayment = revenueEntity.NotePayment,
-                        VendorVatId = revenueEntity.VendorVatId,
-                        BossId= item.BossId,
-                        ContainerNo= item.ContainerNo,
-                        SealNo= item.SealNo,
-                        ContainerTypeId= item.ContainerTypeId,
-                        ClosingDate= item.ClosingDate,
+                        BossId = item.BossId,
+                        ContainerNo = item.ContainerNo,
+                        SealNo = item.SealNo,
+                        ContainerTypeId = item.ContainerTypeId,
+                        ClosingDate = item.ClosingDate,
                         TransportationId = item.Id,
                         Id = 0,
                         Active = true,
                         InsertedDate = DateTime.Now.Date,
                         InsertedBy = Client.Token.UserId
                     };
+                    newRevenue.LotNo = revenueEntity.IsLotNo ? revenueEntity.LotNo : null;
+                    newRevenue.LotDate = revenueEntity.IsLotDate ? revenueEntity.LotDate : null;
+                    newRevenue.InvoinceNo = revenueEntity.IsInvoinceNo ? revenueEntity.InvoinceNo : null;
+                    newRevenue.InvoinceDate = revenueEntity.IsInvoinceDate ? revenueEntity.InvoinceDate : null;
+                    newRevenue.UnitPriceBeforeTax = revenueEntity.IsUnitPriceBeforeTax ? revenueEntity.UnitPriceBeforeTax : null;
+                    newRevenue.UnitPriceAfterTax = revenueEntity.IsUnitPriceAfterTax ? revenueEntity.UnitPriceAfterTax : null;
+                    newRevenue.ReceivedPrice = revenueEntity.IsReceivedPrice ? revenueEntity.ReceivedPrice : null;
+                    newRevenue.CollectOnBehaftPrice = revenueEntity.IsCollectOnBehaftPrice ? revenueEntity.CollectOnBehaftPrice : null;
+                    newRevenue.Vat = revenueEntity.IsVat ? revenueEntity.Vat : null;
+                    newRevenue.TotalPriceBeforTax = revenueEntity.IsTotalPriceBeforTax ? revenueEntity.TotalPriceBeforTax : null;
+                    newRevenue.VatPrice = revenueEntity.IsVatPrice ? revenueEntity.VatPrice : null;
+                    newRevenue.TotalPrice = revenueEntity.IsTotalPrice ? revenueEntity.TotalPrice : null;
+                    newRevenue.NotePayment = revenueEntity.IsNotePayment ? revenueEntity.NotePayment : null;
+                    newRevenue.VendorVatId = revenueEntity.IsVendorVatId ? revenueEntity.VendorVatId : null;
                     revenues.Add(newRevenue);
                 }
                 var res = await new Client(nameof(Revenue)).BulkUpdateAsync<Revenue>(revenues);
@@ -120,20 +120,20 @@ namespace TMS.UI.Business.Accountant
                 Spinner.AppendTo(this.Element, true, true, 20000);
                 foreach (var item in revenues)
                 {
-                    item.LotNo = item.LotNo == null || item.LotNo == "" ? revenueEntity.LotNo : item.LotNo;
-                    item.LotDate = item.LotDate == null ? revenueEntity.LotDate : item.LotDate;
-                    item.InvoinceNo = item.InvoinceNo == null || item.InvoinceNo == "" ? revenueEntity.InvoinceNo : item.InvoinceNo;
-                    item.InvoinceDate = item.InvoinceDate == null ? revenueEntity.InvoinceDate : item.InvoinceDate;
-                    item.UnitPriceBeforeTax = item.UnitPriceBeforeTax == null || item.UnitPriceBeforeTax == 0 ? revenueEntity.UnitPriceBeforeTax : item.UnitPriceBeforeTax;
-                    item.UnitPriceAfterTax = item.UnitPriceAfterTax == null || item.UnitPriceAfterTax == 0 ? revenueEntity.UnitPriceAfterTax : item.UnitPriceAfterTax;
-                    item.ReceivedPrice = item.ReceivedPrice == null || item.ReceivedPrice == 0 ? revenueEntity.ReceivedPrice : item.ReceivedPrice;
-                    item.CollectOnBehaftPrice = item.CollectOnBehaftPrice == null || item.CollectOnBehaftPrice == 0  ? revenueEntity.CollectOnBehaftPrice : item.CollectOnBehaftPrice;
-                    item.Vat = item.Vat == null || item.Vat == 0  ? revenueEntity.Vat : item.Vat;
-                    item.TotalPriceBeforTax = item.TotalPriceBeforTax == null || item.TotalPriceBeforTax == 0 ? revenueEntity.TotalPriceBeforTax : item.TotalPriceBeforTax;  
-                    item.VatPrice = item.VatPrice == null || item.VatPrice == 0  ? revenueEntity.VatPrice : item.VatPrice;
-                    item.TotalPrice = item.TotalPrice == null || item.TotalPrice == 0  ? revenueEntity.TotalPrice : item.TotalPrice;
-                    item.NotePayment = item.NotePayment == null || item.NotePayment == "" ? revenueEntity.NotePayment : item.NotePayment;
-                    item.VendorVatId = item.VendorVatId == null ? revenueEntity.VendorVatId : item.VendorVatId;
+                    item.LotNo = revenueEntity.IsLotNo ? revenueEntity.LotNo : item.LotNo;
+                    item.LotDate = revenueEntity.IsLotDate ? revenueEntity.LotDate : item.LotDate;
+                    item.InvoinceNo = revenueEntity.IsInvoinceNo ? revenueEntity.InvoinceNo : item.InvoinceNo;
+                    item.InvoinceDate = revenueEntity.IsInvoinceDate ? revenueEntity.InvoinceDate : item.InvoinceDate;
+                    item.UnitPriceBeforeTax = revenueEntity.IsUnitPriceBeforeTax ? revenueEntity.UnitPriceBeforeTax : item.UnitPriceBeforeTax;
+                    item.UnitPriceAfterTax = revenueEntity.IsUnitPriceAfterTax ? revenueEntity.UnitPriceAfterTax : item.UnitPriceAfterTax;
+                    item.ReceivedPrice = revenueEntity.IsReceivedPrice ? revenueEntity.ReceivedPrice : item.ReceivedPrice;
+                    item.CollectOnBehaftPrice = revenueEntity.IsCollectOnBehaftPrice ? revenueEntity.CollectOnBehaftPrice : item.CollectOnBehaftPrice;
+                    item.Vat = revenueEntity.IsVat ? revenueEntity.Vat : item.Vat;
+                    item.TotalPriceBeforTax = revenueEntity.IsTotalPriceBeforTax ? revenueEntity.TotalPriceBeforTax : item.TotalPriceBeforTax;  
+                    item.VatPrice = revenueEntity.IsVatPrice ? revenueEntity.VatPrice : item.VatPrice;
+                    item.TotalPrice = revenueEntity.IsTotalPrice ? revenueEntity.TotalPrice : item.TotalPrice;
+                    item.NotePayment = revenueEntity.IsNotePayment ? revenueEntity.NotePayment : item.NotePayment;
+                    item.VendorVatId = revenueEntity.IsVendorVatId ? revenueEntity.VendorVatId : item.VendorVatId;
                 }
                 var res = await new Client(nameof(Revenue)).BulkUpdateAsync<Revenue>(revenues);
                 if (res != null)
@@ -175,20 +175,20 @@ namespace TMS.UI.Business.Accountant
                 Spinner.AppendTo(this.Element, true, true, 20000);
                 foreach (var item in revenues)
                 {
-                    item.LotNo = item.LotNo == null || item.LotNo == "" ? revenueEntity.LotNo : item.LotNo;
-                    item.LotDate = item.LotDate == null ? revenueEntity.LotDate : item.LotDate;
-                    item.InvoinceNo = item.InvoinceNo == null || item.InvoinceNo == "" ? revenueEntity.InvoinceNo : item.InvoinceNo;
-                    item.InvoinceDate = item.InvoinceDate == null ? revenueEntity.InvoinceDate : item.InvoinceDate;
-                    item.UnitPriceBeforeTax = item.UnitPriceBeforeTax == null || item.UnitPriceBeforeTax == 0 ? revenueEntity.UnitPriceBeforeTax : item.UnitPriceBeforeTax;
-                    item.UnitPriceAfterTax = item.UnitPriceAfterTax == null || item.UnitPriceAfterTax == 0 ? revenueEntity.UnitPriceAfterTax : item.UnitPriceAfterTax;
-                    item.ReceivedPrice = item.ReceivedPrice == null || item.ReceivedPrice == 0 ? revenueEntity.ReceivedPrice : item.ReceivedPrice;
-                    item.CollectOnBehaftPrice = item.CollectOnBehaftPrice == null || item.CollectOnBehaftPrice == 0 ? revenueEntity.CollectOnBehaftPrice : item.CollectOnBehaftPrice;
-                    item.Vat = item.Vat == null || item.Vat == 0 ? revenueEntity.Vat : item.Vat;
-                    item.TotalPriceBeforTax = item.TotalPriceBeforTax == null || item.TotalPriceBeforTax == 0 ? revenueEntity.TotalPriceBeforTax : item.TotalPriceBeforTax;
-                    item.VatPrice = item.VatPrice == null || item.VatPrice == 0 ? revenueEntity.VatPrice : item.VatPrice;
-                    item.TotalPrice = item.TotalPrice == null || item.TotalPrice == 0 ? revenueEntity.TotalPrice : item.TotalPrice;
-                    item.NotePayment = item.NotePayment == null || item.NotePayment == "" ? revenueEntity.NotePayment : item.NotePayment;
-                    item.VendorVatId = item.VendorVatId == null ? revenueEntity.VendorVatId : item.VendorVatId;
+                    item.LotNo = revenueEntity.IsLotNo ? revenueEntity.LotNo : item.LotNo;
+                    item.LotDate = revenueEntity.IsLotDate ? revenueEntity.LotDate : item.LotDate;
+                    item.InvoinceNo = revenueEntity.IsInvoinceNo ? revenueEntity.InvoinceNo : item.InvoinceNo;
+                    item.InvoinceDate = revenueEntity.IsInvoinceDate ? revenueEntity.InvoinceDate : item.InvoinceDate;
+                    item.UnitPriceBeforeTax = revenueEntity.IsUnitPriceBeforeTax ? revenueEntity.UnitPriceBeforeTax : item.UnitPriceBeforeTax;
+                    item.UnitPriceAfterTax = revenueEntity.IsUnitPriceAfterTax ? revenueEntity.UnitPriceAfterTax : item.UnitPriceAfterTax;
+                    item.ReceivedPrice = revenueEntity.IsReceivedPrice ? revenueEntity.ReceivedPrice : item.ReceivedPrice;
+                    item.CollectOnBehaftPrice = revenueEntity.IsCollectOnBehaftPrice ? revenueEntity.CollectOnBehaftPrice : item.CollectOnBehaftPrice;
+                    item.Vat = revenueEntity.IsVat ? revenueEntity.Vat : item.Vat;
+                    item.TotalPriceBeforTax = revenueEntity.IsTotalPriceBeforTax ? revenueEntity.TotalPriceBeforTax : item.TotalPriceBeforTax;  
+                    item.VatPrice = revenueEntity.IsVatPrice ? revenueEntity.VatPrice : item.VatPrice;
+                    item.TotalPrice = revenueEntity.IsTotalPrice ? revenueEntity.TotalPrice : item.TotalPrice;
+                    item.NotePayment = revenueEntity.IsNotePayment ? revenueEntity.NotePayment : item.NotePayment;
+                    item.VendorVatId = revenueEntity.IsVendorVatId ? revenueEntity.VendorVatId : item.VendorVatId;
                 }
                 var res = await new Client(nameof(Revenue)).BulkUpdateAsync<Revenue>(revenues);
                 if (res != null)
