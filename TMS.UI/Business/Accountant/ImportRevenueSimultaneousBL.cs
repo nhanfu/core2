@@ -48,7 +48,7 @@ namespace TMS.UI.Business.Accountant
             var revenues = new List<Revenue>();
             confirm.YesConfirmed += async () =>
             {
-                Spinner.AppendTo(this.Element, true);
+                Spinner.AppendTo(this.Element, true, true, 20000);
                 foreach (var item in listViewItems)
                 {
                     var newRevenue = new Revenue()
@@ -117,7 +117,7 @@ namespace TMS.UI.Business.Accountant
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                Spinner.AppendTo(this.Element, true);
+                Spinner.AppendTo(this.Element, true, true, 20000);
                 foreach (var item in revenues)
                 {
                     item.LotNo = item.LotNo == null || item.LotNo == "" ? revenueEntity.LotNo : item.LotNo;
@@ -172,7 +172,7 @@ namespace TMS.UI.Business.Accountant
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                Spinner.AppendTo(this.Element, true);
+                Spinner.AppendTo(this.Element, true, true, 20000);
                 foreach (var item in revenues)
                 {
                     item.LotNo = item.LotNo == null || item.LotNo == "" ? revenueEntity.LotNo : item.LotNo;

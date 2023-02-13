@@ -171,7 +171,7 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public async void RequestUnClosingRevenue(Revenue revenue, PatchUpdate patch)
+        public async Task RequestUnClosingRevenue(Revenue revenue, PatchUpdate patch)
         {
             if (patch.Changes.Any(x => x.Field == nameof(revenue.UnitPriceAfterTax)
                 || x.Field == nameof(revenue.ReceivedPrice)))
