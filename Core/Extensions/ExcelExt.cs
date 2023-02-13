@@ -23,7 +23,7 @@ namespace Core.Extensions
             }
             /*@
                 var dataType = "application/vnd.ms-excel";
-                var extension = ".xlsx";
+                var extension = ".xls";
                 let base64 = function(s) {
                     return window.btoa(unescape(encodeURIComponent(s)))
                 };
