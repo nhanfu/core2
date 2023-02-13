@@ -992,7 +992,7 @@ namespace TMS.UI.Business.Manage
             || x.Field == nameof(Transportation.CommodityId)
             || x.Field == nameof(Transportation.StartShip)
             || x.Field == nameof(Transportation.ShipId)
-            || x.Field == nameof(Transportation.RouteId)) && transportation.PolicyId is null && !patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ShipPrice)))
+            || x.Field == nameof(Transportation.RouteId)) && !patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ShipPrice) || x.Field == nameof(Transportation.ShipPolicyPrice)))
             {
                 Toast.Warning("Hệ thống đang lấy chính sách hãng tàu");
                 var components = new Client(nameof(GridPolicy)).GetRawList<GridPolicy>("?$filter=ComponentId eq 16016");
