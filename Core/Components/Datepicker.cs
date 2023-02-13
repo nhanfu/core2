@@ -304,7 +304,7 @@ namespace Core.Components
                     .Div.ClassName("hour").Icon("fa fa-chevron-up").Event(EventType.Click, () => IncreaseTime(1)).End
                         .Input.Value(_someday.Hour.ToString(HHmmFormat))
                         .Event(EventType.Focus, () => Window.ClearTimeout(_closeAwaiter))
-                        .Event(EventType.Input, ChangeHour)
+                        .Event(EventType.Change, ChangeHour)
                         .Event(EventType.KeyDown, ChangeHourHotKey);
                 _hour = Html.Context as HTMLInputElement;
                 Html.Instance.End.Render();
@@ -313,7 +313,7 @@ namespace Core.Components
                     .Div.ClassName("minute").Icon("fa fa-chevron-up").Event(EventType.Click, () => IncreaseTime(10, true)).End
                         .Input.Value(_someday.Minute.ToString(HHmmFormat))
                         .Event(EventType.Focus, () => Window.ClearTimeout(_closeAwaiter))
-                        .Event(EventType.Input, ChangeMinute)
+                        .Event(EventType.Change, ChangeMinute)
                         .Event(EventType.KeyDown, ChangeMinuteHotKey);
                 _minute = Html.Context as HTMLInputElement;
                 Html.Instance.End.Icon("fa fa-chevron-down").Event(EventType.MouseDown, () => IncreaseTime(-10, true)).EndOf(".minute");
@@ -354,7 +354,7 @@ namespace Core.Components
 
             _someday = _someday.AddMinutes(-_someday.Minute).AddMinutes(newMinute);
             _value = _someday;
-            TriggerUserChange(_value.Value);
+            TriggerUserChange(_value.Value, true);
         }
 
         private void ChangeHour(Event e)
@@ -400,7 +400,7 @@ namespace Core.Components
             TriggerUserChange(selected);
         }
 
-        private void TriggerUserChange(DateTime? selected)
+        private void TriggerUserChange(DateTime? selected, bool date = false)
         {
             var oldVal = _value;
             Value = selected;
@@ -411,7 +411,10 @@ namespace Core.Components
             PopulateFields();
             CascadeField();
             _simpleNoEvent = true;
-            Input.Focus();
+            if (!date)
+            {
+                Input.Focus();
+            }
             Task.Run(async () =>
             {
                 await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
