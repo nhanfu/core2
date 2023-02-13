@@ -19,6 +19,7 @@ namespace TMS.API.Models
         public decimal? TotalPriceBeforTax { get; set; }
         public decimal? VatPrice { get; set; }
         public decimal? TotalPrice { get; set; }
+        public decimal? RevenueAdjustment { get; set; }
         public int? VendorVatId { get; set; }
         public string NotePayment { get; set; }
         public string Note { get; set; }

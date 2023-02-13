@@ -904,6 +904,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.ReceivedPrice)
                 .HasDefaultValueSql("((0))")
                 .HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.RevenueAdjustment).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.SealNo).HasMaxLength(250);
             entity.Property(e => e.TotalPrice)
                 .HasDefaultValueSql("((0))")
@@ -1254,6 +1255,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.ReturnUnitPrice).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ReturnUserId).HasMaxLength(250);
             entity.Property(e => e.ReturnVs).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.RevenueAdjustment).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.SealCheck).HasMaxLength(250);
             entity.Property(e => e.SealCheckUpload).HasMaxLength(250);
             entity.Property(e => e.SealNo).HasMaxLength(250);

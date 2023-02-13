@@ -130,6 +130,7 @@ namespace TMS.API.Models
         public int? VendorVatId { get; set; }
         public string NoteVendorVatId { get; set; }
         public string NotePayment { get; set; }
+        public decimal? RevenueAdjustment { get; set; }
         public string Note { get; set; }
         public decimal Cp1 { get; set; }
         public decimal Cp2 { get; set; }
