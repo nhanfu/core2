@@ -227,7 +227,6 @@ public partial class TMSContext : DbContext
 
         modelBuilder.Entity<CommodityValue>(entity =>
         {
-            entity.Property(e => e.Notes).HasMaxLength(250);
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(20, 5)");
         });
 
