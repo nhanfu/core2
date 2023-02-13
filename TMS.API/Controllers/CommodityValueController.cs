@@ -332,13 +332,13 @@ namespace TMS.API.Controllers
                 }
                 if (commodity != null && vendor != null)
                 {
-                    if (item.TotalPrice1 != "x" && item.TotalPrice1 != "X" && item.TotalPrice1 != "" && item.TotalPrice1 != null)
+                    if (item.TotalPrice1 != "x" && item.TotalPrice1 != "X")
                     {
                         commodityValue = new CommodityValue()
                         {
                             BossId = vendor.Id,
                             CommodityId = commodity.Id,
-                            SaleId = vendor.UserId,
+                            SaleId = user.Id,
                             TotalPrice = item.TotalPrice1 is null || item.TotalPrice1 == "" ? 0 : decimal.Parse(item.TotalPrice1),
                             ContainerId = 14910,
                             Notes = item.Notes,
@@ -390,13 +390,13 @@ namespace TMS.API.Controllers
                         }
                         db.Add(commodityValue);
                     }
-                    if (item.TotalPrice2 != "x" && item.TotalPrice2 != "X" && item.TotalPrice2 != "" && item.TotalPrice2 != null)
+                    if (item.TotalPrice2 != "x" && item.TotalPrice2 != "X")
                     {
                         commodityValue2 = new CommodityValue()
                         {
                             BossId = vendor.Id,
                             CommodityId = commodity.Id,
-                            SaleId = vendor.UserId,
+                            SaleId = user.Id,
                             TotalPrice = item.TotalPrice2 is null || item.TotalPrice2 == "" ? 0 : decimal.Parse(item.TotalPrice2),
                             ContainerId = 14909,
                             Notes = item.Notes,
