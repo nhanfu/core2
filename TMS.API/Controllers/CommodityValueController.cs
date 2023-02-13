@@ -22,6 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.ViewModels;
+using Windows.UI.Xaml;
 using FileIO = System.IO.File;
 using LicenseContext = OfficeOpenXml.LicenseContext;
 
@@ -292,7 +293,7 @@ namespace TMS.API.Controllers
             var rsBoss = await db.Vendor.ToListAsync();
             var vendorDB = rsBoss.Where(x => listBossCodes.Contains(ConvertTextEn(x.Name)) && x.TypeId == 7551).ToDictionary(x => ConvertTextEn(x.Name));
             var rsCommodity = await db.MasterData.ToListAsync();
-            var commodityDB = rsCommodity.Where(x => listCommodityCodes.Contains(ConvertTextEn(x.Description)) && x.Path.Contains(@"\7651\") && x.ParentId != 7651).ToDictionaryDistinct(x => ConvertTextEn(x.Description));
+            var commodityDB = rsCommodity.Where(x => listCommodityCodes.Contains(ConvertTextEn(x.Description)) && x.Path.Contains(@"\7651\") && x.ParentId != 7651 && x.Description != "" && x.Description != null).ToDictionaryDistinct(x => ConvertTextEn(x.Description));
             var userDB = await db.User.Where(x => listSaleCodes.Contains(x.UserName)).ToDictionaryAsync(x => x.UserName.ToLower());
             var listJourneyCodes = list.Select(x => x.JourneyText).Where(x => x != null && x != "").Distinct().ToList();
             var listCustomerTypeCodes = list.Select(x => x.CustomerTypeText).Where(x => x != null && x != "").Distinct().ToList();
@@ -312,42 +313,10 @@ namespace TMS.API.Controllers
                 {
                     vendor = vendorDB.Count == 0 ? null : vendorDB.GetValueOrDefault(item.BossTextEn);
                 }
-                if (vendor is null && item.BossText != null && item.BossText != "")
-                {
-                    vendor = new Vendor()
-                    {
-                        Name = item.BossText,
-                        TypeId = 7551,
-                        UserId = 78,
-                        Active = true,
-                        InsertedBy = 1,
-                        InsertedDate = DateTime.Now.Date
-                    };
-                    db.Add(vendor);
-                    await db.SaveChangesAsync();
-                    vendorDB.Add(ConvertTextEn(vendor.Name), vendor);
-                }
                 MasterData commodity = null;
                 if (item.CommodityText != null && item.CommodityText != "")
                 {
                     commodity = commodityDB.Count == 0 ? null : commodityDB.GetValueOrDefault(item.CommodityTextEn);
-                }
-                if (commodity is null && item.CommodityText != null && item.CommodityText != "")
-                {
-                    commodity = new MasterData()
-                    {
-                        Name = item.CommodityText,
-                        Description = item.CommodityText,
-                        ParentId = 15004,
-                        Path = @"\7651\15004\",
-                        Level = 2,
-                        Active = true,
-                        InsertedBy = 1,
-                        InsertedDate = DateTime.Now.Date
-                    };
-                    db.Add(commodity);
-                    await db.SaveChangesAsync();
-                    commodityDB.Add(ConvertTextEn(commodity.Description), commodity);
                 }
                 CommodityValue commodityValue = null;
                 CommodityValue commodityValue2 = null;
