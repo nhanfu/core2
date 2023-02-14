@@ -1503,10 +1503,57 @@ namespace TMS.UI.Business.Manage
 
         public async Task BeforePatchUpdateTransportation(Transportation transportation, PatchUpdate patchUpdate)
         {
-            if (transportation.IsLocked || transportation.IsKt || transportation.LockShip)
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+            if (gridView is null)
+            {
+                return;
+            }
+            if (transportation.IsLocked || transportation.IsKt || transportation.LockShip || transportation.LockShip == false)
             {
                 var tran = new TransportationListAccountantBL();
-                await tran.RequestUnClosing(transportation, patchUpdate);
+                if (patchUpdate.Changes.Any(x => x.Field == nameof(transportation.LockShip)))
+                {
+                    if (transportation.LockShip)
+                    {
+                        var confirm = new ConfirmDialog
+                        {
+                            Content = "Bạn có chắc chắn muốn khóa cước tàu ?",
+                        };
+                        confirm.Render();
+                        confirm.YesConfirmed += async () =>
+                        {
+                            await tran.RequestUnClosing(transportation, patchUpdate);
+                        };
+                        confirm.NoConfirmed += async () =>
+                        {
+                            transportation.LockShip = false;
+                            await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchLockShipEntity(transportation));
+                            await gridView.ApplyFilter(true);
+                        };
+                    }
+                    else
+                    {
+                        var confirm = new ConfirmDialog
+                        {
+                            Content = "Bạn có chắc chắn muốn mở khóa cước tàu ?",
+                        };
+                        confirm.Render();
+                        confirm.YesConfirmed += async () =>
+                        {
+                            await tran.RequestUnClosing(transportation, patchUpdate);
+                        };
+                        confirm.NoConfirmed += async () =>
+                        {
+                            transportation.LockShip = true;
+                            await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchLockShipEntity(transportation));
+                            await gridView.ApplyFilter(true);
+                        };
+                    }
+                }
+                else
+                {
+                    await tran.RequestUnClosing(transportation, patchUpdate);
+                }
             }
             else
             {
@@ -1693,6 +1740,14 @@ namespace TMS.UI.Business.Manage
             var details = new List<PatchUpdateDetail>();
             details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = expense.Id.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Expense.StatusId), Value = expense.StatusId.ToString() });
+            return new PatchUpdate { Changes = details };
+        }
+
+        public PatchUpdate GetPatchLockShipEntity(Transportation transportation)
+        {
+            var details = new List<PatchUpdateDetail>();
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.LockShip), Value = transportation.LockShip.ToString() });
             return new PatchUpdate { Changes = details };
         }
     }

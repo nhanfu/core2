@@ -50,6 +50,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task MessageConfirmLockOrUnLock(Transportation transportation, PatchUpdate patch)
         {
+            var grid = this.FindComponentByName<GridView>("TransportationAccountant");
             if (patch.Changes.Any(x => x.Field == nameof(transportation.IsLocked)))
             {
                 if (transportation.IsLocked)
@@ -63,6 +64,7 @@ namespace TMS.UI.Business.Manage
                     {
                         transportation.IsLocked = false;
                         await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedEntity(transportation));
+                        await grid.ApplyFilter(true);
                     };
                 }
                 else
@@ -76,6 +78,7 @@ namespace TMS.UI.Business.Manage
                     {
                         transportation.IsLocked = true;
                         await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedEntity(transportation));
+                        await grid.ApplyFilter(true);
                     };
                 }
             }
@@ -94,7 +97,9 @@ namespace TMS.UI.Business.Manage
                     };
                     confirm.NoConfirmed += async () =>
                     {
-                        await RequestUnClosing(transportation, patch);
+                        transportation.IsSubmit = false;
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsSubmitEntity(transportation));
+                        await grid.ApplyFilter(true);
                     };
                 }
                 else
@@ -110,7 +115,9 @@ namespace TMS.UI.Business.Manage
                     };
                     confirm.NoConfirmed += async () =>
                     {
-                        await RequestUnClosing(transportation, patch);
+                        transportation.IsSubmit = true;
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsSubmitEntity(transportation));
+                        await grid.ApplyFilter(true);
                     };
                 }
             }
@@ -129,7 +136,9 @@ namespace TMS.UI.Business.Manage
                     };
                     confirm.NoConfirmed += async () =>
                     {
-                        await RequestUnClosing(transportation, patch);
+                        transportation.IsKt = false;
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsKtEntity(transportation));
+                        await grid.ApplyFilter(true);
                     };
                 }
                 else
@@ -145,7 +154,9 @@ namespace TMS.UI.Business.Manage
                     };
                     confirm.NoConfirmed += async () =>
                     {
-                        await RequestUnClosing(transportation, patch);
+                        transportation.IsKt = true;
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsKtEntity(transportation));
+                        await grid.ApplyFilter(true);
                     };
                 }
             }
@@ -997,6 +1008,22 @@ namespace TMS.UI.Business.Manage
             var details = new List<PatchUpdateDetail>();
             details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsLocked), Value = transportation.IsLocked.ToString() });
+            return new PatchUpdate { Changes = details };
+        }
+
+        public PatchUpdate GetPatchIsKtEntity(Transportation transportation)
+        {
+            var details = new List<PatchUpdateDetail>();
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsKt), Value = transportation.IsKt.ToString() });
+            return new PatchUpdate { Changes = details };
+        }
+
+        public PatchUpdate GetPatchIsSubmitEntity(Transportation transportation)
+        {
+            var details = new List<PatchUpdateDetail>();
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsSubmit), Value = transportation.IsSubmit.ToString() });
             return new PatchUpdate { Changes = details };
         }
 
