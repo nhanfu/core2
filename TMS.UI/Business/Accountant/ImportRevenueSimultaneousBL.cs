@@ -25,6 +25,42 @@ namespace TMS.UI.Business.Accountant
             Name = "Import Revenue Simultaneous";
         }
 
+        public void TickAll()
+        {
+            if (revenueEntity.IsAll)
+            {
+                revenueEntity.IsLotNo = true;
+                revenueEntity.IsLotDate = true;
+                revenueEntity.IsInvoinceNo = true;
+                revenueEntity.IsInvoinceDate = true;
+                revenueEntity.IsUnitPriceBeforeTax = true;
+                revenueEntity.IsUnitPriceAfterTax = true;
+                revenueEntity.IsReceivedPrice = true;
+                revenueEntity.IsCollectOnBehaftPrice = true;
+                revenueEntity.IsVat = true;
+                revenueEntity.IsTotalPriceBeforTax = true;
+                revenueEntity.IsVatPrice = true;
+                revenueEntity.IsTotalPrice = true;
+                revenueEntity.IsNotePayment = true;
+                revenueEntity.IsVendorVatId = true;
+                UpdateView(false,
+                nameof(Revenue.IsLotNo),
+                nameof(Revenue.IsLotDate),
+                nameof(Revenue.IsInvoinceNo),
+                nameof(Revenue.IsInvoinceDate),
+                nameof(Revenue.IsUnitPriceBeforeTax),
+                nameof(Revenue.IsUnitPriceAfterTax),
+                nameof(Revenue.IsReceivedPrice),
+                nameof(Revenue.IsCollectOnBehaftPrice),
+                nameof(Revenue.IsVat),
+                nameof(Revenue.IsTotalPriceBeforTax),
+                nameof(Revenue.IsVatPrice),
+                nameof(Revenue.IsTotalPrice),
+                nameof(Revenue.IsNotePayment),
+                nameof(Revenue.IsVendorVatId));
+            }
+        }
+
         public async Task CreateRevenueSimultaneous()
         {
             var gridView = Parent.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");

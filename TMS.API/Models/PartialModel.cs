@@ -73,5 +73,7 @@ namespace TMS.API.Models
         public bool IsNotePayment { get; set; }
         [NotMapped]
         public bool IsVendorVatId { get; set; }
+        [NotMapped]
+        public bool IsAll { get; set; }
     }
 }
