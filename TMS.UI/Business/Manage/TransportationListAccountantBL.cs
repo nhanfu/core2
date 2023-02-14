@@ -48,6 +48,113 @@ namespace TMS.UI.Business.Manage
             await grid.ApplyFilter(true);
         }
 
+        public async Task MessageConfirmLockOrUnLock(Transportation transportation, PatchUpdate patch)
+        {
+            if (patch.Changes.Any(x => x.Field == nameof(transportation.IsLocked)))
+            {
+                if (transportation.IsLocked)
+                {
+                    var confirm = new ConfirmDialog
+                    {
+                        Content = "Bạn có chắc chắn muốn khóa hệ thống ?",
+                    };
+                    confirm.Render();
+                    confirm.NoConfirmed += async () =>
+                    {
+                        transportation.IsLocked = false;
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedEntity(transportation));
+                    };
+                }
+                else
+                {
+                    var confirm = new ConfirmDialog
+                    {
+                        Content = "Bạn có chắc chắn muốn mở khóa hệ thống ?",
+                    };
+                    confirm.Render();
+                    confirm.NoConfirmed += async () =>
+                    {
+                        transportation.IsLocked = true;
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedEntity(transportation));
+                    };
+                }
+            }
+            else if (patch.Changes.Any(x => x.Field == nameof(transportation.IsSubmit)))
+            {
+                if (transportation.IsSubmit)
+                {
+                    var confirm = new ConfirmDialog
+                    {
+                        Content = "Bạn có chắc chắn muốn khóa kế toán ?",
+                    };
+                    confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        await RequestUnClosing(transportation, patch);
+                    };
+                    confirm.NoConfirmed += async () =>
+                    {
+                        await RequestUnClosing(transportation, patch);
+                    };
+                }
+                else
+                {
+                    var confirm = new ConfirmDialog
+                    {
+                        Content = "Bạn có chắc chắn muốn mở khóa kế toán ?",
+                    };
+                    confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        await RequestUnClosing(transportation, patch);
+                    };
+                    confirm.NoConfirmed += async () =>
+                    {
+                        await RequestUnClosing(transportation, patch);
+                    };
+                }
+            }
+            else if (patch.Changes.Any(x => x.Field == nameof(transportation.IsKt)))
+            {
+                if (transportation.IsKt)
+                {
+                    var confirm = new ConfirmDialog
+                    {
+                        Content = "Bạn có chắc chắn muốn khóa khai thác ?",
+                    };
+                    confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        await RequestUnClosing(transportation, patch);
+                    };
+                    confirm.NoConfirmed += async () =>
+                    {
+                        await RequestUnClosing(transportation, patch);
+                    };
+                }
+                else
+                {
+                    var confirm = new ConfirmDialog
+                    {
+                        Content = "Bạn có chắc chắn muốn mở khóa khai thác ?",
+                    };
+                    confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        await RequestUnClosing(transportation, patch);
+                    };
+                    confirm.NoConfirmed += async () =>
+                    {
+                        await RequestUnClosing(transportation, patch);
+                    };
+                }
+            }
+            else
+            {
+                await RequestUnClosing(transportation, patch);
+            }
+        }
+
         public async Task RequestUnClosing(Transportation transportation, PatchUpdate patch)
         {
             if (transportation.IsLocked == false && transportation.IsKt == false && transportation.IsSubmit == false && transportation.LockShip == false)
@@ -57,10 +164,11 @@ namespace TMS.UI.Business.Manage
             if (patch.Changes.Any(x => x.Field != nameof(transportation.Notes) &&
             x.Field != nameof(transportation.Id) &&
             x.Field != nameof(transportation.ExportListReturnId) &&
-            x.Field != nameof(transportation.UserReturnId)))
+            x.Field != nameof(transportation.UserReturnId) &&
+            x.Field != nameof(transportation.IsLocked)))
             {
                 var tran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportation.Id}");
-                if (tran.IsLocked && transportation.IsLocked)
+                if (tran.IsLocked)
                 {
                     var confirm = new ConfirmDialog
                     {
@@ -882,6 +990,14 @@ namespace TMS.UI.Business.Manage
             var path = await new Client(nameof(Transportation)).PostAsync<string>(listViewItems, "ExportTransportationAndRevenue");
             Client.Download($"/excel/Download/{path}");
             Toast.Success("Xuất file thành công");
+        }
+
+        public PatchUpdate GetPatchIsLockedEntity(Transportation transportation)
+        {
+            var details = new List<PatchUpdateDetail>();
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsLocked), Value = transportation.IsLocked.ToString() });
+            return new PatchUpdate { Changes = details };
         }
 
         public PatchUpdate GetPatchEntity(Transportation transportation)

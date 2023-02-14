@@ -54,7 +54,8 @@ namespace TMS.API.Controllers
             if (patch.Changes.Any(x => x.Field != nameof(entity.Notes) &&
             x.Field != nameof(entity.Id) &&
             x.Field != nameof(entity.ExportListReturnId) &&
-            x.Field != nameof(entity.UserReturnId)))
+            x.Field != nameof(entity.UserReturnId) &&
+            x.Field != nameof(entity.IsLocked)))
             {
                 var oldEntity = await db.Transportation.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
                 if (oldEntity.IsLocked)
