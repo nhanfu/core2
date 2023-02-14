@@ -257,6 +257,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.Events)
                 .HasMaxLength(500)
                 .IsUnicode(false);
+            entity.Property(e => e.ExcelFieldName).HasMaxLength(1000);
             entity.Property(e => e.FieldName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -297,7 +298,6 @@ public partial class TMSContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.UpperCase).HasDefaultValueSql("((0))");
             entity.Property(e => e.Validation).HasMaxLength(1000);
-            entity.Property(e => e.ExcelFieldName).HasMaxLength(1000);
             entity.Property(e => e.VirtualScroll).HasDefaultValueSql("((0))");
             entity.Property(e => e.Width)
                 .HasMaxLength(20)
@@ -599,6 +599,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.Events)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.ExcelFieldName).HasMaxLength(1000);
             entity.Property(e => e.FieldName).HasMaxLength(100);
             entity.Property(e => e.FilterTemplate)
                 .HasMaxLength(200)
@@ -608,8 +609,6 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.GroupBy)
                 .HasMaxLength(1000)
                 .IsUnicode(false);
-            entity.Property(e => e.ExcelFieldName)
-                .HasMaxLength(1000);
             entity.Property(e => e.GroupName).HasMaxLength(50);
             entity.Property(e => e.Icon)
                 .HasMaxLength(50)
@@ -898,7 +897,7 @@ public partial class TMSContext : DbContext
                 .HasDefaultValueSql("((0))")
                 .HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ContainerNo).HasMaxLength(250);
-            entity.Property(e => e.InvoinceNo).HasMaxLength(250);
+            entity.Property(e => e.InvoinceNo).HasColumnType("decimal(20, 0)");
             entity.Property(e => e.LotNo).HasMaxLength(250);
             entity.Property(e => e.Name).HasMaxLength(250);
             entity.Property(e => e.Note).HasMaxLength(250);
@@ -926,10 +925,6 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.VatPrice)
                 .HasDefaultValueSql("((0))")
                 .HasColumnType("decimal(20, 5)");
-
-            entity.HasOne(d => d.Transportation).WithMany(p => p.Revenue)
-                .HasForeignKey(d => d.TransportationId)
-                .HasConstraintName("FK_Revenue_Transportation");
         });
 
         modelBuilder.Entity<Role>(entity =>

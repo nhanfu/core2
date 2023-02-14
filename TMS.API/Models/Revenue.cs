@@ -9,7 +9,7 @@ namespace TMS.API.Models
         public int? TransportationId { get; set; }
         public string LotNo { get; set; }
         public DateTime? LotDate { get; set; }
-        public string InvoinceNo { get; set; }
+        public decimal? InvoinceNo { get; set; }
         public DateTime? InvoinceDate { get; set; }
         public decimal? Vat { get; set; }
         public decimal? UnitPriceBeforeTax { get; set; }
