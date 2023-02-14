@@ -685,23 +685,40 @@ namespace TMS.API.Controllers
 
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add(typeof(T).Name);
+            worksheet.Cell("A1").Value = component.Label.IsNullOrWhiteSpace() ? component.RefName : component.Label;
+            worksheet.Cell("A1").Style.Font.Bold = true;
+            worksheet.Cell("A1").Style.Font.FontSize = 14;
+            worksheet.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("A1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range(1, 1, gridPolicy.Count + 1, gridPolicy.Count + 1).Row(1).Merge();
             worksheet.Style.Font.SetFontName("Times New Roman");
-            var i = 1;
+            var i = 2;
+            worksheet.Cell(2, 1).SetValue("STT");
+            worksheet.Cell(2, 1).Style.Font.Bold = true;
+            worksheet.Cell(2, 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(2, 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(2, 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(2, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             foreach (var item in gridPolicy)
             {
-                worksheet.Cell(1, i).SetValue(item.ShortDesc);
-                worksheet.Cell(1, i).Style.Font.Bold = true;
+                worksheet.Cell(2, i).SetValue(item.ShortDesc);
+                worksheet.Cell(2, i).Style.Font.Bold = true;
+                worksheet.Cell(2, i).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(2, i).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(2, i).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(2, i).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                 i++;
             }
-            worksheet.Row(1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Row(1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Row(1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Row(1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-            var x = 2;
+            var x = 3;
+            var j = 1;
             foreach (var item in tables[0])
             {
-                var y = 1;
-                worksheet.Cell(x, 1).SetValue(x);
+                var y = 2;
+                worksheet.Cell(x, 1).SetValue(j);
+                worksheet.Cell(x, 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(x, 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(x, 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(x, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                 foreach (var itemDetail in gridPolicy)
                 {
                     var vl = item.GetValueOrDefault(itemDetail.FieldName);
@@ -745,16 +762,22 @@ namespace TMS.API.Controllers
                         default:
                             break;
                     }
+                    worksheet.Cell(x, y).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(x, y).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(x, y).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(x, y).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                     y++;
                 }
-                worksheet.Row(x).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                worksheet.Row(x).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                worksheet.Row(x).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                worksheet.Row(x).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                j++;
                 x++;
             }
-            var k = 1;
-            var last = tables[0].Count + 2;
+            var k = 2;
+            var last = tables[0].Count + 3;
+            worksheet.Cell(last, 1).Value = "Total";
+            worksheet.Cell(last, 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(last, 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(last, 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(last, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             foreach (var item in gridPolicy)
             {
                 if (item.ComponentType == "Number")
@@ -774,12 +797,12 @@ namespace TMS.API.Controllers
                     worksheet.Cell(last, k).Style.Font.Bold = true;
                     worksheet.Cell(last, k).Style.NumberFormat.Format = "#,##";
                 }
+                worksheet.Cell(last, k).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(last, k).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(last, k).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(last, k).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                 k++;
             }
-            worksheet.Row(last).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Row(last).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Row(last).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Row(last).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             var url = $"{component.RefName}{DateTime.Now:ddMMyyyyhhmm}.xlsx";
             worksheet.Columns().AdjustToContents();
             workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");

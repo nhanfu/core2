@@ -73,6 +73,19 @@ namespace TMS.UI.Business.Manage
                 });
         }
 
+        public async Task ProductionReport()
+        {
+            await this.OpenPopup(
+                featureName: "Production Report",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.ProductionReportFormBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Báo cáo sản lượng";
+                    return instance;
+                });
+        }
+
         public async Task EditTransportation(Transportation entity)
         {
             await this.OpenPopup(

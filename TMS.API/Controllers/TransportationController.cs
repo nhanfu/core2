@@ -889,6 +889,112 @@ namespace TMS.API.Controllers
             return url;
         }
 
+        [HttpPost("api/Transportation/ExportProductionReport")]
+        public async Task<string> ExportProductionReport()
+        {
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add(nameof(Transportation));
+            worksheet.Style.Font.SetFontName("Times New Roman");
+            worksheet.Cell("A1").Value = "BÁO CÁO SẢN LƯỢNG";
+            worksheet.Range(1, 1, 8, 8).Row(1).Merge();
+            worksheet.Cell("A1").Style.Font.FontSize = 14;
+            worksheet.Cell("A1").Style.Font.Bold = true;
+            worksheet.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("A1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            var sql = @"select t.StartShip,el.Name as 'ExportList',bs.Name as 'BrandShip',s.Name as 'Ship' ,r.Name as 'Route',cont.Description as 'ContainerType',SUM(t.Cont40) as Cont40,SUM(t.Cont20) as Cont20
+                    from Transportation t
+                    left join Vendor as el on el.Id = t.ExportListId
+                    left join Ship as s on s.Id = t.ShipId
+                    left join Vendor as bs on bs.Id = t.BrandShipId
+                    left join Route as r on r.Id = t.RouteId
+                    left join MasterData as cont on cont.Id = t.ContainerTypeId
+                    where BookingId is not null
+                    group by el.Name,bs.Name,s.Name,r.Name,cont.Description, t.StartShip
+                    order by StartShip desc";
+            var data = await ConverSqlToDataSet(sql);
+            worksheet.Cell("A2").Value = $"Ngày tàu chạy";
+            worksheet.Cell("A2").Style.Alignment.WrapText = true;
+            worksheet.Cell("A2").Style.Font.Bold = true;
+            worksheet.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("A2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Cell("B2").Value = $"List xuất";
+            worksheet.Cell("B2").Style.Alignment.WrapText = true;
+            worksheet.Cell("B2").Style.Font.Bold = true;
+            worksheet.Cell("B2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("B2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Cell("C2").Value = $"Hãng tàu";
+            worksheet.Cell("C2").Style.Alignment.WrapText = true;
+            worksheet.Cell("C2").Style.Font.Bold = true;
+            worksheet.Cell("C2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("C2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Cell("D2").Value = $"Tàu";
+            worksheet.Cell("D2").Style.Alignment.WrapText = true;
+            worksheet.Cell("D2").Style.Font.Bold = true;
+            worksheet.Cell("D2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("D2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Cell("E2").Value = $"Tuyến đường";
+            worksheet.Cell("E2").Style.Alignment.WrapText = true;
+            worksheet.Cell("E2").Style.Font.Bold = true;
+            worksheet.Cell("E2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("E2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Cell("F2").Value = $"Loại cont";
+            worksheet.Cell("F2").Style.Alignment.WrapText = true;
+            worksheet.Cell("F2").Style.Font.Bold = true;
+            worksheet.Cell("F2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("F2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Cell("G2").Value = $"Cont20";
+            worksheet.Cell("G2").Style.Alignment.WrapText = true;
+            worksheet.Cell("G2").Style.Font.Bold = true;
+            worksheet.Cell("G2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("G2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Cell("H2").Value = $"Cont40";
+            worksheet.Cell("H2").Style.Alignment.WrapText = true;
+            worksheet.Cell("H2").Style.Font.Bold = true;
+            worksheet.Cell("H2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("H2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range(2, 1, 2, 8).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(2, 1, 2, 8).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(2, 1, 2, 8).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(2, 1, 2, 8).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            var group = data[0].GroupBy(x => new { BrandShip = x["BrandShip"], Route = x["Route"], ExportList = x["ExportList"], Ship = x["Ship"], ContainerType = x["ContainerType"] });
+            var i = 3;
+            foreach (var item in group)
+            {
+                foreach (var itemDetail in item.ToList())
+                {
+                    worksheet.Cell("A" + i).Value = itemDetail["StartShip"] is null ? default(DateTime) : DateTime.Parse(itemDetail["StartShip"].ToString());
+                    worksheet.Cell("B" + i).Value = itemDetail["ExportList"] is null ? default(string) : itemDetail["ExportList"].ToString();
+                    worksheet.Cell("C" + i).Value = itemDetail["BrandShip"] is null ? default(string) : itemDetail["BrandShip"].ToString();
+                    worksheet.Cell("D" + i).Value = itemDetail["Ship"] is null ? default(string) : itemDetail["Ship"].ToString();
+                    worksheet.Cell("E" + i).Value = itemDetail["Route"] is null ? default(string) : itemDetail["Route"].ToString();
+                    worksheet.Cell("F" + i).Value = itemDetail["ContainerType"] is null ? default(string) : itemDetail["ContainerType"].ToString();
+                    worksheet.Cell("G" + i).Value = itemDetail["Cont20"] is null ? default(decimal) : decimal.Parse(itemDetail["Cont20"].ToString());
+                    worksheet.Cell("H" + i).Value = itemDetail["Cont40"] is null ? default(decimal) : decimal.Parse(itemDetail["Cont40"].ToString());
+                    worksheet.Range(i, 1, i, 8).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(i, 1, i, 8).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(i, 1, i, 8).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(i, 1, i, 8).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    i++;
+                }
+                worksheet.Cell("A" + i).Value = "Tổng cộng";
+                worksheet.Cell("A" + i).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("A" + i).Style.Alignment.WrapText = true;
+                worksheet.Cell("A" + i).Style.Font.Bold = true;
+                worksheet.Range(i, 1, i, 6).Row(1).Merge();
+                worksheet.Cell("G" + i).Style.Alignment.WrapText = true;
+                worksheet.Cell("G" + i).Style.Font.Bold = true;
+                worksheet.Cell("G" + i).Value = item.ToList().Sum(x => decimal.Parse(x["Cont20"].ToString()));
+                worksheet.Cell("H" + i).Value = item.ToList().Sum(x => decimal.Parse(x["Cont40"].ToString()));
+                worksheet.Cell("H" + i).Style.Alignment.WrapText = true;
+                worksheet.Cell("H" + i).Style.Font.Bold = true;
+                i++;
+            }
+            worksheet.Columns().AdjustToContents();
+            var url = $"BaoCaoSanLuong.xlsx";
+            workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
+            return url;
+        }
+
         public async Task<List<List<Dictionary<string, object>>>> ConverSqlToDataSet(string reportQuery)
         {
             var connectionStr = Startup.GetConnectionString(_serviceProvider, _config, "Default");
