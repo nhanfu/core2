@@ -619,13 +619,19 @@ namespace TMS.API.Controllers
             var pros = typeof(T).GetProperties().Where(x => x.CanRead && x.PropertyType.IsSimple()).Select(x => x.Name).ToList();
             var selects = gridPolicy.Where(x => x.ComponentType == "Dropdown" && pros.Contains(x.FieldName)).ToList().Select(x =>
             {
-                var format = x.FormatCell.Split("}")[0].Replace("{", "");
-                var objField = x.FieldName.Substring(0, x.FieldName.Length - 2);
-                return $"[{objField}].[{format}] as [{objField}]";
+                if (x.ExcelFieldName.IsNullOrWhiteSpace())
+                {
+                    var format = x.FormatCell.Split("}")[0].Replace("{", "");
+                    var objField = x.FieldName.Substring(0, x.FieldName.Length - 2);
+                    return $"[{objField}].[{format}] as [{objField}]";
+                }
+                else
+                {
+                    return x.ExcelFieldName;
+                }
             });
             var joins = gridPolicy.Where(x => x.ComponentType == "Dropdown").ToList().Select(x =>
             {
-                var format = x.FormatCell.Split("}")[0].Replace("{", "");
                 var objField = x.FieldName.Substring(0, x.FieldName.Length - 2);
                 return $"left join [{x.RefName}] as [{objField}] on [{objField}].Id = [{component.RefName}].{x.FieldName}";
             }).Distinct().ToList();

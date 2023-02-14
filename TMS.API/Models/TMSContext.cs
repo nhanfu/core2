@@ -297,6 +297,7 @@ public partial class TMSContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.UpperCase).HasDefaultValueSql("((0))");
             entity.Property(e => e.Validation).HasMaxLength(1000);
+            entity.Property(e => e.ExcelFieldName).HasMaxLength(1000);
             entity.Property(e => e.VirtualScroll).HasDefaultValueSql("((0))");
             entity.Property(e => e.Width)
                 .HasMaxLength(20)
@@ -607,6 +608,8 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.GroupBy)
                 .HasMaxLength(1000)
                 .IsUnicode(false);
+            entity.Property(e => e.ExcelFieldName)
+                .HasMaxLength(1000);
             entity.Property(e => e.GroupName).HasMaxLength(50);
             entity.Property(e => e.Icon)
                 .HasMaxLength(50)

@@ -63,7 +63,7 @@ namespace TMS.API.Controllers
         {
             if (entity.ShipId != null && entity.Trip != null && entity.StartShip != null && entity.BookingNo != null)
             {
-                var check = await db.Booking.FirstOrDefaultAsync(x => x.ShipId == entity.ShipId && x.Trip == entity.Trip && x.StartShip.Value.Date == entity.StartShip.Value.Date && x.BookingNo == entity.BookingNo && x.BranchId == entity.BranchId);
+                var check = await db.Booking.FirstOrDefaultAsync(x => x.ShipId == entity.ShipId && x.Trip == entity.Trip && x.StartShip.Value.Date == entity.StartShip.Value.Date && (x.BookingNo == entity.BookingNo || entity.BookingNo.IsNullOrWhiteSpace()) && x.BranchId == entity.BranchId);
                 if (check != null)
                 {
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
@@ -74,7 +74,7 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<Booking>> UpdateAsync([FromBody] Booking entity, string reasonOfChange = "")
         {
-            var check = await db.Booking.FirstOrDefaultAsync(x => x.ShipId == entity.ShipId && x.Trip == entity.Trip && x.StartShip.Value.Date == entity.StartShip.Value.Date && x.Id != entity.Id && x.BookingNo == entity.BookingNo && x.BranchId == entity.BranchId);
+            var check = await db.Booking.FirstOrDefaultAsync(x => x.ShipId == entity.ShipId && x.Trip == entity.Trip && x.StartShip.Value.Date == entity.StartShip.Value.Date && x.Id != entity.Id && (x.BookingNo == entity.BookingNo || entity.BookingNo.IsNullOrWhiteSpace()) && x.BranchId == entity.BranchId);
             if (check != null)
             {
                 throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
