@@ -398,6 +398,7 @@ namespace TMS.UI.Business.Manage
                     transportation.ClosingNotes = item.Notes;
                     transportation.ExportListId = Client.Token.Vendor.Id;
                     transportation.Expense.Add(expense);
+                    transportation.Revenue.Add(new Revenue());
                     await new Client(nameof(Transportation)).CreateAsync<Transportation>(transportation);
                 }
             }
