@@ -59,6 +59,38 @@ namespace TMS.UI.Business.Accountant
                 nameof(Revenue.IsNotePayment),
                 nameof(Revenue.IsVendorVatId));
             }
+            else
+            {
+                revenueEntity.IsLotNo = false;
+                revenueEntity.IsLotDate = false;
+                revenueEntity.IsInvoinceNo = false;
+                revenueEntity.IsInvoinceDate = false;
+                revenueEntity.IsUnitPriceBeforeTax = false;
+                revenueEntity.IsUnitPriceAfterTax = false;
+                revenueEntity.IsReceivedPrice = false;
+                revenueEntity.IsCollectOnBehaftPrice = false;
+                revenueEntity.IsVat = false;
+                revenueEntity.IsTotalPriceBeforTax = false;
+                revenueEntity.IsVatPrice = false;
+                revenueEntity.IsTotalPrice = false;
+                revenueEntity.IsNotePayment = false;
+                revenueEntity.IsVendorVatId = false;
+                UpdateView(false,
+                nameof(Revenue.IsLotNo),
+                nameof(Revenue.IsLotDate),
+                nameof(Revenue.IsInvoinceNo),
+                nameof(Revenue.IsInvoinceDate),
+                nameof(Revenue.IsUnitPriceBeforeTax),
+                nameof(Revenue.IsUnitPriceAfterTax),
+                nameof(Revenue.IsReceivedPrice),
+                nameof(Revenue.IsCollectOnBehaftPrice),
+                nameof(Revenue.IsVat),
+                nameof(Revenue.IsTotalPriceBeforTax),
+                nameof(Revenue.IsVatPrice),
+                nameof(Revenue.IsTotalPrice),
+                nameof(Revenue.IsNotePayment),
+                nameof(Revenue.IsVendorVatId));
+            }
         }
 
         public async Task CreateRevenueSimultaneous()
@@ -154,25 +186,9 @@ namespace TMS.UI.Business.Accountant
             confirm.YesConfirmed += async () =>
             {
                 Spinner.AppendTo(this.Element, true, true, 20000);
-                foreach (var item in revenues)
-                {
-                    item.LotNo = revenueEntity.IsLotNo ? revenueEntity.LotNo : item.LotNo;
-                    item.LotDate = revenueEntity.IsLotDate ? revenueEntity.LotDate : item.LotDate;
-                    item.InvoinceNo = revenueEntity.IsInvoinceNo ? revenueEntity.InvoinceNo : item.InvoinceNo;
-                    item.InvoinceDate = revenueEntity.IsInvoinceDate ? revenueEntity.InvoinceDate : item.InvoinceDate;
-                    item.UnitPriceBeforeTax = revenueEntity.IsUnitPriceBeforeTax ? revenueEntity.UnitPriceBeforeTax : item.UnitPriceBeforeTax;
-                    item.UnitPriceAfterTax = revenueEntity.IsUnitPriceAfterTax ? revenueEntity.UnitPriceAfterTax : item.UnitPriceAfterTax;
-                    item.ReceivedPrice = revenueEntity.IsReceivedPrice ? revenueEntity.ReceivedPrice : item.ReceivedPrice;
-                    item.CollectOnBehaftPrice = revenueEntity.IsCollectOnBehaftPrice ? revenueEntity.CollectOnBehaftPrice : item.CollectOnBehaftPrice;
-                    item.Vat = revenueEntity.IsVat ? revenueEntity.Vat : item.Vat;
-                    item.TotalPriceBeforTax = revenueEntity.IsTotalPriceBeforTax ? revenueEntity.TotalPriceBeforTax : item.TotalPriceBeforTax;  
-                    item.VatPrice = revenueEntity.IsVatPrice ? revenueEntity.VatPrice : item.VatPrice;
-                    item.TotalPrice = revenueEntity.IsTotalPrice ? revenueEntity.TotalPrice : item.TotalPrice;
-                    item.NotePayment = revenueEntity.IsNotePayment ? revenueEntity.NotePayment : item.NotePayment;
-                    item.VendorVatId = revenueEntity.IsVendorVatId ? revenueEntity.VendorVatId : item.VendorVatId;
-                }
-                var res = await new Client(nameof(Revenue)).BulkUpdateAsync<Revenue>(revenues);
-                if (res != null)
+                revenues.Add(revenueEntity);
+                var res = await new Client(nameof(Revenue)).PostAsync<bool>(revenues, "UpdateRevenueSimultaneous");
+                if (res)
                 {
                     await gridView.ApplyFilter(true);
                     Dispose();
@@ -209,25 +225,9 @@ namespace TMS.UI.Business.Accountant
             confirm.YesConfirmed += async () =>
             {
                 Spinner.AppendTo(this.Element, true, true, 20000);
-                foreach (var item in revenues)
-                {
-                    item.LotNo = revenueEntity.IsLotNo ? revenueEntity.LotNo : item.LotNo;
-                    item.LotDate = revenueEntity.IsLotDate ? revenueEntity.LotDate : item.LotDate;
-                    item.InvoinceNo = revenueEntity.IsInvoinceNo ? revenueEntity.InvoinceNo : item.InvoinceNo;
-                    item.InvoinceDate = revenueEntity.IsInvoinceDate ? revenueEntity.InvoinceDate : item.InvoinceDate;
-                    item.UnitPriceBeforeTax = revenueEntity.IsUnitPriceBeforeTax ? revenueEntity.UnitPriceBeforeTax : item.UnitPriceBeforeTax;
-                    item.UnitPriceAfterTax = revenueEntity.IsUnitPriceAfterTax ? revenueEntity.UnitPriceAfterTax : item.UnitPriceAfterTax;
-                    item.ReceivedPrice = revenueEntity.IsReceivedPrice ? revenueEntity.ReceivedPrice : item.ReceivedPrice;
-                    item.CollectOnBehaftPrice = revenueEntity.IsCollectOnBehaftPrice ? revenueEntity.CollectOnBehaftPrice : item.CollectOnBehaftPrice;
-                    item.Vat = revenueEntity.IsVat ? revenueEntity.Vat : item.Vat;
-                    item.TotalPriceBeforTax = revenueEntity.IsTotalPriceBeforTax ? revenueEntity.TotalPriceBeforTax : item.TotalPriceBeforTax;  
-                    item.VatPrice = revenueEntity.IsVatPrice ? revenueEntity.VatPrice : item.VatPrice;
-                    item.TotalPrice = revenueEntity.IsTotalPrice ? revenueEntity.TotalPrice : item.TotalPrice;
-                    item.NotePayment = revenueEntity.IsNotePayment ? revenueEntity.NotePayment : item.NotePayment;
-                    item.VendorVatId = revenueEntity.IsVendorVatId ? revenueEntity.VendorVatId : item.VendorVatId;
-                }
-                var res = await new Client(nameof(Revenue)).BulkUpdateAsync<Revenue>(revenues);
-                if (res != null)
+                revenues.Add(revenueEntity);
+                var res = await new Client(nameof(Revenue)).PostAsync<bool>(revenues, "UpdateRevenueSimultaneous");
+                if (res)
                 {
                     await gridView.ApplyFilter(true);
                     Dispose();

@@ -127,5 +127,78 @@ namespace TMS.API.Controllers
                 throw new ApiException("Không thể xóa dữ liệu!") { StatusCode = HttpStatusCode.BadRequest };
             }
         }
+
+        [HttpPost("api/Revenue/UpdateRevenueSimultaneous")]
+        public async Task<bool> UpdateRevenueSimultaneous([FromBody] List<Revenue> revenues)
+        {
+            if (revenues == null)
+            {
+                return false;
+            }
+            var cmd = $"Update [{nameof(Revenue)}] set ";
+            var item = revenues.Where(x => x.Id <= 0).FirstOrDefault();
+            if (item.IsLotNo)
+            {
+                cmd += $"{nameof(Revenue.LotNo)} = '{item.LotNo}',";
+            }
+            if (item.IsLotDate)
+            {
+                cmd += $"{nameof(Revenue.LotDate)} = '{item.LotDate.Value.ToString("yyyy-MM-dd")}',";
+            }
+            if (item.IsInvoinceNo)
+            {
+                cmd += $"{nameof(Revenue.InvoinceNo)}  = '{item.InvoinceNo}',";
+            }
+            if (item.IsInvoinceDate)
+            {
+                cmd += $"{nameof(Revenue.InvoinceDate)}  = '{item.InvoinceDate.Value.ToString("yyyy-MM-dd")}',";
+            }
+            if (item.IsUnitPriceBeforeTax)
+            {
+                cmd += $"{nameof(Revenue.UnitPriceBeforeTax)}  = '{item.UnitPriceBeforeTax}',";
+            }
+            if (item.IsUnitPriceAfterTax)
+            {
+                cmd += $"{nameof(Revenue.UnitPriceAfterTax)}  = '{item.UnitPriceAfterTax}',";
+            }
+            if (item.IsReceivedPrice)
+            {
+                cmd += $"{nameof(Revenue.ReceivedPrice)}  = '{item.ReceivedPrice}',";
+            }
+            if (item.IsCollectOnBehaftPrice)
+            {
+                cmd += $"{nameof(Revenue.CollectOnBehaftPrice)}  = '{item.CollectOnBehaftPrice}',";
+            }
+            if (item.IsVat)
+            {
+                cmd += $"{nameof(Revenue.Vat)}  = '{item.Vat}',";
+            }
+            if (item.IsTotalPriceBeforTax)
+            {
+                cmd += $"{nameof(Revenue.TotalPriceBeforTax)}   = '{item.TotalPriceBeforTax}',";
+            }
+            if (item.IsVatPrice)
+            {
+                cmd += $"{nameof(Revenue.VatPrice)}   = '{item.VatPrice}',";
+            }
+            if (item.IsTotalPrice)
+            {
+                cmd += $"{nameof(Revenue.TotalPrice)}   = '{item.TotalPrice}',";
+            }
+            if (item.IsNotePayment)
+            {
+                cmd += $"{nameof(Revenue.NotePayment)}   = '{item.NotePayment}',";
+            }
+            if (item.IsVendorVatId)
+            {
+                cmd += $"{nameof(Revenue.VendorVatId)}   = '{item.VendorVatId}',";
+            }
+            cmd = cmd.TrimEnd(',');
+            revenues.Remove(item);
+            var ids = revenues.Select(x => x.Id).ToList();
+            cmd += $"where Id in ({ids.Combine()})";
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
     }
 }

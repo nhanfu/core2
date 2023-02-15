@@ -376,7 +376,7 @@ namespace TMS.UI.Business.Manage
                         }
                     };
                     var transportationNoLock = transportations.Where(x => x.IsLocked == false).ToList();
-                    var res = await ApproveUnLockTransportation(transportationNoLock);
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "ApproveUnLockTransportation");
                     if (res)
                     {
                         gridView.RemoveRange(transportationNoLock);
@@ -384,7 +384,7 @@ namespace TMS.UI.Business.Manage
                 }
                 else
                 {
-                    var res = await ApproveUnLockTransportation(transportations);
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockTransportation");
                     if (res)
                     {
                         gridView.RemoveRange(transportations);
@@ -434,7 +434,7 @@ namespace TMS.UI.Business.Manage
                         }
                     };
                     var transportationNoLock = transportations.Where(x => x.IsLocked == false).ToList();
-                    var res = await ApproveUnLockAccountantTransportation(transportationNoLock);
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "ApproveUnLockAccountantTransportation");
                     if (res)
                     {
                         gridView.RemoveRange(transportationNoLock);
@@ -442,7 +442,7 @@ namespace TMS.UI.Business.Manage
                 }
                 else
                 {
-                    var res = await ApproveUnLockAccountantTransportation(transportations);
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockAccountantTransportation");
                     if (res)
                     {
                         gridView.RemoveRange(transportations);
@@ -472,13 +472,8 @@ namespace TMS.UI.Business.Manage
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                foreach (var item in transportations)
-                {
-                    item.IsLocked = false;
-                    item.IsRequestUnLockAll = false;
-                }
-                var res = await new Client(nameof(Transportation)).BulkUpdateAsync<Transportation>(transportations);
-                if (res != null)
+                var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockAll");
+                if (res)
                 {
                     gridView.RemoveRange(transportations);
                     Toast.Success("Mở khóa thành công");
@@ -531,21 +526,27 @@ namespace TMS.UI.Business.Manage
                         }
                     };
                     var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
-                    foreach (var item in transportationNoLock)
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "LockTransportation");
+                    if (res)
                     {
-                        item.IsKt = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
+                        await gridView.ApplyFilter(true);
                     }
-                    await gridView.ApplyFilter(true);
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
                 }
                 else
                 {
-                    foreach (var item in listViewItems)
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockTransportation");
+                    if (res)
                     {
-                        item.IsKt = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
+                        await gridView.ApplyFilter(true);
                     }
-                    await gridView.ApplyFilter(true);
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
                 }
             };
         }
@@ -591,21 +592,27 @@ namespace TMS.UI.Business.Manage
                         }
                     };
                     var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
-                    foreach (var item in transportationNoLock)
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "LockAccountantTransportation");
+                    if (res)
                     {
-                        item.IsSubmit = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
+                        await gridView.ApplyFilter(true);
                     }
-                    await gridView.ApplyFilter(true);
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
                 }
                 else
                 {
-                    foreach (var item in listViewItems)
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockAccountantTransportation");
+                    if (res)
                     {
-                        item.IsSubmit = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
+                        await gridView.ApplyFilter(true);
                     }
-                    await gridView.ApplyFilter(true);
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
                 }
             };
         }
@@ -631,12 +638,15 @@ namespace TMS.UI.Business.Manage
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                foreach (var item in listViewItems)
+                var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockAllTransportation");
+                if (res)
                 {
-                    item.IsLocked = true;
-                    await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
+                    await gridView.ApplyFilter(true);
                 }
-                await gridView.ApplyFilter(true);
+                else
+                {
+                    Toast.Warning("Đã có lỗi xảy ra");
+                }
             };
         }
 
@@ -775,71 +785,39 @@ namespace TMS.UI.Business.Manage
                     confirmRequets.Render();
                     confirmRequets.YesConfirmed += async () =>
                     {
-                        foreach (var item in checkRequests)
+                        var rs = await new Client(nameof(Transportation)).PostAsync<bool>(checkRequests, "ApproveUnLockAll");
+                        if (rs)
                         {
-                            item.IsLocked = false;
-                            item.IsRequestUnLockAll = false;
-                            await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
+                            await gridView.ApplyFilter(true);
                         }
-                        await gridView.ApplyFilter(true);
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
                     };
-                    foreach (var item in listViewItems.Where(x => x.IsRequestUnLockAll == false))
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems.Where(x => x.IsRequestUnLockAll == false), "UnLockAllTransportation");
+                    if (res)
                     {
-                        item.IsLocked = false;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
+                        await gridView.ApplyFilter(true);
                     }
-                    await gridView.ApplyFilter(true);
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
                 }
                 else if (checkRequests.Count <= 0)
                 {
-                    foreach (var item in listViewItems)
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "UnLockAllTransportation");
+                    if (res)
                     {
-                        item.IsLocked = false;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
+                        await gridView.ApplyFilter(true);
                     }
-                    await gridView.ApplyFilter(true);
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
                 }
             };
-        }
-
-        public async Task<bool> ApproveUnLockTransportation(List<Transportation> transportations)
-        {
-            foreach (var item in transportations)
-            {
-                item.IsKt = false;
-                item.IsRequestUnLockExploit = false;
-            }
-            var res = await new Client(nameof(Transportation)).BulkUpdateAsync<Transportation>(transportations);
-            if (res != null)
-            {
-                Toast.Success("Mở khóa thành công");
-                return true;
-            }
-            else
-            {
-                Toast.Warning("Đã có lỗi xảy ra");
-                return false;
-            }
-        }
-
-        public async Task<bool> ApproveUnLockAccountantTransportation(List<Transportation> transportations)
-        {
-            foreach (var item in transportations)
-            {
-                item.IsSubmit = false;
-                item.IsRequestUnLockAccountant = false;
-            }
-            var res = await new Client(nameof(Transportation)).BulkUpdateAsync<Transportation>(transportations);
-            if (res != null)
-            {
-                Toast.Success("Mở khóa thành công");
-                return true;
-            }
-            else
-            {
-                Toast.Warning("Đã có lỗi xảy ra");
-                return false;
-            }
         }
 
         public async Task UnLockTransportationNoCheck(List<Transportation> transportations)
@@ -854,26 +832,13 @@ namespace TMS.UI.Business.Manage
                 confirmRequets.Render();
                 confirmRequets.YesConfirmed += async () =>
                 {
-                    foreach (var item in checkRequests)
-                    {
-                        item.IsKt = false;
-                        item.IsRequestUnLockExploit = false;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
-                    }
+                    await new Client(nameof(Transportation)).PostAsync<bool>(checkRequests, "ApproveUnLockTransportation");
                 };
-                foreach (var item in transportations.Where(x => x.IsRequestUnLockExploit == false))
-                {
-                    item.IsKt = false;
-                    await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
-                }
+                await new Client(nameof(Transportation)).PostAsync<bool>(transportations.Where(x => x.IsRequestUnLockExploit == false), "UnLockTransportation");
             }
             else if (checkRequests.Count <= 0)
             {
-                foreach (var item in transportations)
-                {
-                    item.IsKt = false;
-                    await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
-                }
+                await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "UnLockTransportation");
             }
         }
 
@@ -889,26 +854,13 @@ namespace TMS.UI.Business.Manage
                 confirmRequets.Render();
                 confirmRequets.YesConfirmed += async () =>
                 {
-                    foreach (var item in checkRequests)
-                    {
-                        item.IsSubmit = false;
-                        item.IsRequestUnLockAccountant = false;
-                        var rs = await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
-                    }
+                    await new Client(nameof(Transportation)).PostAsync<bool>(checkRequests, "ApproveUnLockAccountantTransportation");
                 };
-                foreach (var item in transportations.Where(x => x.IsRequestUnLockAccountant == false))
-                {
-                    item.IsSubmit = false;
-                    var rs = await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
-                }
+                await new Client(nameof(Transportation)).PostAsync<bool>(transportations.Where(x => x.IsRequestUnLockAccountant == false), "UnLockAccountantTransportation");
             }
             else if (checkRequests.Count <= 0)
             {
-                foreach (var item in transportations)
-                {
-                    item.IsSubmit = false;
-                    var rs = await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchEntity(item));
-                }
+                await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "UnLockAccountantTransportation");
             }
         }
 

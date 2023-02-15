@@ -2205,6 +2205,132 @@ namespace TMS.API.Controllers
             }
         }
 
+        [HttpPost("api/Transportation/ApproveUnLockAll")]
+        public async Task<bool> ApproveUnLockAll([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var cmd = $"Update [{nameof(Transportation)}] set IsLocked = 0, IsRequestUnLockAll = 0" +
+                $" where Id in ({ids.Combine()})";
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
+
+        [HttpPost("api/Transportation/ApproveUnLockTransportation")]
+        public async Task<bool> ApproveUnLockTransportation([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var cmd = $"Update [{nameof(Transportation)}] set IsKt = 0, IsRequestUnLockExploit = 0" +
+                $" where Id in ({ids.Combine()})";
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
+
+        [HttpPost("api/Transportation/ApproveUnLockAccountantTransportation")]
+        public async Task<bool> ApproveUnLockAccountantTransportation([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var cmd = $"Update [{nameof(Transportation)}] set IsSubmit = 0, IsRequestUnLockAccountant = 0" +
+                $" where Id in ({ids.Combine()})";
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
+
+        [HttpPost("api/Transportation/LockAllTransportation")]
+        public async Task<bool> LockAllTransportation([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var cmd = $"Update [{nameof(Transportation)}] set IsLocked = 1" +
+                $" where Id in ({ids.Combine()})";
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
+
+        [HttpPost("api/Transportation/LockTransportation")]
+        public async Task<bool> LockTransportation([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var cmd = $"Update [{nameof(Transportation)}] set IsKt = 1" +
+                $" where Id in ({ids.Combine()})";
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
+
+        [HttpPost("api/Transportation/LockAccountantTransportation")]
+        public async Task<bool> LockAccountantTransportation([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var cmd = $"Update [{nameof(Transportation)}] set IsSubmit = 1" +
+                $" where Id in ({ids.Combine()})";
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
+
+        [HttpPost("api/Transportation/UnLockAllTransportation")]
+        public async Task<bool> UnLockAllTransportation([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var cmd = $"Update [{nameof(Transportation)}] set IsLocked = 0" +
+                $" where Id in ({ids.Combine()})";
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
+
+        [HttpPost("api/Transportation/UnLockTransportation")]
+        public async Task<bool> UnLockTransportation([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var cmd = $"Update [{nameof(Transportation)}] set IsKt = 0" +
+                $" where Id in ({ids.Combine()})";
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
+
+        [HttpPost("api/Transportation/UnLockAccountantTransportation")]
+        public async Task<bool> UnLockAccountantTransportation([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var cmd = $"Update [{nameof(Transportation)}] set IsSubmit = 0" +
+                $" where Id in ({ids.Combine()})";
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
+
         [HttpPost("api/Transportation/ExportTransportationAndRevenue")]
         public async Task<string> ExportTransportationAndRevenue([FromBody] List<int> tranIds)
         {
