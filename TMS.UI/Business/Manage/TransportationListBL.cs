@@ -692,6 +692,7 @@ namespace TMS.UI.Business.Manage
                     instance.Entity = new Transportation()
                     {
                         ShipId = selected is null ? null : selected.ShipId,
+                        BrandShipId = selected is null ? null : selected.BrandShipId,
                         Trip = selected is null ? null : selected.Trip,
                         RouteIds = selected is null ? null : new List<int>() { selected.RouteId.Value },
                     };
@@ -1005,7 +1006,8 @@ namespace TMS.UI.Business.Manage
             || x.Field == nameof(Transportation.CommodityId)
             || x.Field == nameof(Transportation.StartShip)
             || x.Field == nameof(Transportation.ShipId)
-            || x.Field == nameof(Transportation.RouteId)) && !patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ShipPrice) || x.Field == nameof(Transportation.ShipPolicyPrice)))
+            || x.Field == nameof(Transportation.BookingId)
+            || x.Field == nameof(Transportation.RouteId)))
             {
                 Toast.Warning("Hệ thống đang lấy chính sách hãng tàu");
                 var components = new Client(nameof(GridPolicy)).GetRawList<GridPolicy>("?$filter=ComponentId eq 16016");

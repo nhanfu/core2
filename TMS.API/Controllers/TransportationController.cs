@@ -1289,9 +1289,9 @@ namespace TMS.API.Controllers
             }
             var cmd = $"Update [{nameof(Transportation)}] set [ShipDate] = '{entity.ShipDate.Value.ToString("yyyy-MM-dd")}',[PortLiftId] = '{entity.PortLiftId}'" +
                 $" where ShipId = '{entity.ShipId}' and (BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Trip = '{entity.Trip}' and RouteId in ({entity.RouteIds.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER tr_Transportation_UpdateTeus ON Transportation");
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER tr_Transportation_UpdateTeus ON Transportation");
+            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
             return check;
         }
 
