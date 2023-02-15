@@ -20,7 +20,7 @@ namespace Core.Components
 {
     public class ListView : EditableComponent
     {
-        internal int _rowHeight = 37;
+        internal int _rowHeight = 26;
         private const string PermissionLoaded = "PermissionLoaded";
         private const string IsOwner = "IsOwner";
         private const string CmdUrl = "Cmd";

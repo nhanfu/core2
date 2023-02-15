@@ -100,7 +100,7 @@ namespace Core.Components
                 Html.Instance.Div.ClassName("delete")
                     .Event(EventType.Click, RemoveFile, path).I.ClassName("fas fa-trash-alt").EndOf(MVVM.ElementType.div);
             }
-            Html.Instance.End.Div.ClassName("middle-secondery").Style("font-size:8px").Text(thumbText).Render();
+            Html.Instance.End.Div.ClassName("middle-secondery").Style("font-size:8px").Text(thumbText.DecodeSpecialChar()).Render();
             return _gallerys;
         }
 
@@ -323,7 +323,7 @@ namespace Core.Components
             {
                 Html.Instance.Attr("multiple", "multiple");
             }
-            Html.Take(ParentElement)
+            Html.Take(ParentElement).Div.ClassName("file-upload")
                 .I.ClassName("fal fa-file-alt")
                 .Event(EventType.Click, OpenFileDialog).End.Div.ClassName("gallerys").Render();
             _gallerys = Html.Context as HTMLDivElement;
