@@ -140,14 +140,9 @@ namespace TMS.UI.Business.Manage
                     return;
                 }
                 listViewItem.Element.RemoveClass("bg-red1");
-                listViewItem.Element.RemoveClass("bg-red");
                 if (x.DemDate != null && x.ReturnDate != null && Convert.ToDateTime(x.ReturnDate.Value).Date > Convert.ToDateTime(x.DemDate.Value).Date)
                 {
                     listViewItem.Element.AddClass("bg-red1");
-                }
-                if (!x.IsQuotationReturn)
-                {
-                    listViewItem.Element.AddClass("bg-red");
                 }
             });
         }

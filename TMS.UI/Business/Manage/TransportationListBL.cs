@@ -229,14 +229,9 @@ namespace TMS.UI.Business.Manage
                 {
                     return;
                 }
-                listViewItem.Element.RemoveClass("bg-red");
                 listViewItem.Element.RemoveClass("bg-host");
                 var bookingId = listViewItem.FilterChildren<EditableComponent>(y => y.GuiInfo.FieldName == nameof(Transportation.BookingId)).FirstOrDefault();
                 bookingId.Disabled = false;
-                if (!x.IsQuotation)
-                {
-                    listViewItem.Element.AddClass("bg-red");
-                }
                 if (!x.IsHost)
                 {
                     listViewItem.Element.AddClass("bg-host");
