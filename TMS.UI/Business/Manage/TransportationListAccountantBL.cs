@@ -874,9 +874,12 @@ namespace TMS.UI.Business.Manage
 
         public async Task CalcRevenueTotalPriceAsync(Revenue revenue)
         {
-            revenue.UnitPriceAfterTax = revenue.UnitPriceAfterTax == null ? 0 : revenue.UnitPriceAfterTax;
-            revenue.ReceivedPrice = revenue.ReceivedPrice == null ? 0 : revenue.ReceivedPrice;
-            revenue.TotalPrice = revenue.UnitPriceAfterTax + revenue.ReceivedPrice;
+            if (revenue.IsLockTotalPrice == false)
+            {
+                revenue.UnitPriceAfterTax = revenue.UnitPriceAfterTax == null ? 0 : revenue.UnitPriceAfterTax;
+                revenue.ReceivedPrice = revenue.ReceivedPrice == null ? 0 : revenue.ReceivedPrice;
+                revenue.TotalPrice = revenue.UnitPriceAfterTax + revenue.ReceivedPrice;
+            }
             await CalcRevenueAsync(revenue);
         }
 
