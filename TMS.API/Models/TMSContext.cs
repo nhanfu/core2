@@ -1221,6 +1221,7 @@ public partial class TMSContext : DbContext
                 .HasDefaultValueSql("((0))");
             entity.Property(e => e.ReasonUnLockAll).HasMaxLength(250);
             entity.Property(e => e.ReasonUnLockExploit).HasMaxLength(250);
+            entity.Property(e => e.ReasonUnLockRevenue).HasMaxLength(250);
             entity.Property(e => e.ReasonUnLockShip).HasMaxLength(250);
             entity.Property(e => e.ReceivedCheck).HasMaxLength(250);
             entity.Property(e => e.ReceivedCheckUpload).HasMaxLength(250);

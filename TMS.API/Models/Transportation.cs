@@ -307,6 +307,9 @@ namespace TMS.API.Models
         public decimal? FeeVat3Upload { get; set; }
         public int? OrderExcel { get; set; }
         public decimal? ShipUnitPriceQuotation { get; set; }
+        public bool IsLockedRevenue { get; set; }
+        public bool IsRequestUnLockRevenue { get; set; }
+        public string ReasonUnLockRevenue { get; set; }
 
         public virtual ICollection<Expense> Expense { get; set; }
         public virtual ICollection<Revenue> Revenue { get; set; }
