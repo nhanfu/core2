@@ -200,5 +200,29 @@ namespace TMS.API.Controllers
             await db.Database.ExecuteSqlRawAsync(cmd);
             return true;
         }
+
+        [HttpPost("api/Revenue/CreateRevenues")]
+        public async Task<bool> CreateRevenues([FromBody] List<Transportation> transportations)
+        {
+            var revenues = await db.Revenue.Where(x => x.Active == true && x.TransportationId != null).ToListAsync();
+            var ids = revenues.Select(x => x.TransportationId).Distinct().ToList();
+            var trans = transportations.Where(x => x.Active == true && ids.All(y => y != x.Id)).ToList();
+            if (trans.Count <= 0)
+            {
+                return false;
+            }
+            var cmd = "";
+            foreach(var item in trans)
+            {
+                var boss = item.BossId == null ? "NULL" : item.BossId.ToString();
+                var containerNo = item.ContainerNo == null ? "NULL" : $"'{item.ContainerNo}'";
+                var sealNo = item.SealNo == null ? "NULL" : $"'{item.SealNo}'";
+                var containerType = item.ContainerTypeId == null ? "NULL" : item.ContainerTypeId.ToString();
+                var closingDate = item.ClosingDate == null ? "NULL" : $"'{item.ClosingDate.Value.ToString("yyyy-MM-dd")}'";
+                cmd += $"INSERT INTO Revenue(TransportationId, Active, InsertedDate, InsertedBy, BossId, ContainerNo, SealNo, ContainerTypeId, ClosingDate) VALUES ({item.Id}, 1, '2023/02/16', 1, {boss}, {containerNo}, {sealNo}, {containerType}, {closingDate}) ";
+            }
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
     }
 }

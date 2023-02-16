@@ -177,15 +177,16 @@ namespace TMS.UI.Business.Accountant
                 Toast.Warning("Không có DSVC nào có thể nhập");
                 return;
             }
-            var revenues = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and TransportationId in ({ids.Combine()})");
             var confirm = new ConfirmDialog
             {
-                Content = "Bạn có chắc chắn muốn nhập doanh thu cho " + listViewItems.Count + " DSVC với " + revenues.Count + " dòng doanh thu ?",
+                Content = "Bạn có chắc chắn muốn nhập doanh thu cho " + listViewItems.Count + " DSVC ?",
             };
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
                 Spinner.AppendTo(this.Element, true, true, 20000);
+                var resCreateRevenues = await new Client(nameof(Revenue)).PostAsync<bool>(listViewItems, "CreateRevenues");
+                var revenues = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and TransportationId in ({ids.Combine()})");
                 revenues.Add(revenueEntity);
                 var res = await new Client(nameof(Revenue)).PostAsync<bool>(revenues, "UpdateRevenueSimultaneous");
                 if (res)
