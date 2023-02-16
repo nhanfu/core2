@@ -391,14 +391,11 @@ namespace TMS.UI.Business.Manage
                     var transportation = new Transportation();
                     transportation.CopyPropFrom(item, nameof(Transportation.Contact2Id));
                     transportation.Id = 0;
-                    transportation.Cont20 = cont20;
-                    transportation.Cont40 = cont40;
                     transportation.TransportationPlanId = item.Id;
                     transportation.Notes = null;
                     transportation.ClosingNotes = item.Notes;
                     transportation.ExportListId = Client.Token.Vendor.Id;
                     transportation.Expense.Add(expense);
-                    transportation.Revenue.Add(new Revenue());
                     await new Client(nameof(Transportation)).CreateAsync<Transportation>(transportation);
                 }
             }
