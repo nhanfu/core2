@@ -677,29 +677,7 @@ namespace Core.Components
                 .EndOf(".popup-title")
                 .Div.ClassName("popup-body scroll-content");
             Html.Instance.Div.ClassName("container-rpt");
-            Html.Instance.Div.ClassName("menuBar")
-            .Div.ClassName("printBtn")
-                .Button.ClassName("fa fal fa-expand").Event(EventType.Click, () =>
-                {
-                    Element["requestFullscreen"].As<Function>()?.Call(Element);
-                    Element.Style.Overflow = Overflow.Auto;
-                }).End
-                .Button.ClassName("fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement, printPreview: true)).End
-                .Button.ClassName("fa fa-file-excel").Event(EventType.Click, () =>
-                {
-                    if (!(_summary.QuerySelector("table") is HTMLTableElement table))
-                    {
-                        ConfirmDialog.RenderConfirm("Excel data not found in the report");
-                        return;
-                    }
-                    ExcelExt.ExportTableToExcel(null, GuiInfo.Label ?? GuiInfo.FieldName, table, true);
-                }).End.Render();
-            if (Client.SystemRole)
-            {
-                Html.Instance.Button.ClassName("far fa-eye")
-                        .Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement)).End.Render();
-            }
-
+            Html.Instance.Div.ClassName("menuBar");
             Html.Instance.EndOf(".menuBar");
             Html.Instance.Div.ClassName("printable");
             var body = Html.Context;
@@ -715,8 +693,9 @@ namespace Core.Components
                 {
                     refn = dataSet[1];
                 }
+                var id = "sumary" + GuiInfo.Id;
                 var dir = refn?.ToDictionary(x => x[IdField]);
-                Html.Instance.Div.ClassName("grid-wrapper sticky").Div.ClassName("table-wrapper printable").Table.ClassName("table")
+                Html.Instance.Div.ClassName("grid-wrapper sticky").Div.ClassName("table-wrapper printable").Table.Id(id).ClassName("table")
                 .Thead
                     .TRow.Render();
                 Html.Instance.Th.Style("max-width: 100%;").IText(header.ShortDesc).End.Render();
@@ -785,6 +764,17 @@ namespace Core.Components
                     var de = sumarys.Select(x => x[item.FieldName].ToString().Replace(",", "")).ToList();
                     var ttCount1 = de.Where(x => !x.IsNullOrWhiteSpace()).Sum(x => decimal.Parse(x));
                     Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IHtml(ttCount1.ToString("N0")).End.Render();
+                }
+                
+                await Client.LoadScript("//cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js");
+                if (_summary != null)
+                {
+                    /*@
+                    $('#'+id).DataTable({
+                        paging: false,
+                        info: false
+                    });
+                */
                 }
             });
         }
