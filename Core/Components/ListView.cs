@@ -27,6 +27,7 @@ namespace Core.Components
         protected static List<object> _copiedRows;
         public Action<object> RowClick;
         protected bool _isFocusCell;
+        public bool CanWrite;
         protected bool _firstCache;
         protected Section _noRecord;
         public Action BodyContextMenuShow;
@@ -271,6 +272,9 @@ namespace Core.Components
 
         public override void Render()
         {
+            var feature = EditForm.Feature;
+            var gridPolicies = EditForm.GetElementPolicies(GuiInfo.Id, Utils.ComponentId);
+            CanWrite = CanDo(gridPolicies, x => x.CanWrite);
             Html.Take(ParentElement).DataAttr("name", GuiInfo.FieldName);
             AddSections();
             SetRowDataIfExists();
@@ -1364,9 +1368,8 @@ namespace Core.Components
                 return;
             }
             var ctxMenu = ContextMenu.Instance;
-            var feature = EditForm.Feature;
             var gridPolicies = EditForm.GetElementPolicies(GuiInfo.Id, Utils.ComponentId);
-            var canWrite = GuiInfo.CanAdd && CanDo(gridPolicies, x => x.CanWrite);
+            var canWrite = GuiInfo.CanAdd && CanWrite;
             await RenderViewMenu();
             RenderCopyPasteMenu(canWrite);
             RenderEditMenu(selectedRows, gridPolicies, canWrite);

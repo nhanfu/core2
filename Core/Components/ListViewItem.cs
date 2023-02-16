@@ -188,7 +188,7 @@ namespace Core.Components
             {
                 return;
             }
-            var component = header.Editable || NotCellText.Contains(header.ComponentType)
+            var component = ((header.Editable || NotCellText.Contains(header.ComponentType)) && ListViewSection.ListView.CanWrite)
                 ? ComponentFactory.GetComponent(header, EditForm)
                 : new CellText(header);
             if (component is CellText cellText)
