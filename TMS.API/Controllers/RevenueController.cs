@@ -50,6 +50,11 @@ namespace TMS.API.Controllers
             {
                 db.Add(entity);
             }
+            var tran = await db.Transportation.Where(x => x.Id == entity.TransportationId).FirstOrDefaultAsync();
+            if (tran != null && tran.IsLockedRevenue)
+            {
+                throw new ApiException("Doanh thu này đã được khóa.") { StatusCode = HttpStatusCode.BadRequest };
+            }
             if (patch.Changes.Any(x => x.Field == nameof(entity.LotNo)
                 || x.Field == nameof(entity.LotDate)
                 || x.Field == nameof(entity.Vat)
@@ -60,7 +65,6 @@ namespace TMS.API.Controllers
                 || x.Field == nameof(entity.NotePayment)
                 || x.Field == nameof(entity.VendorVatId)))
             {
-                var tran = await db.Transportation.Where(x => x.Id == entity.TransportationId).FirstOrDefaultAsync();
                 if (tran != null && tran.IsSubmit)
                 {
                     throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
@@ -187,7 +191,7 @@ namespace TMS.API.Controllers
             }
             if (item.IsNotePayment)
             {
-                cmd += $"{nameof(Revenue.NotePayment)}   = '{item.NotePayment}',";
+                cmd += $"{nameof(Revenue.NotePayment)}   = N'{item.NotePayment}',";
             }
             if (item.IsVendorVatId)
             {

@@ -171,7 +171,7 @@ namespace TMS.UI.Business.Accountant
             }
             var ids = gridView.SelectedIds.ToList();
             var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()})");
-            var listViewItems = transportations.Where(x => x.IsLocked == false && x.IsSubmit == false).ToList();
+            var listViewItems = transportations.Where(x => x.IsLocked == false && x.IsSubmit == false && x.IsLockedRevenue == false).ToList();
             if (listViewItems.Count <= 0)
             {
                 Toast.Warning("Không có DSVC nào có thể nhập");
@@ -186,7 +186,8 @@ namespace TMS.UI.Business.Accountant
             {
                 Spinner.AppendTo(this.Element, true, true, 20000);
                 var resCreateRevenues = await new Client(nameof(Revenue)).PostAsync<bool>(listViewItems, "CreateRevenues");
-                var revenues = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and TransportationId in ({ids.Combine()})");
+                var idTrans = listViewItems.Select(x => x.Id).ToList();
+                var revenues = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and TransportationId in ({idTrans.Combine()})");
                 revenues.Add(revenueEntity);
                 var res = await new Client(nameof(Revenue)).PostAsync<bool>(revenues, "UpdateRevenueSimultaneous");
                 if (res)
@@ -210,9 +211,11 @@ namespace TMS.UI.Business.Accountant
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var revenues = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and Id in ({ids.Combine()})");
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({revenues.Select(x => x.TransportationId).Combine()})");
-            var listViewItems = transportations.Where(x => x.IsLocked == false && x.IsSubmit == false).ToList();
+            var revenueSelecteds = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and Id in ({ids.Combine()})");
+            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({revenueSelecteds.Select(x => x.TransportationId).Combine()})");
+            var listViewItems = transportations.Where(x => x.IsLocked == false && x.IsSubmit == false && x.IsLockedRevenue == false).ToList();
+            var idTrans = listViewItems.Select(x => x.Id).ToList();
+            var revenues = revenueSelecteds.Where(x => idTrans.Contains((int)x.TransportationId)).ToList();
             if (listViewItems.Count <= 0)
             {
                 Toast.Warning("Không có doanh thu nào có thể nhập");
