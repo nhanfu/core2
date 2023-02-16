@@ -650,6 +650,72 @@ namespace TMS.UI.Business.Manage
             };
         }
 
+        public async Task LockRevenueTransportation()
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+            if (gridView is null)
+            {
+                return;
+            }
+            var ids = gridView.SelectedIds.ToList();
+            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLockedRevenue eq false");
+            if (listViewItems.Count <= 0)
+            {
+                Toast.Warning("Không DSVC nào cần khóa");
+                return;
+            }
+            var confirm = new ConfirmDialog
+            {
+                Content = "Bạn có chắc chắn muốn khóa " + listViewItems.Count + " DSVC ?",
+            };
+            confirm.Render();
+            confirm.YesConfirmed += async () =>
+            {
+                var checks = listViewItems.Where(x => x.IsLocked).ToList();
+                if (checks.Count > 0)
+                {
+                    var confirmRequest = new ConfirmDialog
+                    {
+                        NeedAnswer = true,
+                        ComType = nameof(Textbox),
+                        Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                        "Hãy nhập lý do",
+                    };
+                    confirmRequest.Render();
+                    confirmRequest.YesConfirmed += async () =>
+                    {
+                        foreach (var item in checks)
+                        {
+                            item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                            await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                        }
+                    };
+                    var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "LockRevenueTransportation");
+                    if (res)
+                    {
+                        await gridView.ApplyFilter(true);
+                    }
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
+                }
+                else
+                {
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockRevenueTransportation");
+                    if (res)
+                    {
+                        await gridView.ApplyFilter(true);
+                    }
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
+                }
+            };
+        }
+
         public async Task UnLockTransportation()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
@@ -815,6 +881,64 @@ namespace TMS.UI.Business.Manage
                     else
                     {
                         Toast.Warning("Đã có lỗi xảy ra");
+                    }
+                }
+            };
+        }
+
+        public async Task UnLockRevenueTransportation()
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+            if (gridView is null)
+            {
+                return;
+            }
+            var ids = gridView.SelectedIds.ToList();
+            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLockedRevenue eq true");
+            if (listViewItems.Count <= 0)
+            {
+                Toast.Warning("Không DSVC nào cần mở khóa");
+                return;
+            }
+            var confirm = new ConfirmDialog
+            {
+                Content = "Bạn có chắc chắn muốn mở khóa " + listViewItems.Count + " DSVC ?",
+            };
+            confirm.Render();
+            confirm.YesConfirmed += async () =>
+            {
+                var checks = listViewItems.Where(x => x.IsLocked).ToList();
+                if (checks.Count > 0)
+                {
+                    var confirmRequest = new ConfirmDialog
+                    {
+                        NeedAnswer = true,
+                        ComType = nameof(Textbox),
+                        Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                        "Hãy nhập lý do",
+                    };
+                    confirmRequest.Render();
+                    confirmRequest.YesConfirmed += async () =>
+                    {
+                        foreach (var item in checks)
+                        {
+                            item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                            await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                        }
+                    };
+                    var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "UnLockRevenueTransportation");
+                    if (res)
+                    {
+                        await gridView.ApplyFilter(true);
+                    }
+                }
+                else
+                {
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "UnLockRevenueTransportation");
+                    if (res)
+                    {
+                        await gridView.ApplyFilter(true);
                     }
                 }
             };

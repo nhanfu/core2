@@ -2301,6 +2301,22 @@ namespace TMS.API.Controllers
             return true;
         }
 
+        [HttpPost("api/Transportation/LockRevenueTransportation")]
+        public async Task<bool> LockRevenueTransportation([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var cmd = $"Update [{nameof(Transportation)}] set IsLockedRevenue = 1" +
+                $" where Id in ({ids.Combine()})";
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+            return true;
+        }
+
         [HttpPost("api/Transportation/UnLockAllTransportation")]
         public async Task<bool> UnLockAllTransportation([FromBody] List<Transportation> transportations)
         {
@@ -2342,6 +2358,22 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsSubmit = 0" +
+                $" where Id in ({ids.Combine()})";
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+            return true;
+        }
+
+        [HttpPost("api/Transportation/UnLockRevenueTransportation")]
+        public async Task<bool> UnLockRevenueTransportation([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var cmd = $"Update [{nameof(Transportation)}] set IsLockedRevenue = 0" +
                 $" where Id in ({ids.Combine()})";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
