@@ -29,6 +29,7 @@ namespace TMS.API.Models
         public string SealNo { get; set; }
         public int? ContainerTypeId { get; set; }
         public DateTime? ClosingDate { get; set; }
+        public bool IsLockTotalPrice { get; set; }
         public bool Active { get; set; }
         public DateTime InsertedDate { get; set; }
         public int InsertedBy { get; set; }
