@@ -261,13 +261,13 @@ namespace TMS.API.Controllers
             var list = new List<ImportCommodityValue>();
             for (int row = 2; row <= noOfRow; row++)
             {
-                if ((worksheet.Cells[row, 2].Value == null || worksheet.Cells[row, 2].Value?.ToString() == "") &&
-                    (worksheet.Cells[row, 3].Value == null || worksheet.Cells[row, 3].Value?.ToString() == ""))
+                if ((worksheet.Cells[row, 3].Value == null || worksheet.Cells[row, 3].Value?.ToString() == "") &&
+                    (worksheet.Cells[row, 4].Value == null || worksheet.Cells[row, 4].Value?.ToString() == ""))
                 {
                     continue;
                 }
-                var boss = worksheet.Cells[row, 2].Value?.ToString().Trim();
-                var commodity = worksheet.Cells[row, 3].Value?.ToString().Trim();
+                var boss = worksheet.Cells[row, 3].Value?.ToString().Trim();
+                var commodity = worksheet.Cells[row, 4].Value?.ToString().Trim();
                 var commodityValue = new ImportCommodityValue()
                 {
                     SaleText = worksheet.Cells[row, 1].Value?.ToString().Trim(),
@@ -275,15 +275,15 @@ namespace TMS.API.Controllers
                     BossTextEn = ConvertTextEn(boss),
                     CommodityText = ConvertTextVn(commodity),
                     CommodityTextEn = ConvertTextEn(commodity),
-                    TotalPrice1 = worksheet.Cells[row, 4].Value?.ToString().Trim(),
-                    TotalPrice2 = worksheet.Cells[row, 5].Value?.ToString().Trim(),
-                    Notes = worksheet.Cells[row, 6].Value?.ToString().Trim(),
-                    IsWetText = worksheet.Cells[row, 7].Value?.ToString().Trim(),
-                    SteamingTerms = worksheet.Cells[row, 8].Value?.ToString().Trim(),
-                    BreakTerms = worksheet.Cells[row, 9].Value?.ToString().Trim(),
-                    IsBoughtText = worksheet.Cells[row, 10].Value?.ToString().Trim(),
-                    CustomerTypeText = worksheet.Cells[row, 11].Value?.ToString().Trim(),
-                    JourneyText = worksheet.Cells[row, 12].Value?.ToString().Trim(),
+                    TotalPrice1 = worksheet.Cells[row, 5].Value?.ToString().Trim(),
+                    TotalPrice2 = worksheet.Cells[row, 6].Value?.ToString().Trim(),
+                    Notes = worksheet.Cells[row, 7].Value?.ToString().Trim(),
+                    IsWetText = worksheet.Cells[row, 8].Value?.ToString().Trim(),
+                    SteamingTerms = worksheet.Cells[row, 9].Value?.ToString().Trim(),
+                    BreakTerms = worksheet.Cells[row, 10].Value?.ToString().Trim(),
+                    IsBoughtText = worksheet.Cells[row, 11].Value?.ToString().Trim(),
+                    CustomerTypeText = worksheet.Cells[row, 12].Value?.ToString().Trim(),
+                    JourneyText = worksheet.Cells[row, 13].Value?.ToString().Trim(),
                 };
                 list.Add(commodityValue);
             }
@@ -301,7 +301,7 @@ namespace TMS.API.Controllers
             var customerTypeDB = rsCommodity.Where(x => x.ParentId == 12085 && listCustomerTypeCodes.Contains(x.Description)).ToDictionary(x => x.Description);
             var endDate1 = new DateTime(DateTime.Now.Year, 7, 1);
             var endDate2 = new DateTime(DateTime.Now.Year, 12, 31);
-            foreach (var item in list)
+            foreach(var item in list)
             {
                 User user = null;
                 if (item.SaleText != null && item.SaleText != "")
@@ -330,6 +330,10 @@ namespace TMS.API.Controllers
                 {
                     customerType = customerTypeDB.Count == 0 ? null : customerTypeDB.GetValueOrDefault(item.CustomerTypeText);
                 }
+                if (vendor == null)
+                {
+                    var test = 0;
+                }
                 if (commodity != null && vendor != null)
                 {
                     if (item.TotalPrice1 != "x" && item.TotalPrice1 != "X")
@@ -344,7 +348,8 @@ namespace TMS.API.Controllers
                             Notes = item.Notes,
                             JourneyId = journey is null ? null : journey.Id,
                             CustomerTypeId = customerType is null ? null : customerType.Id,
-                            StartDate = DateTime.Now.Date,
+                            StartDate = DateTime.Parse("2023/01/01"),
+                            EndDate = endDate1,
                             Active = true,
                             InsertedBy = 1,
                             InsertedDate = DateTime.Now.Date
@@ -380,13 +385,6 @@ namespace TMS.API.Controllers
                         else if (item.BreakTerms == "KHÔNG" || item.BreakTerms == "" || item.BreakTerms is null)
                         {
                             commodityValue.BreakTerms = false;
-                        }if (DateTime.Now >= endDate1 && DateTime.Now <= endDate2)
-                        {
-                            commodityValue.StartDate = endDate1;
-                        }
-                        if (DateTime.Now >= endDate1 && DateTime.Now <= endDate2)
-                        {
-                            commodityValue.EndDate = endDate2;
                         }
                         db.Add(commodityValue);
                     }
@@ -402,7 +400,8 @@ namespace TMS.API.Controllers
                             Notes = item.Notes,
                             JourneyId = journey is null ? null : journey.Id,
                             CustomerTypeId = customerType is null ? null : customerType.Id,
-                            StartDate = DateTime.Now.Date,
+                            StartDate = DateTime.Parse("2023/01/01"),
+                            EndDate = endDate1,
                             Active = true,
                             InsertedBy = 1,
                             InsertedDate = DateTime.Now.Date
@@ -438,14 +437,6 @@ namespace TMS.API.Controllers
                         else if (item.BreakTerms == "KHÔNG" || item.BreakTerms == "" || item.BreakTerms is null)
                         {
                             commodityValue2.BreakTerms = false;
-                        }
-                        if (DateTime.Now >= endDate1 && DateTime.Now <= endDate2)
-                        {
-                            commodityValue2.StartDate = endDate1;
-                        }
-                        if (DateTime.Now >= endDate1 && DateTime.Now <= endDate2)
-                        {
-                            commodityValue2.EndDate = endDate2;
                         }
                         db.Add(commodityValue2);
                     }
