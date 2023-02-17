@@ -294,6 +294,21 @@ namespace TMS.UI.Business.Manage
             var cont40Rs = containers.Result.FirstOrDefault(x => x.Name.Contains("40HC"));
             var dir = containerTypeDb.Result.ToDictionary(x => x.Id);
             var rs = new List<Transportation>();
+            var insuranceFeesRateColdDB = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 25391");
+            var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
+            var containerTypes = new List<int>(await CheckContainerTypes(selected));
+            var index = 0;
+            foreach (var item in selected)
+            {
+                var containerTypeId = containerTypes.ElementAt(index);
+                var commodidtyValue = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {item.BossId} and CommodityId eq {item.CommodityId} and ContainerId eq {containerTypeId}");
+                if (commodidtyValue is null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null && item.IsCompany == false)
+                {
+                    var newCommodityValue = await CreateCommodityValue(item);
+                    await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
+                }
+                index++;
+            }
             foreach (var item in selected)
             {
                 decimal cont40 = 0;
@@ -319,13 +334,6 @@ namespace TMS.UI.Business.Manage
                 {
                     containerId = cont40Rs.Id;
                 }
-                var containerTypeId = await CheckContainerType(item);
-                var commodidtyValue = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {item.BossId} and CommodityId eq {item.CommodityId} and ContainerId eq {containerTypeId}");
-                if (commodidtyValue is null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null && item.IsCompany == false)
-                {
-                    var newCommodityValue = await CreateCommodityValue(item);
-                    await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
-                }
                 var expense = new Expense();
                 expense.CopyPropFrom(item);
                 expense.Id = 0;
@@ -349,10 +357,9 @@ namespace TMS.UI.Business.Manage
                 && x.IsSOC == false);
                 if (insuranceFeesRateDB != null)
                 {
-                    var getContainerType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq {expense.ContainerTypeId}");
+                    var getContainerType = dir.GetValueOrDefault(expense.ContainerTypeId ?? 0);
                     if (getContainerType != null && getContainerType.Description.ToLower().Contains("lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
                     {
-                        var insuranceFeesRateColdDB = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 25391");
                         expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? decimal.Parse(insuranceFeesRateColdDB.Name) : 0;
                     }
                     else
@@ -361,7 +368,6 @@ namespace TMS.UI.Business.Manage
                     }
                     if (isSubRatio && insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
                     {
-                        var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
                         extraInsuranceFeesRateDB.ForEach(x =>
                         {
                             var prop = expense.GetType().GetProperties().Where(y => y.Name == x.Name && bool.Parse(y.GetValue(expense, null).ToString())).FirstOrDefault();
@@ -396,6 +402,7 @@ namespace TMS.UI.Business.Manage
                     transportation.ClosingNotes = item.Notes;
                     transportation.ExportListId = Client.Token.Vendor.Id;
                     transportation.Expense.Add(expense);
+                    transportation.Revenue.Add(new Revenue());
                     await new Client(nameof(Transportation)).CreateAsync<Transportation>(transportation);
                 }
             }
@@ -582,6 +589,36 @@ namespace TMS.UI.Business.Manage
         }
 
         private int containerId = 0;
+
+        public async Task<List<int>> CheckContainerTypes(List<TransportationPlan> transportationPlans)
+        {
+            var containerTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 7565");
+            var containerTypeCodes = containerTypes.ToDictionary(x => x.Id);
+            var containerTypeIds = new List<int>();
+            var containers = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and (contains(Name, '40HC') or contains(Name, '20DC') or contains(Name, '45HC') or contains(Name, '50DC'))");
+            foreach (var item in transportationPlans) 
+            {
+                var containerTypeName = containerTypeCodes.GetValueOrDefault((int)item.ContainerTypeId);
+                if (containerTypeName.Description.Contains("Cont 20"))
+                {
+                    containerId = containers.Find(x => x.Name.Contains("20DC")).Id;
+                }
+                else if (containerTypeName.Description.Contains("Cont 40"))
+                {
+                    containerId = containers.Find(x => x.Name.Contains("40HC")).Id;
+                }
+                else if (containerTypeName.Description.Contains("Cont 45"))
+                {
+                    containerId = containers.Find(x => x.Name.Contains("45HC")).Id;
+                }
+                else if (containerTypeName.Description.Contains("Cont 50"))
+                {
+                    containerId = containers.Find(x => x.Name.Contains("50DC")).Id;
+                }
+                containerTypeIds.Add(containerId);
+            }
+            return containerTypeIds;
+        }
 
         public async Task<int> CheckContainerType(TransportationPlan transportationPlan)
         {
