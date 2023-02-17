@@ -37,11 +37,6 @@ namespace TMS.API.Controllers
         public override async Task<ActionResult<Transportation>> PatchAsync([FromQuery] ODataQueryOptions<Transportation> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
             Transportation entity = default;
-            patch.Changes.AddRange(new List<PatchUpdateDetail>
-            {
-               new PatchUpdateDetail { Field = nameof(Transportation.ExportListReturnId), Value = VendorId.ToString() },
-               new PatchUpdateDetail { Field = nameof(Transportation.UserReturnId), Value = UserId.ToString() },
-            });
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
             entity = await db.Set<Transportation>().FindAsync(idInt);
@@ -1288,6 +1283,7 @@ namespace TMS.API.Controllers
                 return check;
             }
             var cmd = $"Update [{nameof(Transportation)}] set [ShipDate] = '{entity.ShipDate.Value.ToString("yyyy-MM-dd")}',[PortLiftId] = '{entity.PortLiftId}'" +
+                $" ,[ExportListReturnId] = '{VendorId}',[UserReturnId] = '{UserId}'" +
                 $" where ShipId = '{entity.ShipId}' and (BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Trip = '{entity.Trip}' and RouteId in ({entity.RouteIds.Combine()})";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);

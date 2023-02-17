@@ -21,7 +21,7 @@ namespace TMS.UI.Business.Manage
         public TransportationPlanEditorBL() : base(nameof(TransportationPlan))
         {
             Name = "TransportationPlan Editor";
-            
+
         }
 
         public void SetGridView()
@@ -199,27 +199,36 @@ namespace TMS.UI.Business.Manage
             {
                 var _gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
                 var listViewItem = _gridView.RowData.Data.Cast<TransportationPlan>().FirstOrDefault(x => x.StatusId == (int)ApprovalStatusEnum.Approving);
-                var containerTypeId = await CheckContainerType(listViewItem);
-                var commodidtyValue = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {listViewItem.BossId} and CommodityId eq {listViewItem.CommodityId} and ContainerId eq {containerTypeId}");
-                if (commodidtyValue is null && listViewItem.BossId != null && listViewItem.CommodityId != null && listViewItem.ContainerTypeId != null && listViewItem.IsCompany == false)
+                await Approve(listViewItem);
+                listViewItem.ClearReferences();
+                Window.SetTimeout(async () =>
                 {
-                    var newCommodityValue = await CreateCommodityValue(listViewItem);
-                    await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
-                }
-                var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and TransportationPlanId eq {transportationPlanEntity.Id}");
-                if (transportations != null)
-                {
-                    var transportationIds = transportations.Select(x => x.Id).ToList();
-                    var expenseType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'Bảo hiểm')");
-                    var expenseSOCType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'BH SOC')");
-                    var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId in ({transportationIds.Combine()}) and ExpenseTypeId in ({expenseType.Id}, {expenseSOCType.Id}) and RequestChangeId eq null");
-                    if (expenses != null)
+                    try
                     {
-                        await UpdateExpenses(expenses, listViewItem);
+                        var containerTypeId = await CheckContainerType(listViewItem);
+                        var commodidtyValue = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {listViewItem.BossId} and CommodityId eq {listViewItem.CommodityId} and ContainerId eq {containerTypeId}");
+                        if (commodidtyValue is null && listViewItem.BossId != null && listViewItem.CommodityId != null && listViewItem.ContainerTypeId != null && listViewItem.IsCompany == false)
+                        {
+                            var newCommodityValue = await CreateCommodityValue(listViewItem);
+                            await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
+                        }
+                        var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and TransportationPlanId eq {transportationPlanEntity.Id}");
+                        if (transportations != null)
+                        {
+                            var transportationIds = transportations.Select(x => x.Id).ToList();
+                            var expenseType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'Bảo hiểm')");
+                            var expenseSOCType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'BH SOC')");
+                            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId in ({transportationIds.Combine()}) and ExpenseTypeId in ({expenseType.Id}, {expenseSOCType.Id}) and RequestChangeId eq null");
+                            if (expenses != null)
+                            {
+                                await UpdateExpenses(expenses, listViewItem);
+                            }
+                        }
                     }
-                    listViewItem.ClearReferences();
-                    await Approve(listViewItem);
-                }
+                    catch
+                    {
+                    }
+                }, 100);
             };
         }
 

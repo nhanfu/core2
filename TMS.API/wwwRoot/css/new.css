@@ -10156,7 +10156,7 @@ a.text-info:focus, a.text-info:hover {
 }
 
 .text-warning {
-    color: #ffc107 !important
+    color: #0768ff !important;
 }
 
 a.text-warning:focus, a.text-warning:hover {
@@ -50559,7 +50559,7 @@ a.fc-more:hover {
 }
 
 .text-warning {
-    color: #ffc107
+    color: #0768ff !important;
 }
 
     .text-warning[href]:focus, .text-warning[href]:hover {
