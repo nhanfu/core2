@@ -36,7 +36,7 @@ namespace TMS.UI.Business.Accountant
                 {
                     return;
                 }
-                if (!Client.Token.AllRoleIds.Contains(31) && !Client.Token.AllRoleIds.Contains(8))
+                if (!Client.Token.AllRoleIds.Contains(34) && !Client.Token.AllRoleIds.Contains(8))
                 {
                     listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "IsClosing" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
                     if (x.IsClosing)
@@ -168,24 +168,20 @@ namespace TMS.UI.Business.Accountant
                 });
         }
 
-        public void RequestUnClosing()
+        public void RequestUnClosing(FreightRate freightRate)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-            var freightRate = gridView.GetSelectedRows().FirstOrDefault().Cast<FreightRate>();
             if(freightRate == null)
             {
                 return;
             }
-            if (freightRate.IsApproveClosing && (Client.Token.AllRoleIds.Contains(12) || Client.Token.AllRoleIds.Contains(8)))
+            if (freightRate.IsApproveClosing && (Client.Token.AllRoleIds.Contains(34) || Client.Token.AllRoleIds.Contains(8)))
             {
                 var confirm = new ConfirmDialog
                 {
-                    NeedAnswer = true,
-                    ComType = nameof(Textbox),
                     Content = $"Bạn có chắc chắn muốn duyệt mở khóa<br />" +
-                    "Với lý do",
+                    $"Với lý do: {freightRate.Reason}",
                 };
-                confirm.Textbox.Text = freightRate.Reason;
                 confirm.Render();
                 confirm.YesConfirmed += async () =>
                 {
@@ -199,7 +195,7 @@ namespace TMS.UI.Business.Accountant
                     listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
                 };
             }
-            else if(!freightRate.IsApproveClosing && !Client.Token.AllRoleIds.Contains(12) && !Client.Token.AllRoleIds.Contains(8))
+            else if(!freightRate.IsApproveClosing && !Client.Token.AllRoleIds.Contains(34) && !Client.Token.AllRoleIds.Contains(8))
             {
                 var confirm = new ConfirmDialog
                 {
