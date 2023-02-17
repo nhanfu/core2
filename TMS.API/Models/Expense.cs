@@ -59,6 +59,7 @@ namespace TMS.API.Models
         public DateTime? ReturnDate { get; set; }
         public decimal Cont20 { get; set; }
         public decimal Cont40 { get; set; }
+        public int? ReceivedId { get; set; }
 
         public virtual Allotment Allotment { get; set; }
         public virtual Transportation Transportation { get; set; }
