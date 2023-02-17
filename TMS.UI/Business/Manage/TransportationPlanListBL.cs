@@ -374,22 +374,29 @@ namespace TMS.UI.Business.Manage
             Toast.Success("Tạo chuyến xe thành công");
             await gridView.ApplyFilter(true);
             Toast.Success("Khóa kế hoạch vận chuyển thành công");
-            var index = 0;
-            //await Task.Run(async () =>
-            //{
-            //    foreach (var item in selected)
-            //    {
-            //        var containerTypeId = containerTypes.ElementAt(index);
-            //        var commodidtyValue = new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {item.BossId} and CommodityId eq {item.CommodityId} and ContainerId eq {containerTypeId}");
-            //        if (commodidtyValue is null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null && item.IsCompany == false)
-            //        {
-            //            var newCommodityValue = await CreateCommodityValue(item);
-            //            await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
-            //        }
-            //        index++;
-            //    }
-            //});
             gridView.ClearSelected();
+            Window.SetInterval(async () =>
+            {
+                try
+                {
+                    var index = 0;
+                    var commodidtyValues = await new Client(nameof(CommodityValue)).GetRawList<CommodityValue>($"?$filter=Active eq true and BossId in ({bossIds.Combine()}) and CommodityId in ({commodityTypeIds.Combine()}) and ContainerId in ({commodityTypeIds.Combine()})");
+                    foreach (var item in selected)
+                    {
+                        var containerTypeId = containerTypes.ElementAt(index);
+                        var commodidtyValue = commodidtyValues.FirstOrDefault(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == item.ContainerTypeId);
+                        if (commodidtyValue is null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null && item.IsCompany == false)
+                        {
+                            var newCommodityValue = await CreateCommodityValue(item);
+                            await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
+                        }
+                        index++;
+                    }
+                }
+                catch
+                {
+                }
+            }, 100);
         }
 
         public async Task CheckClosingDate(TransportationPlan transportationPlan)
