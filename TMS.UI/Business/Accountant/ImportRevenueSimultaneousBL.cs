@@ -184,7 +184,6 @@ namespace TMS.UI.Business.Accountant
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                Spinner.AppendTo(this.Element, true, true, 20000);
                 var resCreateRevenues = await new Client(nameof(Revenue)).PostAsync<bool>(listViewItems, "CreateRevenues");
                 var idTrans = listViewItems.Select(x => x.Id).ToList();
                 var revenues = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and TransportationId in ({idTrans.Combine()})");
@@ -228,7 +227,6 @@ namespace TMS.UI.Business.Accountant
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                Spinner.AppendTo(this.Element, true, true, 20000);
                 revenues.Add(revenueEntity);
                 var res = await new Client(nameof(Revenue)).PostAsync<bool>(revenues, "UpdateRevenueSimultaneous");
                 if (res)

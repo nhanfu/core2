@@ -51,23 +51,37 @@ namespace TMS.API.Controllers
                 db.Add(entity);
             }
             var tran = await db.Transportation.Where(x => x.Id == entity.TransportationId).FirstOrDefaultAsync();
-            if (tran != null && tran.IsLockedRevenue)
+            if (tran != null && tran.IsLocked)
             {
-                throw new ApiException("Doanh thu này đã được khóa.") { StatusCode = HttpStatusCode.BadRequest };
+                throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
             }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.LotNo)
-                || x.Field == nameof(entity.LotDate)
+            if (patch.Changes.Any(x => x.Field == nameof(entity.InvoinceNo)
+                || x.Field == nameof(entity.InvoinceDate)
                 || x.Field == nameof(entity.Vat)
+                || x.Field == nameof(entity.TotalPriceBeforTax)
+                || x.Field == nameof(entity.VatPrice)
+                || x.Field == nameof(entity.TotalPrice)))
+            {
+                if (tran != null && tran.IsLockedRevenue)
+                {
+                    throw new ApiException("DT này đã được khóa doanh thu.") { StatusCode = HttpStatusCode.BadRequest };
+                }
+            }
+            if (patch.Changes.Any(x => x.Field == nameof(entity.Name)
+                || x.Field == nameof(entity.LotNo)
+                || x.Field == nameof(entity.LotDate)
                 || x.Field == nameof(entity.UnitPriceAfterTax)
                 || x.Field == nameof(entity.UnitPriceBeforeTax)
                 || x.Field == nameof(entity.ReceivedPrice)
                 || x.Field == nameof(entity.CollectOnBehaftPrice)
                 || x.Field == nameof(entity.NotePayment)
-                || x.Field == nameof(entity.VendorVatId)))
+                || x.Field == nameof(entity.Note)
+                || x.Field == nameof(entity.VendorVatId)
+                || x.Field == nameof(entity.RevenueAdjustment)))
             {
                 if (tran != null && tran.IsSubmit)
                 {
-                    throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
+                    throw new ApiException("DT này đã được khóa kế toán. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
             await db.SaveChangesAsync();
