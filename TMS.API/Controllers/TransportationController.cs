@@ -150,7 +150,7 @@ namespace TMS.API.Controllers
                 x.Field == nameof(oldEntity.Trip) ||
                 x.Field == nameof(oldEntity.SealNo) ||
                 x.Field == nameof(oldEntity.ContainerNo) ||
-                x.Field == nameof(oldEntity.Notes) ||
+                x.Field == nameof(oldEntity.Note2) ||
                 x.Field == nameof(oldEntity.StartShip) ||
                 x.Field == nameof(oldEntity.ClosingDate)) &&
                 (oldEntity.BookingId != entity.BookingId) ||
@@ -159,7 +159,7 @@ namespace TMS.API.Controllers
                 (oldEntity.Trip != entity.Trip) ||
                 (oldEntity.SealNo != entity.SealNo) ||
                 (oldEntity.ContainerNo != entity.ContainerNo) ||
-                (oldEntity.Notes != entity.Notes) ||
+                (oldEntity.Note2 != entity.Note2) ||
                 (oldEntity.StartShip != entity.StartShip) ||
                 (oldEntity.ClosingDate != entity.ClosingDate))
                 {
@@ -180,7 +180,7 @@ namespace TMS.API.Controllers
                             x.Trip = entity.Trip;
                             x.SealNo = entity.SealNo;
                             x.ContainerNo = entity.ContainerNo;
-                            x.Notes = entity.Notes;
+                            x.Notes = entity.Note2;
                             if (x.JourneyId == 12114 || x.JourneyId == 16001)
                             {
                                 x.StartShip = entity.ClosingDate;
@@ -200,7 +200,7 @@ namespace TMS.API.Controllers
                             x.Trip = entity.Trip;
                             x.SealNo = entity.SealNo;
                             x.ContainerNo = entity.ContainerNo;
-                            x.Notes = entity.Notes;
+                            x.Notes = entity.Note2;
                             if (x.JourneyId == 12114 || x.JourneyId == 16001)
                             {
                                 x.StartShip = entity.ClosingDate;
