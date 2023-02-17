@@ -375,7 +375,7 @@ namespace TMS.UI.Business.Manage
             await gridView.ApplyFilter(true);
             Toast.Success("Khóa kế hoạch vận chuyển thành công");
             gridView.ClearSelected();
-            Window.SetInterval(async () =>
+            Window.SetTimeout(async () =>
             {
                 try
                 {
