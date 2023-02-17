@@ -297,43 +297,8 @@ namespace TMS.UI.Business.Manage
             var insuranceFeesRateColdDB = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 25391");
             var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
             var containerTypes = new List<int>(await CheckContainerTypes(selected));
-            var index = 0;
             foreach (var item in selected)
             {
-                var containerTypeId = containerTypes.ElementAt(index);
-                var commodidtyValue = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {item.BossId} and CommodityId eq {item.CommodityId} and ContainerId eq {containerTypeId}");
-                if (commodidtyValue is null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null && item.IsCompany == false)
-                {
-                    var newCommodityValue = await CreateCommodityValue(item);
-                    await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
-                }
-                index++;
-            }
-            foreach (var item in selected)
-            {
-                decimal cont40 = 0;
-                decimal cont20 = 0;
-                if (item.ContainerTypeId != null)
-                {
-                    var cont = dir.GetValueOrDefault(item.ContainerTypeId ?? 0);
-                    if (cont.Name.Contains("4"))
-                    {
-                        cont40 = 1;
-                    }
-                    if (cont.Name.Contains("2"))
-                    {
-                        cont20 = 1;
-                    }
-                }
-                var containertype = dir.GetValueOrDefault(item.ContainerTypeId ?? 0);
-                if (containertype.Enum == 1)
-                {
-                    containerId = cont20Rs.Id;
-                }
-                else
-                {
-                    containerId = cont40Rs.Id;
-                }
                 var expense = new Expense();
                 expense.CopyPropFrom(item);
                 expense.Id = 0;
@@ -409,6 +374,21 @@ namespace TMS.UI.Business.Manage
             Toast.Success("Tạo chuyến xe thành công");
             await gridView.ApplyFilter(true);
             Toast.Success("Khóa kế hoạch vận chuyển thành công");
+            var index = 0;
+            //await Task.Run(async () =>
+            //{
+            //    foreach (var item in selected)
+            //    {
+            //        var containerTypeId = containerTypes.ElementAt(index);
+            //        var commodidtyValue = new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {item.BossId} and CommodityId eq {item.CommodityId} and ContainerId eq {containerTypeId}");
+            //        if (commodidtyValue is null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null && item.IsCompany == false)
+            //        {
+            //            var newCommodityValue = await CreateCommodityValue(item);
+            //            await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
+            //        }
+            //        index++;
+            //    }
+            //});
             gridView.ClearSelected();
         }
 
@@ -596,7 +576,7 @@ namespace TMS.UI.Business.Manage
             var containerTypeCodes = containerTypes.ToDictionary(x => x.Id);
             var containerTypeIds = new List<int>();
             var containers = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and (contains(Name, '40HC') or contains(Name, '20DC') or contains(Name, '45HC') or contains(Name, '50DC'))");
-            foreach (var item in transportationPlans) 
+            foreach (var item in transportationPlans)
             {
                 var containerTypeName = containerTypeCodes.GetValueOrDefault((int)item.ContainerTypeId);
                 if (containerTypeName.Description.Contains("Cont 20"))
