@@ -212,6 +212,10 @@ namespace TMS.API.Controllers
             {
                 db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             }
+            else
+            {
+                db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+            }
             await db.SaveChangesAsync();
             if (disableTrigger)
             {
