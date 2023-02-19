@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -157,64 +158,64 @@ namespace TMS.API.Controllers
             var item = revenues.Where(x => x.Id <= 0).FirstOrDefault();
             if (item.IsLotNo)
             {
-                cmd += $"{nameof(Revenue.LotNo)} = '{item.LotNo}',";
+                cmd += $"{nameof(Revenue.LotNo)} = " + (item.LotNo != null ? $"'{item.LotNo}'" : "NULL") + ",";
             }
             if (item.IsLotDate)
             {
-                cmd += $"{nameof(Revenue.LotDate)} = '{item.LotDate.Value.ToString("yyyy-MM-dd")}',";
+                cmd += $"{nameof(Revenue.LotDate)} = " + (item.LotDate != null ? $"'{item.LotDate.Value.ToString("yyyy-MM-dd")}'" : "NULL") + ",";
             }
             if (item.IsInvoinceNo)
             {
-                cmd += $"{nameof(Revenue.InvoinceNo)}  = '{item.InvoinceNo}',";
+                cmd += $"{nameof(Revenue.InvoinceNo)} = " + (item.InvoinceNo != null ? $"'{item.InvoinceNo}'" : "NULL") + ",";
             }
             if (item.IsInvoinceDate)
             {
-                cmd += $"{nameof(Revenue.InvoinceDate)}  = '{item.InvoinceDate.Value.ToString("yyyy-MM-dd")}',";
+                cmd += $"{nameof(Revenue.InvoinceDate)} = " + (item.InvoinceDate != null ? $"'{item.InvoinceDate.Value.ToString("yyyy-MM-dd")}'" : "NULL") + ",";
             }
             if (item.IsUnitPriceBeforeTax)
             {
-                cmd += $"{nameof(Revenue.UnitPriceBeforeTax)}  = '{item.UnitPriceBeforeTax}',";
+                cmd += $"{nameof(Revenue.UnitPriceBeforeTax)} = " + (item.UnitPriceBeforeTax != null ? $"'{item.UnitPriceBeforeTax}'" : "NULL") + ",";
             }
             if (item.IsUnitPriceAfterTax)
             {
-                cmd += $"{nameof(Revenue.UnitPriceAfterTax)}  = '{item.UnitPriceAfterTax}',";
+                cmd += $"{nameof(Revenue.UnitPriceAfterTax)} = " + (item.UnitPriceAfterTax != null ? $"'{item.UnitPriceAfterTax}'" : "NULL") + ",";
             }
             if (item.IsReceivedPrice)
             {
-                cmd += $"{nameof(Revenue.ReceivedPrice)}  = '{item.ReceivedPrice}',";
+                cmd += $"{nameof(Revenue.ReceivedPrice)} = " + (item.ReceivedPrice != null ? $"'{item.ReceivedPrice}'" : "NULL") + ",";
             }
             if (item.IsCollectOnBehaftPrice)
             {
-                cmd += $"{nameof(Revenue.CollectOnBehaftPrice)}  = '{item.CollectOnBehaftPrice}',";
+                cmd += $"{nameof(Revenue.CollectOnBehaftPrice)} = " + (item.CollectOnBehaftPrice != null ? $"'{item.CollectOnBehaftPrice}'" : "NULL") + ",";
             }
             if (item.IsVat)
             {
-                cmd += $"{nameof(Revenue.Vat)}  = '{item.Vat}',";
+                cmd += $"{nameof(Revenue.Vat)} = " + (item.Vat != null ? $"'{item.Vat}'" : "NULL") + ",";
             }
             if (item.IsTotalPriceBeforTax)
             {
-                cmd += $"{nameof(Revenue.TotalPriceBeforTax)}   = '{item.TotalPriceBeforTax}',";
+                cmd += $"{nameof(Revenue.TotalPriceBeforTax)} = " + (item.TotalPriceBeforTax != null ? $"'{item.TotalPriceBeforTax}'" : "NULL") + ",";
             }
             if (item.IsVatPrice)
             {
-                cmd += $"{nameof(Revenue.VatPrice)}   = '{item.VatPrice}',";
+                cmd += $"{nameof(Revenue.VatPrice)} = " + (item.VatPrice != null ? $"'{item.VatPrice}'" : "NULL") + ",";
             }
             if (item.IsTotalPrice)
             {
-                cmd += $"{nameof(Revenue.TotalPrice)}   = '{item.TotalPrice}',";
+                cmd += $"{nameof(Revenue.TotalPrice)} = " + (item.TotalPrice != null ? $"'{item.TotalPrice}'" : "NULL") + ",";
             }
             if (item.IsNotePayment)
             {
-                cmd += $"{nameof(Revenue.NotePayment)}   = N'{item.NotePayment}',";
+                cmd += $"{nameof(Revenue.NotePayment)} = " + (item.NotePayment != null ? $"N'{item.NotePayment}'" : "NULL") + ",";
             }
             if (item.IsVendorVatId)
             {
-                cmd += $"{nameof(Revenue.VendorVatId)}   = '{item.VendorVatId}',";
+                cmd += $"{nameof(Revenue.VendorVatId)} = " + (item.VendorVatId != null ? $"'{item.VendorVatId}'" : "NULL") + ",";
             }
             cmd = cmd.TrimEnd(',');
             revenues.Remove(item);
             var ids = revenues.Select(x => x.Id).ToList();
-            cmd += $"where Id in ({ids.Combine()})";
+            cmd += $" where Id in ({ids.Combine()})";
             await db.Database.ExecuteSqlRawAsync(cmd);
             return true;
         }
