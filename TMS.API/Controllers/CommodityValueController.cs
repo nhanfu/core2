@@ -330,10 +330,6 @@ namespace TMS.API.Controllers
                 {
                     customerType = customerTypeDB.Count == 0 ? null : customerTypeDB.GetValueOrDefault(item.CustomerTypeText);
                 }
-                if (vendor == null)
-                {
-                    var test = 0;
-                }
                 if (commodity != null && vendor != null)
                 {
                     if (item.TotalPrice1 != "x" && item.TotalPrice1 != "X")
