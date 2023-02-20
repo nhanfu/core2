@@ -272,7 +272,10 @@ namespace TMS.UI.Business.Manage
                 || x.Field == nameof(transportation.Weight)
                 || x.Field == nameof(transportation.ReceivedId)
                 || x.Field == nameof(transportation.FreeText2)
-                || x.Field == nameof(transportation.LeftDate)))
+                || x.Field == nameof(transportation.ShipDate)
+                || x.Field == nameof(transportation.ReturnDate)
+                || x.Field == nameof(transportation.ReturnId)
+                || x.Field == nameof(transportation.FreeText3)))
                 {
                     if (transportation.IsKt)
                     {

@@ -91,7 +91,10 @@ namespace TMS.API.Controllers
                 || x.Field == nameof(entity.Weight)
                 || x.Field == nameof(entity.ReceivedId)
                 || x.Field == nameof(entity.FreeText2)
-                || x.Field == nameof(entity.LeftDate)))
+                || x.Field == nameof(entity.ShipDate)
+                || x.Field == nameof(entity.ReturnDate)
+                || x.Field == nameof(entity.ReturnId)
+                || x.Field == nameof(entity.FreeText3)))
                 {
                     if (entity.IsKt)
                     {
