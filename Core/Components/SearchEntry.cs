@@ -398,10 +398,6 @@ namespace Core.Components
 
         private void TriggerSearch(string term = null)
         {
-            if (_input.NextElementSibling != null)
-            {
-                _input.NextElementSibling.Style.Display = Display.Block;
-            }
             RenderGridView(term.DecodeSpecialChar());
         }
 

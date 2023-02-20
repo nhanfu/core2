@@ -354,6 +354,12 @@ namespace Core.Components.Forms
             {
                 // Update the Gridview row that open this tab if possible
             }
+            var firstGridView = Parent.FindActiveComponent<GridView>().FirstOrDefault();
+            if (firstGridView != null && firstGridView.LastListViewItem != null && firstGridView.LastElementFocus != null)
+            {
+                firstGridView.LastListViewItem.Focused = true;
+                firstGridView.LastElementFocus.Focus();
+            }
             base.Dispose();
         }
 
