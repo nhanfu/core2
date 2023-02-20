@@ -765,7 +765,7 @@ namespace Core.Components
                     var ttCount1 = de.Where(x => !x.IsNullOrWhiteSpace()).Sum(x => decimal.Parse(x));
                     Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IHtml(ttCount1.ToString("N0")).End.Render();
                 }
-                
+
                 await Client.LoadScript("//cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js");
                 if (_summary != null)
                 {
@@ -1744,6 +1744,7 @@ namespace Core.Components
                 }
                 EmptyRowSection.Children.Clear();
                 AddNewEmptyRow();
+                await LoadMasterData(new List<object>() { rowData });
                 Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
