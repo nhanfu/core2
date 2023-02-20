@@ -1026,7 +1026,7 @@ namespace Core.Components.Forms
                     var instance = Activator.CreateInstance(type) as PopupEditor;
                     instance.Title = "Feature configuration";
                     instance.Entity = Feature;
-                    instance.ParentElement = Document.Body;
+                    instance.ParentElement = TabEditor.Element;
                     return instance;
                 });
             });
