@@ -380,11 +380,11 @@ namespace TMS.UI.Business.Manage
                 try
                 {
                     var index = 0;
-                    var commodidtyValues = await new Client(nameof(CommodityValue)).GetRawList<CommodityValue>($"?$filter=Active eq true and BossId in ({bossIds.Combine()}) and CommodityId in ({commodityTypeIds.Combine()}) and ContainerId in ({commodityTypeIds.Combine()})");
+                    var commodidtyValues = await new Client(nameof(CommodityValue)).GetRawList<CommodityValue>($"?$filter=Active eq true and BossId in ({bossIds.Combine()}) and CommodityId in ({commodityTypeIds.Combine()})");
                     foreach (var item in selected)
                     {
                         var containerTypeId = containerTypes.ElementAt(index);
-                        var commodidtyValue = commodidtyValues.FirstOrDefault(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == item.ContainerTypeId);
+                        var commodidtyValue = commodidtyValues.FirstOrDefault(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == containerTypeId);
                         if (commodidtyValue is null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null && item.IsCompany == false)
                         {
                             var newCommodityValue = await CreateCommodityValue(item);
