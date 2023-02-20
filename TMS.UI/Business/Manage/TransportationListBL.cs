@@ -1398,7 +1398,9 @@ namespace TMS.UI.Business.Manage
                 $"and TransportationTypeId eq {expense.TransportationTypeId} " +
                 $"and JourneyId eq {expense.JourneyId} " +
                 $"and IsBought eq {expense.IsBought.ToString().ToLower()} " +
-                $"and IsSOC eq {isSOC.ToLower()}");
+                $"and IsSOC eq {isSOC.ToString().ToLower()}" +
+                $"and IsSubRatio eq {isSubRatio.ToString().ToLower()}"
+                );
             if (insuranceFeesRateDB != null)
             {
                 var getContainerType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq {expense.ContainerTypeId}");
