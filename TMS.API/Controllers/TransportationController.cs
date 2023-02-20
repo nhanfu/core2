@@ -133,7 +133,11 @@ namespace TMS.API.Controllers
                     }
                 }
             }
-
+            if (patch.Changes.Any(x => x.Field == nameof(entity.ShipDate) && !x.Value.IsNullOrWhiteSpace()))
+            {
+                entity.ExportListReturnId = VendorId;
+                entity.UserReturnId = UserId;
+            }
             var expenseTypes = await db.MasterData.Where(x => x.ParentId == 7577 && (x.Name.Contains("Bảo hiểm") || x.Name.Contains("BH SOC"))).ToListAsync();
             var expenseTypeIds = expenseTypes.Select(x => x.Id.ToString()).ToList();
             var expense = await db.Expense.Where(x => x.TransportationId == entity.Id && expenseTypeIds.Contains(x.ExpenseTypeId.ToString()) && x.RequestChangeId == null && x.Active).ToListAsync();

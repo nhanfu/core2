@@ -1474,20 +1474,24 @@ namespace Core.Components
             }
             gridView1.CellSelected.Clear();
             gridView1.AdvSearchVM.Conditions.Clear();
-            var selected = GetSelectedRows().FirstOrDefault();
+            var selecteds = await GetRealTimeSelectedRows();
             var com = gridView1.BasicHeader.FirstOrDefault(x => x.FieldName == e.TargetFieldName);
-            gridView1.CellSelected.Add(new CellSelected
+            var cellSelecteds = selecteds.Select(selected =>
             {
-                FieldName = e.TargetFieldName,
-                FieldText = com.ShortDesc,
-                ComponentType = com.ComponentType,
-                Value = selected.GetPropValue(e.FieldName).ToString(),
-                ValueText = selected.GetPropValue(e.FieldName).ToString(),
-                Operator = "in",
-                OperatorText = "Chứa",
-                Logic = LogicOperation.Or,
-                IsSearch = true
+                return new CellSelected()
+                {
+                    FieldName = e.TargetFieldName,
+                    FieldText = com.ShortDesc,
+                    ComponentType = com.ComponentType,
+                    Value = selected.GetPropValue(e.FieldName).ToString(),
+                    ValueText = selected.GetPropValue(e.FieldName).ToString(),
+                    Operator = "in",
+                    OperatorText = "Chứa",
+                    Logic = LogicOperation.Or,
+                    IsSearch = true
+                };
             });
+            gridView1.CellSelected.AddRange(cellSelecteds);
             await gridView1.ActionFilter();
         }
 
