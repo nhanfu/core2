@@ -32,7 +32,7 @@ namespace TMS.UI.Business.Setting
             var commodityValueDB = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {transportationPlanEntity.BossId} and CommodityId eq {transportationPlanEntity.CommodityId} and ContainerId eq {containerId}");
             if (commodityValueDB != null && transportationPlanEntity.JourneyId == null)
             {
-                this.SetDisabled(true, "CustomerTypeId", "IsWet", "IsBought", "CommodityValue", "IsCompany");
+                this.SetDisabled(true, "CustomerTypeId", "IsWet", "IsBought", "CommodityValue", "IsCompany", "SteamingTerms", "BreakTerms");
             }
             base.ToggleApprovalBtn(entity);
         }

@@ -547,6 +547,8 @@ namespace TMS.UI.Business.Manage
                 }
                 if (commodityValueDB != null)
                 {
+                    transportationPlan.SteamingTerms = commodityValueDB.SteamingTerms;
+                    transportationPlan.BreakTerms= commodityValueDB.BreakTerms;
                     transportationPlan.IsBought = commodityValueDB.IsBought;
                     transportationPlan.CustomerTypeId = commodityValueDB.CustomerTypeId;
                     transportationPlan.CommodityValue = commodityValueDB.TotalPrice;
@@ -815,6 +817,8 @@ namespace TMS.UI.Business.Manage
             details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportationPlan.Id.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.TransportationTypeId), Value = transportationPlan.TransportationTypeId.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.IsWet), Value = transportationPlan.IsWet.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.SteamingTerms), Value = transportationPlan.SteamingTerms.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.BreakTerms), Value = transportationPlan.BreakTerms.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.IsBought), Value = transportationPlan.IsBought.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.JourneyId), Value = transportationPlan.JourneyId.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.CustomerTypeId), Value = transportationPlan.CustomerTypeId.ToString() });
