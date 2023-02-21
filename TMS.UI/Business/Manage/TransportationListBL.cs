@@ -134,6 +134,7 @@ namespace TMS.UI.Business.Manage
             expense.BossId = selected.BossId;
             expense.CommodityId = selected.CommodityId;
             expense.ContainerTypeId = selected.ContainerTypeId;
+            expense.RouteId = selected.RouteId;
             expense.TransportationId = selected.Id;
             expense.Id = 0;
             expense.Quantity = 1;

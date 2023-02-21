@@ -217,6 +217,8 @@ namespace TMS.UI.Business.Manage
             expense.SealNo = selected.SealNo;
             expense.BossId = selected.BossId;
             expense.CommodityId = selected.CommodityId;
+            expense.ContainerTypeId = selected.ContainerTypeId;
+            expense.RouteId = selected.RouteId;
             expense.Id = 0;
             expense.TransportationId = selected.Id;
             expense.Quantity = 1;
