@@ -208,8 +208,8 @@ namespace TMS.UI.Business.Manage
                     item.LockShip = false;
                     item.IsRequestUnLockShip = false;
                 }
-                var res = await new Client(nameof(Transportation)).BulkUpdateAsync<Transportation>(transportations);
-                if (res != null)
+                var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockShip");
+                if (res)
                 {
                     gridView.RemoveRange(transportations);
                     Toast.Success("Mở khóa thành công");

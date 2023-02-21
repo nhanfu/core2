@@ -294,70 +294,21 @@ namespace TMS.UI.Business.Manage
                         };
                     }
                 }
-                if (patch.Changes.Any(x => x.Field == nameof(transportation.LotNo)
-                || x.Field == nameof(transportation.LotDate)
-                || x.Field == nameof(transportation.Vat)
-                || x.Field == nameof(transportation.UnitPriceAfterTax)
-                || x.Field == nameof(transportation.UnitPriceBeforeTax)
-                || x.Field == nameof(transportation.ReceivedPrice)
-                || x.Field == nameof(transportation.CollectOnBehaftPrice)
-                || x.Field == nameof(transportation.NotePayment)
-                || x.Field == nameof(transportation.VendorVatId)))
-                {
-                    if (transportation.IsSubmit)
-                    {
-                        var confirm = new ConfirmDialog
-                        {
-                            NeedAnswer = true,
-                            ComType = nameof(Textbox),
-                            Content = $"DSVC này đã bị khóa (Kế toán). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                            "Hãy nhập lý do",
-                        };
-                        confirm.Render();
-                        confirm.YesConfirmed += async () =>
-                        {
-                            transportation.ReasonUnLockAccountant = confirm.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(transportation, "RequestUnLockAccountant");
-                        };
-                    }
-                }
             }
         }
 
         public async Task RequestUnClosingRevenue(Revenue revenue, PatchUpdate patch)
         {
-            if (selected.IsLocked == false && selected.IsSubmit == false)
+            if (selected.IsLocked == false)
             {
-                if (patch.Changes.Any(x => x.Field == nameof(revenue.UnitPriceAfterTax)
-                || x.Field == nameof(revenue.ReceivedPrice)))
-                {
-                    await CalcRevenueTotalPriceAsync(revenue);
-                }
                 if (patch.Changes.Any(x => x.Field == nameof(revenue.Vat)
-                    || x.Field == nameof(revenue.TotalPrice)))
+                    || x.Field == nameof(revenue.TotalPrice)) && selected.IsLockedRevenue == false)
                 {
                     await CalcRevenueAsync(revenue);
                 }
-            }
-            else
-            {
-                if (selected.IsLocked)
+                if (selected.IsSubmit)
                 {
-                    var confirm = new ConfirmDialog
-                    {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"DSVC này đã bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
-                    };
-                    confirm.Render();
-                    confirm.YesConfirmed += async () =>
-                    {
-                        selected.ReasonUnLockAll = confirm.Textbox?.Text;
-                        await new Client(nameof(Transportation)).PostAsync<Transportation>(selected, "RequestUnLockAll");
-                    };
-                }
-                else if (patch.Changes.Any(x => x.Field == nameof(Revenue.Name)
+                    if (patch.Changes.Any(x => x.Field == nameof(Revenue.Name)
                     || x.Field == nameof(Revenue.LotNo)
                     || x.Field == nameof(Revenue.LotDate)
                     || x.Field == nameof(Revenue.UnitPriceAfterTax)
@@ -366,26 +317,50 @@ namespace TMS.UI.Business.Manage
                     || x.Field == nameof(Revenue.CollectOnBehaftPrice)
                     || x.Field == nameof(Revenue.NotePayment)
                     || x.Field == nameof(Revenue.Note)
-                    || x.Field == nameof(Revenue.VendorVatId)
                     || x.Field == nameof(Revenue.RevenueAdjustment)))
-                {
-                    if (selected.IsSubmit)
                     {
-                        var confirm = new ConfirmDialog
+                        if (selected.IsSubmit)
                         {
-                            NeedAnswer = true,
-                            ComType = nameof(Textbox),
-                            Content = $"DSVC này đã bị khóa (Kế toán). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                            "Hãy nhập lý do",
-                        };
-                        confirm.Render();
-                        confirm.YesConfirmed += async () =>
-                        {
-                            selected.ReasonUnLockAccountant = confirm.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(selected, "RequestUnLockAccountant");
-                        };
+                            var confirm = new ConfirmDialog
+                            {
+                                NeedAnswer = true,
+                                ComType = nameof(Textbox),
+                                Content = $"DSVC này đã bị khóa (Kế toán). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                                "Hãy nhập lý do",
+                            };
+                            confirm.Render();
+                            confirm.YesConfirmed += async () =>
+                            {
+                                selected.ReasonUnLockAccountant = confirm.Textbox?.Text;
+                                await new Client(nameof(Transportation)).PostAsync<Transportation>(selected, "RequestUnLockAccountant");
+                            };
+                        }
                     }
                 }
+                else
+                {
+                    if (patch.Changes.Any(x => x.Field == nameof(revenue.UnitPriceAfterTax)
+                    || x.Field == nameof(revenue.ReceivedPrice)))
+                    {
+                        await CalcRevenueTotalPriceAsync(revenue);
+                    }
+                }
+            }
+            else
+            {
+                var confirm = new ConfirmDialog
+                {
+                    NeedAnswer = true,
+                    ComType = nameof(Textbox),
+                    Content = $"DSVC này đã bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                        "Hãy nhập lý do",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    selected.ReasonUnLockAll = confirm.Textbox?.Text;
+                    await new Client(nameof(Transportation)).PostAsync<Transportation>(selected, "RequestUnLockAll");
+                };
             }
         }
 
@@ -1072,7 +1047,15 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-            if (selected.IsSubmit)
+            if (selected.IsSubmit &&
+                    (revenue.LotNo != null || 
+                    revenue.LotDate != null || 
+                    (revenue.Vat != null && revenue.Vat != 0) || 
+                    (revenue.UnitPriceAfterTax != null && revenue.UnitPriceAfterTax != 0) || 
+                    (revenue.UnitPriceBeforeTax != null && revenue.UnitPriceBeforeTax != 0) || 
+                    (revenue.ReceivedPrice != null && revenue.ReceivedPrice != 0) || 
+                    (revenue.CollectOnBehaftPrice != null && revenue.CollectOnBehaftPrice != 0) ||
+                    revenue.NotePayment != null))
             {
                 var confirm = new ConfirmDialog
                 {

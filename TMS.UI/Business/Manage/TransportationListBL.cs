@@ -1628,21 +1628,19 @@ namespace TMS.UI.Business.Manage
                         }
                     };
                     var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
-                    foreach (var item in transportationNoLock)
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "LockShipTransportation");
+                    if (res)
                     {
-                        item.LockShip = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchTransportation(item));
+                        await gridView.ApplyFilter(true);
                     }
-                    await gridView.ApplyFilter(true);
                 }
                 else
                 {
-                    foreach (var item in listViewItems)
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockShipTransportation");
+                    if (res)
                     {
-                        item.LockShip = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchTransportation(item));
+                        await gridView.ApplyFilter(true);
                     }
-                    await gridView.ApplyFilter(true);
                 }
             };
         }
@@ -1710,26 +1708,13 @@ namespace TMS.UI.Business.Manage
                 confirmRequets.Render();
                 confirmRequets.YesConfirmed += async () =>
                 {
-                    foreach (var item in checkRequests)
-                    {
-                        item.LockShip = false;
-                        item.IsRequestUnLockShip = false;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchTransportation(item));
-                    }
+                    await new Client(nameof(Transportation)).PostAsync<bool>(checkRequests, "ApproveUnLockShip");
                 };
-                foreach (var item in transportations.Where(x => x.IsRequestUnLockShip == false))
-                {
-                    item.LockShip = false;
-                    await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchTransportation(item));
-                }
+                await new Client(nameof(Transportation)).PostAsync<bool>(transportations.Where(x => x.IsRequestUnLockShip == false), "UnLockShipTransportation");
             }
             else if (checkRequests.Count <= 0)
             {
-                foreach (var item in transportations)
-                {
-                    item.LockShip = false;
-                    await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchTransportation(item));
-                }
+                await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "UnLockShipTransportation");
             }
         }
 
@@ -1740,11 +1725,9 @@ namespace TMS.UI.Business.Manage
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsLocked), Value = transportation.IsLocked.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsKt), Value = transportation.IsKt.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsSubmit), Value = transportation.IsSubmit.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.LockShip), Value = transportation.LockShip.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockAll), Value = transportation.IsRequestUnLockAll.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockExploit), Value = transportation.IsRequestUnLockExploit.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockAccountant), Value = transportation.IsRequestUnLockAccountant.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockShip), Value = transportation.IsRequestUnLockShip.ToString() });
             return new PatchUpdate { Changes = details };
         }
 
@@ -1761,6 +1744,7 @@ namespace TMS.UI.Business.Manage
             var details = new List<PatchUpdateDetail>();
             details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.LockShip), Value = transportation.LockShip.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockShip), Value = transportation.IsRequestUnLockShip.ToString() });
             return new PatchUpdate { Changes = details };
         }
     }
