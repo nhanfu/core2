@@ -15,6 +15,7 @@ namespace Core.Components.Forms
     {
         private const string ActiveClass = "active";
         protected HTMLElement _backdrop;
+        protected HTMLElement _tab;
         public static HTMLElement TabContainer = Document.GetElementById("tab-content");
         public static List<TabEditor> Tabs = new List<TabEditor>();
         public static TabEditor ActiveTab => Tabs.FirstOrDefault(x => x.Show);
@@ -130,6 +131,29 @@ namespace Core.Components.Forms
                 }
                 return;
             }
+            if (e.AltKey() && keyCode == KeyCodeEnum.GraveAccent)
+            {
+                if (Tabs.Count <=1)
+                {
+                    return;
+                }
+                int index;
+                index = Tabs.IndexOf(this);
+                if (index >= Tabs.Count - 1)
+                {
+                    index = 0;
+                }
+                else
+                {
+                    index++;
+                }
+                if (index < 0 || index > Tabs.Count)
+                {
+                    return;
+                }
+
+                Tabs.ElementAt(index)?.Focus();
+            }
             var shiftKey = e.ShiftKey();
             var ctrlKey = e.CtrlOrMetaKey();
             var altKey = e.AltKey();
@@ -146,6 +170,11 @@ namespace Core.Components.Forms
             }
 
             TriggerMatchHotKey(e, keyCode, shiftKey, ctrlKey, altKey);
+        }
+
+        private void DisposeTabView()
+        {
+            _tab.Hide();
         }
 
         private void TriggerMatchHotKey(Event e, KeyCodeEnum? keyCode, bool shiftKey, bool ctrlKey, bool altKey)
@@ -286,12 +315,6 @@ namespace Core.Components.Forms
             Document.Title = LangSelect.Get(TabTitle);
             base.Focus();
             Window.DispatchEvent(new Event(EventType.Resize.ToString()));
-            Task.Run(async () =>
-            {
-                var tab = FilterChildren<TabComponent>().ToArray();
-                var task = tab.Select((x) => x.CountBage());
-                await Task.WhenAll(task);
-            });
         }
 
         public override bool Show

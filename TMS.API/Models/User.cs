@@ -44,6 +44,7 @@ namespace TMS.API.Models
         public int? RouteId { get; set; }
         public string ContactId { get; set; }
         public int? Length { get; set; }
+        public int? ActUserId { get; set; }
 
         public virtual Vendor Vendor { get; set; }
         public virtual ICollection<ErrorLog> ErrorLog { get; set; }

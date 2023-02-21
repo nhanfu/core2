@@ -635,7 +635,17 @@ namespace TMS.API.Controllers
                 var objField = x.FieldName.Substring(0, x.FieldName.Length - 2);
                 return $"left join [{x.RefName}] as [{objField}] on [{objField}].Id = [{component.RefName}].{x.FieldName}";
             }).Distinct().ToList();
-            var select1s = gridPolicy.Where(x => x.ComponentType != "Dropdown").Distinct().ToList().Select(x => $"[{component.RefName}].[{x.FieldName}]").Distinct().ToList();
+            var select1s = gridPolicy.Where(x => x.ComponentType != "Dropdown").Distinct().ToList().Select(x =>
+            {
+                if (x.ExcelFieldName.IsNullOrWhiteSpace())
+                {
+                    return $"[{component.RefName}].[{x.FieldName}]";
+                }
+                else
+                {
+                    return x.ExcelFieldName;
+                }
+            }).Distinct().ToList();
             var fieldNames = select1s.Union(selects).ToList();
             if (!sql.IsNullOrWhiteSpace())
             {

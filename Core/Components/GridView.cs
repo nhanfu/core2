@@ -658,6 +658,11 @@ namespace Core.Components
         {
             _showSummary = false;
             _summary.Remove();
+            if (LastListViewItem != null && LastElementFocus != null)
+            {
+                LastListViewItem.Focused = true;
+                LastElementFocus.Focus();
+            }
         }
 
         private void HiddenSumary()
@@ -668,7 +673,7 @@ namespace Core.Components
         public void ViewSumary(object ev, GridPolicy header)
         {
             Html.Take(Document.Body).Div.ClassName("backdrop")
-            .Style("align-items: center;").Escape((e) => Dispose());
+            .Style("align-items: center;").Escape((e) => DisposeSumary());
             _summary = Html.Context;
             Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;min-width: 90%")
                 .Div.ClassName("popup-title").InnerHTML("Gộp theo cột hiện thời")
