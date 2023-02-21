@@ -2709,22 +2709,22 @@ namespace TMS.API.Controllers
             t.FreeText3,
             t.IsKt,
             t.IsSubmit,
-            [dbo].Get_Revenue(t.Id, 'Name') as Name,
-            [dbo].Get_Revenue(t.Id, 'LotNo') as LotNo,
-            [dbo].Get_Revenue(t.Id, 'LotDate') as LotDate,
-            [dbo].Get_Revenue(t.Id, 'InvoinceNo') as InvoinceNo,
-            [dbo].Get_Revenue(t.Id, 'InvoinceDate') as InvoinceDate,
+            t.Name,
+            t.LotNo,
+            t.NoteLotDate,
+            t.InvoinceNo,
+            t.NoteInvoinceDate,
             t.Vat,
             t.UnitPriceBeforeTax,
             t.UnitPriceAfterTax,
             t.ReceivedPrice,
             t.CollectOnBehaftPrice,
-            [dbo].Get_Revenue(t.Id, 'NotePayment') as NotePayment,
+            t.NotePayment,
             t.TotalPriceBeforTax,
             t.VatPrice,
             t.TotalPrice,
-            [dbo].Get_Revenue(t.Id, 'VendorVatId') as VendorVat,
-            [dbo].Get_Revenue(t.Id, 'Note') as Note,
+            t.NoteVendorVatId,
+            t.Note,
             t.IsPayment
             from Transportation t 
             left join Vendor v on t.ExportListId = v.Id
@@ -2775,9 +2775,9 @@ namespace TMS.API.Controllers
                 worksheet.Cell("AC" + start).SetValue(item["IsSubmit"].ToString().Contains("False") ? 0 : 1);
                 worksheet.Cell("AD" + start).SetValue(item["Name"] is null ? "" : item["Name"].ToString());
                 worksheet.Cell("AE" + start).SetValue(item["LotNo"] is null ? "" : item["LotNo"].ToString());
-                worksheet.Cell("AF" + start).SetValue(item["LotDate"] is null ? "" : item["LotDate"].ToString());
+                worksheet.Cell("AF" + start).SetValue(item["NoteLotDate"] is null ? "" : item["NoteLotDate"].ToString());
                 worksheet.Cell("AG" + start).SetValue(item["InvoinceNo"] is null ? "" : item["InvoinceNo"].ToString());
-                worksheet.Cell("AH" + start).SetValue(item["InvoinceDate"] is null ? "" : item["InvoinceDate"].ToString());
+                worksheet.Cell("AH" + start).SetValue(item["NoteInvoinceDate"] is null ? "" : item["NoteInvoinceDate"].ToString());
                 worksheet.Cell("AI" + start).SetValue(item["Vat"] is null ? default(decimal) : decimal.Parse(item["Vat"].ToString()));
                 worksheet.Cell("AJ" + start).SetValue(item["UnitPriceBeforeTax"] is null ? default(decimal) : decimal.Parse(item["UnitPriceBeforeTax"].ToString()));
                 worksheet.Cell("AJ" + start).Style.NumberFormat.Format = "#,##";
@@ -2794,7 +2794,7 @@ namespace TMS.API.Controllers
                 worksheet.Cell("AP" + start).Style.NumberFormat.Format = "#,##";
                 worksheet.Cell("AQ" + start).SetValue(item["TotalPrice"] is null ? default(decimal) : decimal.Parse(item["TotalPrice"].ToString()));
                 worksheet.Cell("AQ" + start).Style.NumberFormat.Format = "#,##";
-                worksheet.Cell("AR" + start).SetValue(item["VendorVat"] is null ? "" : item["VendorVat"].ToString());
+                worksheet.Cell("AR" + start).SetValue(item["NoteVendorVatId"] is null ? "" : item["NoteVendorVatId"].ToString());
                 worksheet.Cell("AS" + start).SetValue(item["Note"] is null ? "" : item["Note"].ToString());
                 worksheet.Cell("AT" + start).SetValue(item["IsPayment"].ToString().Contains("False") ? 0 : 1);
                 worksheet.Row(start).Style.Border.RightBorder = XLBorderStyleValues.Thin;
