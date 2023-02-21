@@ -32,18 +32,15 @@ namespace TMS.API.Controllers
         public override async Task<ActionResult<Revenue>> PatchAsync([FromQuery] ODataQueryOptions<Revenue> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
             Revenue entity = default;
-            Revenue oldEntity = default;
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             if (id != null && id.TryParseInt() > 0)
             {
                 var idInt = id.TryParseInt() ?? 0;
                 entity = await db.Set<Revenue>().FindAsync(idInt);
-                oldEntity = await db.Revenue.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
             }
             else
             {
                 entity = await GetEntityByOdataOptions(options);
-                oldEntity = await GetEntityByOdataOptions(options);
             }
             patch.ApplyTo(entity);
             SetAuditInfo(entity);
@@ -68,16 +65,27 @@ namespace TMS.API.Controllers
                     throw new ApiException("DT này đã được khóa doanh thu.") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
+            var oldEntity = await db.Revenue.Where(x => x.Id == entity.Id).FirstOrDefaultAsync();
             if (patch.Changes.Any(x => x.Field == nameof(entity.Name)
                 || x.Field == nameof(entity.LotNo)
                 || x.Field == nameof(entity.LotDate)
-                || (x.Field == nameof(entity.UnitPriceAfterTax) && oldEntity.UnitPriceAfterTax != null && entity.UnitPriceAfterTax != 0)
-                || (x.Field == nameof(entity.UnitPriceBeforeTax) && oldEntity.UnitPriceBeforeTax != null && entity.UnitPriceAfterTax != 0)
-                || (x.Field == nameof(entity.ReceivedPrice) && oldEntity.ReceivedPrice != null && entity.UnitPriceAfterTax != 0)
-                || (x.Field == nameof(entity.CollectOnBehaftPrice) && oldEntity.CollectOnBehaftPrice != null && entity.UnitPriceAfterTax != 0)
+                || x.Field == nameof(entity.UnitPriceAfterTax)
+                || x.Field == nameof(entity.UnitPriceBeforeTax)
+                || x.Field == nameof(entity.ReceivedPrice)
+                || x.Field == nameof(entity.CollectOnBehaftPrice)
                 || x.Field == nameof(entity.NotePayment)
                 || x.Field == nameof(entity.Note)
-                || (x.Field == nameof(entity.RevenueAdjustment) && oldEntity.RevenueAdjustment != null && entity.UnitPriceAfterTax != 0)))
+                || x.Field == nameof(entity.RevenueAdjustment)) &&
+                (entity.Name != oldEntity.Name
+                || entity.LotNo != oldEntity.LotNo
+                || entity.LotDate != oldEntity.LotDate
+                || entity.UnitPriceAfterTax != oldEntity.UnitPriceAfterTax
+                || entity.UnitPriceBeforeTax != oldEntity.UnitPriceBeforeTax
+                || entity.ReceivedPrice != oldEntity.ReceivedPrice
+                || entity.CollectOnBehaftPrice != oldEntity.CollectOnBehaftPrice
+                || entity.NotePayment != oldEntity.NotePayment
+                || entity.Note != oldEntity.Note
+                || entity.RevenueAdjustment != oldEntity.RevenueAdjustment))
             {
                 if (tran != null && tran.IsSubmit)
                 {

@@ -1030,6 +1030,7 @@ namespace TMS.UI.Business.Manage
             revenue.UnitPriceAfterTax = revenue.UnitPriceAfterTax == null ? 0 : revenue.UnitPriceAfterTax;
             revenue.ReceivedPrice = revenue.ReceivedPrice == null ? 0 : revenue.ReceivedPrice;
             revenue.TotalPrice = revenue.UnitPriceAfterTax + revenue.ReceivedPrice;
+            await new Client(nameof(Revenue)).PatchAsync<Revenue>(GetPatchEntityCalcRevenueTotalPrice(revenue));
             await CalcRevenueAsync(revenue);
         }
 
@@ -1168,6 +1169,14 @@ namespace TMS.UI.Business.Manage
             details.Add(new PatchUpdateDetail { Field = nameof(Revenue.Vat), Value = revenue.Vat.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Revenue.TotalPriceBeforTax), Value = revenue.TotalPriceBeforTax.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Revenue.VatPrice), Value = revenue.VatPrice.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.TotalPrice), Value = revenue.TotalPrice.ToString() });
+            return new PatchUpdate { Changes = details };
+        }
+
+        public PatchUpdate GetPatchEntityCalcRevenueTotalPrice(Revenue revenue)
+        {
+            var details = new List<PatchUpdateDetail>();
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = revenue.Id.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Revenue.TotalPrice), Value = revenue.TotalPrice.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Revenue.UnitPriceAfterTax), Value = revenue.UnitPriceAfterTax.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Revenue.ReceivedPrice), Value = revenue.ReceivedPrice.ToString() });
