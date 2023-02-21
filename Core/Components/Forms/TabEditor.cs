@@ -281,7 +281,7 @@ namespace Core.Components.Forms
             }
             if (Feature != null && Feature.Name != null && !Popup)
             {
-                Window.History.ReplaceState(null, LangSelect.Get(TabTitle), Window.Location.PathName + "?f=" + Feature.Name.Replace(" ", "-"));
+                Window.History.ReplaceState(null, LangSelect.Get(TabTitle), Window.Location.PathName + "?f=" + Feature.Name.Replace(" ", "-") + "&Id=" + Feature.Id);
             }
             Document.Title = LangSelect.Get(TabTitle);
             base.Focus();

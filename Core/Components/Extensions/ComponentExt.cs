@@ -320,6 +320,29 @@ namespace Core.Components.Extensions
             return feature;
         }
 
+        public static async Task<Feature> LoadFeatureComponent(Feature feature1, bool publicForm = false)
+        {
+#if RELEASE
+            if (FeatureMap.ContainsKey(featureName))
+            {
+                return FeatureMap[featureName];
+            }
+#endif
+            var prefix = publicForm ? "/Public/" : string.Empty;
+            var policyOdata = publicForm ? Task.FromResult(new List<FeaturePolicy>())
+                : new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
+                $"?$filter=Active eq true and FeatureId eq {feature1.Id}");
+            var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>(
+                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name))" +
+                $"&$filter=Active eq true and FeatureId eq {feature1.Id}", addTenant: true);
+            await Task.WhenAll(policyOdata, componentGroupTask);
+            feature1.FeaturePolicy = policyOdata.Result;
+            feature1.ComponentGroup = componentGroupTask.Result;
+            FeatureMap.TryAdd(feature1.Name, feature1);
+            ExecuteFeatureScript(feature1);
+            return feature1;
+        }
+
         public static async Task<Feature> LoadFeatureByNameOrViewClass(string nameOrViewClass)
         {
             var exists = FeatureMap.Values.FirstOrDefault(x => x.ViewClass == nameOrViewClass);

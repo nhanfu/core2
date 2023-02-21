@@ -99,9 +99,15 @@ namespace TMS.UI.Business
                 RenderMenuItems(_feature);
                 RenderMenuMobileItems(_feature, true);
                 await feature.Where(x => startApps.Contains(x.Id) || x.StartUp).ForEachAsync(OpenFeature);
-                var featureParam = Utils.GetUrlParam(Utils.FeatureField).Replace("-", " ");
+                var featureParam = Utils.GetUrlParam(Utils.IdField);
                 if (!featureParam.IsNullOrWhiteSpace())
                 {
+                    var currentFeature = feature.FirstOrDefault(x => x.Id == int.Parse(featureParam));
+                    await OpenFeature(currentFeature);
+                }
+                else
+                {
+                    featureParam = Utils.GetUrlParam(Utils.FeatureField).Replace("-", " ");
                     var currentFeature = feature.FirstOrDefault(x => x.Name == featureParam);
                     await OpenFeature(currentFeature);
                 }
@@ -158,7 +164,7 @@ namespace TMS.UI.Business
             {
                 var check = item.InverseParent != null && item.InverseParent.Count > 0;
                 Html.Instance.Li.ClassName("nav-item dropdown").DataAttr("feature", item.Id.ToString())
-                .A.Href(check ? "javascript:void(0);" : ("?f=" + item.Name.Replace(" ", "-"))).ClassName("navbar-nav-link" + (check ? " dropdown-toggle" : ""))
+                .A.Href(check ? "javascript:void(0);" : ("?f=" + item.Name.Replace(" ", "-") + "&Id=" + item.Id)).ClassName("navbar-nav-link" + (check ? " dropdown-toggle" : ""))
                 .DataAttr("toggle", "dropdown").Attr("aria-expanded", "false")
                 .AsyncEvent(EventType.Click, MenuItemClick, item)
                 .Event(EventType.ContextMenu, FeatureContextMenu, item)
@@ -180,7 +186,7 @@ namespace TMS.UI.Business
             {
                 var check = item.InverseParent != null && item.InverseParent.Count > 0;
                 Html.Instance.Li.ClassName("nav-item" + (check ? " nav-item-submenu" : "")).DataAttr("feature", item.Id.ToString())
-                .A.Href(check ? "javascript:void(0);" : ("?f=" + item.Name.Replace(" ", "-"))).ClassName("nav-link")
+                .A.Href(check ? "javascript:void(0);" : ("?f=" + item.Name.Replace(" ", "-") + "&Id=" + item.Id)).ClassName("nav-link")
                 .AsyncEvent(EventType.Click, MenuItemClick, item)
                 .Event(EventType.ContextMenu, FeatureContextMenu, item)
                 .Title(item.Label).Render();
@@ -199,7 +205,7 @@ namespace TMS.UI.Business
             Html.Instance.ForEach(menuItems, (item, index) =>
             {
                 var check = item.InverseParent != null && item.InverseParent.Count > 0;
-                Html.Instance.Li.ClassName("nav-item").A.Href("?f=" + item.Name.Replace(" ", "-")).ClassName("nav-link")
+                Html.Instance.Li.ClassName("nav-item").A.Href("?f=" + item.Name.Replace(" ", "-") + "&Id=" + item.Id).ClassName("nav-link")
                 .AsyncEvent(EventType.Click, MenuItemClick, item)
                 .Event(EventType.ContextMenu, FeatureContextMenu, item)
                 .I.ClassName(item.Icon ?? "").End
@@ -220,11 +226,11 @@ namespace TMS.UI.Business
                 if (check)
                 {
                     Html.Instance.Div.ClassName("dropdown-submenu")
-                    .A.Href("?f=" + item.Name.Replace(" ", "-")).ClassName("dropdown-item" + (check ? " dropdown-toggle" : ""));
+                    .A.Href("?f=" + item.Name.Replace(" ", "-") + "&Id=" + item.Id).ClassName("dropdown-item" + (check ? " dropdown-toggle" : ""));
                 }
                 else
                 {
-                    Html.Instance.A.Href("?f=" + item.Name.Replace(" ", "-")).ClassName("dropdown-item" + (check ? " dropdown-toggle" : ""));
+                    Html.Instance.A.Href("?f=" + item.Name.Replace(" ", "-") + "&Id=" + item.Id).ClassName("dropdown-item" + (check ? " dropdown-toggle" : ""));
                 }
                 Html.Instance.AsyncEvent(EventType.Click, MenuItemClick, item)
                 .Event(EventType.ContextMenu, FeatureContextMenu, item)
@@ -325,7 +331,7 @@ namespace TMS.UI.Business
             }
             FocusFeature(feature);
             await OpenFeature(feature);
-            Window.History.ReplaceState(null, LangSelect.Get(feature.Label), Window.Location.PathName + "?f=" + feature.Name.Replace(" ", "-"));
+            Window.History.ReplaceState(null, LangSelect.Get(feature.Label), Window.Location.PathName + "?f=" + feature.Name.Replace(" ", "-") + "&Id=" + feature.Id);
         }
 
         private HTMLElement FindMenuItemByID(int id)
@@ -379,7 +385,7 @@ namespace TMS.UI.Business
                 return;
             }
 
-            feature = await ComponentExt.LoadFeatureByName(feature.Name);
+            feature = await ComponentExt.LoadFeatureComponent(feature);
             Type type;
             if (feature.ViewClass != null)
             {
