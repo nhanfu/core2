@@ -693,7 +693,7 @@ namespace Core.Components
                 {
                     refn = dataSet[1];
                 }
-                var id = "sumary" + GuiInfo.Id;
+                var id = "sumary" + GuiInfo.Id + header.FieldName;
                 var dir = refn?.ToDictionary(x => x[IdField]);
                 Html.Instance.Div.ClassName("grid-wrapper sticky").Div.ClassName("table-wrapper printable").Table.Id(id).ClassName("table")
                 .Thead
@@ -767,15 +767,12 @@ namespace Core.Components
                 }
 
                 await Client.LoadScript("//cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js");
-                if (_summary != null)
-                {
                     /*@
                     $('#'+id).DataTable({
                         paging: false,
                         info: false
                     });
                 */
-                }
             });
         }
 
