@@ -1,4 +1,6 @@
-﻿using Core.Extensions;
+﻿using Core.Enums;
+using Core.Exceptions;
+using Core.Extensions;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -1169,6 +1171,39 @@ namespace TMS.API.Controllers
         public static string ConvertTextVn(string text)
         {
             return text is null || text == "" ? "" : Regex.Replace(text.Trim(), @"\s+", " ");
+        }
+
+        public override async Task<ActionResult<Quotation>> CreateAsync([FromBody] Quotation entity)
+        {
+            var check = await db.Quotation.AnyAsync(x => x.LocationId == entity.LocationId
+            && x.RouteId == entity.RouteId
+            && x.StartDate == entity.StartDate
+            && x.BranchId == entity.BranchId
+            && x.PackingId == entity.PackingId
+            && x.BossId == entity.BossId
+            && x.ContainerTypeId == entity.ContainerTypeId);
+            if(check)
+            {
+                throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
+            }
+            return await base.CreateAsync(entity);
+        }
+
+        public override async Task<ActionResult<Quotation>> UpdateAsync([FromBody] Quotation entity, string reasonOfChange = "")
+        {
+            var check = await db.Quotation.AnyAsync(x => x.LocationId == entity.LocationId
+            && x.RouteId == entity.RouteId
+            && x.StartDate == entity.StartDate
+            && x.BranchId == entity.BranchId
+            && x.PackingId == entity.PackingId
+            && x.BossId == entity.BossId
+            && x.Id != entity.Id
+            && x.ContainerTypeId == entity.ContainerTypeId);
+            if (check)
+            {
+                throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
+            }
+            return await base.UpdateAsync(entity, reasonOfChange);
         }
     }
 }

@@ -50,6 +50,10 @@ namespace Core.Components
         public List<object> FormattedRowData { get; set; }
         internal bool VirtualScroll { get; set; }
         public string Sql { get; set; }
+        public int StartRow { get; set; }
+        public int EndRow { get; set; }
+        public int StartCol { get; set; }
+        public int EndCol { get; set; }
         public List<object> CacheData { get; set; } = new List<object>();
         public string FormattedDataSource
         {
