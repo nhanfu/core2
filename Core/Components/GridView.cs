@@ -27,9 +27,9 @@ namespace Core.Components
         public ListViewSection EmptyRowSection { get; set; }
         private const string SummaryClass = "summary";
         private const int CellCountNoSticky = 50;
-        private HTMLElement _summary;
-        private bool _showSummary;
+        private List<HTMLElement> _summarys = new List<HTMLElement>();
         public bool _sum = false;
+        private bool _showSummary;
         public HTMLElement DataTable { get; set; }
         private UserSetting _settings { get; set; }
         public static GridPolicy ToolbarColumn = new GridPolicy
@@ -656,8 +656,11 @@ namespace Core.Components
 
         private void DisposeSumary()
         {
-            _showSummary = false;
-            _summary.Remove();
+            if (_summarys.Any())
+            {
+                _summarys.ElementAtOrDefault(_summarys.Count - 1).Remove();
+                _summarys.RemoveAt(_summarys.Count - 1);
+            }
             if (LastListViewItem != null && LastElementFocus != null)
             {
                 LastListViewItem.Focused = true;
@@ -667,14 +670,14 @@ namespace Core.Components
 
         private void HiddenSumary()
         {
-            _summary.Hide();
+            _summarys.ElementAtOrDefault(_summarys.Count - 1).Hide();
         }
 
         public void ViewSumary(object ev, GridPolicy header)
         {
             Html.Take(Document.Body).Div.ClassName("backdrop")
             .Style("align-items: center;").Escape((e) => DisposeSumary());
-            _summary = Html.Context;
+            _summarys.Add(Html.Context);
             Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;min-width: 90%")
                 .Div.ClassName("popup-title").InnerHTML("Gộp theo cột hiện thời")
                 .Div.ClassName("icon-box").Span.ClassName("fa fa-times")
@@ -686,7 +689,6 @@ namespace Core.Components
             Html.Instance.EndOf(".menuBar");
             Html.Instance.Div.ClassName("printable");
             var body = Html.Context;
-            _showSummary = true;
             Task.Run(async () =>
             {
                 var gridPolicy = BasicHeader.Where(x => x.ComponentType == nameof(Number) && x.FieldName != header.FieldName).ToList();
@@ -698,7 +700,7 @@ namespace Core.Components
                 {
                     refn = dataSet[1];
                 }
-                var id = "sumary" + GuiInfo.Id + header.FieldName;
+                var id = "sumary" + (new Random(10)).GetHashCode();
                 var dir = refn?.ToDictionary(x => x[IdField]);
                 Html.Instance.Div.ClassName("grid-wrapper sticky").Div.ClassName("table-wrapper printable").Table.Id(id).ClassName("table")
                 .Thead
@@ -772,11 +774,13 @@ namespace Core.Components
                 }
 
                 await Client.LoadScript("//cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js");
-                    /*@
-                    $('#'+id).DataTable({
-                        paging: false,
-                        info: false
-                    });
+                /*@
+                if (!$.fn.DataTable.isDataTable('#'+id)){
+                  $('#'+id).DataTable({
+                    paging: false,
+                    info: false
+                });
+                }
                 */
             });
         }
@@ -987,7 +991,7 @@ namespace Core.Components
                     {
                         return;
                     }
-                    var upItemUp = AllListViewItem.FirstOrDefault(x => x.RowNo == (currentItemUp.RowNo - 1));
+                    var upItemUp = AllListViewItem.Where(x => !x.GroupRow).FirstOrDefault(x => x.RowNo == (currentItemUp.RowNo - 1));
                     if (upItemUp is null)
                     {
                         currentItemUp.Focus();
@@ -1001,7 +1005,7 @@ namespace Core.Components
                     break;
                 case KeyCodeEnum.DownArrow:
                     var currentItemDown = GetItemFocus();
-                    var upItemDown = AllListViewItem.FirstOrDefault(x => x.RowNo == (currentItemDown.RowNo + 1));
+                    var upItemDown = AllListViewItem.Where(x => !x.GroupRow).FirstOrDefault(x => x.RowNo == (currentItemDown.RowNo + 1));
                     if (upItemDown is null)
                     {
                         currentItemDown.Focus();
@@ -1181,15 +1185,11 @@ namespace Core.Components
                 }
                 else
                 {
-                    Task.Run(async () =>
-                    {
-                        var dataSourceFilter = GuiInfo.DataSourceFilter;
-                        await ReloadData(dataSourceFilter);
-                    });
+                    return;
                 }
-                if (_showSummary)
+                if (_summarys.Any())
                 {
-                    _summary.Show();
+                    _summarys.LastOrDefault().Show();
                 }
             }
             else if (keyCode == KeyCodeEnum.F3)
@@ -1602,11 +1602,11 @@ namespace Core.Components
             var sums = Header.Where(x => !x.Summary.IsNullOrWhiteSpace());
             MainSection.Element.As<HTMLTableElement>().Children.Where(x => x.HasClass(SummaryClass)).ToArray().ForEach(x => x.Remove());
             var count = sums.DistinctBy(x => x.Summary).Count();
-            sums.ForEach((header =>
+            sums.ForEach(header =>
             {
                 AddNewEmptyRow();
                 RenderSummaryRow(header, Header, FooterSection.Element as HTMLTableSectionElement, count);
-            }));
+            });
         }
 
         private void RenderSummaryRow(GridPolicy sum, List<GridPolicy> headers, HTMLTableSectionElement footer, int count)
