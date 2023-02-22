@@ -44,6 +44,7 @@ namespace Core.Components
         public SortedField SortedField { get; set; }
         public List<GridPolicy> Header { get; set; }
         public List<GridPolicy> BasicHeader { get; set; }
+        public List<GridPolicy> BasicHeaderSearch { get; set; }
         public Dictionary<int, Component> HeaderComponentMap { get; set; }
         public ObservableList<object> RowData { get; set; }
         public List<object> FormattedRowData { get; set; }
@@ -352,6 +353,7 @@ namespace Core.Components
             var columns = await LoadGridPolicy();
             columns = FilterColumns(columns);
             BasicHeader = columns;
+            BasicHeaderSearch = columns.Where(x => x.ComponentType == "Dropdown").ToList();
             ResetOrder();
             HeaderLoaded?.Invoke(columns);
         }

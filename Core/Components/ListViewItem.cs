@@ -229,6 +229,27 @@ namespace Core.Components
             };
         }
 
+        public bool CompareEx(object obj, object another)
+        {
+            var fileNames = ListViewSection.ListView.BasicHeaderSearch.Select(x => x.FieldName).ToList();
+            var result = false;
+            foreach (var property in obj.GetType().GetProperties().Where(x => fileNames.Contains(x.Name)).ToList())
+            {
+                var objValue = property.GetValue(obj);
+                var anotherValue = property.GetValue(another);
+                if (objValue == null && anotherValue == null)
+                {
+                    continue;
+                }
+                if ((objValue != null && anotherValue == null) || (objValue == null && anotherValue != null) || (objValue != null && anotherValue != null && objValue.ToString() != anotherValue.ToString()))
+                {
+                    result = true;
+                    break;
+                }
+            }
+            return result;
+        }
+
         public async Task PatchUpdate()
         {
             if (!Dirty)
@@ -269,14 +290,18 @@ namespace Core.Components
                     }
                 }
                 var rs = await new Client(GuiInfo.Reference.Name).PatchAsync<object>(pathModel, ig: $"&disableTrigger={ignoreSync}");
+                var check = CompareEx(Entity, rs);
                 Entity.CopyPropFrom(rs);
                 if (GuiInfo.ComponentType == nameof(VirtualGrid))
                 {
                     ListViewSection.ListView.CacheData.FirstOrDefault(x => x[IdField] == rs[IdField]).CopyPropFrom(rs);
                 }
-                await ListViewSection.ListView.LoadMasterData(new object[] { rs });
+                if (check)
+                {
+                    await ListViewSection.ListView.LoadMasterData(new object[] { rs });
+                }
                 EmptyRow = false;
-                UpdateView(true);
+                UpdateView();
                 if (rs != null)
                 {
                     await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);

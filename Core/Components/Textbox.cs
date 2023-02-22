@@ -134,7 +134,7 @@ namespace Core.Components
                         }
                         var updated = upItem.FilterChildren<Textbox>(x => x.GuiInfo.FieldName == GuiInfo.FieldName).FirstOrDefault();
                         updated.Dirty = true;
-                        updated.Value = item.Replace(",", "").IsNullOrWhiteSpace() ? default(decimal) : decimal.Parse(item.Replace(",", ""));
+                        updated.Value = item;
                         updated.UpdateView();
                         updated.PopulateFields();
                         await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
@@ -190,6 +190,7 @@ namespace Core.Components
 
                 TextArea.OnInput += (e) => PopulateUIChange(EventType.Input);
                 TextArea.OnChange += (e) => PopulateUIChange(EventType.Change);
+                TextArea.AddEventListener(EventType.KeyDown, async (e) => await KeyDownNumber(e));
             }
             else
             {
@@ -211,8 +212,9 @@ namespace Core.Components
                 {
                     this.SetAutoWidth(Input.Value, Input.GetComputedStyle().Font);
                 }
+                Input.AddEventListener(EventType.KeyDown, async (e) => await KeyDownNumber(e));
+
             }
-            Input.AddEventListener(EventType.KeyDown, async (e) => await KeyDownNumber(e));
             if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace())
             {
                 if (Utils.IsFunction(GuiInfo.ChildStyle, out var fn))

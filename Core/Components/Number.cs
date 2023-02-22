@@ -151,7 +151,7 @@ namespace Core.Components
                         }
                         var updated = upItem.FilterChildren<Number>(x => x.GuiInfo.FieldName == GuiInfo.FieldName).FirstOrDefault();
                         updated.Dirty = true;
-                        updated.Value = item.Replace(",", "").IsNullOrWhiteSpace() ? default(decimal) : decimal.Parse(item.Replace(",", ""));
+                        updated.Value = item.Replace(",", "").Replace(".", "").IsNullOrWhiteSpace() ? default(decimal) : decimal.Parse(item.Replace(",", "").Replace(".", ""));
                         updated.UpdateView();
                         updated.PopulateFields();
                         await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
