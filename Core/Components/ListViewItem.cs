@@ -301,7 +301,7 @@ namespace Core.Components
                     await ListViewSection.ListView.LoadMasterData(new object[] { rs });
                 }
                 EmptyRow = false;
-                UpdateView();
+                UpdateView(true);
                 if (rs != null)
                 {
                     await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);

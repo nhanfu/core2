@@ -49,10 +49,6 @@ namespace Core.Components
             ListViewSection.ListView.LastElementFocus = td;
             ListViewSection.ListView.LastComponentFocus = header;
             ListViewSection.ListView.EntityFocusId = Entity[IdField].As<int>();
-            if (e.AltKey())
-            {
-                ListViewSection.ListView.StartRow = ListViewSection.ListView.AllListViewItem.IndexOf(x => x.RowNo == RowNo);
-            }
         }
 
         private void FocusOutCell(Event e)
