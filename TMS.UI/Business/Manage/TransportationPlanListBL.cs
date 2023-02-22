@@ -753,13 +753,12 @@ namespace TMS.UI.Business.Manage
                         if (check != null)
                         {
                             transportationPlan.TransportationTypeId = item.TransportationTypeId;
-                            var patchModel = GetPatchEntity(transportationPlan);
-                            await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(patchModel);
+                            await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityTransportationType(transportationPlan));
                         }
                     }
                 }
-                Analysis(transportationPlan);
             }, 500);
+            Analysis(transportationPlan);
         }
 
         public void AfterPatchUpdateTransportationPlan(TransportationPlan transportationPlan, PatchUpdate patchUpdate, ListViewItem listViewItem)
@@ -816,7 +815,6 @@ namespace TMS.UI.Business.Manage
             newCommodityValue.Notes = "";
             newCommodityValue.Active = true;
             newCommodityValue.InsertedDate = DateTime.Now.Date;
-            newCommodityValue.InsertedBy = Client.Token.UserId;
             if (DateTime.Now.Date >= startDate1 && DateTime.Now.Date <= endDate1)
             {
                 newCommodityValue.EndDate = endDate1;
@@ -826,6 +824,14 @@ namespace TMS.UI.Business.Manage
                 newCommodityValue.EndDate = endDate2;
             }
             return newCommodityValue;
+        }
+
+        public PatchUpdate GetPatchEntityTransportationType(TransportationPlan transportationPlan)
+        {
+            var details = new List<PatchUpdateDetail>();
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportationPlan.Id.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.TransportationTypeId), Value = transportationPlan.TransportationTypeId.ToString() });
+            return new PatchUpdate { Changes = details };
         }
 
         public PatchUpdate GetPatchEntity(TransportationPlan transportationPlan)

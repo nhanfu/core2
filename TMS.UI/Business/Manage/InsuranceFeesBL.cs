@@ -162,10 +162,21 @@ namespace TMS.UI.Business.Manage
             {
                 var containerId = await CheckContainerType(expense);
                 var commodityValueDB = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {expense.BossId} and CommodityId eq {expense.CommodityId} and ContainerId eq {containerId}");
+                var boss = await new Client(nameof(Vendor)).FirstOrDefaultAsync<Vendor>($"?$filter=Active eq true and Id eq {expense.BossId}");
                 if (commodityValueDB is null)
                 {
-                    var newCommodityValue = CreateCommodityValue(expense);
-                    await new Client(nameof(CommodityValue)).CreateAsync(newCommodityValue);
+                    var confirm = new ConfirmDialog
+                    {
+                        Content = "Bạn có muốn lưu giá trị này vào bảng GTHH không?",
+                    };
+                    confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        var newCommodityValue = CreateCommodityValue(expense);
+                        newCommodityValue.TotalPrice = (decimal)expense.CommodityValue;
+                        newCommodityValue.SaleId = boss.UserId;
+                        await new Client(nameof(CommodityValue)).CreateAsync(newCommodityValue);
+                    };
                 }
                 else
                 {
@@ -183,7 +194,6 @@ namespace TMS.UI.Business.Manage
                             await new Client(nameof(CommodityValue)).UpdateAsync(commodityValueDB);
                             var newCommodityValue = CreateCommodityValue(expense);
                             newCommodityValue.TotalPrice = (decimal)expense.CommodityValue;
-                            newCommodityValue.StartDate = DateTime.Now.Date;
                             await new Client(nameof(CommodityValue)).CreateAsync(newCommodityValue);
                         };
                     }
@@ -207,15 +217,13 @@ namespace TMS.UI.Business.Manage
             newCommodityValue.TotalPrice = 0;
             newCommodityValue.Active = true;
             newCommodityValue.InsertedDate = DateTime.Now.Date;
-            newCommodityValue.InsertedBy = Client.Token.UserId;
+            newCommodityValue.StartDate = DateTime.Now.Date;
             if (DateTime.Now.Date >= startDate1 && DateTime.Now.Date <= endDate1)
             {
-                newCommodityValue.StartDate = startDate1;
                 newCommodityValue.EndDate = endDate1;
             }
             if (DateTime.Now.Date >= startDate2 && DateTime.Now.Date <= endDate2)
             {
-                newCommodityValue.StartDate = startDate2;
                 newCommodityValue.EndDate = endDate2;
             }
             return newCommodityValue;
