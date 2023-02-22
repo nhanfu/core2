@@ -357,6 +357,11 @@ namespace TMS.UI.Business.Manage
                     expense.TotalPriceBeforeTax = (decimal)expense.InsuranceFeeRate * (decimal)expense.CommodityValue / 100;
                     expense.TotalPriceAfterTax = expense.TotalPriceBeforeTax + Math.Round(expense.TotalPriceBeforeTax * expense.Vat / 100, 0);
                 }
+                var revenue = new Revenue();
+                revenue.Vat = revenue.Vat == null || revenue.Vat == 0 ? 10 : revenue.Vat;
+                revenue.BossId = item.BossId;
+                revenue.ContainerTypeId = item.ContainerTypeId;
+                revenue.ClosingDate = item.ClosingDate;
                 for (int i = 0; i < item.TotalContainerRemain; i++)
                 {
                     var transportation = new Transportation();
@@ -367,7 +372,7 @@ namespace TMS.UI.Business.Manage
                     transportation.ClosingNotes = item.Notes;
                     transportation.ExportListId = Client.Token.Vendor.Id;
                     transportation.Expense.Add(expense);
-                    transportation.Revenue.Add(new Revenue());
+                    transportation.Revenue.Add(revenue);
                     await new Client(nameof(Transportation)).CreateAsync<Transportation>(transportation);
                 }
             }

@@ -200,6 +200,32 @@ namespace TMS.API.Controllers
                     }
                 }
             }
+            var revenues = await db.Revenue.Where(x => x.TransportationId == entity.Id).ToListAsync();
+            if (revenues != null)
+            {
+                var oldEntity = await db.Transportation.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
+                if (patch.Changes.Any(x =>
+                x.Field == nameof(entity.ContainerNo) ||
+                x.Field == nameof(entity.SealNo) ||
+                x.Field == nameof(entity.BossId) ||
+                x.Field == nameof(entity.ContainerTypeId) ||
+                x.Field == nameof(entity.ClosingDate)) &&
+                (oldEntity.ContainerNo != entity.ContainerNo) ||
+                (oldEntity.SealNo != entity.SealNo) ||
+                (oldEntity.BossId != entity.BossId) ||
+                (oldEntity.ContainerTypeId != entity.ContainerTypeId) ||
+                (oldEntity.ClosingDate != entity.ClosingDate))
+                {
+                    revenues.ForEach(x =>
+                    {
+                        x.ContainerNo = entity.ContainerNo;
+                        x.SealNo = entity.SealNo;
+                        x.BossId = entity.BossId;
+                        x.ContainerTypeId = entity.ContainerTypeId;
+                        x.ClosingDate = entity.ClosingDate;
+                    });
+                }
+            }
             if (disableTrigger)
             {
                 db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");

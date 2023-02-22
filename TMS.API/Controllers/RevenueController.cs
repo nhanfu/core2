@@ -64,6 +64,10 @@ namespace TMS.API.Controllers
                 {
                     throw new ApiException("DT này đã được khóa doanh thu.") { StatusCode = HttpStatusCode.BadRequest };
                 }
+                else
+                {
+                    entity.Vat = entity.Vat != null ? entity.Vat : 10;
+                }
             }
             var oldEntity = await db.Revenue.Where(x => x.Id == entity.Id).FirstOrDefaultAsync();
             if (patch.Changes.Any(x => x.Field == nameof(entity.Name)

@@ -102,11 +102,44 @@ namespace TMS.UI.Business.Accountant
             }
             var ids = gridView.SelectedIds.ToList();
             var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()})");
-            var listViewItems = transportations.Where(x => x.IsLocked == false && x.IsSubmit == false && x.IsLockedRevenue == false).ToList();
+            var listViewItems = transportations.Where(x => x.IsLocked == false).ToList();
             if (listViewItems.Count <= 0)
             {
                 Toast.Warning("Không có DSVC nào có thể nhập");
                 return;
+            }
+            var listViewItemsIsSubmit = listViewItems.Where(x => x.IsSubmit == true).ToList();
+            var listViewItemsIsLockedRevenue = listViewItems.Where(x => x.IsLockedRevenue == true).ToList();
+            var idTrans = listViewItems.Select(x => x.Id).ToList();
+            var idTransIsSubmit = listViewItemsIsSubmit.Select(x => x.Id).ToList();
+            var idTransIsLockedRevenue = listViewItemsIsLockedRevenue.Select(x => x.Id).ToList();
+            if (listViewItemsIsSubmit.Count > 0 || listViewItemsIsLockedRevenue.Count > 0)
+            {
+                if ((revenueEntity.IsLotNo ||
+                    revenueEntity.IsLotDate ||
+                    revenueEntity.IsUnitPriceAfterTax ||
+                    revenueEntity.IsUnitPriceBeforeTax ||
+                    revenueEntity.IsReceivedPrice ||
+                    revenueEntity.IsCollectOnBehaftPrice ||
+                    revenueEntity.IsNotePayment) && listViewItemsIsSubmit.Count > 0)
+                {
+                    listViewItems = listViewItems.Where(x => idTransIsSubmit.All(y => y != x.Id)).ToList();
+                }
+                if ((revenueEntity.IsVat ||
+                    revenueEntity.IsVatPrice ||
+                    revenueEntity.IsTotalPriceBeforTax ||
+                    revenueEntity.IsTotalPrice ||
+                    revenueEntity.IsVendorVatId ||
+                    revenueEntity.IsInvoinceNo ||
+                    revenueEntity.IsInvoinceDate) && listViewItemsIsLockedRevenue.Count > 0)
+                {
+                    listViewItems = listViewItems.Where(x => idTransIsLockedRevenue.All(y => y != x.Id)).ToList();
+                }
+                if (listViewItems.Count <= 0)
+                {
+                    Toast.Warning("Không có DSVC nào có thể nhập");
+                    return;
+                }
             }
             var confirm = new ConfirmDialog
             {
@@ -116,8 +149,8 @@ namespace TMS.UI.Business.Accountant
             confirm.YesConfirmed += async () =>
             {
                 var resCreateRevenues = await new Client(nameof(Revenue)).PostAsync<bool>(listViewItems, "CreateRevenues");
-                var idTrans = listViewItems.Select(x => x.Id).ToList();
-                var revenues = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and TransportationId in ({idTrans.Combine()})");
+                var idtrans = listViewItems.Select(x => x.Id).ToList();
+                var revenues = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and TransportationId in ({idtrans.Combine()})");
                 revenues.Add(revenueEntity);
                 var res = await new Client(nameof(Revenue)).PostAsync<bool>(revenues, "UpdateRevenueSimultaneous");
                 if (res)
@@ -143,18 +176,56 @@ namespace TMS.UI.Business.Accountant
             var ids = gridView.SelectedIds.ToList();
             var revenueSelecteds = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and Id in ({ids.Combine()})");
             var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({revenueSelecteds.Select(x => x.TransportationId).Combine()})");
-            var listViewItems = transportations.Where(x => x.IsLocked == false && x.IsSubmit == false && x.IsLockedRevenue == false).ToList();
+            var listViewItems = transportations.Where(x => x.IsLocked == false).ToList();
+            var listViewItemsIsSubmit = listViewItems.Where(x => x.IsSubmit == true).ToList();
+            var listViewItemsIsLockedRevenue = listViewItems.Where(x => x.IsLockedRevenue == true).ToList();
             var idTrans = listViewItems.Select(x => x.Id).ToList();
-            var revenues = revenueSelecteds.Where(x => idTrans.Contains((int)x.TransportationId)).ToList();
+            var idTransIsSubmit = listViewItemsIsSubmit.Select(x => x.Id).ToList();
+            var idTransIsLockedRevenue = listViewItemsIsLockedRevenue.Select(x => x.Id).ToList();
+            var revenues = new List<Revenue>();
             if (listViewItems.Count <= 0)
             {
                 Toast.Warning("Không có doanh thu nào có thể nhập");
                 return;
             }
-            var confirm = new ConfirmDialog
+            var confirm = new ConfirmDialog();
+            revenues = revenueSelecteds.Where(x => idTrans.Contains((int)x.TransportationId)).ToList();
+            if (listViewItemsIsSubmit.Count <= 0 && listViewItemsIsLockedRevenue.Count <= 0)
             {
-                Content = "Bạn có chắc chắn muốn nhập doanh thu cho " + revenues.Count + " dòng doanh thu ?",
-            };
+                confirm.Content = "Bạn có chắc chắn muốn nhập doanh thu cho " + revenues.Count + " dòng doanh thu ?";
+            }
+            else if (listViewItemsIsSubmit.Count > 0 && listViewItemsIsLockedRevenue.Count > 0)
+            {
+                if ((revenueEntity.IsLotNo ||
+                    revenueEntity.IsLotDate ||
+                    revenueEntity.IsUnitPriceAfterTax ||
+                    revenueEntity.IsUnitPriceBeforeTax ||
+                    revenueEntity.IsReceivedPrice ||
+                    revenueEntity.IsCollectOnBehaftPrice ||
+                    revenueEntity.IsNotePayment) && listViewItemsIsSubmit.Count > 0)
+                {
+                    revenues = revenues.Where(x => idTrans.Contains((int)x.TransportationId) && idTransIsSubmit.All(y => y != x.TransportationId)).ToList();
+                }
+                if ((revenueEntity.IsVat ||
+                    revenueEntity.IsVatPrice ||
+                    revenueEntity.IsTotalPriceBeforTax ||
+                    revenueEntity.IsTotalPrice ||
+                    revenueEntity.IsVendorVatId ||
+                    revenueEntity.IsInvoinceNo ||
+                    revenueEntity.IsInvoinceDate) && listViewItemsIsLockedRevenue.Count > 0)
+                {
+                    revenues = revenues.Where(x => idTrans.Contains((int)x.TransportationId) && idTransIsLockedRevenue.All(y => y != x.TransportationId)).ToList();
+                }
+                if (revenues.Count <= 0)
+                {
+                    Toast.Warning("Không có doanh thu nào có thể nhập");
+                    return;
+                }
+                else
+                {
+                    confirm.Content = "Bạn có chắc chắn muốn nhập doanh thu cho " + revenues.Count + " dòng doanh thu ?";
+                }
+            }
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {

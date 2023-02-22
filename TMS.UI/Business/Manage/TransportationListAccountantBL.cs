@@ -1019,7 +1019,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task CalcRevenueAsync(Revenue revenue)
         {
-            revenue.Vat = revenue.Vat == null || revenue.Vat == 0 ? 10 : revenue.Vat;
+            revenue.Vat = revenue.Vat != null ? revenue.Vat : 10;
             revenue.TotalPriceBeforTax = Math.Round((decimal)revenue.TotalPrice / (1 + ((decimal)revenue.Vat / 100)));
             revenue.VatPrice = Math.Round((decimal)revenue.TotalPriceBeforTax * (decimal)revenue.Vat / 100);
             await new Client(nameof(Revenue)).PatchAsync<Revenue>(GetPatchEntityCalcRevenue(revenue));
@@ -1049,14 +1049,16 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             if (selected.IsSubmit &&
-                    (revenue.LotNo != null || 
-                    revenue.LotDate != null || 
-                    (revenue.Vat != null && revenue.Vat != 0) || 
+                    (revenue.Name != null ||
+                    revenue.LotNo != null || 
+                    revenue.LotDate != null ||
                     (revenue.UnitPriceAfterTax != null && revenue.UnitPriceAfterTax != 0) || 
                     (revenue.UnitPriceBeforeTax != null && revenue.UnitPriceBeforeTax != 0) || 
                     (revenue.ReceivedPrice != null && revenue.ReceivedPrice != 0) || 
                     (revenue.CollectOnBehaftPrice != null && revenue.CollectOnBehaftPrice != 0) ||
-                    revenue.NotePayment != null))
+                    revenue.NotePayment != null ||
+                    revenue.Note != null ||
+                    (revenue.RevenueAdjustment != null || revenue.RevenueAdjustment != 0)))
             {
                 var confirm = new ConfirmDialog
                 {
@@ -1073,6 +1075,7 @@ namespace TMS.UI.Business.Manage
                 };
                 return;
             }
+            revenue.Vat = revenue.Vat == null || revenue.Vat == 0 ? 10 : revenue.Vat;
             revenue.BossId = selected.BossId;
             revenue.ContainerNo = selected.ContainerNo;
             revenue.SealNo = selected.SealNo;
