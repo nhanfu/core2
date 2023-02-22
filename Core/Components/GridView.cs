@@ -29,7 +29,7 @@ namespace Core.Components
         private const int CellCountNoSticky = 50;
         private List<HTMLElement> _summarys = new List<HTMLElement>();
         public bool _sum = false;
-        private bool _showSummary;
+        public bool AutoFocus = false;
         public HTMLElement DataTable { get; set; }
         private UserSetting _settings { get; set; }
         public static GridPolicy ToolbarColumn = new GridPolicy
@@ -1455,6 +1455,10 @@ namespace Core.Components
 
         protected void SetFocusingCom()
         {
+            if (AutoFocus)
+            {
+                return;
+            }
             if (EntityFocusId != null && LastComponentFocus != null)
             {
                 var element = MainSection.Children.Flattern(x => x.Children)

@@ -135,18 +135,19 @@ namespace Core.Components
                     SetValue();
                     var current = this.FindClosest<ListViewItem>();
                     var startNo = current.RowNo;
+                    var varCount = values.Count + startNo;
                     var gridView = this.FindClosest<VirtualGrid>();
-                    foreach (var item in values)
+                    gridView.AutoFocus = true;
+                    foreach (var item in values.Take(values.Count - 1))
                     {
                         var upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
                         if (upItem is null)
                         {
-                            if (startNo + 1 <= values.Count())
+                            if (startNo <= varCount)
                             {
-                                gridView.DataTable.ParentElement.ScrollTop += 37 * 5;
+                                await Task.Delay(1000);
+                                upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
                             }
-                            await Task.Delay(500);
-                            upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo + 1);
                         }
                         var updated = upItem.FilterChildren<Number>(x => x.GuiInfo.FieldName == GuiInfo.FieldName).FirstOrDefault();
                         updated.Dirty = true;
@@ -159,11 +160,11 @@ namespace Core.Components
                         {
                             await upItem.PatchUpdate();
                         }
-                        upItem.Focused = true;
-                        updated.Focus();
-                        gridView.DataTable.ParentElement.ScrollTop += 37;
+                        gridView.DataTable.ParentElement.ScrollTop += 26;
                         startNo++;
+                        await Task.Delay(300);
                     }
+                    gridView.AutoFocus = false;
                 }
             }
         }

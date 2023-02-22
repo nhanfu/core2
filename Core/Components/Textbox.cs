@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bridge;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Core.Components
 {
@@ -96,6 +97,61 @@ namespace Core.Components
             });
         }
 
+        private async Task KeyDownNumber(Event evt)
+        {
+            if (!(Parent is ListViewItem))
+            {
+                return;
+            }
+            var check = evt.KeyCodeEnum() == KeyCodeEnum.V && evt.CtrlOrMetaKey() && evt.ShiftKey();
+            var tcs = new TaskCompletionSource<string>();
+            if (check)
+            {
+                /*@
+                 navigator.clipboard.readText().then(clipText => tcs.setResult(clipText));
+                */
+                var te = await tcs.Task;
+                var checkMulti = te.Contains("\r\n");
+                if (checkMulti)
+                {
+                    var values = te.Split("\r\n").ToList();
+                    Input.Value = values[0];
+                    var current = this.FindClosest<ListViewItem>();
+                    var startNo = current.RowNo;
+                    var varCount = values.Count + startNo;
+                    var gridView = this.FindClosest<VirtualGrid>();
+                    gridView.AutoFocus = true;
+                    foreach (var item in values.Take(values.Count - 1))
+                    {
+                        var upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
+                        if (upItem is null)
+                        {
+                            if (startNo <= varCount)
+                            {
+                                await Task.Delay(1000);
+                                upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
+                            }
+                        }
+                        var updated = upItem.FilterChildren<Textbox>(x => x.GuiInfo.FieldName == GuiInfo.FieldName).FirstOrDefault();
+                        updated.Dirty = true;
+                        updated.Value = item.Replace(",", "").IsNullOrWhiteSpace() ? default(decimal) : decimal.Parse(item.Replace(",", ""));
+                        updated.UpdateView();
+                        updated.PopulateFields();
+                        await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
+                        await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
+                        if (gridView.GuiInfo.IsRealtime)
+                        {
+                            await upItem.PatchUpdate();
+                        }
+                        gridView.DataTable.ParentElement.ScrollTop += 26;
+                        startNo++;
+                        await Task.Delay(500);
+                    }
+                    gridView.AutoFocus = false;
+                }
+            }
+        }
+
         public override void Render()
         {
             SetDefaultVal();
@@ -156,6 +212,7 @@ namespace Core.Components
                     this.SetAutoWidth(Input.Value, Input.GetComputedStyle().Font);
                 }
             }
+            Input.AddEventListener(EventType.KeyDown, async (e) => await KeyDownNumber(e));
             if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace())
             {
                 if (Utils.IsFunction(GuiInfo.ChildStyle, out var fn))
