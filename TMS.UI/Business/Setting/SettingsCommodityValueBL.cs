@@ -73,7 +73,15 @@ namespace TMS.UI.Business.Setting
             {
                 isSubRatio = true;
             }
-            var insuranceFeesRate = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {transportationPlanEntity.TransportationTypeId} and JourneyId eq {transportationPlanEntity.JourneyId} and IsBought eq {transportationPlanEntity.IsBought.ToString().ToLower()} and IsSubRatio eq {isSubRatio.ToString().ToLower()} and IsSOC eq false");
+            InsuranceFeesRate insuranceFeesRate = null;
+            if (transportationPlanEntity.IsBought)
+            {
+                insuranceFeesRate = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {transportationPlanEntity.TransportationTypeId} and JourneyId eq {transportationPlanEntity.JourneyId} and IsBought eq {transportationPlanEntity.IsBought.ToString().ToLower()} and IsSOC eq false and IsSubRatio eq {isSubRatio.ToString().ToLower()}");
+            }
+            else
+            {
+                insuranceFeesRate = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {transportationPlanEntity.TransportationTypeId} and JourneyId eq {transportationPlanEntity.JourneyId} and IsBought eq {transportationPlanEntity.IsBought.ToString().ToLower()} and IsSOC eq false");
+            }
             if (insuranceFeesRate is null)
             {
                 Toast.Warning("Hiện tại chưa có mức tỷ lệ phí phù hợp cho các điều kiện này. Vui lòng cấu hình lại !!!");

@@ -316,10 +316,22 @@ namespace TMS.UI.Business.Manage
                 {
                     isSubRatio = true;
                 }
-                var insuranceFeesRateDB = insuranceFeesRates.Result.FirstOrDefault(x => x.TransportationTypeId == expense.TransportationTypeId
-                && x.JourneyId == expense.JourneyId
-                && x.IsBought == expense.IsBought
-                && x.IsSOC == false);
+                InsuranceFeesRate insuranceFeesRateDB = null;
+                if (expense.IsBought)
+                {
+                    insuranceFeesRateDB = insuranceFeesRates.Result.FirstOrDefault(x => x.TransportationTypeId == expense.TransportationTypeId
+                    && x.JourneyId == expense.JourneyId
+                    && x.IsBought == expense.IsBought
+                    && x.IsSOC == false
+                    && x.IsSubRatio == isSubRatio);
+                }
+                else
+                {
+                    insuranceFeesRateDB = insuranceFeesRates.Result.FirstOrDefault(x => x.TransportationTypeId == expense.TransportationTypeId
+                    && x.JourneyId == expense.JourneyId
+                    && x.IsBought == expense.IsBought
+                    && x.IsSOC == false);
+                }
                 if (insuranceFeesRateDB != null)
                 {
                     var getContainerType = dir.GetValueOrDefault(expense.ContainerTypeId ?? 0);
