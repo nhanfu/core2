@@ -25,5 +25,6 @@ namespace TMS.API.Models
         public int? JourneyId { get; set; }
         public bool SteamingTerms { get; set; }
         public bool BreakTerms { get; set; }
+        public int? CreatedBy { get; set; }
     }
 }
