@@ -265,7 +265,7 @@ namespace TMS.UI.Business.Manage
                     if (!booking.Files.Contains("    "))
                     {
                         var booking1 = await new Client(nameof(Booking)).FirstOrDefaultAsync<Booking>($"?$filter=Active eq true and BrandShipId eq {coord.BrandShipId} and ShipId eq {coord.ShipId} and Trip eq '{coord.Trip}' and (Files ne null or Files ne '') and contains(Files,'    ')");
-                        if (booking1.Files.Contains("    "))
+                        if (booking1 != null && booking1.Files.Contains("    "))
                         {
                             booking = booking1;
                         }

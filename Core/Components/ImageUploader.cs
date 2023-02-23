@@ -391,7 +391,7 @@ namespace Core.Components
             {
                 base64Image = base64Image.Substring(JpegUrlPrefix.Length);
             }
-            return await new Client(nameof(User)).PostAsync<string>(base64Image, $"Image?name={fileName}", allowNested: true);
+            return await new Client(nameof(User)).PostAsync<string>(base64Image, $"Image?name={fileName.DecodeSpecialChar()}", allowNested: true);
         }
 
         public override bool Disabled
