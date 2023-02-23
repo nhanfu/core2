@@ -249,7 +249,8 @@ namespace Core.Components
                 });
             }
             _headers = _headers.OrderBy(x => x.OrderExport).ToList();
-            Html.Take("#Content11203").Table.ClassName("table").Id("exTable")
+            var content = this.FindComponentByName<Section>("Content");
+            Html.Take(content.Element).Table.ClassName("table").Id("exTable")
                 .Thead
                     .TRow.TData.Text("STT").End
                     .TData.Checkbox(false).Event(EventType.Input, (e) => TongleAll(e)).End.End
