@@ -12,6 +12,7 @@ namespace TMS.API.Models
 
         public int Id { get; set; }
         public bool IsAdd { get; set; }
+        public int? ContainerId { get; set; }
         public DateTime? StartDate { get; set; }
         public int? RegionId { get; set; }
         public decimal UnitPrice { get; set; }

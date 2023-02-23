@@ -37,6 +37,7 @@ namespace TMS.API.Models
         public int? RegionId { get; set; }
         public int? DistrictId { get; set; }
         public int? ProvinceId { get; set; }
+        public int? ExportListId { get; set; }
 
         public virtual Location Location { get; set; }
         public virtual QuotationUpdate QuotationUpdate { get; set; }

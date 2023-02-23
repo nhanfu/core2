@@ -236,7 +236,7 @@ namespace TMS.API.Controllers
                     shouldLoadToken = true;
                     request.Headers.Add(action.ApiKeyHeader, action.TokenPrefix + token);
                 }
-                request.RequestUri = new Uri($"{action.SubUrl}/?{action.ApiKeyHeader}={action.ApiKey}");
+                request.RequestUri = new Uri($"{action.SubUrl}/?{action.ApiKeyHeader}={action.ApiKey}&EntityName={typeof(T).Name}");
             }
             var res = await _client.SendAsync(request);
             return shouldLoadToken;

@@ -43,6 +43,22 @@ namespace TMS.API.Models
         public string TransportationIds { get; set; }
     }
 
+    public partial class QuotationUpdate
+    {
+        [NotMapped]
+        public List<int?> PackingIds { get; set; }
+        [NotMapped]
+        public List<int?> Packing1Ids { get; set; }
+        [NotMapped]
+        public List<int?> BossIds { get; set; }
+        [NotMapped]
+        public List<int?> Boss1Ids { get; set; }
+        [NotMapped]
+        public List<int?> RegionIds { get; set; }
+        [NotMapped]
+        public List<int?> Region1Ids { get; set; }
+    }
+
     public partial class Revenue
     {
         [NotMapped]
