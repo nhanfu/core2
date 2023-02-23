@@ -1042,7 +1042,7 @@ namespace TMS.UI.Business.Manage
             await grid.ApplyFilter(true);
         }
 
-        public virtual void BeforeCreatedRevenue(Revenue revenue)
+        public virtual void BeforeCreatedRevenue(Revenue revenue, PatchUpdate patch)
         {
             if (selected is null)
             {
@@ -1058,7 +1058,7 @@ namespace TMS.UI.Business.Manage
                     (revenue.CollectOnBehaftPrice != null && revenue.CollectOnBehaftPrice != 0) ||
                     revenue.NotePayment != null ||
                     revenue.Note != null ||
-                    (revenue.RevenueAdjustment != null || revenue.RevenueAdjustment != 0)))
+                    (revenue.RevenueAdjustment != null && revenue.RevenueAdjustment != 0)))
             {
                 var confirm = new ConfirmDialog
                 {
