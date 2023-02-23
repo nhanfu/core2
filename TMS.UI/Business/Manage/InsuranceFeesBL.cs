@@ -175,6 +175,7 @@ namespace TMS.UI.Business.Manage
                         var newCommodityValue = CreateCommodityValue(expense);
                         newCommodityValue.TotalPrice = (decimal)expense.CommodityValue;
                         newCommodityValue.SaleId = boss.UserId;
+                        newCommodityValue.CreatedBy = Client.Token.UserId;
                         await new Client(nameof(CommodityValue)).CreateAsync(newCommodityValue);
                     };
                 }

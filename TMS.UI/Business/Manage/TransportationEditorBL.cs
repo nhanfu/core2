@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using TMS.API.Models;
 using static Retyped.dom.Literals.Types;
 using MasterData = Core.Models.MasterData;
+using Vendor = Core.Models.Vendor;
 
 namespace TMS.UI.Business.Manage
 {
@@ -83,11 +84,22 @@ namespace TMS.UI.Business.Manage
             {
                 var containerId = await CheckContainerType(expense);
                 var commodityValueDB = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {expense.BossId} and CommodityId eq {expense.CommodityId} and ContainerId eq {containerId}");
+                var boss = await new Client(nameof(Vendor)).FirstOrDefaultAsync<Vendor>($"?$filter=Active eq true and Id eq {expense.BossId}");
                 if (commodityValueDB is null)
                 {
-                    var newCommodityValue = CreateCommodityValue(expense);
-                    newCommodityValue.StartDate = DateTime.Now.Date;
-                    await new Client(nameof(CommodityValue)).CreateAsync(newCommodityValue);
+                    var confirm = new ConfirmDialog
+                    {
+                        Content = "Bạn có muốn lưu giá trị này vào bảng GTHH không?",
+                    };
+                    confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        var newCommodityValue = CreateCommodityValue(expense);
+                        newCommodityValue.TotalPrice = (decimal)expense.CommodityValue;
+                        newCommodityValue.SaleId = boss.UserId;
+                        newCommodityValue.CreatedBy = Client.Token.UserId;
+                        await new Client(nameof(CommodityValue)).CreateAsync(newCommodityValue);
+                    };
                 }
                 else
                 {
