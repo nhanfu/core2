@@ -25,7 +25,7 @@ namespace TMS.API.Controllers
                                  ROW_NUMBER() OVER (PARTITION BY PackingId,BossId,ContainerTypeId,LocationId,RouteId ORDER BY StartDate DESC) AS rn
                            FROM Quotation
                            where TypeId = {entity.TypeId}
-                           and BranchId = {VendorId}
+                           and ExportListId = {VendorId}
                            and StartDate < '{entity.StartDate:yyyy-MM-dd}'";
             if (entity.ContainerId != null)
             {
@@ -72,7 +72,7 @@ namespace TMS.API.Controllers
 					   ,[LocationId]
 					   ,[PolicyTypeId]
 					   ,case when [UnitPrice] > 0 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice] + {entity.UnitPrice} else [UnitPrice] - {entity.UnitPrice} end else [UnitPrice] end
-					   ,case when [UnitPrice1] > 0 then case when {entity.TypeId} = 7592 or {entity.TypeId} = 7593 or {entity.TypeId} = 7594 or {entity.TypeId} = 7596 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice1] + {entity.UnitPrice} else [UnitPrice1] - {entity.UnitPrice} end else [UnitPrice1] end end 
+					   ,isnull(case when [UnitPrice1] > 0 then case when {entity.TypeId} = 7592 or {entity.TypeId} = 7593 or {entity.TypeId} = 7594 or {entity.TypeId} = 7596 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice1] + {entity.UnitPrice} else [UnitPrice1] - {entity.UnitPrice} end else [UnitPrice1] end end,0)
 					   ,UnitPrice2
 					   ,'{entity.StartDate:yyyy-MM-dd}' as [StartDate]
 					   ,[Note]
