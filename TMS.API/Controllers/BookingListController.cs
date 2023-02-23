@@ -304,7 +304,6 @@ namespace TMS.API.Controllers
                 && x.ExportListId == item.ExportListId
                 && x.PolicyId == item.PolicyId
                 && x.ShipUnitPrice == item.ShipUnitPrice
-                && x.Submit == false
                 && x.Active).FirstOrDefaultAsync();
                 if (checkBookingList == null)
                 {
@@ -314,7 +313,7 @@ namespace TMS.API.Controllers
                 }
                 else
                 {
-                    if (item.Count != checkBookingList.Count || item.ShipPrice != checkBookingList.ShipPrice || item.ShipPolicyPrice != checkBookingList.ShipPolicyPrice)
+                    if ((item.Count != checkBookingList.Count || item.ShipPrice != checkBookingList.ShipPrice || item.ShipPolicyPrice != checkBookingList.ShipPolicyPrice) && checkBookingList.Submit == false)
                     {
                         checkBookingList.Count = item.Count;
                         checkBookingList.ShipPrice = item.ShipPrice;
