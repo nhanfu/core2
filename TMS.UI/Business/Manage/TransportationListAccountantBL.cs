@@ -1044,7 +1044,7 @@ namespace TMS.UI.Business.Manage
 
         public void BeforeCreatedRevenue(Revenue revenue)
         {
-            if (selected is null)
+            if (selected == null)
             {
                 return;
             }

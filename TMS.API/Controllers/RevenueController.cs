@@ -58,11 +58,12 @@ namespace TMS.API.Controllers
                 || x.Field == nameof(entity.Vat)
                 || x.Field == nameof(entity.TotalPriceBeforTax)
                 || x.Field == nameof(entity.VatPrice)
-                || x.Field == nameof(entity.TotalPrice)))
+                || x.Field == nameof(entity.TotalPrice)
+                || x.Field == nameof(entity.VendorVatId)))
             {
                 if (tran != null && tran.IsLockedRevenue)
                 {
-                    throw new ApiException("DT này đã được khóa doanh thu.") { StatusCode = HttpStatusCode.BadRequest };
+                    throw new ApiException("Cont này đã được khóa doanh thu.") { StatusCode = HttpStatusCode.BadRequest };
                 }
                 else
                 {
@@ -122,13 +123,25 @@ namespace TMS.API.Controllers
             thead.Start();
         }
 
-        public override Task<ActionResult<Revenue>> CreateAsync([FromBody] Revenue entity)
+        public async override  Task<ActionResult<Revenue>> CreateAsync([FromBody] Revenue entity)
         {
             if (entity.TransportationId is null)
             {
                 throw new ApiException("Vui lòng chọn cont cần nhập") { StatusCode = HttpStatusCode.BadRequest };
             }
-            return base.CreateAsync(entity);
+            var tran = await db.Transportation.Where(x => x.Id == entity.TransportationId).FirstOrDefaultAsync();
+            if (tran != null && tran.IsLockedRevenue &&
+                (entity.InvoinceNo != null ||
+                entity.InvoinceDate != null ||
+                (entity.Vat != null && entity.Vat != 0) ||
+                (entity.TotalPriceBeforTax != null && entity.TotalPriceBeforTax != 0) ||
+                (entity.VatPrice != null && entity.VatPrice != 0) ||
+                (entity.TotalPrice != null && entity.TotalPrice != 0) ||
+                entity.VendorVatId != null))
+            {
+                throw new ApiException("Cont này đã được khóa doanh thu.") { StatusCode = HttpStatusCode.BadRequest };
+            }
+            return await base.CreateAsync(entity);
         }
 
         public override async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<int> ids)
