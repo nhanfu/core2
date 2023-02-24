@@ -80,7 +80,7 @@ namespace TMS.API.Controllers
 					   ,GETDATE() as InsertedDate
 					   ,[InsertedBy]
 					   ,[QuotationUpdateId]
-					   ,case when [UnitPrice3] > 0 then case when {entity.TypeId} = 7592 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice3] + {entity.UnitPrice} else [UnitPrice3] - {entity.UnitPrice} end else [UnitPrice3] end end
+					   ,isnull(case when [UnitPrice3] > 0 then case when {entity.TypeId} = 7592 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice3] + {entity.UnitPrice} else [UnitPrice3] - {entity.UnitPrice} end else [UnitPrice3] end end,0)
 					   ,[ParentId]
 					   ,[IsParent]
 					   ,[RegionId]
