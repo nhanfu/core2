@@ -32,7 +32,15 @@ namespace TMS.UI.Business.Manage
                 Toast.Warning("Vui lòng nhập đến ngày");
                 return;
             }
-            await new Client(nameof(BookingList)).PostAsync<bool>(Entity, "UpdateBookingList");
+            var res = await new Client(nameof(BookingList)).PostAsync<bool>(Entity, "UpdateBookingList");
+            if (res)
+            {
+                Toast.Success("Đã cập nhật thành công.");
+            }
+            else
+            {
+                Toast.Warning("Đã có lỗi xảy ra trong quá trình xử lý.");
+            }
             Dirty = false;
             this.Dispose();
         }
