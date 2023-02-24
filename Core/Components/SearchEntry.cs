@@ -214,6 +214,7 @@ namespace Core.Components
 
         private void FocusIn()
         {
+            ParentElement.AddClass("cell-selected");
             if (_contextMenu)
             {
                 _contextMenu = false;
@@ -225,6 +226,11 @@ namespace Core.Components
             }
 
             Search(changeEvent: false, timeout: 0);
+        }
+
+        private void FocusOut()
+        {
+            ParentElement.RemoveClass("cell-selected");
         }
 
         public override void Dispose()

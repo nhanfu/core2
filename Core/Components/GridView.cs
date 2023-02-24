@@ -842,58 +842,26 @@ namespace Core.Components
                 {
                     return;
                 }
-                if (!header.Editable)
+                fieldName = com.GuiInfo.FieldName;
+                switch (com.GuiInfo.ComponentType)
                 {
-                    fieldName = com.GuiInfo.FieldName;
-                    switch (com.GuiInfo.ComponentType)
-                    {
-                        case "Dropdown":
-                            value = focusedRow.Entity.GetPropValue(header.FieldName) is null ? null : focusedRow.Entity.GetPropValue(header.FieldName).ToString().EncodeSpecialChar();
-                            break;
-                        case nameof(Number):
-                            value = focusedRow.Entity.GetPropValue(header.FieldName) is null ? null : focusedRow.Entity.GetPropValue(header.FieldName).ToString().Replace(",", "");
-                            break;
-                        default:
-                            value = com.GetValue() is null ? null : com.GetValue().ToString().EncodeSpecialChar();
-                            break;
-                    }
-                    if (value is null)
-                    {
-                        text = null;
-                    }
-                    else
-                    {
-                        text = com.GetValue() is null ? null : com.GetValue().ToString().DecodeSpecialChar();
-                    }
+                    case "Dropdown":
+                        value = focusedRow.Entity.GetPropValue(header.FieldName) is null ? null : focusedRow.Entity.GetPropValue(header.FieldName).ToString().EncodeSpecialChar();
+                        break;
+                    case nameof(Number):
+                        value = focusedRow.Entity.GetPropValue(header.FieldName) is null ? null : focusedRow.Entity.GetPropValue(header.FieldName).ToString().Replace(",", "");
+                        break;
+                    default:
+                        value = com.GetValue() is null ? null : com.GetValue().ToString().EncodeSpecialChar();
+                        break;
+                }
+                if (value is null)
+                {
+                    text = null;
                 }
                 else
                 {
-                    if (header.ComponentType == nameof(Checkbox))
-                    {
-                        fieldName = com.GuiInfo.FieldName;
-                        value = com.GetValue() is null ? null : com.GetValue().ToString().ToLower();
-                        if (value is null)
-                        {
-                            text = null;
-                        }
-                        else
-                        {
-                            text = com.GetValue() is null ? null : com.GetValue().ToString().ToLower();
-                        }
-                    }
-                    else
-                    {
-                        fieldName = com.GuiInfo.FieldName;
-                        value = com.GetValue() is null ? null : com.GetValue().ToString();
-                        if (value is null)
-                        {
-                            text = null;
-                        }
-                        else
-                        {
-                            text = com.OriginalText;
-                        }
-                    }
+                    text = com.GetValue() is null ? null : com.GetValue().ToString().DecodeSpecialChar();
                 }
             }
 
