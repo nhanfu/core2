@@ -43,20 +43,23 @@ namespace TMS.UI
                 }
                 Document.DocumentElement.ClassName = className;
             }
-            var newToken = await Client.GetToken(Client.Token);
-            if (newToken != null)
+            if (Client.Token != null)
             {
-                Client.Token = newToken;
+                var newToken = await Client.GetToken(Client.Token);
+                if (newToken != null)
+                {
+                    Client.Token = newToken;
+                }
+                else
+                {
+                    await new Client(nameof(User)).CreateAsync<bool>(Client.Token, "SignOut");
+                    Toast.Success("Logout success!");
+                    Client.Token = null;
+                    LocalStorage.RemoveItem("UserInfo");
+                    Window.Location.Reload();
+                }
+                await LoadUserSetting(Client.Token?.UserId);
             }
-            else
-            {
-                await new Client(nameof(User)).CreateAsync<bool>(Client.Token, "SignOut");
-                Toast.Success("Logout success!");
-                Client.Token = null;
-                LocalStorage.RemoveItem("UserInfo");
-                Window.Location.Reload();
-            }
-            await LoadUserSetting(Client.Token?.UserId);
             LoginBL.Instance.InitAppHanlder += LoadSettingWrapper;
             Window.SetTimeout(() =>
             {
