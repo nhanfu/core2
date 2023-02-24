@@ -1042,7 +1042,7 @@ namespace TMS.UI.Business.Manage
             await grid.ApplyFilter(true);
         }
 
-        public virtual void BeforeCreatedRevenue(Revenue revenue, PatchUpdate patch)
+        public void BeforeCreatedRevenue(Revenue revenue)
         {
             if (selected is null)
             {
