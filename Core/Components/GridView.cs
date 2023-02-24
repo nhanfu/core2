@@ -702,7 +702,7 @@ namespace Core.Components
                 }
                 var id = "sumary" + (new Random(10)).GetHashCode();
                 var dir = refn?.ToDictionary(x => x[IdField]);
-                Html.Instance.Div.ClassName("grid-wrapper sticky").Div.ClassName("table-wrapper printable").Table.Id(id).ClassName("table")
+                Html.Instance.Div.ClassName("grid-wrapper sticky").Div.ClassName("table-wrapper printable").Table.Id(id).Width("100%").ClassName("table")
                 .Thead
                     .TRow.Render();
                 Html.Instance.Th.Style("max-width: 100%;").IText(header.ShortDesc).End.Render();
@@ -772,13 +772,23 @@ namespace Core.Components
                     var ttCount1 = de.Where(x => !x.IsNullOrWhiteSpace()).Sum(x => decimal.Parse(x));
                     Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IHtml(ttCount1.ToString("N0")).End.Render();
                 }
-
                 await Client.LoadScript("//cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js");
+                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js");
+                await Client.LoadScript("//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js");
+                await Client.LoadScript("//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js");
+                await Client.LoadScript("//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js");
+                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js");
+                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js");
+                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/buttons.print.min.js");
                 /*@
                 if (!$.fn.DataTable.isDataTable('#'+id)){
                   $('#'+id).DataTable({
                     paging: false,
-                    info: false
+                    info: false,
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ]
                 });
                 }
                 */

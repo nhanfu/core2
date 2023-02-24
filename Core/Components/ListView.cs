@@ -1488,12 +1488,12 @@ namespace Core.Components
                 {
                     FieldName = e.TargetFieldName,
                     FieldText = com.ShortDesc,
-                    ComponentType = "Dropdown",
+                    ComponentType = com.ComponentType,
                     Value = selected.GetPropValue(e.FieldName).ToString(),
                     ValueText = selected.GetPropValue(e.FieldName).ToString(),
                     Operator = "in",
                     OperatorText = "Chứa",
-                    Logic = LogicOperation.And,
+                    Logic = LogicOperation.Or,
                     IsSearch = true
                 };
             });
