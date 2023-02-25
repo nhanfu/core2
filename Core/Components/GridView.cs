@@ -1779,14 +1779,11 @@ namespace Core.Components
             {
                 AddSections();
             }
-            var sortedFields = GetSortedFields();
             headers.ForEach((x, index) => x.PostOrder = index);
             HeaderSection.DisposeChildren();
             bool anyGroup = headers.Any(x => !string.IsNullOrEmpty(x.GroupName));
             Html.Take(HeaderSection.Element).Clear().TRow.ForEach(headers, (header, index) =>
             {
-                var parsed = Enum.TryParse<TextAlign>(header.TextAlign, out var textAlignEnum);
-                header.TextAlignEnum = parsed ? textAlignEnum : TextAlign.left;
                 if (anyGroup && !string.IsNullOrEmpty(header.GroupName))
                 {
                     if (header != headers.FirstOrDefault(x => x.GroupName == header.GroupName))
@@ -1800,12 +1797,11 @@ namespace Core.Components
                     return;
                 }
                 Html.Instance.Th
-                    .Title("Nhấn phím <-- hoặc --> để di chuyển cột")
                     .TabIndex(-1)
                     .DataAttr("field", header.FieldName)
                     .DataAttr("id", header.Id).Width(header.AutoFit ? "auto" : header.Width)
                     .Style($"min-width: {header.MinWidth}; max-width: {header.MaxWidth}")
-                    .TextAlign(header.TextAlignEnum)
+                    .TextAlign(TextAlign.center)
                     .Event(EventType.ContextMenu, HeaderContextMenu, header)
                     .Event(EventType.FocusOut, (e) => FocusOutHeader(e, header))
                     .Event(EventType.KeyDown, (e) => ThHotKeyHandler(e, header));
@@ -1825,7 +1821,7 @@ namespace Core.Components
 
                 if (!header.Icon.IsNullOrWhiteSpace())
                 {
-                    Html.Instance.TextAlign(TextAlign.center).Icon(header.Icon).Margin(Direction.right, 0).End.Render();
+                    Html.Instance.Icon(header.Icon).Margin(Direction.right, 0).End.Render();
                 }
                 else if (!header.StatusBar)
                 {
@@ -1838,6 +1834,11 @@ namespace Core.Components
                 if (header.Description != null)
                 {
                     Html.Instance.Attr("title", header.Description);
+                }
+                if (Client.CheckHasRole(RoleEnum.System))
+                {
+                    Html.Instance.Attr("contenteditable", "true");
+                    Html.Instance.Event(EventType.Input, (e) => ChangeHeader(e, header));
                 }
                 Html.Instance.EndOf(ElementType.th);
             }).EndOf(ElementType.tr).Render();
@@ -1860,6 +1861,19 @@ namespace Core.Components
             }
             HeaderSection.Children = HeaderSection.Children.OrderBy(x => x.GuiInfo.PostOrder).ToList();
             ColumnResizeHandler();
+        }
+        private int _imeout;
+
+        private void ChangeHeader(Event e, GridPolicy header)
+        {
+            Window.ClearTimeout(_imeout);
+            _imeout = Window.SetTimeout(async () =>
+             {
+                 var headerDB = await new Client(nameof(GridPolicy)).GetAsync<GridPolicy>(header.Id);
+                 var html = e.Target as HTMLElement;
+                 headerDB.ShortDesc = html.TextContent.Trim();
+                 await new Client(nameof(GridPolicy)).UpdateAsync<GridPolicy>(headerDB);
+             }, 1000);
         }
 
         protected override async Task<List<object>> CustomQuery(object submitEntity)
