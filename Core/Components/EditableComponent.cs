@@ -312,7 +312,7 @@ namespace Core.Components
             Children = null;
             DOMContentLoaded = null;
             OnToggle = null;
-            if (Parent != null && Parent.Children.HasElement() && Parent.Children.Contains(this))
+            if (Parent != null && Parent.Children != null && Parent.Children.HasElement() && Parent.Children.Contains(this))
             {
                 Parent.Children.Remove(this);
             }

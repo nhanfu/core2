@@ -466,7 +466,7 @@ namespace Core.Components.Extensions
         {
             var result = new HashSet<T>();
             var type = typeof(T);
-            if (component.Children.Nothing())
+            if (component is null || component.Children is null || component.Children.Nothing())
             {
                 return Enumerable.Empty<T>();
             }

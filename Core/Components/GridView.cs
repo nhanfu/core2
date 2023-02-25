@@ -257,6 +257,7 @@ namespace Core.Components
                     }
                     const cells = [].slice.call(row.querySelectorAll('th, td'));
                     cells[index].style.backgroundColor= "#cbdcc2";
+                    cells[index].style.color = "#000";
                 });
                 */
         }
@@ -277,6 +278,7 @@ namespace Core.Components
                     }
                     const cells = [].slice.call(row.querySelectorAll('th, td'));
                     cells[index].style.removeProperty("background-color");
+                    cells[index].style.removeProperty("color");
                 });
                 */
         }
@@ -597,7 +599,7 @@ namespace Core.Components
                 var value = ids ?? cell.Value;
                 if (!AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.Value == value && x.CompareOperatorId == advo))
                 {
-                    if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In)))
+                    if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && cell.FieldName != IdField && x.CompareOperatorId == advo && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In)))
                     {
                         AdvSearchVM.Conditions.FirstOrDefault(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo).Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value;
                     }
@@ -850,6 +852,9 @@ namespace Core.Components
                         break;
                     case nameof(Number):
                         value = focusedRow.Entity.GetPropValue(header.FieldName) is null ? null : focusedRow.Entity.GetPropValue(header.FieldName).ToString().Replace(",", "");
+                        break;
+                    case nameof(Checkbox):
+                        value = com.GetValue() is null ? null : com.GetValue().ToString().EncodeSpecialChar().ToLower();
                         break;
                     default:
                         value = com.GetValue() is null ? null : com.GetValue().ToString().EncodeSpecialChar();

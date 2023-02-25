@@ -2,13 +2,13 @@
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
+using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 
 namespace Core.Components
@@ -273,6 +273,11 @@ namespace Core.Components
                 {
                     html.TData.Visibility(ui.Visibility).Label.IText(ui.Label)
                         .TextAlign(column == 0 ? Enums.TextAlign.left : Enums.TextAlign.right);
+                    if (Client.CheckHasRole(RoleEnum.System))
+                    {
+                        Html.Instance.Attr("contenteditable", "true");
+                        Html.Instance.Event(EventType.Input, (e) => ChangeLabel(e, ui));
+                    }
                     html.EndOf(ElementType.td).TData.Visibility(ui.Visibility).ColSpan(colSpan - 1).Render();
                 }
                 else
@@ -342,6 +347,19 @@ namespace Core.Components
                     html.EndOf(ElementType.tr).TRow.Render();
                 }
             }
+        }
+
+        private int _imeout;
+        private void ChangeLabel(Event e, Component com)
+        {
+            Window.ClearTimeout(_imeout);
+            _imeout = Window.SetTimeout(async () =>
+            {
+                var comDB = await new Client(nameof(Component)).GetAsync<Component>(com.Id);
+                var html = e.Target as HTMLElement;
+                comDB.Label = html.TextContent.Trim();
+                await new Client(nameof(Component)).UpdateAsync<Component>(comDB);
+            }, 1000);
         }
 
         private void RenderComponentResponsive(ComponentGroup group)
