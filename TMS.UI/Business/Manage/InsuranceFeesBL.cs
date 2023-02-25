@@ -322,7 +322,7 @@ namespace TMS.UI.Business.Manage
                     expense.DatePurchasedInsurance = null;
                     listViewItem.UpdateView();
                     listViewItem.FilterChildren<Datepicker>(x => x.GuiInfo.FieldName == nameof(Expense.DatePurchasedInsurance)).ToList().ForEach(x => x.Dirty = true);
-                    await listViewItem.PatchUpdate();
+                    listViewItem.PatchUpdate();
                     listViewItem.Element.RemoveClass("bg-red1");
                 };
                 confirm.NoConfirmed += () =>
@@ -347,7 +347,7 @@ namespace TMS.UI.Business.Manage
                     listViewItem.UpdateView();
                     listViewItem.FilterChildren<Checkbox>(x => x.GuiInfo.FieldName == nameof(Expense.IsPurchasedInsurance)).ToList().ForEach(x => x.Dirty = true);
                     listViewItem.FilterChildren<Datepicker>(x => x.GuiInfo.FieldName == nameof(Expense.DatePurchasedInsurance)).ToList().ForEach(x => x.Dirty = true);
-                    await listViewItem.PatchUpdate();
+                    listViewItem.PatchUpdate();
                     listViewItem.Element.AddClass("bg-red1");
                 }
                 listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);

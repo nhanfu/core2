@@ -158,7 +158,7 @@ namespace Core.Components
                         await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
                         if (gridView.GuiInfo.IsRealtime)
                         {
-                            await upItem.PatchUpdate();
+                            upItem.PatchUpdate();
                         }
                         gridView.DataTable.ParentElement.ScrollTop += 26;
                         startNo++;

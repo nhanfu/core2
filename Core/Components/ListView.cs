@@ -34,6 +34,7 @@ namespace Core.Components
         private HTMLElement _history;
         public Component LastComponentFocus;
         public int LastHeaderId;
+        public int _delay = 0;
         public AdvSearchVM AdvSearchVM { get; set; }
         public bool Editable { get; set; }
         public ListViewItem LastListViewItem { get; set; }
@@ -674,7 +675,7 @@ namespace Core.Components
             }
             if (rowData.EntityId > 0)
             {
-                await rowData.PatchUpdate();
+                rowData.PatchUpdate();
             }
             else
             {
