@@ -310,6 +310,7 @@ namespace TMS.API.Models
         public bool IsLockedRevenue { get; set; }
         public bool IsRequestUnLockRevenue { get; set; }
         public string ReasonUnLockRevenue { get; set; }
+        public int? UnlockRequestId { get; set; }
 
         public virtual ICollection<Expense> Expense { get; set; }
         public virtual ICollection<Revenue> Revenue { get; set; }
