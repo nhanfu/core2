@@ -539,7 +539,7 @@ namespace TMS.UI.Business.Manage
                 {
                     expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
                 }
-                if (isSubRatio && expense.IsBought == false)
+                if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
                 {
                     var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
                     extraInsuranceFeesRateDB.ForEach(x =>

@@ -202,7 +202,7 @@ namespace TMS.API.Controllers
                 {
                     expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
                 }
-                if (isSubRatio && expense.IsBought == false)
+                if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
                 {
                     var extraInsuranceFeesRateDB = await db.MasterData.Where(x => x.Active == true && x.ParentId == 25374).ToListAsync();
                     extraInsuranceFeesRateDB.ForEach(x =>
