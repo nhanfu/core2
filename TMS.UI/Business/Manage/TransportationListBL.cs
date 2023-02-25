@@ -648,7 +648,7 @@ namespace TMS.UI.Business.Manage
                     listViewItem.UpdateView();
                     var updated = listViewItem.FilterChildren<Datepicker>(x => x.GuiInfo.FieldName == nameof(Transportation.ReturnDate) || x.GuiInfo.FieldName == nameof(Transportation.ShipDate)).ToList();
                     updated.ForEach(x => x.Dirty = true);
-                    await listViewItem.PatchUpdate();
+                    listViewItem.PatchUpdate();
                 };
                 AddChild(confirmDialog);
             }
@@ -885,7 +885,7 @@ namespace TMS.UI.Business.Manage
                     listViewItem.UpdateView();
                     var updated = listViewItem.FilterChildren<Number>(x => x.GuiInfo.FieldName == nameof(Expense.CommodityValue) || x.GuiInfo.FieldName == nameof(Expense.TotalPriceBeforeTax) || x.GuiInfo.FieldName == nameof(Expense.TotalPriceAfterTax)).ToList();
                     updated.ForEach(x => x.Dirty = true);
-                    await listViewItem.PatchUpdate();
+                    listViewItem.PatchUpdate();
                 }
                 await UpdateTotalFee();
             }
@@ -921,7 +921,7 @@ namespace TMS.UI.Business.Manage
                 listViewItem.Entity.SetComplexPropValue(item, totalThisValue);
                 listViewItem.FilterChildren(x => x.GuiInfo.FieldName == item).ForEach(x => x.Dirty = true);
             }
-            await listViewItem.PatchUpdate();
+            listViewItem.PatchUpdate();
         }
 
         public async Task UpdateAllTotalFee()
@@ -945,7 +945,7 @@ namespace TMS.UI.Business.Manage
                 listViewItem.Entity.SetComplexPropValue(item, totalThisValue);
                 listViewItem.FilterChildren(x => x.GuiInfo.FieldName == item).ForEach(x => x.Dirty = true);
             }
-            await listViewItem.PatchUpdate();
+            listViewItem.PatchUpdate();
         }
 
         public async Task UpdateCombinationFee(Transportation transportation)

@@ -255,71 +255,76 @@ namespace Core.Components
             ListViewSection.ListView._delay += 300;
             Window.SetTimeout(async () =>
             {
-                if (!Dirty)
-                {
-                    return;
-                }
-                var pathModel = GetPathEntity();
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, pathModel, this);
-                if (pathModel.Changes.FirstOrDefault(x => x.Field == IdField).Value.IsNullOrWhiteSpace())
-                {
-                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
-                    return;
-                }
-                if (pathModel is null)
-                {
-                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
-                    return;
-                }
-                if (PreQueryFn != null)
-                {
-                    pathModel["Entity"] = GuiInfo.RefName;
-                    await new Client(nameof(User)).PostAsync<object>(new SqlViewModel
-                    {
-                        CmdType = "Patch",
-                        Entity = JSON.Stringify(pathModel),
-                    }, CmdUrl);
-                }
-                else
-                {
-                    lastpathModel = pathModel;
-                    var ignoreSync = "false";
-                    if (pathModel.Changes.Count == 2)
-                    {
-                        var header = ListViewSection.ListView.BasicHeader.FirstOrDefault(x => x.FieldName == pathModel.Changes.FirstOrDefault().Field && x.Editable);
-                        if (header != null && header.IgnoreSync)
-                        {
-                            ignoreSync = "true";
-                        }
-                    }
-                    var rs = await new Client(GuiInfo.Reference.Name).PatchAsync<object>(pathModel, ig: $"&disableTrigger={ignoreSync}");
-                    Entity.CopyPropFrom(rs);
-                    if (GuiInfo.ComponentType == nameof(VirtualGrid))
-                    {
-                        ListViewSection.ListView.CacheData.FirstOrDefault(x => x[IdField] == rs[IdField]).CopyPropFrom(rs);
-                    }
-                    await ListViewSection.ListView.LoadMasterData(new object[] { rs });
-                    EmptyRow = false;
-                    UpdateView(true);
-                    if (rs != null)
-                    {
-                        await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
-                    }
-                }
-                var changing = BuildTextHistory().ToString();
-                if (!changing.IsNullOrWhiteSpace())
-                {
-                    await new Client(nameof(Models.History)).CreateAsync<Models.History>(new Models.History
-                    {
-                        ReasonOfChange = "Auto update",
-                        TextHistory = changing.ToString(),
-                        RecordId = EntityId,
-                        EntityId = Utils.GetEntity(GuiInfo.RefName).Id
-                    });
-                }
-                Dirty = false;
+                await ActionPatch();
                 ListViewSection.ListView._delay -= 300;
             }, ListViewSection.ListView._delay);
+        }
+
+        private async Task ActionPatch()
+        {
+            if (!Dirty)
+            {
+                return;
+            }
+            var pathModel = GetPathEntity();
+            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, pathModel, this);
+            if (pathModel.Changes.FirstOrDefault(x => x.Field == IdField).Value.IsNullOrWhiteSpace())
+            {
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
+                return;
+            }
+            if (pathModel is null)
+            {
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
+                return;
+            }
+            if (PreQueryFn != null)
+            {
+                pathModel["Entity"] = GuiInfo.RefName;
+                await new Client(nameof(User)).PostAsync<object>(new SqlViewModel
+                {
+                    CmdType = "Patch",
+                    Entity = JSON.Stringify(pathModel),
+                }, CmdUrl);
+            }
+            else
+            {
+                lastpathModel = pathModel;
+                var ignoreSync = "false";
+                if (pathModel.Changes.Count == 2)
+                {
+                    var header = ListViewSection.ListView.BasicHeader.FirstOrDefault(x => x.FieldName == pathModel.Changes.FirstOrDefault().Field && x.Editable);
+                    if (header != null && header.IgnoreSync)
+                    {
+                        ignoreSync = "true";
+                    }
+                }
+                var rs = await new Client(GuiInfo.Reference.Name).PatchAsync<object>(pathModel, ig: $"&disableTrigger={ignoreSync}");
+                Entity.CopyPropFrom(rs);
+                if (GuiInfo.ComponentType == nameof(VirtualGrid))
+                {
+                    ListViewSection.ListView.CacheData.FirstOrDefault(x => x[IdField] == rs[IdField]).CopyPropFrom(rs);
+                }
+                await ListViewSection.ListView.LoadMasterData(new object[] { rs });
+                EmptyRow = false;
+                UpdateView(true);
+                if (rs != null)
+                {
+                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
+                }
+            }
+            var changing = BuildTextHistory().ToString();
+            if (!changing.IsNullOrWhiteSpace())
+            {
+                await new Client(nameof(Models.History)).CreateAsync<Models.History>(new Models.History
+                {
+                    ReasonOfChange = "Auto update",
+                    TextHistory = changing.ToString(),
+                    RecordId = EntityId,
+                    EntityId = Utils.GetEntity(GuiInfo.RefName).Id
+                });
+            }
+            Dirty = false;
         }
 
         public PatchUpdate GetPathEntity()

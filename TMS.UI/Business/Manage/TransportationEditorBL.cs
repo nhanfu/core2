@@ -137,7 +137,7 @@ namespace TMS.UI.Business.Manage
                     listViewItem.UpdateView();
                     var updated = listViewItem.FilterChildren<Number>(x => x.GuiInfo.FieldName == nameof(Expense.CommodityValue) || x.GuiInfo.FieldName == nameof(Expense.TotalPriceBeforeTax) || x.GuiInfo.FieldName == nameof(Expense.TotalPriceAfterTax)).ToList();
                     updated.ForEach(x => x.Dirty = true);
-                    await listViewItem.PatchUpdate();
+                    listViewItem.PatchUpdate();
                 }
             }
         }
