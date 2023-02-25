@@ -34,9 +34,8 @@ namespace Core.Components
             if (GuiInfo.FocusSearch)
             {
                 Parent.AddChild(_pdfReport);
-                await _pdfReport.RenderAsync();
                 Window.SetTimeout(() =>
-               {
+                {
                    var htmlBuilder = new StringBuilder("<html><head>");
                    htmlBuilder.Append("<body><div style='padding:7pt'>").Append(_pdfReport.Element.QuerySelector(".printable").InnerHTML).Append("</div></body></html>");
                    var html = htmlBuilder.ToString();
@@ -49,7 +48,7 @@ namespace Core.Components
                    printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
                    _pdfReport.Dispose();
                    _preview.Remove();
-               }, 1000);
+               }, 2000);
             }
             else
             {

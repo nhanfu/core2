@@ -79,5 +79,13 @@
     <script src="js/fix.js?v=325167357612523516757"></script>
     <script src="js/TMS.UI.min.js?v=325167357612523516757"></script>
     <script src="js/TMS.UI.meta.min.js?v=325167357612523516757"></script>
+    <script>
+        function disableF5(e) {
+            if (!e.ctrlKey && e.keyCode == 116) {
+                e.preventDefault();
+            }
+        };
+        $(document).on("keydown", disableF5);
+    </script>
 </body>
 </html>

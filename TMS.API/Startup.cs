@@ -44,28 +44,6 @@ namespace TMS.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
-            {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
-            }));
-            services.Configure<IISServerOptions>(options =>
-            {
-                options.AutomaticAuthentication = false;
-            });
-            services.AddLogging(config =>
-            {
-                config.ClearProviders();
-                config.AddConfiguration(_configuration.GetSection("Logging"));
-                config.AddDebug();
-                config.AddEventSourceLogger();
-            });
-            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
-            services.AddResponseCompression(options =>
-            {
-                options.Providers.Add<GzipCompressionProvider>();
-            });
             services.AddSingleton<EntityService>();
             services.AddWebSocketManager();
             services.AddMvc(options =>
@@ -93,7 +71,7 @@ namespace TMS.API
 #if DEBUG
                 options.EnableSensitiveDataLogging();
 #endif
-            }, ServiceLifetime.Scoped);
+            }, ServiceLifetime.Transient);
             services.AddOData();
             var tokenOptions = new TokenValidationParameters()
             {
@@ -116,7 +94,6 @@ namespace TMS.API
                 cfg.TokenValidationParameters = tokenOptions;
 
             });
-            services.AddDistributedMemoryCache();
             services.AddHttpContextAccessor();
 
             // the instance created for each request
@@ -193,7 +170,6 @@ namespace TMS.API
                     return res;
                 });
             }
-            app.UseCors("MyPolicy");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -205,13 +181,11 @@ namespace TMS.API
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            var options = new DefaultFilesOptions();
-            app.UseResponseCompression();
             app.UseWebSockets();
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
             app.MapWebSocketManager("/task", serviceProvider.GetService<RealtimeService>());
-
+            var options = new DefaultFilesOptions();
             options.DefaultFileNames.Clear();
             options.DefaultFileNames.Add("index.html");
             app.UseDefaultFiles(options);
