@@ -323,7 +323,7 @@ namespace TMS.API.Controllers
                     listAdd.Add(checkBookingList.Id);
                 }
                 var trans = await db.Transportation.Where(x => item.TransportationIds.Contains(x.Id.ToString())).ToListAsync();
-                trans.ForEach(x => x.BookingListId = item.Id);
+                trans.ForEach(x => x.BookingListId = checkBookingList is null ? item.Id : checkBookingList.Id);
                 await db.SaveChangesAsync();
             }
             if (listAdd.Count > 0)
