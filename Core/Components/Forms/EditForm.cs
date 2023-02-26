@@ -548,7 +548,7 @@ namespace Core.Components.Forms
             RoleIds = token?.RoleIds != null ? string.Join(",", token.RoleIds) : string.Empty;
             CostCenterId = token?.CostCenterId;
             RoleNames = token?.RoleNames != null ? string.Join(",", token.RoleNames) : string.Empty;
-            var groupTree = BuildTree(Feature.ComponentGroup.OrderBy(x => x.Order).ToList());
+            var groupTree = BuildTree(feature.ComponentGroup.ToList().OrderBy(x => x.Order).ToList());
             Element = RenderTemplate(layout, feature);
             SetFeatureStyleSheet(feature.StyleSheet);
             RenderTabOrSection(groupTree);
@@ -807,7 +807,7 @@ namespace Core.Components.Forms
             Element.AppendChild(style);
         }
 
-        protected void RenderTabOrSection(IEnumerable<ComponentGroup> componentGroup)
+        public void RenderTabOrSection(IEnumerable<ComponentGroup> componentGroup)
         {
             foreach (var group in componentGroup.OrderBy(x => x.Order))
             {
@@ -996,6 +996,7 @@ namespace Core.Components.Forms
             {
                 Entity = group,
                 ParentElement = Element,
+                OpenFrom = this
             };
             AddChild(editor);
         }

@@ -4,6 +4,9 @@ using Core.Components.Forms;
 using Core.Extensions;
 using System;
 using System.Threading.Tasks;
+using Core.MVVM;
+using System.Linq;
+using Core.Components.Extensions;
 
 namespace Core.Components.Framework
 {
@@ -33,7 +36,17 @@ namespace Core.Components.Framework
                 x.Reference = null;
                 x.ComponentGroup = null;
             });
-            return await base.Save(entity);
+
+            var rs = await base.Save(entity);
+            if (rs)
+            {
+                var tab = OpenFrom as EditForm;
+                Html.Take(tab.Element).Clear();
+                var feature = await ComponentExt.LoadFeatureComponent(tab.Feature);
+                var groupTree = BuildTree(feature.ComponentGroup.ToList().OrderBy(x => x.Order).ToList());
+                tab.RenderTabOrSection(groupTree);
+            }
+            return rs;
         }
     }
 }
