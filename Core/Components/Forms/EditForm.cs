@@ -965,6 +965,7 @@ namespace Core.Components.Forms
             {
                 Entity = component,
                 ParentElement = Element,
+                OpenFrom = this.FindClosest<EditForm>(),
             };
             AddChild(editor);
         }
@@ -996,7 +997,7 @@ namespace Core.Components.Forms
             {
                 Entity = group,
                 ParentElement = Element,
-                OpenFrom = this
+                OpenFrom = this.FindClosest<EditForm>()
             };
             AddChild(editor);
         }

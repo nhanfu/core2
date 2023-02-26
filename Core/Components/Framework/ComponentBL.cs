@@ -33,14 +33,6 @@ namespace Core.Components.Framework
             var component = Entity.As<Component>();
             component.ClearReferences();
             var rs = await base.Save(entity);
-            if (rs)
-            {
-                var tab = OpenFrom as EditForm;
-                Html.Take(tab.Element).Clear();
-                var feature = await ComponentExt.LoadFeatureComponent(tab.Feature);
-                var groupTree = BuildTree(feature.ComponentGroup.ToList().OrderBy(x => x.Order).ToList());
-                tab.RenderTabOrSection(groupTree);
-            }
             return rs;
         }
     }
