@@ -85,7 +85,7 @@ namespace TMS.API
 #if DEBUG
                 options.EnableSensitiveDataLogging();
 #endif
-            }, ServiceLifetime.Scoped);
+            });
             services.AddDbContext<TMSContext>((serviceProvider, options) =>
             {
                 string connectionStr = GetConnectionString(serviceProvider, _configuration, "Default");
@@ -93,7 +93,7 @@ namespace TMS.API
 #if DEBUG
                 options.EnableSensitiveDataLogging();
 #endif
-            }, ServiceLifetime.Scoped);
+            });
             services.AddOData();
             var tokenOptions = new TokenValidationParameters()
             {
