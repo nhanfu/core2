@@ -729,7 +729,7 @@ namespace TMS.API.Controllers
                     ,Cont40 as Cont40, Cont40Check, Cont40CheckUpload
                     ,r.Description as Received, ReceivedCheck, ReceivedCheckUpload
                     ,CollectOnBehaftInvoinceNoFee as CollectOnBehaftInvoinceNoFee, CollectOnBehaftInvoinceNoFeeCheck, CollectOnBehaftInvoinceNoFeeUpload
-                    ,CollectOnBehaftFee as CollectOnBehaftFee, CollectOnBehaftFeeCheck, CollectOnBehaftFeeUpload
+                    ,CollectOnBehaftFee as CollectOnBehaftFee, CollectOnBehaftFeeCheck, CollectOnBehaftFeeUpload,TotalPriceAfterTaxUpload
                     ,pi.Description as PickupEmpty, PickupEmptyCheck, PickupEmptyUpload
                     ,po.Description as PortLoading, PortLoadingCheck, PortLoadingUpload
                     ,LiftFee as LiftFee, LiftFeeCheck, LiftFeeCheckUpload
@@ -741,6 +741,7 @@ namespace TMS.API.Controllers
                     ,FeeVat1,FeeVat2,FeeVat3
                     ,FeeVat1Upload,FeeVat1Upload,FeeVat1Upload
                     ,ClosingCombinationUnitPrice as ClosingCombinationUnitPrice, ClosingCombinationUnitPriceCheck, ClosingCombinationUnitPriceUpload
+                    ,IsEmptyLift, IsSeftPayment, IsLanding, IsSeftPaymentLand
                     from Transportation t
                     left join Vendor b on b.Id = t.BossId
                     left join Location r on r.Id = t.ReceivedId
@@ -762,9 +763,9 @@ namespace TMS.API.Controllers
                 worksheet.Cell("B" + start).SetValue(DateTime.Parse(item[nameof(Transportation.ClosingDate)].ToString()));
                 worksheet.Cell("C" + start).SetValue(item["Boss"] is null ? null : item["Boss"].ToString().DecodeSpecialChar());
                 worksheet.Cell("D" + start).SetValue(item["ContainerNo"] is null ? null : item["ContainerNo"].ToString());
-                var seal = item["SealNo"];
-                var sealUpload = item["SealCheckUpload"];
-                worksheet.Cell("E" + start).SetValue(seal is null ? null : seal.ToString());
+                var seal = item["SealNo"] is null ? null : item["SealNo"].ToString();
+                var sealUpload = item["SealCheckUpload"] is null ? null : item["SealCheckUpload"].ToString();
+                worksheet.Cell("E" + start).SetValue(seal);
                 if (seal != sealUpload)
                 {
                     worksheet.Cell("E" + start).Style.Font.FontColor = XLColor.Red;
@@ -773,21 +774,17 @@ namespace TMS.API.Controllers
                 worksheet.Cell("G" + start).SetValue(item["Cont40"] is null ? default(decimal) : decimal.Parse(item["Cont40"].ToString()));
                 worksheet.Cell("H" + start).SetValue(item["Received"] is null ? null : item["Received"].ToString().DecodeSpecialChar());
                 var pick = item["PickupEmpty"];
-                var pickUpload = item["PickupEmptyUpload"];
                 worksheet.Cell("I" + start).SetValue(pick is null ? null : pick.ToString().DecodeSpecialChar());
-                if (pick != pickUpload)
+                if (bool.Parse(item["IsEmptyLift"].ToString()) || bool.Parse(item["IsSeftPayment"].ToString()))
                 {
-                    worksheet.Cell("I" + start).Style.Font.FontColor = XLColor.Red;
-                }
-                var port = item["PortLoading"];
-                var portUpload = item["PortLoadingUpload"];
-                worksheet.Cell("J" + start).SetValue(port is null ? null : port.ToString().DecodeSpecialChar());
-                if (port != portUpload)
-                {
-                    worksheet.Cell("J" + start).Style.Font.FontColor = XLColor.Red;
+                    item["LiftFee"] = null;
                 }
                 worksheet.Cell("K" + start).SetValue(item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()));
                 worksheet.Cell("K" + start).Style.NumberFormat.Format = "#,##";
+                if (bool.Parse(item["IsLanding"].ToString()) || bool.Parse(item["IsSeftPaymentLand"].ToString()))
+                {
+                    item["LandingFee"] = null;
+                }
                 worksheet.Cell("L" + start).SetValue(item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()));
                 worksheet.Cell("L" + start).Style.NumberFormat.Format = "#,##";
 
@@ -818,16 +815,16 @@ namespace TMS.API.Controllers
                 worksheet.Cell("U" + start).SetValue(item["Fee6"] is null ? default(decimal) : decimal.Parse(item["Fee6"].ToString()));
                 worksheet.Cell("U" + start).Style.NumberFormat.Format = "#,##";
 
-                var closingPercent = item["ClosingPercent"];
-                var closingPercentUpload = item["ClosingPercentUpload"];
-                worksheet.Cell("W" + start).SetValue(closingPercent is null ? default(decimal) : decimal.Parse(closingPercent.ToString()));
+                var closingPercent = item["ClosingPercent"] is null ? "0" : item["ClosingPercent"].ToString();
+                var closingPercentUpload = item["ClosingPercentUpload"] is null ? "0" : item["ClosingPercentUpload"].ToString();
+                worksheet.Cell("W" + start).SetValue(decimal.Parse(closingPercent).ToString("N0"));
                 worksheet.Cell("W" + start).Style.NumberFormat.Format = "#,##";
                 if (closingPercent != closingPercentUpload)
                 {
                     worksheet.Cell("W" + start).Style.Font.FontColor = XLColor.Red;
                 }
-                var closingCombinationUnitPrice = item["ClosingCombinationUnitPrice"];
-                var closingCombinationUnitPriceUpload = item["ClosingCombinationUnitPriceUpload"];
+                var closingCombinationUnitPrice = item["ClosingCombinationUnitPrice"] is null ? null : item["ClosingCombinationUnitPrice"].ToString();
+                var closingCombinationUnitPriceUpload = item["TotalPriceAfterTaxUpload"] is null ? null : item["TotalPriceAfterTaxUpload"].ToString();
                 worksheet.Cell("X" + start).SetValue(closingCombinationUnitPrice is null ? default(decimal) : decimal.Parse(closingCombinationUnitPrice.ToString()));
                 worksheet.Cell("X" + start).Style.NumberFormat.Format = "#,##";
                 if (closingCombinationUnitPrice != closingCombinationUnitPriceUpload)
