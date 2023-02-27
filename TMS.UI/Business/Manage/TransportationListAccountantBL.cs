@@ -372,7 +372,9 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsKt eq true");
+            var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockExploit eq true");
+            var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
+            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and IsKt eq true");
             if (transportations.Count <= 0)
             {
                 Toast.Warning("Không có cont nào bị khóa !!!");
@@ -430,7 +432,9 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsSubmit eq true");
+            var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockAccountant eq true");
+            var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
+            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and IsSubmit eq true");
             if (transportations.Count <= 0)
             {
                 Toast.Warning("Không có cont nào bị khóa !!!");
@@ -488,7 +492,9 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLocked eq true");
+            var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockAll eq true");
+            var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
+            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and IsLocked eq true");
             if (transportations.Count <= 0)
             {
                 Toast.Warning("Không có cont nào bị khóa !!!");
@@ -870,7 +876,7 @@ namespace TMS.UI.Business.Manage
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                var checkRequests = listViewItems.Where(x => x.IsRequestUnLockAll).ToList();
+                var checkRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and TransportationId in ({listViewItems.Select(x => x.Id).Combine()}) and IsRequestUnLockAll eq true");
                 if (checkRequests.Count > 0)
                 {
                     var confirmRequets = new ConfirmDialog
@@ -975,7 +981,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task UnLockTransportationNoCheck(List<Transportation> transportations)
         {
-            var checkRequests = transportations.Where(x => x.IsRequestUnLockExploit).ToList();
+            var checkRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and TransportationId in ({transportations.Select(x => x.Id).Combine()}) and IsRequestUnLockExploit eq true");
             if (checkRequests.Count > 0)
             {
                 var confirmRequets = new ConfirmDialog
@@ -997,7 +1003,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task UnLockAccountantTransportationNoCheck(List<Transportation> transportations)
         {
-            var checkRequests = transportations.Where(x => x.IsRequestUnLockAccountant).ToList();
+            var checkRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and TransportationId in ({transportations.Select(x => x.Id).Combine()}) and IsRequestUnLockAccountant eq true");
             if (checkRequests.Count > 0)
             {
                 var confirmRequets = new ConfirmDialog
