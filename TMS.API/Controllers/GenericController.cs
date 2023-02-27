@@ -269,16 +269,16 @@ namespace TMS.API.Controllers
                         var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
                         if (disableTrigger)
                         {
-                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(T)}];";
+                            command.CommandText += $" DISABLE TRIGGER ALL ON [{typeof(T).Name}];";
                         }
                         else
                         {
-                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(T)}];";
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{typeof(T).Name}];";
                         }
-                        command.CommandText += $" UPDATE [{nameof(T)}] SET {update.Combine()} WHERE Id = {idInt};";
+                        command.CommandText += $" UPDATE [{typeof(T).Name}] SET {update.Combine()} WHERE Id = {idInt};";
                         if (disableTrigger)
                         {
-                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(T)}];";
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{typeof(T).Name}];";
                         }
                         foreach (var item in updates)
                         {
