@@ -211,6 +211,9 @@
     <Compile Include="..\TMS.API\Models\TransportationPlan.cs">
       <Link>Models\TransportationPlan.cs</Link>
     </Compile>
+    <Compile Include="..\TMS.API\Models\TransportationRequest.cs">
+      <Link>Models\TransportationRequest.cs</Link>
+    </Compile>
     <Compile Include="..\tms.api\models\User.cs">
       <Link>Models\User.cs</Link>
     </Compile>
