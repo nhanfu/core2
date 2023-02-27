@@ -621,6 +621,8 @@ namespace Core.Components
             }
             var gridPolicys = new List<GridPolicy>();
             var userSettings = userSetting.ToDictionary(x => x.Id);
+            var liteGrid = GuiInfo.LiteGrid is null ? false : GuiInfo.LiteGrid.Value;
+            var show = LocalStorage.GetItem<bool?>("Show" + GuiInfo.Id) is null ? false : LocalStorage.GetItem<bool?>("Show" + GuiInfo.Id);
             sysSetting.ForEach(x =>
             {
                 var current = userSettings.GetValueOrDefault(x.Id);
@@ -647,9 +649,13 @@ namespace Core.Components
                         x.MinWidth = current.MinWidth;
                         x.Order = current.Order;
                     }
+                    if (show.Value && int.Parse(x.MinWidth.Replace("px", "").Trim()) <= 15)
+                    {
+                        x.Active = false;
+                    }
                 }
             });
-            return sysSetting;
+            return sysSetting.Where(x => x.Active).ToList();
         }
 
         public void UpdatePagination(int total, int currentPageCount)

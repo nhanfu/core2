@@ -155,7 +155,7 @@ namespace Core.Components
                 .Button(className: "button secondary small btn-toolbar right", icon: "fa fa-cog")
                     .Title("Nâng cao")
                     .Icon("fa fa-chevron-down").End
-                    .Event(EventType.Click, AdvancedSearch).End
+                    .Event(EventType.Click, AdvancedOptions).End
                 .Button(className: "btnSearch button secondary small btn-toolbar right", icon: "fa fa-undo")
                     .Title("Làm mới")
                     .Event(EventType.Click, async () => await RefershListView()).End
@@ -242,21 +242,22 @@ namespace Core.Components
             _uploader.Value = string.Empty;
         }
 
-        private void HiddenColumn(Event e)
+        private void AdvancedOptions(Event e)
         {
             var buttonRect = e.Target.As<HTMLElement>().GetBoundingClientRect();
+            var show = LocalStorage.GetItem<bool?>("Show" + GuiInfo.Id) is null ? false : LocalStorage.GetItem<bool?>("Show" + GuiInfo.Id);
             var ctxMenu = ContextMenu.Instance;
             ctxMenu.Top = buttonRect.Bottom;
             ctxMenu.Left = buttonRect.Left;
             ctxMenu.MenuItems = new List<ContextMenuItem>
-                {
+            {
                     new ContextMenuItem { Icon = "fa fa-search-plus", Text = "Nâng cao", Click = AdvancedSearch },
-                    new ContextMenuItem { Icon = "icon fa fa-line-columns", Text = "Lite", Click = LiteGridView },
+                    new ContextMenuItem { Icon = "icon fa fa-line-columns", Text = show is null ? "Ẩn cột khép" : (!show.Value ? "Ẩn cột khép" : "Hiện cột khép"), Click = LiteGridView },
                     new ContextMenuItem { Icon = "fa fa-cloud-upload-alt", Text = "Nhập excel", Click = OpenExcelFileDialog },
                     new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất hiển thị", Click = ExportDisplay },
                     new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất toàn bộ", Click = ExportAllData },
                     new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất tùy chọn", Click = ExportCustomData },
-                };
+            };
             ctxMenu.Render();
             Html.Take(Element).Form.Attr("method", "POST").Attr("enctype", "multipart/form-data")
                 .Display(false).Input.Type("file").Id($"id_{GetHashCode()}").Attr("name", "files").Attr("accept", ".csv");
@@ -267,7 +268,9 @@ namespace Core.Components
 
         private void LiteGridView(object arg)
         {
-
+            var show = LocalStorage.GetItem<bool?>("Show" + GuiInfo.Id) is null ? false : LocalStorage.GetItem<bool?>("Show" + GuiInfo.Id);
+            LocalStorage.SetItem<bool?>("Show" + GuiInfo.Id, !show.Value);
+            Window.Location.Reload();
         }
 
         private void ExportCustomData(object arg)
