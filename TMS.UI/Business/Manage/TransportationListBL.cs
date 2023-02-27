@@ -197,7 +197,7 @@ namespace TMS.UI.Business.Manage
 
         public virtual void CheckQuotationTransportation()
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
             if (gridView is null)
             {
                 return;
@@ -409,8 +409,7 @@ namespace TMS.UI.Business.Manage
 
         public virtual void UpdateQuotation(object arg)
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
-
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
             Task.Run(async () =>
             {
                 var selected = await gridView.GetRealTimeSelectedRows();
@@ -420,7 +419,12 @@ namespace TMS.UI.Business.Manage
                     return;
                 }
                 var coords = selected.Cast<Transportation>().ToList().LastOrDefault();
-                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7592 and BossId eq {coords.BossId} and ContainerTypeId eq {coords.ContainerTypeId} and LocationId eq {coords.ReceivedId} and StartDate le {coords.ClosingDate.Value.ToOdataFormat()} and PackingId eq {coords.ClosingId}&$orderby=StartDate desc");
+                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7592 " +
+                    $"and BossId eq {coords.BossId} " +
+                    $"and ContainerTypeId eq {coords.ContainerTypeId} " +
+                    $"and LocationId eq {coords.ReceivedId} " +
+                    $"and StartDate le {coords.ClosingDate.Value.ToOdataFormat()} " +
+                    $"and PackingId eq {coords.ClosingId}&$orderby=StartDate desc");
                 if (quotation is null)
                 {
                     quotation = new Quotation()

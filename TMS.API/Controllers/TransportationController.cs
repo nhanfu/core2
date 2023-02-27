@@ -891,7 +891,7 @@ namespace TMS.API.Controllers
                 await db.SaveChangesAsync();
                 var checks = list.Select(x =>
                 {
-                    var tran = transportations.FirstOrDefault(y => y.ContainerNo.ToLower().Trim() == x.ContainerNo.ToLower()
+                    var tran = transportations.FirstOrDefault(y => y.ContainerNo != null && y.ContainerNo.ToLower().Trim() == x.ContainerNo.ToLower()
                     && y.ClosingDate.Value.Date == x.ClosingDate.Value.Date);
                     if (tran != null)
                     {
