@@ -57315,7 +57315,7 @@ body.layout-vertical.page-type-datagrid {
     position: absolute;
     top: 0;
     right: 0;
-    width: 15px;
+    width: 10px;
     cursor: col-resize;
     user-select: none;
     z-index: 10000;
@@ -57323,8 +57323,8 @@ body.layout-vertical.page-type-datagrid {
 
     .resizer:hover,
     .resizing {
-        border-right: 15px solid blue;
-        width: 15px;
+        border-right: 10px solid blue;
+        width: 10px;
     }
 
 .resizable {
