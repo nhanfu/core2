@@ -1408,20 +1408,20 @@ namespace TMS.UI.Business.Manage
             if (expense.IsBought)
             {
                 insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true " +
-                $"and TransportationTypeId eq {expense.TransportationTypeId} " +
-                $"and JourneyId eq {expense.JourneyId} " +
-                $"and IsBought eq {expense.IsBought.ToString().ToLower()} " +
-                $"and IsSOC eq {isSOC.ToString().ToLower()}" +
-                $"and IsSubRatio eq {isSubRatio.ToString().ToLower()}"
+                $" and TransportationTypeId eq {expense.TransportationTypeId} " +
+                $" and JourneyId eq {expense.JourneyId} " +
+                $" and IsBought eq {expense.IsBought.ToString().ToLower()} " +
+                $" and IsSOC eq {isSOC.ToString().ToLower()}" +
+                $" and IsSubRatio eq {isSubRatio.ToString().ToLower()}"
                 );
             }
             else
             {
                 insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true " +
-                $"and TransportationTypeId eq {expense.TransportationTypeId} " +
-                $"and JourneyId eq {expense.JourneyId} " +
-                $"and IsBought eq {expense.IsBought.ToString().ToLower()} " +
-                $"and IsSOC eq {isSOC.ToString().ToLower()}"
+                $" and TransportationTypeId eq {expense.TransportationTypeId} " +
+                $" and JourneyId eq {expense.JourneyId} " +
+                $" and IsBought eq {expense.IsBought.ToString().ToLower()} " +
+                $" and IsSOC eq {isSOC.ToString().ToLower()}"
                 );
             }
             if (insuranceFeesRateDB != null)
