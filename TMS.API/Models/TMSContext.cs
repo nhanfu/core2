@@ -109,6 +109,8 @@ public partial class TMSContext : DbContext
 
     public virtual DbSet<TransportationPlan> TransportationPlan { get; set; }
 
+    public virtual DbSet<TransportationRequest> TransportationRequest { get; set; }
+
     public virtual DbSet<User> User { get; set; }
 
     public virtual DbSet<UserClick> UserClick { get; set; }
@@ -1028,10 +1030,10 @@ public partial class TMSContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK_Tues");
 
             entity.ToTable(tb =>
-            {
-                tb.HasTrigger("tr_Teus_CreateBooking");
-                tb.HasTrigger("tr_Teus_UpdateBooking");
-            });
+                {
+                    tb.HasTrigger("tr_Teus_CreateBooking");
+                    tb.HasTrigger("tr_Teus_UpdateBooking");
+                });
 
             entity.Property(e => e.Note).HasMaxLength(250);
             entity.Property(e => e.Note1)
@@ -1054,39 +1056,39 @@ public partial class TMSContext : DbContext
         modelBuilder.Entity<Transportation>(entity =>
         {
             entity.ToTable(tb =>
-            {
-                tb.HasTrigger("tr_Transportation_BetAmount");
-                tb.HasTrigger("tr_Transportation_BetFee");
-                tb.HasTrigger("tr_Transportation_ClosingCombinationUnitPrice");
-                tb.HasTrigger("tr_Transportation_ClosingUnitPrice");
-                tb.HasTrigger("tr_Transportation_CombinationFee");
-                tb.HasTrigger("tr_Transportation_Cont20_40");
-                tb.HasTrigger("tr_Transportation_Dem");
-                tb.HasTrigger("tr_Transportation_DemDate");
-                tb.HasTrigger("tr_Transportation_ExportListId");
-                tb.HasTrigger("tr_Transportation_IsSplitBill");
-                tb.HasTrigger("tr_Transportation_LandingFee");
-                tb.HasTrigger("tr_Transportation_LiftFee");
-                tb.HasTrigger("tr_Transportation_MonthText");
-                tb.HasTrigger("tr_Transportation_Note4");
-                tb.HasTrigger("tr_Transportation_ReturnClosingFee");
-                tb.HasTrigger("tr_Transportation_ReturnClosingFeeReport");
-                tb.HasTrigger("tr_Transportation_ReturnDate");
-                tb.HasTrigger("tr_Transportation_ReturnEmptyId");
-                tb.HasTrigger("tr_Transportation_ReturnLiftFee");
-                tb.HasTrigger("tr_Transportation_ReturnNotes");
-                tb.HasTrigger("tr_Transportation_ReturnUnitPrice");
-                tb.HasTrigger("tr_Transportation_ReturnVs");
-                tb.HasTrigger("tr_Transportation_ShellDate");
-                tb.HasTrigger("tr_Transportation_ShipUnitPrice");
-                tb.HasTrigger("tr_Transportation_ShipUnitPriceQuotation");
-                tb.HasTrigger("tr_Transportation_TotalBet");
-                tb.HasTrigger("tr_Transportation_TotalContainerUsing");
-                tb.HasTrigger("tr_Transportation_TotalContainerUsing_delete");
-                tb.HasTrigger("tr_Transportation_UpdateBooking");
-                tb.HasTrigger("tr_Transportation_UpdateTeus");
-                tb.HasTrigger("tr_Transportation_VendorLocation");
-            });
+                {
+                    tb.HasTrigger("tr_Transportation_BetAmount");
+                    tb.HasTrigger("tr_Transportation_BetFee");
+                    tb.HasTrigger("tr_Transportation_ClosingCombinationUnitPrice");
+                    tb.HasTrigger("tr_Transportation_ClosingUnitPrice");
+                    tb.HasTrigger("tr_Transportation_CombinationFee");
+                    tb.HasTrigger("tr_Transportation_Cont20_40");
+                    tb.HasTrigger("tr_Transportation_Dem");
+                    tb.HasTrigger("tr_Transportation_DemDate");
+                    tb.HasTrigger("tr_Transportation_ExportListId");
+                    tb.HasTrigger("tr_Transportation_IsSplitBill");
+                    tb.HasTrigger("tr_Transportation_LandingFee");
+                    tb.HasTrigger("tr_Transportation_LiftFee");
+                    tb.HasTrigger("tr_Transportation_MonthText");
+                    tb.HasTrigger("tr_Transportation_Note4");
+                    tb.HasTrigger("tr_Transportation_ReturnClosingFee");
+                    tb.HasTrigger("tr_Transportation_ReturnClosingFeeReport");
+                    tb.HasTrigger("tr_Transportation_ReturnDate");
+                    tb.HasTrigger("tr_Transportation_ReturnEmptyId");
+                    tb.HasTrigger("tr_Transportation_ReturnLiftFee");
+                    tb.HasTrigger("tr_Transportation_ReturnNotes");
+                    tb.HasTrigger("tr_Transportation_ReturnUnitPrice");
+                    tb.HasTrigger("tr_Transportation_ReturnVs");
+                    tb.HasTrigger("tr_Transportation_ShellDate");
+                    tb.HasTrigger("tr_Transportation_ShipUnitPrice");
+                    tb.HasTrigger("tr_Transportation_ShipUnitPriceQuotation");
+                    tb.HasTrigger("tr_Transportation_TotalBet");
+                    tb.HasTrigger("tr_Transportation_TotalContainerUsing");
+                    tb.HasTrigger("tr_Transportation_TotalContainerUsing_delete");
+                    tb.HasTrigger("tr_Transportation_UpdateBooking");
+                    tb.HasTrigger("tr_Transportation_UpdateTeus");
+                    tb.HasTrigger("tr_Transportation_VendorLocation");
+                });
 
             entity.HasIndex(e => new { e.ClosingDate, e.Active, e.ShipDate, e.RouteId }, "IX_Transportation").IsDescending(true, false, false, false);
 
@@ -1346,6 +1348,17 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.NotesContract).HasMaxLength(250);
             entity.Property(e => e.RequestChangeNote).HasMaxLength(250);
             entity.Property(e => e.ReturnNotes).HasMaxLength(500);
+        });
+
+        modelBuilder.Entity<TransportationRequest>(entity =>
+        {
+            entity.Property(e => e.ReasonUnLockAccountant)
+                .HasMaxLength(250)
+                .HasDefaultValueSql("((0))");
+            entity.Property(e => e.ReasonUnLockAll).HasMaxLength(250);
+            entity.Property(e => e.ReasonUnLockExploit).HasMaxLength(250);
+            entity.Property(e => e.ReasonUnLockRevenue).HasMaxLength(250);
+            entity.Property(e => e.ReasonUnLockShip).HasMaxLength(250);
         });
 
         modelBuilder.Entity<User>(entity =>
