@@ -20,6 +20,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TMS.API.Models;
@@ -36,329 +37,58 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<Transportation>> PatchAsync([FromQuery] ODataQueryOptions<Transportation> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
-            Transportation entity = default;
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
-            entity = await db.Set<Transportation>().FindAsync(idInt);
-            patch.ApplyTo(entity);
-            if (!entity.IsEmptyCombination && !entity.IsClosingCustomer)
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
             {
-                entity.ClosingPercent = 0;
-            }
-            SetAuditInfo(entity);
-            if (patch.Changes.Any(x => x.Field != nameof(entity.Notes) &&
-            x.Field != nameof(entity.Id) &&
-            x.Field != nameof(entity.ExportListReturnId) &&
-            x.Field != nameof(entity.UserReturnId) &&
-            x.Field != nameof(entity.IsLocked)))
-            {
-                var oldEntity = await db.Transportation.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
-                if (oldEntity.IsLocked)
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
                 {
-                    throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
-                }
-                //if (patch.Changes.Any(x => x.Field == nameof(entity.ShipPrice) ||
-                //x.Field == nameof(entity.PolicyId) ||
-                //x.Field == nameof(entity.RouteId) ||
-                //x.Field == nameof(entity.BrandShipId) ||
-                //x.Field == nameof(entity.ShipId) ||
-                //x.Field == nameof(entity.Trip) ||
-                //x.Field == nameof(entity.StartShip) ||
-                //x.Field == nameof(entity.ContainerTypeId) ||
-                //x.Field == nameof(entity.BookingId)))
-                //{
-                //    if (oldEntity.LockShip)
-                //    {
-                //        throw new ApiException("DSVC này đã được khóa cước tàu.") { StatusCode = HttpStatusCode.BadRequest };
-                //    }
-                //}
-                if (patch.Changes.Any(x => x.Field == nameof(entity.MonthText)
-                || x.Field == nameof(entity.YearText)
-                || x.Field == nameof(entity.ExportListId)
-                || x.Field == nameof(entity.RouteId)
-                || x.Field == nameof(entity.ShipId)
-                || x.Field == nameof(entity.Trip)
-                || x.Field == nameof(entity.ClosingDate)
-                || x.Field == nameof(entity.StartShip)
-                || x.Field == nameof(entity.ContainerTypeId)
-                || x.Field == nameof(entity.ContainerNo)
-                || x.Field == nameof(entity.SealNo)
-                || x.Field == nameof(entity.BossId)
-                || x.Field == nameof(entity.UserId)
-                || x.Field == nameof(entity.CommodityId)
-                || x.Field == nameof(entity.Cont20)
-                || x.Field == nameof(entity.Cont40)
-                || x.Field == nameof(entity.Weight)
-                || x.Field == nameof(entity.ReceivedId)
-                || x.Field == nameof(entity.FreeText2)
-                || x.Field == nameof(entity.ShipDate)
-                || x.Field == nameof(entity.ReturnDate)
-                || x.Field == nameof(entity.ReturnId)
-                || x.Field == nameof(entity.FreeText3)))
-                {
-                    if (entity.IsKt)
+                    using (SqlCommand command = new SqlCommand())
                     {
-                        throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
-                    }
-                }
-                if (patch.Changes.Any(x => x.Field == nameof(entity.ClosingDate)
-                || x.Field == nameof(entity.RouteId)
-                || x.Field == nameof(entity.BrandShipId)
-                || x.Field == nameof(entity.LineId)
-                || x.Field == nameof(entity.ShipId)
-                || x.Field == nameof(entity.Trip)
-                || x.Field == nameof(entity.StartShip)
-                || x.Field == nameof(entity.ContainerTypeId)
-                || x.Field == nameof(entity.SocId)))
-                {
-                    var bookingList = await db.BookingList.Where(x => x.Id == entity.BookingListId && x.Active).FirstOrDefaultAsync();
-                    if (bookingList != null && bookingList.Submit)
-                    {
-                        throw new ApiException("DSVC này đã được khóa. Vì đã được khóa ở danh sách book tàu.") { StatusCode = HttpStatusCode.BadRequest };
-                    }
-                }
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.ShipDate) && !x.Value.IsNullOrWhiteSpace()))
-            {
-                entity.ExportListReturnId = VendorId;
-                entity.UserReturnId = UserId;
-            }
-            var expenseTypes = await db.MasterData.Where(x => x.ParentId == 7577 && (x.Name.Contains("Bảo hiểm") || x.Name.Contains("BH SOC"))).ToListAsync();
-            var expenseTypeIds = expenseTypes.Select(x => x.Id.ToString()).ToList();
-            var expense = await db.Expense.Where(x => x.TransportationId == entity.Id && expenseTypeIds.Contains(x.ExpenseTypeId.ToString()) && x.RequestChangeId == null && x.Active).ToListAsync();
-            if (expense.Count > 0)
-            {
-                expense.ForEach(x => { x.Cont20 = entity.Cont20; x.Cont40 = entity.Cont40; });
-                var oldEntity = await db.Transportation.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
-                if (patch.Changes.Any(x =>
-                x.Field == nameof(oldEntity.BookingId) ||
-                x.Field == nameof(oldEntity.ShipId) ||
-                x.Field == nameof(oldEntity.SaleId) ||
-                x.Field == nameof(oldEntity.Trip) ||
-                x.Field == nameof(oldEntity.SealNo) ||
-                x.Field == nameof(oldEntity.ContainerNo) ||
-                x.Field == nameof(oldEntity.Note2) ||
-                x.Field == nameof(oldEntity.StartShip) ||
-                x.Field == nameof(oldEntity.ClosingDate)) &&
-                (oldEntity.BookingId != entity.BookingId) ||
-                (oldEntity.ShipId != entity.ShipId) ||
-                (oldEntity.SaleId != entity.SaleId) ||
-                (oldEntity.Trip != entity.Trip) ||
-                (oldEntity.SealNo != entity.SealNo) ||
-                (oldEntity.ContainerNo != entity.ContainerNo) ||
-                (oldEntity.Note2 != entity.Note2) ||
-                (oldEntity.StartShip != entity.StartShip) ||
-                (oldEntity.ClosingDate != entity.ClosingDate))
-                {
-                    var expenseNoPurchased = expense.Where(x => x.IsPurchasedInsurance == false).ToList();
-                    var expensePurchased = expense.Where(x => x.IsPurchasedInsurance).ToList();
-                    if (expensePurchased != null)
-                    {
-                        expensePurchased.ForEach(x =>
+                        command.Transaction = transaction;
+                        command.Connection = connection;
+                        if (patch.Changes.Any(x => x.Field == nameof(Transportation.ShipDate) && !x.Value.IsNullOrWhiteSpace()))
                         {
-                            var newExpense = new Expense();
-                            newExpense.CopyPropFrom(x);
-                            newExpense.Id = 0;
-                            newExpense.StatusId = 1;
-                            newExpense.RequestChangeId = x.Id;
-                            db.Add(newExpense);
-                            x.ShipId = entity.ShipId;
-                            x.SaleId = entity.SaleId;
-                            x.Trip = entity.Trip;
-                            x.SealNo = entity.SealNo;
-                            x.ContainerNo = entity.ContainerNo;
-                            x.Notes = entity.Note2;
-                            if (x.JourneyId == 12114 || x.JourneyId == 16001)
-                            {
-                                x.StartShip = entity.ClosingDate;
-                            }
-                            else
-                            {
-                                x.StartShip = entity.StartShip;
-                            }
-                        });
-                    }
-                    if (expenseNoPurchased != null)
-                    {
-                        expenseNoPurchased.ForEach(x =>
+                            patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.ExportListReturnId), Value = VendorId.ToString() });
+                            patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.UserReturnId), Value = UserId.ToString() });
+                        }
+                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                        if (disableTrigger)
                         {
-                            x.ShipId = entity.ShipId;
-                            x.SaleId = entity.SaleId;
-                            x.Trip = entity.Trip;
-                            x.SealNo = entity.SealNo;
-                            x.ContainerNo = entity.ContainerNo;
-                            x.Notes = entity.Note2;
-                            if (x.JourneyId == 12114 || x.JourneyId == 16001)
-                            {
-                                x.StartShip = entity.ClosingDate;
-                            }
-                            else
-                            {
-                                x.StartShip = entity.StartShip;
-                            }
-                        });
+                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(Transportation)}];";
+                        }
+                        else
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
+                        }
+                        command.CommandText += $" UPDATE [{nameof(Transportation)}] SET {update.Combine()} WHERE Id = {idInt};";
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
+                        }
+                        foreach (var item in updates)
+                        {
+                            command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                        }
+                        command.ExecuteNonQuery();
+                        transaction.Commit();
+                        var entity = await db.Transportation.FindAsync(idInt);
+                        if (!disableTrigger)
+                        {
+                            await db.Entry(entity).ReloadAsync();
+                        }
+                        return entity;
                     }
                 }
-            }
-            var revenues = await db.Revenue.Where(x => x.TransportationId == entity.Id).ToListAsync();
-            if (revenues != null)
-            {
-                var oldEntity = await db.Transportation.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
-                if (patch.Changes.Any(x =>
-                x.Field == nameof(entity.ContainerNo) ||
-                x.Field == nameof(entity.SealNo) ||
-                x.Field == nameof(entity.BossId) ||
-                x.Field == nameof(entity.ContainerTypeId) ||
-                x.Field == nameof(entity.ClosingDate)) &&
-                (oldEntity.ContainerNo != entity.ContainerNo) ||
-                (oldEntity.SealNo != entity.SealNo) ||
-                (oldEntity.BossId != entity.BossId) ||
-                (oldEntity.ContainerTypeId != entity.ContainerTypeId) ||
-                (oldEntity.ClosingDate != entity.ClosingDate))
+                catch (Exception ex)
                 {
-                    revenues.ForEach(x =>
-                    {
-                        x.ContainerNo = entity.ContainerNo;
-                        x.SealNo = entity.SealNo;
-                        x.BossId = entity.BossId;
-                        x.ContainerTypeId = entity.ContainerTypeId;
-                        x.ClosingDate = entity.ClosingDate;
-                    });
+                    transaction.Rollback();
+                    var entity = await db.Transportation.FindAsync(idInt);
+                    return entity;
                 }
-            }
-            if (disableTrigger)
-            {
-                db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            }
-            else
-            {
-                db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
-            }
-            await db.SaveChangesAsync();
-            if (disableTrigger)
-            {
-                db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
-            }
-            else
-            {
-                await db.Entry(entity).ReloadAsync();
-            }
-            return entity;
-        }
-
-        private void DisableTrigger(PatchUpdate patch, Transportation entity, string action)
-        {
-            if (patch.Changes.Any(x => x.Field == nameof(entity.BetAmount) || x.Field == nameof(entity.IsBet)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_BetAmount ON Transportation");
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.ReturnId)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_BetFee ON Transportation");
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_IsSplitBill ON Transportation");
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.ClosingId)
-            || x.Field == nameof(entity.BossId)
-            || x.Field == nameof(entity.ContainerTypeId)
-            || x.Field == nameof(entity.ReceivedId)
-            || x.Field == nameof(entity.ClosingDate)
-            || x.Field == nameof(entity.IsClampingFee)
-            || x.Field == nameof(entity.IsClosingCustomer)
-            || x.Field == nameof(entity.IsEmptyCombination)
-            || x.Field == nameof(entity.ClosingUnitPrice)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_ClosingUnitPrice ON Transportation");
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.StartShip)
-            && (x.Field == nameof(entity.BrandShipId)
-            || x.Field == nameof(entity.IsEmptyCombination)
-            || x.Field == nameof(entity.IsClosingCustomer))))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_CombinationFee ON Transportation");
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.ContainerTypeId)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_Cont20_40 ON Transportation");
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.DemDate)
-            || x.Field == nameof(entity.ReturnDate)
-            || x.Field == nameof(entity.ShipDate)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_Dem ON Transportation");
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_DemDate ON Transportation");
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.ContainerTypeId)
-            || x.Field == nameof(entity.IsLanding)
-            || x.Field == nameof(entity.PortLoadingId)
-            || x.Field == nameof(entity.ClosingDate)
-            || x.Field == nameof(entity.LandingFee)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_LandingFee ON Transportation");
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.ContainerTypeId)
-            || x.Field == nameof(entity.PickupEmptyId)
-            || x.Field == nameof(entity.ClosingDate)
-            || x.Field == nameof(entity.IsEmptyLift)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_LiftFee ON Transportation");
-            }
-            if (patch.Changes.Any(x => (x.Field == nameof(entity.ContainerTypeId)
-            || x.Field == nameof(entity.IsClosingEmptyFee)
-            || x.Field == nameof(entity.ReturnEmptyId)
-            || x.Field == nameof(entity.ReturnClosingFee)) && x.Field == nameof(entity.ShipDate)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_ReturnClosingFee ON Transportation");
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.SplitBill)
-            || x.Field == nameof(entity.ShipDate)
-            || x.Field == nameof(entity.ReturnDate)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_ReturnDate ON Transportation");
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.EmptyCombinationId)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_ReturnEmptyId ON Transportation");
-            }
-            if (patch.Changes.Any(x => (x.Field == nameof(entity.ContainerTypeId)
-            || x.Field == nameof(entity.IsLiftFee)
-            || x.Field == nameof(entity.PortLiftId)
-            || x.Field == nameof(entity.ReturnLiftFee)) && x.Field == nameof(entity.ShipDate)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_ReturnLiftFee ON Transportation");
-            }
-            if (patch.Changes.Any(x => (x.Field == nameof(entity.ReturnVendorId)
-            || x.Field == nameof(entity.BossId)
-            || x.Field == nameof(entity.ContainerTypeId)
-            || x.Field == nameof(entity.IsClampingReturnFee)
-            || x.Field == nameof(entity.ReturnId)) && x.Field == nameof(entity.ReturnDate)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_ReturnUnitPrice ON Transportation");
-            }
-            if (patch.Changes.Any(x => (x.Field == nameof(entity.BrandShipId)
-            || x.Field == nameof(entity.LevelId)) && x.Field == nameof(entity.StartShip)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_ReturnVs ON Transportation");
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.LeftDate)
-           || x.Field == nameof(entity.ClosingCont)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_ShellDate ON Transportation");
-            }
-            if (patch.Changes.Any(x => (x.Field == nameof(entity.ContainerTypeId)
-            || x.Field == nameof(entity.LineId)
-            || x.Field == nameof(entity.BrandShipId)) && x.Field == nameof(entity.StartShip)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_ShipUnitPrice ON Transportation");
-            }
-            if (patch.Changes.Any(x => (x.Field == nameof(entity.ContainerTypeId)
-            || x.Field == nameof(entity.LineId)
-            || x.Field == nameof(entity.BrandShipId)) && x.Field == nameof(entity.StartShip)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_ShipUnitPrice ON Transportation");
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.BookingId)))
-            {
-                db.Transportation.FromSqlInterpolated($"{action} TRIGGER tr_Transportation_UpdateBooking ON Transportation");
             }
         }
 
@@ -817,12 +547,16 @@ namespace TMS.API.Controllers
 
                 var closingPercent = item["ClosingPercent"] is null ? "0" : item["ClosingPercent"].ToString();
                 var closingPercentUpload = item["ClosingPercentUpload"] is null ? "0" : item["ClosingPercentUpload"].ToString();
-                worksheet.Cell("W" + start).SetValue(decimal.Parse(closingPercent).ToString("N0"));
-                worksheet.Cell("W" + start).Style.NumberFormat.Format = "#,##";
                 if (closingPercent != closingPercentUpload)
                 {
+                    worksheet.Cell("W" + start).SetValue(decimal.Parse(closingPercent));
                     worksheet.Cell("W" + start).Style.Font.FontColor = XLColor.Red;
                 }
+                else
+                {
+                    worksheet.Cell("W" + start).SetValue(item["ClosingPercent"] is null ? "" : decimal.Parse(item["ClosingPercent"].ToString()));
+                }
+                worksheet.Cell("W" + start).Style.NumberFormat.Format = "#,##";
                 var closingCombinationUnitPrice = item["ClosingCombinationUnitPrice"] is null ? null : item["ClosingCombinationUnitPrice"].ToString();
                 var closingCombinationUnitPriceUpload = item["TotalPriceAfterTaxUpload"] is null ? null : item["TotalPriceAfterTaxUpload"].ToString();
                 worksheet.Cell("X" + start).SetValue(closingCombinationUnitPrice is null ? default(decimal) : decimal.Parse(closingCombinationUnitPrice.ToString()));

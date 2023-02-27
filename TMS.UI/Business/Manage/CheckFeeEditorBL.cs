@@ -379,7 +379,7 @@ namespace TMS.UI.Business.Manage
             }
             else
             {
-                listViewItem.PatchUpdate();
+                await listViewItem.PatchUpdate();
             }
         }
     }

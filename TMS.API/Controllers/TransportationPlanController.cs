@@ -458,15 +458,54 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<TransportationPlan>> PatchAsync([FromQuery] ODataQueryOptions<TransportationPlan> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
-            TransportationPlan entity = default;
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
-            entity = await db.Set<TransportationPlan>().FindAsync(idInt);
-            patch.ApplyTo(entity);
-            SetAuditInfo(entity);
-            await db.SaveChangesAsync();
-            await db.Entry(entity).ReloadAsync();
-            return entity;
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.Connection = connection;
+                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" DISABLE TRIGGER ALL ON [TransportationPlan];";
+                        }
+                        else
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [TransportationPlan];";
+                        }
+                        command.CommandText += $" UPDATE [TransportationPlan] SET {update.Combine()} WHERE Id = {idInt};";
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [TransportationPlan];";
+                        }
+                        foreach (var item in updates)
+                        {
+                            command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                        }
+                        command.ExecuteNonQuery();
+                        transaction.Commit();
+                        var entity = await db.TransportationPlan.FindAsync(idInt);
+                        if (!disableTrigger)
+                        {
+                            await db.Entry(entity).ReloadAsync();
+                        }
+                        return entity;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    var entity = await db.TransportationPlan.FindAsync(idInt);
+                    return entity;
+                }
+            }
         }
 
         public static string ConvertTextEn(string text)

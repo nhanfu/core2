@@ -675,7 +675,7 @@ namespace Core.Components
             }
             if (rowData.EntityId > 0)
             {
-                rowData.PatchUpdate();
+                await rowData.PatchUpdate();
             }
             else
             {

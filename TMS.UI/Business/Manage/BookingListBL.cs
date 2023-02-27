@@ -88,7 +88,7 @@ namespace TMS.UI.Business.Manage
                     var dropdown = updated.FilterChildren<SearchEntry>(x => x.GuiInfo.FieldName == nameof(Transportation.BookingId)).FirstOrDefault();
                     updated.PopulateFields(dropdown.Matched);
                     await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, updated.Entity, dropdown.Matched);
-                    updated.PatchUpdate();
+                    await updated.PatchUpdate();
                 }
                 Toast.Success("Chọn booking thành công");
             });

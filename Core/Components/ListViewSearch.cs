@@ -155,7 +155,7 @@ namespace Core.Components
                 .Button(className: "button secondary small btn-toolbar right", icon: "fa fa-cog")
                     .Title("Nâng cao")
                     .Icon("fa fa-chevron-down").End
-                    .Event(EventType.Click, AdvancedOptions).End
+                    .Event(EventType.Click, AdvancedSearch).End
                 .Button(className: "btnSearch button secondary small btn-toolbar right", icon: "fa fa-undo")
                     .Title("Làm mới")
                     .Event(EventType.Click, async () => await RefershListView()).End
@@ -242,7 +242,7 @@ namespace Core.Components
             _uploader.Value = string.Empty;
         }
 
-        private void AdvancedOptions(Event e)
+        private void HiddenColumn(Event e)
         {
             var buttonRect = e.Target.As<HTMLElement>().GetBoundingClientRect();
             var ctxMenu = ContextMenu.Instance;
@@ -251,6 +251,7 @@ namespace Core.Components
             ctxMenu.MenuItems = new List<ContextMenuItem>
                 {
                     new ContextMenuItem { Icon = "fa fa-search-plus", Text = "Nâng cao", Click = AdvancedSearch },
+                    new ContextMenuItem { Icon = "icon fa fa-line-columns", Text = "Lite", Click = LiteGridView },
                     new ContextMenuItem { Icon = "fa fa-cloud-upload-alt", Text = "Nhập excel", Click = OpenExcelFileDialog },
                     new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất hiển thị", Click = ExportDisplay },
                     new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất toàn bộ", Click = ExportAllData },
@@ -262,6 +263,11 @@ namespace Core.Components
             _uploader = Html.Context as HTMLInputElement;
             _uploader.AddEventListener(EventType.Change.ToString(), async (ev) => await UploadCsv(ev));
             ctxMenu.Element.Children.FirstOrDefault()?.AppendChild(_uploader.ParentElement);
+        }
+
+        private void LiteGridView(object arg)
+        {
+
         }
 
         private void ExportCustomData(object arg)

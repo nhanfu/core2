@@ -250,17 +250,7 @@ namespace Core.Components
             return result;
         }
 
-        public void PatchUpdate()
-        {
-            ListViewSection.ListView._delay += 300;
-            Window.SetTimeout(async () =>
-            {
-                await ActionPatch();
-                ListViewSection.ListView._delay -= 300;
-            }, ListViewSection.ListView._delay);
-        }
-
-        private async Task ActionPatch()
+        public async Task PatchUpdate()
         {
             if (!Dirty)
             {

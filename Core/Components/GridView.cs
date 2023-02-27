@@ -1128,7 +1128,7 @@ namespace Core.Components
                             await currentItemD.ListViewSection.ListView.DispatchEventToHandlerAsync(upItemD.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItemD.Entity);
                             if (GuiInfo.IsRealtime)
                             {
-                                currentItemD.PatchUpdate();
+                               await  currentItemD.PatchUpdate();
                             }
                         });
                     }
@@ -1259,7 +1259,7 @@ namespace Core.Components
                         await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
                         if (GuiInfo.IsRealtime)
                         {
-                            upItem.PatchUpdate();
+                           await upItem.PatchUpdate();
                         }
                     });
                 }

@@ -89,6 +89,7 @@ namespace TMS.API.Models
         public string Migration { get; set; }
         public string ListClass { get; set; }
         public string ExcelFieldName { get; set; }
+        public bool? LiteGrid { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

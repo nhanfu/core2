@@ -253,15 +253,54 @@ namespace TMS.API.Controllers
         [HttpPatch("api/[Controller]")]
         public virtual async Task<ActionResult<T>> PatchAsync([FromQuery] ODataQueryOptions<T> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
-            T entity = default;
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
-            entity = await ctx.Set<T>().FindAsync(idInt);
-            patch.ApplyTo(entity);
-            SetAuditInfo(entity);
-            await ctx.SaveChangesAsync();
-            await ctx.Entry(entity).ReloadAsync();
-            return entity;
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.Connection = connection;
+                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(T)}];";
+                        }
+                        else
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(T)}];";
+                        }
+                        command.CommandText += $" UPDATE [{nameof(T)}] SET {update.Combine()} WHERE Id = {idInt};";
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(T)}];";
+                        }
+                        foreach (var item in updates)
+                        {
+                            command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                        }
+                        command.ExecuteNonQuery();
+                        transaction.Commit();
+                        var entity = await ctx.Set<T>().FindAsync(idInt);
+                        if (!disableTrigger)
+                        {
+                            await ctx.Entry(entity).ReloadAsync();
+                        }
+                        return entity;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    var entity = await ctx.Set<T>().FindAsync(idInt);
+                    return entity;
+                }
+            }
         }
 
         [HttpPost("api/[Controller]/EmailAttached")]
