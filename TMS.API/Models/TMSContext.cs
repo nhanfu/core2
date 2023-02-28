@@ -423,6 +423,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.InsuranceFeeRate)
                 .HasDefaultValueSql("((0))")
                 .HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.MonthText).HasMaxLength(50);
             entity.Property(e => e.Notes).HasMaxLength(500);
             entity.Property(e => e.Quantity).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Reason).HasMaxLength(250);
@@ -434,6 +435,7 @@ public partial class TMSContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Vat).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.YearText).HasMaxLength(50);
 
             entity.HasOne(d => d.Allotment).WithMany(p => p.Expense)
                 .HasForeignKey(d => d.AllotmentId)

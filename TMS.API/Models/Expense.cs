@@ -61,6 +61,8 @@ namespace TMS.API.Models
         public decimal Cont40 { get; set; }
         public int? ReceivedId { get; set; }
         public string Reason { get; set; }
+        public string MonthText { get; set; }
+        public string YearText { get; set; }
 
         public virtual Allotment Allotment { get; set; }
         public virtual Transportation Transportation { get; set; }
