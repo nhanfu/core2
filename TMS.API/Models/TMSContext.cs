@@ -1352,6 +1352,7 @@ public partial class TMSContext : DbContext
 
         modelBuilder.Entity<TransportationRequest>(entity =>
         {
+            entity.Property(e => e.ReasonReject).HasMaxLength(250);
             entity.Property(e => e.ReasonUnLockAccountant)
                 .HasMaxLength(250)
                 .HasDefaultValueSql("((0))");

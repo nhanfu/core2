@@ -29,6 +29,10 @@ namespace TMS.API.Models
 
         public string ReasonUnLockRevenue { get; set; }
 
+        public int? StatusId { get; set; }
+
+        public string ReasonReject { get; set; }
+
         public bool Active { get; set; }
 
         public DateTime InsertedDate { get; set; }
