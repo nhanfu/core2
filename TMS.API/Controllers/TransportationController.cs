@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using System;
@@ -24,6 +25,7 @@ using System.Linq.Dynamic.Core.Tokenizer;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.ViewModels;
@@ -1730,6 +1732,11 @@ namespace TMS.API.Controllers
         [HttpPost("api/Transportation/RequestUnLock")]
         public async Task RequestUnLock([FromBody] Transportation transportation)
         {
+            var check = await db.TransportationRequest.Where(x => x.TransportationId == transportation.Id && x.Active).ToListAsync();
+            if (check.Count > 0)
+            {
+                throw new ApiException("Đã có yêu cầu mở khóa");
+            }
             var entityType = _entitySvc.GetEntity(typeof(Expense).Name);
             var approvalConfig = await db.ApprovalConfig.AsNoTracking().OrderBy(x => x.Level)
                 .Where(x => x.Active && x.EntityId == entityType.Id).ToListAsync();
@@ -1766,9 +1773,8 @@ namespace TMS.API.Controllers
                 tranRequest.IsRequestUnLockExploit = true;
                 tranRequest.ReasonUnLockExploit = transportation.ReasonUnLockExploit;
                 tranRequest.TransportationId = transportation.Id;
-                tranRequest.Active = true;
-                tranRequest.InsertedBy = UserId;
-                tranRequest.InsertedDate = DateTime.Now.Date;
+                tranRequest.StatusId = (int)ApprovalStatusEnum.Approving;
+                SetAuditInfo(tranRequest);
                 db.Add(tranRequest);
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
                 var tasks = listUser.Select(user => new TaskNotification
@@ -1793,6 +1799,11 @@ namespace TMS.API.Controllers
         [HttpPost("api/Transportation/RequestUnLockAccountant")]
         public async Task RequestUnLockAccountant([FromBody] Transportation transportation)
         {
+            var check = await db.TransportationRequest.Where(x => x.TransportationId == transportation.Id && x.Active).ToListAsync();
+            if (check.Count > 0)
+            {
+                throw new ApiException("Đã có yêu cầu mở khóa");
+            }
             var entityType = _entitySvc.GetEntity(typeof(Expense).Name);
             var approvalConfig = await db.ApprovalConfig.AsNoTracking().OrderBy(x => x.Level)
                 .Where(x => x.Active && x.EntityId == entityType.Id).ToListAsync();
@@ -1829,9 +1840,8 @@ namespace TMS.API.Controllers
                 tranRequest.IsRequestUnLockAccountant = true;
                 tranRequest.ReasonUnLockAccountant = transportation.ReasonUnLockAccountant;
                 tranRequest.TransportationId = transportation.Id;
-                tranRequest.Active = true;
-                tranRequest.InsertedBy = UserId;
-                tranRequest.InsertedDate = DateTime.Now.Date;
+                tranRequest.StatusId = (int)ApprovalStatusEnum.Approving;
+                SetAuditInfo(tranRequest);
                 db.Add(tranRequest);
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
                 var tasks = listUser.Select(user => new TaskNotification
@@ -1856,6 +1866,11 @@ namespace TMS.API.Controllers
         [HttpPost("api/Transportation/RequestUnLockAll")]
         public async Task RequestUnLockAll([FromBody] Transportation transportation)
         {
+            var check = await db.TransportationRequest.Where(x => x.TransportationId == transportation.Id && x.Active).ToListAsync();
+            if (check.Count > 0)
+            {
+                throw new ApiException("Đã có yêu cầu mở khóa");
+            }
             var entityType = _entitySvc.GetEntity(typeof(Expense).Name);
             var approvalConfig = await db.ApprovalConfig.AsNoTracking().OrderBy(x => x.Level)
                 .Where(x => x.Active && x.EntityId == entityType.Id).ToListAsync();
@@ -1892,9 +1907,8 @@ namespace TMS.API.Controllers
                 tranRequest.IsRequestUnLockAll = true;
                 tranRequest.ReasonUnLockAll = transportation.ReasonUnLockAll;
                 tranRequest.TransportationId = transportation.Id;
-                tranRequest.Active = true;
-                tranRequest.InsertedBy = UserId;
-                tranRequest.InsertedDate = DateTime.Now.Date;
+                tranRequest.StatusId = (int)ApprovalStatusEnum.Approving;
+                SetAuditInfo(tranRequest);
                 db.Add(tranRequest);
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
                 var tasks = listUser.Select(user => new TaskNotification
@@ -1919,6 +1933,11 @@ namespace TMS.API.Controllers
         [HttpPost("api/Transportation/RequestUnLockShip")]
         public async Task RequestUnLockShip([FromBody] Transportation transportation)
         {
+            var check = await db.TransportationRequest.Where(x => x.TransportationId == transportation.Id && x.Active).ToListAsync();
+            if (check.Count > 0)
+            {
+                throw new ApiException("Đã có yêu cầu mở khóa");
+            }
             var entityType = _entitySvc.GetEntity(typeof(Expense).Name);
             var approvalConfig = await db.ApprovalConfig.AsNoTracking().OrderBy(x => x.Level)
                 .Where(x => x.Active && x.EntityId == entityType.Id).ToListAsync();
@@ -1955,9 +1974,8 @@ namespace TMS.API.Controllers
                 tranRequest.IsRequestUnLockShip = true;
                 tranRequest.ReasonUnLockShip = transportation.ReasonUnLockShip;
                 tranRequest.TransportationId = transportation.Id;
-                tranRequest.Active = true;
-                tranRequest.InsertedBy = UserId;
-                tranRequest.InsertedDate = DateTime.Now.Date;
+                tranRequest.StatusId = (int)ApprovalStatusEnum.Approving;
+                SetAuditInfo(tranRequest);
                 db.Add(tranRequest);
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
                 var tasks = listUser.Select(user => new TaskNotification
@@ -1986,12 +2004,33 @@ namespace TMS.API.Controllers
             {
                 return false;
             }
+            var user = await db.User.Where(x => x.Active && x.Id == UserId).FirstOrDefaultAsync();
+            foreach (var item in transportations)
+            {
+                var tranRequest = await db.TransportationRequest.Where(x => x.TransportationId == item.Id && x.Active).FirstOrDefaultAsync();
+                var taskNotification = new TaskNotification
+                {
+                    Title = $"{user.FullName}",
+                    Description = $"Đã duyệt yêu cầu mở khóa",
+                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                    RecordId = item.Id,
+                    Attachment = "fal fa-check",
+                    AssignedId = tranRequest.InsertedBy,
+                    StatusId = (int)TaskStateEnum.UnreadStatus,
+                    RemindBefore = 540,
+                    Deadline = DateTime.Now,
+                };
+                SetAuditInfo(taskNotification);
+                db.AddRange(taskNotification);
+                await db.SaveChangesAsync();
+                await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
+            }
             var ids = transportations.Select(x => x.Id).ToList();
             var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
             var cmd = $"Update [{nameof(Transportation)}] set IsLocked = 0" +
                 $" where Id in ({ids.Combine()})";
-            cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0" +
-                $" where Id in ({tranRequestIds.Combine()})";
+            cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
+                $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
@@ -2005,12 +2044,33 @@ namespace TMS.API.Controllers
             {
                 return false;
             }
+            var user = await db.User.Where(x => x.Active && x.Id == UserId).FirstOrDefaultAsync();
+            foreach (var item in transportations)
+            {
+                var tranRequest = await db.TransportationRequest.Where(x => x.TransportationId == item.Id && x.Active).FirstOrDefaultAsync();
+                var taskNotification = new TaskNotification
+                {
+                    Title = $"{user.FullName}",
+                    Description = $"Đã duyệt yêu cầu mở khóa",
+                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                    RecordId = item.Id,
+                    Attachment = "fal fa-check",
+                    AssignedId = tranRequest.InsertedBy,
+                    StatusId = (int)TaskStateEnum.UnreadStatus,
+                    RemindBefore = 540,
+                    Deadline = DateTime.Now,
+                };
+                SetAuditInfo(taskNotification);
+                db.AddRange(taskNotification);
+                await db.SaveChangesAsync();
+                await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
+            }
             var ids = transportations.Select(x => x.Id).ToList();
             var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
             var cmd = $"Update [{nameof(Transportation)}] set IsKt = 0" +
                 $" where Id in ({ids.Combine()})";
-            cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0" +
-                $" where Id in ({tranRequestIds.Combine()})";
+            cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
+                $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
@@ -2024,12 +2084,33 @@ namespace TMS.API.Controllers
             {
                 return false;
             }
+            var user = await db.User.Where(x => x.Active && x.Id == UserId).FirstOrDefaultAsync();
+            foreach (var item in transportations)
+            {
+                var tranRequest = await db.TransportationRequest.Where(x => x.TransportationId == item.Id && x.Active).FirstOrDefaultAsync();
+                var taskNotification = new TaskNotification
+                {
+                    Title = $"{user.FullName}",
+                    Description = $"Đã duyệt yêu cầu mở khóa",
+                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                    RecordId = item.Id,
+                    Attachment = "fal fa-check",
+                    AssignedId = tranRequest.InsertedBy,
+                    StatusId = (int)TaskStateEnum.UnreadStatus,
+                    RemindBefore = 540,
+                    Deadline = DateTime.Now,
+                };
+                SetAuditInfo(taskNotification);
+                db.AddRange(taskNotification);
+                await db.SaveChangesAsync();
+                await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
+            }
             var ids = transportations.Select(x => x.Id).ToList();
             var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
             var cmd = $"Update [{nameof(Transportation)}] set IsSubmit = 0" +
                 $" where Id in ({ids.Combine()})";
-            cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0" +
-                $" where Id in ({tranRequestIds.Combine()})";
+            cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
+                $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
@@ -2043,12 +2124,185 @@ namespace TMS.API.Controllers
             {
                 return false;
             }
+            var user = await db.User.Where(x => x.Active && x.Id == UserId).FirstOrDefaultAsync();
+            foreach (var item in transportations)
+            {
+                var tranRequest = await db.TransportationRequest.Where(x => x.TransportationId == item.Id && x.Active).FirstOrDefaultAsync();
+                var taskNotification = new TaskNotification
+                {
+                    Title = $"{user.FullName}",
+                    Description = $"Đã duyệt yêu cầu mở khóa",
+                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                    RecordId = item.Id,
+                    Attachment = "fal fa-check",
+                    AssignedId = tranRequest.InsertedBy,
+                    StatusId = (int)TaskStateEnum.UnreadStatus,
+                    RemindBefore = 540,
+                    Deadline = DateTime.Now,
+                };
+                SetAuditInfo(taskNotification);
+                db.AddRange(taskNotification);
+                await db.SaveChangesAsync();
+                await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
+            }
             var ids = transportations.Select(x => x.Id).ToList();
             var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
             var cmd = $"Update [{nameof(Transportation)}] set LockShip = 0" +
                 $" where Id in ({ids.Combine()})";
-            cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0" +
-                $" where Id in ({tranRequestIds.Combine()})";
+            cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
+                $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+            return true;
+        }
+
+        [HttpPost("api/Transportation/RejectUnLockAll")]
+        public async Task<bool> RejectUnLockAll([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var user = await db.User.Where(x => x.Active && x.Id == UserId).FirstOrDefaultAsync();
+            foreach (var item in transportations)
+            {
+                var tranRequest = await db.TransportationRequest.Where(x => x.TransportationId == item.Id && x.Active).FirstOrDefaultAsync();
+                var taskNotification = new TaskNotification
+                {
+                    Title = $"{user.FullName}",
+                    Description = $"Đã hủy yêu cầu mở khóa. Lý do: {tranRequest.ReasonReject}",
+                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                    RecordId = item.Id,
+                    Attachment = "fal fa-check",
+                    AssignedId = tranRequest.InsertedBy,
+                    StatusId = (int)TaskStateEnum.UnreadStatus,
+                    RemindBefore = 540,
+                    Deadline = DateTime.Now,
+                };
+                SetAuditInfo(taskNotification);
+                db.AddRange(taskNotification);
+                await db.SaveChangesAsync();
+                await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
+            var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
+                $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+            return true;
+        }
+
+        [HttpPost("api/Transportation/RejectUnLockTransportation")]
+        public async Task<bool> RejectUnLockTransportation([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var user = await db.User.Where(x => x.Active && x.Id == UserId).FirstOrDefaultAsync();
+            foreach (var item in transportations)
+            {
+                var tranRequest = await db.TransportationRequest.Where(x => x.TransportationId == item.Id && x.Active).FirstOrDefaultAsync();
+                var taskNotification = new TaskNotification
+                {
+                    Title = $"{user.FullName}",
+                    Description = $"Đã hủy yêu cầu mở khóa. Lý do: {tranRequest.ReasonReject}",
+                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                    RecordId = item.Id,
+                    Attachment = "fal fa-check",
+                    AssignedId = tranRequest.InsertedBy,
+                    StatusId = (int)TaskStateEnum.UnreadStatus,
+                    RemindBefore = 540,
+                    Deadline = DateTime.Now,
+                };
+                SetAuditInfo(taskNotification);
+                db.AddRange(taskNotification);
+                await db.SaveChangesAsync();
+                await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
+            var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
+                $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+            return true;
+        }
+
+        [HttpPost("api/Transportation/RejectUnLockAccountantTransportation")]
+        public async Task<bool> RejectUnLockAccountantTransportation([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var user = await db.User.Where(x => x.Active && x.Id == UserId).FirstOrDefaultAsync();
+            foreach (var item in transportations)
+            {
+                var tranRequest = await db.TransportationRequest.Where(x => x.TransportationId == item.Id && x.Active).FirstOrDefaultAsync();
+                var taskNotification = new TaskNotification
+                {
+                    Title = $"{user.FullName}",
+                    Description = $"Đã hủy yêu cầu mở khóa. Lý do: {tranRequest.ReasonReject}",
+                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                    RecordId = item.Id,
+                    Attachment = "fal fa-check",
+                    AssignedId = tranRequest.InsertedBy,
+                    StatusId = (int)TaskStateEnum.UnreadStatus,
+                    RemindBefore = 540,
+                    Deadline = DateTime.Now,
+                };
+                SetAuditInfo(taskNotification);
+                db.AddRange(taskNotification);
+                await db.SaveChangesAsync();
+                await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
+            var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
+                $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+            return true;
+        }
+
+        [HttpPost("api/Transportation/RejectUnLockShip")]
+        public async Task<bool> RejectUnLockShip([FromBody] List<Transportation> transportations)
+        {
+            if (transportations == null)
+            {
+                return false;
+            }
+            var user = await db.User.Where(x => x.Active && x.Id == UserId).FirstOrDefaultAsync();
+            foreach (var item in transportations)
+            {
+                var tranRequest = await db.TransportationRequest.Where(x => x.TransportationId == item.Id && x.Active).FirstOrDefaultAsync();
+                var taskNotification = new TaskNotification
+                {
+                    Title = $"{user.FullName}",
+                    Description = $"Đã hủy yêu cầu mở khóa. Lý do: {tranRequest.ReasonReject}",
+                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                    RecordId = item.Id,
+                    Attachment = "fal fa-check",
+                    AssignedId = tranRequest.InsertedBy,
+                    StatusId = (int)TaskStateEnum.UnreadStatus,
+                    RemindBefore = 540,
+                    Deadline = DateTime.Now,
+                };
+                SetAuditInfo(taskNotification);
+                db.AddRange(taskNotification);
+                await db.SaveChangesAsync();
+                await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
+            }
+            var ids = transportations.Select(x => x.Id).ToList();
+            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
+            var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
+                $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");

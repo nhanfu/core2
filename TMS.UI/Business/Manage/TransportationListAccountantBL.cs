@@ -21,23 +21,119 @@ namespace TMS.UI.Business.Manage
             Name = "Transportation List Accountant";
         }
 
-        public async Task ImportRevenueSimultaneous()
+        public virtual void ReloadMenu()
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant" || x.GuiInfo.FieldName == "Revenue");
-            if (gridView is null)
+            var gridView = this.FindActiveComponent<GridView>().ToList();
+            if (gridView == null)
             {
                 return;
             }
-            await this.OpenPopup(
-                featureName: "Import Revenue Simultaneous",
-                factory: () =>
+            var menus = new List<ContextMenuItem>();
+            if (gridView.Any(x=>x.Name == "TransportationAccountant"))
+            {
+                var grid = gridView.Where(x => x.Name == "TransportationAccountant").FirstOrDefault();
+                grid.BodyContextMenuShow += () =>
                 {
-                    var type = Type.GetType("TMS.UI.Business.Accountant.ImportRevenueSimultaneousBL");
-                    var instance = Activator.CreateInstance(type) as PopupEditor;
-                    instance.Title = "Nhập đồng loạt doanh thu";
-                    instance.Entity = new Revenue();
-                    return instance;
-                });
+                    menus.Add(new ContextMenuItem { Icon = "fal fa-ballot-check", Text = "Nhập đồng loạt DT", Click = ImportRevenueSimultaneous });
+                    menus.Add(new ContextMenuItem
+                    {
+                        Icon = "fas fa-tasks-alt mr-1",
+                        Text = "Hệ thống",
+                        MenuItems = new List<ContextMenuItem>
+                        {
+                            new ContextMenuItem { Text = "Khóa hệ thống", Click = LockAllTransportation },
+                            new ContextMenuItem { Text = "Mở khóa hệ thống", Click = UnLockAllTransportation },
+                        }
+                    });
+                    menus.Add(new ContextMenuItem
+                    {
+                        Icon = "fas fa-tasks-alt mr-1",
+                        Text = "Khai thác",
+                        MenuItems = new List<ContextMenuItem>
+                        {
+                            new ContextMenuItem { Text = "Khóa khai thác", Click = LockTransportation },
+                            new ContextMenuItem { Text = "Mở khóa khai thác", Click = UnLockTransportation },
+                        }
+                    });
+                    menus.Add(new ContextMenuItem
+                    {
+                        Icon = "fas fa-tasks-alt mr-1",
+                        Text = "Kế toán",
+                        MenuItems = new List<ContextMenuItem>
+                        {
+                            new ContextMenuItem { Text = "Khóa kế toán", Click = LockAccountantTransportation },
+                            new ContextMenuItem { Text = "Mở khóa kế toán", Click = UnLockAccountantTransportation },
+                        }
+                    });
+                    menus.Add(new ContextMenuItem
+                    {
+                        Icon = "fas fa-tasks-alt mr-1",
+                        Text = "Doanh thu",
+                        MenuItems = new List<ContextMenuItem>
+                        {
+                            new ContextMenuItem { Text = "Khóa doanh thu", Click = LockRevenueTransportation },
+                            new ContextMenuItem { Text = "Mở khóa doanh thu", Click = UnLockRevenueTransportation },
+                        }
+                    });
+                    ContextMenu.Instance.MenuItems = menus;
+                };
+            }
+            else if (gridView.Any(x => x.Name == "TransportationUnLockAll"))
+            {
+                var grid = gridView.Where(x => x.Name == "TransportationUnLockAll").FirstOrDefault();
+                grid.BodyContextMenuShow += () =>
+                {
+                    menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt mở khóa", Click = ApproveUnLockAll });
+                    menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy mở khóa", Click = RejectUnLockAll });
+                    ContextMenu.Instance.MenuItems = menus;
+                };
+            }
+            else if (gridView.Any(x => x.Name == "TransportationUnLock"))
+            {
+                var grid = gridView.Where(x => x.Name == "TransportationUnLock").FirstOrDefault();
+                grid.BodyContextMenuShow += () =>
+                {
+                    menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt mở khóa", Click = ApproveUnLock });
+                    menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy mở khóa", Click = RejectUnLock });
+                    ContextMenu.Instance.MenuItems = menus;
+                };
+            }
+            else if (gridView.Any(x => x.Name == "TransportationUnLockAccountant"))
+            {
+                var grid = gridView.Where(x => x.Name == "TransportationUnLockAccountant").FirstOrDefault();
+                grid.BodyContextMenuShow += () =>
+                {
+                    menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt mở khóa", Click = ApproveUnLockAccountant });
+                    menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy mở khóa", Click = RejectUnLockAccountant });
+                    ContextMenu.Instance.MenuItems = menus;
+                };
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        public void ImportRevenueSimultaneous(object arg)
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant" || x.GuiInfo.FieldName == "Revenue");
+                if (gridView is null)
+                {
+                    return;
+                }
+                await this.OpenPopup(
+                    featureName: "Import Revenue Simultaneous",
+                    factory: () =>
+                    {
+                        var type = Type.GetType("TMS.UI.Business.Accountant.ImportRevenueSimultaneousBL");
+                        var instance = Activator.CreateInstance(type) as PopupEditor;
+                        instance.Title = "Nhập đồng loạt doanh thu";
+                        instance.Entity = new Revenue();
+                        return instance;
+                    });
+            });
         }
 
         public async Task ReloadExpense(Transportation transportation)
@@ -364,530 +460,436 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public async Task ApproveUnLock()
+        public void ApproveUnLock(object arg)
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLock");
-            if (gridView == null)
+            Task.Run(async () => 
             {
-                return;
-            }
-            var ids = gridView.SelectedIds.ToList();
-            var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockExploit eq true");
-            var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and IsKt eq true");
-            if (transportations.Count <= 0)
-            {
-                Toast.Warning("Không có cont nào bị khóa !!!");
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = $"Bạn có chắc chắn muốn mở khóa cho {transportations.Count} cont không?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                var checks = transportations.Where(x => x.IsLocked).ToList();
-                if (checks.Count > 0)
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLock");
+                if (gridView == null)
                 {
-                    var confirmRequest = new ConfirmDialog
-                    {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
-                    };
-                    confirmRequest.Render();
-                    confirmRequest.YesConfirmed += async () =>
-                    {
-                        foreach (var item in checks)
-                        {
-                            item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
-                        }
-                    };
-                    var transportationNoLock = transportations.Where(x => x.IsLocked == false).ToList();
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "ApproveUnLockTransportation");
-                    if (res)
-                    {
-                        gridView.RemoveRange(transportationNoLock);
-                    }
+                    return;
                 }
-                else
+                var ids = gridView.SelectedIds.ToList();
+                var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockExploit eq true");
+                var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
+                var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and IsKt eq true");
+                if (transportations.Count <= 0)
                 {
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockTransportation");
+                    Toast.Warning("Không có cont nào bị khóa !!!");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    Content = $"Bạn có chắc chắn muốn mở khóa cho {transportations.Count} cont không?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var checks = transportations.Where(x => x.IsLocked).ToList();
+                    if (checks.Count > 0)
+                    {
+                        var confirmRequest = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            "Hãy nhập lý do",
+                        };
+                        confirmRequest.Render();
+                        confirmRequest.YesConfirmed += async () =>
+                        {
+                            foreach (var item in checks)
+                            {
+                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                            }
+                        };
+                        var transportationNoLock = transportations.Where(x => x.IsLocked == false).ToList();
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "ApproveUnLockTransportation");
+                        if (res)
+                        {
+                            gridView.RemoveRange(transportationNoLock);
+                            Toast.Success("Mở khóa thành công");
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                    else
+                    {
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockTransportation");
+                        if (res)
+                        {
+                            gridView.RemoveRange(transportations);
+                            Toast.Success("Mở khóa thành công");
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                };
+            });
+        }
+
+        public void ApproveUnLockAccountant(object arg)
+        {
+            Task.Run(async () => 
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLockAccountant");
+                if (gridView == null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockAccountant eq true");
+                var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
+                var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and IsSubmit eq true");
+                if (transportations.Count <= 0)
+                {
+                    Toast.Warning("Không có cont nào bị khóa !!!");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    Content = $"Bạn có chắc chắn muốn mở khóa cho {transportations.Count} cont không?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var checks = transportations.Where(x => x.IsLocked).ToList();
+                    if (checks.Count > 0)
+                    {
+                        var confirmRequest = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            "Hãy nhập lý do",
+                        };
+                        confirmRequest.Render();
+                        confirmRequest.YesConfirmed += async () =>
+                        {
+                            foreach (var item in checks)
+                            {
+                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                            }
+                        };
+                        var transportationNoLock = transportations.Where(x => x.IsLocked == false).ToList();
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "ApproveUnLockAccountantTransportation");
+                        if (res)
+                        {
+                            gridView.RemoveRange(transportationNoLock);
+                            Toast.Success("Mở khóa thành công");
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                    else
+                    {
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockAccountantTransportation");
+                        if (res)
+                        {
+                            gridView.RemoveRange(transportations);
+                            Toast.Success("Mở khóa thành công");
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                };
+            });
+        }
+
+        public void ApproveUnLockAll(object arg)
+        {
+            Task.Run(async () => 
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLockAll");
+                if (gridView == null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockAll eq true");
+                var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
+                var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and IsLocked eq true");
+                if (transportations.Count <= 0)
+                {
+                    Toast.Warning("Không có cont nào bị khóa !!!");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    Content = $"Bạn có chắc chắn muốn mở khóa cho {transportations.Count} DSVC không?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockAll");
                     if (res)
                     {
                         gridView.RemoveRange(transportations);
+                        Toast.Success("Mở khóa thành công");
                     }
-                }
-            };
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
+                };
+            });
         }
 
-        public async Task ApproveUnLockAccountant()
+        public void RejectUnLock(object arg)
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLockAccountant");
-            if (gridView == null)
+            Task.Run(async () =>
             {
-                return;
-            }
-            var ids = gridView.SelectedIds.ToList();
-            var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockAccountant eq true");
-            var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and IsSubmit eq true");
-            if (transportations.Count <= 0)
-            {
-                Toast.Warning("Không có cont nào bị khóa !!!");
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = $"Bạn có chắc chắn muốn mở khóa cho {transportations.Count} cont không?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                var checks = transportations.Where(x => x.IsLocked).ToList();
-                if (checks.Count > 0)
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLock");
+                if (gridView == null)
                 {
-                    var confirmRequest = new ConfirmDialog
-                    {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
-                    };
-                    confirmRequest.Render();
-                    confirmRequest.YesConfirmed += async () =>
-                    {
-                        foreach (var item in checks)
-                        {
-                            item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
-                        }
-                    };
-                    var transportationNoLock = transportations.Where(x => x.IsLocked == false).ToList();
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "ApproveUnLockAccountantTransportation");
-                    if (res)
-                    {
-                        gridView.RemoveRange(transportationNoLock);
-                    }
+                    return;
                 }
-                else
+                var ids = gridView.SelectedIds.ToList();
+                var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockExploit eq true");
+                var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
+                var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and IsKt eq true");
+                if (transportations.Count <= 0)
                 {
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockAccountantTransportation");
+                    Toast.Warning("Không có cont nào bị khóa !!!");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    NeedAnswer = true,
+                    ComType = nameof(Textbox),
+                    Content = $"Bạn có chắc chắn muốn hủy yêu cầu cho {transportations.Count} cont không??<br />" +
+                            "Hãy nhập lý do",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    tranRequests.ForEach(x => x.ReasonReject = confirm.Textbox?.Text);
+                    await new Client(nameof(TransportationRequest)).BulkUpdateAsync<TransportationRequest>(tranRequests);
+                    var checks = transportations.Where(x => x.IsLocked).ToList();
+                    if (checks.Count > 0)
+                    {
+                        var confirmRequest = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            "Hãy nhập lý do",
+                        };
+                        confirmRequest.Render();
+                        confirmRequest.YesConfirmed += async () =>
+                        {
+                            foreach (var item in checks)
+                            {
+                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                            }
+                        };
+                        var transportationNoLock = transportations.Where(x => x.IsLocked == false).ToList();
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "RejectUnLockTransportation");
+                        if (res)
+                        {
+                            gridView.RemoveRange(transportationNoLock);
+                            Toast.Success("Hủy yêu cầu thành công");
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                    else
+                    {
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "RejectUnLockTransportation");
+                        if (res)
+                        {
+                            gridView.RemoveRange(transportations);
+                            Toast.Success("Hủy yêu cầu thành công");
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                };
+            });
+        }
+
+        public void RejectUnLockAccountant(object arg)
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLockAccountant");
+                if (gridView == null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockAccountant eq true");
+                var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
+                var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and IsSubmit eq true");
+                if (transportations.Count <= 0)
+                {
+                    Toast.Warning("Không có cont nào bị khóa !!!");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    NeedAnswer = true,
+                    ComType = nameof(Textbox),
+                    Content = $"Bạn có chắc chắn muốn hủy yêu cầu cho {transportations.Count} cont không??<br />" +
+                            "Hãy nhập lý do",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    tranRequests.ForEach(x => x.ReasonReject = confirm.Textbox?.Text);
+                    await new Client(nameof(TransportationRequest)).BulkUpdateAsync<TransportationRequest>(tranRequests);
+                    var checks = transportations.Where(x => x.IsLocked).ToList();
+                    if (checks.Count > 0)
+                    {
+                        var confirmRequest = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            "Hãy nhập lý do",
+                        };
+                        confirmRequest.Render();
+                        confirmRequest.YesConfirmed += async () =>
+                        {
+                            foreach (var item in checks)
+                            {
+                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                            }
+                        };
+                        var transportationNoLock = transportations.Where(x => x.IsLocked == false).ToList();
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "RejectUnLockAccountantTransportation");
+                        if (res)
+                        {
+                            gridView.RemoveRange(transportationNoLock);
+                            Toast.Success("Hủy yêu cầu thành công");
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                    else
+                    {
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "RejectUnLockAccountantTransportation");
+                        if (res)
+                        {
+                            gridView.RemoveRange(transportations);
+                            Toast.Success("Hủy yêu cầu thành công");
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                };
+            });
+        }
+
+        public void RejectUnLockAll(object arg)
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLockAll");
+                if (gridView == null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockAll eq true");
+                var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
+                var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and IsLocked eq true");
+                if (transportations.Count <= 0)
+                {
+                    Toast.Warning("Không có cont nào bị khóa !!!");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    NeedAnswer = true,
+                    ComType = nameof(Textbox),
+                    Content = $"Bạn có chắc chắn muốn hủy yêu cầu cho {transportations.Count} cont không??<br />" +
+                            "Hãy nhập lý do",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    tranRequests.ForEach(x => x.ReasonReject = confirm.Textbox?.Text);
+                    await new Client(nameof(TransportationRequest)).BulkUpdateAsync<TransportationRequest>(tranRequests);
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "RejectUnLockAll");
                     if (res)
                     {
                         gridView.RemoveRange(transportations);
+                        Toast.Success("Hủy yêu cầu thành công");
                     }
-                }
-            };
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
+                };
+            });
         }
 
-        public async Task ApproveUnLockAll()
+        public void LockTransportation(object arg)
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLockAll");
-            if (gridView == null)
+            Task.Run(async () =>
             {
-                return;
-            }
-            var ids = gridView.SelectedIds.ToList();
-            var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockAll eq true");
-            var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and IsLocked eq true");
-            if (transportations.Count <= 0)
-            {
-                Toast.Warning("Không có cont nào bị khóa !!!");
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = $"Bạn có chắc chắn muốn mở khóa cho {transportations.Count} DSVC không?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockAll");
-                if (res)
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+                if (gridView is null)
                 {
-                    gridView.RemoveRange(transportations);
-                    Toast.Success("Mở khóa thành công");
+                    return;
                 }
-                else
+                var ids = gridView.SelectedIds.ToList();
+                var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsKt eq false");
+                if (listViewItems.Count <= 0)
                 {
-                    Toast.Warning("Đã có lỗi xảy ra");
+                    Toast.Warning("Không DSVC nào cần khóa");
+                    return;
                 }
-            };
-        }
-
-        public async Task LockTransportation()
-        {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
-            if (gridView is null)
-            {
-                return;
-            }
-            var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsKt eq false");
-            if (listViewItems.Count <= 0)
-            {
-                Toast.Warning("Không DSVC nào cần khóa");
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = "Bạn có chắc chắn muốn khóa " + listViewItems.Count + " DSVC ?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                var checks = listViewItems.Where(x => x.IsLocked).ToList();
-                if (checks.Count > 0)
+                var confirm = new ConfirmDialog
                 {
-                    var confirmRequest = new ConfirmDialog
+                    Content = "Bạn có chắc chắn muốn khóa " + listViewItems.Count + " DSVC ?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var checks = listViewItems.Where(x => x.IsLocked).ToList();
+                    if (checks.Count > 0)
                     {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
-                    };
-                    confirmRequest.Render();
-                    confirmRequest.YesConfirmed += async () =>
-                    {
-                        foreach (var item in checks)
+                        var confirmRequest = new ConfirmDialog
                         {
-                            item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
-                        }
-                    };
-                    var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "LockTransportation");
-                    if (res)
-                    {
-                        await gridView.ApplyFilter(true);
-                    }
-                    else
-                    {
-                        Toast.Warning("Đã có lỗi xảy ra");
-                    }
-                }
-                else
-                {
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockTransportation");
-                    if (res)
-                    {
-                        await gridView.ApplyFilter(true);
-                    }
-                    else
-                    {
-                        Toast.Warning("Đã có lỗi xảy ra");
-                    }
-                }
-            };
-        }
-
-        public async Task LockAccountantTransportation()
-        {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
-            if (gridView is null)
-            {
-                return;
-            }
-            var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsSubmit eq false");
-            if (listViewItems.Count <= 0)
-            {
-                Toast.Warning("Không DSVC nào cần khóa");
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = "Bạn có chắc chắn muốn khóa " + listViewItems.Count + " DSVC ?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                var checks = listViewItems.Where(x => x.IsLocked).ToList();
-                if (checks.Count > 0)
-                {
-                    var confirmRequest = new ConfirmDialog
-                    {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
-                    };
-                    confirmRequest.Render();
-                    confirmRequest.YesConfirmed += async () =>
-                    {
-                        foreach (var item in checks)
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            "Hãy nhập lý do",
+                        };
+                        confirmRequest.Render();
+                        confirmRequest.YesConfirmed += async () =>
                         {
-                            item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
-                        }
-                    };
-                    var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "LockAccountantTransportation");
-                    if (res)
-                    {
-                        await gridView.ApplyFilter(true);
-                    }
-                    else
-                    {
-                        Toast.Warning("Đã có lỗi xảy ra");
-                    }
-                }
-                else
-                {
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockAccountantTransportation");
-                    if (res)
-                    {
-                        await gridView.ApplyFilter(true);
-                    }
-                    else
-                    {
-                        Toast.Warning("Đã có lỗi xảy ra");
-                    }
-                }
-            };
-        }
-
-        public async Task LockAllTransportation()
-        {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
-            if (gridView is null)
-            {
-                return;
-            }
-            var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLocked eq false");
-            if (listViewItems.Count <= 0)
-            {
-                Toast.Warning("Không DSVC nào cần khóa");
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = "Bạn có chắc chắn muốn khóa " + listViewItems.Count + " DSVC ?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockAllTransportation");
-                if (res)
-                {
-                    await gridView.ApplyFilter(true);
-                }
-                else
-                {
-                    Toast.Warning("Đã có lỗi xảy ra");
-                }
-            };
-        }
-
-        public async Task LockRevenueTransportation()
-        {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
-            if (gridView is null)
-            {
-                return;
-            }
-            var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLockedRevenue eq false");
-            if (listViewItems.Count <= 0)
-            {
-                Toast.Warning("Không DSVC nào cần khóa");
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = "Bạn có chắc chắn muốn khóa " + listViewItems.Count + " DSVC ?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                var checks = listViewItems.Where(x => x.IsLocked).ToList();
-                if (checks.Count > 0)
-                {
-                    var confirmRequest = new ConfirmDialog
-                    {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
-                    };
-                    confirmRequest.Render();
-                    confirmRequest.YesConfirmed += async () =>
-                    {
-                        foreach (var item in checks)
-                        {
-                            item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
-                        }
-                    };
-                    var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "LockRevenueTransportation");
-                    if (res)
-                    {
-                        await gridView.ApplyFilter(true);
-                    }
-                    else
-                    {
-                        Toast.Warning("Đã có lỗi xảy ra");
-                    }
-                }
-                else
-                {
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockRevenueTransportation");
-                    if (res)
-                    {
-                        await gridView.ApplyFilter(true);
-                    }
-                    else
-                    {
-                        Toast.Warning("Đã có lỗi xảy ra");
-                    }
-                }
-            };
-        }
-
-        public async Task UnLockTransportation()
-        {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
-            if (gridView is null)
-            {
-                return;
-            }
-            var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsKt eq true");
-            if (listViewItems.Count <= 0)
-            {
-                Toast.Warning("Không DSVC nào cần mở khóa");
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = "Bạn có chắc chắn muốn mở khóa " + listViewItems.Count + " DSVC ?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                var checks = listViewItems.Where(x => x.IsLocked).ToList();
-                if (checks.Count > 0)
-                {
-                    var confirmRequest = new ConfirmDialog
-                    {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
-                    };
-                    confirmRequest.Render();
-                    confirmRequest.YesConfirmed += async () =>
-                    {
-                        foreach (var item in checks)
-                        {
-                            item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
-                        }
-                    };
-                    var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
-                    await UnLockTransportationNoCheck(transportationNoLock);
-                    await gridView.ApplyFilter(true);
-                }
-                else
-                {
-                    await UnLockTransportationNoCheck(listViewItems);
-                    await gridView.ApplyFilter(true);
-                }
-            };
-        }
-
-        public async Task UnLockAccountantTransportation()
-        {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
-            if (gridView is null)
-            {
-                return;
-            }
-            var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsSubmit eq true");
-            if (listViewItems.Count <= 0)
-            {
-                Toast.Warning("Không DSVC nào cần mở khóa");
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = "Bạn có chắc chắn muốn mở khóa " + listViewItems.Count + " DSVC ?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                var checks = listViewItems.Where(x => x.IsLocked).ToList();
-                if (checks.Count > 0)
-                {
-                    var confirmRequest = new ConfirmDialog
-                    {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
-                    };
-                    confirmRequest.Render();
-                    confirmRequest.YesConfirmed += async () =>
-                    {
-                        foreach (var item in checks)
-                        {
-                            item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
-                        }
-                    };
-                    var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
-                    await UnLockAccountantTransportationNoCheck(transportationNoLock);
-                    await gridView.ApplyFilter(true);
-                }
-                else
-                {
-                    await UnLockAccountantTransportationNoCheck(listViewItems);
-                    await gridView.ApplyFilter(true);
-                }
-            };
-        }
-
-        public async Task UnLockAllTransportation()
-        {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
-            if (gridView is null)
-            {
-                return;
-            }
-            var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLocked eq true");
-            if (listViewItems.Count <= 0)
-            {
-                Toast.Warning("Không DSVC nào cần mở khóa");
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = "Bạn có chắc chắn muốn mở khóa " + listViewItems.Count + " DSVC ?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                var checkRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and TransportationId in ({listViewItems.Select(x => x.Id).Combine()}) and IsRequestUnLockAll eq true");
-                if (checkRequests.Count > 0)
-                {
-                    var confirmRequets = new ConfirmDialog
-                    {
-                        Content = $"Có {checkRequests.Count} DSVC cần duyệt bạn có muốn duyệt mở khóa toàn bộ không ?",
-                    };
-                    confirmRequets.Render();
-                    confirmRequets.YesConfirmed += async () =>
-                    {
-                        var rs = await new Client(nameof(Transportation)).PostAsync<bool>(checkRequests, "ApproveUnLockAll");
-                        if (rs)
+                            foreach (var item in checks)
+                            {
+                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                            }
+                        };
+                        var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "LockTransportation");
+                        if (res)
                         {
                             await gridView.ApplyFilter(true);
                         }
@@ -895,88 +897,435 @@ namespace TMS.UI.Business.Manage
                         {
                             Toast.Warning("Đã có lỗi xảy ra");
                         }
-                    };
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems.Where(x => x.IsRequestUnLockAll == false), "UnLockAllTransportation");
-                    if (res)
-                    {
-                        await gridView.ApplyFilter(true);
                     }
                     else
                     {
-                        Toast.Warning("Đã có lỗi xảy ra");
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockTransportation");
+                        if (res)
+                        {
+                            await gridView.ApplyFilter(true);
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
                     }
-                }
-                else if (checkRequests.Count <= 0)
-                {
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "UnLockAllTransportation");
-                    if (res)
-                    {
-                        await gridView.ApplyFilter(true);
-                    }
-                    else
-                    {
-                        Toast.Warning("Đã có lỗi xảy ra");
-                    }
-                }
-            };
+                };
+            });
         }
 
-        public async Task UnLockRevenueTransportation()
+        public void LockAccountantTransportation(object arg)
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
-            if (gridView is null)
+            Task.Run(async () => 
             {
-                return;
-            }
-            var ids = gridView.SelectedIds.ToList();
-            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLockedRevenue eq true");
-            if (listViewItems.Count <= 0)
-            {
-                Toast.Warning("Không DSVC nào cần mở khóa");
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = "Bạn có chắc chắn muốn mở khóa " + listViewItems.Count + " DSVC ?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                var checks = listViewItems.Where(x => x.IsLocked).ToList();
-                if (checks.Count > 0)
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+                if (gridView is null)
                 {
-                    var confirmRequest = new ConfirmDialog
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsSubmit eq false");
+                if (listViewItems.Count <= 0)
+                {
+                    Toast.Warning("Không DSVC nào cần khóa");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    Content = "Bạn có chắc chắn muốn khóa " + listViewItems.Count + " DSVC ?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var checks = listViewItems.Where(x => x.IsLocked).ToList();
+                    if (checks.Count > 0)
                     {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
-                    };
-                    confirmRequest.Render();
-                    confirmRequest.YesConfirmed += async () =>
-                    {
-                        foreach (var item in checks)
+                        var confirmRequest = new ConfirmDialog
                         {
-                            item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            "Hãy nhập lý do",
+                        };
+                        confirmRequest.Render();
+                        confirmRequest.YesConfirmed += async () =>
+                        {
+                            foreach (var item in checks)
+                            {
+                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                            }
+                        };
+                        var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "LockAccountantTransportation");
+                        if (res)
+                        {
+                            await gridView.ApplyFilter(true);
                         }
-                    };
-                    var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "UnLockRevenueTransportation");
-                    if (res)
-                    {
-                        await gridView.ApplyFilter(true);
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
                     }
-                }
-                else
+                    else
+                    {
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockAccountantTransportation");
+                        if (res)
+                        {
+                            await gridView.ApplyFilter(true);
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                };
+            });
+        }
+
+        public void LockAllTransportation(object arg)
+        {
+            Task.Run(async () => 
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+                if (gridView is null)
                 {
-                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "UnLockRevenueTransportation");
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLocked eq false");
+                if (listViewItems.Count <= 0)
+                {
+                    Toast.Warning("Không DSVC nào cần khóa");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    Content = "Bạn có chắc chắn muốn khóa " + listViewItems.Count + " DSVC ?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockAllTransportation");
                     if (res)
                     {
                         await gridView.ApplyFilter(true);
                     }
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
+                };
+            });
+        }
+
+        public void LockRevenueTransportation(object arg)
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+                if (gridView is null)
+                {
+                    return;
                 }
-            };
+                var ids = gridView.SelectedIds.ToList();
+                var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLockedRevenue eq false");
+                if (listViewItems.Count <= 0)
+                {
+                    Toast.Warning("Không DSVC nào cần khóa");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    Content = "Bạn có chắc chắn muốn khóa " + listViewItems.Count + " DSVC ?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var checks = listViewItems.Where(x => x.IsLocked).ToList();
+                    if (checks.Count > 0)
+                    {
+                        var confirmRequest = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            "Hãy nhập lý do",
+                        };
+                        confirmRequest.Render();
+                        confirmRequest.YesConfirmed += async () =>
+                        {
+                            foreach (var item in checks)
+                            {
+                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                            }
+                        };
+                        var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "LockRevenueTransportation");
+                        if (res)
+                        {
+                            await gridView.ApplyFilter(true);
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                    else
+                    {
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockRevenueTransportation");
+                        if (res)
+                        {
+                            await gridView.ApplyFilter(true);
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                };
+            });
+        }
+
+        public void UnLockTransportation(object arg)
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+                if (gridView is null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsKt eq true");
+                if (listViewItems.Count <= 0)
+                {
+                    Toast.Warning("Không DSVC nào cần mở khóa");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    Content = "Bạn có chắc chắn muốn mở khóa " + listViewItems.Count + " DSVC ?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var checks = listViewItems.Where(x => x.IsLocked).ToList();
+                    if (checks.Count > 0)
+                    {
+                        var confirmRequest = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            "Hãy nhập lý do",
+                        };
+                        confirmRequest.Render();
+                        confirmRequest.YesConfirmed += async () =>
+                        {
+                            foreach (var item in checks)
+                            {
+                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                            }
+                        };
+                        var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
+                        await UnLockTransportationNoCheck(transportationNoLock);
+                        await gridView.ApplyFilter(true);
+                    }
+                    else
+                    {
+                        await UnLockTransportationNoCheck(listViewItems);
+                        await gridView.ApplyFilter(true);
+                    }
+                };
+            });
+        }
+
+        public void UnLockAccountantTransportation(object arg)
+        {
+            Task.Run(async () => 
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+                if (gridView is null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsSubmit eq true");
+                if (listViewItems.Count <= 0)
+                {
+                    Toast.Warning("Không DSVC nào cần mở khóa");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    Content = "Bạn có chắc chắn muốn mở khóa " + listViewItems.Count + " DSVC ?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var checks = listViewItems.Where(x => x.IsLocked).ToList();
+                    if (checks.Count > 0)
+                    {
+                        var confirmRequest = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            "Hãy nhập lý do",
+                        };
+                        confirmRequest.Render();
+                        confirmRequest.YesConfirmed += async () =>
+                        {
+                            foreach (var item in checks)
+                            {
+                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                            }
+                        };
+                        var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
+                        await UnLockAccountantTransportationNoCheck(transportationNoLock);
+                        await gridView.ApplyFilter(true);
+                    }
+                    else
+                    {
+                        await UnLockAccountantTransportationNoCheck(listViewItems);
+                        await gridView.ApplyFilter(true);
+                    }
+                };
+            });
+        }
+
+        public void UnLockAllTransportation(object arg)
+        {
+            Task.Run(async () => 
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+                if (gridView is null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLocked eq true");
+                if (listViewItems.Count <= 0)
+                {
+                    Toast.Warning("Không DSVC nào cần mở khóa");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    Content = "Bạn có chắc chắn muốn mở khóa " + listViewItems.Count + " DSVC ?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var checkRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and TransportationId in ({listViewItems.Select(x => x.Id).Combine()}) and IsRequestUnLockAll eq true");
+                    if (checkRequests.Count > 0)
+                    {
+                        var confirmRequets = new ConfirmDialog
+                        {
+                            Content = $"Có {checkRequests.Count} DSVC cần duyệt bạn có muốn duyệt mở khóa toàn bộ không ?",
+                        };
+                        confirmRequets.Render();
+                        confirmRequets.YesConfirmed += async () =>
+                        {
+                            var rs = await new Client(nameof(Transportation)).PostAsync<bool>(checkRequests, "ApproveUnLockAll");
+                            if (rs)
+                            {
+                                await gridView.ApplyFilter(true);
+                            }
+                            else
+                            {
+                                Toast.Warning("Đã có lỗi xảy ra");
+                            }
+                        };
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems.Where(x => x.IsRequestUnLockAll == false), "UnLockAllTransportation");
+                        if (res)
+                        {
+                            await gridView.ApplyFilter(true);
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                    else if (checkRequests.Count <= 0)
+                    {
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "UnLockAllTransportation");
+                        if (res)
+                        {
+                            await gridView.ApplyFilter(true);
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                };
+            });
+        }
+
+        public void UnLockRevenueTransportation(object arg)
+        {
+            Task.Run(async () => 
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+                if (gridView is null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsLockedRevenue eq true");
+                if (listViewItems.Count <= 0)
+                {
+                    Toast.Warning("Không DSVC nào cần mở khóa");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    Content = "Bạn có chắc chắn muốn mở khóa " + listViewItems.Count + " DSVC ?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var checks = listViewItems.Where(x => x.IsLocked).ToList();
+                    if (checks.Count > 0)
+                    {
+                        var confirmRequest = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            "Hãy nhập lý do",
+                        };
+                        confirmRequest.Render();
+                        confirmRequest.YesConfirmed += async () =>
+                        {
+                            foreach (var item in checks)
+                            {
+                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                            }
+                        };
+                        var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "UnLockRevenueTransportation");
+                        if (res)
+                        {
+                            await gridView.ApplyFilter(true);
+                        }
+                    }
+                    else
+                    {
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "UnLockRevenueTransportation");
+                        if (res)
+                        {
+                            await gridView.ApplyFilter(true);
+                        }
+                    }
+                };
+            });
         }
 
         public async Task UnLockTransportationNoCheck(List<Transportation> transportations)
