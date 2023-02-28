@@ -1363,15 +1363,40 @@ namespace TMS.UI.Business.Manage
                 }
                 else
                 {
-                    var requestChange = new Expense();
-                    requestChange.CopyPropFrom(expense);
-                    requestChange.Id = 0;
-                    requestChange.StatusId = (int)ApprovalStatusEnum.New;
-                    requestChange.RequestChangeId = expense.Id;
-                    expense.StatusId = (int)ApprovalStatusEnum.Approving;
-                    await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(expense));
-                    await new Client(nameof(TransportationPlan)).CreateAsync(requestChange);
-                    await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
+                    var confirm = new ConfirmDialog
+                    {
+                        NeedAnswer = true,
+                        ComType = nameof(Textbox),
+                        Content = $"Cont này đã được mua BH. Bạn có muốn tiếp tục cập nhật thông tin không ?<br />" +
+                        "Hãy nhập lý do",
+                    };
+                    confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        var requestChange = new Expense();
+                        requestChange.CopyPropFrom(expense);
+                        requestChange.Id = 0;
+                        requestChange.StatusId = (int)ApprovalStatusEnum.New;
+                        requestChange.RequestChangeId = expense.Id;
+                        requestChange.Reason = confirm.Textbox?.Text;
+                        expense.StatusId = (int)ApprovalStatusEnum.Approving;
+                        await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(expense));
+                        await new Client(nameof(TransportationPlan)).CreateAsync(requestChange);
+                        await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
+                    };
+                    confirm.NoConfirmed += async () =>
+                    {
+                        var requestChange = new Expense();
+                        requestChange.CopyPropFrom(expense);
+                        requestChange.Id = 0;
+                        requestChange.StatusId = (int)ApprovalStatusEnum.New;
+                        requestChange.RequestChangeId = expense.Id;
+                        requestChange.Reason = confirm.Textbox?.Text;
+                        expense.StatusId = (int)ApprovalStatusEnum.Approving;
+                        await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(expense));
+                        await new Client(nameof(TransportationPlan)).CreateAsync(requestChange);
+                        await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
+                    };
                 }
                 Expense expenseSOC = null;
                 if (transportation.SocId != null)
@@ -1394,13 +1419,34 @@ namespace TMS.UI.Business.Manage
                     }
                     else
                     {
-                        var requestChangeSOC = new Expense();
-                        requestChangeSOC.CopyPropFrom(expenseSOC);
-                        requestChangeSOC.Id = 0;
-                        requestChangeSOC.StatusId = (int)ApprovalStatusEnum.New;
-                        requestChangeSOC.RequestChangeId = expenseSOC.Id;
-                        await new Client(nameof(TransportationPlan)).CreateAsync(requestChangeSOC);
-                        await new Client(nameof(Expense)).PostAsync<bool>(requestChangeSOC, "RequestApprove");
+                        var confirm = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Cont này đã được mua BH. Bạn có muốn tiếp tục cập nhật thông tin không ?<br />" +
+                        "Hãy nhập lý do",
+                        };
+                        confirm.Render();
+                        confirm.YesConfirmed += async () =>
+                        {
+                            var requestChangeSOC = new Expense();
+                            requestChangeSOC.CopyPropFrom(expenseSOC);
+                            requestChangeSOC.Id = 0;
+                            requestChangeSOC.StatusId = (int)ApprovalStatusEnum.New;
+                            requestChangeSOC.RequestChangeId = expenseSOC.Id;
+                            await new Client(nameof(TransportationPlan)).CreateAsync(requestChangeSOC);
+                            await new Client(nameof(Expense)).PostAsync<bool>(requestChangeSOC, "RequestApprove");
+                        };
+                        confirm.NoConfirmed += async () =>
+                        {
+                            var requestChangeSOC = new Expense();
+                            requestChangeSOC.CopyPropFrom(expenseSOC);
+                            requestChangeSOC.Id = 0;
+                            requestChangeSOC.StatusId = (int)ApprovalStatusEnum.New;
+                            requestChangeSOC.RequestChangeId = expenseSOC.Id;
+                            await new Client(nameof(TransportationPlan)).CreateAsync(requestChangeSOC);
+                            await new Client(nameof(Expense)).PostAsync<bool>(requestChangeSOC, "RequestApprove");
+                        };
                     }
                 }
             }

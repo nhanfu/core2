@@ -199,36 +199,25 @@ namespace TMS.UI.Business.Manage
             {
                 var _gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
                 var listViewItem = _gridView.RowData.Data.Cast<TransportationPlan>().FirstOrDefault(x => x.StatusId == (int)ApprovalStatusEnum.Approving);
-                await Approve(listViewItem);
-                listViewItem.ClearReferences();
-                Window.SetTimeout(async () =>
+                var containerTypeId = await CheckContainerType(listViewItem);
+                var commodidtyValue = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {listViewItem.BossId} and CommodityId eq {listViewItem.CommodityId} and ContainerId eq {containerTypeId}");
+                if (commodidtyValue is null && listViewItem.BossId != null && listViewItem.CommodityId != null && listViewItem.ContainerTypeId != null && listViewItem.IsCompany == false)
                 {
-                    try
+                    var newCommodityValue = await CreateCommodityValue(listViewItem);
+                    await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
+                }
+                var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and TransportationPlanId eq {transportationPlanEntity.Id}");
+                if (transportations != null)
+                {
+                    var transportationIds = transportations.Select(x => x.Id).ToList();
+                    var expenseType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'Bảo hiểm')");
+                    var expenseSOCType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'BH SOC')");
+                    var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId in ({transportationIds.Combine()}) and ExpenseTypeId in ({expenseType.Id}, {expenseSOCType.Id}) and RequestChangeId eq null");
+                    if (expenses != null)
                     {
-                        var containerTypeId = await CheckContainerType(listViewItem);
-                        var commodidtyValue = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {listViewItem.BossId} and CommodityId eq {listViewItem.CommodityId} and ContainerId eq {containerTypeId}");
-                        if (commodidtyValue is null && listViewItem.BossId != null && listViewItem.CommodityId != null && listViewItem.ContainerTypeId != null && listViewItem.IsCompany == false)
-                        {
-                            var newCommodityValue = await CreateCommodityValue(listViewItem);
-                            await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
-                        }
-                        var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and TransportationPlanId eq {transportationPlanEntity.Id}");
-                        if (transportations != null)
-                        {
-                            var transportationIds = transportations.Select(x => x.Id).ToList();
-                            var expenseType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'Bảo hiểm')");
-                            var expenseSOCType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'BH SOC')");
-                            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId in ({transportationIds.Combine()}) and ExpenseTypeId in ({expenseType.Id}, {expenseSOCType.Id}) and RequestChangeId eq null");
-                            if (expenses != null)
-                            {
-                                await UpdateExpenses(expenses, listViewItem);
-                            }
-                        }
+                        await UpdateExpenses(expenses, listViewItem);
                     }
-                    catch
-                    {
-                    }
-                }, 100);
+                }
             };
         }
 
@@ -267,15 +256,44 @@ namespace TMS.UI.Business.Manage
                 }
                 else
                 {
-                    var requestChange = new Expense();
-                    requestChange.CopyPropFrom(item);
-                    requestChange.Id = 0;
-                    requestChange.StatusId = (int)ApprovalStatusEnum.New;
-                    requestChange.RequestChangeId = item.Id;
-                    item.StatusId = (int)ApprovalStatusEnum.Approving;
-                    await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(item));
-                    await new Client(nameof(Expense)).CreateAsync(requestChange);
-                    var res = await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
+                    var confirm = new ConfirmDialog
+                    {
+                        NeedAnswer = true,
+                        ComType = nameof(Textbox),
+                        Content = $"Cont này đã được mua BH. Bạn có muốn tiếp tục cập nhật thông tin không ?<br />" +
+                        "Hãy nhập lý do",
+                    };
+                    confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        var requestChange = new Expense();
+                        requestChange.CopyPropFrom(item);
+                        requestChange.Id = 0;
+                        requestChange.StatusId = (int)ApprovalStatusEnum.New;
+                        requestChange.RequestChangeId = item.Id;
+                        requestChange.Reason = confirm.Textbox?.Text;
+                        item.StatusId = (int)ApprovalStatusEnum.Approving;
+                        await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(item));
+                        await new Client(nameof(Expense)).CreateAsync(requestChange);
+                        var res = await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
+                        await Approve(listViewItem);
+                        listViewItem.ClearReferences();
+                    };
+                    confirm.NoConfirmed += async () =>
+                    {
+                        var requestChange = new Expense();
+                        requestChange.CopyPropFrom(item);
+                        requestChange.Id = 0;
+                        requestChange.StatusId = (int)ApprovalStatusEnum.New;
+                        requestChange.RequestChangeId = item.Id;
+                        requestChange.Reason = confirm.Textbox?.Text;
+                        item.StatusId = (int)ApprovalStatusEnum.Approving;
+                        await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(item));
+                        await new Client(nameof(Expense)).CreateAsync(requestChange);
+                        var res = await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
+                        await Approve(listViewItem);
+                        listViewItem.ClearReferences();
+                    };
                 }
             }
         }
