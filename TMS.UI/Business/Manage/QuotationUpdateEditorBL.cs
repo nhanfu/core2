@@ -36,6 +36,8 @@ namespace TMS.UI.Business.Manage
                 if (rs)
                 {
                     Toast.Success("Cập nhật giá thành công");
+                    Dirty = false;
+                    Dispose();
                 }
             };
             AddChild(confirmDialog);
