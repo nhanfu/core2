@@ -425,6 +425,7 @@ public partial class TMSContext : DbContext
                 .HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Notes).HasMaxLength(500);
             entity.Property(e => e.Quantity).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.Reason).HasMaxLength(250);
             entity.Property(e => e.SealNo).HasMaxLength(250);
             entity.Property(e => e.TotalPriceAfterTax).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.TotalPriceBeforeTax).HasColumnType("decimal(20, 5)");
