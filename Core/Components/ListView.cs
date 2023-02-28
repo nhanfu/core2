@@ -355,7 +355,12 @@ namespace Core.Components
 
         public async Task LoadHeader()
         {
-            await LoadGridPolicy();
+            var columns = await LoadGridPolicy();
+            columns = FilterColumns(columns);
+            BasicHeader = columns;
+            BasicHeaderSearch = columns.Where(x => x.ComponentType == "Dropdown").ToList();
+            ResetOrder();
+            HeaderLoaded?.Invoke(columns);
         }
 
         public void ResetOrder()
@@ -599,11 +604,6 @@ namespace Core.Components
                         x.MinWidth = pe;
                     });
                 }
-                var columns1 = FilterColumns(sysSetting);
-                BasicHeader = columns1;
-                BasicHeaderSearch = columns1.Where(x => x.ComponentType == "Dropdown").ToList();
-                ResetOrder();
-                HeaderLoaded?.Invoke(columns1);
                 return sysSetting;
             }
             else
@@ -617,17 +617,10 @@ namespace Core.Components
         {
             if (userSetting.Nothing())
             {
-                var columns1 = FilterColumns(sysSetting);
-                BasicHeader = columns1;
-                BasicHeaderSearch = columns1.Where(x => x.ComponentType == "Dropdown").ToList();
-                ResetOrder();
-                HeaderLoaded?.Invoke(columns1);
                 return sysSetting;
             }
             var gridPolicys = new List<GridPolicy>();
             var userSettings = userSetting.ToDictionary(x => x.Id);
-            var liteGrid = GuiInfo.LiteGrid is null ? false : GuiInfo.LiteGrid.Value;
-            var show = LocalStorage.GetItem<bool?>("Show" + GuiInfo.Id) is null ? false : LocalStorage.GetItem<bool?>("Show" + GuiInfo.Id);
             sysSetting.ForEach(x =>
             {
                 var current = userSettings.GetValueOrDefault(x.Id);
@@ -655,18 +648,8 @@ namespace Core.Components
                         x.Order = current.Order;
                     }
                 }
-                if (show.Value && int.Parse(x.Width.Replace("px", "").Trim()) <= 15)
-                {
-                    x.Hidden = true;
-                }
             });
-            var columns = FilterColumns(sysSetting);
-            BasicHeader = columns;
-            BasicHeaderSearch = columns.Where(x => x.ComponentType == "Dropdown").ToList();
-            ResetOrder();
-            columns = columns.Where(x => !x.Hidden).ToList();
-            HeaderLoaded?.Invoke(columns);
-            return columns;
+            return sysSetting;
         }
 
         public void UpdatePagination(int total, int currentPageCount)

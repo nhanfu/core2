@@ -879,6 +879,7 @@ namespace TMS.API.Controllers
                 var qr = db.Transportation.Where(x =>
                 x.ClosingDate.Value.Date >= FromDate
                 && x.ClosingDate.Value.Date <= ToDate
+                && x.ExportListId == VendorId
                 && x.ClosingId == ClosingId).OrderBy(x => x.ClosingDate).AsQueryable();
                 var transportations = await qr.ToListAsync();
                 var lastHis = new CheckFeeHistory()
@@ -1005,6 +1006,7 @@ namespace TMS.API.Controllers
                             CollectOnSupPriceUpload = x.CollectOnSupPrice,
                             TotalPriceAfterTaxCheck = x.TotalPriceAfterTax,
                             TotalPriceAfterTaxUpload = x.TotalPriceAfterTax,
+                            CheckFeeHistoryId = lastHis.Id
                         };
                     }
                     return tran;
@@ -1273,6 +1275,7 @@ namespace TMS.API.Controllers
                 var routeId = item.Route is null ? null : routeDB.GetValueOrDefault(item.RouteEn + brandShipId.Id);
                 var tran = new Transportation()
                 {
+                    CheckFeeHistoryId = exportListId is null ? null : exportListId.Id,
                     ExportListId = exportListId is null ? null : exportListId.Id,
                     RouteId = routeId is null ? null : routeId.Id,
                     BookingId = bookingId is null ? null : bookingId.Id,
