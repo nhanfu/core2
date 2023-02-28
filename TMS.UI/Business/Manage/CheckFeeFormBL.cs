@@ -36,6 +36,11 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
+            if(AEntity.RouteIds is null || AEntity.RouteIds.Nothing())
+            {
+                Toast.Warning("Vui lòng chọn chuyến xe");
+                return;
+            }
             _uploaderCheckFee.Click();
         }
 
@@ -70,7 +75,7 @@ namespace TMS.UI.Business.Manage
             formData.Append(nameof(CheckFeeHistory.FromDate), AEntity.FromDate.ToString());
             formData.Append(nameof(CheckFeeHistory.ToDate), AEntity.ToDate.ToString());
             formData.Append(nameof(CheckFeeHistory.ClosingId), AEntity.ClosingId.ToString());
-            formData.Append(nameof(CheckFeeHistory.RouteIds), AEntity.RouteIds.ToString());
+            formData.Append(nameof(CheckFeeHistory.RouteIds), AEntity.RouteIds.Combine());
             var rs = await new Client(nameof(Transportation)).SubmitAsync<List<Transportation>>(new XHRWrapper
             {
                 FormData = formData,

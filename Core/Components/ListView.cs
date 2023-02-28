@@ -1400,6 +1400,7 @@ namespace Core.Components
                     ClearSelected();
                 }
                 currentRow.Selected = true;
+                LastListViewItem = currentRow;
                 SelectedIndex = currentRow.ListViewSection.Children.IndexOf(currentRow);
             }
         }

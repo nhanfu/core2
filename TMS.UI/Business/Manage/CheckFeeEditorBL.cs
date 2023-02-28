@@ -382,5 +382,211 @@ namespace TMS.UI.Business.Manage
                 await listViewItem.PatchUpdate();
             }
         }
+
+        public virtual void UpdateQuotation(object arg)
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
+            Task.Run(async () =>
+            {
+                var selected = gridView.LastListViewItem;
+                if (selected is null)
+                {
+                    Toast.Warning("Vui lòng chọn cont cần cập nhật giá!");
+                    return;
+                }
+                var coords = selected.Entity.As<Transportation>();
+                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7592 " +
+                    $"and BossId eq {coords.BossId} " +
+                    $"and ContainerTypeId eq {coords.ContainerTypeId} " +
+                    $"and LocationId eq {coords.ReceivedId} " +
+                    $"and StartDate le {coords.ClosingDate.Value.ToOdataFormat()} " +
+                    $"and PackingId eq {coords.ClosingId}&$orderby=StartDate desc");
+                if (quotation is null)
+                {
+                    quotation = new Quotation()
+                    {
+                        TypeId = 7592,
+                        BossId = coords.BossId,
+                        ContainerTypeId = coords.ContainerTypeId,
+                        LocationId = coords.ReceivedId,
+                        StartDate = coords.ClosingDate,
+                        PackingId = coords.ClosingId
+                    };
+                }
+                await this.OpenPopup(
+                featureName: "Quotation Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Settings.QuotationEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Chỉnh sửa bảng giá đóng hàng";
+                    instance.Entity = quotation;
+                    return instance;
+                });
+            });
+        }
+
+        public virtual void CheckQuotationTransportation()
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
+            if (gridView is null)
+            {
+                return;
+            }
+            gridView.BodyContextMenuShow += () =>
+            {
+                var menus = new List<ContextMenuItem>();
+                menus.Clear();
+                menus.Add(new ContextMenuItem { Icon = "fas fa-pen", Text = "Cập nhật giá", Click = UpdateQuotation });
+                menus.Add(new ContextMenuItem
+                {
+                    Icon = "fas fa-pen",
+                    Text = "Cập nhật phí",
+                    MenuItems = new List<ContextMenuItem>
+                    {
+                        new ContextMenuItem { Text = "Cập cước tàu", Click = UpdateShipQuotation },
+                        new ContextMenuItem { Text = "Cập phí nâng", Click = UpdateLiftQuotation },
+                        new ContextMenuItem { Text = "Cập phí hạ", Click = UpdateLadingQuotation },
+                    }
+                });
+                ContextMenu.Instance.MenuItems = menus;
+            };
+        }
+
+        public void UpdateShipQuotation(object arg)
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+
+            Task.Run(async () =>
+            {
+                var selected = gridView.LastListViewItem;
+                if (selected is null)
+                {
+                    Toast.Warning("Vui lòng chọn cont cần cập nhật giá!");
+                    return;
+                }
+                var coords = selected.Entity.As<Transportation>();
+                if (coords.BrandShipId is null || coords.RouteId is null || coords.ContainerTypeId is null)
+                {
+                    Toast.Warning("Vui lòng nhập đầy đủ thông tin");
+                    return;
+                }
+                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7598 " +
+                    $"and RouteId eq {coords.RouteId} " +
+                    $"and PackingId eq {coords.BrandShipId} " +
+                    $"and ContainerTypeId eq {coords.ContainerTypeId} " +
+                    $"and cast(StartDate,Edm.DateTimeOffset) le {coords.ClosingDate.Value.ToOdataFormat()}&$orderby=StartDate desc");
+                if (quotation is null)
+                {
+                    quotation = new Quotation()
+                    {
+                        TypeId = 7598,
+                        RouteId = coords.RouteId,
+                        PackingId = coords.BrandShipId,
+                        ContainerTypeId = coords.ContainerTypeId,
+                        StartDate = coords.ClosingDate,
+                    };
+                }
+                await this.OpenPopup(
+                featureName: "Quotation Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Settings.QuotationEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Chỉnh sửa bảng giá cước tàu";
+                    instance.Entity = quotation;
+                    return instance;
+                });
+            });
+        }
+
+        public void UpdateLiftQuotation(object arg)
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+
+            Task.Run(async () =>
+            {
+                var selected = gridView.LastListViewItem;
+                if (selected is null)
+                {
+                    Toast.Warning("Vui lòng chọn cont cần cập nhật giá!");
+                    return;
+                }
+                var coords = selected.Entity.As<Transportation>();
+                if (coords.PickupEmptyId is null || coords.ContainerTypeId is null)
+                {
+                    Toast.Warning("Vui lòng nhập đầy đủ thông tin");
+                    return;
+                }
+                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7594 " +
+                    $"and ContainerTypeId eq {coords.ContainerTypeId} " +
+                    $"and LocationId eq {coords.PickupEmptyId} " +
+                    $"and StartDate le {coords.ClosingDate.Value.ToOdataFormat()}&$orderby=StartDate desc");
+                if (quotation is null)
+                {
+                    quotation = new Quotation()
+                    {
+                        TypeId = 7594,
+                        LocationId = coords.PickupEmptyId,
+                        ContainerTypeId = coords.ContainerTypeId,
+                        StartDate = coords.ClosingDate,
+                    };
+                }
+                await this.OpenPopup(
+                featureName: "Quotation Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Settings.QuotationEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Chỉnh sửa bảng giá nâng đóng hàng";
+                    instance.Entity = quotation;
+                    return instance;
+                });
+            });
+        }
+
+        public void UpdateLadingQuotation(object arg)
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+            Task.Run(async () =>
+            {
+                var selected = gridView.LastListViewItem;
+                if (selected is null)
+                {
+                    Toast.Warning("Vui lòng chọn cont cần cập nhật giá!");
+                    return;
+                }
+                var coords = selected.As<Transportation>();
+                if (coords.PortLoadingId is null || coords.ContainerTypeId is null)
+                {
+                    Toast.Warning("Vui lòng nhập đầy đủ thông tin");
+                    return;
+                }
+                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7596 " +
+                   $"and ContainerTypeId eq {coords.ContainerTypeId} " +
+                   $"and LocationId eq {coords.PortLoadingId} " +
+                   $"and StartDate le {coords.ClosingDate.Value.ToOdataFormat()}&$orderby=StartDate desc");
+                if (quotation is null)
+                {
+                    quotation = new Quotation()
+                    {
+                        TypeId = 7596,
+                        LocationId = coords.PortLoadingId,
+                        ContainerTypeId = coords.ContainerTypeId,
+                        StartDate = coords.ClosingDate,
+                    };
+                }
+                await this.OpenPopup(
+                featureName: "Quotation Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Settings.QuotationEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Chỉnh sửa bảng giá hạ đóng hàng";
+                    instance.Entity = quotation;
+                    return instance;
+                });
+            });
+        }
     }
 }

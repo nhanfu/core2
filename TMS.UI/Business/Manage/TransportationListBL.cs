@@ -416,13 +416,18 @@ namespace TMS.UI.Business.Manage
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
             Task.Run(async () =>
             {
-                var selected = gridView.AllListViewItem.FirstOrDefault(x => x.Selected);
+                var selected = gridView.LastListViewItem;
                 if (selected is null)
                 {
                     Toast.Warning("Vui lòng chọn cont cần cập nhật giá!");
                     return;
                 }
-                var coords = selected.As<Transportation>();
+                var coords = selected.Entity.As<Transportation>();
+                if (coords.ClosingId is null)
+                {
+                    Toast.Warning("Vui lòng nhập nhà xe");
+                    return;
+                }
                 var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7592 " +
                     $"and BossId eq {coords.BossId} " +
                     $"and ContainerTypeId eq {coords.ContainerTypeId} " +
@@ -460,13 +465,13 @@ namespace TMS.UI.Business.Manage
 
             Task.Run(async () =>
             {
-                var selected = await gridView.GetRealTimeSelectedRows();
-                if (selected.Nothing())
+                var selected = gridView.LastListViewItem;
+                if (selected is null)
                 {
                     Toast.Warning("Vui lòng chọn cont cần cập nhật giá!");
                     return;
                 }
-                var coords = selected.Cast<Transportation>().ToList().LastOrDefault();
+                var coords = selected.Entity.As<Transportation>();
                 if (coords.BrandShipId is null || coords.RouteId is null || coords.ContainerTypeId is null)
                 {
                     Toast.Warning("Vui lòng nhập đầy đủ thông tin");
@@ -507,13 +512,13 @@ namespace TMS.UI.Business.Manage
 
             Task.Run(async () =>
             {
-                var selected = await gridView.GetRealTimeSelectedRows();
-                if (selected.Nothing())
+                var selected = gridView.LastListViewItem;
+                if (selected is null)
                 {
                     Toast.Warning("Vui lòng chọn cont cần cập nhật giá!");
                     return;
                 }
-                var coords = selected.Cast<Transportation>().ToList().LastOrDefault();
+                var coords = selected.Entity.As<Transportation>();
                 if (coords.PickupEmptyId is null || coords.ContainerTypeId is null)
                 {
                     Toast.Warning("Vui lòng nhập đầy đủ thông tin");
@@ -552,13 +557,13 @@ namespace TMS.UI.Business.Manage
 
             Task.Run(async () =>
             {
-                var selected = await gridView.GetRealTimeSelectedRows();
-                if (selected.Nothing())
+                var selected = gridView.LastListViewItem;
+                if (selected is null)
                 {
                     Toast.Warning("Vui lòng chọn cont cần cập nhật giá!");
                     return;
                 }
-                var coords = selected.Cast<Transportation>().ToList().LastOrDefault();
+                var coords = selected.Entity.As<Transportation>();
                 if (coords.PortLoadingId is null || coords.ContainerTypeId is null)
                 {
                     Toast.Warning("Vui lòng nhập đầy đủ thông tin");

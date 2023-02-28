@@ -793,7 +793,7 @@ namespace TMS.API.Controllers
         }
 
         [HttpPost("api/Transportation/CheckFee")]
-        public async Task<List<Transportation>> CheckFee([FromForm] DateTime FromDate, [FromForm] DateTime ToDate, [FromForm] int ClosingId, [FromForm] List<int> RouteIds, [FromServices] IWebHostEnvironment host, List<IFormFile> fileCheckFee, int type)
+        public async Task<List<Transportation>> CheckFee([FromForm] DateTime FromDate, [FromForm] DateTime ToDate, [FromForm] int ClosingId, [FromForm] string RouteIds, [FromServices] IWebHostEnvironment host, List<IFormFile> fileCheckFee, int type)
         {
             var formFile = fileCheckFee.FirstOrDefault();
             if (formFile == null || formFile.Length <= 0)
@@ -874,6 +874,7 @@ namespace TMS.API.Controllers
                     throw new ApiException($"Dòng {row} bị lỗi: {e.Message}") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
+            var routes = RouteIds.Split(",").Cast<int>().ToList();
             if (type == 1)
             {
                 var qr = db.Transportation.Where(x =>
@@ -881,7 +882,7 @@ namespace TMS.API.Controllers
                 && x.ClosingDate.Value.Date <= ToDate
                 && x.RouteId != null
                 && x.ContainerNo != null
-                && x.RouteIds.Contains(x.RouteId.Value)
+                && routes.Contains(x.RouteId.Value)
                 && x.ClosingId == ClosingId).OrderBy(x => x.ClosingDate).AsQueryable();
                 var transportations = await qr.ToListAsync();
                 var lastHis = new CheckFeeHistory()

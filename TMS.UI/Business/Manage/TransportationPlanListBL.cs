@@ -1,20 +1,18 @@
-﻿using Core.Components;
+﻿using Bridge.Html5;
+using Core.Clients;
+using Core.Components;
 using Core.Components.Extensions;
 using Core.Components.Forms;
+using Core.Enums;
 using Core.Extensions;
+using Core.MVVM;
+using Core.ViewModels;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
-using System;
-using System.Collections.Generic;
-using Core.Clients;
-using Bridge.Html5;
-using Core.MVVM;
-using Core.Enums;
-using Core.ViewModels;
-using static Retyped.dom.Literals.Types;
 using Event = Bridge.Html5.Event;
-using static Retyped.es5;
 using Math = System.Math;
 
 namespace TMS.UI.Business.Manage
