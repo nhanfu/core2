@@ -2136,6 +2136,66 @@ form {
     }
 }
 
+.fix1-ribbon-group {
+    border: 0px;
+    border-radius: 3px;
+    border-bottom: 1px solid @grayLight;
+    background-color: @bgButtonBar;
+    width: 100%;
+    height: 29px;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    z-index: 100;
+    top: 9px;
+    width: auto;
+    left: 515px;
+
+    > label {
+        display: none;
+    }
+
+    > table {
+        width: auto;
+    }
+
+    td {
+        margin: 0;
+        padding: 0 !important;
+    }
+
+    button {
+        height: 29px;
+        min-width: 4rem;
+        border-radius: 5px;
+        color: #fff;
+        .transparent;
+        position: relative;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        margin-right: 3px;
+
+        .icon {
+            color: inherit;
+            margin-right: 4px;
+
+            & + .caption {
+                margin: 0;
+            }
+        }
+
+        &:not(.last)::after {
+            position: absolute;
+            content: '';
+            border-right: 1px solid #ccc;
+            height: 50%;
+            top: 25%;
+            right: 0;
+        }
+    }
+}
+
 .floating-button {
     border: 0px;
     padding: 0px !important;

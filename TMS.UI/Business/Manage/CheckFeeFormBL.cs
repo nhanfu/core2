@@ -70,6 +70,7 @@ namespace TMS.UI.Business.Manage
             formData.Append(nameof(CheckFeeHistory.FromDate), AEntity.FromDate.ToString());
             formData.Append(nameof(CheckFeeHistory.ToDate), AEntity.ToDate.ToString());
             formData.Append(nameof(CheckFeeHistory.ClosingId), AEntity.ClosingId.ToString());
+            formData.Append(nameof(CheckFeeHistory.RouteIds), AEntity.RouteIds.ToString());
             var rs = await new Client(nameof(Transportation)).SubmitAsync<List<Transportation>>(new XHRWrapper
             {
                 FormData = formData,
@@ -77,6 +78,7 @@ namespace TMS.UI.Business.Manage
                 Method = HttpMethod.POST,
                 ResponseMimeType = Utils.GetMimeType("xlsx")
             });
+            LocalStorage.SetItem("RouteCheckFeeClosing", AEntity.RouteIds);
             Dispose();
             Window.SetTimeout(async () =>
             {

@@ -61,6 +61,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task CheckFee()
         {
+            var routeIds = LocalStorage.GetItem<List<int>>("RouteCheckFeeClosing");
             await this.OpenPopup(
                 featureName: "CheckFee Form",
                 factory: () =>
@@ -68,7 +69,10 @@ namespace TMS.UI.Business.Manage
                     var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeFormBL");
                     var instance = Activator.CreateInstance(type) as PopupEditor;
                     instance.Title = "Kiểm tra bảng kê";
-                    instance.Entity = new CheckFeeHistory();
+                    instance.Entity = new CheckFeeHistory()
+                    {
+                        RouteIds = routeIds
+                    };
                     return instance;
                 });
         }

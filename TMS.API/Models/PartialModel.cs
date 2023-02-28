@@ -59,6 +59,13 @@ namespace TMS.API.Models
         public List<int?> Region1Ids { get; set; }
     }
 
+    public partial class CheckFeeHistory
+    {
+        [NotMapped]
+        public List<int> RouteIds { get; set; }
+    }
+    
+
     public partial class Revenue
     {
         [NotMapped]

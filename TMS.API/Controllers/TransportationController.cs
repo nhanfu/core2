@@ -793,7 +793,7 @@ namespace TMS.API.Controllers
         }
 
         [HttpPost("api/Transportation/CheckFee")]
-        public async Task<List<Transportation>> CheckFee([FromForm] DateTime FromDate, [FromForm] DateTime ToDate, [FromForm] int ClosingId, [FromServices] IWebHostEnvironment host, List<IFormFile> fileCheckFee, int type)
+        public async Task<List<Transportation>> CheckFee([FromForm] DateTime FromDate, [FromForm] DateTime ToDate, [FromForm] int ClosingId, [FromForm] List<int> RouteIds, [FromServices] IWebHostEnvironment host, List<IFormFile> fileCheckFee, int type)
         {
             var formFile = fileCheckFee.FirstOrDefault();
             if (formFile == null || formFile.Length <= 0)
@@ -879,7 +879,9 @@ namespace TMS.API.Controllers
                 var qr = db.Transportation.Where(x =>
                 x.ClosingDate.Value.Date >= FromDate
                 && x.ClosingDate.Value.Date <= ToDate
-                && x.ExportListId == VendorId
+                && x.RouteId != null
+                && x.ContainerNo != null
+                && x.RouteIds.Contains(x.RouteId.Value)
                 && x.ClosingId == ClosingId).OrderBy(x => x.ClosingDate).AsQueryable();
                 var transportations = await qr.ToListAsync();
                 var lastHis = new CheckFeeHistory()
