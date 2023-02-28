@@ -311,7 +311,43 @@ namespace TMS.API.Models
         public bool IsRequestUnLockRevenue { get; set; }
         public string ReasonUnLockRevenue { get; set; }
         public int? UnlockRequestId { get; set; }
-
+        public int? CheckFeeHistoryReturnId { get; set; }
+        public DateTime? ClosingDateReturnUpload { get; set; }
+        public string ReceivedCheckReturnUpload { get; set; }
+        public string SealCheckReturnUpload { get; set; }
+        public string BossCheckReturnUpload { get; set; }
+        public int? Cont20CheckReturnUpload { get; set; }
+        public int? Cont40CheckReturnUpload { get; set; }
+        public string PickupEmptyReturnUpload { get; set; }
+        public string PortLoadingReturnUpload { get; set; }
+        public decimal? LiftFeeCheckReturnUpload { get; set; }
+        public decimal? LandingFeeReturnUpload { get; set; }
+        public decimal? CollectOnBehaftInvoinceNoFeeReturnUpload { get; set; }
+        public decimal? CollectOnBehaftFeeReturnUpload { get; set; }
+        public decimal? CollectOnSupPriceReturnUpload { get; set; }
+        public decimal? ClosingCombinationUnitPriceReturnUpload { get; set; }
+        public decimal? ClosingPercentReturnUpload { get; set; }
+        public decimal? TotalPriceAfterTaxReturnUpload { get; set; }
+        public string ContainerNoReturnUpload { get; set; }
+        public decimal? FeeVatReturn { get; set; }
+        public decimal? FeeVatReturn2 { get; set; }
+        public decimal? FeeVatReturn3 { get; set; }
+        public decimal? FeeReturn1 { get; set; }
+        public decimal? FeeReturn2 { get; set; }
+        public decimal? FeeReturn3 { get; set; }
+        public decimal? FeeReturn4 { get; set; }
+        public decimal? FeeReturn5 { get; set; }
+        public decimal? FeeReturn6 { get; set; }
+        public decimal? Fee1UploadReturn { get; set; }
+        public decimal? Fee2UploadReturn { get; set; }
+        public decimal? Fee3UploadReturn { get; set; }
+        public decimal? Fee4UploadReturn { get; set; }
+        public decimal? Fee5UploadReturn { get; set; }
+        public decimal? Fee6UploadReturn { get; set; }
+        public decimal? FeeVat1UploadReturn { get; set; }
+        public decimal? FeeVat2UploadReturn { get; set; }
+        public decimal? FeeVat3UploadReturn { get; set; }
+        public int? OrderExcelReturn { get; set; }
         public virtual ICollection<Expense> Expense { get; set; }
         public virtual ICollection<Revenue> Revenue { get; set; }
     }

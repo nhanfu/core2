@@ -167,11 +167,7 @@ public partial class TMSContext : DbContext
 
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.ToTable(tb =>
-            {
-                tb.HasTrigger("tr_Booking_Create");
-                tb.HasTrigger("tr_Booking_UpdateClick");
-            });
+            entity.ToTable(tb => tb.HasTrigger("tr_Booking_UpdateClick"));
 
             entity.Property(e => e.BookingNo)
                 .HasMaxLength(250)
@@ -1099,12 +1095,14 @@ public partial class TMSContext : DbContext
                 .HasMaxLength(250)
                 .IsUnicode(false);
             entity.Property(e => e.BossCheck).HasMaxLength(250);
+            entity.Property(e => e.BossCheckReturnUpload).HasMaxLength(250);
             entity.Property(e => e.BossCheckUpload).HasMaxLength(250);
             entity.Property(e => e.BossReturnCheck).HasMaxLength(250);
             entity.Property(e => e.CheckFee).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ClosingCombinationUnitPrice).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ClosingCombinationUnitPriceCheck).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ClosingCombinationUnitPriceReturnCheck).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.ClosingCombinationUnitPriceReturnUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ClosingCombinationUnitPriceUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ClosingDriverId).HasMaxLength(250);
             entity.Property(e => e.ClosingFee).HasColumnType("decimal(20, 5)");
@@ -1112,6 +1110,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.ClosingPercent).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ClosingPercentCheck).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ClosingPercentReturnCheck).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.ClosingPercentReturnUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ClosingPercentUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ClosingTruckId).HasMaxLength(250);
             entity.Property(e => e.ClosingUnitPrice).HasColumnType("decimal(20, 5)");
@@ -1119,10 +1118,12 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.CollectOnBehaftFee).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnBehaftFeeCheck).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnBehaftFeeReturnCheck).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.CollectOnBehaftFeeReturnUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnBehaftFeeUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnBehaftInvoinceNoFee).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnBehaftInvoinceNoFeeCheck).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnBehaftInvoinceNoFeeReturnCheck).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.CollectOnBehaftInvoinceNoFeeReturnUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnBehaftInvoinceNoFeeUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnBehaftPrice).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnSupPrice)
@@ -1130,6 +1131,7 @@ public partial class TMSContext : DbContext
                 .HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnSupPriceCheck).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnSupPriceReturnCheck).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.CollectOnSupPriceReturnUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnSupPriceUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CombinationFee).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CommodityValue).HasColumnType("decimal(20, 5)");
@@ -1139,6 +1141,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.ContainerNo).HasMaxLength(250);
             entity.Property(e => e.ContainerNoCheck).HasMaxLength(250);
             entity.Property(e => e.ContainerNoReturnCheck).HasMaxLength(250);
+            entity.Property(e => e.ContainerNoReturnUpload).HasMaxLength(250);
             entity.Property(e => e.ContainerNoUpload).HasMaxLength(250);
             entity.Property(e => e.Cp1).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Cp2).HasColumnType("decimal(20, 5)");
@@ -1152,22 +1155,40 @@ public partial class TMSContext : DbContext
                 .HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Fee1).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Fee1Upload).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.Fee1UploadReturn).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Fee2).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Fee2Upload).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.Fee2UploadReturn).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Fee3).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Fee3Upload).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.Fee3UploadReturn).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Fee4).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Fee4Upload).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.Fee4UploadReturn).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Fee5).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Fee5Upload).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.Fee5UploadReturn).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Fee6).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.Fee6Upload).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.Fee6UploadReturn).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.FeeReturn1).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.FeeReturn2).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.FeeReturn3).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.FeeReturn4).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.FeeReturn5).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.FeeReturn6).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FeeVat1).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FeeVat1Upload).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.FeeVat1UploadReturn).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FeeVat2).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FeeVat2Upload).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.FeeVat2UploadReturn).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FeeVat3).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FeeVat3Upload).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.FeeVat3UploadReturn).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.FeeVatReturn).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.FeeVatReturn2).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.FeeVatReturn3).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.FreeText).HasMaxLength(250);
             entity.Property(e => e.FreeText1).HasMaxLength(250);
             entity.Property(e => e.FreeText2).HasMaxLength(250);
@@ -1188,9 +1209,11 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.LandingFee).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.LandingFeeCheck).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.LandingFeeReturnCheck).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.LandingFeeReturnUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.LandingFeeUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.LiftFee).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.LiftFeeCheck).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.LiftFeeCheckReturnUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.LiftFeeCheckUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.LiftFeeReturnCheck).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.LotNo).HasMaxLength(250);
@@ -1217,8 +1240,10 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.PickupEmptyCheck).HasMaxLength(250);
             entity.Property(e => e.PickupEmptyReturnCheck).HasMaxLength(250);
             entity.Property(e => e.PickupEmptyUpload).HasMaxLength(250);
+            entity.Property(e => e.PickupEmptyReturnUpload).HasMaxLength(250);
             entity.Property(e => e.PortLoadingCheck).HasMaxLength(250);
             entity.Property(e => e.PortLoadingReturnCheck).HasMaxLength(250);
+            entity.Property(e => e.PortLoadingReturnUpload).HasMaxLength(250);
             entity.Property(e => e.PortLoadingUpload).HasMaxLength(250);
             entity.Property(e => e.ReasonUnLockAccountant)
                 .HasMaxLength(250)
@@ -1228,6 +1253,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.ReasonUnLockRevenue).HasMaxLength(250);
             entity.Property(e => e.ReasonUnLockShip).HasMaxLength(250);
             entity.Property(e => e.ReceivedCheck).HasMaxLength(250);
+            entity.Property(e => e.ReceivedCheckReturnUpload).HasMaxLength(250);
             entity.Property(e => e.ReceivedCheckUpload).HasMaxLength(250);
             entity.Property(e => e.ReceivedPrice).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.ReceivedReturnCheck).HasMaxLength(250);
@@ -1259,6 +1285,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.ReturnVs).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.RevenueAdjustment).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.SealCheck).HasMaxLength(250);
+            entity.Property(e => e.SealCheckReturnUpload).HasMaxLength(250);
             entity.Property(e => e.SealCheckUpload).HasMaxLength(250);
             entity.Property(e => e.SealNo).HasMaxLength(250);
             entity.Property(e => e.SealReturnCheck).HasMaxLength(250);
@@ -1290,6 +1317,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.TotalPriceAfterTax).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.TotalPriceAfterTaxCheck).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.TotalPriceAfterTaxReturnCheck).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.TotalPriceAfterTaxReturnUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.TotalPriceAfterTaxUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.TotalPriceBeforTax).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.TotalPriceNoTaxClosing)

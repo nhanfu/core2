@@ -1021,7 +1021,145 @@ namespace TMS.API.Controllers
             }
             else
             {
-                return null;
+                var qr = db.Transportation.Where(x =>
+                x.ReturnDate.Value.Date >= FromDate
+                && x.ReturnDate.Value.Date <= ToDate
+                && x.RouteId != null
+                && x.ContainerNo != null
+                && routes.Contains(x.RouteId.Value)
+                && x.ClosingId == ClosingId).OrderBy(x => x.ReturnDate).AsQueryable();
+                var transportations = await qr.ToListAsync();
+                var lastHis = new CheckFeeHistory()
+                {
+                    ClosingId = ClosingId,
+                    FromDate = FromDate,
+                    ToDate = ToDate,
+                    TypeId = type
+                };
+                SetAuditInfo(lastHis);
+                db.Add(lastHis);
+                await db.SaveChangesAsync();
+                var checks = list.Select(x =>
+                {
+                    var tran = transportations.FirstOrDefault(y => y.ContainerNo != null && y.ContainerNo.ToLower().Trim() == x.ContainerNo.ToLower()
+                    && y.ReturnDate.Value.Date == x.ClosingDate.Value.Date);
+                    if (tran != null)
+                    {
+                        tran.OrderExcel = int.Parse(x.No);
+                        tran.CheckFeeHistoryId = lastHis.Id;
+                        tran.ReceivedReturnCheck = x.Received;
+                        tran.ClosingDateReturnCheck = x.ClosingDate;
+                        tran.SealReturnCheck = x.SealNo;
+                        tran.ContainerNoCheck = x.ContainerNo;
+                        tran.BossReturnCheck = x.Boss;
+                        tran.Cont20ReturnCheck = x.Cont20;
+                        tran.Cont40ReturnCheck = x.Cont40;
+                        tran.ClosingPercentReturnCheck = x.ClosingPercentCheck;
+                        tran.PickupEmptyReturnCheck = x.PickupEmpty;
+                        tran.PortLoadingReturnCheck = x.PortLoading;
+                        tran.LiftFeeReturnCheck = x.LiftFee;
+                        tran.LandingFeeReturnCheck = x.LandingFee;
+                        tran.CollectOnBehaftInvoinceNoFeeReturnCheck = x.FeeVat1 + x.FeeVat2 + x.FeeVat3;
+                        tran.FeeVatReturn = x.FeeVat1;
+                        tran.FeeVatReturn2 = x.FeeVat2;
+                        tran.FeeVatReturn3 = x.FeeVat3;
+                        tran.FeeVat1UploadReturn = x.FeeVat1;
+                        tran.FeeVat2UploadReturn = x.FeeVat2;
+                        tran.FeeVat3UploadReturn = x.FeeVat3;
+                        tran.FeeReturn1 = x.Fee1;
+                        tran.FeeReturn2 = x.Fee2;
+                        tran.FeeReturn3 = x.Fee3;
+                        tran.FeeReturn4 = x.Fee4;
+                        tran.FeeReturn5 = x.Fee5;
+                        tran.FeeReturn6 = x.Fee6;
+                        tran.Fee1UploadReturn = x.Fee1;
+                        tran.Fee2UploadReturn = x.Fee2;
+                        tran.Fee3UploadReturn = x.Fee3;
+                        tran.Fee4UploadReturn = x.Fee4;
+                        tran.Fee5UploadReturn = x.Fee5;
+                        tran.Fee6UploadReturn = x.Fee6;
+                        tran.CollectOnBehaftFeeReturnCheck = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5 + x.Fee6;
+                        tran.CollectOnSupPriceReturnCheck = x.CollectOnSupPrice;
+                        tran.TotalPriceAfterTaxReturnCheck = x.TotalPriceAfterTax;
+                        tran.ReceivedCheckReturnUpload = x.Received;
+                        tran.ClosingDateReturnUpload = x.ClosingDate;
+                        tran.SealCheckReturnUpload = x.SealNo;
+                        tran.ContainerNoReturnUpload = x.ContainerNo;
+                        tran.Cont20CheckReturnUpload = x.Cont20;
+                        tran.Cont40CheckReturnUpload = x.Cont40;
+                        tran.ClosingPercentReturnUpload = x.ClosingPercentCheck;
+                        tran.PickupEmptyReturnUpload = x.PickupEmpty;
+                        tran.PortLoadingReturnUpload = x.PortLoading;
+                        tran.LiftFeeCheckReturnUpload = x.LiftFee;
+                        tran.LandingFeeReturnUpload = x.LandingFee;
+                        tran.CollectOnBehaftInvoinceNoFeeReturnUpload = x.FeeVat1 + x.FeeVat2 + x.FeeVat3;
+                        tran.CollectOnBehaftFeeReturnUpload = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5 + x.Fee6;
+                        tran.CollectOnSupPriceReturnUpload = x.CollectOnSupPrice;
+                        tran.TotalPriceAfterTaxReturnUpload = x.TotalPriceAfterTax;
+                    }
+                    else
+                    {
+                        tran = new Transportation()
+                        {
+                            ClosingId = ClosingId,
+                            OrderExcel = int.Parse(x.No),
+                            ReceivedCheck = x.Received,
+                            ReceivedCheckUpload = x.Received,
+                            ClosingDateCheck = x.ClosingDate,
+                            ClosingDateUpload = x.ClosingDate,
+                            SealCheck = x.SealNo,
+                            SealCheckUpload = x.SealNo,
+                            BossCheck = x.Boss,
+                            BossCheckUpload = x.Boss,
+                            ContainerNoCheck = x.ContainerNo,
+                            ContainerNoUpload = x.ContainerNo,
+                            Cont20Check = x.Cont20,
+                            Cont20CheckUpload = x.Cont20,
+                            Cont40Check = x.Cont40,
+                            Cont40CheckUpload = x.Cont40,
+                            PickupEmptyCheck = x.PickupEmpty,
+                            PickupEmptyUpload = x.PickupEmpty,
+                            PortLoadingCheck = x.PortLoading,
+                            PortLoadingUpload = x.PortLoading,
+                            ClosingPercentCheck = x.ClosingPercentCheck,
+                            ClosingPercentUpload = x.ClosingPercentCheck,
+                            LiftFeeCheck = x.LiftFee,
+                            LiftFeeCheckUpload = x.LiftFee,
+                            LandingFeeCheck = x.LandingFee,
+                            LandingFeeUpload = x.LandingFee,
+                            FeeVat1 = x.FeeVat1,
+                            FeeVat2 = x.FeeVat2,
+                            FeeVat3 = x.FeeVat3,
+                            FeeVat1Upload = x.FeeVat1,
+                            FeeVat2Upload = x.FeeVat2,
+                            FeeVat3Upload = x.FeeVat3,
+                            Fee1 = x.Fee1,
+                            Fee2 = x.Fee2,
+                            Fee3 = x.Fee3,
+                            Fee4 = x.Fee4,
+                            Fee5 = x.Fee5,
+                            Fee6 = x.Fee6,
+                            Fee1Upload = x.Fee1,
+                            Fee2Upload = x.Fee2,
+                            Fee3Upload = x.Fee3,
+                            Fee4Upload = x.Fee4,
+                            Fee5Upload = x.Fee5,
+                            Fee6Upload = x.Fee6,
+                            CollectOnBehaftInvoinceNoFeeCheck = x.FeeVat1 + x.FeeVat2 + x.FeeVat3,
+                            CollectOnBehaftInvoinceNoFeeUpload = x.FeeVat1 + x.FeeVat2 + x.FeeVat3,
+                            CollectOnBehaftFeeCheck = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5 + x.Fee6,
+                            CollectOnBehaftFeeUpload = x.Fee1 + x.Fee2 + x.Fee3 + x.Fee4 + x.Fee5 + x.Fee6,
+                            CollectOnSupPriceCheck = x.CollectOnSupPrice,
+                            CollectOnSupPriceUpload = x.CollectOnSupPrice,
+                            TotalPriceAfterTaxCheck = x.TotalPriceAfterTax,
+                            TotalPriceAfterTaxUpload = x.TotalPriceAfterTax,
+                            CheckFeeHistoryId = lastHis.Id
+                        };
+                    }
+                    return tran;
+                }).ToList();
+                await db.SaveChangesAsync();
+                return checks;
             }
         }
 
