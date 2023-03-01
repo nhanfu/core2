@@ -294,29 +294,18 @@ namespace TMS.UI.Business.Manage
                             var requestChange = new Expense();
                             requestChange.CopyPropFrom(item);
                             requestChange.Id = 0;
-                            requestChange.StatusId = (int)ApprovalStatusEnum.New;
+                            requestChange.StatusId = (int)ApprovalStatusEnum.Approving;
                             requestChange.RequestChangeId = item.Id;
                             requestChange.Reason = confirm.Textbox?.Text;
                             item.StatusId = (int)ApprovalStatusEnum.Approving;
                             await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(item));
-                            await new Client(nameof(Expense)).CreateAsync(requestChange);
-                            var res = await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
-                            await Approve(listViewItem);
-                            listViewItem.ClearReferences();
+                            await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
                         };
-                        confirm.NoConfirmed += async () =>
-                        {
-                            await Approve(listViewItem);
-                            listViewItem.ClearReferences();
-                        };
-                    }
-                    else
-                    {
-                        await Approve(listViewItem);
-                        listViewItem.ClearReferences();
                     }
                 }
             }
+            await Approve(listViewItem);
+            listViewItem.ClearReferences();
         }
 
         public override void Reject()

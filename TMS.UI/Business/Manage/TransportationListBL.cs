@@ -1343,11 +1343,11 @@ namespace TMS.UI.Business.Manage
             }
             else
             {
-                expense.TransportationTypeId = transportation.TransportationTypeId;
-                expense.CommodityId = transportation.CommodityId;
-                expense.ContainerTypeId = transportation.ContainerTypeId;
                 if (expense.IsPurchasedInsurance == false)
                 {
+                    expense.TransportationTypeId = transportation.TransportationTypeId;
+                    expense.CommodityId = transportation.CommodityId;
+                    expense.ContainerTypeId = transportation.ContainerTypeId;
                     containerId = await CheckContainerType(expense);
                     var commodityValue = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {expense.BossId} and CommodityId eq {expense.CommodityId} and ContainerId eq {containerId}");
                     if (commodityValue != null)
@@ -1367,27 +1367,19 @@ namespace TMS.UI.Business.Manage
                 }
                 else
                 {
-                    var confirm = new ConfirmDialog
+                    var history = new Expense();
+                    history.CopyPropFrom(expense);
+                    history.Id = 0;
+                    history.StatusId = (int)ApprovalStatusEnum.New;
+                    history.RequestChangeId = expense.Id;
+                    var res = await new Client(nameof(Expense)).CreateAsync<Expense>(history);
+                    if (res != null)
                     {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"Cont này đã được mua BH. Bạn có muốn tiếp tục cập nhật thông tin không ?<br />" +
-                        "Hãy nhập lý do",
-                    };
-                    confirm.Render();
-                    confirm.YesConfirmed += async () =>
-                    {
-                        var requestChange = new Expense();
-                        requestChange.CopyPropFrom(expense);
-                        requestChange.Id = 0;
-                        requestChange.StatusId = (int)ApprovalStatusEnum.New;
-                        requestChange.RequestChangeId = expense.Id;
-                        requestChange.Reason = confirm.Textbox?.Text;
-                        expense.StatusId = (int)ApprovalStatusEnum.Approving;
-                        await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(expense));
-                        await new Client(nameof(TransportationPlan)).CreateAsync(requestChange);
-                        await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
-                    };
+                        expense.TransportationTypeId = transportation.TransportationTypeId;
+                        expense.CommodityId = transportation.CommodityId;
+                        expense.ContainerTypeId = transportation.ContainerTypeId;
+                        await new Client(nameof(Expense)).UpdateAsync<Expense>(expense);
+                    }
                 }
                 Expense expenseSOC = null;
                 if (transportation.SocId != null)
@@ -1410,34 +1402,19 @@ namespace TMS.UI.Business.Manage
                     }
                     else
                     {
-                        var confirm = new ConfirmDialog
+                        var history = new Expense();
+                        history.CopyPropFrom(expense);
+                        history.Id = 0;
+                        history.StatusId = (int)ApprovalStatusEnum.New;
+                        history.RequestChangeId = expense.Id;
+                        var res = await new Client(nameof(Expense)).CreateAsync<Expense>(history);
+                        if (res != null)
                         {
-                            NeedAnswer = true,
-                            ComType = nameof(Textbox),
-                            Content = $"Cont này đã được mua BH. Bạn có muốn tiếp tục cập nhật thông tin không ?<br />" +
-                        "Hãy nhập lý do",
-                        };
-                        confirm.Render();
-                        confirm.YesConfirmed += async () =>
-                        {
-                            var requestChangeSOC = new Expense();
-                            requestChangeSOC.CopyPropFrom(expenseSOC);
-                            requestChangeSOC.Id = 0;
-                            requestChangeSOC.StatusId = (int)ApprovalStatusEnum.New;
-                            requestChangeSOC.RequestChangeId = expenseSOC.Id;
-                            await new Client(nameof(TransportationPlan)).CreateAsync(requestChangeSOC);
-                            await new Client(nameof(Expense)).PostAsync<bool>(requestChangeSOC, "RequestApprove");
-                        };
-                        confirm.NoConfirmed += async () =>
-                        {
-                            var requestChangeSOC = new Expense();
-                            requestChangeSOC.CopyPropFrom(expenseSOC);
-                            requestChangeSOC.Id = 0;
-                            requestChangeSOC.StatusId = (int)ApprovalStatusEnum.New;
-                            requestChangeSOC.RequestChangeId = expenseSOC.Id;
-                            await new Client(nameof(TransportationPlan)).CreateAsync(requestChangeSOC);
-                            await new Client(nameof(Expense)).PostAsync<bool>(requestChangeSOC, "RequestApprove");
-                        };
+                            expense.TransportationTypeId = transportation.TransportationTypeId;
+                            expense.CommodityId = transportation.CommodityId;
+                            expense.ContainerTypeId = transportation.ContainerTypeId;
+                            await new Client(nameof(Expense)).UpdateAsync<Expense>(expense);
+                        }
                     }
                 }
             }
@@ -1593,144 +1570,97 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-            if (transportation.IsLocked || transportation.IsKt || transportation.LockShip || transportation.LockShip == false)
+            var tranAcc = new TransportationListAccountantBL();
+            if (patchUpdate.Changes.Any(x => x.Field == nameof(transportation.LockShip)))
             {
-                var tran = new TransportationListAccountantBL();
-                if (patchUpdate.Changes.Any(x => x.Field == nameof(transportation.LockShip)))
+                if (transportation.LockShip)
                 {
-                    if (transportation.LockShip)
+                    var confirm = new ConfirmDialog
                     {
-                        var confirm = new ConfirmDialog
-                        {
-                            Content = "Bạn có chắc chắn muốn khóa cước tàu ?",
-                        };
-                        confirm.Render();
-                        confirm.YesConfirmed += async () =>
-                        {
-                            await tran.RequestUnClosing(transportation, patchUpdate);
-                        };
-                        confirm.NoConfirmed += async () =>
-                        {
-                            transportation.LockShip = false;
-                            await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchLockShipEntity(transportation));
-                            await gridView.ApplyFilter(true);
-                        };
-                    }
-                    else
+                        Content = "Bạn có chắc chắn muốn khóa cước tàu ?",
+                    };
+                    confirm.Render();
+                    confirm.YesConfirmed += async () =>
                     {
-                        var confirm = new ConfirmDialog
-                        {
-                            Content = "Bạn có chắc chắn muốn mở khóa cước tàu ?",
-                        };
-                        confirm.Render();
-                        confirm.YesConfirmed += async () =>
-                        {
-                            await tran.RequestUnClosing(transportation, patchUpdate);
-                        };
-                        confirm.NoConfirmed += async () =>
-                        {
-                            transportation.LockShip = true;
-                            await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchLockShipEntity(transportation));
-                            await gridView.ApplyFilter(true);
-                        };
-                    }
+                        await tranAcc.RequestUnClosing(transportation, patchUpdate);
+                    };
+                    confirm.NoConfirmed += async () =>
+                    {
+                        transportation.LockShip = false;
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchLockShipEntity(transportation));
+                        await gridView.ApplyFilter(true);
+                    };
                 }
                 else
                 {
-                    await tran.RequestUnClosing(transportation, patchUpdate);
+                    var confirm = new ConfirmDialog
+                    {
+                        Content = "Bạn có chắc chắn muốn mở khóa cước tàu ?",
+                    };
+                    confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        await tranAcc.RequestUnClosing(transportation, patchUpdate);
+                    };
+                    confirm.NoConfirmed += async () =>
+                    {
+                        transportation.LockShip = true;
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchLockShipEntity(transportation));
+                        await gridView.ApplyFilter(true);
+                    };
                 }
             }
-            else
+            if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ContainerNo) && !x.Value.IsNullOrWhiteSpace()))
             {
-                if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ContainerNo) && !x.Value.IsNullOrWhiteSpace()))
+                var tran = await Client.FirstOrDefaultAsync<Transportation>($"?$top=1&$select=ClosingDate&$filter=ContainerNo eq '{patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.ContainerNo)).Value}' and Id ne {transportation.Id}");
+                if (tran != null)
                 {
-                    var tran = await Client.FirstOrDefaultAsync<Transportation>($"?$top=1&$select=ClosingDate&$filter=ContainerNo eq '{patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.ContainerNo)).Value}' and Id ne {transportation.Id}");
-                    if (tran != null)
+                    if ((tran.ClosingDate.Value - transportation.ClosingDate.Value).Days < 7)
                     {
-                        if ((tran.ClosingDate.Value - transportation.ClosingDate.Value).Days < 7)
-                        {
-                            Toast.Warning("Số cont bạn chọn đã đóng hàng chưa được 7 ngày");
-                        }
+                        Toast.Warning("Số cont bạn chọn đã đóng hàng chưa được 7 ngày");
                     }
                 }
-                var expenseTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and (contains(Name, 'Bảo hiểm') or contains(Name, 'BH SOC'))");
-                var expenseTypeIds = expenseTypes.Select(x => x.Id).ToList();
-                var expense = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId eq {transportation.Id} and ExpenseTypeId in ({expenseTypeIds.Combine()}) and RequestChangeId eq null");
-                if (expense.Count > 0)
+            }
+            var expenseTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and (contains(Name, 'Bảo hiểm') or contains(Name, 'BH SOC'))");
+            var expenseTypeIds = expenseTypes.Select(x => x.Id).ToList();
+            var expense = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId eq {transportation.Id} and ExpenseTypeId in ({expenseTypeIds.Combine()}) and RequestChangeId eq null");
+            if (expense.Count > 0)
+            {
+                expense.ForEach(x => { x.Cont20 = transportation.Cont20; x.Cont40 = transportation.Cont40; });
+                var oldEntity = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportation.Id}");
+                if (patchUpdate.Changes.Any(x =>
+                x.Field == nameof(oldEntity.BookingId) ||
+                x.Field == nameof(oldEntity.ShipId) ||
+                x.Field == nameof(oldEntity.SaleId) ||
+                x.Field == nameof(oldEntity.Trip) ||
+                x.Field == nameof(oldEntity.SealNo) ||
+                x.Field == nameof(oldEntity.ContainerNo) ||
+                x.Field == nameof(oldEntity.Note2) ||
+                x.Field == nameof(oldEntity.StartShip) ||
+                x.Field == nameof(oldEntity.ClosingDate)) &&
+                (oldEntity.BookingId != transportation.BookingId) ||
+                (oldEntity.ShipId != transportation.ShipId) ||
+                (oldEntity.SaleId != transportation.SaleId) ||
+                (oldEntity.Trip != transportation.Trip) ||
+                (oldEntity.SealNo != transportation.SealNo) ||
+                (oldEntity.ContainerNo != transportation.ContainerNo) ||
+                (oldEntity.Note2 != transportation.Note2) ||
+                (oldEntity.StartShip != transportation.StartShip) ||
+                (oldEntity.ClosingDate != transportation.ClosingDate))
                 {
-                    expense.ForEach(x => { x.Cont20 = transportation.Cont20; x.Cont40 = transportation.Cont40; });
-                    var oldEntity = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportation.Id}");
-                    if (patchUpdate.Changes.Any(x =>
-                    x.Field == nameof(oldEntity.BookingId) ||
-                    x.Field == nameof(oldEntity.ShipId) ||
-                    x.Field == nameof(oldEntity.SaleId) ||
-                    x.Field == nameof(oldEntity.Trip) ||
-                    x.Field == nameof(oldEntity.SealNo) ||
-                    x.Field == nameof(oldEntity.ContainerNo) ||
-                    x.Field == nameof(oldEntity.Note2) ||
-                    x.Field == nameof(oldEntity.StartShip) ||
-                    x.Field == nameof(oldEntity.ClosingDate)) &&
-                    (oldEntity.BookingId != transportation.BookingId) ||
-                    (oldEntity.ShipId != transportation.ShipId) ||
-                    (oldEntity.SaleId != transportation.SaleId) ||
-                    (oldEntity.Trip != transportation.Trip) ||
-                    (oldEntity.SealNo != transportation.SealNo) ||
-                    (oldEntity.ContainerNo != transportation.ContainerNo) ||
-                    (oldEntity.Note2 != transportation.Note2) ||
-                    (oldEntity.StartShip != transportation.StartShip) ||
-                    (oldEntity.ClosingDate != transportation.ClosingDate))
+                    var expenseNoPurchased = expense.Where(x => x.IsPurchasedInsurance == false).ToList();
+                    var expensePurchased = expense.Where(x => x.IsPurchasedInsurance).ToList();
+                    if (expensePurchased != null)
                     {
-                        var expenseNoPurchased = expense.Where(x => x.IsPurchasedInsurance == false).ToList();
-                        var expensePurchased = expense.Where(x => x.IsPurchasedInsurance).ToList();
-                        if (expensePurchased != null)
+                        foreach (var x in expensePurchased)
                         {
-                            var confirm = new ConfirmDialog
-                            {
-                                NeedAnswer = true,
-                                ComType = nameof(Textbox),
-                                Content = $"Cont này đã có phí bảo hiểm được mua. Bạn có muốn tạo yêu cầu cập nhật không ?<br />" +
-                                "Hãy nhập lý do",
-                            };
-                            confirm.Render();
-                            confirm.YesConfirmed += async () =>
-                            {
-                                expensePurchased.ForEach(async x =>
-                                {
-                                    var newExpense = new Expense();
-                                    newExpense.CopyPropFrom(x);
-                                    newExpense.Id = 0;
-                                    newExpense.StatusId = 1;
-                                    newExpense.RequestChangeId = x.Id;
-                                    await new Client(nameof(Expense)).CreateAsync<Expense>(newExpense);
-                                    x.ShipId = transportation.ShipId;
-                                    x.SaleId = transportation.SaleId;
-                                    x.Trip = transportation.Trip;
-                                    x.SealNo = transportation.SealNo;
-                                    x.ContainerNo = transportation.ContainerNo;
-                                    x.Notes = transportation.Note2;
-                                    if (x.JourneyId == 12114 || x.JourneyId == 16001)
-                                    {
-                                        x.StartShip = transportation.ClosingDate;
-                                    }
-                                    else
-                                    {
-                                        x.StartShip = transportation.StartShip;
-                                    }
-                                });
-                                var res = await new Client(nameof(Expense)).BulkUpdateAsync<Expense>(expensePurchased);
-                                if (res != null)
-                                {
-                                    Toast.Success("Đã tạo yêu cầu thành công.");
-                                }
-                                else
-                                {
-                                    Toast.Warning("Đã có lỗi xảy ra trong quá trình xử lý.");
-                                }
-                            };
-                        }
-                        if (expenseNoPurchased != null)
-                        {
-                            expenseNoPurchased.ForEach(x =>
+                            var history = new Expense();
+                            history.CopyPropFrom(x);
+                            history.Id = 0;
+                            history.StatusId = (int)ApprovalStatusEnum.New;
+                            history.RequestChangeId = x.Id;
+                            var res = await new Client(nameof(Expense)).CreateAsync<Expense>(history);
+                            if (res != null)
                             {
                                 x.ShipId = transportation.ShipId;
                                 x.SaleId = transportation.SaleId;
@@ -1746,9 +1676,30 @@ namespace TMS.UI.Business.Manage
                                 {
                                     x.StartShip = transportation.StartShip;
                                 }
-                            });
-                            await new Client(nameof(Expense)).BulkUpdateAsync<Expense>(expenseNoPurchased);
+                            }
                         }
+                        await new Client(nameof(Expense)).BulkUpdateAsync<Expense>(expensePurchased);
+                    }
+                    if (expenseNoPurchased != null)
+                    {
+                        expenseNoPurchased.ForEach(x =>
+                        {
+                            x.ShipId = transportation.ShipId;
+                            x.SaleId = transportation.SaleId;
+                            x.Trip = transportation.Trip;
+                            x.SealNo = transportation.SealNo;
+                            x.ContainerNo = transportation.ContainerNo;
+                            x.Notes = transportation.Note2;
+                            if (x.JourneyId == 12114 || x.JourneyId == 16001)
+                            {
+                                x.StartShip = transportation.ClosingDate;
+                            }
+                            else
+                            {
+                                x.StartShip = transportation.StartShip;
+                            }
+                        });
+                        await new Client(nameof(Expense)).BulkUpdateAsync<Expense>(expenseNoPurchased);
                     }
                 }
             }

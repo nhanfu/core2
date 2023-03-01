@@ -105,14 +105,14 @@ namespace TMS.UI.Business.Manage
                     var newCommodityValue = await CreateCommodityValue(listViewItem);
                     await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
                 }
+                var history = new Expense();
+                history.CopyPropFrom(expenseEntity);
+                history.Id = 0;
+                history.StatusId = (int)ApprovalStatusEnum.New;
+                history.RequestChangeId = expenseEntity.Id;
+                await new Client(nameof(Expense)).CreateAsync<Expense>(history);
                 listViewItem.ClearReferences();
                 await Approve(listViewItem);
-                var newExpense = new Expense();
-                newExpense.CopyPropFrom(expenseEntity);
-                newExpense.Id = 0;
-                newExpense.StatusId = 1;
-                newExpense.RequestChangeId = expenseEntity.Id;
-                await new Client(nameof(Expense)).CreateAsync<Expense>(newExpense);
             };
         }
 

@@ -319,7 +319,6 @@ namespace TMS.API.Controllers
             {
                 entity.SetPropValue("StatusId", (int)ApprovalStatusEnum.Approving);
             }
-
             if (id <= 0)
             {
                 await CreateAsync(entity);
