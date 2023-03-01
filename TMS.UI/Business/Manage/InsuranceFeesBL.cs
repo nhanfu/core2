@@ -217,6 +217,7 @@ namespace TMS.UI.Business.Manage
             newCommodityValue.Notes = expense.CommodityValueNotes;
             newCommodityValue.TotalPrice = 0;
             newCommodityValue.Active = true;
+            newCommodityValue.CreatedBy = Client.Token.UserId;
             newCommodityValue.InsertedDate = DateTime.Now.Date;
             newCommodityValue.StartDate = DateTime.Now.Date;
             if (DateTime.Now.Date >= startDate1 && DateTime.Now.Date <= endDate1)

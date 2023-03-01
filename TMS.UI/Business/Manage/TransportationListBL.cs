@@ -792,6 +792,7 @@ namespace TMS.UI.Business.Manage
             newCommodityValue.Active = true;
             newCommodityValue.InsertedDate = DateTime.Now.Date;
             newCommodityValue.StartDate = DateTime.Now.Date;
+            newCommodityValue.CreatedBy = Client.Token.UserId;
             if (DateTime.Now.Date >= startDate1 && DateTime.Now.Date <= endDate1)
             {
                 newCommodityValue.EndDate = endDate1;
