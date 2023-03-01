@@ -217,6 +217,16 @@ namespace TMS.UI.Business.Manage
                     {
                         await UpdateExpenses(expenses, listViewItem);
                     }
+                    else
+                    {
+                        await Approve(listViewItem);
+                        listViewItem.ClearReferences();
+                    }
+                }
+                else
+                {
+                    await Approve(listViewItem);
+                    listViewItem.ClearReferences();
                 }
             };
         }
