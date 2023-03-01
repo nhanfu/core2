@@ -36,7 +36,7 @@ namespace TMS.UI.Business.Manage
             };
         }
 
-        public async Task LockBooking()
+        public void LockBooking()
         {
             gridView = this.FindComponentByName<GridView>(nameof(Booking));
             var lockUpdate = gridView.RowData.Data.Cast<Booking>().Where(x => x.BookingExpired != null && x.BookingExpired < DateTime.Now).ToList();
@@ -271,7 +271,7 @@ namespace TMS.UI.Business.Manage
         public override async Task<bool> BulkUpdate()
         {
             var rs = await base.BulkUpdate();
-            await LockBooking();
+            LockBooking();
             return rs;
         }
 
@@ -299,7 +299,7 @@ namespace TMS.UI.Business.Manage
             }
             var uploadForm = _uploader.ParentElement as HTMLFormElement;
             var formData = new FormData(uploadForm);
-            var response = await Client.SubmitAsync<List<Booking>>(new XHRWrapper
+            await Client.SubmitAsync<List<Booking>>(new XHRWrapper
             {
                 FormData = formData,
                 Url = "ImportExcel",
@@ -322,7 +322,7 @@ namespace TMS.UI.Business.Manage
             }
             var uploadForm = _uploaderTeus.ParentElement as HTMLFormElement;
             var formData = new FormData(uploadForm);
-            var response = await Client.SubmitAsync<List<Teus>>(new XHRWrapper
+            await Client.SubmitAsync<List<Teus>>(new XHRWrapper
             {
                 FormData = formData,
                 Url = "ImportExcelTeus",
