@@ -73,13 +73,13 @@ namespace TMS.UI.Business.Manage
 
             Task.Run(async () =>
             {
-                var selected = await gridView.GetRealTimeSelectedRows();
-                if (selected.Nothing())
+                var selected = gridView.LastListViewItem;
+                if (selected is null)
                 {
                     Toast.Warning("Vui lòng chọn cont cần cập nhật giá!");
                     return;
                 }
-                var coords = selected.Cast<Transportation>().ToList().LastOrDefault();
+                var coords = selected.Entity.As<Transportation>();
                 var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7593 and BossId eq {coords.BossId} and ContainerTypeId eq {coords.ContainerTypeId} and LocationId eq {coords.ReturnId} and StartDate le {coords.ReturnDate.Value.ToOdataFormat()} and PackingId eq {coords.ReturnVendorId}&$orderby=StartDate desc");
                 if (quotation is null)
                 {
@@ -225,6 +225,41 @@ namespace TMS.UI.Business.Manage
             expense.TransportationId = selected.Id;
             expense.Quantity = 1;
             expense.IsReturn = true;
+        }
+
+        public override async Task CheckFee()
+        {
+            var routeIds = LocalStorage.GetItem<List<int>>("RouteCheckFeeClosing");
+            await this.OpenPopup(
+                featureName: "CheckFee Form",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeFormBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Kiểm tra bảng kê";
+                    instance.Entity = new CheckFeeHistory()
+                    {
+                        RouteIds = routeIds,
+                        TypeId = 2,
+                    };
+                    return instance;
+                });
+        }
+
+        public override async Task ViewCheckFee(CheckFeeHistory entity)
+        {
+            await this.OpenTab(
+                id: "CheckFee Return Editor" + entity.Id,
+                featureName: "CheckFee Return Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeReturnEditorBL");
+                    var instance = Activator.CreateInstance(type) as TabEditor;
+                    instance.Title = "Kiểm tra phí trả hàng";
+                    instance.Icon = "fal fa-sitemap mr-1";
+                    instance.Entity = entity;
+                    return instance;
+                });
         }
 
         public override async Task ReloadExpense(Transportation transportation)

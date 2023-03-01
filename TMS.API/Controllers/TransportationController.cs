@@ -868,7 +868,7 @@ namespace TMS.API.Controllers
                     throw new ApiException($"Dòng {row} bị lỗi: {e.Message}") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
-            var routes = RouteIds.Split(",").Cast<int>().ToList();
+            var routes = RouteIds.Split(",").Where(x => x != null).Select(x => int.Parse(x)).ToList();
             if (type == 1)
             {
                 var qr = db.Transportation.Where(x =>
@@ -1042,7 +1042,7 @@ namespace TMS.API.Controllers
                         tran.ReceivedReturnCheck = x.Received;
                         tran.ClosingDateReturnCheck = x.ClosingDate;
                         tran.SealReturnCheck = x.SealNo;
-                        tran.ContainerNoCheck = x.ContainerNo;
+                        tran.ContainerNoReturnCheck = x.ContainerNo;
                         tran.BossReturnCheck = x.Boss;
                         tran.Cont20ReturnCheck = x.Cont20;
                         tran.Cont40ReturnCheck = x.Cont40;
@@ -1098,7 +1098,7 @@ namespace TMS.API.Controllers
                         tran.ReceivedReturnCheck = x.Received;
                         tran.ClosingDateReturnCheck = x.ClosingDate;
                         tran.SealReturnCheck = x.SealNo;
-                        tran.ContainerNoCheck = x.ContainerNo;
+                        tran.ContainerNoReturnCheck = x.ContainerNo;
                         tran.BossReturnCheck = x.Boss;
                         tran.Cont20ReturnCheck = x.Cont20;
                         tran.Cont40ReturnCheck = x.Cont40;

@@ -309,7 +309,7 @@ namespace TMS.UI.Business.Manage
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee5Upload),
-                        Value = transportation.Fee5 is null ? "0" : transportation.Fee5Upload.ToString(),
+                        Value = transportation.Fee5Upload is null ? "0" : transportation.Fee5Upload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {

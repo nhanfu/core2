@@ -29,7 +29,7 @@ namespace TMS.UI.Business.Manage
             };
         }
 
-        public async Task ViewCheckFee(CheckFeeHistory entity)
+        public virtual async Task ViewCheckFee(CheckFeeHistory entity)
         {
             await this.OpenTab(
                 id: "CheckFee Editor" + entity.Id,
@@ -59,7 +59,7 @@ namespace TMS.UI.Business.Manage
                 });
         }
 
-        public async Task CheckFee()
+        public virtual async Task CheckFee()
         {
             var routeIds = LocalStorage.GetItem<List<int>>("RouteCheckFeeClosing");
             await this.OpenPopup(
@@ -71,7 +71,8 @@ namespace TMS.UI.Business.Manage
                     instance.Title = "Kiểm tra bảng kê";
                     instance.Entity = new CheckFeeHistory()
                     {
-                        RouteIds = routeIds
+                        RouteIds = routeIds,
+                        TypeId = 1,
                     };
                     return instance;
                 });

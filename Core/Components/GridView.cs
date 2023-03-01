@@ -1132,7 +1132,7 @@ namespace Core.Components
                             await currentItemD.ListViewSection.ListView.DispatchEventToHandlerAsync(upItemD.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItemD.Entity);
                             if (GuiInfo.IsRealtime)
                             {
-                               await  currentItemD.PatchUpdate();
+                                await currentItemD.PatchUpdate();
                             }
                         });
                     }
@@ -1183,23 +1183,26 @@ namespace Core.Components
             {
                 e.PreventDefault();
                 e.StopPropagation();
-                var selected = GetSelectedRows();
-                if (selected.Count == 0)
+                Task.Run(async () =>
                 {
-                    selected = RowData.Data.ToList();
-                }
-                var numbers = Header.Where(x => x.ComponentType == nameof(Number)).ToList();
-                if (numbers.Count == 0)
-                {
-                    Toast.Warning("Vui lòng cấu hình");
-                    return;
-                }
-                var listString = numbers.Select(x =>
-                {
-                    var val = selected.Select(k => k[x.FieldName]).Where(k => k != null).Select(y => Convert.ToDecimal(y)).Sum();
-                    return x.ShortDesc + " : " + (val % 2 > 0 ? val.ToString("N2") : val.ToString("N0"));
+                    var selected = await GetRealTimeSelectedRows();
+                    if (selected.Count == 0)
+                    {
+                        selected = RowData.Data.ToList();
+                    }
+                    var numbers = Header.Where(x => x.ComponentType == nameof(Number)).ToList();
+                    if (numbers.Count == 0)
+                    {
+                        Toast.Warning("Vui lòng cấu hình");
+                        return;
+                    }
+                    var listString = numbers.Select(x =>
+                    {
+                        var val = selected.Select(k => k[x.FieldName]).Where(k => k != null).Select(y => Convert.ToDecimal(y)).Sum();
+                        return x.ShortDesc + " : " + (val % 2 > 0 ? val.ToString("N2") : val.ToString("N0"));
+                    });
+                    Toast.Success(listString.Combine("</br>"), 6000);
                 });
-                Toast.Success(listString.Combine("</br>"), 6000);
             }
             else if (keyCode == KeyCodeEnum.F1)
             {
@@ -1263,7 +1266,7 @@ namespace Core.Components
                         await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
                         if (GuiInfo.IsRealtime)
                         {
-                           await upItem.PatchUpdate();
+                            await upItem.PatchUpdate();
                         }
                     });
                 }

@@ -68,7 +68,7 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-
+            LocalStorage.SetItem("RouteCheckFeeClosing", AEntity.RouteIds);
             var uploadForm = _uploaderCheckFee.ParentElement as HTMLFormElement;
             var formData = new FormData(uploadForm);
             _uploaderCheckFee.Value = null;
@@ -79,32 +79,54 @@ namespace TMS.UI.Business.Manage
             var rs = await new Client(nameof(Transportation)).SubmitAsync<List<Transportation>>(new XHRWrapper
             {
                 FormData = formData,
-                Url = "CheckFee?type=" + (TabEditor.Name == "Transportation List" ? "1" : "0"),
+                Url = "CheckFee?type=" + AEntity.TypeId,
                 Method = HttpMethod.POST,
                 ResponseMimeType = Utils.GetMimeType("xlsx")
             });
-            LocalStorage.SetItem("RouteCheckFeeClosing", AEntity.RouteIds);
             Dispose();
             Window.SetTimeout(async () =>
             {
                 if (rs != null)
                 {
-                    var entity = await new Client(nameof(CheckFeeHistory)).FirstOrDefaultAsync<CheckFeeHistory>($"?$filter=Id eq {rs.FirstOrDefault(x => x.CheckFeeHistoryId != null).CheckFeeHistoryId}");
-                    if (entity.Id > 0)
+                    if (AEntity.TypeId == 1)
                     {
-                        await this.OpenTab(
-                        id: "CheckFee Editor" + rs.FirstOrDefault().CheckFeeHistoryId,
-                        featureName: "CheckFee Editor",
-                        factory: () =>
+                        var entity = await new Client(nameof(CheckFeeHistory)).FirstOrDefaultAsync<CheckFeeHistory>($"?$filter=Id eq {rs.FirstOrDefault(x => x.CheckFeeHistoryId != null).CheckFeeHistoryId}");
+                        if (entity.Id > 0)
                         {
-                            var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeEditorBL");
-                            var instance = Activator.CreateInstance(type) as TabEditor;
-                            instance.Icon = "fal fa-sitemap mr-1";
-                            instance.Title = "Kiểm tra phí đóng hàng";
-                            instance.Entity = entity;
-                            instance.Entity.SetPropValue("TransportationList", rs);
-                            return instance;
-                        });
+                            await this.OpenTab(
+                            id: "CheckFee Editor" + rs.FirstOrDefault().CheckFeeHistoryId,
+                            featureName: "CheckFee Editor",
+                            factory: () =>
+                            {
+                                var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeEditorBL");
+                                var instance = Activator.CreateInstance(type) as TabEditor;
+                                instance.Icon = "fal fa-sitemap mr-1";
+                                instance.Title = "Kiểm tra phí đóng hàng";
+                                instance.Entity = entity;
+                                instance.Entity.SetPropValue("TransportationList", rs);
+                                return instance;
+                            });
+                        }
+                    }
+                    else
+                    {
+                        var entity = await new Client(nameof(CheckFeeHistory)).FirstOrDefaultAsync<CheckFeeHistory>($"?$filter=Id eq {rs.FirstOrDefault(x => x.CheckFeeHistoryReturnId != null).CheckFeeHistoryReturnId}");
+                        if (entity.Id > 0)
+                        {
+                            await this.OpenTab(
+                            id: "CheckFee Return Editor" + rs.FirstOrDefault().CheckFeeHistoryReturnId,
+                            featureName: "CheckFee Return Editor",
+                            factory: () =>
+                            {
+                                var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeReturnEditorBL");
+                                var instance = Activator.CreateInstance(type) as TabEditor;
+                                instance.Icon = "fal fa-sitemap mr-1";
+                                instance.Title = "Kiểm tra phí trả hàng";
+                                instance.Entity = entity;
+                                instance.Entity.SetPropValue("TransportationList", rs);
+                                return instance;
+                            });
+                        }
                     }
                 }
             }, 2000);
