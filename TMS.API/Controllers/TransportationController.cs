@@ -34,6 +34,64 @@ namespace TMS.API.Controllers
         {
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
+            var entity = await db.Transportation.FindAsync(idInt);
+            if (patch.Changes.Any(x => x.Field != nameof(entity.Notes) &&
+            x.Field != nameof(entity.Id) &&
+            x.Field != nameof(entity.ExportListReturnId) &&
+            x.Field != nameof(entity.UserReturnId) &&
+            x.Field != nameof(entity.IsLocked)))
+            {
+                if (entity.IsLocked)
+                {
+                    throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
+                }
+                if (entity.IsKt)
+                {
+                    if (patch.Changes.Any(x => x.Field == nameof(entity.MonthText)
+                    || x.Field == nameof(entity.YearText)
+                    || x.Field == nameof(entity.ExportListId)
+                    || x.Field == nameof(entity.RouteId)
+                    || x.Field == nameof(entity.ShipId)
+                    || x.Field == nameof(entity.Trip)
+                    || x.Field == nameof(entity.ClosingDate)
+                    || x.Field == nameof(entity.StartShip)
+                    || x.Field == nameof(entity.ContainerTypeId)
+                    || x.Field == nameof(entity.ContainerNo)
+                    || x.Field == nameof(entity.SealNo)
+                    || x.Field == nameof(entity.BossId)
+                    || x.Field == nameof(entity.UserId)
+                    || x.Field == nameof(entity.CommodityId)
+                    || x.Field == nameof(entity.Cont20)
+                    || x.Field == nameof(entity.Cont40)
+                    || x.Field == nameof(entity.Weight)
+                    || x.Field == nameof(entity.ReceivedId)
+                    || x.Field == nameof(entity.FreeText2)
+                    || x.Field == nameof(entity.ShipDate)
+                    || x.Field == nameof(entity.ReturnDate)
+                    || x.Field == nameof(entity.ReturnId)
+                    || x.Field == nameof(entity.FreeText3)))
+                    {
+                        throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
+                    }
+                }
+
+                if (patch.Changes.Any(x => x.Field == nameof(entity.ClosingDate)
+                || x.Field == nameof(entity.RouteId)
+                || x.Field == nameof(entity.BrandShipId)
+                || x.Field == nameof(entity.LineId)
+                || x.Field == nameof(entity.ShipId)
+                || x.Field == nameof(entity.Trip)
+                || x.Field == nameof(entity.StartShip)
+                || x.Field == nameof(entity.ContainerTypeId)
+                || x.Field == nameof(entity.SocId)) && entity.BookingId != null)
+                {
+                    var bookingList = await db.BookingList.Where(x => x.Id == entity.BookingListId && x.Active).FirstOrDefaultAsync();
+                    if (bookingList != null && bookingList.Submit)
+                    {
+                        throw new ApiException("DSVC này đã được khóa. Vì đã được khóa ở danh sách book tàu.") { StatusCode = HttpStatusCode.BadRequest };
+                    }
+                }
+            }
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
             {
                 connection.Open();
@@ -60,6 +118,7 @@ namespace TMS.API.Controllers
                             command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
                         }
                         command.CommandText += $" UPDATE [{nameof(Transportation)}] SET {update.Combine()} WHERE Id = {idInt};";
+                        //
                         if (disableTrigger)
                         {
                             command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
@@ -70,18 +129,13 @@ namespace TMS.API.Controllers
                         }
                         command.ExecuteNonQuery();
                         transaction.Commit();
-                        var entity = await db.Transportation.FindAsync(idInt);
-                        if (!disableTrigger)
-                        {
-                            await db.Entry(entity).ReloadAsync();
-                        }
+                        await db.Entry(entity).ReloadAsync();
                         return entity;
                     }
                 }
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    var entity = await db.Transportation.FindAsync(idInt);
                     return entity;
                 }
             }
@@ -964,7 +1018,7 @@ namespace TMS.API.Controllers
                 && x.RouteId != null
                 && x.ContainerNo != null
                 && routes.Contains(x.RouteId.Value)
-                && x.ClosingId == ClosingId).OrderBy(x => x.ReturnDate).AsQueryable();
+                && x.ReturnVendorId == ClosingId).OrderBy(x => x.ReturnDate).AsQueryable();
                 var transportations = await qr.ToListAsync();
                 var lastHis = new CheckFeeHistory()
                 {
@@ -1037,6 +1091,7 @@ namespace TMS.API.Controllers
                     else
                     {
                         tran = new Transportation();
+                        tran.ReturnVendorId = ClosingId;
                         tran.OrderExcelReturn = int.Parse(x.No);
                         tran.CheckFeeHistoryReturnId = lastHis.Id;
                         tran.ReceivedReturnCheck = x.Received;
