@@ -226,18 +226,18 @@ namespace TMS.UI.Business.Manage
             var expenseType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'Bảo hiểm')");
             foreach (var item in expenses)
             {
-                item.TransportationTypeId = listViewItem.TransportationTypeId;
-                item.BossId = listViewItem.BossId;
-                item.SaleId = listViewItem.UserId;
-                item.CommodityId = item.ExpenseTypeId == expenseType.Id ? listViewItem.CommodityId : item.CommodityId;
-                item.RouteId = listViewItem.RouteId;
-                item.ContainerTypeId = listViewItem.ContainerTypeId;
-                if (item.JourneyId == 12114 || item.JourneyId == 16001)
-                {
-                    item.StartShip = listViewItem.ClosingDate;
-                }
                 if (item.IsPurchasedInsurance == false)
                 {
+                    item.TransportationTypeId = listViewItem.TransportationTypeId;
+                    item.BossId = listViewItem.BossId;
+                    item.SaleId = listViewItem.UserId;
+                    item.CommodityId = item.ExpenseTypeId == expenseType.Id ? listViewItem.CommodityId : item.CommodityId;
+                    item.RouteId = listViewItem.RouteId;
+                    item.ContainerTypeId = listViewItem.ContainerTypeId;
+                    if (item.JourneyId == 12114 || item.JourneyId == 16001)
+                    {
+                        item.StartShip = listViewItem.ClosingDate;
+                    }
                     item.IsWet = listViewItem.IsWet;
                     item.IsBought = listViewItem.IsBought;
                     item.CustomerTypeId = listViewItem.CustomerTypeId;
@@ -256,44 +256,65 @@ namespace TMS.UI.Business.Manage
                 }
                 else
                 {
-                    var confirm = new ConfirmDialog
+                    if (item.SaleId != listViewItem.UserId ||
+                        item.ContainerTypeId != listViewItem.ContainerTypeId ||
+                        item.BossId != listViewItem.BossId ||
+                        item.TransportationTypeId != listViewItem.TransportationTypeId ||
+                        (item.CommodityId != listViewItem.CommodityId && item.ExpenseTypeId == expenseType.Id) ||
+                        item.JourneyId != item.JourneyId ||
+                        item.StartShip != listViewItem.ClosingDate ||
+                        item.RouteId != listViewItem.RouteId ||
+                        item.IsWet != listViewItem.IsWet ||
+                        item.IsBought != listViewItem.IsBought ||
+                        item.SteamingTerms != listViewItem.SteamingTerms ||
+                        item.BreakTerms != listViewItem.BreakTerms ||
+                        item.CustomerTypeId != item.CustomerTypeId ||
+                        item.CommodityValue != listViewItem.CommodityValue)
                     {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"Cont này đã được mua BH. Bạn có muốn tiếp tục cập nhật thông tin không ?<br />" +
+                        var confirm = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Cont này đã được mua BH. Bạn có muốn tiếp tục cập nhật thông tin không ?<br />" +
                         "Hãy nhập lý do",
-                    };
-                    confirm.Render();
-                    confirm.YesConfirmed += async () =>
+                        };
+                        confirm.Render();
+                        confirm.YesConfirmed += async () =>
+                        {
+                            item.TransportationTypeId = listViewItem.TransportationTypeId;
+                            item.BossId = listViewItem.BossId;
+                            item.SaleId = listViewItem.UserId;
+                            item.CommodityId = item.ExpenseTypeId == expenseType.Id ? listViewItem.CommodityId : item.CommodityId;
+                            item.RouteId = listViewItem.RouteId;
+                            item.ContainerTypeId = listViewItem.ContainerTypeId;
+                            if (item.JourneyId == 12114 || item.JourneyId == 16001)
+                            {
+                                item.StartShip = listViewItem.ClosingDate;
+                            }
+                            var requestChange = new Expense();
+                            requestChange.CopyPropFrom(item);
+                            requestChange.Id = 0;
+                            requestChange.StatusId = (int)ApprovalStatusEnum.New;
+                            requestChange.RequestChangeId = item.Id;
+                            requestChange.Reason = confirm.Textbox?.Text;
+                            item.StatusId = (int)ApprovalStatusEnum.Approving;
+                            await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(item));
+                            await new Client(nameof(Expense)).CreateAsync(requestChange);
+                            var res = await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
+                            await Approve(listViewItem);
+                            listViewItem.ClearReferences();
+                        };
+                        confirm.NoConfirmed += async () =>
+                        {
+                            await Approve(listViewItem);
+                            listViewItem.ClearReferences();
+                        };
+                    }
+                    else
                     {
-                        var requestChange = new Expense();
-                        requestChange.CopyPropFrom(item);
-                        requestChange.Id = 0;
-                        requestChange.StatusId = (int)ApprovalStatusEnum.New;
-                        requestChange.RequestChangeId = item.Id;
-                        requestChange.Reason = confirm.Textbox?.Text;
-                        item.StatusId = (int)ApprovalStatusEnum.Approving;
-                        await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(item));
-                        await new Client(nameof(Expense)).CreateAsync(requestChange);
-                        var res = await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
                         await Approve(listViewItem);
                         listViewItem.ClearReferences();
-                    };
-                    confirm.NoConfirmed += async () =>
-                    {
-                        var requestChange = new Expense();
-                        requestChange.CopyPropFrom(item);
-                        requestChange.Id = 0;
-                        requestChange.StatusId = (int)ApprovalStatusEnum.New;
-                        requestChange.RequestChangeId = item.Id;
-                        requestChange.Reason = confirm.Textbox?.Text;
-                        item.StatusId = (int)ApprovalStatusEnum.Approving;
-                        await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(item));
-                        await new Client(nameof(Expense)).CreateAsync(requestChange);
-                        var res = await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
-                        await Approve(listViewItem);
-                        listViewItem.ClearReferences();
-                    };
+                    }
                 }
             }
         }

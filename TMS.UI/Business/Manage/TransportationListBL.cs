@@ -1388,19 +1388,6 @@ namespace TMS.UI.Business.Manage
                         await new Client(nameof(TransportationPlan)).CreateAsync(requestChange);
                         await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
                     };
-                    confirm.NoConfirmed += async () =>
-                    {
-                        var requestChange = new Expense();
-                        requestChange.CopyPropFrom(expense);
-                        requestChange.Id = 0;
-                        requestChange.StatusId = (int)ApprovalStatusEnum.New;
-                        requestChange.RequestChangeId = expense.Id;
-                        requestChange.Reason = confirm.Textbox?.Text;
-                        expense.StatusId = (int)ApprovalStatusEnum.Approving;
-                        await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(expense));
-                        await new Client(nameof(TransportationPlan)).CreateAsync(requestChange);
-                        await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
-                    };
                 }
                 Expense expenseSOC = null;
                 if (transportation.SocId != null)
