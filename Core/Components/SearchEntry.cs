@@ -63,7 +63,7 @@ namespace Core.Components
             DataSourceFilter = ui.DataSourceFilter;
             DeserializeLocalData(ui);
             GuiInfo.ComponentGroup = null;
-            GuiInfo.Row = 20;
+            GuiInfo.Row = GuiInfo.Row ?? 20;
             RowData = new ObservableList<object>();
             Element = ele;
             IdFieldName = GuiInfo.FieldName;
@@ -241,10 +241,6 @@ namespace Core.Components
 
         protected virtual void DiposeGvWrapper()
         {
-            if (_gv is null || !_gv.Show)
-            {
-                return;
-            }
             Window.ClearTimeout(_waitForDispose);
             _waitForDispose = Window.SetTimeout(DisposeGv, 300);
         }

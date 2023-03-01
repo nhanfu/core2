@@ -75,6 +75,7 @@ namespace TMS.API.Models
         public string GroupFormat { get; set; }
         public bool? IsSumary { get; set; }
         public string ExcelFieldName { get; set; }
+        public int? Row { get; set; }
 
         public virtual Entity Entity { get; set; }
         public virtual Feature Feature { get; set; }
