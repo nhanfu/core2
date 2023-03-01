@@ -10,22 +10,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Linq.Dynamic.Core.Tokenizer;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.ViewModels;
@@ -204,27 +195,6 @@ namespace TMS.API.Controllers
             await ctx.Database.ExecuteSqlRawAsync(updateCommand);
             return true;
         }
-
-        public static DateTime TryParseDateTimeFile(string value)
-        {
-            DateTime dateTime = DateTime.Now;
-            bool parsed = false;
-            string format = null;
-            for (long i = 0; i < formats.Length; i++)
-            {
-                parsed = DateTime.TryParseExact(value, formats[i], CultureInfo.CurrentCulture, DateTimeStyles.None, out dateTime);
-                if (parsed)
-                {
-                    format = formats[i];
-                    break;
-                }
-            }
-            Console.WriteLine(value);
-            Console.WriteLine(dateTime);
-            return dateTime;
-        }
-
-        public static string[] formats = { "dd/MM/yy", "dd/MM/yyyy" };
 
         [HttpPost("api/Transportation/ExportCheckFee")]
         public async Task<string> ExportCheckFee([FromBody] List<Transportation> transportations)
@@ -761,39 +731,6 @@ namespace TMS.API.Controllers
             return tables;
         }
 
-        private void SetBackgroundColor(Workbook workbook, string cell)
-        {
-            var style = workbook.Worksheets[0].Cells[cell].GetStyle();
-            style.Pattern = BackgroundType.Solid;
-            style.ForegroundColor = Color.LightGreen;
-            workbook.Worksheets[0].Cells[cell].SetStyle(style);
-            SetBorder(workbook, cell);
-        }
-
-        private void SetColor(Workbook workbook, string cell)
-        {
-            var style = workbook.Worksheets[0].Cells[cell].GetStyle();
-            style.Font.Color = Color.Red;
-            workbook.Worksheets[0].Cells[cell].SetStyle(style);
-        }
-
-        private void SetBorder(Workbook workbook, string cell)
-        {
-            var style = workbook.Worksheets[0].Cells[cell].GetStyle();
-            style.SetBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.Black);
-            style.SetBorder(BorderType.LeftBorder, CellBorderType.Thin, Color.Black);
-            style.SetBorder(BorderType.RightBorder, CellBorderType.Thin, Color.Black);
-            style.SetBorder(BorderType.TopBorder, CellBorderType.Thin, Color.Black);
-            workbook.Worksheets[0].Cells[cell].SetStyle(style);
-        }
-
-        private void SetAlign(Workbook workbook, string cell)
-        {
-            var style = workbook.Worksheets[0].Cells[cell].GetStyle();
-            style.HorizontalAlignment = TextAlignmentType.Center;
-            workbook.Worksheets[0].Cells[cell].SetStyle(style);
-        }
-
         [HttpPost("api/Transportation/CheckFee")]
         public async Task<List<Transportation>> CheckFee([FromForm] DateTime FromDate, [FromForm] DateTime ToDate, [FromForm] int ClosingId, [FromForm] string RouteIds, [FromServices] IWebHostEnvironment host, List<IFormFile> fileCheckFee, int type)
         {
@@ -1176,337 +1113,6 @@ namespace TMS.API.Controllers
             return check;
         }
 
-        [HttpPost("api/Transportation/ImportExcel")]
-        public async Task<List<TransportationPlan>> ImportExcel([FromServices] IWebHostEnvironment host, List<IFormFile> fileImport)
-        {
-            var formFile = fileImport.FirstOrDefault();
-            if (formFile == null || formFile.Length <= 0)
-            {
-                return null;
-            }
-
-            if (!Path.GetExtension(formFile.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
-            {
-                return null;
-            }
-
-            var path = GetUploadPath(formFile.FileName, host.WebRootPath);
-            EnsureDirectoryExist(path);
-            path = IncreaseFileName(path);
-            using var stream = FileIO.Create(path);
-            await formFile.CopyToAsync(stream);
-            using var package = new ExcelPackage(stream);
-            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-            var currentSheet = package.Workbook.Worksheets;
-            var worksheet = currentSheet.First();
-            var noOfCol = worksheet.Dimension.End.Column;
-            var noOfRow = worksheet.Dimension.End.Row;
-            var list = new List<ImportTransportation>();
-            for (int row = 2; row <= noOfRow; row++)
-            {
-                if ((worksheet.Cells[row, 1].Value == null || worksheet.Cells[row, 1].Value?.ToString() == "") &&
-                    (worksheet.Cells[row, 2].Value == null || worksheet.Cells[row, 2].Value?.ToString() == "") &&
-                    (worksheet.Cells[row, 3].Value == null || worksheet.Cells[row, 3].Value?.ToString() == ""))
-                {
-                    continue;
-                }
-                var listExport = worksheet.Cells[row, 3].Value?.ToString().Trim();
-                var route = worksheet.Cells[row, 4].Value?.ToString().Trim();
-                var booking = worksheet.Cells[row, 5].Value?.ToString().Trim();
-                var name = worksheet.Cells[row, 6].Value?.ToString().Trim();
-                var brandShip = worksheet.Cells[row, 7].Value?.ToString().Trim();
-                var line = worksheet.Cells[row, 8].Value?.ToString().Trim();
-                var ship = worksheet.Cells[row, 9].Value?.ToString().Trim();
-                var closing = worksheet.Cells[row, 14].Value?.ToString().Trim();
-                var soc = worksheet.Cells[row, 15].Value?.ToString().Trim();
-                var emptyCombinationId = worksheet.Cells[row, 18].Value?.ToString().Trim();
-                var containerTypeId = worksheet.Cells[row, 20].Value?.ToString().Trim();
-                var boss = worksheet.Cells[row, 24].Value?.ToString().Trim();
-                var sale = worksheet.Cells[row, 25].Value?.ToString().Trim();
-                var commodityId = worksheet.Cells[row, 26].Value?.ToString().Trim();
-                var received = worksheet.Cells[row, 30].Value?.ToString().Trim();
-                var pickupEmptyId = worksheet.Cells[row, 35].Value?.ToString().Trim();
-                var portLoadingId = worksheet.Cells[row, 36].Value?.ToString().Trim();
-                var returnId = worksheet.Cells[row, 60].Value?.ToString().Trim();
-                var returnVendorId = worksheet.Cells[row, 63].Value?.ToString().Trim();
-                var portLiftId = worksheet.Cells[row, 68].Value?.ToString().Trim();
-                var returnEmptyId = worksheet.Cells[row, 69].Value?.ToString().Trim();
-                var transportationPlan = new ImportTransportation()
-                {
-                    ListExport = ConvertTextVn(listExport),
-                    ListExportEn = ConvertTextEn(listExport),
-                    Route = ConvertTextVn(route),
-                    RouteEn = ConvertTextEn(route),
-                    Booking = ConvertTextVn(booking),
-                    BookingEn = ConvertTextEn(booking),
-                    Name = ConvertTextVn(name),
-                    NameEn = ConvertTextEn(name),
-                    BrandShip = ConvertTextVn(brandShip),
-                    BrandShipEn = ConvertTextEn(brandShip),
-                    Line = ConvertTextVn(line),
-                    LineEn = ConvertTextEn(line),
-                    Ship = ConvertTextVn(ship),
-                    ShipEn = ConvertTextEn(ship),
-                    Trip = worksheet.Cells[row, 10].Value?.ToString().Trim(),
-                    Bill = worksheet.Cells[row, 11].Value?.ToString().Trim(),
-                    ClosingDate = worksheet.Cells[row, 12].Value?.ToString().Trim(),
-                    StartDate = worksheet.Cells[row, 13].Value?.ToString().Trim(),
-                    Closing = ConvertTextVn(closing),
-                    ClosingEn = ConvertTextEn(closing),
-                    Soc = ConvertTextVn(soc),
-                    SocEn = ConvertTextEn(soc),
-                    SplitBill = worksheet.Cells[row, 16].Value?.ToString().Trim(),
-                    IsEmptyCombination = worksheet.Cells[row, 17].Value?.ToString().Trim(),
-                    EmptyCombinationId = ConvertTextVn(emptyCombinationId),
-                    EmptyCombinationIdEn = ConvertTextEn(emptyCombinationId),
-                    IsClosingCustomer = worksheet.Cells[row, 19].Value?.ToString().Trim(),
-                    ContainerTypeId = ConvertTextVn(containerTypeId),
-                    ContainerTypeIdEn = ConvertTextEn(containerTypeId),
-                    ContainerNo = worksheet.Cells[row, 22].Value?.ToString().Trim(),
-                    SealNo = worksheet.Cells[row, 23].Value?.ToString().Trim(),
-                    Boss = ConvertTextVn(boss),
-                    BossEn = ConvertTextEn(boss),
-                    Sale = ConvertTextVn(sale),
-                    SaleEn = ConvertTextEn(sale),
-                    CommodityId = ConvertTextVn(commodityId),
-                    CommodityIdEn = ConvertTextEn(commodityId),
-                    Cont20 = worksheet.Cells[row, 27].Value?.ToString().Trim(),
-                    Cont40 = worksheet.Cells[row, 28].Value?.ToString().Trim(),
-                    Weight = worksheet.Cells[row, 29].Value?.ToString().Trim(),
-                    Received = ConvertTextVn(received),
-                    ReceivedEn = ConvertTextEn(received),
-                    ClosingNotes = worksheet.Cells[row, 31].Value?.ToString().Trim(),
-                    ClosingUser = worksheet.Cells[row, 32].Value?.ToString().Trim(),
-                    ClosingDriver = worksheet.Cells[row, 33].Value?.ToString().Trim(),
-                    Closingtruck = worksheet.Cells[row, 34].Value?.ToString().Trim(),
-                    PickupEmptyId = ConvertTextVn(pickupEmptyId),
-                    PickupEmptyIdEn = ConvertTextEn(pickupEmptyId),
-                    PortLoadingId = ConvertTextVn(portLoadingId),
-                    PortLoadingIdEn = ConvertTextEn(portLoadingId),
-                    IsClampingFee = worksheet.Cells[row, 37].Value?.ToString().Trim(),
-                    ClosingUnitPrice = worksheet.Cells[row, 38].Value?.ToString().Trim(),
-                    IsEmptyLift = worksheet.Cells[row, 39].Value?.ToString().Trim(),
-                    IsLanding = worksheet.Cells[row, 40].Value?.ToString().Trim(),
-                    LiftFee = worksheet.Cells[row, 41].Value?.ToString().Trim(),
-                    LandingFee = worksheet.Cells[row, 42].Value?.ToString().Trim(),
-                    CheckFee = worksheet.Cells[row, 43].Value?.ToString().Trim(),
-                    OrtherFee = worksheet.Cells[row, 44].Value?.ToString().Trim(),
-                    OrtherFeeInvoinceNo = worksheet.Cells[row, 45].Value?.ToString().Trim(),
-                    CollectOnBehaftFee = worksheet.Cells[row, 46].Value?.ToString().Trim(),
-                    CollectOnBehaftInvoinceNoFee = worksheet.Cells[row, 47].Value?.ToString().Trim(),
-                    InsuranceFee = worksheet.Cells[row, 48].Value?.ToString().Trim(),
-                    TotalFee = worksheet.Cells[row, 49].Value?.ToString().Trim(),
-                    ShipPrice = worksheet.Cells[row, 50].Value?.ToString().Trim(),
-                    ShipRoses = worksheet.Cells[row, 51].Value?.ToString().Trim(),
-                    ShipNote = worksheet.Cells[row, 52].Value?.ToString().Trim(),
-                    ShipDate = worksheet.Cells[row, 53].Value?.ToString().Trim(),
-                    Dem = worksheet.Cells[row, 54].Value?.ToString().Trim(),
-                    DemDate = worksheet.Cells[row, 55].Value?.ToString().Trim(),
-                    LeftDate = worksheet.Cells[row, 56].Value?.ToString().Trim(),
-                    ReturnDate = worksheet.Cells[row, 57].Value?.ToString().Trim(),
-                    ClosingCont = worksheet.Cells[row, 58].Value?.ToString().Trim(),
-                    ShellDate = worksheet.Cells[row, 59].Value?.ToString().Trim(),
-                    ReturnId = ConvertTextVn(returnId),
-                    ReturnIdEn = ConvertTextEn(returnId),
-                    ReturnNotes = worksheet.Cells[row, 61].Value?.ToString().Trim(),
-                    ReturnUserId = worksheet.Cells[row, 62].Value?.ToString().Trim(),
-                    ReturnVendorId = ConvertTextVn(returnVendorId),
-                    ReturnVendorIdEn = ConvertTextEn(returnVendorId),
-                    ReturnDriverId = worksheet.Cells[row, 64].Value?.ToString().Trim(),
-                    ReturnTruckId = worksheet.Cells[row, 65].Value?.ToString().Trim(),
-                    NotificationCount = worksheet.Cells[row, 66].Value?.ToString().Trim(),
-                    Bet = worksheet.Cells[row, 67].Value?.ToString().Trim(),
-                    PortLiftId = ConvertTextVn(portLiftId),
-                    PortLiftIdEn = ConvertTextEn(portLiftId),
-                    ReturnEmptyId = ConvertTextVn(returnEmptyId),
-                    ReturnEmptyIdEn = ConvertTextEn(returnEmptyId),
-                    ReturnUnitPrice = worksheet.Cells[row, 70].Value?.ToString().Trim(),
-                    IsLiftFee = worksheet.Cells[row, 71].Value?.ToString().Trim(),
-                    IsClosingEmptyFee = worksheet.Cells[row, 72].Value?.ToString().Trim(),
-                    ReturnLiftFee = worksheet.Cells[row, 73].Value?.ToString().Trim(),
-                    ReturnClosingFee = worksheet.Cells[row, 74].Value?.ToString().Trim(),
-                    ReturnDo = worksheet.Cells[row, 75].Value?.ToString().Trim(),
-                    ReturnCheckFee = worksheet.Cells[row, 76].Value?.ToString().Trim(),
-                    ReturnOrtherFee = worksheet.Cells[row, 77].Value?.ToString().Trim(),
-                    ReturnOrtherInvoinceFee = worksheet.Cells[row, 78].Value?.ToString().Trim(),
-                    ReturnCollectOnBehaftFee = worksheet.Cells[row, 79].Value?.ToString().Trim(),
-                    ReturnCollectOnBehaftInvoinceFee = worksheet.Cells[row, 80].Value?.ToString().Trim(),
-                    ReturnPlusFee = worksheet.Cells[row, 81].Value?.ToString().Trim(),
-                    ReturnTotalFee = worksheet.Cells[row, 82].Value?.ToString().Trim(),
-                    Notes = worksheet.Cells[row, 83].Value?.ToString().Trim(),
-                    IsKt = worksheet.Cells[row, 84].Value?.ToString().Trim(),
-                    InsertedBy = worksheet.Cells[row, 85].Value?.ToString().Trim(),
-                };
-                list.Add(transportationPlan);
-            }
-
-            var listListExport = list.Select(x => x.ListExportEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listRoute = list.Select(x => x.RouteEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listBooking = list.Select(x => x.BookingEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listName = list.Select(x => x.NameEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listBrandShip = list.Select(x => x.BrandShipEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listLine = list.Select(x => x.LineEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listShip = list.Select(x => x.ShipEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listClosing = list.Select(x => x.ClosingEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listSoc = list.Select(x => x.SocEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listEmptyCombination = list.Select(x => x.EmptyCombinationIdEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listContainerType = list.Select(x => x.ContainerTypeId).Where(x => x != null && x != "").Distinct().ToList();
-            var listBoss = list.Select(x => x.BossEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listSale = list.Select(x => x.SaleEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listCommodity = list.Select(x => x.CommodityIdEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listReceived = list.Select(x => x.ReceivedEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listPickupEmpty = list.Select(x => x.PickupEmptyIdEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listPortLoading = list.Select(x => x.PortLoadingIdEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listReturn = list.Select(x => x.ReturnIdEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listReturnVendor = list.Select(x => x.ReturnVendorIdEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listPortLift = list.Select(x => x.PortLiftIdEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listReturnEmpty = list.Select(x => x.ReturnEmptyIdEn).Where(x => x != null && x != "").Distinct().ToList();
-            var listUser = list.Select(x => x.InsertedBy).Where(x => x != null && x != "").Distinct().ToList();
-
-            var rsVendor = await db.Vendor.ToListAsync();
-            var rsRoute = await db.Route.ToListAsync();
-            var rsBooking = await db.Booking.ToListAsync();
-            var rsTransportationPlan = await db.TransportationPlan.ToListAsync();
-            var rsShip = await db.Ship.ToListAsync();
-            var rsMasterData = await db.MasterData.ToListAsync();
-            var rsLocation = await db.Location.ToListAsync();
-
-            var listExportDB = rsVendor.Where(x => listListExport.Contains(ConvertTextEn(x.Name)) && x.TypeId == 7552).ToDictionary(x => ConvertTextEn(x.Name));
-            var routeDB = rsRoute.Where(x => listRoute.Contains(ConvertTextEn(x.Name))).ToDictionary(x => ConvertTextEn(x.Name));
-            var bookingDB1 = rsBooking.Where(x => listBooking.Contains(ConvertTextEn(x.BookingNo))).OrderByDescending(x => x.Id).ToList();
-            var bookingDB = bookingDB1.ToDictionary(x => ConvertTextEn(x.BookingNo));
-            var tranpDB1 = rsTransportationPlan.Where(x => listName.Contains(ConvertTextEn(x.Name))).ToList();
-            var tranpDB = tranpDB1.ToDictionaryDistinct(x => $"{x.Name}{(x.ClosingDate is null ? null : x.ClosingDate)}");
-            var vendorDB1 = rsVendor.Where(x => (listBrandShip.Contains(ConvertTextEn(x.Name)) || listLine.Contains(ConvertTextEn(x.Name)) || listSoc.Contains(ConvertTextEn(x.Name)) || listEmptyCombination.Contains(ConvertTextEn(x.Name)) || listReturnVendor.Contains(ConvertTextEn(x.Name)) || listClosing.Contains(ConvertTextEn(x.Name))) && x.TypeId == 7552).ToList();
-            var vendorDB = vendorDB1.ToDictionary(x => x.Name);
-            var shipDB1 = rsShip.Where(x => listShip.Contains(ConvertTextEn(x.Name))).ToList();
-            var shipDB = shipDB1.ToDictionary(x => x.Name + x.BrandShipId);
-            var containerDB = rsMasterData.Where(x => listContainerType.Contains(ConvertTextEn(x.Description)) && x.ParentId == 7565).ToDictionary(x => ConvertTextEn(x.Description));
-            var bossDB = rsVendor.Where(x => listBoss.Contains(ConvertTextEn(x.Name)) && x.TypeId == 7551).ToDictionary(x => ConvertTextEn(x.Name));
-            var userDB = await db.User.Where(x => listSale.Contains(x.UserName) || listUser.Contains(x.UserName)).ToDictionaryAsync(x => x.UserName.ToLower());
-            var commodityDB1 = rsMasterData.Where(x => listCommodity.Contains(ConvertTextEn(x.Description)) && x.Path.Contains(@"\7651\") && x.ParentId != 7651).ToList();
-            var commodityDB = commodityDB1.ToDictionary(x => ConvertTextEn(x.Description));
-            var receivedDB = rsLocation.Where(x => listReceived.Contains(ConvertTextEn(x.Description)) || listPickupEmpty.Contains(ConvertTextEn(x.Description)) || listPortLoading.Contains(ConvertTextEn(x.Description)) || listPortLoading.Contains(ConvertTextEn(x.Description)) || listReturn.Contains(ConvertTextEn(x.Description)) || listPortLift.Contains(ConvertTextEn(x.Description)) || listPortLift.Contains(ConvertTextEn(x.Description)) || listReturnEmpty.Contains(ConvertTextEn(x.Description))).OrderByDescending(x => x.Id).ToDictionary(x => ConvertTextEn(x.Description));
-            foreach (var item in list)
-            {
-                var exportListId = item.ListExport is null ? null : listExportDB.GetValueOrDefault(item.ListExportEn);
-                var bookingId = item.Booking is null ? null : bookingDB.GetValueOrDefault(item.BookingEn);
-                var KEY = $"{item.NameEn}{(item.ClosingDate is null ? null : DateTime.Parse(item.ClosingDate))}";
-                var tranpId = item.Name is null ? null : tranpDB.GetValueOrDefault(KEY);
-                var brandShipId = item.BrandShip is null ? null : vendorDB.GetValueOrDefault(item.BrandShipEn);
-                var lineId = item.Line is null ? null : vendorDB.GetValueOrDefault(item.LineEn);
-                var shipId = item.Ship is null ? null : shipDB.GetValueOrDefault(item.ShipEn);
-                var closingId = item.Closing is null ? null : vendorDB.GetValueOrDefault(item.ClosingEn);
-                var socId = item.Soc is null ? null : vendorDB.GetValueOrDefault(item.Soc);
-                var emptyCombinationId = item.EmptyCombinationId is null ? null : vendorDB.GetValueOrDefault(item.EmptyCombinationIdEn);
-                var containerTypeId = item.ContainerTypeId is null ? null : containerDB.GetValueOrDefault(item.ContainerTypeIdEn);
-                var bossId = item.Boss is null ? null : bossDB.GetValueOrDefault(item.BossEn);
-                var saleId = item.Sale is null ? null : userDB.GetValueOrDefault(item.SaleEn);
-                var commodityId = item.CommodityId is null ? null : commodityDB.GetValueOrDefault(item.CommodityIdEn);
-                var receivedId = item.Received is null ? null : receivedDB.GetValueOrDefault(item.ReceivedEn);
-                var pickupEmptyId = item.PickupEmptyId is null ? null : receivedDB.GetValueOrDefault(item.PickupEmptyIdEn);
-                var portLoadingId = item.PortLoadingId is null ? null : receivedDB.GetValueOrDefault(item.PortLoadingIdEn);
-                var returnId = item.ReturnId is null ? null : receivedDB.GetValueOrDefault(item.ReturnIdEn);
-                var returnVendorId = item.ReturnVendorId is null ? null : vendorDB.GetValueOrDefault(item.ReturnVendorIdEn);
-                var insertedById = item.InsertedBy is null ? null : userDB.GetValueOrDefault(item.InsertedBy);
-                var portLiftIdId = item.PortLiftId is null ? null : userDB.GetValueOrDefault(item.PortLiftIdEn);
-                var returnEmptyId = item.ReturnEmptyId is null ? null : userDB.GetValueOrDefault(item.ReturnEmptyIdEn);
-                var routeId = item.Route is null ? null : routeDB.GetValueOrDefault(item.RouteEn + brandShipId.Id);
-                var tran = new Transportation()
-                {
-                    CheckFeeHistoryId = exportListId is null ? null : exportListId.Id,
-                    ExportListId = exportListId is null ? null : exportListId.Id,
-                    RouteId = routeId is null ? null : routeId.Id,
-                    BookingId = bookingId is null ? null : bookingId.Id,
-                    TransportationPlanId = tranpId is null ? null : tranpId.Id,
-                    BrandShipId = brandShipId is null ? null : brandShipId.Id,
-                    LineId = lineId is null ? null : lineId.Id,
-                    ShipId = shipId is null ? null : shipId.Id,
-                    Trip = item.Trip,
-                    BillNo = item.Bill,
-                    ClosingDate = item.ClosingDate is null ? null : DateTime.Parse(item.ClosingDate),
-                    StartShip = item.StartDate is null ? null : DateTime.Parse(item.StartDate),
-                    ClosingId = closingId is null ? null : closingId.Id,
-                    SocId = socId is null ? null : socId.Id,
-                    SplitBill = item.SplitBill,
-                    IsEmptyCombination = item.IsEmptyCombination == "1" ? true : false,
-                    EmptyCombinationId = emptyCombinationId is null ? null : emptyCombinationId.Id,
-                    IsClosingCustomer = item.IsClosingCustomer == "1" ? true : false,
-                    ContainerTypeId = containerTypeId is null ? null : containerTypeId.Id,
-                    ContainerNo = item.ContainerNo,
-                    SealNo = item.SealNo,
-                    BossId = bossId is null ? null : bossId.Id,
-                    UserId = saleId is null ? null : saleId.Id,
-                    CommodityId = commodityId is null ? null : commodityId.Id,
-                    Cont20 = decimal.Parse((item.Cont20 == "" || item.Cont20 is null) ? "0" : item.Cont20.Replace(",", "")),
-                    Cont40 = decimal.Parse((item.Cont40 == "" || item.Cont40 is null) ? "0" : item.Cont40.Replace(",", "")),
-                    Weight = decimal.Parse((item.Weight == "" || item.Weight is null) ? "0" : item.Weight.Replace(",", "")),
-                    ReceivedId = receivedId is null ? null : receivedId.Id,
-                    ClosingNotes = item.ClosingNotes,
-                    ClosingUserId = item.ClosingUser,
-                    ClosingDriverId = item.ClosingDriver,
-                    ClosingTruckId = item.Closingtruck,
-                    PickupEmptyId = pickupEmptyId is null ? null : pickupEmptyId.Id,
-                    PortLoadingId = portLoadingId is null ? null : portLoadingId.Id,
-                    IsClampingFee = item.IsClampingFee == "1" ? true : false,
-                    ClosingUnitPrice = decimal.Parse((item.ClosingUnitPrice == "" || item.ClosingUnitPrice is null) ? "0" : item.ClosingUnitPrice.Replace(",", "")),
-                    IsEmptyLift = item.IsEmptyLift == "1" ? true : false,
-                    IsLanding = item.IsEmptyLift == "1" ? true : false,
-                    LiftFee = decimal.Parse((item.LiftFee == "" || item.LiftFee is null) ? "0" : item.LiftFee.Replace(",", "")),
-                    LandingFee = decimal.Parse((item.LandingFee == "" || item.LandingFee is null) ? "0" : item.LandingFee.Replace(",", "")),
-                    CheckFee = decimal.Parse((item.CheckFee == "" || item.CheckFee is null) ? "0" : item.CheckFee.Replace(",", "")),
-                    OrtherFee = decimal.Parse((item.OrtherFee == "" || item.OrtherFee is null) ? "0" : item.OrtherFee.Replace(",", "")),
-                    OrtherFeeInvoinceNo = decimal.Parse((item.OrtherFeeInvoinceNo == "" || item.OrtherFeeInvoinceNo is null) ? "0" : item.OrtherFeeInvoinceNo.Replace(",", "")),
-                    CollectOnBehaftFee = decimal.Parse((item.CollectOnBehaftFee == "" || item.CollectOnBehaftFee is null) ? "0" : item.CollectOnBehaftFee.Replace(",", "")),
-                    CollectOnBehaftInvoinceNoFee = decimal.Parse((item.CollectOnBehaftInvoinceNoFee == "" || item.CollectOnBehaftInvoinceNoFee is null) ? "0" : item.CollectOnBehaftInvoinceNoFee.Replace(",", "")),
-                    InsuranceFee = decimal.Parse((item.InsuranceFee == "" || item.InsuranceFee is null) ? "0" : item.InsuranceFee.Replace(",", "")),
-                    TotalFee = decimal.Parse((item.TotalFee == "" || item.TotalFee is null) ? "0" : item.TotalFee.Replace(",", "")),
-                    ShipPrice = decimal.Parse((item.ShipPrice == "" || item.ShipPrice is null) ? "0" : item.ShipPrice.Replace(",", "")),
-                    ShipRoses = decimal.Parse((item.ShipRoses == "" || item.ShipRoses is null) ? "0" : item.ShipRoses.Replace(",", "")),
-                    ShipNotes = item.ShipNote,
-                    ShipDate = item.ShipDate is null ? null : DateTime.Parse(item.ShipDate),
-                    Dem = decimal.Parse((item.Dem == "" || item.Dem is null) ? "0" : item.Dem.Replace(",", "")),
-                    DemDate = item.DemDate is null ? null : DateTime.Parse(item.DemDate),
-                    LeftDate = item.LeftDate is null ? null : DateTime.Parse(item.LeftDate),
-                    ReturnDate = item.ReturnDate is null ? null : DateTime.Parse(item.ReturnDate),
-                    ClosingCont = item.ClosingCont is null ? null : DateTime.Parse(item.ClosingCont),
-                    ShellDate = decimal.Parse((item.ShellDate == "" || item.ShellDate is null) ? "0" : item.ShellDate.Replace(",", "")),
-                    ReturnId = returnId is null ? null : returnId.Id,
-                    ReturnNotes = item.ReturnNotes,
-                    ReturnUserId = item.ReturnUserId,
-                    ReturnVendorId = returnVendorId is null ? null : returnVendorId.Id,
-                    ReturnDriverId = item.ReturnDriverId,
-                    ReturnTruckId = item.ReturnTruckId,
-                    NotificationCount = item.NotificationCount,
-                    Bet = item.Bet,
-                    PortLiftId = portLiftIdId is null ? null : portLiftIdId.Id,
-                    ReturnEmptyId = returnEmptyId is null ? null : returnEmptyId.Id,
-                    ReturnUnitPrice = decimal.Parse((item.ShellDate == "" || item.ShellDate is null) ? "0" : item.ShellDate.Replace(",", "")),
-                    IsLiftFee = item.IsLiftFee == "1" ? true : false,
-                    IsClosingEmptyFee = item.IsClosingEmptyFee == "1" ? true : false,
-                    ReturnLiftFee = decimal.Parse((item.ReturnLiftFee == "" || item.ReturnLiftFee is null) ? "0" : item.ReturnLiftFee.Replace(",", "")),
-                    ReturnClosingFee = decimal.Parse((item.ReturnClosingFee == "" || item.ReturnClosingFee is null) ? "0" : item.ReturnClosingFee.Replace(",", "")),
-                    ReturnDo = decimal.Parse((item.ReturnDo == "" || item.ReturnDo is null) ? "0" : item.ReturnDo.Replace(",", "")),
-                    ReturnCheckFee = decimal.Parse((item.ReturnCheckFee == "" || item.ReturnCheckFee is null) ? "0" : item.ReturnCheckFee.Replace(",", "")),
-                    ReturnOrtherFee = decimal.Parse((item.ReturnOrtherFee == "" || item.ReturnOrtherFee is null) ? "0" : item.ReturnOrtherFee.Replace(",", "")),
-                    ReturnOrtherInvoinceFee = decimal.Parse((item.ReturnOrtherInvoinceFee == "" || item.ReturnOrtherInvoinceFee is null) ? "0" : item.ReturnOrtherInvoinceFee.Replace(",", "")),
-                    ReturnCollectOnBehaftFee = decimal.Parse((item.ReturnCollectOnBehaftFee == "" || item.ReturnCollectOnBehaftFee is null) ? "0" : item.ReturnCollectOnBehaftFee.Replace(",", "")),
-                    ReturnCollectOnBehaftInvoinceFee = decimal.Parse((item.ReturnCollectOnBehaftInvoinceFee == "" || item.ReturnCollectOnBehaftInvoinceFee is null) ? "0" : item.ReturnCollectOnBehaftInvoinceFee.Replace(",", "")),
-                    ReturnPlusFee = decimal.Parse((item.ReturnPlusFee == "" || item.ReturnPlusFee is null) ? "0" : item.ReturnPlusFee.Replace(",", "")),
-                    ReturnTotalFee = decimal.Parse((item.ReturnTotalFee == "" || item.ReturnTotalFee is null) ? "0" : item.ReturnTotalFee.Replace(",", "")),
-                    Notes = item.Notes,
-                    IsKt = item.IsKt == "1" ? true : false,
-                    InsertedBy = insertedById is null ? 1 : insertedById.Id,
-                    Active = true,
-                    InsertedDate = DateTime.Now,
-                    Name = item.Name
-                };
-                db.Add(tran);
-            }
-            await db.SaveChangesAsync();
-            return null;
-        }
-
         [HttpGet("api/[Controller]/GetByRole")]
         public Task<OdataResult<Transportation>> UserClick(ODataQueryOptions<Transportation> options)
         {
@@ -1698,17 +1304,7 @@ namespace TMS.API.Controllers
                                         };
             return groupByPercentileQuery.OrderByDescending(x => x.Month).ThenByDescending(x => x.Year).ToList();
         }
-
-        public static string ConvertTextEn(string text)
-        {
-            return text is null || text == "" ? "" : Regex.Replace(text.ToLower().Trim(), @"\s+", " ");
-        }
-
-        public static string ConvertTextVn(string text)
-        {
-            return text is null || text == "" ? "" : Regex.Replace(text.Trim(), @"\s+", " ");
-        }
-
+        #region Core
         public override async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ViewSumary([FromServices] IServiceProvider serviceProvider, [FromServices] IConfiguration config, [FromBody] string sum, [FromQuery] string group, [FromQuery] string tablename, [FromQuery] string refname, [FromQuery] string formatsumary, [FromQuery] string orderby, [FromQuery] string sql, [FromQuery] string where)
         {
             var connectionStr = Startup.GetConnectionString(serviceProvider, config, "Default");
@@ -1862,7 +1458,17 @@ namespace TMS.API.Controllers
             }
             return tables;
         }
+        public static string ConvertTextEn(string text)
+        {
+            return text is null || text == "" ? "" : Regex.Replace(text.ToLower().Trim(), @"\s+", " ");
+        }
 
+        public static string ConvertTextVn(string text)
+        {
+            return text is null || text == "" ? "" : Regex.Replace(text.Trim(), @"\s+", " ");
+        }
+        #endregion
+        #region  Request
         [HttpPost("api/Transportation/RequestUnLock")]
         public async Task RequestUnLock([FromBody] Transportation transportation)
         {
@@ -2442,6 +2048,8 @@ namespace TMS.API.Controllers
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
             return true;
         }
+        #endregion
+        #region Lock
 
         [HttpPost("api/Transportation/LockAllTransportation")]
         public async Task<bool> LockAllTransportation([FromBody] List<Transportation> transportations)
@@ -2602,7 +2210,8 @@ namespace TMS.API.Controllers
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
             return true;
         }
-
+        #endregion
+        #region Export
         [HttpPost("api/Transportation/ExportTransportationAndRevenue")]
         public async Task<string> ExportTransportationAndRevenue([FromBody] List<int> tranIds)
         {
@@ -3022,5 +2631,6 @@ namespace TMS.API.Controllers
             workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
             return url;
         }
+        #endregion
     }
 }
