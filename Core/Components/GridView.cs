@@ -1007,9 +1007,9 @@ namespace Core.Components
                     }
                     e.PreventDefault();
                     e.StopPropagation();
-                    var currentItemLeft = GetItemFocus();
+                    var currentItemLeft = LastListViewItem;
                     var upItemLeft = currentItemLeft.Children.FirstOrDefault(x => x.Element.Closest(ElementType.td.ToString()) == com.Element.Closest(ElementType.td.ToString()).PreviousElementSibling);
-                    if (upItemLeft is null)
+                    if (upItemLeft is null || currentItemLeft.Children.Nothing())
                     {
                         return;
                     }
@@ -1031,7 +1031,11 @@ namespace Core.Components
                     }
                     e.PreventDefault();
                     e.StopPropagation();
-                    var currentItemRight = GetItemFocus();
+                    var currentItemRight = LastListViewItem;
+                    if (currentItemRight is null || currentItemRight.Children.Nothing())
+                    {
+                        return;
+                    }
                     var upItemRight = currentItemRight.Children.FirstOrDefault(x => x.Element.Closest(ElementType.td.ToString()) == com.Element.Closest(ElementType.td.ToString()).NextElementSibling);
                     if (upItemRight is null)
                     {
