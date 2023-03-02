@@ -1571,6 +1571,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var tranAcc = new TransportationListAccountantBL();
+            await tranAcc.RequestUnClosing(transportation, patchUpdate);
             if (patchUpdate.Changes.Any(x => x.Field == nameof(transportation.LockShip)))
             {
                 if (transportation.LockShip)

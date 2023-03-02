@@ -170,6 +170,24 @@ namespace TMS.UI.Business.Manage
                         Content = "Bạn có chắc chắn muốn mở khóa hệ thống ?",
                     };
                     confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        var checkRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {transportation.Id} and IsRequestUnLockAll eq true");
+                        if (checkRequests.Count > 0)
+                        {
+                            var confirmRequets = new ConfirmDialog
+                            {
+                                Content = $"Cont này có yêu cần duyệt bạn có muốn duyệt mở khóa không ?",
+                            };
+                            confirmRequets.Render();
+                            confirmRequets.YesConfirmed += async () =>
+                            {
+                                var trans = new List<Transportation>();
+                                trans.Add(transportation);
+                                await new Client(nameof(Transportation)).PostAsync<bool>(trans, "ApproveUnLockAll");
+                            };
+                        }
+                    };
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.IsLocked = true;
@@ -207,7 +225,28 @@ namespace TMS.UI.Business.Manage
                     confirm.Render();
                     confirm.YesConfirmed += async () =>
                     {
-                        await RequestUnClosing(transportation, patch);
+                        if (transportation.IsLocked)
+                        {
+                            await RequestUnClosing(transportation, patch);
+                        }
+                        else
+                        {
+                            var checkRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {transportation.Id} and IsRequestUnLockAccountant eq true");
+                            if (checkRequests.Count > 0)
+                            {
+                                var confirmRequets = new ConfirmDialog
+                                {
+                                    Content = $"Cont này có yêu cần duyệt bạn có muốn duyệt mở khóa không ?",
+                                };
+                                confirmRequets.Render();
+                                confirmRequets.YesConfirmed += async () =>
+                                {
+                                    var trans = new List<Transportation>();
+                                    trans.Add(transportation);
+                                    await new Client(nameof(Transportation)).PostAsync<bool>(trans, "ApproveUnLockAccountantTransportation");
+                                };
+                            }
+                        }
                     };
                     confirm.NoConfirmed += async () =>
                     {
@@ -246,7 +285,28 @@ namespace TMS.UI.Business.Manage
                     confirm.Render();
                     confirm.YesConfirmed += async () =>
                     {
-                        await RequestUnClosing(transportation, patch);
+                        if (transportation.IsLocked)
+                        {
+                            await RequestUnClosing(transportation, patch);
+                        }
+                        else
+                        {
+                            var checkRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {transportation.Id} and IsRequestUnLockExploit eq true");
+                            if (checkRequests.Count > 0)
+                            {
+                                var confirmRequets = new ConfirmDialog
+                                {
+                                    Content = $"Cont này có yêu cần duyệt bạn có muốn duyệt mở khóa không ?",
+                                };
+                                confirmRequets.Render();
+                                confirmRequets.YesConfirmed += async () =>
+                                {
+                                    var trans = new List<Transportation>();
+                                    trans.Add(transportation);
+                                    await new Client(nameof(Transportation)).PostAsync<bool>(trans, "ApproveUnLockTransportation");
+                                };
+                            }
+                        }
                     };
                     confirm.NoConfirmed += async () =>
                     {
@@ -265,6 +325,10 @@ namespace TMS.UI.Business.Manage
                         Content = "Bạn có chắc chắn muốn khóa doanh thu ?",
                     };
                     confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        await RequestUnClosing(transportation, patch);
+                    };
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.IsLockedRevenue = false;
@@ -279,6 +343,10 @@ namespace TMS.UI.Business.Manage
                         Content = "Bạn có chắc chắn muốn mở khóa doanh thu ?",
                     };
                     confirm.Render();
+                    confirm.YesConfirmed += async () =>
+                    {
+                        await RequestUnClosing(transportation, patch);
+                    };
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.IsLockedRevenue = true;
@@ -1226,12 +1294,12 @@ namespace TMS.UI.Business.Manage
                     {
                         var confirmRequets = new ConfirmDialog
                         {
-                            Content = $"Có {checkRequests.Count} DSVC cần duyệt bạn có muốn duyệt mở khóa toàn bộ không ?",
+                            Content = $"Có {checkRequests.Count} yêu cầu cần duyệt bạn có muốn duyệt mở khóa toàn bộ không ?",
                         };
                         confirmRequets.Render();
                         confirmRequets.YesConfirmed += async () =>
                         {
-                            var rs = await new Client(nameof(Transportation)).PostAsync<bool>(checkRequests, "ApproveUnLockAll");
+                            var rs = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "ApproveUnLockAll");
                             if (rs)
                             {
                                 await gridView.ApplyFilter(true);
@@ -1335,12 +1403,12 @@ namespace TMS.UI.Business.Manage
             {
                 var confirmRequets = new ConfirmDialog
                 {
-                    Content = $"Có {checkRequests.Count} DSVC cần duyệt bạn có muốn duyệt mở khóa toàn bộ không ?",
+                    Content = $"Có {checkRequests.Count} yêu cầu cần duyệt bạn có muốn duyệt mở khóa toàn bộ không ?",
                 };
                 confirmRequets.Render();
                 confirmRequets.YesConfirmed += async () =>
                 {
-                    await new Client(nameof(Transportation)).PostAsync<bool>(checkRequests, "ApproveUnLockTransportation");
+                    await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockTransportation");
                 };
                 await new Client(nameof(Transportation)).PostAsync<bool>(transportations.Where(x => x.IsRequestUnLockExploit == false), "UnLockTransportation");
             }
@@ -1357,12 +1425,12 @@ namespace TMS.UI.Business.Manage
             {
                 var confirmRequets = new ConfirmDialog
                 {
-                    Content = $"Có {checkRequests.Count} DSVC cần duyệt bạn có muốn duyệt mở khóa toàn bộ không ?",
+                    Content = $"Có {checkRequests.Count} yêu cầu cần duyệt bạn có muốn duyệt mở khóa toàn bộ không ?",
                 };
                 confirmRequets.Render();
                 confirmRequets.YesConfirmed += async () =>
                 {
-                    await new Client(nameof(Transportation)).PostAsync<bool>(checkRequests, "ApproveUnLockAccountantTransportation");
+                    await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockAccountantTransportation");
                 };
                 await new Client(nameof(Transportation)).PostAsync<bool>(transportations.Where(x => x.IsRequestUnLockAccountant == false), "UnLockAccountantTransportation");
             }
