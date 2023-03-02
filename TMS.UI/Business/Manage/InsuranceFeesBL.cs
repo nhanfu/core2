@@ -31,7 +31,7 @@ namespace TMS.UI.Business.Manage
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
             if (gridView.Name.Contains("ExpenseIsDelete"))
             {
-                ApproveDelete(entity);
+                await ApproveDelete(entity);
             }
             else
             {
@@ -48,9 +48,23 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public void LockExpense()
+        public async Task ViewChangeInsuranceFees(Expense entity)
         {
-            ChangeBackgroudColor();
+            await this.OpenPopup(
+               featureName: "InsuranceFees View Change",
+               factory: () =>
+               {
+                   var type = Type.GetType("TMS.UI.Business.Manage.InsuranceFeesViewChangeBL");
+                   var instance = Activator.CreateInstance(type) as PopupEditor;
+                   instance.Title = "Lịch sử thay đổi";
+                   instance.Entity = entity;
+                   return instance;
+               });
+        }
+
+        public async Task LockExpense()
+        {
+            await ChangeBackgroudColor();
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
             var listViewItems = gridView.RowData.Data.Cast<Expense>().ToList();
             if (gridView.Name.Contains("ExpenseIsDelete"))
@@ -68,14 +82,19 @@ namespace TMS.UI.Business.Manage
             }
             else
             {
-                listViewItems.ForEach(async x =>
+                var ids = listViewItems.Select(x => x.Id).ToList();
+                var listExpenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and IsPurchasedInsurance eq true and RequestChangeId in ({ids.Combine()}) and StatusId eq {(int)ApprovalStatusEnum.Approving}");
+                var checkHistorys = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and RequestChangeId in ({ids.Combine()}) and StatusId eq {(int)ApprovalStatusEnum.New}");
+                foreach (var item in listViewItems)
                 {
-                    await UpdateListView(x, gridView);
-                });
+                    var expenses = listExpenses.Where(x => x.Id == item.Id).ToList();
+                    var checkHistory = checkHistorys.Where(x => x.RequestChangeId == item.Id).ToList();
+                    await UpdateListView(item, gridView, expenses, checkHistory);
+                }
             }
         }
 
-        private static async Task UpdateListView(Expense x, GridView gridView)
+        private async Task UpdateListView(Expense x, GridView gridView, List<Expense> expenses, List<Expense> checkHistory)
         {
             var listViewItem = gridView.GetListViewItems(x).FirstOrDefault();
             if (listViewItem is null)
@@ -83,7 +102,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
-            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and IsPurchasedInsurance eq true and RequestChangeId eq {x.Id} and StatusId eq {(int)ApprovalStatusEnum.Approving}");
+            
             if (expenses.Count > 0)
             {
                 listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
@@ -95,6 +114,14 @@ namespace TMS.UI.Business.Manage
             else
             {
                 listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+            }
+            if (checkHistory.Count > 0)
+            {
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnViewChange").ForEach(y => y.Disabled = false);
+            }
+            else
+            {
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnViewChange").ForEach(y => y.Disabled = true);
             }
         }
 
@@ -309,7 +336,7 @@ namespace TMS.UI.Business.Manage
                 expense.DatePurchasedInsurance = DateTime.Now.Date;
                 listViewItem.UpdateView();
                 listViewItem.FilterChildren<Datepicker>(x => x.GuiInfo.FieldName == nameof(Expense.DatePurchasedInsurance)).ToList().ForEach(x => x.Dirty = true);
-                listViewItem.Element.AddClass("bg-red1");
+                listViewItem.Element.AddClass("bg-host");
             }
             else
             {
@@ -324,7 +351,7 @@ namespace TMS.UI.Business.Manage
                     listViewItem.UpdateView();
                     listViewItem.FilterChildren<Datepicker>(x => x.GuiInfo.FieldName == nameof(Expense.DatePurchasedInsurance)).ToList().ForEach(x => x.Dirty = true);
                     await listViewItem.PatchUpdate();
-                    listViewItem.Element.RemoveClass("bg-red1");
+                    listViewItem.Element.RemoveClass("bg-host");
                 };
                 confirm.NoConfirmed += () =>
                 {
@@ -349,7 +376,7 @@ namespace TMS.UI.Business.Manage
                     listViewItem.FilterChildren<Checkbox>(x => x.GuiInfo.FieldName == nameof(Expense.IsPurchasedInsurance)).ToList().ForEach(x => x.Dirty = true);
                     listViewItem.FilterChildren<Datepicker>(x => x.GuiInfo.FieldName == nameof(Expense.DatePurchasedInsurance)).ToList().ForEach(x => x.Dirty = true);
                     await listViewItem.PatchUpdate();
-                    listViewItem.Element.AddClass("bg-red1");
+                    listViewItem.Element.AddClass("bg-host");
                 }
                 listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
                 listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "IsClosing" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
@@ -369,7 +396,7 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public void ChangeBackgroudColor()
+        public async Task ChangeBackgroudColor()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
             if (gridView is null)
@@ -377,25 +404,31 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var listViewItems = gridView.RowData.Data.Cast<Expense>().ToList();
-            listViewItems.ForEach(x =>
+            foreach (var item in listViewItems)
             {
-                var listViewItem = gridView.GetListViewItems(x).FirstOrDefault();
+                var listViewItem = gridView.GetListViewItems(item).FirstOrDefault();
                 if (listViewItem is null)
                 {
                     return;
                 }
                 if (listViewItem != null)
                 {
-                    if (x.IsPurchasedInsurance == true)
+                    var checkHistory = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and RequestChangeId eq {item.Id} and StatusId eq 2");
+                    if (checkHistory.Count > 0)
                     {
                         listViewItem.Element.AddClass("bg-red1");
+                    }
+                    else if (item.IsPurchasedInsurance == true)
+                    {
+                        listViewItem.Element.AddClass("bg-host");
                     }
                     else
                     {
                         listViewItem.Element.RemoveClass("bg-red1");
+                        listViewItem.Element.RemoveClass("bg-host");
                     }
                 }
-            });
+            }
         }
 
         public async Task SetPurchasedForExpenses()
@@ -428,7 +461,7 @@ namespace TMS.UI.Business.Manage
                     var listViewItem = gridView.GetListViewItems(item).FirstOrDefault();
                     if (listViewItem != null)
                     {
-                        listViewItem.Element.AddClass("bg-red1");
+                        listViewItem.Element.AddClass("bg-host");
                     }
                 }
                 await gridView.ApplyFilter(true);
@@ -469,14 +502,14 @@ namespace TMS.UI.Business.Manage
                     var listViewItem = gridView.GetListViewItems(item).FirstOrDefault();
                     if (listViewItem != null)
                     {
-                        listViewItem.Element.AddClass("bg-red1");
+                        listViewItem.Element.AddClass("bg-host");
                     }
                 }
                 await gridView.ApplyFilter(true);
             };
         }
 
-        public void ApproveDelete(Expense expense)
+        public async Task ApproveDelete(Expense expense)
         {
             var confirm = new ConfirmDialog
             {
@@ -488,7 +521,7 @@ namespace TMS.UI.Business.Manage
                 var transportation = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {expense.TransportationId}");
                 var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId eq {expense.TransportationId} and RequestChangeId eq null");
                 var check = true;
-                expenses.ForEach(async x =>
+                foreach (var x in expenses)
                 {
                     if (x.IsClosing && x.IsPurchasedInsurance)
                     {
@@ -564,7 +597,7 @@ namespace TMS.UI.Business.Manage
                             check = false;
                         }
                     }
-                });
+                }
                 if (check)
                 {
                     var resTr = await new Client(nameof(Transportation)).HardDeleteAsync(transportation.Id);
