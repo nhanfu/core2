@@ -51,5 +51,7 @@ namespace TMS.API.Models
         public bool IsQuotation { get; set; }
         public bool SteamingTerms { get; set; }
         public bool BreakTerms { get; set; }
+        public decimal? Cont20 { get; set; }
+        public decimal? Cont40 { get; set; }
     }
 }

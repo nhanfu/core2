@@ -1379,6 +1379,8 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.NotesContract).HasMaxLength(250);
             entity.Property(e => e.RequestChangeNote).HasMaxLength(250);
             entity.Property(e => e.ReturnNotes).HasMaxLength(500);
+            entity.Property(e => e.Cont20).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.Cont40).HasColumnType("decimal(20, 5)");
         });
 
         modelBuilder.Entity<TransportationRequest>(entity =>

@@ -652,6 +652,8 @@ namespace TMS.API.Controllers
                 }
             }).Distinct().ToList();
             var fieldNames = select1s.Union(selects.Union(idFields)).ToList();
+            fieldNames.Add($"[{component.RefName}].Id");
+            fieldNames = fieldNames.Distinct().ToList();
             if (!sql.IsNullOrWhiteSpace())
             {
                 reportQuery = $@"select {fieldNames.Combine()}
@@ -668,7 +670,7 @@ namespace TMS.API.Controllers
             }
             if (!orderby.IsNullOrWhiteSpace())
             {
-                reportQuery += $" order by {orderby}";
+                reportQuery += $" order by {orderby},[{component.RefName}].Id asc";
             }
             var connectionStr = Startup.GetConnectionString(serviceProvider, config, "Default");
             using var con = new SqlConnection(connectionStr);
