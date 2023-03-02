@@ -254,7 +254,6 @@ namespace Core.Components
                     new ContextMenuItem { Icon = "fa fa-search-plus", Text = "Nâng cao", Click = AdvancedSearch },
                     new ContextMenuItem { Icon = "icon fa fa-line-columns", Text = show is null ? "Ẩn cột khép" : (!show.Value ? "Ẩn cột khép" : "Hiện cột khép"), Click = LiteGridView },
                     new ContextMenuItem { Icon = "fa fa-cloud-upload-alt", Text = "Nhập excel", Click = OpenExcelFileDialog },
-                    new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất hiển thị", Click = ExportDisplay },
                     new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất toàn bộ", Click = ExportAllData },
                     new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất tùy chọn", Click = ExportCustomData },
             };
