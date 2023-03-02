@@ -83,7 +83,7 @@ namespace TMS.UI.Business.Manage
             else
             {
                 var ids = listViewItems.Select(x => x.Id).ToList();
-                var listExpenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and IsPurchasedInsurance eq true and RequestChangeId in ({ids.Combine()}) and StatusId eq {(int)ApprovalStatusEnum.Approving}");
+                var listExpenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and IsPurchasedInsurance eq true and Id in ({ids.Combine()}) and StatusId eq {(int)ApprovalStatusEnum.Approving} and RequestChangeId eq null ");
                 var checkHistorys = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and RequestChangeId in ({ids.Combine()}) and StatusId eq {(int)ApprovalStatusEnum.New}");
                 foreach (var item in listViewItems)
                 {
@@ -101,19 +101,22 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-            listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
-            
-            if (expenses.Count > 0)
+            if (x.IsClosing)
             {
-                listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
-            }
-            else if (x.IsClosing)
-            {
-                listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "IsClosing" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "IsClosing").ForEach(y => y.Disabled = true);
             }
             else
             {
-                listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+                if (expenses.Count > 0)
+                {
+                    listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+                    listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange").ForEach(y => y.Disabled = false);
+                }
+                else
+                {
+                    listViewItem.FilterChildren(y => y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
+                    listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange").ForEach(y => y.Disabled = true);
+                }
             }
             if (checkHistory.Count > 0)
             {
@@ -418,7 +421,7 @@ namespace TMS.UI.Business.Manage
                     {
                         listViewItem.Element.AddClass("bg-red1");
                     }
-                    else if (item.IsPurchasedInsurance == true)
+                    if (item.IsPurchasedInsurance)
                     {
                         listViewItem.Element.AddClass("bg-host");
                     }
@@ -509,6 +512,8 @@ namespace TMS.UI.Business.Manage
             };
         }
 
+        private int awaiter;
+
         public async Task ApproveDelete(Expense expense)
         {
             var confirm = new ConfirmDialog
@@ -520,12 +525,10 @@ namespace TMS.UI.Business.Manage
             {
                 var transportation = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {expense.TransportationId}");
                 var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId eq {expense.TransportationId} and RequestChangeId eq null");
-                var check = true;
                 foreach (var x in expenses)
                 {
                     if (x.IsClosing && x.IsPurchasedInsurance)
                     {
-                        check = false;
                         var confirmDel = new ConfirmDialog
                         {
                             Content = "Đã có phí BH được mua và chốt, bạn có muốn tiếp tục duyệt và tìm cont thay thế không ?",
@@ -574,11 +577,14 @@ namespace TMS.UI.Business.Manage
                                     {
                                         Toast.Success("Thay thế thành công!");
                                         var res = await new Client(nameof(Expense)).HardDeleteAsync(x.Id);
-                                        check = res ? true : false;
-                                        if (check)
+                                        if (res)
                                         {
-                                            var resTr = await new Client(nameof(Transportation)).HardDeleteAsync(transportation.Id);
-                                            if (resTr) { Toast.Success("Hủy thành công"); } else { Toast.Warning("Đã xảy ra lỗi trong quá trình xử lý."); }
+                                            var check = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId eq {expense.TransportationId} and RequestChangeId eq null");
+                                            if (check.Count <= 0)
+                                            {
+                                                var resTr = await new Client(nameof(Transportation)).HardDeleteAsync(transportation.Id);
+                                                if (resTr) { Toast.Success("Hủy thành công"); } else { Toast.Warning("Đã xảy ra lỗi trong quá trình xử lý."); }
+                                            }
                                         }
                                     }
                                     else
@@ -591,18 +597,19 @@ namespace TMS.UI.Business.Manage
                     }
                     else
                     {
-                        var res = await new Client(nameof(Expense)).HardDeleteAsync(x.Id);
-                        if (res == false)
-                        {
-                            check = false;
-                        }
+                        await new Client(nameof(Expense)).HardDeleteAsync(x.Id);
                     }
                 }
-                if (check)
+                Window.ClearTimeout(awaiter);
+                awaiter = Window.SetTimeout(async () =>
                 {
-                    var resTr = await new Client(nameof(Transportation)).HardDeleteAsync(transportation.Id);
-                    if (resTr) { Toast.Success("Hủy thành công"); } else { Toast.Warning("Đã xảy ra lỗi trong quá trình xử lý."); }
-                }
+                    var check = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId eq {expense.TransportationId} and RequestChangeId eq null");
+                    if (check.Count <= 0)
+                    {
+                        var resTr = await new Client(nameof(Transportation)).HardDeleteAsync(transportation.Id);
+                        if (resTr) { Toast.Success("Hủy thành công"); } else { Toast.Warning("Đã xảy ra lỗi trong quá trình xử lý."); }
+                    }
+                }, 1000);
             };
         }
 
