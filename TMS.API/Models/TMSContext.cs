@@ -1078,6 +1078,7 @@ public partial class TMSContext : DbContext
                     tb.HasTrigger("tr_Transportation_ReturnNotes");
                     tb.HasTrigger("tr_Transportation_ReturnUnitPrice");
                     tb.HasTrigger("tr_Transportation_ReturnVs");
+                    tb.HasTrigger("tr_Transportation_Revenue");
                     tb.HasTrigger("tr_Transportation_ShellDate");
                     tb.HasTrigger("tr_Transportation_ShipUnitPrice");
                     tb.HasTrigger("tr_Transportation_ShipUnitPriceQuotation");
@@ -1393,6 +1394,10 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.ReasonUnLockExploit).HasMaxLength(250);
             entity.Property(e => e.ReasonUnLockRevenue).HasMaxLength(250);
             entity.Property(e => e.ReasonUnLockShip).HasMaxLength(250);
+
+            entity.HasOne(d => d.Transportation).WithMany(p => p.TransportationRequest)
+                .HasForeignKey(d => d.TransportationId)
+                .HasConstraintName("FK_TransportationRequest_Transportation");
         });
 
         modelBuilder.Entity<User>(entity =>

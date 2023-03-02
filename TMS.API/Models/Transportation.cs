@@ -350,5 +350,6 @@ namespace TMS.API.Models
         public int? OrderExcelReturn { get; set; }
         public virtual ICollection<Expense> Expense { get; set; }
         public virtual ICollection<Revenue> Revenue { get; set; }
+        public virtual ICollection<TransportationRequest> TransportationRequest { get; set; }
     }
 }
