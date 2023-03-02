@@ -372,8 +372,9 @@ namespace Core.Components
                 if (shift)
                 {
                     var allListView = ListViewSection.ListView.AllListViewItem;
-                    if (ListViewSection.ListView.LastListViewItem is null)
+                    if (ListViewSection.ListView.LastShiftViewItem is null)
                     {
+                        ListViewSection.ListView.LastShiftViewItem = this;
                         ListViewSection.ListView.LastIndex = RowNo;
                     }
                     var _lastIndex = ListViewSection.ListView.LastIndex;
@@ -398,19 +399,13 @@ namespace Core.Components
                                 selectedIds.ForEach(x => ListViewSection.ListView.SelectedIds.Remove(x));
                             }
                             SetSeletedListViewItem(allListView, _lastIndex, currentIndex);
-                            ListViewSection.ListView.LastListViewItem = null;
-                            ToastSelected();
+                            ListViewSection.ListView.LastShiftViewItem = null;
                         });
                     }
                     else
                     {
                         SetSeletedListViewItem(allListView, _lastIndex, currentIndex);
-                        ToastSelected();
                     }
-                }
-                else
-                {
-                    ToastSelected();
                 }
             }
             else

@@ -38,6 +38,7 @@ namespace Core.Components
         public AdvSearchVM AdvSearchVM { get; set; }
         public bool Editable { get; set; }
         public ListViewItem LastListViewItem { get; set; }
+        public ListViewItem LastShiftViewItem { get; set; }
         public int LastIndex { get; set; }
         public HTMLElement LastElementFocus { get; set; }
         public ListViewSearch ListViewSearch { get; set; }
