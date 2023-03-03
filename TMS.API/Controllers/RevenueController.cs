@@ -48,6 +48,35 @@ namespace TMS.API.Controllers
             {
                 db.Add(entity);
             }
+            if (patch.Changes.Any(x => x.Field == nameof(entity.InvoinceNo)
+                || x.Field == nameof(entity.InvoinceDate)
+                || x.Field == nameof(entity.Vat)
+                || x.Field == nameof(entity.TotalPriceBeforTax)
+                || x.Field == nameof(entity.VatPrice)
+                || x.Field == nameof(entity.TotalPrice)
+                || x.Field == nameof(entity.VendorVatId)))
+            {
+                if (RoleIds.Where(x => x == 34).Any() == false)
+                {
+                    throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
+                }
+            }
+            if (patch.Changes.Any(x => x.Field == nameof(entity.Name)
+                || x.Field == nameof(entity.LotNo)
+                || x.Field == nameof(entity.LotDate)
+                || x.Field == nameof(entity.UnitPriceBeforeTax)
+                || x.Field == nameof(entity.UnitPriceAfterTax)
+                || x.Field == nameof(entity.ReceivedPrice)
+                || x.Field == nameof(entity.CollectOnBehaftPrice)
+                || x.Field == nameof(entity.NotePayment)
+                || x.Field == nameof(entity.RevenueAdjustment)
+                || x.Field == nameof(entity.Note)))
+            {
+                if (RoleIds.Where(x => x == 46).Any() == false)
+                {
+                    throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
+                }
+            }
             var tran = await db.Transportation.Where(x => x.Id == entity.TransportationId).FirstOrDefaultAsync();
             if (tran != null && tran.IsLocked)
             {
@@ -128,6 +157,29 @@ namespace TMS.API.Controllers
             if (entity.TransportationId is null)
             {
                 throw new ApiException("Vui lòng chọn cont cần nhập") { StatusCode = HttpStatusCode.BadRequest };
+            }
+            if ((entity.InvoinceNo != null ||
+                entity.InvoinceDate != null ||
+                (entity.Vat != null && entity.Vat != 0) ||
+                (entity.TotalPriceBeforTax != null && entity.TotalPriceBeforTax != 0) ||
+                (entity.VatPrice != null && entity.VatPrice != 0) ||
+                (entity.TotalPrice != null && entity.TotalPrice != 0) ||
+                entity.VendorVatId != null) && RoleIds.Where(x => x == 34).Any() == false)
+            {
+                throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
+            }
+            if ((entity.Name != null ||
+                entity.LotNo != null ||
+                entity.LotDate != null ||
+                (entity.UnitPriceBeforeTax != null && entity.UnitPriceBeforeTax != 0) ||
+                (entity.UnitPriceAfterTax != null && entity.UnitPriceAfterTax != 0) ||
+                (entity.ReceivedPrice != null && entity.ReceivedPrice != 0) ||
+                (entity.CollectOnBehaftPrice != null && entity.CollectOnBehaftPrice != 0) ||
+                (entity.RevenueAdjustment != null && entity.RevenueAdjustment != 0) ||
+                entity.NotePayment != null ||
+                entity.Note != null) && RoleIds.Where(x => x == 46).Any() == false)
+            {
+                throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
             }
             var tran = await db.Transportation.Where(x => x.Id == entity.TransportationId).FirstOrDefaultAsync();
             if (tran != null && tran.IsLockedRevenue &&
@@ -262,7 +314,7 @@ namespace TMS.API.Controllers
                 var sealNo = item.SealNo == null ? "NULL" : $"'{item.SealNo}'";
                 var containerType = item.ContainerTypeId == null ? "NULL" : item.ContainerTypeId.ToString();
                 var closingDate = item.ClosingDate == null ? "NULL" : $"'{item.ClosingDate.Value.ToString("yyyy-MM-dd")}'";
-                cmd += $"INSERT INTO Revenue(TransportationId, Active, InsertedDate, InsertedBy, BossId, ContainerNo, SealNo, ContainerTypeId, ClosingDate) VALUES ({item.Id}, 1, '2023/02/16', 1, {boss}, {containerNo}, {sealNo}, {containerType}, {closingDate}) ";
+                cmd += $"INSERT INTO Revenue(TransportationId, Active, InsertedDate, InsertedBy, BossId, ContainerNo, SealNo, ContainerTypeId, ClosingDate) VALUES ({item.Id}, 1, '{DateTime.Now.Date.ToString("yyyy-MM-dd")}', 1, {boss}, {containerNo}, {sealNo}, {containerType}, {closingDate}) ";
             }
             await db.Database.ExecuteSqlRawAsync(cmd);
             return true;
