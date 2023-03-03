@@ -252,18 +252,17 @@ namespace TMS.API.Controllers
         }
 
         [HttpPost("api/Transportation/ExportCheckFee")]
-        public async Task<string> ExportCheckFee([FromBody] List<Transportation> transportations)
+        public async Task<string> ExportCheckFee([FromBody] CheckFeeHistory transportation, [FromQuery] int Type)
         {
-            transportations = transportations.OrderBy(x => x.ClosingDate).ToList();
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add(nameof(Transportation));
-            var closingId = transportations.FirstOrDefault().ClosingId;
+            var closingId = transportation.ClosingId;
             var closing = await db.Vendor.FirstOrDefaultAsync(x => x.Id == closingId);
             worksheet.Style.Font.SetFontName("Times New Roman");
             worksheet.Cell("A1").Value = closing.Name;
             worksheet.Cell("A2").Value = "Địa chỉ";
             worksheet.Cell("A3").Value = "MST";
-            worksheet.Cell("A4").Value = $"BẢNG KÊ ĐỐI CHIẾU CƯỚC VC XE TỪ NGÀY {transportations.FirstOrDefault().ClosingDate?.ToString("dd/MM/yyyy")} ĐẾN {transportations.LastOrDefault().ClosingDate?.ToString("dd/MM/yyyy")}";
+            worksheet.Cell("A4").Value = $"BẢNG KÊ ĐỐI CHIẾU CƯỚC VC XE TỪ NGÀY {transportation.FromDate?.ToString("dd/MM/yyyy")} ĐẾN {transportation.ToDate?.ToString("dd/MM/yyyy")}";
             worksheet.Cell("A4").Style.Font.Bold = true;
             worksheet.Cell("A4").Style.Font.FontSize = 20;
             worksheet.Cell("A4").Style.Font.FontColor = XLColor.Red;
@@ -506,13 +505,13 @@ namespace TMS.API.Controllers
                     left join Location r on r.Id = t.ReceivedId
                     left join Location pi on pi.Id = t.PickupEmptyId
                     left join Location po on po.Id = t.PortLoadingId";
-            if (transportations.FirstOrDefault().CheckFeeHistoryId != null)
+            if (Type == 1)
             {
-                sql += $" where t.CheckFeeHistoryId = {transportations.FirstOrDefault().CheckFeeHistoryId}";
+                sql += $" where t.CheckFeeHistoryId = {transportation.Id}";
             }
             else
             {
-                sql += $" where t.Id in ({string.Join(",", transportations.Select(x => x.Id).ToList())})";
+                sql += $" where t.ClosingDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})";
             }
             var data = await ConverSqlToDataSet(sql);
             var start = 8;
@@ -650,7 +649,7 @@ namespace TMS.API.Controllers
             worksheet.Column(16).AdjustToContents();
             worksheet.Column(24).AdjustToContents();
             worksheet.Column(26).AdjustToContents();
-            var url = $"BangKe{closing.Name}{transportations.FirstOrDefault().ClosingDate.Value.ToString("dd-MM-yyyy")}Den{transportations.LastOrDefault().ClosingDate.Value.ToString("dd-MM-yyyy")}.xlsx";
+            var url = $"BangKe{closing.Name}{transportation.FromDate.Value.ToString("dd-MM-yyyy")}Den{transportation.ToDate.Value.ToString("dd-MM-yyyy")}.xlsx";
             workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
             return url;
         }

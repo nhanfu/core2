@@ -36,7 +36,7 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-            if(AEntity.RouteIds is null || AEntity.RouteIds.Nothing())
+            if (AEntity.RouteIds is null || AEntity.RouteIds.Nothing())
             {
                 Toast.Warning("Vui lòng chọn chuyến xe");
                 return;
@@ -50,13 +50,7 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-            var selected = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=cast(ClosingDate,Edm.DateTimeOffset) ge cast({AEntity.FromDate.Value.ToISOFormat()},Edm.DateTimeOffset) and cast(ClosingDate,Edm.DateTimeOffset) le cast({AEntity.ToDate.Value.ToISOFormat()},Edm.DateTimeOffset) and ClosingId eq {AEntity.ClosingId}");
-            if (selected.Nothing())
-            {
-                Toast.Warning("Vui lòng chọn cont xuất bảng kê");
-                return;
-            }
-            var path = await new Client(nameof(Transportation)).PostAsync<string>(selected, "ExportCheckFee");
+            var path = await new Client(nameof(Transportation)).PostAsync<string>(AEntity, "ExportCheckFee?Type=2");
             Client.Download($"/excel/Download/{path.EncodeSpecialChar()}");
             Toast.Success("Xuất file thành công");
         }

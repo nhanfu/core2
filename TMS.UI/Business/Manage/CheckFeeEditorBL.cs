@@ -22,7 +22,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task ExportCheckFee()
         {
-            var path = await new Client(nameof(Transportation)).PostAsync<string>(Entity["TransportationList"].As<List<Transportation>>(), "ExportCheckFee");
+            var path = await new Client(nameof(Transportation)).PostAsync<string>(CheckFeeHistoryEntity, "ExportCheckFee?Type=1");
             Client.Download($"/excel/Download/{path}");
             Toast.Success("Xuất file thành công");
         }
