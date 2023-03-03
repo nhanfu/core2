@@ -670,7 +670,10 @@ namespace TMS.API.Controllers
             }
             if (!orderby.IsNullOrWhiteSpace())
             {
-                reportQuery += $" order by {orderby},[{component.RefName}].Id asc";
+                if (!orderby.Contains($"[{component.RefName}].Id"))
+                {
+                    reportQuery += $" order by {orderby},[{component.RefName}].Id asc";
+                }
             }
             var connectionStr = Startup.GetConnectionString(serviceProvider, config, "Default");
             using var con = new SqlConnection(connectionStr);
