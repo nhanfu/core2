@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.ViewModels;
 using Bridge.Html5;
+using static Retyped.es5;
 
 namespace TMS.UI.Business.Manage
 {
@@ -21,60 +22,76 @@ namespace TMS.UI.Business.Manage
             Name = "Transportation List Accountant";
         }
 
-        public virtual void ReloadMenu()
+        public virtual async Task ReloadMenu()
         {
             var gridView = this.FindActiveComponent<GridView>().ToList();
             if (gridView == null)
             {
                 return;
             }
+            var featurePolicy = await CheckRoleList();
             var menus = new List<ContextMenuItem>();
             if (gridView.Any(x=>x.Name == "TransportationAccountant"))
             {
                 var grid = gridView.Where(x => x.Name == "TransportationAccountant").FirstOrDefault();
                 grid.BodyContextMenuShow += () =>
                 {
-                    menus.Add(new ContextMenuItem { Icon = "fal fa-ballot-check", Text = "Nhập đồng loạt DT", Click = ImportRevenueSimultaneous });
-                    menus.Add(new ContextMenuItem
+                    if (featurePolicy.Where(x => x.RecordId == 18111).Any())
                     {
-                        Icon = "fas fa-tasks-alt mr-1",
-                        Text = "Hệ thống",
-                        MenuItems = new List<ContextMenuItem>
+                        menus.Add(new ContextMenuItem { Icon = "fal fa-ballot-check", Text = "Nhập đồng loạt DT", Click = ImportRevenueSimultaneous });
+                    }
+                    if (featurePolicy.Where(x => x.RecordId == 17758).Any())
+                    {
+                        menus.Add(new ContextMenuItem
+                        {
+                            Icon = "fas fa-tasks-alt mr-1",
+                            Text = "Hệ thống",
+                            MenuItems = new List<ContextMenuItem>
                         {
                             new ContextMenuItem { Text = "Khóa hệ thống", Click = LockAllTransportation },
                             new ContextMenuItem { Text = "Mở khóa hệ thống", Click = UnLockAllTransportation },
                         }
-                    });
-                    menus.Add(new ContextMenuItem
+                        });
+                    }
+                    if (featurePolicy.Where(x => x.RecordId == 17752).Any())
                     {
-                        Icon = "fas fa-tasks-alt mr-1",
-                        Text = "Khai thác",
-                        MenuItems = new List<ContextMenuItem>
+                        menus.Add(new ContextMenuItem
+                        {
+                            Icon = "fas fa-tasks-alt mr-1",
+                            Text = "Khai thác",
+                            MenuItems = new List<ContextMenuItem>
                         {
                             new ContextMenuItem { Text = "Khóa khai thác", Click = LockTransportation },
                             new ContextMenuItem { Text = "Mở khóa khai thác", Click = UnLockTransportation },
                         }
-                    });
-                    menus.Add(new ContextMenuItem
+                        });
+                    }
+                    if (featurePolicy.Where(x => x.RecordId == 17756).Any())
                     {
-                        Icon = "fas fa-tasks-alt mr-1",
-                        Text = "Kế toán",
-                        MenuItems = new List<ContextMenuItem>
+                        menus.Add(new ContextMenuItem
+                        {
+                            Icon = "fas fa-tasks-alt mr-1",
+                            Text = "Kế toán",
+                            MenuItems = new List<ContextMenuItem>
                         {
                             new ContextMenuItem { Text = "Khóa kế toán", Click = LockAccountantTransportation },
                             new ContextMenuItem { Text = "Mở khóa kế toán", Click = UnLockAccountantTransportation },
                         }
-                    });
-                    menus.Add(new ContextMenuItem
+                        });
+                    }
+                    if (featurePolicy.Where(x => x.RecordId == 18142).Any())
                     {
-                        Icon = "fas fa-tasks-alt mr-1",
-                        Text = "Doanh thu",
-                        MenuItems = new List<ContextMenuItem>
+                        menus.Add(new ContextMenuItem
+                        {
+                            Icon = "fas fa-tasks-alt mr-1",
+                            Text = "Doanh thu",
+                            MenuItems = new List<ContextMenuItem>
                         {
                             new ContextMenuItem { Text = "Khóa doanh thu", Click = LockRevenueTransportation },
                             new ContextMenuItem { Text = "Mở khóa doanh thu", Click = UnLockRevenueTransportation },
                         }
-                    });
+                        });
+                    }
                     ContextMenu.Instance.MenuItems = menus;
                 };
             }
@@ -83,8 +100,11 @@ namespace TMS.UI.Business.Manage
                 var grid = gridView.Where(x => x.Name == "TransportationUnLockAll").FirstOrDefault();
                 grid.BodyContextMenuShow += () =>
                 {
-                    menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt mở khóa", Click = ApproveUnLockAll });
-                    menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy mở khóa", Click = RejectUnLockAll });
+                    if (featurePolicy.Where(x => x.RecordId == 17749).Any())
+                    {
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt mở khóa", Click = ApproveUnLockAll });
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy mở khóa", Click = RejectUnLockAll });
+                    }
                     ContextMenu.Instance.MenuItems = menus;
                 };
             }
@@ -93,8 +113,11 @@ namespace TMS.UI.Business.Manage
                 var grid = gridView.Where(x => x.Name == "TransportationUnLock").FirstOrDefault();
                 grid.BodyContextMenuShow += () =>
                 {
-                    menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt mở khóa", Click = ApproveUnLock });
-                    menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy mở khóa", Click = RejectUnLock });
+                    if (featurePolicy.Where(x => x.RecordId == 17718).Any())
+                    {
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt mở khóa", Click = ApproveUnLock });
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy mở khóa", Click = RejectUnLock });
+                    }
                     ContextMenu.Instance.MenuItems = menus;
                 };
             }
@@ -103,8 +126,11 @@ namespace TMS.UI.Business.Manage
                 var grid = gridView.Where(x => x.Name == "TransportationUnLockAccountant").FirstOrDefault();
                 grid.BodyContextMenuShow += () =>
                 {
-                    menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt mở khóa", Click = ApproveUnLockAccountant });
-                    menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy mở khóa", Click = RejectUnLockAccountant });
+                    if (featurePolicy.Where(x => x.RecordId == 17724).Any())
+                    {
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt mở khóa", Click = ApproveUnLockAccountant });
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy mở khóa", Click = RejectUnLockAccountant });
+                    }
                     ContextMenu.Instance.MenuItems = menus;
                 };
             }
@@ -1443,8 +1469,8 @@ namespace TMS.UI.Business.Manage
         public async Task CalcRevenueAsync(Revenue revenue)
         {
             revenue.Vat = revenue.Vat != null ? revenue.Vat : 10;
-            revenue.TotalPriceBeforTax = Math.Round((decimal)revenue.TotalPrice / (1 + ((decimal)revenue.Vat / 100)));
-            revenue.VatPrice = Math.Round((decimal)revenue.TotalPriceBeforTax * (decimal)revenue.Vat / 100);
+            revenue.TotalPriceBeforTax = System.Math.Round((decimal)revenue.TotalPrice / (1 + ((decimal)revenue.Vat / 100)));
+            revenue.VatPrice = System.Math.Round((decimal)revenue.TotalPriceBeforTax * (decimal)revenue.Vat / 100);
             await new Client(nameof(Revenue)).PatchAsync<Revenue>(GetPatchEntityCalcRevenue(revenue));
         }
 
@@ -1541,6 +1567,11 @@ namespace TMS.UI.Business.Manage
             var path = await new Client(nameof(Transportation)).PostAsync<string>(listViewItems, "ExportTransportationAndRevenue");
             Client.Download($"/excel/Download/{path}");
             Toast.Success("Xuất file thành công");
+        }
+
+        public async Task<List<FeaturePolicy>> CheckRoleList()
+        {
+            return await new Client(nameof(FeaturePolicy)).GetRawList<FeaturePolicy>($"?$filter=Active eq true and EntityId eq 20 and RecordId in (18111, 17758, 17752, 17756, 18142, 17749, 17718, 17724) and RoleId in ({Token.RoleIds.Combine()})");
         }
 
         public PatchUpdate GetPatchIsLockedEntity(Transportation transportation)
