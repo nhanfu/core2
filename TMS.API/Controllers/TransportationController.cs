@@ -1533,7 +1533,7 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Đã có yêu cầu mở khóa");
             }
-            var entityType = _entitySvc.GetEntity(typeof(Expense).Name);
+            var entityType = _entitySvc.GetEntity(typeof(Transportation).Name);
             var approvalConfig = await db.ApprovalConfig.AsNoTracking().OrderBy(x => x.Level)
                 .Where(x => x.Active && x.EntityId == entityType.Id).ToListAsync();
             if (approvalConfig.Nothing())
@@ -1573,20 +1573,25 @@ namespace TMS.API.Controllers
                 SetAuditInfo(tranRequest);
                 db.Add(tranRequest);
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
-                var tasks = listUser.Select(user => new TaskNotification
+                var tasks = new List<TaskNotification>();
+                foreach (var user in listUser)
                 {
-                    Title = $"{currentUser.FullName}",
-                    Description = $"Đã gửi yêu cầu mở khóa",
-                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
-                    RecordId = tranRequest.Id,
-                    Attachment = "fal fa-paper-plane",
-                    AssignedId = user.Id,
-                    StatusId = (int)TaskStateEnum.UnreadStatus,
-                    RemindBefore = 540,
-                    Deadline = DateTime.Now,
-                });
-                SetAuditInfo(tasks);
-                db.AddRange(tasks);
+                    var task = new TaskNotification()
+                    {
+                        Title = $"{currentUser.FullName}",
+                        Description = $"Đã gửi yêu cầu mở khóa",
+                        EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                        RecordId = transportation.Id,
+                        Attachment = "fal fa-paper-plane",
+                        AssignedId = user.Id,
+                        StatusId = (int)TaskStateEnum.UnreadStatus,
+                        RemindBefore = 540,
+                        Deadline = DateTime.Now,
+                    };
+                    SetAuditInfo(task);
+                    db.AddRange(task);
+                    tasks.Add(task);
+                }
                 await db.SaveChangesAsync();
                 await _taskService.NotifyAsync(tasks);
             }
@@ -1600,7 +1605,7 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Đã có yêu cầu mở khóa");
             }
-            var entityType = _entitySvc.GetEntity(typeof(Expense).Name);
+            var entityType = _entitySvc.GetEntity(typeof(Transportation).Name);
             var approvalConfig = await db.ApprovalConfig.AsNoTracking().OrderBy(x => x.Level)
                 .Where(x => x.Active && x.EntityId == entityType.Id).ToListAsync();
             if (approvalConfig.Nothing())
@@ -1640,20 +1645,25 @@ namespace TMS.API.Controllers
                 SetAuditInfo(tranRequest);
                 db.Add(tranRequest);
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
-                var tasks = listUser.Select(user => new TaskNotification
+                var tasks = new List<TaskNotification>();
+                foreach (var user in listUser)
                 {
-                    Title = $"{currentUser.FullName}",
-                    Description = $"Đã gửi yêu cầu mở khóa",
-                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
-                    RecordId = transportation.Id,
-                    Attachment = "fal fa-paper-plane",
-                    AssignedId = user.Id,
-                    StatusId = (int)TaskStateEnum.UnreadStatus,
-                    RemindBefore = 540,
-                    Deadline = DateTime.Now,
-                });
-                SetAuditInfo(tasks);
-                db.AddRange(tasks);
+                    var task = new TaskNotification()
+                    {
+                        Title = $"{currentUser.FullName}",
+                        Description = $"Đã gửi yêu cầu mở khóa",
+                        EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                        RecordId = transportation.Id,
+                        Attachment = "fal fa-paper-plane",
+                        AssignedId = user.Id,
+                        StatusId = (int)TaskStateEnum.UnreadStatus,
+                        RemindBefore = 540,
+                        Deadline = DateTime.Now,
+                    };
+                    SetAuditInfo(task);
+                    db.AddRange(task);
+                    tasks.Add(task);
+                }
                 await db.SaveChangesAsync();
                 await _taskService.NotifyAsync(tasks);
             }
@@ -1667,7 +1677,7 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Đã có yêu cầu mở khóa");
             }
-            var entityType = _entitySvc.GetEntity(typeof(Expense).Name);
+            var entityType = _entitySvc.GetEntity(typeof(Transportation).Name);
             var approvalConfig = await db.ApprovalConfig.AsNoTracking().OrderBy(x => x.Level)
                 .Where(x => x.Active && x.EntityId == entityType.Id).ToListAsync();
             if (approvalConfig.Nothing())
@@ -1707,20 +1717,25 @@ namespace TMS.API.Controllers
                 SetAuditInfo(tranRequest);
                 db.Add(tranRequest);
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
-                var tasks = listUser.Select(user => new TaskNotification
+                var tasks = new List<TaskNotification>();
+                foreach (var user in listUser)
                 {
-                    Title = $"{currentUser.FullName}",
-                    Description = $"Đã gửi yêu cầu mở khóa",
-                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
-                    RecordId = transportation.Id,
-                    Attachment = "fal fa-paper-plane",
-                    AssignedId = user.Id,
-                    StatusId = (int)TaskStateEnum.UnreadStatus,
-                    RemindBefore = 540,
-                    Deadline = DateTime.Now,
-                });
-                SetAuditInfo(tasks);
-                db.AddRange(tasks);
+                    var task = new TaskNotification()
+                    {
+                        Title = $"{currentUser.FullName}",
+                        Description = $"Đã gửi yêu cầu mở khóa",
+                        EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                        RecordId = transportation.Id,
+                        Attachment = "fal fa-paper-plane",
+                        AssignedId = user.Id,
+                        StatusId = (int)TaskStateEnum.UnreadStatus,
+                        RemindBefore = 540,
+                        Deadline = DateTime.Now,
+                    };
+                    SetAuditInfo(task);
+                    db.AddRange(task);
+                    tasks.Add(task);
+                }
                 await db.SaveChangesAsync();
                 await _taskService.NotifyAsync(tasks);
             }
@@ -1734,7 +1749,7 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Đã có yêu cầu mở khóa");
             }
-            var entityType = _entitySvc.GetEntity(typeof(Expense).Name);
+            var entityType = _entitySvc.GetEntity(typeof(Transportation).Name);
             var approvalConfig = await db.ApprovalConfig.AsNoTracking().OrderBy(x => x.Level)
                 .Where(x => x.Active && x.EntityId == entityType.Id).ToListAsync();
             if (approvalConfig.Nothing())
@@ -1774,20 +1789,25 @@ namespace TMS.API.Controllers
                 SetAuditInfo(tranRequest);
                 db.Add(tranRequest);
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
-                var tasks = listUser.Select(user => new TaskNotification
+                var tasks = new List<TaskNotification>();
+                foreach (var user in listUser)
                 {
-                    Title = $"{currentUser.FullName}",
-                    Description = $"Đã gửi yêu cầu mở khóa",
-                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
-                    RecordId = transportation.Id,
-                    Attachment = "fal fa-paper-plane",
-                    AssignedId = user.Id,
-                    StatusId = (int)TaskStateEnum.UnreadStatus,
-                    RemindBefore = 540,
-                    Deadline = DateTime.Now,
-                });
-                SetAuditInfo(tasks);
-                db.AddRange(tasks);
+                    var task = new TaskNotification()
+                    {
+                        Title = $"{currentUser.FullName}",
+                        Description = $"Đã gửi yêu cầu mở khóa",
+                        EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                        RecordId = transportation.Id,
+                        Attachment = "fal fa-paper-plane",
+                        AssignedId = user.Id,
+                        StatusId = (int)TaskStateEnum.UnreadStatus,
+                        RemindBefore = 540,
+                        Deadline = DateTime.Now,
+                    };
+                    SetAuditInfo(task);
+                    db.AddRange(task);
+                    tasks.Add(task);
+                }
                 await db.SaveChangesAsync();
                 await _taskService.NotifyAsync(tasks);
             }
