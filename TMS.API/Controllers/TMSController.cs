@@ -668,12 +668,13 @@ namespace TMS.API.Controllers
                                   {joins.Combine(" ")}
                                   where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
             }
-            if (!orderby.IsNullOrWhiteSpace())
+            if (!orderby.IsNullOrWhiteSpace() && !orderby.Contains(",Id desc") && !orderby.Contains(",Id asc") && orderby != "Id desc" && orderby != "Id asc")
             {
-                if (!orderby.Contains($"[{component.RefName}].Id"))
-                {
-                    reportQuery += $" order by {orderby},[{component.RefName}].Id asc";
-                }
+                reportQuery += $" order by {orderby},[{component.RefName}].Id asc";
+            }
+            else
+            {
+                reportQuery += ($" order by {orderby}").Replace("Id desc", $"[{component.RefName}].Id desc").Replace("Id asc", $"[{component.RefName}].Id asc");
             }
             var connectionStr = Startup.GetConnectionString(serviceProvider, config, "Default");
             using var con = new SqlConnection(connectionStr);
