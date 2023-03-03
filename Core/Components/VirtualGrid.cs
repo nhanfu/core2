@@ -120,7 +120,16 @@ namespace Core.Components
 
         private IEnumerable<object> ReadCache(int skip, int viewPortCount)
         {
-            var index = CacheData.IndexOf(x => (int)x[RowNo] == skip + 1);
+            var index = -1;
+            try
+            {
+                index = CacheData.IndexOf(x => (int)x[RowNo] == skip + 1);
+            }
+            catch
+            {
+                CacheData.Clear();
+                yield break;
+            }
             if (index < 0)
             {
                 CacheData.Clear();
