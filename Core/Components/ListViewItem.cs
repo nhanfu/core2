@@ -317,6 +317,29 @@ namespace Core.Components
             Dirty = false;
         }
 
+        public async Task CreateUpdate()
+        {
+            if (!Dirty)
+            {
+                return;
+            }
+            var entity = Entity;
+            entity.ClearReferences();
+            var rs = await new Client(GuiInfo.Reference.Name).CreateAsync<object>(entity);
+            Entity.CopyPropFrom(rs);
+            if (GuiInfo.ComponentType == nameof(VirtualGrid))
+            {
+                ListViewSection.ListView.CacheData.Add(rs);
+            }
+            await ListViewSection.ListView.LoadMasterData(new object[] { rs });
+            EmptyRow = false;
+            UpdateView(true);
+            if (rs != null)
+            {
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, this);
+            }
+        }
+
         public PatchUpdate GetPathEntity()
         {
             var details = Children

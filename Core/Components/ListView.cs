@@ -680,7 +680,7 @@ namespace Core.Components
             }
             else
             {
-                await BatchUpdate(true);
+                await rowData.CreateUpdate();
             }
         }
 
