@@ -588,7 +588,11 @@ namespace TMS.API.Controllers
         {
             var component = await db.Component.FindAsync(componentId);
             var userSetting = await db.UserSetting.FirstOrDefaultAsync(x => x.Name == $"{(custom ? "Export" : "ListView")}-" + componentId && x.UserId == UserId);
-            var gridPolicySys = JsonConvert.DeserializeObject<List<GridPolicy>>(userSetting.Value);
+            var gridPolicySys = new List<GridPolicy>();
+            if (userSetting != null)
+            {
+                gridPolicySys = JsonConvert.DeserializeObject<List<GridPolicy>>(userSetting.Value);
+            }
             var gridPolicy = await db.GridPolicy.Where(x => x.EntityId == component.ReferenceId && x.FeatureId == featureId && x.Active && !x.Hidden).ToListAsync();
             var specificComponent = gridPolicy.Any(x => x.ComponentId == component.Id);
             if (specificComponent)
