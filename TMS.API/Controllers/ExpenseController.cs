@@ -683,7 +683,7 @@ namespace TMS.API.Controllers
                 worksheet.Cell("Y" + start).SetValue(item["Notes"] is null ? "" : item["Notes"].ToString());
                 worksheet.Cell("Z" + start).SetValue(item["NotesInsuranceFees"] is null ? "" : item["NotesInsuranceFees"].ToString());
                 var id = int.Parse(item["Id"].ToString());
-                var expenseChangesOfItem = expenseChanges.Where(x => x.RequestChangeId == id && x.StatusId == 1).ToList();
+                var expenseChangesOfItem = expenseChanges.Where(x => x.RequestChangeId == id && x.StatusId == 2).ToList();
                 if (expenseChangesOfItem != null)
                 {
                     var fieldChanges = new List<string>();
