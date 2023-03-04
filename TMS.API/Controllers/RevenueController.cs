@@ -56,7 +56,7 @@ namespace TMS.API.Controllers
                 || x.Field == nameof(entity.TotalPrice)
                 || x.Field == nameof(entity.VendorVatId)))
             {
-                if (RoleIds.Where(x => x == 34).Any() == false)
+                if (RoleIds.Where(x => x == 46).Any() == false)
                 {
                     throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
                 }
@@ -72,7 +72,7 @@ namespace TMS.API.Controllers
                 || x.Field == nameof(entity.RevenueAdjustment)
                 || x.Field == nameof(entity.Note)))
             {
-                if (RoleIds.Where(x => x == 46).Any() == false)
+                if (RoleIds.Where(x => x == 34).Any() == false)
                 {
                     throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
                 }
@@ -164,7 +164,7 @@ namespace TMS.API.Controllers
                 (entity.TotalPriceBeforTax != null && entity.TotalPriceBeforTax != 0) ||
                 (entity.VatPrice != null && entity.VatPrice != 0) ||
                 (entity.TotalPrice != null && entity.TotalPrice != 0) ||
-                entity.VendorVatId != null) && RoleIds.Where(x => x == 34).Any() == false)
+                entity.VendorVatId != null) && RoleIds.Where(x => x == 46).Any() == false)
             {
                 throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
             }
@@ -177,7 +177,7 @@ namespace TMS.API.Controllers
                 (entity.CollectOnBehaftPrice != null && entity.CollectOnBehaftPrice != 0) ||
                 (entity.RevenueAdjustment != null && entity.RevenueAdjustment != 0) ||
                 entity.NotePayment != null ||
-                entity.Note != null) && RoleIds.Where(x => x == 46).Any() == false)
+                entity.Note != null) && RoleIds.Where(x => x == 34).Any() == false)
             {
                 throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
             }
