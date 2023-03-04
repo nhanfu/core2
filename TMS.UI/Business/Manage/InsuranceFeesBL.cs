@@ -615,7 +615,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task ExportCheckChange()
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Expense));
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Expense));
             if (gridView is null)
             {
                 return;
