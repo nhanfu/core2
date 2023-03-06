@@ -34,6 +34,8 @@ namespace TMS.API.Models
         public int InsertedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public int? UpdatedBy { get; set; }
+        public int? UserUpdate1 { get; set; }
+        public int? UserUpdate2 { get; set; }
 
         public virtual Transportation Transportation { get; set; }
     }

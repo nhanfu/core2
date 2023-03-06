@@ -928,6 +928,10 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.VatPrice)
                 .HasDefaultValueSql("((0))")
                 .HasColumnType("decimal(20, 5)");
+
+            entity.HasOne(d => d.Transportation).WithMany(p => p.Revenue)
+                .HasForeignKey(d => d.TransportationId)
+                .HasConstraintName("FK_Revenue_Transportation");
         });
 
         modelBuilder.Entity<Role>(entity =>
