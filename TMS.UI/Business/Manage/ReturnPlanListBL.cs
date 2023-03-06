@@ -265,9 +265,9 @@ namespace TMS.UI.Business.Manage
         public override async Task ReloadExpense(Transportation transportation)
         {
             selected = transportation;
-            gridViewExpense = this.FindComponentByName<GridView>(nameof(Expense));
+            var gridViewExpense = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Expense));
             gridViewExpense.DataSourceFilter = $"?$filter=Active eq true and TransportationId eq {transportation.Id} and IsReturn eq true and ((ExpenseTypeId in (15981, 15939) eq false)  or IsPurchasedInsurance eq true)";
-            await gridViewExpense.ApplyFilter(true);
+            await gridViewExpense.ActionFilter();
         }
 
         public override void CheckReturnDate(Transportation Transportation)

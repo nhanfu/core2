@@ -122,9 +122,9 @@ namespace TMS.UI.Business.Manage
         public virtual async Task ReloadExpense(Transportation transportation)
         {
             selected = transportation;
-            var grid = this.FindComponentByName<GridView>(nameof(Expense));
+            var grid = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Expense));
             grid.DataSourceFilter = $"?$filter=Active eq true and TransportationId eq {transportation.Id} and IsReturn eq false and ((ExpenseTypeId in (15981, 15939) eq false) or IsPurchasedInsurance eq true)";
-            await grid.ApplyFilter(true);
+            await grid.ActionFilter();
         }
 
         public virtual void BeforeCreatedExpense(Expense expense)

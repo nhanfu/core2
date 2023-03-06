@@ -51,7 +51,7 @@ namespace Core.Components
             {
                 if (emptyRow is null)
                 {
-                    emptyRow = this.FindClosest<ListViewItem>()?.EmptyRow ?? false;
+                    emptyRow = this.FindClosest<ListViewItem>()?.EmptyRow;
                 }
                 return emptyRow.Value;
             }

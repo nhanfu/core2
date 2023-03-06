@@ -1724,9 +1724,13 @@ namespace Core.Components
         internal override async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
         {
             await Task.Delay(100);
-            if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
+            var ele = EmptyRowSection.FilterChildren<ListViewItem>().FirstOrDefault()?.Element;
+            if (rowSection.Element == ele && observableArgs.EvType == EventType.Change)
             {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
+                if (!GuiInfo.IsRealtime)
+                {
+                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
+                }
                 rowSection.EmptyRow = false;
                 MoveEmptyRow(rowSection);
                 var headers = Header.Where(y => y.Editable).ToList();
@@ -1742,7 +1746,10 @@ namespace Core.Components
                 AddNewEmptyRow();
                 await LoadMasterData(new List<object>() { rowData });
                 Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
+                if (!GuiInfo.IsRealtime)
+                {
+                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
+                }
             }
             PopulateFields();
             RenderIndex();
