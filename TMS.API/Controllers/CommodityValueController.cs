@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using Slugify;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -36,26 +38,10 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<CommodityValue>> PatchAsync([FromQuery] ODataQueryOptions<CommodityValue> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
-            CommodityValue entity = default;
-            CommodityValue oldEntity = default;
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
-            if (id != null && id.TryParseInt() > 0)
-            {
-                var idInt = id.TryParseInt() ?? 0;
-                entity = await db.Set<CommodityValue>().FindAsync(idInt);
-                oldEntity = await db.CommodityValue.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
-            }
-            else
-            {
-                entity = await GetEntityByOdataOptions(options);
-                oldEntity = await GetEntityByOdataOptions(options);
-            }
-            patch.ApplyTo(entity);
-            SetAuditInfo(entity);
-            if ((int)entity.GetPropValue(IdField) <= 0)
-            {
-                db.Add(entity);
-            }
+            var idInt = id.TryParseInt() ?? 0;
+            var entity = await db.CommodityValue.FindAsync(idInt);
+            var oldEntity = await db.CommodityValue.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
             if (patch.Changes.Any(x => x.Field == nameof(oldEntity.BossId)
             || x.Field == nameof(oldEntity.CommodityId)
             || x.Field == nameof(oldEntity.ContainerId)))
@@ -148,10 +134,48 @@ namespace TMS.API.Controllers
                     await CalcInsuranceFees(x, false);
                 }
             }
-            await db.SaveChangesAsync();
-            await db.Entry(entity).ReloadAsync();
-            RealTimeUpdate(entity);
-            return entity;
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.Connection = connection;
+                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(CommodityValue)}];";
+                        }
+                        else
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(CommodityValue)}];";
+                        }
+                        command.CommandText += $" UPDATE [{nameof(CommodityValue)}] SET {update.Combine()} WHERE Id = {idInt};";
+                        //
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(CommodityValue)}];";
+                        }
+                        foreach (var item in updates)
+                        {
+                            command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                        }
+                        command.ExecuteNonQuery();
+                        transaction.Commit();
+                        await db.Entry(entity).ReloadAsync();
+                        return entity;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return entity;
+                }
+            }
         }
 
         private void RealTimeUpdate(CommodityValue entity)

@@ -7,6 +7,7 @@ using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -31,23 +32,9 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<Revenue>> PatchAsync([FromQuery] ODataQueryOptions<Revenue> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
-            Revenue entity = default;
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
-            if (id != null && id.TryParseInt() > 0)
-            {
-                var idInt = id.TryParseInt() ?? 0;
-                entity = await db.Set<Revenue>().FindAsync(idInt);
-            }
-            else
-            {
-                entity = await GetEntityByOdataOptions(options);
-            }
-            patch.ApplyTo(entity);
-            SetAuditInfo(entity);
-            if ((int)entity.GetPropValue(IdField) <= 0)
-            {
-                db.Add(entity);
-            }
+            var idInt = id.TryParseInt() ?? 0;
+            var entity = await db.Revenue.FindAsync(idInt);
             if (patch.Changes.Any(x => x.Field == nameof(entity.InvoinceNo)
                 || x.Field == nameof(entity.InvoinceDate)
                 || x.Field == nameof(entity.Vat)
@@ -126,10 +113,48 @@ namespace TMS.API.Controllers
                     throw new ApiException("DT này đã được khóa kế toán. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
-            await db.SaveChangesAsync();
-            await db.Entry(entity).ReloadAsync();
-            RealTimeUpdate(entity);
-            return entity;
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.Connection = connection;
+                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(Revenue)}];";
+                        }
+                        else
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Revenue)}];";
+                        }
+                        command.CommandText += $" UPDATE [{nameof(Revenue)}] SET {update.Combine()} WHERE Id = {idInt};";
+                        //
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Revenue)}];";
+                        }
+                        foreach (var item in updates)
+                        {
+                            command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                        }
+                        command.ExecuteNonQuery();
+                        transaction.Commit();
+                        await db.Entry(entity).ReloadAsync();
+                        return entity;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return entity;
+                }
+            }
         }
 
         private void RealTimeUpdate(Revenue entity)

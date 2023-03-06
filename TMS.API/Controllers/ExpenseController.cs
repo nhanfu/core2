@@ -8,6 +8,7 @@ using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -31,30 +32,14 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<Expense>> PatchAsync([FromQuery] ODataQueryOptions<Expense> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
-            Expense entity = default;
-            Expense oldEntity = default;
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
-            if (id != null && id.TryParseInt() > 0)
-            {
-                var idInt = id.TryParseInt() ?? 0;
-                entity = await db.Set<Expense>().FindAsync(idInt);
-                oldEntity = await db.Expense.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
-            }
-            else
-            {
-                entity = await GetEntityByOdataOptions(options);
-                oldEntity = await GetEntityByOdataOptions(options);
-            }
-            patch.ApplyTo(entity);
-            SetAuditInfo(entity);
+            var idInt = id.TryParseInt() ?? 0;
+            var entity = await db.Expense.FindAsync(idInt);
+            var oldEntity = await db.Expense.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
             if (patch.Changes.Any(x => x.Field == nameof(oldEntity.ExpenseTypeId)) &&
             (oldEntity.ExpenseTypeId != entity.ExpenseTypeId))
             {
                 await CheckDuplicates(entity);
-            }
-            if ((int)entity.GetPropValue(IdField) <= 0)
-            {
-                db.Add(entity);
             }
             if (patch.Changes.Any(x => x.Field == nameof(oldEntity.IsWet) ||
             x.Field == nameof(oldEntity.SteamingTerms) ||
@@ -140,10 +125,48 @@ namespace TMS.API.Controllers
             {
                 await CalcInsuranceFees(entity, false);
             }
-            await db.SaveChangesAsync();
-            await db.Entry(entity).ReloadAsync();
-            RealTimeUpdate(entity);
-            return entity;
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.Connection = connection;
+                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(Expense)}];";
+                        }
+                        else
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Expense)}];";
+                        }
+                        command.CommandText += $" UPDATE [{nameof(Expense)}] SET {update.Combine()} WHERE Id = {idInt};";
+                        //
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Expense)}];";
+                        }
+                        foreach (var item in updates)
+                        {
+                            command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                        }
+                        command.ExecuteNonQuery();
+                        transaction.Commit();
+                        await db.Entry(entity).ReloadAsync();
+                        return entity;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return entity;
+                }
+            }
         }
 
         private void RealTimeUpdate(Expense entity)

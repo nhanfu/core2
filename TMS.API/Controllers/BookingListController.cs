@@ -19,6 +19,7 @@ using Core.Exceptions;
 using Core.Enums;
 using PuppeteerSharp.Input;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Configuration;
 
 namespace TMS.API.Controllers
 {
@@ -26,39 +27,60 @@ namespace TMS.API.Controllers
     {
         public BookingListController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
-
         }
 
         public override async Task<ActionResult<BookingList>> PatchAsync([FromQuery] ODataQueryOptions<BookingList> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
-            BookingList entity = default;
-            BookingList oldEntity = default;
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
-            if (id != null && id.TryParseInt() > 0)
-            {
-                var idInt = id.TryParseInt() ?? 0;
-                entity = await db.Set<BookingList>().FindAsync(idInt);
-                oldEntity = await db.BookingList.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
-            }
-            else
-            {
-                entity = await GetEntityByOdataOptions(options);
-                oldEntity = await GetEntityByOdataOptions(options);
-            }
-            patch.ApplyTo(entity);
-            SetAuditInfo(entity);
-            if ((int)entity.GetPropValue(IdField) <= 0)
-            {
-                db.Add(entity);
-            }
+            var idInt = id.TryParseInt() ?? 0;
+            var entity = await db.BookingList.FindAsync(idInt);
+            var oldEntity = await db.BookingList.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
             if (oldEntity.Submit && entity.Submit)
             {
                 throw new ApiException("Danh sách book tàu này đã bị khóa !!!") { StatusCode = HttpStatusCode.BadRequest };
             }
-            await db.SaveChangesAsync();
-            await db.Entry(entity).ReloadAsync();
-            RealTimeUpdate(entity);
-            return entity;
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.Connection = connection;
+                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(BookingList)}];";
+                        }
+                        else
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(BookingList)}];";
+                        }
+                        command.CommandText += $" UPDATE [{nameof(BookingList)}] SET {update.Combine()} WHERE Id = {idInt};";
+                        //
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(BookingList)}];";
+                        }
+                        foreach (var item in updates)
+                        {
+                            command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                        }
+                        command.ExecuteNonQuery();
+                        transaction.Commit();
+                        await db.Entry(entity).ReloadAsync();
+                        return entity;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return entity;
+                }
+            }
         }
 
         private void RealTimeUpdate(BookingList entity)

@@ -13,6 +13,8 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNet.OData.Query;
 using Core.ViewModels;
+using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
 
 namespace TMS.API.Controllers
 {
@@ -24,26 +26,10 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<FreightRate>> PatchAsync([FromQuery] ODataQueryOptions<FreightRate> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
-            FreightRate entity = default;
-            FreightRate oldEntity = default;
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
-            if (id != null && id.TryParseInt() > 0)
-            {
-                var idInt = id.TryParseInt() ?? 0;
-                entity = await db.Set<FreightRate>().FindAsync(idInt);
-                oldEntity = await db.FreightRate.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
-            }
-            else
-            {
-                entity = await GetEntityByOdataOptions(options);
-                oldEntity = await GetEntityByOdataOptions(options);
-            }
-            patch.ApplyTo(entity);
-            SetAuditInfo(entity);
-            if ((int)entity.GetPropValue(IdField) <= 0)
-            {
-                db.Add(entity);
-            }
+            var idInt = id.TryParseInt() ?? 0;
+            var entity = await db.FreightRate.FindAsync(idInt);
+            var oldEntity = await db.FreightRate.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
             if (oldEntity.IsClosing && entity.IsClosing)
             {
                 throw new ApiException("Biểu giá CVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
@@ -88,10 +74,48 @@ namespace TMS.API.Controllers
                     db.FreightRate.Add(newFreightRate);
                 }
             }
-            await db.SaveChangesAsync();
-            await db.Entry(entity).ReloadAsync();
-            RealTimeUpdate(entity);
-            return entity;
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.Connection = connection;
+                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(FreightRate)}];";
+                        }
+                        else
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(FreightRate)}];";
+                        }
+                        command.CommandText += $" UPDATE [{nameof(FreightRate)}] SET {update.Combine()} WHERE Id = {idInt};";
+                        //
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(FreightRate)}];";
+                        }
+                        foreach (var item in updates)
+                        {
+                            command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                        }
+                        command.ExecuteNonQuery();
+                        transaction.Commit();
+                        await db.Entry(entity).ReloadAsync();
+                        return entity;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return entity;
+                }
+            }
         }
 
         private void RealTimeUpdate(FreightRate entity)
