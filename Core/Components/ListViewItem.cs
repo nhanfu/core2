@@ -250,7 +250,7 @@ namespace Core.Components
             return result;
         }
 
-        public async Task PatchUpdate()
+        public async Task PatchUpdate(bool noEvent = false)
         {
             if (!Dirty)
             {
@@ -258,12 +258,12 @@ namespace Core.Components
             }
             var pathModel = GetPathEntity();
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, pathModel, this);
-            if (pathModel.Changes.FirstOrDefault(x => x.Field == IdField).Value.IsNullOrWhiteSpace())
+            if (pathModel.Changes.FirstOrDefault(x => x.Field == IdField).Value.IsNullOrWhiteSpace() && !noEvent)
             {
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
                 return;
             }
-            if (pathModel is null)
+            if (pathModel is null && !noEvent)
             {
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
                 return;
@@ -298,7 +298,7 @@ namespace Core.Components
                 await ListViewSection.ListView.LoadMasterData(new object[] { rs });
                 EmptyRow = false;
                 UpdateView(true);
-                if (rs != null)
+                if (rs != null && !noEvent)
                 {
                     await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
                 }

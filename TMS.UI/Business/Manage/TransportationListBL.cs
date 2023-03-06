@@ -1031,19 +1031,19 @@ namespace TMS.UI.Business.Manage
             || x.Field == nameof(Transportation.BookingId)
             || x.Field == nameof(Transportation.RouteId)))
             {
-                Toast.Warning("Hệ thống đang lấy chính sách hãng tàu");
-                var components = new Client(nameof(GridPolicy)).GetRawList<GridPolicy>("?$filter=ComponentId eq 16016");
-                var operators = new Client(nameof(MasterData)).GetRawList<MasterData>("?$filter=Parent/Name eq 'Operator'");
-                if (transportation.StartShip is null)
-                {
-                    return;
-                }
                 transportation.StartShip = Convert.ToDateTime(transportation.StartShip);
                 var startShip = transportation.StartShip.Value.ToOdataFormat();
                 var listpolicy = await new Client(nameof(SettingPolicy)).GetRawList<SettingPolicy>($"?$expand=SettingPolicyDetail&$filter=ExportListId eq {transportation.ExportListId} and BrandShipId eq {transportation.BrandShipId} and StartDate lt {startShip} and (EndDate gt {startShip} or EndDate eq null) and TypeId eq 1&$orderby=UnitPrice desc");
                 if (listpolicy.Nothing())
                 {
                     Toast.Success("Không tìm thấy chính sách");
+                    return;
+                }
+                Toast.Warning("Hệ thống đang lấy chính sách hãng tàu");
+                var components = new Client(nameof(GridPolicy)).GetRawList<GridPolicy>("?$filter=ComponentId eq 16016");
+                var operators = new Client(nameof(MasterData)).GetRawList<MasterData>("?$filter=Parent/Name eq 'Operator'");
+                if (transportation.StartShip is null)
+                {
                     return;
                 }
                 await Task.WhenAll(components, operators);
@@ -1205,11 +1205,16 @@ namespace TMS.UI.Business.Manage
                     }
                 }
                 transportation.ShipPrice = (transportation.ShipUnitPriceQuotation is null ? default(decimal) : transportation.ShipUnitPriceQuotation.Value) - (transportation.ShipPolicyPrice is null ? default(decimal) : transportation.ShipPolicyPrice.Value);
-                var patchModel = GetPatchEntity(transportation);
-                var patch = await new Client(nameof(Transportation)).PatchAsync<object>(patchModel);
-                listViewItem.Entity.CopyPropFrom(patch);
-                await listViewItem.ListViewSection.ListView.LoadMasterData(new List<object>() { rs });
                 listViewItem.UpdateView(true);
+                listViewItem.FilterChildren(x =>
+                x.GuiInfo.FieldName == nameof(Transportation.PolicyId)
+                || x.GuiInfo.FieldName == nameof(Transportation.ShipPolicyPrice)
+                ).ForEach(x => x.Dirty = false);
+                listViewItem.FilterChildren(x =>
+                x.GuiInfo.FieldName == nameof(Transportation.PolicyId)
+                || x.GuiInfo.FieldName == nameof(Transportation.ShipPolicyPrice)
+                ).ForEach(x => x.Dirty = true);
+                await listViewItem.PatchUpdate(true);
                 Toast.Success("Đã áp dụng chính sách");
             }
         }
