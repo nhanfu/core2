@@ -680,6 +680,8 @@ namespace Core.Components
             }
             else
             {
+                if(arg.EvType == EventType.Change)
+                {
                 await rowData.CreateUpdate();
             }
         }
