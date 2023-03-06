@@ -43,9 +43,20 @@ namespace TMS.API.Controllers
                 || x.Field == nameof(entity.TotalPrice)
                 || x.Field == nameof(entity.VendorVatId)))
             {
-                if (RoleIds.Where(x => x == 46).Any() == false)
+                if (RoleIds.Where(x => x == 46 || x == 8).Any() == false)
                 {
                     throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
+                }
+                else
+                {
+                    if (entity.UserUpdate2 != null && entity.UserUpdate2 != 0 && entity.UserUpdate2 != UserId)
+                    {
+                        throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của user khác.") { StatusCode = HttpStatusCode.BadRequest };
+                    }
+                    else
+                    {
+                        entity.UserUpdate2 = UserId;
+                    }
                 }
             }
             if (patch.Changes.Any(x => x.Field == nameof(entity.Name)
@@ -59,9 +70,20 @@ namespace TMS.API.Controllers
                 || x.Field == nameof(entity.RevenueAdjustment)
                 || x.Field == nameof(entity.Note)))
             {
-                if (RoleIds.Where(x => x == 34).Any() == false)
+                if (RoleIds.Where(x => x == 34 || x == 8).Any() == false)
                 {
                     throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
+                }
+                else
+                {
+                    if (entity.UserUpdate1 != null && entity.UserUpdate1 != 0 && entity.UserUpdate1 != UserId)
+                    {
+                        throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của user khác.") { StatusCode = HttpStatusCode.BadRequest };
+                    }
+                    else
+                    {
+                        entity.UserUpdate1 = UserId;
+                    }
                 }
             }
             var tran = await db.Transportation.Where(x => x.Id == entity.TransportationId).FirstOrDefaultAsync();
@@ -123,6 +145,8 @@ namespace TMS.API.Controllers
                     {
                         command.Transaction = transaction;
                         command.Connection = connection;
+                        patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Revenue.UserUpdate1), Value = entity.UserUpdate1.ToString() });
+                        patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Revenue.UserUpdate2), Value = entity.UserUpdate2.ToString() });
                         var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
                         var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
                         if (disableTrigger)
@@ -189,9 +213,20 @@ namespace TMS.API.Controllers
                 (entity.TotalPriceBeforTax != null && entity.TotalPriceBeforTax != 0) ||
                 (entity.VatPrice != null && entity.VatPrice != 0) ||
                 (entity.TotalPrice != null && entity.TotalPrice != 0) ||
-                entity.VendorVatId != null) && RoleIds.Where(x => x == 46).Any() == false)
+                entity.VendorVatId != null) && RoleIds.Where(x => x == 46 || x == 8).Any() == false)
             {
                 throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
+            }
+            else
+            {
+                if (entity.UserUpdate2 != null && entity.UserUpdate2 != 0 && entity.UserUpdate2 != UserId)
+                {
+                    throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của user khác.") { StatusCode = HttpStatusCode.BadRequest };
+                }
+                else
+                {
+                    entity.UserUpdate2 = UserId;
+                }
             }
             if ((entity.Name != null ||
                 entity.LotNo != null ||
@@ -202,9 +237,20 @@ namespace TMS.API.Controllers
                 (entity.CollectOnBehaftPrice != null && entity.CollectOnBehaftPrice != 0) ||
                 (entity.RevenueAdjustment != null && entity.RevenueAdjustment != 0) ||
                 entity.NotePayment != null ||
-                entity.Note != null) && RoleIds.Where(x => x == 34).Any() == false)
+                entity.Note != null) && RoleIds.Where(x => x == 34 || x == 8).Any() == false)
             {
                 throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
+            }
+            else
+            {
+                if (entity.UserUpdate1 != null && entity.UserUpdate1 != 0 && entity.UserUpdate1 != UserId)
+                {
+                    throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của user khác.") { StatusCode = HttpStatusCode.BadRequest };
+                }
+                else
+                {
+                    entity.UserUpdate1 = UserId;
+                }
             }
             var tran = await db.Transportation.Where(x => x.Id == entity.TransportationId).FirstOrDefaultAsync();
             if (tran != null && tran.IsLockedRevenue &&

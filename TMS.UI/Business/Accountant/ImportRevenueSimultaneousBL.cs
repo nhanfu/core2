@@ -151,6 +151,31 @@ namespace TMS.UI.Business.Accountant
                 var resCreateRevenues = await new Client(nameof(Revenue)).PostAsync<bool>(listViewItems, "CreateRevenues");
                 var idtrans = listViewItems.Select(x => x.Id).ToList();
                 var revenues = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and TransportationId in ({idtrans.Combine()})");
+                if (revenueEntity.IsLotNo ||
+                    revenueEntity.IsLotDate ||
+                    revenueEntity.IsUnitPriceAfterTax ||
+                    revenueEntity.IsUnitPriceBeforeTax ||
+                    revenueEntity.IsReceivedPrice ||
+                    revenueEntity.IsCollectOnBehaftPrice ||
+                    revenueEntity.IsNotePayment)
+                {
+                    revenues = revenues.Where(x => x.UserUpdate1 == null || x.UserUpdate1 == 0 || x.UserUpdate1 == Client.Token.UserId).ToList();
+                }
+                if (revenueEntity.IsVat ||
+                    revenueEntity.IsVatPrice ||
+                    revenueEntity.IsTotalPriceBeforTax ||
+                    revenueEntity.IsTotalPrice ||
+                    revenueEntity.IsVendorVatId ||
+                    revenueEntity.IsInvoinceNo ||
+                    revenueEntity.IsInvoinceDate)
+                {
+                    revenues = revenues.Where(x => x.UserUpdate2 == null || x.UserUpdate2 == 0 || x.UserUpdate2 == Client.Token.UserId).ToList();
+                }
+                if (revenues.Count <= 0)
+                {
+                    Toast.Warning("Không có doanh thu nào có thể nhập");
+                    return;
+                }
                 revenues.Add(revenueEntity);
                 var res = await new Client(nameof(Revenue)).PostAsync<bool>(revenues, "UpdateRevenueSimultaneous");
                 if (res)
@@ -229,6 +254,31 @@ namespace TMS.UI.Business.Accountant
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
+                if (revenueEntity.IsLotNo ||
+                    revenueEntity.IsLotDate ||
+                    revenueEntity.IsUnitPriceAfterTax ||
+                    revenueEntity.IsUnitPriceBeforeTax ||
+                    revenueEntity.IsReceivedPrice ||
+                    revenueEntity.IsCollectOnBehaftPrice ||
+                    revenueEntity.IsNotePayment)
+                {
+                    revenues = revenues.Where(x => x.UserUpdate1 == null || x.UserUpdate1 == 0 || x.UserUpdate1 == Client.Token.UserId).ToList();
+                }
+                if (revenueEntity.IsVat ||
+                    revenueEntity.IsVatPrice ||
+                    revenueEntity.IsTotalPriceBeforTax ||
+                    revenueEntity.IsTotalPrice ||
+                    revenueEntity.IsVendorVatId ||
+                    revenueEntity.IsInvoinceNo ||
+                    revenueEntity.IsInvoinceDate)
+                {
+                    revenues = revenues.Where(x => x.UserUpdate2 == null || x.UserUpdate2 == 0 || x.UserUpdate2 == Client.Token.UserId).ToList();
+                }
+                if (revenues.Count <= 0)
+                {
+                    Toast.Warning("Không có doanh thu nào có thể nhập");
+                    return;
+                }
                 revenues.Add(revenueEntity);
                 var res = await new Client(nameof(Revenue)).PostAsync<bool>(revenues, "UpdateRevenueSimultaneous");
                 if (res)
