@@ -300,6 +300,110 @@ namespace TMS.UI.Business.Manage
             expense.TotalPriceBeforeTax = Math.Round(expense.TotalPriceAfterTax / (decimal)1.1, 0);
         }
 
+        public async Task BeforePatchUpdate(CommodityValue entity, PatchUpdate patch)
+        {
+            var oldEntity = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and Id eq {entity.Id}");
+            if (patch.Changes.Any(x => x.Field == nameof(oldEntity.BossId)
+            || x.Field == nameof(oldEntity.CommodityId)
+            || x.Field == nameof(oldEntity.ContainerId)))
+            {
+                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId ne 7651 and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
+                var commodityValueDB = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($@"?$filter=Active eq true and BossId eq {entity.BossId} and CommodityId eq {entity.CommodityId} and ContainerId eq {entity.ContainerId}");
+                if (commodityValueDB != null || entity.CommodityId == commodity.Id)
+                {
+                    return;
+                }
+            }
+            if (patch.Changes.Any(x => x.Field == nameof(oldEntity.BossId) ||
+            x.Field == nameof(oldEntity.IsWet) ||
+            x.Field == nameof(oldEntity.IsBought) ||
+            x.Field == nameof(oldEntity.SaleId) ||
+            x.Field == nameof(oldEntity.CustomerTypeId) ||
+            x.Field == nameof(oldEntity.StartDate) ||
+            x.Field == nameof(oldEntity.ContainerId) ||
+            x.Field == nameof(oldEntity.JourneyId) ||
+            x.Field == nameof(oldEntity.SteamingTerms) ||
+            x.Field == nameof(oldEntity.BreakTerms) ||
+            x.Field == nameof(oldEntity.CommodityId)) &&
+            (oldEntity.BossId != entity.BossId) ||
+            (oldEntity.IsBought != entity.IsBought) ||
+            (oldEntity.SaleId != entity.SaleId) ||
+            (oldEntity.CustomerTypeId != entity.CustomerTypeId) ||
+            (oldEntity.StartDate != entity.StartDate) ||
+            (oldEntity.CommodityId != entity.CommodityId) ||
+            (oldEntity.ContainerId != entity.ContainerId) ||
+            (oldEntity.JourneyId != entity.JourneyId) ||
+            (oldEntity.SteamingTerms != entity.SteamingTerms) ||
+            (oldEntity.BreakTerms != entity.BreakTerms) ||
+            (oldEntity.IsWet != entity.IsWet))
+            {
+                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId ne 7651 and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
+                if (oldEntity.CommodityId == commodity.Id)
+                {
+                    return;
+                }
+            }
+            if (patch.Changes.Any(x =>
+            x.Field == nameof(oldEntity.StartDate) ||
+            x.Field == nameof(oldEntity.IsWet) ||
+            x.Field == nameof(oldEntity.IsBought) ||
+            x.Field == nameof(oldEntity.CustomerTypeId) ||
+            x.Field == nameof(oldEntity.Notes) ||
+            x.Field == nameof(oldEntity.JourneyId)) &&
+            (oldEntity.StartDate != entity.StartDate) ||
+            (oldEntity.IsBought != entity.IsBought) ||
+            (oldEntity.CustomerTypeId != entity.CustomerTypeId) ||
+            (oldEntity.JourneyId != entity.JourneyId) ||
+            (oldEntity.Notes != entity.Notes) ||
+            (oldEntity.IsWet != entity.IsWet))
+            {
+                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId ne 7651 and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
+                if (oldEntity.CommodityId == commodity.Id)
+                {
+                    return;
+                }
+                var expenseTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($@"?$filter=Active eq true and ParentId eq 7577 and (contains(Name,'Bảo hiểm') or contains(Name,'BH SOC'))");
+                var expenseTypeCodes = expenseTypes.Select(x => x.Id).ToList();
+                var expenseTypeDictionary = expenseTypes.ToDictionary(x => x.Id);
+                var containerName = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and Id eq {entity.ContainerId}");
+                var containerTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($@"?$filter=Active eq true and ParentId eq 7565 and contains(Description,'{containerName.Description}')");
+                var containerTypeCodes = containerTypes.Select(x => x.Id).ToList();
+                var startDate = entity.StartDate.Value.Date.ToString("yyyy-MM-dd");
+                var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($@"?$filter=Active eq true and ExpenseTypeId in ({expenseTypeCodes.Combine()}) and BossId eq {entity.BossId} and CommodityId eq {entity.CommodityId} and ContainerTypeId in ({containerTypeCodes.Combine()}) and IsPurchasedInsurance eq false and (StartShip eq null or StartShip ge {startDate}) and RequestChangeId eq null");
+                var transportationIds = expenses.Select(x => x.TransportationId).Distinct().ToList();
+                var transportation = await new Client(nameof(Transportation)).GetRawList<Transportation>($@"?$filter=Active eq true and Id in ({transportationIds.Combine()})");
+                var transportationPlanIds = transportation.Select(x => x.TransportationPlanId).Distinct().ToList();
+                var transportationPlan = await new Client(nameof(TransportationPlan)).GetRawList<TransportationPlan>($@"?$filter=Active eq true and Id in ({transportationPlanIds.Combine()})");
+                transportationPlan.ForEach(x =>
+                {
+                    x.CommodityValue = entity.TotalPrice;
+                    x.IsWet = entity.IsWet;
+                    x.IsBought = entity.IsBought;
+                    x.JourneyId = entity.JourneyId;
+                    x.CustomerTypeId = entity.CustomerTypeId;
+                });
+                foreach (var x in expenses)
+                {
+                    x.CommodityValue = entity.TotalPrice;
+                    x.CustomerTypeId = entity.CustomerTypeId;
+                    x.CommodityValueNotes = entity.Notes;
+                    x.JourneyId = entity.JourneyId;
+                    var expenseType = expenseTypeDictionary.GetValueOrDefault((int)x.ExpenseTypeId);
+                    if (x.CommodityId != commodity.Id && expenseType.Name.Contains("BH SOC") == false)
+                    {
+                        x.IsWet = entity.IsWet;
+                    }
+                    if (x.CommodityId != commodity.Id && expenseType.Name.Contains("BH SOC") == false)
+                    {
+                        x.IsBought = entity.IsBought;
+                    }
+                    await CalcInsuranceFees(x, false);
+                }
+                await new Client(nameof(TransportationPlan)).BulkUpdateAsync<TransportationPlan>(transportationPlan);
+                await new Client(nameof(Expense)).BulkUpdateAsync<Expense>(expenses);
+            }
+        }
+
         public PatchUpdate GetPatchEntity(CommodityValue commodityValue)
         {
             var details = new List<PatchUpdateDetail>();

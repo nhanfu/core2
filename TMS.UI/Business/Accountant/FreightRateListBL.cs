@@ -325,6 +325,55 @@ namespace TMS.UI.Business.Accountant
             freightRate.TypeId = 25156;
         }
 
+        public async Task BeforePatchUpdate(FreightRate entity, PatchUpdate patch)
+        {
+            var oldEntity = await new Client(nameof(FreightRate)).FirstOrDefaultAsync<FreightRate>($"?$filter=Active eq true and Id eq {entity.Id}");
+            if (oldEntity.IsClosing && entity.IsClosing)
+            {
+                return;
+            }
+            if (patch.Changes.Any(x => x.Field == nameof(oldEntity.BossId)
+            || x.Field == nameof(oldEntity.UserId) ||
+            x.Field == nameof(oldEntity.TransportationTypeId) ||
+            x.Field == nameof(oldEntity.RouteId) ||
+            x.Field == nameof(oldEntity.ReceivedId) ||
+            x.Field == nameof(oldEntity.ReturnId) ||
+            x.Field == nameof(oldEntity.UnitPriceCont20) ||
+            x.Field == nameof(oldEntity.UnitPriceCont40) ||
+            x.Field == nameof(oldEntity.UnitPriceNoVatCont20) ||
+            x.Field == nameof(oldEntity.UnitPriceNoVatCont40) ||
+            x.Field == nameof(oldEntity.UnitPriceNoVatTon) ||
+            x.Field == nameof(oldEntity.UnitPriceTon) ||
+            x.Field == nameof(oldEntity.StartDate) ||
+            x.Field == nameof(oldEntity.EndDate) ||
+            x.Field == nameof(oldEntity.Notes)) &&
+            (oldEntity.BossId != entity.BossId) ||
+            (oldEntity.UserId != entity.UserId) ||
+            (oldEntity.TransportationTypeId != entity.TransportationTypeId) ||
+            (oldEntity.RouteId != entity.RouteId) ||
+            (oldEntity.ReceivedId != entity.ReceivedId) ||
+            (oldEntity.ReturnId != entity.ReturnId) ||
+            (oldEntity.UnitPriceCont20 != entity.UnitPriceCont20) ||
+            (oldEntity.UnitPriceCont40 != entity.UnitPriceCont40) ||
+            (oldEntity.UnitPriceNoVatCont20 != entity.UnitPriceNoVatCont20) ||
+            (oldEntity.UnitPriceNoVatCont40 != entity.UnitPriceNoVatCont40) ||
+            (oldEntity.UnitPriceNoVatTon != entity.UnitPriceNoVatTon) ||
+            (oldEntity.UnitPriceTon != entity.UnitPriceTon) ||
+            (oldEntity.StartDate != entity.StartDate) ||
+            (oldEntity.EndDate != entity.EndDate) ||
+            (oldEntity.Notes != entity.Notes))
+            {
+                if (entity.IsChange)
+                {
+                    var newFreightRate = new FreightRate();
+                    newFreightRate.CopyPropFrom(oldEntity);
+                    newFreightRate.Id = 0;
+                    newFreightRate.RequestChangeId = entity.Id;
+                    await new Client(nameof(FreightRate)).CreateAsync<FreightRate>(newFreightRate);
+                }
+            }
+        }
+
         public PatchUpdate GetPatchEntity(FreightRate freightRate)
         {
             var details = new List<PatchUpdateDetail>();

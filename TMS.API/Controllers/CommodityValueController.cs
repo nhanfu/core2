@@ -61,6 +61,9 @@ namespace TMS.API.Controllers
             x.Field == nameof(oldEntity.StartDate) ||
             x.Field == nameof(oldEntity.ContainerId) ||
             x.Field == nameof(oldEntity.JourneyId) ||
+            x.Field == nameof(oldEntity.SteamingTerms) ||
+            x.Field == nameof(oldEntity.BreakTerms) ||
+            x.Field == nameof(oldEntity.Notes) ||
             x.Field == nameof(oldEntity.CommodityId)) &&
             (oldEntity.BossId != entity.BossId) ||
             (oldEntity.IsBought != entity.IsBought) ||
@@ -70,25 +73,8 @@ namespace TMS.API.Controllers
             (oldEntity.CommodityId != entity.CommodityId) ||
             (oldEntity.ContainerId != entity.ContainerId) ||
             (oldEntity.JourneyId != entity.JourneyId) ||
-            (oldEntity.IsWet != entity.IsWet))
-            {
-                var commodity = await db.MasterData.Where(x => x.ParentId != 7651 && x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).FirstOrDefaultAsync();
-                if (oldEntity.CommodityId == commodity.Id)
-                {
-                    throw new ApiException("Không được cập nhật thông tin khác ngoài GTHH") { StatusCode = HttpStatusCode.BadRequest };
-                }
-            }
-            if (patch.Changes.Any(x =>
-            x.Field == nameof(oldEntity.StartDate) ||
-            x.Field == nameof(oldEntity.IsWet) ||
-            x.Field == nameof(oldEntity.IsBought) ||
-            x.Field == nameof(oldEntity.CustomerTypeId) ||
-            x.Field == nameof(oldEntity.Notes) ||
-            x.Field == nameof(oldEntity.JourneyId)) &&
-            (oldEntity.StartDate != entity.StartDate) ||
-            (oldEntity.IsBought != entity.IsBought) ||
-            (oldEntity.CustomerTypeId != entity.CustomerTypeId) ||
-            (oldEntity.JourneyId != entity.JourneyId) ||
+            (oldEntity.SteamingTerms != entity.SteamingTerms) ||
+            (oldEntity.BreakTerms != entity.BreakTerms) ||
             (oldEntity.Notes != entity.Notes) ||
             (oldEntity.IsWet != entity.IsWet))
             {
@@ -96,42 +82,6 @@ namespace TMS.API.Controllers
                 if (oldEntity.CommodityId == commodity.Id)
                 {
                     throw new ApiException("Không được cập nhật thông tin khác ngoài GTHH") { StatusCode = HttpStatusCode.BadRequest };
-                }
-                var expenseTypes = await db.MasterData.Where(x => x.ParentId == 7577 && (x.Name.Contains("Bảo hiểm") || x.Name.Contains("BH SOC"))).ToListAsync();
-                var expenseTypeCodes = expenseTypes.Select(x => x.Id).ToList();
-                var expenseTypeDictionary = expenseTypes.ToDictionary(x => x.Id);
-                var containerName = await db.MasterData.Where(x => x.Id == entity.ContainerId).FirstOrDefaultAsync();
-                var containerTypes = await db.MasterData.Where(x => x.ParentId == 7565 && x.Description.Contains(containerName.Description)).ToListAsync();
-                var containerTypeCodes = containerTypes.Select(x => x.Id).ToList();
-                var expenses = await db.Expense.Where(x => expenseTypeCodes.Contains((int)x.ExpenseTypeId) && x.BossId == entity.BossId && x.CommodityId == entity.CommodityId && containerTypeCodes.Contains((int)x.ContainerTypeId) && x.IsPurchasedInsurance == false && (x.StartShip >= entity.StartDate || x.StartShip == null) && x.RequestChangeId == null).ToListAsync();
-                var transportationIds = expenses.Select(x => x.TransportationId).Distinct().ToList();
-                var transportation = await db.Transportation.Where(x => transportationIds.Contains(x.Id)).ToListAsync();
-                var transportationPlanIds = transportation.Select(x => x.TransportationPlanId).Distinct().ToList();
-                var transportationPlan = await db.TransportationPlan.Where(x => transportationPlanIds.Contains(x.Id)).ToListAsync();
-                transportationPlan.ForEach(x =>
-                {
-                    x.CommodityValue = entity.TotalPrice;
-                    x.IsWet = entity.IsWet;
-                    x.IsBought = entity.IsBought;
-                    x.JourneyId = entity.JourneyId;
-                    x.CustomerTypeId = entity.CustomerTypeId;
-                });
-                foreach (var x in expenses)
-                {
-                    x.CommodityValue = entity.TotalPrice;
-                    x.CustomerTypeId = entity.CustomerTypeId;
-                    x.CommodityValueNotes = entity.Notes;
-                    x.JourneyId = entity.JourneyId;
-                    var expenseType = expenseTypeDictionary.GetValueOrDefault((int)x.ExpenseTypeId);
-                    if (x.CommodityId != commodity.Id && expenseType.Name.Contains("BH SOC") == false)
-                    {
-                        x.IsWet = entity.IsWet;
-                    }
-                    if (x.CommodityId != commodity.Id && expenseType.Name.Contains("BH SOC") == false)
-                    {
-                        x.IsBought = entity.IsBought;
-                    }
-                    await CalcInsuranceFees(x, false);
                 }
             }
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
