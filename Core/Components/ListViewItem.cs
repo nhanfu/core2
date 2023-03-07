@@ -223,17 +223,43 @@ namespace Core.Components
             {
                 if (arg.EvType == EventType.Change || arg.EvType == EventType.Abort)
                 {
-                    if (int.Parse(component.Entity[IdField].ToString()) > 0)
-                    {
-                        await ListView.RowChangeHandler(component.Entity, this, arg, component);
-                        await ListView.RealtimeUpdateAsync(this, arg);
-                    }
-                    else
-                    {
-                        await ListView.RowChangeHandler(component.Entity, this, arg, component);
-                    }
+                    await ListView.RowChangeHandler(component.Entity, this, arg, component);
+                    await ListView.RealtimeUpdateAsync(this, arg);
                 }
             };
+        }
+
+        public async Task CreateUpdate()
+        {
+            if (!Dirty)
+            {
+                return;
+            }
+            if (GuiInfo.IsRealtime)
+            {
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, Entity);
+            }
+            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, Entity, this);
+            var entity = Entity;
+            entity.ClearReferences();
+            var rs = await new Client(GuiInfo.Reference.Name).CreateAsync<object>(entity);
+            Entity.CopyPropFrom(rs);
+            if (GuiInfo.ComponentType == nameof(VirtualGrid))
+            {
+                ListViewSection.ListView.CacheData.Add(rs);
+            }
+            await ListViewSection.ListView.LoadMasterData(new object[] { rs });
+            UpdateView(true);
+            Element.RemoveClass("new-row");
+            if (rs != null)
+            {
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, this);
+            }
+            if (GuiInfo.IsRealtime)
+            {
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, Entity);
+            }
+            EmptyRow = false;
         }
 
         public bool CompareEx(object obj, object another)

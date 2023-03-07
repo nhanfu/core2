@@ -1726,7 +1726,6 @@ namespace Core.Components
             await Task.Delay(50);
             if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
-                rowSection.EmptyRow = false;
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData, this);
                 var entity = rowData;
                 entity.ClearReferences();
@@ -2277,9 +2276,14 @@ namespace Core.Components
             RenderIndex();
         }
 
-        public override Task<IEnumerable<object>> HardDeleteConfirmed()
+        public override async Task<IEnumerable<object>> HardDeleteConfirmed()
         {
-            var res = base.HardDeleteConfirmed();
+            var res = await base.HardDeleteConfirmed();
+            if (GuiInfo.ComponentType == nameof(VirtualGrid) && res != null)
+            {
+                var ids = res.Select(x => int.Parse(x[IdField].ToString())).ToList();
+                CacheData.RemoveAll(x => ids.Contains(int.Parse(x[IdField].ToString())));
+            }
             RenderIndex();
             if (GuiInfo.IsSumary)
             {

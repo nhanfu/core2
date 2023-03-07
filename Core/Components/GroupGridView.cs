@@ -1,5 +1,6 @@
 ﻿using Bridge.Html5;
 using Core.Components.Extensions;
+using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
@@ -275,10 +276,18 @@ namespace Core.Components
             data.ForEach(x => RemoveRowById(x[IdField].As<int>()));
         }
 
-        public override async Task AddRows(IEnumerable<object> rowsData, int index = 0)
+        public override async Task<List<ListViewItem>> AddRows(IEnumerable<object> rowsData, int index = 0)
         {
-            await LoadMasterData(rowsData);
-            await rowsData.ForEachAsync(async x => await AddRow(x, index, false));
+            if (!GuiInfo.IsRealtime)
+            {
+                await LoadMasterData(rowsData);
+            }
+            var listItem = new List<ListViewItem>();
+            await rowsData.ForEachAsync(async x =>
+            {
+                listItem.Add(await AddRow(x, index, false));
+            });
+            return listItem;
         }
 
         public override async Task AddOrUpdateRow(object rowData, bool singleAdd = true, bool force = false, params string[] fields)

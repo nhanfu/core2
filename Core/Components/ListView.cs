@@ -683,6 +683,10 @@ namespace Core.Components
             {
                 await rowData.PatchUpdate();
             }
+            else
+            {
+                await rowData.CreateUpdate();
+            }
         }
 
         internal virtual async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
@@ -914,7 +918,7 @@ namespace Core.Components
                     return;
                 }
                 confirm.Dispose();
-                var deletedItems = GetSelectedRows().ToList();
+                var deletedItems = await GetRealTimeSelectedRows();
                 if (deletedItems.Nothing())
                 {
                     deletedItems = GetFocusedRows().ToList();
@@ -950,7 +954,7 @@ namespace Core.Components
         public virtual async Task<IEnumerable<object>> HardDeleteConfirmed()
         {
             var entity = GuiInfo.RefName;
-            var deleted = GetSelectedRows().ToList();
+            var deleted = await GetRealTimeSelectedRows();
             var ids = deleted.Select(x => (int)x[IdField]).ToList();
             var client = new Client(entity);
             var success = await client.HardDeleteAsync(ids);
@@ -960,6 +964,7 @@ namespace Core.Components
                     .Where(x => x.Selected).Select(x => x.OriginalText).Combine(Utils.NewLine);
                 AllListViewItem.Where(x => x.Selected).ToArray().ForEach(x => x.Dispose());
                 Toast.Success("Xóa dữ liệu thành công");
+                ClearSelected();
                 return deleted;
             }
             else
@@ -1006,14 +1011,19 @@ namespace Core.Components
                 Toast.Success("Đang Sao chép liệu !");
                 await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.BeforePasted, _originRows, _copiedRows);
                 var index = AllListViewItem.IndexOf(x => x.Selected);
-                await AddRows(_copiedRows, index);
+                var list = await AddRows(_copiedRows, index);
                 base.Dirty = true;
                 base.Focus();
                 await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.AfterPasted, _originRows, _copiedRows);
                 if (GuiInfo.IsRealtime)
                 {
-                    await BatchUpdate(true);
+                    foreach (var item in list)
+                    {
+                        await item.CreateUpdate();
+                    }
                     Toast.Success("Sao chép dữ liệu thành công !");
+                    base.Dirty = false;
+                    ClearSelected();
                 }
             }));
         }
@@ -1029,15 +1039,22 @@ namespace Core.Components
 
             _ = Task.Run(async () =>
             {
+                Toast.Success("Đang Sao chép liệu !");
                 await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows);
                 var index = AllListViewItem.IndexOf(x => x.Selected);
-                await AddRows(copiedRows, index);
+                var list = await AddRows(copiedRows, index);
                 base.Dirty = true;
                 base.Focus();
                 await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows);
                 if (GuiInfo.IsRealtime)
                 {
-                    await BatchUpdate(true);
+                    foreach (var item in list)
+                    {
+                        await item.CreateUpdate();
+                    }
+                    Toast.Success("Sao chép dữ liệu thành công !");
+                    base.Dirty = false;
+                    ClearSelected();
                 }
             });
         }
@@ -1116,7 +1133,7 @@ namespace Core.Components
             _noRecord = null;
         }
 
-        public virtual async Task AddRows(IEnumerable<object> rows, int index = 0)
+        public virtual async Task<List<ListViewItem>> AddRows(IEnumerable<object> rows, int index = 0)
         {
             if (index < 0)
             {
@@ -1134,14 +1151,19 @@ namespace Core.Components
                     RowData.Data.Add(row);
                 }
             });
-            await LoadMasterData(rows);
+            if (!GuiInfo.IsRealtime)
+            {
+                await LoadMasterData(rows);
+            }
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
+            var listItem = new List<ListViewItem>();
             await rows.AsEnumerable().Reverse().ForEachAsync(async data =>
             {
-                await AddRow(data, index, false);
+                listItem.Add(await AddRow(data, index, false));
             });
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreatedList, rows);
             AddNewEmptyRow();
+            return listItem;
         }
 
         public virtual void RemoveRowById(int id)

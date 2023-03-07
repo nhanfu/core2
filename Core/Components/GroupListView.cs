@@ -95,10 +95,18 @@ namespace Core.Components
             return rowSection;
         }
 
-        public override async Task AddRows(IEnumerable<object> rowsData, int index = 0)
+        public override async Task<List<ListViewItem>> AddRows(IEnumerable<object> rowsData, int index = 0)
         {
-            await LoadMasterData(rowsData);
-            await rowsData.ForEachAsync(async x => await AddRow(x, 0, false));
+            if (!GuiInfo.IsRealtime)
+            {
+                await LoadMasterData(rowsData);
+            }
+            var listItem = new List<ListViewItem>();
+            await rowsData.ForEachAsync(async x =>
+            {
+                listItem.Add(await AddRow(x, 0, false));
+            });
+            return listItem;
         }
 
         public override ListViewItem RenderRowData(List<GridPolicy> headers, object row, Section listViewSection, int? index, bool emptyRow = false)
