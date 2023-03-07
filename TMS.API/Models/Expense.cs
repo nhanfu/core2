@@ -64,6 +64,7 @@ namespace TMS.API.Models
         public string MonthText { get; set; }
         public string YearText { get; set; }
         public bool IsApproveChange { get; set; }
+        public bool IsHasChange { get; set; }
 
         public virtual Allotment Allotment { get; set; }
         public virtual Transportation Transportation { get; set; }
