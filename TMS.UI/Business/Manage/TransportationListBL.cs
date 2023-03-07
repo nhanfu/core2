@@ -62,6 +62,7 @@ namespace TMS.UI.Business.Manage
         public virtual async Task CheckFee()
         {
             var routeIds = LocalStorage.GetItem<List<int>>("RouteCheckFeeClosing");
+            var closingId = LocalStorage.GetItem<int>("ClosingIdCheckFeeClosing");
             await this.OpenPopup(
                 featureName: "CheckFee Form",
                 factory: () =>
@@ -72,6 +73,9 @@ namespace TMS.UI.Business.Manage
                     instance.Entity = new CheckFeeHistory()
                     {
                         RouteIds = routeIds,
+                        FromDate = LocalStorage.GetItem<string>("FromDateCheckFeeClosing") is null ? default(DateTime) : DateTime.Parse(LocalStorage.GetItem<string>("FromDateCheckFeeClosing")),
+                        ToDate = LocalStorage.GetItem<string>("ToDateCheckFeeClosing") is null ? default(DateTime) :  DateTime.Parse(LocalStorage.GetItem<string>("ToDateCheckFeeClosing")),
+                        ClosingId = closingId,
                         TypeId = 1,
                     };
                     return instance;

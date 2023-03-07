@@ -167,154 +167,154 @@ namespace TMS.UI.Business.Manage
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.LiftFeeCheckUpload),
-                        Value = transportation.LiftFeeCheckUpload.ToString(),
-                    });
+                        Value = transportation.LiftFeeCheckUpload is null ? null : transportation.LiftFeeCheckUpload.ToString(),
+                    }); ;
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.LiftFeeCheck),
-                        Value = transportation.LiftFeeCheck.ToString(),
+                        Value = transportation.LiftFeeCheck is null ? null : transportation.LiftFeeCheck.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.LandingFeeCheck),
-                        Value = transportation.LandingFeeCheck is null ? "0" : transportation.LandingFeeCheck.ToString(),
+                        Value = transportation.LandingFeeCheck is null ? null : transportation.LandingFeeCheck.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.LandingFeeUpload),
-                        Value = transportation.LandingFeeUpload is null ? "0" : transportation.LandingFeeUpload.ToString(),
+                        Value = transportation.LandingFeeUpload is null ? null : transportation.LandingFeeUpload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.CollectOnBehaftInvoinceNoFeeCheck),
-                        Value = transportation.CollectOnBehaftInvoinceNoFeeCheck is null ? "0" : transportation.CollectOnBehaftInvoinceNoFeeCheck.ToString(),
+                        Value = transportation.CollectOnBehaftInvoinceNoFeeCheck is null ? null : transportation.CollectOnBehaftInvoinceNoFeeCheck.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.CollectOnBehaftInvoinceNoFeeUpload),
-                        Value = transportation.CollectOnBehaftInvoinceNoFeeUpload is null ? "0" : transportation.CollectOnBehaftInvoinceNoFeeUpload.ToString(),
+                        Value = transportation.CollectOnBehaftInvoinceNoFeeUpload is null ? null : transportation.CollectOnBehaftInvoinceNoFeeUpload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.CollectOnBehaftFeeUpload),
-                        Value = transportation.CollectOnBehaftFeeUpload is null ? "0" : transportation.CollectOnBehaftFeeUpload.ToString(),
+                        Value = transportation.CollectOnBehaftFeeUpload is null ? null : transportation.CollectOnBehaftFeeUpload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.CollectOnBehaftFeeCheck),
-                        Value = transportation.CollectOnBehaftFeeCheck is null ? "0" : transportation.CollectOnBehaftFeeCheck.ToString(),
+                        Value = transportation.CollectOnBehaftFeeCheck is null ? null : transportation.CollectOnBehaftFeeCheck.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.CollectOnSupPriceCheck),
-                        Value = transportation.CollectOnSupPriceCheck is null ? "0" : transportation.CollectOnSupPriceCheck.ToString(),
+                        Value = transportation.CollectOnSupPriceCheck is null ? null : transportation.CollectOnSupPriceCheck.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.CollectOnSupPriceUpload),
-                        Value = transportation.CollectOnSupPriceUpload is null ? "0" : transportation.CollectOnSupPriceUpload.ToString(),
+                        Value = transportation.CollectOnSupPriceUpload is null ? null : transportation.CollectOnSupPriceUpload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.TotalPriceAfterTaxCheck),
-                        Value = transportation.TotalPriceAfterTaxCheck is null ? "0" : transportation.TotalPriceAfterTaxCheck.ToString(),
+                        Value = transportation.TotalPriceAfterTaxCheck is null ? null : transportation.TotalPriceAfterTaxCheck.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.TotalPriceAfterTaxUpload),
-                        Value = transportation.TotalPriceAfterTaxUpload is null ? "0" : transportation.TotalPriceAfterTaxUpload.ToString(),
+                        Value = transportation.TotalPriceAfterTaxUpload is null ? null : transportation.TotalPriceAfterTaxUpload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.FeeVat1),
-                        Value = transportation.FeeVat1 is null ? "0" : transportation.FeeVat1.ToString(),
+                        Value = transportation.FeeVat1 is null ? null : transportation.FeeVat1.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.FeeVat2),
-                        Value = transportation.FeeVat2 is null ? "0" : transportation.FeeVat2.ToString(),
+                        Value = transportation.FeeVat2 is null ? null : transportation.FeeVat2.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.FeeVat3),
-                        Value = transportation.FeeVat3 is null ? "0" : transportation.FeeVat3.ToString(),
+                        Value = transportation.FeeVat3 is null ? null : transportation.FeeVat3.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.FeeVat1Upload),
-                        Value = transportation.FeeVat1Upload is null ? "0" : transportation.FeeVat1Upload.ToString(),
+                        Value = transportation.FeeVat1Upload is null ? null : transportation.FeeVat1Upload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.FeeVat2Upload),
-                        Value = transportation.FeeVat2Upload is null ? "0" : transportation.FeeVat2Upload.ToString(),
+                        Value = transportation.FeeVat2Upload is null ? null : transportation.FeeVat2Upload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.FeeVat3Upload),
-                        Value = transportation.FeeVat3Upload is null ? "0" : transportation.FeeVat3Upload.ToString(),
+                        Value = transportation.FeeVat3Upload is null ? null : transportation.FeeVat3Upload.ToString(),
                     });
                     //
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee1),
-                        Value = transportation.Fee1 is null ? "0" : transportation.Fee1.ToString(),
+                        Value = transportation.Fee1 is null ? null : transportation.Fee1.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee2),
-                        Value = transportation.Fee2 is null ? "0" : transportation.Fee2.ToString(),
+                        Value = transportation.Fee2 is null ? null : transportation.Fee2.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee3),
-                        Value = transportation.Fee3 is null ? "0" : transportation.Fee3.ToString(),
+                        Value = transportation.Fee3 is null ? null : transportation.Fee3.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee4),
-                        Value = transportation.Fee4 is null ? "0" : transportation.Fee4.ToString(),
+                        Value = transportation.Fee4 is null ? null : transportation.Fee4.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee5),
-                        Value = transportation.Fee5 is null ? "0" : transportation.Fee5.ToString(),
+                        Value = transportation.Fee5 is null ? null : transportation.Fee5.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee6),
-                        Value = transportation.Fee6 is null ? "0" : transportation.Fee6.ToString(),
+                        Value = transportation.Fee6 is null ? null : transportation.Fee6.ToString(),
                     });
                     //
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee1Upload),
-                        Value = transportation.Fee1Upload is null ? "0" : transportation.Fee1Upload.ToString(),
+                        Value = transportation.Fee1Upload is null ? null : transportation.Fee1Upload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee2Upload),
-                        Value = transportation.Fee2Upload is null ? "0" : transportation.Fee2Upload.ToString(),
+                        Value = transportation.Fee2Upload is null ? null : transportation.Fee2Upload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee3Upload),
-                        Value = transportation.Fee3Upload is null ? "0" : transportation.Fee3Upload.ToString(),
+                        Value = transportation.Fee3Upload is null ? null : transportation.Fee3Upload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee4Upload),
-                        Value = transportation.Fee4Upload is null ? "0" : transportation.Fee4Upload.ToString(),
+                        Value = transportation.Fee4Upload is null ? null : transportation.Fee4Upload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee5Upload),
-                        Value = transportation.Fee5Upload is null ? "0" : transportation.Fee5Upload.ToString(),
+                        Value = transportation.Fee5Upload is null ? null : transportation.Fee5Upload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.Fee6Upload),
-                        Value = transportation.Fee6Upload is null ? "0" : transportation.Fee6Upload.ToString(),
+                        Value = transportation.Fee6Upload is null ? null : transportation.Fee6Upload.ToString(),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
