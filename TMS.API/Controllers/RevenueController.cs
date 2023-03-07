@@ -35,6 +35,51 @@ namespace TMS.API.Controllers
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
             var entity = await db.Revenue.FindAsync(idInt);
+            var tran = await db.Transportation.Where(x => x.Id == entity.TransportationId).FirstOrDefaultAsync();
+            if (tran != null && tran.IsLocked)
+            {
+                throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
+            }
+            if (patch.Changes.Any(x => x.Field == nameof(entity.InvoinceNo)
+                || x.Field == nameof(entity.InvoinceDate)
+                || x.Field == nameof(entity.Vat)
+                || x.Field == nameof(entity.TotalPriceBeforTax)
+                || x.Field == nameof(entity.VatPrice)
+                || x.Field == nameof(entity.TotalPrice)
+                || x.Field == nameof(entity.VendorVatId)))
+            {
+                if (tran != null && tran.IsLockedRevenue)
+                {
+                    throw new ApiException("Cont này đã được khóa doanh thu.") { StatusCode = HttpStatusCode.BadRequest };
+                }
+            }
+            var oldEntity = await db.Revenue.Where(x => x.Id == entity.Id).FirstOrDefaultAsync();
+            if (patch.Changes.Any(x => x.Field == nameof(entity.Name)
+                || x.Field == nameof(entity.LotNo)
+                || x.Field == nameof(entity.LotDate)
+                || x.Field == nameof(entity.UnitPriceAfterTax)
+                || x.Field == nameof(entity.UnitPriceBeforeTax)
+                || x.Field == nameof(entity.ReceivedPrice)
+                || x.Field == nameof(entity.CollectOnBehaftPrice)
+                || x.Field == nameof(entity.NotePayment)
+                || x.Field == nameof(entity.Note)
+                || x.Field == nameof(entity.RevenueAdjustment)) &&
+                (entity.Name != oldEntity.Name
+                || entity.LotNo != oldEntity.LotNo
+                || entity.LotDate != oldEntity.LotDate
+                || entity.UnitPriceAfterTax != oldEntity.UnitPriceAfterTax
+                || entity.UnitPriceBeforeTax != oldEntity.UnitPriceBeforeTax
+                || entity.ReceivedPrice != oldEntity.ReceivedPrice
+                || entity.CollectOnBehaftPrice != oldEntity.CollectOnBehaftPrice
+                || entity.NotePayment != oldEntity.NotePayment
+                || entity.Note != oldEntity.Note
+                || entity.RevenueAdjustment != oldEntity.RevenueAdjustment))
+            {
+                if (tran != null && tran.IsSubmit)
+                {
+                    throw new ApiException("DT này đã được khóa kế toán. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
+                }
+            }
             if (patch.Changes.Any(x => x.Field == nameof(entity.InvoinceNo)
                 || x.Field == nameof(entity.InvoinceDate)
                 || x.Field == nameof(entity.Vat)
@@ -45,64 +90,26 @@ namespace TMS.API.Controllers
             {
                 if (RoleIds.Where(x => x == 46 || x == 8).Any() == false)
                 {
-                    if ((patch.Changes.Any(x => x.Field == nameof(entity.Vat)
+                    if (patch.Changes.Any(x => x.Field == nameof(entity.Vat)
                     || x.Field == nameof(entity.VatPrice)
-                    || x.Field == nameof(entity.TotalPrice))) && RoleIds.Where(x => x == 34 || x == 8).Any())
+                    || x.Field == nameof(entity.TotalPriceBeforTax)
+                    || x.Field == nameof(entity.TotalPrice)) && RoleIds.Where(x => x == 34 || x == 8).Any())
                     {
-                        if (entity.UserUpdate2 != null && entity.UserUpdate2 != 0 && entity.UserUpdate2 != UserId)
+                        if (entity.UserUpdate2 != null && entity.UserUpdate2 != 0)
                         {
-                            throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của user khác.") { StatusCode = HttpStatusCode.BadRequest };
-                        }
-                        else
-                        {
-                            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
-                            {
-                                connection.Open();
-                                SqlTransaction transaction = connection.BeginTransaction();
-                                try
-                                {
-                                    using (SqlCommand command = new SqlCommand())
-                                    {
-                                        command.Transaction = transaction;
-                                        command.Connection = connection;
-                                        patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Revenue.Vat), Value = entity.Vat.ToString() });
-                                        patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Revenue.VatPrice), Value = entity.VatPrice.ToString() });
-                                        patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Revenue.TotalPrice), Value = entity.TotalPrice.ToString() });
-                                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
-                                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
-                                        if (disableTrigger)
-                                        {
-                                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(Revenue)}];";
-                                        }
-                                        else
-                                        {
-                                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Revenue)}];";
-                                        }
-                                        command.CommandText += $" UPDATE [{nameof(Revenue)}] SET {update.Combine()} WHERE Id = {idInt};";
-                                        //
-                                        if (disableTrigger)
-                                        {
-                                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Revenue)}];";
-                                        }
-                                        foreach (var item in updates)
-                                        {
-                                            command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
-                                        }
-                                        command.ExecuteNonQuery();
-                                        transaction.Commit();
-                                        await db.Entry(entity).ReloadAsync();
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    transaction.Rollback();
-                                }
-                            }
+                            patch.Changes = patch.Changes.Where(x => x.Field != nameof(entity.Vat)
+                            && x.Field != nameof(entity.VatPrice)
+                            && x.Field != nameof(entity.TotalPriceBeforTax)
+                            && x.Field != nameof(entity.TotalPrice)).ToList();
                         }
                     }
-                    else
+                    if (patch.Changes.Any(x => x.Field == nameof(entity.InvoinceNo)
+                    || x.Field == nameof(entity.InvoinceDate)
+                    || x.Field == nameof(entity.VendorVatId)) && RoleIds.Where(x => x == 34 || x == 8).Any())
                     {
-                        throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
+                        patch.Changes = patch.Changes.Where(x => x.Field != nameof(entity.InvoinceNo)
+                            && x.Field != nameof(entity.InvoinceDate)
+                            && x.Field != nameof(entity.VendorVatId)).ToList();
                     }
                 }
                 else
@@ -142,55 +149,6 @@ namespace TMS.API.Controllers
                     {
                         entity.UserUpdate1 = UserId;
                     }
-                }
-            }
-            var tran = await db.Transportation.Where(x => x.Id == entity.TransportationId).FirstOrDefaultAsync();
-            if (tran != null && tran.IsLocked)
-            {
-                throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(entity.InvoinceNo)
-                || x.Field == nameof(entity.InvoinceDate)
-                || x.Field == nameof(entity.Vat)
-                || x.Field == nameof(entity.TotalPriceBeforTax)
-                || x.Field == nameof(entity.VatPrice)
-                || x.Field == nameof(entity.TotalPrice)
-                || x.Field == nameof(entity.VendorVatId)))
-            {
-                if (tran != null && tran.IsLockedRevenue)
-                {
-                    throw new ApiException("Cont này đã được khóa doanh thu.") { StatusCode = HttpStatusCode.BadRequest };
-                }
-                else
-                {
-                    entity.Vat = entity.Vat != null ? entity.Vat : 10;
-                }
-            }
-            var oldEntity = await db.Revenue.Where(x => x.Id == entity.Id).FirstOrDefaultAsync();
-            if (patch.Changes.Any(x => x.Field == nameof(entity.Name)
-                || x.Field == nameof(entity.LotNo)
-                || x.Field == nameof(entity.LotDate)
-                || x.Field == nameof(entity.UnitPriceAfterTax)
-                || x.Field == nameof(entity.UnitPriceBeforeTax)
-                || x.Field == nameof(entity.ReceivedPrice)
-                || x.Field == nameof(entity.CollectOnBehaftPrice)
-                || x.Field == nameof(entity.NotePayment)
-                || x.Field == nameof(entity.Note)
-                || x.Field == nameof(entity.RevenueAdjustment)) &&
-                (entity.Name != oldEntity.Name
-                || entity.LotNo != oldEntity.LotNo
-                || entity.LotDate != oldEntity.LotDate
-                || entity.UnitPriceAfterTax != oldEntity.UnitPriceAfterTax
-                || entity.UnitPriceBeforeTax != oldEntity.UnitPriceBeforeTax
-                || entity.ReceivedPrice != oldEntity.ReceivedPrice
-                || entity.CollectOnBehaftPrice != oldEntity.CollectOnBehaftPrice
-                || entity.NotePayment != oldEntity.NotePayment
-                || entity.Note != oldEntity.Note
-                || entity.RevenueAdjustment != oldEntity.RevenueAdjustment))
-            {
-                if (tran != null && tran.IsSubmit)
-                {
-                    throw new ApiException("DT này đã được khóa kế toán. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
@@ -416,6 +374,32 @@ namespace TMS.API.Controllers
             if (item.IsVendorVatId)
             {
                 cmd += $"{nameof(Revenue.VendorVatId)} = " + (item.VendorVatId != null ? $"'{item.VendorVatId}'" : "NULL") + ",";
+            }
+            if (item.IsLotNo ||
+                item.IsLotDate ||
+                item.IsUnitPriceAfterTax ||
+                item.IsUnitPriceBeforeTax ||
+                item.IsReceivedPrice ||
+                item.IsCollectOnBehaftPrice ||
+                item.IsNotePayment)
+            {
+                if (RoleIds.Where(x => x == 46 || x == 8).Any())
+                {
+                    cmd += $"{nameof(Revenue.UserUpdate1)} = {UserId},";
+                }
+            }
+            if (item.IsVat ||
+                item.IsVatPrice ||
+                item.IsTotalPriceBeforTax ||
+                item.IsTotalPrice ||
+                item.IsVendorVatId ||
+                item.IsInvoinceNo ||
+                item.IsInvoinceDate)
+            {
+                if (RoleIds.Where(x => x == 34 || x == 8).Any())
+                {
+                    cmd += $"{nameof(Revenue.UserUpdate2)} = {UserId},";
+                }
             }
             cmd = cmd.TrimEnd(',');
             revenues.Remove(item);

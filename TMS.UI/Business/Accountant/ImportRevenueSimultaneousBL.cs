@@ -215,11 +215,7 @@ namespace TMS.UI.Business.Accountant
             }
             var confirm = new ConfirmDialog();
             revenues = revenueSelecteds.Where(x => idTrans.Contains((int)x.TransportationId)).ToList();
-            if (listViewItemsIsSubmit.Count <= 0 && listViewItemsIsLockedRevenue.Count <= 0)
-            {
-                confirm.Content = "Bạn có chắc chắn muốn nhập doanh thu cho " + revenues.Count + " dòng doanh thu ?";
-            }
-            else if (listViewItemsIsSubmit.Count > 0 && listViewItemsIsLockedRevenue.Count > 0)
+            if (listViewItemsIsSubmit.Count > 0 && listViewItemsIsLockedRevenue.Count > 0)
             {
                 if ((revenueEntity.IsLotNo ||
                     revenueEntity.IsLotDate ||
@@ -246,39 +242,31 @@ namespace TMS.UI.Business.Accountant
                     Toast.Warning("Không có doanh thu nào có thể nhập");
                     return;
                 }
-                else
-                {
-                    confirm.Content = "Bạn có chắc chắn muốn nhập doanh thu cho " + revenues.Count + " dòng doanh thu ?";
-                }
             }
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                if (revenueEntity.IsLotNo ||
+            if (revenueEntity.IsLotNo ||
                     revenueEntity.IsLotDate ||
                     revenueEntity.IsUnitPriceAfterTax ||
                     revenueEntity.IsUnitPriceBeforeTax ||
                     revenueEntity.IsReceivedPrice ||
                     revenueEntity.IsCollectOnBehaftPrice ||
                     revenueEntity.IsNotePayment)
-                {
-                    revenues = revenues.Where(x => x.UserUpdate1 == null || x.UserUpdate1 == 0 || x.UserUpdate1 == Client.Token.UserId).ToList();
-                }
-                if (revenueEntity.IsVat ||
-                    revenueEntity.IsVatPrice ||
-                    revenueEntity.IsTotalPriceBeforTax ||
-                    revenueEntity.IsTotalPrice ||
-                    revenueEntity.IsVendorVatId ||
-                    revenueEntity.IsInvoinceNo ||
-                    revenueEntity.IsInvoinceDate)
-                {
-                    revenues = revenues.Where(x => x.UserUpdate2 == null || x.UserUpdate2 == 0 || x.UserUpdate2 == Client.Token.UserId).ToList();
-                }
-                if (revenues.Count <= 0)
-                {
-                    Toast.Warning("Không có doanh thu nào có thể nhập");
-                    return;
-                }
+            {
+                revenues = revenues.Where(x => x.UserUpdate1 == null || x.UserUpdate1 == 0 || x.UserUpdate1 == Client.Token.UserId).ToList();
+            }
+            if (revenueEntity.IsVat ||
+                revenueEntity.IsVatPrice ||
+                revenueEntity.IsTotalPriceBeforTax ||
+                revenueEntity.IsTotalPrice ||
+                revenueEntity.IsVendorVatId ||
+                revenueEntity.IsInvoinceNo ||
+                revenueEntity.IsInvoinceDate)
+            {
+                revenues = revenues.Where(x => x.UserUpdate2 == null || x.UserUpdate2 == 0 || x.UserUpdate2 == Client.Token.UserId).ToList();
+            }
+            confirm.Content = "Bạn có chắc chắn muốn nhập doanh thu cho " + revenues.Count + " dòng doanh thu ?";
+            confirm.Render();
+            confirm.YesConfirmed += async () =>
+            {
                 revenues.Add(revenueEntity);
                 var res = await new Client(nameof(Revenue)).PostAsync<bool>(revenues, "UpdateRevenueSimultaneous");
                 if (res)
