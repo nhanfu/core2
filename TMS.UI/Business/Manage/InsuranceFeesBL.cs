@@ -421,13 +421,16 @@ namespace TMS.UI.Business.Manage
                     {
                         listViewItem.Element.AddClass("bg-red1");
                     }
+                    else
+                    {
+                        listViewItem.Element.RemoveClass("bg-red1");
+                    }
                     if (item.IsPurchasedInsurance)
                     {
                         listViewItem.Element.AddClass("bg-host");
                     }
                     else
                     {
-                        listViewItem.Element.RemoveClass("bg-red1");
                         listViewItem.Element.RemoveClass("bg-host");
                     }
                 }
