@@ -1634,7 +1634,6 @@ namespace TMS.UI.Business.Manage
         {
             var details = new List<PatchUpdateDetail>();
             details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = revenue.Id.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.TotalPrice), Value = revenue.TotalPrice.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Revenue.UnitPriceAfterTax), Value = revenue.UnitPriceAfterTax.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Revenue.ReceivedPrice), Value = revenue.ReceivedPrice.ToString() });
             return new PatchUpdate { Changes = details };

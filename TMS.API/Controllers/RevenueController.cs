@@ -45,7 +45,65 @@ namespace TMS.API.Controllers
             {
                 if (RoleIds.Where(x => x == 46 || x == 8).Any() == false)
                 {
-                    throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
+                    if ((patch.Changes.Any(x => x.Field == nameof(entity.Vat)
+                    || x.Field == nameof(entity.VatPrice)
+                    || x.Field == nameof(entity.TotalPrice))) && RoleIds.Where(x => x == 34 || x == 8).Any())
+                    {
+                        if (entity.UserUpdate2 != null && entity.UserUpdate2 != 0 && entity.UserUpdate2 != UserId)
+                        {
+                            throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của user khác.") { StatusCode = HttpStatusCode.BadRequest };
+                        }
+                        else
+                        {
+                            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+                            {
+                                connection.Open();
+                                SqlTransaction transaction = connection.BeginTransaction();
+                                try
+                                {
+                                    using (SqlCommand command = new SqlCommand())
+                                    {
+                                        command.Transaction = transaction;
+                                        command.Connection = connection;
+                                        patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Revenue.Vat), Value = entity.Vat.ToString() });
+                                        patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Revenue.VatPrice), Value = entity.VatPrice.ToString() });
+                                        patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Revenue.TotalPrice), Value = entity.TotalPrice.ToString() });
+                                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                                        if (disableTrigger)
+                                        {
+                                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(Revenue)}];";
+                                        }
+                                        else
+                                        {
+                                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Revenue)}];";
+                                        }
+                                        command.CommandText += $" UPDATE [{nameof(Revenue)}] SET {update.Combine()} WHERE Id = {idInt};";
+                                        //
+                                        if (disableTrigger)
+                                        {
+                                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Revenue)}];";
+                                        }
+                                        foreach (var item in updates)
+                                        {
+                                            command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                                        }
+                                        command.ExecuteNonQuery();
+                                        transaction.Commit();
+                                        await db.Entry(entity).ReloadAsync();
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    transaction.Rollback();
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
+                    }
                 }
                 else
                 {
