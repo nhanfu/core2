@@ -1738,10 +1738,12 @@ namespace Core.Components
                     {
                         CacheData.Add(rs);
                     }
+                    Dirty = false;
                 }
                 else
                 {
                     rs = rowSection.Entity;
+                    Dirty = true;
                 }
                 MoveEmptyRow(rowSection);
                 EmptyRowSection.Children.Clear();
@@ -1749,7 +1751,6 @@ namespace Core.Components
                 Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
                 await LoadMasterData(new object[] { rs });
                 rowSection.UpdateView(true);
-                Dirty = false;
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
             PopulateFields();

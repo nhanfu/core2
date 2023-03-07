@@ -107,12 +107,12 @@ namespace TMS.UI.Business.Manage
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.ClosingDateCheck),
-                        Value = transportation.ClosingDateCheck.Value.ToString("yyyy-MM-dd"),
+                        Value = transportation.ClosingDateCheck is null ? null : transportation.ClosingDateCheck.Value.ToString("yyyy-MM-dd"),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
                         Field = nameof(Transportation.ClosingDateUpload),
-                        Value = transportation.ClosingDateUpload.Value.ToString("yyyy-MM-dd"),
+                        Value = transportation.ClosingDateUpload is null ? null : transportation.ClosingDateUpload.Value.ToString("yyyy-MM-dd"),
                     });
                     changes.Add(new PatchUpdateDetail()
                     {
