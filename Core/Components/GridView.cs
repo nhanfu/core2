@@ -1723,33 +1723,27 @@ namespace Core.Components
 
         internal override async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
         {
-            await Task.Delay(100);
-            var ele = EmptyRowSection.FilterChildren<ListViewItem>().FirstOrDefault()?.Element;
-            if (rowSection.Element == ele && observableArgs.EvType == EventType.Change)
+            await Task.Delay(50);
+            if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
-                if (!GuiInfo.IsRealtime)
-                {
-                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
-                }
                 rowSection.EmptyRow = false;
-                MoveEmptyRow(rowSection);
-                var headers = Header.Where(y => y.Editable).ToList();
-                var currentComponent = headers.FirstOrDefault(y => y.FieldName == component?.GuiInfo.FieldName);
-                var index = headers.IndexOf(currentComponent);
-                if (headers.Count > index + 1)
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData, this);
+                var entity = rowData;
+                entity.ClearReferences();
+                var rs = await new Client(GuiInfo.Reference.Name).CreateAsync<object>(entity);
+                rowSection.Entity.CopyPropFrom(rs);
+                if (GuiInfo.ComponentType == nameof(VirtualGrid))
                 {
-                    var nextGrid = headers[index + 1];
-                    var nextComponent = rowSection.Children.Where(y => y?.GuiInfo.FieldName == nextGrid.FieldName).FirstOrDefault();
-                    nextComponent.Focus();
+                    CacheData.Add(rs);
                 }
+                MoveEmptyRow(rowSection);
                 EmptyRowSection.Children.Clear();
                 AddNewEmptyRow();
-                await LoadMasterData(new List<object>() { rowData });
                 Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
-                if (!GuiInfo.IsRealtime)
-                {
-                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
-                }
+                await LoadMasterData(new object[] { rs });
+                rowSection.UpdateView(true);
+                Dirty = false;
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
             PopulateFields();
             RenderIndex();
@@ -1757,6 +1751,17 @@ namespace Core.Components
             if (GuiInfo.IsSumary)
             {
                 AddSummaries();
+            }
+            LastListViewItem = rowSection;
+            var headers = Header.Where(y => y.Editable).ToList();
+            var currentComponent = headers.FirstOrDefault(y => y.FieldName == component?.GuiInfo.FieldName);
+            var index = headers.IndexOf(currentComponent);
+            if (headers.Count > index + 1)
+            {
+                var nextGrid = headers[index + 1];
+                var nextComponent = rowSection.Children.Where(y => y?.GuiInfo.FieldName == nextGrid.FieldName).FirstOrDefault();
+                rowSection.Focused = true;
+                nextComponent.Focus();
             }
         }
 
@@ -1783,6 +1788,10 @@ namespace Core.Components
                 {
                     MainSection.Children.Add(EmptyRowSection.FirstChild);
                 }
+            }
+            if (GuiInfo.IsRealtime)
+            {
+                rowSection.Element.RemoveClass("new-row");
             }
             rowSection.Parent = MainSection;
             rowSection.ListViewSection = MainSection;

@@ -533,16 +533,19 @@ namespace Core.Components
             Matched = null;
             _value = null;
             _input.Value = string.Empty;
-            Entity?.SetComplexPropValue(GuiInfo.FieldName, null);
-            Dirty = true;
-            CascadeAndPopulate();
-            Task.Run(async () =>
+            if (oldMatch != Matched)
             {
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, Matched, oldMatch);
-            });
-            if (UserInput != null)
-            {
-                UserInput.Invoke(new ObservableArgs { NewData = null, OldData = oldValue, EvType = EventType.Change });
+                Entity?.SetComplexPropValue(GuiInfo.FieldName, null);
+                Dirty = true;
+                CascadeAndPopulate();
+                Task.Run(async () =>
+                {
+                    await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, Matched, oldMatch);
+                });
+                if (UserInput != null)
+                {
+                    UserInput.Invoke(new ObservableArgs { NewData = null, OldData = oldValue, EvType = EventType.Change });
+                }
             }
             TriggerSearch(null);
         }

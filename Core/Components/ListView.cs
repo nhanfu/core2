@@ -670,6 +670,11 @@ namespace Core.Components
 
         public async Task RealtimeUpdateAsync(ListViewItem rowData, ObservableArgs arg)
         {
+            if (EmptyRow)
+            {
+                EmptyRow = false;
+                return;
+            }
             if (!GuiInfo.IsRealtime || arg is null || arg.EvType == EventType.Abort)
             {
                 return;
@@ -677,10 +682,6 @@ namespace Core.Components
             if (rowData.EntityId > 0)
             {
                 await rowData.PatchUpdate();
-            }
-            else
-            {
-                await rowData.CreateUpdate();
             }
         }
 
