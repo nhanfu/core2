@@ -1727,13 +1727,21 @@ namespace Core.Components
             if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData, this);
-                var entity = rowData;
-                entity.ClearReferences();
-                var rs = await new Client(GuiInfo.Reference.Name).CreateAsync<object>(entity);
-                rowSection.Entity.CopyPropFrom(rs);
-                if (GuiInfo.ComponentType == nameof(VirtualGrid))
+                object rs;
+                if (GuiInfo.IsRealtime)
                 {
-                    CacheData.Add(rs);
+                    var entity = rowData;
+                    entity.ClearReferences();
+                    rs = await new Client(GuiInfo.Reference.Name).CreateAsync<object>(entity);
+                    rowSection.Entity.CopyPropFrom(rs);
+                    if (GuiInfo.ComponentType == nameof(VirtualGrid))
+                    {
+                        CacheData.Add(rs);
+                    }
+                }
+                else
+                {
+                    rs = rowSection.Entity;
                 }
                 MoveEmptyRow(rowSection);
                 EmptyRowSection.Children.Clear();
