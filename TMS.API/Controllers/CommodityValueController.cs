@@ -38,16 +38,30 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<CommodityValue>> PatchAsync([FromQuery] ODataQueryOptions<CommodityValue> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
+            CommodityValue entity = default;
+            CommodityValue oldEntity = default;
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
-            var idInt = id.TryParseInt() ?? 0;
-            var entity = await db.CommodityValue.FindAsync(idInt);
-            var oldEntity = await db.CommodityValue.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
+            var idInt = 0;
+            if (id != null && id.TryParseInt() > 0)
+            {
+                idInt = id.TryParseInt() ?? 0;
+                entity = await db.Set<CommodityValue>().FindAsync(idInt);
+                oldEntity = await db.CommodityValue.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
+            }
+            else
+            {
+                entity = await GetEntityByOdataOptions(options);
+                oldEntity = await GetEntityByOdataOptions(options);
+            }
             if (patch.Changes.Any(x => x.Field == nameof(oldEntity.BossId)
             || x.Field == nameof(oldEntity.CommodityId)
             || x.Field == nameof(oldEntity.ContainerId)))
             {
                 var commodity = await db.MasterData.Where(x => x.ParentId != 7651 && x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).FirstOrDefaultAsync();
-                var commodityValueDB = await db.CommodityValue.Where(x => x.Active == true && x.BossId == entity.BossId && x.CommodityId == entity.CommodityId && x.ContainerId == entity.ContainerId).FirstOrDefaultAsync();
+                var commodityValueDB = await db.CommodityValue.Where(x => x.Active == true && 
+                x.BossId == entity.BossId && 
+                x.CommodityId == entity.CommodityId && 
+                x.ContainerId == entity.ContainerId && x.Id != entity.Id).FirstOrDefaultAsync();
                 if (commodityValueDB != null || entity.CommodityId == commodity.Id)
                 {
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
