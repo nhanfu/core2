@@ -825,7 +825,7 @@ namespace TMS.API.Controllers
             {
                 try
                 {
-                    if (worksheet.Cells.Rows[row][0].Value is null)
+                    if (worksheet.Cells.Rows[row][0].Value is null && worksheet.Cells.Rows[row][0].Value is not int)
                     {
                         break;
                     }
