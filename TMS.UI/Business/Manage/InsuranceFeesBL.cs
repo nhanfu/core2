@@ -120,7 +120,7 @@ namespace TMS.UI.Business.Manage
             }
             if (checkHistory.Count > 0)
             {
-                listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnViewChange" || y.GuiInfo.FieldName == "IsApproveChange").ForEach(y => y.Disabled = false);
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnViewChange" || y.GuiInfo.FieldName == "IsApproveChange" || y.GuiInfo.FieldName == "NotesInsuranceFees").ForEach(y => y.Disabled = false);
             }
             else
             {
