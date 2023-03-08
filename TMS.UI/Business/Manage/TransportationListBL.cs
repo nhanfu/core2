@@ -1213,10 +1213,6 @@ namespace TMS.UI.Business.Manage
                 listViewItem.FilterChildren(x =>
                 x.GuiInfo.FieldName == nameof(Transportation.PolicyId)
                 || x.GuiInfo.FieldName == nameof(Transportation.ShipPolicyPrice)
-                ).ForEach(x => x.Dirty = false);
-                listViewItem.FilterChildren(x =>
-                x.GuiInfo.FieldName == nameof(Transportation.PolicyId)
-                || x.GuiInfo.FieldName == nameof(Transportation.ShipPolicyPrice)
                 ).ForEach(x => x.Dirty = true);
                 await listViewItem.PatchUpdate(true);
                 Toast.Success("Đã áp dụng chính sách");
