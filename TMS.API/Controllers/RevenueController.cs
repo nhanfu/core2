@@ -85,8 +85,7 @@ namespace TMS.API.Controllers
                 || x.Field == nameof(entity.Vat)
                 || x.Field == nameof(entity.TotalPriceBeforTax)
                 || x.Field == nameof(entity.VatPrice)
-                || x.Field == nameof(entity.TotalPrice)
-                || x.Field == nameof(entity.VendorVatId)))
+                || x.Field == nameof(entity.TotalPrice)))
             {
                 if (RoleIds.Where(x => x == 46 || x == 8).Any() == false)
                 {
@@ -104,12 +103,10 @@ namespace TMS.API.Controllers
                         }
                     }
                     if (patch.Changes.Any(x => x.Field == nameof(entity.InvoinceNo)
-                    || x.Field == nameof(entity.InvoinceDate)
-                    || x.Field == nameof(entity.VendorVatId)) && RoleIds.Where(x => x == 34 || x == 8).Any())
+                    || x.Field == nameof(entity.InvoinceDate)) && RoleIds.Where(x => x == 34 || x == 8).Any())
                     {
                         patch.Changes = patch.Changes.Where(x => x.Field != nameof(entity.InvoinceNo)
-                            && x.Field != nameof(entity.InvoinceDate)
-                            && x.Field != nameof(entity.VendorVatId)).ToList();
+                            && x.Field != nameof(entity.InvoinceDate)).ToList();
                     }
                 }
                 else
@@ -228,8 +225,7 @@ namespace TMS.API.Controllers
                 (entity.Vat != null && entity.Vat != 0) ||
                 (entity.TotalPriceBeforTax != null && entity.TotalPriceBeforTax != 0) ||
                 (entity.VatPrice != null && entity.VatPrice != 0) ||
-                (entity.TotalPrice != null && entity.TotalPrice != 0) ||
-                entity.VendorVatId != null) && RoleIds.Where(x => x == 46 || x == 8).Any() == false)
+                (entity.TotalPrice != null && entity.TotalPrice != 0)) && RoleIds.Where(x => x == 46 || x == 8).Any() == false)
             {
                 throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
             }
@@ -392,7 +388,6 @@ namespace TMS.API.Controllers
                 item.IsVatPrice ||
                 item.IsTotalPriceBeforTax ||
                 item.IsTotalPrice ||
-                item.IsVendorVatId ||
                 item.IsInvoinceNo ||
                 item.IsInvoinceDate)
             {

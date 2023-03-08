@@ -502,8 +502,7 @@ namespace TMS.UI.Business.Manage
                     await CalcRevenueAsync(revenue);
                 }
                 if (patch.Changes.Any(x => x.Field == nameof(revenue.InvoinceNo)
-                    || x.Field == nameof(revenue.InvoinceDate)
-                    || x.Field == nameof(revenue.VendorVatId)) && selected.IsLockedRevenue == false && Client.Token.RoleIds.Where(x => x == 46 || x == 8).Any() == false)
+                    || x.Field == nameof(revenue.InvoinceDate)) && selected.IsLockedRevenue == false && Client.Token.RoleIds.Where(x => x == 46 || x == 8).Any() == false)
                 {
                     Toast.Warning("Bạn không có quyền chỉnh sửa dữ liệu của cột này.");
                     return;

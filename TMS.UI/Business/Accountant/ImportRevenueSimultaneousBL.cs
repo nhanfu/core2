@@ -165,7 +165,6 @@ namespace TMS.UI.Business.Accountant
                     revenueEntity.IsVatPrice ||
                     revenueEntity.IsTotalPriceBeforTax ||
                     revenueEntity.IsTotalPrice ||
-                    revenueEntity.IsVendorVatId ||
                     revenueEntity.IsInvoinceNo ||
                     revenueEntity.IsInvoinceDate)
                 {
@@ -257,7 +256,6 @@ namespace TMS.UI.Business.Accountant
                 revenueEntity.IsVatPrice ||
                 revenueEntity.IsTotalPriceBeforTax ||
                 revenueEntity.IsTotalPrice ||
-                revenueEntity.IsVendorVatId ||
                 revenueEntity.IsInvoinceNo ||
                 revenueEntity.IsInvoinceDate)
             {
