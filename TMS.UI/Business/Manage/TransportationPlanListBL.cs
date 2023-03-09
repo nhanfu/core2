@@ -368,7 +368,6 @@ namespace TMS.UI.Business.Manage
                     expense.TotalPriceAfterTax = expense.TotalPriceBeforeTax + Math.Round(expense.TotalPriceBeforeTax * expense.Vat / 100, 0);
                 }
                 var revenue = new Revenue();
-                revenue.Vat = revenue.Vat == null || revenue.Vat == 0 ? 10 : revenue.Vat;
                 revenue.BossId = item.BossId;
                 revenue.ContainerTypeId = item.ContainerTypeId;
                 revenue.ClosingDate = item.ClosingDate;
