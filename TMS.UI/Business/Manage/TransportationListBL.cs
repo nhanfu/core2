@@ -1436,12 +1436,13 @@ namespace TMS.UI.Business.Manage
             {
                 isSubRatio = true;
             }
+            var journeyId = expense.JourneyId is null ? "" : "and JourneyId eq " + expense.JourneyId.ToString();
             InsuranceFeesRate insuranceFeesRateDB = null;
             if (expense.IsBought)
             {
                 insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true " +
                 $" and TransportationTypeId eq {expense.TransportationTypeId} " +
-                $" and JourneyId eq {expense.JourneyId} " +
+                $" {journeyId} " +
                 $" and IsBought eq {expense.IsBought.ToString().ToLower()} " +
                 $" and IsSOC eq {isSOC.ToString().ToLower()}" +
                 $" and IsSubRatio eq {isSubRatio.ToString().ToLower()}"
@@ -1451,7 +1452,7 @@ namespace TMS.UI.Business.Manage
             {
                 insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true " +
                 $" and TransportationTypeId eq {expense.TransportationTypeId} " +
-                $" and JourneyId eq {expense.JourneyId} " +
+                $" {journeyId} " +
                 $" and IsBought eq {expense.IsBought.ToString().ToLower()} " +
                 $" and IsSOC eq {isSOC.ToString().ToLower()}"
                 );

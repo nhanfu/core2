@@ -241,11 +241,11 @@ namespace TMS.UI.Business.Manage
             InsuranceFeesRate insuranceFeesRateDB = null;
             if (expense.IsBought)
             {
-                insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {expense.TransportationTypeId} and JourneyId eq {expense.JourneyId} and IsBought eq {expense.IsBought.ToString().ToLower()} and IsSOC eq {isSOC.ToString().ToLower()} and IsSubRatio eq {isSubRatio.ToString().ToLower()}");
+                insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {expense.TransportationTypeId} {journeyId} and IsBought eq {expense.IsBought.ToString().ToLower()} and IsSOC eq {isSOC.ToString().ToLower()} and IsSubRatio eq {isSubRatio.ToString().ToLower()}");
             }
             else
             {
-                insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {expense.TransportationTypeId} and JourneyId eq {expense.JourneyId} and IsBought eq {expense.IsBought.ToString().ToLower()} and IsSOC eq {isSOC.ToString().ToLower()}");
+                insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {expense.TransportationTypeId} {journeyId} and IsBought eq {expense.IsBought.ToString().ToLower()} and IsSOC eq {isSOC.ToString().ToLower()}");
             }
             if (insuranceFeesRateDB != null)
             {
@@ -371,8 +371,8 @@ namespace TMS.UI.Business.Manage
                 var checkBoss = entity.BossId != null ? $"and BossId eq {entity.BossId}" : "";
                 var checkCommodity = entity.CommodityId != null ? $"and CommodityId eq {entity.CommodityId}" : "";
                 var checkContainer = entity.ContainerId != null ? $"and ContainerId eq {entity.ContainerId}" : "";
-                var containerName = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and Id eq {checkContainer}");
-                var containerTypes = new List<MasterData>();
+                var containerName = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and Id eq {entity.ContainerId}");
+                var containerTypes = new List<MasterData>(); 
                 if (containerName != null)
                 {
                     containerTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($@"?$filter=Active eq true and ParentId eq 7565 and contains(Description,'{containerName.Description}')");
