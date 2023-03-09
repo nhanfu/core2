@@ -383,14 +383,15 @@ namespace TMS.UI.Business.Manage
                     var transportation = await new Client(nameof(Transportation)).GetRawList<Transportation>($@"?$filter=Active eq true and Id in ({transportationIds.Combine()})");
                     var transportationPlanIds = transportation.Select(x => x.TransportationPlanId).Distinct().ToList();
                     var transportationPlan = await new Client(nameof(TransportationPlan)).GetRawList<TransportationPlan>($@"?$filter=Active eq true and Id in ({transportationPlanIds.Combine()})");
-                    transportationPlan.ForEach(x =>
+                    foreach (var x in transportationPlan)
                     {
                         x.CommodityValue = entity.TotalPrice;
                         x.IsWet = entity.IsWet;
                         x.IsBought = entity.IsBought;
                         x.JourneyId = entity.JourneyId;
                         x.CustomerTypeId = entity.CustomerTypeId;
-                    });
+                        await new Client(nameof(TransportationPlan)).UpdateAsync<TransportationPlan>(x);
+                    }
                     foreach (var x in expenses)
                     {
                         x.CommodityValue = entity.TotalPrice;
@@ -401,15 +402,11 @@ namespace TMS.UI.Business.Manage
                         if (x.CommodityId != commodity.Id && expenseType.Name.Contains("BH SOC") == false)
                         {
                             x.IsWet = entity.IsWet;
-                        }
-                        if (x.CommodityId != commodity.Id && expenseType.Name.Contains("BH SOC") == false)
-                        {
                             x.IsBought = entity.IsBought;
                         }
                         await CalcInsuranceFees(x, false);
+                        await new Client(nameof(Expense)).UpdateAsync<Expense>(x);
                     }
-                    await new Client(nameof(TransportationPlan)).BulkUpdateAsync<TransportationPlan>(transportationPlan);
-                    await new Client(nameof(Expense)).BulkUpdateAsync<Expense>(expenses);
                 }
             }
         }
