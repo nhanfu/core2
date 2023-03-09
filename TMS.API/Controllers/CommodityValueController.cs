@@ -38,62 +38,46 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<CommodityValue>> PatchAsync([FromQuery] ODataQueryOptions<CommodityValue> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
-            CommodityValue entity = default;
-            CommodityValue oldEntity = default;
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
-            var idInt = 0;
-            if (id != null && id.TryParseInt() > 0)
-            {
-                idInt = id.TryParseInt() ?? 0;
-                entity = await db.Set<CommodityValue>().FindAsync(idInt);
-                oldEntity = await db.CommodityValue.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
-            }
-            else
-            {
-                entity = await GetEntityByOdataOptions(options);
-                oldEntity = await GetEntityByOdataOptions(options);
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(oldEntity.BossId)
-            || x.Field == nameof(oldEntity.CommodityId)
-            || x.Field == nameof(oldEntity.ContainerId)))
+            var idInt = id.TryParseInt() ?? 0;
+            var entity = await db.CommodityValue.FindAsync(idInt);
+            if (patch.Changes.Any(x => x.Field == nameof(entity.BossId)
+            || x.Field == nameof(entity.CommodityId)
+            || x.Field == nameof(entity.ContainerId)))
             {
                 var commodity = await db.MasterData.Where(x => x.ParentId != 7651 && x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).FirstOrDefaultAsync();
-                var commodityValueDB = await db.CommodityValue.Where(x => x.Active == true && 
-                x.BossId == entity.BossId && 
-                x.CommodityId == entity.CommodityId && 
-                x.ContainerId == entity.ContainerId && x.Id != entity.Id).FirstOrDefaultAsync();
-                if (commodityValueDB != null || entity.CommodityId == commodity.Id)
+                var bossChange = patch.Changes.Where(x => x.Field == nameof(CommodityValue.BossId)).FirstOrDefault();
+                var bossId = bossChange != null ? int.Parse(bossChange.Value) : entity.BossId;
+                var commodityChange = patch.Changes.Where(x => x.Field == nameof(CommodityValue.CommodityId)).FirstOrDefault();
+                var commodityId = commodityChange != null ? int.Parse(commodityChange.Value) : entity.CommodityId;
+                var containerChange = patch.Changes.Where(x => x.Field == nameof(CommodityValue.ContainerId)).FirstOrDefault();
+                var containerId = containerChange != null ? int.Parse(containerChange.Value) : entity.ContainerId;
+                var commodityValueDB = await db.CommodityValue.Where(x => x.Active == true &&
+                x.BossId == bossId &&
+                x.CommodityId == commodityId &&
+                x.ContainerId == containerId).FirstOrDefaultAsync();
+                if (commodityValueDB != null || commodityId == commodity.Id)
                 {
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
-            if (patch.Changes.Any(x => x.Field == nameof(oldEntity.BossId) ||
-            x.Field == nameof(oldEntity.IsWet) ||
-            x.Field == nameof(oldEntity.IsBought) ||
-            x.Field == nameof(oldEntity.SaleId) ||
-            x.Field == nameof(oldEntity.CustomerTypeId) ||
-            x.Field == nameof(oldEntity.StartDate) ||
-            x.Field == nameof(oldEntity.ContainerId) ||
-            x.Field == nameof(oldEntity.JourneyId) ||
-            x.Field == nameof(oldEntity.SteamingTerms) ||
-            x.Field == nameof(oldEntity.BreakTerms) ||
-            x.Field == nameof(oldEntity.Notes) ||
-            x.Field == nameof(oldEntity.CommodityId)) &&
-            (oldEntity.BossId != entity.BossId) ||
-            (oldEntity.IsBought != entity.IsBought) ||
-            (oldEntity.SaleId != entity.SaleId) ||
-            (oldEntity.CustomerTypeId != entity.CustomerTypeId) ||
-            (oldEntity.StartDate != entity.StartDate) ||
-            (oldEntity.CommodityId != entity.CommodityId) ||
-            (oldEntity.ContainerId != entity.ContainerId) ||
-            (oldEntity.JourneyId != entity.JourneyId) ||
-            (oldEntity.SteamingTerms != entity.SteamingTerms) ||
-            (oldEntity.BreakTerms != entity.BreakTerms) ||
-            (oldEntity.Notes != entity.Notes) ||
-            (oldEntity.IsWet != entity.IsWet))
+            if (patch.Changes.Any(x => x.Field == nameof(entity.BossId) ||
+            x.Field == nameof(entity.IsWet) ||
+            x.Field == nameof(entity.IsBought) ||
+            x.Field == nameof(entity.SaleId) ||
+            x.Field == nameof(entity.CustomerTypeId) ||
+            x.Field == nameof(entity.StartDate) ||
+            x.Field == nameof(entity.ContainerId) ||
+            x.Field == nameof(entity.JourneyId) ||
+            x.Field == nameof(entity.SteamingTerms) ||
+            x.Field == nameof(entity.BreakTerms) ||
+            x.Field == nameof(entity.Notes) ||
+            x.Field == nameof(entity.CommodityId)))
             {
                 var commodity = await db.MasterData.Where(x => x.ParentId != 7651 && x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).FirstOrDefaultAsync();
-                if (oldEntity.CommodityId == commodity.Id)
+                var commodityChange = patch.Changes.Where(x => x.Field == nameof(entity.CommodityId)).FirstOrDefault();
+                var commodityId = commodityChange != null ? int.Parse(commodityChange.Value) : entity.CommodityId;
+                if (commodityId == commodity.Id)
                 {
                     throw new ApiException("Không được cập nhật thông tin khác ngoài GTHH") { StatusCode = HttpStatusCode.BadRequest };
                 }
