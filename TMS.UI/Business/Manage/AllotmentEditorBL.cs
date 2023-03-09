@@ -79,8 +79,10 @@ namespace TMS.UI.Business.Manage
             var notTotal = expenseTypes.Where(x => x.Additional.IsNullOrWhiteSpace()).Select(x => x.Id).ToList();
             foreach (var item in transportations)
             {
-                var details = new List<PatchUpdateDetail>();
-                details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = item.Id.ToString() });
+                var details = new List<PatchUpdateDetail>()
+                {
+                    new PatchUpdateDetail { Field = Utils.IdField, Value = item.Id.ToString() }
+                };
                 var expenses = item.Expense;
                 foreach (var itemDetail in expenseTypes.Select(x => x.Additional).Distinct().ToList())
                 {
@@ -88,8 +90,8 @@ namespace TMS.UI.Business.Manage
                     var totalThisValue = expenses.Where(x => expenseTypeThisIds.Contains(x.ExpenseTypeId.Value)).Sum(x => x.TotalPriceAfterTax);
                     details.Add(new PatchUpdateDetail { Field = itemDetail, Value = totalThisValue.ToString() });
                 }
-                var path = new PatchUpdate { Changes = details.Where(x => x.Field != null && x.Field != "null").DistinctBy(x => x.Field).ToList() };
-                await new Client(nameof(Transportation)).PatchAsync<Transportation>(path);
+                var path = new PatchUpdate { Changes = details.Where(x => x.Field != null && x.Field != "null" && x.Field != "").DistinctBy(x => x.Field).ToList() };
+                await new Client(nameof(Transportation)).PatchAsync<Transportation>(path, ig: "true");
             }
         }
     }

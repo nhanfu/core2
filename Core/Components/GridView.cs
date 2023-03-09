@@ -1745,13 +1745,13 @@ namespace Core.Components
                     rs = rowSection.Entity;
                     Dirty = true;
                 }
-                EmptyRowSection.Children.Clear();
                 Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
                 await LoadMasterData(new object[] { rs });
                 rowSection.UpdateView(true);
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
                 MoveEmptyRow(rowSection);
+                EmptyRowSection.Children.Clear();
                 AddNewEmptyRow();
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
             PopulateFields();
             RenderIndex();

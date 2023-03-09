@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -830,7 +831,15 @@ namespace TMS.API.Controllers
                         break;
                     }
                     var datetimes = worksheet.Cells.Rows[row][1].Value.ToString();
-                    var datetime = DateTime.Parse(datetimes);
+                    DateTime datetime = default(DateTime);
+                    if (datetimes.Length == 10)
+                    {
+                        datetime = DateTime.ParseExact(datetimes, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        datetime = DateTime.Parse(datetimes);
+                    }
                     var per = decimal.Parse(worksheet.Cells.Rows[row][22].Value is null || worksheet.Cells.Rows[row][22].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][22].Value.ToString().Replace("%", "").Replace(",", "").Trim());
                     var entity = new CheckCompineTransportationVM()
                     {

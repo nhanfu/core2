@@ -74,7 +74,7 @@ namespace TMS.UI.Business.Manage
                     {
                         RouteIds = routeIds,
                         FromDate = LocalStorage.GetItem<string>("FromDateCheckFeeClosing") is null ? default(DateTime) : DateTime.Parse(LocalStorage.GetItem<string>("FromDateCheckFeeClosing")),
-                        ToDate = LocalStorage.GetItem<string>("ToDateCheckFeeClosing") is null ? default(DateTime) :  DateTime.Parse(LocalStorage.GetItem<string>("ToDateCheckFeeClosing")),
+                        ToDate = LocalStorage.GetItem<string>("ToDateCheckFeeClosing") is null ? default(DateTime) : DateTime.Parse(LocalStorage.GetItem<string>("ToDateCheckFeeClosing")),
                         ClosingId = closingId,
                         TypeId = 1,
                     };
@@ -823,16 +823,8 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public void UpdateTransportation()
-        {
-            Window.ClearTimeout(commodityAwaiter);
-            commodityAwaiter = Window.SetTimeout(async () =>
-            {
-                await UpdateTotalFee();
-            }, 1000);
-        }
-
         private int commodityAwaiter;
+        private int totalAwaiter;
 
         public void UpdateCommodityValue(Expense expense)
         {
@@ -908,7 +900,6 @@ namespace TMS.UI.Business.Manage
                     updated.ForEach(x => x.Dirty = true);
                     await listViewItem.PatchUpdate();
                 }
-                await UpdateTotalFee();
             }
         }
 
@@ -921,28 +912,41 @@ namespace TMS.UI.Business.Manage
             listViewItem.UpdateView(true);
         }
 
-        private async Task UpdateTotalFee()
+        public void UpdateTotalFee(Expense expense, PatchUpdate patchUpdate, ListViewItem listViewItem1)
         {
-            var grid = this.FindComponentByName<GridView>(nameof(Transportation));
-            var listViewItem = grid.GetListViewItems(selected).FirstOrDefault();
-            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter={nameof(Expense.TransportationId)} eq {selected.Id}");
-            var expenseTypeIds = expenses.Where(x => x.ExpenseTypeId != null).Select(x => x.ExpenseTypeId.Value).Distinct().ToList();
-            var expenseTypes = await new Client(nameof(MasterData)).GetRawListById<MasterData>(expenseTypeIds);
-            foreach (var item in expenseTypes)
+            if (!patchUpdate.Changes.Any(x => x.Field == nameof(expense.UnitPrice) || x.Field == nameof(expense.IsCollectOnBehaft) || x.Field == nameof(expense.IsVat)) || expense.TotalPriceAfterTax <= 0)
             {
-                var totalThisValue = expenses.Where(x => x.ExpenseTypeId == item.Id).Sum(x => x.TotalPriceAfterTax);
-                listViewItem.Entity.SetComplexPropValue(item.Description, totalThisValue);
-                listViewItem.FilterChildren(x => x.GuiInfo.FieldName == item.Description).ForEach(x => x.Dirty = true);
+                return;
             }
+            Window.ClearTimeout(totalAwaiter);
+            totalAwaiter = Window.SetTimeout(async () =>
+            {
+                var grid = this.FindComponentByName<GridView>(nameof(Transportation));
+                var listViewItem = grid.GetListViewItems(selected).FirstOrDefault();
+                var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter={nameof(Expense.TransportationId)} eq {selected.Id}");
+                var expenseTypeIds = expenses.Where(x => x.ExpenseTypeId != null).Select(x => x.ExpenseTypeId.Value).Distinct().ToList();
+                var expenseTypes = await new Client(nameof(MasterData)).GetRawListById<MasterData>(expenseTypeIds);
+                var details = new List<PatchUpdateDetail>()
+                {
+                    new PatchUpdateDetail { Field = Utils.IdField, Value = selected.Id.ToString() }
+                };
+                foreach (var item in expenseTypes)
+                {
+                    var totalThisValue = expenses.Where(x => x.ExpenseTypeId == item.Id).Sum(x => x.TotalPriceAfterTax);
+                    listViewItem.Entity.SetComplexPropValue(item.Description, totalThisValue);
+                    details.Add(new PatchUpdateDetail { Field = item.Description, Value = totalThisValue.ToString() });
+                }
 
-            foreach (var item in expenseTypes.Select(x => x.Additional).Distinct().ToList())
-            {
-                var expenseTypeThisIds = expenseTypes.Where(x => x.Additional == item).Select(x => x.Id).Distinct().ToList();
-                var totalThisValue = expenses.Where(x => expenseTypeThisIds.Contains(x.ExpenseTypeId.Value)).Sum(x => x.TotalPriceAfterTax);
-                listViewItem.Entity.SetComplexPropValue(item, totalThisValue);
-                listViewItem.FilterChildren(x => x.GuiInfo.FieldName == item).ForEach(x => x.Dirty = true);
-            }
-            await listViewItem.PatchUpdate();
+                foreach (var item in expenseTypes.Select(x => x.Additional).Distinct().ToList())
+                {
+                    var expenseTypeThisIds = expenseTypes.Where(x => x.Additional == item).Select(x => x.Id).Distinct().ToList();
+                    var totalThisValue = expenses.Where(x => expenseTypeThisIds.Contains(x.ExpenseTypeId.Value)).Sum(x => x.TotalPriceAfterTax);
+                    listViewItem.Entity.SetComplexPropValue(item, totalThisValue);
+                    details.Add(new PatchUpdateDetail { Field = item, Value = totalThisValue.ToString() });
+                }
+                var path = new PatchUpdate { Changes = details.Where(x => x.Field != null && x.Field != "null" && x.Field != "").DistinctBy(x => x.Field).ToList() };
+                await new Client(nameof(Transportation)).PatchAsync<Transportation>(path, ig: "true");
+            }, 1000);
         }
 
         public async Task UpdateAllTotalFee()
