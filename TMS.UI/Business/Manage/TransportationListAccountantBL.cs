@@ -1535,7 +1535,6 @@ namespace TMS.UI.Business.Manage
                 };
                 return;
             }
-            revenue.Vat = revenue.Vat == null || revenue.Vat == 0 ? 10 : revenue.Vat;
             revenue.BossId = selected.BossId;
             revenue.ContainerNo = selected.ContainerNo;
             revenue.SealNo = selected.SealNo;

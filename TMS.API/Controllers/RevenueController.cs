@@ -217,18 +217,7 @@ namespace TMS.API.Controllers
                 (entity.VatPrice != null && entity.VatPrice != 0) ||
                 (entity.TotalPrice != null && entity.TotalPrice != 0)) && RoleIds.Where(x => x == 46 || x == 8).Any() == false)
             {
-                throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
-            }
-            else
-            {
-                if (entity.UserUpdate2 != null && entity.UserUpdate2 != 0 && entity.UserUpdate2 != UserId)
-                {
-                    throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của user khác.") { StatusCode = HttpStatusCode.BadRequest };
-                }
-                else
-                {
-                    entity.UserUpdate2 = UserId;
-                }
+                throw new ApiException("Bạn không có quyền nhập dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
             }
             if ((entity.Name != null ||
                 entity.LotNo != null ||
@@ -241,18 +230,7 @@ namespace TMS.API.Controllers
                 entity.NotePayment != null ||
                 entity.Note != null) && RoleIds.Where(x => x == 34 || x == 8).Any() == false)
             {
-                throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
-            }
-            else
-            {
-                if (entity.UserUpdate1 != null && entity.UserUpdate1 != 0 && entity.UserUpdate1 != UserId)
-                {
-                    throw new ApiException("Bạn không có quyền chỉnh sửa dữ liệu của user khác.") { StatusCode = HttpStatusCode.BadRequest };
-                }
-                else
-                {
-                    entity.UserUpdate1 = UserId;
-                }
+                throw new ApiException("Bạn không có quyền nhập dữ liệu của cột này.") { StatusCode = HttpStatusCode.BadRequest };
             }
             var tran = await db.Transportation.Where(x => x.Id == entity.TransportationId).FirstOrDefaultAsync();
             if (tran != null && tran.IsLockedRevenue &&
