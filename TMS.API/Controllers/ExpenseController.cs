@@ -35,20 +35,25 @@ namespace TMS.API.Controllers
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
             var entity = await db.Expense.FindAsync(idInt);
-            var oldEntity = await db.Expense.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
-            if (patch.Changes.Any(x => x.Field == nameof(oldEntity.ExpenseTypeId)) &&
-            (oldEntity.ExpenseTypeId != entity.ExpenseTypeId))
+            if (patch.Changes.Any(x => x.Field == nameof(entity.ExpenseTypeId)))
             {
-                await CheckDuplicates(entity);
+                var entityCheck = new Expense();
+                entityCheck.CopyPropFrom(entity);
+                var expenseTypeChange = patch.Changes.Where(x => x.Field == nameof(Expense.ExpenseTypeId)).FirstOrDefault();
+                entityCheck.ExpenseTypeId = expenseTypeChange != null ? int.Parse(expenseTypeChange.Value) : entityCheck.ExpenseTypeId;
+                await CheckDuplicates(entityCheck);
             }
-            if (patch.Changes.Any(x => x.Field == nameof(oldEntity.IsWet) ||
-            x.Field == nameof(oldEntity.SteamingTerms) ||
-            x.Field == nameof(oldEntity.BreakTerms)) &&
-            (oldEntity.IsWet != entity.IsWet) ||
-            (oldEntity.SteamingTerms != entity.SteamingTerms) ||
-            (oldEntity.BreakTerms != entity.BreakTerms))
+            if (patch.Changes.Any(x => x.Field == nameof(entity.IsWet) ||
+            x.Field == nameof(entity.SteamingTerms) ||
+            x.Field == nameof(entity.BreakTerms)))
             {
-                if (entity.IsWet && entity.SteamingTerms && entity.BreakTerms)
+                var isWetChange = patch.Changes.Where(x => x.Field == nameof(Expense.IsWet)).FirstOrDefault();
+                var isWet = isWetChange != null ? bool.Parse(isWetChange.Value) : entity.IsWet;
+                var steamingTermsChange = patch.Changes.Where(x => x.Field == nameof(Expense.SteamingTerms)).FirstOrDefault();
+                var steamingTerms = steamingTermsChange != null ? bool.Parse(steamingTermsChange.Value) : entity.SteamingTerms;
+                var breakTermsChange = patch.Changes.Where(x => x.Field == nameof(Expense.BreakTerms)).FirstOrDefault();
+                var breakTerms = breakTermsChange != null ? bool.Parse(breakTermsChange.Value) : entity.BreakTerms;
+                if (isWet && steamingTerms && breakTerms)
                 {
                     throw new ApiException("Không thể cùng lúc có nhiều hơn 2 điều khoản") { StatusCode = HttpStatusCode.BadRequest };
                 }

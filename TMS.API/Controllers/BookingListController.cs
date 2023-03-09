@@ -34,8 +34,7 @@ namespace TMS.API.Controllers
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
             var entity = await db.BookingList.FindAsync(idInt);
-            var oldEntity = await db.BookingList.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idInt);
-            if (oldEntity.Submit && entity.Submit)
+            if (entity.Submit)
             {
                 throw new ApiException("Danh sách book tàu này đã bị khóa !!!") { StatusCode = HttpStatusCode.BadRequest };
             }
