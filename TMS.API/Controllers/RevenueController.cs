@@ -63,17 +63,7 @@ namespace TMS.API.Controllers
                 || x.Field == nameof(entity.CollectOnBehaftPrice)
                 || x.Field == nameof(entity.NotePayment)
                 || x.Field == nameof(entity.Note)
-                || x.Field == nameof(entity.RevenueAdjustment)) &&
-                (entity.Name != oldEntity.Name
-                || entity.LotNo != oldEntity.LotNo
-                || entity.LotDate != oldEntity.LotDate
-                || entity.UnitPriceAfterTax != oldEntity.UnitPriceAfterTax
-                || entity.UnitPriceBeforeTax != oldEntity.UnitPriceBeforeTax
-                || entity.ReceivedPrice != oldEntity.ReceivedPrice
-                || entity.CollectOnBehaftPrice != oldEntity.CollectOnBehaftPrice
-                || entity.NotePayment != oldEntity.NotePayment
-                || entity.Note != oldEntity.Note
-                || entity.RevenueAdjustment != oldEntity.RevenueAdjustment))
+                || x.Field == nameof(entity.RevenueAdjustment)))
             {
                 if (tran != null && tran.IsSubmit)
                 {
