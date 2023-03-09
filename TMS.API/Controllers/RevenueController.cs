@@ -260,12 +260,44 @@ namespace TMS.API.Controllers
             }
             try
             {
+                var revenues = await db.Revenue.Where(x => ids.Contains(x.Id)).ToListAsync();
+                var tranIds = revenues.Select(x => x.TransportationId).ToList();
+                var trans = await db.Transportation.Where(x => tranIds.Contains(x.Id)).ToListAsync();
                 foreach (var id in ids)
                 {
                     var revenue = await db.Revenue.Where(x => x.Id == id).FirstOrDefaultAsync();
                     db.Revenue.Remove(revenue);
                     await db.SaveChangesAsync();
                 }
+                var revenueDB = await db.Revenue.Where(x => tranIds.Contains(x.TransportationId)).ToListAsync();
+                foreach (var item in trans)
+                {
+                    var countRevenue = revenueDB.Where(x => x.TransportationId == item.Id).ToList();
+                    if (countRevenue.Count <= 0)
+                    {
+                        item.UnitPriceBeforeTax = 0;
+                        item.UnitPriceAfterTax = 0;
+                        item.ReceivedPrice = 0;
+                        item.CollectOnBehaftPrice = 0;
+                        item.TotalPriceBeforTax = 0;
+                        item.Vat = 0;
+                        item.VatPrice = 0;
+                        item.TotalPrice = 0;
+                        item.RevenueAdjustment = 0;
+                        item.Name = null;
+                        item.LotNo = null;
+                        item.NoteLotDate = null;
+                        item.InvoinceNo = null;
+                        item.NoteInvoinceDate = null;
+                        item.NoteVat = null;
+                        item.NotePayment = null;
+                        item.NoteVendorVatId = null;
+                        item.Note = null;
+                        item.LotDate = null;
+                        item.InvoinceDate = null;
+                    }
+                }
+                await db.SaveChangesAsync();
                 return true;
             }
             catch
