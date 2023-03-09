@@ -487,7 +487,7 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public async Task RequestUnClosingRevenue(Revenue revenue, PatchUpdate patch)
+        public void RequestUnClosingRevenue(Revenue revenue, PatchUpdate patch)
         {
             if (selected.IsLocked == false)
             {
@@ -499,7 +499,6 @@ namespace TMS.UI.Business.Manage
                         Toast.Warning("Bạn không có quyền chỉnh sửa dữ liệu của user khác.");
                         return;
                     }
-                    await CalcRevenueAsync(revenue);
                 }
                 if (patch.Changes.Any(x => x.Field == nameof(revenue.InvoinceNo)
                     || x.Field == nameof(revenue.InvoinceDate)) && selected.IsLockedRevenue == false && Client.Token.RoleIds.Where(x => x == 46 || x == 8).Any() == false)
@@ -536,14 +535,6 @@ namespace TMS.UI.Business.Manage
                                 await new Client(nameof(Transportation)).PostAsync<Transportation>(selected, "RequestUnLockAccountant");
                             };
                         }
-                    }
-                }
-                else
-                {
-                    if (patch.Changes.Any(x => x.Field == nameof(revenue.UnitPriceAfterTax)
-                    || x.Field == nameof(revenue.ReceivedPrice)))
-                    {
-                        await CalcRevenueTotalPriceAsync(revenue);
                     }
                 }
             }
@@ -1477,23 +1468,6 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public async Task CalcRevenueAsync(Revenue revenue)
-        {
-            revenue.Vat = revenue.Vat != null ? revenue.Vat : 10;
-            revenue.TotalPriceBeforTax = System.Math.Round((decimal)revenue.TotalPrice / (1 + ((decimal)revenue.Vat / 100)));
-            revenue.VatPrice = System.Math.Round((decimal)revenue.TotalPriceBeforTax * (decimal)revenue.Vat / 100);
-            await new Client(nameof(Revenue)).PatchAsync<Revenue>(GetPatchEntityCalcRevenue(revenue));
-        }
-
-        public async Task CalcRevenueTotalPriceAsync(Revenue revenue)
-        {
-            revenue.UnitPriceAfterTax = revenue.UnitPriceAfterTax == null ? 0 : revenue.UnitPriceAfterTax;
-            revenue.ReceivedPrice = revenue.ReceivedPrice == null ? 0 : revenue.ReceivedPrice;
-            revenue.TotalPrice = revenue.UnitPriceAfterTax + revenue.ReceivedPrice;
-            await new Client(nameof(Revenue)).PatchAsync<Revenue>(GetPatchEntityCalcRevenueTotalPrice(revenue));
-            await CalcRevenueAsync(revenue);
-        }
-
         public async Task ReloadRevenue(Transportation transportation)
         {
             var grid = this.FindComponentByName<GridView>(nameof(Revenue));
@@ -1626,26 +1600,6 @@ namespace TMS.UI.Business.Manage
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockAll), Value = transportation.IsRequestUnLockAll.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockExploit), Value = transportation.IsRequestUnLockExploit.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockAccountant), Value = transportation.IsRequestUnLockAccountant.ToString() });
-            return new PatchUpdate { Changes = details };
-        }
-
-        public PatchUpdate GetPatchEntityCalcRevenue(Revenue revenue)
-        {
-            var details = new List<PatchUpdateDetail>();
-            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = revenue.Id.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.Vat), Value = revenue.Vat.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.TotalPriceBeforTax), Value = revenue.TotalPriceBeforTax.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.VatPrice), Value = revenue.VatPrice.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.TotalPrice), Value = revenue.TotalPrice.ToString() });
-            return new PatchUpdate { Changes = details };
-        }
-
-        public PatchUpdate GetPatchEntityCalcRevenueTotalPrice(Revenue revenue)
-        {
-            var details = new List<PatchUpdateDetail>();
-            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = revenue.Id.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.UnitPriceAfterTax), Value = revenue.UnitPriceAfterTax.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.ReceivedPrice), Value = revenue.ReceivedPrice.ToString() });
             return new PatchUpdate { Changes = details };
         }
     }
