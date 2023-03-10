@@ -92,13 +92,13 @@ namespace TMS.UI.Business.Manage
                         {
                             await this.OpenTab(
                             id: "CheckFee Editor" + rs.FirstOrDefault().CheckFeeHistoryId,
-                            featureName: "CheckFee Editor",
+                            featureName: "Add CheckFee Editor",
                             factory: () =>
                             {
                                 var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeEditorBL");
                                 var instance = Activator.CreateInstance(type) as TabEditor;
                                 instance.Icon = "fal fa-sitemap mr-1";
-                                instance.Title = "Kiểm tra phí đóng hàng";
+                                instance.Title = "Thêm mới kiểm tra phí đóng hàng";
                                 instance.Entity = entity;
                                 instance.Entity.SetPropValue("TransportationList", rs);
                                 return instance;
