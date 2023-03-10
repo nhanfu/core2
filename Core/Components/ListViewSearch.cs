@@ -107,7 +107,7 @@ namespace Core.Components
 
             Html.Take(Parent.Element.FirstElementChild).TabIndex(-1).AsyncEvent(EventType.KeyPress, EnterSearch);
             Element = Html.Context;
-            if (GuiInfo.ComponentType != nameof(VirtualGrid))
+            if (!GuiInfo.IsRealtime)
             {
                 var txtSearch = new Textbox(new Component
                 {

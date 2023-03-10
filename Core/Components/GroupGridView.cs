@@ -194,7 +194,7 @@ namespace Core.Components
                 groupText = Utils.FormatEntity(GuiInfo.GroupFormat, null, first, Utils.EmptyFormat, Utils.EmptyFormat);
             }
             Html.Instance.TData.ClassName("status-cell").Icon("mif-pencil").EndOf(ElementType.td)
-                .TData
+                .TData.ColSpan(headers.Count - 1)
                     .AsyncEvent(EventType.Click, DispatchClick, first)
                     .AsyncEvent(EventType.DblClick, DispatchDblClick, first)
                     .Icon("fa fa-chevron-right").Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).End
@@ -203,10 +203,6 @@ namespace Core.Components
             groupSection.Chevron = Html.Context.PreviousElementSibling;
             groupSection.Chevron.ParentElement.PreviousElementSibling.AppendChild(groupSection.Chevron);
             Html.Instance.EndOf(ElementType.td);
-            for (int i = 1; i < headers.Count - 1; i++)
-            {
-                Html.Instance.TData.End.Render();
-            }
             Html.Instance.EndOf(ElementType.tr);
             groupRow.Children.ForEach(child =>
             {
