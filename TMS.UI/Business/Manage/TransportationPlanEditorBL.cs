@@ -531,7 +531,6 @@ namespace TMS.UI.Business.Manage
                         }
                     }
                 }
-                Analysis(transportationPlan);
             }, 500);
         }
 
