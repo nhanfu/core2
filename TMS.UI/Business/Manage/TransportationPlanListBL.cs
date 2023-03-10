@@ -229,7 +229,6 @@ namespace TMS.UI.Business.Manage
         public void ViewTransportation(object arg)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(TransportationPlan));
-
             Task.Run(async () =>
             {
                 var selected = (await gridView.GetRealTimeSelectedRows());
@@ -455,8 +454,8 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public async Task BeforeCreated(TransportationPlan transportationPlan)
-        {
+        public void BeforeCreated(TransportationPlan transportationPlan)
+        {   
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
             var listViewItem = gridView.GetListViewItems(transportationPlan).FirstOrDefault();
             if (listViewItem is null)
@@ -467,10 +466,6 @@ namespace TMS.UI.Business.Manage
                 transportationPlan.PlanDate = DateTime.Now;
                 return;
             }
-            var user = await new Client(nameof(User)).FirstOrDefaultAsync<API.Models.User>($"?$orderby=Id desc&$filter=Active eq true and Id eq {EditForm.CurrentUserId}&$take=1");
-            transportationPlan.RouteId = user.RouteId;
-            var updated = listViewItem.FilterChildren<SearchEntry>(x => x.GuiInfo.FieldName == nameof(TransportationPlan.RouteId)).ToList();
-            updated.ForEach(x => x.Dirty = true);
         }
 
         private async Task SelectedExcel(Event e)
@@ -777,6 +772,7 @@ namespace TMS.UI.Business.Manage
                 listViewItem.ListViewSection.ListView.SelectedIds.Remove(transportationPlan.Id);
             }
             Analysis(transportationPlan);
+            SetPolicy(transportationPlan);
         }
 
         private static bool ListViewItemFilter(object updatedData, EditableComponent x)
@@ -820,25 +816,29 @@ namespace TMS.UI.Business.Manage
 
         public PatchUpdate GetPatchEntityTransportationType(TransportationPlan transportationPlan)
         {
-            var details = new List<PatchUpdateDetail>();
-            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportationPlan.Id.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.TransportationTypeId), Value = transportationPlan.TransportationTypeId.ToString() });
+            var details = new List<PatchUpdateDetail>
+            {
+                new PatchUpdateDetail { Field = Utils.IdField, Value = transportationPlan.Id.ToString() },
+                new PatchUpdateDetail { Field = nameof(TransportationPlan.TransportationTypeId), Value = transportationPlan.TransportationTypeId.ToString() }
+            };
             return new PatchUpdate { Changes = details };
         }
 
         public PatchUpdate GetPatchEntity(TransportationPlan transportationPlan)
         {
-            var details = new List<PatchUpdateDetail>();
-            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportationPlan.Id.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.TransportationTypeId), Value = transportationPlan.TransportationTypeId.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.IsWet), Value = transportationPlan.IsWet.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.SteamingTerms), Value = transportationPlan.SteamingTerms.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.BreakTerms), Value = transportationPlan.BreakTerms.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.IsBought), Value = transportationPlan.IsBought.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.JourneyId), Value = transportationPlan.JourneyId.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.CustomerTypeId), Value = transportationPlan.CustomerTypeId.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.CommodityValue), Value = transportationPlan.CommodityValue.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(TransportationPlan.IsSettingsInsurance), Value = transportationPlan.IsSettingsInsurance.ToString() });
+            var details = new List<PatchUpdateDetail>
+            {
+                new PatchUpdateDetail { Field = Utils.IdField, Value = transportationPlan.Id.ToString() },
+                new PatchUpdateDetail { Field = nameof(TransportationPlan.TransportationTypeId), Value = transportationPlan.TransportationTypeId.ToString() },
+                new PatchUpdateDetail { Field = nameof(TransportationPlan.IsWet), Value = transportationPlan.IsWet.ToString() },
+                new PatchUpdateDetail { Field = nameof(TransportationPlan.SteamingTerms), Value = transportationPlan.SteamingTerms.ToString() },
+                new PatchUpdateDetail { Field = nameof(TransportationPlan.BreakTerms), Value = transportationPlan.BreakTerms.ToString() },
+                new PatchUpdateDetail { Field = nameof(TransportationPlan.IsBought), Value = transportationPlan.IsBought.ToString() },
+                new PatchUpdateDetail { Field = nameof(TransportationPlan.JourneyId), Value = transportationPlan.JourneyId.ToString() },
+                new PatchUpdateDetail { Field = nameof(TransportationPlan.CustomerTypeId), Value = transportationPlan.CustomerTypeId.ToString() },
+                new PatchUpdateDetail { Field = nameof(TransportationPlan.CommodityValue), Value = transportationPlan.CommodityValue.ToString() },
+                new PatchUpdateDetail { Field = nameof(TransportationPlan.IsSettingsInsurance), Value = transportationPlan.IsSettingsInsurance.ToString() }
+            };
             return new PatchUpdate { Changes = details };
         }
     }

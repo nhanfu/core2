@@ -1768,6 +1768,10 @@ namespace Core.Components
             LastListViewItem = rowSection;
             var headers = Header.Where(y => y.Editable).ToList();
             var currentComponent = headers.FirstOrDefault(y => y.FieldName == component?.GuiInfo.FieldName);
+            if (currentComponent.ComponentType != nameof(SearchEntry))
+            {
+                return;
+            }
             var index = headers.IndexOf(currentComponent);
             if (headers.Count > index + 1)
             {
