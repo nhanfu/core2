@@ -455,12 +455,6 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public async Task CheckContractAndAnalysis(TransportationPlan transportationPlan)
-        {
-            Analysis(transportationPlan);
-            await CheckContract(transportationPlan);
-        }
-
         public async Task BeforeCreated(TransportationPlan transportationPlan)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
@@ -755,7 +749,6 @@ namespace TMS.UI.Business.Manage
                     }
                 }
             }, 500);
-            Analysis(transportationPlan);
         }
 
         public void AfterPatchUpdateTransportationPlan(TransportationPlan transportationPlan, PatchUpdate patchUpdate, ListViewItem listViewItem)
@@ -783,6 +776,7 @@ namespace TMS.UI.Business.Manage
                 listViewItem.ListViewSection.ListView.RemoveRowById(transportationPlan.Id);
                 listViewItem.ListViewSection.ListView.SelectedIds.Remove(transportationPlan.Id);
             }
+            Analysis(transportationPlan);
         }
 
         private static bool ListViewItemFilter(object updatedData, EditableComponent x)
