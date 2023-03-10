@@ -185,8 +185,9 @@ namespace TMS.UI.Business.Manage
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.IsLocked = false;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedEntity(transportation));
-                        await grid.ApplyFilter(true);
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedEntity(transportation), ig: "true");
+                        var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                        listViewItem.UpdateView(false, nameof(Transportation.IsLocked));
                     };
                 }
                 else
@@ -217,8 +218,9 @@ namespace TMS.UI.Business.Manage
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.IsLocked = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedEntity(transportation));
-                        await grid.ApplyFilter(true);
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedEntity(transportation), ig: "true");
+                        var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                        listViewItem.UpdateView(false, nameof(Transportation.IsLocked));
                     };
                 }
             }
@@ -238,8 +240,9 @@ namespace TMS.UI.Business.Manage
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.IsSubmit = false;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsSubmitEntity(transportation));
-                        await grid.ApplyFilter(true);
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsSubmitEntity(transportation), ig: "true");
+                        var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                        listViewItem.UpdateView(false, nameof(Transportation.IsSubmit));
                     };
                 }
                 else
@@ -277,8 +280,9 @@ namespace TMS.UI.Business.Manage
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.IsSubmit = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsSubmitEntity(transportation));
-                        await grid.ApplyFilter(true);
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsSubmitEntity(transportation), ig: "true");
+                        var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                        listViewItem.UpdateView(false, nameof(Transportation.IsSubmit));
                     };
                 }
             }
@@ -298,8 +302,9 @@ namespace TMS.UI.Business.Manage
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.IsKt = false;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsKtEntity(transportation));
-                        await grid.ApplyFilter(true);
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsKtEntity(transportation), ig: "true");
+                        var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                        listViewItem.UpdateView(false, nameof(Transportation.IsKt));
                     };
                 }
                 else
@@ -337,8 +342,9 @@ namespace TMS.UI.Business.Manage
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.IsKt = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsKtEntity(transportation));
-                        await grid.ApplyFilter(true);
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsKtEntity(transportation), ig: "true");
+                        var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                        listViewItem.UpdateView(false, nameof(Transportation.IsKt));
                     };
                 }
             }
@@ -358,8 +364,9 @@ namespace TMS.UI.Business.Manage
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.IsLockedRevenue = false;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedRevenueEntity(transportation));
-                        await grid.ApplyFilter(true);
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedRevenueEntity(transportation), ig: "true");
+                        var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                        listViewItem.UpdateView(false, nameof(Transportation.IsLockedRevenue));
                     };
                 }
                 else
@@ -376,8 +383,9 @@ namespace TMS.UI.Business.Manage
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.IsLockedRevenue = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedRevenueEntity(transportation));
-                        await grid.ApplyFilter(true);
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedRevenueEntity(transportation), ig: "true");
+                        var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                        listViewItem.UpdateView(false, nameof(Transportation.IsLockedRevenue));
                     };
                 }
             }

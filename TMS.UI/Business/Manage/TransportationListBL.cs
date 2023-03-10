@@ -1598,8 +1598,9 @@ namespace TMS.UI.Business.Manage
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.LockShip = false;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchLockShipEntity(transportation));
-                        await gridView.ApplyFilter(true);
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchLockShipEntity(transportation), ig: "true");
+                        var listViewItem = gridView.GetListViewItems(transportation).FirstOrDefault();
+                        listViewItem.UpdateView(false, nameof(Transportation.LockShip));
                     };
                 }
                 else
@@ -1616,8 +1617,9 @@ namespace TMS.UI.Business.Manage
                     confirm.NoConfirmed += async () =>
                     {
                         transportation.LockShip = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchLockShipEntity(transportation));
-                        await gridView.ApplyFilter(true);
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchLockShipEntity(transportation), ig: "true");
+                        var listViewItem = gridView.GetListViewItems(transportation).FirstOrDefault();
+                        listViewItem.UpdateView(false, nameof(Transportation.LockShip));
                     };
                 }
             }
