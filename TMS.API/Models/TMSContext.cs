@@ -33,6 +33,8 @@ public partial class TMSContext : DbContext
 
     public virtual DbSet<ComponentGroup> ComponentGroup { get; set; }
 
+    public virtual DbSet<DeleteHistory> DeleteHistory { get; set; }
+
     public virtual DbSet<Dictionary> Dictionary { get; set; }
 
     public virtual DbSet<Entity> Entity { get; set; }
@@ -844,6 +846,10 @@ public partial class TMSContext : DbContext
                 .HasForeignKey(d => d.LocationId)
                 .HasConstraintName("FK_Quotation_Location");
 
+            entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent)
+                .HasForeignKey(d => d.ParentId)
+                .HasConstraintName("FK_Quotation_Quotation");
+
             entity.HasOne(d => d.QuotationUpdate).WithMany(p => p.Quotation)
                 .HasForeignKey(d => d.QuotationUpdateId)
                 .HasConstraintName("FK_Quotation_QuotationUpdate");
@@ -1054,6 +1060,7 @@ public partial class TMSContext : DbContext
                     tb.HasTrigger("tr_Transportation_ClosingUnitPrice");
                     tb.HasTrigger("tr_Transportation_CombinationFee");
                     tb.HasTrigger("tr_Transportation_Cont20_40");
+                    tb.HasTrigger("tr_Transportation_Delete");
                     tb.HasTrigger("tr_Transportation_Dem");
                     tb.HasTrigger("tr_Transportation_DemDate");
                     tb.HasTrigger("tr_Transportation_ExportListId");
@@ -1235,8 +1242,8 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.PaymentReturnNote).HasMaxLength(250);
             entity.Property(e => e.PickupEmptyCheck).HasMaxLength(250);
             entity.Property(e => e.PickupEmptyReturnCheck).HasMaxLength(250);
-            entity.Property(e => e.PickupEmptyUpload).HasMaxLength(250);
             entity.Property(e => e.PickupEmptyReturnUpload).HasMaxLength(250);
+            entity.Property(e => e.PickupEmptyUpload).HasMaxLength(250);
             entity.Property(e => e.PortLoadingCheck).HasMaxLength(250);
             entity.Property(e => e.PortLoadingReturnCheck).HasMaxLength(250);
             entity.Property(e => e.PortLoadingReturnUpload).HasMaxLength(250);

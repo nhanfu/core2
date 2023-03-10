@@ -11,6 +11,7 @@ namespace TMS.API.Models
             Quotation = new HashSet<Quotation>();
             VendorContact = new HashSet<VendorContact>();
             VendorLocation = new HashSet<VendorLocation>();
+            InverseParent = new HashSet<Quotation>();
         }
 
         public int Id { get; set; }
@@ -38,7 +39,9 @@ namespace TMS.API.Models
         public bool? IsUse { get; set; }
         public int? ParentLocationId { get; set; }
 
+        public virtual Quotation Parent { get; set; }
         public virtual ICollection<LocationService> LocationService { get; set; }
+        public virtual ICollection<Quotation> InverseParent { get; set; }
         public virtual ICollection<Quotation> Quotation { get; set; }
         public virtual ICollection<VendorContact> VendorContact { get; set; }
         public virtual ICollection<VendorLocation> VendorLocation { get; set; }
