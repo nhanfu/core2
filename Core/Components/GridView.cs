@@ -73,11 +73,16 @@ namespace Core.Components
                 return;
             }
             var sum = gridPolicy.Select(x => $"FORMAT(SUM(isnull([{GuiInfo.RefName}].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
+            var submitEntity = GuiInfo.PreQuery;
+            if (_preQueryFn != null)
+            {
+                submitEntity = (string)_preQueryFn.Call(null, this);
+            }
             var dataSet = await new Client(GuiInfo.RefName)
                 .SubmitAsync<object[][]>(new XHRWrapper
                 {
                     Value = sum.Combine(),
-                    Url = $"SubTotal?group=&tablename={GuiInfo.RefName}&refname=&formatsumary={GuiInfo.FormatSumaryField}&sql={Sql}&orderby={GuiInfo.OrderBySumary}&where={Wheres.Combine(" and ")} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {GuiInfo.PreQuery}")}",
+                    Url = $"SubTotal?group=&tablename={GuiInfo.RefName}&refname=&formatsumary={GuiInfo.FormatSumaryField}&sql={Sql}&orderby={GuiInfo.OrderBySumary}&where={Wheres.Combine(" and ")} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {submitEntity}")}",
                     Method = HttpMethod.POST,
                     AllowNestedObject = true,
                     ErrorHandler = (x) => { }

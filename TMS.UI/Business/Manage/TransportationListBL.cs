@@ -1580,49 +1580,6 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-            var tranAcc = new TransportationListAccountantBL();
-            await tranAcc.RequestUnClosing(transportation, patchUpdate);
-            if (patchUpdate.Changes.Any(x => x.Field == nameof(transportation.LockShip)))
-            {
-                if (transportation.LockShip)
-                {
-                    var confirm = new ConfirmDialog
-                    {
-                        Content = "Bạn có chắc chắn muốn khóa cước tàu ?",
-                    };
-                    confirm.Render();
-                    confirm.YesConfirmed += async () =>
-                    {
-                        await tranAcc.RequestUnClosing(transportation, patchUpdate);
-                    };
-                    confirm.NoConfirmed += async () =>
-                    {
-                        transportation.LockShip = false;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchLockShipEntity(transportation), ig: "true");
-                        var listViewItem = gridView.GetListViewItems(transportation).FirstOrDefault();
-                        listViewItem.UpdateView(false, nameof(Transportation.LockShip));
-                    };
-                }
-                else
-                {
-                    var confirm = new ConfirmDialog
-                    {
-                        Content = "Bạn có chắc chắn muốn mở khóa cước tàu ?",
-                    };
-                    confirm.Render();
-                    confirm.YesConfirmed += async () =>
-                    {
-                        await tranAcc.RequestUnClosing(transportation, patchUpdate);
-                    };
-                    confirm.NoConfirmed += async () =>
-                    {
-                        transportation.LockShip = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchLockShipEntity(transportation), ig: "true");
-                        var listViewItem = gridView.GetListViewItems(transportation).FirstOrDefault();
-                        listViewItem.UpdateView(false, nameof(Transportation.LockShip));
-                    };
-                }
-            }
             if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ContainerNo) && !x.Value.IsNullOrWhiteSpace()))
             {
                 var tran = await Client.FirstOrDefaultAsync<Transportation>($"?$top=1&$select=ClosingDate&$filter=ContainerNo eq '{patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.ContainerNo)).Value}' and Id ne {transportation.Id}");
@@ -1631,88 +1588,6 @@ namespace TMS.UI.Business.Manage
                     if ((tran.ClosingDate.Value - transportation.ClosingDate.Value).Days < 7)
                     {
                         Toast.Warning("Số cont bạn chọn đã đóng hàng chưa được 7 ngày");
-                    }
-                }
-            }
-            var expenseTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and (contains(Name, 'Bảo hiểm') or contains(Name, 'BH SOC'))");
-            var expenseTypeIds = expenseTypes.Select(x => x.Id).ToList();
-            var expense = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId eq {transportation.Id} and ExpenseTypeId in ({expenseTypeIds.Combine()}) and RequestChangeId eq null");
-            if (expense.Count > 0)
-            {
-                expense.ForEach(x => { x.Cont20 = transportation.Cont20; x.Cont40 = transportation.Cont40; });
-                var oldEntity = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportation.Id}");
-                if (patchUpdate.Changes.Any(x =>
-                x.Field == nameof(oldEntity.BookingId) ||
-                x.Field == nameof(oldEntity.ShipId) ||
-                x.Field == nameof(oldEntity.SaleId) ||
-                x.Field == nameof(oldEntity.Trip) ||
-                x.Field == nameof(oldEntity.SealNo) ||
-                x.Field == nameof(oldEntity.ContainerNo) ||
-                x.Field == nameof(oldEntity.Note2) ||
-                x.Field == nameof(oldEntity.StartShip) ||
-                x.Field == nameof(oldEntity.ClosingDate)) &&
-                (oldEntity.BookingId != transportation.BookingId) ||
-                (oldEntity.ShipId != transportation.ShipId) ||
-                (oldEntity.SaleId != transportation.SaleId) ||
-                (oldEntity.Trip != transportation.Trip) ||
-                (oldEntity.SealNo != transportation.SealNo) ||
-                (oldEntity.ContainerNo != transportation.ContainerNo) ||
-                (oldEntity.Note2 != transportation.Note2) ||
-                (oldEntity.StartShip != transportation.StartShip) ||
-                (oldEntity.ClosingDate != transportation.ClosingDate))
-                {
-                    var expenseNoPurchased = expense.Where(x => x.IsPurchasedInsurance == false).ToList();
-                    var expensePurchased = expense.Where(x => x.IsPurchasedInsurance).ToList();
-                    if (expensePurchased != null)
-                    {
-                        foreach (var x in expensePurchased)
-                        {
-                            var history = new Expense();
-                            history.CopyPropFrom(x);
-                            history.Id = 0;
-                            history.StatusId = (int)ApprovalStatusEnum.New;
-                            history.RequestChangeId = x.Id;
-                            var res = await new Client(nameof(Expense)).CreateAsync<Expense>(history);
-                            if (res != null)
-                            {
-                                x.ShipId = transportation.ShipId;
-                                x.SaleId = transportation.SaleId;
-                                x.Trip = transportation.Trip;
-                                x.SealNo = transportation.SealNo;
-                                x.ContainerNo = transportation.ContainerNo;
-                                x.Notes = transportation.Note2;
-                                if (x.JourneyId == 12114 || x.JourneyId == 16001)
-                                {
-                                    x.StartShip = transportation.ClosingDate;
-                                }
-                                else
-                                {
-                                    x.StartShip = transportation.StartShip;
-                                }
-                            }
-                        }
-                        await new Client(nameof(Expense)).BulkUpdateAsync<Expense>(expensePurchased);
-                    }
-                    if (expenseNoPurchased != null)
-                    {
-                        expenseNoPurchased.ForEach(x =>
-                        {
-                            x.ShipId = transportation.ShipId;
-                            x.SaleId = transportation.SaleId;
-                            x.Trip = transportation.Trip;
-                            x.SealNo = transportation.SealNo;
-                            x.ContainerNo = transportation.ContainerNo;
-                            x.Notes = transportation.Note2;
-                            if (x.JourneyId == 12114 || x.JourneyId == 16001)
-                            {
-                                x.StartShip = transportation.ClosingDate;
-                            }
-                            else
-                            {
-                                x.StartShip = transportation.StartShip;
-                            }
-                        });
-                        await new Client(nameof(Expense)).BulkUpdateAsync<Expense>(expenseNoPurchased);
                     }
                 }
             }
@@ -1854,31 +1729,37 @@ namespace TMS.UI.Business.Manage
 
         public PatchUpdate GetPatchTransportation(Transportation transportation)
         {
-            var details = new List<PatchUpdateDetail>();
-            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsLocked), Value = transportation.IsLocked.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsKt), Value = transportation.IsKt.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsSubmit), Value = transportation.IsSubmit.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockAll), Value = transportation.IsRequestUnLockAll.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockExploit), Value = transportation.IsRequestUnLockExploit.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockAccountant), Value = transportation.IsRequestUnLockAccountant.ToString() });
+            var details = new List<PatchUpdateDetail>
+            {
+                new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() },
+                new PatchUpdateDetail { Field = nameof(Transportation.IsLocked), Value = transportation.IsLocked.ToString() },
+                new PatchUpdateDetail { Field = nameof(Transportation.IsKt), Value = transportation.IsKt.ToString() },
+                new PatchUpdateDetail { Field = nameof(Transportation.IsSubmit), Value = transportation.IsSubmit.ToString() },
+                new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockAll), Value = transportation.IsRequestUnLockAll.ToString() },
+                new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockExploit), Value = transportation.IsRequestUnLockExploit.ToString() },
+                new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockAccountant), Value = transportation.IsRequestUnLockAccountant.ToString() }
+            };
             return new PatchUpdate { Changes = details };
         }
 
         public PatchUpdate GetPatchEntityApprove(Expense expense)
         {
-            var details = new List<PatchUpdateDetail>();
-            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = expense.Id.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Expense.StatusId), Value = expense.StatusId.ToString() });
+            var details = new List<PatchUpdateDetail>
+            {
+                new PatchUpdateDetail { Field = Utils.IdField, Value = expense.Id.ToString() },
+                new PatchUpdateDetail { Field = nameof(Expense.StatusId), Value = expense.StatusId.ToString() }
+            };
             return new PatchUpdate { Changes = details };
         }
 
         public PatchUpdate GetPatchLockShipEntity(Transportation transportation)
         {
-            var details = new List<PatchUpdateDetail>();
-            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.LockShip), Value = transportation.LockShip.ToString() });
-            details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockShip), Value = transportation.IsRequestUnLockShip.ToString() });
+            var details = new List<PatchUpdateDetail>
+            {
+                new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() },
+                new PatchUpdateDetail { Field = nameof(Transportation.LockShip), Value = transportation.LockShip.ToString() },
+                new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockShip), Value = transportation.IsRequestUnLockShip.ToString() }
+            };
             return new PatchUpdate { Changes = details };
         }
     }
