@@ -7,7 +7,9 @@ using Core.ViewModels;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,6 +20,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TMS.API.Models;
@@ -393,6 +396,85 @@ namespace TMS.API.Controllers
                 throw new ApiException("Không thể xóa dữ liệu!") { StatusCode = HttpStatusCode.BadRequest };
             }
         }
+
+        [HttpPost("api/Expense/UpdateDataFromTransportation")]
+        public async Task<bool> UpdateDataFromTransportation([FromBody] Expense expense)
+        {
+            var expenseTypes = await db.MasterData.Where(x => x.Active && x.ParentId == 7577 && (x.Name.Contains("Bảo hiểm") || x.Name.Contains("BH SOC"))).ToListAsync();
+            var expenseTypeIds = expenseTypes.Select(x => x.Id).ToList();
+            var trans = await db.Transportation.Where(x => (x.ClosingDate.Value.Date >= expense.FromDate || x.StartShip.Value.Date >= expense.FromDate) && (x.ClosingDate.Value.Date <= expense.ToDate || x.StartShip.Value.Date <= expense.ToDate) && x.Active).ToListAsync();
+            if (trans == null)
+            {
+                return false;
+            }
+            var tranIds = trans.Select(x => x.Id).ToList();
+            var expenses = await db.Expense.Where(x => tranIds.Contains((int)x.TransportationId) && expenseTypeIds.Contains((int)x.ExpenseTypeId) && x.RequestChangeId == null && x.Active).ToListAsync();
+            if (expenses == null)
+            {
+                return false;
+            }
+            StringBuilder sql = new StringBuilder();
+            foreach (var tran in trans)
+            {
+                var expensesByTran = expenses.Where(x => x.TransportationId == tran.Id).ToList();
+                foreach (var item in expensesByTran)
+                {
+                    if ((tran.RouteId != item.RouteId) ||
+                        (tran.ShipId != item.ShipId) ||
+                        (tran.BossId != item.BossId) ||
+                        (tran.ReceivedId != item.ReceivedId) ||
+                        (tran.CommodityId != item.CommodityId) ||
+                        (tran.TransportationTypeId != item.TransportationTypeId) ||
+                        (tran.ContainerTypeId != item.ContainerTypeId) ||
+                        (tran.Trip?.Trim() != item.Trip?.Trim()) ||
+                        (tran.ContainerNo?.Trim() != item.ContainerNo?.Trim()) ||
+                        (tran.SealNo?.Trim() != item.SealNo?.Trim()) ||
+                        (tran.Cont20 != item.Cont20) ||
+                        (tran.Cont40 != item.Cont40) ||
+                        (tran.Note2?.Trim() != item.Notes?.Trim()) ||
+                        (tran.ClosingDate != item.StartShip && (item.JourneyId == 12114 || item.JourneyId == 16001)) ||
+                        (tran.StartShip != item.StartShip && (item.JourneyId != 12114 && item.JourneyId != 16001)))
+                    {
+                        if (item.IsPurchasedInsurance)
+                        {
+                            var history = new Expense();
+                            history.CopyPropFrom(item);
+                            history.Id = 0;
+                            history.StatusId = (int)ApprovalStatusEnum.New;
+                            history.RequestChangeId = item.Id;
+                            item.IsHasChange = true;
+                            db.Add(history);
+                            await db.SaveChangesAsync();
+                        }
+                        var query = "";
+                        query += $"update [{nameof(Expense)}] set ";
+                        if (tran.RouteId != item.RouteId) { query += "RouteId = " + (tran.RouteId == null ? "NULL" : $"{tran.RouteId}") + ","; }
+                        if (tran.ShipId != item.ShipId) { query += "ShipId = " + (tran.ShipId == null ? "NULL" : $"{tran.ShipId}") + ","; }
+                        if (tran.BossId != item.BossId) { query += "BossId = " + (tran.BossId == null ? "NULL" : $"{tran.BossId}") + ","; }
+                        if (tran.ReceivedId != item.ReceivedId) { query += "ReceivedId = " + (tran.ReceivedId == null ? "NULL" : $"{tran.ReceivedId}") + ","; }
+                        if (tran.CommodityId != item.CommodityId) { query += "CommodityId = " + (tran.CommodityId == null ? "NULL" : $"{tran.CommodityId}") + ","; }
+                        if (tran.TransportationTypeId != item.TransportationTypeId) { query += "TransportationTypeId = " + (tran.TransportationTypeId == null ? "NULL" : $"{tran.TransportationTypeId}") + ","; }
+                        if (tran.ContainerTypeId != item.ContainerTypeId) { query += "ContainerTypeId = " + (tran.ContainerTypeId == null ? "NULL" : $"{tran.ContainerTypeId}") + ","; }
+                        if (tran.Trip?.Trim() != item.Trip?.Trim()) { query += "Trip = " + (tran.Trip == null ? "NULL" : $"'{tran.Trip}'") + ","; }
+                        if (tran.ContainerNo?.Trim() != item.ContainerNo?.Trim()) { query += "ContainerNo = " + (tran.ContainerNo == null ? "NULL" : $"'{tran.ContainerNo}'") + ","; }
+                        if (tran.SealNo?.Trim() != item.SealNo?.Trim()) { query += "SealNo = " + (tran.SealNo == null ? "NULL" : $"'{tran.SealNo}'") + ","; }
+                        if (tran.Cont20 != item.Cont20) { query += $"Cont20 = {tran.Cont20},"; }
+                        if (tran.Cont40 != item.Cont40) { query += $"Cont40 = {tran.Cont40},"; }
+                        if (tran.Note2?.Trim() != item.Notes?.Trim()) { query += "Notes = " + (tran.Note2 == null ? "NULL" : $"'{tran.Note2}'") + ","; }
+                        if (tran.ClosingDate != item.StartShip && (item.JourneyId == 12114 || item.JourneyId == 16001)) { query += "StartShip = " + (tran.ClosingDate == null ? "NULL" : $"'{tran.ClosingDate.Value.ToString("yyyy-MM-dd")}'") + ","; }
+                        if (tran.StartShip != item.StartShip && (item.JourneyId != 12114 && item.JourneyId != 16001)) { query += "StartShip = " + (tran.StartShip == null ? "NULL" : $"'{tran.StartShip.Value.ToString("yyyy-MM-dd")}'") + ","; }
+                        query = query.TrimEnd(',');
+                        query += $" where Id = {item.Id} ";
+                        sql.AppendLine(query);
+                    }
+                }
+            }
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON {nameof(Expense)}");
+            await db.Database.ExecuteSqlRawAsync(sql.ToString());
+            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON {nameof(Expense)}");
+            return true;
+        }
+        
 
         [HttpPost("api/Expense/ExportCheckChange")]
         public async Task<string> ExportCheckChange([FromBody] List<int> expenseIds)

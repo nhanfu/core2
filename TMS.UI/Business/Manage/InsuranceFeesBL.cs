@@ -62,6 +62,20 @@ namespace TMS.UI.Business.Manage
                });
         }
 
+        public async Task UpdateDataFromTransportation()
+        {
+            await this.OpenPopup(
+               featureName: "InsuranceFees Update Data",
+               factory: () =>
+               {
+                   var type = Type.GetType("TMS.UI.Business.Manage.InsuranceFeesUpdateDataBL");
+                   var instance = Activator.CreateInstance(type) as PopupEditor;
+                   instance.Title = "Cập nhật dữ liệu";
+                   instance.Entity = new Expense();
+                   return instance;
+               });
+        }
+
         public async Task LockExpense()
         {
             await ChangeBackgroudColor();
@@ -663,88 +677,41 @@ namespace TMS.UI.Business.Manage
                     return;
                 }
             }
-            if (patch.Changes.Any(x => x.Field == nameof(oldEntity.TransportationTypeId) ||
+            if (patch.Changes.Any(x =>
+            x.Field == nameof(oldEntity.TransportationTypeId) ||
             x.Field == nameof(oldEntity.JourneyId) ||
-            x.Field == nameof(oldEntity.CustomerTypeId) ||
-            x.Field == nameof(oldEntity.CommodityId) ||
-            x.Field == nameof(oldEntity.IsBought) ||
-            x.Field == nameof(oldEntity.IsWet)) &&
-            (oldEntity.TransportationTypeId != entity.TransportationTypeId) ||
-            (oldEntity.JourneyId != entity.JourneyId) ||
-            (oldEntity.CustomerTypeId != entity.CustomerTypeId) ||
-            (oldEntity.CommodityId != entity.CommodityId) ||
-            (oldEntity.IsBought != entity.IsBought) ||
-            (oldEntity.IsWet != entity.IsWet))
-            {
-                var expenseType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId eq 7577 and contains(Name,'Bảo hiểm')");
-                if (entity.ExpenseTypeId == expenseType.Id)
-                {
-                    var transportation = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($@"?$filter=Active eq true and Id eq {entity.TransportationId}");
-                    var transportationPlan = await new Client(nameof(TransportationPlan)).FirstOrDefaultAsync<TransportationPlan>($@"?$filter=Active eq true and Id eq {transportation.TransportationPlanId}");
-                    transportationPlan.TransportationTypeId = entity.TransportationTypeId;
-                    transportationPlan.JourneyId = entity.JourneyId;
-                    transportationPlan.CustomerTypeId = entity.CustomerTypeId;
-                    transportationPlan.CommodityId = entity.CommodityId;
-                    transportationPlan.IsBought = entity.IsBought;
-                    transportationPlan.IsWet = entity.IsWet;
-                    await new Client(nameof(TransportationPlan)).UpdateAsync<TransportationPlan>(transportationPlan);
-                }
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(oldEntity.TransportationTypeId) ||
-            x.Field == nameof(oldEntity.JourneyId) ||
-            x.Field == nameof(oldEntity.CustomerTypeId)) &&
-            (oldEntity.TransportationTypeId != entity.TransportationTypeId) ||
-            (oldEntity.JourneyId != entity.JourneyId) ||
-            (oldEntity.CustomerTypeId != entity.CustomerTypeId))
-            {
-
-                var expenseTypeInsurance = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId eq 7577 and contains(Name,'Bảo hiểm')");
-                var expenseTypeSOC = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId eq 7577 and contains(Name,'BH SOC')");
-                if (entity.ExpenseTypeId == expenseTypeInsurance.Id)
-                {
-                    await SetWetAndJourneyForExpense(entity, oldEntity);
-                    var expense = await new Client(nameof(Expense)).FirstOrDefaultAsync<Expense>($@"?$filter=Active eq true and ExpenseTypeId eq {expenseTypeSOC.Id} and TransportationId eq {entity.TransportationId} and RequestChangeId eq null");
-                    if (expense != null)
-                    {
-                        expense.TransportationTypeId = entity.TransportationTypeId;
-                        expense.CustomerTypeId = entity.CustomerTypeId;
-                        await SetWetAndJourneyForExpense(entity, oldEntity);
-                        await CalcInsuranceFees(expense, true);
-                        await new Client(nameof(Expense)).UpdateAsync<Expense>(expense);
-                    }
-                    await CalcInsuranceFees(entity, false);
-                    await new Client(nameof(Expense)).UpdateAsync<Expense>(entity);
-                }
-                else if (entity.ExpenseTypeId == expenseTypeSOC.Id)
-                {
-                    var expense = await new Client(nameof(Expense)).FirstOrDefaultAsync<Expense>($@"?$filter=Active eq true and ExpenseTypeId eq {expenseTypeInsurance.Id} and TransportationId eq {entity.TransportationId} and RequestChangeId eq null");
-                    if (expense != null)
-                    {
-                        expense.TransportationTypeId = entity.TransportationTypeId;
-                        expense.CustomerTypeId = entity.CustomerTypeId;
-                        await SetWetAndJourneyForExpense(expense, oldEntity);
-                        await CalcInsuranceFees(expense, false);
-                        await new Client(nameof(Expense)).UpdateAsync<Expense>(expense);
-                    }
-                    await CalcInsuranceFees(entity, true);
-                    await new Client(nameof(Expense)).UpdateAsync<Expense>(entity);
-                }
-            }
-            if (patch.Changes.Any(x => x.Field == nameof(oldEntity.IsWet) ||
+            x.Field == nameof(oldEntity.IsWet) ||
             x.Field == nameof(oldEntity.SteamingTerms) ||
             x.Field == nameof(oldEntity.BreakTerms) ||
             x.Field == nameof(oldEntity.IsBought)) &&
+            (oldEntity.TransportationTypeId != entity.TransportationTypeId) ||
+            (oldEntity.JourneyId != entity.JourneyId) ||
             (oldEntity.IsWet != entity.IsWet) ||
             (oldEntity.SteamingTerms != entity.SteamingTerms) ||
             (oldEntity.BreakTerms != entity.BreakTerms) ||
             (oldEntity.IsBought != entity.IsBought))
             {
-                await CalcInsuranceFees(entity, false);
+                var tran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($@"?$filter=Active eq true and Id eq {entity.TransportationId}");
+                var expenseType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId eq 7577 and contains(Name,'Bảo hiểm')");
+                var expenseTypeSOC = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId eq 7577 and contains(Name,'BH SOC')");
+                if (entity.ExpenseTypeId == expenseType.Id)
+                {
+                    await SetWetAndJourneyForExpense(entity, tran);
+                    await CalcInsuranceFees(entity, false);
+                }
+                else if (entity.ExpenseTypeId == expenseTypeSOC.Id)
+                {
+                    await CalcInsuranceFees(entity, true);
+                }
+                else
+                {
+                    return;
+                }
                 await new Client(nameof(Expense)).UpdateAsync<Expense>(entity);
             }
         }
 
-        private async Task SetWetAndJourneyForExpense(Expense expense, Expense oldExpense)
+        private async Task SetWetAndJourneyForExpense(Expense expense, Transportation transportation)
         {
             if (expense.TransportationTypeId != null)
             {
@@ -763,7 +730,6 @@ namespace TMS.UI.Business.Manage
                         }
                     }
                 }
-                var transportation = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {expense.TransportationId}");
                 if (expense.JourneyId == 12114 || expense.JourneyId == 16001)
                 {
                     expense.StartShip = transportation.ClosingDate;

@@ -111,6 +111,8 @@ namespace TMS.UI.Business.Manage
                 history.StatusId = (int)ApprovalStatusEnum.New;
                 history.RequestChangeId = expenseEntity.Id;
                 await new Client(nameof(Expense)).CreateAsync<Expense>(history);
+                expenseEntity.IsHasChange = true;
+                await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntity(expenseEntity));
                 listViewItem.ClearReferences();
                 await Approve(listViewItem);
             };
@@ -169,6 +171,14 @@ namespace TMS.UI.Business.Manage
                 newCommodityValue.EndDate = endDate2;
             }
             return newCommodityValue;
+        }
+
+        public PatchUpdate GetPatchEntity(Expense expense)
+        {
+            var details = new List<PatchUpdateDetail>();
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = expense.Id.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Expense.IsHasChange), Value = expense.IsHasChange.ToString() });
+            return new PatchUpdate { Changes = details };
         }
     }
 }

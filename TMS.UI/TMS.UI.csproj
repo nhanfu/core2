@@ -286,6 +286,7 @@
     <Compile Include="Business\Accountant\FreightTransportationListBL.cs" />
     <Compile Include="Business\Accountant\FreightShipListBL.cs" />
     <Compile Include="Business\Manage\CheckFeeReturnEditorBL.cs" />
+    <Compile Include="Business\Manage\InsuranceFeesUpdateDataBL.cs" />
     <Compile Include="Business\Manage\InsuranceFeesViewChangeBL.cs" />
     <Compile Include="Business\Manage\ProductionReportFormBL.cs" />
     <Compile Include="Business\Manage\CheckFeeFormBL.cs" />

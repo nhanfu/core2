@@ -43,6 +43,16 @@ namespace TMS.API.Models
         public string TransportationIds { get; set; }
     }
 
+    public partial class Expense
+    {
+        [NotMapped]
+        public DateTime? FromDate { get; set; }
+        [NotMapped]
+        public DateTime? ToDate { get; set; }
+        [NotMapped]
+        public string TransportationIds { get; set; }
+    }
+
     public partial class QuotationUpdate
     {
         [NotMapped]
