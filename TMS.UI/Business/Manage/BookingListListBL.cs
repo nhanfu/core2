@@ -79,38 +79,6 @@ namespace TMS.UI.Business.Manage
             await new Client(nameof(BookingList)).PostAsync<BookingList>(null, "CreateAllBookingList");
         }
 
-        private int awaiter;
-
-        public void CalcTotalPriceAndTotalFee(BookingList bookingList)
-        {
-            Window.ClearTimeout(awaiter);
-            awaiter = Window.SetTimeout(async () =>
-            {
-                await CalcTotalPriceAndTotalFeeAsync(bookingList);
-            }, 500);
-        }
-
-        public async Task CalcTotalPriceAndTotalFeeAsync(BookingList bookingList)
-        {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-            if (gridView is null)
-            {
-                return;
-            }
-            var listViewItem = gridView.GetListViewItems(bookingList).FirstOrDefault();
-            if (listViewItem != null)
-            {
-                bookingList.TotalPrice = bookingList.ShipUnitPrice * bookingList.Count;
-                bookingList.TotalFee = bookingList.TotalPrice + bookingList.OrtherFeePrice;
-                var res = await new Client(nameof(BookingList)).PatchAsync<BookingList>(GetPatchEntity(bookingList));
-                if (res != null)
-                {
-                    await gridView.ApplyFilter(true);
-                    gridView.Dirty = false;
-                }
-            }
-        }
-
         public async Task LockAllBookingList()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(BookingList));
