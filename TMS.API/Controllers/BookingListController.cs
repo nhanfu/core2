@@ -33,10 +33,13 @@ namespace TMS.API.Controllers
         {
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
-            var entity = await db.BookingList.FindAsync(idInt);
-            if (entity.Submit)
+            var entity = await db.BookingList.FindAsync(idInt); 
+            if (patch.Changes.Any(x => x.Field == nameof(entity.Submit)) == false)
             {
-                throw new ApiException("Danh sách book tàu này đã bị khóa !!!") { StatusCode = HttpStatusCode.BadRequest };
+                if (entity.Submit)
+                {
+                    throw new ApiException("Danh sách book tàu này đã bị khóa !!!") { StatusCode = HttpStatusCode.BadRequest };
+                }
             }
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
             {
