@@ -326,6 +326,7 @@
     <Compile Include="Business\Manage\TransportationPlanListBL.cs" />
     <Compile Include="Business\Manage\BookingListBL.cs" />
     <Compile Include="Business\Settings\ApiException.cs" />
+    <Compile Include="Business\Settings\QuotationRegionEditorBL.cs" />
     <Compile Include="Business\Settings\VendorContactEditorBL.cs" />
     <Compile Include="Business\Settings\VendorContactListBL.cs" />
     <Compile Include="Business\Settings\SettingTransportationEditorBL.cs" />

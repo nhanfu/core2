@@ -271,7 +271,6 @@ div[disabled]:not([enable]) input[readonly] {
 .overflowYOverlay {
   overflow-x: hidden;
   overflow-y: auto;
-  overflow-y: overlay;
 }
 .overflowOverlayHover {
   overflow: hidden;

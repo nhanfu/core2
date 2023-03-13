@@ -2,6 +2,7 @@
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
+using Core.Components.Framework;
 using Core.Enums;
 using Core.Extensions;
 using Core.Models;
@@ -242,6 +243,18 @@ namespace Core.Components
             ToggleDisabled(ComponentGroup?.DisabledExp);
         }
 
+        public void ComponentProperties(object arg,Component component)
+        {
+            component.ComponentGroup = null;
+            var editor = new ComponentBL()
+            {
+                Entity = component,
+                ParentElement = Element,
+                OpenFrom = this.FindClosest<EditForm>(),
+            };
+            AddChild(editor);
+        }
+
         private void RenderComponent(ComponentGroup group)
         {
             if (group.Component.Nothing())
@@ -277,6 +290,7 @@ namespace Core.Components
                     {
                         Html.Instance.Attr("contenteditable", "true");
                         Html.Instance.Event(EventType.Input, (e) => ChangeLabel(e, ui));
+                        Html.Instance.Event(EventType.DblClick, (e) => ComponentProperties(e, ui));
                     }
                     html.EndOf(ElementType.td).TData.Visibility(ui.Visibility).ColSpan(colSpan - 1).Render();
                 }
