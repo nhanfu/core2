@@ -215,13 +215,23 @@ namespace Core.Components
                 width = (outerColumn == parentColumn || groupInfo.Responsive) ? "100%" : $"calc({per}% - {padding}rem)";
             }
 
-            Html.Take(parent.Element).Panel(groupInfo.Label)
-                .ClassName(groupInfo.ClassName).Event(EventType.ContextMenu, (e) => parent.EditForm.SysConfigMenu(e, null, groupInfo));
+            Html.Take(parent.Element).Div.Render();
+            if (!string.IsNullOrEmpty(groupInfo.Label))
+            {
+                Html.Instance.Label.ClassName("header").IText(groupInfo.Label);
+                if (Client.CheckHasRole(RoleEnum.System))
+                {
+                    Html.Instance.Attr("contenteditable", "true");
+                    Html.Instance.Event(EventType.Input, (e) => ChangeComponentGroupLabel(e, groupInfo));
+                    Html.Instance.Event(EventType.DblClick, (e) => parent.EditForm.SectionProperties(groupInfo));
+                }
+                Html.Instance.End.Render();
+            }
+            Html.Instance.ClassName(groupInfo.ClassName).Event(EventType.ContextMenu, (e) => parent.EditForm.SysConfigMenu(e, null, groupInfo));
             if (!groupInfo.ClassName.Contains("ribbon"))
             {
                 Html.Instance.ClassName("panel").ClassName("group");
             }
-
             Html.Instance.Display(!groupInfo.Hidden).Style(groupInfo.Style ?? string.Empty).Width(width);
             var section = new Section(Html.Context)
             {
@@ -243,7 +253,7 @@ namespace Core.Components
             ToggleDisabled(ComponentGroup?.DisabledExp);
         }
 
-        public void ComponentProperties(object arg,Component component)
+        public void ComponentProperties(object arg, Component component)
         {
             component.ComponentGroup = null;
             var editor = new ComponentBL()
@@ -373,6 +383,19 @@ namespace Core.Components
                 var html = e.Target as HTMLElement;
                 comDB.Label = html.TextContent.Trim();
                 await new Client(nameof(Component)).UpdateAsync<Component>(comDB);
+            }, 1000);
+        }
+
+        private static int _imeout1;
+        private static void ChangeComponentGroupLabel(Event e, ComponentGroup com)
+        {
+            Window.ClearTimeout(_imeout1);
+            _imeout1 = Window.SetTimeout(async () =>
+            {
+                var comDB = await new Client(nameof(ComponentGroup)).GetAsync<ComponentGroup>(com.Id);
+                var html = e.Target as HTMLElement;
+                comDB.Label = html.TextContent.Trim();
+                await new Client(nameof(ComponentGroup)).UpdateAsync<ComponentGroup>(comDB);
             }, 1000);
         }
 

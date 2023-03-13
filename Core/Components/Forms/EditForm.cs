@@ -909,6 +909,7 @@ namespace Core.Components.Forms
                     component is null ? null : new ContextMenuItem { Icon = "fal fa-cog", Text = "Tùy chọn dữ liệu", Click = ComponentProperties, Parameter = component },
                     component is null ? null : new ContextMenuItem { Icon = "fal fa-clone", Text = "Sao chép", Click = CoppyComponent, Parameter = component },
                     _componentCoppy is null ? null : new ContextMenuItem { Icon = "fal fa-paste", Text = "Dán", Click = PasteComponent, Parameter = group },
+                    new ContextMenuItem { Icon = "fal fa-plus", Text = "Thêm mới bảng dữ liệu", Click = AddGridView, Parameter = group },
                     new ContextMenuItem { Icon = "fal fa-cogs", Text = "Tùy chọn vùng dữ liệu", Click = SectionProperties, Parameter = group },
                     new ContextMenuItem { Icon = "fal fa-clone", Text = "Clone vùng dữ liệu", Click = CloneProperties, Parameter = group },
                     new ContextMenuItem { Icon = "fal fa-folder-open", Text = "Thiết lập chung", Click = FeatureProperties },
@@ -977,6 +978,19 @@ namespace Core.Components.Forms
         }
 
         public void PasteComponent(object arg)
+        {
+            var componentGroup = arg.CastProp<ComponentGroup>();
+            _componentCoppy.ComponentGroupId = componentGroup.Id;
+            Task.Run(async () =>
+            {
+                _componentCoppy.Id = 0;
+                var client = await new Client(nameof(Component)).CreateAsync(_componentCoppy);
+                _componentCoppy = null;
+                Toast.Success("Sao chép thành công!");
+            });
+        }
+
+        public void AddGridView(object arg)
         {
             var componentGroup = arg.CastProp<ComponentGroup>();
             _componentCoppy.ComponentGroupId = componentGroup.Id;
