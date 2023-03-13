@@ -993,13 +993,16 @@ namespace Core.Components.Forms
         public void AddGridView(object arg)
         {
             var componentGroup = arg.CastProp<ComponentGroup>();
-            _componentCoppy.ComponentGroupId = componentGroup.Id;
+            var com = new Component()
+            {
+                ComponentType = nameof(GridView),
+                Visibility = true,
+                ComponentGroupId = componentGroup.Id,
+            };
             Task.Run(async () =>
             {
-                _componentCoppy.Id = 0;
-                var client = await new Client(nameof(Component)).CreateAsync(_componentCoppy);
-                _componentCoppy = null;
-                Toast.Success("Sao chép thành công!");
+                var client = await new Client(nameof(Component)).CreateAsync(com);
+                Toast.Success("Tạo thành công!");
             });
         }
 

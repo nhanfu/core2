@@ -1,4 +1,5 @@
-﻿using Core.Components.Extensions;
+﻿using Core.Clients;
+using Core.Components.Extensions;
 using Core.Components.Forms;
 using System;
 using System.Threading.Tasks;
@@ -15,6 +16,11 @@ namespace TMS.UI.Business.Settings
 
         public async Task EditQuotationRegion(Quotation entity)
         {
+            var parent = new Quotation();
+            if (entity.ParentId != null)
+            {
+                parent = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=Active eq true and Id eq {entity.ParentId.Value}");
+            }
             await this.OpenPopup(
                 featureName: "Quotation Region Editor",
                 factory: () =>
@@ -22,7 +28,7 @@ namespace TMS.UI.Business.Settings
                     var type = Type.GetType("TMS.UI.Business.Settings.QuotationRegionEditorBL");
                     var instance = Activator.CreateInstance(type) as PopupEditor;
                     instance.Title = "Chỉnh sửa bảng giá";
-                    instance.Entity = entity;
+                    instance.Entity = parent;
                     return instance;
                 });
         }
@@ -97,7 +103,7 @@ namespace TMS.UI.Business.Settings
 
         public async Task UpdateQuotation()
         {
-            
+
             await this.OpenPopup(
                 featureName: "Quotation Update Editor",
                 factory: () =>
