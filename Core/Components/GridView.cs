@@ -400,7 +400,7 @@ namespace Core.Components
                 Window.LocalStorage.SetItem("LastSearch" + GuiInfo.Id + header.Id, value);
                 if (!CellSelected.Any(x => x.FieldName == ev["FieldName"].ToString() && x.Value == value && x.Operator == ev["Operator"].ToString()))
                 {
-                    if (CellSelected.Any(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in"))
+                    if (CellSelected.Any(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in") && !(bool)ev["Shift"])
                     {
                         CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").Value = value;
                         CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").ValueText = valueText;
@@ -913,22 +913,22 @@ namespace Core.Components
                     menu.MenuItems = new List<ContextMenuItem>
                     {
                         new ContextMenuItem { Icon = "fal fa-angle-double-right", Text = "Chứa", Click = FilterInSelected,
-                                Parameter = new { Operator = "in", OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text   } },
+                                Parameter = new { Operator = "in", OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey()  } },
                         new ContextMenuItem { Icon = "fal fa-not-equal", Text = "Không chứa", Click = FilterInSelected,
-                                Parameter = new { Operator="not in",OperatorText= "Không chứa", Value = value, FieldName = fieldName, ValueText = text }}
+                                Parameter = new { Operator="not in",OperatorText= "Không chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }}
                     };
                     if (com.GuiInfo.ComponentType == nameof(Number) || com.GuiInfo.ComponentType == nameof(Datepicker))
                     {
                         menu.MenuItems.AddRange(new List<ContextMenuItem>
                         {
                             new ContextMenuItem { Icon = "fal fa-greater-than", Text = "Lớn hơn", Click = FilterInSelected,
-                                    Parameter = new { Operator="gt", OperatorText= "Lớn hơn", Value = value, FieldName = fieldName, ValueText = text }},
+                                    Parameter = new { Operator="gt", OperatorText= "Lớn hơn", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
                             new ContextMenuItem { Icon = "fal fa-less-than", Text = "Nhỏ hơn", Click = FilterInSelected,
-                                    Parameter = new { Operator="lt", OperatorText= "Nhỏ hơn", Value = value, FieldName = fieldName, ValueText=text }},
+                                    Parameter = new { Operator="lt", OperatorText= "Nhỏ hơn", Value = value, FieldName = fieldName, ValueText=text, Shift = e.ShiftKey() }},
                             new ContextMenuItem { Icon = "fal fa-greater-than-equal", Text = "Lớn hơn bằng", Click = FilterInSelected,
-                                    Parameter = new { Operator="ge", OperatorText= "Lớn hơn bằng", Value = value, FieldName = fieldName, ValueText = text }},
+                                    Parameter = new { Operator="ge", OperatorText= "Lớn hơn bằng", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
                             new ContextMenuItem { Icon = "fal fa-less-than-equal", Text = "Nhỏ hơn bằng", Click = FilterInSelected,
-                                    Parameter = new { Operator="le", OperatorText= "Nhỏ hơn bằng", Value = value, FieldName = fieldName, ValueText = text }},
+                                    Parameter = new { Operator="le", OperatorText= "Nhỏ hơn bằng", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
                         });
                     }
                     menu.Render();
