@@ -771,8 +771,8 @@ namespace TMS.UI.Business.Manage
                 listViewItem.ListViewSection.ListView.RemoveRowById(transportationPlan.Id);
                 listViewItem.ListViewSection.ListView.SelectedIds.Remove(transportationPlan.Id);
             }
-            Analysis(transportationPlan);
             SetPolicy(transportationPlan);
+            Analysis(transportationPlan);
         }
 
         private static bool ListViewItemFilter(object updatedData, EditableComponent x)
