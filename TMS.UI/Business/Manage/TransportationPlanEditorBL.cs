@@ -204,7 +204,7 @@ namespace TMS.UI.Business.Manage
                 var res = await Client.CreateAsync<bool>(listViewItem, "Approve");
                 if (res)
                 {
-                    Toast.Success("Duyệt thành công");
+                    ProcessEnumMessage(res);
                     try
                     {
                         var containerTypeId = await CheckContainerType(listViewItem);

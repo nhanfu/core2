@@ -269,7 +269,7 @@ namespace TMS.API.Controllers
             var check = await db.Transportation.Where(x => Ids.Contains(x.Id)).ToListAsync();
             foreach (var item in tran)
             {
-                if(check.FirstOrDefault(x=>x.Id==item.Id) is null)
+                if (check.FirstOrDefault(x => x.Id == item.Id) is null)
                 {
                     db.Transportation.Add(item);
                 }
@@ -1196,7 +1196,7 @@ namespace TMS.API.Controllers
                 return check;
             }
             var cmd = $"Update [{nameof(Transportation)}] set [ShipDate] = '{entity.ShipDate.Value.ToString("yyyy-MM-dd")}',[PortLiftId] = '{entity.PortLiftId}'" +
-                $" ,[ExportListReturnId] = '{VendorId}',[UserReturnId] = '{UserId}'" +
+                $" ,[ExportListReturnId] = '{VendorId}',[IsLiftFee] = {(entity.IsLiftFee ? 1 : 0)},[UserReturnId] = '{UserId}'" +
                 $" where ShipId = '{entity.ShipId}' and (BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Trip = '{entity.Trip}' and RouteId in ({entity.RouteIds.Combine()})";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
