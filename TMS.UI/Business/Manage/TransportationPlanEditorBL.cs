@@ -145,16 +145,20 @@ namespace TMS.UI.Business.Manage
                     var expenses = transportations.SelectMany(x => x.Expense).ToList();
                     if (expenses != null && expenses.Any())
                     {
-                        var expensesPurchasedInsurance = expenses.Where(x => x.IsPurchasedInsurance).ToList();
-                        if (expensesPurchasedInsurance.Count > 0)
+                        var checkExpenses = expenses.Where(x => x.IsPurchasedInsurance).Any();
+                        if (checkExpenses)
                         {
                             var confirmExpenses = new ConfirmDialog
                             {
-                                Content = $"Đã có {expensesPurchasedInsurance.Count}/{expenses.Count} cont được mua BH, bạn có chắc chắn muốn gửi yêu cầu cập nhật thông tin không?",
+                                NeedAnswer = true,
+                                ComType = nameof(Textbox),
+                                Content = $"Cont này đã được mua BH. Bạn có muốn tiếp tục cập nhật thông tin không ?<br />" +
+                                "Hãy nhập lý do",
                             };
                             confirmExpenses.Render();
                             confirmExpenses.YesConfirmed += async () =>
                             {
+                                listViewItem.ReasonChange = confirmExpenses.Textbox?.Text;
                                 await ActionRequest(listViewItem);
                             };
                         }
@@ -214,9 +218,9 @@ namespace TMS.UI.Business.Manage
                         if (transportations != null)
                         {
                             var transportationIds = transportations.Select(x => x.Id).ToList();
-                            var expenseType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'Bảo hiểm')");
-                            var expenseSOCType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'BH SOC')");
-                            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId in ({transportationIds.Combine()}) and ExpenseTypeId in ({expenseType.Id}, {expenseSOCType.Id}) and RequestChangeId eq null");
+                            var expenseTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and (contains(Name, 'Bảo hiểm') or contains(Name, 'BH SOC'))");
+                            var expenseTypeIds = expenseTypes.Select(x => x.Id).ToList();
+                            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId in ({transportationIds.Combine()}) and ExpenseTypeId in ({expenseTypeIds.Combine()}) and RequestChangeId eq null");
                             if (expenses != null)
                             {
                                 await UpdateExpenses(expenses, listViewItem);
@@ -236,84 +240,69 @@ namespace TMS.UI.Business.Manage
             var expenseType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'Bảo hiểm')");
             foreach (var item in expenses)
             {
-                if (item.IsPurchasedInsurance == false)
-                {
-                    item.TransportationTypeId = listViewItem.TransportationTypeId;
-                    item.BossId = listViewItem.BossId;
-                    item.SaleId = listViewItem.UserId;
-                    item.CommodityId = item.ExpenseTypeId == expenseType.Id ? listViewItem.CommodityId : item.CommodityId;
-                    item.RouteId = listViewItem.RouteId;
-                    item.ContainerTypeId = listViewItem.ContainerTypeId;
-                    if (item.JourneyId == 12114 || item.JourneyId == 16001)
-                    {
-                        item.StartShip = listViewItem.ClosingDate;
-                    }
-                    item.IsWet = listViewItem.IsWet;
-                    item.IsBought = listViewItem.IsBought;
-                    item.CustomerTypeId = listViewItem.CustomerTypeId;
-                    item.JourneyId = listViewItem.JourneyId;
-                    item.CommodityValue = listViewItem.CommodityValue;
-                    item.IsCompany = listViewItem.IsCompany;
-                    if (item.ExpenseTypeId == expenseType.Id)
-                    {
-                        await CalcInsuranceFees(item, false);
-                    }
-                    else
-                    {
-                        await CalcInsuranceFees(item, true);
-                    }
-                    await new Client(nameof(Expense)).UpdateAsync<Expense>(item);
-                }
-                else
-                {
-                    if (item.SaleId != listViewItem.UserId ||
+                if (item.SaleId != listViewItem.UserId ||
                         item.ContainerTypeId != listViewItem.ContainerTypeId ||
                         item.BossId != listViewItem.BossId ||
                         item.TransportationTypeId != listViewItem.TransportationTypeId ||
                         (item.CommodityId != listViewItem.CommodityId && item.ExpenseTypeId == expenseType.Id) ||
                         item.JourneyId != item.JourneyId ||
-                        item.StartShip != listViewItem.ClosingDate ||
+                        (item.StartShip != listViewItem.ClosingDate && (item.JourneyId == 12114 || item.JourneyId == 16001)) ||
                         item.RouteId != listViewItem.RouteId ||
                         item.IsWet != listViewItem.IsWet ||
                         item.IsBought != listViewItem.IsBought ||
                         item.SteamingTerms != listViewItem.SteamingTerms ||
                         item.BreakTerms != listViewItem.BreakTerms ||
                         item.CustomerTypeId != item.CustomerTypeId ||
-                        item.CommodityValue != listViewItem.CommodityValue)
+                        item.CommodityValue != listViewItem.CommodityValue ||
+                        item.ReceivedId != listViewItem.ReceivedId)
+                {
+                    SetInfoChangeExpense(item, listViewItem, expenseType);
+                    if (item.IsPurchasedInsurance == false)
                     {
-                        var confirm = new ConfirmDialog
+                        if (item.ExpenseTypeId == expenseType.Id)
                         {
-                            NeedAnswer = true,
-                            ComType = nameof(Textbox),
-                            Content = $"Cont này đã được mua BH. Bạn có muốn tiếp tục cập nhật thông tin không ?<br />" +
-                        "Hãy nhập lý do",
-                        };
-                        confirm.Render();
-                        confirm.YesConfirmed += async () =>
+                            await CalcInsuranceFees(item, false);
+                        }
+                        else
                         {
-                            item.TransportationTypeId = listViewItem.TransportationTypeId;
-                            item.BossId = listViewItem.BossId;
-                            item.SaleId = listViewItem.UserId;
-                            item.CommodityId = item.ExpenseTypeId == expenseType.Id ? listViewItem.CommodityId : item.CommodityId;
-                            item.RouteId = listViewItem.RouteId;
-                            item.ContainerTypeId = listViewItem.ContainerTypeId;
-                            if (item.JourneyId == 12114 || item.JourneyId == 16001)
-                            {
-                                item.StartShip = listViewItem.ClosingDate;
-                            }
-                            var requestChange = new Expense();
-                            requestChange.CopyPropFrom(item);
-                            requestChange.Id = 0;
-                            requestChange.StatusId = (int)ApprovalStatusEnum.Approving;
-                            requestChange.RequestChangeId = item.Id;
-                            requestChange.Reason = confirm.Textbox?.Text;
-                            item.StatusId = (int)ApprovalStatusEnum.Approving;
-                            await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(item));
-                            await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
-                        };
+                            await CalcInsuranceFees(item, true);
+                        }
+                        await new Client(nameof(Expense)).UpdateAsync<Expense>(item);
+                    }
+                    else
+                    {
+                        var requestChange = new Expense();
+                        requestChange.CopyPropFrom(item);
+                        requestChange.Id = 0;
+                        requestChange.StatusId = (int)ApprovalStatusEnum.Approving;
+                        requestChange.RequestChangeId = item.Id;
+                        requestChange.Reason = listViewItem.ReasonChange;
+                        item.StatusId = (int)ApprovalStatusEnum.Approving;
+                        await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(item));
+                        await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
                     }
                 }
             }
+        }
+
+        public void SetInfoChangeExpense(Expense item, TransportationPlan listViewItem, MasterData expenseType)
+        {
+            if (item.TransportationTypeId != listViewItem.TransportationTypeId) { item.TransportationTypeId = listViewItem.TransportationTypeId; }
+            if (item.BossId != listViewItem.BossId) { item.BossId = listViewItem.BossId; }
+            if (item.SaleId != listViewItem.UserId) { item.SaleId = listViewItem.UserId; }
+            if (item.CommodityId != listViewItem.CommodityId && item.ExpenseTypeId == expenseType.Id) { item.CommodityId = listViewItem.CommodityId; }
+            if (item.RouteId != listViewItem.RouteId) { item.RouteId = listViewItem.RouteId; }
+            if (item.ContainerTypeId != listViewItem.ContainerTypeId) { item.ContainerTypeId = listViewItem.ContainerTypeId; }
+            if (item.JourneyId != listViewItem.JourneyId) { item.JourneyId = listViewItem.JourneyId; }
+            if (item.StartShip != listViewItem.ClosingDate && (item.JourneyId == 12114 || item.JourneyId == 16001)) { item.StartShip = listViewItem.ClosingDate; }
+            if (item.IsBought != listViewItem.IsBought) { item.IsBought = listViewItem.IsBought; }
+            if (item.IsWet != listViewItem.IsWet) { item.IsWet = listViewItem.IsWet; }
+            if (item.SteamingTerms != listViewItem.SteamingTerms) { item.SteamingTerms = listViewItem.SteamingTerms; }
+            if (item.BreakTerms != listViewItem.BreakTerms) { item.BreakTerms = listViewItem.BreakTerms; }
+            if (item.CustomerTypeId != listViewItem.CustomerTypeId) { item.CustomerTypeId = listViewItem.CustomerTypeId; }
+            if (item.CommodityValue != listViewItem.CommodityValue) { item.CommodityValue = listViewItem.CommodityValue; }
+            if (item.ReceivedId != listViewItem.ReceivedId) { item.ReceivedId = listViewItem.ReceivedId; }
+            if (item.IsCompany != listViewItem.IsCompany) { item.IsCompany = listViewItem.IsCompany; }
         }
 
         public override void Reject()
