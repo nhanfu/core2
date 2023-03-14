@@ -21,6 +21,12 @@ namespace Core.Components.Framework
             Title = "Section properties";
             Icon = "fa fa-wrench";
             PopulateDirty = false;
+            DOMContentLoaded += AlterPosition;
+        }
+
+        private void AlterPosition()
+        {
+            Element.ParentElement.AddClass("properties");
         }
 
         public override async Task<bool> Save(object entity)

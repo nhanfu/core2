@@ -5,9 +5,19 @@ namespace TMS.UI.Business.Settings
 {
     public class QuotationRegionEditorBL : PopupEditor
     {
+        public Quotation QEntity => Entity as Quotation;
         public QuotationRegionEditorBL() : base(nameof(Quotation))
         {
             Name = "Quotation Region Editor";
+        }
+
+        public void BeforeCreatedQuotationRegion(Quotation quotation)
+        {
+            quotation.PackingId = QEntity.PackingId;
+            quotation.ContainerTypeId = QEntity.ContainerTypeId;
+            quotation.RegionId = QEntity.RegionId;
+            quotation.StartDate = QEntity.StartDate;
+            quotation.TypeId = QEntity.TypeId;
         }
     }
 }

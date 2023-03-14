@@ -21,6 +21,12 @@ namespace Core.Components.Framework
             PopulateDirty = false;
             ShouldLoadEntity = true;
             Entity = new Feature();
+            DOMContentLoaded += AlterPosition;
+        }
+
+        private void AlterPosition()
+        {
+            Element.ParentElement.AddClass("properties");
         }
 
         public async Task<bool> SaveFeature(Feature feature)

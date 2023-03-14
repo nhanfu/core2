@@ -1,5 +1,6 @@
 ﻿using Core.Components.Extensions;
 using Core.Components.Forms;
+using Core.Extensions;
 using Core.Models;
 
 namespace Core.Components.Framework
@@ -11,6 +12,12 @@ namespace Core.Components.Framework
             Name = "Feature management";
             Title = "Feature";
             Icon = "icons/config.png";
+            DOMContentLoaded += AlterPosition;
+        }
+
+        private void AlterPosition()
+        {
+            Element.ParentElement.AddClass("properties");
         }
 
         public void EditFeature(Feature feature)
