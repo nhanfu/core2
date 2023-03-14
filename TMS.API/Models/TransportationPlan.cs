@@ -53,5 +53,6 @@ namespace TMS.API.Models
         public bool BreakTerms { get; set; }
         public int? Cont20Text { get; set; }
         public int? Cont40Text { get; set; }
+        public string ReasonChange { get; set; }
     }
 }

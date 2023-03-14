@@ -412,11 +412,7 @@ public partial class TMSContext : DbContext
 
         modelBuilder.Entity<Expense>(entity =>
         {
-            entity.ToTable(tb =>
-                {
-                    tb.HasTrigger("tr_UpdateIsHasChange");
-                    tb.HasTrigger("tr_UpdateTran");
-                });
+            entity.ToTable(tb => tb.HasTrigger("tr_UpdateTran"));
 
             entity.Property(e => e.CommodityValue)
                 .HasDefaultValueSql("((0))")
@@ -1377,6 +1373,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(250);
             entity.Property(e => e.Notes).HasMaxLength(250);
             entity.Property(e => e.NotesContract).HasMaxLength(250);
+            entity.Property(e => e.ReasonChange).HasMaxLength(250);
             entity.Property(e => e.RequestChangeNote).HasMaxLength(250);
             entity.Property(e => e.ReturnNotes).HasMaxLength(500);
         });
