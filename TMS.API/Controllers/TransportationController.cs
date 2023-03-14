@@ -5,11 +5,13 @@ using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
 using Microsoft.AspNet.OData.Query;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -249,6 +251,31 @@ namespace TMS.API.Controllers
         {
             var updateCommand = $"update Transportation set IsReturn=1 where Active = 1 and ShipDate = DATEADD(dd, 0, DATEDIFF(dd, 0, '{dateTime}'))";
             await ctx.Database.ExecuteSqlRawAsync(updateCommand);
+            return true;
+        }
+
+        [HttpGet("api/Transportation/RestoreDelete")]
+        public async Task<bool> RestoreDelete()
+        {
+            var updateCommand = await db.DeleteHistory.Where(x => x.Id >= 99).ToListAsync();
+            var value = updateCommand.Select(x => x.Value).ToList();
+            var tran = new List<Transportation>();
+            foreach (var item in value)
+            {
+                tran.AddRange(JsonConvert.DeserializeObject<List<Transportation>>(item));
+            }
+            db.Database.ExecuteSqlRaw($"DISABLE TRIGGER ALL ON [{nameof(Transportation)}]");
+            var Ids = tran.Select(x => x.Id).ToList();
+            var check = await db.Transportation.Where(x => Ids.Contains(x.Id)).ToListAsync();
+            foreach (var item in tran)
+            {
+                if(check.FirstOrDefault(x=>x.Id==item.Id) is null)
+                {
+                    db.Transportation.Add(item);
+                }
+            }
+            await db.SaveChangesAsync();
+            db.Database.ExecuteSqlRaw($"ENABLE TRIGGER ALL ON [{nameof(Transportation)}]");
             return true;
         }
 
