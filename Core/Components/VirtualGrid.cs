@@ -17,7 +17,9 @@ namespace Core.Components
         private const string VirtualRow = "virtualRow";
         private int _renderViewPortAwaiter;
         internal bool _renderingViewPort;
+        internal bool _waitingLoad;
         internal int viewPortCount;
+        internal int _skip;
         internal static int cacheAhead = 5;
         private int _renderPrepareCacheAwaiter;
 
@@ -53,6 +55,7 @@ namespace Core.Components
                 var shouldEndNo = firstRowNo + viewPortCount * cacheAhead;
                 if (skip > firstRowNo && skip < shouldEndNo)
                 {
+                    _waitingLoad = false;
                     return;
                 }
             }
@@ -65,12 +68,14 @@ namespace Core.Components
             var data = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
             if (data.Value.Nothing())
             {
+                _waitingLoad = false;
                 return;
             }
             CacheData.Clear();
             CacheData.AddRange(data.Value);
             CacheData.ForEach((x, index) => x[RowNo] = start + index + 1);
             await LoadMasterData(data.Value, spinner: false);
+            _waitingLoad = false;
         }
 
         internal override async Task RenderViewPort(bool count = true, bool firstLoad = false)
@@ -145,6 +150,7 @@ namespace Core.Components
 
         private async Task<List<object>> FirstLoadData(bool count, int skip)
         {
+            _skip = skip;
             List<object> rows;
             var source = CalcDatasourse(viewPortCount, skip, count ? "true" : "false");
             var oDataRows = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
@@ -160,6 +166,7 @@ namespace Core.Components
             if (rows.Count < Paginator.Options.Total)
             {
                 Window.ClearTimeout(_renderPrepareCacheAwaiter);
+                _waitingLoad = true;
                 _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(skip), 3000);
             }
             return rows;
@@ -178,6 +185,12 @@ namespace Core.Components
         {
             if (_renderingViewPort || !VirtualScroll)
             {
+                if (_waitingLoad)
+                {
+                    Window.ClearTimeout(_renderPrepareCacheAwaiter);
+                    _waitingLoad = true;
+                    _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 3000);
+                }
                 _renderingViewPort = false;
                 e.PreventDefault();
                 return;

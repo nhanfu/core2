@@ -426,7 +426,7 @@ namespace Core.Components
             {
                 if (finalFilter.HasAnyChar())
                 {
-                    finalFilter += " and (";
+                    finalFilter += " and ";
                 }
                 if (!ParentListView.Wheres.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] >= '{EntityVM.StartDate.Value.ToString("yyyy-MM-dd")}'"))
                 {
@@ -444,7 +444,7 @@ namespace Core.Components
             {
                 if (finalFilter.HasAnyChar())
                 {
-                    finalFilter += " and (";
+                    finalFilter += " and ";
                 }
                 if (!ParentListView.Wheres.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <= '{EntityVM.EndDate.Value.ToString("yyyy-MM-dd")}'"))
                 {
