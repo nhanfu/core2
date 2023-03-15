@@ -239,11 +239,11 @@ namespace TMS.UI.Business.Manage
             }
             var journeyId = expense.JourneyId is null ? "" : "and JourneyId eq " + expense.JourneyId.ToString();
             InsuranceFeesRate insuranceFeesRateDB = null;
-            if (expense.IsBought)
+            if (expense.IsBought && expense.TransportationTypeId != null)
             {
                 insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {expense.TransportationTypeId} {journeyId} and IsBought eq {expense.IsBought.ToString().ToLower()} and IsSOC eq {isSOC.ToString().ToLower()} and IsSubRatio eq {isSubRatio.ToString().ToLower()}");
             }
-            else
+            else if(expense.IsBought == false && expense.TransportationTypeId != null)
             {
                 insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {expense.TransportationTypeId} {journeyId} and IsBought eq {expense.IsBought.ToString().ToLower()} and IsSOC eq {isSOC.ToString().ToLower()}");
             }
