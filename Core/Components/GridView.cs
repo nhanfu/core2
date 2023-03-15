@@ -203,6 +203,16 @@ namespace Core.Components
             {
                 ListViewSearch.EntityVM.StartDate = DateTime.Parse(lFrom.ToString());
                 if (ListViewSearch.EntityVM.StartDate < DateTime.Now.AddMonths(-2))
+                {
+                    ListViewSearch.EntityVM.StartDate = DateTime.Now.AddMonths(-2);
+                }
+            }
+            else
+            {
+                if (GuiInfo.ComponentType == nameof(VirtualGrid))
+                {
+                    ListViewSearch.EntityVM.StartDate = DateTime.Now.AddMonths(-2);
+                }
             }
             if (GuiInfo.DefaultAddEnd.HasValue)
             {
