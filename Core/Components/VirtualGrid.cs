@@ -1,6 +1,7 @@
 ﻿using Bridge.Html5;
 using Core.Clients;
 using Core.Components.Extensions;
+using Core.Components.Forms;
 using Core.Extensions;
 using Core.Models;
 using System;
@@ -167,7 +168,7 @@ namespace Core.Components
             {
                 Window.ClearTimeout(_renderPrepareCacheAwaiter);
                 _waitingLoad = true;
-                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(skip), 3000);
+                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(skip), 5000);
             }
             return rows;
         }
@@ -183,14 +184,13 @@ namespace Core.Components
 
         private void RenderViewPortWrapper(Event e)
         {
+            if (_waitingLoad)
+            {
+                Window.ClearTimeout(_renderPrepareCacheAwaiter);
+                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 3000);
+            }
             if (_renderingViewPort || !VirtualScroll)
             {
-                if (_waitingLoad)
-                {
-                    Window.ClearTimeout(_renderPrepareCacheAwaiter);
-                    _waitingLoad = true;
-                    _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 3000);
-                }
                 _renderingViewPort = false;
                 e.PreventDefault();
                 return;
@@ -237,6 +237,94 @@ namespace Core.Components
             Paginator.Options.EndIndex = skip + viewPort;
             Paginator.Element.AddClass("infinite-scroll");
             Paginator.Children.ForEach(child => child.UpdateView());
+        }
+
+        public override void FilterInSelected(object ev)
+        {
+            if (_waitingLoad)
+            {
+                Window.ClearTimeout(_renderPrepareCacheAwaiter);
+            }
+            if (ev["Operator"] is null)
+            {
+                return;
+            }
+            var header = Header.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString());
+            var subFilter = string.Empty;
+            var lastFilter = Window.LocalStorage.GetItem("LastSearch" + GuiInfo.Id + header.Id);
+            if (lastFilter != null)
+            {
+                subFilter = lastFilter.ToString();
+            }
+            var confirmDialog = new ConfirmDialog
+            {
+                Content = $"Nhập {header.ShortDesc} cần tìm" + ev["Text"],
+                NeedAnswer = true,
+                MultipleLine = false,
+                ComType = header.ComponentType == nameof(Datepicker) ? header.ComponentType : nameof(Textbox)
+            };
+            confirmDialog.YesConfirmed += async () =>
+            {
+                string value = null;
+                string valueText = null;
+                if (header.ComponentType == nameof(Datepicker))
+                {
+                    valueText = confirmDialog.Datepicker.OriginalText;
+                    value = confirmDialog.Datepicker.Value.ToString();
+                }
+                else
+                {
+                    valueText = confirmDialog.Textbox.Text.Trim().EncodeSpecialChar();
+                    value = confirmDialog.Textbox.Text.Trim().EncodeSpecialChar();
+                }
+                Window.LocalStorage.SetItem("LastSearch" + GuiInfo.Id + header.Id, value);
+                if (!CellSelected.Any(x => x.FieldName == ev["FieldName"].ToString() && x.Value == value && x.Operator == ev["Operator"].ToString()))
+                {
+                    if (CellSelected.Any(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in") && !(bool)ev["Shift"])
+                    {
+                        CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").Value = value;
+                        CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").ValueText = valueText;
+                    }
+                    else
+                    {
+                        CellSelected.Add(new CellSelected
+                        {
+                            FieldName = ev["FieldName"].ToString(),
+                            FieldText = header.ShortDesc,
+                            ComponentType = header.ComponentType,
+                            Value = value,
+                            ValueText = valueText,
+                            Operator = ev["Operator"].ToString(),
+                            OperatorText = ev["OperatorText"].ToString(),
+                        });
+                    }
+                }
+                await ActionFilter();
+                confirmDialog.Textbox.Text = null;
+            };
+            confirmDialog.Canceled += () =>
+            {
+                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 3000);
+            };
+            confirmDialog.Entity = new { ReasonOfChange = string.Empty };
+            confirmDialog.Render();
+            if (!subFilter.IsNullOrWhiteSpace())
+            {
+                if (header.ComponentType == nameof(Datepicker))
+                {
+                    confirmDialog.Datepicker.Value = DateTime.Parse(subFilter);
+                    var input = confirmDialog.Datepicker.Element as HTMLInputElement;
+                    input.SelectionStart = 0;
+                    input.SelectionEnd = subFilter.Length;
+                }
+                else
+                {
+                    confirmDialog.Textbox.Text = subFilter;
+                    var input = confirmDialog.Textbox.Element as HTMLInputElement;
+                    input.SelectionStart = 0;
+                    input.SelectionEnd = subFilter.Length;
+                }
+            }
         }
     }
 }

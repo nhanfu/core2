@@ -374,7 +374,7 @@ namespace Core.Components
             }
         }
 
-        public void FilterInSelected(object ev)
+        public virtual void FilterInSelected(object ev)
         {
             if (ev["Operator"] is null)
             {
