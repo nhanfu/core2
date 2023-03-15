@@ -188,11 +188,6 @@ namespace TMS.API.Controllers
                     {
                         throw new ApiException("Quy trình duyệt chưa được cấu hình");
                     }
-                    await _taskService.SendMessageAllUser(new WebSocketResponse<Expense>
-                    {
-                        EntityId = _entitySvc.GetEntity(typeof(Expense).Name).Id,
-                        Data = item
-                    });
                     await db.SaveChangesAsync();
                     if (approvalConfig is null)
                     {
@@ -1580,11 +1575,6 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Quy trình duyệt chưa được cấu hình");
             }
-            await _taskService.SendMessageAllUser(new WebSocketResponse<Transportation>
-            {
-                EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
-                Data = transportation
-            });
             if (approvalConfig is null)
             {
                 throw new ApiException("Quy trình duyệt chưa được cấu hình");
@@ -1652,11 +1642,6 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Quy trình duyệt chưa được cấu hình");
             }
-            await _taskService.SendMessageAllUser(new WebSocketResponse<Transportation>
-            {
-                EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
-                Data = transportation
-            });
             if (approvalConfig is null)
             {
                 throw new ApiException("Quy trình duyệt chưa được cấu hình");
@@ -1724,11 +1709,6 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Quy trình duyệt chưa được cấu hình");
             }
-            await _taskService.SendMessageAllUser(new WebSocketResponse<Transportation>
-            {
-                EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
-                Data = transportation
-            });
             if (approvalConfig is null)
             {
                 throw new ApiException("Quy trình duyệt chưa được cấu hình");
@@ -1796,11 +1776,6 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Quy trình duyệt chưa được cấu hình");
             }
-            await _taskService.SendMessageAllUser(new WebSocketResponse<Transportation>
-            {
-                EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
-                Data = transportation
-            });
             if (approvalConfig is null)
             {
                 throw new ApiException("Quy trình duyệt chưa được cấu hình");

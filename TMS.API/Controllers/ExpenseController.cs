@@ -301,11 +301,6 @@ namespace TMS.API.Controllers
             await Approving(entity);
             var oldEntity = await db.Expense.FindAsync(entity.RequestChangeId);
             await db.Entry(oldEntity).ReloadAsync();
-            await _taskService.SendMessageAllUser(new WebSocketResponse<Expense>
-            {
-                EntityId = _entitySvc.GetEntity(typeof(Expense).Name).Id,
-                Data = oldEntity
-            });
             await db.SaveChangesAsync();
             var listUser = await GetApprovalUsers(entity, matchApprovalConfig);
             if (listUser.HasElement())
@@ -355,12 +350,28 @@ namespace TMS.API.Controllers
             await db.SaveChangesAsync();
             await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
             await db.Entry(entity).ReloadAsync();
-            await _taskService.SendMessageAllUser(new WebSocketResponse<Expense>
-            {
-                EntityId = _entitySvc.GetEntity(typeof(Expense).Name).Id,
-                Data = oldEntity
-            });
+            RealTimeUpdateUser(oldEntity);
             return rs;
+        }
+
+        private void RealTimeUpdateUser(Expense entity)
+        {
+            var thead = new Thread(async () =>
+            {
+                try
+                {
+                    await _taskService.SendMessageAllUser(new WebSocketResponse<Expense>
+                    {
+                        EntityId = _entitySvc.GetEntity(typeof(Expense).Name).Id,
+                        Data = entity
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("RealtimeUpdate error at {0}: {1} {2}", DateTimeOffset.Now, ex.Message, ex.StackTrace);
+                }
+            });
+            thead.Start();
         }
 
         public override async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<int> ids)

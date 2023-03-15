@@ -113,11 +113,6 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Quy trình duyệt chưa được cấu hình");
             }
-            await _taskService.SendMessageAllUser(new WebSocketResponse<FreightRate>
-            {
-                EntityId = _entitySvc.GetEntity(typeof(FreightRate).Name).Id,
-                Data = freightRate
-            });
             await db.SaveChangesAsync();
             if (approvalConfig is null)
             {
