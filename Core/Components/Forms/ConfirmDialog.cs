@@ -39,7 +39,7 @@ namespace Core.Components.Forms
             Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: auto;")
                 .Div.ClassName("popup-title").IHtml(Title)
                 .Div.ClassName("icon-box").Span.ClassName("fa fa-times")
-                    .Event(EventType.Click, Dispose)
+                    .Event(EventType.Click, CloseDispose)
                 .EndOf(".popup-title")
                 .Div.ClassName("popup-body");
 
@@ -114,7 +114,7 @@ namespace Core.Components.Forms
                         {
                             Console.WriteLine(ex.StackTrace);
                         }
-                        Dispose();
+                        CloseDispose();
                     }).End.Render();
             }
 
@@ -153,11 +153,12 @@ namespace Core.Components.Forms
 
         public override void Dispose()
         {
-            if (_cancel)
-            {
-                Canceled?.Invoke();
-            }
+            base.Dispose();
+        }
 
+        public void CloseDispose()
+        {
+            Canceled?.Invoke();
             base.Dispose();
         }
 
