@@ -17,6 +17,7 @@ namespace Core.Components
     {
         public string SearchTerm { get; set; }
         public DateTime? StartDate { get; set; }
+        public int? DateTimeField { get; set; }
         public DateTime? EndDate { get; set; }
     }
 
@@ -149,6 +150,25 @@ namespace Core.Components
             };
             endDate.UserInput = null;
             AddChild(endDate);
+            if (ParentListView.GuiInfo.ShowDatetimeField != null && (bool)ParentListView.GuiInfo.ShowDatetimeField)
+            {
+                var dateType = new SearchEntry(new Component
+                {
+                    FieldName = nameof(Component.DateTimeField),
+                    PlainText = "Loại ngày",
+                    FormatData = "{ShortDesc}",
+                    DataSourceFilter = $"?$filter=Active eq true and ComponentType eq '{nameof(Datepicker)}' and FeatureId eq {EditForm.Feature.Id}",
+                    ShowLabel = false,
+                    ReferenceId = Utils.GetEntity(nameof(GridPolicy)).Id,
+                    RefName = nameof(GridPolicy),
+                    Reference = new Entity { Name = nameof(GridPolicy) },
+                })
+                {
+                    ParentElement = Element
+                };
+                dateType.UserInput = null;
+                AddChild(dateType);
+            }
             Html.Take(Element).Div.ClassName("searching-block")
                 .Button("Tìm kiếm", className: "button secondary small btn-toolbar", icon: "fa fa-search")
                     .Event(EventType.Click, async () => await ParentListView.ApplyFilter()).End
@@ -414,6 +434,10 @@ namespace Core.Components
 
         public string CalcFilterQuery(string prefix)
         {
+            if (EntityVM.DateTimeField != null)
+            {
+                DateTimeField = ParentListView.Header.FirstOrDefault(x => x.Id == EntityVM.DateTimeField).FieldName;
+            }
             var headers = ParentListView.Header;
             var searchTerm = EntityVM.SearchTerm?.Trim().EncodeSpecialChar() ?? string.Empty;
             var finalFilter = ComponentExt.FilterById(searchTerm, headers);
