@@ -165,7 +165,7 @@ namespace TMS.UI.Business.Manage
         public async Task ReloadExpense(Transportation transportation)
         {
             var grid = this.FindComponentByName<GridView>(nameof(Expense));
-            grid.DataSourceFilter = $"?$filter=Active eq true and TransportationId eq {transportation.Id} and ((ExpenseTypeId in (15981, 15939) eq false) or IsPurchasedInsurance eq true)";
+            grid.DataSourceFilter = $"?$filter=Active eq true and TransportationId eq {transportation.Id} and ((ExpenseTypeId in (15981, 15939) eq false) or IsPurchasedInsurance eq true) and RequestChangeId eq null";
             selected = transportation;
             await grid.ApplyFilter(true);
         }
