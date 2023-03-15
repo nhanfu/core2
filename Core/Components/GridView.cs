@@ -202,6 +202,7 @@ namespace Core.Components
             if (lFrom != null)
             {
                 ListViewSearch.EntityVM.StartDate = DateTime.Parse(lFrom.ToString());
+                if (ListViewSearch.EntityVM.StartDate < DateTime.Now.AddMonths(-2))
             }
             if (GuiInfo.DefaultAddEnd.HasValue)
             {
