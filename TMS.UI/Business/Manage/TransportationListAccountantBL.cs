@@ -213,6 +213,13 @@ namespace TMS.UI.Business.Manage
                                 trans.Add(transportation);
                                 await new Client(nameof(Transportation)).PostAsync<bool>(trans, "ApproveUnLockAll");
                             };
+                            confirmRequets.NoConfirmed += async () =>
+                            {
+                                transportation.IsLocked = true;
+                                await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedEntity(transportation), ig: "true");
+                                var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                                listViewItem.UpdateView(false, nameof(Transportation.IsLocked));
+                            };
                         }
                     };
                     confirm.NoConfirmed += async () =>
@@ -273,6 +280,13 @@ namespace TMS.UI.Business.Manage
                                     var trans = new List<Transportation>();
                                     trans.Add(transportation);
                                     await new Client(nameof(Transportation)).PostAsync<bool>(trans, "ApproveUnLockAccountantTransportation");
+                                };
+                                confirmRequets.NoConfirmed += async () =>
+                                {
+                                    transportation.IsSubmit = true;
+                                    await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsSubmitEntity(transportation), ig: "true");
+                                    var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                                    listViewItem.UpdateView(false, nameof(Transportation.IsSubmit));
                                 };
                             }
                         }
@@ -335,6 +349,13 @@ namespace TMS.UI.Business.Manage
                                     var trans = new List<Transportation>();
                                     trans.Add(transportation);
                                     await new Client(nameof(Transportation)).PostAsync<bool>(trans, "ApproveUnLockTransportation");
+                                };
+                                confirmRequets.NoConfirmed += async () =>
+                                {
+                                    transportation.IsKt = true;
+                                    await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsKtEntity(transportation), ig: "true");
+                                    var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                                    listViewItem.UpdateView(false, nameof(Transportation.IsKt));
                                 };
                             }
                         }
@@ -612,7 +633,7 @@ namespace TMS.UI.Business.Manage
                         var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "ApproveUnLockTransportation");
                         if (res)
                         {
-                            gridView.RemoveRange(transportationNoLock);
+                            await gridView.ApplyFilter(true);
                             Toast.Success("Mở khóa thành công");
                         }
                         else
@@ -625,7 +646,7 @@ namespace TMS.UI.Business.Manage
                         var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockTransportation");
                         if (res)
                         {
-                            gridView.RemoveRange(transportations);
+                            await gridView.ApplyFilter(true);
                             Toast.Success("Mở khóa thành công");
                         }
                         else
@@ -685,7 +706,7 @@ namespace TMS.UI.Business.Manage
                         var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "ApproveUnLockAccountantTransportation");
                         if (res)
                         {
-                            gridView.RemoveRange(transportationNoLock);
+                            await gridView.ApplyFilter(true);
                             Toast.Success("Mở khóa thành công");
                         }
                         else
@@ -698,7 +719,7 @@ namespace TMS.UI.Business.Manage
                         var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockAccountantTransportation");
                         if (res)
                         {
-                            gridView.RemoveRange(transportations);
+                            await gridView.ApplyFilter(true);
                             Toast.Success("Mở khóa thành công");
                         }
                         else
@@ -738,7 +759,7 @@ namespace TMS.UI.Business.Manage
                     var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockAll");
                     if (res)
                     {
-                        gridView.RemoveRange(transportations);
+                        await gridView.ApplyFilter(true);
                         Toast.Success("Mở khóa thành công");
                     }
                     else
@@ -802,7 +823,7 @@ namespace TMS.UI.Business.Manage
                         var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "RejectUnLockTransportation");
                         if (res)
                         {
-                            gridView.RemoveRange(transportationNoLock);
+                            await gridView.ApplyFilter(true);
                             Toast.Success("Hủy yêu cầu thành công");
                         }
                         else
@@ -815,7 +836,7 @@ namespace TMS.UI.Business.Manage
                         var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "RejectUnLockTransportation");
                         if (res)
                         {
-                            gridView.RemoveRange(transportations);
+                            await gridView.ApplyFilter(true);
                             Toast.Success("Hủy yêu cầu thành công");
                         }
                         else
@@ -880,7 +901,7 @@ namespace TMS.UI.Business.Manage
                         var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "RejectUnLockAccountantTransportation");
                         if (res)
                         {
-                            gridView.RemoveRange(transportationNoLock);
+                            await gridView.ApplyFilter(true);
                             Toast.Success("Hủy yêu cầu thành công");
                         }
                         else
@@ -893,7 +914,7 @@ namespace TMS.UI.Business.Manage
                         var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "RejectUnLockAccountantTransportation");
                         if (res)
                         {
-                            gridView.RemoveRange(transportations);
+                            await gridView.ApplyFilter(true);
                             Toast.Success("Hủy yêu cầu thành công");
                         }
                         else
@@ -938,7 +959,7 @@ namespace TMS.UI.Business.Manage
                     var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "RejectUnLockAll");
                     if (res)
                     {
-                        gridView.RemoveRange(transportations);
+                        await gridView.ApplyFilter(true);
                         Toast.Success("Hủy yêu cầu thành công");
                     }
                     else

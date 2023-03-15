@@ -1591,6 +1591,8 @@ namespace TMS.UI.Business.Manage
                     }
                 }
             }
+            var checkLock = new TransportationListAccountantBL();
+            await checkLock.RequestUnClosing(transportation, patchUpdate);
         }
 
         public async Task LockShipTransportation()
