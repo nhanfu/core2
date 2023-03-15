@@ -105,26 +105,6 @@ namespace TMS.API.Controllers
             }
         }
 
-        private void RealTimeUpdate(Expense entity)
-        {
-            var thead = new Thread(async () =>
-            {
-                try
-                {
-                    await _taskService.SendMessageAllUser(new WebSocketResponse<Expense>
-                    {
-                        EntityId = _entitySvc.GetEntity(typeof(Expense).Name).Id,
-                        Data = entity
-                    });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("RealtimeUpdate error at {0}: {1} {2}", DateTimeOffset.Now, ex.Message, ex.StackTrace);
-                }
-            });
-            thead.Start();
-        }
-
         private async Task SetWetAndJourneyForExpense(Expense expense, Expense oldExpense)
         {
             if (expense.TransportationTypeId != null)

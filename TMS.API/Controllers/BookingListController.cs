@@ -86,26 +86,6 @@ namespace TMS.API.Controllers
             }
         }
 
-        private void RealTimeUpdate(BookingList entity)
-        {
-            var thead = new Thread(async () =>
-            {
-                try
-                {
-                    await _taskService.SendMessageAllUser(new WebSocketResponse<BookingList>
-                    {
-                        EntityId = _entitySvc.GetEntity(typeof(BookingList).Name).Id,
-                        Data = entity
-                    });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("RealtimeUpdate error at {0}: {1} {2}", DateTimeOffset.Now, ex.Message, ex.StackTrace);
-                }
-            });
-            thead.Start();
-        }
-
         [HttpPost("api/[Controller]/CreateAllBookingList")]
         public async Task<bool> CreateAllBookingList([FromBody] BookingList entity)
         {

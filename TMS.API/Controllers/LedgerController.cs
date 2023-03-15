@@ -59,28 +59,7 @@ namespace TMS.API.Controllers
             }
             await db.SaveChangesAsync();
             await db.Entry(entity).ReloadAsync();
-            RealTimeUpdate(entity);
             return entity;
-        }
-
-        private void RealTimeUpdate(Ledger entity)
-        {
-            var thead = new Thread(async () =>
-            {
-                try
-                {
-                    await _taskService.SendMessageAllUser(new WebSocketResponse<Ledger>
-                    {
-                        EntityId = _entitySvc.GetEntity(typeof(Ledger).Name).Id,
-                        Data = entity
-                    });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("RealtimeUpdate error at {0}: {1} {2}", DateTimeOffset.Now, ex.Message, ex.StackTrace);
-                }
-            });
-            thead.Start();
         }
 
         public override async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<int> ids)

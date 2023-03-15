@@ -126,26 +126,6 @@ namespace TMS.API.Controllers
             }
         }
 
-        private void RealTimeUpdate(CommodityValue entity)
-        {
-            var thead = new Thread(async () =>
-            {
-                try
-                {
-                    await _taskService.SendMessageAllUser(new WebSocketResponse<CommodityValue>
-                    {
-                        EntityId = _entitySvc.GetEntity(typeof(CommodityValue).Name).Id,
-                        Data = entity
-                    });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("RealtimeUpdate error at {0}: {1} {2}", DateTimeOffset.Now, ex.Message, ex.StackTrace);
-                }
-            });
-            thead.Start();
-        }
-
         private async Task CalcInsuranceFees(Expense expense, bool isSOC)
         {
             bool isSubRatio = false;

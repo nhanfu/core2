@@ -482,7 +482,7 @@ namespace Core.Components
             {
                 LocalStorage.RemoveItem("ToDate" + ParentListView.GuiInfo.Id);
             }
-            if (EntityVM.EndDate != null || EntityVM.StartDate != null)
+            if ((EntityVM.EndDate != null || EntityVM.StartDate != null) && ParentListView.GuiInfo.ShowNull != null && (bool)ParentListView.GuiInfo.ShowNull)
             {
                 finalFilter += $" or {DateTimeField} eq null";
             }

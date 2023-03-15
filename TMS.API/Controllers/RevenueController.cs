@@ -184,26 +184,6 @@ namespace TMS.API.Controllers
             }
         }
 
-        private void RealTimeUpdate(Revenue entity)
-        {
-            var thead = new Thread(async () =>
-            {
-                try
-                {
-                    await _taskService.SendMessageAllUser(new WebSocketResponse<Revenue>
-                    {
-                        EntityId = _entitySvc.GetEntity(typeof(Revenue).Name).Id,
-                        Data = entity
-                    });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("RealtimeUpdate error at {0}: {1} {2}", DateTimeOffset.Now, ex.Message, ex.StackTrace);
-                }
-            });
-            thead.Start();
-        }
-
         public async override  Task<ActionResult<Revenue>> CreateAsync([FromBody] Revenue entity)
         {
             if (entity.TransportationId is null)

@@ -78,26 +78,6 @@ namespace TMS.API.Controllers
             }
         }
 
-        private void RealTimeUpdate(FreightRate entity)
-        {
-            var thead = new Thread(async () =>
-            {
-                try
-                {
-                    await _taskService.SendMessageAllUser(new WebSocketResponse<FreightRate>
-                    {
-                        EntityId = _entitySvc.GetEntity(typeof(FreightRate).Name).Id,
-                        Data = entity
-                    });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("RealtimeUpdate error at {0}: {1} {2}", DateTimeOffset.Now, ex.Message, ex.StackTrace);
-                }
-            });
-            thead.Start();
-        }
-
         protected override IQueryable<FreightRate> GetQuery()
         {
             var rs = base.GetQuery();
