@@ -295,8 +295,8 @@ namespace TMS.UI.Business.Accountant
         public void CalcRevenue()
         {
             revenueEntity.Vat = revenueEntity.Vat == null ? 10 : revenueEntity.Vat;
-            revenueEntity.TotalPriceBeforTax = Math.Round(revenueEntity.TotalPrice == null ? 0 : (decimal)revenueEntity.TotalPrice / (1 + ((decimal)revenueEntity.Vat / 100)));
-            revenueEntity.VatPrice = Math.Round(revenueEntity.TotalPriceBeforTax == null ? 0 : (decimal)revenueEntity.TotalPriceBeforTax * (decimal)revenueEntity.Vat / 100);
+            revenueEntity.VatPrice = Math.Round(((revenueEntity.TotalPrice == null ? 0 : (decimal)revenueEntity.TotalPrice) / (1 + ((decimal)revenueEntity.Vat / 100))) * ((decimal)revenueEntity.Vat / 100), 0);
+            revenueEntity.TotalPriceBeforTax = (revenueEntity.TotalPrice == null ? 0 : (decimal)revenueEntity.TotalPrice) - (revenueEntity.VatPrice == null ? 0 : (decimal)revenueEntity.VatPrice);
             this.UpdateView(false, nameof(Transportation.Vat), nameof(Transportation.TotalPriceBeforTax), nameof(Transportation.VatPrice));
         }
 
