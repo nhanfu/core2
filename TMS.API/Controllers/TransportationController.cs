@@ -1194,6 +1194,7 @@ namespace TMS.API.Controllers
                 $" ,[ExportListReturnId] = '{VendorId}',[IsLiftFee] = {(entity.IsLiftFee ? 1 : 0)},[UserReturnId] = '{UserId}'" +
                 $" where ShipId = '{entity.ShipId}' and (BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Trip = '{entity.Trip}' and RouteId in ({entity.RouteIds.Combine()})";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
+            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER tr_Transportation_ReturnDate ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
             return check;

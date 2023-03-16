@@ -188,7 +188,7 @@ namespace TMS.UI.Business.Authentication
             var userId = Client.Token.UserId;
             if (NotificationClient is null)
             {
-                //NotificationClient = new WebSocketClient("task");
+                NotificationClient = new WebSocketClient("task");
             }
 
             if (MenuComponent is null)
