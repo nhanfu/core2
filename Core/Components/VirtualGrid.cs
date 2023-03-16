@@ -432,6 +432,7 @@ namespace Core.Components
                         });
                     }
                 }
+                _summarys.Add(new HTMLElement());
                 await ActionFilter();
                 confirmDialog.Textbox.Text = null;
             };

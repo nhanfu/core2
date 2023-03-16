@@ -430,6 +430,7 @@ namespace Core.Components
                         });
                     }
                 }
+                _summarys.Add(new HTMLElement());
                 await ActionFilter();
                 confirmDialog.Textbox.Text = null;
             };
@@ -666,6 +667,7 @@ namespace Core.Components
                     IsSearch = isSearch
                 });
             }
+            _summarys.Add(new HTMLElement());
             Task.Run(async () =>
             {
                 await ActionFilter();
@@ -1192,7 +1194,15 @@ namespace Core.Components
                 }
                 if (_summarys.Any())
                 {
-                    _summarys.LastOrDefault().Show();
+                    var lastElement = _summarys.LastOrDefault();
+                    if (lastElement.InnerHTML == string.Empty)
+                    {
+                        _summarys.RemoveAt(_summarys.Count - 1);
+                    }
+                    else
+                    {
+                        lastElement.Show();
+                    }
                 }
             }
             else if (keyCode == KeyCodeEnum.F3)
