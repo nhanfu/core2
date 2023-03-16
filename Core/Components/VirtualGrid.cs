@@ -4,6 +4,7 @@ using Core.Components.Extensions;
 using Core.Components.Forms;
 using Core.Extensions;
 using Core.Models;
+using Core.MVVM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -237,6 +238,138 @@ namespace Core.Components
             Paginator.Options.EndIndex = skip + viewPort;
             Paginator.Element.AddClass("infinite-scroll");
             Paginator.Children.ForEach(child => child.UpdateView());
+        }
+
+        public override void DisposeSumary()
+        {
+            _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 3000);
+            base.DisposeSumary();
+        }
+
+        public override void ViewSumary(object ev, GridPolicy header)
+        {
+            if (_waitingLoad)
+            {
+                Window.ClearTimeout(_renderPrepareCacheAwaiter);
+            }
+            Html.Take(Document.Body).Div.ClassName("backdrop")
+            .Style("align-items: center;").Escape((e) => DisposeSumary());
+            _summarys.Add(Html.Context);
+            Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;min-width: 90%")
+                .Div.ClassName("popup-title").InnerHTML("Gộp theo cột hiện thời")
+                .Div.ClassName("icon-box").Span.ClassName("fa fa-times")
+                    .Event(EventType.Click, DisposeSumary)
+                .EndOf(".popup-title")
+                .Div.ClassName("popup-body scroll-content");
+            Html.Instance.Div.ClassName("container-rpt");
+            Html.Instance.Div.ClassName("menuBar");
+            Html.Instance.EndOf(".menuBar");
+            Html.Instance.Div.ClassName("printable");
+            var body = Html.Context;
+            Task.Run(async () =>
+            {
+                var gridPolicy = BasicHeader.Where(x => x.ComponentType == nameof(Number) && x.FieldName != header.FieldName).ToList();
+                var sum = gridPolicy.Select(x => $"FORMAT(SUM(isnull([{GuiInfo.RefName}].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
+                var dataSet = await new Client(GuiInfo.RefName).PostAsync<object[][]>(sum.Combine(), $"ViewSumary?group={header.FieldName}&tablename={GuiInfo.RefName}&refname={header.RefName}&formatsumary={GuiInfo.FormatSumaryField}&sql={Sql}&orderby={GuiInfo.OrderBySumary}&where={Wheres.Combine(" and ")} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {GuiInfo.PreQuery}")}");
+                var sumarys = dataSet[0];
+                object[] refn = null;
+                if (dataSet.Length > 1)
+                {
+                    refn = dataSet[1];
+                }
+                var id = "sumary" + (new Random(10)).GetHashCode();
+                var dir = refn?.ToDictionary(x => x[IdField]);
+                Html.Instance.Div.ClassName("grid-wrapper sticky").Div.ClassName("table-wrapper printable").Table.Id(id).Width("100%").ClassName("table")
+                .Thead
+                    .TRow.Render();
+                Html.Instance.Th.Style("max-width: 100%;").IText(header.ShortDesc).End.Render();
+                Html.Instance.Th.Style("max-width: 100%;").IText("Tổng dữ liệu").End.Render();
+                foreach (var item in gridPolicy)
+                {
+                    Html.Instance.Th.Style("max-width: 100%;").IHtml(item.ShortDesc).End.Render();
+                }
+                Html.Instance.EndOf(ElementType.thead);
+                Html.Instance.TBody.Render();
+                var ttCount = sumarys.Sum(x => Convert.ToDecimal(x["TotalRecord"].ToString().Replace(",", "") == "" ? "0" : x["TotalRecord"].ToString().Replace(",", "")));
+                foreach (var item in sumarys)
+                {
+                    item[header.FieldName] = item[header.FieldName] ?? "";
+                    var dataHeader = item[header.FieldName].ToString();
+                    var value = string.Empty;
+                    var valueText = string.Empty;
+                    if (header.ComponentType == "Dropdown")
+                    {
+                        var ob = dir.GetValueOrDefault(item[header.FieldName]);
+                        if (ob is null)
+                        {
+                            dataHeader = "";
+                        }
+                        else
+                        {
+                            dataHeader = ob[header.FormatCell.Split("}")[0].Replace("{", "")].ToString();
+                            value = ob["Id"].ToString();
+                            valueText = dataHeader;
+                        }
+                    }
+                    else if (header.ComponentType == nameof(Datepicker))
+                    {
+                        var datetime = DateTimeExt.TryParseDateTime(item[header.FieldName].ToString());
+                        dataHeader = datetime?.ToString("dd/MM/yyyy");
+                        value = datetime?.ToString("dd/MM/yyyy");
+                        valueText = datetime?.ToString("dd/MM/yyyy");
+                    }
+                    else if (header.ComponentType == nameof(Number))
+                    {
+                        var datetime = (item[header.FieldName] is null || item[header.FieldName].ToString() == "") ? default(decimal) : decimal.Parse(item[header.FieldName].ToString());
+                        dataHeader = datetime == default(decimal) ? "" : datetime.ToString("N0");
+                        value = item[header.FieldName].ToString();
+                        valueText = dataHeader;
+                    }
+                    else
+                    {
+                        value = item[header.FieldName].ToString();
+                        valueText = item[header.FieldName].ToString();
+                    }
+                    Html.Instance.TRow.Event(EventType.Click, () => FilterSumary(header, value, valueText)).Render();
+                    Html.Instance.TData.Style("max-width: 100%;").ClassName(header.ComponentType == nameof(Number) ? "text-right" : "text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
+                    Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item["TotalRecord"].ToString()).End.Render();
+                    foreach (var itemDetail in gridPolicy)
+                    {
+                        Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item[itemDetail.FieldName].ToString()).End.Render();
+                    }
+                    Html.Instance.EndOf(ElementType.tr);
+                }
+                Html.Instance.EndOf(ElementType.tbody);
+                Html.Instance.TFooter.TRow.ClassName("summary").Render();
+                Html.Instance.TData.Style("max-width: 100%;").IText("Tổng cộng").End.Render();
+                Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IText(ttCount.ToString("N0")).End.Render();
+                foreach (var item in gridPolicy)
+                {
+                    var de = sumarys.Select(x => x[item.FieldName].ToString().Replace(",", "")).ToList();
+                    var ttCount1 = de.Where(x => !x.IsNullOrWhiteSpace()).Sum(x => decimal.Parse(x));
+                    Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IHtml(ttCount1.ToString("N0")).End.Render();
+                }
+                await Client.LoadScript("//cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js");
+                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js");
+                await Client.LoadScript("//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js");
+                await Client.LoadScript("//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js");
+                await Client.LoadScript("//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js");
+                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js");
+                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js");
+                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/buttons.print.min.js");
+                /*@
+                if (!$.fn.DataTable.isDataTable('#'+id)){
+                  $('#'+id).DataTable({
+                    paging: false,
+                    info: false,
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ]
+                });
+                }
+                */
+            });
         }
 
         public override void FilterInSelected(object ev)

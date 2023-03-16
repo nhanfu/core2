@@ -21,6 +21,10 @@ namespace TMS.UI.Business.Settings
             {
                 parent = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=Active eq true and Id eq {entity.ParentId.Value}");
             }
+            else
+            {
+                parent = entity;
+            }
             await this.OpenPopup(
                 featureName: "Quotation Region Editor",
                 factory: () =>

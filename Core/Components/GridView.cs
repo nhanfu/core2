@@ -27,7 +27,7 @@ namespace Core.Components
         public ListViewSection EmptyRowSection { get; set; }
         private const string SummaryClass = "summary";
         private const int CellCountNoSticky = 50;
-        private List<HTMLElement> _summarys = new List<HTMLElement>();
+        public List<HTMLElement> _summarys = new List<HTMLElement>();
         public bool _sum = false;
         public bool AutoFocus = false;
         public HTMLElement DataTable { get; set; }
@@ -672,7 +672,7 @@ namespace Core.Components
             });
         }
 
-        private void DisposeSumary()
+        public virtual void DisposeSumary()
         {
             if (_summarys.Any())
             {
@@ -691,7 +691,7 @@ namespace Core.Components
             _summarys.ElementAtOrDefault(_summarys.Count - 1).Hide();
         }
 
-        public void ViewSumary(object ev, GridPolicy header)
+        public virtual void ViewSumary(object ev, GridPolicy header)
         {
             Html.Take(Document.Body).Div.ClassName("backdrop")
             .Style("align-items: center;").Escape((e) => DisposeSumary());
