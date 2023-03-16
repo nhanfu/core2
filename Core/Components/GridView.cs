@@ -1165,7 +1165,7 @@ namespace Core.Components
             // not to do anything
         }
 
-        protected void HotKeyF6Handler(Event e)
+        protected virtual void HotKeyF6Handler(Event e)
         {
             var keyCode = e.KeyCodeEnum();
             var selectedRow = AllListViewItem.FirstOrDefault(x => x.Selected);

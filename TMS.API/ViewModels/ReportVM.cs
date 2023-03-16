@@ -2,6 +2,20 @@
 
 namespace TMS.API.ViewModels
 {
+    public class ReportGroupVM
+    {
+        public bool Boss { get; set; }
+        public bool ContainerType { get; set; }
+        public bool Combination { get; set; }
+        public bool Commodity { get; set; }
+        public bool Closing { get; set; }
+        public bool Route { get; set; }
+        public bool BrandShip { get; set; }
+        public bool User { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+    }
+
     public class TranGroupVM
     {
         public int? Month { get; set; }
@@ -20,6 +34,5 @@ namespace TMS.API.ViewModels
         public decimal ShipUnitPrice { get; set; }
         public decimal ShipPrice { get; set; }
         public decimal ShipPolicyPrice { get; set; }
-
     }
 }

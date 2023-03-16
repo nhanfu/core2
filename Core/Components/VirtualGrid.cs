@@ -2,6 +2,7 @@
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
+using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
@@ -244,6 +245,83 @@ namespace Core.Components
         {
             _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 3000);
             base.DisposeSumary();
+        }
+
+        protected override void HotKeyF6Handler(Event e)
+        {
+            var keyCode = e.KeyCodeEnum();
+            var selectedRow = AllListViewItem.FirstOrDefault(x => x.Selected);
+            var el = e.Target as HTMLElement;
+            el = el.Closest(ElementType.td.ToString());
+            if (keyCode == KeyCodeEnum.F6)
+            {
+                e.PreventDefault();
+                e.StopPropagation();
+                if (CellSelected.Count > 0)
+                {
+                    CellSelected.RemoveAt(CellSelected.Count - 1);
+                    if (Wheres.Count - 1 >= 0)
+                    {
+                        Wheres.RemoveAt(Wheres.Count - 1);
+                    }
+                    AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                    Task.Run(async () =>
+                    {
+                        await ActionFilter();
+                    });
+                }
+                else
+                {
+                    return;
+                }
+                if (_summarys.Any())
+                {
+                    var lastElement = _summarys.LastOrDefault();
+                    if (lastElement.InnerHTML == string.Empty)
+                    {
+                        _summarys.RemoveAt(_summarys.Count - 1);
+                    }
+                    else
+                    {
+                        if (_waitingLoad)
+                        {
+                            Window.ClearTimeout(_renderPrepareCacheAwaiter);
+                        }
+                        lastElement.Show();
+                    }
+                }
+            }
+            else if (keyCode == KeyCodeEnum.F3)
+            {
+                e.PreventDefault();
+                e.StopPropagation();
+                Task.Run(async () =>
+                {
+                    var selected = await GetRealTimeSelectedRows();
+                    if (selected.Count == 0)
+                    {
+                        selected = RowData.Data.ToList();
+                    }
+                    var numbers = Header.Where(x => x.ComponentType == nameof(Number)).ToList();
+                    if (numbers.Count == 0)
+                    {
+                        Toast.Warning("Vui lòng cấu hình");
+                        return;
+                    }
+                    var listString = numbers.Select(x =>
+                    {
+                        var val = selected.Select(k => k[x.FieldName]).Where(k => k != null).Select(y => Convert.ToDecimal(y)).Sum();
+                        return x.ShortDesc + " : " + (val % 2 > 0 ? val.ToString("N2") : val.ToString("N0"));
+                    });
+                    Toast.Success(listString.Combine("</br>"), 6000);
+                });
+            }
+            else if (keyCode == KeyCodeEnum.F1)
+            {
+                e.PreventDefault();
+                e.StopPropagation();
+                ToggleAll();
+            }
         }
 
         public override void ViewSumary(object ev, GridPolicy header)
