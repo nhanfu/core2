@@ -28,6 +28,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task UpdateDataFromTransportation()
         {
+            Spinner.AppendTo(this.Element, false, true, 30000);
             if (expenseEntity.FromDate is null)
             {
                 Toast.Warning("Vui lòng nhập từ ngày");
