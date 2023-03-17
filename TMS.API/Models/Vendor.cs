@@ -59,6 +59,9 @@ namespace TMS.API.Models
         public int? DepartmentId { get; set; }
         public int? SaleId { get; set; }
         public string NameSys { get; set; }
+        public int? StateId { get; set; }
+        public DateTime? LastOrderState { get; set; }
+        public bool IsSeft { get; set; }
 
         public virtual ICollection<ErrorLog> ErrorLog { get; set; }
         public virtual ICollection<User> User { get; set; }

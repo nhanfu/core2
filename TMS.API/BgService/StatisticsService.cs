@@ -1,0 +1,169 @@
+﻿using Core.Enums;
+using Core.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.WebSockets;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using TMS.API.Models;
+using TMS.API.Services;
+using TMS.API.Websocket;
+
+namespace TMS.API.BgService
+{
+    public class StatisticsService : BackgroundService
+    {
+        private readonly IServiceProvider _serviceProvider;
+        protected readonly EntityService _entitySvc;
+        private readonly string FCM_API_KEY;
+        private readonly string FCM_SENDER_ID;
+        protected ConnectionManager WebSocketConnectionManager { get; set; }
+
+        public StatisticsService(IServiceProvider serviceProvider, EntityService entityService, IConfiguration configuration, ConnectionManager webSocketConnectionManage)
+        {
+            WebSocketConnectionManager = webSocketConnectionManage;
+            _serviceProvider = serviceProvider;
+            _entitySvc = entityService;
+            FCM_API_KEY = configuration["FCM_API_KEY"];
+            FCM_SENDER_ID = configuration["FCM_SENDER_ID"];
+        }
+
+        public async Task NotifyAsync(IEnumerable<TaskNotification> entities)
+        {
+            await entities
+                .Where(x => x.AssignedId.HasValue)
+                .Select(x => new WebSocketResponse<TaskNotification>
+                {
+                    EntityId = _entitySvc.GetEntity(nameof(TaskNotification))?.Id ?? 0,
+                    Data = x
+                })
+                .ForEachAsync(SendMessageToUser);
+        }
+
+        private async Task SendMessageToUser(WebSocketResponse<TaskNotification> task)
+        {
+            var fcm = new FCMWrapper
+            {
+                To = $"/topics/DongAU{task.Data.AssignedId:0000000}",
+                Data = new FCMData
+                {
+                    Title = task.Data.Title,
+                    Body = task.Data.Description,
+                },
+                Notification = new FCMNotification
+                {
+                    Title = task.Data.Title,
+                    Body = task.Data.Description,
+                    ClickAction = "com.softek.tms.push.background.MESSAGING_EVENT"
+                }
+            };
+            await SendMessageToUsersAsync(new List<int>() { task.Data.AssignedId.Value }, task.ToJson(), fcm.ToJson());
+        }
+
+        public Task SendMessageToUsersAsync(List<int> userIds, string message, string fcm = null)
+        {
+            var userGroup = WebSocketConnectionManager.GetAll()
+                .Where(x => userIds.Contains(x.Key.Split("/").FirstOrDefault().TryParseInt() ?? 0));
+            return NotifyUserGroup(message, userGroup, fcm);
+        }
+
+        public async Task SendFCMNotfication(string message)
+        {
+            if (message is null)
+            {
+                return;
+            }
+
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, new Uri("https://fcm.googleapis.com/fcm/send"));
+            request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + FCM_API_KEY);
+            request.Headers.TryAddWithoutValidation("Sender", "id=" + FCM_SENDER_ID);
+            request.Content = new StringContent(message, Encoding.UTF8, "application/json");
+            var res = await client.SendAsync(request);
+            await res.Content.ReadAsStringAsync();
+        }
+
+        public async Task SendMessageAsync(WebSocket socket, string message)
+        {
+            if (socket.State != WebSocketState.Open)
+            {
+                return;
+            }
+
+            var bytes = Encoding.UTF8.GetBytes(message);
+            await socket.SendAsync(buffer: new ArraySegment<byte>(
+                    array: bytes,
+                    offset: 0,
+                    count: bytes.Length),
+                messageType: WebSocketMessageType.Text,
+                endOfMessage: true,
+                cancellationToken: CancellationToken.None);
+        }
+
+        private async Task NotifyUserGroup(string message, IEnumerable<KeyValuePair<string, WebSocket>> userGroup, string fcm = null)
+        {
+            var fcmTask = SendFCMNotfication(fcm);
+            var realtimeTasks = userGroup.Select(pair =>
+            {
+                if (pair.Value.State != WebSocketState.Open)
+                {
+                    return Task.CompletedTask;
+                }
+
+                return SendMessageAsync(pair.Value, message);
+            }).ToList();
+            realtimeTasks.Add(fcmTask);
+            await Task.WhenAll(realtimeTasks);
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                var now = DateTime.Now;
+                var waitTime = new DateTime(now.Year, now.Month, now.Day, 6, 0, 0) - now;
+                if (waitTime < TimeSpan.Zero)
+                {
+                    waitTime = waitTime.Add(TimeSpan.FromDays(1));
+                }
+                await Task.Delay(waitTime, stoppingToken);
+                var currentDate = DateTime.UtcNow.Date.AddMonths(-3);
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<TMSContext>();
+                    var vendors = await dbContext.Vendor.Where(o => !o.IsSeft && o.StateId == 1 && o.TypeId == 7551 && ((o.LastOrderState < currentDate && o.LastOrderState != null) || (o.InsertedDate < currentDate && o.LastOrderState == null))).ToListAsync();
+                    if (vendors.Count == 0)
+                    {
+                        continue;
+                    }
+                    vendors.ForEach(x => x.StateId = 2);
+                    var listUser = await dbContext.UserRole.Where(x => x.RoleId == 43).Select(x => x.UserId).Distinct().ToListAsync();
+                    var tasks = listUser.Select(user => new TaskNotification
+                    {
+                        Title = $"Chuyển chủ hàng về Đông Á vì lý do 3 tháng chưa phát sinh đơn hàng",
+                        Description = $"{vendors.Select(x => x.Name).Combine(", ")}",
+                        EntityId = _entitySvc.GetEntity(typeof(Vendor).Name).Id,
+                        RecordId = null,
+                        Attachment = "fal fa-users-slash",
+                        AssignedId = user,
+                        StatusId = (int)TaskStateEnum.UnreadStatus,
+                        RemindBefore = 540,
+                        Deadline = DateTime.Now,
+                        InsertedBy = 1,
+                        InsertedDate = DateTime.Now
+                    });
+                    dbContext.AddRange(tasks);
+                    await NotifyAsync(tasks);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+        }
+    }
+}

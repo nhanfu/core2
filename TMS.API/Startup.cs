@@ -26,6 +26,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using TMS.API.BgService;
 using TMS.API.Extensions;
 using TMS.API.Models;
 using TMS.API.Services;
@@ -124,6 +125,8 @@ namespace TMS.API
             services.AddScoped<TaskService>();
             services.AddScoped<UserService>();
             services.AddScoped<VendorSvc>();
+            //
+            services.AddHostedService<StatisticsService>();
         }
 
         static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()

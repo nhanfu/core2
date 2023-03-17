@@ -62,6 +62,8 @@ namespace Core.Models
         public int? CollectOnBehalfDay { get; set; }
         public string GlobalId { get; set; }
         public string PartnerId { get; set; }
+        public int? StateId { get; set; }
+        public bool IsSeft { get; set; }
 
         public virtual Vendor Parent { get; set; }
         public virtual Vendor Tenant { get; set; }
