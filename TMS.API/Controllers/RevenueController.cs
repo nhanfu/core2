@@ -359,7 +359,7 @@ namespace TMS.API.Controllers
                 item.IsCollectOnBehaftPrice ||
                 item.IsNotePayment)
             {
-                if (RoleIds.Where(x => x == 46 || x == 8).Any())
+                if (RoleIds.Where(x => x == 34 || x == 8).Any())
                 {
                     cmd += $"{nameof(Revenue.UserUpdate1)} = {UserId},";
                 }
@@ -371,7 +371,7 @@ namespace TMS.API.Controllers
                 item.IsInvoinceNo ||
                 item.IsInvoinceDate)
             {
-                if (RoleIds.Where(x => x == 34 || x == 8).Any())
+                if (RoleIds.Where(x => x == 46 || x == 8).Any())
                 {
                     cmd += $"{nameof(Revenue.UserUpdate2)} = {UserId},";
                 }
