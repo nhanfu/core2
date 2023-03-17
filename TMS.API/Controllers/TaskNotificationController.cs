@@ -4,6 +4,7 @@ using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +17,35 @@ namespace TMS.API.Controllers
         public TaskNotificationController(
             TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
+        }
+
+        [HttpPost("api/[Controller]/SendRequest")]
+        public async Task<IActionResult> MarkAllAsRead([FromBody] TaskNotification entity)
+        {
+            var listUser = await db.User.Where(x => x.Id != UserId).ToListAsync();
+            if (listUser.HasElement())
+            {
+                var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
+                var tasks = listUser.Select(user => new TaskNotification
+                {
+                    Title = entity.Title,
+                    Description = entity.Description,
+                    EntityId = entity.EntityId,
+                    RecordId = entity.RecordId,
+                    Attachment = entity.Attachment,
+                    AssignedId = user.Id,
+                    StatusId = (int)TaskStateEnum.UnreadStatus,
+                    RemindBefore = 540,
+                    Deadline = entity.Deadline,
+                    Active = true,
+                    InsertedBy = UserId,
+                    InsertedDate = DateTime.Now
+                });
+                db.AddRange(tasks);
+                await db.SaveChangesAsync();
+                await _taskService.NotifyAsync(tasks);
+            }
+            return Ok(true);
         }
 
         [HttpPost("api/[Controller]/MarkAllAsRead")]

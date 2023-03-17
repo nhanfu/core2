@@ -250,26 +250,24 @@ namespace TMS.UI.Notifications
             };
             html.EndOf(ElementType.a);
             html.Div.Style("border-top-left-radius: 0;border-top-right-radius: 0").ClassName("dropdown-menu dropdown-menu-right dropdown-content wmin-md-300 mt-0").Style("border-top-left-radius: 0;border-top-right-radius: 0");
-            html.Ul.Id("notifyBox").ClassName("media-list pt-2 pb-2")
-                    .ForEach(Notifications, (task, index) =>
-                    {
-                        if (task is null)
-                        {
-                            return;
-                        }
+            html.ForEach(Notifications, (task, index) =>
+            {
+                if (task is null)
+                {
+                    return;
+                }
 
-                        var className = task.StatusId == (int)TaskStateEnum.UnreadStatus ? "far fa-bell mr-1" : "fal fa-bell-slash mr-1";
-                        html.Li.ClassName("dropdown-item");
-                        html.A.ClassName("media-title noticeItem font-weight-semibold text-default").Event(EventType.Click, async (e) =>
-                        {
-                            await OpenNotification(task, e);
-                        });
-                        html.I.ClassName(className).End.Text(task.Title + ", " + task.Description + ", lúc " + task.Deadline.ToString("dd/MM/yyyy HH:mm")).EndOf(ElementType.li);
-                    });
-            html.EndOf(ElementType.ul);
-            html.Div.ClassName("dropdown-content-footer");
-            html.A.ClassName("text-grey mr-auto cur").AsyncEvent(EventType.Click, SeeMore).Text("See more").EndOf(ElementType.a);
-            html.A.ClassName("text-grey").DataAttr("toggle", "tooltip").AsyncEvent(EventType.Click, MarkAllAsRead).Text("Mark as read").EndOf(ElementType.a);
+                var className = task.StatusId == (int)TaskStateEnum.UnreadStatus ? "text-danger" : "text-muted";
+                html.A.ClassName("dropdown-item").Div.ClassName("media").Event(EventType.Click, async (e) =>
+                {
+                    await OpenNotification(task, e);
+                })
+                .Div.ClassName("media-body").H3.ClassName("dropdown-item-title").Text(task.Title).Span.ClassName("float-right text-sm " + className).I.ClassName("fas fa-star").End.End.End
+                .P.ClassName("text-sm").Text(task.Description).End
+                .P.ClassName("text-sm text-muted")
+                    .I.ClassName("far fa-clock mr-1").End.Text(task.Deadline.ToString("dd/MM/yyyy HH:mm")).EndOf(ElementType.a);
+            });
+            html.A.ClassName("dropdown-item dropdown-footer").AsyncEvent(EventType.Click, SeeMore).Text("See more").EndOf(ElementType.a);
             Notifications.Data.ForEach(PopupNotification);
         }
 
@@ -308,9 +306,9 @@ namespace TMS.UI.Notifications
             Client client = new Client(nameof(TaskNotification));
             var res = await client.PostAsync<bool>(client, "MarkAllAsRead");
             ToggleBageCount(Notifications.Data.Count);
-            _task.QuerySelectorAll(".task-unread").ForEach(task =>
+            _task.QuerySelectorAll(".text-danger").ForEach(task =>
             {
-                task.ReplaceClass("task-unread", "task-read");
+                task.ReplaceClass("text-danger", "text-muted");
             });
         }
 

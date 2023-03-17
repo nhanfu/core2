@@ -35,7 +35,7 @@ namespace TMS.API.Services
                     EntityId = _entitySvc.GetEntity(nameof(TaskNotification))?.Id ?? 0,
                     Data = x
                 })
-                .ForEachAsync(async (task) => await SendMessageToUser(task));
+                .ForEachAsync(SendMessageToUser);
         }
 
         private async Task SendMessageToUser(WebSocketResponse<TaskNotification> task)

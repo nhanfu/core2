@@ -2,6 +2,7 @@
 using Core.Components.Forms;
 using System;
 using System.Threading.Tasks;
+using TMS.API.Models;
 
 namespace TMS.UI.Business.User
 {
@@ -23,6 +24,20 @@ namespace TMS.UI.Business.User
             await InitUserForm(new API.Models.User());
         }
 
+        public async Task CreateTaskNotification()
+        {
+            await this.OpenPopup(
+                featureName: "Create TaskNotification",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.User.TaskNotificationDetailBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Thêm mới thông báo";
+                    instance.Entity = new TaskNotification();
+                    return instance;
+                });
+        }
+        
         private async Task InitUserForm(API.Models.User user)
         {
             await this.OpenPopup(

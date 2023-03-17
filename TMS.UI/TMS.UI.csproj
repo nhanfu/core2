@@ -384,6 +384,7 @@
     <Compile Include="Business\User\UserBL.cs" />
     <Compile Include="Business\User\UserDetailBL.cs" />
     <Compile Include="Business\User\UserProfileBL.cs" />
+    <Compile Include="Business\User\TaskNotificationDetailBL.cs" />
     <Compile Include="Business\User\UserSettingBL.cs" />
     <Compile Include="Notifications\NotificationBL.cs" />
     <Compile Include="Notifications\TaskNotificationListBL.cs" />
