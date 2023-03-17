@@ -26,7 +26,6 @@ namespace TMS.UI.Business.Manage
             Name = "Booking List";
             DOMContentLoaded += () =>
             {
-                NotificationClient?.AddListener(Utils.GetEntity(nameof(Teus)).Id, RealtimeUpdate);
                 Html.Take("Body").Form.Attr("method", "POST").Attr("enctype", "multipart/form-data")
                 .Display(false).Input.Event(EventType.Change, async (ev) => await SelectedExcel(ev)).Type("file").Id($"id_{GetHashCode()}").Attr("name", "fileImport").Attr("accept", ".xlsx");
                 _uploader = Html.Context as HTMLInputElement;

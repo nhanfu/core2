@@ -119,14 +119,6 @@ namespace Core.Components.Forms
             {
                 Entity = Activator.CreateInstance(entityType);
             }
-
-            var hasEntity = Client.Entities.Values.FirstOrDefault(x => (x.AliasFor ?? x.Name) == _entity);
-            if (hasEntity != null)
-            {
-                _entityEnum = hasEntity;
-                NotificationClient?.AddListener(_entityEnum.Id, RealtimeUpdate);
-            }
-
             Window.AddEventListener(EventType.Resize, ResizeHandler);
             LayoutForm = LayoutForm ?? new EditForm(null);
         }

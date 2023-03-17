@@ -23,10 +23,6 @@ namespace TMS.UI.Business.Manage
         public TransportationListBL() : base(nameof(Transportation))
         {
             Name = "Transportation List";
-            DOMContentLoaded += () =>
-            {
-                NotificationClient?.AddListener(Utils.GetEntity(nameof(Expense)).Id, RealtimeUpdate);
-            };
         }
 
         public virtual async Task ViewCheckFee(CheckFeeHistory entity)
@@ -640,16 +636,6 @@ namespace TMS.UI.Business.Manage
                     listViewItem.Element.RemoveClass("bg-red1");
                 }
             });
-        }
-
-        protected override void RealtimeUpdate(object updatedData)
-        {
-            base.RealtimeUpdate(updatedData);
-            var tran = updatedData as Transportation;
-            if (tran != null)
-            {
-                ChangeBackgroudColor(new List<Transportation> { tran });
-            }
         }
 
         public virtual void CheckReturnDate(Transportation transportationPlan)
