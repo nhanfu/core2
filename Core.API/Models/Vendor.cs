@@ -63,6 +63,7 @@ namespace Core.Models
         public string GlobalId { get; set; }
         public string PartnerId { get; set; }
         public int? StateId { get; set; }
+        public DateTime? LastOrderState { get; set; }
         public bool IsSeft { get; set; }
 
         public virtual Vendor Parent { get; set; }

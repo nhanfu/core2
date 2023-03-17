@@ -134,36 +134,72 @@ namespace TMS.API.BgService
                     waitTime = waitTime.Add(TimeSpan.FromDays(1));
                 }
                 await Task.Delay(waitTime, stoppingToken);
-                var currentDate = DateTime.UtcNow.Date.AddMonths(-3);
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var dbContext = scope.ServiceProvider.GetRequiredService<TMSContext>();
-                    var vendors = await dbContext.Vendor.Where(o => !o.IsSeft && o.StateId == 1 && o.TypeId == 7551 && ((o.LastOrderState < currentDate && o.LastOrderState != null) || (o.InsertedDate < currentDate && o.LastOrderState == null))).ToListAsync();
-                    if (vendors.Count == 0)
-                    {
-                        continue;
-                    }
-                    vendors.ForEach(x => x.StateId = 2);
-                    var listUser = await dbContext.UserRole.Where(x => x.RoleId == 43).Select(x => x.UserId).Distinct().ToListAsync();
-                    var tasks = listUser.Select(user => new TaskNotification
-                    {
-                        Title = $"Chuyển chủ hàng về Đông Á vì lý do 3 tháng chưa phát sinh đơn hàng",
-                        Description = $"{vendors.Select(x => x.Name).Combine(", ")}",
-                        EntityId = _entitySvc.GetEntity(typeof(Vendor).Name).Id,
-                        RecordId = null,
-                        Attachment = "fal fa-users-slash",
-                        AssignedId = user,
-                        StatusId = (int)TaskStateEnum.UnreadStatus,
-                        RemindBefore = 540,
-                        Deadline = DateTime.Now,
-                        InsertedBy = 1,
-                        InsertedDate = DateTime.Now
-                    });
-                    dbContext.AddRange(tasks);
-                    await NotifyAsync(tasks);
+                    var rs1 = await CheckVendorLv1(dbContext);
+                    var rs = await CheckVendorLv2(dbContext);
+                    dbContext.AddRange(rs);
+                    dbContext.AddRange(rs1);
                     await dbContext.SaveChangesAsync();
+                    await NotifyAsync(rs);
+                    await NotifyAsync(rs1);
                 }
             }
+        }
+
+        private async Task<IEnumerable<TaskNotification>> CheckVendorLv1(TMSContext dbContext)
+        {
+            var currentDate = DateTime.UtcNow.Date.AddMonths(-3);
+            var vendors = await dbContext.Vendor.Where(o => !o.IsSeft && o.StateId == 1 && o.TypeId == 7551 && ((o.LastOrderState < currentDate && o.LastOrderState != null) || (o.InsertedDate < currentDate && o.LastOrderState == null))).ToListAsync();
+            if (vendors.Count == 0)
+            {
+                return new List<TaskNotification>();
+            }
+            vendors.ForEach(x => x.StateId = 2);
+            var listUser = await dbContext.UserRole.Where(x => x.RoleId == 43).Select(x => x.UserId).Distinct().ToListAsync();
+            var tasks = listUser.Select(user => new TaskNotification
+            {
+                Title = $"Chuyển chủ hàng về Đông Á vì lý do 3 tháng chưa phát sinh đơn hàng",
+                Description = $"{vendors.Select(x => x.Name).Combine(", ")}",
+                EntityId = _entitySvc.GetEntity(typeof(Vendor).Name).Id,
+                RecordId = null,
+                Attachment = "fal fa-users-slash",
+                AssignedId = user,
+                StatusId = (int)TaskStateEnum.UnreadStatus,
+                RemindBefore = 540,
+                Deadline = DateTime.Now,
+                InsertedBy = 1,
+                InsertedDate = DateTime.Now
+            });
+            return tasks;
+        }
+
+        private async Task<IEnumerable<TaskNotification>> CheckVendorLv2(TMSContext dbContext)
+        {
+            var currentDate = DateTime.UtcNow.Date.AddMonths(-6);
+            var vendors = await dbContext.Vendor.Where(o => !o.IsSeft && o.StateId == 2 && o.TypeId == 7551 && ((o.LastOrderState < currentDate && o.LastOrderState != null) || (o.InsertedDate < currentDate && o.LastOrderState == null))).ToListAsync();
+            if (vendors.Count == 0)
+            {
+                return new List<TaskNotification>();
+            }
+            vendors.ForEach(x => x.StateId = 3);
+            var listUser = await dbContext.UserRole.Where(x => x.RoleId == 43).Select(x => x.UserId).Distinct().ToListAsync();
+            var tasks = listUser.Select(user => new TaskNotification
+            {
+                Title = $"Chuyển chủ hàng về chung vì lý do 6 tháng chưa phát sinh đơn hàng",
+                Description = $"{vendors.Select(x => x.Name).Combine(", ")}",
+                EntityId = _entitySvc.GetEntity(typeof(Vendor).Name).Id,
+                RecordId = null,
+                Attachment = "fal fa-users-slash",
+                AssignedId = user,
+                StatusId = (int)TaskStateEnum.UnreadStatus,
+                RemindBefore = 540,
+                Deadline = DateTime.Now,
+                InsertedBy = 1,
+                InsertedDate = DateTime.Now
+            });
+            return tasks;
         }
     }
 }
