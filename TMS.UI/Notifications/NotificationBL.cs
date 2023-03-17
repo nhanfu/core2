@@ -114,7 +114,14 @@ namespace TMS.UI.Notifications
 
         private void ShowToast(TaskNotification task)
         {
-            Toast.Success($"Notifications from the system <br /> {task.Title} - {task.Description}");
+            /*@
+             Swal.fire({
+                  icon: 'error',
+                  title: task.Title,
+                  text: task.Description,
+                  footer: '<a href="#">Chúc 1 ngày làm việc hiệu quả</a>'
+                })
+             */
         }
 
         public static NotificationBL Instance
