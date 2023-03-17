@@ -65,11 +65,11 @@ namespace TMS.UI.Notifications
             } else if (typeof(Notification) !== 'undefined' && Notification.permission !== "denied") {
                 Notification.requestPermission().then((permission) => {
                     if (permission !== 'granted') {
-                        this.ShowToast(task);
                     }
                     else this.ShowNativeNtf(task);
                 });
-            } else this.ShowToast(task);
+            }
+            this.ShowToast(task);
             */
         }
 
@@ -114,14 +114,21 @@ namespace TMS.UI.Notifications
 
         private void ShowToast(TaskNotification task)
         {
-            /*@
-             Swal.fire({
-                  icon: 'error',
-                  title: task.Title,
-                  text: task.Description,
-                  footer: '<a href="#">Chúc 1 ngày làm việc hiệu quả</a>'
-                })
-             */
+            if (task.EntityId == Utils.GetEntity(nameof(Entity)).Id)
+            {
+                /*@
+                 Swal.fire({
+                      icon: 'error',
+                      title: task.Title,
+                      text: task.Description,
+                      footer: '<a href="#">Chúc 1 ngày làm việc hiệu quả</a>'
+                    })
+                */
+            }
+            else
+            {
+                Toast.Success($"Thông báo hệ thống <br /> {task.Title} - {task.Description}");
+            }
         }
 
         public static NotificationBL Instance
