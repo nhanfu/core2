@@ -1803,6 +1803,8 @@ namespace Core.Components
             }
         }
 
+        
+
         private void MoveEmptyRow(ListViewItem rowSection)
         {
             if (RowData.Data.Contains(rowSection.Entity))
@@ -2376,6 +2378,34 @@ namespace Core.Components
             {
                 RowAction(row => !row.EmptyRow, row => row.UpdateView(force, dirty, componentNames));
             }
+        }
+
+        public async Task RowChangeHandlerGrid(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
+        {
+            await Task.Delay(CellCountNoSticky);
+            if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
+            {
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
+                rowSection.EmptyRow = false;
+                MoveEmptyRow(rowSection);
+                var headers = Header.Where(y => y.Editable).ToList();
+                var currentComponent = headers.FirstOrDefault(y => y.FieldName == component?.GuiInfo.FieldName);
+                var index = headers.IndexOf(currentComponent);
+                if (headers.Count > index + 1)
+                {
+                    var nextGrid = headers[index + 1];
+                    var nextComponent = rowSection.Children.Where(y => y?.GuiInfo.FieldName == nextGrid.FieldName).FirstOrDefault();
+                    nextComponent.Focus();
+                }
+                EmptyRowSection.Children.Clear();
+                AddNewEmptyRow();
+                Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
+            }
+            AddSummaries();
+            PopulateFields();
+            RenderIndex();
+            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, rowData);
         }
     }
 }

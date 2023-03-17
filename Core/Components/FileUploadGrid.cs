@@ -1,5 +1,7 @@
 ﻿using Bridge.Html5;
 using Core.Clients;
+using Core.Components.Extensions;
+using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
@@ -103,6 +105,7 @@ namespace Core.Components
         {
             RowData.Data.Select(x => x.CastProp<FileUpload>()).ForEach(x => Client.Download(x.FilePath));
         }
+        
 
         internal override async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
         {
@@ -121,7 +124,7 @@ namespace Core.Components
             rowData[nameof(FileUpload.SectionId)] = GuiInfo.ComponentGroupId;
             rowData[nameof(FileUpload.FieldName)] = GuiInfo.FieldName;
             rowData[nameof(FileUpload.FileName)] = ImageUploader.RemoveGuid(rowData[nameof(FileUpload.FilePath)] as string);
-            await base.RowChangeHandler(rowData, rowSection, observableArgs);
+            await RowChangeHandlerGrid(rowData, rowSection, observableArgs);
             rowSection.UpdateView(true);
             SetEntityPath();
             if (GuiInfo.IsRealtime && EntityId > 0)
