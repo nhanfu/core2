@@ -127,21 +127,9 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        private int commodityAwaiter;
-
-        public void UpdateCommodityValue()
-        {
-            Window.ClearTimeout(commodityAwaiter);
-            commodityAwaiter = Window.SetTimeout(async () =>
-            {
-                await UpdateCommodityAsync();
-            }, 500);
-        }
-
-        public async Task UpdateCommodityAsync()
+        public async Task UpdateCommodityAsync(CommodityValue commodityValueEntity)
         {
             gridView = gridView ?? this.FindActiveComponent<GridView>().FirstOrDefault();
-            var commodityValueEntity = gridView.GetSelectedRows().Cast<CommodityValue>().ToList().FirstOrDefault();
             if (commodityValueEntity != null && commodityValueEntity.BossId > 0 && commodityValueEntity.CommodityId > 0 && commodityValueEntity.ContainerId > 0)
             {
                 var commodityValue = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {commodityValueEntity.BossId} and CommodityId eq {commodityValueEntity.CommodityId} and ContainerId eq {commodityValueEntity.ContainerId}");
@@ -151,19 +139,16 @@ namespace TMS.UI.Business.Manage
                     {
                         Content = "Bạn có muốn cập nhật GTHH này từ " + commodityValue.TotalPrice.ToString("N0") + " thành " + commodityValueEntity.TotalPrice.ToString("N0") + " không?"
                     };
-                    var selectedCommodityValue = gridView.RowData.Data.Cast<CommodityValue>().ToList().Where(x => x.BossId == commodityValueEntity.BossId && x.CommodityId == commodityValueEntity.CommodityId && x.ContainerId == commodityValueEntity.ContainerId && x.Active == true).FirstOrDefault();
                     confirm.Render();
                     confirm.YesConfirmed += async () =>
                     {
-                        gridView.RemoveRow(selectedCommodityValue);
                         commodityValue.EndDate = DateTime.Now.Date;
                         commodityValue.Active = false;
                         await new Client(nameof(CommodityValue)).PatchAsync<object>(GetPatchEntity(commodityValue));
                         var newCommodityValue = CreateCommodityValue(commodityValueEntity);
                         await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
-                        await gridView.AddRow(newCommodityValue);
                         Toast.Success("Đã cập nhật thành công");
-                        UpdateView();
+                        await gridView.ApplyFilter(true);
                         var expenseContainerType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7565 and Id eq {commodityValue.ContainerId}");
                         var containerTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 7565 and contains(Description, '{expenseContainerType.Description}')");
                         var containerTypeCodes = containerTypes.Select(x => x.Id).ToList();
@@ -197,8 +182,8 @@ namespace TMS.UI.Business.Manage
                     confirm.NoConfirmed += async () =>
                     {
                         commodityValueEntity.TotalPrice = commodityValue.TotalPrice;
-                        gridView.UpdateRow(selectedCommodityValue);
-                        var listViewItem = gridView.GetListViewItems(selectedCommodityValue).FirstOrDefault();
+                        gridView.UpdateRow(commodityValueEntity);
+                        var listViewItem = gridView.GetListViewItems(commodityValueEntity).FirstOrDefault();
                         var updated = listViewItem.FilterChildren<Number>(x => x.GuiInfo.FieldName == nameof(CommodityValue.TotalPrice)).ToList();
                         updated.ForEach(x => x.Dirty = true);
                         await new Client(nameof(CommodityValue)).PatchAsync<object>(GetPatchEntity(commodityValueEntity));
@@ -345,6 +330,11 @@ namespace TMS.UI.Business.Manage
                 {
                     return;
                 }
+            }
+            if (patch.Changes.Any(x =>
+            x.Field == nameof(oldEntity.TotalPrice)))
+            {
+                await UpdateCommodityAsync(entity);
             }
             if (patch.Changes.Any(x =>
             x.Field == nameof(oldEntity.StartDate) ||
