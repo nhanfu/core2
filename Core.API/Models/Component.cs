@@ -99,6 +99,7 @@ namespace Core.Models
         public bool? LiteGrid { get; set; }
         public bool? ShowDatetimeField { get; set; }
         public bool? ShowNull { get; set; }
+        public bool? AddDate { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

@@ -209,7 +209,7 @@ namespace Core.Components
             }
             else
             {
-                if (GuiInfo.ComponentType == nameof(VirtualGrid))
+                if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.AddDate != null && (bool)GuiInfo.AddDate)
                 {
                     ListViewSearch.EntityVM.StartDate = DateTime.Now.AddMonths(-2);
                 }
@@ -1803,7 +1803,7 @@ namespace Core.Components
             }
         }
 
-        
+
 
         private void MoveEmptyRow(ListViewItem rowSection)
         {
