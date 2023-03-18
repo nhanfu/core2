@@ -1,7 +1,9 @@
 ﻿using Core.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -55,9 +57,9 @@ namespace TMS.API.Websocket
             _logger.LogDebug(FCM_SENDER_ID);
         }
 
-        public virtual Task OnConnected(WebSocket socket, int userId, List<int> roleIds)
+        public virtual Task OnConnected(WebSocket socket, int userId, List<int> roleIds, string ip)
         {
-            WebSocketConnectionManager.AddSocket(socket, userId, roleIds);
+            WebSocketConnectionManager.AddSocket(socket, userId, roleIds, ip);
             return Task.CompletedTask;
         }
 
@@ -109,6 +111,12 @@ namespace TMS.API.Websocket
                     await SendMessageAsync(pair.Value, message);
                 }
             }
+        }
+
+
+        public ConcurrentDictionary<string, WebSocket> GetAll()
+        {
+            return WebSocketConnectionManager.GetAll();
         }
 
         public Task SendMessageToUserAsync(int userId, string message, string fcm = null)

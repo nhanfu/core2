@@ -16,9 +16,9 @@ namespace TMS.API.Websocket
         {
         }
 
-        public override async Task OnConnected(WebSocket socket, int userId, List<int> roleIds)
+        public override async Task OnConnected(WebSocket socket, int userId, List<int> roleIds, string ip)
         {
-            await base.OnConnected(socket, userId, roleIds);
+            await base.OnConnected(socket, userId, roleIds, ip);
         }
 
         public override async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)

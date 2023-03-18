@@ -22,17 +22,21 @@ namespace TMS.UI.Notifications
     {
         private static NotificationBL _instance;
         private static Observable<string> _countNtf;
+        private static Observable<string> _countUser;
         private HTMLElement _profile;
         private HTMLElement _task;
         private HTMLElement _countBadge;
 
         public static ObservableList<TaskNotification> Notifications { get; private set; }
+        public static ObservableList<User> UserActive { get; private set; }
         private Token CurrentUser { get; set; }
 
         private NotificationBL() : base(null)
         {
             Notifications = new ObservableList<TaskNotification>();
+            UserActive = new ObservableList<User>();
             _countNtf = new Observable<string>();
+            _countUser = new Observable<string>();
             EditForm.NotificationClient?.AddListener(nameof(TaskNotification), ProcessIncomMessage);
         }
 
@@ -77,6 +81,7 @@ namespace TMS.UI.Notifications
         {
             var unreadCount = Notifications.Data.Count(x => x.StatusId == (int)TaskStateEnum.UnreadStatus);
             _countNtf.Data = unreadCount > 9 ? "9+" : unreadCount.ToString();
+            _countUser.Data = UserActive.Data.Count.ToString();
             var badge = unreadCount > 9 ? 9 : unreadCount;
             /*@
             if (typeof(cordova) !== 'undefined' &&
@@ -151,12 +156,16 @@ namespace TMS.UI.Notifications
         public async Task RenderAsync()
         {
             Html.Take("#notification-list").Clear();
+            Html.Take("#user-active").Clear();
             var notifications = await new Client(nameof(TaskNotification)).GetRawList<TaskNotification>($"?$expand=Entity&$orderby=InsertedDate desc&$top=50");
+            var userActive = await new Client(nameof(TaskNotification)).PostAsync<List<User>>(null, $"GetUserActive");
             Notifications.Data = notifications;
+            UserActive.Data = userActive;
             SetBadgeNumber();
             CurrentUser = Client.Token;
             CurrentUser.Avatar = Client.Origin + (CurrentUser.Avatar.IsNullOrWhiteSpace() ? "./image/chinese.jfif" : CurrentUser.Avatar);
             RenderNotification();
+            RenderUserActive();
             RenderProfile(".profile-info1");
         }
 
@@ -283,6 +292,30 @@ namespace TMS.UI.Notifications
             });
             html.A.ClassName("dropdown-item dropdown-footer").AsyncEvent(EventType.Click, SeeMore).Text("See more").EndOf(ElementType.a);
             Notifications.Data.ForEach(PopupNotification);
+        }
+
+        private void RenderUserActive()
+        {
+            var html = Html.Take("#user-active").A.ClassName("navbar-nav-link").DataAttr("toggle", "dropdown").I.ClassName("fal fa-users fa-lg").EndOf(ElementType.i);
+            if (_countUser.Data != string.Empty)
+            {
+                html.Span.ClassName("badge badge-pill bg-warning-400 ml-auto ml-md-0").Text(_countUser);
+                _countBadge = Html.Context;
+            };
+            html.EndOf(ElementType.a);
+            html.Div.Style("border-top-left-radius: 0;border-top-right-radius: 0").ClassName("dropdown-menu dropdown-menu-right dropdown-content wmin-md-300 mt-0").Style("border-top-left-radius: 0;border-top-right-radius: 0");
+            html.ForEach(UserActive, (task, index) =>
+            {
+                if (task is null)
+                {
+                    return;
+                }
+                html.A.ClassName("dropdown-item").Div.ClassName("media")
+                .Div.ClassName("media-body").H3.ClassName("dropdown-item-title").Text(task.FullName).Span.ClassName("float-right text-sm text-sucssess").I.ClassName("fas fa-star").End.End.End
+                .P.ClassName("text-sm").Text("").End
+                .P.ClassName("text-sm text-muted")
+                    .I.ClassName("fal fa-tablet mr-1").End.Text(task.Recover).EndOf(ElementType.a);
+            });
         }
 
         private void ToggleBageCount(int count)

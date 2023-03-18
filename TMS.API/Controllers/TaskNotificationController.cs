@@ -57,6 +57,29 @@ namespace TMS.API.Controllers
             return Ok(true);
         }
 
+        [HttpPost("api/[Controller]/GetUserActive")]
+        public async Task<List<User>> GetUserActive()
+        {
+            var online = _taskService.GetAll().Select(x => x.Key).ToList();
+            var us = online.Select(x =>
+            {
+                var split = x.Split("/");
+                return new User
+                {
+                    Id = int.Parse(split[0]),
+                    Recover = split[3],
+                };
+            }).OrderBy(x => x.Id).ToList();
+            var ids = us.Select(x => x.Id).Distinct().ToList();
+            var user = await db.User.Where(x => ids.Contains(x.Id)).ToDictionaryAsync(x => x.Id);
+            us.ForEach(x =>
+            {
+                var u = user.GetValueOrDefault(x.Id);
+                x.FullName = u.FullName;
+            });
+            return us;
+        }
+
         public override async Task<ActionResult<TaskNotification>> CreateAsync([FromBody] TaskNotification entity)
         {
             var res = await base.CreateAsync(entity);

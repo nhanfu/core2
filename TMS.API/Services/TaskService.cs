@@ -3,8 +3,10 @@ using Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.Websocket;
@@ -57,6 +59,11 @@ namespace TMS.API.Services
                 }
             };
             await _fcmSvc.SendMessageToUsersAsync(new List<int>() { task.Data.AssignedId.Value }, task.ToJson(), fcm.ToJson());
+        }
+
+        public ConcurrentDictionary<string, WebSocket> GetAll()
+        {
+            return _fcmSvc.GetAll();
         }
 
         public async Task SendMessageAllUser(object task)

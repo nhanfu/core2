@@ -35,7 +35,7 @@ namespace TMS.API.Websocket
             var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value?.TryParseInt() ?? 0;
             var roleIds = principal.Claims.Where(x => x.Type == ClaimTypes.Role)
                 .Select(x => x.Value?.TryParseInt() ?? 0).ToList();
-            await WebSocketHandler.OnConnected(socket, userId, roleIds);
+            await WebSocketHandler.OnConnected(socket, userId, roleIds, context.Connection.RemoteIpAddress.ToString());
             await Receive(socket, async (result, buffer) =>
             {
                 if (result.MessageType == WebSocketMessageType.Text)

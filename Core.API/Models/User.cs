@@ -54,6 +54,7 @@ namespace Core.Models
         public int? CostCenterId { get; set; }
         public int? TeamId { get; set; }
         public string ContactId { get; set; }
+        public int? StateId { get; set; }
 
         public virtual User Supervisor { get; set; }
         public virtual Vendor Vendor { get; set; }
