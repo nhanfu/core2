@@ -143,7 +143,7 @@ namespace TMS.API.Controllers
             var configuration = _httpContext.HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration;
             var connStr = configuration.GetConnectionString("Default");
             var db = _config.GetConnectionString("Default");
-            var thead = new Thread(async () =>
+            var thead = new Thread(() =>
             {
             });
             thead.Start();
