@@ -1,31 +1,14 @@
 using Core.Exceptions;
 using Core.Extensions;
-using Core.ViewModels;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OData.Edm;
 using Newtonsoft.Json;
-using Polly;
-using Polly.Extensions.Http;
-using System;
-using System.Collections.Generic;
 using System.IO.Compression;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using TMS.API.BgService;
 using TMS.API.Extensions;
 using TMS.API.Models;
@@ -35,11 +18,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
-            {
+{
                 builder.AllowAnyOrigin()
                        .AllowAnyMethod()
                        .AllowAnyHeader();
-            }));
+}));
 builder.Services.Configure<IISServerOptions>(options =>
 {
     options.AutomaticAuthentication = false;
