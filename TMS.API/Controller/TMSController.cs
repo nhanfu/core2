@@ -4,25 +4,16 @@ using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Net.Http;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using TMS.API.Models;
 using ApprovalStatusEnum = Core.Enums.ApprovalStatusEnum;
 using AuthVerEnum = Core.Enums.AuthVerEnum;
@@ -654,14 +645,14 @@ namespace TMS.API.Controllers
                 reportQuery = $@"select {fieldNames.Combine()}
                                   from ({sql})  as [{component.RefName}]
                                   {joins.Combine(" ")}
-                                  where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
+                                  where {(component.ShowNull != null && (bool)component.ShowNull ? $" [{component.RefName}].[{component.DateTimeField ?? nameof(Transportation.InsertedDate)}] is null and " : "")} 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
             }
             else
             {
                 reportQuery = $@"select {fieldNames.Combine()}
                                   from [{component.RefName}] as [{component.RefName}]
                                   {joins.Combine(" ")}
-                                  where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
+                                  where {(component.ShowNull != null && (bool)component.ShowNull ? $" [{component.RefName}].[{component.DateTimeField ?? nameof(Transportation.InsertedDate)}] is null and " : "")} 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
             }
             if (!orderby.IsNullOrWhiteSpace() && !orderby.Contains(",Id desc") && !orderby.Contains(",Id asc") && orderby != "Id desc" && orderby != "Id asc" && orderby != $"[{component.RefName}].Id asc" && orderby != $"[{component.RefName}].Id asc")
             {
@@ -669,7 +660,7 @@ namespace TMS.API.Controllers
             }
             else
             {
-                if(orderby== $"[{component.RefName}].Id asc" || orderby == $"[{component.RefName}].Id desc")
+                if (orderby == $"[{component.RefName}].Id asc" || orderby == $"[{component.RefName}].Id desc")
                 {
                     reportQuery += $" order by {orderby}";
                 }
