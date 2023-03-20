@@ -645,14 +645,14 @@ namespace TMS.API.Controllers
                 reportQuery = $@"select {fieldNames.Combine()}
                                   from ({sql})  as [{component.RefName}]
                                   {joins.Combine(" ")}
-                                  where {(component.ShowNull != null && (bool)component.ShowNull ? $" [{component.RefName}].[{component.DateTimeField ?? nameof(Transportation.InsertedDate)}] is null and " : "")} 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
+                                  where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
             }
             else
             {
                 reportQuery = $@"select {fieldNames.Combine()}
                                   from [{component.RefName}] as [{component.RefName}]
                                   {joins.Combine(" ")}
-                                  where {(component.ShowNull != null && (bool)component.ShowNull ? $" [{component.RefName}].[{component.DateTimeField ?? nameof(Transportation.InsertedDate)}] is null and " : "")} 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
+                                  where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
             }
             if (!orderby.IsNullOrWhiteSpace() && !orderby.Contains(",Id desc") && !orderby.Contains(",Id asc") && orderby != "Id desc" && orderby != "Id asc" && orderby != $"[{component.RefName}].Id asc" && orderby != $"[{component.RefName}].Id asc")
             {
