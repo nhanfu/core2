@@ -230,7 +230,7 @@ namespace TMS.API.Controllers
                 var sql = $@"select distinct * from [{typeof(Transportation).Name}] where Id in ({string.Join(",", ids)})";
                 var data = await db.Set<Transportation>().FromSqlRaw(sql).ToListAsync();
                 var delete = $" delete from [{typeof(Expense).Name}] where TransportationId in ({string.Join(",", ids)}) ";
-                delete += $" delete from [{typeof(Revenue).Name}] where TransportationId in ({string.Join(",", ids)}) delete from [{typeof(Transportation).Name}] where Id in ({string.Join(",", ids)})";
+                delete += $" delete from [{typeof(Revenue).Name}] where TransportationId in ({string.Join(",", ids)})";
                 delete += $" delete from [{typeof(TransportationRequest).Name}] where TransportationId in ({string.Join(",", ids)}) delete from [{typeof(Transportation).Name}] where Id in ({string.Join(",", ids)})";
                 await ctx.Database.ExecuteSqlRawAsync(delete);
                 return true;
