@@ -28,7 +28,7 @@ namespace Core.Components
                     ShortDesc = "Name",
                     ComponentType = "Input",
                     Style = "width: 250px;",
-                    Frozen = true,
+                    Order = 2
                 },
                 new GridPolicy
                 {
@@ -40,6 +40,7 @@ namespace Core.Components
                     ShortDesc = "File",
                     IsRealtime = GuiInfo.IsRealtime,
                     Precision = 1,
+                    Order = 1
                 },
                 new GridPolicy
                 {
@@ -50,6 +51,7 @@ namespace Core.Components
                     FormatCell = "{" + nameof(User.FullName) + "}",
                     ComponentType = "Label",
                     ShortDesc = "Created by",
+                    Order = 3
                 },
                 new GridPolicy
                 {
@@ -57,6 +59,7 @@ namespace Core.Components
                     Active = true,
                     ComponentType = "Label",
                     ShortDesc = "Created date",
+                    Order = 4
                 },
                 new GridPolicy
                 {
@@ -67,6 +70,7 @@ namespace Core.Components
                     FormatCell = "{" + nameof(User.FullName) + "}",
                     ComponentType = "Label",
                     ShortDesc = "Updated by",
+                    Order = 5
                 },
                 new GridPolicy
                 {
@@ -74,6 +78,7 @@ namespace Core.Components
                     Active = true,
                     ComponentType = "Label",
                     ShortDesc = "Updated date",
+                    Order = 6
                 },
             };
             ui.Row = int.MaxValue;
@@ -105,7 +110,7 @@ namespace Core.Components
         {
             RowData.Data.Select(x => x.CastProp<FileUpload>()).ForEach(x => Client.Download(x.FilePath));
         }
-        
+
 
         internal override async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
         {

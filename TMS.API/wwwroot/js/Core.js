@@ -36104,12 +36104,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.GuiInfo = ui;
                 ui.LocalHeader = Bridge.fn.bind(this, function (_o1) {
                         var $t, $t1, $t2, $t3, $t4;
-                        _o1.add(($t = new Core.Models.GridPolicy(), $t.FieldName = "FileName", $t.Editable = true, $t.ShortDesc = "Name", $t.ComponentType = "Input", $t.Style = "width: 250px;", $t.Frozen = true, $t));
-                        _o1.add(($t = new Core.Models.GridPolicy(), $t.FieldName = "FilePath", $t.Editable = true, $t.Active = true, $t.ComponentType = "ImageUploader", $t.DataSource = Core.Extensions.StringExt.IsNullOrEmpty(ui.DataSourceFilter) ? "*.*" : ui.DataSourceFilter, $t.ShortDesc = "File", $t.IsRealtime = this.GuiInfo.IsRealtime, $t.Precision = 1, $t));
-                        _o1.add(($t = new Core.Models.GridPolicy(), $t.FieldName = "InsertedBy", $t.Active = true, $t.RefName = "User", $t.ReferenceId = ($t1 = (($t2 = Core.Extensions.Utils.GetEntity$1("User")) != null ? $t2.Id : null), $t1 != null ? $t1 : 0), $t.FormatCell = "{FullName}", $t.ComponentType = "Label", $t.ShortDesc = "Created by", $t));
-                        _o1.add(($t = new Core.Models.GridPolicy(), $t.FieldName = "InsertedDate", $t.Active = true, $t.ComponentType = "Label", $t.ShortDesc = "Created date", $t));
-                        _o1.add(($t = new Core.Models.GridPolicy(), $t.FieldName = "UpdatedBy", $t.Active = true, $t.RefName = "User", $t.ReferenceId = ($t3 = (($t4 = Core.Extensions.Utils.GetEntity$1("User")) != null ? $t4.Id : null), $t3 != null ? $t3 : 0), $t.FormatCell = "{FullName}", $t.ComponentType = "Label", $t.ShortDesc = "Updated by", $t));
-                        _o1.add(($t = new Core.Models.GridPolicy(), $t.FieldName = "UpdatedDate", $t.Active = true, $t.ComponentType = "Label", $t.ShortDesc = "Updated date", $t));
+                        _o1.add(($t = new Core.Models.GridPolicy(), $t.FieldName = "FileName", $t.Editable = true, $t.ShortDesc = "Name", $t.ComponentType = "Input", $t.Style = "width: 250px;", $t.Order = 1, $t));
+                        _o1.add(($t = new Core.Models.GridPolicy(), $t.FieldName = "FilePath", $t.Editable = true, $t.Active = true, $t.ComponentType = "ImageUploader", $t.DataSource = Core.Extensions.StringExt.IsNullOrEmpty(ui.DataSourceFilter) ? "*.*" : ui.DataSourceFilter, $t.ShortDesc = "File", $t.IsRealtime = this.GuiInfo.IsRealtime, $t.Precision = 1, $t.Order = 2, $t));
+                        _o1.add(($t = new Core.Models.GridPolicy(), $t.FieldName = "InsertedBy", $t.Active = true, $t.RefName = "User", $t.ReferenceId = ($t1 = (($t2 = Core.Extensions.Utils.GetEntity$1("User")) != null ? $t2.Id : null), $t1 != null ? $t1 : 0), $t.FormatCell = "{FullName}", $t.ComponentType = "Label", $t.ShortDesc = "Created by", $t.Order = 3, $t));
+                        _o1.add(($t = new Core.Models.GridPolicy(), $t.FieldName = "InsertedDate", $t.Active = true, $t.ComponentType = "Label", $t.ShortDesc = "Created date", $t.Order = 4, $t));
+                        _o1.add(($t = new Core.Models.GridPolicy(), $t.FieldName = "UpdatedBy", $t.Active = true, $t.RefName = "User", $t.ReferenceId = ($t3 = (($t4 = Core.Extensions.Utils.GetEntity$1("User")) != null ? $t4.Id : null), $t3 != null ? $t3 : 0), $t.FormatCell = "{FullName}", $t.ComponentType = "Label", $t.ShortDesc = "Updated by", $t.Order = 5, $t));
+                        _o1.add(($t = new Core.Models.GridPolicy(), $t.FieldName = "UpdatedDate", $t.Active = true, $t.ComponentType = "Label", $t.ShortDesc = "Updated date", $t.Order = 6, $t));
                         return _o1;
                     })(new (System.Collections.Generic.List$1(Core.Models.GridPolicy)).ctor());
                 ui.Row = 2147483647;
