@@ -95,7 +95,7 @@ namespace Core.Components
             Html.Instance.End.Render();
             Html.Instance.Div.ClassName("middle d-flex")
                 .Div.ClassName("preview").Event(EventType.Click, Preview, path.DecodeSpecialChar()).I.ClassName("fas fa-eye").EndOf(MVVM.ElementType.div);
-            if (!_disabledDelete)
+            if (Disabled)
             {
                 Html.Instance.Div.ClassName("delete")
                     .Event(EventType.Click, RemoveFile, path).I.ClassName("fas fa-trash-alt").EndOf(MVVM.ElementType.div);
