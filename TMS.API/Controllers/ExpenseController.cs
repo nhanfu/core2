@@ -4,6 +4,7 @@ using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
+using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -129,9 +130,8 @@ namespace TMS.API.Controllers
             }
         }
 
-        private async Task CalcInsuranceFees(Expense expense, bool isSOC)
+        private async Task CalcInsuranceFees(Expense expense, bool isSOC, List<InsuranceFeesRate> insuranceFeesRates, List<MasterData> extraInsuranceFeesRateDB, MasterData containerExpense, MasterData insuranceFeesRateColdDB)
         {
-            var containerId = await CheckContainerType(expense);
             if (expense.IsPurchasedInsurance == false && expense.RequestChangeId == null)
             {
                 bool isSubRatio = false;
@@ -142,18 +142,16 @@ namespace TMS.API.Controllers
                 InsuranceFeesRate insuranceFeesRateDB = null;
                 if (expense.IsBought)
                 {
-                    insuranceFeesRateDB = await db.InsuranceFeesRate.Where(x => x.TransportationTypeId == expense.TransportationTypeId && x.JourneyId == expense.JourneyId && x.IsBought == expense.IsBought && x.IsSOC == isSOC && x.IsSubRatio == isSubRatio).FirstOrDefaultAsync();
+                    insuranceFeesRateDB = insuranceFeesRates.Where(x => x.TransportationTypeId == expense.TransportationTypeId && x.JourneyId == expense.JourneyId && x.IsBought == expense.IsBought && x.IsSOC == isSOC && x.IsSubRatio == isSubRatio).FirstOrDefault();
                 }
                 else
                 {
-                    insuranceFeesRateDB = await db.InsuranceFeesRate.Where(x => x.TransportationTypeId == expense.TransportationTypeId && x.JourneyId == expense.JourneyId && x.IsBought == expense.IsBought && x.IsSOC == isSOC).FirstOrDefaultAsync();
+                    insuranceFeesRateDB = insuranceFeesRates.Where(x => x.TransportationTypeId == expense.TransportationTypeId && x.JourneyId == expense.JourneyId && x.IsBought == expense.IsBought && x.IsSOC == isSOC).FirstOrDefault();
                 }
                 if (insuranceFeesRateDB != null)
                 {
-                    var getContainerType = await db.MasterData.Where(x => x.Id == expense.ContainerTypeId).FirstOrDefaultAsync();
-                    if (getContainerType != null && getContainerType.Description.ToLower().Contains("lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
+                    if (containerExpense != null && containerExpense.Description.ToLower().Contains("lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
                     {
-                        var insuranceFeesRateColdDB = await db.MasterData.Where(x => x.Id == 25391).FirstOrDefaultAsync();
                         expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? decimal.Parse(insuranceFeesRateColdDB.Name) : 0;
                     }
                     else
@@ -162,7 +160,6 @@ namespace TMS.API.Controllers
                     }
                     if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
                     {
-                        var extraInsuranceFeesRateDB = await db.MasterData.Where(x => x.Active == true && x.ParentId == 25374).ToListAsync();
                         extraInsuranceFeesRateDB.ForEach(x =>
                         {
                             var prop = expense.GetType().GetProperties().Where(y => y.Name == x.Name && bool.Parse(y.GetValue(expense, null).ToString())).FirstOrDefault();
@@ -424,6 +421,40 @@ namespace TMS.API.Controllers
             {
                 return false;
             }
+
+            var containerTypes = await db.MasterData.Where(x => x.ParentId == 7565).ToListAsync();
+            var containerTypeIds = containerTypes.ToDictionary(x => x.Id);
+            var containers = await db.MasterData.Where(x => x.Name.Contains("40HC") || x.Name.Contains("20DC") || x.Name.Contains("45HC") || x.Name.Contains("50DC")).ToListAsync();
+
+            var bossIds = trans.Select(x => x.BossId).ToList();
+            var commodityIds = trans.Select(x => x.CommodityId).ToList();
+            var commodityValues = await db.CommodityValue.Where(x => bossIds.Contains(x.BossId) && commodityIds.Contains(x.CommodityId) && x.Active).ToListAsync();
+            var commodityValueOfTrans = new Dictionary<int, CommodityValue>();
+            foreach (var item in trans)
+            {
+                var container = containerTypeIds.GetValueOrDefault((int)item?.ContainerTypeId);
+                var containerId = 0;
+                if (container.Description.Contains("Cont 20"))
+                {
+                    containerId = containers.Find(x => x.Name.Contains("20DC")).Id;
+                }
+                else if (container.Description.Contains("Cont 40"))
+                {
+                    containerId = containers.Find(x => x.Name.Contains("40HC")).Id;
+                }
+                else if (container.Description.Contains("Cont 45"))
+                {
+                    containerId = containers.Find(x => x.Name.Contains("45HC")).Id;
+                }
+                else if (container.Description.Contains("Cont 50"))
+                {
+                    containerId = containers.Find(x => x.Name.Contains("50DC")).Id;
+                }
+
+                var commodityValue = commodityValues.Where(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == containerId).FirstOrDefault();
+                commodityValueOfTrans.Add(item.Id, commodityValue);
+            }
+
             var tranIds = trans.Select(x => x.Id).ToList();
             var expenses = await db.Expense.Where(x => tranIds.Contains((int)x.TransportationId) && expenseTypeIds.Contains((int)x.ExpenseTypeId) && x.RequestChangeId == null && x.Active).ToListAsync();
             if (expenses == null)
@@ -432,7 +463,20 @@ namespace TMS.API.Controllers
             }
             var expenseIds = expenses.Select(x => x.Id).ToList();
             var checkRequests = await db.Expense.Where(x => expenseIds.Contains((int)x.RequestChangeId) && x.StatusId == (int)ApprovalStatusEnum.Approving && x.Active).ToListAsync();
-            StringBuilder sql = new StringBuilder();
+
+            var extraInsuranceFeesRateDB = await db.MasterData.Where(x => x.Active == true && x.ParentId == 25374).ToListAsync();
+            var insuranceFeesRateColdDB = await db.MasterData.Where(x => x.Id == 25391).FirstOrDefaultAsync();
+            var containerTypeIdExpenses = expenses.Select(x => x.ContainerTypeId).ToList();
+            var containerTypeExpenses = await db.MasterData.Where(x => containerTypeIdExpenses.Contains(x.Id)).ToListAsync();
+            var containerTypeOfExpenses = new Dictionary<int, MasterData>();
+
+            var insuranceFeesRates = await db.InsuranceFeesRate.Where(x => x.Active).ToListAsync();
+            foreach (var item in expenses)
+            {
+                var container = containerTypeExpenses.Where(x => x.Id == item.ContainerTypeId).FirstOrDefault();
+                containerTypeOfExpenses.Add(item.Id, container);
+            }
+
             foreach (var tran in trans)
             {
                 var expensesByTran = expenses.Where(x => x.TransportationId == tran.Id).ToList();
@@ -470,8 +514,7 @@ namespace TMS.API.Controllers
                             tran.ContainerTypeId != item.ContainerTypeId ||
                             tran.TransportationTypeId != item.TransportationTypeId) && item.IsPurchasedInsurance == false)
                         {
-                            var containerId = await CheckContainerType(tran);
-                            var commodityValue = await db.CommodityValue.Where(x => x.BossId == tran.BossId && x.CommodityId == tran.CommodityId && x.ContainerId == containerId && x.Active).FirstOrDefaultAsync();
+                            var commodityValue = commodityValueOfTrans.GetValueOrDefault(tran.Id);
                             if (commodityValue != null)
                             {
                                 item.CommodityValue = commodityValue.TotalPrice;
@@ -482,7 +525,8 @@ namespace TMS.API.Controllers
                                 item.BreakTerms = commodityValue.BreakTerms;
                                 item.CustomerTypeId = commodityValue.CustomerTypeId;
                                 item.CommodityValueNotes = commodityValue.Notes;
-                                await CalcInsuranceFees(item, false);
+                                var containerExpense = containerTypeOfExpenses.GetValueOrDefault(item.Id);
+                                await CalcInsuranceFees(item, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
                             }
                         }
                         if (tran.TransportationTypeId != item.TransportationTypeId) { item.TransportationTypeId = tran.TransportationTypeId; }
