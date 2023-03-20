@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/TMS.API/wwwroot/js/Core.js
+/TMS.API/wwwroot/js/bridge.js
+/TMS.API/wwwroot/js/newtonsoft.json.js
+/TMS.API/wwwroot/js/TMS.UI.js
