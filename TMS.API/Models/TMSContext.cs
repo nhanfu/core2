@@ -87,7 +87,7 @@ public partial class TMSContext : DbContext
 
     public virtual DbSet<Role> Role { get; set; }
 
-    public virtual DbSet<Route> Route { get; set; }
+    public virtual DbSet<TMS.API.Models.Route> Route { get; set; }
 
     public virtual DbSet<RouteUser> RouteUser { get; set; }
 
@@ -942,7 +942,7 @@ public partial class TMSContext : DbContext
                 .HasConstraintName("FK_Role_ParentRole");
         });
 
-        modelBuilder.Entity<Route>(entity =>
+        modelBuilder.Entity<TMS.API.Models.Route>(entity =>
         {
             entity.ToTable(tb => tb.HasTrigger("tr_update_length2"));
 
