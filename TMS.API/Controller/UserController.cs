@@ -1,20 +1,12 @@
-﻿using Core.Enums;
-using Core.Exceptions;
+﻿using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.Services;
 
@@ -27,7 +19,7 @@ namespace TMS.API.Controllers
         private readonly UserService _userSerivce;
 
         public UserController(TMSContext context, IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor, UserService userSerivce, IServiceProvider serviceProvider) : base(context, httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, EntityService entityService, UserService userSerivce, IServiceProvider serviceProvider) : base(context, entityService, httpContextAccessor)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _userSerivce = userSerivce;

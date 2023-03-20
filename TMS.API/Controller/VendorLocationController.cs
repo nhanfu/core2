@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Linq;
+﻿using Core.Extensions;
 using TMS.API.Models;
 
 namespace TMS.API.Controllers
 {
     public class VendorLocationController : TMSController<VendorLocation>
     {
-        public VendorLocationController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public VendorLocationController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

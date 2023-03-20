@@ -1,26 +1,18 @@
-﻿using Core.Exceptions;
-using Core.Enums;
+﻿using Core.Enums;
+using Core.Exceptions;
 using Core.Extensions;
-using Microsoft.AspNetCore.Http;
+using Core.ViewModels;
+using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TMS.API.Models;
-using System;
-using System.Threading;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNet.OData.Query;
-using Core.ViewModels;
-using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
+using TMS.API.Models;
 
 namespace TMS.API.Controllers
 {
     public class FreightRateController : TMSController<FreightRate>
     {
-        public FreightRateController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public FreightRateController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

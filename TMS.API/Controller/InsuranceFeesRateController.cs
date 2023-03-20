@@ -1,5 +1,6 @@
 ﻿using Core.Enums;
 using Core.Exceptions;
+using Core.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
@@ -9,7 +10,7 @@ namespace TMS.API.Controllers
 {
     public class InsuranceFeesRateController : TMSController<InsuranceFeesRate>
     {
-        public InsuranceFeesRateController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public InsuranceFeesRateController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

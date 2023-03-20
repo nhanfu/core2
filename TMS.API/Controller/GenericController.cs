@@ -2,29 +2,18 @@
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
-using Microsoft.AspNet.OData;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using PuppeteerSharp;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.Services;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using FileIO = System.IO.File;
 
 namespace TMS.API.Controllers
@@ -60,12 +49,12 @@ namespace TMS.API.Controllers
         protected readonly UserService _userSvc;
         protected readonly TaskService _taskService;
         protected readonly EntityService _entitySvc;
-        public GenericController(DbContext context, IHttpContextAccessor httpContextAccessor)
+        public GenericController(DbContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor)
         {
             ctx = context;
             _httpContext = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _userSvc = _httpContext.HttpContext.RequestServices.GetService(typeof(UserService)) as UserService;
-            _entitySvc = _httpContext.HttpContext.RequestServices.GetService(typeof(EntityService)) as EntityService;
+            _entitySvc = entityService;
             _taskService = _httpContext.HttpContext.RequestServices.GetService(typeof(TaskService)) as TaskService;
             _serviceProvider = _httpContext.HttpContext.RequestServices.GetService(typeof(IServiceProvider)) as IServiceProvider;
             _config = _httpContext.HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration;

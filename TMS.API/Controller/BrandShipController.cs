@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Core.Extensions;
 using TMS.API.Models;
 
 namespace TMS.API.Controllers
 {
     public class BrandShipController : TMSController<BrandShip>
     {
-        public BrandShipController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public BrandShipController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
     }

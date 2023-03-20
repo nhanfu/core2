@@ -1,28 +1,20 @@
-﻿using Microsoft.AspNet.OData.Query;
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-using TMS.API.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using Core.Extensions;
-using System.Linq;
-using Microsoft.AspNetCore.Hosting;
-using System;
-using OfficeOpenXml;
-using FileIO = System.IO.File;
-using System.IO;
-using TMS.API.ViewModels;
+﻿using Core.Enums;
 using Core.Exceptions;
-using Core.Enums;
-using Slugify;
+using Core.Extensions;
+using Microsoft.AspNet.OData.Query;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using System.Text.RegularExpressions;
+using TMS.API.Models;
+using TMS.API.ViewModels;
+using FileIO = System.IO.File;
 
 namespace TMS.API.Controllers
 {
     public class LocationController : TMSController<Location>
     {
-        public LocationController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public LocationController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
         }

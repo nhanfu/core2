@@ -4,20 +4,10 @@ using Core.Extensions;
 using Core.ViewModels;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
-using Slugify;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.ViewModels;
 using FileIO = System.IO.File;
@@ -26,8 +16,8 @@ namespace TMS.API.Controllers
 {
     public class MasterDataController : TMSController<MasterData>
     {
-        public MasterDataController(TMSContext context, IHttpContextAccessor httpContextAccessor)
-            : base(context, httpContextAccessor)
+        public MasterDataController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor)
+            : base(context, entityService, httpContextAccessor)
         {
         }
 
@@ -143,7 +133,7 @@ namespace TMS.API.Controllers
         [HttpPost("api/MasterData/UpdatePath")]
         public async Task<IActionResult> UpdatePath()
         {
-            var ms = await db.MasterData.OrderByDescending(x=>x.Id).ToListAsync();
+            var ms = await db.MasterData.OrderByDescending(x => x.Id).ToListAsync();
             foreach (var item in ms)
             {
                 await UpdateTreeNodeAsync(item);

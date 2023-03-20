@@ -1,21 +1,15 @@
-﻿using Core.Enums;
-using Core.Extensions;
+﻿using Core.Extensions;
 using Microsoft.AspNet.OData.Query;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Threading.Tasks;
 using TMS.API.Models;
-using TMS.API.Services;
 
 namespace TMS.API.Controllers
 {
     public class RoleController : TMSController<Role>
     {
-        public RoleController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public RoleController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

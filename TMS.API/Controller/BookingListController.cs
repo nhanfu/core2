@@ -1,32 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
-using TMS.API.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Text;
-using System.Data.SqlClient;
-using System.Data;
-using System.Collections.Generic;
-using Microsoft.CodeAnalysis.Operations;
-using Microsoft.AspNet.OData.Query;
-using Core.ViewModels;
-using Core.Extensions;
-using System.Threading;
-using System;
-using Microsoft.Extensions.Logging;
+﻿using Core.Enums;
 using Core.Exceptions;
-using Core.Enums;
-using PuppeteerSharp.Input;
-using System.Text.RegularExpressions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using Core.Extensions;
+using Core.ViewModels;
+using Microsoft.AspNet.OData.Query;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
+using System.Data.SqlClient;
+using TMS.API.Models;
 
 namespace TMS.API.Controllers
 {
     public class BookingListController : TMSController<BookingList> 
     {
-        public BookingListController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public BookingListController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

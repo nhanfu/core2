@@ -3,28 +3,13 @@ using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
 using Microsoft.AspNet.OData.Query;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
-using Slugify;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.ViewModels;
-using Windows.UI.Xaml;
 using FileIO = System.IO.File;
 using LicenseContext = OfficeOpenXml.LicenseContext;
 
@@ -32,7 +17,7 @@ namespace TMS.API.Controllers
 {
     public class CommodityValueController : TMSController<CommodityValue>
     {
-        public CommodityValueController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public CommodityValueController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

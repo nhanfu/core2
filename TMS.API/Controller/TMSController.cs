@@ -36,7 +36,7 @@ namespace TMS.API.Controllers
         protected string ChildrenField = "InverseParent";
         private string _address;
 
-        public TMSController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public TMSController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
             db = context;
             _logger = (ILogger<TMSController<T>>)httpContextAccessor.HttpContext.RequestServices.GetService(typeof(ILogger<TMSController<T>>));

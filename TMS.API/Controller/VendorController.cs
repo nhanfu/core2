@@ -14,7 +14,7 @@ namespace TMS.API.Controllers
     {
         private readonly VendorSvc _vendorSvc;
 
-        public VendorController(TMSContext context, IHttpContextAccessor httpContextAccessor, VendorSvc vendorSvc) : base(context, httpContextAccessor)
+        public VendorController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor, VendorSvc vendorSvc) : base(context, entityService, httpContextAccessor)
         {
             _vendorSvc = vendorSvc;
         }

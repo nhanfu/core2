@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNet.OData.Query;
-using Microsoft.AspNetCore.Http;
+﻿using Core.Extensions;
+using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
 using TMS.API.Models;
 
 namespace TMS.API.Controllers
@@ -10,7 +8,7 @@ namespace TMS.API.Controllers
     public class HistoryController : GenericController<History>
     {
         private readonly HistoryContext db;
-        public HistoryController(HistoryContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public HistoryController(HistoryContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
             db = context;
         }

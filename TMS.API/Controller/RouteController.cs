@@ -1,18 +1,9 @@
 ﻿using Core.Extensions;
 using Microsoft.AspNet.OData.Query;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
-using Slugify;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.ViewModels;
 using FileIO = System.IO.File;
@@ -21,7 +12,7 @@ namespace TMS.API.Controllers
 {
     public class RouteController : TMSController<TMS.API.Models.Route>
     {
-        public RouteController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public RouteController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

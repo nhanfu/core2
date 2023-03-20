@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNet.OData.Query;
+﻿using Core.Extensions;
+using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
-using System.Threading.Tasks;
 using TMS.API.Models;
 
 namespace TMS.API.Controllers
 {
     public class UserSettingController : TMSController<UserSetting>
     {
-        public UserSettingController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public UserSettingController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
         }

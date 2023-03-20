@@ -1,19 +1,15 @@
 ﻿using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TMS.API.Models;
 
 namespace TMS.API.Controllers
 {
     public class SettingPolicyController : TMSController<SettingPolicy>
     {
-        public SettingPolicyController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public SettingPolicyController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
         }

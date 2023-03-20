@@ -1,17 +1,13 @@
 ﻿using Core.Extensions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using TMS.API.Models;
 
 namespace TMS.API.Controllers
 {
-    public class QuotationUpdateController : TMSController<QuotationUpdate>
+	public class QuotationUpdateController : TMSController<QuotationUpdate>
     {
-        public QuotationUpdateController(TMSContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public QuotationUpdateController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
         }
