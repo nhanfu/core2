@@ -1,28 +1,12 @@
-﻿using Core.Extensions;
+﻿using Core.Enums;
+using Core.Exceptions;
+using Core.Extensions;
+using Core.ViewModels;
 using Microsoft.AspNet.OData.Query;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.Services;
-using FileIO = System.IO.File;
-using System.IO;
-using TMS.API.ViewModels;
-using Core.Exceptions;
-using Core.Enums;
-using Core.ViewModels;
-using System.Text.RegularExpressions;
-using Slugify;
-using NuGet.Versioning;
-using System.Threading;
-using Microsoft.Extensions.Logging;
 
 namespace TMS.API.Controllers
 {

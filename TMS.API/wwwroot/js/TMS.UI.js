@@ -38021,7 +38021,6 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                         $task2, 
                         $taskResult2, 
                         $task3, 
-                        $task4, 
                         $jumpFromFinally, 
                         $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                         $returnValue, 
@@ -38032,13 +38031,12 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                         startApps, 
                         featureParam, 
                         currentFeature, 
-                        currentFeature1, 
                         $t, 
                         $async_e, 
                         $asyncBody = Bridge.fn.bind(this, function () {
                             try {
                                 for (;;) {
-                                    $step = System.Array.min([0,1,2,3,4,5,6,7], $step);
+                                    $step = System.Array.min([0,1,2,3,4,5], $step);
                                     switch ($step) {
                                         case 0: {
                                             featureTask = new Core.Clients.Client.$ctor1("Feature").GetRawList(Core.Models.Feature, "?$expand=Entity($select=Name)&$filter=Active eq true and IsMenu eq true&$orderby=Order");
@@ -38085,18 +38083,17 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                         }
                                         case 2: {
                                             $taskResult2 = $task2.getAwaitedResult();
-                                            featureParam = Core.Extensions.Utils.GetUrlParam(Core.Extensions.Utils.IdField);
+                                            featureParam = System.String.replaceAll(System.String.replaceAll(window.location.pathname, "/", ""), "-", " ");
                                             if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(featureParam)) {
                                                 $step = 3;
                                                 continue;
-                                            } else  {
-                                                $step = 5;
-                                                continue;
-                                            }
+                                            } 
+                                            $step = 5;
+                                            continue;
                                         }
                                         case 3: {
                                             currentFeature = System.Linq.Enumerable.from(feature, Core.Models.Feature).firstOrDefault(function (x) {
-                                                return x.Id === System.Int32.parse(featureParam);
+                                                return Bridge.referenceEquals(x.Name, featureParam);
                                             }, null);
                                             $task3 = TMS.UI.Business.MenuComponent.OpenFeature(currentFeature);
                                             $step = 4;
@@ -38108,28 +38105,10 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                         }
                                         case 4: {
                                             $task3.getAwaitedResult();
-                                            $step = 7;
+                                            $step = 5;
                                             continue;
                                         }
                                         case 5: {
-                                            featureParam = System.String.replaceAll(Core.Extensions.Utils.GetUrlParam(Core.Extensions.Utils.FeatureField), "-", " ");
-                                            currentFeature1 = System.Linq.Enumerable.from(feature, Core.Models.Feature).firstOrDefault(function (x) {
-                                                return Bridge.referenceEquals(x.Name, featureParam);
-                                            }, null);
-                                            $task4 = TMS.UI.Business.MenuComponent.OpenFeature(currentFeature1);
-                                            $step = 6;
-                                            if ($task4.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task4.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 6: {
-                                            $task4.getAwaitedResult();
-                                            $step = 7;
-                                            continue;
-                                        }
-                                        case 7: {
                                             !Bridge.staticEquals(($t = this.DOMContentLoaded), null) ? $t() : null;
                                             $tcs.setResult(null);
                                             return;
@@ -38189,7 +38168,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 html.ForEach$2(Core.Models.Feature, menuItems, Bridge.fn.bind(this, function (item, index) {
                     var $t;
                     var check = item.InverseParent != null && System.Array.getCount(item.InverseParent, Core.Models.Feature) > 0;
-                    Core.Components.Renderer.Title(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Li, "nav-item" + ((check ? " nav-item-submenu" : "") || "")).DataAttr$1("feature", Bridge.toString(item.Id)).A.Href(check ? "javascript:void(0);" : ("?f=" + (System.String.replaceAll(item.Name, " ", "-") || "") + "&Id=" + item.Id)), "nav-link").AsyncEvent$3(Core.Models.Feature, "click", Bridge.fn.cacheBind(this, this.MenuItemClick), item).Event$4(Core.Models.Feature, "contextmenu", Bridge.fn.cacheBind(this, this.FeatureContextMenu), item), item.Label).Render();
+                    Core.Components.Renderer.Title(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Li, "nav-item" + ((check ? " nav-item-submenu" : "") || "")).DataAttr$1("feature", Bridge.toString(item.Id)).A.Href("javascript:void(0);"), "nav-link").AsyncEvent$3(Core.Models.Feature, "click", Bridge.fn.cacheBind(this, this.MenuItemClick), item).Event$4(Core.Models.Feature, "contextmenu", Bridge.fn.cacheBind(this, this.FeatureContextMenu), item), item.Label).Render();
                     Core.Components.Renderer.IText(Core.MVVM.Html.Instance.Span, item.Label).Style$1("margin-left: 19px;margin-top: 4px;").EndOf(Core.MVVM.ElementType.a).Render();
                     if (check) {
                         this.RenderSubMobileMenu(($t = Core.Models.Feature, System.Linq.Enumerable.from(item.InverseParent, $t).toList($t)));
@@ -38202,7 +38181,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 Core.MVVM.Html.Instance.ForEach$2(Core.Models.Feature, menuItems, Bridge.fn.bind(this, function (item, index) {
                     var $t, $t1;
                     var check = item.InverseParent != null && System.Array.getCount(item.InverseParent, Core.Models.Feature) > 0;
-                    Core.Components.Renderer.IText(Core.Components.Renderer.Title(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Li, "nav-item").A.Href("?f=" + (System.String.replaceAll(item.Name, " ", "-") || "") + "&Id=" + item.Id), "nav-link").AsyncEvent$3(Core.Models.Feature, "click", Bridge.fn.cacheBind(this, this.MenuItemClick), item).Event$4(Core.Models.Feature, "contextmenu", Bridge.fn.cacheBind(this, this.FeatureContextMenu), item).I, ($t = item.Icon, $t != null ? $t : "")).End, item.Label).Span, item.Label).End.End.Render();
+                    Core.Components.Renderer.IText(Core.Components.Renderer.Title(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Li, "nav-item").A.Href("javascript:void(0);"), "nav-link").AsyncEvent$3(Core.Models.Feature, "click", Bridge.fn.cacheBind(this, this.MenuItemClick), item).Event$4(Core.Models.Feature, "contextmenu", Bridge.fn.cacheBind(this, this.FeatureContextMenu), item).I, ($t = item.Icon, $t != null ? $t : "")).End, item.Label).Span, item.Label).End.End.Render();
                     if (check) {
                         this.RenderSubMenu(($t1 = Core.Models.Feature, System.Linq.Enumerable.from(item.InverseParent, $t1).toList($t1)));
                     }
@@ -38214,9 +38193,9 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     var $t, $t1;
                     var check = item.InverseParent != null && System.Array.getCount(item.InverseParent, Core.Models.Feature) > 0;
                     if (check) {
-                        Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "dropdown-submenu").A.Href("?f=" + (System.String.replaceAll(item.Name, " ", "-") || "") + "&Id=" + item.Id), "dropdown-item" + ((check ? " dropdown-toggle" : "") || ""));
+                        Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "dropdown-submenu").A.Href("javascript:void(0);"), "dropdown-item" + ((check ? " dropdown-toggle" : "") || ""));
                     } else {
-                        Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.A.Href("?f=" + (System.String.replaceAll(item.Name, " ", "-") || "") + "&Id=" + item.Id), "dropdown-item" + ((check ? " dropdown-toggle" : "") || ""));
+                        Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.A.Href("javascript:void(0);"), "dropdown-item" + ((check ? " dropdown-toggle" : "") || ""));
                     }
                     Core.Components.Renderer.IText(Core.Components.Renderer.Title(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.AsyncEvent$3(Core.Models.Feature, "click", Bridge.fn.cacheBind(this, this.MenuItemClick), item).Event$4(Core.Models.Feature, "contextmenu", Bridge.fn.cacheBind(this, this.FeatureContextMenu), item).I, ($t = item.Icon, $t != null ? $t : "")).End, item.Label).Span, item.Label).End.Render();
                     if (check) {
@@ -38372,7 +38351,6 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     }
                                     case 1: {
                                         $task1.getAwaitedResult();
-                                        window.history.replaceState(null, Core.Components.LangSelect.Get(feature.Label), (window.location.pathname || "") + "?f=" + (System.String.replaceAll(feature.Name, " ", "-") || "") + "&Id=" + feature.Id);
                                         $tcs.setResult(null);
                                         return;
                                     }

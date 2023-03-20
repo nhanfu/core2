@@ -28537,7 +28537,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.Show = true;
                 }
                 if (this.Feature != null && this.Feature.Name != null && !this.Popup) {
-                    window.history.replaceState(null, Core.Components.LangSelect.Get(this.TabTitle), (window.location.pathname || "") + "?f=" + (System.String.replaceAll(this.Feature.Name, " ", "-") || "") + "&Id=" + this.Feature.Id);
+                    window.history.replaceState(null, Core.Components.LangSelect.Get(this.TabTitle), (window.location.origin || "") + "/" + (System.String.replaceAll(this.Feature.Name, " ", "-") || ""));
                 }
                 document.title = Core.Components.LangSelect.Get(this.TabTitle);
                 Core.Components.Forms.EditForm.prototype.Focus.call(this);

@@ -133,7 +133,7 @@ namespace Core.Components.Forms
             }
             if (e.AltKey() && keyCode == KeyCodeEnum.GraveAccent)
             {
-                if (Tabs.Count <=1)
+                if (Tabs.Count <= 1)
                 {
                     return;
                 }
@@ -310,7 +310,7 @@ namespace Core.Components.Forms
             }
             if (Feature != null && Feature.Name != null && !Popup)
             {
-                Window.History.ReplaceState(null, LangSelect.Get(TabTitle), Window.Location.PathName + "?f=" + Feature.Name.Replace(" ", "-") + "&Id=" + Feature.Id);
+                Window.History.ReplaceState(null, LangSelect.Get(TabTitle), Window.Location.Origin + "/" + Feature.Name.Replace(" ", "-"));
             }
             Document.Title = LangSelect.Get(TabTitle);
             base.Focus();

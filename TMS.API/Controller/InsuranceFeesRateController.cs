@@ -1,12 +1,9 @@
-﻿using Core.Exceptions;
-using Microsoft.AspNetCore.Http;
+﻿using Core.Enums;
+using Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Dynamic.Core;
-using System.Threading.Tasks;
-using TMS.API.Models;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Core.Enums;
+using System.Linq.Dynamic.Core;
+using TMS.API.Models;
 
 namespace TMS.API.Controllers
 {
