@@ -39801,8 +39801,15 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }).select(function (x, index) {
                     return index < ((conditions.Count - 1) | 0) ? (x.Term || "") + (x.Operator || "") : x.Term;
                 }), "");
+                var qr = System.String.format("({0})", [originFilter]);
                 if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filterPart)) {
-                    query = Core.Extensions.OdataExt.ApplyClause(query, System.String.replaceAll(System.String.format("({0}) and ({1} 1 eq 1) and ({2} 1 eq 1)", originFilter, filterPart, filterPartGroup), "or  1 eq 1", ""));
+                    qr = (qr || "") + ((System.String.replaceAll(System.String.replaceAll(System.String.format(" and ({0})", [filterPart]), "and )", ")"), "or )", ")")) || "");
+                }
+                if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filterPartGroup)) {
+                    qr = (qr || "") + ((System.String.replaceAll(System.String.replaceAll(System.String.format(" and ({0})", [filterPartGroup]), "and )", ")"), "or )", ")")) || "");
+                }
+                if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filterPart) || !Core.Extensions.StringExt.IsNullOrWhiteSpace(filterPartGroup)) {
+                    query = Core.Extensions.OdataExt.ApplyClause(query, qr);
                 }
                 var orderbyList = System.Linq.Enumerable.from(this.AdvSearchEntity.OrderBy, Core.Models.OrderBy).select(function (orderby) {
                         return System.String.format("{0} {1}", orderby.Field.FieldName, System.Nullable.toString(orderby.OrderbyOptionId, System.Enum.toStringFn(Core.Enums.OrderbyOption)).toLowerCase());

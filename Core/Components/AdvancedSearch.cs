@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Core.Components
 {
@@ -428,14 +429,23 @@ namespace Core.Components
             {
                 Term = GetSearchValue(x),
                 Operator = GetLogicOp(x) ?? " and ",
-                x.Group
+                Group = x.Group
             }).Where(x => x.Term.HasAnyChar()).ToList();
 
             var filterPart = conditions.Where(x => !x.Group).Select((x, index) => index < conditions.Count - 1 ? x.Term + x.Operator : x.Term).Combine(string.Empty);
             var filterPartGroup = conditions.Where(x => x.Group).Select((x, index) => index < conditions.Count - 1 ? x.Term + x.Operator : x.Term).Combine(string.Empty);
+            var qr = $"({originFilter})";
             if (!filterPart.IsNullOrWhiteSpace())
             {
-                query = OdataExt.ApplyClause(query, $"({originFilter}) and ({filterPart} 1 eq 1) and ({filterPartGroup} 1 eq 1)".Replace("or  1 eq 1", ""));
+                qr += $" and ({filterPart})".Replace("and )", ")").Replace("or )", ")");
+            }
+            if (!filterPartGroup.IsNullOrWhiteSpace())
+            {
+                qr += $" and ({filterPartGroup})".Replace("and )", ")").Replace("or )", ")");
+            }
+            if (!filterPart.IsNullOrWhiteSpace() || !filterPartGroup.IsNullOrWhiteSpace())
+            {
+                query = OdataExt.ApplyClause(query, qr);
             }
             var orderbyList = AdvSearchEntity.OrderBy.Select(orderby => $"{orderby.Field.FieldName} {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
             var orderByPart = string.Join(",", orderbyList);
