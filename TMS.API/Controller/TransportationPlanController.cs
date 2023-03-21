@@ -534,7 +534,17 @@ namespace TMS.API.Controllers
             return rs;
         }
 
-        public override async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> SubTotal([FromServices] IServiceProvider serviceProvider, [FromServices] IConfiguration config, [FromBody] string sum, [FromQuery] string group, [FromQuery] string tablename, [FromQuery] string refname, [FromQuery] string formatsumary, [FromQuery] string orderby, [FromQuery] string sql, [FromQuery] string where)
+        public override async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> SubTotal([FromServices] IServiceProvider serviceProvider
+            , [FromServices] IConfiguration config
+            , [FromBody] string sum
+            , [FromQuery] string group
+            , [FromQuery] string tablename
+            , [FromQuery] string refname
+            , [FromQuery] string formatsumary
+            , [FromQuery] string orderby
+            , [FromQuery] string sql
+            , [FromQuery] bool showNull
+            , [FromQuery] string where)
         {
             var connectionStr = _config.GetConnectionString("Default");
             using var con = new SqlConnection(connectionStr);

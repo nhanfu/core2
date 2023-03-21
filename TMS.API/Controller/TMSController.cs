@@ -566,7 +566,16 @@ namespace TMS.API.Controllers
         }
 
         [HttpGet("api/[Controller]/ExportExcel")]
-        public async Task<string> ExportExcel([FromServices] IServiceProvider serviceProvider, [FromServices] IConfiguration config, [FromQuery] int componentId, [FromQuery] string sql, [FromQuery] string where, [FromQuery] bool custom, [FromQuery] int featureId, [FromQuery] string order, [FromQuery] string orderby)
+        public async Task<string> ExportExcel([FromServices] IServiceProvider serviceProvider
+            , [FromServices] IConfiguration config
+            , [FromQuery] int componentId
+            , [FromQuery] string sql
+            , [FromQuery] string where
+            , [FromQuery] bool custom
+            , [FromQuery] int featureId
+            , [FromQuery] string order
+            , [FromQuery] bool showNull
+            , [FromQuery] string orderby)
         {
             var component = await db.Component.FindAsync(componentId);
             var userSetting = await db.UserSetting.FirstOrDefaultAsync(x => x.Name == $"{(custom ? "Export" : "ListView")}-" + componentId && x.UserId == UserId);
