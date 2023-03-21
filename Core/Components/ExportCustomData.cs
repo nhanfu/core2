@@ -333,7 +333,23 @@ namespace Core.Components
                     finalFilter = $"[{ParentListView.GuiInfo.RefName}].{finalFilter}";
                 }
             }
-            var path = await new Client(ParentListView.GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}&sql={ParentListView.Sql}&showNull={ParentListView.GuiInfo.ShowNull ?? false}&where={ParentListView.Wheres.Combine(" and ")} {(ParentListView.GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(ParentListView.Wheres.Any() ? " and " : "")} {ParentListView.GuiInfo.PreQuery}")}&custom=true&featureId={Parent.EditForm.Feature.Id}&orderby={finalFilter}");
+            var filter = ParentListView.Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
+            var filter1 = ParentListView.Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
+            var wh = new List<string>();
+            if (!filter.IsNullOrWhiteSpace())
+            {
+                wh.Add($"({filter})");
+            }
+            if (!filter1.IsNullOrWhiteSpace())
+            {
+                wh.Add($"({filter1})");
+            }
+            var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
+            var path = await new Client(ParentListView.GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}" +
+                $"&sql={ParentListView.Sql}" +
+                $"&showNull={ParentListView.GuiInfo.ShowNull ?? false}" +
+                $"&where={stringWh} {(ParentListView.GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(ParentListView.Wheres.Any() ? " and " : "")} {ParentListView.GuiInfo.PreQuery}")}" +
+                $"&custom=true&featureId={Parent.EditForm.Feature.Id}&orderby={finalFilter}");
             Client.Download($"/excel/Download/{path}");
             Toast.Success("Xuất file thành công");
         }

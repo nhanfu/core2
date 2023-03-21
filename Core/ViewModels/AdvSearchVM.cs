@@ -30,6 +30,12 @@ namespace Core.Models
         public bool Group { get; set; }
     }
 
+    public class Where
+    {
+        public string FieldName { get; set; }
+        public bool Group { get; set; }
+    }
+
     public class FieldCondition
     {
         public int Id { get; set; }

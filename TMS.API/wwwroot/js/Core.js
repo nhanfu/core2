@@ -9818,6 +9818,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     }; });
 
+    Bridge.define("Core.Models.Where", {
+        props: {
+            FieldName: null,
+            Group: false
+        }
+    });
+
     Bridge.define("Core.MVVM.ElementType", {
         $kind: "enum",
         statics: {
@@ -15540,7 +15547,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             init: function () {
                 this._rowHeight = 26;
                 this._delay = 0;
-                this.Wheres = new (System.Collections.Generic.List$1(System.String)).ctor();
+                this.Wheres = new (System.Collections.Generic.List$1(Core.Models.Where)).ctor();
                 this.RecordPolicy = new (System.Collections.Generic.List$1(Core.Models.FeaturePolicy)).ctor();
                 this.CacheData = new (System.Collections.Generic.List$1(System.Object)).ctor();
                 this.SelectedIndex = -1;
@@ -15997,6 +16004,36 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     }
                                     case 1: {
                                         $taskResult1 = $task1.getAwaitedResult();
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                    default: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            $tcs.setException($async_e);
+                        }
+                    }, arguments);
+
+                $asyncBody();
+                return $tcs.task;
+            },
+            ActionFilter: function () {
+                var $step = 0,
+                    $jumpFromFinally, 
+                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                    $returnValue, 
+                    $async_e, 
+                    $asyncBody = Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                $step = System.Array.min([0], $step);
+                                switch ($step) {
+                                    case 0: {
                                         $tcs.setResult(null);
                                         return;
                                     }
@@ -22486,7 +22523,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
-                                        $task1 = this.ParentListView.ApplyFilter();
+                                        $task1 = this.ParentListView.ActionFilter();
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -22870,6 +22907,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                         $returnValue, 
                         orderbyList, 
                         finalFilter, 
+                        filter, 
+                        filter1, 
+                        wh, 
+                        stringWh, 
                         path, 
                         $t, 
                         $async_e, 
@@ -22895,7 +22936,25 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                     })));
                                                 }
                                             }
-                                            $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).GetAsync$1(System.String, System.String.format("/ExportExcel?componentId={0}&sql={1}&showNull={2}&where={3} {4}&custom=false&featureId={5}&orderby={6}", Bridge.box(this.ParentListView.GuiInfo.Id, System.Int32), this.ParentListView.Sql, Bridge.box(($t = this.GuiInfo.ShowNull, $t != null ? $t : false), System.Boolean, System.Boolean.toString), Core.Extensions.IEnumerableExtensions.Combine(System.String, this.ParentListView.Wheres, " and "), (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.ParentListView.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.ParentListView.Wheres, System.String).any() ? " and " : ""), this.ParentListView.GuiInfo.PreQuery)), Bridge.box(this.EditForm.Feature.Id, System.Int32), finalFilter));
+                                            filter = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).where(function (x) {
+                                                return !x.Group;
+                                            }).select(function (x) {
+                                                return x.FieldName;
+                                            }), " and ");
+                                            filter1 = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).where(function (x) {
+                                                return x.Group;
+                                            }).select(function (x) {
+                                                return x.FieldName;
+                                            }), " or ");
+                                            wh = new (System.Collections.Generic.List$1(System.String)).ctor();
+                                            if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter)) {
+                                                wh.add(System.String.format("({0})", [filter]));
+                                            }
+                                            if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter1)) {
+                                                wh.add(System.String.format("({0})", [filter1]));
+                                            }
+                                            stringWh = System.Linq.Enumerable.from(wh, System.String).any() ? System.String.format("({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.String, wh, " and ")]) : "";
+                                            $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).GetAsync$1(System.String, (System.String.format("/ExportExcel?componentId={0}", [Bridge.box(this.ParentListView.GuiInfo.Id, System.Int32)]) || "") + (System.String.format("&sql={0}", [this.ParentListView.Sql]) || "") + (System.String.format("&showNull={0}", [Bridge.box(($t = this.GuiInfo.ShowNull, $t != null ? $t : false), System.Boolean, System.Boolean.toString)]) || "") + (System.String.format("&where={0} {1}", stringWh, (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.ParentListView.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(wh, System.String).any() ? " and " : ""), this.ParentListView.GuiInfo.PreQuery))) || "") + (System.String.format("&custom=false&featureId={0}&orderby={1}", Bridge.box(this.EditForm.Feature.Id, System.Int32), finalFilter) || ""));
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -23072,7 +23131,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this._uploader.click();
             },
             CalcFilterQuery: function (prefix) {
-                var $t, $t1;
+                var $t, $t1, $t2;
                 if (this.EntityVM.DateTimeField != null) {
                     this.DateTimeField = System.Linq.Enumerable.from(this.ParentListView.Header, Core.Models.GridPolicy).firstOrDefault(Bridge.fn.bind(this, function (x) {
                             return System.Nullable.eq(x.Id, this.EntityVM.DateTimeField);
@@ -23093,17 +23152,19 @@ Bridge.assembly("Core", function ($asm, globals) {
                     if (Core.Extensions.StringExt.HasAnyChar(finalFilter)) {
                         finalFilter = (finalFilter || "") + " and ";
                     }
-                    if (!this.ParentListView.Wheres.contains(System.String.format("[{0}].[{1}] >= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.StartDate), "yyyy-MM-dd")))) {
-                        this.ParentListView.Wheres.add(System.String.format("[{0}].[{1}] >= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.StartDate), "yyyy-MM-dd")));
+                    if (!System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).any(Bridge.fn.bind(this, function (x) {
+                            return System.String.contains(x.FieldName,System.String.format("[{0}].[{1}] >= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.StartDate), "yyyy-MM-dd")));
+                        }))) {
+                        this.ParentListView.Wheres.add(($t2 = new Core.Models.Where(), $t2.FieldName = System.String.format("[{0}].[{1}] >= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.StartDate), "yyyy-MM-dd")), $t2.Group = false, $t2));
                     }
                     this.EntityVM.StartDate = System.DateTime.getDate(System.Nullable.getValue(this.EntityVM.StartDate));
                     finalFilter = (finalFilter || "") + ((System.String.format("cast({0},Edm.DateTimeOffset) ge cast({1},Edm.DateTimeOffset)", this.DateTimeField, Core.Extensions.DateTimeExt.ToISOFormat(System.DateTime.toUniversalTime(System.Nullable.getValue(this.EntityVM.StartDate))))) || "");
                     Core.Clients.LocalStorage.SetItem(System.String, "FromDate" + this.ParentListView.GuiInfo.Id, System.DateTime.format(System.Nullable.getValue(this.EntityVM.StartDate), "MM/dd/yyyy"));
                 } else {
-                    var check = System.Linq.Enumerable.from(this.ParentListView.Wheres, System.String).firstOrDefault(Bridge.fn.bind(this, function (x) {
-                            return System.String.contains(x,System.String.format("[{0}].[{1}] >=", this.ParentListView.GuiInfo.RefName, this.DateTimeField));
+                    var check = System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).firstOrDefault(Bridge.fn.bind(this, function (x) {
+                            return System.String.contains(x.FieldName,System.String.format("[{0}].[{1}] >=", this.ParentListView.GuiInfo.RefName, this.DateTimeField));
                         }), null);
-                    if (System.Linq.Enumerable.from(this.ParentListView.Wheres, System.String).any() && check != null) {
+                    if (System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).any() && check != null) {
                         this.ParentListView.Wheres.remove(check);
                     }
                     Core.Clients.LocalStorage.RemoveItem("FromDate" + this.ParentListView.GuiInfo.Id);
@@ -23112,17 +23173,19 @@ Bridge.assembly("Core", function ($asm, globals) {
                     if (Core.Extensions.StringExt.HasAnyChar(finalFilter)) {
                         finalFilter = (finalFilter || "") + " and ";
                     }
-                    if (!this.ParentListView.Wheres.contains(System.String.format("[{0}].[{1}] <= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.EndDate), "yyyy-MM-dd")))) {
-                        this.ParentListView.Wheres.add(System.String.format("[{0}].[{1}] <= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.EndDate), "yyyy-MM-dd")));
+                    if (!System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).any(Bridge.fn.bind(this, function (x) {
+                            return System.String.contains(x.FieldName,System.String.format("[{0}].[{1}] <= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.EndDate), "yyyy-MM-dd")));
+                        }))) {
+                        this.ParentListView.Wheres.add(($t2 = new Core.Models.Where(), $t2.FieldName = System.String.format("[{0}].[{1}] <= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.EndDate), "yyyy-MM-dd")), $t2.Group = false, $t2));
                     }
                     var endDate = System.DateTime.addDays(System.DateTime.getDate(System.Nullable.getValue(this.EntityVM.EndDate)), 1);
                     finalFilter = (finalFilter || "") + ((System.String.format("cast({0},Edm.DateTimeOffset) le cast({1},Edm.DateTimeOffset)", this.DateTimeField, Core.Extensions.DateTimeExt.ToISOFormat(System.DateTime.toUniversalTime(endDate)))) || "");
                     Core.Clients.LocalStorage.SetItem(System.String, "ToDate" + this.ParentListView.GuiInfo.Id, System.DateTime.format(System.Nullable.getValue(this.EntityVM.EndDate), "MM/dd/yyyy"));
                 } else {
-                    var check1 = System.Linq.Enumerable.from(this.ParentListView.Wheres, System.String).firstOrDefault(Bridge.fn.bind(this, function (x) {
-                            return System.String.contains(x,System.String.format("[{0}].[{1}] <=", this.ParentListView.GuiInfo.RefName, this.DateTimeField));
+                    var check1 = System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).firstOrDefault(Bridge.fn.bind(this, function (x) {
+                            return System.String.contains(x.FieldName,System.String.format("[{0}].[{1}] <=", this.ParentListView.GuiInfo.RefName, this.DateTimeField));
                         }), null);
-                    if (System.Linq.Enumerable.from(this.ParentListView.Wheres, System.String).any() && check1 != null) {
+                    if (System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).any() && check1 != null) {
                         this.ParentListView.Wheres.remove(check1);
                     }
                     Core.Clients.LocalStorage.RemoveItem("ToDate" + this.ParentListView.GuiInfo.Id);
@@ -28840,6 +28903,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                     gridPolicy, 
                     sum, 
                     submitEntity, 
+                    filter, 
+                    filter1, 
+                    wh, 
+                    stringWh, 
                     dataSet, 
                     $t, 
                     $t1, 
@@ -28870,7 +28937,25 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         if (this._preQueryFn != null) {
                                             submitEntity = Bridge.cast(this._preQueryFn.call(null, this), System.String);
                                         }
-                                        $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = Core.Extensions.IEnumerableExtensions.Combine(System.String, sum), $t.Url = System.String.format("SubTotal?group=&tablename={0}&refname=&formatsumary={1}&dateTimeField={2}&showNull={3}&sql={4}&orderby={5}&where={6} {7}", this.GuiInfo.RefName, this.GuiInfo.FormatSumaryField, this.GuiInfo.DateTimeField, Bridge.box(($t1 = this.GuiInfo.ShowNull, $t1 != null ? $t1 : false), System.Boolean, System.Boolean.toString), this.Sql, this.GuiInfo.OrderBySumary, Core.Extensions.IEnumerableExtensions.Combine(System.String, this.Wheres, " and "), (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.Wheres, System.String).any() ? " and " : ""), submitEntity))), $t.Method = Core.Enums.HttpMethod.POST, $t.AllowNestedObject = true, $t.ErrorHandler = function (x) { }, $t));
+                                        filter = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).where(function (x) {
+                                            return !x.Group;
+                                        }).select(function (x) {
+                                            return x.FieldName;
+                                        }), " and ");
+                                        filter1 = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).where(function (x) {
+                                            return x.Group;
+                                        }).select(function (x) {
+                                            return x.FieldName;
+                                        }), " or ");
+                                        wh = new (System.Collections.Generic.List$1(System.String)).ctor();
+                                        if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter)) {
+                                            wh.add(System.String.format("({0})", [filter]));
+                                        }
+                                        if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter1)) {
+                                            wh.add(System.String.format("({0})", [filter1]));
+                                        }
+                                        stringWh = System.Linq.Enumerable.from(wh, System.String).any() ? System.String.format("({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.String, wh, " and ")]) : "";
+                                        $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = Core.Extensions.IEnumerableExtensions.Combine(System.String, sum), $t.Url = (System.String.format("SubTotal?group=", null) || "") + (System.String.format("&tablename={0}", [this.GuiInfo.RefName]) || "") + (System.String.format("&refname=", null) || "") + (System.String.format("&formatsumary={0}", [this.GuiInfo.FormatSumaryField]) || "") + (System.String.format("&dateTimeField={0}", [this.GuiInfo.DateTimeField]) || "") + (System.String.format("&showNull={0}", [Bridge.box(($t1 = this.GuiInfo.ShowNull, $t1 != null ? $t1 : false), System.Boolean, System.Boolean.toString)]) || "") + (System.String.format("&sql={0}", [this.Sql]) || "") + (System.String.format("&orderby={0}", [this.GuiInfo.OrderBySumary]) || "") + (System.String.format("&where={0} {1}", stringWh, (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(wh, System.String).any() ? " and " : ""), submitEntity))) || ""), $t.Method = Core.Enums.HttpMethod.POST, $t.AllowNestedObject = true, $t.ErrorHandler = function (x) { }, $t));
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -29338,7 +29423,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                     where = Bridge.referenceEquals(cell.Operator, "not in") ? System.String.format("[{0}].{1} not like N'%{2}%'", this.GuiInfo.RefName, cell.FieldName, cell.Value) : System.String.format("[{0}].{1} like N'%{2}%'", this.GuiInfo.RefName, cell.FieldName, cell.Value);
                                                 }
                                                 lisToast.add((hl.ShortDesc || "") + " <span class='text-danger'>" + (cell.OperatorText || "") + "</span> " + (cell.ValueText || ""));
-                                            } else if (Bridge.referenceEquals(hl.ComponentType, "Number")) {
+                                            } else if (Bridge.referenceEquals(hl.ComponentType, "Number") || (Bridge.referenceEquals(hl.ComponentType, "Label") && System.String.contains(hl.FieldName,"Id"))) {
                                                 if (isNUll) {
                                                     advo = Bridge.referenceEquals(cell.Operator, "not in") ? Core.Enums.AdvSearchOperation.NotEqualNull : Core.Enums.AdvSearchOperation.EqualNull;
                                                     where = Bridge.referenceEquals(cell.Operator, "not in") ? System.String.format("[{0}].{1} is not null", this.GuiInfo.RefName, cell.FieldName) : System.String.format("[{0}].{1} is null", this.GuiInfo.RefName, cell.FieldName);
@@ -29396,10 +29481,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                 }
                                                 lisToast.add((hl.ShortDesc || "") + " <span class='text-danger'>" + (cell.OperatorText || "") + "</span> " + (cell.ValueText || ""));
                                             }
-                                            if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(where) && !System.Linq.Enumerable.from(this.Wheres, System.String).any(function (x) {
-                                                return Bridge.referenceEquals(x, where);
+                                            if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(where) && !System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).any(function (x) {
+                                                return Bridge.referenceEquals(x.FieldName, where);
                                             })) {
-                                                this.Wheres.add(where);
+                                                this.Wheres.add(($t = new Core.Models.Where(), $t.FieldName = where, $t.Group = cell.Group, $t));
                                             }
                                             var value = ($t = ids, $t != null ? $t : cell.Value);
                                             if (!System.Linq.Enumerable.from(this.AdvSearchVM.Conditions, Core.Models.FieldCondition).any(function (x) {
@@ -29597,7 +29682,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             sum = System.Linq.Enumerable.from(gridPolicy, Core.Models.GridPolicy).select(Bridge.fn.bind(this, function (x) {
                                                 return System.String.format("FORMAT(SUM(isnull([{0}].{1},0)),'#,#') as {2}", this.GuiInfo.RefName, x.FieldName, x.FieldName);
                                             })).toList(System.String);
-                                            $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).PostAsync(System.Array.type(System.Array.type(System.Object)), Core.Extensions.IEnumerableExtensions.Combine(System.String, sum), System.String.format("ViewSumary?group={0}&tablename={1}&refname={2}&formatsumary={3}&sql={4}&orderby={5}&where={6} {7}", header.FieldName, this.GuiInfo.RefName, header.RefName, this.GuiInfo.FormatSumaryField, this.Sql, this.GuiInfo.OrderBySumary, Core.Extensions.IEnumerableExtensions.Combine(System.String, this.Wheres, " and "), (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.Wheres, System.String).any() ? " and " : ""), this.GuiInfo.PreQuery))));
+                                            $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).PostAsync(System.Array.type(System.Array.type(System.Object)), Core.Extensions.IEnumerableExtensions.Combine(System.String, sum), System.String.format("ViewSumary?group={0}&tablename={1}&refname={2}&formatsumary={3}&sql={4}&orderby={5}&where={6} {7}", header.FieldName, this.GuiInfo.RefName, header.RefName, this.GuiInfo.FormatSumaryField, this.Sql, this.GuiInfo.OrderBySumary, Core.Extensions.IEnumerableExtensions.Combine(Core.Models.Where, this.Wheres, " and "), (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).any() ? " and " : ""), this.GuiInfo.PreQuery))));
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -38336,7 +38421,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             sum = System.Linq.Enumerable.from(gridPolicy, Core.Models.GridPolicy).select(Bridge.fn.bind(this, function (x) {
                                                 return System.String.format("FORMAT(SUM(isnull([{0}].{1},0)),'#,#') as {2}", this.GuiInfo.RefName, x.FieldName, x.FieldName);
                                             })).toList(System.String);
-                                            $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).PostAsync(System.Array.type(System.Array.type(System.Object)), Core.Extensions.IEnumerableExtensions.Combine(System.String, sum), System.String.format("ViewSumary?group={0}&tablename={1}&refname={2}&formatsumary={3}&sql={4}&orderby={5}&where={6} {7}", header.FieldName, this.GuiInfo.RefName, header.RefName, this.GuiInfo.FormatSumaryField, this.Sql, this.GuiInfo.OrderBySumary, Core.Extensions.IEnumerableExtensions.Combine(System.String, this.Wheres, " and "), (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.Wheres, System.String).any() ? " and " : ""), this.GuiInfo.PreQuery))));
+                                            $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).PostAsync(System.Array.type(System.Array.type(System.Object)), Core.Extensions.IEnumerableExtensions.Combine(System.String, sum), System.String.format("ViewSumary?group={0}&tablename={1}&refname={2}&formatsumary={3}&sql={4}&orderby={5}&where={6} {7}", header.FieldName, this.GuiInfo.RefName, header.RefName, this.GuiInfo.FormatSumaryField, this.Sql, this.GuiInfo.OrderBySumary, Core.Extensions.IEnumerableExtensions.Combine(Core.Models.Where, this.Wheres, " and "), (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).any() ? " and " : ""), this.GuiInfo.PreQuery))));
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -40483,6 +40568,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                     orderbyList, 
                     finalFilter, 
                     k, 
+                    filter, 
+                    filter1, 
+                    wh, 
+                    stringWh, 
                     path, 
                     $t1, 
                     $async_e, 
@@ -40561,7 +40650,25 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                 finalFilter = System.String.format("[{0}].{1}", this.ParentListView.GuiInfo.RefName, finalFilter);
                                             }
                                         }
-                                        $task4 = new Core.Clients.Client.$ctor1(this.ParentListView.GuiInfo.RefName).GetAsync$1(System.String, System.String.format("/ExportExcel?componentId={0}&sql={1}&showNull={2}&where={3} {4}&custom=true&featureId={5}&orderby={6}", Bridge.box(this.ParentListView.GuiInfo.Id, System.Int32), this.ParentListView.Sql, Bridge.box(($t1 = this.ParentListView.GuiInfo.ShowNull, $t1 != null ? $t1 : false), System.Boolean, System.Boolean.toString), Core.Extensions.IEnumerableExtensions.Combine(System.String, this.ParentListView.Wheres, " and "), (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.ParentListView.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.ParentListView.Wheres, System.String).any() ? " and " : ""), this.ParentListView.GuiInfo.PreQuery)), Bridge.box(this.Parent.EditForm.Feature.Id, System.Int32), finalFilter));
+                                        filter = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).where(function (x) {
+                                            return !x.Group;
+                                        }).select(function (x) {
+                                            return x.FieldName;
+                                        }), " and ");
+                                        filter1 = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).where(function (x) {
+                                            return x.Group;
+                                        }).select(function (x) {
+                                            return x.FieldName;
+                                        }), " or ");
+                                        wh = new (System.Collections.Generic.List$1(System.String)).ctor();
+                                        if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter)) {
+                                            wh.add(System.String.format("({0})", [filter]));
+                                        }
+                                        if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter1)) {
+                                            wh.add(System.String.format("({0})", [filter1]));
+                                        }
+                                        stringWh = System.Linq.Enumerable.from(wh, System.String).any() ? System.String.format("({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.String, wh, " and ")]) : "";
+                                        $task4 = new Core.Clients.Client.$ctor1(this.ParentListView.GuiInfo.RefName).GetAsync$1(System.String, (System.String.format("/ExportExcel?componentId={0}", [Bridge.box(this.ParentListView.GuiInfo.Id, System.Int32)]) || "") + (System.String.format("&sql={0}", [this.ParentListView.Sql]) || "") + (System.String.format("&showNull={0}", [Bridge.box(($t1 = this.ParentListView.GuiInfo.ShowNull, $t1 != null ? $t1 : false), System.Boolean, System.Boolean.toString)]) || "") + (System.String.format("&where={0} {1}", stringWh, (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.ParentListView.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).any() ? " and " : ""), this.ParentListView.GuiInfo.PreQuery))) || "") + (System.String.format("&custom=true&featureId={0}&orderby={1}", Bridge.box(this.Parent.EditForm.Feature.Id, System.Int32), finalFilter) || ""));
                                         $step = 7;
                                         if ($task4.isCompleted()) {
                                             continue;

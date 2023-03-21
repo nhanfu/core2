@@ -101,7 +101,7 @@ namespace Core.Components
 
         public bool IgnoreConfirmHardDelete { get; set; }
         public List<CellSelected> CellSelected { get; set; } = new List<CellSelected>();
-        public List<string> Wheres = new List<string>();
+        public List<Where> Wheres = new List<Where>();
         public HashSet<int> SelectedIds { get; set; } = new HashSet<int>();
         public int? FocusId { get; set; }
         public int? EntityFocusId { get; set; }
@@ -331,6 +331,10 @@ namespace Core.Components
             var calcFilter = CalcFilterQuery(searching);
             ClearRowData();
             await ReloadData(calcFilter, cache: false);
+        }
+
+        public virtual async Task ActionFilter()
+        {
         }
 
         public virtual string CalcFilterQuery(bool searching)

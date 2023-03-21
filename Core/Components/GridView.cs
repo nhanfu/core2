@@ -78,11 +78,31 @@ namespace Core.Components
             {
                 submitEntity = (string)_preQueryFn.Call(null, this);
             }
+            var filter = Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
+            var filter1 = Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
+            var wh = new List<string>();
+            if (!filter.IsNullOrWhiteSpace())
+            {
+                wh.Add($"({filter})");
+            }
+            if (!filter1.IsNullOrWhiteSpace())
+            {
+                wh.Add($"({filter1})");
+            }
+            var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
             var dataSet = await new Client(GuiInfo.RefName)
                 .SubmitAsync<object[][]>(new XHRWrapper
                 {
                     Value = sum.Combine(),
-                    Url = $"SubTotal?group=&tablename={GuiInfo.RefName}&refname=&formatsumary={GuiInfo.FormatSumaryField}&dateTimeField={GuiInfo.DateTimeField}&showNull={GuiInfo.ShowNull ?? false}&sql={Sql}&orderby={GuiInfo.OrderBySumary}&where={Wheres.Combine(" and ")} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {submitEntity}")}",
+                    Url = $"SubTotal?group=" +
+                    $"&tablename={GuiInfo.RefName}" +
+                    $"&refname=" +
+                    $"&formatsumary={GuiInfo.FormatSumaryField}" +
+                    $"&dateTimeField={GuiInfo.DateTimeField}" +
+                    $"&showNull={GuiInfo.ShowNull ?? false}" +
+                    $"&sql={Sql}" +
+                    $"&orderby={GuiInfo.OrderBySumary}" +
+                    $"&where={stringWh} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {submitEntity}")}",
                     Method = HttpMethod.POST,
                     AllowNestedObject = true,
                     ErrorHandler = (x) => { }
@@ -455,7 +475,7 @@ namespace Core.Components
             }
         }
 
-        public async Task ActionFilter()
+        public override async Task ActionFilter()
         {
             if (CellSelected.Nothing())
             {
@@ -525,7 +545,7 @@ namespace Core.Components
                     }
                     lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
-                else if (hl.ComponentType == nameof(Number))
+                else if (hl.ComponentType == nameof(Number) || (hl.ComponentType == "Label" && hl.FieldName.Contains("Id")))
                 {
                     if (isNUll)
                     {
@@ -609,9 +629,13 @@ namespace Core.Components
                     }
                     lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
-                if (!where.IsNullOrWhiteSpace() && !Wheres.Any(x => x == where))
+                if (!where.IsNullOrWhiteSpace() && !Wheres.Any(x => x.FieldName == where))
                 {
-                    Wheres.Add(where);
+                    Wheres.Add(new Where()
+                    {
+                        FieldName = where,
+                        Group = cell.Group
+                    });
                 }
                 var value = ids ?? cell.Value;
                 if (!AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.Value == value && x.CompareOperatorId == advo))
