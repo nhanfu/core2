@@ -518,7 +518,7 @@ namespace TMS.API.Controllers
                         }
                         if (tran.TransportationTypeId != item.TransportationTypeId) { item.TransportationTypeId = tran.TransportationTypeId; }
                         if (tran.BossId != item.BossId) { item.BossId = tran.BossId; }
-                        if (tran.CommodityId != item.CommodityId) { item.CommodityId = tran.CommodityId; }
+                        if (tran.CommodityId != item.CommodityId && item.ExpenseTypeId != 15981) { item.CommodityId = tran.CommodityId; }
                         if (tran.ContainerTypeId != item.ContainerTypeId) { item.ContainerTypeId = tran.ContainerTypeId; }
                         if (tran.RouteId != item.RouteId) { item.RouteId = tran.RouteId; }
                         if (tran.ShipId != item.ShipId) { item.ShipId = tran.ShipId; }
