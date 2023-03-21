@@ -427,12 +427,15 @@ namespace Core.Components
             var conditions = AdvSearchEntity.Conditions.Select((x, index) => new
             {
                 Term = GetSearchValue(x),
-                Operator = GetLogicOp(x) ?? " and "
+                Operator = GetLogicOp(x) ?? " and ",
+                x.Group
             }).Where(x => x.Term.HasAnyChar()).ToList();
-            var filterPart = conditions.Select((x, index) => index < conditions.Count - 1 ? x.Term + x.Operator : x.Term).Combine(string.Empty);
+
+            var filterPart = conditions.Where(x => !x.Group).Select((x, index) => index < conditions.Count - 1 ? x.Term + x.Operator : x.Term).Combine(string.Empty);
+            var filterPartGroup = conditions.Where(x => x.Group).Select((x, index) => index < conditions.Count - 1 ? x.Term + x.Operator : x.Term).Combine(string.Empty);
             if (!filterPart.IsNullOrWhiteSpace())
             {
-                query = OdataExt.ApplyClause(query, $"({originFilter}) and ({filterPart})");
+                query = OdataExt.ApplyClause(query, $"({originFilter}) and ({filterPart} 1 eq 1) and ({filterPartGroup} 1 eq 1)".Replace("or  1 eq 1", ""));
             }
             var orderbyList = AdvSearchEntity.OrderBy.Select(orderby => $"{orderby.Field.FieldName} {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
             var orderByPart = string.Join(",", orderbyList);

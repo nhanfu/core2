@@ -627,7 +627,8 @@ namespace Core.Components
                             Field = hl,
                             CompareOperatorId = advo,
                             LogicOperatorId = cell.Logic ?? LogicOperation.And,
-                            Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value
+                            Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value,
+                            Group = cell.Group
                         });
                     }
                 }

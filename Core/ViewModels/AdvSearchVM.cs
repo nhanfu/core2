@@ -27,6 +27,7 @@ namespace Core.Models
         public string OperatorText { get; set; }
         public LogicOperation? Logic { get; set; }
         public bool IsSearch { get; set; }
+        public bool Group { get; set; }
     }
 
     public class FieldCondition
@@ -39,6 +40,7 @@ namespace Core.Models
         public LogicOperation? LogicOperatorId { get; set; }
         public Entity LogicOperator { get; set; }
         public int Level { get; set; }
+        public bool Group { get; set; }
     }
 
     public class OrderBy

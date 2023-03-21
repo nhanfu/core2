@@ -1520,7 +1520,8 @@ namespace Core.Components
                     Operator = "in",
                     OperatorText = "Chứa",
                     Logic = LogicOperation.Or,
-                    IsSearch = true
+                    IsSearch = true,
+                    Group = true
                 };
             });
             gridView1.CellSelected.AddRange(cellSelecteds);

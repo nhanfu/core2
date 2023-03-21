@@ -8865,7 +8865,8 @@ Bridge.assembly("Core", function ($asm, globals) {
             Operator: null,
             OperatorText: null,
             Logic: null,
-            IsSearch: false
+            IsSearch: false,
+            Group: false
         }
     });
 
@@ -9247,7 +9248,8 @@ Bridge.assembly("Core", function ($asm, globals) {
             Value: null,
             LogicOperatorId: null,
             LogicOperator: null,
-            Level: 0
+            Level: 0,
+            Group: false
         }
     });
 
@@ -18639,7 +18641,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         }, null);
                                         cellSelecteds = System.Linq.Enumerable.from(selecteds, System.Object).select(function (selected) {
                                             var $t;
-                                            return ($t = new Core.Models.CellSelected(), $t.FieldName = e.TargetFieldName, $t.FieldText = com.ShortDesc, $t.ComponentType = com.ComponentType, $t.Value = Bridge.toString(Core.Extensions.BridgeExt.GetPropValue(selected, e.FieldName)), $t.ValueText = Bridge.toString(Core.Extensions.BridgeExt.GetPropValue(selected, e.FieldName)), $t.Operator = "in", $t.OperatorText = "Ch\u1ee9a", $t.Logic = Core.Enums.LogicOperation.Or, $t.IsSearch = true, $t);
+                                            return ($t = new Core.Models.CellSelected(), $t.FieldName = e.TargetFieldName, $t.FieldText = com.ShortDesc, $t.ComponentType = com.ComponentType, $t.Value = Bridge.toString(Core.Extensions.BridgeExt.GetPropValue(selected, e.FieldName)), $t.ValueText = Bridge.toString(Core.Extensions.BridgeExt.GetPropValue(selected, e.FieldName)), $t.Operator = "in", $t.OperatorText = "Ch\u1ee9a", $t.Logic = Core.Enums.LogicOperation.Or, $t.IsSearch = true, $t.Group = true, $t);
                                         });
                                         gridView1.CellSelected.AddRange(cellSelecteds);
                                         $task2 = gridView1.ActionFilter();
@@ -29410,7 +29412,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                         return Bridge.referenceEquals(x.Field.FieldName, cell.FieldName) && System.Nullable.eq(x.CompareOperatorId, advo);
                                                     }, null).Value = Core.Extensions.StringExt.IsNullOrWhiteSpace(value) ? cell.ValueText : value;
                                                 } else {
-                                                    this.AdvSearchVM.Conditions.add(($t1 = new Core.Models.FieldCondition(), $t1.Field = hl, $t1.CompareOperatorId = advo, $t1.LogicOperatorId = ($t2 = cell.Logic, $t2 != null ? $t2 : Core.Enums.LogicOperation.And), $t1.Value = Core.Extensions.StringExt.IsNullOrWhiteSpace(value) ? cell.ValueText : value, $t1));
+                                                    this.AdvSearchVM.Conditions.add(($t1 = new Core.Models.FieldCondition(), $t1.Field = hl, $t1.CompareOperatorId = advo, $t1.LogicOperatorId = ($t2 = cell.Logic, $t2 != null ? $t2 : Core.Enums.LogicOperation.And), $t1.Value = Core.Extensions.StringExt.IsNullOrWhiteSpace(value) ? cell.ValueText : value, $t1.Group = cell.Group, $t1));
                                                 }
                                             }
                                         }));
@@ -39784,15 +39786,23 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var originFilter = Core.Extensions.OdataExt.GetClausePart(query);
                 var conditions = System.Linq.Enumerable.from(this.AdvSearchEntity.Conditions, Core.Models.FieldCondition).select(Bridge.fn.bind(this, function (x, index) {
                         var $t;
-                        return new $asm.$AnonymousType$11(this.GetSearchValue(x), ($t = Core.Components.AdvancedSearch.GetLogicOp(x), $t != null ? $t : " and "));
+                        return new $asm.$AnonymousType$11(this.GetSearchValue(x), ($t = Core.Components.AdvancedSearch.GetLogicOp(x), $t != null ? $t : " and "), x.Group);
                     })).where(function (x) {
                     return Core.Extensions.StringExt.HasAnyChar(x.Term);
                 }).toList(System.Object);
-                var filterPart = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(conditions, System.Object).select(function (x, index) {
-                        return index < ((conditions.Count - 1) | 0) ? (x.Term || "") + (x.Operator || "") : x.Term;
-                    }), "");
+
+                var filterPart = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(conditions, System.Object).where(function (x) {
+                        return !x.Group;
+                    }).select(function (x, index) {
+                    return index < ((conditions.Count - 1) | 0) ? (x.Term || "") + (x.Operator || "") : x.Term;
+                }), "");
+                var filterPartGroup = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(conditions, System.Object).where(function (x) {
+                        return x.Group;
+                    }).select(function (x, index) {
+                    return index < ((conditions.Count - 1) | 0) ? (x.Term || "") + (x.Operator || "") : x.Term;
+                }), "");
                 if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filterPart)) {
-                    query = Core.Extensions.OdataExt.ApplyClause(query, System.String.format("({0}) and ({1})", originFilter, filterPart));
+                    query = Core.Extensions.OdataExt.ApplyClause(query, System.String.replaceAll(System.String.format("({0}) and ({1} 1 eq 1) and ({2} 1 eq 1)", originFilter, filterPart, filterPartGroup), "or  1 eq 1", ""));
                 }
                 var orderbyList = System.Linq.Enumerable.from(this.AdvSearchEntity.OrderBy, Core.Models.OrderBy).select(function (orderby) {
                         return System.String.format("{0} {1}", orderby.Field.FieldName, System.Nullable.toString(orderby.OrderbyOptionId, System.Enum.toStringFn(Core.Enums.OrderbyOption)).toLowerCase());
@@ -40050,9 +40060,10 @@ Bridge.assembly("Core", function ($asm, globals) {
     Bridge.define("$AnonymousType$11", $asm, {
         $kind: "anonymous",
         ctors: {
-            ctor: function (term, operator) {
+            ctor: function (term, operator, group) {
                 this.Term = term;
                 this.Operator = operator;
+                this.Group = group;
             }
         },
         methods: {
@@ -40060,22 +40071,23 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (!Bridge.is(o, $asm.$AnonymousType$11)) {
                     return false;
                 }
-                return Bridge.equals(this.Term, o.Term) && Bridge.equals(this.Operator, o.Operator);
+                return Bridge.equals(this.Term, o.Term) && Bridge.equals(this.Operator, o.Operator) && Bridge.equals(this.Group, o.Group);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550208730, this.Term, this.Operator]);
+                var h = Bridge.addHash([7550208730, this.Term, this.Operator, this.Group]);
                 return h;
             },
             toJSON: function () {
                 return {
                     Term : this.Term,
-                    Operator : this.Operator
+                    Operator : this.Operator,
+                    Group : this.Group
                 };
             }
         },
         statics : {
             methods: {
-                $metadata : function () { return {"m":[{"a":2,"n":"Operator","t":16,"rt":System.String,"g":{"a":2,"n":"get_Operator","t":8,"rt":System.String,"fg":"Operator"},"fn":"Operator"},{"a":2,"n":"Term","t":16,"rt":System.String,"g":{"a":2,"n":"get_Term","t":8,"rt":System.String,"fg":"Term"},"fn":"Term"}]}; }
+                $metadata : function () { return {"m":[{"a":2,"n":"Group","t":16,"rt":System.Boolean,"g":{"a":2,"n":"get_Group","t":8,"rt":System.Boolean,"fg":"Group","box":function ($v) { return Bridge.box($v, System.Boolean, System.Boolean.toString);}},"fn":"Group"},{"a":2,"n":"Operator","t":16,"rt":System.String,"g":{"a":2,"n":"get_Operator","t":8,"rt":System.String,"fg":"Operator"},"fn":"Operator"},{"a":2,"n":"Term","t":16,"rt":System.String,"g":{"a":2,"n":"get_Term","t":8,"rt":System.String,"fg":"Term"},"fn":"Term"}]}; }
             }
         }
     });
