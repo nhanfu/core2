@@ -346,9 +346,26 @@ namespace Core.Components
             var body = Html.Context;
             Task.Run(async () =>
             {
+                var filter = Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
+                var filter1 = Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
+                var wh = new List<string>();
+                if (!filter.IsNullOrWhiteSpace())
+                {
+                    wh.Add($"({filter})");
+                }
+                if (!filter1.IsNullOrWhiteSpace())
+                {
+                    wh.Add($"({filter1})");
+                }
+                var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
                 var gridPolicy = BasicHeader.Where(x => x.ComponentType == nameof(Number) && x.FieldName != header.FieldName).ToList();
                 var sum = gridPolicy.Select(x => $"FORMAT(SUM(isnull([{GuiInfo.RefName}].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
-                var dataSet = await new Client(GuiInfo.RefName).PostAsync<object[][]>(sum.Combine(), $"ViewSumary?group={header.FieldName}&tablename={GuiInfo.RefName}&refname={header.RefName}&formatsumary={GuiInfo.FormatSumaryField}&sql={Sql}&orderby={GuiInfo.OrderBySumary}&where={Wheres.Combine(" and ")} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {GuiInfo.PreQuery}")}");
+                var dataSet = await new Client(GuiInfo.RefName).PostAsync<object[][]>(sum.Combine(), $"ViewSumary?group={header.FieldName}" +
+                    $"&tablename={GuiInfo.RefName}" +
+                    $"&refname={header.RefName}" +
+                    $"&formatsumary={GuiInfo.FormatSumaryField}" +
+                    $"&sql={Sql}&orderby={GuiInfo.OrderBySumary}" +
+                    $"&where={stringWh} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {GuiInfo.PreQuery}")}");
                 var sumarys = dataSet[0];
                 object[] refn = null;
                 if (dataSet.Length > 1)

@@ -29643,6 +29643,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                         $returnValue, 
                         gridPolicy, 
                         sum, 
+                        filter, 
+                        filter1, 
+                        wh, 
+                        stringWh, 
                         dataSet, 
                         sumarys, 
                         refn, 
@@ -29681,7 +29685,26 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             sum = System.Linq.Enumerable.from(gridPolicy, Core.Models.GridPolicy).select(Bridge.fn.bind(this, function (x) {
                                                 return System.String.format("FORMAT(SUM(isnull([{0}].{1},0)),'#,#') as {2}", this.GuiInfo.RefName, x.FieldName, x.FieldName);
                                             })).toList(System.String);
-                                            $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).PostAsync(System.Array.type(System.Array.type(System.Object)), Core.Extensions.IEnumerableExtensions.Combine(System.String, sum), System.String.format("ViewSumary?group={0}&tablename={1}&refname={2}&formatsumary={3}&sql={4}&orderby={5}&where={6} {7}", header.FieldName, this.GuiInfo.RefName, header.RefName, this.GuiInfo.FormatSumaryField, this.Sql, this.GuiInfo.OrderBySumary, Core.Extensions.IEnumerableExtensions.Combine(Core.Models.Where, this.Wheres, " and "), (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).any() ? " and " : ""), this.GuiInfo.PreQuery))));
+
+                                            filter = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).where(function (x) {
+                                                return !x.Group;
+                                            }).select(function (x) {
+                                                return x.FieldName;
+                                            }), " and ");
+                                            filter1 = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).where(function (x) {
+                                                return x.Group;
+                                            }).select(function (x) {
+                                                return x.FieldName;
+                                            }), " or ");
+                                            wh = new (System.Collections.Generic.List$1(System.String)).ctor();
+                                            if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter)) {
+                                                wh.add(System.String.format("({0})", [filter]));
+                                            }
+                                            if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter1)) {
+                                                wh.add(System.String.format("({0})", [filter1]));
+                                            }
+                                            stringWh = System.Linq.Enumerable.from(wh, System.String).any() ? System.String.format("({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.String, wh, " and ")]) : "";
+                                            $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).PostAsync(System.Array.type(System.Array.type(System.Object)), Core.Extensions.IEnumerableExtensions.Combine(System.String, sum), (System.String.format("ViewSumary?group={0}", [header.FieldName]) || "") + (System.String.format("&tablename={0}", [this.GuiInfo.RefName]) || "") + (System.String.format("&refname={0}", [header.RefName]) || "") + (System.String.format("&formatsumary={0}", [this.GuiInfo.FormatSumaryField]) || "") + (System.String.format("&sql={0}&orderby={1}", this.Sql, this.GuiInfo.OrderBySumary) || "") + (System.String.format("&where={0} {1}", stringWh, (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).any() ? " and " : ""), this.GuiInfo.PreQuery))) || ""));
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -38380,6 +38403,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                         $jumpFromFinally, 
                         $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                         $returnValue, 
+                        filter, 
+                        filter1, 
+                        wh, 
+                        stringWh, 
                         gridPolicy, 
                         sum, 
                         dataSet, 
@@ -38414,13 +38441,31 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     $step = System.Array.min([0,1,2,3,4,5,6,7,8,9], $step);
                                     switch ($step) {
                                         case 0: {
+                                            filter = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).where(function (x) {
+                                                return !x.Group;
+                                            }).select(function (x) {
+                                                return x.FieldName;
+                                            }), " and ");
+                                            filter1 = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).where(function (x) {
+                                                return x.Group;
+                                            }).select(function (x) {
+                                                return x.FieldName;
+                                            }), " or ");
+                                            wh = new (System.Collections.Generic.List$1(System.String)).ctor();
+                                            if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter)) {
+                                                wh.add(System.String.format("({0})", [filter]));
+                                            }
+                                            if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter1)) {
+                                                wh.add(System.String.format("({0})", [filter1]));
+                                            }
+                                            stringWh = System.Linq.Enumerable.from(wh, System.String).any() ? System.String.format("({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.String, wh, " and ")]) : "";
                                             gridPolicy = System.Linq.Enumerable.from(this.BasicHeader, Core.Models.GridPolicy).where(function (x) {
                                                 return Bridge.referenceEquals(x.ComponentType, "Number") && !Bridge.referenceEquals(x.FieldName, header.FieldName);
                                             }).toList(Core.Models.GridPolicy);
                                             sum = System.Linq.Enumerable.from(gridPolicy, Core.Models.GridPolicy).select(Bridge.fn.bind(this, function (x) {
                                                 return System.String.format("FORMAT(SUM(isnull([{0}].{1},0)),'#,#') as {2}", this.GuiInfo.RefName, x.FieldName, x.FieldName);
                                             })).toList(System.String);
-                                            $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).PostAsync(System.Array.type(System.Array.type(System.Object)), Core.Extensions.IEnumerableExtensions.Combine(System.String, sum), System.String.format("ViewSumary?group={0}&tablename={1}&refname={2}&formatsumary={3}&sql={4}&orderby={5}&where={6} {7}", header.FieldName, this.GuiInfo.RefName, header.RefName, this.GuiInfo.FormatSumaryField, this.Sql, this.GuiInfo.OrderBySumary, Core.Extensions.IEnumerableExtensions.Combine(Core.Models.Where, this.Wheres, " and "), (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).any() ? " and " : ""), this.GuiInfo.PreQuery))));
+                                            $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).PostAsync(System.Array.type(System.Array.type(System.Object)), Core.Extensions.IEnumerableExtensions.Combine(System.String, sum), (System.String.format("ViewSumary?group={0}", [header.FieldName]) || "") + (System.String.format("&tablename={0}", [this.GuiInfo.RefName]) || "") + (System.String.format("&refname={0}", [header.RefName]) || "") + (System.String.format("&formatsumary={0}", [this.GuiInfo.FormatSumaryField]) || "") + (System.String.format("&sql={0}&orderby={1}", this.Sql, this.GuiInfo.OrderBySumary) || "") + (System.String.format("&where={0} {1}", stringWh, (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).any() ? " and " : ""), this.GuiInfo.PreQuery))) || ""));
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
