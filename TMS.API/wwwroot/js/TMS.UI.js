@@ -16568,9 +16568,15 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                     $task8, 
                                                     $taskResult8, 
                                                     $task9, 
+                                                    $taskResult9, 
                                                     $task10, 
+                                                    $taskResult10, 
                                                     $task11, 
                                                     $taskResult11, 
+                                                    $task12, 
+                                                    $taskResult12, 
+                                                    $task13, 
+                                                    $taskResult13, 
                                                     $jumpFromFinally, 
                                                     newCommodityValue, 
                                                     expenseContainerType, 
@@ -16580,13 +16586,23 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                     expenseTypes, 
                                                     expenseTypeCodes, 
                                                     expenses, 
+                                                    insuranceFeesRates, 
+                                                    extraInsuranceFeesRateDB, 
+                                                    insuranceFeesRateColdDB, 
+                                                    containerTypeIdExpenses, 
+                                                    containerTypeExpenses, 
+                                                    containerTypeOfExpenses, 
                                                     $t1, 
                                                     item, 
+                                                    container, 
+                                                    $t2, 
+                                                    item1, 
                                                     checkIsSOC, 
+                                                    containerExpense, 
                                                     rs, 
                                                     $asyncBody = Bridge.fn.bind(this, function () {
                                                         for (;;) {
-                                                            $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17], $step);
+                                                            $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], $step);
                                                             switch ($step) {
                                                                 case 0: {
                                                                     commodityValue.EndDate = System.DateTime.getDate(System.DateTime.getNow());
@@ -16674,84 +16690,117 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                                 case 7: {
                                                                     $taskResult7 = $task7.getAwaitedResult();
                                                                     expenses = $taskResult7;
-                                                                    $t1 = Bridge.getEnumerator(expenses);
+                                                                    $task8 = new Core.Clients.Client.$ctor1("InsuranceFeesRate").GetRawList(TMS.API.Models.InsuranceFeesRate, System.String.format("?$filter=Active eq true", null));
                                                                     $step = 8;
-                                                                    continue;
-                                                                }
-                                                                case 8: {
-                                                                    if ($t1.moveNext()) {
-                                                                        item = $t1.Current;
-                                                                        $step = 9;
-                                                                        continue;
-                                                                    }
-                                                                    $step = 16;
-                                                                    continue;
-                                                                }
-                                                                case 9: {
-                                                                    item.CommodityValue = newCommodityValue.TotalPrice;
-                                                                    $task8 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 7577 and Id eq {0}", [Bridge.box(item.ExpenseTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                                                    $step = 10;
                                                                     if ($task8.isCompleted()) {
                                                                         continue;
                                                                     }
                                                                     $task8.continue($asyncBody);
                                                                     return;
                                                                 }
-                                                                case 10: {
+                                                                case 8: {
                                                                     $taskResult8 = $task8.getAwaitedResult();
-                                                                    checkIsSOC = $taskResult8;
-                                                                    if (System.String.contains(checkIsSOC.Name,"BH SOC")) {
-                                                                        $step = 11;
-                                                                        continue;
-                                                                    } else  {
-                                                                        $step = 13;
-                                                                        continue;
-                                                                    }
-                                                                }
-                                                                case 11: {
-                                                                    $task9 = this.CalcInsuranceFees(item, true);
-                                                                    $step = 12;
+                                                                    insuranceFeesRates = $taskResult8;
+                                                                    $task9 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 25374", null));
+                                                                    $step = 9;
                                                                     if ($task9.isCompleted()) {
                                                                         continue;
                                                                     }
                                                                     $task9.continue($asyncBody);
                                                                     return;
                                                                 }
-                                                                case 12: {
-                                                                    $task9.getAwaitedResult();
-                                                                    $step = 15;
-                                                                    continue;
-                                                                }
-                                                                case 13: {
-                                                                    $task10 = this.CalcInsuranceFees(item, false);
-                                                                    $step = 14;
+                                                                case 9: {
+                                                                    $taskResult9 = $task9.getAwaitedResult();
+                                                                    extraInsuranceFeesRateDB = $taskResult9;
+                                                                    $task10 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq 25391", null));
+                                                                    $step = 10;
                                                                     if ($task10.isCompleted()) {
                                                                         continue;
                                                                     }
                                                                     $task10.continue($asyncBody);
                                                                     return;
                                                                 }
-                                                                case 14: {
-                                                                    $task10.getAwaitedResult();
-                                                                    $step = 15;
-                                                                    continue;
-                                                                }
-                                                                case 15: {
-                                                                    $step = 8;
-                                                                    continue;
-                                                                }
-                                                                case 16: {
-                                                                    $task11 = new Core.Clients.Client.$ctor1("Expense").BulkUpdateAsync(TMS.API.Models.Expense, expenses);
-                                                                    $step = 17;
+                                                                case 10: {
+                                                                    $taskResult10 = $task10.getAwaitedResult();
+                                                                    insuranceFeesRateColdDB = $taskResult10;
+                                                                    containerTypeIdExpenses = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).select(function (x) {
+                                                                        return x.ContainerTypeId;
+                                                                    }).toList(System.Int32);
+                                                                    $task11 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id in ({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.Nullable$1(System.Int32), containerTypeIdExpenses)]));
+                                                                    $step = 11;
                                                                     if ($task11.isCompleted()) {
                                                                         continue;
                                                                     }
                                                                     $task11.continue($asyncBody);
                                                                     return;
                                                                 }
-                                                                case 17: {
+                                                                case 11: {
                                                                     $taskResult11 = $task11.getAwaitedResult();
-                                                                    rs = $taskResult11;
+                                                                    containerTypeExpenses = $taskResult11;
+                                                                    containerTypeOfExpenses = new (System.Collections.Generic.Dictionary$2(System.Int32,TMS.API.Models.MasterData)).ctor();
+                                                                    $t1 = Bridge.getEnumerator(expenses);
+                                                                    try {
+                                                                        while ($t1.moveNext()) {
+                                                                            item = { v : $t1.Current };
+                                                                            container = System.Linq.Enumerable.from(containerTypeExpenses, TMS.API.Models.MasterData).where((function ($me, item) {
+                                                                                return function (x) {
+                                                                                    return System.Nullable.eq(x.Id, item.v.ContainerTypeId);
+                                                                                };
+                                                                            })(this, item)).firstOrDefault(null, null);
+                                                                            containerTypeOfExpenses.add(item.v.Id, container);
+                                                                        }
+                                                                    } finally {
+                                                                        if (Bridge.is($t1, System.IDisposable)) {
+                                                                            $t1.System$IDisposable$Dispose();
+                                                                        }
+                                                                    }
+                                                                    $t2 = Bridge.getEnumerator(expenses);
+                                                                    $step = 12;
+                                                                    continue;
+                                                                }
+                                                                case 12: {
+                                                                    if ($t2.moveNext()) {
+                                                                        item1 = $t2.Current;
+                                                                        $step = 13;
+                                                                        continue;
+                                                                    }
+                                                                    $step = 15;
+                                                                    continue;
+                                                                }
+                                                                case 13: {
+                                                                    item1.CommodityValue = newCommodityValue.TotalPrice;
+                                                                    $task12 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 7577 and Id eq {0}", [Bridge.box(item1.ExpenseTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
+                                                                    $step = 14;
+                                                                    if ($task12.isCompleted()) {
+                                                                        continue;
+                                                                    }
+                                                                    $task12.continue($asyncBody);
+                                                                    return;
+                                                                }
+                                                                case 14: {
+                                                                    $taskResult12 = $task12.getAwaitedResult();
+                                                                    checkIsSOC = $taskResult12;
+                                                                    containerExpense = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.Int32, TMS.API.Models.MasterData, containerTypeOfExpenses, item1.Id);
+                                                                    if (System.String.contains(checkIsSOC.Name,"BH SOC")) {
+                                                                        this.CalcInsuranceFees(item1, true, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
+                                                                    } else {
+                                                                        this.CalcInsuranceFees(item1, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
+                                                                    }
+                                                                    $step = 12;
+                                                                    continue;
+                                                                }
+                                                                case 15: {
+                                                                    $task13 = new Core.Clients.Client.$ctor1("Expense").BulkUpdateAsync(TMS.API.Models.Expense, expenses);
+                                                                    $step = 16;
+                                                                    if ($task13.isCompleted()) {
+                                                                        continue;
+                                                                    }
+                                                                    $task13.continue($asyncBody);
+                                                                    return;
+                                                                }
+                                                                case 16: {
+                                                                    $taskResult13 = $task13.getAwaitedResult();
+                                                                    rs = $taskResult13;
                                                                     if (rs != null) {
                                                                         Core.Extensions.Toast.Success("\u0110\u00e3 \u00e1p d\u1ee5ng th\u00e0nh c\u00f4ng GTHH");
                                                                     } else {
@@ -16853,202 +16902,47 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 }
                 return newCommodityValue;
             },
-            CalcInsuranceFees: function (expense, isSOC) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $task2, 
-                    $taskResult2, 
-                    $task3, 
-                    $taskResult3, 
-                    $task4, 
-                    $taskResult4, 
-                    $task5, 
-                    $taskResult5, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    isSubRatio, 
-                    journeyId, 
-                    insuranceFeesRateDB, 
-                    getContainerType, 
-                    insuranceFeesRateColdDB, 
-                    extraInsuranceFeesRateDB, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,7,8,9,10,11,12,13,14,15,16,17,18], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        isSubRatio = false;
-                                        if (((expense.IsWet || expense.SteamingTerms || expense.BreakTerms) && expense.IsBought === false) || (expense.IsBought && expense.IsWet)) {
-                                            isSubRatio = true;
-                                        }
-                                        journeyId = expense.JourneyId == null ? "" : "and JourneyId eq " + (System.Nullable.toString(expense.JourneyId, null) || "");
-                                        insuranceFeesRateDB = null;
-                                        if (expense.IsBought && expense.TransportationTypeId != null) {
-                                            $step = 1;
-                                            continue;
-                                        } else  {
-                                            $step = 3;
-                                            continue;
-                                        }
-                                    }
-                                    case 1: {
-                                        $task1 = new Core.Clients.Client.$ctor1("InsuranceFeesRate").FirstOrDefaultAsync(TMS.API.Models.InsuranceFeesRate, System.String.format("?$filter=Active eq true and TransportationTypeId eq {0} {1} and IsBought eq {2} and IsSOC eq {3} and IsSubRatio eq {4}", Bridge.box(expense.TransportationTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), journeyId, System.Boolean.toString(expense.IsBought).toLowerCase(), System.Boolean.toString(isSOC).toLowerCase(), System.Boolean.toString(isSubRatio).toLowerCase()));
-                                        $step = 2;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        insuranceFeesRateDB = $taskResult1;
-                                        $step = 7;
-                                        continue;
-                                    }
-                                    case 3: {
-                                        if (expense.IsBought === false && expense.TransportationTypeId != null) {
-                                            $step = 4;
-                                            continue;
-                                        } 
-                                        $step = 6;
-                                        continue;
-                                    }
-                                    case 4: {
-                                        $task2 = new Core.Clients.Client.$ctor1("InsuranceFeesRate").FirstOrDefaultAsync(TMS.API.Models.InsuranceFeesRate, System.String.format("?$filter=Active eq true and TransportationTypeId eq {0} {1} and IsBought eq {2} and IsSOC eq {3}", Bridge.box(expense.TransportationTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), journeyId, System.Boolean.toString(expense.IsBought).toLowerCase(), System.Boolean.toString(isSOC).toLowerCase()));
-                                        $step = 5;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 5: {
-                                        $taskResult2 = $task2.getAwaitedResult();
-                                        insuranceFeesRateDB = $taskResult2;
-                                        $step = 6;
-                                        continue;
-                                    }
-
-                                    case 7: {
-                                        if (insuranceFeesRateDB != null) {
-                                            $step = 8;
-                                            continue;
-                                        } else  {
-                                            $step = 17;
-                                            continue;
-                                        }
-                                    }
-                                    case 8: {
-                                        $task3 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(expense.ContainerTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                        $step = 9;
-                                        if ($task3.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task3.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 9: {
-                                        $taskResult3 = $task3.getAwaitedResult();
-                                        getContainerType = $taskResult3;
-                                        if (getContainerType != null && System.String.contains(getContainerType.Description.toLowerCase(),"l\u1ea1nh") && System.Nullable.eq(insuranceFeesRateDB.TransportationTypeId, 11673) && System.Nullable.eq(insuranceFeesRateDB.JourneyId, 12114)) {
-                                            $step = 10;
-                                            continue;
-                                        } else  {
-                                            $step = 12;
-                                            continue;
-                                        }
-                                    }
-                                    case 10: {
-                                        $task4 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq 25391", null));
-                                        $step = 11;
-                                        if ($task4.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task4.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 11: {
-                                        $taskResult4 = $task4.getAwaitedResult();
-                                        insuranceFeesRateColdDB = $taskResult4;
-                                        expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? System.Decimal(insuranceFeesRateColdDB.Name) : System.Decimal(0);
-                                        $step = 13;
-                                        continue;
-                                    }
-                                    case 12: {
-                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
-                                        $step = 13;
-                                        continue;
-                                    }
-                                    case 13: {
-                                        if (insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
-                                            $step = 14;
-                                            continue;
-                                        } 
-                                        $step = 16;
-                                        continue;
-                                    }
-                                    case 14: {
-                                        $task5 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 25374", null));
-                                        $step = 15;
-                                        if ($task5.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task5.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 15: {
-                                        $taskResult5 = $task5.getAwaitedResult();
-                                        extraInsuranceFeesRateDB = $taskResult5;
-                                        extraInsuranceFeesRateDB.ForEach(function (x) {
-                                            var prop = System.Linq.Enumerable.from(Bridge.Reflection.getMembers(Bridge.getType(expense), 16, 28), System.Reflection.PropertyInfo).where(function (y) {
-                                                return Bridge.referenceEquals(y.n, x.Name) && System.Boolean.parse(Bridge.toString(Bridge.Reflection.midel(y.g, expense).apply(null, null)));
-                                            }).firstOrDefault(null, null);
-                                            if (prop != null) {
-                                                expense.InsuranceFeeRate = System.Nullable.lift2("add", expense.InsuranceFeeRate, System.Decimal(x.Code));
-                                            }
-                                        });
-                                        $step = 16;
-                                        continue;
-                                    }
-                                    case 16: {
-                                        $step = 18;
-                                        continue;
-                                    }
-                                    case 17: {
-                                        expense.InsuranceFeeRate = System.Decimal(0);
-                                        expense.TotalPriceBeforeTax = System.Decimal(0);
-                                        expense.TotalPriceAfterTax = System.Decimal(0);
-                                        $step = 18;
-                                        continue;
-                                    }
-                                    case 18: {
-                                        if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, true)) {
-                                            this.CalcInsuranceFeeNoVAT(expense);
-                                        } else if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, false)) {
-                                            this.CalcInsuranceFee(expense);
-                                        }
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
+            CalcInsuranceFees: function (expense, isSOC, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB) {
+                var isSubRatio = false;
+                if (((expense.IsWet || expense.SteamingTerms || expense.BreakTerms) && expense.IsBought === false) || (expense.IsBought && expense.IsWet)) {
+                    isSubRatio = true;
+                }
+                var insuranceFeesRateDB = null;
+                if (expense.IsBought) {
+                    insuranceFeesRateDB = System.Linq.Enumerable.from(insuranceFeesRates, TMS.API.Models.InsuranceFeesRate).where(function (x) {
+                            return System.Nullable.eq(x.TransportationTypeId, expense.TransportationTypeId) && System.Nullable.eq(x.JourneyId, expense.JourneyId) && x.IsBought === expense.IsBought && System.Nullable.eq(x.IsSOC, isSOC) && x.IsSubRatio === isSubRatio;
+                        }).firstOrDefault(null, null);
+                } else {
+                    insuranceFeesRateDB = System.Linq.Enumerable.from(insuranceFeesRates, TMS.API.Models.InsuranceFeesRate).where(function (x) {
+                            return System.Nullable.eq(x.TransportationTypeId, expense.TransportationTypeId) && System.Nullable.eq(x.JourneyId, expense.JourneyId) && x.IsBought === expense.IsBought && System.Nullable.eq(x.IsSOC, isSOC);
+                        }).firstOrDefault(null, null);
+                }
+                if (insuranceFeesRateDB != null) {
+                    if (containerExpense != null && System.String.contains(containerExpense.Description.toLowerCase(),"l\u1ea1nh") && System.Nullable.eq(insuranceFeesRateDB.TransportationTypeId, 11673) && System.Nullable.eq(insuranceFeesRateDB.JourneyId, 12114)) {
+                        expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? System.Decimal(insuranceFeesRateColdDB.Name) : System.Decimal(0);
+                    } else {
+                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                    }
+                    if (insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
+                        extraInsuranceFeesRateDB.ForEach(function (x) {
+                            var prop = System.Linq.Enumerable.from(Bridge.Reflection.getMembers(Bridge.getType(expense), 16, 28), System.Reflection.PropertyInfo).where(function (y) {
+                                    return Bridge.referenceEquals(y.n, x.Name) && System.Boolean.parse(Bridge.toString(Bridge.Reflection.midel(y.g, expense).apply(null, null)));
+                                }).firstOrDefault(null, null);
+                            if (prop != null) {
+                                expense.InsuranceFeeRate = System.Nullable.lift2("add", expense.InsuranceFeeRate, System.Decimal(x.Code));
                             }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                        });
+                    }
+                } else {
+                    expense.InsuranceFeeRate = System.Decimal(0);
+                    expense.TotalPriceBeforeTax = System.Decimal(0);
+                    expense.TotalPriceAfterTax = System.Decimal(0);
+                }
+                if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, true)) {
+                    this.CalcInsuranceFeeNoVAT(expense);
+                } else if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, false)) {
+                    this.CalcInsuranceFee(expense);
+                }
             },
             CalcInsuranceFee: function (expense) {
                 expense.TotalPriceBeforeTax = System.Nullable.getValue(expense.InsuranceFeeRate).mul(System.Nullable.getValue(expense.CommodityValue)).div(System.Decimal(100));
@@ -17086,6 +16980,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $task13, 
                     $taskResult13, 
                     $task14, 
+                    $taskResult14, 
                     $task15, 
                     $taskResult15, 
                     $jumpFromFinally, 
@@ -17111,20 +17006,24 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     containerTypeCodes, 
                     startDate, 
                     expenses, 
-                    transportationIds, 
-                    transportation, 
-                    transportationPlanIds, 
-                    transportationPlan, 
+                    insuranceFeesRates, 
+                    extraInsuranceFeesRateDB, 
+                    insuranceFeesRateColdDB, 
+                    containerTypeIdExpenses, 
+                    containerTypeExpenses, 
+                    containerTypeOfExpenses, 
                     $t1, 
-                    x, 
+                    item, 
+                    container, 
                     $t2, 
-                    x1, 
+                    x, 
                     expenseType, 
+                    containerExpense, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
                             for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,31], $step);
+                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,28], $step);
                                 switch ($step) {
                                     case 0: {
                                         $task1 = new Core.Clients.Client.$ctor1("CommodityValue").FirstOrDefaultAsync(TMS.API.Models.CommodityValue, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(entity.Id, System.Int32)]));
@@ -17235,15 +17134,19 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     }
                                     case 11: {
                                         if (System.Linq.Enumerable.from(patch.Changes, Core.ViewModels.PatchUpdateDetail).any(function (x) {
-                                            return Bridge.referenceEquals(x.Field, "StartDate") || Bridge.referenceEquals(x.Field, "IsWet") || Bridge.referenceEquals(x.Field, "IsBought") || Bridge.referenceEquals(x.Field, "CustomerTypeId") || Bridge.referenceEquals(x.Field, "Notes") || Bridge.referenceEquals(x.Field, "JourneyId");
-                                        }) && (!Bridge.equals(oldEntity.StartDate, entity.StartDate)) || (oldEntity.IsBought !== entity.IsBought) || (System.Nullable.neq(oldEntity.CustomerTypeId, entity.CustomerTypeId)) || (System.Nullable.neq(oldEntity.JourneyId, entity.JourneyId)) || (!Bridge.referenceEquals(oldEntity.Notes, entity.Notes)) || (oldEntity.IsWet !== entity.IsWet)) {
+                                            return Bridge.referenceEquals(x.Field, "StartDate") || Bridge.referenceEquals(x.Field, "IsWet") || Bridge.referenceEquals(x.Field, "IsBought") || Bridge.referenceEquals(x.Field, "CustomerTypeId") || Bridge.referenceEquals(x.Field, "Notes") || Bridge.referenceEquals(x.Field, "SteamingTerms") || Bridge.referenceEquals(x.Field, "BreakTerms") || Bridge.referenceEquals(x.Field, "JourneyId");
+                                        }) && (!Bridge.equals(oldEntity.StartDate, entity.StartDate)) || (oldEntity.IsBought !== entity.IsBought) || (System.Nullable.neq(oldEntity.CustomerTypeId, entity.CustomerTypeId)) || (System.Nullable.neq(oldEntity.JourneyId, entity.JourneyId)) || (!Bridge.referenceEquals(oldEntity.Notes, entity.Notes)) || (oldEntity.SteamingTerms !== entity.SteamingTerms) || (oldEntity.BreakTerms !== entity.BreakTerms) || (oldEntity.IsWet !== entity.IsWet)) {
                                             $step = 12;
                                             continue;
                                         } 
-                                        $step = 31;
+                                        $step = 28;
                                         continue;
                                     }
                                     case 12: {
+                                        if (entity.IsWet && entity.SteamingTerms && entity.BreakTerms) {
+                                            $tcs.setResult(null);
+                                            return;
+                                        }
                                         $task6 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId ne 7651 and contains(Path,'\\7651\\') and contains(Description,'V\u1ecf r\u1ed7ng')", null));
                                         $step = 13;
                                         if ($task6.isCompleted()) {
@@ -17295,7 +17198,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             $step = 16;
                                             continue;
                                         } 
-                                        $step = 30;
+                                        $step = 27;
                                         continue;
                                     }
                                     case 16: {
@@ -17325,10 +17228,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     case 18: {
                                         $taskResult10 = $task10.getAwaitedResult();
                                         expenses = $taskResult10;
-                                        transportationIds = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).select(function (x) {
-                                            return x.TransportationId;
-                                        }).distinct().toList(System.Int32);
-                                        $task11 = new Core.Clients.Client.$ctor1("Transportation").GetRawList(TMS.API.Models.Transportation, System.String.format("?$filter=Active eq true and Id in ({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.Nullable$1(System.Int32), transportationIds)]));
+                                        $task11 = new Core.Clients.Client.$ctor1("InsuranceFeesRate").GetRawList(TMS.API.Models.InsuranceFeesRate, System.String.format("?$filter=Active eq true", null));
                                         $step = 19;
                                         if ($task11.isCompleted()) {
                                             continue;
@@ -17338,11 +17238,8 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     }
                                     case 19: {
                                         $taskResult11 = $task11.getAwaitedResult();
-                                        transportation = $taskResult11;
-                                        transportationPlanIds = System.Linq.Enumerable.from(transportation, TMS.API.Models.Transportation).select(function (x) {
-                                            return x.TransportationPlanId;
-                                        }).distinct().toList(System.Int32);
-                                        $task12 = new Core.Clients.Client.$ctor1("TransportationPlan").GetRawList(TMS.API.Models.TransportationPlan, System.String.format("?$filter=Active eq true and Id in ({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.Nullable$1(System.Int32), transportationPlanIds)]));
+                                        insuranceFeesRates = $taskResult11;
+                                        $task12 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 25374", null));
                                         $step = 20;
                                         if ($task12.isCompleted()) {
                                             continue;
@@ -17352,89 +17249,96 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     }
                                     case 20: {
                                         $taskResult12 = $task12.getAwaitedResult();
-                                        transportationPlan = $taskResult12;
-                                        $t1 = Bridge.getEnumerator(transportationPlan);
+                                        extraInsuranceFeesRateDB = $taskResult12;
+                                        $task13 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq 25391", null));
                                         $step = 21;
-                                        continue;
-                                    }
-                                    case 21: {
-                                        if ($t1.moveNext()) {
-                                            x = $t1.Current;
-                                            $step = 22;
-                                            continue;
-                                        }
-                                        $step = 24;
-                                        continue;
-                                    }
-                                    case 22: {
-                                        x.CommodityValue = entity.TotalPrice;
-                                        x.IsWet = entity.IsWet;
-                                        x.IsBought = entity.IsBought;
-                                        x.JourneyId = entity.JourneyId;
-                                        x.CustomerTypeId = entity.CustomerTypeId;
-                                        $task13 = new Core.Clients.Client.$ctor1("TransportationPlan").UpdateAsync(TMS.API.Models.TransportationPlan, x);
-                                        $step = 23;
                                         if ($task13.isCompleted()) {
                                             continue;
                                         }
                                         $task13.continue($asyncBody);
                                         return;
                                     }
-                                    case 23: {
+                                    case 21: {
                                         $taskResult13 = $task13.getAwaitedResult();
-                                        $step = 21;
-                                        continue;
-                                    }
-                                    case 24: {
-                                        $t2 = Bridge.getEnumerator(expenses);
-                                        $step = 25;
-                                        continue;
-                                    }
-                                    case 25: {
-                                        if ($t2.moveNext()) {
-                                            x1 = $t2.Current;
-                                            $step = 26;
-                                            continue;
-                                        }
-                                        $step = 29;
-                                        continue;
-                                    }
-                                    case 26: {
-                                        x1.CommodityValue = entity.TotalPrice;
-                                        x1.CustomerTypeId = entity.CustomerTypeId;
-                                        x1.CommodityValueNotes = entity.Notes;
-                                        x1.JourneyId = entity.JourneyId;
-                                        expenseType = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.Int32, TMS.API.Models.MasterData, expenseTypeDictionary, System.Nullable.getValue(x1.ExpenseTypeId));
-                                        if (System.Nullable.neq(x1.CommodityId, commodity2.Id) && System.String.contains(expenseType.Name,"BH SOC") === false) {
-                                            x1.IsWet = entity.IsWet;
-                                            x1.IsBought = entity.IsBought;
-                                        }
-                                        $task14 = this.CalcInsuranceFees(x1, false);
-                                        $step = 27;
+                                        insuranceFeesRateColdDB = $taskResult13;
+                                        containerTypeIdExpenses = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).select(function (x) {
+                                            return x.ContainerTypeId;
+                                        }).toList(System.Int32);
+                                        $task14 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id in ({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.Nullable$1(System.Int32), containerTypeIdExpenses)]));
+                                        $step = 22;
                                         if ($task14.isCompleted()) {
                                             continue;
                                         }
                                         $task14.continue($asyncBody);
                                         return;
                                     }
-                                    case 27: {
-                                        $task14.getAwaitedResult();
-                                        $task15 = new Core.Clients.Client.$ctor1("Expense").UpdateAsync(TMS.API.Models.Expense, x1);
-                                        $step = 28;
+                                    case 22: {
+                                        $taskResult14 = $task14.getAwaitedResult();
+                                        containerTypeExpenses = $taskResult14;
+                                        containerTypeOfExpenses = new (System.Collections.Generic.Dictionary$2(System.Int32,TMS.API.Models.MasterData)).ctor();
+                                        $t1 = Bridge.getEnumerator(expenses);
+                                        try {
+                                            while ($t1.moveNext()) {
+                                                item = { v : $t1.Current };
+                                                container = System.Linq.Enumerable.from(containerTypeExpenses, TMS.API.Models.MasterData).where((function ($me, item) {
+                                                    return function (x) {
+                                                        return System.Nullable.eq(x.Id, item.v.ContainerTypeId);
+                                                    };
+                                                })(this, item)).firstOrDefault(null, null);
+                                                containerTypeOfExpenses.add(item.v.Id, container);
+                                            }
+                                        } finally {
+                                            if (Bridge.is($t1, System.IDisposable)) {
+                                                $t1.System$IDisposable$Dispose();
+                                            }
+                                        }
+                                        $t2 = Bridge.getEnumerator(expenses);
+                                        $step = 23;
+                                        continue;
+                                    }
+                                    case 23: {
+                                        if ($t2.moveNext()) {
+                                            x = $t2.Current;
+                                            $step = 24;
+                                            continue;
+                                        }
+                                        $step = 26;
+                                        continue;
+                                    }
+                                    case 24: {
+                                        x.CommodityValue = entity.TotalPrice;
+                                        x.CustomerTypeId = entity.CustomerTypeId;
+                                        x.CommodityValueNotes = entity.Notes;
+                                        x.JourneyId = entity.JourneyId;
+                                        expenseType = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.Int32, TMS.API.Models.MasterData, expenseTypeDictionary, System.Nullable.getValue(x.ExpenseTypeId));
+                                        if (System.Nullable.neq(x.CommodityId, commodity2.Id) && System.String.contains(expenseType.Name,"BH SOC") === false) {
+                                            x.IsWet = entity.IsWet;
+                                            x.IsBought = entity.IsBought;
+                                            x.SteamingTerms = entity.SteamingTerms;
+                                            x.BreakTerms = entity.BreakTerms;
+                                        }
+                                        containerExpense = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.Int32, TMS.API.Models.MasterData, containerTypeOfExpenses, x.Id);
+                                        this.CalcInsuranceFees(x, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
+                                        $task15 = new Core.Clients.Client.$ctor1("Expense").UpdateAsync(TMS.API.Models.Expense, x);
+                                        $step = 25;
                                         if ($task15.isCompleted()) {
                                             continue;
                                         }
                                         $task15.continue($asyncBody);
                                         return;
                                     }
-                                    case 28: {
+                                    case 25: {
                                         $taskResult15 = $task15.getAwaitedResult();
-                                        $step = 25;
+                                        $step = 23;
+                                        continue;
+                                    }
+                                    case 26: {
+                                        Core.Extensions.Toast.Success("\u0110\u00e3 \u00e1p d\u1ee5ng th\u00e0nh c\u00f4ng GTHH n\u00e0y");
+                                        $step = 27;
                                         continue;
                                     }
 
-
-                                    case 31: {
+                                    case 28: {
                                         $tcs.setResult(null);
                                         return;
                                     }
@@ -18401,8 +18305,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
             EditInsuranceFees: function (entity) {
                 var $step = 0,
                     $task1, 
-                    $task2, 
-                    $taskResult2, 
+                    $taskResult1, 
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
@@ -18411,7 +18314,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
                             for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5], $step);
+                                $step = System.Array.min([0,1,2,3,4], $step);
                                 switch ($step) {
                                     case 0: {
                                         gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this), Core.Components.GridView).firstOrDefault(null, null);
@@ -18419,45 +18322,36 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             $step = 1;
                                             continue;
                                         } else  {
-                                            $step = 3;
+                                            $step = 2;
                                             continue;
                                         }
                                     }
                                     case 1: {
-                                        $task1 = this.ApproveDelete(entity);
-                                        $step = 2;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $task1.getAwaitedResult();
-                                        $step = 5;
+                                        this.ApproveDelete(entity);
+                                        $step = 4;
                                         continue;
                                     }
-                                    case 3: {
-                                        $task2 = Core.Components.Extensions.ComponentExt.OpenPopup(this, "InsuranceFees Editor", function () {
+                                    case 2: {
+                                        $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(this, "InsuranceFees Editor", function () {
                                             var type = Bridge.Reflection.getType("TMS.UI.Business.Manage.InsuranceFeesEditorBL");
                                             var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
                                             instance.Title = "Y\u00eau c\u1ea7u thay \u0111\u1ed5i th\u00f4ng tin ph\u00ed b\u1ea3o hi\u1ec3m";
                                             instance.Entity = entity;
                                             return instance;
                                         }, false);
-                                        $step = 4;
-                                        if ($task2.isCompleted()) {
+                                        $step = 3;
+                                        if ($task1.isCompleted()) {
                                             continue;
                                         }
-                                        $task2.continue($asyncBody);
+                                        $task1.continue($asyncBody);
                                         return;
                                     }
-                                    case 4: {
-                                        $taskResult2 = $task2.getAwaitedResult();
-                                        $step = 5;
+                                    case 3: {
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        $step = 4;
                                         continue;
                                     }
-                                    case 5: {
+                                    case 4: {
                                         $tcs.setResult(null);
                                         return;
                                     }
@@ -18579,7 +18473,6 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $taskResult2, 
                     $task3, 
                     $taskResult3, 
-                    $task4, 
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
@@ -18596,7 +18489,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
                             for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,10], $step);
+                                $step = System.Array.min([0,1,2,3,4,5,6], $step);
                                 switch ($step) {
                                     case 0: {
                                         $task1 = this.ChangeBackgroudColor();
@@ -18636,7 +18529,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 y.Disabled = true;
                                             });
                                         });
-                                        $step = 10;
+                                        $step = 6;
                                         continue;
                                     }
                                     case 3: {
@@ -18666,44 +18559,30 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                         $taskResult3 = $task3.getAwaitedResult();
                                         checkHistorys = $taskResult3;
                                         $t = Bridge.getEnumerator(listViewItems);
+                                        try {
+                                            while ($t.moveNext()) {
+                                                item = { v : $t.Current };
+                                                expenses = System.Linq.Enumerable.from(listExpenses, TMS.API.Models.Expense).where((function ($me, item) {
+                                                    return function (x) {
+                                                        return x.Id === item.v.Id;
+                                                    };
+                                                })(this, item)).toList(TMS.API.Models.Expense);
+                                                checkHistory = System.Linq.Enumerable.from(checkHistorys, TMS.API.Models.Expense).where((function ($me, item) {
+                                                    return function (x) {
+                                                        return System.Nullable.eq(x.RequestChangeId, item.v.Id);
+                                                    };
+                                                })(this, item)).toList(TMS.API.Models.Expense);
+                                                this.UpdateListView(item.v, gridView, expenses, checkHistory);
+                                            }
+                                        } finally {
+                                            if (Bridge.is($t, System.IDisposable)) {
+                                                $t.System$IDisposable$Dispose();
+                                            }
+                                        }
                                         $step = 6;
                                         continue;
                                     }
                                     case 6: {
-                                        if ($t.moveNext()) {
-                                            item = { v : $t.Current };
-                                            $step = 7;
-                                            continue;
-                                        }
-                                        $step = 9;
-                                        continue;
-                                    }
-                                    case 7: {
-                                        expenses = System.Linq.Enumerable.from(listExpenses, TMS.API.Models.Expense).where((function ($me, item) {
-                                            return function (x) {
-                                                return x.Id === item.v.Id;
-                                            };
-                                        })(this, item)).toList(TMS.API.Models.Expense);
-                                        checkHistory = System.Linq.Enumerable.from(checkHistorys, TMS.API.Models.Expense).where((function ($me, item) {
-                                            return function (x) {
-                                                return System.Nullable.eq(x.RequestChangeId, item.v.Id);
-                                            };
-                                        })(this, item)).toList(TMS.API.Models.Expense);
-                                        $task4 = this.UpdateListView(item.v, gridView, expenses, checkHistory);
-                                        $step = 8;
-                                        if ($task4.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task4.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 8: {
-                                        $task4.getAwaitedResult();
-                                        $step = 6;
-                                        continue;
-                                    }
-
-                                    case 10: {
                                         $tcs.setResult(null);
                                         return;
                                     }
@@ -18723,84 +18602,54 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 return $tcs.task;
             },
             UpdateListView: function (x, gridView, expenses, checkHistory) {
-                var $step = 0,
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    listViewItem, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        listViewItem = System.Linq.Enumerable.from(gridView.GetListViewItems(x), Core.Components.ListViewItem).firstOrDefault(null, null);
-                                        if (listViewItem == null) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        if (x.IsClosing) {
-                                            Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
-                                                return !Bridge.referenceEquals(y.GuiInfo.FieldName, "IsClosing");
-                                            }), function (y) {
-                                                y.Disabled = true;
-                                            });
-                                        } else {
-                                            if (expenses.Count > 0) {
-                                                Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
-                                                    return !y.GuiInfo.Disabled;
-                                                }), function (y) {
-                                                    y.Disabled = true;
-                                                });
-                                                Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
-                                                    return Bridge.referenceEquals(y.GuiInfo.FieldName, "btnRequestChange");
-                                                }), function (y) {
-                                                    y.Disabled = false;
-                                                });
-                                            } else {
-                                                Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
-                                                    return y.GuiInfo.Disabled;
-                                                }), function (y) {
-                                                    y.Disabled = false;
-                                                });
-                                                Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
-                                                    return Bridge.referenceEquals(y.GuiInfo.FieldName, "btnRequestChange");
-                                                }), function (y) {
-                                                    y.Disabled = true;
-                                                });
-                                            }
-                                        }
-                                        if (checkHistory.Count > 0) {
-                                            Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
-                                                return Bridge.referenceEquals(y.GuiInfo.FieldName, "btnViewChange") || Bridge.referenceEquals(y.GuiInfo.FieldName, "IsApproveChange") || Bridge.referenceEquals(y.GuiInfo.FieldName, "NotesInsuranceFees");
-                                            }), function (y) {
-                                                y.Disabled = false;
-                                            });
-                                        } else {
-                                            Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
-                                                return Bridge.referenceEquals(y.GuiInfo.FieldName, "btnViewChange") || Bridge.referenceEquals(y.GuiInfo.FieldName, "IsApproveChange");
-                                            }), function (y) {
-                                                y.Disabled = true;
-                                            });
-                                        }
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                var listViewItem = System.Linq.Enumerable.from(gridView.GetListViewItems(x), Core.Components.ListViewItem).firstOrDefault(null, null);
+                if (listViewItem == null) {
+                    return;
+                }
+                if (x.IsClosing) {
+                    Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
+                        return !Bridge.referenceEquals(y.GuiInfo.FieldName, "IsClosing");
+                    }), function (y) {
+                        y.Disabled = true;
+                    });
+                } else {
+                    if (expenses.Count > 0) {
+                        Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
+                            return !y.GuiInfo.Disabled;
+                        }), function (y) {
+                            y.Disabled = true;
+                        });
+                        Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
+                            return Bridge.referenceEquals(y.GuiInfo.FieldName, "btnRequestChange");
+                        }), function (y) {
+                            y.Disabled = false;
+                        });
+                    } else {
+                        Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
+                            return y.GuiInfo.Disabled;
+                        }), function (y) {
+                            y.Disabled = false;
+                        });
+                        Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
+                            return Bridge.referenceEquals(y.GuiInfo.FieldName, "btnRequestChange");
+                        }), function (y) {
+                            y.Disabled = true;
+                        });
+                    }
+                }
+                if (checkHistory.Count > 0) {
+                    Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
+                        return Bridge.referenceEquals(y.GuiInfo.FieldName, "btnViewChange") || Bridge.referenceEquals(y.GuiInfo.FieldName, "IsApproveChange") || Bridge.referenceEquals(y.GuiInfo.FieldName, "NotesInsuranceFees");
+                    }), function (y) {
+                        y.Disabled = false;
+                    });
+                } else {
+                    Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
+                        return Bridge.referenceEquals(y.GuiInfo.FieldName, "btnViewChange") || Bridge.referenceEquals(y.GuiInfo.FieldName, "IsApproveChange");
+                    }), function (y) {
+                        y.Disabled = true;
+                    });
+                }
             },
             UpdateVATInsuranceFees: function () {
                 var $step = 0,
@@ -20022,90 +19871,166 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 return $tcs.task;
             },
             ApproveDelete: function (expense) {
-                var $step = 0,
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    confirm, 
-                    $t, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
+                var $t;
+                var confirm = ($t = new Core.Components.Forms.ConfirmDialog(), $t.Content = "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn duy\u1ec7t y\u00eau c\u1ea7u h\u1ee7y ?", $t);
+                confirm.Render();
+                confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
+                    var $step = 0,
+                        $task1, 
+                        $taskResult1, 
+                        $task2, 
+                        $taskResult2, 
+                        $task3, 
+                        $taskResult3, 
+                        $jumpFromFinally, 
+                        transportation, 
+                        expenses, 
+                        $t1, 
+                        x, 
+                        confirmDel, 
+                        $t2, 
+                        $asyncBody = Bridge.fn.bind(this, function () {
                             for (;;) {
-                                $step = System.Array.min([0], $step);
+                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9], $step);
                                 switch ($step) {
                                     case 0: {
-                                        confirm = ($t = new Core.Components.Forms.ConfirmDialog(), $t.Content = "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn duy\u1ec7t y\u00eau c\u1ea7u h\u1ee7y ?", $t);
-                                        confirm.Render();
-                                        confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
-                                            var $step = 0,
-                                                $task1, 
-                                                $taskResult1, 
-                                                $task2, 
-                                                $taskResult2, 
-                                                $task3, 
-                                                $taskResult3, 
-                                                $jumpFromFinally, 
-                                                transportation, 
-                                                expenses, 
-                                                $t1, 
-                                                x, 
-                                                confirmDel, 
-                                                $t2, 
-                                                $asyncBody = Bridge.fn.bind(this, function () {
-                                                    for (;;) {
-                                                        $step = System.Array.min([0,1,2,3,4,5,6,7,8,9], $step);
-                                                        switch ($step) {
-                                                            case 0: {
-                                                                $task1 = new Core.Clients.Client.$ctor1("Transportation").FirstOrDefaultAsync(TMS.API.Models.Transportation, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(expense.TransportationId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                                                $step = 1;
-                                                                if ($task1.isCompleted()) {
-                                                                    continue;
+                                        $task1 = new Core.Clients.Client.$ctor1("Transportation").FirstOrDefaultAsync(TMS.API.Models.Transportation, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(expense.TransportationId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
+                                        $step = 1;
+                                        if ($task1.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task1.continue($asyncBody);
+                                        return;
+                                    }
+                                    case 1: {
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        transportation = $taskResult1;
+                                        $task2 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and TransportationId eq {0} and RequestChangeId eq null", [Bridge.box(expense.TransportationId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
+                                        $step = 2;
+                                        if ($task2.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task2.continue($asyncBody);
+                                        return;
+                                    }
+                                    case 2: {
+                                        $taskResult2 = $task2.getAwaitedResult();
+                                        expenses = $taskResult2;
+                                        $t1 = Bridge.getEnumerator(expenses);
+                                        $step = 3;
+                                        continue;
+                                    }
+                                    case 3: {
+                                        if ($t1.moveNext()) {
+                                            x = { v : $t1.Current };
+                                            $step = 4;
+                                            continue;
+                                        }
+                                        $step = 9;
+                                        continue;
+                                    }
+                                    case 4: {
+                                        if (x.v.IsClosing && x.v.IsPurchasedInsurance) {
+                                            $step = 5;
+                                            continue;
+                                        } else  {
+                                            $step = 6;
+                                            continue;
+                                        }
+                                    }
+                                    case 5: {
+                                        confirmDel = ($t2 = new Core.Components.Forms.ConfirmDialog(), $t2.Content = "\u0110\u00e3 c\u00f3 ph\u00ed BH \u0111\u01b0\u1ee3c mua v\u00e0 ch\u1ed1t, b\u1ea1n c\u00f3 mu\u1ed1n ti\u1ebfp t\u1ee5c duy\u1ec7t v\u00e0 t\u00ecm cont thay th\u1ebf kh\u00f4ng ?", $t2);
+                                        confirmDel.Render();
+                                        confirmDel.YesConfirmed = Bridge.fn.combine(confirmDel.YesConfirmed, (function ($me, x) {
+                                            return Bridge.fn.bind($me, function () {
+                                                var $step = 0,
+                                                    $task1, 
+                                                    $taskResult1, 
+                                                    $task2, 
+                                                    $taskResult2, 
+                                                    $task3, 
+                                                    $taskResult3, 
+                                                    $jumpFromFinally, 
+                                                    saleFilter, 
+                                                    findReplace, 
+                                                    selectExpenseReplace, 
+                                                    expenseReplace, 
+                                                    confirmReplace, 
+                                                    $t3, 
+                                                    $asyncBody = Bridge.fn.bind(this, function () {
+                                                        for (;;) {
+                                                            $step = System.Array.min([0,1,2,3,4,5,6,7,8], $step);
+                                                            switch ($step) {
+                                                                case 0: {
+                                                                    if (x.v.TransportationTypeId == null || x.v.CustomerTypeId == null || x.v.JourneyId == null) {
+                                                                        Core.Extensions.Toast.Warning("Kh\u00f4ng t\u00ecm th\u1ea5y cont ph\u00f9 h\u1ee3p!");
+                                                                    }
+                                                                    saleFilter = x.v.SaleId == null ? "" : System.String.format("and SaleId eq {0}", [Bridge.box(x.v.SaleId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]);
+                                                                    $task1 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and IsPurchasedInsurance eq false and TransportationTypeId eq {0} and IsWet eq {1} and IsBought eq {2} and JourneyId eq {3} and CustomerTypeId eq {4} {5} and Id ne {6}", Bridge.box(x.v.TransportationTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), System.Boolean.toString(x.v.IsWet).toLowerCase(), System.Boolean.toString(x.v.IsBought).toLowerCase(), Bridge.box(x.v.JourneyId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(x.v.CustomerTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), saleFilter, Bridge.box(x.v.Id, System.Int32)));
+                                                                    $step = 1;
+                                                                    if ($task1.isCompleted()) {
+                                                                        continue;
+                                                                    }
+                                                                    $task1.continue($asyncBody);
+                                                                    return;
                                                                 }
-                                                                $task1.continue($asyncBody);
-                                                                return;
-                                                            }
-                                                            case 1: {
-                                                                $taskResult1 = $task1.getAwaitedResult();
-                                                                transportation = $taskResult1;
-                                                                $task2 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and TransportationId eq {0} and RequestChangeId eq null", [Bridge.box(expense.TransportationId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                                                $step = 2;
-                                                                if ($task2.isCompleted()) {
-                                                                    continue;
-                                                                }
-                                                                $task2.continue($asyncBody);
-                                                                return;
-                                                            }
-                                                            case 2: {
-                                                                $taskResult2 = $task2.getAwaitedResult();
-                                                                expenses = $taskResult2;
-                                                                $t1 = Bridge.getEnumerator(expenses);
-                                                                $step = 3;
-                                                                continue;
-                                                            }
-                                                            case 3: {
-                                                                if ($t1.moveNext()) {
-                                                                    x = { v : $t1.Current };
+                                                                case 1: {
+                                                                    $taskResult1 = $task1.getAwaitedResult();
+                                                                    findReplace = $taskResult1;
+                                                                    if (findReplace == null) {
+                                                                        $step = 2;
+                                                                        continue;
+                                                                    } 
                                                                     $step = 4;
                                                                     continue;
                                                                 }
-                                                                $step = 9;
-                                                                continue;
-                                                            }
-                                                            case 4: {
-                                                                if (x.v.IsClosing && x.v.IsPurchasedInsurance) {
-                                                                    $step = 5;
-                                                                    continue;
-                                                                } else  {
-                                                                    $step = 6;
+                                                                case 2: {
+                                                                    $task2 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and IsPurchasedInsurance eq false and TransportationTypeId eq {0} and IsWet eq {1} and IsBought eq {2} and JourneyId eq {3} and CustomerTypeId eq {4} and Id ne {5}", Bridge.box(x.v.TransportationTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), System.Boolean.toString(x.v.IsWet).toLowerCase(), System.Boolean.toString(x.v.IsBought).toLowerCase(), Bridge.box(x.v.JourneyId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(x.v.CustomerTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(x.v.Id, System.Int32)));
+                                                                    $step = 3;
+                                                                    if ($task2.isCompleted()) {
+                                                                        continue;
+                                                                    }
+                                                                    $task2.continue($asyncBody);
+                                                                    return;
+                                                                }
+                                                                case 3: {
+                                                                    $taskResult2 = $task2.getAwaitedResult();
+                                                                    findReplace = $taskResult2;
+                                                                    $step = 4;
                                                                     continue;
                                                                 }
-                                                            }
-                                                            case 5: {
-                                                                confirmDel = ($t2 = new Core.Components.Forms.ConfirmDialog(), $t2.Content = "\u0110\u00e3 c\u00f3 ph\u00ed BH \u0111\u01b0\u1ee3c mua v\u00e0 ch\u1ed1t, b\u1ea1n c\u00f3 mu\u1ed1n ti\u1ebfp t\u1ee5c duy\u1ec7t v\u00e0 t\u00ecm cont thay th\u1ebf kh\u00f4ng ?", $t2);
-                                                                confirmDel.Render();
-                                                                confirmDel.YesConfirmed = Bridge.fn.combine(confirmDel.YesConfirmed, (function ($me, x) {
-                                                                    return Bridge.fn.bind($me, function () {
+                                                                case 4: {
+                                                                    if (findReplace.Count <= 0) {
+                                                                        $step = 5;
+                                                                        continue;
+                                                                    } else  {
+                                                                        $step = 6;
+                                                                        continue;
+                                                                    }
+                                                                }
+                                                                case 5: {
+                                                                    Core.Extensions.Toast.Warning("Kh\u00f4ng t\u00ecm th\u1ea5y cont ph\u00f9 h\u1ee3p!");
+                                                                    $step = 8;
+                                                                    continue;
+                                                                }
+                                                                case 6: {
+                                                                    selectExpenseReplace = System.Linq.Enumerable.from(findReplace, TMS.API.Models.Expense).orderBy(function (item) {
+                                                                        return Math.abs(((System.Decimal.toInt(System.Nullable.getValue(x.v.CommodityValue), System.Int32) - System.Decimal.toInt(System.Nullable.getValue(item.CommodityValue), System.Int32)) | 0));
+                                                                    }).firstOrDefault(null, null);
+                                                                    $task3 = new Core.Clients.Client.$ctor1("Expense").FirstOrDefaultAsync(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(selectExpenseReplace.Id, System.Int32)]));
+                                                                    $step = 7;
+                                                                    if ($task3.isCompleted()) {
+                                                                        continue;
+                                                                    }
+                                                                    $task3.continue($asyncBody);
+                                                                    return;
+                                                                }
+                                                                case 7: {
+                                                                    $taskResult3 = $task3.getAwaitedResult();
+                                                                    expenseReplace = $taskResult3;
+                                                                    confirmReplace = ($t3 = new Core.Components.Forms.ConfirmDialog(), $t3.Content = (System.String.format("\u0110\u00e3 t\u00ecm th\u1ea5y cont Id: {0} c\u00f3 GTHH ", [Bridge.box(expenseReplace.Id, System.Int32)]) || "") + (Bridge.Int.format(System.Decimal(expenseReplace.CommodityValue.toString()), "N0") || "") + ". B\u1ea1n c\u00f3 mu\u1ed1n thay th\u1ebf kh\u00f4ng?", $t3);
+                                                                    confirmReplace.Render();
+                                                                    confirmReplace.YesConfirmed = Bridge.fn.combine(confirmReplace.YesConfirmed, Bridge.fn.bind(this, function () {
                                                                         var $step = 0,
                                                                             $task1, 
                                                                             $taskResult1, 
@@ -20113,23 +20038,35 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                                             $taskResult2, 
                                                                             $task3, 
                                                                             $taskResult3, 
+                                                                            $task4, 
+                                                                            $taskResult4, 
+                                                                            $task5, 
+                                                                            $taskResult5, 
+                                                                            $task6, 
+                                                                            $taskResult6, 
+                                                                            $task7, 
+                                                                            $taskResult7, 
                                                                             $jumpFromFinally, 
-                                                                            saleFilter, 
-                                                                            findReplace, 
-                                                                            selectExpenseReplace, 
-                                                                            expenseReplace, 
-                                                                            confirmReplace, 
-                                                                            $t3, 
+                                                                            bossName, 
+                                                                            commodityName, 
+                                                                            saleName, 
+                                                                            note1, 
+                                                                            note2, 
+                                                                            note3, 
+                                                                            note4, 
+                                                                            note5, 
+                                                                            resUpdate, 
+                                                                            res, 
+                                                                            check, 
+                                                                            resTr, 
                                                                             $asyncBody = Bridge.fn.bind(this, function () {
                                                                                 for (;;) {
-                                                                                    $step = System.Array.min([0,1,2,3,4,5,6,7,8], $step);
+                                                                                    $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,12,13,14], $step);
                                                                                     switch ($step) {
                                                                                         case 0: {
-                                                                                            if (x.v.TransportationTypeId == null || x.v.CustomerTypeId == null || x.v.JourneyId == null) {
-                                                                                                Core.Extensions.Toast.Warning("Kh\u00f4ng t\u00ecm th\u1ea5y cont ph\u00f9 h\u1ee3p!");
-                                                                                            }
-                                                                                            saleFilter = x.v.SaleId == null ? "" : System.String.format("and SaleId eq {0}", [Bridge.box(x.v.SaleId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]);
-                                                                                            $task1 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and IsPurchasedInsurance eq false and TransportationTypeId eq {0} and IsWet eq {1} and IsBought eq {2} and JourneyId eq {3} and CustomerTypeId eq {4} {5} and Id ne {6}", Bridge.box(x.v.TransportationTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), System.Boolean.toString(x.v.IsWet).toLowerCase(), System.Boolean.toString(x.v.IsBought).toLowerCase(), Bridge.box(x.v.JourneyId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(x.v.CustomerTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), saleFilter, Bridge.box(x.v.Id, System.Int32)));
+                                                                                            expenseReplace.IsPurchasedInsurance = true;
+                                                                                            expenseReplace.DatePurchasedInsurance = x.v.DatePurchasedInsurance;
+                                                                                            $task1 = new Core.Clients.Client.$ctor1("Vendor").FirstOrDefaultAsync(TMS.API.Models.Vendor, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(x.v.BossId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
                                                                                             $step = 1;
                                                                                             if ($task1.isCompleted()) {
                                                                                                 continue;
@@ -20139,239 +20076,124 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                                                         }
                                                                                         case 1: {
                                                                                             $taskResult1 = $task1.getAwaitedResult();
-                                                                                            findReplace = $taskResult1;
-                                                                                            if (findReplace == null) {
-                                                                                                $step = 2;
-                                                                                                continue;
-                                                                                            } 
-                                                                                            $step = 4;
-                                                                                            continue;
-                                                                                        }
-                                                                                        case 2: {
-                                                                                            $task2 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and IsPurchasedInsurance eq false and TransportationTypeId eq {0} and IsWet eq {1} and IsBought eq {2} and JourneyId eq {3} and CustomerTypeId eq {4} and Id ne {5}", Bridge.box(x.v.TransportationTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), System.Boolean.toString(x.v.IsWet).toLowerCase(), System.Boolean.toString(x.v.IsBought).toLowerCase(), Bridge.box(x.v.JourneyId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(x.v.CustomerTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(x.v.Id, System.Int32)));
-                                                                                            $step = 3;
+                                                                                            bossName = $taskResult1;
+                                                                                            $task2 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(x.v.CommodityId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
+                                                                                            $step = 2;
                                                                                             if ($task2.isCompleted()) {
                                                                                                 continue;
                                                                                             }
                                                                                             $task2.continue($asyncBody);
                                                                                             return;
                                                                                         }
-                                                                                        case 3: {
+                                                                                        case 2: {
                                                                                             $taskResult2 = $task2.getAwaitedResult();
-                                                                                            findReplace = $taskResult2;
-                                                                                            $step = 4;
-                                                                                            continue;
-                                                                                        }
-                                                                                        case 4: {
-                                                                                            if (findReplace.Count <= 0) {
-                                                                                                $step = 5;
-                                                                                                continue;
-                                                                                            } else  {
-                                                                                                $step = 6;
-                                                                                                continue;
-                                                                                            }
-                                                                                        }
-                                                                                        case 5: {
-                                                                                            Core.Extensions.Toast.Warning("Kh\u00f4ng t\u00ecm th\u1ea5y cont ph\u00f9 h\u1ee3p!");
-                                                                                            $step = 8;
-                                                                                            continue;
-                                                                                        }
-                                                                                        case 6: {
-                                                                                            selectExpenseReplace = System.Linq.Enumerable.from(findReplace, TMS.API.Models.Expense).orderBy(function (item) {
-                                                                                                return Math.abs(((System.Decimal.toInt(System.Nullable.getValue(x.v.CommodityValue), System.Int32) - System.Decimal.toInt(System.Nullable.getValue(item.CommodityValue), System.Int32)) | 0));
-                                                                                            }).firstOrDefault(null, null);
-                                                                                            $task3 = new Core.Clients.Client.$ctor1("Expense").FirstOrDefaultAsync(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(selectExpenseReplace.Id, System.Int32)]));
-                                                                                            $step = 7;
+                                                                                            commodityName = $taskResult2;
+                                                                                            $task3 = new Core.Clients.Client.$ctor1("User").FirstOrDefaultAsync(TMS.API.Models.User, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(x.v.CommodityId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
+                                                                                            $step = 3;
                                                                                             if ($task3.isCompleted()) {
                                                                                                 continue;
                                                                                             }
                                                                                             $task3.continue($asyncBody);
                                                                                             return;
                                                                                         }
-                                                                                        case 7: {
+                                                                                        case 3: {
                                                                                             $taskResult3 = $task3.getAwaitedResult();
-                                                                                            expenseReplace = $taskResult3;
-                                                                                            confirmReplace = ($t3 = new Core.Components.Forms.ConfirmDialog(), $t3.Content = (System.String.format("\u0110\u00e3 t\u00ecm th\u1ea5y cont Id: {0} c\u00f3 GTHH ", [Bridge.box(expenseReplace.Id, System.Int32)]) || "") + (Bridge.Int.format(System.Decimal(expenseReplace.CommodityValue.toString()), "N0") || "") + ". B\u1ea1n c\u00f3 mu\u1ed1n thay th\u1ebf kh\u00f4ng?", $t3);
-                                                                                            confirmReplace.Render();
-                                                                                            confirmReplace.YesConfirmed = Bridge.fn.combine(confirmReplace.YesConfirmed, Bridge.fn.bind(this, function () {
-                                                                                                var $step = 0,
-                                                                                                    $task1, 
-                                                                                                    $taskResult1, 
-                                                                                                    $task2, 
-                                                                                                    $taskResult2, 
-                                                                                                    $task3, 
-                                                                                                    $taskResult3, 
-                                                                                                    $task4, 
-                                                                                                    $taskResult4, 
-                                                                                                    $task5, 
-                                                                                                    $taskResult5, 
-                                                                                                    $task6, 
-                                                                                                    $taskResult6, 
-                                                                                                    $task7, 
-                                                                                                    $taskResult7, 
-                                                                                                    $jumpFromFinally, 
-                                                                                                    bossName, 
-                                                                                                    commodityName, 
-                                                                                                    saleName, 
-                                                                                                    note1, 
-                                                                                                    note2, 
-                                                                                                    note3, 
-                                                                                                    note4, 
-                                                                                                    note5, 
-                                                                                                    resUpdate, 
-                                                                                                    res, 
-                                                                                                    check, 
-                                                                                                    resTr, 
-                                                                                                    $asyncBody = Bridge.fn.bind(this, function () {
-                                                                                                        for (;;) {
-                                                                                                            $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,12,13,14], $step);
-                                                                                                            switch ($step) {
-                                                                                                                case 0: {
-                                                                                                                    expenseReplace.IsPurchasedInsurance = true;
-                                                                                                                    expenseReplace.DatePurchasedInsurance = x.v.DatePurchasedInsurance;
-                                                                                                                    $task1 = new Core.Clients.Client.$ctor1("Vendor").FirstOrDefaultAsync(TMS.API.Models.Vendor, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(x.v.BossId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                                                                                                    $step = 1;
-                                                                                                                    if ($task1.isCompleted()) {
-                                                                                                                        continue;
-                                                                                                                    }
-                                                                                                                    $task1.continue($asyncBody);
-                                                                                                                    return;
-                                                                                                                }
-                                                                                                                case 1: {
-                                                                                                                    $taskResult1 = $task1.getAwaitedResult();
-                                                                                                                    bossName = $taskResult1;
-                                                                                                                    $task2 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(x.v.CommodityId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                                                                                                    $step = 2;
-                                                                                                                    if ($task2.isCompleted()) {
-                                                                                                                        continue;
-                                                                                                                    }
-                                                                                                                    $task2.continue($asyncBody);
-                                                                                                                    return;
-                                                                                                                }
-                                                                                                                case 2: {
-                                                                                                                    $taskResult2 = $task2.getAwaitedResult();
-                                                                                                                    commodityName = $taskResult2;
-                                                                                                                    $task3 = new Core.Clients.Client.$ctor1("User").FirstOrDefaultAsync(TMS.API.Models.User, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(x.v.CommodityId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                                                                                                    $step = 3;
-                                                                                                                    if ($task3.isCompleted()) {
-                                                                                                                        continue;
-                                                                                                                    }
-                                                                                                                    $task3.continue($asyncBody);
-                                                                                                                    return;
-                                                                                                                }
-                                                                                                                case 3: {
-                                                                                                                    $taskResult3 = $task3.getAwaitedResult();
-                                                                                                                    saleName = $taskResult3;
-                                                                                                                    note1 = Bridge.equals(x.v.StartShip, null) ? "" : System.DateTime.format(System.DateTime.getDate(System.Nullable.getValue(x.v.StartShip)), "dd/MM/yyyy");
-                                                                                                                    note2 = bossName == null ? "" : bossName.Name;
-                                                                                                                    note3 = commodityName == null ? "" : commodityName.Description;
-                                                                                                                    note4 = saleName == null ? "" : saleName.FullName;
-                                                                                                                    note5 = Bridge.equals(x.v.DatePurchasedInsurance, null) ? "" : System.DateTime.format(System.DateTime.getDate(System.Nullable.getValue(x.v.DatePurchasedInsurance)), "dd/MM/yyyy");
-                                                                                                                    expenseReplace.NotesInsuranceFees = (System.String.format("Thay th\u1ebf cont b\u1ecb h\u1ee7y: Id: {0}, \u0111\u00f3ng ng\u00e0y: ", [Bridge.box(x.v.Id, System.Int32)]) || "") + (note1 || "") + ", ch\u1ee7 h\u00e0ng: " + (note2 || "") + ", v\u1eadt t\u01b0: " + (note3 || "") + ", sale: " + (note4 || "") + ", mua ng\u00e0y: " + (note5 || "");
-                                                                                                                    $task4 = new Core.Clients.Client.$ctor1("Expense").UpdateAsync(TMS.API.Models.Expense, expenseReplace);
-                                                                                                                    $step = 4;
-                                                                                                                    if ($task4.isCompleted()) {
-                                                                                                                        continue;
-                                                                                                                    }
-                                                                                                                    $task4.continue($asyncBody);
-                                                                                                                    return;
-                                                                                                                }
-                                                                                                                case 4: {
-                                                                                                                    $taskResult4 = $task4.getAwaitedResult();
-                                                                                                                    resUpdate = $taskResult4;
-                                                                                                                    if (resUpdate != null) {
-                                                                                                                        $step = 5;
-                                                                                                                        continue;
-                                                                                                                    } else  {
-                                                                                                                        $step = 13;
-                                                                                                                        continue;
-                                                                                                                    }
-                                                                                                                }
-                                                                                                                case 5: {
-                                                                                                                    Core.Extensions.Toast.Success("Thay th\u1ebf th\u00e0nh c\u00f4ng!");
-                                                                                                                    $task5 = new Core.Clients.Client.$ctor1("Expense").HardDeleteAsync$1(x.v.Id);
-                                                                                                                    $step = 6;
-                                                                                                                    if ($task5.isCompleted()) {
-                                                                                                                        continue;
-                                                                                                                    }
-                                                                                                                    $task5.continue($asyncBody);
-                                                                                                                    return;
-                                                                                                                }
-                                                                                                                case 6: {
-                                                                                                                    $taskResult5 = $task5.getAwaitedResult();
-                                                                                                                    res = $taskResult5;
-                                                                                                                    if (res) {
-                                                                                                                        $step = 7;
-                                                                                                                        continue;
-                                                                                                                    } 
-                                                                                                                    $step = 12;
-                                                                                                                    continue;
-                                                                                                                }
-                                                                                                                case 7: {
-                                                                                                                    $task6 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and TransportationId eq {0} and RequestChangeId eq null", [Bridge.box(expense.TransportationId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                                                                                                    $step = 8;
-                                                                                                                    if ($task6.isCompleted()) {
-                                                                                                                        continue;
-                                                                                                                    }
-                                                                                                                    $task6.continue($asyncBody);
-                                                                                                                    return;
-                                                                                                                }
-                                                                                                                case 8: {
-                                                                                                                    $taskResult6 = $task6.getAwaitedResult();
-                                                                                                                    check = $taskResult6;
-                                                                                                                    if (check.Count <= 0) {
-                                                                                                                        $step = 9;
-                                                                                                                        continue;
-                                                                                                                    } 
-                                                                                                                    $step = 11;
-                                                                                                                    continue;
-                                                                                                                }
-                                                                                                                case 9: {
-                                                                                                                    $task7 = new Core.Clients.Client.$ctor1("Transportation").HardDeleteAsync$1(transportation.Id);
-                                                                                                                    $step = 10;
-                                                                                                                    if ($task7.isCompleted()) {
-                                                                                                                        continue;
-                                                                                                                    }
-                                                                                                                    $task7.continue($asyncBody);
-                                                                                                                    return;
-                                                                                                                }
-                                                                                                                case 10: {
-                                                                                                                    $taskResult7 = $task7.getAwaitedResult();
-                                                                                                                    resTr = $taskResult7;
-                                                                                                                    if (resTr) {
-                                                                                                                        Core.Extensions.Toast.Success("H\u1ee7y th\u00e0nh c\u00f4ng");
-                                                                                                                    } else {
-                                                                                                                        Core.Extensions.Toast.Warning("\u0110\u00e3 x\u1ea3y ra l\u1ed7i trong qu\u00e1 tr\u00ecnh x\u1eed l\u00fd.");
-                                                                                                                    }
-                                                                                                                    $step = 11;
-                                                                                                                    continue;
-                                                                                                                }
-
-                                                                                                                case 12: {
-                                                                                                                    $step = 14;
-                                                                                                                    continue;
-                                                                                                                }
-                                                                                                                case 13: {
-                                                                                                                    Core.Extensions.Toast.Warning("\u0110\u00e3 x\u1ea3y ra l\u1ed7i trong qu\u00e1 tr\u00ecnh x\u1eed l\u00fd.");
-                                                                                                                    $step = 14;
-                                                                                                                    continue;
-                                                                                                                }
-                                                                                                                case 14: {
-                                                                                                                    return;
-                                                                                                                }
-                                                                                                                default: {
-                                                                                                                    return;
-                                                                                                                }
-                                                                                                            }
-                                                                                                        }
-                                                                                                    }, arguments);
-
-                                                                                                $asyncBody();
-                                                                                            }));
-                                                                                            $step = 8;
+                                                                                            saleName = $taskResult3;
+                                                                                            note1 = Bridge.equals(x.v.StartShip, null) ? "" : System.DateTime.format(System.DateTime.getDate(System.Nullable.getValue(x.v.StartShip)), "dd/MM/yyyy");
+                                                                                            note2 = bossName == null ? "" : bossName.Name;
+                                                                                            note3 = commodityName == null ? "" : commodityName.Description;
+                                                                                            note4 = saleName == null ? "" : saleName.FullName;
+                                                                                            note5 = Bridge.equals(x.v.DatePurchasedInsurance, null) ? "" : System.DateTime.format(System.DateTime.getDate(System.Nullable.getValue(x.v.DatePurchasedInsurance)), "dd/MM/yyyy");
+                                                                                            expenseReplace.NotesInsuranceFees = (System.String.format("Thay th\u1ebf cont b\u1ecb h\u1ee7y: Id: {0}, \u0111\u00f3ng ng\u00e0y: ", [Bridge.box(x.v.Id, System.Int32)]) || "") + (note1 || "") + ", ch\u1ee7 h\u00e0ng: " + (note2 || "") + ", v\u1eadt t\u01b0: " + (note3 || "") + ", sale: " + (note4 || "") + ", mua ng\u00e0y: " + (note5 || "");
+                                                                                            $task4 = new Core.Clients.Client.$ctor1("Expense").UpdateAsync(TMS.API.Models.Expense, expenseReplace);
+                                                                                            $step = 4;
+                                                                                            if ($task4.isCompleted()) {
+                                                                                                continue;
+                                                                                            }
+                                                                                            $task4.continue($asyncBody);
+                                                                                            return;
+                                                                                        }
+                                                                                        case 4: {
+                                                                                            $taskResult4 = $task4.getAwaitedResult();
+                                                                                            resUpdate = $taskResult4;
+                                                                                            if (resUpdate != null) {
+                                                                                                $step = 5;
+                                                                                                continue;
+                                                                                            } else  {
+                                                                                                $step = 13;
+                                                                                                continue;
+                                                                                            }
+                                                                                        }
+                                                                                        case 5: {
+                                                                                            Core.Extensions.Toast.Success("Thay th\u1ebf th\u00e0nh c\u00f4ng!");
+                                                                                            $task5 = new Core.Clients.Client.$ctor1("Expense").HardDeleteAsync$1(x.v.Id);
+                                                                                            $step = 6;
+                                                                                            if ($task5.isCompleted()) {
+                                                                                                continue;
+                                                                                            }
+                                                                                            $task5.continue($asyncBody);
+                                                                                            return;
+                                                                                        }
+                                                                                        case 6: {
+                                                                                            $taskResult5 = $task5.getAwaitedResult();
+                                                                                            res = $taskResult5;
+                                                                                            if (res) {
+                                                                                                $step = 7;
+                                                                                                continue;
+                                                                                            } 
+                                                                                            $step = 12;
                                                                                             continue;
                                                                                         }
+                                                                                        case 7: {
+                                                                                            $task6 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and TransportationId eq {0} and RequestChangeId eq null", [Bridge.box(expense.TransportationId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
+                                                                                            $step = 8;
+                                                                                            if ($task6.isCompleted()) {
+                                                                                                continue;
+                                                                                            }
+                                                                                            $task6.continue($asyncBody);
+                                                                                            return;
+                                                                                        }
                                                                                         case 8: {
+                                                                                            $taskResult6 = $task6.getAwaitedResult();
+                                                                                            check = $taskResult6;
+                                                                                            if (check.Count <= 0) {
+                                                                                                $step = 9;
+                                                                                                continue;
+                                                                                            } 
+                                                                                            $step = 11;
+                                                                                            continue;
+                                                                                        }
+                                                                                        case 9: {
+                                                                                            $task7 = new Core.Clients.Client.$ctor1("Transportation").HardDeleteAsync$1(transportation.Id);
+                                                                                            $step = 10;
+                                                                                            if ($task7.isCompleted()) {
+                                                                                                continue;
+                                                                                            }
+                                                                                            $task7.continue($asyncBody);
+                                                                                            return;
+                                                                                        }
+                                                                                        case 10: {
+                                                                                            $taskResult7 = $task7.getAwaitedResult();
+                                                                                            resTr = $taskResult7;
+                                                                                            if (resTr) {
+                                                                                                Core.Extensions.Toast.Success("H\u1ee7y th\u00e0nh c\u00f4ng");
+                                                                                            } else {
+                                                                                                Core.Extensions.Toast.Warning("\u0110\u00e3 x\u1ea3y ra l\u1ed7i trong qu\u00e1 tr\u00ecnh x\u1eed l\u00fd.");
+                                                                                            }
+                                                                                            $step = 11;
+                                                                                            continue;
+                                                                                        }
+
+                                                                                        case 12: {
+                                                                                            $step = 14;
+                                                                                            continue;
+                                                                                        }
+                                                                                        case 13: {
+                                                                                            Core.Extensions.Toast.Warning("\u0110\u00e3 x\u1ea3y ra l\u1ed7i trong qu\u00e1 tr\u00ecnh x\u1eed l\u00fd.");
+                                                                                            $step = 14;
+                                                                                            continue;
+                                                                                        }
+                                                                                        case 14: {
                                                                                             return;
                                                                                         }
                                                                                         default: {
@@ -20382,95 +20204,99 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                                             }, arguments);
 
                                                                         $asyncBody();
-                                                                    });
-                                                                })(this, x));
-                                                                $step = 8;
-                                                                continue;
-                                                            }
-                                                            case 6: {
-                                                                $task3 = new Core.Clients.Client.$ctor1("Expense").HardDeleteAsync$1(x.v.Id);
-                                                                $step = 7;
-                                                                if ($task3.isCompleted()) {
+                                                                    }));
+                                                                    $step = 8;
                                                                     continue;
                                                                 }
-                                                                $task3.continue($asyncBody);
+                                                                case 8: {
+                                                                    return;
+                                                                }
+                                                                default: {
+                                                                    return;
+                                                                }
+                                                            }
+                                                        }
+                                                    }, arguments);
+
+                                                $asyncBody();
+                                            });
+                                        })(this, x));
+                                        $step = 8;
+                                        continue;
+                                    }
+                                    case 6: {
+                                        $task3 = new Core.Clients.Client.$ctor1("Expense").HardDeleteAsync$1(x.v.Id);
+                                        $step = 7;
+                                        if ($task3.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task3.continue($asyncBody);
+                                        return;
+                                    }
+                                    case 7: {
+                                        $taskResult3 = $task3.getAwaitedResult();
+                                        $step = 8;
+                                        continue;
+                                    }
+                                    case 8: {
+                                        $step = 3;
+                                        continue;
+                                    }
+                                    case 9: {
+                                        window.clearTimeout(this.awaiter$1);
+                                        this.awaiter$1 = window.setTimeout(Bridge.fn.bind(this, function () {
+                                            var $step = 0,
+                                                $task1, 
+                                                $taskResult1, 
+                                                $task2, 
+                                                $taskResult2, 
+                                                $jumpFromFinally, 
+                                                check, 
+                                                resTr, 
+                                                $asyncBody = Bridge.fn.bind(this, function () {
+                                                    for (;;) {
+                                                        $step = System.Array.min([0,1,2,3,4], $step);
+                                                        switch ($step) {
+                                                            case 0: {
+                                                                $task1 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and TransportationId eq {0} and RequestChangeId eq null", [Bridge.box(expense.TransportationId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
+                                                                $step = 1;
+                                                                if ($task1.isCompleted()) {
+                                                                    continue;
+                                                                }
+                                                                $task1.continue($asyncBody);
                                                                 return;
                                                             }
-                                                            case 7: {
-                                                                $taskResult3 = $task3.getAwaitedResult();
-                                                                $step = 8;
+                                                            case 1: {
+                                                                $taskResult1 = $task1.getAwaitedResult();
+                                                                check = $taskResult1;
+                                                                if (check.Count <= 0) {
+                                                                    $step = 2;
+                                                                    continue;
+                                                                } 
+                                                                $step = 4;
                                                                 continue;
                                                             }
-                                                            case 8: {
+                                                            case 2: {
+                                                                $task2 = new Core.Clients.Client.$ctor1("Transportation").HardDeleteAsync$1(transportation.Id);
                                                                 $step = 3;
+                                                                if ($task2.isCompleted()) {
+                                                                    continue;
+                                                                }
+                                                                $task2.continue($asyncBody);
+                                                                return;
+                                                            }
+                                                            case 3: {
+                                                                $taskResult2 = $task2.getAwaitedResult();
+                                                                resTr = $taskResult2;
+                                                                if (resTr) {
+                                                                    Core.Extensions.Toast.Success("H\u1ee7y th\u00e0nh c\u00f4ng");
+                                                                } else {
+                                                                    Core.Extensions.Toast.Warning("\u0110\u00e3 x\u1ea3y ra l\u1ed7i trong qu\u00e1 tr\u00ecnh x\u1eed l\u00fd.");
+                                                                }
+                                                                $step = 4;
                                                                 continue;
                                                             }
-                                                            case 9: {
-                                                                window.clearTimeout(this.awaiter$1);
-                                                                this.awaiter$1 = window.setTimeout(Bridge.fn.bind(this, function () {
-                                                                    var $step = 0,
-                                                                        $task1, 
-                                                                        $taskResult1, 
-                                                                        $task2, 
-                                                                        $taskResult2, 
-                                                                        $jumpFromFinally, 
-                                                                        check, 
-                                                                        resTr, 
-                                                                        $asyncBody = Bridge.fn.bind(this, function () {
-                                                                            for (;;) {
-                                                                                $step = System.Array.min([0,1,2,3,4], $step);
-                                                                                switch ($step) {
-                                                                                    case 0: {
-                                                                                        $task1 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and TransportationId eq {0} and RequestChangeId eq null", [Bridge.box(expense.TransportationId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                                                                        $step = 1;
-                                                                                        if ($task1.isCompleted()) {
-                                                                                            continue;
-                                                                                        }
-                                                                                        $task1.continue($asyncBody);
-                                                                                        return;
-                                                                                    }
-                                                                                    case 1: {
-                                                                                        $taskResult1 = $task1.getAwaitedResult();
-                                                                                        check = $taskResult1;
-                                                                                        if (check.Count <= 0) {
-                                                                                            $step = 2;
-                                                                                            continue;
-                                                                                        } 
-                                                                                        $step = 4;
-                                                                                        continue;
-                                                                                    }
-                                                                                    case 2: {
-                                                                                        $task2 = new Core.Clients.Client.$ctor1("Transportation").HardDeleteAsync$1(transportation.Id);
-                                                                                        $step = 3;
-                                                                                        if ($task2.isCompleted()) {
-                                                                                            continue;
-                                                                                        }
-                                                                                        $task2.continue($asyncBody);
-                                                                                        return;
-                                                                                    }
-                                                                                    case 3: {
-                                                                                        $taskResult2 = $task2.getAwaitedResult();
-                                                                                        resTr = $taskResult2;
-                                                                                        if (resTr) {
-                                                                                            Core.Extensions.Toast.Success("H\u1ee7y th\u00e0nh c\u00f4ng");
-                                                                                        } else {
-                                                                                            Core.Extensions.Toast.Warning("\u0110\u00e3 x\u1ea3y ra l\u1ed7i trong qu\u00e1 tr\u00ecnh x\u1eed l\u00fd.");
-                                                                                        }
-                                                                                        $step = 4;
-                                                                                        continue;
-                                                                                    }
-                                                                                    case 4: {
-                                                                                        return;
-                                                                                    }
-                                                                                    default: {
-                                                                                        return;
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }, arguments);
-
-                                                                    $asyncBody();
-                                                                }), 1000);
+                                                            case 4: {
                                                                 return;
                                                             }
                                                             default: {
@@ -20481,24 +20307,18 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 }, arguments);
 
                                             $asyncBody();
-                                        }));
-                                        $tcs.setResult(null);
+                                        }), 1000);
                                         return;
                                     }
                                     default: {
-                                        $tcs.setResult(null);
                                         return;
                                     }
                                 }
                             }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
+                        }, arguments);
 
-                $asyncBody();
-                return $tcs.task;
+                    $asyncBody();
+                }));
             },
             ExportCheckChange: function () {
                 var $step = 0,
@@ -20579,8 +20399,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $task7, 
                     $task8, 
                     $task9, 
-                    $task10, 
-                    $taskResult10, 
+                    $taskResult9, 
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
@@ -20594,7 +20413,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
                             for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,7,8,9,10,11,12,13,14,15,16,17,18,20,21,22], $step);
+                                $step = System.Array.min([0,1,2,3,4,5,7,8,9,10,11,12,13,14,15,16,17,19,20,21], $step);
                                 switch ($step) {
                                     case 0: {
                                         $task1 = new Core.Clients.Client.$ctor1("Expense").FirstOrDefaultAsync(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(entity.Id, System.Int32)]));
@@ -20673,7 +20492,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             $step = 8;
                                             continue;
                                         } 
-                                        $step = 22;
+                                        $step = 21;
                                         continue;
                                     }
                                     case 8: {
@@ -20714,12 +20533,13 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             $step = 12;
                                             continue;
                                         } else  {
-                                            $step = 15;
+                                            $step = 14;
                                             continue;
                                         }
                                     }
                                     case 12: {
-                                        $task7 = this.SetWetAndJourneyForExpense(entity, tran);
+                                        this.SetWetAndJourneyForExpense(entity, tran);
+                                        $task7 = this.CalcInsuranceFees(entity, false);
                                         $step = 13;
                                         if ($task7.isCompleted()) {
                                             continue;
@@ -20729,62 +20549,52 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     }
                                     case 13: {
                                         $task7.getAwaitedResult();
-                                        $task8 = this.CalcInsuranceFees(entity, false);
-                                        $step = 14;
+                                        $step = 19;
+                                        continue;
+                                    }
+                                    case 14: {
+                                        if (System.Nullable.eq(entity.ExpenseTypeId, expenseTypeSOC.Id)) {
+                                            $step = 15;
+                                            continue;
+                                        } else  {
+                                            $step = 17;
+                                            continue;
+                                        }
+                                    }
+                                    case 15: {
+                                        $task8 = this.CalcInsuranceFees(entity, true);
+                                        $step = 16;
                                         if ($task8.isCompleted()) {
                                             continue;
                                         }
                                         $task8.continue($asyncBody);
                                         return;
                                     }
-                                    case 14: {
+                                    case 16: {
                                         $task8.getAwaitedResult();
-                                        $step = 20;
+                                        $step = 18;
                                         continue;
                                     }
-                                    case 15: {
-                                        if (System.Nullable.eq(entity.ExpenseTypeId, expenseTypeSOC.Id)) {
-                                            $step = 16;
-                                            continue;
-                                        } else  {
-                                            $step = 18;
-                                            continue;
-                                        }
+                                    case 17: {
+                                        $tcs.setResult(null);
+                                        return;
                                     }
-                                    case 16: {
-                                        $task9 = this.CalcInsuranceFees(entity, true);
-                                        $step = 17;
+
+                                    case 19: {
+                                        $task9 = new Core.Clients.Client.$ctor1("Expense").UpdateAsync(TMS.API.Models.Expense, entity);
+                                        $step = 20;
                                         if ($task9.isCompleted()) {
                                             continue;
                                         }
                                         $task9.continue($asyncBody);
                                         return;
                                     }
-                                    case 17: {
-                                        $task9.getAwaitedResult();
-                                        $step = 19;
-                                        continue;
-                                    }
-                                    case 18: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-
                                     case 20: {
-                                        $task10 = new Core.Clients.Client.$ctor1("Expense").UpdateAsync(TMS.API.Models.Expense, entity);
+                                        $taskResult9 = $task9.getAwaitedResult();
                                         $step = 21;
-                                        if ($task10.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task10.continue($asyncBody);
-                                        return;
+                                        continue;
                                     }
                                     case 21: {
-                                        $taskResult10 = $task10.getAwaitedResult();
-                                        $step = 22;
-                                        continue;
-                                    }
-                                    case 22: {
                                         $tcs.setResult(null);
                                         return;
                                     }
@@ -20804,51 +20614,23 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 return $tcs.task;
             },
             SetWetAndJourneyForExpense: function (expense, transportation) {
-                var $step = 0,
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (expense.TransportationTypeId != null) {
-                                            if (System.Nullable.neq(expense.TransportationTypeId, 11673)) {
-                                                if (expense.IsPurchasedInsurance === false && expense.RequestChangeId == null) {
-                                                    expense.IsWet = System.Nullable.eq(expense.TransportationTypeId, 11677) ? true : false;
-                                                    if (System.Nullable.neq(expense.TransportationTypeId, 11677)) {
-                                                        expense.JourneyId = 12114;
-                                                    } else {
-                                                        expense.JourneyId = null;
-                                                    }
-                                                }
-                                            }
-                                            if (System.Nullable.eq(expense.JourneyId, 12114) || System.Nullable.eq(expense.JourneyId, 16001)) {
-                                                expense.StartShip = transportation.ClosingDate;
-                                            } else {
-                                                expense.StartShip = transportation.StartShip;
-                                            }
-                                        }
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
+                if (expense.TransportationTypeId != null) {
+                    if (System.Nullable.neq(expense.TransportationTypeId, 11673)) {
+                        if (expense.IsPurchasedInsurance === false && expense.RequestChangeId == null) {
+                            expense.IsWet = System.Nullable.eq(expense.TransportationTypeId, 11677) ? true : false;
+                            if (System.Nullable.neq(expense.TransportationTypeId, 11677)) {
+                                expense.JourneyId = 12114;
+                            } else {
+                                expense.JourneyId = null;
                             }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
                         }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                    }
+                    if (System.Nullable.eq(expense.JourneyId, 12114) || System.Nullable.eq(expense.JourneyId, 16001)) {
+                        expense.StartShip = transportation.ClosingDate;
+                    } else {
+                        expense.StartShip = transportation.StartShip;
+                    }
+                }
             },
             GetPatchEntity: function (expense) {
                 var $t;

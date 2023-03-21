@@ -479,7 +479,7 @@ namespace Core.Components
                 var rowSection = RenderRowData(Header, rowData, MainSection);
             });
         }
-
+        
         protected virtual void Rerender()
         {
             DisposeNoRecord();
@@ -1510,6 +1510,8 @@ namespace Core.Components
             }
             gridView1.CellSelected.Clear();
             gridView1.AdvSearchVM.Conditions.Clear();
+            gridView1.ListViewSearch.EntityVM.StartDate = null;
+            gridView1.ListViewSearch.EntityVM.EndDate = null;
             var selecteds = await GetRealTimeSelectedRows();
             var com = gridView1.BasicHeader.FirstOrDefault(x => x.FieldName == e.TargetFieldName);
             var cellSelecteds = selecteds.Select(selected =>

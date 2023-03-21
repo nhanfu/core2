@@ -18662,6 +18662,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         }
                                         gridView1.CellSelected.clear();
                                         gridView1.AdvSearchVM.Conditions.clear();
+                                        gridView1.ListViewSearch.EntityVM.StartDate = null;
+                                        gridView1.ListViewSearch.EntityVM.EndDate = null;
                                         $task1 = this.GetRealTimeSelectedRows();
                                         $step = 1;
                                         if ($task1.isCompleted()) {
@@ -23193,14 +23195,11 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if ((!Bridge.equals(this.EntityVM.EndDate, null) || !Bridge.equals(this.EntityVM.StartDate, null)) && this.ParentListView.GuiInfo.ShowNull != null && System.Nullable.getValue(this.ParentListView.GuiInfo.ShowNull)) {
                     finalFilter = (finalFilter || "") + ((System.String.format(" or {0} eq null", [this.DateTimeField])) || "");
                 }
-
-
                 if (Core.Extensions.StringExt.IsNullOrWhiteSpace(finalFilter)) {
                     return this.ApplyOrder(prefix);
                 }
                 var filterPart = Core.Extensions.OdataExt.GetClausePart(prefix, Core.Extensions.OdataExt.FilterKeyword);
                 finalFilter = Core.Extensions.OdataExt.AppendClause(prefix, Core.Extensions.StringExt.IsNullOrWhiteSpace(filterPart) ? finalFilter : System.String.format(" and ({0})", [finalFilter]));
-
                 finalFilter = this.ApplyOrder(finalFilter);
                 return finalFilter;
             },

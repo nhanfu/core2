@@ -520,15 +520,12 @@ namespace Core.Components
             {
                 finalFilter += $" or {DateTimeField} eq null";
             }
-
-
             if (finalFilter.IsNullOrWhiteSpace())
             {
                 return ApplyOrder(prefix);
             }
             var filterPart = OdataExt.GetClausePart(prefix, OdataExt.FilterKeyword);
             finalFilter = OdataExt.AppendClause(prefix, filterPart.IsNullOrWhiteSpace() ? finalFilter : $" and ({finalFilter})");
-
             finalFilter = ApplyOrder(finalFilter);
             return finalFilter;
         }
