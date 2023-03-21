@@ -26,6 +26,21 @@ namespace TMS.API.Controllers
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
             var entity = await db.CommodityValue.FindAsync(idInt);
+            if (patch.Changes.Any(x => x.Field == nameof(entity.IsWet) ||
+            x.Field == nameof(entity.SteamingTerms) ||
+            x.Field == nameof(entity.BreakTerms)))
+            {
+                var isWetChange = patch.Changes.Where(x => x.Field == nameof(Expense.IsWet)).FirstOrDefault();
+                var isWet = isWetChange != null ? bool.Parse(isWetChange.Value) : entity.IsWet;
+                var steamingTermsChange = patch.Changes.Where(x => x.Field == nameof(Expense.SteamingTerms)).FirstOrDefault();
+                var steamingTerms = steamingTermsChange != null ? bool.Parse(steamingTermsChange.Value) : entity.SteamingTerms;
+                var breakTermsChange = patch.Changes.Where(x => x.Field == nameof(Expense.BreakTerms)).FirstOrDefault();
+                var breakTerms = breakTermsChange != null ? bool.Parse(breakTermsChange.Value) : entity.BreakTerms;
+                if (isWet && steamingTerms && breakTerms)
+                {
+                    throw new ApiException("Không thể cùng lúc có nhiều hơn 2 điều khoản") { StatusCode = HttpStatusCode.BadRequest };
+                }
+            }
             if (patch.Changes.Any(x => x.Field == nameof(entity.BossId)
             || x.Field == nameof(entity.CommodityId)
             || x.Field == nameof(entity.ContainerId)))

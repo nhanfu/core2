@@ -156,17 +156,29 @@ namespace TMS.UI.Business.Manage
                         var expenseTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and (contains(Name, 'BH SOC') or contains(Name, 'Bảo hiểm'))");
                         var expenseTypeCodes = expenseTypes.Select(x => x.Id).ToList();
                         var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and BossId eq {commodityValueEntity.BossId} and CommodityId eq {commodityValueEntity.CommodityId} and ContainerTypeId in ({containerTypeCodes.Combine()}) and (StartShip ge {startDate} or StartShip eq null) and IsPurchasedInsurance eq false and ExpenseTypeId in ({expenseTypeCodes.Combine()}) and RequestChangeId eq null");
+                        var insuranceFeesRates = await new Client(nameof(InsuranceFeesRate)).GetRawList<InsuranceFeesRate>($"?$filter=Active eq true");
+                        var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
+                        var insuranceFeesRateColdDB = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 25391");
+                        var containerTypeIdExpenses = expenses.Select(x => x.ContainerTypeId).ToList();
+                        var containerTypeExpenses = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and Id in ({containerTypeIdExpenses.Combine()})");
+                        var containerTypeOfExpenses = new Dictionary<int, MasterData>();
+                        foreach (var item in expenses)
+                        {
+                            var container = containerTypeExpenses.Where(x => x.Id == item.ContainerTypeId).FirstOrDefault();
+                            containerTypeOfExpenses.Add(item.Id, container);
+                        }
                         foreach (var item in expenses)
                         {
                             item.CommodityValue = newCommodityValue.TotalPrice;
                             var checkIsSOC = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and Id eq {item.ExpenseTypeId}");
+                            var containerExpense = containerTypeOfExpenses.GetValueOrDefault(item.Id);
                             if (checkIsSOC.Name.Contains("BH SOC"))
                             {
-                                await CalcInsuranceFees(item, true);
+                                CalcInsuranceFees(item, true, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
                             }
                             else
                             {
-                                await CalcInsuranceFees(item, false);
+                                CalcInsuranceFees(item, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
                             }
                         }
                         var rs = await new Client(nameof(Expense)).BulkUpdateAsync(expenses);
@@ -215,29 +227,26 @@ namespace TMS.UI.Business.Manage
             return newCommodityValue;
         }
 
-        private async Task CalcInsuranceFees(Expense expense, bool isSOC)
+        private void CalcInsuranceFees(Expense expense, bool isSOC, List<InsuranceFeesRate> insuranceFeesRates, List<MasterData> extraInsuranceFeesRateDB, MasterData containerExpense, MasterData insuranceFeesRateColdDB)
         {
             bool isSubRatio = false;
             if (((expense.IsWet || expense.SteamingTerms || expense.BreakTerms) && expense.IsBought == false) || (expense.IsBought && expense.IsWet))
             {
                 isSubRatio = true;
             }
-            var journeyId = expense.JourneyId is null ? "" : "and JourneyId eq " + expense.JourneyId.ToString();
             InsuranceFeesRate insuranceFeesRateDB = null;
-            if (expense.IsBought && expense.TransportationTypeId != null)
+            if (expense.IsBought)
             {
-                insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {expense.TransportationTypeId} {journeyId} and IsBought eq {expense.IsBought.ToString().ToLower()} and IsSOC eq {isSOC.ToString().ToLower()} and IsSubRatio eq {isSubRatio.ToString().ToLower()}");
+                insuranceFeesRateDB = insuranceFeesRates.Where(x => x.TransportationTypeId == expense.TransportationTypeId && x.JourneyId == expense.JourneyId && x.IsBought == expense.IsBought && x.IsSOC == isSOC && x.IsSubRatio == isSubRatio).FirstOrDefault();
             }
-            else if(expense.IsBought == false && expense.TransportationTypeId != null)
+            else
             {
-                insuranceFeesRateDB = await new Client(nameof(InsuranceFeesRate)).FirstOrDefaultAsync<InsuranceFeesRate>($"?$filter=Active eq true and TransportationTypeId eq {expense.TransportationTypeId} {journeyId} and IsBought eq {expense.IsBought.ToString().ToLower()} and IsSOC eq {isSOC.ToString().ToLower()}");
+                insuranceFeesRateDB = insuranceFeesRates.Where(x => x.TransportationTypeId == expense.TransportationTypeId && x.JourneyId == expense.JourneyId && x.IsBought == expense.IsBought && x.IsSOC == isSOC).FirstOrDefault();
             }
             if (insuranceFeesRateDB != null)
             {
-                var getContainerType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq {expense.ContainerTypeId}");
-                if (getContainerType != null && getContainerType.Description.ToLower().Contains("lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
+                if (containerExpense != null && containerExpense.Description.ToLower().Contains("lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
                 {
-                    var insuranceFeesRateColdDB = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 25391");
                     expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? decimal.Parse(insuranceFeesRateColdDB.Name) : 0;
                 }
                 else
@@ -246,7 +255,6 @@ namespace TMS.UI.Business.Manage
                 }
                 if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
                 {
-                    var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
                     extraInsuranceFeesRateDB.ForEach(x =>
                     {
                         var prop = expense.GetType().GetProperties().Where(y => y.Name == x.Name && bool.Parse(y.GetValue(expense, null).ToString())).FirstOrDefault();
@@ -342,14 +350,22 @@ namespace TMS.UI.Business.Manage
             x.Field == nameof(oldEntity.IsBought) ||
             x.Field == nameof(oldEntity.CustomerTypeId) ||
             x.Field == nameof(oldEntity.Notes) ||
+            x.Field == nameof(oldEntity.SteamingTerms) ||
+            x.Field == nameof(oldEntity.BreakTerms) ||
             x.Field == nameof(oldEntity.JourneyId)) &&
             (oldEntity.StartDate != entity.StartDate) ||
             (oldEntity.IsBought != entity.IsBought) ||
             (oldEntity.CustomerTypeId != entity.CustomerTypeId) ||
             (oldEntity.JourneyId != entity.JourneyId) ||
             (oldEntity.Notes != entity.Notes) ||
+            (oldEntity.SteamingTerms != entity.SteamingTerms) ||
+            (oldEntity.BreakTerms != entity.BreakTerms) ||
             (oldEntity.IsWet != entity.IsWet))
             {
+                if (entity.IsWet && entity.SteamingTerms && entity.BreakTerms)
+                {
+                    return;
+                }
                 var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId ne 7651 and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
                 if (oldEntity.CommodityId == commodity.Id)
                 {
@@ -369,18 +385,16 @@ namespace TMS.UI.Business.Manage
                     var containerTypeCodes = containerTypes.Select(x => x.Id).ToList();
                     var startDate = entity.StartDate.Value.Date.ToString("yyyy-MM-dd");
                     var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($@"?$filter=Active eq true and ExpenseTypeId in ({expenseTypeCodes.Combine()}) {checkBoss} {checkCommodity} and ContainerTypeId in ({containerTypeCodes.Combine()}) and IsPurchasedInsurance eq false and (StartShip eq null or StartShip ge {startDate}) and RequestChangeId eq null");
-                    var transportationIds = expenses.Select(x => x.TransportationId).Distinct().ToList();
-                    var transportation = await new Client(nameof(Transportation)).GetRawList<Transportation>($@"?$filter=Active eq true and Id in ({transportationIds.Combine()})");
-                    var transportationPlanIds = transportation.Select(x => x.TransportationPlanId).Distinct().ToList();
-                    var transportationPlan = await new Client(nameof(TransportationPlan)).GetRawList<TransportationPlan>($@"?$filter=Active eq true and Id in ({transportationPlanIds.Combine()})");
-                    foreach (var x in transportationPlan)
+                    var insuranceFeesRates = await new Client(nameof(InsuranceFeesRate)).GetRawList<InsuranceFeesRate>($"?$filter=Active eq true");
+                    var extraInsuranceFeesRateDB =  await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
+                    var insuranceFeesRateColdDB = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 25391");
+                    var containerTypeIdExpenses = expenses.Select(x => x.ContainerTypeId).ToList();
+                    var containerTypeExpenses = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and Id in ({containerTypeIdExpenses.Combine()})");
+                    var containerTypeOfExpenses = new Dictionary<int, MasterData>();
+                    foreach (var item in expenses)
                     {
-                        x.CommodityValue = entity.TotalPrice;
-                        x.IsWet = entity.IsWet;
-                        x.IsBought = entity.IsBought;
-                        x.JourneyId = entity.JourneyId;
-                        x.CustomerTypeId = entity.CustomerTypeId;
-                        await new Client(nameof(TransportationPlan)).UpdateAsync<TransportationPlan>(x);
+                        var container = containerTypeExpenses.Where(x => x.Id == item.ContainerTypeId).FirstOrDefault();
+                        containerTypeOfExpenses.Add(item.Id, container);
                     }
                     foreach (var x in expenses)
                     {
@@ -393,10 +407,14 @@ namespace TMS.UI.Business.Manage
                         {
                             x.IsWet = entity.IsWet;
                             x.IsBought = entity.IsBought;
+                            x.SteamingTerms = entity.SteamingTerms;
+                            x.BreakTerms = entity.BreakTerms;
                         }
-                        await CalcInsuranceFees(x, false);
+                        var containerExpense = containerTypeOfExpenses.GetValueOrDefault(x.Id);
+                        CalcInsuranceFees(x, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
                         await new Client(nameof(Expense)).UpdateAsync<Expense>(x);
                     }
+                    Toast.Success("Đã áp dụng thành công GTHH này");
                 }
             }
         }

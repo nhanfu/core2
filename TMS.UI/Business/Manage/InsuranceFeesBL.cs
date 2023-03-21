@@ -31,7 +31,7 @@ namespace TMS.UI.Business.Manage
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
             if (gridView.Name.Contains("ExpenseIsDelete"))
             {
-                await ApproveDelete(entity);
+                ApproveDelete(entity);
             }
             else
             {
@@ -103,12 +103,12 @@ namespace TMS.UI.Business.Manage
                 {
                     var expenses = listExpenses.Where(x => x.Id == item.Id).ToList();
                     var checkHistory = checkHistorys.Where(x => x.RequestChangeId == item.Id).ToList();
-                    await UpdateListView(item, gridView, expenses, checkHistory);
+                    UpdateListView(item, gridView, expenses, checkHistory);
                 }
             }
         }
 
-        private async Task UpdateListView(Expense x, GridView gridView, List<Expense> expenses, List<Expense> checkHistory)
+        private void UpdateListView(Expense x, GridView gridView, List<Expense> expenses, List<Expense> checkHistory)
         {
             var listViewItem = gridView.GetListViewItems(x).FirstOrDefault();
             if (listViewItem is null)
@@ -532,7 +532,7 @@ namespace TMS.UI.Business.Manage
 
         private int awaiter;
 
-        public async Task ApproveDelete(Expense expense)
+        public void ApproveDelete(Expense expense)
         {
             var confirm = new ConfirmDialog
             {
@@ -696,7 +696,7 @@ namespace TMS.UI.Business.Manage
                 var expenseTypeSOC = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId eq 7577 and contains(Name,'BH SOC')");
                 if (entity.ExpenseTypeId == expenseType.Id)
                 {
-                    await SetWetAndJourneyForExpense(entity, tran);
+                    SetWetAndJourneyForExpense(entity, tran);
                     await CalcInsuranceFees(entity, false);
                 }
                 else if (entity.ExpenseTypeId == expenseTypeSOC.Id)
@@ -711,7 +711,7 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        private async Task SetWetAndJourneyForExpense(Expense expense, Transportation transportation)
+        private void SetWetAndJourneyForExpense(Expense expense, Transportation transportation)
         {
             if (expense.TransportationTypeId != null)
             {

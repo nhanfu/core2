@@ -117,7 +117,7 @@ namespace TMS.API.Controllers
             }
         }
 
-        private async Task CalcInsuranceFees(Expense expense, bool isSOC, List<InsuranceFeesRate> insuranceFeesRates, List<MasterData> extraInsuranceFeesRateDB, MasterData containerExpense, MasterData insuranceFeesRateColdDB)
+        private void CalcInsuranceFees(Expense expense, bool isSOC, List<InsuranceFeesRate> insuranceFeesRates, List<MasterData> extraInsuranceFeesRateDB, MasterData containerExpense, MasterData insuranceFeesRateColdDB)
         {
             if (expense.IsPurchasedInsurance == false && expense.RequestChangeId == null)
             {
@@ -513,7 +513,7 @@ namespace TMS.API.Controllers
                                 item.CustomerTypeId = commodityValue.CustomerTypeId;
                                 item.CommodityValueNotes = commodityValue.Notes;
                                 var containerExpense = containerTypeOfExpenses.GetValueOrDefault(item.Id);
-                                await CalcInsuranceFees(item, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
+                                CalcInsuranceFees(item, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
                             }
                         }
                         if (tran.TransportationTypeId != item.TransportationTypeId) { item.TransportationTypeId = tran.TransportationTypeId; }
