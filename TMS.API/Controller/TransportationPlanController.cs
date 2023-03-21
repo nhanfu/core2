@@ -544,6 +544,7 @@ namespace TMS.API.Controllers
             , [FromQuery] string orderby
             , [FromQuery] string sql
             , [FromQuery] bool showNull
+            , [FromQuery] string datetimeField
             , [FromQuery] string where)
         {
             var connectionStr = _config.GetConnectionString("Default");

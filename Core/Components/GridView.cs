@@ -82,7 +82,7 @@ namespace Core.Components
                 .SubmitAsync<object[][]>(new XHRWrapper
                 {
                     Value = sum.Combine(),
-                    Url = $"SubTotal?group=&tablename={GuiInfo.RefName}&refname=&formatsumary={GuiInfo.FormatSumaryField}&sql={Sql}&orderby={GuiInfo.OrderBySumary}&where={Wheres.Combine(" and ")} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {submitEntity}")}",
+                    Url = $"SubTotal?group=&tablename={GuiInfo.RefName}&refname=&formatsumary={GuiInfo.FormatSumaryField}&dateTimeField={GuiInfo.DateTimeField}&showNull={GuiInfo.ShowNull ?? false}&sql={Sql}&orderby={GuiInfo.OrderBySumary}&where={Wheres.Combine(" and ")} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {submitEntity}")}",
                     Method = HttpMethod.POST,
                     AllowNestedObject = true,
                     ErrorHandler = (x) => { }

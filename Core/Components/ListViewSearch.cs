@@ -364,7 +364,7 @@ namespace Core.Components
                         finalFilter.Split(",").Select(x => $"[{ParentListView.GuiInfo.RefName}].{x}").Combine();
                     }
                 }
-                var path = await new Client(GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}&sql={ParentListView.Sql}&where={ParentListView.Wheres.Combine(" and ")} {(ParentListView.GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(ParentListView.Wheres.Any() ? " and " : "")} {ParentListView.GuiInfo.PreQuery}")}&custom=false&featureId={EditForm.Feature.Id}&orderby={finalFilter}");
+                var path = await new Client(GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}&sql={ParentListView.Sql}&showNull={GuiInfo.ShowNull ?? false}&where={ParentListView.Wheres.Combine(" and ")} {(ParentListView.GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(ParentListView.Wheres.Any() ? " and " : "")} {ParentListView.GuiInfo.PreQuery}")}&custom=false&featureId={EditForm.Feature.Id}&orderby={finalFilter}");
                 Client.Download($"/excel/Download/{path}");
                 Toast.Success("Xuất file thành công");
             });
@@ -462,6 +462,11 @@ namespace Core.Components
             }
             else
             {
+                var check = ParentListView.Wheres.FirstOrDefault(x => x.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] >="));
+                if (ParentListView.Wheres.Any() && check != null)
+                {
+                    ParentListView.Wheres.Remove(check);
+                }
                 LocalStorage.RemoveItem("FromDate" + ParentListView.GuiInfo.Id);
             }
             if (EntityVM.EndDate != null)
@@ -480,6 +485,11 @@ namespace Core.Components
             }
             else
             {
+                var check1 = ParentListView.Wheres.FirstOrDefault(x => x.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <="));
+                if (ParentListView.Wheres.Any() && check1 != null)
+                {
+                    ParentListView.Wheres.Remove(check1);
+                }
                 LocalStorage.RemoveItem("ToDate" + ParentListView.GuiInfo.Id);
             }
             if ((EntityVM.EndDate != null || EntityVM.StartDate != null) && ParentListView.GuiInfo.ShowNull != null && (bool)ParentListView.GuiInfo.ShowNull)

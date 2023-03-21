@@ -806,11 +806,13 @@ namespace TMS.API.Controllers
             [FromQuery] string orderby,
             [FromQuery] string sql,
             [FromQuery] bool showNull,
+            [FromQuery] string datetimeField,
             [FromQuery] string where)
         {
             var connectionStr = _config.GetConnectionString("Default");
             using var con = new SqlConnection(connectionStr);
             var reportQuery = string.Empty;
+            var showNullString = showNull ? $"" : string.Empty;
             if (sql.IsNullOrWhiteSpace())
             {
                 reportQuery = $@"select {sum}

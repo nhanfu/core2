@@ -101,7 +101,7 @@ namespace Core.Components
 
         public bool IgnoreConfirmHardDelete { get; set; }
         public List<CellSelected> CellSelected { get; set; } = new List<CellSelected>();
-        public List<string> Wheres { get; set; } = new List<string>();
+        public List<string> Wheres = new List<string>();
         public HashSet<int> SelectedIds { get; set; } = new HashSet<int>();
         public int? FocusId { get; set; }
         public int? EntityFocusId { get; set; }

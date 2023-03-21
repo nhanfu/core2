@@ -333,7 +333,7 @@ namespace Core.Components
                     finalFilter = $"[{ParentListView.GuiInfo.RefName}].{finalFilter}";
                 }
             }
-            var path = await new Client(ParentListView.GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}&sql={ParentListView.Sql}&where={ParentListView.Wheres.Combine(" and ")} {(ParentListView.GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(ParentListView.Wheres.Any() ? " and " : "")} {ParentListView.GuiInfo.PreQuery}")}&custom=true&featureId={Parent.EditForm.Feature.Id}&orderby={finalFilter}");
+            var path = await new Client(ParentListView.GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}&sql={ParentListView.Sql}&showNull={ParentListView.GuiInfo.ShowNull ?? false}&where={ParentListView.Wheres.Combine(" and ")} {(ParentListView.GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(ParentListView.Wheres.Any() ? " and " : "")} {ParentListView.GuiInfo.PreQuery}")}&custom=true&featureId={Parent.EditForm.Feature.Id}&orderby={finalFilter}");
             Client.Download($"/excel/Download/{path}");
             Toast.Success("Xuất file thành công");
         }
