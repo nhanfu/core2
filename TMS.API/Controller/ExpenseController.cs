@@ -474,7 +474,7 @@ namespace TMS.API.Controllers
                         (tran.ShipId != item.ShipId) ||
                         (tran.BossId != item.BossId) ||
                         (tran.ReceivedId != item.ReceivedId) ||
-                        (tran.CommodityId != item.CommodityId) ||
+                        (tran.CommodityId != item.CommodityId && item.ExpenseTypeId != 15981) ||
                         (tran.TransportationTypeId != item.TransportationTypeId) ||
                         (tran.ContainerTypeId != item.ContainerTypeId) ||
                         (tran.Trip?.Trim() != item.Trip?.Trim()) ||
