@@ -715,8 +715,10 @@ namespace TMS.API.Controllers
             {
                 selects.Add("com.Description as 'Commodity'");
             }
-            var sql = @$"select {selects.Combine()},SUM(t.Cont40) as Cont40,SUM(t.Cont20) as Cont20,sum(case when t.EmptyCombinationId is not null then 1 else 0 end) as EmptyCombination, sum(case when t.EmptyCombinationId is null then 1 else 0 end) as NoEmptyCombination
-                    from Transportation t";
+            var sql = @$"select {selects.Combine()},SUM(t.Cont40) as Cont40,SUM(t.Cont20) as Cont20
+            ,sum(case when t.EmptyCombinationId is not null and Cont20 = 1 then 1 else 0 end) as EmptyCombination20
+            ,sum(case when t.EmptyCombinationId is not null and Cont40 = 1 then 1 else 0 end) as EmptyCombination40
+            ,cast(Round((sum(case when t.EmptyCombinationId is not null then 1 else 0 end)/(SUM(t.Cont40)+SUM(t.Cont20)))*100,0) as int) as Per from Transportation t ";
             if (entity.Route)
             {
                 sql += @$" left join Route as r on r.Id = t.RouteId";
@@ -754,6 +756,11 @@ namespace TMS.API.Controllers
                 sql += @$" left join MasterData as com on com.Id = t.CommodityId";
             }
             var selects1 = new List<string>();
+            var orderby = new List<string>();
+            if (entity.StartShip)
+            {
+                selects1.Add("t.StartShip,t.Id");
+            }
             if (entity.ExportList)
             {
                 selects1.Add("e.Name,e.Id");
@@ -761,6 +768,7 @@ namespace TMS.API.Controllers
             if (entity.Route)
             {
                 selects1.Add("r.Name,r.Id");
+
             }
             if (entity.BrandShip)
             {
@@ -770,17 +778,9 @@ namespace TMS.API.Controllers
             {
                 selects1.Add("s.Name,s.Id");
             }
-            if (entity.StartShip)
-            {
-                selects1.Add("t.StartShip,t.Id");
-            }
             if (entity.ContainerType)
             {
                 selects1.Add("cont.Description,cont.Id");
-            }
-            if (entity.User)
-            {
-                selects1.Add("us.FullName,us.Id");
             }
             if (entity.Closing)
             {
@@ -794,8 +794,13 @@ namespace TMS.API.Controllers
             {
                 selects1.Add("com.Description,com.Id");
             }
+            if (entity.User)
+            {
+                selects1.Add("us.FullName,us.Id");
+            }
             sql += $" where t.ClosingDate >= '{entity.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{entity.ToDate.Value.ToString("yyyy-MM-dd")}'";
             sql += @$" group by {selects1.Combine()}";
+            sql += @$" order by {selects1.Combine()} asc";
             var data = await ConverSqlToDataSet(sql);
             var index = 1;
             if (entity.StartShip)
@@ -900,13 +905,19 @@ namespace TMS.API.Controllers
             worksheet.Cell(2, index).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell(2, index).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             index++;
-            worksheet.Cell(2, index).Value = $"Kết hợp";
+            worksheet.Cell(2, index).Value = $"KH 20";
             worksheet.Cell(2, index).Style.Alignment.WrapText = true;
             worksheet.Cell(2, index).Style.Font.Bold = true;
             worksheet.Cell(2, index).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell(2, index).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             index++;
-            worksheet.Cell(2, index).Value = $"Không kết hợp";
+            worksheet.Cell(2, index).Value = $"KH 40";
+            worksheet.Cell(2, index).Style.Alignment.WrapText = true;
+            worksheet.Cell(2, index).Style.Font.Bold = true;
+            worksheet.Cell(2, index).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell(2, index).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            index++;
+            worksheet.Cell(2, index).Value = $"% KH";
             worksheet.Cell(2, index).Style.Alignment.WrapText = true;
             worksheet.Cell(2, index).Style.Font.Bold = true;
             worksheet.Cell(2, index).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -980,9 +991,11 @@ namespace TMS.API.Controllers
                 index1++;
                 worksheet.Cell(i, index1).Value = (itemDetail["Cont40"] is null || (itemDetail["Cont40"] != null && itemDetail["Cont40"].ToString() == "0.00000")) ? "" : decimal.Parse(itemDetail["Cont40"].ToString());
                 index1++;
-                worksheet.Cell(i, index1).Value = (itemDetail["EmptyCombination"] is null || (itemDetail["EmptyCombination"] != null && itemDetail["EmptyCombination"].ToString() == "0")) ? "" : decimal.Parse(itemDetail["EmptyCombination"].ToString());
+                worksheet.Cell(i, index1).Value = (itemDetail["EmptyCombination20"] is null || (itemDetail["EmptyCombination20"] != null && itemDetail["EmptyCombination20"].ToString() == "0")) ? "" : decimal.Parse(itemDetail["EmptyCombination20"].ToString());
                 index1++;
-                worksheet.Cell(i, index1).Value = (itemDetail["NoEmptyCombination"] is null || (itemDetail["NoEmptyCombination"] != null && itemDetail["NoEmptyCombination"].ToString() == "0")) ? "" : decimal.Parse(itemDetail["NoEmptyCombination"].ToString());
+                worksheet.Cell(i, index1).Value = (itemDetail["EmptyCombination40"] is null || (itemDetail["EmptyCombination40"] != null && itemDetail["EmptyCombination40"].ToString() == "0")) ? "" : decimal.Parse(itemDetail["EmptyCombination40"].ToString());
+                index1++;
+                worksheet.Cell(i, index1).Value = (itemDetail["Per"] is null || (itemDetail["Per"] != null && itemDetail["Per"].ToString() == "0")) ? "" : decimal.Parse(itemDetail["Per"].ToString());
                 worksheet.Range(i, 1, i, index1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
                 worksheet.Range(i, 1, i, index1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
                 worksheet.Range(i, 1, i, index1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
@@ -993,21 +1006,23 @@ namespace TMS.API.Controllers
             worksheet.Cell(i, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell(i, 1).Style.Alignment.WrapText = true;
             worksheet.Cell(i, 1).Style.Font.Bold = true;
-            worksheet.Range(i, 1, i, index - 2).Row(1).Merge();
+            worksheet.Range(i, 1, i, index - 5).Row(1).Merge();
             var tt20 = data[0].ToList().Sum(x => decimal.Parse(x["Cont20"].ToString()));
             var tt40 = data[0].ToList().Sum(x => decimal.Parse(x["Cont40"].ToString()));
-            var tt1 = data[0].ToList().Sum(x => decimal.Parse(x["EmptyCombination"].ToString()));
-            var tt2 = data[0].ToList().Sum(x => decimal.Parse(x["NoEmptyCombination"].ToString()));
-            worksheet.Cell(i, index).Value = tt1 == 0 ? "" : tt1;
-            worksheet.Cell(i, index - 1).Value = tt2 == 0 ? "" : tt2;
+            var com20 = data[0].ToList().Sum(x => decimal.Parse(x["EmptyCombination20"].ToString()));
+            var com40 = data[0].ToList().Sum(x => decimal.Parse(x["EmptyCombination40"].ToString()));
             worksheet.Cell(i, index - 3).Value = tt20 == 0 ? "" : tt20;
-            worksheet.Cell(i, index - 2).Value = tt40 == 0 ? "" : tt40;
+            worksheet.Cell(i, index - 4).Value = tt40 == 0 ? "" : tt40;
+            worksheet.Cell(i, index - 1).Value = com20 == 0 ? "" : com20;
+            worksheet.Cell(i, index - 2).Value = com40 == 0 ? "" : com40;
             worksheet.Cell(i, index - 1).Style.Alignment.WrapText = true;
             worksheet.Cell(i, index - 1).Style.Font.Bold = true;
             worksheet.Cell(i, index - 3).Style.Alignment.WrapText = true;
             worksheet.Cell(i, index - 3).Style.Font.Bold = true;
             worksheet.Cell(i, index - 2).Style.Alignment.WrapText = true;
             worksheet.Cell(i, index - 2).Style.Font.Bold = true;
+            worksheet.Cell(i, index - 4).Style.Alignment.WrapText = true;
+            worksheet.Cell(i, index - 4).Style.Font.Bold = true;
             worksheet.Cell(i, index).Style.Alignment.WrapText = true;
             worksheet.Cell(i, index).Style.Font.Bold = true;
             worksheet.Columns().AdjustToContents();
