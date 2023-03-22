@@ -20,7 +20,7 @@ namespace TMS.API.Controllers
 {
     public class TransportationController : TMSController<Transportation>
     {
-        public TransportationController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public TransportationController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 
@@ -669,7 +669,7 @@ namespace TMS.API.Controllers
         }
 
         [HttpPost("api/Transportation/ExportProductionReport")]
-        public async Task<string> ExportProductionReport()
+        public async Task<string> ExportProductionReport([FromBody] ReportGroupVM entity)
         {
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add(nameof(Transportation));
@@ -680,92 +680,310 @@ namespace TMS.API.Controllers
             worksheet.Cell("A1").Style.Font.Bold = true;
             worksheet.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            var sql = @"select t.StartShip,el.Name as 'ExportList',bs.Name as 'BrandShip',s.Name as 'Ship' ,r.Name as 'Route',cont.Description as 'ContainerType',SUM(t.Cont40) as Cont40,SUM(t.Cont20) as Cont20
-                    from Transportation t
-                    left join Vendor as el on el.Id = t.ExportListId
-                    left join Ship as s on s.Id = t.ShipId
-                    left join Vendor as bs on bs.Id = t.BrandShipId
-                    left join Route as r on r.Id = t.RouteId
-                    left join MasterData as cont on cont.Id = t.ContainerTypeId
-                    where BookingId is not null
-                    group by el.Name,bs.Name,s.Name,r.Name,cont.Description, t.StartShip
-                    order by StartShip desc";
+
+            var selects = new List<string>();
+            if (entity.Route)
+            {
+                selects.Add("r.Name as 'Route'");
+            }
+            if (entity.BrandShip)
+            {
+                selects.Add("bs.Name as 'BrandShip'");
+            }
+            if (entity.StartShip)
+            {
+                selects.Add("t.StartShip");
+            }
+            if (entity.ContainerType)
+            {
+                selects.Add("cont.Description as 'ContainerType'");
+            }
+            if (entity.Ship)
+            {
+                selects.Add("s.Name as 'Ship'");
+            }
+            if (entity.User)
+            {
+                selects.Add("us.FullName as 'User'");
+            }
+            if (entity.Closing)
+            {
+                selects.Add("c.Name as 'Closing'");
+            }
+            if (entity.Boss)
+            {
+                selects.Add("b.Name as 'Boss'");
+            }
+            if (entity.ExportList)
+            {
+                selects.Add("e.Name as 'ExportList'");
+            }
+            if (entity.Commodity)
+            {
+                selects.Add("com.Description as 'Commodity'");
+            }
+            var sql = @$"select {selects.Combine()},SUM(t.Cont40) as Cont40,SUM(t.Cont20) as Cont20,CASE WHEN EmptyCombinationId IS NULL THEN '' ELSE N'Kết hợp' END EmptyCombination
+                    from Transportation t";
+            if (entity.Route)
+            {
+                sql += @$" left join Route as r on r.Id = t.RouteId";
+            }
+            if (entity.BrandShip)
+            {
+                sql += @$" left join Vendor as bs on bs.Id = t.BrandShipId";
+            }
+            if (entity.ContainerType)
+            {
+                sql += @$" left join MasterData as cont on cont.Id = t.ContainerTypeId";
+            }
+            if (entity.Ship)
+            {
+                sql += @$" left join Ship as s on s.Id = t.ShipId";
+            }
+            if (entity.User)
+            {
+                sql += @$" left join [User] as us on us.Id = t.UserId";
+            }
+            if (entity.Closing)
+            {
+                sql += @$" left join Vendor as c on c.Id = t.ClosingId";
+            }
+            if (entity.Boss)
+            {
+                sql += @$" left join Vendor as b on b.Id = t.BossId";
+            }
+            if (entity.ExportList)
+            {
+                sql += @$" left join Vendor as e on e.Id = t.ExportListId";
+            }
+            if (entity.Commodity)
+            {
+                sql += @$" left join MasterData as com on com.Id = t.CommodityId";
+            }
+            var selects1 = new List<string>();
+            if (entity.Route)
+            {
+                selects1.Add("r.Name,r.Id");
+            }
+            if (entity.BrandShip)
+            {
+                selects1.Add("bs.Name,bs.Id");
+            }
+            if (entity.StartShip)
+            {
+                selects1.Add("t.StartShip,t.Id");
+            }
+            if (entity.ContainerType)
+            {
+                selects1.Add("cont.Description,cont.Id");
+            }
+            if (entity.Ship)
+            {
+                selects1.Add("s.Name,s.Id");
+            }
+            if (entity.User)
+            {
+                selects1.Add("us.FullName,us.Id");
+            }
+            if (entity.Closing)
+            {
+                selects1.Add("c.Name,c.Id");
+            }
+            if (entity.Boss)
+            {
+                selects1.Add("b.Name,b.Id");
+            }
+            if (entity.ExportList)
+            {
+                selects1.Add("e.Name,e.Id");
+            }
+            if (entity.Commodity)
+            {
+                selects1.Add("com.Description,com.Id");
+            }
+            sql += @$" group by CASE WHEN EmptyCombinationId IS NULL THEN 'NULL' ELSE 'NOT NULL' END, {selects1.Combine()},CASE WHEN EmptyCombinationId IS NULL THEN '' ELSE N'Kết hợp' END";
             var data = await ConverSqlToDataSet(sql);
-            worksheet.Cell("A2").Value = $"Ngày tàu chạy";
-            worksheet.Cell("A2").Style.Alignment.WrapText = true;
-            worksheet.Cell("A2").Style.Font.Bold = true;
-            worksheet.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Cell("A2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Cell("B2").Value = $"List xuất";
-            worksheet.Cell("B2").Style.Alignment.WrapText = true;
-            worksheet.Cell("B2").Style.Font.Bold = true;
-            worksheet.Cell("B2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Cell("B2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Cell("C2").Value = $"Hãng tàu";
-            worksheet.Cell("C2").Style.Alignment.WrapText = true;
-            worksheet.Cell("C2").Style.Font.Bold = true;
-            worksheet.Cell("C2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Cell("C2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Cell("D2").Value = $"Tàu";
-            worksheet.Cell("D2").Style.Alignment.WrapText = true;
-            worksheet.Cell("D2").Style.Font.Bold = true;
-            worksheet.Cell("D2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Cell("D2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Cell("E2").Value = $"Tuyến đường";
-            worksheet.Cell("E2").Style.Alignment.WrapText = true;
-            worksheet.Cell("E2").Style.Font.Bold = true;
-            worksheet.Cell("E2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Cell("E2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Cell("F2").Value = $"Loại cont";
-            worksheet.Cell("F2").Style.Alignment.WrapText = true;
-            worksheet.Cell("F2").Style.Font.Bold = true;
-            worksheet.Cell("F2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Cell("F2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Cell("G2").Value = $"Cont20";
-            worksheet.Cell("G2").Style.Alignment.WrapText = true;
-            worksheet.Cell("G2").Style.Font.Bold = true;
-            worksheet.Cell("G2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Cell("G2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Cell("H2").Value = $"Cont40";
-            worksheet.Cell("H2").Style.Alignment.WrapText = true;
-            worksheet.Cell("H2").Style.Font.Bold = true;
-            worksheet.Cell("H2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Cell("H2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range(2, 1, 2, 8).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(2, 1, 2, 8).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(2, 1, 2, 8).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Range(2, 1, 2, 8).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-            var group = data[0].GroupBy(x => new { BrandShip = x["BrandShip"], Route = x["Route"], ExportList = x["ExportList"], Ship = x["Ship"], ContainerType = x["ContainerType"] });
+            if (entity.Route)
+            {
+                worksheet.Cell("E2").Value = $"Tuyến đường";
+                worksheet.Cell("E2").Style.Alignment.WrapText = true;
+                worksheet.Cell("E2").Style.Font.Bold = true;
+                worksheet.Cell("E2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("E2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            }
+            if (entity.BrandShip)
+            {
+                worksheet.Cell("C2").Value = $"Hãng tàu";
+                worksheet.Cell("C2").Style.Alignment.WrapText = true;
+                worksheet.Cell("C2").Style.Font.Bold = true;
+                worksheet.Cell("C2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("C2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            }
+            if (entity.StartShip)
+            {
+                worksheet.Cell("A2").Value = $"Ngày tàu chạy";
+                worksheet.Cell("A2").Style.Alignment.WrapText = true;
+                worksheet.Cell("A2").Style.Font.Bold = true;
+                worksheet.Cell("A2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("A2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            }
+            if (entity.ContainerType)
+            {
+                worksheet.Cell("F2").Value = $"Loại cont";
+                worksheet.Cell("F2").Style.Alignment.WrapText = true;
+                worksheet.Cell("F2").Style.Font.Bold = true;
+                worksheet.Cell("F2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("F2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            }
+            if (entity.Ship)
+            {
+                worksheet.Cell("D2").Value = $"Tàu";
+                worksheet.Cell("D2").Style.Alignment.WrapText = true;
+                worksheet.Cell("D2").Style.Font.Bold = true;
+                worksheet.Cell("D2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("D2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            }
+            if (entity.User)
+            {
+                worksheet.Cell("J2").Value = $"Nhân viên bán hàng";
+                worksheet.Cell("J2").Style.Alignment.WrapText = true;
+                worksheet.Cell("J2").Style.Font.Bold = true;
+                worksheet.Cell("J2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("J2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            }
+            if (entity.Closing)
+            {
+                worksheet.Cell("I2").Value = $"Đơn vị đóng hàng";
+                worksheet.Cell("I2").Style.Alignment.WrapText = true;
+                worksheet.Cell("I2").Style.Font.Bold = true;
+                worksheet.Cell("I2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("I2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            }
+            if (entity.Boss)
+            {
+                worksheet.Cell("H2").Value = $"Chủ hàng";
+                worksheet.Cell("H2").Style.Alignment.WrapText = true;
+                worksheet.Cell("H2").Style.Font.Bold = true;
+                worksheet.Cell("H2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("H2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            }
+            if (entity.ExportList)
+            {
+                worksheet.Cell("B2").Value = $"List xuất";
+                worksheet.Cell("B2").Style.Alignment.WrapText = true;
+                worksheet.Cell("B2").Style.Font.Bold = true;
+                worksheet.Cell("B2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("B2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            }
+            if (entity.Commodity)
+            {
+                worksheet.Cell("G2").Value = $"Hàng hóa";
+                worksheet.Cell("G2").Style.Alignment.WrapText = true;
+                worksheet.Cell("G2").Style.Font.Bold = true;
+                worksheet.Cell("G2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell("G2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            }
+            worksheet.Cell("K2").Value = $"Cont20";
+            worksheet.Cell("K2").Style.Alignment.WrapText = true;
+            worksheet.Cell("K2").Style.Font.Bold = true;
+            worksheet.Cell("K2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("K2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Cell("L2").Value = $"Cont40";
+            worksheet.Cell("L2").Style.Alignment.WrapText = true;
+            worksheet.Cell("L2").Style.Font.Bold = true;
+            worksheet.Cell("L2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("L2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Cell("M2").Value = $"Loại vận chuyển";
+            worksheet.Cell("M2").Style.Alignment.WrapText = true;
+            worksheet.Cell("M2").Style.Font.Bold = true;
+            worksheet.Cell("M2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("M2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range(2, 1, 2, 13).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(2, 1, 2, 13).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(2, 1, 2, 13).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Range(2, 1, 2, 13).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            var group = data[0].GroupBy(x => new
+            {
+                BrandShip = x["BrandShip"],
+                Route = x["Route"],
+                ExportList = x["ExportList"],
+                Ship = x["Ship"],
+                ContainerType = x["ContainerType"],
+                Commodity = x["Commodity"],
+                Boss = x["Boss"],
+                User = x["User"],
+                Closing = x["Closing"],
+                EmptyCombination = x["EmptyCombination"]
+            });
             var i = 3;
             foreach (var item in group)
             {
                 foreach (var itemDetail in item.ToList())
                 {
-                    worksheet.Cell("A" + i).Value = itemDetail["StartShip"] is null ? default(DateTime) : DateTime.Parse(itemDetail["StartShip"].ToString());
-                    worksheet.Cell("B" + i).Value = itemDetail["ExportList"] is null ? default(string) : itemDetail["ExportList"].ToString();
-                    worksheet.Cell("C" + i).Value = itemDetail["BrandShip"] is null ? default(string) : itemDetail["BrandShip"].ToString();
-                    worksheet.Cell("D" + i).Value = itemDetail["Ship"] is null ? default(string) : itemDetail["Ship"].ToString();
-                    worksheet.Cell("E" + i).Value = itemDetail["Route"] is null ? default(string) : itemDetail["Route"].ToString();
-                    worksheet.Cell("F" + i).Value = itemDetail["ContainerType"] is null ? default(string) : itemDetail["ContainerType"].ToString();
-                    worksheet.Cell("G" + i).Value = itemDetail["Cont20"] is null ? default(decimal) : decimal.Parse(itemDetail["Cont20"].ToString());
-                    worksheet.Cell("H" + i).Value = itemDetail["Cont40"] is null ? default(decimal) : decimal.Parse(itemDetail["Cont40"].ToString());
-                    worksheet.Range(i, 1, i, 8).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                    worksheet.Range(i, 1, i, 8).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    worksheet.Range(i, 1, i, 8).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                    worksheet.Range(i, 1, i, 8).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    if (entity.Route)
+                    {
+                        worksheet.Cell("E" + i).Value = itemDetail["Route"] is null ? null : itemDetail["Route"].ToString().DecodeSpecialChar();
+                    }
+                    if (entity.BrandShip)
+                    {
+                        worksheet.Cell("C" + i).Value = itemDetail["Route"] is null ? null : itemDetail["Route"].ToString().DecodeSpecialChar();
+                    }
+                    if (entity.StartShip)
+                    {
+                        worksheet.Cell("A" + i).Value = itemDetail["StartShip"] is null ? default(DateTime) : DateTime.Parse(itemDetail["StartShip"].ToString());
+                    }
+                    if (entity.ContainerType)
+                    {
+                        worksheet.Cell("F" + i).Value = itemDetail["ContainerType"] is null ? null : itemDetail["ContainerType"].ToString().DecodeSpecialChar();
+                    }
+                    if (entity.Ship)
+                    {
+                        worksheet.Cell("D" + i).Value = itemDetail["Ship"] is null ? null : itemDetail["Ship"].ToString().DecodeSpecialChar();
+                    }
+                    if (entity.User)
+                    {
+                        worksheet.Cell("J" + i).Value = itemDetail["User"] is null ? null : itemDetail["User"].ToString().DecodeSpecialChar();
+                    }
+                    if (entity.Closing)
+                    {
+                        worksheet.Cell("I" + i).Value = itemDetail["Closing"] is null ? null : itemDetail["Closing"].ToString().DecodeSpecialChar();
+                    }
+                    if (entity.Boss)
+                    {
+                        worksheet.Cell("H" + i).Value = itemDetail["Boss"] is null ? null : itemDetail["Boss"].ToString().DecodeSpecialChar();
+                    }
+                    if (entity.ExportList)
+                    {
+                        worksheet.Cell("B" + i).Value = itemDetail["ExportList"] is null ? null : itemDetail["ExportList"].ToString().DecodeSpecialChar();
+                    }
+                    if (entity.Commodity)
+                    {
+                        worksheet.Cell("G" + i).Value = itemDetail["Commodity"] is null ? null : itemDetail["Commodity"].ToString().DecodeSpecialChar();
+
+                    }
+                    worksheet.Cell("K" + i).Value = itemDetail["Cont20"] is null ? default(decimal) : decimal.Parse(itemDetail["Cont20"].ToString());
+                    worksheet.Cell("L" + i).Value = itemDetail["Cont40"] is null ? default(decimal) : decimal.Parse(itemDetail["Cont40"].ToString());
+                    worksheet.Cell("M" + i).Value = itemDetail["EmptyCombination"] is null ? null : itemDetail["EmptyCombination"].ToString();
+                    worksheet.Range(i, 1, i, 13).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(i, 1, i, 13).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(i, 1, i, 13).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(i, 1, i, 13).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                     i++;
                 }
                 worksheet.Cell("A" + i).Value = "Tổng cộng";
                 worksheet.Cell("A" + i).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 worksheet.Cell("A" + i).Style.Alignment.WrapText = true;
                 worksheet.Cell("A" + i).Style.Font.Bold = true;
-                worksheet.Range(i, 1, i, 6).Row(1).Merge();
-                worksheet.Cell("G" + i).Style.Alignment.WrapText = true;
-                worksheet.Cell("G" + i).Style.Font.Bold = true;
-                worksheet.Cell("G" + i).Value = item.ToList().Sum(x => decimal.Parse(x["Cont20"].ToString()));
-                worksheet.Cell("H" + i).Value = item.ToList().Sum(x => decimal.Parse(x["Cont40"].ToString()));
-                worksheet.Cell("H" + i).Style.Alignment.WrapText = true;
-                worksheet.Cell("H" + i).Style.Font.Bold = true;
+                worksheet.Range(i, 1, i, 10).Row(1).Merge();
+                worksheet.Cell("K" + i).Style.Alignment.WrapText = true;
+                worksheet.Cell("K" + i).Style.Font.Bold = true;
+                worksheet.Cell("K" + i).Value = item.ToList().Sum(x => decimal.Parse(x["Cont20"].ToString()));
+                worksheet.Cell("L" + i).Value = item.ToList().Sum(x => decimal.Parse(x["Cont40"].ToString()));
+                worksheet.Cell("L" + i).Style.Alignment.WrapText = true;
+                worksheet.Cell("L" + i).Style.Font.Bold = true;
+                worksheet.Cell("M" + i).Value = "";
+                worksheet.Cell("M" + i).Style.Alignment.WrapText = true;
+                worksheet.Cell("M" + i).Style.Font.Bold = true;
                 i++;
             }
             worksheet.Columns().AdjustToContents();

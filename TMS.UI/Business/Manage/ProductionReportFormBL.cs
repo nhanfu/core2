@@ -18,6 +18,10 @@ namespace TMS.UI.Business.Manage
 
         public async Task ExportExcel()
         {
+            if (!await IsFormValid())
+            {
+                return;
+            }
             var path = await new Client(nameof(Transportation)).PostAsync<string>(EReportGroupVM, "ExportProductionReport");
             Client.Download($"/excel/Download/{path.EncodeSpecialChar()}");
             Toast.Success("Xuất file thành công");

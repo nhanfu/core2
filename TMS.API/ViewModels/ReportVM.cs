@@ -10,10 +10,13 @@ namespace TMS.API.ViewModels
         public bool Commodity { get; set; }
         public bool Closing { get; set; }
         public bool Route { get; set; }
+        public bool Ship { get; set; }
+        public bool ExportList { get; set; }
+        public bool StartShip { get; set; }
         public bool BrandShip { get; set; }
         public bool User { get; set; }
-        public DateTime FromDate { get; set; }
-        public DateTime ToDate { get; set; }
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
     }
 
     public class TranGroupVM

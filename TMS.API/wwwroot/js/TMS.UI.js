@@ -3078,16 +3078,13 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
             Commodity: false,
             Closing: false,
             Route: false,
+            Ship: false,
+            ExportList: false,
+            StartShip: false,
             BrandShip: false,
             User: false,
             FromDate: null,
             ToDate: null
-        },
-        ctors: {
-            init: function () {
-                this.FromDate = System.DateTime.getDefaultValue();
-                this.ToDate = System.DateTime.getDefaultValue();
-            }
         }
     });
 
@@ -21774,6 +21771,8 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 var $step = 0,
                     $task1, 
                     $taskResult1, 
+                    $task2, 
+                    $taskResult2, 
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
@@ -21782,10 +21781,10 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
                             for (;;) {
-                                $step = System.Array.min([0,1], $step);
+                                $step = System.Array.min([0,1,2,3,4], $step);
                                 switch ($step) {
                                     case 0: {
-                                        $task1 = new Core.Clients.Client.$ctor1("Transportation").PostAsync(System.String, this.EReportGroupVM, "ExportProductionReport");
+                                        $task1 = this.IsFormValid();
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -21795,7 +21794,29 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     }
                                     case 1: {
                                         $taskResult1 = $task1.getAwaitedResult();
-                                        path = $taskResult1;
+                                        if (!$taskResult1) {
+                                            $step = 2;
+                                            continue;
+                                        } 
+                                        $step = 3;
+                                        continue;
+                                    }
+                                    case 2: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                    case 3: {
+                                        $task2 = new Core.Clients.Client.$ctor1("Transportation").PostAsync(System.String, this.EReportGroupVM, "ExportProductionReport");
+                                        $step = 4;
+                                        if ($task2.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task2.continue($asyncBody);
+                                        return;
+                                    }
+                                    case 4: {
+                                        $taskResult2 = $task2.getAwaitedResult();
+                                        path = $taskResult2;
                                         Core.Clients.Client.Download(System.String.format("/excel/Download/{0}", [Core.Extensions.Utils.EncodeSpecialChar(path)]));
                                         Core.Extensions.Toast.Success("Xu\u1ea5t file th\u00e0nh c\u00f4ng");
                                         $tcs.setResult(null);
