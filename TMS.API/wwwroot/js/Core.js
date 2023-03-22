@@ -23154,10 +23154,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                     if (Core.Extensions.StringExt.HasAnyChar(finalFilter)) {
                         finalFilter = (finalFilter || "") + " and ";
                     }
-                    if (!System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).any(Bridge.fn.bind(this, function (x) {
-                            return System.String.contains(x.FieldName,System.String.format("[{0}].[{1}] >= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.StartDate), "yyyy-MM-dd")));
-                        }))) {
+                    var oldStartDate = System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).firstOrDefault(Bridge.fn.bind(this, function (x) {
+                            return System.String.contains(x.FieldName,System.String.format("[{0}].[{1}] >=", this.ParentListView.GuiInfo.RefName, this.DateTimeField));
+                        }), null);
+                    if (oldStartDate == null) {
                         this.ParentListView.Wheres.add(($t2 = new Core.Models.Where(), $t2.FieldName = System.String.format("[{0}].[{1}] >= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.StartDate), "yyyy-MM-dd")), $t2.Group = false, $t2));
+                    } else {
+                        oldStartDate.FieldName = System.String.format("[{0}].[{1}] >= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.StartDate), "yyyy-MM-dd"));
                     }
                     this.EntityVM.StartDate = System.DateTime.getDate(System.Nullable.getValue(this.EntityVM.StartDate));
                     finalFilter = (finalFilter || "") + ((System.String.format("cast({0},Edm.DateTimeOffset) ge cast({1},Edm.DateTimeOffset)", this.DateTimeField, Core.Extensions.DateTimeExt.ToISOFormat(System.DateTime.toUniversalTime(System.Nullable.getValue(this.EntityVM.StartDate))))) || "");
@@ -23175,10 +23178,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                     if (Core.Extensions.StringExt.HasAnyChar(finalFilter)) {
                         finalFilter = (finalFilter || "") + " and ";
                     }
-                    if (!System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).any(Bridge.fn.bind(this, function (x) {
-                            return System.String.contains(x.FieldName,System.String.format("[{0}].[{1}] <= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.EndDate), "yyyy-MM-dd")));
-                        }))) {
+                    var oldEndDate = System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).firstOrDefault(Bridge.fn.bind(this, function (x) {
+                            return System.String.contains(x.FieldName,System.String.format("[{0}].[{1}] <=", this.ParentListView.GuiInfo.RefName, this.DateTimeField));
+                        }), null);
+                    if (oldEndDate == null) {
                         this.ParentListView.Wheres.add(($t2 = new Core.Models.Where(), $t2.FieldName = System.String.format("[{0}].[{1}] <= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.EndDate), "yyyy-MM-dd")), $t2.Group = false, $t2));
+                    } else {
+                        oldEndDate.FieldName = System.String.format("[{0}].[{1}] <= '{2}'", this.ParentListView.GuiInfo.RefName, this.DateTimeField, System.DateTime.format(System.Nullable.getValue(this.EntityVM.EndDate), "yyyy-MM-dd"));
                     }
                     var endDate = System.DateTime.addDays(System.DateTime.getDate(System.Nullable.getValue(this.EntityVM.EndDate)), 1);
                     finalFilter = (finalFilter || "") + ((System.String.format("cast({0},Edm.DateTimeOffset) le cast({1},Edm.DateTimeOffset)", this.DateTimeField, Core.Extensions.DateTimeExt.ToISOFormat(System.DateTime.toUniversalTime(endDate)))) || "");

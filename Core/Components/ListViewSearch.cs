@@ -468,13 +468,18 @@ namespace Core.Components
                 {
                     finalFilter += " and ";
                 }
-                if (!ParentListView.Wheres.Any(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] >= '{EntityVM.StartDate.Value.ToString("yyyy-MM-dd")}'")))
+                var oldStartDate = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] >="));
+                if (oldStartDate is null)
                 {
                     ParentListView.Wheres.Add(new Where()
                     {
                         FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] >= '{EntityVM.StartDate.Value.ToString("yyyy-MM-dd")}'",
                         Group = false
                     });
+                }
+                else
+                {
+                    oldStartDate.FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] >= '{EntityVM.StartDate.Value.ToString("yyyy-MM-dd")}'";
                 }
                 EntityVM.StartDate = EntityVM.StartDate.Value.Date;
                 finalFilter += $"cast({DateTimeField},Edm.DateTimeOffset) ge cast({EntityVM.StartDate.Value.ToUniversalTime().ToISOFormat()},Edm.DateTimeOffset)";
@@ -495,13 +500,18 @@ namespace Core.Components
                 {
                     finalFilter += " and ";
                 }
-                if (!ParentListView.Wheres.Any(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <= '{EntityVM.EndDate.Value.ToString("yyyy-MM-dd")}'")))
+                var oldEndDate = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <="));
+                if (oldEndDate is null)
                 {
                     ParentListView.Wheres.Add(new Where()
                     {
                         FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <= '{EntityVM.EndDate.Value.ToString("yyyy-MM-dd")}'",
                         Group = false
                     });
+                }
+                else
+                {
+                    oldEndDate.FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <= '{EntityVM.EndDate.Value.ToString("yyyy-MM-dd")}'";
                 }
                 var endDate = EntityVM.EndDate.Value.Date.AddDays(1);
                 finalFilter += $"cast({DateTimeField},Edm.DateTimeOffset) le cast({endDate.ToUniversalTime().ToISOFormat()},Edm.DateTimeOffset)";
