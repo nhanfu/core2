@@ -7,6 +7,7 @@ using Core.ViewModels;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -404,6 +405,7 @@ namespace TMS.API.Controllers
             var expenseTypes = await db.MasterData.Where(x => x.Active && x.ParentId == 7577 && (x.Name.Contains("Bảo hiểm") || x.Name.Contains("BH SOC"))).ToListAsync();
             var expenseTypeIds = expenseTypes.Select(x => x.Id).ToList();
             var trans = await db.Transportation.Where(x => (x.ClosingDate.Value.Date >= expense.FromDate || x.StartShip.Value.Date >= expense.FromDate) && (x.ClosingDate.Value.Date <= expense.ToDate || x.StartShip.Value.Date <= expense.ToDate) && x.Active).ToListAsync();
+            //var trans = await db.Transportation.Where(x => x.Active).ToListAsync();
             if (trans == null)
             {
                 return false;
@@ -419,27 +421,31 @@ namespace TMS.API.Controllers
             var commodityValueOfTrans = new Dictionary<int, CommodityValue>();
             foreach (var item in trans)
             {
-                var container = containerTypeIds.GetValueOrDefault((int)item?.ContainerTypeId);
-                var containerId = 0;
-                if (container.Description.Contains("Cont 20"))
+                MasterData container = null;
+                if (item.ContainerTypeId != null)
                 {
-                    containerId = containers.Find(x => x.Name.Contains("20DC")).Id;
-                }
-                else if (container.Description.Contains("Cont 40"))
-                {
-                    containerId = containers.Find(x => x.Name.Contains("40HC")).Id;
-                }
-                else if (container.Description.Contains("Cont 45"))
-                {
-                    containerId = containers.Find(x => x.Name.Contains("45HC")).Id;
-                }
-                else if (container.Description.Contains("Cont 50"))
-                {
-                    containerId = containers.Find(x => x.Name.Contains("50DC")).Id;
-                }
+                    container = containerTypeIds.GetValueOrDefault((int)item.ContainerTypeId);
+                    var containerId = 0;
+                    if (container.Description.Contains("Cont 20"))
+                    {
+                        containerId = containers.Find(x => x.Name.Contains("20DC")).Id;
+                    }
+                    else if (container.Description.Contains("Cont 40"))
+                    {
+                        containerId = containers.Find(x => x.Name.Contains("40HC")).Id;
+                    }
+                    else if (container.Description.Contains("Cont 45"))
+                    {
+                        containerId = containers.Find(x => x.Name.Contains("45HC")).Id;
+                    }
+                    else if (container.Description.Contains("Cont 50"))
+                    {
+                        containerId = containers.Find(x => x.Name.Contains("50DC")).Id;
+                    }
 
-                var commodityValue = commodityValues.Where(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == containerId).FirstOrDefault();
-                commodityValueOfTrans.Add(item.Id, commodityValue);
+                    var commodityValue = commodityValues.Where(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == containerId).FirstOrDefault();
+                    commodityValueOfTrans.Add(item.Id, commodityValue);
+                }
             }
 
             var tranIds = trans.Select(x => x.Id).ToList();
