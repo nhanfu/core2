@@ -161,12 +161,12 @@ namespace TMS.UI.Business.Accountant
                 {
                     revenues = revenues.Where(x => x.UserUpdate1 == null || x.UserUpdate1 == 0 || x.UserUpdate1 == Client.Token.UserId).ToList();
                 }
-                if (revenueEntity.IsVat ||
+                if ((revenueEntity.IsVat ||
                     revenueEntity.IsVatPrice ||
                     revenueEntity.IsTotalPriceBeforTax ||
                     revenueEntity.IsTotalPrice ||
                     revenueEntity.IsInvoinceNo ||
-                    revenueEntity.IsInvoinceDate)
+                    revenueEntity.IsInvoinceDate) && Client.Token.RoleIds.Where(x => x == 46).Any())
                 {
                     revenues = revenues.Where(x => x.UserUpdate2 == null || x.UserUpdate2 == 0 || x.UserUpdate2 == Client.Token.UserId).ToList();
                 }
@@ -252,12 +252,12 @@ namespace TMS.UI.Business.Accountant
             {
                 revenues = revenues.Where(x => x.UserUpdate1 == null || x.UserUpdate1 == 0 || x.UserUpdate1 == Client.Token.UserId).ToList();
             }
-            if (revenueEntity.IsVat ||
+            if ((revenueEntity.IsVat ||
                 revenueEntity.IsVatPrice ||
                 revenueEntity.IsTotalPriceBeforTax ||
                 revenueEntity.IsTotalPrice ||
                 revenueEntity.IsInvoinceNo ||
-                revenueEntity.IsInvoinceDate)
+                revenueEntity.IsInvoinceDate) && Client.Token.RoleIds.Where(x => x == 46).Any())
             {
                 revenues = revenues.Where(x => x.UserUpdate2 == null || x.UserUpdate2 == 0 || x.UserUpdate2 == Client.Token.UserId).ToList();
             }
