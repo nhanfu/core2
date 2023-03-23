@@ -454,6 +454,7 @@ namespace TMS.API.Controllers
             var bossIds = trans.Select(x => x.BossId).ToList();
             var commodityIds = trans.Select(x => x.CommodityId).ToList();
             var commodityValues = await db.CommodityValue.Where(x => bossIds.Contains(x.BossId) && commodityIds.Contains(x.CommodityId) && x.Active).ToListAsync();
+            var commodityValuesSOC = await db.CommodityValue.Where(x => x.CommodityId == 15764 && x.Active).ToListAsync();
             var commodityValueOfTrans = new Dictionary<int, CommodityValue>();
             foreach (var item in trans)
             {
@@ -543,19 +544,34 @@ namespace TMS.API.Controllers
                             tran.ContainerTypeId != item.ContainerTypeId ||
                             tran.TransportationTypeId != item.TransportationTypeId) && item.IsPurchasedInsurance == false)
                         {
-                            var commodityValue = commodityValueOfTrans.GetValueOrDefault(tran.Id);
-                            if (commodityValue != null)
+                            var containerExpense = containerTypeOfExpenses.GetValueOrDefault(item.Id);
+                            CommodityValue commodityValue = null;
+                            if (item.ExpenseTypeId == 15939)
                             {
-                                item.CommodityValue = commodityValue.TotalPrice;
-                                item.JourneyId = commodityValue.JourneyId;
-                                item.IsBought = commodityValue.IsBought;
-                                item.IsWet = commodityValue.IsWet;
-                                item.SteamingTerms = commodityValue.SteamingTerms;
-                                item.BreakTerms = commodityValue.BreakTerms;
-                                item.CustomerTypeId = commodityValue.CustomerTypeId;
-                                item.CommodityValueNotes = commodityValue.Notes;
-                                var containerExpense = containerTypeOfExpenses.GetValueOrDefault(item.Id);
-                                CalcInsuranceFees(item, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
+                                commodityValue = commodityValueOfTrans.GetValueOrDefault(tran.Id);
+                                if (commodityValue != null)
+                                {
+                                    item.CommodityValue = commodityValue.TotalPrice;
+                                    item.JourneyId = commodityValue.JourneyId;
+                                    item.IsBought = commodityValue.IsBought;
+                                    item.IsWet = commodityValue.IsWet;
+                                    item.SteamingTerms = commodityValue.SteamingTerms;
+                                    item.BreakTerms = commodityValue.BreakTerms;
+                                    item.CustomerTypeId = commodityValue.CustomerTypeId;
+                                    item.CommodityValueNotes = commodityValue.Notes;
+                                    CalcInsuranceFees(item, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
+                                }
+                            }
+                            else if(item.ExpenseTypeId == 15981)
+                            {
+                                commodityValue = commodityValuesSOC.Where(x => x.ContainerId == containerTypeOfExpenses.GetValueOrDefault(item.Id).Id).FirstOrDefault();
+                                if (commodityValue != null)
+                                {
+                                    item.CommodityValue = commodityValue.TotalPrice;
+                                    item.CustomerTypeId = commodityValue.CustomerTypeId;
+                                    item.CommodityValueNotes = commodityValue.Notes;
+                                    CalcInsuranceFees(item, true, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
+                                }
                             }
                         }
                         if (tran.TransportationTypeId != item.TransportationTypeId) { item.TransportationTypeId = tran.TransportationTypeId; }
