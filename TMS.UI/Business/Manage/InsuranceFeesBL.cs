@@ -365,17 +365,16 @@ namespace TMS.UI.Business.Manage
                 confirm.Render();
                 confirm.YesConfirmed += async () =>
                 {
-                    expense.DatePurchasedInsurance = null;
-                    listViewItem.UpdateView();
-                    listViewItem.FilterChildren<Datepicker>(x => x.GuiInfo.FieldName == nameof(Expense.DatePurchasedInsurance)).ToList().ForEach(x => x.Dirty = true);
-                    await listViewItem.PatchUpdate();
+                    expense.IsPurchasedInsurance = false;
+                    await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchIsPurchasedInsuranceEntity(expense), ig: "true");
+                    listViewItem.UpdateView(false, nameof(Expense.IsPurchasedInsurance));
                     listViewItem.Element.RemoveClass("bg-host");
                 };
-                confirm.NoConfirmed += () =>
+                confirm.NoConfirmed += async () =>
                 {
                     expense.IsPurchasedInsurance = true;
-                    listViewItem.UpdateView();
-                    listViewItem.FilterChildren<Checkbox>(x => x.GuiInfo.FieldName == nameof(Expense.IsPurchasedInsurance)).ToList().ForEach(x => x.Dirty = true);
+                    await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchIsPurchasedInsuranceEntity(expense), ig: "true");
+                    listViewItem.UpdateView(false, nameof(Expense.IsPurchasedInsurance));
                 };
             }
         }
@@ -396,8 +395,7 @@ namespace TMS.UI.Business.Manage
                     await listViewItem.PatchUpdate();
                     listViewItem.Element.AddClass("bg-host");
                 }
-                listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
-                listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "IsClosing" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "IsClosing").ForEach(y => y.Disabled = true);
             }
             else
             {
@@ -406,10 +404,17 @@ namespace TMS.UI.Business.Manage
                     Content = "Bạn có chắc chắn muốn bỏ chốt BH?",
                 };
                 confirm.Render();
-                confirm.YesConfirmed += () =>
+                confirm.YesConfirmed +=  async () =>
                 {
-                    listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
-                    listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+                    expense.IsClosing = false;
+                    var res = await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchIsClosingEntity(expense), ig: "true");
+                    listViewItem.UpdateView(false, nameof(Expense.IsClosing));
+                };
+                confirm.NoConfirmed += async () =>
+                {
+                    expense.IsClosing = true;
+                    await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchIsClosingEntity(expense), ig: "true");
+                    listViewItem.UpdateView(false, nameof(Expense.IsClosing));
                 };
             }
         }
@@ -452,7 +457,7 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public async Task SetPurchasedForExpenses()
+        public void SetPurchasedForExpenses()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Expense));
             if (gridView is null)
@@ -460,7 +465,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and Id in ({ids.Combine()})");
+            var expenses = gridView.GetSelectedRows().Cast<Expense>().ToList();
             var listViewItems = expenses.Where(x => x.IsPurchasedInsurance == false).ToList();
             if (listViewItems.Count <= 0)
             {
@@ -474,22 +479,28 @@ namespace TMS.UI.Business.Manage
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                foreach (var item in listViewItems)
+                var res = await new Client(nameof(Expense)).PostAsync<bool>(ids, "PurchasedInsuranceFees");
+                if (res)
                 {
-                    item.IsPurchasedInsurance = true;
-                    item.DatePurchasedInsurance = DateTime.Now.Date;
-                    await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityPurchased(item));
-                    var listViewItem = gridView.GetListViewItems(item).FirstOrDefault();
-                    if (listViewItem != null)
+                    await gridView.ApplyFilter(true);
+                    foreach (var item in listViewItems)
                     {
-                        listViewItem.Element.AddClass("bg-host");
+                        var listViewItem = gridView.GetListViewItems(item).FirstOrDefault();
+                        if (listViewItem != null)
+                        {
+                            listViewItem.Element.AddClass("bg-host");
+                        }
                     }
+                    Toast.Success("Đã cập nhật thành công");
                 }
-                await gridView.ApplyFilter(true);
+                else
+                {
+                    Toast.Warning("Đã có lỗi xảy ra");
+                }
             };
         }
 
-        public async Task SetClosingForExpenses()
+        public void SetClosingForExpenses()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Expense));
             if (gridView is null)
@@ -497,7 +508,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and Id in ({ids.Combine()})");
+            var expenses = gridView.GetSelectedRows().Cast<Expense>().ToList();
             var listViewItems = expenses.Where(x => x.IsClosing == false).ToList();
             if (listViewItems.Count <= 0)
             {
@@ -511,22 +522,24 @@ namespace TMS.UI.Business.Manage
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                foreach (var item in listViewItems)
+                var res = await new Client(nameof(Expense)).PostAsync<bool>(expenses, "ClosingInsuranceFees");
+                if (res)
                 {
-                    item.IsClosing = true;
-                    if (item.IsPurchasedInsurance == false)
+                    await gridView.ApplyFilter(true);
+                    foreach (var item in listViewItems)
                     {
-                        item.IsPurchasedInsurance = true;
-                        item.DatePurchasedInsurance = DateTime.Now.Date;
+                        var listViewItem = gridView.GetListViewItems(item).FirstOrDefault();
+                        if (listViewItem != null)
+                        {
+                            listViewItem.Element.AddClass("bg-host");
+                        }
                     }
-                    await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityPurchased(item));
-                    var listViewItem = gridView.GetListViewItems(item).FirstOrDefault();
-                    if (listViewItem != null)
-                    {
-                        listViewItem.Element.AddClass("bg-host");
-                    }
+                    Toast.Success("Đã cập nhật thành công");
                 }
-                await gridView.ApplyFilter(true);
+                else
+                {
+                    Toast.Warning("Đã có lỗi xảy ra");
+                }
             };
         }
 
@@ -758,6 +771,22 @@ namespace TMS.UI.Business.Manage
             details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = expense.Id.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Expense.IsPurchasedInsurance), Value = expense.IsPurchasedInsurance.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Expense.DatePurchasedInsurance), Value = expense.DatePurchasedInsurance.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Expense.IsClosing), Value = expense.IsClosing.ToString() });
+            return new PatchUpdate { Changes = details };
+        }
+
+        public PatchUpdate GetPatchIsPurchasedInsuranceEntity(Expense expense)
+        {
+            var details = new List<PatchUpdateDetail>();
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = expense.Id.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Expense.IsPurchasedInsurance), Value = expense.IsPurchasedInsurance.ToString() });
+            return new PatchUpdate { Changes = details };
+        }
+
+        public PatchUpdate GetPatchIsClosingEntity(Expense expense)
+        {
+            var details = new List<PatchUpdateDetail>();
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = expense.Id.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Expense.IsClosing), Value = expense.IsClosing.ToString() });
             return new PatchUpdate { Changes = details };
         }

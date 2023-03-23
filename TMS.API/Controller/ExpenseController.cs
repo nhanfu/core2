@@ -399,6 +399,42 @@ namespace TMS.API.Controllers
             }
         }
 
+        [HttpPost("api/Expense/PurchasedInsuranceFees")]
+        public async Task<bool> PurchasedInsuranceFees([FromBody] List<int> ids)
+        {
+            if (ids == null)
+            {
+                return false;
+            }
+            var cmd = $"Update [{nameof(Expense)}] set IsPurchasedInsurance = 1, DatePurchasedInsurance = '{DateTime.Now.ToString("yyyy-MM-dd")}'" +
+                $" where Id in ({ids.Combine()})";
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Expense");
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Expense");
+            return true;
+        }
+
+        [HttpPost("api/Expense/ClosingInsuranceFees")]
+        public async Task<bool> ClosingInsuranceFees([FromBody] List<Expense> expenses)
+        {
+            if (expenses == null)
+            {
+                return false;
+            }
+            var expensePurchased = expenses.Where(x => x.IsPurchasedInsurance).ToList();
+            var idPurchaseds = expensePurchased.Select(x => x.Id).ToList();
+            var expenseNoPurchased = expenses.Where(x => x.IsPurchasedInsurance == false).ToList();
+            var idNoPurchaseds = expenseNoPurchased.Select(x => x.Id).ToList();
+            var cmd = $"Update [{nameof(Expense)}] set IsClosing = 1" +
+                $" where Id in ({idPurchaseds.Combine()})";
+            cmd += $" Update [{nameof(Expense)}] set IsClosing = 1, IsPurchasedInsurance = 1, DatePurchasedInsurance = '{DateTime.Now.ToString("yyyy-MM-dd")}'" +
+                $" where Id in ({idNoPurchaseds.Combine()})";
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Expense");
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Expense");
+            return true;
+        }
+
         [HttpPost("api/Expense/UpdateDataFromTransportation")]
         public async Task<bool> UpdateDataFromTransportation([FromBody] Expense expense)
         {
