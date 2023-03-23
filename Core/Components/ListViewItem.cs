@@ -365,6 +365,7 @@ namespace Core.Components
 
         protected virtual async Task RowItemClick(Event e)
         {
+            e.StopPropagation();
             var ctrl = e.CtrlOrMetaKey();
             var shift = e.ShiftKey();
             var target = e.Target as Node;
@@ -503,7 +504,6 @@ namespace Core.Components
 
         protected virtual void RowFocusOut()
         {
-            Focused = false;
             Task.Run(async () => await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.RowFocusOut, Entity));
         }
 

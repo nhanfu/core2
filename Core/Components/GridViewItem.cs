@@ -24,7 +24,6 @@ namespace Core.Components
         {
             Html.Take(Element).TData.TabIndex(-1)
                 .Event(EventType.FocusIn, (e) => FocusCell(e, header))
-                .Event(EventType.FocusOut, FocusOutCell)
                 .Event(EventType.KeyDown, (e) => Grid.HotKeyHandler(e, header, this))
                 .DataAttr("field", header.FieldName).Render();
             if (header.StatusBar)
@@ -47,12 +46,6 @@ namespace Core.Components
             ListViewSection.ListView.LastElementFocus = td;
             ListViewSection.ListView.LastComponentFocus = header;
             ListViewSection.ListView.EntityFocusId = Entity[IdField].As<int>();
-        }
-
-        private void FocusOutCell(Event e)
-        {
-            var td = e.Target as HTMLElement;
-            td.Closest(ElementType.td.ToString()).RemoveClass("cell-selected");
         }
     }
 }

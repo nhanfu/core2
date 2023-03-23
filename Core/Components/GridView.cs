@@ -658,7 +658,7 @@ namespace Core.Components
                 }
             });
             await ApplyFilter(true);
-            if (GuiInfo.ComponentType == nameof(GridView) && GuiInfo.CanSearch)
+            if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.CanSearch)
             {
                 ListViewSearch.Focus();
             }

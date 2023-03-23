@@ -29538,7 +29538,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     }
                                     case 5: {
                                         $task3.getAwaitedResult();
-                                        if (Bridge.referenceEquals(this.GuiInfo.ComponentType, "GridView") && this.GuiInfo.CanSearch) {
+                                        if (Bridge.referenceEquals(this.GuiInfo.ComponentType, "VirtualGrid") && this.GuiInfo.CanSearch) {
                                             this.ListViewSearch.Focus();
                                         }
                                         Core.Extensions.Toast.Success(Core.Extensions.IEnumerableExtensions.Combine(System.String, lisToast, "</br>"));
@@ -34315,6 +34315,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
+                                        e.stopPropagation();
                                         ctrl = Core.Extensions.EventExt.CtrlOrMetaKey(e);
                                         shift = Core.Extensions.EventExt.ShiftKey(e);
                                         target = Bridge.as(e.target, Node);
@@ -34508,7 +34509,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
             },
             RowFocusOut: function () {
-                this.Focused = false;
                 System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
                     var $step = 0,
                         $task1, 
@@ -36511,7 +36511,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (cellWrapper === void 0) { cellWrapper = null; }
                 Core.Components.Renderer.TabIndex(Core.MVVM.Html.Take(this.Element).TData, -1).Event$1("focusin", Bridge.fn.bind(this, function (e) {
                     this.FocusCell(e, header);
-                })).Event$1("focusout", Bridge.fn.cacheBind(this, this.FocusOutCell)).Event$1("keydown", Bridge.fn.bind(this, function (e) {
+                })).Event$1("keydown", Bridge.fn.bind(this, function (e) {
                     this.Grid.HotKeyHandler(e, header, this);
                 })).DataAttr$1("field", header.FieldName).Render();
                 if (header.StatusBar) {
@@ -36530,10 +36530,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.ListViewSection.ListView.LastElementFocus = td;
                 this.ListViewSection.ListView.LastComponentFocus = header;
                 this.ListViewSection.ListView.EntityFocusId = Bridge.unbox(this.Entity[Core.Components.EditableComponent.IdField]);
-            },
-            FocusOutCell: function (e) {
-                var td = Bridge.as(e.target, HTMLElement);
-                Core.Extensions.HtmlElementExtension.RemoveClass(Core.Extensions.HtmlElementExtension.Closest(td, System.Enum.toString(Core.MVVM.ElementType, Core.MVVM.ElementType.td)), "cell-selected");
             }
         }
     });

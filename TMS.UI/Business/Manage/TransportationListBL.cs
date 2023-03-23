@@ -95,12 +95,13 @@ namespace TMS.UI.Business.Manage
         public virtual async Task EditTransportation(Transportation entity)
         {
             selected = entity;
-            var editExpense = TabEditor.FindComponentByName<GridView>(nameof(Expense));
-            if (editExpense != null)
+            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
+            var gridView1 = TabEditor.FindComponentByName<GridView>(nameof(Expense));
+            if (_expensePopup != null && gridView1 != null)
             {
                 return;
             }
-            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
+            _expensePopup?.Dispose();
             _expensePopup = await gridView.OpenPopup(
                 featureName: "Transportation Editor",
                 factory: () =>
@@ -113,16 +114,26 @@ namespace TMS.UI.Business.Manage
                 });
         }
 
-        public virtual async Task ReloadExpense(Transportation transportation)
+        public virtual async Task ReloadExpense(Transportation entity)
         {
-            selected = transportation;
-            var editExpense = _expensePopup.FindComponentByName<GridView>(nameof(Expense));
-            if (editExpense is null)
+            selected = entity;
+            var gridView1 = TabEditor.FindComponentByName<GridView>(nameof(Expense));
+            if (_expensePopup is null || gridView1 is null)
             {
                 return;
             }
-            _expensePopup.Entity.CopyPropFrom(selected);
-            await editExpense.ActionFilter();
+            _expensePopup?.Dispose();
+            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
+            _expensePopup = await gridView.OpenPopup(
+                featureName: "Transportation Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Xem chi phí";
+                    instance.Entity = entity;
+                    return instance;    
+                });
         }
 
         public async Task ViewAllotment(Allotment allotment)

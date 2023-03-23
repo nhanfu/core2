@@ -245,12 +245,13 @@ namespace TMS.UI.Business.Manage
         public override async Task EditTransportation(Transportation entity)
         {
             selected = entity;
-            var editExpense = TabEditor.FindComponentByName<GridView>(nameof(Expense));
-            if (editExpense != null)
+            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
+            var gridView1 = TabEditor.FindComponentByName<GridView>(nameof(Expense));
+            if (_expensePopup != null && gridView1 != null)
             {
                 return;
             }
-            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
+            _expensePopup?.Dispose();
             _expensePopup = await gridView.OpenPopup(
                 featureName: "Transportation Return Editor",
                 factory: () =>
@@ -263,17 +264,26 @@ namespace TMS.UI.Business.Manage
                 });
         }
 
-        public override async Task ReloadExpense(Transportation transportation)
+        public override async Task ReloadExpense(Transportation entity)
         {
-            Bridge.Utils.Console.Log(transportation.Id);
-            selected = transportation;
-            _expensePopup.Entity.CopyPropFrom(selected);
-            var editExpense = _expensePopup.FindComponentByName<GridView>(nameof(Expense));
-            if (editExpense is null)
+            selected = entity;
+            var gridView1 = TabEditor.FindComponentByName<GridView>(nameof(Expense));
+            if (_expensePopup is null || gridView1 is null)
             {
                 return;
             }
-            await editExpense.ActionFilter();
+            _expensePopup?.Dispose();
+            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
+            _expensePopup = await gridView.OpenPopup(
+                featureName: "Transportation Return Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationReturnEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Xem chi phí";
+                    instance.Entity = entity;
+                    return instance;
+                });
         }
 
         public override void CheckReturnDate(Transportation Transportation)

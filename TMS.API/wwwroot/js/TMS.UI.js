@@ -16919,20 +16919,24 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                         }).firstOrDefault(null, null);
                 }
                 if (insuranceFeesRateDB != null) {
-                    if (containerExpense != null && System.String.contains(containerExpense.Description.toLowerCase(),"l\u1ea1nh") && System.Nullable.eq(insuranceFeesRateDB.TransportationTypeId, 11673) && System.Nullable.eq(insuranceFeesRateDB.JourneyId, 12114)) {
-                        expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? System.Decimal(insuranceFeesRateColdDB.Name) : System.Decimal(0);
-                    } else {
+                    if (System.Nullable.eq(expense.ExpenseTypeId, 15981)) {
                         expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
-                    }
-                    if (insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
-                        extraInsuranceFeesRateDB.ForEach(function (x) {
-                            var prop = System.Linq.Enumerable.from(Bridge.Reflection.getMembers(Bridge.getType(expense), 16, 28), System.Reflection.PropertyInfo).where(function (y) {
-                                    return Bridge.referenceEquals(y.n, x.Name) && System.Boolean.parse(Bridge.toString(Bridge.Reflection.midel(y.g, expense).apply(null, null)));
-                                }).firstOrDefault(null, null);
-                            if (prop != null) {
-                                expense.InsuranceFeeRate = System.Nullable.lift2("add", expense.InsuranceFeeRate, System.Decimal(x.Code));
-                            }
-                        });
+                    } else {
+                        if (containerExpense != null && System.String.contains(containerExpense.Description.toLowerCase(),"l\u1ea1nh") && System.Nullable.eq(insuranceFeesRateDB.TransportationTypeId, 11673) && System.Nullable.eq(insuranceFeesRateDB.JourneyId, 12114)) {
+                            expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? System.Decimal(insuranceFeesRateColdDB.Name) : System.Decimal(0);
+                        } else {
+                            expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                        }
+                        if (insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
+                            extraInsuranceFeesRateDB.ForEach(function (x) {
+                                var prop = System.Linq.Enumerable.from(Bridge.Reflection.getMembers(Bridge.getType(expense), 16, 28), System.Reflection.PropertyInfo).where(function (y) {
+                                        return Bridge.referenceEquals(y.n, x.Name) && System.Boolean.parse(Bridge.toString(Bridge.Reflection.midel(y.g, expense).apply(null, null)));
+                                    }).firstOrDefault(null, null);
+                                if (prop != null) {
+                                    expense.InsuranceFeeRate = System.Nullable.lift2("add", expense.InsuranceFeeRate, System.Decimal(x.Code));
+                                }
+                            });
+                        }
                     }
                 } else {
                     expense.InsuranceFeeRate = System.Decimal(0);
@@ -17824,7 +17828,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
                             for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], $step);
+                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19], $step);
                                 switch ($step) {
                                     case 0: {
                                         isSubRatio = false;
@@ -17876,69 +17880,83 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             $step = 6;
                                             continue;
                                         } else  {
-                                            $step = 15;
+                                            $step = 18;
                                             continue;
                                         }
                                     }
                                     case 6: {
+                                        if (System.Nullable.eq(expense.ExpenseTypeId, 15981)) {
+                                            $step = 7;
+                                            continue;
+                                        } else  {
+                                            $step = 8;
+                                            continue;
+                                        }
+                                    }
+                                    case 7: {
+                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                                        $step = 17;
+                                        continue;
+                                    }
+                                    case 8: {
                                         $task3 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(expense.ContainerTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                        $step = 7;
+                                        $step = 9;
                                         if ($task3.isCompleted()) {
                                             continue;
                                         }
                                         $task3.continue($asyncBody);
                                         return;
                                     }
-                                    case 7: {
+                                    case 9: {
                                         $taskResult3 = $task3.getAwaitedResult();
                                         getContainerType = $taskResult3;
                                         if (getContainerType != null && System.String.contains(getContainerType.Description.toLowerCase(),"l\u1ea1nh") && System.Nullable.eq(insuranceFeesRateDB.TransportationTypeId, 11673) && System.Nullable.eq(insuranceFeesRateDB.JourneyId, 12114)) {
-                                            $step = 8;
+                                            $step = 10;
                                             continue;
                                         } else  {
-                                            $step = 10;
+                                            $step = 12;
                                             continue;
                                         }
                                     }
-                                    case 8: {
+                                    case 10: {
                                         $task4 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq 25391", null));
-                                        $step = 9;
+                                        $step = 11;
                                         if ($task4.isCompleted()) {
                                             continue;
                                         }
                                         $task4.continue($asyncBody);
                                         return;
                                     }
-                                    case 9: {
+                                    case 11: {
                                         $taskResult4 = $task4.getAwaitedResult();
                                         insuranceFeesRateColdDB = $taskResult4;
                                         expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? System.Decimal(insuranceFeesRateColdDB.Name) : System.Decimal(0);
-                                        $step = 11;
-                                        continue;
-                                    }
-                                    case 10: {
-                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
-                                        $step = 11;
-                                        continue;
-                                    }
-                                    case 11: {
-                                        if (insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
-                                            $step = 12;
-                                            continue;
-                                        } 
-                                        $step = 14;
+                                        $step = 13;
                                         continue;
                                     }
                                     case 12: {
-                                        $task5 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 25374", null));
+                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
                                         $step = 13;
+                                        continue;
+                                    }
+                                    case 13: {
+                                        if (insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
+                                            $step = 14;
+                                            continue;
+                                        } 
+                                        $step = 16;
+                                        continue;
+                                    }
+                                    case 14: {
+                                        $task5 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 25374", null));
+                                        $step = 15;
                                         if ($task5.isCompleted()) {
                                             continue;
                                         }
                                         $task5.continue($asyncBody);
                                         return;
                                     }
-                                    case 13: {
+                                    case 15: {
                                         $taskResult5 = $task5.getAwaitedResult();
                                         extraInsuranceFeesRateDB = $taskResult5;
                                         extraInsuranceFeesRateDB.ForEach(function (x) {
@@ -17949,21 +17967,22 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 expense.InsuranceFeeRate = System.Nullable.lift2("add", expense.InsuranceFeeRate, System.Decimal(x.Code));
                                             }
                                         });
-                                        $step = 14;
-                                        continue;
-                                    }
-                                    case 14: {
                                         $step = 16;
                                         continue;
                                     }
-                                    case 15: {
+
+                                    case 17: {
+                                        $step = 19;
+                                        continue;
+                                    }
+                                    case 18: {
                                         expense.InsuranceFeeRate = System.Decimal(0);
                                         expense.TotalPriceBeforeTax = System.Decimal(0);
                                         expense.TotalPriceAfterTax = System.Decimal(0);
-                                        $step = 16;
+                                        $step = 19;
                                         continue;
                                     }
-                                    case 16: {
+                                    case 19: {
                                         if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, true)) {
                                             this.CalcInsuranceFeeNoVAT(expense);
                                         } else if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, false)) {
@@ -19137,7 +19156,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
                             for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], $step);
+                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19], $step);
                                 switch ($step) {
                                     case 0: {
                                         isSubRatio = false;
@@ -19189,69 +19208,83 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             $step = 6;
                                             continue;
                                         } else  {
-                                            $step = 15;
+                                            $step = 18;
                                             continue;
                                         }
                                     }
                                     case 6: {
+                                        if (System.Nullable.eq(expense.ExpenseTypeId, 15981)) {
+                                            $step = 7;
+                                            continue;
+                                        } else  {
+                                            $step = 8;
+                                            continue;
+                                        }
+                                    }
+                                    case 7: {
+                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                                        $step = 17;
+                                        continue;
+                                    }
+                                    case 8: {
                                         $task3 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(expense.ContainerTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                        $step = 7;
+                                        $step = 9;
                                         if ($task3.isCompleted()) {
                                             continue;
                                         }
                                         $task3.continue($asyncBody);
                                         return;
                                     }
-                                    case 7: {
+                                    case 9: {
                                         $taskResult3 = $task3.getAwaitedResult();
                                         getContainerType = $taskResult3;
                                         if (getContainerType != null && System.String.contains(getContainerType.Description.toLowerCase(),"l\u1ea1nh") && System.Nullable.eq(insuranceFeesRateDB.TransportationTypeId, 11673) && System.Nullable.eq(insuranceFeesRateDB.JourneyId, 12114)) {
-                                            $step = 8;
+                                            $step = 10;
                                             continue;
                                         } else  {
-                                            $step = 10;
+                                            $step = 12;
                                             continue;
                                         }
                                     }
-                                    case 8: {
+                                    case 10: {
                                         $task4 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq 25391", null));
-                                        $step = 9;
+                                        $step = 11;
                                         if ($task4.isCompleted()) {
                                             continue;
                                         }
                                         $task4.continue($asyncBody);
                                         return;
                                     }
-                                    case 9: {
+                                    case 11: {
                                         $taskResult4 = $task4.getAwaitedResult();
                                         insuranceFeesRateColdDB = $taskResult4;
                                         expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? System.Decimal(insuranceFeesRateColdDB.Name) : System.Decimal(0);
-                                        $step = 11;
-                                        continue;
-                                    }
-                                    case 10: {
-                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
-                                        $step = 11;
-                                        continue;
-                                    }
-                                    case 11: {
-                                        if (insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
-                                            $step = 12;
-                                            continue;
-                                        } 
-                                        $step = 14;
+                                        $step = 13;
                                         continue;
                                     }
                                     case 12: {
-                                        $task5 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 25374", null));
+                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
                                         $step = 13;
+                                        continue;
+                                    }
+                                    case 13: {
+                                        if (insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
+                                            $step = 14;
+                                            continue;
+                                        } 
+                                        $step = 16;
+                                        continue;
+                                    }
+                                    case 14: {
+                                        $task5 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 25374", null));
+                                        $step = 15;
                                         if ($task5.isCompleted()) {
                                             continue;
                                         }
                                         $task5.continue($asyncBody);
                                         return;
                                     }
-                                    case 13: {
+                                    case 15: {
                                         $taskResult5 = $task5.getAwaitedResult();
                                         extraInsuranceFeesRateDB = $taskResult5;
                                         extraInsuranceFeesRateDB.ForEach(function (x) {
@@ -19262,21 +19295,22 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 expense.InsuranceFeeRate = System.Nullable.lift2("add", expense.InsuranceFeeRate, System.Decimal(x.Code));
                                             }
                                         });
-                                        $step = 14;
-                                        continue;
-                                    }
-                                    case 14: {
                                         $step = 16;
                                         continue;
                                     }
-                                    case 15: {
+
+                                    case 17: {
+                                        $step = 19;
+                                        continue;
+                                    }
+                                    case 18: {
                                         expense.InsuranceFeeRate = System.Decimal(0);
                                         expense.TotalPriceBeforeTax = System.Decimal(0);
                                         expense.TotalPriceAfterTax = System.Decimal(0);
-                                        $step = 16;
+                                        $step = 19;
                                         continue;
                                     }
-                                    case 16: {
+                                    case 19: {
                                         if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, true)) {
                                             this.CalcInsuranceFeeNoVAT(expense);
                                         } else if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, false)) {
@@ -19329,21 +19363,15 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
                         var $step = 0,
                             $task1, 
+                            $taskResult1, 
                             $jumpFromFinally, 
-                            $t2, 
                             $asyncBody = Bridge.fn.bind(this, function () {
                                 for (;;) {
                                     $step = System.Array.min([0,1], $step);
                                     switch ($step) {
                                         case 0: {
-                                            expense.DatePurchasedInsurance = null;
-                                            listViewItem.UpdateView();
-                                            ($t2 = Core.Components.Datepicker, System.Linq.Enumerable.from(listViewItem.FilterChildren(Core.Components.Datepicker, function (x) {
-                                                return Bridge.referenceEquals(x.GuiInfo.FieldName, "DatePurchasedInsurance");
-                                            }), $t2).toList($t2)).ForEach(function (x) {
-                                                x.Dirty = true;
-                                            });
-                                            $task1 = listViewItem.PatchUpdate();
+                                            expense.IsPurchasedInsurance = false;
+                                            $task1 = new Core.Clients.Client.$ctor1("Expense").PatchAsync(TMS.API.Models.Expense, this.GetPatchIsPurchasedInsuranceEntity(expense), "", "true", false, false);
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -19352,7 +19380,8 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             return;
                                         }
                                         case 1: {
-                                            $task1.getAwaitedResult();
+                                            $taskResult1 = $task1.getAwaitedResult();
+                                            listViewItem.UpdateView$1(false, ["IsPurchasedInsurance"]);
                                             Core.Extensions.HtmlElementExtension.RemoveClass(listViewItem.Element, "bg-host");
                                             return;
                                         }
@@ -19365,16 +19394,39 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
 
                         $asyncBody();
                     }));
-                    confirm.NoConfirmed = Bridge.fn.combine(confirm.NoConfirmed, function () {
-                        var $t2;
-                        expense.IsPurchasedInsurance = true;
-                        listViewItem.UpdateView();
-                        ($t2 = Core.Components.Checkbox, System.Linq.Enumerable.from(listViewItem.FilterChildren(Core.Components.Checkbox, function (x) {
-                                return Bridge.referenceEquals(x.GuiInfo.FieldName, "IsPurchasedInsurance");
-                            }), $t2).toList($t2)).ForEach(function (x) {
-                            x.Dirty = true;
-                        });
-                    });
+                    confirm.NoConfirmed = Bridge.fn.combine(confirm.NoConfirmed, Bridge.fn.bind(this, function () {
+                        var $step = 0,
+                            $task1, 
+                            $taskResult1, 
+                            $jumpFromFinally, 
+                            $asyncBody = Bridge.fn.bind(this, function () {
+                                for (;;) {
+                                    $step = System.Array.min([0,1], $step);
+                                    switch ($step) {
+                                        case 0: {
+                                            expense.IsPurchasedInsurance = true;
+                                            $task1 = new Core.Clients.Client.$ctor1("Expense").PatchAsync(TMS.API.Models.Expense, this.GetPatchIsPurchasedInsuranceEntity(expense), "", "true", false, false);
+                                            $step = 1;
+                                            if ($task1.isCompleted()) {
+                                                continue;
+                                            }
+                                            $task1.continue($asyncBody);
+                                            return;
+                                        }
+                                        case 1: {
+                                            $taskResult1 = $task1.getAwaitedResult();
+                                            listViewItem.UpdateView$1(false, ["IsPurchasedInsurance"]);
+                                            return;
+                                        }
+                                        default: {
+                                            return;
+                                        }
+                                    }
+                                }
+                            }, arguments);
+
+                        $asyncBody();
+                    }));
                 }
             },
             UpdateIsClosing: function (expense) {
@@ -19445,12 +19497,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     }
                                     case 4: {
                                         Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
-                                            return !y.GuiInfo.Disabled;
-                                        }), function (y) {
-                                            y.Disabled = false;
-                                        });
-                                        Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
-                                            return !Bridge.referenceEquals(y.GuiInfo.FieldName, "IsClosing") && !y.GuiInfo.Disabled;
+                                            return !Bridge.referenceEquals(y.GuiInfo.FieldName, "IsClosing");
                                         }), function (y) {
                                             y.Disabled = true;
                                         });
@@ -19460,18 +19507,74 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     case 5: {
                                         confirm = ($t2 = new Core.Components.Forms.ConfirmDialog(), $t2.Content = "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn mu\u1ed1n b\u1ecf ch\u1ed1t BH?", $t2);
                                         confirm.Render();
-                                        confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, function () {
-                                            Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
-                                                return !y.GuiInfo.Disabled;
-                                            }), function (y) {
-                                                y.Disabled = false;
-                                            });
-                                            Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1(function (y) {
-                                                return Bridge.referenceEquals(y.GuiInfo.FieldName, "btnRequestChange") && !y.GuiInfo.Disabled;
-                                            }), function (y) {
-                                                y.Disabled = true;
-                                            });
-                                        });
+                                        confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
+                                            var $step = 0,
+                                                $task1, 
+                                                $taskResult1, 
+                                                $jumpFromFinally, 
+                                                res, 
+                                                $asyncBody = Bridge.fn.bind(this, function () {
+                                                    for (;;) {
+                                                        $step = System.Array.min([0,1], $step);
+                                                        switch ($step) {
+                                                            case 0: {
+                                                                expense.IsClosing = false;
+                                                                $task1 = new Core.Clients.Client.$ctor1("Expense").PatchAsync(TMS.API.Models.Expense, this.GetPatchIsClosingEntity(expense), "", "true", false, false);
+                                                                $step = 1;
+                                                                if ($task1.isCompleted()) {
+                                                                    continue;
+                                                                }
+                                                                $task1.continue($asyncBody);
+                                                                return;
+                                                            }
+                                                            case 1: {
+                                                                $taskResult1 = $task1.getAwaitedResult();
+                                                                res = $taskResult1;
+                                                                listViewItem.UpdateView$1(false, ["IsClosing"]);
+                                                                return;
+                                                            }
+                                                            default: {
+                                                                return;
+                                                            }
+                                                        }
+                                                    }
+                                                }, arguments);
+
+                                            $asyncBody();
+                                        }));
+                                        confirm.NoConfirmed = Bridge.fn.combine(confirm.NoConfirmed, Bridge.fn.bind(this, function () {
+                                            var $step = 0,
+                                                $task1, 
+                                                $taskResult1, 
+                                                $jumpFromFinally, 
+                                                $asyncBody = Bridge.fn.bind(this, function () {
+                                                    for (;;) {
+                                                        $step = System.Array.min([0,1], $step);
+                                                        switch ($step) {
+                                                            case 0: {
+                                                                expense.IsClosing = true;
+                                                                $task1 = new Core.Clients.Client.$ctor1("Expense").PatchAsync(TMS.API.Models.Expense, this.GetPatchIsClosingEntity(expense), "", "true", false, false);
+                                                                $step = 1;
+                                                                if ($task1.isCompleted()) {
+                                                                    continue;
+                                                                }
+                                                                $task1.continue($asyncBody);
+                                                                return;
+                                                            }
+                                                            case 1: {
+                                                                $taskResult1 = $task1.getAwaitedResult();
+                                                                listViewItem.UpdateView$1(false, ["IsClosing"]);
+                                                                return;
+                                                            }
+                                                            default: {
+                                                                return;
+                                                            }
+                                                        }
+                                                    }
+                                                }, arguments);
+
+                                            $asyncBody();
+                                        }));
                                         $step = 6;
                                         continue;
                                     }
@@ -19595,35 +19698,40 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 return $tcs.task;
             },
             SetPurchasedForExpenses: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    gridView, 
-                    ids, 
-                    $t, 
-                    expenses, 
-                    listViewItems, 
-                    confirm, 
-                    $t1, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
+                var $t, $t1;
+                var gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this), Core.Components.GridView).firstOrDefault(function (x) {
+                        return Bridge.referenceEquals(x.GuiInfo.FieldName, "Expense");
+                    }, null);
+                if (gridView == null) {
+                    return;
+                }
+                var ids = ($t = System.Int32, System.Linq.Enumerable.from(gridView.SelectedIds, $t).toList($t));
+                var expenses = System.Linq.Enumerable.from(gridView.GetSelectedRows()).select(function (x) { return Bridge.cast(x, TMS.API.Models.Expense); }).toList(TMS.API.Models.Expense);
+                var listViewItems = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).where(function (x) {
+                        return x.IsPurchasedInsurance === false;
+                    }).toList(TMS.API.Models.Expense);
+                if (listViewItems.Count <= 0) {
+                    Core.Extensions.Toast.Warning("B\u1ea1n ch\u01b0a ch\u1ecdn d\u1eef li\u1ec7u");
+                    return;
+                }
+                var confirm = ($t1 = new Core.Components.Forms.ConfirmDialog(), $t1.Content = "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn mu\u1ed1n mua BH cho " + System.Linq.Enumerable.from(listViewItems, TMS.API.Models.Expense).count() + " Cont ?", $t1);
+                confirm.Render();
+                confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
+                    var $step = 0,
+                        $task1, 
+                        $taskResult1, 
+                        $task2, 
+                        $jumpFromFinally, 
+                        res, 
+                        $t2, 
+                        item, 
+                        listViewItem, 
+                        $asyncBody = Bridge.fn.bind(this, function () {
                             for (;;) {
-                                $step = System.Array.min([0,1], $step);
+                                $step = System.Array.min([0,1,2,3,4,5], $step);
                                 switch ($step) {
                                     case 0: {
-                                        gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this), Core.Components.GridView).firstOrDefault(function (x) {
-                                            return Bridge.referenceEquals(x.GuiInfo.FieldName, "Expense");
-                                        }, null);
-                                        if (gridView == null) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        ids = ($t = System.Int32, System.Linq.Enumerable.from(gridView.SelectedIds, $t).toList($t));
-                                        $task1 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and Id in ({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.Int32, ids)]));
+                                        $task1 = new Core.Clients.Client.$ctor1("Expense").PostAsync(System.Boolean, ids, "PurchasedInsuranceFees");
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -19633,134 +19741,97 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     }
                                     case 1: {
                                         $taskResult1 = $task1.getAwaitedResult();
-                                        expenses = $taskResult1;
-                                        listViewItems = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).where(function (x) {
-                                            return x.IsPurchasedInsurance === false;
-                                        }).toList(TMS.API.Models.Expense);
-                                        if (listViewItems.Count <= 0) {
-                                            Core.Extensions.Toast.Warning("B\u1ea1n ch\u01b0a ch\u1ecdn d\u1eef li\u1ec7u");
-                                            $tcs.setResult(null);
-                                            return;
+                                        res = $taskResult1;
+                                        if (res) {
+                                            $step = 2;
+                                            continue;
+                                        } else  {
+                                            $step = 4;
+                                            continue;
                                         }
-                                        confirm = ($t1 = new Core.Components.Forms.ConfirmDialog(), $t1.Content = "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn mu\u1ed1n mua BH cho " + System.Linq.Enumerable.from(listViewItems, TMS.API.Models.Expense).count() + " Cont ?", $t1);
-                                        confirm.Render();
-                                        confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
-                                            var $step = 0,
-                                                $task1, 
-                                                $taskResult1, 
-                                                $task2, 
-                                                $jumpFromFinally, 
-                                                $t2, 
-                                                item, 
-                                                listViewItem, 
-                                                $asyncBody = Bridge.fn.bind(this, function () {
-                                                    for (;;) {
-                                                        $step = System.Array.min([0,1,2,3,4,5], $step);
-                                                        switch ($step) {
-                                                            case 0: {
-                                                                $t2 = Bridge.getEnumerator(listViewItems);
-                                                                $step = 1;
-                                                                continue;
-                                                            }
-                                                            case 1: {
-                                                                if ($t2.moveNext()) {
-                                                                    item = $t2.Current;
-                                                                    $step = 2;
-                                                                    continue;
-                                                                }
-                                                                $step = 4;
-                                                                continue;
-                                                            }
-                                                            case 2: {
-                                                                item.IsPurchasedInsurance = true;
-                                                                item.DatePurchasedInsurance = System.DateTime.getDate(System.DateTime.getNow());
-                                                                $task1 = new Core.Clients.Client.$ctor1("Expense").PatchAsync(TMS.API.Models.Expense, this.GetPatchEntityPurchased(item));
-                                                                $step = 3;
-                                                                if ($task1.isCompleted()) {
-                                                                    continue;
-                                                                }
-                                                                $task1.continue($asyncBody);
-                                                                return;
-                                                            }
-                                                            case 3: {
-                                                                $taskResult1 = $task1.getAwaitedResult();
-                                                                listViewItem = System.Linq.Enumerable.from(gridView.GetListViewItems(item), Core.Components.ListViewItem).firstOrDefault(null, null);
-                                                                if (listViewItem != null) {
-                                                                    Core.Extensions.HtmlElementExtension.AddClass(listViewItem.Element, "bg-host");
-                                                                }
-                                                                $step = 1;
-                                                                continue;
-                                                            }
-                                                            case 4: {
-                                                                $task2 = gridView.ApplyFilter(true);
-                                                                $step = 5;
-                                                                if ($task2.isCompleted()) {
-                                                                    continue;
-                                                                }
-                                                                $task2.continue($asyncBody);
-                                                                return;
-                                                            }
-                                                            case 5: {
-                                                                $task2.getAwaitedResult();
-                                                                return;
-                                                            }
-                                                            default: {
-                                                                return;
-                                                            }
-                                                        }
-                                                    }
-                                                }, arguments);
-
-                                            $asyncBody();
-                                        }));
-                                        $tcs.setResult(null);
+                                    }
+                                    case 2: {
+                                        $task2 = gridView.ApplyFilter(true);
+                                        $step = 3;
+                                        if ($task2.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task2.continue($asyncBody);
+                                        return;
+                                    }
+                                    case 3: {
+                                        $task2.getAwaitedResult();
+                                        $t2 = Bridge.getEnumerator(listViewItems);
+                                        try {
+                                            while ($t2.moveNext()) {
+                                                item = $t2.Current;
+                                                listViewItem = System.Linq.Enumerable.from(gridView.GetListViewItems(item), Core.Components.ListViewItem).firstOrDefault(null, null);
+                                                if (listViewItem != null) {
+                                                    Core.Extensions.HtmlElementExtension.AddClass(listViewItem.Element, "bg-host");
+                                                }
+                                            }
+                                        } finally {
+                                            if (Bridge.is($t2, System.IDisposable)) {
+                                                $t2.System$IDisposable$Dispose();
+                                            }
+                                        }
+                                        Core.Extensions.Toast.Success("\u0110\u00e3 c\u1eadp nh\u1eadt th\u00e0nh c\u00f4ng");
+                                        $step = 5;
+                                        continue;
+                                    }
+                                    case 4: {
+                                        Core.Extensions.Toast.Warning("\u0110\u00e3 c\u00f3 l\u1ed7i x\u1ea3y ra");
+                                        $step = 5;
+                                        continue;
+                                    }
+                                    case 5: {
                                         return;
                                     }
                                     default: {
-                                        $tcs.setResult(null);
                                         return;
                                     }
                                 }
                             }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
+                        }, arguments);
 
-                $asyncBody();
-                return $tcs.task;
+                    $asyncBody();
+                }));
             },
             SetClosingForExpenses: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    gridView, 
-                    ids, 
-                    $t, 
-                    expenses, 
-                    listViewItems, 
-                    confirm, 
-                    $t1, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
+                var $t, $t1;
+                var gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this), Core.Components.GridView).firstOrDefault(function (x) {
+                        return Bridge.referenceEquals(x.GuiInfo.FieldName, "Expense");
+                    }, null);
+                if (gridView == null) {
+                    return;
+                }
+                var ids = ($t = System.Int32, System.Linq.Enumerable.from(gridView.SelectedIds, $t).toList($t));
+                var expenses = System.Linq.Enumerable.from(gridView.GetSelectedRows()).select(function (x) { return Bridge.cast(x, TMS.API.Models.Expense); }).toList(TMS.API.Models.Expense);
+                var listViewItems = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).where(function (x) {
+                        return x.IsClosing === false;
+                    }).toList(TMS.API.Models.Expense);
+                if (listViewItems.Count <= 0) {
+                    Core.Extensions.Toast.Warning("B\u1ea1n ch\u01b0a ch\u1ecdn d\u1eef li\u1ec7u");
+                    return;
+                }
+                var confirm = ($t1 = new Core.Components.Forms.ConfirmDialog(), $t1.Content = "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn mu\u1ed1n ch\u1ed1t BH cho " + System.Linq.Enumerable.from(listViewItems, TMS.API.Models.Expense).count() + " Cont ?", $t1);
+                confirm.Render();
+                confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
+                    var $step = 0,
+                        $task1, 
+                        $taskResult1, 
+                        $task2, 
+                        $jumpFromFinally, 
+                        res, 
+                        $t2, 
+                        item, 
+                        listViewItem, 
+                        $asyncBody = Bridge.fn.bind(this, function () {
                             for (;;) {
-                                $step = System.Array.min([0,1], $step);
+                                $step = System.Array.min([0,1,2,3,4,5], $step);
                                 switch ($step) {
                                     case 0: {
-                                        gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this), Core.Components.GridView).firstOrDefault(function (x) {
-                                            return Bridge.referenceEquals(x.GuiInfo.FieldName, "Expense");
-                                        }, null);
-                                        if (gridView == null) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        ids = ($t = System.Int32, System.Linq.Enumerable.from(gridView.SelectedIds, $t).toList($t));
-                                        $task1 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter=Active eq true and Id in ({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.Int32, ids)]));
+                                        $task1 = new Core.Clients.Client.$ctor1("Expense").PostAsync(System.Boolean, expenses, "ClosingInsuranceFees");
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -19770,106 +19841,61 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     }
                                     case 1: {
                                         $taskResult1 = $task1.getAwaitedResult();
-                                        expenses = $taskResult1;
-                                        listViewItems = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).where(function (x) {
-                                            return x.IsClosing === false;
-                                        }).toList(TMS.API.Models.Expense);
-                                        if (listViewItems.Count <= 0) {
-                                            Core.Extensions.Toast.Warning("B\u1ea1n ch\u01b0a ch\u1ecdn d\u1eef li\u1ec7u");
-                                            $tcs.setResult(null);
-                                            return;
+                                        res = $taskResult1;
+                                        if (res) {
+                                            $step = 2;
+                                            continue;
+                                        } else  {
+                                            $step = 4;
+                                            continue;
                                         }
-                                        confirm = ($t1 = new Core.Components.Forms.ConfirmDialog(), $t1.Content = "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn mu\u1ed1n ch\u1ed1t BH cho " + System.Linq.Enumerable.from(listViewItems, TMS.API.Models.Expense).count() + " Cont ?", $t1);
-                                        confirm.Render();
-                                        confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
-                                            var $step = 0,
-                                                $task1, 
-                                                $taskResult1, 
-                                                $task2, 
-                                                $jumpFromFinally, 
-                                                $t2, 
-                                                item, 
-                                                listViewItem, 
-                                                $asyncBody = Bridge.fn.bind(this, function () {
-                                                    for (;;) {
-                                                        $step = System.Array.min([0,1,2,3,4,5], $step);
-                                                        switch ($step) {
-                                                            case 0: {
-                                                                $t2 = Bridge.getEnumerator(listViewItems);
-                                                                $step = 1;
-                                                                continue;
-                                                            }
-                                                            case 1: {
-                                                                if ($t2.moveNext()) {
-                                                                    item = $t2.Current;
-                                                                    $step = 2;
-                                                                    continue;
-                                                                }
-                                                                $step = 4;
-                                                                continue;
-                                                            }
-                                                            case 2: {
-                                                                item.IsClosing = true;
-                                                                if (item.IsPurchasedInsurance === false) {
-                                                                    item.IsPurchasedInsurance = true;
-                                                                    item.DatePurchasedInsurance = System.DateTime.getDate(System.DateTime.getNow());
-                                                                }
-                                                                $task1 = new Core.Clients.Client.$ctor1("Expense").PatchAsync(TMS.API.Models.Expense, this.GetPatchEntityPurchased(item));
-                                                                $step = 3;
-                                                                if ($task1.isCompleted()) {
-                                                                    continue;
-                                                                }
-                                                                $task1.continue($asyncBody);
-                                                                return;
-                                                            }
-                                                            case 3: {
-                                                                $taskResult1 = $task1.getAwaitedResult();
-                                                                listViewItem = System.Linq.Enumerable.from(gridView.GetListViewItems(item), Core.Components.ListViewItem).firstOrDefault(null, null);
-                                                                if (listViewItem != null) {
-                                                                    Core.Extensions.HtmlElementExtension.AddClass(listViewItem.Element, "bg-host");
-                                                                }
-                                                                $step = 1;
-                                                                continue;
-                                                            }
-                                                            case 4: {
-                                                                $task2 = gridView.ApplyFilter(true);
-                                                                $step = 5;
-                                                                if ($task2.isCompleted()) {
-                                                                    continue;
-                                                                }
-                                                                $task2.continue($asyncBody);
-                                                                return;
-                                                            }
-                                                            case 5: {
-                                                                $task2.getAwaitedResult();
-                                                                return;
-                                                            }
-                                                            default: {
-                                                                return;
-                                                            }
-                                                        }
-                                                    }
-                                                }, arguments);
-
-                                            $asyncBody();
-                                        }));
-                                        $tcs.setResult(null);
+                                    }
+                                    case 2: {
+                                        $task2 = gridView.ApplyFilter(true);
+                                        $step = 3;
+                                        if ($task2.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task2.continue($asyncBody);
+                                        return;
+                                    }
+                                    case 3: {
+                                        $task2.getAwaitedResult();
+                                        $t2 = Bridge.getEnumerator(listViewItems);
+                                        try {
+                                            while ($t2.moveNext()) {
+                                                item = $t2.Current;
+                                                listViewItem = System.Linq.Enumerable.from(gridView.GetListViewItems(item), Core.Components.ListViewItem).firstOrDefault(null, null);
+                                                if (listViewItem != null) {
+                                                    Core.Extensions.HtmlElementExtension.AddClass(listViewItem.Element, "bg-host");
+                                                }
+                                            }
+                                        } finally {
+                                            if (Bridge.is($t2, System.IDisposable)) {
+                                                $t2.System$IDisposable$Dispose();
+                                            }
+                                        }
+                                        Core.Extensions.Toast.Success("\u0110\u00e3 c\u1eadp nh\u1eadt th\u00e0nh c\u00f4ng");
+                                        $step = 5;
+                                        continue;
+                                    }
+                                    case 4: {
+                                        Core.Extensions.Toast.Warning("\u0110\u00e3 c\u00f3 l\u1ed7i x\u1ea3y ra");
+                                        $step = 5;
+                                        continue;
+                                    }
+                                    case 5: {
                                         return;
                                     }
                                     default: {
-                                        $tcs.setResult(null);
                                         return;
                                     }
                                 }
                             }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
+                        }, arguments);
 
-                $asyncBody();
-                return $tcs.task;
+                    $asyncBody();
+                }));
             },
             ApproveDelete: function (expense) {
                 var $t;
@@ -20649,6 +20675,20 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(expense.Id), $t));
                 details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "IsPurchasedInsurance", $t.Value = System.Boolean.toString(expense.IsPurchasedInsurance), $t));
                 details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "DatePurchasedInsurance", $t.Value = System.Nullable.toString(expense.DatePurchasedInsurance, function ($t) { return System.DateTime.format($t); }), $t));
+                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "IsClosing", $t.Value = System.Boolean.toString(expense.IsClosing), $t));
+                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
+            },
+            GetPatchIsPurchasedInsuranceEntity: function (expense) {
+                var $t;
+                var details = new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor();
+                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(expense.Id), $t));
+                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "IsPurchasedInsurance", $t.Value = System.Boolean.toString(expense.IsPurchasedInsurance), $t));
+                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
+            },
+            GetPatchIsClosingEntity: function (expense) {
+                var $t;
+                var details = new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor();
+                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(expense.Id), $t));
                 details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "IsClosing", $t.Value = System.Boolean.toString(expense.IsClosing), $t));
                 return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
             }
@@ -22185,8 +22225,8 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    editExpense, 
                     gridView, 
+                    gridView1, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -22195,14 +22235,15 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                 switch ($step) {
                                     case 0: {
                                         this.selected = entity;
-                                        editExpense = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this.TabEditor, "Expense");
-                                        if (editExpense != null) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
                                         gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this, function (x) {
                                             return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
                                         }), Core.Components.GridView).firstOrDefault(null, null);
+                                        gridView1 = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this.TabEditor, "Expense");
+                                        if (this._expensePopup != null && gridView1 != null) {
+                                            $tcs.setResult(null);
+                                            return;
+                                        }
+                                        this._expensePopup != null ? this._expensePopup.Dispose() : null;
                                         $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(gridView, "Transportation Editor", function () {
                                             var type = Bridge.Reflection.getType("TMS.UI.Business.Manage.TransportationEditorBL");
                                             var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
@@ -22238,13 +22279,15 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            ReloadExpense: function (transportation) {
+            ReloadExpense: function (entity) {
                 var $step = 0,
                     $task1, 
+                    $taskResult1, 
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    editExpense, 
+                    gridView1, 
+                    gridView, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -22252,14 +22295,23 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
-                                        this.selected = transportation;
-                                        editExpense = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this._expensePopup, "Expense");
-                                        if (editExpense == null) {
+                                        this.selected = entity;
+                                        gridView1 = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this.TabEditor, "Expense");
+                                        if (this._expensePopup == null || gridView1 == null) {
                                             $tcs.setResult(null);
                                             return;
                                         }
-                                        Core.Extensions.ReflectionExt.CopyPropFrom$1(this._expensePopup.Entity, this.selected);
-                                        $task1 = editExpense.ActionFilter();
+                                        this._expensePopup != null ? this._expensePopup.Dispose() : null;
+                                        gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this, function (x) {
+                                            return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
+                                        }), Core.Components.GridView).firstOrDefault(null, null);
+                                        $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(gridView, "Transportation Editor", function () {
+                                            var type = Bridge.Reflection.getType("TMS.UI.Business.Manage.TransportationEditorBL");
+                                            var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
+                                            instance.Title = "Xem chi ph\u00ed";
+                                            instance.Entity = entity;
+                                            return instance;
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -22268,7 +22320,8 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                         return;
                                     }
                                     case 1: {
-                                        $task1.getAwaitedResult();
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        this._expensePopup = $taskResult1;
                                         $tcs.setResult(null);
                                         return;
                                     }
@@ -24995,7 +25048,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
                             for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], $step);
+                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19], $step);
                                 switch ($step) {
                                     case 0: {
                                         if (expense.TransportationTypeId == null || expense.JourneyId == null) {
@@ -25051,69 +25104,83 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             $step = 6;
                                             continue;
                                         } else  {
-                                            $step = 15;
+                                            $step = 18;
                                             continue;
                                         }
                                     }
                                     case 6: {
+                                        if (System.Nullable.eq(expense.ExpenseTypeId, 15981)) {
+                                            $step = 7;
+                                            continue;
+                                        } else  {
+                                            $step = 8;
+                                            continue;
+                                        }
+                                    }
+                                    case 7: {
+                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                                        $step = 17;
+                                        continue;
+                                    }
+                                    case 8: {
                                         $task3 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(expense.ContainerTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                        $step = 7;
+                                        $step = 9;
                                         if ($task3.isCompleted()) {
                                             continue;
                                         }
                                         $task3.continue($asyncBody);
                                         return;
                                     }
-                                    case 7: {
+                                    case 9: {
                                         $taskResult3 = $task3.getAwaitedResult();
                                         getContainerType = $taskResult3;
                                         if (getContainerType != null && System.String.contains(getContainerType.Description.toLowerCase(),"l\u1ea1nh") && System.Nullable.eq(insuranceFeesRateDB.TransportationTypeId, 11673) && System.Nullable.eq(insuranceFeesRateDB.JourneyId, 12114)) {
-                                            $step = 8;
+                                            $step = 10;
                                             continue;
                                         } else  {
-                                            $step = 10;
+                                            $step = 12;
                                             continue;
                                         }
                                     }
-                                    case 8: {
+                                    case 10: {
                                         $task4 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq 25391", null));
-                                        $step = 9;
+                                        $step = 11;
                                         if ($task4.isCompleted()) {
                                             continue;
                                         }
                                         $task4.continue($asyncBody);
                                         return;
                                     }
-                                    case 9: {
+                                    case 11: {
                                         $taskResult4 = $task4.getAwaitedResult();
                                         insuranceFeesRateColdDB = $taskResult4;
                                         expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? System.Decimal(insuranceFeesRateColdDB.Name) : System.Decimal(0);
-                                        $step = 11;
-                                        continue;
-                                    }
-                                    case 10: {
-                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
-                                        $step = 11;
-                                        continue;
-                                    }
-                                    case 11: {
-                                        if (insuranceFeesRateDB.IsSubRatio && insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
-                                            $step = 12;
-                                            continue;
-                                        } 
-                                        $step = 14;
+                                        $step = 13;
                                         continue;
                                     }
                                     case 12: {
-                                        $task5 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 25374", null));
+                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
                                         $step = 13;
+                                        continue;
+                                    }
+                                    case 13: {
+                                        if (insuranceFeesRateDB.IsSubRatio && insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
+                                            $step = 14;
+                                            continue;
+                                        } 
+                                        $step = 16;
+                                        continue;
+                                    }
+                                    case 14: {
+                                        $task5 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 25374", null));
+                                        $step = 15;
                                         if ($task5.isCompleted()) {
                                             continue;
                                         }
                                         $task5.continue($asyncBody);
                                         return;
                                     }
-                                    case 13: {
+                                    case 15: {
                                         $taskResult5 = $task5.getAwaitedResult();
                                         extraInsuranceFeesRateDB = $taskResult5;
                                         extraInsuranceFeesRateDB.ForEach(function (x) {
@@ -25124,21 +25191,22 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 expense.InsuranceFeeRate = System.Nullable.lift2("add", expense.InsuranceFeeRate, System.Decimal(x.Code));
                                             }
                                         });
-                                        $step = 14;
-                                        continue;
-                                    }
-                                    case 14: {
                                         $step = 16;
                                         continue;
                                     }
-                                    case 15: {
+
+                                    case 17: {
+                                        $step = 19;
+                                        continue;
+                                    }
+                                    case 18: {
                                         expense.InsuranceFeeRate = System.Decimal(0);
                                         expense.TotalPriceBeforeTax = System.Decimal(0);
                                         expense.TotalPriceAfterTax = System.Decimal(0);
-                                        $step = 16;
+                                        $step = 19;
                                         continue;
                                     }
-                                    case 16: {
+                                    case 19: {
                                         if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, true)) {
                                             this.CalcInsuranceFeeNoVAT(expense);
                                         } else if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, false)) {
@@ -25293,7 +25361,10 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                         expenseSOC.ExpenseTypeId = expenseTypeSOC.Id; //SOC
                                         expenseSOC.IsWet = false;
                                         expenseSOC.IsBought = false;
+                                        expenseSOC.SteamingTerms = false;
+                                        expenseSOC.BreakTerms = false;
                                         expenseSOC.CommodityValue = commodityValue.TotalPrice;
+                                        expenseSOC.JourneyId = 12114;
                                         $task8 = this.CalcInsuranceFees(expenseSOC, true);
                                         $step = 9;
                                         if ($task8.isCompleted()) {
@@ -33906,7 +33977,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
                             for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], $step);
+                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19], $step);
                                 switch ($step) {
                                     case 0: {
                                         if (expense.TransportationTypeId == null || expense.JourneyId == null) {
@@ -33962,69 +34033,83 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             $step = 6;
                                             continue;
                                         } else  {
-                                            $step = 15;
+                                            $step = 18;
                                             continue;
                                         }
                                     }
                                     case 6: {
+                                        if (System.Nullable.eq(expense.ExpenseTypeId, 15981)) {
+                                            $step = 7;
+                                            continue;
+                                        } else  {
+                                            $step = 8;
+                                            continue;
+                                        }
+                                    }
+                                    case 7: {
+                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                                        $step = 17;
+                                        continue;
+                                    }
+                                    case 8: {
                                         $task3 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(expense.ContainerTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                        $step = 7;
+                                        $step = 9;
                                         if ($task3.isCompleted()) {
                                             continue;
                                         }
                                         $task3.continue($asyncBody);
                                         return;
                                     }
-                                    case 7: {
+                                    case 9: {
                                         $taskResult3 = $task3.getAwaitedResult();
                                         getContainerType = $taskResult3;
                                         if (getContainerType != null && System.String.contains(getContainerType.Description.toLowerCase(),"l\u1ea1nh") && System.Nullable.eq(insuranceFeesRateDB.TransportationTypeId, 11673) && System.Nullable.eq(insuranceFeesRateDB.JourneyId, 12114)) {
-                                            $step = 8;
+                                            $step = 10;
                                             continue;
                                         } else  {
-                                            $step = 10;
+                                            $step = 12;
                                             continue;
                                         }
                                     }
-                                    case 8: {
+                                    case 10: {
                                         $task4 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq 25391", null));
-                                        $step = 9;
+                                        $step = 11;
                                         if ($task4.isCompleted()) {
                                             continue;
                                         }
                                         $task4.continue($asyncBody);
                                         return;
                                     }
-                                    case 9: {
+                                    case 11: {
                                         $taskResult4 = $task4.getAwaitedResult();
                                         insuranceFeesRateColdDB = $taskResult4;
                                         expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? System.Decimal(insuranceFeesRateColdDB.Name) : System.Decimal(0);
-                                        $step = 11;
-                                        continue;
-                                    }
-                                    case 10: {
-                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
-                                        $step = 11;
-                                        continue;
-                                    }
-                                    case 11: {
-                                        if (insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
-                                            $step = 12;
-                                            continue;
-                                        } 
-                                        $step = 14;
+                                        $step = 13;
                                         continue;
                                     }
                                     case 12: {
-                                        $task5 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 25374", null));
+                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
                                         $step = 13;
+                                        continue;
+                                    }
+                                    case 13: {
+                                        if (insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
+                                            $step = 14;
+                                            continue;
+                                        } 
+                                        $step = 16;
+                                        continue;
+                                    }
+                                    case 14: {
+                                        $task5 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(TMS.API.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 25374", null));
+                                        $step = 15;
                                         if ($task5.isCompleted()) {
                                             continue;
                                         }
                                         $task5.continue($asyncBody);
                                         return;
                                     }
-                                    case 13: {
+                                    case 15: {
                                         $taskResult5 = $task5.getAwaitedResult();
                                         extraInsuranceFeesRateDB = $taskResult5;
                                         extraInsuranceFeesRateDB.ForEach(function (x) {
@@ -34035,21 +34120,22 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 expense.InsuranceFeeRate = System.Nullable.lift2("add", expense.InsuranceFeeRate, System.Decimal(x.Code));
                                             }
                                         });
-                                        $step = 14;
-                                        continue;
-                                    }
-                                    case 14: {
                                         $step = 16;
                                         continue;
                                     }
-                                    case 15: {
+
+                                    case 17: {
+                                        $step = 19;
+                                        continue;
+                                    }
+                                    case 18: {
                                         expense.InsuranceFeeRate = System.Decimal(0);
                                         expense.TotalPriceBeforeTax = System.Decimal(0);
                                         expense.TotalPriceAfterTax = System.Decimal(0);
-                                        $step = 16;
+                                        $step = 19;
                                         continue;
                                     }
-                                    case 16: {
+                                    case 19: {
                                         if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, true)) {
                                             this.CalcInsuranceFeeNoVAT(expense);
                                         } else if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, false)) {
@@ -44918,8 +45004,8 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    editExpense, 
                     gridView, 
+                    gridView1, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -44928,14 +45014,15 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                 switch ($step) {
                                     case 0: {
                                         this.selected = entity;
-                                        editExpense = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this.TabEditor, "Expense");
-                                        if (editExpense != null) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
                                         gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this, function (x) {
                                             return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
                                         }), Core.Components.GridView).firstOrDefault(null, null);
+                                        gridView1 = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this.TabEditor, "Expense");
+                                        if (this._expensePopup != null && gridView1 != null) {
+                                            $tcs.setResult(null);
+                                            return;
+                                        }
+                                        this._expensePopup != null ? this._expensePopup.Dispose() : null;
                                         $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(gridView, "Transportation Return Editor", function () {
                                             var type = Bridge.Reflection.getType("TMS.UI.Business.Manage.TransportationReturnEditorBL");
                                             var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
@@ -44971,13 +45058,15 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            ReloadExpense: function (transportation) {
+            ReloadExpense: function (entity) {
                 var $step = 0,
                     $task1, 
+                    $taskResult1, 
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    editExpense, 
+                    gridView1, 
+                    gridView, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -44985,15 +45074,23 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
-                                        Bridge.Console.log(Bridge.box(transportation.Id, System.Int32));
-                                        this.selected = transportation;
-                                        Core.Extensions.ReflectionExt.CopyPropFrom$1(this._expensePopup.Entity, this.selected);
-                                        editExpense = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this._expensePopup, "Expense");
-                                        if (editExpense == null) {
+                                        this.selected = entity;
+                                        gridView1 = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this.TabEditor, "Expense");
+                                        if (this._expensePopup == null || gridView1 == null) {
                                             $tcs.setResult(null);
                                             return;
                                         }
-                                        $task1 = editExpense.ActionFilter();
+                                        this._expensePopup != null ? this._expensePopup.Dispose() : null;
+                                        gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this, function (x) {
+                                            return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
+                                        }), Core.Components.GridView).firstOrDefault(null, null);
+                                        $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(gridView, "Transportation Return Editor", function () {
+                                            var type = Bridge.Reflection.getType("TMS.UI.Business.Manage.TransportationReturnEditorBL");
+                                            var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
+                                            instance.Title = "Xem chi ph\u00ed";
+                                            instance.Entity = entity;
+                                            return instance;
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -45002,7 +45099,8 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                         return;
                                     }
                                     case 1: {
-                                        $task1.getAwaitedResult();
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        this._expensePopup = $taskResult1;
                                         $tcs.setResult(null);
                                         return;
                                     }
