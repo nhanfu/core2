@@ -19,6 +19,7 @@ namespace TMS.UI.Business.Manage
         public bool openPopup;
         public GridView gridViewExpense;
         public Transportation selected;
+        public TabEditor _expensePopup;
 
         public TransportationListBL() : base(nameof(Transportation))
         {
@@ -91,30 +92,23 @@ namespace TMS.UI.Business.Manage
                 });
         }
 
-        public async Task EditTransportation(Transportation entity)
+        public virtual async Task EditTransportation(Transportation entity)
         {
-            await this.OpenPopup(
+            selected = entity;
+            var editExpense = TabEditor.FindComponentByName<GridView>(nameof(Expense));
+            if (editExpense != null)
+            {
+                return;
+            }
+            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
+            _expensePopup = await gridView.OpenPopup(
                 featureName: "Transportation Editor",
                 factory: () =>
                 {
                     var type = Type.GetType("TMS.UI.Business.Manage.TransportationEditorBL");
                     var instance = Activator.CreateInstance(type) as PopupEditor;
-                    instance.Title = "Chỉnh sửa danh sách vận chuyển";
+                    instance.Title = "Xem chi phí";
                     instance.Entity = entity;
-                    return instance;
-                });
-        }
-
-        public async Task AddTransportation()
-        {
-            await this.OpenPopup(
-                featureName: "Transportation Editor",
-                factory: () =>
-                {
-                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationEditorBL");
-                    var instance = Activator.CreateInstance(type) as PopupEditor;
-                    instance.Title = "Thêm mới danh sách vận chuyển";
-                    instance.Entity = new Transportation();
                     return instance;
                 });
         }
@@ -122,29 +116,13 @@ namespace TMS.UI.Business.Manage
         public virtual async Task ReloadExpense(Transportation transportation)
         {
             selected = transportation;
-            var grid = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Expense));
-            grid.DataSourceFilter = $"?$filter=Active eq true and TransportationId eq {transportation.Id} and IsReturn eq false and ((ExpenseTypeId in (15981, 15939) eq false) or IsPurchasedInsurance eq true) and RequestChangeId eq null";
-            await grid.ActionFilter();
-        }
-
-        public virtual void BeforeCreatedExpense(Expense expense)
-        {
-            if (selected is null)
+            var editExpense = _expensePopup.FindComponentByName<GridView>(nameof(Expense));
+            if (editExpense is null)
             {
-                Toast.Warning("Vui lòng chọn cont cần nhập");
                 return;
             }
-            expense.ContainerNo = selected.ContainerNo;
-            expense.SealNo = selected.SealNo;
-            expense.BossId = selected.BossId;
-            expense.CommodityId = selected.CommodityId;
-            expense.ContainerTypeId = selected.ContainerTypeId;
-            expense.RouteId = selected.RouteId;
-            expense.YearText = selected.YearText;
-            expense.MonthText = selected.MonthText;
-            expense.TransportationId = selected.Id;
-            expense.Id = 0;
-            expense.Quantity = 1;
+            _expensePopup.Entity.CopyPropFrom(selected);
+            await editExpense.ActionFilter();
         }
 
         public async Task ViewAllotment(Allotment allotment)
@@ -810,7 +788,6 @@ namespace TMS.UI.Business.Manage
         }
 
         private int commodityAwaiter;
-        private int totalAwaiter;
 
         public void UpdateCommodityValue(Expense expense)
         {
@@ -887,76 +864,6 @@ namespace TMS.UI.Business.Manage
                     await listViewItem.PatchUpdate();
                 }
             }
-        }
-
-        public async void UpdateViewSelected()
-        {
-            var grid = this.FindComponentByName<GridView>(nameof(Transportation));
-            var listViewItem = grid.GetListViewItems(selected).FirstOrDefault();
-            var tran = await new Client(nameof(Transportation)).GetAsync<Transportation>(selected.Id);
-            listViewItem.Entity.CopyPropFrom(tran);
-            listViewItem.UpdateView(true);
-        }
-
-        public void UpdateTotalFee(Expense expense, PatchUpdate patchUpdate, ListViewItem listViewItem1)
-        {
-            if (!patchUpdate.Changes.Any(x => x.Field == nameof(expense.UnitPrice) || x.Field == nameof(expense.IsCollectOnBehaft) || x.Field == nameof(expense.IsVat)) || expense.TotalPriceAfterTax <= 0)
-            {
-                return;
-            }
-            Window.ClearTimeout(totalAwaiter);
-            totalAwaiter = Window.SetTimeout(async () =>
-            {
-                var grid = this.FindComponentByName<GridView>(nameof(Transportation));
-                var listViewItem = grid.GetListViewItems(selected).FirstOrDefault();
-                var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter={nameof(Expense.TransportationId)} eq {selected.Id}");
-                var expenseTypeIds = expenses.Where(x => x.ExpenseTypeId != null).Select(x => x.ExpenseTypeId.Value).Distinct().ToList();
-                var expenseTypes = await new Client(nameof(MasterData)).GetRawListById<MasterData>(expenseTypeIds);
-                var details = new List<PatchUpdateDetail>()
-                {
-                    new PatchUpdateDetail { Field = Utils.IdField, Value = selected.Id.ToString() }
-                };
-                foreach (var item in expenseTypes)
-                {
-                    var totalThisValue = expenses.Where(x => x.ExpenseTypeId == item.Id).Sum(x => x.TotalPriceAfterTax);
-                    listViewItem.Entity.SetComplexPropValue(item.Description, totalThisValue);
-                    details.Add(new PatchUpdateDetail { Field = item.Description, Value = totalThisValue.ToString() });
-                }
-
-                foreach (var item in expenseTypes.Select(x => x.Additional).Distinct().ToList())
-                {
-                    var expenseTypeThisIds = expenseTypes.Where(x => x.Additional == item).Select(x => x.Id).Distinct().ToList();
-                    var totalThisValue = expenses.Where(x => expenseTypeThisIds.Contains(x.ExpenseTypeId.Value)).Sum(x => x.TotalPriceAfterTax);
-                    listViewItem.Entity.SetComplexPropValue(item, totalThisValue);
-                    details.Add(new PatchUpdateDetail { Field = item, Value = totalThisValue.ToString() });
-                }
-                var path = new PatchUpdate { Changes = details.Where(x => x.Field != null && x.Field != "null" && x.Field != "").DistinctBy(x => x.Field).ToList() };
-                await new Client(nameof(Transportation)).PatchAsync<Transportation>(path, ig: "true");
-            }, 1000);
-        }
-
-        public async Task UpdateAllTotalFee()
-        {
-            var grid = this.FindComponentByName<GridView>(nameof(Transportation));
-            var listViewItem = grid.GetListViewItems(selected).FirstOrDefault();
-            var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter={nameof(Expense.TransportationId)} eq {selected.Id}");
-            var expenseTypeIds = expenses.Where(x => x.ExpenseTypeId != null).Select(x => x.ExpenseTypeId.Value).Distinct().ToList();
-            var expenseTypes = await new Client(nameof(MasterData)).GetRawListById<MasterData>(expenseTypeIds);
-            foreach (var item in expenseTypes)
-            {
-                var totalThisValue = expenses.Where(x => x.ExpenseTypeId == item.Id).Sum(x => x.TotalPriceAfterTax);
-                listViewItem.Entity.SetComplexPropValue(item.Description, totalThisValue);
-                listViewItem.FilterChildren(x => x.GuiInfo.FieldName == item.Description).ForEach(x => x.Dirty = true);
-            }
-
-            foreach (var item in expenseTypes.Select(x => x.Additional).Distinct().ToList())
-            {
-                var expenseTypeThisIds = expenseTypes.Where(x => x.Additional == item).Select(x => x.Id).Distinct().ToList();
-                var totalThisValue = expenses.Where(x => expenseTypeThisIds.Contains(x.ExpenseTypeId.Value)).Sum(x => x.TotalPriceAfterTax);
-                listViewItem.Entity.SetComplexPropValue(item, totalThisValue);
-                listViewItem.FilterChildren(x => x.GuiInfo.FieldName == item).ForEach(x => x.Dirty = true);
-            }
-            await listViewItem.PatchUpdate();
         }
 
         public async Task UpdateCombinationFee(Transportation transportation)
@@ -1207,17 +1114,6 @@ namespace TMS.UI.Business.Manage
                 await listViewItem.PatchUpdate(true);
                 Toast.Success("Đã áp dụng chính sách");
             }
-        }
-
-        public PatchUpdate GetPatchEntity(Transportation transportation)
-        {
-            var details = new List<PatchUpdateDetail>
-            {
-                new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() },
-                new PatchUpdateDetail { Field = nameof(Transportation.PolicyId), Value = transportation.PolicyId is null ? null : transportation.PolicyId.ToString() },
-                new PatchUpdateDetail { Field = nameof(Transportation.ShipPolicyPrice), Value = transportation.ShipPolicyPrice is null ? "0" : transportation.ShipPolicyPrice.ToString() }
-            };
-            return new PatchUpdate { Changes = details };
         }
 
         public async Task SetPolicyTransportationType(Transportation transportation)
@@ -1564,11 +1460,6 @@ namespace TMS.UI.Business.Manage
             return new PatchUpdate { Changes = details };
         }
 
-        public void ChangeBackground()
-        {
-            var gridView = this.FindComponentByName<GridView>("");
-        }
-
         public async Task BeforePatchUpdateTransportation(Transportation transportation, PatchUpdate patchUpdate)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
@@ -1723,42 +1614,6 @@ namespace TMS.UI.Business.Manage
             {
                 await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "UnLockShipTransportation");
             }
-        }
-
-        public PatchUpdate GetPatchTransportation(Transportation transportation)
-        {
-            var details = new List<PatchUpdateDetail>
-            {
-                new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() },
-                new PatchUpdateDetail { Field = nameof(Transportation.IsLocked), Value = transportation.IsLocked.ToString() },
-                new PatchUpdateDetail { Field = nameof(Transportation.IsKt), Value = transportation.IsKt.ToString() },
-                new PatchUpdateDetail { Field = nameof(Transportation.IsSubmit), Value = transportation.IsSubmit.ToString() },
-                new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockAll), Value = transportation.IsRequestUnLockAll.ToString() },
-                new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockExploit), Value = transportation.IsRequestUnLockExploit.ToString() },
-                new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockAccountant), Value = transportation.IsRequestUnLockAccountant.ToString() }
-            };
-            return new PatchUpdate { Changes = details };
-        }
-
-        public PatchUpdate GetPatchEntityApprove(Expense expense)
-        {
-            var details = new List<PatchUpdateDetail>
-            {
-                new PatchUpdateDetail { Field = Utils.IdField, Value = expense.Id.ToString() },
-                new PatchUpdateDetail { Field = nameof(Expense.StatusId), Value = expense.StatusId.ToString() }
-            };
-            return new PatchUpdate { Changes = details };
-        }
-
-        public PatchUpdate GetPatchLockShipEntity(Transportation transportation)
-        {
-            var details = new List<PatchUpdateDetail>
-            {
-                new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() },
-                new PatchUpdateDetail { Field = nameof(Transportation.LockShip), Value = transportation.LockShip.ToString() },
-                new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockShip), Value = transportation.IsRequestUnLockShip.ToString() }
-            };
-            return new PatchUpdate { Changes = details };
         }
     }
 }

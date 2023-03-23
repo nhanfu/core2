@@ -330,8 +330,15 @@ namespace Core.Components
             {
                 leaves.ForEach(x =>
                 {
+                    if (x is null)
+                    {
+                        return;
+                    }
                     x.Dispose();
-                    x.Parent.Children.Remove(x);
+                    if (x.Parent != null && x.Parent.Children != null)
+                    {
+                        x.Parent.Children.Remove(x);
+                    }
                 });
                 leaves = Children.Flattern(x => x.Children)?.Where(x => x.Element != null && x.Parent != null && x.Children.Nothing()).ToArray();
             }

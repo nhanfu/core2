@@ -131,7 +131,11 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var _gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-            var listViewItem = _gridView.RowData.Data.Cast<TransportationPlan>().FirstOrDefault(x => x.StatusId == (int)ApprovalStatusEnum.New);
+            var listViewItem = _gridView.RowData.Data.Cast<TransportationPlan>().FirstOrDefault(x => x.StatusId == (int)ApprovalStatusEnum.New || x.StatusId == (int)ApprovalStatusEnum.Rejected);
+            if (listViewItem is null)
+            {
+                return;
+            }
             var confirm = new ConfirmDialog
             {
                 Content = "Bạn có chắc chắn gửi yêu cầu phê duyệt?",

@@ -2068,8 +2068,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }).ToArray(Core.Components.EditableComponent) : null;
                 while (Core.Extensions.IEnumerableExtensions.HasElement(Core.Components.EditableComponent, leaves)) {
                     leaves.forEach(function (x) {
+                            if (x == null) {
+                                return;
+                            }
                             x.Dispose();
-                            x.Parent.Children.remove(x);
+                            if (x.Parent != null && x.Parent.Children != null) {
+                                x.Parent.Children.remove(x);
+                            }
                         });
                     leaves = ($t1 = Core.Extensions.IEnumerableExtensions.Flattern(Core.Components.EditableComponent, this.Children, function (x) {
                             return x.Children;
@@ -3197,7 +3202,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                             return Bridge.referenceEquals(x.Entity, tab.Entity);
                         })) != null ? System.Linq.Enumerable.from($t, Core.Components.ListViewItem).firstOrDefault(null, null) : null;
                 },
-                OpenPopup: function (com, featureName, factory, anonymous) {
+                OpenPopup: function (com, featureName, factory, anonymous, child) {
                     var $step = 0,
                         $task1, 
                         $taskResult1, 
@@ -3212,6 +3217,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     switch ($step) {
                                         case 0: {
                                             if (anonymous === void 0) { anonymous = false; }
+                                            if (child === void 0) { child = false; }
                                             $task1 = Core.Components.Extensions.ComponentExt.OpenTab$1(com, Bridge.toString(Bridge.getHashCode(com)), featureName, factory, true, anonymous);
                                             $step = 1;
                                             if ($task1.isCompleted()) {
@@ -13554,7 +13560,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                 instance.Entity = this.Feature;
                                                 instance.ParentElement = this.TabEditor.Element;
                                                 return instance;
-                                            }), false);
+                                            }), false, false);
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -28351,6 +28357,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         fields: {
             _backdrop: null,
+            _backdropGridView: null,
             _tab: null,
             _li: null,
             _hotKeyComponents: null
@@ -28436,18 +28443,33 @@ Bridge.assembly("Core", function ($asm, globals) {
                 Core.Components.Forms.EditForm.prototype.Render.call(this);
             },
             RenderPopup: function () {
-                var $t;
-                Core.Components.Renderer.TabIndex(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.ParentElement || (($t = this.Parent) != null ? $t.Element : null) || Core.Components.Forms.TabEditor.TabContainer).Div, "backdrop"), -1).Trigger("focus").Event$1("keydown", Bridge.fn.cacheBind(this, this.HotKeyHandler));
-                this._backdrop = Core.MVVM.Html.Context;
-                Core.Components.Renderer.IconForSpan(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "popup-content").Div, "popup-title").Span, this.Icon);
-                this.IconElement = Core.MVVM.Html.Context;
-                Core.Components.Renderer.IText(Core.MVVM.Html.Instance.End.Span, this.Title);
-                this.TitleElement = Core.MVVM.Html.Context;
-                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Div, "icon-box").Span, "fa fa-times").Event("click", Bridge.fn.cacheBind(this, this.Dispose)).EndOf$1(".popup-title").Div, "popup-body");
-                this.Element = Core.MVVM.Html.Context;
-                Core.Components.Forms.EditForm.prototype.Render.call(this);
-                if (Core.Extensions.HtmlElementExtension.OutOfViewport(this._backdrop).Top) {
-                    this._backdrop.scrollIntoView(true);
+                var $t, $t1;
+                if (Bridge.is(this.Parent, Core.Components.GridView)) {
+                    Core.Components.Renderer.TabIndex(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.ParentElement || (($t = this.Parent) != null ? $t.Element : null) || Core.Components.Forms.TabEditor.TabContainer).Div, "backdrop-gridview"), -1).Trigger("focus").Event$1("keydown", Bridge.fn.cacheBind(this, this.HotKeyHandler));
+                    this._backdropGridView = Core.MVVM.Html.Context;
+                    Core.Components.Renderer.IconForSpan(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "popup-content").Div, "popup-title").Span, this.Icon);
+                    this.IconElement = Core.MVVM.Html.Context;
+                    Core.Components.Renderer.IText(Core.MVVM.Html.Instance.End.Span, this.Title);
+                    this.TitleElement = Core.MVVM.Html.Context;
+                    Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Div, "icon-box").Span, "fa fa-times").Event("click", Bridge.fn.cacheBind(this, this.Dispose)).EndOf$1(".popup-title").Div, "popup-body");
+                    this.Element = Core.MVVM.Html.Context;
+                    Core.Components.Forms.EditForm.prototype.Render.call(this);
+                    if (Core.Extensions.HtmlElementExtension.OutOfViewport(this._backdropGridView).Top) {
+                        this._backdropGridView.scrollIntoView(true);
+                    }
+                } else {
+                    Core.Components.Renderer.TabIndex(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.ParentElement || (($t1 = this.Parent) != null ? $t1.Element : null) || Core.Components.Forms.TabEditor.TabContainer).Div, "backdrop"), -1).Trigger("focus").Event$1("keydown", Bridge.fn.cacheBind(this, this.HotKeyHandler));
+                    this._backdrop = Core.MVVM.Html.Context;
+                    Core.Components.Renderer.IconForSpan(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "popup-content").Div, "popup-title").Span, this.Icon);
+                    this.IconElement = Core.MVVM.Html.Context;
+                    Core.Components.Renderer.IText(Core.MVVM.Html.Instance.End.Span, this.Title);
+                    this.TitleElement = Core.MVVM.Html.Context;
+                    Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Div, "icon-box").Span, "fa fa-times").Event("click", Bridge.fn.cacheBind(this, this.Dispose)).EndOf$1(".popup-title").Div, "popup-body");
+                    this.Element = Core.MVVM.Html.Context;
+                    Core.Components.Forms.EditForm.prototype.Render.call(this);
+                    if (Core.Extensions.HtmlElementExtension.OutOfViewport(this._backdrop).Top) {
+                        this._backdrop.scrollIntoView(true);
+                    }
                 }
             },
             HotKeyHandler: function (e) {
@@ -28650,7 +28672,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this._li.remove();
                     this.DisposeTab();
                 } else {
-                    // Update the Gridview row that open this tab if possible
                 }
                 var firstGridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this.Parent), Core.Components.GridView).firstOrDefault(null, null);
                 if (firstGridView != null && firstGridView.LastListViewItem != null && firstGridView.LastElementFocus != null) {
@@ -28680,6 +28701,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 ($t = this.Element) != null ? $t.remove() : null;
                 this._li != null ? this._li.remove() : null;
                 this._backdrop != null ? this._backdrop.remove() : null;
+                this._backdropGridView != null ? this._backdropGridView.remove() : null;
             }
         }
     });
@@ -37316,36 +37338,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
 
                 this.GroupText.innerHTML = text;
-            },
-            RowItemClick: function (e) {
-                var $step = 0,
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
             }
         }
     });
@@ -37734,7 +37726,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
                             for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,6,7], $step);
+                                $step = System.Array.min([0,1,2,3,4,5,7], $step);
                                 switch ($step) {
                                     case 0: {
                                         if (count === void 0) { count = true; }
@@ -37798,12 +37790,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         $step = 6;
                                         continue;
                                     }
-                                    case 6: {
-                                        this.FormattedRowData = rows;
-                                        $step = 7;
-                                        continue;
-                                    }
+
                                     case 7: {
+                                        this.FormattedRowData = rows;
                                         this.RenderVirtualRow(Bridge.as(this.MainSection.Element, HTMLTableSectionElement), skip, this.viewPortCount);
                                         this.UpdateExistRows(false);
                                         existBottomEle = System.Linq.Enumerable.from(this.MainSection.Element.children, HTMLElement).firstOrDefault(function (x) {
@@ -38864,7 +38853,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
                                             instance.Entity = role || new Core.Models.Role();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -38926,7 +38915,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             instance.Title = masterData == null ? "Th\u00eam tham chi\u1ebfu m\u1edbi" : "C\u1eadp nh\u1eadt tham chi\u1ebfu";
                                             instance.Entity = masterData || new Core.Models.MasterData();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -39214,7 +39203,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
                                             instance.Entity = vm;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;

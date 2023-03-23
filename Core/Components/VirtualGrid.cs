@@ -108,8 +108,8 @@ namespace Core.Components
                 {
                     rows = await FirstLoadData(count, skip);
                 }
-                FormattedRowData = rows;
             }
+            FormattedRowData = rows;
             RenderVirtualRow(MainSection.Element as HTMLTableSectionElement, skip, viewPortCount);
             UpdateExistRows(false);
             var existBottomEle = MainSection.Element.Children

@@ -3488,7 +3488,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi t\u00e0i kho\u1ea3n";
                                             instance.Entity = new TMS.API.Models.MasterData();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 2;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -3509,7 +3509,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi t\u00e0i kho\u1ea3n";
                                             instance.Entity = ($t = new TMS.API.Models.MasterData(), $t.ParentId = 23991, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 4;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -3561,7 +3561,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda t\u00e0i kho\u1ea3n ng\u00e2n h\u00e0ng";
                                             instance.Entity = masterData;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -3697,7 +3697,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi t\u00e0i kho\u1ea3n ng\u00e2n h\u00e0ng";
                                             instance.Entity = new TMS.API.Models.BankAccount();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -3745,7 +3745,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda t\u00e0i kho\u1ea3n ng\u00e2n h\u00e0ng";
                                             instance.Entity = bankAccount;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -4904,7 +4904,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "L\u1ea5y d\u1eef li\u1ec7u sang bi\u1ec3u gi\u00e1 CVC";
                                             instance.Entity = this.freightRateEntity;
                                             return instance;
-                                        }), false);
+                                        }), false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -4977,7 +4977,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi v\u1ee5 vi\u1ec7c";
                                             instance.Entity = ($t = new TMS.API.Models.MasterData(), $t.ParentId = 24945, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -5025,7 +5025,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda v\u1ee5 vi\u1ec7c";
                                             instance.Entity = masterData;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -5948,7 +5948,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi phi\u1ebfu UNC";
                                             instance.Entity = ($t = new TMS.API.Models.Ledger(), $t.InvoiceFormId = 16054, $t.BillDate = System.DateTime.getNow(), $t.InvoiceDate = System.DateTime.getNow(), $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -5996,7 +5996,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda phi\u1ebfu UNC";
                                             instance.Entity = ledger;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -6122,7 +6122,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi b\u1ed9 ph\u1eadn";
                                             instance.Entity = ($t = new TMS.API.Models.MasterData(), $t.ParentId = 24944, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -6170,7 +6170,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ed9 ph\u1eadn";
                                             instance.Entity = masterData;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -6805,7 +6805,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi bi\u1ec3u gi\u00e1 CVC";
                                             instance.Entity = ($t = new TMS.API.Models.FreightRate(), $t.TypeId = 25156, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -6853,7 +6853,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda bi\u1ec3u gi\u00e1 CVC";
                                             instance.Entity = freightRate;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -6904,7 +6904,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Th\u00f4ng tin ch\u1ec9nh s\u1eeda";
                                                 instance.Entity = freightRate;
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -6954,7 +6954,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "B\u1ea3ng gi\u00e1 tham kh\u1ea3o";
                                             instance.Entity = ($t = new TMS.API.Models.FreightRate(), $t.TypeId = 25157, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -7002,7 +7002,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1 tham kh\u1ea3o";
                                             instance.Entity = freightRate;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -7829,7 +7829,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi phi\u1ebfu c\u01b0\u1edbc t\u00e0u";
                                             instance.Entity = ($t = new TMS.API.Models.Ledger(), $t.InvoiceFormId = 16048, $t.BillDate = System.DateTime.getNow(), $t.InvoiceDate = System.DateTime.getNow(), $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -7877,7 +7877,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda phi\u1ebfu c\u01b0\u1edbc t\u00e0u";
                                             instance.Entity = ledger;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -7952,7 +7952,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Phi\u1ebfu UNC";
                                                 instance.Entity = ($t = new TMS.API.Models.Ledger(), $t.InvoiceFormId = 16054, $t.InvoiceDate = System.DateTime.getNow(), $t.VendorId = ledger.VendorId, $t.ObjectId = ledger.ObjectId, $t.Taxcode = ledger.Taxcode, $t);
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -8028,7 +8028,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Phi\u1ebfu chi";
                                                 instance.Entity = ($t = new TMS.API.Models.Ledger(), $t.InvoiceFormId = 16049, $t.InvoiceDate = System.DateTime.getNow(), $t.VendorId = ledger.VendorId, $t.ObjectId = ledger.ObjectId, $t.Taxcode = ledger.Taxcode, $t);
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -8769,7 +8769,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "T\u1ea1o d\u1eef li\u1ec7u";
                                             instance.Entity = ledger;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -8818,7 +8818,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Nh\u1eadp chi ph\u00ed";
                                             instance.Entity = ledger;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -9038,7 +9038,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi phi\u1ebfu c\u01b0\u1edbc v\u1eadn chuy\u1ec3n";
                                             instance.Entity = ($t = new TMS.API.Models.Ledger(), $t.ExchangeRate = System.Decimal(1), $t.CurrencyId = 16083, $t.Vat = System.Decimal(0), $t.InvoiceFormId = 16047, $t.BillDate = System.DateTime.getNow(), $t.InvoiceDate = System.DateTime.getNow(), $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -9086,7 +9086,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda phi\u1ebfu c\u01b0\u1edbc v\u1eadn chuy\u1ec3n";
                                             instance.Entity = ledger;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -9161,7 +9161,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Phi\u1ebfu UNC";
                                                 instance.Entity = ($t = new TMS.API.Models.Ledger(), $t.InvoiceFormId = 16054, $t.InvoiceDate = System.DateTime.getNow(), $t.VendorId = ledger.VendorId, $t.ObjectId = ledger.ObjectId, $t.Taxcode = ledger.Taxcode, $t);
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -9237,7 +9237,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Phi\u1ebfu chi";
                                                 instance.Entity = ($t = new TMS.API.Models.Ledger(), $t.InvoiceFormId = 16049, $t.InvoiceDate = System.DateTime.getNow(), $t.VendorId = ledger.VendorId, $t.ObjectId = ledger.ObjectId, $t.Taxcode = ledger.Taxcode, $t);
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -9514,7 +9514,9 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                                         return x.UserUpdate1 == null || System.Nullable.eq(x.UserUpdate1, 0) || System.Nullable.eq(x.UserUpdate1, Core.Clients.Client.Token.UserId);
                                                                     }).toList(TMS.API.Models.Revenue);
                                                                 }
-                                                                if (this.revenueEntity.IsVat || this.revenueEntity.IsVatPrice || this.revenueEntity.IsTotalPriceBeforTax || this.revenueEntity.IsTotalPrice || this.revenueEntity.IsInvoinceNo || this.revenueEntity.IsInvoinceDate) {
+                                                                if ((this.revenueEntity.IsVat || this.revenueEntity.IsVatPrice || this.revenueEntity.IsTotalPriceBeforTax || this.revenueEntity.IsTotalPrice || this.revenueEntity.IsInvoinceNo || this.revenueEntity.IsInvoinceDate) && System.Linq.Enumerable.from(Core.Clients.Client.Token.RoleIds, System.Int32).where(function (x) {
+                                                                    return x === 46;
+                                                                }).any()) {
                                                                     revenues = System.Linq.Enumerable.from(revenues, TMS.API.Models.Revenue).where(function (x) {
                                                                         return x.UserUpdate2 == null || System.Nullable.eq(x.UserUpdate2, 0) || System.Nullable.eq(x.UserUpdate2, Core.Clients.Client.Token.UserId);
                                                                     }).toList(TMS.API.Models.Revenue);
@@ -9709,7 +9711,9 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 return x.UserUpdate1 == null || System.Nullable.eq(x.UserUpdate1, 0) || System.Nullable.eq(x.UserUpdate1, Core.Clients.Client.Token.UserId);
                                             }).toList(TMS.API.Models.Revenue);
                                         }
-                                        if (this.revenueEntity.IsVat || this.revenueEntity.IsVatPrice || this.revenueEntity.IsTotalPriceBeforTax || this.revenueEntity.IsTotalPrice || this.revenueEntity.IsInvoinceNo || this.revenueEntity.IsInvoinceDate) {
+                                        if ((this.revenueEntity.IsVat || this.revenueEntity.IsVatPrice || this.revenueEntity.IsTotalPriceBeforTax || this.revenueEntity.IsTotalPrice || this.revenueEntity.IsInvoinceNo || this.revenueEntity.IsInvoinceDate) && System.Linq.Enumerable.from(Core.Clients.Client.Token.RoleIds, System.Int32).where(function (x) {
+                                            return x === 46;
+                                        }).any()) {
                                             revenues = System.Linq.Enumerable.from(revenues, TMS.API.Models.Revenue).where(function (x) {
                                                 return x.UserUpdate2 == null || System.Nullable.eq(x.UserUpdate2, 0) || System.Nullable.eq(x.UserUpdate2, Core.Clients.Client.Token.UserId);
                                             }).toList(TMS.API.Models.Revenue);
@@ -9885,7 +9889,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi kho\u1ea3n m\u1ee5c";
                                             instance.Entity = ($t = new TMS.API.Models.MasterData(), $t.ParentId = 23767, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -9933,7 +9937,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda kho\u1ea3n m\u1ee5c";
                                             instance.Entity = masterData;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -10205,7 +10209,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi \u0111\u1ed1i t\u01b0\u1ee3ng c\u00f4ng n\u1ee3";
                                             instance.Entity = ($t = new TMS.API.Models.Vendor(), $t.TypeId = 23741, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -10253,7 +10257,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda \u0111\u1ed1i t\u01b0\u1ee3ng c\u00f4ng n\u1ee3";
                                             instance.Entity = vendor;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -10413,7 +10417,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi phi\u1ebfu chi t\u1ea1m \u1ee9ng";
                                             instance.Entity = ($t = new TMS.API.Models.Ledger(), $t.InvoiceFormId = 16051, $t.BillDate = System.DateTime.getNow(), $t.InvoiceDate = System.DateTime.getNow(), $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -10461,7 +10465,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda phi\u1ebfu chi t\u1ea1m \u1ee9ng";
                                             instance.Entity = ledger;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -11415,7 +11419,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi phi\u1ebfu chi";
                                             instance.Entity = ($t = new TMS.API.Models.Ledger(), $t.InvoiceFormId = 16049, $t.BillDate = System.DateTime.getNow(), $t.InvoiceDate = System.DateTime.getNow(), $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -11463,7 +11467,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda phi\u1ebfu chi";
                                             instance.Entity = ledger;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -11885,7 +11889,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi phi\u1ebfu thu";
                                             instance.Entity = ($t = new TMS.API.Models.Ledger(), $t.ExchangeRate = System.Decimal(1), $t.CurrencyId = 16083, $t.InvoiceFormId = 16050, $t.BillDate = System.DateTime.getNow(), $t.InvoiceDate = System.DateTime.getNow(), $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -11933,7 +11937,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda phi\u1ebfu thu";
                                             instance.Entity = ledger;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -12075,7 +12079,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi K.M\u1ee5c CP thu\u1ebf";
                                             instance.Entity = ($t = new TMS.API.Models.MasterData(), $t.ParentId = 23776, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -12123,7 +12127,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda K.M\u1ee5c CP thu\u1ebf";
                                             instance.Entity = masterData;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -12644,7 +12648,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
                                             instance.Entity = role || new TMS.API.Models.Role();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -13628,7 +13632,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda booking";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -13676,7 +13680,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi booking";
                                             instance.Entity = new TMS.API.Models.Booking();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -14037,7 +14041,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "C\u1eadp nh\u1eadt l\u1ecbch book t\u00e0u";
                                             instance.Entity = new TMS.API.Models.BookingList();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -14722,7 +14726,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ph\u00e2n b\u1ed5 chi ph\u00ed \u0111\u00f3ng h\u00e0ng";
                                             instance.Entity = ($t = new TMS.API.Models.Allotment(), $t.UnitPrice = System.Decimal(0), $t.Expense = fees, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 2;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -15003,7 +15007,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1 \u0111\u00f3ng h\u00e0ng";
                                                 instance.Entity = quotation;
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 2;
                                             if ($task2.isCompleted()) {
                                                 continue;
@@ -15111,7 +15115,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1 c\u01b0\u1edbc t\u00e0u";
                                                 instance.Entity = quotation;
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 2;
                                             if ($task2.isCompleted()) {
                                                 continue;
@@ -15197,7 +15201,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1 n\u00e2ng \u0111\u00f3ng h\u00e0ng";
                                                 instance.Entity = quotation;
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 2;
                                             if ($task2.isCompleted()) {
                                                 continue;
@@ -15282,7 +15286,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1 h\u1ea1 \u0111\u00f3ng h\u00e0ng";
                                                 instance.Entity = quotation;
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 2;
                                             if ($task2.isCompleted()) {
                                                 continue;
@@ -15807,7 +15811,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ph\u00e2n b\u1ed5 chi ph\u00ed tr\u1ea3 h\u00e0ng";
                                             instance.Entity = ($t = new TMS.API.Models.Allotment(), $t.UnitPrice = System.Decimal(0), $t.Expense = fees, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 2;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -16155,7 +16159,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1 tr\u1ea3 h\u00e0ng";
                                                 instance.Entity = quotation;
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 2;
                                             if ($task2.isCompleted()) {
                                                 continue;
@@ -16254,7 +16258,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda gi\u00e1 tr\u1ecb h\u00e0ng h\u00f3a";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -16302,7 +16306,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi gi\u00e1 tr\u1ecb h\u00e0ng h\u00f3a";
                                             instance.Entity = new TMS.API.Models.CommodityValue();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -18032,7 +18036,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda danh s\u00e1ch v\u1eadn chuy\u1ec3n";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -18080,7 +18084,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi danh s\u00e1ch v\u1eadn chuy\u1ec3n";
                                             instance.Entity = new TMS.API.Models.Transportation();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -18127,7 +18131,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
                                             instance.Title = "Ch\u1ec9nh s\u1eeda s\u1ed1 ti\u1ec1n c\u01b0\u1ee3c h\u00e3ng t\u00e0u";
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -18335,7 +18339,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Y\u00eau c\u1ea7u thay \u0111\u1ed5i th\u00f4ng tin ph\u00ed b\u1ea3o hi\u1ec3m";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 3;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -18387,7 +18391,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "L\u1ecbch s\u1eed thay \u0111\u1ed5i";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -18435,7 +18439,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "C\u1eadp nh\u1eadt d\u1eef li\u1ec7u";
                                             instance.Entity = new TMS.API.Models.Expense();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -18682,7 +18686,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda VAT ph\u00ed b\u1ea3o hi\u1ec3m";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 2;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -21146,7 +21150,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda t\u1ef7 l\u1ec7 ph\u00ed BH";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -21194,7 +21198,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi t\u1ef7 l\u1ec7 ph\u00ed BH";
                                             instance.Entity = new TMS.API.Models.InsuranceFeesRate();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -21242,7 +21246,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "C\u1eadp nh\u1eadt t\u1ef7 l\u1ec7 ph\u00ed ph\u1ee5";
                                             instance.Entity = new TMS.API.Models.MasterData();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -21962,9 +21966,9 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
             openPopup: false,
             gridViewExpense: null,
             selected: null,
+            _expensePopup: null,
             containerId: 0,
-            commodityAwaiter: 0,
-            totalAwaiter: 0
+            commodityAwaiter: 0
         },
         ctors: {
             init: function () {
@@ -22046,7 +22050,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Xu\u1ea5t b\u1ea3ng k\u00ea";
                                             instance.Entity = new TMS.API.Models.CheckFeeHistory();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -22099,7 +22103,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ki\u1ec3m tra b\u1ea3ng k\u00ea";
                                             instance.Entity = ($t = new TMS.API.Models.CheckFeeHistory(), $t.RouteIds = routeIds, $t.FromDate = Core.Clients.LocalStorage.GetItem(System.String, "FromDateCheckFeeClosing") == null ? Bridge.getDefaultValue(System.DateTime) : System.DateTime.parse(Core.Clients.LocalStorage.GetItem(System.String, "FromDateCheckFeeClosing")), $t.ToDate = Core.Clients.LocalStorage.GetItem(System.String, "ToDateCheckFeeClosing") == null ? Bridge.getDefaultValue(System.DateTime) : System.DateTime.parse(Core.Clients.LocalStorage.GetItem(System.String, "ToDateCheckFeeClosing")), $t.ClosingId = closingId, $t.TypeId = 1, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -22146,7 +22150,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
                                             instance.Title = "B\u00e1o c\u00e1o s\u1ea3n l\u01b0\u1ee3ng";
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -22181,6 +22185,8 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
+                    editExpense, 
+                    gridView, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -22188,13 +22194,22 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
-                                        $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(this, "Transportation Editor", function () {
+                                        this.selected = entity;
+                                        editExpense = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this.TabEditor, "Expense");
+                                        if (editExpense != null) {
+                                            $tcs.setResult(null);
+                                            return;
+                                        }
+                                        gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this, function (x) {
+                                            return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
+                                        }), Core.Components.GridView).firstOrDefault(null, null);
+                                        $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(gridView, "Transportation Editor", function () {
                                             var type = Bridge.Reflection.getType("TMS.UI.Business.Manage.TransportationEditorBL");
                                             var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
-                                            instance.Title = "Ch\u1ec9nh s\u1eeda danh s\u00e1ch v\u1eadn chuy\u1ec3n";
+                                            instance.Title = "Xem chi ph\u00ed";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -22204,54 +22219,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     }
                                     case 1: {
                                         $taskResult1 = $task1.getAwaitedResult();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
-            AddTransportation: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(this, "Transportation Editor", function () {
-                                            var type = Bridge.Reflection.getType("TMS.UI.Business.Manage.TransportationEditorBL");
-                                            var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
-                                            instance.Title = "Th\u00eam m\u1edbi danh s\u00e1ch v\u1eadn chuy\u1ec3n";
-                                            instance.Entity = new TMS.API.Models.Transportation();
-                                            return instance;
-                                        }, false);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
+                                        this._expensePopup = $taskResult1;
                                         $tcs.setResult(null);
                                         return;
                                     }
@@ -22276,7 +22244,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    grid, 
+                    editExpense, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -22285,11 +22253,13 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                 switch ($step) {
                                     case 0: {
                                         this.selected = transportation;
-                                        grid = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this), Core.Components.GridView).firstOrDefault(function (x) {
-                                            return Bridge.referenceEquals(x.GuiInfo.RefName, "Expense");
-                                        }, null);
-                                        grid.DataSourceFilter = System.String.format("?$filter=Active eq true and TransportationId eq {0} and IsReturn eq false and ((ExpenseTypeId in (15981, 15939) eq false) or IsPurchasedInsurance eq true) and RequestChangeId eq null", [Bridge.box(transportation.Id, System.Int32)]);
-                                        $task1 = grid.ActionFilter();
+                                        editExpense = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this._expensePopup, "Expense");
+                                        if (editExpense == null) {
+                                            $tcs.setResult(null);
+                                            return;
+                                        }
+                                        Core.Extensions.ReflectionExt.CopyPropFrom$1(this._expensePopup.Entity, this.selected);
+                                        $task1 = editExpense.ActionFilter();
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -22317,23 +22287,6 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            BeforeCreatedExpense: function (expense) {
-                if (this.selected == null) {
-                    Core.Extensions.Toast.Warning("Vui l\u00f2ng ch\u1ecdn cont c\u1ea7n nh\u1eadp");
-                    return;
-                }
-                expense.ContainerNo = this.selected.ContainerNo;
-                expense.SealNo = this.selected.SealNo;
-                expense.BossId = this.selected.BossId;
-                expense.CommodityId = this.selected.CommodityId;
-                expense.ContainerTypeId = this.selected.ContainerTypeId;
-                expense.RouteId = this.selected.RouteId;
-                expense.YearText = this.selected.YearText;
-                expense.MonthText = this.selected.MonthText;
-                expense.TransportationId = this.selected.Id;
-                expense.Id = 0;
-                expense.Quantity = System.Decimal(1);
-            },
             ViewAllotment: function (allotment) {
                 var $step = 0,
                     $task1, 
@@ -22354,7 +22307,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Chi ti\u1ebft";
                                             instance.Entity = allotment;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -22433,7 +22386,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ph\u00e2n b\u1ed5 chi ph\u00ed \u0111\u00f3ng h\u00e0ng";
                                             instance.Entity = ($t = new TMS.API.Models.Allotment(), $t.UnitPrice = System.Decimal(0), $t.Expense = fees, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 2;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -22934,7 +22887,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1 \u0111\u00f3ng h\u00e0ng";
                                                 instance.Entity = quotation;
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 2;
                                             if ($task2.isCompleted()) {
                                                 continue;
@@ -23020,7 +22973,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1 c\u01b0\u1edbc t\u00e0u";
                                                 instance.Entity = quotation;
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 2;
                                             if ($task2.isCompleted()) {
                                                 continue;
@@ -23106,7 +23059,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1 n\u00e2ng \u0111\u00f3ng h\u00e0ng";
                                                 instance.Entity = quotation;
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 2;
                                             if ($task2.isCompleted()) {
                                                 continue;
@@ -23192,7 +23145,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1 h\u1ea1 \u0111\u00f3ng h\u00e0ng";
                                                 instance.Entity = quotation;
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 2;
                                             if ($task2.isCompleted()) {
                                                 continue;
@@ -23320,7 +23273,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Tr\u1ea3 h\u00e0ng";
                                             instance.Entity = new TMS.API.Models.Transportation();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -23379,7 +23332,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 return _o1;
                                             })(new (System.Collections.Generic.List$1(System.Int32)).ctor()), $t);
                                             return instance;
-                                        }), false);
+                                        }), false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -23431,7 +23384,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 return _o1;
                                             })(new (System.Collections.Generic.List$1(System.Int32)).ctor()), $t);
                                             return instance;
-                                        }), false);
+                                        }), false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -23978,337 +23931,6 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            UpdateViewSelected: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    grid, 
-                    listViewItem, 
-                    tran, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        for (;;) {
-                            $step = System.Array.min([0,1], $step);
-                            switch ($step) {
-                                case 0: {
-                                    grid = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this, "Transportation");
-                                    listViewItem = System.Linq.Enumerable.from(grid.GetListViewItems(this.selected), Core.Components.ListViewItem).firstOrDefault(null, null);
-                                    $task1 = new Core.Clients.Client.$ctor1("Transportation").GetAsync(TMS.API.Models.Transportation, this.selected.Id);
-                                    $step = 1;
-                                    if ($task1.isCompleted()) {
-                                        continue;
-                                    }
-                                    $task1.continue($asyncBody);
-                                    return;
-                                }
-                                case 1: {
-                                    $taskResult1 = $task1.getAwaitedResult();
-                                    tran = $taskResult1;
-                                    Core.Extensions.ReflectionExt.CopyPropFrom$1(listViewItem.Entity, tran);
-                                    listViewItem.UpdateView$1(true);
-                                    return;
-                                }
-                                default: {
-                                    return;
-                                }
-                            }
-                        }
-                    }, arguments);
-
-                $asyncBody();
-            },
-            UpdateTotalFee: function (expense, patchUpdate, listViewItem1) {
-                if (!System.Linq.Enumerable.from(patchUpdate.Changes, Core.ViewModels.PatchUpdateDetail).any(function (x) {
-                        return Bridge.referenceEquals(x.Field, "UnitPrice") || Bridge.referenceEquals(x.Field, "IsCollectOnBehaft") || Bridge.referenceEquals(x.Field, "IsVat");
-                    }) || expense.TotalPriceAfterTax.lte(System.Decimal(0))) {
-                    return;
-                }
-                window.clearTimeout(this.totalAwaiter);
-                this.totalAwaiter = window.setTimeout(Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $taskResult1, 
-                        $task2, 
-                        $taskResult2, 
-                        $task3, 
-                        $taskResult3, 
-                        $jumpFromFinally, 
-                        grid, 
-                        listViewItem, 
-                        expenses, 
-                        expenseTypeIds, 
-                        expenseTypes, 
-                        details, 
-                        $t, 
-                        item, 
-                        totalThisValue, 
-                        $t1, 
-                        item1, 
-                        expenseTypeThisIds, 
-                        totalThisValue1, 
-                        $t2, 
-                        path, 
-                        $t3, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        grid = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this, "Transportation");
-                                        listViewItem = System.Linq.Enumerable.from(grid.GetListViewItems(this.selected), Core.Components.ListViewItem).firstOrDefault(null, null);
-                                        $task1 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter={0} eq {1}", "TransportationId", Bridge.box(this.selected.Id, System.Int32)));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        expenses = $taskResult1;
-                                        expenseTypeIds = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).where(function (x) {
-                                            return x.ExpenseTypeId != null;
-                                        }).select(function (x) {
-                                            return System.Nullable.getValue(x.ExpenseTypeId);
-                                        }).distinct().toList(System.Int32);
-                                        $task2 = new Core.Clients.Client.$ctor1("MasterData").GetRawListById(TMS.API.Models.MasterData, expenseTypeIds);
-                                        $step = 2;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $taskResult2 = $task2.getAwaitedResult();
-                                        expenseTypes = $taskResult2;
-                                        details = Bridge.fn.bind(this, function (_o1) {
-                                            var $t;
-                                            _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(this.selected.Id), $t));
-                                            return _o1;
-                                        })(new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor());
-                                        $t = Bridge.getEnumerator(expenseTypes);
-                                        try {
-                                            while ($t.moveNext()) {
-                                                item = { v : $t.Current };
-                                                totalThisValue = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).where((function ($me, item) {
-                                                    return function (x) {
-                                                        return System.Nullable.eq(x.ExpenseTypeId, item.v.Id);
-                                                    };
-                                                })(this, item)).sum(function (x) {
-                                                    return x.TotalPriceAfterTax;
-                                                }, System.Decimal.Zero);
-                                                Core.Extensions.BridgeExt.SetComplexPropValue(listViewItem.Entity, item.v.Description, totalThisValue);
-                                                details.add(($t1 = new Core.ViewModels.PatchUpdateDetail(), $t1.Field = item.v.Description, $t1.Value = totalThisValue.toString(), $t1));
-                                            }
-                                        } finally {
-                                            if (Bridge.is($t, System.IDisposable)) {
-                                                $t.System$IDisposable$Dispose();
-                                            }
-                                        }
-
-                                        $t1 = Bridge.getEnumerator(System.Linq.Enumerable.from(expenseTypes, TMS.API.Models.MasterData).select(function (x) {
-                                            return x.Additional;
-                                        }).distinct().toList(System.String));
-                                        try {
-                                            while ($t1.moveNext()) {
-                                                item1 = { v : $t1.Current };
-                                                expenseTypeThisIds = { v : System.Linq.Enumerable.from(expenseTypes, TMS.API.Models.MasterData).where((function ($me, item1) {
-                                                    return function (x) {
-                                                        return Bridge.referenceEquals(x.Additional, item1.v);
-                                                    };
-                                                })(this, item1)).select(function (x) {
-                                                    return x.Id;
-                                                }).distinct().toList(System.Int32) };
-                                                totalThisValue1 = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).where((function ($me, expenseTypeThisIds) {
-                                                    return function (x) {
-                                                        return expenseTypeThisIds.v.contains(System.Nullable.getValue(x.ExpenseTypeId));
-                                                    };
-                                                })(this, expenseTypeThisIds)).sum(function (x) {
-                                                    return x.TotalPriceAfterTax;
-                                                }, System.Decimal.Zero);
-                                                Core.Extensions.BridgeExt.SetComplexPropValue(listViewItem.Entity, item1.v, totalThisValue1);
-                                                details.add(($t2 = new Core.ViewModels.PatchUpdateDetail(), $t2.Field = item1.v, $t2.Value = totalThisValue1.toString(), $t2));
-                                            }
-                                        } finally {
-                                            if (Bridge.is($t1, System.IDisposable)) {
-                                                $t1.System$IDisposable$Dispose();
-                                            }
-                                        }
-                                        path = ($t2 = new Core.ViewModels.PatchUpdate(), $t2.Changes = ($t3 = Core.ViewModels.PatchUpdateDetail, System.Linq.Enumerable.from(Core.Extensions.BridgeExt.DistinctBy(Core.ViewModels.PatchUpdateDetail, System.String, System.Linq.Enumerable.from(details, Core.ViewModels.PatchUpdateDetail).where(function (x) {
-                                            return x.Field != null && !Bridge.referenceEquals(x.Field, "null") && !Bridge.referenceEquals(x.Field, "");
-                                        }), function (x) {
-                                            return x.Field;
-                                        }), $t3).toList($t3)), $t2);
-                                        $task3 = new Core.Clients.Client.$ctor1("Transportation").PatchAsync(TMS.API.Models.Transportation, path, "", "true", false, false);
-                                        $step = 3;
-                                        if ($task3.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task3.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 3: {
-                                        $taskResult3 = $task3.getAwaitedResult();
-                                        return;
-                                    }
-                                    default: {
-                                        return;
-                                    }
-                                }
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                }), 1000);
-            },
-            UpdateAllTotalFee: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $task2, 
-                    $taskResult2, 
-                    $task3, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    grid, 
-                    listViewItem, 
-                    expenses, 
-                    expenseTypeIds, 
-                    expenseTypes, 
-                    $t, 
-                    item, 
-                    totalThisValue, 
-                    $t1, 
-                    item1, 
-                    expenseTypeThisIds, 
-                    totalThisValue1, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        grid = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this, "Transportation");
-                                        listViewItem = System.Linq.Enumerable.from(grid.GetListViewItems(this.selected), Core.Components.ListViewItem).firstOrDefault(null, null);
-                                        $task1 = new Core.Clients.Client.$ctor1("Expense").GetRawList(TMS.API.Models.Expense, System.String.format("?$filter={0} eq {1}", "TransportationId", Bridge.box(this.selected.Id, System.Int32)));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        expenses = $taskResult1;
-                                        expenseTypeIds = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).where(function (x) {
-                                            return x.ExpenseTypeId != null;
-                                        }).select(function (x) {
-                                            return System.Nullable.getValue(x.ExpenseTypeId);
-                                        }).distinct().toList(System.Int32);
-                                        $task2 = new Core.Clients.Client.$ctor1("MasterData").GetRawListById(TMS.API.Models.MasterData, expenseTypeIds);
-                                        $step = 2;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $taskResult2 = $task2.getAwaitedResult();
-                                        expenseTypes = $taskResult2;
-                                        $t = Bridge.getEnumerator(expenseTypes);
-                                        try {
-                                            while ($t.moveNext()) {
-                                                item = { v : $t.Current };
-                                                totalThisValue = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).where((function ($me, item) {
-                                                    return function (x) {
-                                                        return System.Nullable.eq(x.ExpenseTypeId, item.v.Id);
-                                                    };
-                                                })(this, item)).sum(function (x) {
-                                                    return x.TotalPriceAfterTax;
-                                                }, System.Decimal.Zero);
-                                                Core.Extensions.BridgeExt.SetComplexPropValue(listViewItem.Entity, item.v.Description, totalThisValue);
-                                                Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1((function ($me, item) {
-                                                    return function (x) {
-                                                        return Bridge.referenceEquals(x.GuiInfo.FieldName, item.v.Description);
-                                                    };
-                                                })(this, item)), function (x) {
-                                                    x.Dirty = true;
-                                                });
-                                            }
-                                        } finally {
-                                            if (Bridge.is($t, System.IDisposable)) {
-                                                $t.System$IDisposable$Dispose();
-                                            }
-                                        }
-
-                                        $t1 = Bridge.getEnumerator(System.Linq.Enumerable.from(expenseTypes, TMS.API.Models.MasterData).select(function (x) {
-                                            return x.Additional;
-                                        }).distinct().toList(System.String));
-                                        try {
-                                            while ($t1.moveNext()) {
-                                                item1 = { v : $t1.Current };
-                                                expenseTypeThisIds = { v : System.Linq.Enumerable.from(expenseTypes, TMS.API.Models.MasterData).where((function ($me, item1) {
-                                                    return function (x) {
-                                                        return Bridge.referenceEquals(x.Additional, item1.v);
-                                                    };
-                                                })(this, item1)).select(function (x) {
-                                                    return x.Id;
-                                                }).distinct().toList(System.Int32) };
-                                                totalThisValue1 = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).where((function ($me, expenseTypeThisIds) {
-                                                    return function (x) {
-                                                        return expenseTypeThisIds.v.contains(System.Nullable.getValue(x.ExpenseTypeId));
-                                                    };
-                                                })(this, expenseTypeThisIds)).sum(function (x) {
-                                                    return x.TotalPriceAfterTax;
-                                                }, System.Decimal.Zero);
-                                                Core.Extensions.BridgeExt.SetComplexPropValue(listViewItem.Entity, item1.v, totalThisValue1);
-                                                Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, listViewItem.FilterChildren$1((function ($me, item1) {
-                                                    return function (x) {
-                                                        return Bridge.referenceEquals(x.GuiInfo.FieldName, item1.v);
-                                                    };
-                                                })(this, item1)), function (x) {
-                                                    x.Dirty = true;
-                                                });
-                                            }
-                                        } finally {
-                                            if (Bridge.is($t1, System.IDisposable)) {
-                                                $t1.System$IDisposable$Dispose();
-                                            }
-                                        }
-                                        $task3 = listViewItem.PatchUpdate();
-                                        $step = 3;
-                                        if ($task3.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task3.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 3: {
-                                        $task3.getAwaitedResult();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
             UpdateCombinationFee: function (transportation) {
                 var $step = 0,
                     $task1, 
@@ -24769,34 +24391,6 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
 
                 $asyncBody();
                 return $tcs.task;
-            },
-            GetPatchEntity$2: function (transportation) {
-                var $t;
-                var details = function (_o1) {
-                        var $t;
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(transportation.Id), $t));
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "PolicyId", $t.Value = transportation.PolicyId == null ? null : System.Nullable.toString(transportation.PolicyId, null), $t));
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "ShipPolicyPrice", $t.Value = System.Nullable.lifteq("equals", transportation.ShipPolicyPrice, System.Decimal.lift(null)) ? "0" : transportation.ShipPolicyPrice.toString(), $t));
-                        return _o1;
-                    }(new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor());
-                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
-            },
-            GetPatchEntity: function (commodityValue) {
-                var $t;
-                var details = new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor();
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(commodityValue.Id), $t));
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "Active", $t.Value = System.Boolean.toString(commodityValue.Active), $t));
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "EndDate", $t.Value = Bridge.equals(commodityValue.EndDate, null) ? "" : System.Nullable.toString(commodityValue.EndDate, function ($t) { return System.DateTime.format($t); }), $t));
-                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
-            },
-            GetPatchEntity$1: function (expense) {
-                var $t;
-                var details = new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor();
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(expense.Id), $t));
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "CommodityValue", $t.Value = System.Nullable.lifteq("equals", expense.CommodityValue, System.Decimal.lift(null)) ? "" : expense.CommodityValue.toString(), $t));
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "TotalPriceAfterTax", $t.Value = expense.TotalPriceAfterTax.toString(), $t));
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "TotalPriceBeforeTax", $t.Value = expense.TotalPriceBeforeTax.toString(), $t));
-                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
             },
             SetPolicyTransportationType: function (transportation) {
                 var $step = 0,
@@ -25790,8 +25384,22 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 expense.TotalPriceAfterTax = System.Nullable.getValue(expense.InsuranceFeeRate).mul(System.Nullable.getValue(expense.CommodityValue)).div(System.Decimal(100));
                 expense.TotalPriceBeforeTax = System.Decimal.toDecimalPlaces(expense.TotalPriceAfterTax.div(System.Decimal(1.1, 1)), 0, 6);
             },
-            ChangeBackground: function () {
-                var gridView = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this, "");
+            GetPatchEntity: function (commodityValue) {
+                var $t;
+                var details = new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor();
+                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(commodityValue.Id), $t));
+                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "Active", $t.Value = System.Boolean.toString(commodityValue.Active), $t));
+                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "EndDate", $t.Value = Bridge.equals(commodityValue.EndDate, null) ? "" : System.Nullable.toString(commodityValue.EndDate, function ($t) { return System.DateTime.format($t); }), $t));
+                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
+            },
+            GetPatchEntity$1: function (expense) {
+                var $t;
+                var details = new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor();
+                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(expense.Id), $t));
+                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "CommodityValue", $t.Value = System.Nullable.lifteq("equals", expense.CommodityValue, System.Decimal.lift(null)) ? "" : expense.CommodityValue.toString(), $t));
+                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "TotalPriceAfterTax", $t.Value = expense.TotalPriceAfterTax.toString(), $t));
+                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "TotalPriceBeforeTax", $t.Value = expense.TotalPriceBeforeTax.toString(), $t));
+                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
             },
             BeforePatchUpdateTransportation: function (transportation, patchUpdate) {
                 var $step = 0,
@@ -26447,42 +26055,6 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
 
                 $asyncBody();
                 return $tcs.task;
-            },
-            GetPatchTransportation: function (transportation) {
-                var $t;
-                var details = function (_o1) {
-                        var $t;
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(transportation.Id), $t));
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "IsLocked", $t.Value = System.Boolean.toString(transportation.IsLocked), $t));
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "IsKt", $t.Value = System.Boolean.toString(transportation.IsKt), $t));
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "IsSubmit", $t.Value = System.Boolean.toString(transportation.IsSubmit), $t));
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "IsRequestUnLockAll", $t.Value = System.Boolean.toString(transportation.IsRequestUnLockAll), $t));
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "IsRequestUnLockExploit", $t.Value = System.Boolean.toString(transportation.IsRequestUnLockExploit), $t));
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "IsRequestUnLockAccountant", $t.Value = System.Boolean.toString(transportation.IsRequestUnLockAccountant), $t));
-                        return _o1;
-                    }(new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor());
-                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
-            },
-            GetPatchEntityApprove: function (expense) {
-                var $t;
-                var details = function (_o1) {
-                        var $t;
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(expense.Id), $t));
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "StatusId", $t.Value = System.Nullable.toString(expense.StatusId, null), $t));
-                        return _o1;
-                    }(new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor());
-                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
-            },
-            GetPatchLockShipEntity: function (transportation) {
-                var $t;
-                var details = function (_o1) {
-                        var $t;
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(transportation.Id), $t));
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "LockShip", $t.Value = System.Boolean.toString(transportation.LockShip), $t));
-                        _o1.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "IsRequestUnLockShip", $t.Value = System.Boolean.toString(transportation.IsRequestUnLockShip), $t));
-                        return _o1;
-                    }(new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor());
-                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
             }
         }
     });
@@ -26698,7 +26270,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda kh\u00e1ch h\u00e0ng \u0111\u1eb7c bi\u1ec7t";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -26747,7 +26319,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi kh\u00e1ch h\u00e0ng \u0111\u1eb7c bi\u1ec7t";
                                             instance.Entity = ($t = new TMS.API.Models.Vendor(), $t.TypeId = 12095, $t.ReturnRate = System.Decimal(0), $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -26840,7 +26412,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda Teus";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -26888,7 +26460,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi Teus";
                                             instance.Entity = new TMS.API.Models.Teus();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -27048,7 +26620,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda k\u1ebf ho\u1ea1ch v\u1eadn chuy\u1ec3n";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -27096,7 +26668,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi k\u1ebf ho\u1ea1ch v\u1eadn chuy\u1ec3n";
                                             instance.Entity = new TMS.API.Models.TransportationContract();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -27188,9 +26760,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
     Bridge.define("TMS.UI.Business.Manage.TransportationEditorBL", {
         inherits: [Core.Components.Forms.PopupEditor],
         fields: {
-            gridView: null,
-            commodityAwaiter: 0,
-            containerId: 0
+            gridView: null
         },
         props: {
             TransportationEntity: {
@@ -27200,9 +26770,6 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
             }
         },
         ctors: {
-            init: function () {
-                this.containerId = 0;
-            },
             ctor: function () {
                 this.$initialize();
                 Core.Components.Forms.PopupEditor.ctor.call(this, "Transportation");
@@ -27210,507 +26777,158 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
             }
         },
         methods: {
-            CalcTax: function (expense) {
+            BeforeCreatedExpense: function (expense) {
+                if (this.TransportationEntity == null) {
+                    Core.Extensions.Toast.Warning("Vui l\u00f2ng ch\u1ecdn cont c\u1ea7n nh\u1eadp");
+                    return;
+                }
+                expense.ContainerNo = this.TransportationEntity.ContainerNo;
+                expense.SealNo = this.TransportationEntity.SealNo;
+                expense.BossId = this.TransportationEntity.BossId;
+                expense.CommodityId = this.TransportationEntity.CommodityId;
+                expense.ContainerTypeId = this.TransportationEntity.ContainerTypeId;
+                expense.RouteId = this.TransportationEntity.RouteId;
+                expense.YearText = this.TransportationEntity.YearText;
+                expense.MonthText = this.TransportationEntity.MonthText;
+                expense.TransportationId = this.TransportationEntity.Id;
+                expense.Id = 0;
+                expense.Quantity = System.Decimal(1);
+            },
+            AfterCreatedExpense: function (expense, patchUpdate, listViewItem1) {
                 var $step = 0,
                     $task1, 
                     $taskResult1, 
                     $task2, 
+                    $taskResult2, 
                     $task3, 
                     $taskResult3, 
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    expenseType, 
+                    transportations, 
                     expenseTypeIds, 
                     expenseTypes, 
+                    notTotal, 
                     $t, 
                     item, 
-                    totalThisValue, 
+                    details, 
+                    expenses, 
                     $t1, 
-                    item1, 
+                    itemDetail, 
                     expenseTypeThisIds, 
-                    totalThisValue1, 
+                    totalThisValue, 
+                    $t2, 
+                    path, 
+                    $t3, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
                             for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5], $step);
+                                $step = System.Array.min([0,1,2,3,4,5,6], $step);
                                 switch ($step) {
                                     case 0: {
-                                        this.gridView = this.gridView || System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this), Core.Components.GridView).firstOrDefault(null, null);
-                                        expenseType = null;
-                                        if (expense.ExpenseTypeId != null) {
-                                            $step = 1;
-                                            continue;
-                                        } 
-                                        $step = 3;
-                                        continue;
-                                    }
-                                    case 1: {
-                                        $task1 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(Core.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 7577 and Id eq {0}", [Bridge.box(expense.ExpenseTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                        $step = 2;
+                                        $task1 = new Core.Clients.Client.$ctor1("Transportation").GetRawList(TMS.API.Models.Transportation, System.String.format("?$expand=Expense&$filter=Active eq true and Id in ({0})", [([Bridge.box(this.TransportationEntity.Id, System.Int32)]).join(",")]));
+                                        $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
                                         }
                                         $task1.continue($asyncBody);
                                         return;
                                     }
-                                    case 2: {
+                                    case 1: {
                                         $taskResult1 = $task1.getAwaitedResult();
-                                        expenseType = $taskResult1;
-                                        $step = 3;
-                                        continue;
-                                    }
-                                    case 3: {
-                                        if (expenseType != null && System.String.contains(expenseType.Name,"B\u1ea3o hi\u1ec3m") && System.String.contains(expenseType.Name,"BH SOC")) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        } else {
-                                            expense.TotalPriceBeforeTax = expense.UnitPrice.mul(expense.Quantity);
-                                            expense.TotalPriceAfterTax = expense.TotalPriceBeforeTax.add(expense.TotalPriceBeforeTax.mul(expense.Vat).div(System.Decimal(100)));
-                                        }
-                                        $task2 = this.gridView.AddOrUpdateRow(expense);
-                                        $step = 4;
+                                        transportations = $taskResult1;
+                                        expenseTypeIds = System.Linq.Enumerable.from(transportations, TMS.API.Models.Transportation).selectMany(function (x) {
+                                            return x.Expense;
+                                        }).where(function (x) {
+                                            return x.ExpenseTypeId != null;
+                                        }).select(function (x) {
+                                            return System.Nullable.getValue(x.ExpenseTypeId);
+                                        }).distinct().toList(System.Int32);
+                                        $task2 = new Core.Clients.Client.$ctor1("MasterData").GetRawListById(TMS.API.Models.MasterData, expenseTypeIds);
+                                        $step = 2;
                                         if ($task2.isCompleted()) {
                                             continue;
                                         }
                                         $task2.continue($asyncBody);
                                         return;
                                     }
-                                    case 4: {
-                                        $task2.getAwaitedResult();
-                                        expenseTypeIds = System.Linq.Enumerable.from(this.TransportationEntity.Expense, TMS.API.Models.Expense).where(function (x) {
-                                            return x.ExpenseTypeId != null;
+                                    case 2: {
+                                        $taskResult2 = $task2.getAwaitedResult();
+                                        expenseTypes = $taskResult2;
+                                        notTotal = System.Linq.Enumerable.from(expenseTypes, TMS.API.Models.MasterData).where(function (x) {
+                                            return Core.Extensions.StringExt.IsNullOrWhiteSpace(x.Additional);
                                         }).select(function (x) {
-                                            return System.Nullable.getValue(x.ExpenseTypeId);
-                                        }).distinct().toList(System.Int32);
-                                        $task3 = new Core.Clients.Client.$ctor1("MasterData").GetRawListById(Core.Models.MasterData, expenseTypeIds);
-                                        $step = 5;
-                                        if ($task3.isCompleted()) {
+                                            return x.Id;
+                                        }).toList(System.Int32);
+                                        $t = Bridge.getEnumerator(transportations);
+                                        $step = 3;
+                                        continue;
+                                    }
+                                    case 3: {
+                                        if ($t.moveNext()) {
+                                            item = { v : $t.Current };
+                                            $step = 4;
                                             continue;
                                         }
-                                        $task3.continue($asyncBody);
-                                        return;
+                                        $step = 6;
+                                        continue;
                                     }
-                                    case 5: {
-                                        $taskResult3 = $task3.getAwaitedResult();
-                                        expenseTypes = $taskResult3;
-                                        $t = Bridge.getEnumerator(expenseTypes);
-                                        try {
-                                            while ($t.moveNext()) {
-                                                item = { v : $t.Current };
-                                                totalThisValue = System.Linq.Enumerable.from(this.TransportationEntity.Expense, TMS.API.Models.Expense).where((function ($me, item) {
-                                                    return function (x) {
-                                                        return System.Nullable.eq(x.ExpenseTypeId, item.v.Id);
-                                                    };
-                                                })(this, item)).sum(function (x) {
-                                                    return x.TotalPriceAfterTax;
-                                                }, System.Decimal.Zero);
-                                                Core.Extensions.BridgeExt.SetComplexPropValue(this.TransportationEntity, item.v.Description, totalThisValue);
-                                            }
-                                        } finally {
-                                            if (Bridge.is($t, System.IDisposable)) {
-                                                $t.System$IDisposable$Dispose();
-                                            }
-                                        }
-
-                                        $t1 = Bridge.getEnumerator(System.Linq.Enumerable.from(expenseTypes, Core.Models.MasterData).select(function (x) {
+                                    case 4: {
+                                        details = (function ($me, item) {
+                                            return function (_o1) {
+                                                var $t1;
+                                                _o1.add(($t1 = new Core.ViewModels.PatchUpdateDetail(), $t1.Field = Core.Extensions.Utils.IdField, $t1.Value = Bridge.toString(item.v.Id), $t1));
+                                                return _o1;
+                                            };
+                                        })(this, item)(new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor());
+                                        expenses = item.v.Expense;
+                                        $t1 = Bridge.getEnumerator(System.Linq.Enumerable.from(expenseTypes, TMS.API.Models.MasterData).select(function (x) {
                                             return x.Additional;
                                         }).distinct().toList(System.String));
                                         try {
                                             while ($t1.moveNext()) {
-                                                item1 = { v : $t1.Current };
-                                                expenseTypeThisIds = { v : System.Linq.Enumerable.from(expenseTypes, Core.Models.MasterData).where((function ($me, item1) {
+                                                itemDetail = { v : $t1.Current };
+                                                expenseTypeThisIds = { v : System.Linq.Enumerable.from(expenseTypes, TMS.API.Models.MasterData).where((function ($me, itemDetail) {
                                                     return function (x) {
-                                                        return Bridge.referenceEquals(x.Additional, item1.v);
+                                                        return Bridge.referenceEquals(x.Additional, itemDetail.v);
                                                     };
-                                                })(this, item1)).select(function (x) {
+                                                })(this, itemDetail)).select(function (x) {
                                                     return x.Id;
                                                 }).distinct().toList(System.Int32) };
-                                                totalThisValue1 = System.Linq.Enumerable.from(this.TransportationEntity.Expense, TMS.API.Models.Expense).where((function ($me, expenseTypeThisIds) {
+                                                totalThisValue = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).where((function ($me, expenseTypeThisIds) {
                                                     return function (x) {
                                                         return expenseTypeThisIds.v.contains(System.Nullable.getValue(x.ExpenseTypeId));
                                                     };
                                                 })(this, expenseTypeThisIds)).sum(function (x) {
                                                     return x.TotalPriceAfterTax;
                                                 }, System.Decimal.Zero);
-                                                Core.Extensions.BridgeExt.SetComplexPropValue(this.TransportationEntity, item1.v, totalThisValue1);
+                                                details.add(($t2 = new Core.ViewModels.PatchUpdateDetail(), $t2.Field = itemDetail.v, $t2.Value = totalThisValue.toString(), $t2));
                                             }
                                         } finally {
                                             if (Bridge.is($t1, System.IDisposable)) {
                                                 $t1.System$IDisposable$Dispose();
                                             }
                                         }
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
-            UpdateCommodityValue: function (expense) {
-                var $step = 0,
-                    $task1, 
-                    $jumpFromFinally, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        for (;;) {
-                            $step = System.Array.min([0,1], $step);
-                            switch ($step) {
-                                case 0: {
-                                    window.clearTimeout(this.commodityAwaiter);
-                                    this.commodityAwaiter = window.setTimeout(Bridge.fn.bind(this, function () {
-                                        var $step = 0,
-                                            $task1, 
-                                            $jumpFromFinally, 
-                                            $asyncBody = Bridge.fn.bind(this, function () {
-                                                for (;;) {
-                                                    $step = System.Array.min([0,1], $step);
-                                                    switch ($step) {
-                                                        case 0: {
-                                                            $task1 = this.UpdateCommodityAsync(expense);
-                                                            $step = 1;
-                                                            if ($task1.isCompleted()) {
-                                                                continue;
-                                                            }
-                                                            $task1.continue($asyncBody);
-                                                            return;
-                                                        }
-                                                        case 1: {
-                                                            $task1.getAwaitedResult();
-                                                            return;
-                                                        }
-                                                        default: {
-                                                            return;
-                                                        }
-                                                    }
-                                                }
-                                            }, arguments);
-
-                                        $asyncBody();
-                                    }), 500);
-                                    $task1 = this.CalcTax(expense);
-                                    $step = 1;
-                                    if ($task1.isCompleted()) {
-                                        continue;
-                                    }
-                                    $task1.continue($asyncBody);
-                                    return;
-                                }
-                                case 1: {
-                                    $task1.getAwaitedResult();
-                                    return;
-                                }
-                                default: {
-                                    return;
-                                }
-                            }
-                        }
-                    }, arguments);
-
-                $asyncBody();
-            },
-            UpdateCommodityAsync: function (expense) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $task2, 
-                    $taskResult2, 
-                    $task3, 
-                    $taskResult3, 
-                    $task4, 
-                    $taskResult4, 
-                    $task5, 
-                    $taskResult5, 
-                    $task6, 
-                    $task7, 
-                    $task8, 
-                    $taskResult8, 
-                    $task9, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    expenseType, 
-                    containerId, 
-                    commodityValueDB, 
-                    boss, 
-                    confirm, 
-                    $t, 
-                    confirm1, 
-                    gridView, 
-                    masterDataDB, 
-                    vat, 
-                    listViewItem, 
-                    updated, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,19], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(Core.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 7577 and Id eq {0}", [Bridge.box(expense.ExpenseTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
+                                        path = ($t2 = new Core.ViewModels.PatchUpdate(), $t2.Changes = ($t3 = Core.ViewModels.PatchUpdateDetail, System.Linq.Enumerable.from(Core.Extensions.BridgeExt.DistinctBy(Core.ViewModels.PatchUpdateDetail, System.String, System.Linq.Enumerable.from(details, Core.ViewModels.PatchUpdateDetail).where(function (x) {
+                                            return x.Field != null && !Bridge.referenceEquals(x.Field, "null") && !Bridge.referenceEquals(x.Field, "");
+                                        }), function (x) {
+                                            return x.Field;
+                                        }), $t3).toList($t3)), $t2);
+                                        $task3 = new Core.Clients.Client.$ctor1("Transportation").PatchAsync(TMS.API.Models.Transportation, path, "", "true", false, false);
+                                        $step = 5;
+                                        if ($task3.isCompleted()) {
                                             continue;
                                         }
-                                        $task1.continue($asyncBody);
+                                        $task3.continue($asyncBody);
                                         return;
                                     }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        expenseType = $taskResult1;
-                                        if (System.String.contains(expenseType.Name,"B\u1ea3o hi\u1ec3m") === false && System.String.contains(expenseType.Name,"BH SOC") === false) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        if (expense.BossId != null && System.Nullable.gt(expense.BossId, 0) && expense.CommodityId != null && System.Nullable.gt(expense.CommodityId, 0) && expense.ContainerTypeId != null && System.Nullable.gt(expense.ContainerTypeId, 0)) {
-                                            $step = 2;
-                                            continue;
-                                        } 
-                                        $step = 19;
-                                        continue;
-                                    }
-                                    case 2: {
-                                        $task2 = this.CheckContainerType(expense);
+                                    case 5: {
+                                        $taskResult3 = $task3.getAwaitedResult();
                                         $step = 3;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 3: {
-                                        $taskResult2 = $task2.getAwaitedResult();
-                                        containerId = $taskResult2;
-                                        $task3 = new Core.Clients.Client.$ctor1("CommodityValue").FirstOrDefaultAsync(TMS.API.Models.CommodityValue, System.String.format("?$filter=Active eq true and BossId eq {0} and CommodityId eq {1} and ContainerId eq {2}", Bridge.box(expense.BossId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(expense.CommodityId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(containerId, System.Int32)));
-                                        $step = 4;
-                                        if ($task3.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task3.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 4: {
-                                        $taskResult3 = $task3.getAwaitedResult();
-                                        commodityValueDB = $taskResult3;
-                                        $task4 = new Core.Clients.Client.$ctor1("Vendor").FirstOrDefaultAsync(Core.Models.Vendor, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(expense.BossId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                        $step = 5;
-                                        if ($task4.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task4.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 5: {
-                                        $taskResult4 = $task4.getAwaitedResult();
-                                        boss = $taskResult4;
-                                        if (commodityValueDB == null) {
-                                            $step = 6;
-                                            continue;
-                                        } else  {
-                                            $step = 7;
-                                            continue;
-                                        }
+                                        continue;
                                     }
                                     case 6: {
-                                        confirm = ($t = new Core.Components.Forms.ConfirmDialog(), $t.Content = "B\u1ea1n c\u00f3 mu\u1ed1n l\u01b0u gi\u00e1 tr\u1ecb n\u00e0y v\u00e0o b\u1ea3ng GTHH kh\u00f4ng?", $t);
-                                        confirm.Render();
-                                        confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
-                                            var $step = 0,
-                                                $task1, 
-                                                $taskResult1, 
-                                                $jumpFromFinally, 
-                                                newCommodityValue, 
-                                                $asyncBody = Bridge.fn.bind(this, function () {
-                                                    for (;;) {
-                                                        $step = System.Array.min([0,1], $step);
-                                                        switch ($step) {
-                                                            case 0: {
-                                                                newCommodityValue = this.CreateCommodityValue(expense);
-                                                                newCommodityValue.TotalPrice = System.Nullable.getValue(expense.CommodityValue);
-                                                                newCommodityValue.SaleId = boss.UserId;
-                                                                newCommodityValue.CreatedBy = Core.Clients.Client.Token.UserId;
-                                                                $task1 = new Core.Clients.Client.$ctor1("CommodityValue").CreateAsync$1(newCommodityValue);
-                                                                $step = 1;
-                                                                if ($task1.isCompleted()) {
-                                                                    continue;
-                                                                }
-                                                                $task1.continue($asyncBody);
-                                                                return;
-                                                            }
-                                                            case 1: {
-                                                                $taskResult1 = $task1.getAwaitedResult();
-                                                                return;
-                                                            }
-                                                            default: {
-                                                                return;
-                                                            }
-                                                        }
-                                                    }
-                                                }, arguments);
-
-                                            $asyncBody();
-                                        }));
-                                        $step = 18;
-                                        continue;
-                                    }
-                                    case 7: {
-                                        if (System.Nullable.liftne("ne", expense.CommodityValue, commodityValueDB.TotalPrice)) {
-                                            confirm1 = ($t = new Core.Components.Forms.ConfirmDialog(), $t.Content = "B\u1ea1n c\u00f3 mu\u1ed1n l\u01b0u gi\u00e1 tr\u1ecb n\u00e0y v\u00e0o b\u1ea3ng GTHH kh\u00f4ng?", $t);
-                                            confirm1.Render();
-                                            confirm1.YesConfirmed = Bridge.fn.combine(confirm1.YesConfirmed, Bridge.fn.bind(this, function () {
-                                                var $step = 0,
-                                                    $task1, 
-                                                    $taskResult1, 
-                                                    $task2, 
-                                                    $taskResult2, 
-                                                    $jumpFromFinally, 
-                                                    newCommodityValue, 
-                                                    $asyncBody = Bridge.fn.bind(this, function () {
-                                                        for (;;) {
-                                                            $step = System.Array.min([0,1,2], $step);
-                                                            switch ($step) {
-                                                                case 0: {
-                                                                    commodityValueDB.EndDate = System.DateTime.getDate(System.DateTime.getNow());
-                                                                    commodityValueDB.Active = false;
-                                                                    $task1 = new Core.Clients.Client.$ctor1("CommodityValue").PatchAsync(System.Object, this.GetPatchEntity(commodityValueDB));
-                                                                    $step = 1;
-                                                                    if ($task1.isCompleted()) {
-                                                                        continue;
-                                                                    }
-                                                                    $task1.continue($asyncBody);
-                                                                    return;
-                                                                }
-                                                                case 1: {
-                                                                    $taskResult1 = $task1.getAwaitedResult();
-                                                                    newCommodityValue = this.CreateCommodityValue(expense);
-                                                                    newCommodityValue.TotalPrice = System.Nullable.getValue(expense.CommodityValue);
-                                                                    newCommodityValue.StartDate = System.DateTime.getDate(System.DateTime.getNow());
-                                                                    $task2 = new Core.Clients.Client.$ctor1("CommodityValue").CreateAsync$1(newCommodityValue);
-                                                                    $step = 2;
-                                                                    if ($task2.isCompleted()) {
-                                                                        continue;
-                                                                    }
-                                                                    $task2.continue($asyncBody);
-                                                                    return;
-                                                                }
-                                                                case 2: {
-                                                                    $taskResult2 = $task2.getAwaitedResult();
-                                                                    return;
-                                                                }
-                                                                default: {
-                                                                    return;
-                                                                }
-                                                            }
-                                                        }
-                                                    }, arguments);
-
-                                                $asyncBody();
-                                            }));
-                                        }
-                                        gridView = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this, "Expense");
-                                        $task5 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(Core.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq 11685", null));
-                                        $step = 8;
-                                        if ($task5.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task5.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 8: {
-                                        $taskResult5 = $task5.getAwaitedResult();
-                                        masterDataDB = $taskResult5;
-                                        vat = System.Decimal(masterDataDB.Name);
-                                        if (System.String.contains(expenseType.Name,"B\u1ea3o hi\u1ec3m")) {
-                                            $step = 9;
-                                            continue;
-                                        } else  {
-                                            $step = 11;
-                                            continue;
-                                        }
-                                    }
-                                    case 9: {
-                                        $task6 = this.CalcInsuranceFees(expense, false);
-                                        $step = 10;
-                                        if ($task6.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task6.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 10: {
-                                        $task6.getAwaitedResult();
-                                        $step = 15;
-                                        continue;
-                                    }
-                                    case 11: {
-                                        if (System.String.contains(expenseType.Name,"BH SOC")) {
-                                            $step = 12;
-                                            continue;
-                                        } 
-                                        $step = 14;
-                                        continue;
-                                    }
-                                    case 12: {
-                                        $task7 = this.CalcInsuranceFees(expense, true);
-                                        $step = 13;
-                                        if ($task7.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task7.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 13: {
-                                        $task7.getAwaitedResult();
-                                        $step = 14;
-                                        continue;
-                                    }
-
-                                    case 15: {
-                                        $task8 = new Core.Clients.Client.$ctor1("Expense").PatchAsync(System.Object, this.GetPatchEntity$1(expense));
-                                        $step = 16;
-                                        if ($task8.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task8.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 16: {
-                                        $taskResult8 = $task8.getAwaitedResult();
-                                        listViewItem = System.Linq.Enumerable.from(gridView.GetListViewItems(expense), Core.Components.ListViewItem).firstOrDefault(null, null);
-                                        listViewItem.UpdateView();
-                                        updated = ($t = Core.Components.Number, System.Linq.Enumerable.from(listViewItem.FilterChildren(Core.Components.Number, function (x) {
-                                            return Bridge.referenceEquals(x.GuiInfo.FieldName, "CommodityValue") || Bridge.referenceEquals(x.GuiInfo.FieldName, "TotalPriceBeforeTax") || Bridge.referenceEquals(x.GuiInfo.FieldName, "TotalPriceAfterTax");
-                                        }), $t).toList($t));
-                                        updated.ForEach(function (x) {
-                                            x.Dirty = true;
-                                        });
-                                        $task9 = listViewItem.PatchUpdate();
-                                        $step = 17;
-                                        if ($task9.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task9.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 17: {
-                                        $task9.getAwaitedResult();
-                                        $step = 18;
-                                        continue;
-                                    }
-
-                                    case 19: {
                                         $tcs.setResult(null);
                                         return;
                                     }
@@ -27729,323 +26947,20 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            CheckContainerType: function (expense) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $task2, 
-                    $taskResult2, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    containerTypes, 
-                    containerTypeCodes, 
-                    $t, 
-                    containerTypeName, 
-                    containers, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(Core.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 7565", null));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        containerTypes = $taskResult1;
-                                        containerTypeCodes = ($t = Core.Models.MasterData, System.Linq.Enumerable.from(containerTypes, $t).toDictionary(function (x) {
-                                            return x.Id;
-                                        }, null, System.Int32, $t));
-                                        containerTypeName = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.Int32, Core.Models.MasterData, containerTypeCodes, System.Nullable.getValue(expense.ContainerTypeId));
-                                        $task2 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(Core.Models.MasterData, System.String.format("?$filter=Active eq true and (contains(Name, '40HC') or contains(Name, '20DC'))", null));
-                                        $step = 2;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $taskResult2 = $task2.getAwaitedResult();
-                                        containers = $taskResult2;
-                                        if (System.String.contains(containerTypeName.Description,"Cont 20")) {
-                                            this.containerId = containers.Find(function (x) {
-                                                return System.String.contains(x.Name,"20DC");
-                                            }).Id;
-                                        } else if (System.String.contains(containerTypeName.Description,"Cont 40")) {
-                                            this.containerId = containers.Find(function (x) {
-                                                return System.String.contains(x.Name,"40HC");
-                                            }).Id;
-                                        }
-                                        $tcs.setResult(this.containerId);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
-            CreateCommodityValue: function (expense) {
-                var startDate1 = System.DateTime.create(System.DateTime.getYear(System.DateTime.getNow()), 1, 1);
-                var endDate1 = System.DateTime.create(System.DateTime.getYear(System.DateTime.getNow()), 6, 30);
-                var startDate2 = System.DateTime.create(System.DateTime.getYear(System.DateTime.getNow()), 7, 1);
-                var endDate2 = System.DateTime.create(System.DateTime.getYear(System.DateTime.getNow()), 12, 31);
-                var newCommodityValue = new TMS.API.Models.CommodityValue();
-                Core.Extensions.ReflectionExt.CopyPropFrom$1(newCommodityValue, expense);
-                newCommodityValue.Id = 0;
-                newCommodityValue.ContainerId = this.containerId;
-                newCommodityValue.TotalPrice = System.Decimal(0);
-                newCommodityValue.Notes = expense.CommodityValueNotes;
-                newCommodityValue.Active = true;
-                newCommodityValue.InsertedDate = System.DateTime.getDate(System.DateTime.getNow());
-                newCommodityValue.StartDate = System.DateTime.getDate(System.DateTime.getNow());
-                newCommodityValue.CreatedBy = Core.Clients.Client.Token.UserId;
-                if (System.DateTime.gte(System.DateTime.getDate(System.DateTime.getNow()), startDate1) && System.DateTime.lte(System.DateTime.getDate(System.DateTime.getNow()), endDate1)) {
-                    newCommodityValue.EndDate = endDate1;
+            CalcTax: function (expense) {
+                var grid = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this, "Expense");
+                var listViewItem = System.Linq.Enumerable.from(grid.GetListViewItems(expense), Core.Components.ListViewItem).firstOrDefault(null, null);
+                expense.TotalPriceBeforeTax = expense.UnitPrice.mul(expense.Quantity);
+                expense.TotalPriceAfterTax = expense.TotalPriceBeforeTax.add(expense.TotalPriceBeforeTax.mul(expense.Vat).div(System.Decimal(100)));
+                if (listViewItem != null) {
+                    listViewItem.UpdateView();
+                    var updated = listViewItem.FilterChildren$1(function (x) {
+                        return Bridge.referenceEquals(x.GuiInfo.FieldName, "TotalPriceBeforeTax") || Bridge.referenceEquals(x.GuiInfo.FieldName, "TotalPriceAfterTax");
+                    });
+                    Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, updated, function (x) {
+                        x.Dirty = true;
+                    });
                 }
-                if (System.DateTime.gte(System.DateTime.getDate(System.DateTime.getNow()), startDate2) && System.DateTime.lte(System.DateTime.getDate(System.DateTime.getNow()), endDate2)) {
-                    newCommodityValue.EndDate = endDate2;
-                }
-                return newCommodityValue;
-            },
-            CalcInsuranceFees: function (expense, isSOC) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $task2, 
-                    $taskResult2, 
-                    $task3, 
-                    $taskResult3, 
-                    $task4, 
-                    $taskResult4, 
-                    $task5, 
-                    $taskResult5, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    isSubRatio, 
-                    journeyId, 
-                    insuranceFeesRateDB, 
-                    getContainerType, 
-                    insuranceFeesRateColdDB, 
-                    extraInsuranceFeesRateDB, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        isSubRatio = false;
-                                        if (((expense.IsWet || expense.SteamingTerms || expense.BreakTerms) && expense.IsBought === false) || (expense.IsBought && expense.IsWet)) {
-                                            isSubRatio = true;
-                                        }
-                                        journeyId = expense.JourneyId == null ? "" : "and JourneyId eq " + (System.Nullable.toString(expense.JourneyId, null) || "");
-                                        insuranceFeesRateDB = null;
-                                        if (expense.IsBought) {
-                                            $step = 1;
-                                            continue;
-                                        } else  {
-                                            $step = 3;
-                                            continue;
-                                        }
-                                    }
-                                    case 1: {
-                                        $task1 = new Core.Clients.Client.$ctor1("InsuranceFeesRate").FirstOrDefaultAsync(TMS.API.Models.InsuranceFeesRate, System.String.format("?$filter=Active eq true and TransportationTypeId eq {0} {1} and IsBought eq {2} and IsSOC eq {3} and IsSubRatio eq {4}", Bridge.box(expense.TransportationTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), journeyId, System.Boolean.toString(expense.IsBought).toLowerCase(), System.Boolean.toString(isSOC).toLowerCase(), System.Boolean.toString(isSubRatio).toLowerCase()));
-                                        $step = 2;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        insuranceFeesRateDB = $taskResult1;
-                                        $step = 5;
-                                        continue;
-                                    }
-                                    case 3: {
-                                        $task2 = new Core.Clients.Client.$ctor1("InsuranceFeesRate").FirstOrDefaultAsync(TMS.API.Models.InsuranceFeesRate, System.String.format("?$filter=Active eq true and TransportationTypeId eq {0} {1} and IsBought eq {2} and IsSOC eq {3}", Bridge.box(expense.TransportationTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), journeyId, System.Boolean.toString(expense.IsBought).toLowerCase(), System.Boolean.toString(isSOC).toLowerCase()));
-                                        $step = 4;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 4: {
-                                        $taskResult2 = $task2.getAwaitedResult();
-                                        insuranceFeesRateDB = $taskResult2;
-                                        $step = 5;
-                                        continue;
-                                    }
-                                    case 5: {
-                                        if (insuranceFeesRateDB != null) {
-                                            $step = 6;
-                                            continue;
-                                        } else  {
-                                            $step = 15;
-                                            continue;
-                                        }
-                                    }
-                                    case 6: {
-                                        $task3 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(Core.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq {0}", [Bridge.box(expense.ContainerTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
-                                        $step = 7;
-                                        if ($task3.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task3.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 7: {
-                                        $taskResult3 = $task3.getAwaitedResult();
-                                        getContainerType = $taskResult3;
-                                        if (getContainerType != null && System.String.contains(getContainerType.Description.toLowerCase(),"l\u1ea1nh") && System.Nullable.eq(insuranceFeesRateDB.TransportationTypeId, 11673) && System.Nullable.eq(insuranceFeesRateDB.JourneyId, 12114)) {
-                                            $step = 8;
-                                            continue;
-                                        } else  {
-                                            $step = 10;
-                                            continue;
-                                        }
-                                    }
-                                    case 8: {
-                                        $task4 = new Core.Clients.Client.$ctor1("MasterData").FirstOrDefaultAsync(Core.Models.MasterData, System.String.format("?$filter=Active eq true and Id eq 25391", null));
-                                        $step = 9;
-                                        if ($task4.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task4.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 9: {
-                                        $taskResult4 = $task4.getAwaitedResult();
-                                        insuranceFeesRateColdDB = $taskResult4;
-                                        expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? System.Decimal(insuranceFeesRateColdDB.Name) : System.Decimal(0);
-                                        $step = 11;
-                                        continue;
-                                    }
-                                    case 10: {
-                                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
-                                        $step = 11;
-                                        continue;
-                                    }
-                                    case 11: {
-                                        if (insuranceFeesRateDB.IsSubRatio && expense.IsBought === false) {
-                                            $step = 12;
-                                            continue;
-                                        } 
-                                        $step = 14;
-                                        continue;
-                                    }
-                                    case 12: {
-                                        $task5 = new Core.Clients.Client.$ctor1("MasterData").GetRawList(Core.Models.MasterData, System.String.format("?$filter=Active eq true and ParentId eq 25374", null));
-                                        $step = 13;
-                                        if ($task5.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task5.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 13: {
-                                        $taskResult5 = $task5.getAwaitedResult();
-                                        extraInsuranceFeesRateDB = $taskResult5;
-                                        extraInsuranceFeesRateDB.ForEach(function (x) {
-                                            var prop = System.Linq.Enumerable.from(Bridge.Reflection.getMembers(Bridge.getType(expense), 16, 28), System.Reflection.PropertyInfo).where(function (y) {
-                                                return Bridge.referenceEquals(y.n, x.Name) && System.Boolean.parse(Bridge.toString(Bridge.Reflection.midel(y.g, expense).apply(null, null)));
-                                            }).firstOrDefault(null, null);
-                                            if (prop != null) {
-                                                expense.InsuranceFeeRate = System.Nullable.lift2("add", expense.InsuranceFeeRate, System.Decimal(x.Code));
-                                            }
-                                        });
-                                        $step = 14;
-                                        continue;
-                                    }
-                                    case 14: {
-                                        $step = 16;
-                                        continue;
-                                    }
-                                    case 15: {
-                                        expense.InsuranceFeeRate = System.Decimal(0);
-                                        expense.TotalPriceBeforeTax = System.Decimal(0);
-                                        expense.TotalPriceAfterTax = System.Decimal(0);
-                                        $step = 16;
-                                        continue;
-                                    }
-                                    case 16: {
-                                        if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, true)) {
-                                            this.CalcInsuranceFeeNoVAT(expense);
-                                        } else if (insuranceFeesRateDB != null && System.Nullable.eq(insuranceFeesRateDB.IsVAT, false)) {
-                                            this.CalcInsuranceFee(expense);
-                                        }
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
-            CalcInsuranceFee: function (expense) {
-                expense.TotalPriceBeforeTax = System.Nullable.getValue(expense.InsuranceFeeRate).mul(System.Nullable.getValue(expense.CommodityValue)).div(System.Decimal(100));
-                expense.TotalPriceAfterTax = expense.TotalPriceBeforeTax.add(System.Decimal.toDecimalPlaces(expense.TotalPriceBeforeTax.mul(expense.Vat).div(System.Decimal(100)), 0, 6));
-            },
-            CalcInsuranceFeeNoVAT: function (expense) {
-                expense.TotalPriceAfterTax = System.Nullable.getValue(expense.InsuranceFeeRate).mul(System.Nullable.getValue(expense.CommodityValue)).div(System.Decimal(100));
-                expense.TotalPriceBeforeTax = System.Decimal.toDecimalPlaces(expense.TotalPriceAfterTax.div(System.Decimal(1.1, 1)), 0, 6);
-            },
-            GetPatchEntity: function (commodityValue) {
-                var $t;
-                var details = new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor();
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(commodityValue.Id), $t));
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "Active", $t.Value = System.Boolean.toString(commodityValue.Active), $t));
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "EndDate", $t.Value = System.Nullable.toString(commodityValue.EndDate, function ($t) { return System.DateTime.format($t); }), $t));
-                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
-            },
-            GetPatchEntity$1: function (expense) {
-                var $t;
-                var details = new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor();
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(expense.Id), $t));
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "CommodityValue", $t.Value = expense.CommodityValue.toString(), $t));
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "TotalPriceAfterTax", $t.Value = expense.TotalPriceAfterTax.toString(), $t));
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "TotalPriceBeforeTax", $t.Value = expense.TotalPriceBeforeTax.toString(), $t));
-                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
-            },
-            GetPatchEntity$2: function (transportation) {
-                var $t;
-                var details = new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor();
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(transportation.Id), $t));
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "CustomerReturnFee", $t.Value = transportation.CustomerReturnFee.toString(), $t));
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = "TotalBet", $t.Value = transportation.TotalBet.toString(), $t));
-                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
             }
         }
     });
@@ -28257,7 +27172,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Nh\u1eadp \u0111\u1ed3ng lo\u1ea1t doanh thu";
                                                 instance.Entity = new TMS.API.Models.Revenue();
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -33661,8 +32576,12 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                         }
                                         _gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this), Core.Components.GridView).firstOrDefault(null, null);
                                         listViewItem = System.Linq.Enumerable.from(_gridView.RowData.Data).select(function (x) { return Bridge.cast(x, TMS.API.Models.TransportationPlan); }).firstOrDefault(function (x) {
-                                            return System.Nullable.eq(x.StatusId, Core.Enums.ApprovalStatusEnum.New);
+                                            return System.Nullable.eq(x.StatusId, Core.Enums.ApprovalStatusEnum.New) || System.Nullable.eq(x.StatusId, Core.Enums.ApprovalStatusEnum.Rejected);
                                         }, null);
+                                        if (listViewItem == null) {
+                                            $tcs.setResult(null);
+                                            return;
+                                        }
                                         confirm = ($t = new Core.Components.Forms.ConfirmDialog(), $t.Content = "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn g\u1eedi y\u00eau c\u1ea7u ph\u00ea duy\u1ec7t?", $t);
                                         confirm.Render();
                                         confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
@@ -34618,7 +33537,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "C\u1ea5u h\u00ecnh b\u1ea3o hi\u1ec3m v\u00e0 GTHH";
                                             instance.Entity = transportationPlan;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -35458,7 +34377,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda k\u1ebf ho\u1ea1ch v\u1eadn chuy\u1ec3n";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -35506,7 +34425,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Y\u00eau c\u1ea7u thay \u0111\u1ed5i k\u1ebf ho\u1ea1ch v\u1eadn chuy\u1ec3n";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -35554,7 +34473,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi k\u1ebf ho\u1ea1ch v\u1eadn chuy\u1ec3n";
                                             instance.Entity = new TMS.API.Models.TransportationPlan();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -36729,7 +35648,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "C\u1ea5u h\u00ecnh b\u1ea3o hi\u1ec3m v\u00e0 GTHH";
                                             instance.Entity = transportationPlan;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -37411,6 +36330,215 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
 
                 $asyncBody();
                 return $tcs.task;
+            }
+        }
+    });
+
+    Bridge.define("TMS.UI.Business.Manage.TransportationReturnEditorBL", {
+        inherits: [Core.Components.Forms.PopupEditor],
+        fields: {
+            gridView: null
+        },
+        props: {
+            TransportationEntity: {
+                get: function () {
+                    return Bridge.as(this.Entity, TMS.API.Models.Transportation);
+                }
+            }
+        },
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+                Core.Components.Forms.PopupEditor.ctor.call(this, "Transportation");
+                this.Name = "Transportation Return Editor";
+            }
+        },
+        methods: {
+            BeforeCreatedExpense: function (expense) {
+                if (this.TransportationEntity == null) {
+                    Core.Extensions.Toast.Warning("Vui l\u00f2ng ch\u1ecdn cont c\u1ea7n nh\u1eadp");
+                    return;
+                }
+                expense.ContainerNo = this.TransportationEntity.ContainerNo;
+                expense.SealNo = this.TransportationEntity.SealNo;
+                expense.BossId = this.TransportationEntity.BossId;
+                expense.CommodityId = this.TransportationEntity.CommodityId;
+                expense.ContainerTypeId = this.TransportationEntity.ContainerTypeId;
+                expense.RouteId = this.TransportationEntity.RouteId;
+                expense.YearText = this.TransportationEntity.YearText;
+                expense.MonthText = this.TransportationEntity.MonthText;
+                expense.TransportationId = this.TransportationEntity.Id;
+                expense.Id = 0;
+                expense.Quantity = System.Decimal(1);
+                expense.IsReturn = true;
+            },
+            AfterCreatedExpense: function (expense, patchUpdate, listViewItem1) {
+                var $step = 0,
+                    $task1, 
+                    $taskResult1, 
+                    $task2, 
+                    $taskResult2, 
+                    $task3, 
+                    $taskResult3, 
+                    $jumpFromFinally, 
+                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                    $returnValue, 
+                    transportations, 
+                    expenseTypeIds, 
+                    expenseTypes, 
+                    notTotal, 
+                    $t, 
+                    item, 
+                    details, 
+                    expenses, 
+                    $t1, 
+                    itemDetail, 
+                    expenseTypeThisIds, 
+                    totalThisValue, 
+                    $t2, 
+                    path, 
+                    $t3, 
+                    $async_e, 
+                    $asyncBody = Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                $step = System.Array.min([0,1,2,3,4,5,6], $step);
+                                switch ($step) {
+                                    case 0: {
+                                        $task1 = new Core.Clients.Client.$ctor1("Transportation").GetRawList(TMS.API.Models.Transportation, System.String.format("?$expand=Expense&$filter=Active eq true and Id in ({0})", [([Bridge.box(this.TransportationEntity.Id, System.Int32)]).join(",")]));
+                                        $step = 1;
+                                        if ($task1.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task1.continue($asyncBody);
+                                        return;
+                                    }
+                                    case 1: {
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        transportations = $taskResult1;
+                                        expenseTypeIds = System.Linq.Enumerable.from(transportations, TMS.API.Models.Transportation).selectMany(function (x) {
+                                            return x.Expense;
+                                        }).where(function (x) {
+                                            return x.ExpenseTypeId != null;
+                                        }).select(function (x) {
+                                            return System.Nullable.getValue(x.ExpenseTypeId);
+                                        }).distinct().toList(System.Int32);
+                                        $task2 = new Core.Clients.Client.$ctor1("MasterData").GetRawListById(TMS.API.Models.MasterData, expenseTypeIds);
+                                        $step = 2;
+                                        if ($task2.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task2.continue($asyncBody);
+                                        return;
+                                    }
+                                    case 2: {
+                                        $taskResult2 = $task2.getAwaitedResult();
+                                        expenseTypes = $taskResult2;
+                                        notTotal = System.Linq.Enumerable.from(expenseTypes, TMS.API.Models.MasterData).where(function (x) {
+                                            return Core.Extensions.StringExt.IsNullOrWhiteSpace(x.Additional);
+                                        }).select(function (x) {
+                                            return x.Id;
+                                        }).toList(System.Int32);
+                                        $t = Bridge.getEnumerator(transportations);
+                                        $step = 3;
+                                        continue;
+                                    }
+                                    case 3: {
+                                        if ($t.moveNext()) {
+                                            item = { v : $t.Current };
+                                            $step = 4;
+                                            continue;
+                                        }
+                                        $step = 6;
+                                        continue;
+                                    }
+                                    case 4: {
+                                        details = (function ($me, item) {
+                                            return function (_o1) {
+                                                var $t1;
+                                                _o1.add(($t1 = new Core.ViewModels.PatchUpdateDetail(), $t1.Field = Core.Extensions.Utils.IdField, $t1.Value = Bridge.toString(item.v.Id), $t1));
+                                                return _o1;
+                                            };
+                                        })(this, item)(new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor());
+                                        expenses = item.v.Expense;
+                                        $t1 = Bridge.getEnumerator(System.Linq.Enumerable.from(expenseTypes, TMS.API.Models.MasterData).select(function (x) {
+                                            return x.Additional;
+                                        }).distinct().toList(System.String));
+                                        try {
+                                            while ($t1.moveNext()) {
+                                                itemDetail = { v : $t1.Current };
+                                                expenseTypeThisIds = { v : System.Linq.Enumerable.from(expenseTypes, TMS.API.Models.MasterData).where((function ($me, itemDetail) {
+                                                    return function (x) {
+                                                        return Bridge.referenceEquals(x.Additional, itemDetail.v);
+                                                    };
+                                                })(this, itemDetail)).select(function (x) {
+                                                    return x.Id;
+                                                }).distinct().toList(System.Int32) };
+                                                totalThisValue = System.Linq.Enumerable.from(expenses, TMS.API.Models.Expense).where((function ($me, expenseTypeThisIds) {
+                                                    return function (x) {
+                                                        return expenseTypeThisIds.v.contains(System.Nullable.getValue(x.ExpenseTypeId));
+                                                    };
+                                                })(this, expenseTypeThisIds)).sum(function (x) {
+                                                    return x.TotalPriceAfterTax;
+                                                }, System.Decimal.Zero);
+                                                details.add(($t2 = new Core.ViewModels.PatchUpdateDetail(), $t2.Field = itemDetail.v, $t2.Value = totalThisValue.toString(), $t2));
+                                            }
+                                        } finally {
+                                            if (Bridge.is($t1, System.IDisposable)) {
+                                                $t1.System$IDisposable$Dispose();
+                                            }
+                                        }
+                                        path = ($t2 = new Core.ViewModels.PatchUpdate(), $t2.Changes = ($t3 = Core.ViewModels.PatchUpdateDetail, System.Linq.Enumerable.from(Core.Extensions.BridgeExt.DistinctBy(Core.ViewModels.PatchUpdateDetail, System.String, System.Linq.Enumerable.from(details, Core.ViewModels.PatchUpdateDetail).where(function (x) {
+                                            return x.Field != null && !Bridge.referenceEquals(x.Field, "null") && !Bridge.referenceEquals(x.Field, "");
+                                        }), function (x) {
+                                            return x.Field;
+                                        }), $t3).toList($t3)), $t2);
+                                        $task3 = new Core.Clients.Client.$ctor1("Transportation").PatchAsync(TMS.API.Models.Transportation, path, "", "true", false, false);
+                                        $step = 5;
+                                        if ($task3.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task3.continue($asyncBody);
+                                        return;
+                                    }
+                                    case 5: {
+                                        $taskResult3 = $task3.getAwaitedResult();
+                                        $step = 3;
+                                        continue;
+                                    }
+                                    case 6: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                    default: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            $tcs.setException($async_e);
+                        }
+                    }, arguments);
+
+                $asyncBody();
+                return $tcs.task;
+            },
+            CalcTax: function (expense) {
+                var grid = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this, "Expense");
+                var listViewItem = System.Linq.Enumerable.from(grid.GetListViewItems(expense), Core.Components.ListViewItem).firstOrDefault(null, null);
+                expense.TotalPriceBeforeTax = expense.UnitPrice.mul(expense.Quantity);
+                expense.TotalPriceAfterTax = expense.TotalPriceBeforeTax.add(expense.TotalPriceBeforeTax.mul(expense.Vat).div(System.Decimal(100)));
+                if (listViewItem != null) {
+                    listViewItem.UpdateView();
+                    var updated = listViewItem.FilterChildren$1(function (x) {
+                        return Bridge.referenceEquals(x.GuiInfo.FieldName, "TotalPriceBeforeTax") || Bridge.referenceEquals(x.GuiInfo.FieldName, "TotalPriceAfterTax");
+                    });
+                    Core.Extensions.IEnumerableExtensions.ForEach(Core.Components.EditableComponent, updated, function (x) {
+                        x.Dirty = true;
+                    });
+                }
             }
         }
     });
@@ -38458,7 +37586,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Update tham chi\u1ebfu";
                                             instance.Entity = masterData || new TMS.API.Models.MasterData();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -38506,7 +37634,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam tham chi\u1ebfu m\u1edbi";
                                             instance.Entity = new TMS.API.Models.MasterData();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -38610,7 +37738,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Update tham chi\u1ebfu";
                                             instance.Entity = masterData;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 2;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -38992,7 +38120,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = entity == null ? "Th\u00eam cot du lieu moi" : "Update cot du lieu";
                                             instance.Entity = entity || new TMS.API.Models.Entity();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -39040,7 +38168,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = gridPolicy == null ? "Th\u00eam cot du lieu moi" : "Update cot du lieu";
                                             instance.Entity = gridPolicy || new TMS.API.Models.GridPolicy();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -39889,7 +39017,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda h\u00e3ng t\u00e0u";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -39937,7 +39065,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi h\u00e3ng t\u00e0u";
                                             instance.Entity = new TMS.API.Models.BrandShip();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -40028,7 +39156,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda v\u1eadt t\u01b0 h\u00e0ng h\u00f3a";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -40089,7 +39217,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi v\u1eadt t\u01b0 h\u00e0ng h\u00f3a";
                                             instance.Entity = new TMS.API.Models.MasterData();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 2;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -40110,7 +39238,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi v\u1eadt t\u01b0 h\u00e0ng h\u00f3a";
                                             instance.Entity = ($t = new TMS.API.Models.MasterData(), $t.ParentId = 7651, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 4;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -40180,7 +39308,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda c\u1ea5u h\u00ecnh GTHH theo m\u1ee9c c\u00f4ng ty";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -40305,7 +39433,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda lo\u1ea1i xe c\u00f4ng";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -40354,7 +39482,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi lo\u1ea1i xe c\u00f4ng";
                                             instance.Entity = ($t = new TMS.API.Models.MasterData(), $t.ParentId = 7565, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -40783,7 +39911,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda \u0111\u1ecba \u0111i\u1ec3m";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -40831,7 +39959,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi \u0111\u1ecba \u0111i\u1ec3m";
                                             instance.Entity = new TMS.API.Models.Location();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -41253,7 +40381,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda \u0111\u01a1n v\u1ecb nh\u1eadn l\u1ec7nh";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 2;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -41273,7 +40401,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda \u0111\u01a1n v\u1ecb \u0111\u00f3ng h\u1ea1 h\u00e0ng";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 4;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -41339,7 +40467,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi \u0111\u01a1n v\u1ecb \u0111\u00f3ng h\u1ea1 h\u00e0ng";
                                             instance.Entity = ($t = new TMS.API.Models.Vendor(), $t.TypeId = TMS.API.Enums.VendorTypeEnum.Partner, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 2;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -41363,7 +40491,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             System.Array.add(vendor.VendorService, vendorService, TMS.API.Models.VendorService);
                                             instance.Entity = vendor;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 4;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -41675,7 +40803,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda \u0111i\u1ec1u ch\u1ec9nh c\u01b0\u1edbc t\u00e0u";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -41724,7 +40852,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi \u0111i\u1ec1u ch\u1ec9nh c\u01b0\u1edbc t\u00e0u";
                                             instance.Entity = ($t = new TMS.API.Models.Quotation(), $t.TypeId = 11483, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -41916,7 +41044,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda c\u1ea5u h\u00ecnh ch\u00ednh s\u00e1ch";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -41964,7 +41092,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi c\u1ea5u h\u00ecnh ch\u00ednh s\u00e1ch";
                                             instance.Entity = new TMS.API.Models.QuotationExpense();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -42115,7 +41243,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1";
                                             instance.Entity = parent;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 5;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -42163,7 +41291,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi b\u1ea3ng gi\u00e1";
                                             instance.Entity = new TMS.API.Models.Quotation();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -42247,7 +41375,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "\u0110i\u1ec1u ch\u1ec9nh b\u00e1o gi\u00e1";
                                             instance.Entity = new TMS.API.Models.QuotationUpdate();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -42365,7 +41493,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda khu v\u1ef1c";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -42426,7 +41554,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi khu v\u1ef1c";
                                             instance.Entity = new TMS.API.Models.MasterData();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 2;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -42447,7 +41575,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi khu v\u1ef1c";
                                             instance.Entity = ($t = new TMS.API.Models.MasterData(), $t.ParentId = 7569, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 4;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -42564,7 +41692,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda tuy\u1ebfn v\u1eadn chuy\u1ec3n";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -42612,7 +41740,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi tuy\u1ebfn v\u1eadn chuy\u1ec3n";
                                             instance.Entity = new TMS.API.Models.Route();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -42750,7 +41878,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda chi ph\u00ed b\u00e1o gi\u00e1";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -42799,7 +41927,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi chi ph\u00ed b\u00e1o gi\u00e1";
                                             instance.Entity = ($t = new TMS.API.Models.SettingPolicy(), $t.TypeId = 1, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -42871,7 +41999,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda c\u1ea5u h\u00ecnh v\u1eadn chuy\u1ec3n";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -42919,7 +42047,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi c\u1ea5u h\u00ecnh v\u1eadn chuy\u1ec3n";
                                             instance.Entity = new TMS.API.Models.SettingTransportation();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -43061,7 +42189,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda t\u00e0u";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -43109,7 +42237,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi t\u00e0u";
                                             instance.Entity = new TMS.API.Models.Ship();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -43288,7 +42416,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda c\u1ea5u h\u00ecnh lo\u1ea1i v\u1eadn chuy\u1ec3n";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -43336,7 +42464,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi c\u1ea5u h\u00ecnh lo\u1ea1i v\u1eadn chuy\u1ec3n";
                                             instance.Entity = new TMS.API.Models.BrandShip();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -43429,7 +42557,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00f4ng tin li\u00ean h\u1ec7";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -43477,7 +42605,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi th\u00f4ng tin li\u00ean h\u1ec7";
                                             instance.Entity = new TMS.API.Models.VendorContact();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -43594,7 +42722,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda ch\u1ee7 h\u00e0ng";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -43713,7 +42841,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi ch\u1ee7 h\u00e0ng";
                                             instance.Entity = ($t = new TMS.API.Models.Vendor(), $t.TypeId = TMS.API.Enums.VendorTypeEnum.Boss, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -44294,7 +43422,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Th\u00eam m\u1edbi th\u00f4ng b\u00e1o";
                                             instance.Entity = new TMS.API.Models.TaskNotification();
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -44342,7 +43470,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = user.Id <= 0 ? "Add user" : "Edit user";
                                             instance.Entity = user;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -44514,7 +43642,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
                                             instance.Title = "User Setting";
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -44563,7 +43691,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Entity = ($t = new Core.ViewModels.UserProfileVM(), $t.Id = this.UserEntity.Id, $t);
                                             instance.Title = "Change Password";
                                             return instance;
-                                        }), false);
+                                        }), false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -44998,7 +44126,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "User Profile";
                                             instance.Entity = user;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 2;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -45262,7 +44390,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ch\u1ec9nh s\u1eeda k\u1ebf ho\u1ea1ch v\u1eadn chuy\u1ec3n";
                                             instance.Entity = entity;
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 4;
                                         if ($task3.isCompleted()) {
                                             continue;
@@ -45524,7 +44652,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                                 instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1 tr\u1ea3 h\u00e0ng";
                                                 instance.Entity = quotation;
                                                 return instance;
-                                            }, false);
+                                            }, false, false);
                                             $step = 2;
                                             if ($task2.isCompleted()) {
                                                 continue;
@@ -45655,7 +44783,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ph\u00e2n b\u1ed5 chi ph\u00ed tr\u1ea3 h\u00e0ng";
                                             instance.Entity = ($t = new TMS.API.Models.Allotment(), $t.Expense = fees, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 2;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -45683,24 +44811,6 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            BeforeCreatedExpense: function (expense) {
-                if (this.selected == null) {
-                    Core.Extensions.Toast.Warning("Vui l\u00f2ng ch\u1ecdn cont c\u1ea7n nh\u1eadp");
-                    return;
-                }
-                expense.ContainerNo = this.selected.ContainerNo;
-                expense.SealNo = this.selected.SealNo;
-                expense.BossId = this.selected.BossId;
-                expense.CommodityId = this.selected.CommodityId;
-                expense.ContainerTypeId = this.selected.ContainerTypeId;
-                expense.RouteId = this.selected.RouteId;
-                expense.YearText = this.selected.YearText;
-                expense.MonthText = this.selected.MonthText;
-                expense.Id = 0;
-                expense.TransportationId = this.selected.Id;
-                expense.Quantity = System.Decimal(1);
-                expense.IsReturn = true;
-            },
             CheckFee: function () {
                 var $step = 0,
                     $task1, 
@@ -45724,7 +44834,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             instance.Title = "Ki\u1ec3m tra b\u1ea3ng k\u00ea";
                                             instance.Entity = ($t = new TMS.API.Models.CheckFeeHistory(), $t.RouteIds = routeIds, $t.TypeId = 2, $t);
                                             return instance;
-                                        }, false);
+                                        }, false, false);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -45801,13 +44911,15 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            ReloadExpense: function (transportation) {
+            EditTransportation: function (entity) {
                 var $step = 0,
                     $task1, 
+                    $taskResult1, 
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    gridViewExpense, 
+                    editExpense, 
+                    gridView, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -45815,12 +44927,73 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
+                                        this.selected = entity;
+                                        editExpense = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this.TabEditor, "Expense");
+                                        if (editExpense != null) {
+                                            $tcs.setResult(null);
+                                            return;
+                                        }
+                                        gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this, function (x) {
+                                            return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
+                                        }), Core.Components.GridView).firstOrDefault(null, null);
+                                        $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(gridView, "Transportation Return Editor", function () {
+                                            var type = Bridge.Reflection.getType("TMS.UI.Business.Manage.TransportationReturnEditorBL");
+                                            var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
+                                            instance.Title = "Xem chi ph\u00ed";
+                                            instance.Entity = entity;
+                                            return instance;
+                                        }, false, false);
+                                        $step = 1;
+                                        if ($task1.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task1.continue($asyncBody);
+                                        return;
+                                    }
+                                    case 1: {
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        this._expensePopup = $taskResult1;
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                    default: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            $tcs.setException($async_e);
+                        }
+                    }, arguments);
+
+                $asyncBody();
+                return $tcs.task;
+            },
+            ReloadExpense: function (transportation) {
+                var $step = 0,
+                    $task1, 
+                    $jumpFromFinally, 
+                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                    $returnValue, 
+                    editExpense, 
+                    $async_e, 
+                    $asyncBody = Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                $step = System.Array.min([0,1], $step);
+                                switch ($step) {
+                                    case 0: {
+                                        Bridge.Console.log(Bridge.box(transportation.Id, System.Int32));
                                         this.selected = transportation;
-                                        gridViewExpense = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this), Core.Components.GridView).firstOrDefault(function (x) {
-                                            return Bridge.referenceEquals(x.GuiInfo.RefName, "Expense");
-                                        }, null);
-                                        gridViewExpense.DataSourceFilter = System.String.format("?$filter=Active eq true and TransportationId eq {0} and IsReturn eq true and ((ExpenseTypeId in (15981, 15939) eq false)  or IsPurchasedInsurance eq true) and RequestChangeId eq null", [Bridge.box(transportation.Id, System.Int32)]);
-                                        $task1 = gridViewExpense.ActionFilter();
+                                        Core.Extensions.ReflectionExt.CopyPropFrom$1(this._expensePopup.Entity, this.selected);
+                                        editExpense = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this._expensePopup, "Expense");
+                                        if (editExpense == null) {
+                                            $tcs.setResult(null);
+                                            return;
+                                        }
+                                        $task1 = editExpense.ActionFilter();
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;

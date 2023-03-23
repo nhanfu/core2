@@ -3592,3 +3592,11 @@ div > [class*="cell"]:last-child {
 #user-active .text-sm {
   font-size: 0.875rem !important;
 }
+.backdrop-gridview {
+  position: absolute;
+  width: 100%;
+}
+.backdrop-gridview .popup-content {
+  top: 35px !important;
+  right: 0;
+}

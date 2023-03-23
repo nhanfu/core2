@@ -3,7 +3,6 @@ using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
 using System;
-using System.Linq;
 using ElementType = Core.MVVM.ElementType;
 
 namespace Core.Components

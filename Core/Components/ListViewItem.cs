@@ -601,13 +601,6 @@ namespace Core.Components
             GroupText.InnerHTML = text;
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        protected override async Task RowItemClick(Event e)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
-        {
-            return;
-        }
-
         public bool ShowChildren
         {
             get => _showChildren; set

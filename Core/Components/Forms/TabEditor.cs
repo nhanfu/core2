@@ -15,6 +15,7 @@ namespace Core.Components.Forms
     {
         private const string ActiveClass = "active";
         protected HTMLElement _backdrop;
+        protected HTMLElement _backdropGridView;
         protected HTMLElement _tab;
         public static HTMLElement TabContainer = Document.GetElementById("tab-content");
         public static List<TabEditor> Tabs = new List<TabEditor>();
@@ -87,23 +88,47 @@ namespace Core.Components.Forms
 
         public void RenderPopup()
         {
-            Html.Take(ParentElement ?? Parent?.Element ?? TabContainer)
-                .Div.ClassName("backdrop").TabIndex(-1).Trigger(EventType.Focus).Event(EventType.KeyDown, HotKeyHandler);
-            _backdrop = Html.Context;
-            Html.Instance
-                .Div.ClassName("popup-content").Div.ClassName("popup-title").Span.IconForSpan(Icon);
-            IconElement = Html.Context;
-            Html.Instance.End.Span.IText(Title);
-            TitleElement = Html.Context;
-            Html.Instance.End.Div.ClassName("icon-box").Span.ClassName("fa fa-times")
-                .Event(EventType.Click, Dispose)
-                .EndOf(".popup-title")
-                .Div.ClassName("popup-body");
-            Element = Html.Context;
-            base.Render();
-            if (_backdrop.OutOfViewport().Top)
+            if (Parent is GridView)
             {
-                _backdrop.ScrollIntoView(true);
+                Html.Take(ParentElement ?? Parent?.Element ?? TabContainer)
+                .Div.ClassName("backdrop-gridview").TabIndex(-1).Trigger(EventType.Focus).Event(EventType.KeyDown, HotKeyHandler);
+                _backdropGridView = Html.Context;
+                Html.Instance
+                    .Div.ClassName("popup-content").Div.ClassName("popup-title").Span.IconForSpan(Icon);
+                IconElement = Html.Context;
+                Html.Instance.End.Span.IText(Title);
+                TitleElement = Html.Context;
+                Html.Instance.End.Div.ClassName("icon-box").Span.ClassName("fa fa-times")
+                    .Event(EventType.Click, Dispose)
+                    .EndOf(".popup-title")
+                    .Div.ClassName("popup-body");
+                Element = Html.Context;
+                base.Render();
+                if (_backdropGridView.OutOfViewport().Top)
+                {
+                    _backdropGridView.ScrollIntoView(true);
+                }
+            }
+            else
+            {
+                Html.Take(ParentElement ?? Parent?.Element ?? TabContainer)
+                .Div.ClassName("backdrop").TabIndex(-1).Trigger(EventType.Focus).Event(EventType.KeyDown, HotKeyHandler);
+                _backdrop = Html.Context;
+                Html.Instance
+                    .Div.ClassName("popup-content").Div.ClassName("popup-title").Span.IconForSpan(Icon);
+                IconElement = Html.Context;
+                Html.Instance.End.Span.IText(Title);
+                TitleElement = Html.Context;
+                Html.Instance.End.Div.ClassName("icon-box").Span.ClassName("fa fa-times")
+                    .Event(EventType.Click, Dispose)
+                    .EndOf(".popup-title")
+                    .Div.ClassName("popup-body");
+                Element = Html.Context;
+                base.Render();
+                if (_backdrop.OutOfViewport().Top)
+                {
+                    _backdrop.ScrollIntoView(true);
+                }
             }
         }
 
@@ -375,7 +400,6 @@ namespace Core.Components.Forms
             }
             else
             {
-                // Update the Gridview row that open this tab if possible
             }
             var firstGridView = Parent.FindActiveComponent<GridView>().FirstOrDefault();
             if (firstGridView != null && firstGridView.LastListViewItem != null && firstGridView.LastElementFocus != null)
@@ -407,6 +431,7 @@ namespace Core.Components.Forms
             Element?.Remove();
             _li?.Remove();
             _backdrop?.Remove();
+            _backdropGridView?.Remove();
         }
     }
 }

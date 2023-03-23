@@ -12,14 +12,14 @@ using TMS.API.Models;
 
 namespace TMS.UI.Business.Manage
 {
-    public class TransportationEditorBL : PopupEditor
+    public class TransportationReturnEditorBL : PopupEditor
     {
         public GridView gridView;
         public Transportation TransportationEntity => Entity as Transportation;
 
-        public TransportationEditorBL() : base(nameof(Transportation))
+        public TransportationReturnEditorBL() : base(nameof(Transportation))
         {
-            Name = "Transportation Editor";
+            Name = "Transportation Return Editor";
         }
 
         public virtual void BeforeCreatedExpense(Expense expense)
@@ -40,6 +40,7 @@ namespace TMS.UI.Business.Manage
             expense.TransportationId = TransportationEntity.Id;
             expense.Id = 0;
             expense.Quantity = 1;
+            expense.IsReturn = true;
         }
 
         public async Task AfterCreatedExpense(Expense expense, PatchUpdate patchUpdate, ListViewItem listViewItem1)

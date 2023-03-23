@@ -1,4 +1,5 @@
 ﻿using Bridge.Html5;
+using Bridge.Utils;
 using Core.Clients;
 using Core.Components;
 using Core.Components.Extensions;
@@ -206,27 +207,6 @@ namespace TMS.UI.Business.Manage
                 });
         }
 
-        public override void BeforeCreatedExpense(Expense expense)
-        {
-            if (selected is null)
-            {
-                Toast.Warning("Vui lòng chọn cont cần nhập");
-                return;
-            }
-            expense.ContainerNo = selected.ContainerNo;
-            expense.SealNo = selected.SealNo;
-            expense.BossId = selected.BossId;
-            expense.CommodityId = selected.CommodityId;
-            expense.ContainerTypeId = selected.ContainerTypeId;
-            expense.RouteId = selected.RouteId;
-            expense.YearText = selected.YearText;
-            expense.MonthText = selected.MonthText;
-            expense.Id = 0;
-            expense.TransportationId = selected.Id;
-            expense.Quantity = 1;
-            expense.IsReturn = true;
-        }
-
         public override async Task CheckFee()
         {
             var routeIds = LocalStorage.GetItem<List<int>>("RouteCheckFeeClosing");
@@ -262,12 +242,38 @@ namespace TMS.UI.Business.Manage
                 });
         }
 
+        public override async Task EditTransportation(Transportation entity)
+        {
+            selected = entity;
+            var editExpense = TabEditor.FindComponentByName<GridView>(nameof(Expense));
+            if (editExpense != null)
+            {
+                return;
+            }
+            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
+            _expensePopup = await gridView.OpenPopup(
+                featureName: "Transportation Return Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationReturnEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Xem chi phí";
+                    instance.Entity = entity;
+                    return instance;
+                });
+        }
+
         public override async Task ReloadExpense(Transportation transportation)
         {
+            Bridge.Utils.Console.Log(transportation.Id);
             selected = transportation;
-            var gridViewExpense = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Expense));
-            gridViewExpense.DataSourceFilter = $"?$filter=Active eq true and TransportationId eq {transportation.Id} and IsReturn eq true and ((ExpenseTypeId in (15981, 15939) eq false)  or IsPurchasedInsurance eq true) and RequestChangeId eq null";
-            await gridViewExpense.ActionFilter();
+            _expensePopup.Entity.CopyPropFrom(selected);
+            var editExpense = _expensePopup.FindComponentByName<GridView>(nameof(Expense));
+            if (editExpense is null)
+            {
+                return;
+            }
+            await editExpense.ActionFilter();
         }
 
         public override void CheckReturnDate(Transportation Transportation)

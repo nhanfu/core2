@@ -266,7 +266,7 @@ namespace Core.Components.Extensions
             tab.OpenFrom = parentTab?.FilterChildren<ListViewItem>(x => x.Entity == tab.Entity)?.FirstOrDefault();
         }
 
-        public static async Task<TabEditor> OpenPopup(this EditableComponent com, string featureName, Func<TabEditor> factory, bool anonymous = false)
+        public static async Task<TabEditor> OpenPopup(this EditableComponent com, string featureName, Func<TabEditor> factory, bool anonymous = false, bool child = false)
         {
             return await com.OpenTab(com.GetHashCode().ToString(), featureName, factory, true, anonymous);
         }
