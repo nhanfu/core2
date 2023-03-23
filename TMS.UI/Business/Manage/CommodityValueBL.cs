@@ -245,24 +245,31 @@ namespace TMS.UI.Business.Manage
             }
             if (insuranceFeesRateDB != null)
             {
-                if (containerExpense != null && containerExpense.Description.ToLower().Contains("lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
-                {
-                    expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? decimal.Parse(insuranceFeesRateColdDB.Name) : 0;
-                }
-                else
+                if (expense.ExpenseTypeId == 15981)
                 {
                     expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
                 }
-                if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
+                else
                 {
-                    extraInsuranceFeesRateDB.ForEach(x =>
+                    if (containerExpense != null && containerExpense.Description.ToLower().Contains("lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
                     {
-                        var prop = expense.GetType().GetProperties().Where(y => y.Name == x.Name && bool.Parse(y.GetValue(expense, null).ToString())).FirstOrDefault();
-                        if (prop != null)
+                        expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? decimal.Parse(insuranceFeesRateColdDB.Name) : 0;
+                    }
+                    else
+                    {
+                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                    }
+                    if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
+                    {
+                        extraInsuranceFeesRateDB.ForEach(x =>
                         {
-                            expense.InsuranceFeeRate += decimal.Parse(x.Code);
-                        }
-                    });
+                            var prop = expense.GetType().GetProperties().Where(y => y.Name == x.Name && bool.Parse(y.GetValue(expense, null).ToString())).FirstOrDefault();
+                            if (prop != null)
+                            {
+                                expense.InsuranceFeeRate += decimal.Parse(x.Code);
+                            }
+                        });
+                    }
                 }
             }
             else

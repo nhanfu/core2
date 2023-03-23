@@ -1449,27 +1449,34 @@ namespace TMS.UI.Business.Manage
             }
             if (insuranceFeesRateDB != null)
             {
-                var getContainerType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq {expense.ContainerTypeId}");
-                if (getContainerType != null && getContainerType.Description.ToLower().Contains("lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
-                {
-                    var insuranceFeesRateColdDB = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 25391");
-                    expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? decimal.Parse(insuranceFeesRateColdDB.Name) : 0;
-                }
-                else
+                if (expense.ExpenseTypeId == 15981)
                 {
                     expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
                 }
-                if (insuranceFeesRateDB.IsSubRatio && insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
+                else
                 {
-                    var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
-                    extraInsuranceFeesRateDB.ForEach(x =>
+                    var getContainerType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq {expense.ContainerTypeId}");
+                    if (getContainerType != null && getContainerType.Description.ToLower().Contains("lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
                     {
-                        var prop = expense.GetType().GetProperties().Where(y => y.Name == x.Name && bool.Parse(y.GetValue(expense, null).ToString())).FirstOrDefault();
-                        if (prop != null)
+                        var insuranceFeesRateColdDB = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 25391");
+                        expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? decimal.Parse(insuranceFeesRateColdDB.Name) : 0;
+                    }
+                    else
+                    {
+                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                    }
+                    if (insuranceFeesRateDB.IsSubRatio && insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
+                    {
+                        var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
+                        extraInsuranceFeesRateDB.ForEach(x =>
                         {
-                            expense.InsuranceFeeRate += decimal.Parse(x.Code);
-                        }
-                    });
+                            var prop = expense.GetType().GetProperties().Where(y => y.Name == x.Name && bool.Parse(y.GetValue(expense, null).ToString())).FirstOrDefault();
+                            if (prop != null)
+                            {
+                                expense.InsuranceFeeRate += decimal.Parse(x.Code);
+                            }
+                        });
+                    }
                 }
             }
             else
@@ -1506,7 +1513,10 @@ namespace TMS.UI.Business.Manage
                 expenseSOC.ExpenseTypeId = expenseTypeSOC.Id; //SOC
                 expenseSOC.IsWet = false;
                 expenseSOC.IsBought = false;
+                expenseSOC.SteamingTerms = false;
+                expenseSOC.BreakTerms = false;
                 expenseSOC.CommodityValue = commodityValue.TotalPrice;
+                expenseSOC.JourneyId = 12114;
                 await CalcInsuranceFees(expenseSOC, true);
                 await new Client(nameof(Expense)).CreateAsync<Expense>(expenseSOC);
             }
