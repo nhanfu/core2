@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
+using TMS.API.ViewModels;
 
 namespace TMS.UI.Business.Manage
 {
@@ -309,6 +310,23 @@ namespace TMS.UI.Business.Manage
         {
             var tran = new TransportationListAccountantBL();
             await tran.RequestUnClosing(transportation, patch);
+        }
+
+        public override async Task ProductionReport()
+        {
+            await this.OpenPopup(
+                featureName: "Production Report",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.ProductionReportFormBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Báo cáo sản lượng";
+                    instance.Entity = new ReportGroupVM()
+                    {
+                        Return = true
+                    };
+                    return instance;
+                });
         }
     }
 }

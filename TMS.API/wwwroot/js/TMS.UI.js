@@ -3083,6 +3083,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
             StartShip: false,
             BrandShip: false,
             User: false,
+            Return: false,
             FromDate: null,
             ToDate: null
         }
@@ -45161,6 +45162,55 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                     }
                                     case 1: {
                                         $task1.getAwaitedResult();
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                    default: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            $tcs.setException($async_e);
+                        }
+                    }, arguments);
+
+                $asyncBody();
+                return $tcs.task;
+            },
+            ProductionReport: function () {
+                var $step = 0,
+                    $task1, 
+                    $taskResult1, 
+                    $jumpFromFinally, 
+                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                    $returnValue, 
+                    $async_e, 
+                    $asyncBody = Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                $step = System.Array.min([0,1], $step);
+                                switch ($step) {
+                                    case 0: {
+                                        $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(this, "Production Report", function () {
+                                            var $t;
+                                            var type = Bridge.Reflection.getType("TMS.UI.Business.Manage.ProductionReportFormBL");
+                                            var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
+                                            instance.Title = "B\u00e1o c\u00e1o s\u1ea3n l\u01b0\u1ee3ng";
+                                            instance.Entity = ($t = new TMS.API.ViewModels.ReportGroupVM(), $t.Return = true, $t);
+                                            return instance;
+                                        }, false, false);
+                                        $step = 1;
+                                        if ($task1.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task1.continue($asyncBody);
+                                        return;
+                                    }
+                                    case 1: {
+                                        $taskResult1 = $task1.getAwaitedResult();
                                         $tcs.setResult(null);
                                         return;
                                     }

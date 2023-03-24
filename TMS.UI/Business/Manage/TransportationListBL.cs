@@ -79,7 +79,7 @@ namespace TMS.UI.Business.Manage
                 });
         }
 
-        public async Task ProductionReport()
+        public virtual async Task ProductionReport()
         {
             await this.OpenPopup(
                 featureName: "Production Report",
