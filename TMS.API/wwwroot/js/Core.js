@@ -13298,23 +13298,36 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (!Core.Clients.Client.SystemRole) {
                     return;
                 }
-
+                var menuItems = Bridge.fn.bind(this, function (_o1) {
+                        var $t;
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-link mt-2", $t.Text = "Add Link", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$1(group, "AddLink"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Input", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$1(group, "AddInput"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Timepicker", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$1(group, "AddTimepicker"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-lock mt-2", $t.Text = "Add Password", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$1(group, "AddPassword"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Label", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$1(group, "AddLabel"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Textarea", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$1(group, "AddTextarea"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Dropdown", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$1(group, "AddDropdown"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-images mt-2", $t.Text = "Add Image", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$1(group, "AddImage"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add GridView", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$1(group, "AddGridView"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add ListView", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$1(group, "AddListView"), $t));
+                        return _o1;
+                    })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor());
                 e.preventDefault();
                 e.stopPropagation();
                 var ctxMenu = Core.Components.Forms.ContextMenu.Instance;
                 ctxMenu.Top = Core.Extensions.EventExt.Top(e);
                 ctxMenu.Left = Core.Extensions.EventExt.Left(e);
-                ctxMenu.MenuItems = Bridge.fn.bind(this, function (_o1) {
+                ctxMenu.MenuItems = Bridge.fn.bind(this, function (_o2) {
                         var $t;
-                        _o1.add(component == null ? null : ($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-cog", $t.Text = "T\u00f9y ch\u1ecdn d\u1eef li\u1ec7u", $t.Click = Bridge.fn.cacheBind(this, this.ComponentProperties), $t.Parameter = component, $t));
-                        _o1.add(component == null ? null : ($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-clone", $t.Text = "Sao ch\u00e9p", $t.Click = Bridge.fn.cacheBind(this, this.CoppyComponent), $t.Parameter = component, $t));
-                        _o1.add(this._componentCoppy == null ? null : ($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-paste", $t.Text = "D\u00e1n", $t.Click = Bridge.fn.cacheBind(this, this.PasteComponent), $t.Parameter = group, $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-plus", $t.Text = "Th\u00eam m\u1edbi b\u1ea3ng d\u1eef li\u1ec7u", $t.Click = Bridge.fn.cacheBind(this, this.AddGridView), $t.Parameter = group, $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-cogs", $t.Text = "T\u00f9y ch\u1ecdn v\u00f9ng d\u1eef li\u1ec7u", $t.Click = Bridge.fn.cacheBind(this, this.SectionProperties), $t.Parameter = group, $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-clone", $t.Text = "Clone v\u00f9ng d\u1eef li\u1ec7u", $t.Click = Bridge.fn.cacheBind(this, this.CloneProperties), $t.Parameter = group, $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-folder-open", $t.Text = "Thi\u1ebft l\u1eadp chung", $t.Click = Bridge.fn.cacheBind(this, this.FeatureProperties), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-clone", $t.Text = "Clone feature", $t.Click = Bridge.fn.cacheBind(this, this.CloneFeature), $t.Parameter = this.Feature, $t));
-                        return _o1;
+                        _o2.add(component == null ? null : ($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-cog", $t.Text = "T\u00f9y ch\u1ecdn d\u1eef li\u1ec7u", $t.Click = Bridge.fn.cacheBind(this, this.ComponentProperties), $t.Parameter = component, $t));
+                        _o2.add(component == null ? null : ($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-clone", $t.Text = "Sao ch\u00e9p", $t.Click = Bridge.fn.cacheBind(this, this.CoppyComponent), $t.Parameter = component, $t));
+                        _o2.add(this._componentCoppy == null ? null : ($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-paste", $t.Text = "D\u00e1n", $t.Click = Bridge.fn.cacheBind(this, this.PasteComponent), $t.Parameter = group, $t));
+                        _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-cogs", $t.Text = "Th\u00eam Component", $t.MenuItems = menuItems, $t));
+                        _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-cogs", $t.Text = "T\u00f9y ch\u1ecdn v\u00f9ng d\u1eef li\u1ec7u", $t.Click = Bridge.fn.cacheBind(this, this.SectionProperties), $t.Parameter = group, $t));
+                        _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-clone", $t.Text = "Clone v\u00f9ng d\u1eef li\u1ec7u", $t.Click = Bridge.fn.cacheBind(this, this.CloneProperties), $t.Parameter = group, $t));
+                        _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-folder-open", $t.Text = "Thi\u1ebft l\u1eadp chung", $t.Click = Bridge.fn.cacheBind(this, this.FeatureProperties), $t));
+                        _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-clone", $t.Text = "Clone feature", $t.Click = Bridge.fn.cacheBind(this, this.CloneFeature), $t.Parameter = this.Feature, $t));
+                        return _o2;
                     })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor());
                 ctxMenu.Render();
             },
@@ -13442,55 +13455,574 @@ Bridge.assembly("Core", function ($asm, globals) {
                     return $tcs.task;
                 }));
             },
-            AddGridView: function (arg) {
+            AddComponent: function (arg) {
                 var $t;
-                var componentGroup = Core.Extensions.BridgeExt.CastProp(Core.Models.ComponentGroup, arg);
-                var com = ($t = new Core.Models.Component(), $t.ComponentType = "GridView", $t.Visibility = true, $t.ComponentGroupId = componentGroup.Id, $t);
-                System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $taskResult1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        client, 
-                        $async_e, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            $task1 = new Core.Clients.Client.$ctor1("Component").CreateAsync$1(com);
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $taskResult1 = $task1.getAwaitedResult();
-                                            client = $taskResult1;
-                                            Core.Extensions.Toast.Success("T\u1ea1o th\u00e0nh c\u00f4ng!");
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
+                var action = Core.Extensions.BridgeExt.CastProp(System.String, arg.action);
+                var componentGroup = Core.Extensions.BridgeExt.CastProp(Core.Models.ComponentGroup, arg.group);
+                var com = new Core.Models.Component();
+                var childComponent = System.Linq.Enumerable.from(this.Feature.ComponentGroup, Core.Models.ComponentGroup).firstOrDefault(function (x) {
+                        return x.Id === componentGroup.Id;
+                    }, null);
+                var lastOrder = System.Linq.Enumerable.from(childComponent.Component, Core.Models.Component).nullableMax(function (x) {
+                        return x.Order;
+                    });
 
-                    $asyncBody();
-                    return $tcs.task;
-                }));
+                switch (action) {
+                    case "AddLink": 
+                        com.ComponentType = "Link";
+                        com.Visibility = true;
+                        com.Order = lastOrder;
+                        com.ComponentGroupId = componentGroup.Id;
+                        com.FieldName = "";
+                        com.Label = "";
+                        System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
+                            var $step = 0,
+                                $task1, 
+                                $taskResult1, 
+                                $jumpFromFinally, 
+                                $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                                $returnValue, 
+                                client, 
+                                $async_e, 
+                                $asyncBody = Bridge.fn.bind(this, function () {
+                                    try {
+                                        for (;;) {
+                                            $step = System.Array.min([0,1], $step);
+                                            switch ($step) {
+                                                case 0: {
+                                                    $task1 = new Core.Clients.Client.$ctor1("Component").CreateAsync$1(com);
+                                                    $step = 1;
+                                                    if ($task1.isCompleted()) {
+                                                        continue;
+                                                    }
+                                                    $task1.continue($asyncBody);
+                                                    return;
+                                                }
+                                                case 1: {
+                                                    $taskResult1 = $task1.getAwaitedResult();
+                                                    client = $taskResult1;
+                                                    this.UpdateRender(com, componentGroup);
+                                                    Core.Extensions.Toast.Success("T\u1ea1o th\u00e0nh c\u00f4ng!");
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                                default: {
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    } catch($async_e1) {
+                                        $async_e = System.Exception.create($async_e1);
+                                        $tcs.setException($async_e);
+                                    }
+                                }, arguments);
+
+                            $asyncBody();
+                            return $tcs.task;
+                        }));
+                        break;
+                    case "AddInput": 
+                        com.ComponentType = "Input";
+                        com.Visibility = true;
+                        com.Order = lastOrder;
+                        com.ComponentGroupId = componentGroup.Id;
+                        com.FieldName = "";
+                        com.Label = "";
+                        System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
+                            var $step = 0,
+                                $task1, 
+                                $taskResult1, 
+                                $jumpFromFinally, 
+                                $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                                $returnValue, 
+                                client, 
+                                $async_e, 
+                                $asyncBody = Bridge.fn.bind(this, function () {
+                                    try {
+                                        for (;;) {
+                                            $step = System.Array.min([0,1], $step);
+                                            switch ($step) {
+                                                case 0: {
+                                                    $task1 = new Core.Clients.Client.$ctor1("Component").CreateAsync$1(com);
+                                                    $step = 1;
+                                                    if ($task1.isCompleted()) {
+                                                        continue;
+                                                    }
+                                                    $task1.continue($asyncBody);
+                                                    return;
+                                                }
+                                                case 1: {
+                                                    $taskResult1 = $task1.getAwaitedResult();
+                                                    client = $taskResult1;
+                                                    this.UpdateRender(com, componentGroup);
+                                                    Core.Extensions.Toast.Success("T\u1ea1o th\u00e0nh c\u00f4ng!");
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                                default: {
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    } catch($async_e1) {
+                                        $async_e = System.Exception.create($async_e1);
+                                        $tcs.setException($async_e);
+                                    }
+                                }, arguments);
+
+                            $asyncBody();
+                            return $tcs.task;
+                        }));
+                        break;
+                    case "AddTimepicker": 
+                        com.ComponentType = "Timepicker";
+                        com.Visibility = true;
+                        com.Order = lastOrder;
+                        com.ComponentGroupId = componentGroup.Id;
+                        com.FieldName = "";
+                        com.Label = "";
+                        System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
+                            var $step = 0,
+                                $task1, 
+                                $taskResult1, 
+                                $jumpFromFinally, 
+                                $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                                $returnValue, 
+                                client, 
+                                $async_e, 
+                                $asyncBody = Bridge.fn.bind(this, function () {
+                                    try {
+                                        for (;;) {
+                                            $step = System.Array.min([0,1], $step);
+                                            switch ($step) {
+                                                case 0: {
+                                                    $task1 = new Core.Clients.Client.$ctor1("Component").CreateAsync$1(com);
+                                                    $step = 1;
+                                                    if ($task1.isCompleted()) {
+                                                        continue;
+                                                    }
+                                                    $task1.continue($asyncBody);
+                                                    return;
+                                                }
+                                                case 1: {
+                                                    $taskResult1 = $task1.getAwaitedResult();
+                                                    client = $taskResult1;
+                                                    this.UpdateRender(com, componentGroup);
+                                                    Core.Extensions.Toast.Success("T\u1ea1o th\u00e0nh c\u00f4ng!");
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                                default: {
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    } catch($async_e1) {
+                                        $async_e = System.Exception.create($async_e1);
+                                        $tcs.setException($async_e);
+                                    }
+                                }, arguments);
+
+                            $asyncBody();
+                            return $tcs.task;
+                        }));
+                        break;
+                    case "AddPassword": 
+                        com.ComponentType = "Password";
+                        com.Visibility = true;
+                        com.Order = lastOrder;
+                        com.ComponentGroupId = componentGroup.Id;
+                        com.FieldName = "";
+                        com.Label = "";
+                        System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
+                            var $step = 0,
+                                $task1, 
+                                $taskResult1, 
+                                $jumpFromFinally, 
+                                $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                                $returnValue, 
+                                client, 
+                                $async_e, 
+                                $asyncBody = Bridge.fn.bind(this, function () {
+                                    try {
+                                        for (;;) {
+                                            $step = System.Array.min([0,1], $step);
+                                            switch ($step) {
+                                                case 0: {
+                                                    $task1 = new Core.Clients.Client.$ctor1("Component").CreateAsync$1(com);
+                                                    $step = 1;
+                                                    if ($task1.isCompleted()) {
+                                                        continue;
+                                                    }
+                                                    $task1.continue($asyncBody);
+                                                    return;
+                                                }
+                                                case 1: {
+                                                    $taskResult1 = $task1.getAwaitedResult();
+                                                    client = $taskResult1;
+                                                    this.UpdateRender(com, componentGroup);
+                                                    Core.Extensions.Toast.Success("T\u1ea1o th\u00e0nh c\u00f4ng!");
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                                default: {
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    } catch($async_e1) {
+                                        $async_e = System.Exception.create($async_e1);
+                                        $tcs.setException($async_e);
+                                    }
+                                }, arguments);
+
+                            $asyncBody();
+                            return $tcs.task;
+                        }));
+                        break;
+                    case "AddLabel": 
+                        com.ComponentType = "Label";
+                        com.Visibility = true;
+                        com.Order = lastOrder;
+                        com.ComponentGroupId = componentGroup.Id;
+                        com.FieldName = "";
+                        com.ShowLabel = true;
+                        var confirm = ($t = new Core.Components.Forms.ConfirmDialog(), $t.NeedAnswer = true, $t.ComType = "Textbox", $t.Content = "H\u00e3y nh\u1eadp label?", $t);
+                        confirm.Render();
+                        confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
+                            var $t1;
+                            com.Label = ($t1 = confirm.Textbox) != null ? $t1.Text : null;
+                            System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
+                                var $step = 0,
+                                    $task1, 
+                                    $taskResult1, 
+                                    $jumpFromFinally, 
+                                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                                    $returnValue, 
+                                    client, 
+                                    $async_e, 
+                                    $asyncBody = Bridge.fn.bind(this, function () {
+                                        try {
+                                            for (;;) {
+                                                $step = System.Array.min([0,1], $step);
+                                                switch ($step) {
+                                                    case 0: {
+                                                        $task1 = new Core.Clients.Client.$ctor1("Component").CreateAsync(Core.Models.Component, com);
+                                                        $step = 1;
+                                                        if ($task1.isCompleted()) {
+                                                            continue;
+                                                        }
+                                                        $task1.continue($asyncBody);
+                                                        return;
+                                                    }
+                                                    case 1: {
+                                                        $taskResult1 = $task1.getAwaitedResult();
+                                                        client = $taskResult1;
+                                                        this.UpdateRender(client, componentGroup);
+                                                        Core.Extensions.Toast.Success("T\u1ea1o th\u00e0nh c\u00f4ng!");
+                                                        $tcs.setResult(null);
+                                                        return;
+                                                    }
+                                                    default: {
+                                                        $tcs.setResult(null);
+                                                        return;
+                                                    }
+                                                }
+                                            }
+                                        } catch($async_e1) {
+                                            $async_e = System.Exception.create($async_e1);
+                                            $tcs.setException($async_e);
+                                        }
+                                    }, arguments);
+
+                                $asyncBody();
+                                return $tcs.task;
+                            }));
+                        }));
+                        break;
+                    case "AddTextarea": 
+                        com.ComponentType = "Textarea";
+                        com.Visibility = true;
+                        com.Order = lastOrder;
+                        com.ComponentGroupId = componentGroup.Id;
+                        com.FieldName = "";
+                        com.Label = "";
+                        System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
+                            var $step = 0,
+                                $task1, 
+                                $taskResult1, 
+                                $jumpFromFinally, 
+                                $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                                $returnValue, 
+                                client, 
+                                $async_e, 
+                                $asyncBody = Bridge.fn.bind(this, function () {
+                                    try {
+                                        for (;;) {
+                                            $step = System.Array.min([0,1], $step);
+                                            switch ($step) {
+                                                case 0: {
+                                                    $task1 = new Core.Clients.Client.$ctor1("Component").CreateAsync$1(com);
+                                                    $step = 1;
+                                                    if ($task1.isCompleted()) {
+                                                        continue;
+                                                    }
+                                                    $task1.continue($asyncBody);
+                                                    return;
+                                                }
+                                                case 1: {
+                                                    $taskResult1 = $task1.getAwaitedResult();
+                                                    client = $taskResult1;
+                                                    this.UpdateRender(com, componentGroup);
+                                                    Core.Extensions.Toast.Success("T\u1ea1o th\u00e0nh c\u00f4ng!");
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                                default: {
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    } catch($async_e1) {
+                                        $async_e = System.Exception.create($async_e1);
+                                        $tcs.setException($async_e);
+                                    }
+                                }, arguments);
+
+                            $asyncBody();
+                            return $tcs.task;
+                        }));
+                        break;
+                    case "AddDropdown": 
+                        com.ComponentType = "Dropdown";
+                        com.Visibility = true;
+                        com.Order = lastOrder;
+                        com.ComponentGroupId = componentGroup.Id;
+                        com.FieldName = "";
+                        com.Label = "";
+                        System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
+                            var $step = 0,
+                                $task1, 
+                                $taskResult1, 
+                                $jumpFromFinally, 
+                                $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                                $returnValue, 
+                                client, 
+                                $async_e, 
+                                $asyncBody = Bridge.fn.bind(this, function () {
+                                    try {
+                                        for (;;) {
+                                            $step = System.Array.min([0,1], $step);
+                                            switch ($step) {
+                                                case 0: {
+                                                    $task1 = new Core.Clients.Client.$ctor1("Component").CreateAsync$1(com);
+                                                    $step = 1;
+                                                    if ($task1.isCompleted()) {
+                                                        continue;
+                                                    }
+                                                    $task1.continue($asyncBody);
+                                                    return;
+                                                }
+                                                case 1: {
+                                                    $taskResult1 = $task1.getAwaitedResult();
+                                                    client = $taskResult1;
+                                                    this.UpdateRender(com, componentGroup);
+                                                    Core.Extensions.Toast.Success("T\u1ea1o th\u00e0nh c\u00f4ng!");
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                                default: {
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    } catch($async_e1) {
+                                        $async_e = System.Exception.create($async_e1);
+                                        $tcs.setException($async_e);
+                                    }
+                                }, arguments);
+
+                            $asyncBody();
+                            return $tcs.task;
+                        }));
+                        break;
+                    case "AddImage": 
+                        com.ComponentType = "Image";
+                        com.Visibility = true;
+                        com.Order = lastOrder;
+                        com.ComponentGroupId = componentGroup.Id;
+                        com.FieldName = "";
+                        com.Label = "";
+                        System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
+                            var $step = 0,
+                                $task1, 
+                                $taskResult1, 
+                                $jumpFromFinally, 
+                                $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                                $returnValue, 
+                                client, 
+                                $async_e, 
+                                $asyncBody = Bridge.fn.bind(this, function () {
+                                    try {
+                                        for (;;) {
+                                            $step = System.Array.min([0,1], $step);
+                                            switch ($step) {
+                                                case 0: {
+                                                    $task1 = new Core.Clients.Client.$ctor1("Component").CreateAsync$1(com);
+                                                    $step = 1;
+                                                    if ($task1.isCompleted()) {
+                                                        continue;
+                                                    }
+                                                    $task1.continue($asyncBody);
+                                                    return;
+                                                }
+                                                case 1: {
+                                                    $taskResult1 = $task1.getAwaitedResult();
+                                                    client = $taskResult1;
+                                                    this.UpdateRender(com, componentGroup);
+                                                    Core.Extensions.Toast.Success("T\u1ea1o th\u00e0nh c\u00f4ng!");
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                                default: {
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    } catch($async_e1) {
+                                        $async_e = System.Exception.create($async_e1);
+                                        $tcs.setException($async_e);
+                                    }
+                                }, arguments);
+
+                            $asyncBody();
+                            return $tcs.task;
+                        }));
+                        break;
+                    case "AddGridView": 
+                        com.ComponentType = "GridView";
+                        com.Visibility = true;
+                        com.DataSourceFilter = "?$filter=Active eq true";
+                        com.Label = "";
+                        com.ComponentGroupId = componentGroup.Id;
+                        com.Order = lastOrder;
+                        com.FieldName = "";
+                        System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
+                            var $step = 0,
+                                $task1, 
+                                $taskResult1, 
+                                $jumpFromFinally, 
+                                $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                                $returnValue, 
+                                client, 
+                                $async_e, 
+                                $asyncBody = Bridge.fn.bind(this, function () {
+                                    try {
+                                        for (;;) {
+                                            $step = System.Array.min([0,1], $step);
+                                            switch ($step) {
+                                                case 0: {
+                                                    $task1 = new Core.Clients.Client.$ctor1("Component").CreateAsync$1(com);
+                                                    $step = 1;
+                                                    if ($task1.isCompleted()) {
+                                                        continue;
+                                                    }
+                                                    $task1.continue($asyncBody);
+                                                    return;
+                                                }
+                                                case 1: {
+                                                    $taskResult1 = $task1.getAwaitedResult();
+                                                    client = $taskResult1;
+                                                    this.UpdateRender(com, componentGroup);
+                                                    Core.Extensions.Toast.Success("T\u1ea1o th\u00e0nh c\u00f4ng!");
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                                default: {
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    } catch($async_e1) {
+                                        $async_e = System.Exception.create($async_e1);
+                                        $tcs.setException($async_e);
+                                    }
+                                }, arguments);
+
+                            $asyncBody();
+                            return $tcs.task;
+                        }));
+                        break;
+                    case "AddListView": 
+                        com.ComponentType = "ListView";
+                        com.Visibility = true;
+                        com.DataSourceFilter = "?$filter=Active eq true";
+                        com.Label = "";
+                        com.ComponentGroupId = componentGroup.Id;
+                        com.Order = lastOrder;
+                        com.FieldName = "";
+                        System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
+                            var $step = 0,
+                                $task1, 
+                                $taskResult1, 
+                                $jumpFromFinally, 
+                                $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                                $returnValue, 
+                                client, 
+                                $async_e, 
+                                $asyncBody = Bridge.fn.bind(this, function () {
+                                    try {
+                                        for (;;) {
+                                            $step = System.Array.min([0,1], $step);
+                                            switch ($step) {
+                                                case 0: {
+                                                    $task1 = new Core.Clients.Client.$ctor1("Component").CreateAsync$1(com);
+                                                    $step = 1;
+                                                    if ($task1.isCompleted()) {
+                                                        continue;
+                                                    }
+                                                    $task1.continue($asyncBody);
+                                                    return;
+                                                }
+                                                case 1: {
+                                                    $taskResult1 = $task1.getAwaitedResult();
+                                                    client = $taskResult1;
+                                                    this.UpdateRender(com, componentGroup);
+                                                    Core.Extensions.Toast.Success("T\u1ea1o th\u00e0nh c\u00f4ng!");
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                                default: {
+                                                    $tcs.setResult(null);
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    } catch($async_e1) {
+                                        $async_e = System.Exception.create($async_e1);
+                                        $tcs.setException($async_e);
+                                    }
+                                }, arguments);
+
+                            $asyncBody();
+                            return $tcs.task;
+                        }));
+                        break;
+                }
+            },
+            UpdateRender: function (component, componentGroup) {
+                var section = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.Section, this, componentGroup.Name);
+                var childComponent = Core.Components.Extensions.ComponentFactory.GetComponent(component, this.EditForm);
+                childComponent.ParentElement = section.Element;
+                section.AddChild(childComponent);
             },
             SectionProperties: function (arg) {
                 var $t;
@@ -14502,6 +15034,39 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
+    Bridge.define("$AnonymousType$1", $asm, {
+        $kind: "anonymous",
+        ctors: {
+            ctor: function (group, action) {
+                this.group = group;
+                this.action = action;
+            }
+        },
+        methods: {
+            equals: function (o) {
+                if (!Bridge.is(o, $asm.$AnonymousType$1)) {
+                    return false;
+                }
+                return Bridge.equals(this.group, o.group) && Bridge.equals(this.action, o.action);
+            },
+            getHashCode: function () {
+                var h = Bridge.addHash([7550196186, this.group, this.action]);
+                return h;
+            },
+            toJSON: function () {
+                return {
+                    group : this.group,
+                    action : this.action
+                };
+            }
+        },
+        statics : {
+            methods: {
+                $metadata : function () { return {"m":[{"a":2,"n":"action","t":16,"rt":System.String,"g":{"a":2,"n":"get_action","t":8,"rt":System.String,"fg":"action"},"fn":"action"},{"a":2,"n":"group","t":16,"rt":Core.Models.ComponentGroup,"g":{"a":2,"n":"get_group","t":8,"rt":Core.Models.ComponentGroup,"fg":"group"},"fn":"group"}]}; }
+            }
+        }
+    });
+
     Bridge.define("Core.Components.BarCode", {
         inherits: [Core.Components.EditableComponent],
         props: {
@@ -15146,14 +15711,14 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                 return data;
                                             }).groupBy(function (x) {
                                                 var $t1, $t2;
-                                                return new $asm.$AnonymousType$1(Bridge.toString(x.type), ($t1 = x.name) != null ? Bridge.toString($t1) : null, ($t2 = x.axisYType) != null ? Bridge.toString($t2) : null);
+                                                return new $asm.$AnonymousType$2(Bridge.toString(x.type), ($t1 = x.name) != null ? Bridge.toString($t1) : null, ($t2 = x.axisYType) != null ? Bridge.toString($t2) : null);
                                             }).select(function (x) {
-                                                return new $asm.$AnonymousType$2(x.key().type, x.firstOrDefault(null, null).toolTipContent, x.key().axisYType, x.ToArray(System.Object));
+                                                return new $asm.$AnonymousType$3(x.key().type, x.firstOrDefault(null, null).toolTipContent, x.key().axisYType, x.ToArray(System.Object));
                                             }).ToArray(System.Object);
                                         } else if (isFotmatDataFn) {
                                             options.data = $function.v.call.apply($function.v, [this].concat(Bridge.unbox(this.Data)));
                                         } else {
-                                            options.data = System.Array.init([new $asm.$AnonymousType$3(type, "{label} {y}", this.Data)], System.Object);
+                                            options.data = System.Array.init([new $asm.$AnonymousType$4(type, "{label} {y}", this.Data)], System.Object);
                                         }
                                         var chart = new CanvasJS.Chart(this.Element, options);
                                         chart.render();
@@ -15190,7 +15755,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$1", $asm, {
+    Bridge.define("$AnonymousType$2", $asm, {
     $kind: "anonymous",
     ctors: {
         ctor: function (type, name, axisYType) {
@@ -15201,13 +15766,13 @@ Bridge.assembly("Core", function ($asm, globals) {
     },
     methods: {
         equals: function (o) {
-            if (!Bridge.is(o, $asm.$AnonymousType$1)) {
+            if (!Bridge.is(o, $asm.$AnonymousType$2)) {
                 return false;
             }
             return Bridge.equals(this.type, o.type) && Bridge.equals(this.name, o.name) && Bridge.equals(this.axisYType, o.axisYType);
         },
         getHashCode: function () {
-            var h = Bridge.addHash([7550196186, this.type, this.name, this.axisYType]);
+            var h = Bridge.addHash([7550196187, this.type, this.name, this.axisYType]);
             return h;
         },
         toJSON: function () {
@@ -15225,7 +15790,7 @@ Bridge.assembly("Core", function ($asm, globals) {
     }
 });
 
-    Bridge.define("$AnonymousType$2", $asm, {
+    Bridge.define("$AnonymousType$3", $asm, {
     $kind: "anonymous",
     ctors: {
         ctor: function (type, toolTipContent, axisYType, dataPoints) {
@@ -15237,13 +15802,13 @@ Bridge.assembly("Core", function ($asm, globals) {
     },
     methods: {
         equals: function (o) {
-            if (!Bridge.is(o, $asm.$AnonymousType$2)) {
+            if (!Bridge.is(o, $asm.$AnonymousType$3)) {
                 return false;
             }
             return Bridge.equals(this.type, o.type) && Bridge.equals(this.toolTipContent, o.toolTipContent) && Bridge.equals(this.axisYType, o.axisYType) && Bridge.equals(this.dataPoints, o.dataPoints);
         },
         getHashCode: function () {
-            var h = Bridge.addHash([7550196187, this.type, this.toolTipContent, this.axisYType, this.dataPoints]);
+            var h = Bridge.addHash([7550196188, this.type, this.toolTipContent, this.axisYType, this.dataPoints]);
             return h;
         },
         toJSON: function () {
@@ -15262,7 +15827,7 @@ Bridge.assembly("Core", function ($asm, globals) {
     }
 });
 
-    Bridge.define("$AnonymousType$3", $asm, {
+    Bridge.define("$AnonymousType$4", $asm, {
     $kind: "anonymous",
     ctors: {
         ctor: function (type, toolTipContent, dataPoints) {
@@ -15273,13 +15838,13 @@ Bridge.assembly("Core", function ($asm, globals) {
     },
     methods: {
         equals: function (o) {
-            if (!Bridge.is(o, $asm.$AnonymousType$3)) {
+            if (!Bridge.is(o, $asm.$AnonymousType$4)) {
                 return false;
             }
             return Bridge.equals(this.type, o.type) && Bridge.equals(this.toolTipContent, o.toolTipContent) && Bridge.equals(this.dataPoints, o.dataPoints);
         },
         getHashCode: function () {
-            var h = Bridge.addHash([7550196188, this.type, this.toolTipContent, this.dataPoints]);
+            var h = Bridge.addHash([7550196189, this.type, this.toolTipContent, this.dataPoints]);
             return h;
         },
         toJSON: function () {
@@ -16904,7 +17469,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         }), function (x) {
                                             return System.Nullable.toString(x.ReferenceId, null) + "/" + (x.DataSourceOptimized || "");
                                         }), Core.Models.GridPolicy).select(function (x) {
-                                            return new $asm.$AnonymousType$4(x, new Core.Clients.Client.$ctor1(x.RefName).LoadById(x.DataSourceOptimized, "", System.String.format("ById?FieldName={0}", [x.FormatExcell])));
+                                            return new $asm.$AnonymousType$5(x, new Core.Clients.Client.$ctor1(x.RefName).LoadById(x.DataSourceOptimized, "", System.String.format("ById?FieldName={0}", [x.FormatExcell])));
                                         }).ToArray(System.Object);
                                         $task1 = System.Threading.Tasks.Task.whenAll.apply(System.Threading.Tasks.Task, System.Linq.Enumerable.from(dataTask, System.Object).select(function (x) {
                                             return x.Data;
@@ -19134,7 +19699,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$4", $asm, {
+    Bridge.define("$AnonymousType$5", $asm, {
     $kind: "anonymous",
     ctors: {
         ctor: function (header, data) {
@@ -19144,13 +19709,13 @@ Bridge.assembly("Core", function ($asm, globals) {
     },
     methods: {
         equals: function (o) {
-            if (!Bridge.is(o, $asm.$AnonymousType$4)) {
+            if (!Bridge.is(o, $asm.$AnonymousType$5)) {
                 return false;
             }
             return Bridge.equals(this.Header, o.Header) && Bridge.equals(this.Data, o.Data);
         },
         getHashCode: function () {
-            var h = Bridge.addHash([7550196189, this.Header, this.Data]);
+            var h = Bridge.addHash([7550196190, this.Header, this.Data]);
             return h;
         },
         toJSON: function () {
@@ -29375,7 +29940,7 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                     $asyncBody();
                 }));
-                confirmDialog.Entity = new $asm.$AnonymousType$5("");
+                confirmDialog.Entity = new $asm.$AnonymousType$6("");
                 confirmDialog.Render();
                 if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(subFilter)) {
                     if (Bridge.referenceEquals(header.ComponentType, "Datepicker")) {
@@ -30162,17 +30727,17 @@ Bridge.assembly("Core", function ($asm, globals) {
                         menu.Left = el.getBoundingClientRect().left;
                         menu.MenuItems = Bridge.fn.bind(this, function (_o1) {
                                 var $t;
-                                _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-angle-double-right", $t.Text = "Ch\u1ee9a", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$6("in", "Ch\u1ee9a", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
-                                _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-not-equal", $t.Text = "Kh\u00f4ng ch\u1ee9a", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$6("not in", "Kh\u00f4ng ch\u1ee9a", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
+                                _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-angle-double-right", $t.Text = "Ch\u1ee9a", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$7("in", "Ch\u1ee9a", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
+                                _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-not-equal", $t.Text = "Kh\u00f4ng ch\u1ee9a", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$7("not in", "Kh\u00f4ng ch\u1ee9a", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
                                 return _o1;
                             })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor());
                         if (Bridge.referenceEquals(com.GuiInfo.ComponentType, "Number") || Bridge.referenceEquals(com.GuiInfo.ComponentType, "Datepicker")) {
                             menu.MenuItems.AddRange(Bridge.fn.bind(this, function (_o2) {
                                     var $t;
-                                    _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-greater-than", $t.Text = "L\u1edbn h\u01a1n", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$6("gt", "L\u1edbn h\u01a1n", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
-                                    _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-less-than", $t.Text = "Nh\u1ecf h\u01a1n", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$6("lt", "Nh\u1ecf h\u01a1n", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
-                                    _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-greater-than-equal", $t.Text = "L\u1edbn h\u01a1n b\u1eb1ng", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$6("ge", "L\u1edbn h\u01a1n b\u1eb1ng", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
-                                    _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-less-than-equal", $t.Text = "Nh\u1ecf h\u01a1n b\u1eb1ng", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$6("le", "Nh\u1ecf h\u01a1n b\u1eb1ng", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
+                                    _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-greater-than", $t.Text = "L\u1edbn h\u01a1n", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$7("gt", "L\u1edbn h\u01a1n", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
+                                    _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-less-than", $t.Text = "Nh\u1ecf h\u01a1n", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$7("lt", "Nh\u1ecf h\u01a1n", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
+                                    _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-greater-than-equal", $t.Text = "L\u1edbn h\u01a1n b\u1eb1ng", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$7("ge", "L\u1edbn h\u01a1n b\u1eb1ng", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
+                                    _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-less-than-equal", $t.Text = "Nh\u1ecf h\u01a1n b\u1eb1ng", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$7("le", "Nh\u1ecf h\u01a1n b\u1eb1ng", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
                                     return _o2;
                                 })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor()));
                         }
@@ -30197,9 +30762,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                         break;
                     case Core.Enums.KeyCodeEnum.F9: 
                         if (Core.Extensions.StringExt.IsNullOrWhiteSpace(value)) {
-                            this.FilterSelected(new $asm.$AnonymousType$7("in", "Ch\u1ee9a", value, fieldName, text, false));
+                            this.FilterSelected(new $asm.$AnonymousType$8("in", "Ch\u1ee9a", value, fieldName, text, false));
                         } else {
-                            this.FilterSelected(new $asm.$AnonymousType$8("in", "Ch\u1ee9a", value, fieldName, text));
+                            this.FilterSelected(new $asm.$AnonymousType$9("in", "Ch\u1ee9a", value, fieldName, text));
                         }
                         com.Focus();
                         break;
@@ -30211,9 +30776,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                         break;
                     case Core.Enums.KeyCodeEnum.F2: 
                         if (Core.Extensions.StringExt.IsNullOrWhiteSpace(value)) {
-                            this.FilterSelected(new $asm.$AnonymousType$7("not in", "Lo\u1ea1i tr\u1eeb", value, fieldName, text, false));
+                            this.FilterSelected(new $asm.$AnonymousType$8("not in", "Lo\u1ea1i tr\u1eeb", value, fieldName, text, false));
                         } else {
-                            this.FilterSelected(new $asm.$AnonymousType$8("not in", "Lo\u1ea1i tr\u1eeb", value, fieldName, text));
+                            this.FilterSelected(new $asm.$AnonymousType$9("not in", "Lo\u1ea1i tr\u1eeb", value, fieldName, text));
                         }
                         break;
                     case Core.Enums.KeyCodeEnum.UpArrow: 
@@ -32028,7 +32593,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                             return null;
                         }
 
-                        return new $asm.$AnonymousType$9(sortedField[System.Array.index(0, sortedField)], sortedField.length === 2 && Bridge.referenceEquals(sortedField[System.Array.index(1, sortedField)].toLowerCase(), "desc"));
+                        return new $asm.$AnonymousType$10(sortedField[System.Array.index(0, sortedField)], sortedField.length === 2 && Bridge.referenceEquals(sortedField[System.Array.index(1, sortedField)].toLowerCase(), "desc"));
                     }).where(function (x) {
                     return x != null;
                 }), function (x) {
@@ -32134,8 +32699,8 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                 menu.MenuItems = Bridge.fn.bind(this, function (_o1) {
                         var $t;
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-eye", $t.Text = "Hi\u1ec7n ti\u00eau \u0111\u1ec1", $t.Click = Bridge.fn.cacheBind(this, this.ShowWidth), $t.Parameter = new $asm.$AnonymousType$10(header, e), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-eye-slash", $t.Text = "\u1ea8n ti\u00eau \u0111\u1ec1", $t.Click = Bridge.fn.cacheBind(this, this.HideWidth), $t.Parameter = new $asm.$AnonymousType$10(header, e), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-eye", $t.Text = "Hi\u1ec7n ti\u00eau \u0111\u1ec1", $t.Click = Bridge.fn.cacheBind(this, this.ShowWidth), $t.Parameter = new $asm.$AnonymousType$11(header, e), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-eye-slash", $t.Text = "\u1ea8n ti\u00eau \u0111\u1ec1", $t.Click = Bridge.fn.cacheBind(this, this.HideWidth), $t.Parameter = new $asm.$AnonymousType$11(header, e), $t));
                         return _o1;
                     })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor());
                 if (Core.Clients.Client.SystemRole) {
@@ -32810,7 +33375,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$5", $asm, {
+    Bridge.define("$AnonymousType$6", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (reasonOfChange) {
@@ -32819,13 +33384,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$5)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$6)) {
                     return false;
                 }
                 return Bridge.equals(this.ReasonOfChange, o.ReasonOfChange);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550196190, this.ReasonOfChange]);
+                var h = Bridge.addHash([7550196191, this.ReasonOfChange]);
                 return h;
             },
             toJSON: function () {
@@ -32841,7 +33406,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$6", $asm, {
+    Bridge.define("$AnonymousType$7", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (operator, operatorText, value, fieldName, valueText, shift) {
@@ -32855,13 +33420,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$6)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$7)) {
                     return false;
                 }
                 return Bridge.equals(this.Operator, o.Operator) && Bridge.equals(this.OperatorText, o.OperatorText) && Bridge.equals(this.Value, o.Value) && Bridge.equals(this.FieldName, o.FieldName) && Bridge.equals(this.ValueText, o.ValueText) && Bridge.equals(this.Shift, o.Shift);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550196191, this.Operator, this.OperatorText, this.Value, this.FieldName, this.ValueText, this.Shift]);
+                var h = Bridge.addHash([7550196192, this.Operator, this.OperatorText, this.Value, this.FieldName, this.ValueText, this.Shift]);
                 return h;
             },
             toJSON: function () {
@@ -32882,7 +33447,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$7", $asm, {
+    Bridge.define("$AnonymousType$8", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (operator, operatorText, value, fieldName, valueText, isSearch) {
@@ -32896,13 +33461,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$7)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$8)) {
                     return false;
                 }
                 return Bridge.equals(this.Operator, o.Operator) && Bridge.equals(this.OperatorText, o.OperatorText) && Bridge.equals(this.Value, o.Value) && Bridge.equals(this.FieldName, o.FieldName) && Bridge.equals(this.ValueText, o.ValueText) && Bridge.equals(this.IsSearch, o.IsSearch);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550196192, this.Operator, this.OperatorText, this.Value, this.FieldName, this.ValueText, this.IsSearch]);
+                var h = Bridge.addHash([7550196193, this.Operator, this.OperatorText, this.Value, this.FieldName, this.ValueText, this.IsSearch]);
                 return h;
             },
             toJSON: function () {
@@ -32923,7 +33488,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$8", $asm, {
+    Bridge.define("$AnonymousType$9", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (operator, operatorText, value, fieldName, valueText) {
@@ -32936,13 +33501,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$8)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$9)) {
                     return false;
                 }
                 return Bridge.equals(this.Operator, o.Operator) && Bridge.equals(this.OperatorText, o.OperatorText) && Bridge.equals(this.Value, o.Value) && Bridge.equals(this.FieldName, o.FieldName) && Bridge.equals(this.ValueText, o.ValueText);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550196193, this.Operator, this.OperatorText, this.Value, this.FieldName, this.ValueText]);
+                var h = Bridge.addHash([7550196194, this.Operator, this.OperatorText, this.Value, this.FieldName, this.ValueText]);
                 return h;
             },
             toJSON: function () {
@@ -32962,7 +33527,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$9", $asm, {
+    Bridge.define("$AnonymousType$10", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (field, desc) {
@@ -32972,13 +33537,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$9)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$10)) {
                     return false;
                 }
                 return Bridge.equals(this.Field, o.Field) && Bridge.equals(this.Desc, o.Desc);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550196194, this.Field, this.Desc]);
+                var h = Bridge.addHash([7550208474, this.Field, this.Desc]);
                 return h;
             },
             toJSON: function () {
@@ -32995,7 +33560,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$10", $asm, {
+    Bridge.define("$AnonymousType$11", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (header, events) {
@@ -33005,13 +33570,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$10)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$11)) {
                     return false;
                 }
                 return Bridge.equals(this.header, o.header) && Bridge.equals(this.events, o.events);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550208474, this.header, this.events]);
+                var h = Bridge.addHash([7550208730, this.header, this.events]);
                 return h;
             },
             toJSON: function () {
@@ -38846,7 +39411,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         $asyncBody();
                     }), 3000);
                 }));
-                confirmDialog.Entity = new $asm.$AnonymousType$5("");
+                confirmDialog.Entity = new $asm.$AnonymousType$6("");
                 confirmDialog.Render();
                 if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(subFilter)) {
                     if (Bridge.referenceEquals(header.ComponentType, "Datepicker")) {
@@ -39957,7 +40522,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var originFilter = Core.Extensions.OdataExt.GetClausePart(query);
                 var conditions = System.Linq.Enumerable.from(this.AdvSearchEntity.Conditions, Core.Models.FieldCondition).select(Bridge.fn.bind(this, function (x, index) {
                         var $t;
-                        return new $asm.$AnonymousType$11(this.GetSearchValue(x), ($t = Core.Components.AdvancedSearch.GetLogicOp(x), $t != null ? $t : " and "), x.Group);
+                        return new $asm.$AnonymousType$12(this.GetSearchValue(x), ($t = Core.Components.AdvancedSearch.GetLogicOp(x), $t != null ? $t : " and "), x.Group);
                     })).where(function (x) {
                     return Core.Extensions.StringExt.HasAnyChar(x.Term);
                 }).toList(System.Object);
@@ -40235,7 +40800,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$11", $asm, {
+    Bridge.define("$AnonymousType$12", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (term, operator, group) {
@@ -40246,13 +40811,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$11)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$12)) {
                     return false;
                 }
                 return Bridge.equals(this.Term, o.Term) && Bridge.equals(this.Operator, o.Operator) && Bridge.equals(this.Group, o.Group);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550208730, this.Term, this.Operator, this.Group]);
+                var h = Bridge.addHash([7550208986, this.Term, this.Operator, this.Group]);
                 return h;
             },
             toJSON: function () {

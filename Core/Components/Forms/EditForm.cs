@@ -890,7 +890,19 @@ namespace Core.Components.Forms
             {
                 return;
             }
-
+            var menuItems = new List<ContextMenuItem>()
+            {
+                new ContextMenuItem { Icon = "fas fa-link mt-2", Text = "Add Link", Click = AddComponent, Parameter = new { group = group, action = "AddLink" } },
+                new ContextMenuItem { Icon = "fas fa-plus-circle mt-2", Text = "Add Input", Click = AddComponent, Parameter = new { group = group, action = "AddInput" } },
+                new ContextMenuItem { Icon = "fas fa-plus-circle mt-2", Text = "Add Timepicker", Click = AddComponent, Parameter = new { group = group, action = "AddTimepicker" } },
+                new ContextMenuItem { Icon = "fas fa-lock mt-2", Text = "Add Password", Click = AddComponent, Parameter = new { group = group, action = "AddPassword" } },
+                new ContextMenuItem { Icon = "fas fa-plus-circle mt-2", Text = "Add Label", Click = AddComponent, Parameter = new { group = group, action = "AddLabel" } },
+                new ContextMenuItem { Icon = "fas fa-plus-circle mt-2", Text = "Add Textarea", Click = AddComponent, Parameter = new { group = group, action = "AddTextarea" } },
+                new ContextMenuItem { Icon = "fas fa-plus-circle mt-2", Text = "Add Dropdown", Click = AddComponent, Parameter = new { group = group, action = "AddDropdown" } },
+                new ContextMenuItem { Icon = "fas fa-images mt-2", Text = "Add Image", Click = AddComponent, Parameter = new { group = group, action = "AddImage" } },
+                new ContextMenuItem { Icon = "fas fa-plus-circle mt-2", Text = "Add GridView", Click = AddComponent, Parameter = new { group = group, action = "AddGridView" } },
+                new ContextMenuItem { Icon = "fas fa-plus-circle mt-2", Text = "Add ListView", Click = AddComponent, Parameter = new { group = group, action = "AddListView" } },
+            };
             e.PreventDefault();
             e.StopPropagation();
             var ctxMenu = ContextMenu.Instance;
@@ -901,7 +913,7 @@ namespace Core.Components.Forms
                     component is null ? null : new ContextMenuItem { Icon = "fal fa-cog", Text = "Tùy chọn dữ liệu", Click = ComponentProperties, Parameter = component },
                     component is null ? null : new ContextMenuItem { Icon = "fal fa-clone", Text = "Sao chép", Click = CoppyComponent, Parameter = component },
                     _componentCoppy is null ? null : new ContextMenuItem { Icon = "fal fa-paste", Text = "Dán", Click = PasteComponent, Parameter = group },
-                    new ContextMenuItem { Icon = "fal fa-plus", Text = "Thêm mới bảng dữ liệu", Click = AddGridView, Parameter = group },
+                    new ContextMenuItem { Icon = "fal fa-cogs", Text = "Thêm Component", MenuItems = menuItems },
                     new ContextMenuItem { Icon = "fal fa-cogs", Text = "Tùy chọn vùng dữ liệu", Click = SectionProperties, Parameter = group },
                     new ContextMenuItem { Icon = "fal fa-clone", Text = "Clone vùng dữ liệu", Click = CloneProperties, Parameter = group },
                     new ContextMenuItem { Icon = "fal fa-folder-open", Text = "Thiết lập chung", Click = FeatureProperties },
@@ -982,20 +994,180 @@ namespace Core.Components.Forms
             });
         }
 
-        public void AddGridView(object arg)
+        public void AddComponent(object arg)
         {
-            var componentGroup = arg.CastProp<ComponentGroup>();
-            var com = new Component()
+            var action = arg["action"].CastProp<string>();
+            var componentGroup = arg["group"].CastProp<ComponentGroup>();
+            var com = new Component();
+            var childComponent = Feature.ComponentGroup.FirstOrDefault(x => x.Id == componentGroup.Id);
+            var lastOrder = childComponent.Component.Max(x => x.Order);
+
+            switch (action)
             {
-                ComponentType = nameof(GridView),
-                Visibility = true,
-                ComponentGroupId = componentGroup.Id,
-            };
-            Task.Run(async () =>
-            {
-                var client = await new Client(nameof(Component)).CreateAsync(com);
-                Toast.Success("Tạo thành công!");
-            });
+                case "AddLink":
+                    com.ComponentType = nameof(Link);
+                    com.Visibility = true;
+                    com.Order = lastOrder;
+                    com.ComponentGroupId = componentGroup.Id;
+                    com.FieldName = "";
+                    com.Label = "";
+                    Task.Run(async () =>
+                    {
+                        var client = await new Client(nameof(Component)).CreateAsync(com);
+                        UpdateRender(com, componentGroup);
+                        Toast.Success("Tạo thành công!");
+                    });
+                    break;
+                case "AddInput":
+                    com.ComponentType = "Input";
+                    com.Visibility = true;
+                    com.Order = lastOrder;
+                    com.ComponentGroupId = componentGroup.Id;
+                    com.FieldName = "";
+                    com.Label = "";
+                    Task.Run(async () =>
+                    {
+                        var client = await new Client(nameof(Component)).CreateAsync(com);
+                        UpdateRender(com, componentGroup);
+                        Toast.Success("Tạo thành công!");
+                    });
+                    break;
+                case "AddTimepicker":
+                    com.ComponentType = nameof(Timepicker);
+                    com.Visibility = true;
+                    com.Order = lastOrder;
+                    com.ComponentGroupId = componentGroup.Id;
+                    com.FieldName = "";
+                    com.Label = "";
+                    Task.Run(async () =>
+                    {
+                        var client = await new Client(nameof(Component)).CreateAsync(com);
+                        UpdateRender(com, componentGroup);
+                        Toast.Success("Tạo thành công!");
+                    });
+                    break;
+                case "AddPassword":
+                    com.ComponentType = "Password";
+                    com.Visibility = true;
+                    com.Order = lastOrder;
+                    com.ComponentGroupId = componentGroup.Id;
+                    com.FieldName = "";
+                    com.Label = "";
+                    Task.Run(async () =>
+                    {
+                        var client = await new Client(nameof(Component)).CreateAsync(com);
+                        UpdateRender(com, componentGroup);
+                        Toast.Success("Tạo thành công!");
+                    });
+                    break;
+                case "AddLabel":
+                    com.ComponentType = "Label";
+                    com.Visibility = true;
+                    com.Order = lastOrder;
+                    com.ComponentGroupId = componentGroup.Id;
+                    com.FieldName = "";
+                    com.ShowLabel = true;
+
+                    var confirm = new ConfirmDialog
+                    {
+                        NeedAnswer = true,
+                        ComType = nameof(Textbox),
+                        Content = "Hãy nhập label?",
+                    };
+
+                    confirm.Render();
+                    confirm.YesConfirmed += () =>
+                    {
+                        com.Label = confirm.Textbox?.Text;
+                        Task.Run(async () =>
+                        {
+                            var client = await new Client(nameof(Component)).CreateAsync<Component>(com);
+                            UpdateRender(client, componentGroup);
+                            Toast.Success("Tạo thành công!");
+                        });
+                    };
+                    break;
+                case "AddTextarea":
+                    com.ComponentType = "Textarea";
+                    com.Visibility = true;
+                    com.Order = lastOrder;
+                    com.ComponentGroupId = componentGroup.Id;
+                    com.FieldName = "";
+                    com.Label = "";
+                    Task.Run(async () =>
+                    {
+                        var client = await new Client(nameof(Component)).CreateAsync(com);
+                        UpdateRender(com, componentGroup);
+                        Toast.Success("Tạo thành công!");
+                    });
+                    break;
+                case "AddDropdown":
+                    com.ComponentType = "Dropdown";
+                    com.Visibility = true;
+                    com.Order = lastOrder;
+                    com.ComponentGroupId = componentGroup.Id;
+                    com.FieldName = "";
+                    com.Label = "";
+                    Task.Run(async () =>
+                    {
+                        var client = await new Client(nameof(Component)).CreateAsync(com);
+                        UpdateRender(com, componentGroup);
+                        Toast.Success("Tạo thành công!");
+                    });
+                    break;
+                case "AddImage":
+                    com.ComponentType = "Image";
+                    com.Visibility = true;
+                    com.Order = lastOrder;
+                    com.ComponentGroupId = componentGroup.Id;
+                    com.FieldName = "";
+                    com.Label = "";
+                    Task.Run(async () =>
+                    {
+                        var client = await new Client(nameof(Component)).CreateAsync(com);
+                        UpdateRender(com, componentGroup);
+                        Toast.Success("Tạo thành công!");
+                    });
+                    break;
+                case "AddGridView":
+                    com.ComponentType = nameof(GridView);
+                    com.Visibility = true;
+                    com.DataSourceFilter = "?$filter=Active eq true";
+                    com.Label = "";
+                    com.ComponentGroupId = componentGroup.Id;
+                    com.Order = lastOrder;
+                    com.FieldName = "";
+                    Task.Run(async () =>
+                    {
+                        var client = await new Client(nameof(Component)).CreateAsync(com);
+                        UpdateRender(com, componentGroup);
+                        Toast.Success("Tạo thành công!");
+                    });
+                    break;
+                case "AddListView":
+                    com.ComponentType = nameof(ListView);
+                    com.Visibility = true;
+                    com.DataSourceFilter = "?$filter=Active eq true";
+                    com.Label = "";
+                    com.ComponentGroupId = componentGroup.Id;
+                    com.Order = lastOrder;
+                    com.FieldName = "";
+                    Task.Run(async () =>
+                    {
+                        var client = await new Client(nameof(Component)).CreateAsync(com);
+                        UpdateRender(com, componentGroup);
+                        Toast.Success("Tạo thành công!");
+                    });
+                    break;
+            }
+        }
+
+        private void UpdateRender(Component component, ComponentGroup componentGroup)
+        {
+            var section = this.FindComponentByName<Section>(componentGroup.Name);
+            var childComponent = ComponentFactory.GetComponent(component, EditForm);
+            childComponent.ParentElement = section.Element;
+            section.AddChild(childComponent);
         }
 
         public void SectionProperties(object arg)
