@@ -57,8 +57,7 @@ namespace Core.Components.Forms
         {
             if (_root == null)
             {
-                Html.Take(Document.Body).Ul.ClassName("context-menu")
-                    .Event(EventType.FocusOut, Dispose).Event(EventType.KeyDown, HotKeyHandler);
+                Html.Take(Document.Body).Ul.ClassName("context-menu").Event(EventType.KeyDown, HotKeyHandler);
                 _root = Html.Context;
             }
             else
@@ -89,9 +88,9 @@ namespace Core.Components.Forms
 
                 Html.Instance.Li.Render();
                 item.Ele = Html.Context;
-                if (i == 0 && level == 0)
+                if (i == 0 && level == 0 && items[i].MenuItems != null && items[i].MenuItems.Nothing())
                 {
-                    _selectedIndex = 0;
+                    _selectedIndex = i;
                     SetSelectedItem(Html.Context);
                 }
                 if (item.Disabled)

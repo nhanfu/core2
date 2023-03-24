@@ -19739,7 +19739,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         methods: {
             Render: function () {
                 if (Core.Components.Forms.ContextMenu._root == null) {
-                    Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(document.body).Ul, "context-menu").Event("focusout", Bridge.fn.cacheBind(this, this.Dispose)).Event$1("keydown", Bridge.fn.cacheBind(this, this.HotKeyHandler));
+                    Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(document.body).Ul, "context-menu").Event$1("keydown", Bridge.fn.cacheBind(this, this.HotKeyHandler));
                     Core.Components.Forms.ContextMenu._root = Core.MVVM.Html.Context;
                 } else {
                     document.body.appendChild(Core.Components.Forms.ContextMenu._root);
@@ -19764,8 +19764,8 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                     Core.MVVM.Html.Instance.Li.Render();
                     item.Ele = Core.MVVM.Html.Context;
-                    if (i === 0 && level === 0) {
-                        this._selectedIndex = 0;
+                    if (i === 0 && level === 0 && items.getItem(i).MenuItems != null && Core.Extensions.IEnumerableExtensions.Nothing(Core.Components.Forms.ContextMenuItem, items.getItem(i).MenuItems)) {
+                        this._selectedIndex = i;
                         this.SetSelectedItem(Core.MVVM.Html.Context);
                     }
                     if (item.Disabled) {

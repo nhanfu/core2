@@ -132,7 +132,7 @@ namespace TMS.UI.Business.Manage
                     var instance = Activator.CreateInstance(type) as PopupEditor;
                     instance.Title = "Xem chi phí";
                     instance.Entity = entity;
-                    return instance;    
+                    return instance;
                 });
         }
 
@@ -198,13 +198,25 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
+            var listContext1 = new List<ContextMenuItem>()
+            {
+                new ContextMenuItem { Text = "Xem booking", Click = ViewBooking },
+                new ContextMenuItem { Text = "Tải đính kèm", Click = DownLoadPackingList },
+            };
             gridView.BodyContextMenuShow += () =>
             {
                 var menus = new List<ContextMenuItem>();
                 menus.Clear();
-                menus.Add(new ContextMenuItem { Icon = "fas fa-pen", Text = "Cập nhật giá", Click = UpdateQuotation });
-                menus.Add(new ContextMenuItem { Icon = "fal fa-binoculars", Text = "Xem booking", Click = ViewBooking });
-                menus.Add(new ContextMenuItem { Icon = Icon = "fal fa-download", Text = "Tải đính kèm", Click = DownLoadPackingList });
+                menus.Add(new ContextMenuItem
+                {
+                    Icon = "fas fa-pen",
+                    Text = "Cập nhật cước",
+                    MenuItems = new List<ContextMenuItem>
+                    {
+                        new ContextMenuItem { Text = "Cước khu vực", Click = UpdateQuotationRegion },
+                        new ContextMenuItem { Text = "Cước chi tiết", Click = UpdateQuotation },
+                    }
+                });
                 menus.Add(new ContextMenuItem
                 {
                     Icon = "fas fa-pen",
@@ -216,6 +228,7 @@ namespace TMS.UI.Business.Manage
                         new ContextMenuItem { Text = "Cập phí hạ", Click = UpdateLadingQuotation },
                     }
                 });
+                menus.Add(new ContextMenuItem { Icon = "fal fa-binoculars", Text = "Tính năng", MenuItems = listContext1 });
                 ContextMenu.Instance.MenuItems = menus;
             };
             var listViewItems = gridView.RowData.Data.Cast<Transportation>().ToList();
@@ -400,6 +413,54 @@ namespace TMS.UI.Business.Manage
                 });
                 fe.Focus();
                 await gridView1.ActionFilter();
+            });
+        }
+
+        public virtual void UpdateQuotationRegion(object arg)
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
+            Task.Run(async () =>
+            {
+                var selected = gridView.LastListViewItem;
+                if (selected is null)
+                {
+                    Toast.Warning("Vui lòng chọn cont cần cập nhật giá!");
+                    return;
+                }
+                var coords = selected.Entity.As<Transportation>();
+                if (coords.ClosingId is null)
+                {
+                    Toast.Warning("Vui lòng nhập nhà xe");
+                    return;
+                }
+                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7592 " +
+                    $"and BossId eq {coords.BossId} " +
+                    $"and ContainerTypeId eq {coords.ContainerTypeId} " +
+                    $"and LocationId eq {coords.ReceivedId} " +
+                    $"and StartDate le {coords.ClosingDate.Value.ToOdataFormat()} " +
+                    $"and PackingId eq {coords.ClosingId}&$orderby=StartDate desc");
+                if (quotation is null)
+                {
+                    quotation = new Quotation()
+                    {
+                        TypeId = 7592,
+                        BossId = coords.BossId,
+                        ContainerTypeId = coords.ContainerTypeId,
+                        LocationId = coords.ReceivedId,
+                        StartDate = coords.ClosingDate,
+                        PackingId = coords.ClosingId
+                    };
+                }
+                await this.OpenPopup(
+                featureName: "Quotation Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Settings.QuotationEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Chỉnh sửa bảng giá đóng hàng";
+                    instance.Entity = quotation;
+                    return instance;
+                });
             });
         }
 

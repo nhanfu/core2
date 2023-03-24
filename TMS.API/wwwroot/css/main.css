@@ -1763,7 +1763,7 @@ form span.icon {
   white-space: nowrap;
 }
 .context-menu li {
-  line-height: 2.35rem;
+  line-height: 1.9rem;
   padding: 0 1rem;
   cursor: pointer;
   border: 1px solid #d2d2d2;

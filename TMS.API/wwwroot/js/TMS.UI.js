@@ -22475,20 +22475,30 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 if (gridView == null) {
                     return;
                 }
+                var listContext1 = Bridge.fn.bind(this, function (_o1) {
+                        var $t;
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Text = "Xem booking", $t.Click = Bridge.fn.cacheBind(this, this.ViewBooking), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Text = "T\u1ea3i \u0111\u00ednh k\u00e8m", $t.Click = Bridge.fn.cacheBind(this, this.DownLoadPackingList), $t));
+                        return _o1;
+                    })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor());
                 gridView.BodyContextMenuShow = Bridge.fn.combine(gridView.BodyContextMenuShow, Bridge.fn.bind(this, function () {
                     var $t;
                     var menus = new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor();
                     menus.clear();
-                    menus.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-pen", $t.Text = "C\u1eadp nh\u1eadt gi\u00e1", $t.Click = Bridge.fn.cacheBind(this, this.UpdateQuotation), $t));
-                    menus.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-binoculars", $t.Text = "Xem booking", $t.Click = Bridge.fn.cacheBind(this, this.ViewBooking), $t));
-                    menus.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = (this.Icon = "fal fa-download", "fal fa-download"), $t.Text = "T\u1ea3i \u0111\u00ednh k\u00e8m", $t.Click = Bridge.fn.cacheBind(this, this.DownLoadPackingList), $t));
-                    menus.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-pen", $t.Text = "C\u1eadp nh\u1eadt ph\u00ed", $t.MenuItems = Bridge.fn.bind(this, function (_o1) {
+                    menus.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-pen", $t.Text = "C\u1eadp nh\u1eadt c\u01b0\u1edbc", $t.MenuItems = Bridge.fn.bind(this, function (_o2) {
                             var $t1;
-                            _o1.add(($t1 = new Core.Components.Forms.ContextMenuItem(), $t1.Text = "C\u1eadp c\u01b0\u1edbc t\u00e0u", $t1.Click = Bridge.fn.cacheBind(this, this.UpdateShipQuotation), $t1));
-                            _o1.add(($t1 = new Core.Components.Forms.ContextMenuItem(), $t1.Text = "C\u1eadp ph\u00ed n\u00e2ng", $t1.Click = Bridge.fn.cacheBind(this, this.UpdateLiftQuotation), $t1));
-                            _o1.add(($t1 = new Core.Components.Forms.ContextMenuItem(), $t1.Text = "C\u1eadp ph\u00ed h\u1ea1", $t1.Click = Bridge.fn.cacheBind(this, this.UpdateLadingQuotation), $t1));
-                            return _o1;
+                            _o2.add(($t1 = new Core.Components.Forms.ContextMenuItem(), $t1.Text = "C\u01b0\u1edbc khu v\u1ef1c", $t1.Click = Bridge.fn.cacheBind(this, this.UpdateQuotationRegion), $t1));
+                            _o2.add(($t1 = new Core.Components.Forms.ContextMenuItem(), $t1.Text = "C\u01b0\u1edbc chi ti\u1ebft", $t1.Click = Bridge.fn.cacheBind(this, this.UpdateQuotation), $t1));
+                            return _o2;
                         })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor()), $t));
+                    menus.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-pen", $t.Text = "C\u1eadp nh\u1eadt ph\u00ed", $t.MenuItems = Bridge.fn.bind(this, function (_o3) {
+                            var $t1;
+                            _o3.add(($t1 = new Core.Components.Forms.ContextMenuItem(), $t1.Text = "C\u1eadp c\u01b0\u1edbc t\u00e0u", $t1.Click = Bridge.fn.cacheBind(this, this.UpdateShipQuotation), $t1));
+                            _o3.add(($t1 = new Core.Components.Forms.ContextMenuItem(), $t1.Text = "C\u1eadp ph\u00ed n\u00e2ng", $t1.Click = Bridge.fn.cacheBind(this, this.UpdateLiftQuotation), $t1));
+                            _o3.add(($t1 = new Core.Components.Forms.ContextMenuItem(), $t1.Text = "C\u1eadp ph\u00ed h\u1ea1", $t1.Click = Bridge.fn.cacheBind(this, this.UpdateLadingQuotation), $t1));
+                            return _o3;
+                        })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor()), $t));
+                    menus.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-binoculars", $t.Text = "T\u00ednh n\u0103ng", $t.MenuItems = listContext1, $t));
                     Core.Components.Forms.ContextMenu.Instance.MenuItems = menus;
                 }));
                 var listViewItems = System.Linq.Enumerable.from(gridView.RowData.Data).select(function (x) { return Bridge.cast(x, TMS.API.Models.Transportation); }).toList(TMS.API.Models.Transportation);
@@ -22866,6 +22876,91 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                         }
                                         case 2: {
                                             $task2.getAwaitedResult();
+                                            $tcs.setResult(null);
+                                            return;
+                                        }
+                                        default: {
+                                            $tcs.setResult(null);
+                                            return;
+                                        }
+                                    }
+                                }
+                            } catch($async_e1) {
+                                $async_e = System.Exception.create($async_e1);
+                                $tcs.setException($async_e);
+                            }
+                        }, arguments);
+
+                    $asyncBody();
+                    return $tcs.task;
+                }));
+            },
+            UpdateQuotationRegion: function (arg) {
+                var gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this), Core.Components.GridView).firstOrDefault(function (x) {
+                        return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
+                    }, null);
+                System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
+                    var $step = 0,
+                        $task1, 
+                        $taskResult1, 
+                        $task2, 
+                        $taskResult2, 
+                        $jumpFromFinally, 
+                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                        $returnValue, 
+                        selected, 
+                        coords, 
+                        quotation, 
+                        $t, 
+                        $async_e, 
+                        $asyncBody = Bridge.fn.bind(this, function () {
+                            try {
+                                for (;;) {
+                                    $step = System.Array.min([0,1,2], $step);
+                                    switch ($step) {
+                                        case 0: {
+                                            selected = gridView.LastListViewItem;
+                                            if (selected == null) {
+                                                Core.Extensions.Toast.Warning("Vui l\u00f2ng ch\u1ecdn cont c\u1ea7n c\u1eadp nh\u1eadt gi\u00e1!");
+                                                $tcs.setResult(null);
+                                                return;
+                                            }
+                                            coords = Bridge.unbox(selected.Entity);
+                                            if (coords.ClosingId == null) {
+                                                Core.Extensions.Toast.Warning("Vui l\u00f2ng nh\u1eadp nh\u00e0 xe");
+                                                $tcs.setResult(null);
+                                                return;
+                                            }
+                                            $task1 = new Core.Clients.Client.$ctor1("Quotation").FirstOrDefaultAsync(TMS.API.Models.Quotation, (System.String.format("?$filter=TypeId eq 7592 ", null) || "") + (System.String.format("and BossId eq {0} ", [Bridge.box(coords.BossId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]) || "") + (System.String.format("and ContainerTypeId eq {0} ", [Bridge.box(coords.ContainerTypeId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]) || "") + (System.String.format("and LocationId eq {0} ", [Bridge.box(coords.ReceivedId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]) || "") + (System.String.format("and StartDate le {0} ", [Core.Extensions.DateTimeExt.ToOdataFormat(System.Nullable.getValue(coords.ClosingDate))]) || "") + (System.String.format("and PackingId eq {0}&$orderby=StartDate desc", [Bridge.box(coords.ClosingId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]) || ""));
+                                            $step = 1;
+                                            if ($task1.isCompleted()) {
+                                                continue;
+                                            }
+                                            $task1.continue($asyncBody);
+                                            return;
+                                        }
+                                        case 1: {
+                                            $taskResult1 = $task1.getAwaitedResult();
+                                            quotation = $taskResult1;
+                                            if (quotation == null) {
+                                                quotation = ($t = new TMS.API.Models.Quotation(), $t.TypeId = 7592, $t.BossId = coords.BossId, $t.ContainerTypeId = coords.ContainerTypeId, $t.LocationId = coords.ReceivedId, $t.StartDate = coords.ClosingDate, $t.PackingId = coords.ClosingId, $t);
+                                            }
+                                            $task2 = Core.Components.Extensions.ComponentExt.OpenPopup(this, "Quotation Editor", function () {
+                                                var type = Bridge.Reflection.getType("TMS.UI.Business.Settings.QuotationEditorBL");
+                                                var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
+                                                instance.Title = "Ch\u1ec9nh s\u1eeda b\u1ea3ng gi\u00e1 \u0111\u00f3ng h\u00e0ng";
+                                                instance.Entity = quotation;
+                                                return instance;
+                                            }, false, false);
+                                            $step = 2;
+                                            if ($task2.isCompleted()) {
+                                                continue;
+                                            }
+                                            $task2.continue($asyncBody);
+                                            return;
+                                        }
+                                        case 2: {
+                                            $taskResult2 = $task2.getAwaitedResult();
                                             $tcs.setResult(null);
                                             return;
                                         }
