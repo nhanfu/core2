@@ -19764,7 +19764,7 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                     Core.MVVM.Html.Instance.Li.Render();
                     item.Ele = Core.MVVM.Html.Context;
-                    if (i === 0 && level === 0 && items.getItem(i).MenuItems != null && Core.Extensions.IEnumerableExtensions.Nothing(Core.Components.Forms.ContextMenuItem, items.getItem(i).MenuItems)) {
+                    if (i === 0 && level === 0 && (items.getItem(i).MenuItems == null || Core.Extensions.IEnumerableExtensions.Nothing(Core.Components.Forms.ContextMenuItem, items.getItem(i).MenuItems))) {
                         this._selectedIndex = i;
                         this.SetSelectedItem(Core.MVVM.Html.Context);
                     }

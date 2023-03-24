@@ -34370,11 +34370,12 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 Core.Components.Forms.TabEditor.ctor.call(this, "TransportationPlan");
                 this.Name = "TransportationPlan Editor Mobile";
                 this.DOMContentLoaded = Bridge.fn.combine(this.DOMContentLoaded, Bridge.fn.bind(this, function () {
-                    if (this.transportationPlanEntity.Id > 0) {
-                        return;
+                    if (this.transportationPlanEntity.IsTransportation) {
+                        this.LockUpdateButCancel();
                     }
-
-                    Core.Components.Extensions.ComponentExt.SetShow(this, false, ["btnDelete"]);
+                    if (this.transportationPlanEntity.Id < 0) {
+                        Core.Components.Extensions.ComponentExt.SetShow(this, false, ["btnDelete"]);
+                    }
                 }));
             }
         },

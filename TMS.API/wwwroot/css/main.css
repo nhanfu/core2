@@ -1792,6 +1792,7 @@ form span.icon {
   width: 100%;
   padding-left: 4px;
   margin: 0px;
+  margin-top: 8px;
 }
 .context-menu li[disabled] span {
   color: #6e6e6e;
