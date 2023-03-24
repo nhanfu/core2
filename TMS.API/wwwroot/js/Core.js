@@ -14034,6 +14034,54 @@ Bridge.assembly("Core", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
+            Delete: function () {
+                var $t;
+                var confirm = ($t = new Core.Components.Forms.ConfirmDialog(), $t.Content = "B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn x\u00f3a kh\u00f4ng?", $t);
+                confirm.Render();
+                confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
+                    var $step = 0,
+                        $task1, 
+                        $taskResult1, 
+                        $jumpFromFinally, 
+                        success, 
+                        $asyncBody = Bridge.fn.bind(this, function () {
+                            for (;;) {
+                                $step = System.Array.min([0,1], $step);
+                                switch ($step) {
+                                    case 0: {
+                                        $task1 = this.Client.HardDeleteAsync(Bridge.fn.bind(this, function (_o1) {
+                                            _o1.add(System.Int32.parse(Bridge.toString(this.Entity[Core.Components.EditableComponent.IdField])));
+                                            return _o1;
+                                        })(new (System.Collections.Generic.List$1(System.Int32)).ctor()));
+                                        $step = 1;
+                                        if ($task1.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task1.continue($asyncBody);
+                                        return;
+                                    }
+                                    case 1: {
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        success = $taskResult1;
+                                        if (success) {
+                                            this.ParentForm.UpdateView$1(true);
+                                            this.Dispose();
+                                            Core.Extensions.Toast.Success("X\u00f3a d\u1eef li\u1ec7u th\u00e0nh c\u00f4ng");
+                                        } else {
+                                            Core.Extensions.Toast.Warning("X\u00f3a kh\u00f4ng th\u00e0nh c\u00f4ng");
+                                        }
+                                        return;
+                                    }
+                                    default: {
+                                        return;
+                                    }
+                                }
+                            }
+                        }, arguments);
+
+                    $asyncBody();
+                }));
+            },
             ProcessEnumMessage: function (res, showMessage) {
                 var $t;
                 if (showMessage === void 0) { showMessage = true; }

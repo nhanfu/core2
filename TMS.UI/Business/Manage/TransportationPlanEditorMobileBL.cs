@@ -1,6 +1,10 @@
-﻿using Core.Components.Forms;
+﻿using Core.Components.Extensions;
+using Core.Components;
+using Core.Components.Forms;
 using System.Threading.Tasks;
 using TMS.API.Models;
+using System.Linq;
+using System;
 
 namespace TMS.UI.Business.Manage
 {
@@ -10,6 +14,15 @@ namespace TMS.UI.Business.Manage
         public TransportationPlanEditorMobileBL() : base(nameof(TransportationPlan))
         {
             Name = "TransportationPlan Editor Mobile";
+            DOMContentLoaded += () =>
+            {
+                if (transportationPlanEntity.Id > 0)
+                {
+                    return;
+                }
+
+                this.SetShow(false, "btnDelete");
+            };
         }
 
         public override async Task<bool> Save(object entity = null)

@@ -34274,6 +34274,13 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                 this.$initialize();
                 Core.Components.Forms.TabEditor.ctor.call(this, "TransportationPlan");
                 this.Name = "TransportationPlan Editor Mobile";
+                this.DOMContentLoaded = Bridge.fn.combine(this.DOMContentLoaded, Bridge.fn.bind(this, function () {
+                    if (this.transportationPlanEntity.Id > 0) {
+                        return;
+                    }
+
+                    Core.Components.Extensions.ComponentExt.SetShow(this, false, ["btnDelete"]);
+                }));
             }
         },
         methods: {

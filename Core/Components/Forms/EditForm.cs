@@ -1309,6 +1309,29 @@ namespace Core.Components.Forms
             };
         }
 
+        public virtual void Delete()
+        {
+            var confirm = new ConfirmDialog
+            {
+                Content = "Bạn có chắc chắn xóa không?",
+            };
+            confirm.Render();
+            confirm.YesConfirmed += async () =>
+            {
+                var success = await Client.HardDeleteAsync(new List<int>() { int.Parse(Entity[IdField].ToString()) });
+                if (success)
+                {
+                    ParentForm.UpdateView(true);
+                    Dispose();
+                    Toast.Success("Xóa dữ liệu thành công");
+                }
+                else
+                {
+                    Toast.Warning("Xóa không thành công");
+                }
+            };
+        }
+
         protected async Task<bool> RequestApprove(object entity)
         {
             entity.SetPropValue(StatusIdField, (int)ApprovalStatusEnum.Approving);
