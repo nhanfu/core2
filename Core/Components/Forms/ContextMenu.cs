@@ -57,7 +57,8 @@ namespace Core.Components.Forms
         {
             if (_root == null)
             {
-                Html.Take(Document.Body).Ul.ClassName("context-menu").Event(EventType.KeyDown, HotKeyHandler);
+                Html.Take(Document.Body).Ul.ClassName("context-menu")
+                    .Event(EventType.FocusOut, Dispose).Event(EventType.KeyDown, HotKeyHandler);
                 _root = Html.Context;
             }
             else

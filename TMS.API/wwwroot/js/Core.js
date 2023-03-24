@@ -19739,7 +19739,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         methods: {
             Render: function () {
                 if (Core.Components.Forms.ContextMenu._root == null) {
-                    Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(document.body).Ul, "context-menu").Event$1("keydown", Bridge.fn.cacheBind(this, this.HotKeyHandler));
+                    Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(document.body).Ul, "context-menu").Event("focusout", Bridge.fn.cacheBind(this, this.Dispose)).Event$1("keydown", Bridge.fn.cacheBind(this, this.HotKeyHandler));
                     Core.Components.Forms.ContextMenu._root = Core.MVVM.Html.Context;
                 } else {
                     document.body.appendChild(Core.Components.Forms.ContextMenu._root);
