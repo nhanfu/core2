@@ -1,4 +1,5 @@
 ﻿using Bridge.Html5;
+using Core.Components.Extensions;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
@@ -40,6 +41,10 @@ namespace Core.Components
 
         private void FocusCell(Event e, Component header)
         {
+            if (ListViewSection.ListView.LastElementFocus != null)
+            {
+                ListViewSection.ListView.LastElementFocus.Closest(ElementType.td.ToString()).RemoveClass("cell-selected");
+            }
             var td = e.Target as HTMLElement;
             td.Closest(ElementType.td.ToString()).AddClass("cell-selected");
             ListViewSection.ListView.LastListViewItem = this;

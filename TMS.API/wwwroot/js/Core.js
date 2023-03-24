@@ -36524,6 +36524,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                 Core.MVVM.Html.Instance.EndOf(Core.MVVM.ElementType.td);
             },
             FocusCell: function (e, header) {
+                if (this.ListViewSection.ListView.LastElementFocus != null) {
+                    Core.Extensions.HtmlElementExtension.RemoveClass(Core.Extensions.HtmlElementExtension.Closest(this.ListViewSection.ListView.LastElementFocus, System.Enum.toString(Core.MVVM.ElementType, Core.MVVM.ElementType.td)), "cell-selected");
+                }
                 var td = Bridge.as(e.target, HTMLElement);
                 Core.Extensions.HtmlElementExtension.AddClass(Core.Extensions.HtmlElementExtension.Closest(td, System.Enum.toString(Core.MVVM.ElementType, Core.MVVM.ElementType.td)), "cell-selected");
                 this.ListViewSection.ListView.LastListViewItem = this;
