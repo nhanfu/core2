@@ -663,7 +663,7 @@ namespace TMS.API.Controllers
                                   {joins.Combine(" ")}
                                   where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
             }
-            if (!orderby.IsNullOrWhiteSpace() && !orderby.Contains(",Id desc") && !orderby.Contains(",Id asc") && orderby != "Id desc" && orderby != "Id asc" && orderby != $"[{component.RefName}].Id asc" && orderby != $"[{component.RefName}].Id asc")
+            if (!orderby.IsNullOrWhiteSpace() && !orderby.Contains(",Id desc") && !orderby.Contains(",Id asc") && !orderby.Contains($",[{component.RefName}].Id desc") && !orderby.Contains($",[{component.RefName}].Id asc") && orderby != "Id desc" && orderby != "Id asc" && orderby != $"[{component.RefName}].Id asc" && orderby != $"[{component.RefName}].Id desc")
             {
                 reportQuery += $" order by {orderby},[{component.RefName}].Id asc";
             }
@@ -675,7 +675,7 @@ namespace TMS.API.Controllers
                 }
                 else
                 {
-                    reportQuery += $" order by {orderby}".Replace("Id desc", $"[{component.RefName}].Id desc").Replace("Id asc", $"[{component.RefName}].Id asc");
+                    reportQuery += $" order by {orderby}".Replace(" Id desc", $" [{component.RefName}].Id desc").Replace(" Id asc", $" [{component.RefName}].Id asc");
                 }
             }
             var connectionStr = _config.GetConnectionString("Default");

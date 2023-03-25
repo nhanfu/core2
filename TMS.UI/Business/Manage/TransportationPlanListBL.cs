@@ -414,6 +414,10 @@ namespace TMS.UI.Business.Manage
 
         public async Task CheckClosingDate(TransportationPlan transportationPlan)
         {
+            if (transportationPlan.ClosingDate is null || transportationPlan.BossId is null)
+            {
+                return;
+            }
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
             await CheckContract(transportationPlan);
             gridView = gridView ?? this.FindActiveComponent<GridView>().FirstOrDefault();
@@ -455,7 +459,7 @@ namespace TMS.UI.Business.Manage
         }
 
         public void BeforeCreated(TransportationPlan transportationPlan)
-        {   
+        {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
             var listViewItem = gridView.GetListViewItems(transportationPlan).FirstOrDefault();
             if (listViewItem is null)
@@ -551,7 +555,7 @@ namespace TMS.UI.Business.Manage
                 if (commodityValueDB != null)
                 {
                     transportationPlan.SteamingTerms = commodityValueDB.SteamingTerms;
-                    transportationPlan.BreakTerms= commodityValueDB.BreakTerms;
+                    transportationPlan.BreakTerms = commodityValueDB.BreakTerms;
                     transportationPlan.IsBought = commodityValueDB.IsBought;
                     transportationPlan.CustomerTypeId = commodityValueDB.CustomerTypeId;
                     transportationPlan.CommodityValue = commodityValueDB.TotalPrice;

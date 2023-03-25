@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Enums;
+using System.Linq;
 
 namespace Core.Components
 {
@@ -131,6 +132,7 @@ namespace Core.Components
             Input.AutoComplete = AutoComplete.Off;
             Input.Name = GuiInfo.FieldName;
             Input.ParentElement.AddEventListener(EventType.FocusOut, CloseCalendar);
+            Input.AddEventListener(EventType.KeyDown, async (e) => await KeyDownDateTime(e));
             Html.Instance.End.Div.ClassName("btn-group").Button.TabIndex(-1).Span.ClassName("icon mif-calendar")
                 .Event(EventType.Click, () =>
                 {
@@ -149,6 +151,63 @@ namespace Core.Components
                     }
                 });
             DOMContentLoaded?.Invoke();
+        }
+
+        private async Task KeyDownDateTime(Event evt)
+        {
+            if (!(Parent is ListViewItem))
+            {
+                return;
+            }
+            var check = evt.KeyCodeEnum() == KeyCodeEnum.V && evt.CtrlOrMetaKey() && evt.ShiftKey();
+            var tcs = new TaskCompletionSource<string>();
+            if (check)
+            {
+                /*@
+                 navigator.clipboard.readText().then(clipText => tcs.setResult(clipText));
+                */
+                var te = await tcs.Task;
+                var checkMulti = te.Contains("\r\n");
+                if (checkMulti)
+                {
+                    var values = te.Split("\r\n").ToList();
+                    Input.Value = values[0];
+                    ParseDate();
+                    var current = this.FindClosest<ListViewItem>();
+                    var startNo = current.RowNo;
+                    var varCount = values.Count + startNo;
+                    var gridView = this.FindClosest<VirtualGrid>();
+                    gridView.AutoFocus = true;
+                    foreach (var item in values.Take(values.Count - 1))
+                    {
+                        var upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
+                        if (upItem is null)
+                        {
+                            if (startNo <= varCount)
+                            {
+                                await Task.Delay(1000);
+                                upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
+                            }
+                        }
+                        var updated = upItem.FilterChildren<Datepicker>(x => x.GuiInfo.FieldName == GuiInfo.FieldName && x.GuiInfo.Editable).FirstOrDefault();
+                        updated.Dirty = true;
+                        var (parsed, datetime, format) = TryParseDateTime(item);
+                        updated.Value = datetime;
+                        updated.UpdateView();
+                        updated.PopulateFields();
+                        await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
+                        await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
+                        if (gridView.GuiInfo.IsRealtime)
+                        {
+                            await upItem.PatchUpdate();
+                        }
+                        gridView.DataTable.ParentElement.ScrollTop += 26;
+                        startNo++;
+                        await Task.Delay(300);
+                    }
+                    gridView.AutoFocus = false;
+                }
+            }
         }
 
         private bool IsNullable<T>() where T : struct => Entity == null || Utils.IsNullable<T>(Entity.GetType(), GuiInfo.FieldName, Entity);
@@ -180,7 +239,7 @@ namespace Core.Components
                 Input.Value = _value?.ToString(InitFormat);
                 _hour = null;
                 _minute = null;
-            }, 250);
+            }, 100);
         }
 
         private void RenderCalendar(DateTime? someday = null)
