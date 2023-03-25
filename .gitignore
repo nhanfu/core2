@@ -372,3 +372,7 @@ FodyWeavers.xsd
 /TMS.API/wwwroot/js/TMS.UI.js
 /TMS.API/wwwroot/js/newtonsoft.json.js
 /TMS.API/wwwroot/js/newtonsoft.json.min.js
+/TMS.API/wwwroot/js/bridge.js
+/TMS.API/wwwroot/js/bridge.meta.js
+/TMS.API/wwwroot/js/bridge.meta.min.js
+/TMS.API/wwwroot/js/bridge.min.js
