@@ -246,13 +246,12 @@ namespace TMS.UI.Business.Manage
         public override async Task EditTransportation(Transportation entity)
         {
             selected = entity;
-            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
             var gridView1 = TabEditor.FindComponentByName<GridView>(nameof(Expense));
             if (_expensePopup != null && gridView1 != null)
             {
                 return;
             }
-            _expensePopup?.Dispose();
+            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
             _expensePopup = await gridView.OpenPopup(
                 featureName: "Transportation Return Editor",
                 factory: () =>
@@ -273,7 +272,7 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-            _expensePopup?.Dispose();
+            _expensePopup.Dispose();
             var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
             _expensePopup = await gridView.OpenPopup(
                 featureName: "Transportation Return Editor",

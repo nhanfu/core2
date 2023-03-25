@@ -22226,8 +22226,8 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    gridView, 
                     gridView1, 
+                    gridView, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -22236,15 +22236,14 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                 switch ($step) {
                                     case 0: {
                                         this.selected = entity;
-                                        gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this, function (x) {
-                                            return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
-                                        }), Core.Components.GridView).firstOrDefault(null, null);
                                         gridView1 = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this.TabEditor, "Expense");
                                         if (this._expensePopup != null && gridView1 != null) {
                                             $tcs.setResult(null);
                                             return;
                                         }
-                                        this._expensePopup != null ? this._expensePopup.Dispose() : null;
+                                        gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this, function (x) {
+                                            return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
+                                        }), Core.Components.GridView).firstOrDefault(null, null);
                                         $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(gridView, "Transportation Editor", function () {
                                             var type = Bridge.Reflection.getType("TMS.UI.Business.Manage.TransportationEditorBL");
                                             var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
@@ -22302,7 +22301,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             $tcs.setResult(null);
                                             return;
                                         }
-                                        this._expensePopup != null ? this._expensePopup.Dispose() : null;
+                                        this._expensePopup.Dispose();
                                         gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this, function (x) {
                                             return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
                                         }), Core.Components.GridView).firstOrDefault(null, null);
@@ -45108,8 +45107,8 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    gridView, 
                     gridView1, 
+                    gridView, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -45118,15 +45117,14 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                 switch ($step) {
                                     case 0: {
                                         this.selected = entity;
-                                        gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this, function (x) {
-                                            return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
-                                        }), Core.Components.GridView).firstOrDefault(null, null);
                                         gridView1 = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.GridView, this.TabEditor, "Expense");
                                         if (this._expensePopup != null && gridView1 != null) {
                                             $tcs.setResult(null);
                                             return;
                                         }
-                                        this._expensePopup != null ? this._expensePopup.Dispose() : null;
+                                        gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this, function (x) {
+                                            return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
+                                        }), Core.Components.GridView).firstOrDefault(null, null);
                                         $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(gridView, "Transportation Return Editor", function () {
                                             var type = Bridge.Reflection.getType("TMS.UI.Business.Manage.TransportationReturnEditorBL");
                                             var instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.PopupEditor);
@@ -45184,7 +45182,7 @@ Bridge.assembly("TMS.UI", function ($asm, globals) {
                                             $tcs.setResult(null);
                                             return;
                                         }
-                                        this._expensePopup != null ? this._expensePopup.Dispose() : null;
+                                        this._expensePopup.Dispose();
                                         gridView = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.GridView, this, function (x) {
                                             return Bridge.referenceEquals(x.GuiInfo.RefName, "Transportation");
                                         }), Core.Components.GridView).firstOrDefault(null, null);
