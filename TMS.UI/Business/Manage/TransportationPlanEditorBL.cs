@@ -131,7 +131,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var _gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-            var listViewItem = _gridView.RowData.Data.Cast<TransportationPlan>().FirstOrDefault(x => x.StatusId == (int)ApprovalStatusEnum.New || x.StatusId == (int)ApprovalStatusEnum.Rejected);
+            var listViewItem = _gridView.RowData.Data.Cast<TransportationPlan>().OrderByDescending(x => x.Id).FirstOrDefault();
             if (listViewItem is null)
             {
                 return;
@@ -186,7 +186,14 @@ namespace TMS.UI.Business.Manage
         private async Task ActionRequest(TransportationPlan listViewItem)
         {
             var res = await RequestApprove(listViewItem);
-            ProcessEnumMessage(res);
+            if (res && Client.Token.RoleIds.Contains((int)RoleEnum.Driver_Truck))
+            {
+                await Approve();
+            }
+            else
+            {
+                ProcessEnumMessage(res);
+            }
         }
 
         public override async Task Approve()
@@ -204,7 +211,7 @@ namespace TMS.UI.Business.Manage
             confirm.YesConfirmed += async () =>
             {
                 var _gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-                var listViewItem = _gridView.RowData.Data.Cast<TransportationPlan>().FirstOrDefault(x => x.StatusId == (int)ApprovalStatusEnum.Approving);
+                var listViewItem = _gridView.RowData.Data.Cast<TransportationPlan>().OrderByDescending(x => x.Id).FirstOrDefault();
                 var res = await Client.CreateAsync<bool>(listViewItem, "Approve");
                 if (res)
                 {
@@ -321,8 +328,9 @@ namespace TMS.UI.Business.Manage
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
+
                 var _gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-                var listViewItem = _gridView.RowData.Data.Cast<TransportationPlan>().FirstOrDefault(x => x.StatusId == (int)ApprovalStatusEnum.Approving);
+                var listViewItem = _gridView.RowData.Data.Cast<TransportationPlan>().OrderByDescending(x => x.Id).FirstOrDefault();
                 listViewItem.ClearReferences();
                 var res = await Client.CreateAsync<object>(listViewItem, "Reject?reasonOfChange=" + confirm.Textbox?.Text);
                 ProcessEnumMessage(res);

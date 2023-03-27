@@ -47,6 +47,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task RequestChangeTransportationPlan(TransportationPlan entity)
         {
+            entity = await Client.GetAsync<TransportationPlan>(entity.Id);
             await this.OpenPopup(
             featureName: "TransportationPlan Editor",
             factory: () =>

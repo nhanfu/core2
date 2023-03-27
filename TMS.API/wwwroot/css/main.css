@@ -1074,6 +1074,7 @@ td {
 }
 .table-wrapper td button {
   height: 24px !important;
+  width: 30px !important;
   padding: 0;
 }
 .table-wrapper td input:not([type="checkbox"]) {

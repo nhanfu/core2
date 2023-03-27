@@ -49,7 +49,7 @@ namespace Core.Enums
         [Description("Truck leader")]
         Truck_Leader = 18,
         [Description("Super admin")]
-        Super_Admin = 40
+        Super_Admin = 40,
     }
 
     public enum TaskStateEnum
