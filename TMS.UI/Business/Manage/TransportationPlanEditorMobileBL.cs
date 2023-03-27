@@ -13,13 +13,13 @@ namespace TMS.UI.Business.Manage
             Name = "TransportationPlan Editor Mobile";
             DOMContentLoaded += () =>
             {
+                if (transportationPlanEntity.Id <= 0)
+                {
+                    this.SetShow(false, "btnDelete");
+                }
                 if (transportationPlanEntity.IsTransportation)
                 {
                     LockUpdateButCancel();
-                }
-                if (transportationPlanEntity.Id < 0)
-                {
-                    this.SetShow(false, "btnDelete");
                 }
             };
         }
