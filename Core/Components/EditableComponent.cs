@@ -718,7 +718,7 @@ namespace Core.Components
             {
                 updatedText = "N/A";
             }
-            if (_dirty && Updating)
+            if (Updating)
             {
                 var originText = OriginalText.IsNullOrWhiteSpace() ? "N/A" : OriginalText;
                 if (originText.Trim() == updatedText.Trim())
@@ -727,7 +727,7 @@ namespace Core.Components
                 }
                 builder.Append(LangSelect.Get(GuiInfo.Label)).Append(": ").Append(originText).Append(" -> ").Append(updatedText).Append(Utils.NewLine);
             }
-            else if (_dirty || !Updating && AlwaysLogHistory)
+            else if (!Updating && AlwaysLogHistory)
             {
                 builder.Append(LangSelect.Get(GuiInfo.Label)).Append(": ").Append(updatedText).Append(Utils.NewLine);
             }

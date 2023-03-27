@@ -293,8 +293,7 @@ namespace Core.Components.Forms
         public async Task<object> AddOrUpdate(object entity)
         {
             var showMessage = entity != null;
-            var hasHistory = ListViews.Any(x => x.GuiInfo?.ReferenceId == Utils.HistoryId);
-            var changedLog = hasHistory ? BuildTextHistory().ToString() : string.Empty;
+            var changedLog = BuildTextHistory().ToString();
             var updating = Entity[IdField].As<int>() > 0;
             var updated = await AddOrUpdateEntity(entity, updating);
             if (updated is null)
@@ -330,8 +329,8 @@ namespace Core.Components.Forms
             }
             var history = new History
             {
-                EntityId = _entityEnum.Id,
-                RecordId = Entity[IdField].As<int>(),
+                EntityId = Utils.GetEntity(Client.EntityName).Id,
+                RecordId = int.Parse(Entity[IdField].ToString()),
                 ReasonOfChange = ReasonOfChange ?? "Cập nhật thông tin",
                 TextHistory = changedLog,
             };
