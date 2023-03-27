@@ -155,6 +155,22 @@ namespace Core.Components
 
         private async Task KeyDownDateTime(Event evt)
         {
+            if (evt.KeyCodeEnum() == KeyCodeEnum.Enter)
+            {
+                if (Input.Disabled)
+                {
+                    return;
+                }
+
+                if (show)
+                {
+                    CloseCalendar();
+                }
+                else
+                {
+                    RenderCalendar();
+                }
+            }
             if (!(Parent is ListViewItem))
             {
                 return;
@@ -239,7 +255,7 @@ namespace Core.Components
                 Input.Value = _value?.ToString(InitFormat);
                 _hour = null;
                 _minute = null;
-            }, 100);
+            }, 250);
         }
 
         private void RenderCalendar(DateTime? someday = null)

@@ -202,15 +202,18 @@ namespace TMS.API.Controllers
             var rs = await base.Approve(entity, reasonOfChange);
             await db.Entry(entity).ReloadAsync();
             var oldEntity = await db.TransportationPlan.FindAsync(entity.RequestChangeId);
-            var transportation = await db.Transportation.FirstOrDefaultAsync(x => x.TransportationPlanId == oldEntity.Id);
+            var transportations = await db.Transportation.Where(x => x.TransportationPlanId == oldEntity.Id).ToListAsync();
             oldEntity.CopyPropFrom(entity, nameof(TransportationPlan.Id), nameof(TransportationPlan.RequestChangeId), nameof(TransportationPlan.InsertedDate), nameof(TransportationPlan.InsertedBy));
-            transportation.UserId = oldEntity.UserId;
-            transportation.RouteId = oldEntity.RouteId;
-            transportation.BossId = oldEntity.BossId;
-            transportation.ReceivedId = oldEntity.ReceivedId;
-            transportation.ContainerTypeId = oldEntity.ContainerTypeId;
-            transportation.CommodityId = oldEntity.CommodityId;
-            transportation.ClosingDate = oldEntity.ClosingDate;
+            transportations.ForEach(transportation =>
+            {
+                transportation.UserId = oldEntity.UserId;
+                transportation.RouteId = oldEntity.RouteId;
+                transportation.BossId = oldEntity.BossId;
+                transportation.ReceivedId = oldEntity.ReceivedId;
+                transportation.ContainerTypeId = oldEntity.ContainerTypeId;
+                transportation.CommodityId = oldEntity.CommodityId;
+                transportation.ClosingDate = oldEntity.ClosingDate;
+            });
             var user = await db.User.FindAsync(UserId);
             var taskNotification = new TaskNotification
             {

@@ -113,7 +113,6 @@ namespace TMS.API.Websocket
             }
         }
 
-
         public ConcurrentDictionary<string, WebSocket> GetAll()
         {
             return WebSocketConnectionManager.GetAll();
@@ -131,6 +130,18 @@ namespace TMS.API.Websocket
             var userGroup = WebSocketConnectionManager.GetAll()
                 .Where(x => userIds.Contains(x.Key.Split("/").FirstOrDefault().TryParseInt() ?? 0));
             return NotifyUserGroup(message, userGroup, fcm);
+        }
+
+        public async Task SendMessageToSocketAsync(string token, string message, string fcm = null)
+        {
+            var pair = WebSocketConnectionManager.GetAll()
+                .FirstOrDefault(x => x.Key == token);
+            var fcmTask = SendFCMNotfication(fcm);
+            if (pair.Value.State != WebSocketState.Open)
+            {
+                return;
+            }
+            await SendMessageAsync(pair.Value, message);
         }
 
         public Task SendMessageToUsersAsync(int userId, string message, string fcm = null)

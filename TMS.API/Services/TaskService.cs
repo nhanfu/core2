@@ -66,6 +66,16 @@ namespace TMS.API.Services
             return _fcmSvc.GetAll();
         }
 
+        public async Task SendMessageSocket(string socket, TaskNotification task)
+        {
+            var entity = new WebSocketResponse<TaskNotification>
+            {
+                EntityId = _entitySvc.GetEntity(nameof(User))?.Id ?? 0,
+                Data = task
+            };
+            await _fcmSvc.SendMessageToSocketAsync(socket, entity.ToJson());
+        }
+
         public async Task SendMessageAllUser(object task)
         {
             await _fcmSvc.SendMessageToAll(JsonConvert.SerializeObject(task, new JsonSerializerSettings

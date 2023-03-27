@@ -1,5 +1,4 @@
 ﻿using Bridge.Html5;
-using Core.ViewModels;
 using Core.Clients;
 using Core.Components;
 using Core.Components.Extensions;
@@ -7,14 +6,14 @@ using Core.Components.Forms;
 using Core.Enums;
 using Core.Extensions;
 using Core.MVVM;
+using Core.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
-using TMS.UI.Business.Authentication;
 using ElementType = Core.MVVM.ElementType;
 using Notification = Retyped.dom.Notification;
-using System.Collections.Generic;
 
 namespace TMS.UI.Notifications
 {
@@ -38,6 +37,12 @@ namespace TMS.UI.Notifications
             _countNtf = new Observable<string>();
             _countUser = new Observable<string>();
             EditForm.NotificationClient?.AddListener(nameof(TaskNotification), ProcessIncomMessage);
+            EditForm.NotificationClient?.AddListener(nameof(User), Kick);
+        }
+
+        private void Kick(object arg)
+        {
+            Window.Location.Reload(true);
         }
 
         public void ProcessIncomMessage(object obj)
@@ -310,12 +315,20 @@ namespace TMS.UI.Notifications
                 {
                     return;
                 }
-                html.A.ClassName("dropdown-item").Div.ClassName("media")
+                html.A.ClassName("dropdown-item").Event(EventType.DblClick, async (e) =>
+                {
+                    await KickOut(task, e);
+                }).Div.ClassName("media")
                 .Div.ClassName("media-body").H3.ClassName("dropdown-item-title").Text(task.FullName).Span.ClassName("float-right text-sm text-sucssess").I.ClassName("fas fa-star").End.End.End
                 .P.ClassName("text-sm").Text("").End
                 .P.ClassName("text-sm text-muted")
                     .I.ClassName("fal fa-tablet mr-1").End.Text(task.Recover).EndOf(ElementType.a);
             });
+        }
+
+        private async Task KickOut(User task, object e)
+        {
+            await new Client(nameof(TaskNotification)).PostAsync<bool>(task.Email, "KickOut");
         }
 
         private void ToggleBageCount(int count)

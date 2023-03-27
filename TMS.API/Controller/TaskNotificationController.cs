@@ -1,5 +1,6 @@
 ﻿using Core.Enums;
 using Core.Extensions;
+using DocumentFormat.OpenXml.Office2021.DocumentTasks;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -55,14 +56,15 @@ namespace TMS.API.Controllers
         [HttpPost("api/[Controller]/GetUserActive")]
         public async Task<List<User>> GetUserActive()
         {
-            var online = _taskService.GetAll().Select(x => x.Key).ToList();
+            var online = _taskService.GetAll().ToList();
             var us = online.Select(x =>
             {
-                var split = x.Split("/");
+                var split = x.Key.Split("/");
                 return new User
                 {
                     Id = int.Parse(split[0]),
                     Recover = split[3],
+                    Email = x.Key
                 };
             }).OrderBy(x => x.Id).ToList();
             var ids = us.Select(x => x.Id).Distinct().ToList();
@@ -73,6 +75,25 @@ namespace TMS.API.Controllers
                 x.FullName = u.FullName;
             });
             return us;
+        }
+
+        [HttpPost("api/[Controller]/KickOut")]
+        public async Task<IActionResult> GetUserActive([FromBody] string token)
+        {
+            var task = new TaskNotification()
+            {
+                Title = $"Kick",
+                Description = $"Kick",
+                EntityId = _entitySvc.GetEntity(nameof(User)).Id,
+                RecordId = null,
+                Attachment = "fal fa-paper-plane",
+                StatusId = (int)TaskStateEnum.UnreadStatus,
+                RemindBefore = 540,
+                Deadline = DateTime.Now,
+            };
+            SetAuditInfo(task);
+            await _taskService.SendMessageSocket(token, task);
+            return Ok(task);
         }
 
         public override async Task<ActionResult<TaskNotification>> CreateAsync([FromBody] TaskNotification entity)
