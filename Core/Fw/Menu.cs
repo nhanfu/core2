@@ -355,7 +355,6 @@ namespace Core.Fw
             li.Closest(ElementType.li.ToString())?.AddClass(ActiveClass);
             AlterPositionSubMenu(e.Top(), li);
             await OpenFeature(feature);
-            Window.History.ReplaceState(null, feature.Label, Window.Location.PathName + "?f=" + feature.Name.Replace(" ", "-"));
         }
 
         private static void AlterPositionSubMenu(float top, HTMLElement li)
