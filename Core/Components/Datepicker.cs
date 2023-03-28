@@ -155,7 +155,7 @@ namespace Core.Components
 
         private async Task KeyDownDateTime(Event evt)
         {
-            if (evt.KeyCodeEnum() == KeyCodeEnum.Enter)
+            if (evt.KeyCodeEnum() == KeyCodeEnum.Enter && _value is null)
             {
                 if (Input.Disabled)
                 {

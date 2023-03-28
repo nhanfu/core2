@@ -203,6 +203,7 @@ namespace Core.Components
                     .Attr("aria-controls", id).Text(GuiInfo.Label).EndOf(".card");
             }
             html.Div.ClassName("grid-wrapper " + (GuiInfo.IsCollapsible ? "collapse multi-collapse" : "")).Id(id).Event(EventType.KeyDown, HotKeyF6Handler)
+                .Event(EventType.KeyDown, (e) => HotKeyHandler(e))
             .ClassName(Editable ? "editable" : string.Empty);
             Element = Html.Context;
             if (GuiInfo.CanSearch)
@@ -882,12 +883,13 @@ namespace Core.Components
             });
         }
 
-        internal void HotKeyHandler(Event e, Component header, ListViewItem focusedRow)
+        internal void HotKeyHandler(Event e)
         {
             var keyCode = e.KeyCodeEnum();
-            EditableComponent com = focusedRow.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
-            var el = e.Target as HTMLElement;
-            el = el.Closest(ElementType.td.ToString());
+            var focusedRow = LastListViewItem;
+            var header = LastComponentFocus;
+            var el = LastElementFocus;
+            var com = focusedRow.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
             var fieldName = "";
             var text = "";
             var value = "";
