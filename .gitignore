@@ -377,3 +377,5 @@ FodyWeavers.xsd
 /TMS.API/wwwroot/js/bridge.meta.min.js
 /TMS.API/wwwroot/js/bridge.min.js
 /TMS.API/wwwroot/js/js.rar
+/TMS.API/wwwroot/js/Core.js
+/TMS.API/wwwroot/js/Core.min.js
