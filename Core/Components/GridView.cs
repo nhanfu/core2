@@ -1792,7 +1792,7 @@ namespace Core.Components
 
         internal override async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
         {
-            await Task.Delay(50);
+            await Task.Delay(100);
             if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData, this);
@@ -1814,12 +1814,16 @@ namespace Core.Components
                     rs = rowSection.Entity;
                     Dirty = true;
                 }
-                Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
+                if (GuiInfo.ComponentType != nameof(VirtualGrid))
+                {
+                    Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
+                }
+                MoveEmptyRow(rowSection);
                 await LoadMasterData(new object[] { rs });
                 rowSection.UpdateView(true);
-                MoveEmptyRow(rowSection);
                 EmptyRowSection.Children.Clear();
                 AddNewEmptyRow();
+                ClearSelected();
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
             PopulateFields();
@@ -1845,8 +1849,6 @@ namespace Core.Components
                 nextComponent.Focus();
             }
         }
-
-
 
         private void MoveEmptyRow(ListViewItem rowSection)
         {
