@@ -401,7 +401,7 @@ namespace Core.Components
             var keyCode = e.KeyCode();
             if (keyCode == 38 || keyCode == 40)
             {
-                IncreaseTime(keyCode == 38 ? 1 : -1, true);
+                IncreaseTime(keyCode == 38 ? 1 : -1);
             }
         }
 
@@ -416,7 +416,7 @@ namespace Core.Components
 
         private void ChangeMinute(Event e)
         {
-            if (_value is null)
+            if (_value is null || _someday == DateTime.MinValue)
             {
                 _value = _someday;
             }
@@ -426,10 +426,14 @@ namespace Core.Components
             {
                 return;
             }
-
+            if (_someday == DateTime.MinValue && OldValue != null)
+            {
+                DateTime dateTime = DateTime.Parse(OldValue);
+                _someday = GuiInfo.Precision == 7 ? dateTime : DateTime.Now;
+            }
             _someday = _someday.AddMinutes(-_someday.Minute).AddMinutes(newMinute);
-            _value = _someday;
-            TriggerUserChange(_value.Value, true);
+            var innerTime = _someday;
+            TriggerUserChange(innerTime);
         }
 
         private void ChangeHour(Event e)
@@ -438,6 +442,16 @@ namespace Core.Components
             if (!parsed || newHour < 0 || newHour > 23)
             {
                 return;
+            }
+
+            if (OldValue == null)
+            {
+                _someday = DateTime.Now.Date;
+            }
+            if (_someday == DateTime.MinValue && OldValue != null)
+            {
+                DateTime dateTime = DateTime.Parse(OldValue);
+                _someday = GuiInfo.Precision == 7 ? dateTime : DateTime.Now;
             }
 
             _someday = _someday.AddHours(-_someday.Hour).AddHours(newHour);
