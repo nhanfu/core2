@@ -25,6 +25,7 @@ namespace Core.Components
         {
             Html.Take(Element).TData.TabIndex(-1)
                 .Event(EventType.FocusIn, (e) => FocusCell(e, header))
+                .Event(EventType.KeyDown, (e) => Grid.HotKeyHandler(e, header, this))
                 .DataAttr("field", header.FieldName).Render();
             if (header.StatusBar)
             {

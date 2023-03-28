@@ -203,7 +203,6 @@ namespace Core.Components
                     .Attr("aria-controls", id).Text(GuiInfo.Label).EndOf(".card");
             }
             html.Div.ClassName("grid-wrapper " + (GuiInfo.IsCollapsible ? "collapse multi-collapse" : "")).Id(id).Event(EventType.KeyDown, HotKeyF6Handler)
-                .Event(EventType.KeyDown, (e) => HotKeyHandler(e))
             .ClassName(Editable ? "editable" : string.Empty);
             Element = Html.Context;
             if (GuiInfo.CanSearch)
@@ -883,13 +882,12 @@ namespace Core.Components
             });
         }
 
-        internal void HotKeyHandler(Event e)
+        internal void HotKeyHandler(Event e, Component header, ListViewItem focusedRow)
         {
             var keyCode = e.KeyCodeEnum();
-            var focusedRow = LastListViewItem;
-            var header = LastComponentFocus;
-            var el = LastElementFocus;
-            var com = focusedRow.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
+            EditableComponent com = focusedRow.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
+            var el = e.Target as HTMLElement;
+            el = el.Closest(ElementType.td.ToString());
             var fieldName = "";
             var text = "";
             var value = "";
@@ -1337,7 +1335,14 @@ namespace Core.Components
                         await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
                         if (GuiInfo.IsRealtime)
                         {
-                            await upItem.PatchUpdate();
+                            if (int.Parse(upItem.Entity[IdField].ToString()) > 0)
+                            {
+                                await upItem.PatchUpdate();
+                            }
+                            else
+                            {
+                                await upItem.CreateUpdate();
+                            }
                         }
                     });
                 }
@@ -1979,12 +1984,12 @@ namespace Core.Components
         {
             Window.ClearTimeout(_imeout);
             _imeout = Window.SetTimeout(async () =>
-             {
-                 var headerDB = await new Client(nameof(GridPolicy)).GetAsync<GridPolicy>(header.Id);
-                 var html = e.Target as HTMLElement;
-                 headerDB.ShortDesc = html.TextContent.Trim();
-                 await new Client(nameof(GridPolicy)).UpdateAsync<GridPolicy>(headerDB);
-             }, 1000);
+            {
+                var headerDB = await new Client(nameof(GridPolicy)).GetAsync<GridPolicy>(header.Id);
+                var html = e.Target as HTMLElement;
+                headerDB.ShortDesc = html.TextContent.Trim();
+                await new Client(nameof(GridPolicy)).UpdateAsync<GridPolicy>(headerDB);
+            }, 1000);
         }
 
         protected override async Task<List<object>> CustomQuery(object submitEntity)
