@@ -4,6 +4,7 @@ using Core.Components;
 using Core.Components.Forms;
 using Core.Extensions;
 using Core.ViewModels;
+using System;
 using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.UI.Business.Authentication;
@@ -19,6 +20,52 @@ namespace TMS.UI
                 LangSelect.Culture = "vi";
             }
             var translateTask = LangSelect.Translate();
+            var versionCurrent = await new Client(nameof(Entity)).FirstOrDefaultAsync<Entity>("?$top=1&$filter=Name eq 'Version'");
+            if (versionCurrent != null)
+            {
+                var version = LocalStorage.GetItem<string>("Version");
+                if (version is null)
+                {
+                    LocalStorage.SetItem("Version", "1");
+                    version = "1";
+                }
+                if (version != versionCurrent.Description)
+                {
+                    /*@
+                     const swalWithBootstrapButtons = Swal.mixin({
+                          customClass: {
+                            confirmButton: 'btn btn-success',
+                            cancelButton: 'btn btn-danger'
+                          },
+                          buttonsStyling: false
+                        })
+
+                        swalWithBootstrapButtons.fire({
+                          title: 'Cập nhật !',
+                          text: "Phiên bản của bạn chưa mới nhất!",
+                          icon: 'error',
+                          showCancelButton: true,
+                          confirmButtonText: 'Yes, Cập nhật!',
+                          cancelButtonText: 'No, Không!',
+                          reverseButtons: true
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            Core.Clients.LocalStorage.SetItem(System.String, "Version", versionCurrent.Description);
+                            window.location.reload(true);
+                          } else if (
+                            Core.Clients.LocalStorage.SetItem(System.String, "Version", versionCurrent.Description);
+                            window.location.reload(true);
+                          ) {
+                            swalWithBootstrapButtons.fire(
+                              'Cancelled',
+                              'Your imaginary file is safe :)',
+                              'error'
+                            )
+                          }
+                        })
+                     */
+                }
+            }
             var loadEntityTask = Client.LoadEntities();
             await Task.WhenAll(translateTask, loadEntityTask);
             InitTheme();

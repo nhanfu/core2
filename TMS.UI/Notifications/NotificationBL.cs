@@ -124,21 +124,50 @@ namespace TMS.UI.Notifications
 
         private void ShowToast(TaskNotification task)
         {
-            if (task.EntityId == Utils.GetEntity(nameof(Entity)).Id)
+            Task.Run(async () =>
             {
-                /*@
-                 Swal.fire({
-                      icon: 'error',
-                      title: task.Title,
-                      text: task.Description,
-                      footer: '<a href="#">Chúc 1 ngày làm việc hiệu quả</a>'
-                    })
-                */
-            }
-            else
-            {
-                Toast.Success($"Thông báo hệ thống <br /> {task.Title} - {task.Description}");
-            }
+                if (task.EntityId == Utils.GetEntity(nameof(Entity)).Id)
+                {
+                    /*@
+                     Swal.fire({
+                          icon: 'error',
+                          title: 'Hệ thống sẽ cập nhật sau 1 phút',
+                          text: 'Bạn có thể xử lý công việc còn lại trong 1 phút kể từ lúc này',
+                          footer: '<a href="#">Vui lòng không ctrl+f5 cảm ơn!</a>'
+                        })
+                     */
+                    await Task.Delay(1000 * 60);
+                    /*@
+                     let timerInterval
+                        Swal.fire({
+                          title: 'Hệ thống đang cập nhật vui lòng chờ trong giây lát!',
+                          html: 'Chúng tôi sẽ khởi động lại sau <b></b> giây.',
+                          timer: 1000*60*3,
+                          allowOutsideClick: false,
+                          timerProgressBar: true,
+                          didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                              b.textContent = (Swal.getTimerLeft()/1000).toFixed(0)
+                            }, 1000)
+                          },
+                          willClose: () => {
+                            clearInterval(timerInterval)
+                          }
+                        }).then((result) => {
+                             if (result.dismiss === Swal.DismissReason.timer)
+                             {
+                                Window.Location.Reload(true);
+                             }
+                       })
+                    */
+                }
+                else
+                {
+                    Toast.Success($"Thông báo hệ thống <br /> {task.Title} - {task.Description}");
+                }
+            });
         }
 
         public static NotificationBL Instance
