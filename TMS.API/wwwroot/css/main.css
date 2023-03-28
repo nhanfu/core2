@@ -1620,6 +1620,11 @@ form span.icon {
 .ui-layout > tbody > tr > td {
   text-align: left;
 }
+.ui-layout .middle-secondery {
+  font-size: 10px;
+  text-align: center;
+  margin-top: 5px;
+}
 .group {
   flex-flow: row wrap;
   justify-content: space-between;
@@ -3311,7 +3316,7 @@ div > [class*="cell"]:last-child {
 }
 .gallery {
   position: relative;
-  width: 50%;
+  width: 100%;
 }
 .gallerys {
   display: flex;

@@ -85,7 +85,7 @@ namespace Core.Components
             var isImage = PathIO.IsImage(path);
             if (isImage)
             {
-                Html.Instance.Img.ClassName("image").Style(GuiInfo.ChildStyle).Src(Client.Origin + path.DecodeSpecialChar()).Render();
+                Html.Instance.Div.ClassName("file-upload").Img.ClassName("image").Style(GuiInfo.ChildStyle).Src(Client.Origin + path.DecodeSpecialChar()).Render();
             }
             else
             {
