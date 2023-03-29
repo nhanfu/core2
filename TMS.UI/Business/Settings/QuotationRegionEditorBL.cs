@@ -21,11 +21,12 @@ namespace TMS.UI.Business.Settings
             quotation.TypeId = QEntity.TypeId;
         }
 
-        public async Task AddQuotation()
+        public override Task<bool> Save(object entity = null)
         {
-            QEntity.Id = 0;
-            await Save(QEntity);
+            Dirty = true;
+            var rs = base.Save(entity);
             Dispose();
+            return rs;
         }
     }
 }

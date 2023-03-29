@@ -1,6 +1,7 @@
 ﻿using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
+using Core.Extensions;
 using System;
 using System.Threading.Tasks;
 using TMS.API.Models;
@@ -23,7 +24,15 @@ namespace TMS.UI.Business.Settings
             }
             else
             {
-                parent = entity;
+                if (entity.LocationId != null && entity.BossId != null)
+                {
+                    parent.CopyPropFrom(entity, nameof(Quotation.Id), nameof(Quotation.BossId), nameof(Quotation.LocationId), nameof(Quotation.Id));
+                    parent.IsParent = true;
+                }
+                else
+                {
+                    parent = entity;
+                }
             }
             await this.OpenPopup(
                 featureName: "Quotation Region Editor",
