@@ -884,10 +884,15 @@ namespace Core.Components
 
         internal void HotKeyHandler(Event e, Component header, ListViewItem focusedRow)
         {
-            var keyCode = e.KeyCodeEnum();
             EditableComponent com = focusedRow.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
             var el = e.Target as HTMLElement;
             el = el.Closest(ElementType.td.ToString());
+            ActionKeyHandler(e, header, focusedRow, com, el);
+        }
+
+        private void ActionKeyHandler(Event e, Component header, ListViewItem focusedRow, EditableComponent com, HTMLElement el)
+        {
+            var keyCode = e.KeyCodeEnum();
             var fieldName = "";
             var text = "";
             var value = "";

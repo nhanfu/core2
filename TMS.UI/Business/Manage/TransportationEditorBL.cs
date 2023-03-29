@@ -62,7 +62,7 @@ namespace TMS.UI.Business.Manage
                     details.Add(new PatchUpdateDetail { Field = itemDetail, Value = totalThisValue.ToString() });
                 }
                 var path = new PatchUpdate { Changes = details.Where(x => x.Field != null && x.Field != "null" && x.Field != "").DistinctBy(x => x.Field).ToList() };
-                await new Client(nameof(Transportation)).PatchAsync<Transportation>(path, ig: "true");
+                await new Client(nameof(Transportation)).PatchAsync<Transportation>(path,ig: $"&disableTrigger=true");
             }
         }
 
