@@ -57,10 +57,24 @@ namespace TMS.UI.Business.Settings
             quotation.TypeId = 7592;
         }
 
+        public void BeforeCreatedParentTab1(Quotation quotation)
+        {
+            // CVC (Đóng hàng)
+            quotation.TypeId = 7592;
+            quotation.IsParent = true;
+        }
+
         public void BeforeCreatedTab2(Quotation quotation)
         {
             // CVC Trả hàng
             quotation.TypeId = 7593;
+        }
+
+        public void BeforeCreatedParentTab2(Quotation quotation)
+        {
+            // CVC (Đóng hàng)
+            quotation.TypeId = 7593;
+            quotation.IsParent = true;
         }
 
         public void BeforeCreatedTab3(Quotation quotation)
