@@ -19,6 +19,7 @@ namespace TMS.API.Models
         public string MenuText { get; set; }
         public string ViewClass { get; set; }
         public string FieldName { get; set; }
+        public int? FeatureId { get; set; }
 
         public virtual Component Com { get; set; }
     }

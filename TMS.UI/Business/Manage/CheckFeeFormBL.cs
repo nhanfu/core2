@@ -50,6 +50,10 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
+            LocalStorage.SetItem("RouteCheckFeeClosing", AEntity.RouteIds);
+            LocalStorage.SetItem("FromDateCheckFeeClosing", AEntity.FromDate?.ToString("MM/dd/yyyy"));
+            LocalStorage.SetItem("ToDateCheckFeeClosing", AEntity.ToDate?.ToString("MM/dd/yyyy"));
+            LocalStorage.SetItem("ClosingIdCheckFeeClosing", AEntity.ClosingId);
             var path = await new Client(nameof(Transportation)).PostAsync<string>(AEntity, "ExportCheckFee?Type=2");
             Client.Download($"/excel/Download/{path.EncodeSpecialChar()}");
             Toast.Success("Xuất file thành công");
