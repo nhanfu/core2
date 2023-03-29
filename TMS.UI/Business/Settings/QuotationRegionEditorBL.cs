@@ -1,4 +1,5 @@
 ﻿using Core.Components.Forms;
+using System.Threading.Tasks;
 using TMS.API.Models;
 
 namespace TMS.UI.Business.Settings
@@ -18,6 +19,13 @@ namespace TMS.UI.Business.Settings
             quotation.RegionId = QEntity.RegionId;
             quotation.StartDate = QEntity.StartDate;
             quotation.TypeId = QEntity.TypeId;
+        }
+
+        public async Task AddQuotation()
+        {
+            QEntity.Id = 0;
+            await Save(QEntity);
+            Dispose();
         }
     }
 }

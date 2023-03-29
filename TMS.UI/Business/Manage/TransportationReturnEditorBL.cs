@@ -80,5 +80,12 @@ namespace TMS.UI.Business.Manage
                 updated.ForEach(x => x.Dirty = true);
             }
         }
+
+        public override void Dispose()
+        {
+            var parent = TabEditor as ReturnPlanListBL;
+            parent._expensePopup = null;
+            base.Dispose();
+        }
     }
 }

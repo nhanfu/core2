@@ -427,15 +427,17 @@ namespace TMS.UI.Business.Manage
                     return;
                 }
                 var coords = selected.Entity.As<Transportation>();
-                if (coords.ClosingId is null)
+                var received = selected.Entity["Received"];
+                if (coords.ClosingId is null || (received is null) || (received != null && received["RegionId"] is null))
                 {
-                    Toast.Warning("Vui lòng nhập nhà xe");
+                    Toast.Warning("Vui lòng nhập nhà xe hoặc chọn khu vực cho địa chỉ");
                     return;
                 }
                 var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7592 " +
-                    $"and BossId eq {coords.BossId} " +
+                    $"and BossId eq null " +
                     $"and ContainerTypeId eq {coords.ContainerTypeId} " +
-                    $"and LocationId eq {coords.ReceivedId} " +
+                    $"and RegionId eq {received["RegionId"]} " +
+                    $"and LocationId eq null " +
                     $"and StartDate le {coords.ClosingDate.Value.ToOdataFormat()} " +
                     $"and PackingId eq {coords.ClosingId}&$orderby=StartDate desc");
                 if (quotation is null)
@@ -443,20 +445,21 @@ namespace TMS.UI.Business.Manage
                     quotation = new Quotation()
                     {
                         TypeId = 7592,
-                        BossId = coords.BossId,
+                        BossId = null,
+                        RegionId = int.Parse(received["RegionId"].ToString()),
                         ContainerTypeId = coords.ContainerTypeId,
-                        LocationId = coords.ReceivedId,
+                        LocationId = null,
                         StartDate = coords.ClosingDate,
                         PackingId = coords.ClosingId
                     };
                 }
                 await this.OpenPopup(
-                featureName: "Quotation Editor",
+                featureName: "Quotation Region Editor",
                 factory: () =>
                 {
-                    var type = Type.GetType("TMS.UI.Business.Settings.QuotationEditorBL");
+                    var type = Type.GetType("TMS.UI.Business.Settings.QuotationRegionEditorBL");
                     var instance = Activator.CreateInstance(type) as PopupEditor;
-                    instance.Title = "Chỉnh sửa bảng giá đóng hàng";
+                    instance.Title = "Chỉnh sửa bảng giá khu vực";
                     instance.Entity = quotation;
                     return instance;
                 });
@@ -558,7 +561,7 @@ namespace TMS.UI.Business.Manage
             });
         }
 
-        public void UpdateLiftQuotation(object arg)
+        public virtual void UpdateLiftQuotation(object arg)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
 
@@ -603,7 +606,7 @@ namespace TMS.UI.Business.Manage
             });
         }
 
-        public void UpdateLadingQuotation(object arg)
+        public virtual void UpdateLadingQuotation(object arg)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
 
