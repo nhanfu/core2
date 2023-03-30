@@ -35,6 +35,7 @@ namespace TMS.UI.Business.Settings
         public async Task AddQuotation()
         {
             QuotationEntity.Id = 0;
+            QuotationEntity.InverseParent = null;
             await Save(QuotationEntity);
             Dispose();
         }
