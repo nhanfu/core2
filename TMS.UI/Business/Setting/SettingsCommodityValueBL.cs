@@ -87,7 +87,7 @@ namespace TMS.UI.Business.Setting
                 Toast.Warning("Hiện tại chưa có mức tỷ lệ phí phù hợp cho các điều kiện này. Vui lòng cấu hình lại !!!");
                 return;
             }
-            if (transportationPlanEntity.CommodityValue == 0)
+            if (transportationPlanEntity.CommodityValue == 0 || transportationPlanEntity.CommodityValue == null)
             {
                 var confirm = new ConfirmDialog
                 {
@@ -96,6 +96,7 @@ namespace TMS.UI.Business.Setting
                 confirm.Render();
                 confirm.YesConfirmed += async () =>
                 {
+                    transportationPlanEntity.CommodityValue = 0;
                     await SaveTransportationPlanAsync();
                 };
             }
