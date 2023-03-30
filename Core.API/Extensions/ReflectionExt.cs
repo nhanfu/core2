@@ -74,6 +74,41 @@ namespace Core.Extensions
             CopyPropFromInternal(target, source, new HashSet<int>(), 0, 0, ignoreFields);
         }
 
+        public static void CopyPropFromAct(this object target, object source)
+        {
+            if (source is null || target is null)
+            {
+                return;
+            }
+
+            var targetType = target.GetType();
+            if (targetType.IsSimple())
+            {
+                return;
+            }
+            var targetProps = targetType.GetProperties().Where(x => x.CanRead && x.CanWrite);
+            foreach (var targetProp in targetProps)
+            {
+                var value = source.GetPropValue(targetProp.Name);
+                if (targetProp.PropertyType.IsDecimal() && value != null && !value.GetType().IsDecimal())
+                {
+                    target.SetPropValue(targetProp.Name, Convert.ToDecimal(value));
+                }
+                else if (targetProp.PropertyType.IsDate() && value != null && !value.GetType().IsDate())
+                {
+                    target.SetPropValue(targetProp.Name, Convert.ToDateTime(value));
+                }
+                else if (targetProp.PropertyType.IsSimple())
+                {
+                    target.SetPropValue(targetProp.Name, value);
+                }
+                else
+                {
+                    target.GetPropValue(targetProp.Name).CopyPropFromAct(value);
+                }
+            }
+        }
+
         public static void CopyPropFrom(this object target, object source, int maxLevel = 0, params string[] ignoreFields)
         {
             CopyPropFromInternal(target, source, new HashSet<int>(), 0, maxLevel, ignoreFields);

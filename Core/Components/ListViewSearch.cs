@@ -171,7 +171,11 @@ namespace Core.Components
             }
             Html.Take(Element).Div.ClassName("searching-block")
                 .Button("Tìm kiếm", className: "button secondary small btn-toolbar", icon: "fa fa-search")
-                    .Event(EventType.Click, async () => await ParentListView.ActionFilter()).End
+                    .Event(EventType.Click, async () =>
+                    {
+                        ParentListView.ClearSelected();
+                        await ParentListView.ActionFilter();
+                    }).End
                 .Button(className: "button secondary small btn-toolbar right", icon: "fa fa-cog")
                     .Title("Nâng cao")
                     .Icon("fa fa-chevron-down").End
@@ -562,6 +566,7 @@ namespace Core.Components
                 return;
             }
             listView.DataSourceFilter = listView.GuiInfo.DataSourceFilter;
+            listView.ClearSelected();
             listView.CellSelected.Clear();
             listView.AdvSearchVM.Conditions.Clear();
             listView.Wheres.Clear();

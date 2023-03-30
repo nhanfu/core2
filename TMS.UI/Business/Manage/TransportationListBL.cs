@@ -1002,7 +1002,7 @@ namespace TMS.UI.Business.Manage
 
         private async Task SetPolicyId(Transportation transportation, PatchUpdate patchUpdate, ListViewItem listViewItem)
         {
-            if (transportation.BookingId is null)
+            if (transportation.BookingId is null || transportation.BrandShipId is null)
             {
                 return;
             }

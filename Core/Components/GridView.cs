@@ -1,4 +1,5 @@
-﻿using Bridge.Html5;
+﻿using Bridge;
+using Bridge.Html5;
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 using TextAlign = Core.Enums.TextAlign;
@@ -1369,6 +1371,16 @@ namespace Core.Components
                 return;
             }
             var emptyRowData = EmptyRowData();
+            if (!GuiInfo.DefaultVal.IsNullOrWhiteSpace())
+            {
+                var json = string.Empty;
+                if (Utils.IsFunction(GuiInfo.DefaultVal, out var fn))
+                {
+                    json = fn.Call(this, emptyRowData, Entity).ToString();
+                }
+                var entity = JsonConvert.DeserializeObject<object>(json);
+                emptyRowData.CopyPropFromAct(entity);
+            }
             emptyRowData[IdField] = -Math.Abs(emptyRowData.GetHashCode()); // Not to add this row into the submitted list
             var rowSection = RenderRowData(Header, emptyRowData, EmptyRowSection, null, true);
             if (!GuiInfo.TopEmpty)
