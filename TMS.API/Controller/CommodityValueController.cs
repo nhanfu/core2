@@ -195,7 +195,31 @@ namespace TMS.API.Controllers
             expense.TotalPriceBeforeTax = Math.Round(expense.TotalPriceAfterTax / (decimal)1.1, 0);
         }
 
-        [HttpPost("api/CommodityValue/ImportExcel")]
+        [HttpPost("api/[Controller]/UpdateInsuranceFees")]
+        public async Task<bool> UpdateInsuranceFees([FromBody] List<Expense> expenses)
+        {
+            var ids = expenses.Select(x => x.Id).ToList();
+            var expensesDB = await db.Expense.Where(x => (x.ExpenseTypeId == 15981 || x.ExpenseTypeId == 15939) && x.RequestChangeId == null && x.Active).ToListAsync();
+            var expenseMapDB = expensesDB.Where(x => ids.Contains(x.Id)).ToList();
+            foreach (var item in expenseMapDB)
+            {
+                var expense = expenseMapDB.Where(x => x.Id == item.Id).FirstOrDefault();
+                expense.CopyPropFrom(item);
+                if (expense.IsPurchasedInsurance)
+                {
+                    var tran = await db.Transportation.Where(x => x.Id == expense.TransportationId).FirstOrDefaultAsync();
+                    tran.InsuranceFee = expensesDB.Where(x => x.TransportationId == tran.Id).ToList().Sum(x => x.TotalPriceAfterTax);
+                }
+            }
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
+            db.Expense.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Expense");
+            await db.SaveChangesAsync();
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
+            db.Expense.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Expense");
+            return true;
+        }
+
+            [HttpPost("api/CommodityValue/ImportExcel")]
         public async Task<List<CommodityValue>> ImportExcel([FromServices] IWebHostEnvironment host, List<IFormFile> fileImport)
         {
             var formFile = fileImport.FirstOrDefault();

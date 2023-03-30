@@ -419,9 +419,15 @@ namespace TMS.UI.Business.Manage
                         }
                         var containerExpense = containerTypeOfExpenses.GetValueOrDefault(x.Id);
                         CalcInsuranceFees(x, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
-                        await new Client(nameof(Expense)).UpdateAsync<Expense>(x);
                     }
-                    Toast.Success("Đã áp dụng thành công GTHH này");
+                    Toast.Success("Đang áp dụng GTHH này...");
+                    Spinner.AppendTo(this.Element, true, true, 20000);
+                    var res = await new Client(nameof(CommodityValue)).PostAsync<bool>(expenses, "UpdateInsuranceFees");
+                    if (res)
+                    {
+                        Spinner.Hide();
+                        Toast.Success("Đã áp dụng thành công GTHH này");
+                    }
                 }
             }
         }
