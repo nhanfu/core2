@@ -991,7 +991,16 @@ namespace TMS.UI.Business.Manage
             ).ForEach(x => x.Dirty = true);
         }
 
-        public async Task AfterPatchUpdateTransportation(Transportation transportation, PatchUpdate patchUpdate, ListViewItem listViewItem)
+        public void AfterPatchUpdateTransportation(Transportation transportation, PatchUpdate patchUpdate, ListViewItem listViewItem)
+        {
+            Window.SetTimeout(async () =>
+            {
+                await SetPolicyId(transportation, patchUpdate, listViewItem);
+            }, 500);
+
+        }
+
+        private async Task SetPolicyId(Transportation transportation, PatchUpdate patchUpdate, ListViewItem listViewItem)
         {
             if (transportation.BookingId is null)
             {
@@ -1185,8 +1194,11 @@ namespace TMS.UI.Business.Manage
                 x.GuiInfo.FieldName == nameof(Transportation.PolicyId)
                 || x.GuiInfo.FieldName == nameof(Transportation.ShipPolicyPrice)
                 ).ForEach(x => x.Dirty = true);
-                await listViewItem.PatchUpdate(true);
-                Toast.Success("Đã áp dụng chính sách");
+                Window.SetTimeout(async () =>
+                {
+                    await listViewItem.PatchUpdate(true);
+                    Toast.Success("Đã áp dụng chính sách");
+                }, 200);
             }
         }
 
