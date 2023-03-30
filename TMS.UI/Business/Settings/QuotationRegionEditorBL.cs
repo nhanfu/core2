@@ -28,5 +28,13 @@ namespace TMS.UI.Business.Settings
             Dispose();
             return rs;
         }
+
+        public Task<bool> AddNew()
+        {
+            Dirty = true;
+            QEntity.Id = 0;
+            var rs = base.Save(null);
+            return rs;
+        }
     }
 }
