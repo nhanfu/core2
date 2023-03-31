@@ -21,6 +21,7 @@ namespace TMS.UI.Notifications
     {
         private static NotificationBL _instance;
         private static Observable<string> _countNtf;
+        private static Observable<UserChatVM> _userChat;
         private static Observable<string> _countUser;
         private HTMLElement _profile;
         private HTMLElement _task;
