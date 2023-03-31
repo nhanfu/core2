@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
+using TMS.API.ViewModels;
 using ElementType = Core.MVVM.ElementType;
 using Notification = Retyped.dom.Notification;
 
@@ -35,6 +36,7 @@ namespace TMS.UI.Notifications
         {
             Notifications = new ObservableList<TaskNotification>();
             UserActive = new ObservableList<User>();
+            _userChat = new Observable<UserChatVM>();
             _countNtf = new Observable<string>();
             _countUser = new Observable<string>();
             EditForm.NotificationClient?.AddListener(nameof(TaskNotification), ProcessIncomMessage);
@@ -208,7 +210,18 @@ namespace TMS.UI.Notifications
             CurrentUser.Avatar = Client.Origin + (CurrentUser.Avatar.IsNullOrWhiteSpace() ? "./image/chinese.jfif" : CurrentUser.Avatar);
             RenderNotification();
             RenderUserActive();
+            RenderUserChat();
+            RenderChat();
             RenderProfile(".profile-info1");
+        }
+
+        private void RenderChat()
+        {
+            if (_userChat.Data != null)
+            {
+                var html = Html.Take("#FullNameChat");
+                html.InnerHTML(_userChat.Data.FullName);
+            };
         }
 
         public void RenderProfile(string classname)
@@ -358,6 +371,31 @@ namespace TMS.UI.Notifications
                 .P.ClassName("text-sm text-muted")
                     .I.ClassName("fal fa-tablet mr-1").End.Text(task.Recover).EndOf(ElementType.a);
             });
+        }
+
+        private void RenderUserChat()
+        {
+            Html.Take("#contacts").ForEach(UserActive, (task, index) =>
+            {
+                if (task is null)
+                {
+                    return;
+                }
+                Html.Instance.Div.ClassName("contact").Event(EventType.Click, ChatByUser, task)
+                .Div.ClassName("pic rogers").End
+                .Div.ClassName("badge").End
+                .Div.ClassName("name").Text(task.FullName).End
+                .Div.ClassName("message").Text(task.Recover).End.End.Render();
+            });
+        }
+
+        private void ChatByUser(Event e, User user)
+        {
+            _userChat.Data = new UserChatVM()
+            {
+                FullName = new Guid().ToString(),
+            };
+            RenderChat();
         }
 
         private void UserActiveEdit(Event e, User user)

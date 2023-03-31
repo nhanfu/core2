@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TMS.API.ViewModels
 {
@@ -18,6 +19,25 @@ namespace TMS.API.ViewModels
         public bool Return { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
+    }
+
+    public class UserChatVM
+    {
+        public string FullName { get; set; }
+        public string Token { get; set; }
+        public string FromName { get; set; }
+        public string ToName { get; set; }
+        public int FromId { get; set; }
+        public int ToId { get; set; }
+        public List<Chat> Chats { get; set; }
+    }
+
+    public class Chat
+    {
+        public string Context { get; set; }
+        public bool IsSeft { get; set; }
+        public DateTime InsertedDate { get; set; }
+        public bool IsSeen { get; set; }
     }
 
     public class TranGroupVM
