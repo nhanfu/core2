@@ -25,6 +25,8 @@ public partial class TMSContext : DbContext
 
     public virtual DbSet<BrandShip> BrandShip { get; set; }
 
+    public virtual DbSet<Chat> Chat { get; set; }
+
     public virtual DbSet<CheckFeeHistory> CheckFeeHistory { get; set; }
 
     public virtual DbSet<CommodityValue> CommodityValue { get; set; }
@@ -32,6 +34,8 @@ public partial class TMSContext : DbContext
     public virtual DbSet<Component> Component { get; set; }
 
     public virtual DbSet<ComponentGroup> ComponentGroup { get; set; }
+
+    public virtual DbSet<Convertation> Convertation { get; set; }
 
     public virtual DbSet<DeleteHistory> DeleteHistory { get; set; }
 
@@ -87,7 +91,7 @@ public partial class TMSContext : DbContext
 
     public virtual DbSet<Role> Role { get; set; }
 
-    public virtual DbSet<TMS.API.Models.Route> Route { get; set; }
+    public virtual DbSet<Route> Route { get; set; }
 
     public virtual DbSet<RouteUser> RouteUser { get; set; }
 
@@ -225,6 +229,11 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.OldCode).HasMaxLength(100);
         });
 
+        modelBuilder.Entity<Chat>(entity =>
+        {
+            entity.Property(e => e.Context).HasMaxLength(500);
+        });
+
         modelBuilder.Entity<CommodityValue>(entity =>
         {
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(20, 5)");
@@ -232,6 +241,7 @@ public partial class TMSContext : DbContext
 
         modelBuilder.Entity<Component>(entity =>
         {
+            entity.Property(e => e.AddDate).HasDefaultValueSql("((0))");
             entity.Property(e => e.CascadeField)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -345,6 +355,13 @@ public partial class TMSContext : DbContext
             entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent)
                 .HasForeignKey(d => d.ParentId)
                 .HasConstraintName("FK_ComponentGroup_ComponentGroup");
+        });
+
+        modelBuilder.Entity<Convertation>(entity =>
+        {
+            entity.Property(e => e.FromName).HasMaxLength(250);
+            entity.Property(e => e.LastContext).HasMaxLength(500);
+            entity.Property(e => e.ToName).HasMaxLength(250);
         });
 
         modelBuilder.Entity<Dictionary>(entity =>
@@ -942,7 +959,7 @@ public partial class TMSContext : DbContext
                 .HasConstraintName("FK_Role_ParentRole");
         });
 
-        modelBuilder.Entity<TMS.API.Models.Route>(entity =>
+        modelBuilder.Entity<Route>(entity =>
         {
             entity.ToTable(tb => tb.HasTrigger("tr_update_length2"));
 

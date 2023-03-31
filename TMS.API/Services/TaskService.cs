@@ -40,6 +40,11 @@ namespace TMS.API.Services
                 .ForEachAsync(SendMessageToUser);
         }
 
+        public async Task SendChatToUser(WebSocketResponse<Chat> task)
+        {
+            await _fcmSvc.SendMessageToUsersAsync(new List<int>() { task.Data.ToId.Value }, task.ToJson(), null);
+        }
+
         private async Task SendMessageToUser(WebSocketResponse<TaskNotification> task)
         {
             var tenantCode = _userService.TenantCode;

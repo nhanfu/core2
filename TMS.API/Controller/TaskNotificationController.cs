@@ -72,7 +72,7 @@ namespace TMS.API.Controllers
             us.ForEach(x =>
             {
                 var u = user.GetValueOrDefault(x.Id);
-                x.FullName = u.FullName;
+                x.CopyPropFrom(u, nameof(u.Recover), nameof(u.Email));
             });
             return us;
         }

@@ -67,6 +67,7 @@
     background: white;
     box-shadow: 0 0 8rem 0 rgba(0, 0, 0, 0.1), 2rem 2rem 4rem -3rem rgba(0, 0, 0, 0.5);
     transition: transform 500ms;
+    overflow: auto
 }
 
     .contacts h2 {

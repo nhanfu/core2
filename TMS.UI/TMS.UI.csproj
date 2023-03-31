@@ -82,6 +82,9 @@
     <Compile Include="..\TMS.API\Models\BrandShip.cs">
       <Link>Models\BrandShip.cs</Link>
     </Compile>
+    <Compile Include="..\TMS.API\Models\Chat.cs">
+      <Link>Models\Chat.cs</Link>
+    </Compile>
     <Compile Include="..\TMS.API\Models\CheckFeeHistory.cs">
       <Link>Models\CheckFeeHistory.cs</Link>
     </Compile>
@@ -93,6 +96,9 @@
     </Compile>
     <Compile Include="..\TMS.API\Models\ComponentGroup.cs">
       <Link>Models\ComponentGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\TMS.API\Models\Convertation.cs">
+      <Link>Models\Convertation.cs</Link>
     </Compile>
     <Compile Include="..\tms.api\models\Entity.cs">
       <Link>Models\Entity.cs</Link>

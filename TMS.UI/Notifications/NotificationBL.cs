@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
-using TMS.API.ViewModels;
+using static Retyped.canvasjs.CanvasJS;
 using ElementType = Core.MVVM.ElementType;
 using Notification = Retyped.dom.Notification;
 
@@ -22,25 +22,42 @@ namespace TMS.UI.Notifications
     {
         private static NotificationBL _instance;
         private static Observable<string> _countNtf;
-        private static Observable<UserChatVM> _userChat;
         private static Observable<string> _countUser;
         private HTMLElement _profile;
         private HTMLElement _task;
         private HTMLElement _countBadge;
-
         public static ObservableList<TaskNotification> Notifications { get; private set; }
-        public static ObservableList<User> UserActive { get; private set; }
+        public static ObservableList<User> UserActive { get; set; }
+        private static ObservableList<Convertation> Convertations { get; set; }
+        private static Observable<Convertation> Convertation { get; set; }
+        private static ObservableList<Chat> Chats { get; set; }
         private Token CurrentUser { get; set; }
 
         private NotificationBL() : base(null)
         {
             Notifications = new ObservableList<TaskNotification>();
             UserActive = new ObservableList<User>();
-            _userChat = new Observable<UserChatVM>();
+            Convertations = new ObservableList<Convertation>();
+            Convertation = new Observable<Convertation>();
+            Chats = new ObservableList<Chat>();
             _countNtf = new Observable<string>();
             _countUser = new Observable<string>();
             EditForm.NotificationClient?.AddListener(nameof(TaskNotification), ProcessIncomMessage);
             EditForm.NotificationClient?.AddListener(nameof(User), Kick);
+            EditForm.NotificationClient?.AddListener(nameof(Chat), GetChat);
+        }
+
+        private void GetChat(object arg)
+        {
+            if (arg is null)
+            {
+                return;
+            }
+            var chat = arg as Chat;
+            if (Convertation != null && chat.ConvertationId == Convertation.Data.Id)
+            {
+                RenderActionChat(chat);
+            }
         }
 
         private void Kick(object arg)
@@ -217,11 +234,41 @@ namespace TMS.UI.Notifications
 
         private void RenderChat()
         {
-            if (_userChat.Data != null)
+            if (Convertation.Data != null)
             {
-                var html = Html.Take("#FullNameChat");
-                html.InnerHTML(_userChat.Data.FullName);
+                Html.Take("#FullNameChat").InnerHTML(Convertation.Data.ToName);
             };
+        }
+
+        private void RenderChats()
+        {
+            if (Chats.Data != null)
+            {
+                Html.Take("#chat").Clear();
+                Html.Take("#chat").ForEach(Chats.Data, (task, index) =>
+                {
+                    if (task.FromId == Client.Token.UserId)
+                    {
+                        Html.Instance.Div.ClassName("message parker").Text(task.Context).End.Render();
+                    }
+                    else
+                    {
+                        Html.Instance.Div.ClassName("message stark").Text(task.Context).End.Render();
+                    }
+                });
+            };
+        }
+
+        private void RenderActionChat(Chat chat)
+        {
+            if (chat.FromId == Client.Token.UserId)
+            {
+                Html.Take("#chat").Div.ClassName("message parker").Text(chat.Context).End.Render();
+            }
+            else
+            {
+                Html.Take("#chat").Div.ClassName("message stark").Text(chat.Context).End.Render();
+            }
         }
 
         public void RenderProfile(string classname)
@@ -375,32 +422,91 @@ namespace TMS.UI.Notifications
 
         private void RenderUserChat()
         {
-            Html.Take("#contacts").ForEach(UserActive, (task, index) =>
+            if (UserActive.Data is null)
+            {
+                return;
+            }
+            Html.Take("#contacts").ForEach(UserActive.Data.DistinctBy(x => x.Id).ToList(), (task, index) =>
             {
                 if (task is null)
                 {
                     return;
                 }
-                Html.Instance.Div.ClassName("contact").Event(EventType.Click, ChatByUser, task)
+                Html.Instance.Div.ClassName("contact").AsyncEvent(EventType.Click, (e) => ChatByUser(e, task))
                 .Div.ClassName("pic rogers").End
                 .Div.ClassName("badge").End
                 .Div.ClassName("name").Text(task.FullName).End
                 .Div.ClassName("message").Text(task.Recover).End.End.Render();
             });
-            Html.Take("#input-chat").Event(EventType.KeyDown, AddChat);
+            Html.Take("#input-chat").AsyncEvent(EventType.KeyDown, AddChat);
         }
 
-        private void AddChat(Event e)
+        private async Task AddChat(Event e)
         {
-        }
-
-        private void ChatByUser(Event e, User user)
-        {
-            _userChat.Data = new UserChatVM()
+            var keyCode = e.KeyCode();
+            if (keyCode == (int)KeyCodeEnum.Enter)
             {
-                FullName = user.FullName,
-            };
+                var val = e.Target as HTMLInputElement;
+                if (val.Value.IsNullOrWhiteSpace())
+                {
+                    return;
+                }
+                var chat = new Chat();
+                if (Convertation.Data.ToId == Client.Token.UserId)
+                {
+                    chat = new Chat()
+                    {
+                        Context = val.Value,
+                        ConvertationId = Convertation.Data.Id,
+                        FromId = Convertation.Data.ToId,
+                        ToId = Convertation.Data.FromId,
+                        IsSeft = true,
+                    };
+                }
+                else
+                {
+                    chat = new Chat()
+                    {
+                        Context = val.Value,
+                        ConvertationId = Convertation.Data.Id,
+                        FromId = Convertation.Data.FromId,
+                        ToId = Convertation.Data.ToId,
+                        IsSeft = true,
+                    };
+                }
+
+                val.Value = string.Empty;
+                var rs = await new Client(nameof(Chat)).CreateAsync<Chat>(chat);
+                Chats.Data.Add(rs);
+                RenderActionChat(chat);
+            }
+        }
+
+        private async Task ChatByUser(Event e, User user)
+        {
+            var con = await new Client(nameof(Convertation)).FirstOrDefaultAsync<Convertation>($"?$filter=(ToId eq {user.Id} and FromId eq {Client.Token.UserId}) or (FromId eq {user.Id} and ToId eq {Client.Token.UserId})");
+            if (con is null)
+            {
+                con = new Convertation()
+                {
+                    FromId = Client.Token.UserId,
+                    ToId = user.Id,
+                    FromName = Client.Token.FullName,
+                    ToName = user.FullName,
+                };
+                con = await new Client(nameof(Convertation)).CreateAsync<Convertation>(con);
+            }
+            else
+            {
+                var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConvertationId eq {con.Id}");
+                if (chats.Count > 0)
+                {
+                    Chats.Data = chats;
+                }
+            }
+            Convertation.Data = con;
             RenderChat();
+            RenderChats();
         }
 
         private void UserActiveEdit(Event e, User user)

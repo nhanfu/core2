@@ -74,7 +74,6 @@ namespace TMS.API.Models
         [NotMapped]
         public List<int> RouteIds { get; set; }
     }
-    
 
     public partial class Revenue
     {
