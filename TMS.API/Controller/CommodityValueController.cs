@@ -201,7 +201,7 @@ namespace TMS.API.Controllers
             var ids = expenses.Select(x => x.Id).ToList();
             var expensesDB = await db.Expense.Where(x => (x.ExpenseTypeId == 15981 || x.ExpenseTypeId == 15939) && x.RequestChangeId == null && x.Active).ToListAsync();
             var expenseMapDB = expensesDB.Where(x => ids.Contains(x.Id)).ToList();
-            foreach (var item in expenseMapDB)
+            foreach (var item in expenses)
             {
                 var expense = expenseMapDB.Where(x => x.Id == item.Id).FirstOrDefault();
                 expense.CopyPropFrom(item);
