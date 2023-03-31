@@ -1460,6 +1460,14 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (UserId = {UserId} or InsertedBy = {UserId})";
             }
+            else if (RoleIds.Contains(43))
+            {
+                sql += @$" and (UserId = 78 || InsertedBy = {UserId} || UserId = {UserId})";
+            }
+            else if (RoleIds.Contains(17))
+            {
+                sql += @$" and (UserId = 78 ||  UserId = {UserId})";
+            }
             else if (RoleIds.Contains(25))
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where TypeId = 25045 and UserId = {UserId}))";
