@@ -387,13 +387,18 @@ namespace TMS.UI.Notifications
                 .Div.ClassName("name").Text(task.FullName).End
                 .Div.ClassName("message").Text(task.Recover).End.End.Render();
             });
+            Html.Take("#input-chat").Event(EventType.KeyDown, AddChat);
+        }
+
+        private void AddChat(Event e)
+        {
         }
 
         private void ChatByUser(Event e, User user)
         {
             _userChat.Data = new UserChatVM()
             {
-                FullName = new Guid().ToString(),
+                FullName = user.FullName,
             };
             RenderChat();
         }
