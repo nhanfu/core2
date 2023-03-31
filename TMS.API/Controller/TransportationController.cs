@@ -1462,11 +1462,11 @@ namespace TMS.API.Controllers
             }
             else if (RoleIds.Contains(43))
             {
-                sql += @$" and (UserId = 78 || InsertedBy = {UserId} || UserId = {UserId})";
+                sql += @$" and (UserId = 78 or InsertedBy = {UserId} or UserId = {UserId})";
             }
             else if (RoleIds.Contains(17))
             {
-                sql += @$" and (UserId = 78 ||  UserId = {UserId})";
+                sql += @$" and (UserId = 78 or  UserId = {UserId})";
             }
             else if (RoleIds.Contains(25))
             {
