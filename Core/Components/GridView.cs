@@ -722,7 +722,7 @@ namespace Core.Components
 
         public virtual void ViewSumary(object ev, GridPolicy header)
         {
-            Html.Take(DataTable.ParentElement).Div.ClassName("backdrop")
+            Html.Take(Element).Div.ClassName("backdrop")
             .Style("align-items: center;").Escape((e) => DisposeSumary());
             _summarys.Add(Html.Context);
             Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;min-width: 90%")

@@ -1,8 +1,7 @@
 ﻿.center {
     position: absolute;
-    top: 50%;
-    left: calc(50% + 12rem);
-    transform: translate(-50%, -50%);
+    right: 0;
+    bottom: 0;
 }
 
 .pic {
@@ -106,6 +105,13 @@
     background: white;
     box-shadow: 0 0 8rem 0 rgba(0, 0, 0, 0.1), 0rem 2rem 4rem -3rem rgba(0, 0, 0, 0.5);
 }
+
+    .chat .close-chat {
+        position: absolute;
+        right: 10px;
+        cursor: pointer;
+        font-size: 2rem;
+    }
 
     .chat .contact.bar {
         flex-basis: 3.5rem;
@@ -261,4 +267,16 @@
 
 .pic.rogers {
     background-image: url("https://vignette.wikia.nocookie.net/marvelcinematicuniverse/images/7/7c/Cap.America_%28We_Don%27t_Trade_Lives_Vision%29.png");
+}
+
+.arcontactus-message-button {
+    right: 20px;
+    bottom: 0;
+    position: fixed !important;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: #27388f;
+    color: #fff;
+    cursor: pointer;
 }
