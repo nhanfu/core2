@@ -592,7 +592,9 @@ namespace TMS.API.Controllers
                     }
                 }
             }
+            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.SaveChangesAsync();
+            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
             return true;
         }
         
