@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TMS.API.Models;
 using TMS.API.ViewModels;
@@ -1520,6 +1521,10 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (UserId = {UserId} or InsertedBy = {UserId})";
             }
+            else if (RoleIds.Contains(32))
+            {
+                sql += @$" and Active eq true";
+            }
             else if (RoleIds.Contains(25) || RoleIds.Contains(27) || RoleIds.Contains(22))
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
@@ -1528,6 +1533,10 @@ namespace TMS.API.Controllers
             if (RoleIds.Contains(10))
             {
                 qr = qr.Where(x => x.UserId == UserId || x.InsertedBy == UserId);
+            }
+            else if (RoleIds.Contains(32))
+            {
+                qr = qr.Where(x => x.Active);
             }
             else if (RoleIds.Contains(25) || RoleIds.Contains(27) || RoleIds.Contains(22))
             {
