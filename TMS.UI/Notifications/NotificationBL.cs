@@ -53,10 +53,30 @@ namespace TMS.UI.Notifications
             {
                 return;
             }
+            var center = Document.QuerySelector(".center");
+            if (center.HasClass("d-none"))
+            {
+                center.RemoveClass("d-none");
+            }
             var chat = arg as Chat;
             if (Convertation != null && chat.ConvertationId == Convertation.Data.Id)
             {
                 RenderActionChat(chat);
+            }
+            else
+            {
+                Task.Run(async () =>
+                {
+                    var con = await new Client(nameof(Convertation)).FirstOrDefaultAsync<Convertation>($"?$filter=Id eq {chat.ConvertationId})");
+                    var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConvertationId eq {con.Id}");
+                    if (chats.Count > 0)
+                    {
+                        Chats.Data = chats;
+                    }
+                    Convertation.Data = con;
+                    RenderChat();
+                    RenderChats();
+                });
             }
         }
 
@@ -242,9 +262,9 @@ namespace TMS.UI.Notifications
 
         private void RenderChats()
         {
+            Html.Take("#chat").Clear();
             if (Chats.Data != null)
             {
-                Html.Take("#chat").Clear();
                 Html.Take("#chat").ForEach(Chats.Data, (task, index) =>
                 {
                     if (task.FromId == Client.Token.UserId)
@@ -256,6 +276,8 @@ namespace TMS.UI.Notifications
                         Html.Instance.Div.ClassName("message stark").Text(task.Context).End.Render();
                     }
                 });
+                var chat = Document.GetElementById("chat");
+                chat.ScrollTop = chat.ScrollHeight - chat.ClientHeight;
             };
         }
 
@@ -269,6 +291,8 @@ namespace TMS.UI.Notifications
             {
                 Html.Take("#chat").Div.ClassName("message stark").Text(chat.Context).End.Render();
             }
+            var c = Document.GetElementById("chat");
+            c.ScrollTop = c.ScrollHeight - c.ClientHeight;
         }
 
         public void RenderProfile(string classname)
@@ -499,10 +523,7 @@ namespace TMS.UI.Notifications
             else
             {
                 var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConvertationId eq {con.Id}");
-                if (chats.Count > 0)
-                {
-                    Chats.Data = chats;
-                }
+                Chats.Data = chats;
             }
             Convertation.Data = con;
             RenderChat();
