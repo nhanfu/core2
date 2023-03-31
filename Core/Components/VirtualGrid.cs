@@ -251,8 +251,6 @@ namespace Core.Components
         {
             var keyCode = e.KeyCodeEnum();
             var selectedRow = AllListViewItem.FirstOrDefault(x => x.Selected);
-            var el = e.Target as HTMLElement;
-            el = el.Closest(ElementType.td.ToString());
             if (keyCode == KeyCodeEnum.F6)
             {
                 e.PreventDefault();
@@ -270,16 +268,13 @@ namespace Core.Components
                         await ActionFilter();
                     });
                 }
-                else
-                {
-                    return;
-                }
                 if (_summarys.Any())
                 {
                     var lastElement = _summarys.LastOrDefault();
-                    if (lastElement.InnerHTML == string.Empty)
+                    if (lastElement.InnerHTML == string.Empty || lastElement.Style.Display.ToString() == string.Empty)
                     {
                         _summarys.RemoveAt(_summarys.Count - 1);
+                        lastElement.Remove();
                     }
                     else
                     {
@@ -330,7 +325,7 @@ namespace Core.Components
             {
                 Window.ClearTimeout(_renderPrepareCacheAwaiter);
             }
-            Html.Take(Document.Body).Div.ClassName("backdrop")
+            Html.Take(DataTable.ParentElement).Div.ClassName("backdrop")
             .Style("align-items: center;").Escape((e) => DisposeSumary());
             _summarys.Add(Html.Context);
             Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;min-width: 90%")

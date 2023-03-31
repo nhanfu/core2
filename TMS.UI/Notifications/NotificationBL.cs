@@ -42,7 +42,14 @@ namespace TMS.UI.Notifications
 
         private void Kick(object arg)
         {
-            Window.Location.Reload(true);
+            Task.Run(async () =>
+            {
+                var client = new Client(nameof(User));
+                await client.CreateAsync<bool>(Client.Token, "SignOut");
+                Client.Token = null;
+                LocalStorage.RemoveItem("UserInfo");
+                Window.Location.Reload(true);
+            });
         }
 
         public void ProcessIncomMessage(object obj)
@@ -344,10 +351,7 @@ namespace TMS.UI.Notifications
                 {
                     return;
                 }
-                html.A.ClassName("dropdown-item").Event(EventType.DblClick, async (e) =>
-                {
-                    await KickOut(task, e);
-                }).Div.ClassName("media")
+                html.A.ClassName("dropdown-item").Event(EventType.ContextMenu, UserActiveEdit, task).Div.ClassName("media")
                 .Div.ClassName("media-body").H3.ClassName("dropdown-item-title").Text(task.FullName).Span.ClassName("float-right text-sm text-sucssess").I.ClassName("fas fa-star").End.End.End
                 .P.ClassName("text-sm").Text("").End
                 .P.ClassName("text-sm text-muted")
@@ -355,9 +359,35 @@ namespace TMS.UI.Notifications
             });
         }
 
-        private async Task KickOut(User task, object e)
+        private void UserActiveEdit(Event e, User user)
         {
-            await new Client(nameof(TaskNotification)).PostAsync<bool>(task.Email, "KickOut");
+            if (!Client.SystemRole)
+            {
+                return;
+            }
+            var menuItems = new List<ContextMenuItem>()
+            {
+                new ContextMenuItem { Icon = "far fa-sign-out mt-2", Text = "Đăng xuất", Click = LogOut, Parameter = user },
+                new ContextMenuItem { Icon = "fa fa-undo mt-2", Text = "Reload", Click = LogOut, Parameter = user },
+                new ContextMenuItem { Icon = "far fa-envelope mt-2", Text = "Nhắn tin", Click = LogOut, Parameter = user },
+                new ContextMenuItem { Icon = "far fa-bell mt-2", Text = "Thông báo cập nhật", Click = LogOut, Parameter = user },
+            };
+            e.PreventDefault();
+            e.StopPropagation();
+            var ctxMenu = ContextMenu.Instance;
+            ctxMenu.Top = e.Top();
+            ctxMenu.Left = e.Left();
+            ctxMenu.MenuItems = menuItems;
+            ctxMenu.Render();
+        }
+
+        private void LogOut(object e)
+        {
+            var task = e as User;
+            Task.Run(async () =>
+            {
+                await new Client(nameof(TaskNotification)).PostAsync<bool>(task.Email, "KickOut");
+            });
         }
 
         private void ToggleBageCount(int count)
