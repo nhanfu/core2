@@ -49796,16 +49796,6 @@ a.fc-more:hover {
     }
 }
 
-.no-transitions *, .no-transitions :after, .no-transitions :before {
-    transition: none !important
-}
-
-@media (prefers-reduced-motion:reduce) {
-    .no-transitions *, .no-transitions :after, .no-transitions :before {
-        transition: none
-    }
-}
-
 .caret-0::after, .caret-0::before {
     content: none
 }
