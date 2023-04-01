@@ -97,51 +97,7 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId} and TypeId = 25045))";
             }
-            var qr = db.TransportationPlan.AsNoTracking();
-            if (RoleIds.Contains(10))
-            {
-                qr =
-                    from tranp in qr
-                    from policy in db.FeaturePolicy
-                        .Where(x => x.RecordId == tranp.BossId && x.EntityId == _entitySvc.GetEntity(nameof(Vendor)).Id && x.CanRead)
-                        .Where(x => x.UserId == _userSvc.UserId || _userSvc.AllRoleIds.Contains(x.RoleId.Value))
-                        .DefaultIfEmpty()
-                    where tranp.InsertedBy == UserId
-                        || policy != null || tranp.Id == _userSvc.VendorId || tranp.UserId == UserId
-                    select tranp;
-            }
-            else if (RoleIds.Contains(17))
-            {
-                qr =
-                    from tranp in qr
-                    from policy in db.FeaturePolicy
-                        .Where(x => x.RecordId == tranp.BossId && x.EntityId == _entitySvc.GetEntity(nameof(Vendor)).Id && x.CanRead)
-                        .Where(x => x.UserId == _userSvc.UserId || _userSvc.AllRoleIds.Contains(x.RoleId.Value))
-                        .DefaultIfEmpty()
-                    where tranp.InsertedBy == UserId
-                        || policy != null || tranp.Id == _userSvc.VendorId || tranp.UserId == UserId || (tranp.UserId == 78 && policy != null)
-                    select tranp;
-            }
-            else if (RoleIds.Contains(43))
-            {
-                qr =
-                    from tranp in qr
-                    from policy in db.FeaturePolicy
-                        .Where(x => x.RecordId == tranp.BossId && x.EntityId == _entitySvc.GetEntity(nameof(Vendor)).Id && x.CanRead)
-                        .Where(x => x.UserId == _userSvc.UserId || _userSvc.AllRoleIds.Contains(x.RoleId.Value))
-                        .DefaultIfEmpty()
-                    where tranp.InsertedBy == UserId
-                        || policy != null || tranp.Id == _userSvc.VendorId || tranp.UserId == UserId || tranp.UserId == 78
-                    select tranp;
-            }
-            else if (RoleIds.Contains(25) || RoleIds.Contains(27))
-            {
-                qr = from tr in qr
-                     join route in db.UserRoute.AsNoTracking()
-                     on tr.RouteId equals route.RouteId
-                     where route.UserId == UserId && route.TypeId == 25045
-                     select tr;
-            }
+            var qr = db.TransportationPlan.FromSqlRaw(sql);
             return ApplyQuery(options, qr, sql: sql);
         }
 

@@ -1477,35 +1477,7 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
             }
-            var qr = db.Transportation.AsNoTracking();
-            if (RoleIds.Contains(10))
-            {
-                qr = qr.Where(x => x.UserId == UserId || x.InsertedBy == UserId);
-            }
-            else if (RoleIds.Contains(43))
-            {
-                qr = qr.Where(x => x.UserId == 78 || x.InsertedBy == UserId || x.UserId == UserId);
-            }
-            else if (RoleIds.Contains(17))
-            {
-                qr = qr.Where(x => x.UserId == 78 || x.UserId == UserId);
-            }
-            else if (RoleIds.Contains(25))
-            {
-                qr = from tr in qr
-                     join route in db.UserRoute.AsNoTracking()
-                     on tr.RouteId equals route.RouteId
-                     where route.UserId == UserId && route.TypeId == 25045
-                     select tr;
-            }
-            else if (RoleIds.Contains(27))
-            {
-                qr = from tr in qr
-                     join route in db.UserRoute.AsNoTracking()
-                     on tr.RouteId equals route.RouteId
-                     where route.UserId == UserId
-                     select tr;
-            }
+            var qr = db.Transportation.FromSqlRaw(sql);
             return ApplyQuery(options, qr, sql: sql);
         }
 
@@ -1529,23 +1501,7 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
             }
-            var qr = db.Transportation.AsNoTracking();
-            if (RoleIds.Contains(10))
-            {
-                qr = qr.Where(x => x.UserId == UserId || x.InsertedBy == UserId);
-            }
-            else if (RoleIds.Contains(32))
-            {
-                qr = qr.Where(x => x.Active);
-            }
-            else if (RoleIds.Contains(25) || RoleIds.Contains(27) || RoleIds.Contains(22))
-            {
-                qr = from tr in qr
-                     join route in db.UserRoute.AsNoTracking()
-                     on tr.RouteId equals route.RouteId
-                     where route.UserId == UserId
-                     select tr;
-            }
+            var qr = db.Transportation.FromSqlRaw(sql);
             return ApplyQuery(options, qr, sql: sql);
         }
 
@@ -1569,27 +1525,7 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId} and TypeId = 25044))";
             }
-            var qr = db.Transportation.AsNoTracking();
-            if (RoleIds.Contains(10))
-            {
-                qr = qr.Where(x => x.UserId == UserId || x.InsertedBy == UserId);
-            }
-            else if (RoleIds.Contains(27))
-            {
-                qr = from tr in qr
-                     join route in db.UserRoute.AsNoTracking()
-                     on tr.RouteId equals route.RouteId
-                     where route.UserId == UserId
-                     select tr;
-            }
-            if (RoleIds.Contains(22) || RoleIds.Contains(25))
-            {
-                qr = from tr in qr
-                     join route in db.UserRoute.AsNoTracking()
-                     on tr.RouteId equals route.RouteId
-                     where route.UserId == UserId && route.TypeId == 25044
-                     select tr;
-            }
+            var qr = db.Transportation.FromSqlRaw(sql);
             return ApplyQuery(options, qr, sql: sql);
         }
 
