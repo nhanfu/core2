@@ -631,20 +631,13 @@ namespace Core.Components
                     }
                     lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
-                if (!where.IsNullOrWhiteSpace() && !Wheres.Any(x => x.FieldName == where))
-                {
-                    Wheres.Add(new Where()
-                    {
-                        FieldName = where,
-                        Group = cell.Group
-                    });
-                }
                 var value = ids ?? cell.Value;
                 if (!AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.Value == value && x.CompareOperatorId == advo))
                 {
                     if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && cell.FieldName != IdField && x.CompareOperatorId == advo && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In)))
                     {
                         AdvSearchVM.Conditions.FirstOrDefault(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo).Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value;
+                        Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{GuiInfo.RefName}].{cell.FieldName}")).FieldName = where;
                     }
                     else
                     {
@@ -654,6 +647,11 @@ namespace Core.Components
                             CompareOperatorId = advo,
                             LogicOperatorId = cell.Logic ?? LogicOperation.And,
                             Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value,
+                            Group = cell.Group
+                        });
+                        Wheres.Add(new Where()
+                        {
+                            FieldName = where,
                             Group = cell.Group
                         });
                     }
