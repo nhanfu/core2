@@ -59,16 +59,27 @@ namespace TMS.UI.Notifications
                 center.RemoveClass("d-none");
             }
             var chat = arg as Chat;
-            if (Convertation != null && chat.ConvertationId == Convertation.Data.Id)
+            if (Convertation.Data != null && chat.ConvertationId == Convertation.Data.Id)
             {
+                Convertation.Data.LastContext = chat.Context;
+                Convertation.Data.UpdatedDate = chat.InsertedDate;
                 RenderActionChat(chat);
             }
             else
             {
                 Task.Run(async () =>
                 {
-                    var con = await new Client(nameof(Convertation)).FirstOrDefaultAsync<Convertation>($"?$filter=Id eq {chat.ConvertationId})");
-                    var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConvertationId eq {con.Id}");
+                    var con = await new Client(nameof(Convertation)).FirstOrDefaultAsync<Convertation>($"?$filter=Id eq {chat.ConvertationId}");
+                    var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConvertationId eq {chat.ConvertationId}&$orderby=UpdatedDate desc");
+                    var check = Convertations.Data.FirstOrDefault(x => x.Id == con.Id);
+                    if(check != null)
+                    {
+                        Convertations.Data.FirstOrDefault(x => x.Id == con.Id).CopyPropFrom(con);
+                    }
+                    else
+                    {
+                        Convertations.Data.Add(con);
+                    }
                     if (chats.Count > 0)
                     {
                         Chats.Data = chats;
@@ -76,6 +87,7 @@ namespace TMS.UI.Notifications
                     Convertation.Data = con;
                     RenderChat();
                     RenderChats();
+                    RenderUserChat();
                 });
             }
         }
@@ -238,10 +250,13 @@ namespace TMS.UI.Notifications
         {
             Html.Take("#notification-list").Clear();
             Html.Take("#user-active").Clear();
-            var notifications = await new Client(nameof(TaskNotification)).GetRawList<TaskNotification>($"?$expand=Entity&$orderby=InsertedDate desc&$top=50");
-            var userActive = await new Client(nameof(TaskNotification)).PostAsync<List<User>>(null, $"GetUserActive");
-            Notifications.Data = notifications;
-            UserActive.Data = userActive;
+            var notifications = new Client(nameof(TaskNotification)).GetRawList<TaskNotification>($"?$expand=Entity&$orderby=InsertedDate desc&$top=50");
+            var userActive = new Client(nameof(TaskNotification)).PostAsync<List<User>>(null, $"GetUserActive");
+            var convertations = new Client(nameof(Convertation)).GetRawList<Convertation>($"?$filter=FromId eq {Client.Token.UserId} or ToId eq {Client.Token.UserId}");
+            await Task.WhenAll(notifications, userActive, convertations);
+            Convertations.Data = convertations.Result;
+            Notifications.Data = notifications.Result;
+            UserActive.Data = userActive.Result;
             SetBadgeNumber();
             CurrentUser = Client.Token;
             CurrentUser.Avatar = Client.Origin + (CurrentUser.Avatar.IsNullOrWhiteSpace() ? "./image/chinese.jfif" : CurrentUser.Avatar);
@@ -462,6 +477,18 @@ namespace TMS.UI.Notifications
                 .Div.ClassName("name").Text(task.FullName).End
                 .Div.ClassName("message").Text(task.Recover).End.End.Render();
             });
+            Html.Take("#chats").ForEach(Convertations.Data.OrderByDescending(x => x.UpdatedDate).ToList(), (task, index) =>
+            {
+                if (task is null)
+                {
+                    return;
+                }
+                Html.Instance.Div.ClassName("contact").AsyncEvent(EventType.Click, (e) => ChatByConvertation(e, task))
+                .Div.ClassName("pic rogers").End
+                .Div.ClassName("badge").End
+                .Div.ClassName("name").Text(task.FromId == Client.Token.UserId ? task.ToName : task.FromName).End
+                .Div.ClassName("message").Text(task.LastContext).End.End.Render();
+            });
             Html.Take("#input-chat").AsyncEvent(EventType.KeyDown, AddChat);
         }
 
@@ -526,6 +553,15 @@ namespace TMS.UI.Notifications
                 Chats.Data = chats;
             }
             Convertation.Data = con;
+            RenderChat();
+            RenderChats();
+        }
+
+        private async Task ChatByConvertation(Event e, Convertation convertation)
+        {
+            var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConvertationId eq {convertation.Id}");
+            Chats.Data = chats;
+            Convertation.Data = convertation;
             RenderChat();
             RenderChats();
         }

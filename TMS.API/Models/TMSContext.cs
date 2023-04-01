@@ -231,6 +231,10 @@ public partial class TMSContext : DbContext
 
         modelBuilder.Entity<Chat>(entity =>
         {
+            entity.ToTable(tb =>
+            {
+                tb.HasTrigger("_LastChat");
+            });
             entity.Property(e => e.Context).HasMaxLength(500);
         });
 
