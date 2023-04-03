@@ -1316,6 +1316,10 @@ namespace Core.Components
                 {
                     upItem.Entity.SetComplexPropValue(fieldName, com.GetValue());
                     var updated = upItem.FilterChildren(x => x.GuiInfo.FieldName == nextcom.GuiInfo.FieldName).FirstOrDefault();
+                    if (updated.Disabled)
+                    {
+                        return;
+                    }
                     updated.Dirty = true;
                     Task.Run(async () =>
                     {

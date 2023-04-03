@@ -236,6 +236,10 @@ namespace Core.Components
 
         private void PopulateUIChange(EventType type, bool shouldTrim = false)
         {
+            if (Disabled)
+            {
+                return;
+            }
             _oldText = _text;
             _text = Input?.Value ?? TextArea.Value;
             _text = Password ? _text : shouldTrim ? _text?.Trim() : _text;

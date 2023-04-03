@@ -260,6 +260,10 @@ namespace Core.Components
 
         private void RenderCalendar(DateTime? someday = null)
         {
+            if (Disabled)
+            {
+                return;
+            }
             Window.ClearTimeout(_renderAwaiter);
             Window.ClearTimeout(_closeAwaiter);
             _renderAwaiter = Window.SetTimeout(() => RenderCalendarTask(someday), 100);
@@ -491,6 +495,10 @@ namespace Core.Components
 
         private void TriggerUserChange(DateTime? selected, bool date = false)
         {
+            if (Disabled)
+            {
+                return;
+            }
             var oldVal = _value;
             Value = selected;
             if (UserInput != null)
