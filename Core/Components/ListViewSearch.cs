@@ -486,7 +486,7 @@ namespace Core.Components
                     oldStartDate.FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] >= '{EntityVM.StartDate.Value.ToString("yyyy-MM-dd")}'";
                 }
                 EntityVM.StartDate = EntityVM.StartDate.Value.Date;
-                finalFilter += $"cast({DateTimeField},Edm.DateTimeOffset) ge cast({EntityVM.StartDate.Value.ToUniversalTime().ToISOFormat()},Edm.DateTimeOffset)";
+                finalFilter += $"cast({DateTimeField},Edm.DateTimeOffset) ge cast({EntityVM.StartDate.Value.ToISOFormat()},Edm.DateTimeOffset)";
                 LocalStorage.SetItem("FromDate" + ParentListView.GuiInfo.Id, EntityVM.StartDate.Value.ToString("MM/dd/yyyy"));
             }
             else
@@ -517,8 +517,8 @@ namespace Core.Components
                 {
                     oldEndDate.FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <= '{EntityVM.EndDate.Value.ToString("yyyy-MM-dd")}'";
                 }
-                var endDate = EntityVM.EndDate.Value.Date.AddDays(1);
-                finalFilter += $"cast({DateTimeField},Edm.DateTimeOffset) le cast({endDate.ToUniversalTime().ToISOFormat()},Edm.DateTimeOffset)";
+                var endDate = EntityVM.EndDate.Value.Date;
+                finalFilter += $"cast({DateTimeField},Edm.DateTimeOffset) le cast({endDate.ToISOFormat()},Edm.DateTimeOffset)";
                 LocalStorage.SetItem("ToDate" + ParentListView.GuiInfo.Id, EntityVM.EndDate.Value.ToString("MM/dd/yyyy"));
             }
             else
