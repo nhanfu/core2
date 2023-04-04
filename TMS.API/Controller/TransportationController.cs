@@ -520,13 +520,20 @@ namespace TMS.API.Controllers
                     left join Location r on r.Id = t.ReceivedId
                     left join Location pi on pi.Id = t.PickupEmptyId
                     left join Location po on po.Id = t.PortLoadingId";
-            if (Type == 1)
+            if (transportation.Id > 0)
             {
                 sql += $" where t.CheckFeeHistoryId = {transportation.Id}";
             }
             else
             {
-                sql += $" where t.ClosingDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})";
+                if (Type == 1)
+                {
+                    sql += $" where t.ClosingDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})";
+                }
+                else
+                {
+                    sql += $" where t.ReturnDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnVendorId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})";
+                }
             }
             var data = await ConverSqlToDataSet(sql);
             var start = 8;

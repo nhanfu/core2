@@ -378,7 +378,7 @@ namespace TMS.UI.Business.Manage
                     transportationPlan.CommodityValue = commodityValueDB.TotalPrice;
                     Toast.Success("GTHH đã tồn tại trong hệ thống với giá trị là: " + decimal.Parse(transportationPlan.CommodityValue.ToString()).ToString("N0"));
                 }
-                await new Client(nameof(TransportationPlan)).PatchAsync<object>(GetPatchEntity(transportationPlan));
+                await new Client(nameof(TransportationPlan)).PatchAsync<object>(GetPatchEntity(transportationPlan), ig: $"&disableTrigger=true");
                 var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and TransportationPlanId eq {transportationPlanEntity.Id}");
                 var transportationIds = transportations.Select(x => x.Id).ToList();
                 var expenseTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and (contains(Name, 'Bảo hiểm') or contains(Name, 'SOC'))");

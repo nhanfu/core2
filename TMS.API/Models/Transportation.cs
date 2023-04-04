@@ -348,6 +348,8 @@ namespace TMS.API.Models
         public decimal? FeeVat2UploadReturn { get; set; }
         public decimal? FeeVat3UploadReturn { get; set; }
         public int? OrderExcelReturn { get; set; }
+        public decimal? CustomerReturnFeeReport { get; set; }
+
         public virtual ICollection<Expense> Expense { get; set; }
         public virtual ICollection<Revenue> Revenue { get; set; }
         public virtual ICollection<TransportationRequest> TransportationRequest { get; set; }
