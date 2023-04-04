@@ -92,8 +92,8 @@ namespace TMS.UI.Business.Manage
                     $"and ContainerTypeId eq {coords.ContainerTypeId} " +
                     $"and RegionId eq {received["RegionId"]} " +
                     $"and LocationId eq null " +
-                    $"and StartDate le {coords.ClosingDate.Value.ToOdataFormat()} " +
-                    $"and PackingId eq {coords.ClosingId}&$orderby=StartDate desc");
+                    $"and StartDate le {coords.ReturnDate.Value.ToOdataFormat()} " +
+                    $"and PackingId eq {coords.ReturnVendorId}&$orderby=StartDate desc");
                 if (quotation is null)
                 {
                     quotation = new Quotation()
@@ -133,7 +133,9 @@ namespace TMS.UI.Business.Manage
                     return;
                 }
                 var coords = selected.Entity.As<Transportation>();
-                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7593 and BossId eq {coords.BossId} and ContainerTypeId eq {coords.ContainerTypeId} and LocationId eq {coords.ReturnId} and StartDate le {coords.ReturnDate.Value.ToOdataFormat()} and PackingId eq {coords.ReturnVendorId}&$orderby=StartDate desc");
+                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7593 " +
+                    $"and BossId eq {coords.BossId} and ContainerTypeId eq {coords.ContainerTypeId} " +
+                    $"and LocationId eq {coords.ReturnId} and StartDate le {coords.ReturnDate.Value.ToOdataFormat()} and PackingId eq {coords.ReturnVendorId}&$orderby=StartDate desc");
                 if (quotation is null)
                 {
                     quotation = new Quotation()

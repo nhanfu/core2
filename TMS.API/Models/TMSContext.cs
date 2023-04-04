@@ -852,6 +852,7 @@ public partial class TMSContext : DbContext
         modelBuilder.Entity<Quotation>(entity =>
         {
             entity.ToTable(tb => tb.HasTrigger("Quotation_Update"));
+            entity.ToTable(tb => tb.HasTrigger("Quotation_Insert_Transportation"));
 
             entity.Property(e => e.Note).HasMaxLength(250);
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(20, 5)");
