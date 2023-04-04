@@ -2218,6 +2218,8 @@ namespace Core.Components
             {
                 new ContextMenuItem { Icon = "fal fa-eye", Text = "Hiện tiêu đề", Click = ShowWidth, Parameter = new {header= header, events= e }},
                 new ContextMenuItem { Icon = "fal fa-eye-slash", Text = "Ẩn tiêu đề", Click = HideWidth, Parameter = new {header= header, events= e }},
+                new ContextMenuItem { Icon = "fal fa-eye", Text = "Hiện cột", Click = ShowColumn, Parameter = new {header= header, events= e }},
+                new ContextMenuItem { Icon = "fal fa-eye-slash", Text = "Ẩn cột", Click = HideColumn, Parameter = new {header= header, events= e }},
             };
             if (Client.SystemRole)
             {
@@ -2261,6 +2263,20 @@ namespace Core.Components
             Task.Run(async () => await UpdateUserSetting());
         }
 
+        private void HideColumn(object arg)
+        {
+            var entity = arg["header"] as GridPolicy;
+            var e = arg["events"] as Event;
+            /*@
+             var $table = $(e.target).closest('table');
+             var $cell = $(e.target).closest('th,td');
+             var cellIndex = $cell[0].cellIndex + 1;
+             $table.find("tbody tr, thead tr").children(":nth-child("+cellIndex+")").hide();
+             console.log($(e.target).attr("data-field"));
+             */
+            Task.Run(async () => await UpdateUserSettingColumn());
+        }
+
         private async Task UpdateUserSetting()
         {
             _settings = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>(
@@ -2296,15 +2312,57 @@ namespace Core.Components
             }
         }
 
+        private async Task UpdateUserSettingColumn()
+        {
+            _settings = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>(
+                $"?$filter=UserId eq {Client.Token.UserId} and Name eq 'ListView-{GuiInfo.Id}'");
+            BasicHeader.ForEach(x =>
+            {
+                x.Active = false;
+            });
+            var column = BasicHeader;
+            var value = JsonConvert.SerializeObject(column);
+            if (_settings is null)
+            {
+                _settings = new UserSetting
+                {
+                    UserId = Client.Token.UserId,
+                    Name = "ListView-" + GuiInfo.Id,
+                    Value = value
+                };
+                _settings = await new Client(nameof(UserSetting)).CreateAsync<UserSetting>(_settings);
+            }
+            else
+            {
+                _settings.Value = value;
+                _settings.Name = "ListView-" + GuiInfo.Id;
+                _settings = await new Client(nameof(UserSetting)).UpdateAsync<UserSetting>(_settings);
+            }
+        }
+
         private void ShowWidth(object arg)
         {
             var entity = arg["header"] as GridPolicy;
             var e = arg["events"] as Event;
             /*@
-             e.target.prepend(entity.ShortDesc)
+             if (!e.target.firstChild.length) {
+                e.target.prepend(entity.ShortDesc)
+             }
              e.target.style.minWidth = "";
              e.target.style.maxWidth = "";
              e.target.style.width = "";
+             */
+            Task.Run(async () => await UpdateUserSetting());
+        }
+
+        private void ShowColumn(object arg)
+        {
+            var entity = arg["header"] as GridPolicy;
+            var e = arg["events"] as Event;
+            /*@
+             var $table = $(e.target).closest('table');
+             $table.find("th, td").show();
+             console.log($(e.target).attr("data-field"));
              */
             Task.Run(async () => await UpdateUserSetting());
         }
