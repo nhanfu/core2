@@ -15,6 +15,7 @@ namespace TMS.UI.Business.Manage
 {
     public class BookingListListBL : TabEditor
     {
+        public BookingList BookingListEntity => Entity as BookingList;
         public BookingListListBL() : base(nameof(BookingList))
         {
             Name = "List Ship Book";
@@ -187,6 +188,54 @@ namespace TMS.UI.Business.Manage
                     Toast.Warning("Đã có lỗi xảy ra");
                 }
             };
+        }
+
+        public async Task ReportDataByFilter()
+        {
+            var query = $"?$filter=Active eq true";
+            var prequery = $"Active = 1";
+            if (BookingListEntity.Month != null)
+            {
+                query += $" and Month eq {BookingListEntity.Month}";
+                prequery += $" and Month = {BookingListEntity.Month}";
+            }
+            if (BookingListEntity.Year != null)
+            {
+                query += $" and Year eq {BookingListEntity.Year}";
+                prequery += $" and Year = {BookingListEntity.Year}";
+            }
+            if (BookingListEntity.FromDate != null)
+            {
+                var fromDate = BookingListEntity.FromDate.Value.Date.ToString("yyyy-MM-dd");
+                query += $" and StartShip ge {fromDate}";
+                prequery += $" and StartShip >= '{fromDate}'";
+            }
+            if (BookingListEntity.ToDate != null)
+            {
+                var toDate = BookingListEntity.ToDate.Value.Date.ToString("yyyy-MM-dd");
+                query += $" and StartShip le {toDate}";
+                prequery += $" and StartShip <= '{toDate}'";
+            }
+            if (BookingListEntity.RouteId != null)
+            {
+                query += $" and RouteId eq {BookingListEntity.RouteId}";
+                prequery += $" and RouteId = {BookingListEntity.RouteId}";
+            }
+            if (BookingListEntity.ContainerTypeId != null)
+            {
+                query += $" and ContainerTypeId eq {BookingListEntity.ContainerTypeId}";
+                prequery += $" and ContainerTypeId = {BookingListEntity.ContainerTypeId}";
+            }
+            query += "&$orderby=StartShip desc";
+            var bookingList = await new Client(nameof(BookingList)).GetRawList<BookingList>($"{query}");
+            BookingListEntity.TotalCount = (decimal)bookingList.Sum(x => x.Count);
+            BookingListEntity.TotalTotalPrice = (decimal)bookingList.Sum(x => x.TotalPrice);
+            BookingListEntity.AVGTotalPrice = Math.Round(BookingListEntity.TotalTotalPrice / BookingListEntity.TotalCount);
+            this.UpdateView(false, nameof(BookingList.TotalCount), nameof(BookingList.TotalTotalPrice), nameof(BookingList.AVGTotalPrice));
+            var grid = this.FindActiveComponent<GridView>().FirstOrDefault();
+            grid.DataSourceFilter = query;
+            grid.GuiInfo.PreQuery = prequery;
+            await grid.ActionFilter();
         }
 
         public PatchUpdate GetPatchEntity(BookingList bookingList)

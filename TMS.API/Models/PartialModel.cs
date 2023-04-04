@@ -41,6 +41,12 @@ namespace TMS.API.Models
         public DateTime? ToDate { get; set; }
         [NotMapped]
         public string TransportationIds { get; set; }
+        [NotMapped]
+        public decimal AVGTotalPrice { get; set; }
+        [NotMapped]
+        public decimal TotalCount { get; set; }
+        [NotMapped]
+        public decimal TotalTotalPrice { get; set; }
     }
 
     public partial class Expense
