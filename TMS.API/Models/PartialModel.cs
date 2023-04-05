@@ -47,6 +47,18 @@ namespace TMS.API.Models
         public decimal TotalCount { get; set; }
         [NotMapped]
         public decimal TotalTotalPrice { get; set; }
+        [NotMapped]
+        public decimal AVGTotalPriceCont20 { get; set; }
+        [NotMapped]
+        public decimal TotalCountCont20 { get; set; }
+        [NotMapped]
+        public decimal TotalTotalPriceCont20 { get; set; }
+        [NotMapped]
+        public decimal AVGTotalPriceCont40 { get; set; }
+        [NotMapped]
+        public decimal TotalCountCont40 { get; set; }
+        [NotMapped]
+        public decimal TotalTotalPriceCont40 { get; set; }
     }
 
     public partial class Expense

@@ -238,6 +238,57 @@ namespace TMS.UI.Business.Manage
             await grid.ActionFilter();
         }
 
+        public async Task LoadReportDataByFilter()
+        {
+            var grid = this.FindComponentByName<GridView>("BookingListReport");
+            grid.ClearRowData();
+            var query = $"?$filter=Active eq true";
+            if (BookingListEntity.Month != null)
+            {
+                query += $" and Month eq {BookingListEntity.Month}";
+            }
+            if (BookingListEntity.Year != null)
+            {
+                query += $" and Year eq {BookingListEntity.Year}";
+            }
+            if (BookingListEntity.FromDate != null)
+            {
+                var fromDate = BookingListEntity.FromDate.Value.Date.ToString("yyyy-MM-dd");
+                query += $" and StartShip ge {fromDate}";
+            }
+            if (BookingListEntity.ToDate != null)
+            {
+                var toDate = BookingListEntity.ToDate.Value.Date.ToString("yyyy-MM-dd");
+                query += $" and StartShip le {toDate}";
+            }
+            query += "&$orderby=StartShip desc";
+            var bookingList = await new Client(nameof(BookingList)).GetRawList<BookingList>(query);
+            var routes = await new Client(nameof(Route)).GetRawList<Route>($"?$filter=Active eq true and Id in (370, 369, 355, 356, 378, 376)");
+            var reportBookingList = new List<BookingList>();
+            var containerTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 7565");
+            var containerTypesCont20 = containerTypes.Where(x => x.Description.Contains("20")).ToList();
+            var containerTypesCont40 = containerTypes.Where(x => x.Description.Contains("40")).ToList();
+            var containerTypeIdsCont20 = containerTypesCont20.Select(x => x.Id).ToList();
+            var containerTypeIdsCont40 = containerTypesCont40.Select(x => x.Id).ToList();
+            foreach (var item in routes)
+            {
+                var filter = bookingList.Where(x => x.RouteId == item.Id).ToList();
+                var newBookingList = new BookingList()
+                {
+                    RouteId = item.Id,
+                    TotalCountCont20 = (decimal)filter.Where(x => containerTypeIdsCont20.Contains((int)x.ContainerTypeId)).Sum(x => x.Count),
+                    TotalCountCont40 = (decimal)filter.Where(x => containerTypeIdsCont40.Contains((int)x.ContainerTypeId)).Sum(x => x.Count),
+                    TotalTotalPriceCont20 = (decimal)filter.Where(x => containerTypeIdsCont20.Contains((int)x.ContainerTypeId)).Sum(x => x.TotalPrice),
+                    TotalTotalPriceCont40 = (decimal)filter.Where(x => containerTypeIdsCont40.Contains((int)x.ContainerTypeId)).Sum(x => x.TotalPrice),
+                };
+                newBookingList.AVGTotalPriceCont20 = Math.Round(newBookingList.TotalTotalPriceCont20 / newBookingList.TotalCountCont20);
+                newBookingList.AVGTotalPriceCont40 = Math.Round(newBookingList.TotalTotalPriceCont40 / newBookingList.TotalCountCont40);
+                reportBookingList.Add(newBookingList);
+            }
+            await grid.AddRows(reportBookingList);
+            grid.UpdateView(false);
+        }
+
         public PatchUpdate GetPatchEntity(BookingList bookingList)
         {
             var details = new List<PatchUpdateDetail>();
