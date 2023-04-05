@@ -479,9 +479,8 @@ namespace TMS.API.Controllers
                     {
                         containerId = containers.Find(x => x.Name.Contains("50DC")).Id;
                     }
-
-                    var commodityValue = commodityValues.Where(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == containerId).FirstOrDefault();
-                    commodityValueOfTrans.Add(item.Id, commodityValue);
+                    var commodityValue = commodityValues.Where(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == containerId && (x.StartDate >= item.StartShip || item.StartShip == null)).FirstOrDefault();
+                    if (commodityValue != null){ commodityValueOfTrans.Add(item.Id, commodityValue); }
                 }
             }
 
