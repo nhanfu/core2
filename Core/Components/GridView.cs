@@ -523,11 +523,11 @@ namespace Core.Components
                         if (rsdynamic.Any())
                         {
                             ids = rsdynamic.Select(x => x.Id).Cast<int>().Combine();
-                            where = cell.Operator == "not in" ? $"([{GuiInfo.RefName}].{cell.FieldName} not in ({ids}) or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $"[{GuiInfo.RefName}].{cell.FieldName} in ({ids})";
+                            where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} not in ({ids})" : $"[{GuiInfo.RefName}].{cell.FieldName} in ({ids})";
                         }
                         else
                         {
-                            where = cell.Operator == "not in" ? $"([{GuiInfo.RefName}].{cell.FieldName} != {cell.Value} or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $"[{GuiInfo.RefName}].{cell.FieldName} = {cell.Value}";
+                            where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} != {cell.Value}" : $"[{GuiInfo.RefName}].{cell.FieldName} = {cell.Value}";
                         }
                         index++;
                     }
