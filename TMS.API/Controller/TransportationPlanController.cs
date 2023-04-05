@@ -105,6 +105,11 @@ namespace TMS.API.Controllers
         {
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
+            var entity = await db.TransportationPlan.FindAsync(idInt);
+            if (entity.IsTransportation)
+            {
+                throw new ApiException("Kế hoạch đã được sử dụng!") { StatusCode = HttpStatusCode.BadRequest };
+            }
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
             {
                 connection.Open();
@@ -136,7 +141,6 @@ namespace TMS.API.Controllers
                         }
                         command.ExecuteNonQuery();
                         transaction.Commit();
-                        var entity = await db.TransportationPlan.FindAsync(idInt);
                         if (!disableTrigger)
                         {
                             await db.Entry(entity).ReloadAsync();
@@ -147,7 +151,6 @@ namespace TMS.API.Controllers
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    var entity = await db.TransportationPlan.FindAsync(idInt);
                     return entity;
                 }
             }
@@ -366,6 +369,15 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Không thể xóa dữ liệu!") { StatusCode = HttpStatusCode.BadRequest };
             }
+        }
+
+        public override Task<ActionResult<TransportationPlan>> UpdateAsync([FromBody] TransportationPlan entity, string reasonOfChange = "")
+        {
+            if (entity.IsTransportation)
+            {
+                throw new ApiException("Kế hoạch đã được sử dụng!") { StatusCode = HttpStatusCode.BadRequest };
+            }
+            return base.UpdateAsync(entity, reasonOfChange);
         }
 
         public override async Task<ActionResult<bool>> RequestApprove([FromBody] TransportationPlan entity)
