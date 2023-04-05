@@ -68,6 +68,10 @@ namespace Core.Components
                 start = 0;
             }
             var source = CalcDatasourse(viewPortCount + viewPortCount * cacheAhead * 2, start, "false");
+            if (!GuiInfo.DescValue.IsNullOrWhiteSpace())
+            {
+                source = OdataExt.AppendClause(source, GuiInfo.DescValue, "$select=");
+            }
             var data = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
             if (data.Value.Nothing())
             {
@@ -156,6 +160,10 @@ namespace Core.Components
             _skip = skip;
             List<object> rows;
             var source = CalcDatasourse(viewPortCount, skip, count ? "true" : "false");
+            if (!GuiInfo.DescValue.IsNullOrWhiteSpace())
+            {
+                source = OdataExt.AppendClause(source, GuiInfo.DescValue, "$select=");
+            }
             var oDataRows = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
             Sql = oDataRows.Sql;
             rows = oDataRows.Value;

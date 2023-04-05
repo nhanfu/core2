@@ -217,7 +217,7 @@ namespace TMS.UI.Notifications
                         }).then((result) => {
                              if (result.dismiss === Swal.DismissReason.timer)
                              {
-                                Window.Location.Reload(true);
+                                window.location.reload(true);
                              }
                        })
                     */

@@ -690,10 +690,10 @@ namespace TMS.UI.Business.Manage
             });
         }
 
-        public virtual void CheckReturnDate(Transportation transportationPlan)
+        public virtual void CheckReturnDate(Transportation entity)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-            if (transportationPlan.ReturnDate != null && transportationPlan.ShipDate != null && transportationPlan.ReturnDate.Value.Date < transportationPlan.ShipDate.Value.Date)
+            if (entity.ReturnDate != null && entity.ShipDate != null && entity.ReturnDate.Value.Date < entity.ShipDate.Value.Date)
             {
                 var confirmDialog = new ConfirmDialog
                 {
@@ -701,8 +701,8 @@ namespace TMS.UI.Business.Manage
                 };
                 confirmDialog.NoConfirmed += async () =>
                 {
-                    transportationPlan.ReturnDate = transportationPlan.ShipDate;
-                    var listViewItem = gridView.GetListViewItems(transportationPlan).FirstOrDefault();
+                    entity.ReturnDate = entity.ShipDate;
+                    var listViewItem = gridView.GetListViewItems(entity).FirstOrDefault();
                     listViewItem.UpdateView();
                     var updated = listViewItem.FilterChildren<Datepicker>(x => x.GuiInfo.FieldName == nameof(Transportation.ReturnDate) || x.GuiInfo.FieldName == nameof(Transportation.ShipDate)).ToList();
                     updated.ForEach(x => x.Dirty = true);
@@ -726,10 +726,10 @@ namespace TMS.UI.Business.Manage
                 });
         }
 
-        private PatchUpdate GetPathEntity(Transportation transportation)
+        private PatchUpdate GetPathEntity(Transportation entity)
         {
             var details = new List<PatchUpdateDetail>();
-            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = transportation.Id.ToString() });
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = entity.Id.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsReturn), Value = true.ToString() });
             return new PatchUpdate { Changes = details };
         }
@@ -940,22 +940,22 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public async Task UpdateCombinationFee(Transportation transportation)
+        public async Task UpdateCombinationFee(Transportation entity)
         {
-            if (transportation.BrandShipId is null)
+            if (entity.BrandShipId is null)
             {
                 return;
             }
             var gridView = this.FindComponentByName<GridView>(nameof(Transportation));
-            var listViewItem = gridView.GetListViewItems(transportation).FirstOrDefault();
-            if (transportation.IsEmptyCombination || transportation.IsClosingCustomer)
+            var listViewItem = gridView.GetListViewItems(entity).FirstOrDefault();
+            if (entity.IsEmptyCombination || entity.IsClosingCustomer)
             {
-                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=Active eq true and TypeId eq 12071 and PackingId eq {transportation.BrandShipId}");
-                transportation.CombinationFee = quotation is null ? default(decimal) : quotation.UnitPrice;
+                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=Active eq true and TypeId eq 12071 and PackingId eq {entity.BrandShipId}");
+                entity.CombinationFee = quotation is null ? default(decimal) : quotation.UnitPrice;
             }
             else
             {
-                transportation.CombinationFee = 0;
+                entity.CombinationFee = 0;
             }
             listViewItem.UpdateView();
             listViewItem.FilterChildren(x => x.GuiInfo.FieldName == nameof(Transportation.CombinationFee)).ForEach(x => x.Dirty = true);

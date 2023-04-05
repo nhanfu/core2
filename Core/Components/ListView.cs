@@ -366,6 +366,7 @@ namespace Core.Components
             BasicHeaderSearch = columns.Where(x => x.ComponentType == "Dropdown").ToList();
             ResetOrder();
             HeaderLoaded?.Invoke(columns);
+            Console.WriteLine(BasicHeader.Where(x => !x.FieldName.IsNullOrWhiteSpace()).Select(x => x.FieldName).Combine());
         }
 
         public void ResetOrder()
