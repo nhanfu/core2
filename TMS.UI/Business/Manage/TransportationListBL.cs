@@ -206,6 +206,7 @@ namespace TMS.UI.Business.Manage
             {
                 var menus = new List<ContextMenuItem>();
                 menus.Clear();
+                
                 menus.Add(new ContextMenuItem
                 {
                     Icon = "fas fa-pen",
