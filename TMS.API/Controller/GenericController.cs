@@ -231,6 +231,7 @@ namespace TMS.API.Controllers
             result = new OdataResult<K>
             {
                 odata = new Odata { count = shouldCount ? totalResult.Count() : 0 },
+                Sql = sql,
                 value = options.Top == null && !shouldCount || top != null && top.Value > 0 ? limitResult : null
             };
 #if DEBUG
