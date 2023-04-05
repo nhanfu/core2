@@ -1645,7 +1645,8 @@ namespace TMS.API.Controllers
                     reportQuery += $@" select *
                                  from [{refname}] 
                                  where Id in (select distinct {group}
-                                 from ({sql}) as [{tablename}] where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")})";
+                                 from ({sql}) as [{tablename}] 
+                                  where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")})";
                 }
                 else
                 {
@@ -1653,7 +1654,7 @@ namespace TMS.API.Controllers
                                  from [{refname}] 
                                  where Id in (select distinct {group}
                                               from [{tablename}]
-                                 where 1 = 1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")})";
+                                 where 1 = 1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
 
                     if (RoleIds.Contains(10))
                     {
@@ -1675,6 +1676,7 @@ namespace TMS.API.Controllers
                     {
                         reportQuery += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
                     }
+                    reportQuery += ")";
                 }
             }
             var sqlCmd = new SqlCommand(reportQuery, con)
