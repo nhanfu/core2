@@ -480,7 +480,7 @@ namespace Core.Components
                 var rowSection = RenderRowData(Header, rowData, MainSection);
             });
         }
-        
+
         protected virtual void Rerender()
         {
             DisposeNoRecord();
@@ -907,32 +907,36 @@ namespace Core.Components
 
         public void HardDeleteSelected(object ev = null)
         {
-            if (GuiInfo.IgnoreConfirmHardDelete && OnDeleteConfirmed != null)
+            Task.Run(async () =>
             {
-                OnDeleteConfirmed.Invoke();
-                return;
-            }
-            var confirm = new ConfirmDialog();
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                if (OnDeleteConfirmed != null)
+                var deletedItems = await GetRealTimeSelectedRows();
+                if (GuiInfo.IgnoreConfirmHardDelete && OnDeleteConfirmed != null)
                 {
                     OnDeleteConfirmed.Invoke();
-                    DOMContentLoaded?.Invoke();
                     return;
                 }
-                confirm.Dispose();
-                var deletedItems = await GetRealTimeSelectedRows();
-                if (deletedItems.Nothing())
+                var confirm = new ConfirmDialog();
+                confirm.Title = $"Bạn có chắc xóa {deletedItems.Count} dòng dữ liêu không!";
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
                 {
-                    deletedItems = GetFocusedRows().ToList();
-                }
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems);
-                await HardDeleteConfirmed();
-                DOMContentLoaded?.Invoke();
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems);
-            };
+                    if (OnDeleteConfirmed != null)
+                    {
+                        OnDeleteConfirmed.Invoke();
+                        DOMContentLoaded?.Invoke();
+                        return;
+                    }
+                    confirm.Dispose();
+                    if (deletedItems.Nothing())
+                    {
+                        deletedItems = GetFocusedRows().ToList();
+                    }
+                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems);
+                    await HardDeleteConfirmed();
+                    DOMContentLoaded?.Invoke();
+                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems);
+                };
+            });
         }
 
         public virtual async Task Deactivate()
