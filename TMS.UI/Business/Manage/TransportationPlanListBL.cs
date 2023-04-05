@@ -295,8 +295,32 @@ namespace TMS.UI.Business.Manage
             var insuranceFeesRateColdDB = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 25391");
             var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
             var containerTypes = new List<int>(await CheckContainerTypes(selected));
+            var transportationTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 11670");
+            var routes = await new Client(nameof(Route)).GetRawList<Route>($"?$filter=Active eq true and Id in {selected.Select(x => x.RouteId).ToList().Combine()}");
             foreach (var item in selected)
             {
+                if (item.TransportationTypeId == null && item.RouteId != null)
+                {
+                    var route = routes.Where(x => x.Id == item.RouteId).FirstOrDefault();
+                    if (route.Name.ToLower().Contains("sắt"))
+                    {
+                        item.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Sắt")).FirstOrDefault().Id;
+                    }
+                    else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
+                    {
+                        item.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Bộ")).FirstOrDefault().Id;
+                    }
+                    else
+                    {
+                        item.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Tàu")).FirstOrDefault().Id;
+                    }
+                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityTransportationType(item));
+                }
+                if (item.JourneyId == null)
+                {
+                    item.JourneyId = 12114;
+                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityJourneyId(item));
+                }
                 var expense = new Expense();
                 expense.CopyPropFrom(item);
                 expense.Id = 0;
@@ -825,6 +849,16 @@ namespace TMS.UI.Business.Manage
             {
                 new PatchUpdateDetail { Field = Utils.IdField, Value = transportationPlan.Id.ToString() },
                 new PatchUpdateDetail { Field = nameof(TransportationPlan.TransportationTypeId), Value = transportationPlan.TransportationTypeId.ToString() }
+            };
+            return new PatchUpdate { Changes = details };
+        }
+
+        public PatchUpdate GetPatchEntityJourneyId(TransportationPlan transportationPlan)
+        {
+            var details = new List<PatchUpdateDetail>
+            {
+                new PatchUpdateDetail { Field = Utils.IdField, Value = transportationPlan.Id.ToString() },
+                new PatchUpdateDetail { Field = nameof(TransportationPlan.JourneyId), Value = transportationPlan.JourneyId.ToString() }
             };
             return new PatchUpdate { Changes = details };
         }
