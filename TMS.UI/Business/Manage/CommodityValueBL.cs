@@ -162,6 +162,7 @@ namespace TMS.UI.Business.Manage
                         var containerTypeIdExpenses = expenses.Select(x => x.ContainerTypeId).ToList();
                         var containerTypeExpenses = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and Id in ({containerTypeIdExpenses.Combine()})");
                         var containerTypeOfExpenses = new Dictionary<int, MasterData>();
+                        var expenseTypeDictionary = expenseTypes.ToDictionary(x => x.Id);
                         foreach (var item in expenses)
                         {
                             var container = containerTypeExpenses.Where(x => x.Id == item.ContainerTypeId).FirstOrDefault();
@@ -170,7 +171,7 @@ namespace TMS.UI.Business.Manage
                         foreach (var item in expenses)
                         {
                             item.CommodityValue = newCommodityValue.TotalPrice;
-                            var checkIsSOC = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and Id eq {item.ExpenseTypeId}");
+                            var checkIsSOC = expenseTypeDictionary.GetValueOrDefault((int)item.ExpenseTypeId);
                             var containerExpense = containerTypeOfExpenses.GetValueOrDefault(item.Id);
                             if (checkIsSOC.Name.Contains("BH SOC"))
                             {
@@ -181,14 +182,13 @@ namespace TMS.UI.Business.Manage
                                 CalcInsuranceFees(item, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
                             }
                         }
-                        var rs = await new Client(nameof(Expense)).BulkUpdateAsync(expenses);
-                        if (rs != null)
+                        Toast.Success("Đang áp dụng GTHH này...");
+                        Spinner.AppendTo(this.Element, true, true, 20000);
+                        var res = await new Client(nameof(CommodityValue)).PostAsync<bool>(expenses, "UpdateInsuranceFees");
+                        if (res)
                         {
-                            Toast.Success("Đã áp dụng thành công GTHH");
-                        }
-                        else
-                        {
-                            Toast.Warning("Đã áp dụng thất bại GTHH");
+                            Spinner.Hide();
+                            Toast.Success("Đã áp dụng thành công GTHH này");
                         }
                     };
                     confirm.NoConfirmed += async () =>
