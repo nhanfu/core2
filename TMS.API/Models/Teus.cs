@@ -27,5 +27,6 @@ namespace TMS.API.Models
         public string Note3 { get; set; }
         public string Note4 { get; set; }
         public int? BranchId { get; set; }
+        public int? PortLoadingId { get; set; }
     }
 }
