@@ -20,21 +20,5 @@ namespace TMS.UI.Business.Settings
             quotation.StartDate = QEntity.StartDate;
             quotation.TypeId = QEntity.TypeId;
         }
-
-        public override Task<bool> Save(object entity = null)
-        {
-            Dirty = true;
-            var rs = base.Save(entity);
-            Dispose();
-            return rs;
-        }
-
-        public Task<bool> AddNew()
-        {
-            Dirty = true;
-            QEntity.Id = 0;
-            var rs = base.Save(null);
-            return rs;
-        }
     }
 }
