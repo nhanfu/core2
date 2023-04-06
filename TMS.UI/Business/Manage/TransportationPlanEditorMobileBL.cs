@@ -169,6 +169,7 @@ namespace TMS.UI.Business.Manage
                 if (transportationPlanEntity.JourneyId == null)
                 {
                     this.SetDisabled(true, "CustomerTypeId", "IsWet", "IsBought", "CommodityValue", "IsCompany", "SteamingTerms", "BreakTerms");
+                    this.SetDisabled(false, "JourneyId");
                 }
                 else
                 {
@@ -202,7 +203,8 @@ namespace TMS.UI.Business.Manage
                                            nameof(TransportationPlan.CommodityValue),
                                            nameof(TransportationPlan.IsCompany),
                                            nameof(TransportationPlan.SteamingTerms),
-                                           nameof(TransportationPlan.BreakTerms));
+                                           nameof(TransportationPlan.BreakTerms),
+                                           nameof(TransportationPlan.JourneyId));
         }
 
         private int containerId = 0;
