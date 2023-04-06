@@ -761,6 +761,19 @@ namespace TMS.UI.Business.Manage
             }
         }
 
+        public async Task UpdateDataForInsuranceFees()
+        {
+            var res = await new Client(nameof(Expense)).PostAsync<bool>(null, "UpdateDataForInsuranceFees");
+            if (res)
+            {
+                Toast.Success("Đã cập nhật thành công");
+            }
+            else
+            {
+                Toast.Warning("Cập nhật thất bại");
+            }
+        }
+
         public PatchUpdate GetPatchEntity(Expense expense)
         {
             var details = new List<PatchUpdateDetail>();

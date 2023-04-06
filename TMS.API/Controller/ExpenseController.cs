@@ -4,6 +4,7 @@ using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
+using DocumentFormat.OpenXml.Office.CustomUI;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Linq.Dynamic.Core;
 using System.Reflection;
 using TMS.API.Models;
 
@@ -1046,6 +1048,88 @@ namespace TMS.API.Controllers
             var style = workbook.Worksheets[0].Cells[cell].GetStyle();
             style.HorizontalAlignment = TextAlignmentType.Center;
             workbook.Worksheets[0].Cells[cell].SetStyle(style);
+        }
+
+        [HttpPost("api/Expense/UpdateDataForInsuranceFees")]
+        public async Task<bool> UpdateDataForInsuranceFees([FromBody] Expense expense)
+        {
+            var expenses = await db.Expense.Where(x => (x.ExpenseTypeId == 15981 || x.ExpenseTypeId == 15939) && x.RequestChangeId == null && x.IsPurchasedInsurance == false && x.Active).ToListAsync();
+            var commodityValues = await db.CommodityValue.Where(x => x.Active).OrderBy(x => x.Id).ToListAsync();
+            var containerTypes = await db.MasterData.Where(x => x.ParentId == 7565).ToListAsync();
+            var containerTypeIds = containerTypes.ToDictionary(x => x.Id);
+            var containerCommodityValues = await db.MasterData.Where(x => x.Name.Contains("40HC") || x.Name.Contains("20DC") || x.Name.Contains("45HC") || x.Name.Contains("50DC")).ToListAsync();
+            var commodityValueOfExpenses = new Dictionary<int, CommodityValue>();
+            var transportationTypes = await db.MasterData.Where(x => x.Active && x.ParentId == 11670).ToListAsync();
+            var routes = await db.Route.Where(x => x.Active).ToListAsync();
+            var insuranceFeesRates = await db.InsuranceFeesRate.Where(x => x.Active).ToListAsync();
+            var extraInsuranceFeesRateDB = await db.MasterData.Where(x => x.Active == true && x.ParentId == 25374).ToListAsync();
+            var insuranceFeesRateColdDB = await db.MasterData.Where(x => x.Id == 25391).FirstOrDefaultAsync();
+            foreach (var item in expenses)
+            {
+                MasterData container = null;
+                if (item.ContainerTypeId != null)
+                {
+                    container = containerTypeIds.GetValueOrDefault((int)item.ContainerTypeId);
+                    var containerId = 0;
+                    if (container.Description.Contains("Cont 20"))
+                    {
+                        containerId = containerCommodityValues.Find(x => x.Name.Contains("20DC")).Id;
+                    }
+                    else if (container.Description.Contains("Cont 40"))
+                    {
+                        containerId = containerCommodityValues.Find(x => x.Name.Contains("40HC")).Id;
+                    }
+                    else if (container.Description.Contains("Cont 45"))
+                    {
+                        containerId = containerCommodityValues.Find(x => x.Name.Contains("45HC")).Id;
+                    }
+                    else if (container.Description.Contains("Cont 50"))
+                    {
+                        containerId = containerCommodityValues.Find(x => x.Name.Contains("50DC")).Id;
+                    }
+                    var commodityValue = commodityValues.Where(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == containerId && (x.StartDate >= item.StartShip || item.StartShip == null)).FirstOrDefault();
+                    if (commodityValue != null) { commodityValueOfExpenses.Add(item.Id, commodityValue); }
+                }
+            }
+            foreach (var item in expenses)
+            {
+                var commodityValue = commodityValueOfExpenses.GetValueOrDefault(item.Id);
+                if (item.TransportationTypeId == null)
+                {
+                    var route = routes.Where(x => x.Id == item.RouteId).FirstOrDefault();
+                    if (route.Name.ToLower().Contains("sắt"))
+                    {
+                        item.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Sắt")).FirstOrDefault().Id;
+                    }
+                    else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
+                    {
+                        item.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Bộ")).FirstOrDefault().Id;
+                    }
+                    else
+                    {
+                        item.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Tàu")).FirstOrDefault().Id;
+                    }
+                }
+                if (item.ExpenseTypeId == 15939 && commodityValue != null)
+                {
+                    item.CommodityValue = commodityValue.TotalPrice;
+                    item.BreakTerms = commodityValue.BreakTerms;
+                    item.SteamingTerms = commodityValue.SteamingTerms;
+                    item.IsWet = commodityValue.IsWet;
+                    item.IsBought = commodityValue.IsBought;
+                    item.JourneyId = commodityValue.JourneyId;
+                    item.CustomerTypeId = commodityValue.CustomerTypeId;
+                    item.CommodityValueNotes = commodityValue.Notes;
+                    if (item.JourneyId == null)
+                    {
+                        item.JourneyId = 12114;
+                    }
+                    var containerExpense = containerTypeIds.GetValueOrDefault((int)item.ContainerTypeId);
+                    CalcInsuranceFees(item, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
+                }
+            }
+            await db.SaveChangesAsync();
+            return true;
         }
     }
 }
