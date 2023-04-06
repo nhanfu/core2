@@ -348,7 +348,7 @@ namespace TMS.API.Controllers
             worksheet.Cell("G6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("G6:H7").Column(1).Merge();
 
-            worksheet.Cell("H6").Value = $"Địa điểm nhận hàng";
+            worksheet.Cell("H6").Value = transportation.TypeId == 1 ? $"Địa điểm nhận hàng" : "Địa điểm trả hàng";
             worksheet.Cell("H6").Style.Alignment.WrapText = true;
             worksheet.Cell("H6").Style.Font.Bold = true;
             worksheet.Cell("H6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -517,9 +517,9 @@ namespace TMS.API.Controllers
                     ,IsEmptyLift, IsSeftPayment, IsLanding, IsSeftPaymentLand
                     from Transportation t
                     left join Vendor b on b.Id = t.BossId
-                    left join Location r on r.Id = t.ReceivedId
-                    left join Location pi on pi.Id = t.PickupEmptyId
-                    left join Location po on po.Id = t.PortLoadingId";
+                    left join Location r on r.Id = {(transportation.TypeId == 2 ? "t.ReturnId" : "t.ReceivedId")}
+                    left join Location pi on pi.Id = {(transportation.TypeId == 2 ? "t.PickupEmptyId" : "t.ReturnEmptyId")}
+                    left join Location po on po.Id = {(transportation.TypeId == 2 ? "t.PortLiftId" : "t.PortLoadingId")}";
             if (transportation.Id > 0)
             {
                 sql += $" where t.CheckFeeHistoryId = {transportation.Id}";

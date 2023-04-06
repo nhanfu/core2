@@ -724,23 +724,6 @@ namespace Core.Components
                 UserInput.Invoke(new ObservableArgs { NewData = _value, OldData = oldValue, EvType = EventType.Change });
             }
             DiposeGvWrapper();
-            MoveNextCell();
-        }
-
-        private void MoveNextCell()
-        {
-            if (Parent is ListViewItem parent && parent.GuiInfo.IsRealtime && GuiInfo.FocusSearch)
-            {
-                var headers = parent.ListViewSection.ListView.Header.Where(x => x.Editable).ToList();
-                var currentComponent = headers.FirstOrDefault(x => x.FieldName == GuiInfo.FieldName);
-                var index = headers.IndexOf(currentComponent);
-                if (headers.Count > index + 1)
-                {
-                    var nextGrid = headers[index + 1];
-                    var nextComponent = parent.FilterChildren<EditableComponent>(x => x.GuiInfo.FieldName == nextGrid.FieldName).FirstOrDefault();
-                    nextComponent.Focus();
-                }
-            }
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)

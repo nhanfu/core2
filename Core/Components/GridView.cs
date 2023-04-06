@@ -1877,18 +1877,21 @@ namespace Core.Components
             LastListViewItem = rowSection;
             var headers = Header.Where(y => y.Editable).ToList();
             var currentComponent = headers.FirstOrDefault(y => y.FieldName == component?.GuiInfo.FieldName);
-            if (currentComponent.ComponentType != nameof(SearchEntry))
+            if (currentComponent.ComponentType != nameof(SearchEntry) && currentComponent.ComponentType != "Dropdown")
             {
                 return;
             }
             var index = headers.IndexOf(currentComponent);
-            if (headers.Count > index + 1)
+            Window.SetTimeout(() =>
             {
-                var nextGrid = headers[index + 1];
-                var nextComponent = rowSection.Children.Where(y => y?.GuiInfo.FieldName == nextGrid.FieldName).FirstOrDefault();
-                rowSection.Focused = true;
-                nextComponent.Focus();
-            }
+                if (headers.Count > index + 1)
+                {
+                    var nextGrid = headers[index + 1];
+                    var nextComponent = rowSection.Children.Where(y => y?.GuiInfo.FieldName == nextGrid.FieldName).FirstOrDefault();
+                    rowSection.Focused = true;
+                    nextComponent.Focus();
+                }
+            }, 200);
         }
 
         private void MoveEmptyRow(ListViewItem rowSection)

@@ -64,6 +64,7 @@ namespace TMS.UI
                           }
                         })
                      */
+                    return;
                 }
             }
             var loadEntityTask = Client.LoadEntities();
