@@ -817,7 +817,7 @@ namespace Core.Components
                         value = item[header.FieldName].ToString();
                         valueText = item[header.FieldName].ToString();
                     }
-                    Html.Instance.TRow.Event(EventType.Click, () => FilterSumary(header, value, valueText)).Render();
+                    Html.Instance.TRow.Event(EventType.DblClick, () => FilterSumary(header, value, valueText)).Event(EventType.Click, (e) => FocusCell(e, this.HeaderComponentMap[header.GetHashCode()])).Render();
                     Html.Instance.TData.Style("max-width: 100%;").ClassName(header.ComponentType == nameof(Number) ? "text-right" : "text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
                     Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item["TotalRecord"].ToString()).End.Render();
                     foreach (var itemDetail in gridPolicy)
@@ -857,6 +857,20 @@ namespace Core.Components
                 }
                 */
             });
+        }
+
+        private void FocusCell(Event e, Component header)
+        {
+            var td = e.Target as HTMLElement;
+
+            /*@
+             var $table = $(e.target).closest('table');
+             $table.find("tbody tr").removeClass("focus");
+             $table.find("tbody td").removeClass("cell-selected");
+             */
+
+            td.Closest(ElementType.tr.ToString()).AddClass("focus");
+            td.Closest(ElementType.td.ToString()).AddClass("cell-selected");
         }
 
         public void FilterSumary(GridPolicy gridPolicy, string value, string valueText)
