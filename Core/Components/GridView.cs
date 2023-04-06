@@ -22,6 +22,7 @@ namespace Core.Components
     public class SortedField
     {
         public string Field { get; set; }
+        public GridPolicy Com { get; set; }
         public bool Desc { get; set; }
     }
     public class GridView : ListView
@@ -941,25 +942,48 @@ namespace Core.Components
                 case KeyCodeEnum.F11:
                     Task.Run(async () =>
                     {
+                        var th = HeaderSection.Children.FirstOrDefault(x => x.GuiInfo.Id == com.GuiInfo.Id);
+                        th.Element.RemoveClass("desc");
+                        th.Element.RemoveClass("asc");
                         if (SortedField is null)
                         {
-                            SortedField = new SortedField
+                            SortedField = new List<SortedField>()
                             {
-                                Field = com.GuiInfo.FieldName,
-                                Desc = true
+                                new SortedField
+                                {
+                                    Field = com.GuiInfo.FieldName,
+                                    Desc = true,
+                                    Com = com.GuiInfo.CastProp<GridPolicy>(),
+                                }
                             };
+                            th.Element.AddClass("desc");
                         }
                         else
                         {
-                            SortedField.Desc = !SortedField.Desc;
+                            var check = SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName);
+                            if (check != null)
+                            {
+                                SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName).Desc = !check.Desc;
+                                th.Element.AddClass(!check.Desc ? "asc" : "desc");
+                            }
+                            else
+                            {
+                                th.Element.AddClass("desc");
+                                SortedField.Add(new SortedField
+                                {
+                                    Field = com.GuiInfo.FieldName,
+                                    Com = com.GuiInfo.CastProp<GridPolicy>(),
+                                    Desc = true
+                                });
+                            }
                         }
                         AdvSearchVM.OrderBy.Clear();
-                        AdvSearchVM.OrderBy.Add(new OrderBy
+                        AdvSearchVM.OrderBy.AddRange(SortedField.Select(x => new OrderBy
                         {
-                            Field = com.GuiInfo.CastProp<GridPolicy>(),
-                            FieldId = com.GuiInfo.Id,
-                            OrderbyOptionId = SortedField.Desc ? OrderbyOption.DESC : OrderbyOption.ASC
-                        });
+                            Field = x.Com,
+                            FieldId = x.Com.Id,
+                            OrderbyOptionId = x.Desc ? OrderbyOption.DESC : OrderbyOption.ASC
+                        }).ToList());
                         await ActionFilter();
                     });
                     break;

@@ -270,6 +270,24 @@ namespace Core.Components.Forms
             return res;
         }
 
+        public virtual Task<bool> AddNew(object entity = null)
+        {
+            Dirty = true;
+            Entity.SetPropValue(IdField, 0);
+            var dirtyGrid = ListViews
+                .Where(x => x.GuiInfo.IdField.HasAnyChar() && x.GuiInfo.CanAdd)
+                .ToArray();
+            dirtyGrid.ForEach(x =>
+            {
+                x.RowData.Data.ForEach(row =>
+                {
+                    row.SetPropValue(x.GuiInfo.IdField, null);
+                    row.SetPropValue(IdField, 0);
+                });
+            });
+            return Save(null);
+        }
+
         private void UpdateViewForm()
         {
             var parentForm = ParentForm ?? (this is TabEditor tab && tab.Popup ? tab.Parent : null);

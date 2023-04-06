@@ -281,3 +281,11 @@
     color: #fff;
     cursor: pointer;
 }
+
+th.desc::after {
+    content: " ▼";
+}
+
+th.asc::after {
+    content: " ▲";
+}

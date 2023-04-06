@@ -382,6 +382,8 @@ namespace TMS.UI.Business.Manage
                     instance.Entity = new CheckFeeHistory()
                     {
                         RouteIds = routeIds,
+                        FromDate = LocalStorage.GetItem<string>("FromDateCheckFeeClosing") is null ? default(DateTime) : DateTime.Parse(LocalStorage.GetItem<string>("FromDateCheckFeeClosing")),
+                        ToDate = LocalStorage.GetItem<string>("ToDateCheckFeeClosing") is null ? default(DateTime) : DateTime.Parse(LocalStorage.GetItem<string>("ToDateCheckFeeClosing")),
                         TypeId = 2,
                     };
                     return instance;

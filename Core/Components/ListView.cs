@@ -43,7 +43,7 @@ namespace Core.Components
         public HTMLElement LastElementFocus { get; set; }
         public ListViewSearch ListViewSearch { get; set; }
         public Paginator Paginator { get; set; }
-        public SortedField SortedField { get; set; }
+        public List<SortedField> SortedField { get; set; }
         public List<GridPolicy> Header { get; set; }
         public List<GridPolicy> BasicHeader { get; set; }
         public List<GridPolicy> BasicHeaderSearch { get; set; }
@@ -1034,6 +1034,10 @@ namespace Core.Components
                     base.Dirty = false;
                     ClearSelected();
                 }
+                else
+                {
+                    Toast.Success("Sao chép dữ liệu thành công !");
+                }
             }));
         }
 
@@ -1064,6 +1068,10 @@ namespace Core.Components
                     Toast.Success("Sao chép dữ liệu thành công !");
                     base.Dirty = false;
                     ClearSelected();
+                }
+                else
+                {
+                    Toast.Success("Sao chép dữ liệu thành công !");
                 }
             });
         }
