@@ -188,10 +188,7 @@ namespace TMS.API.Controllers
             {
                 throw new ArgumentNullException(nameof(query));
             }
-            if (noTracking)
-            {
-                query = query.AsNoTracking();
-            }
+            query = query.AsNoTracking();
             var shouldCount = options.Count != null;
             var (skip, top) = (options.Skip, options.Top);
             if (options.Skip != null)
@@ -212,7 +209,7 @@ namespace TMS.API.Controllers
                 options.SetReadonlyPropValue(nameof(options.Top), top);
             }
             var limitResult = options.ApplyTo(query);
-            var result = new OdataResult<K>();
+            OdataResult<K> result;
             if (options.SelectExpand is null)
             {
                 var limitedQuery = limitResult as IQueryable<K>;
@@ -223,9 +220,6 @@ namespace TMS.API.Controllers
                     Sql = sql,
                     value = options.Top == null && !shouldCount || top != null && top.Value > 0 ? resultSet : null
                 };
-#if DEBUG
-                result.Query = limitResult.ToQueryString();
-#endif
                 return result;
             }
             result = new OdataResult<K>
@@ -234,9 +228,6 @@ namespace TMS.API.Controllers
                 Sql = sql,
                 value = options.Top == null && !shouldCount || top != null && top.Value > 0 ? limitResult : null
             };
-#if DEBUG
-            result.Query = limitResult.ToQueryString();
-#endif
             return result;
         }
 
