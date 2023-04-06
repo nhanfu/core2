@@ -296,7 +296,7 @@ namespace TMS.UI.Business.Manage
             var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
             var containerTypes = new List<int>(await CheckContainerTypes(selected));
             var transportationTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 11670");
-            var routes = await new Client(nameof(Route)).GetRawList<Route>($"?$filter=Active eq true and Id in {selected.Select(x => x.RouteId).ToList().Combine()}");
+            var routes = await new Client(nameof(Route)).GetRawList<Route>($"?$filter=Active eq true and Id in ({selected.Select(x => x.RouteId).ToList().Combine()})");
             foreach (var item in selected)
             {
                 if (item.TransportationTypeId == null && item.RouteId != null)
@@ -314,12 +314,12 @@ namespace TMS.UI.Business.Manage
                     {
                         item.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Tàu")).FirstOrDefault().Id;
                     }
-                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityTransportationType(item));
+                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityTransportationType(item), ig: $"&disableTrigger=true");
                 }
                 if (item.JourneyId == null)
                 {
                     item.JourneyId = 12114;
-                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityJourneyId(item));
+                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityJourneyId(item), ig: $"&disableTrigger=true");
                 }
                 var expense = new Expense();
                 expense.CopyPropFrom(item);
