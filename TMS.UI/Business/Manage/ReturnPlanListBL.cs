@@ -1,5 +1,4 @@
-﻿using Bridge.Html5;
-using Bridge.Utils;
+﻿using Bridge.Utils;
 using Core.Clients;
 using Core.Components;
 using Core.Components.Extensions;
@@ -178,8 +177,8 @@ namespace TMS.UI.Business.Manage
                     Text = "Ghi chú",
                     MenuItems = new List<ContextMenuItem>
                     {
-                        new ContextMenuItem { Text = "Yêu cầu trả vỏ", Click = NoteFreeText8,Parameter= gridView.GetItemFocus() },
-                        new ContextMenuItem { Text = "Yêu cầu chụp hình", Click = NoteFreeText9, Parameter= gridView.GetItemFocus() },
+                        new ContextMenuItem { Text = "Yêu cầu trả vỏ", Click = NoteFreeText8, Parameter = gridView.GetItemFocus() },
+                        new ContextMenuItem { Text = "Yêu cầu chụp hình", Click = NoteFreeText9, Parameter = gridView.GetItemFocus() },
                     }
                 });
                 menus.Add(new ContextMenuItem
@@ -210,25 +209,18 @@ namespace TMS.UI.Business.Manage
 
         private void NoteFreeText8(object arg)
         {
-            var transportation = arg as ListViewItem;
-            var confirmRequest = new ConfirmDialog
+            Task.Run(async () =>
             {
-                NeedAnswer = true,
-                ComType = nameof(Textbox),
-                Content = $"Nhập yêu cầu trả vỏ",
-            };
-            confirmRequest.Render();
-            confirmRequest.YesConfirmed += async () =>
-            {
-                var value = confirmRequest.Textbox?.Text;
+                var transportation = arg as ListViewItem;
+                var value = transportation.Entity[nameof(Transportation.FreeText8)] is null ? "Yêu cầu trả vỏ" : null;
                 var path = new PatchUpdate
                 {
                     Changes = new List<PatchUpdateDetail>()
                     {
                         new PatchUpdateDetail()
                         {
-                            Field=IdField,
-                            Value=transportation.Entity[IdField].ToString()
+                            Field = IdField,
+                            Value = transportation.Entity[IdField].ToString()
                         },
                         new PatchUpdateDetail()
                         {
@@ -240,23 +232,22 @@ namespace TMS.UI.Business.Manage
                 var rs = await new Client(nameof(Transportation)).PatchAsync<Transportation>(path, ig: $"&disableTrigger=true");
                 transportation.Entity.CopyPropFrom(rs);
                 transportation.UpdateView(true);
-            };
-            confirmRequest.Textbox.Text = transportation.Entity[nameof(Transportation.FreeText8)] is null ? null : transportation.Entity[nameof(Transportation.FreeText8)].ToString();
+                var containerCom = transportation.FilterChildren<EditableComponent>(y => y.GuiInfo.FieldName == nameof(Transportation.ContainerNo)).FirstOrDefault();
+                var td = containerCom.Element.Closest("td");
+                td.Style.BackgroundColor = "";
+                if (value != null)
+                {
+                    td.Style.BackgroundColor = "#ffeb3b";
+                }
+            });
         }
 
         private void NoteFreeText9(object arg)
         {
-            var transportation = arg as ListViewItem;
-            var confirmRequest = new ConfirmDialog
+            Task.Run(async () =>
             {
-                NeedAnswer = true,
-                ComType = nameof(Textbox),
-                Content = $"Nhập yêu cầu chụp hình",
-            };
-            confirmRequest.Render();
-            confirmRequest.YesConfirmed += async () =>
-            {
-                var value = confirmRequest.Textbox?.Text;
+                var transportation = arg as ListViewItem;
+                var value = transportation.Entity[nameof(Transportation.FreeText9)] is null ? "Yêu cầu chụp hình" : null;
                 var path = new PatchUpdate
                 {
                     Changes = new List<PatchUpdateDetail>()
@@ -276,8 +267,14 @@ namespace TMS.UI.Business.Manage
                 var rs = await new Client(nameof(Transportation)).PatchAsync<Transportation>(path, ig: $"&disableTrigger=true");
                 transportation.Entity.CopyPropFrom(rs);
                 transportation.UpdateView(true);
-            };
-            confirmRequest.Textbox.Text = transportation.Entity[nameof(Transportation.FreeText9)] is null ? null : transportation.Entity[nameof(Transportation.FreeText9)].ToString();
+                var containerCom = transportation.FilterChildren<EditableComponent>(y => y.GuiInfo.FieldName == nameof(Transportation.ContainerNo)).FirstOrDefault();
+                var td = containerCom.Element.Closest("td");
+                td.Style.BackgroundColor = "";
+                if (value != null)
+                {
+                    td.Style.BackgroundColor = "#e9a38a";
+                }
+            });
         }
 
         public void ChangeBackgroudColorReturn(List<Transportation> listViewItems)
@@ -287,9 +284,9 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-            listViewItems.ForEach(x =>
+            foreach (var item in listViewItems)
             {
-                var listViewItem = gridView.AllListViewItem.FirstOrDefault(y => y.Entity[IdField].ToString() == x.Id.ToString());
+                var listViewItem = gridView.AllListViewItem.FirstOrDefault(y => y.Entity[IdField].ToString() == item.Id.ToString());
                 if (listViewItem is null)
                 {
                     return;
@@ -297,17 +294,21 @@ namespace TMS.UI.Business.Manage
                 listViewItem.Element.RemoveClass("bg-red1");
                 var containerCom = listViewItem.FilterChildren<EditableComponent>(y => y.GuiInfo.FieldName == nameof(Transportation.ContainerNo)).FirstOrDefault();
                 var td = containerCom.Element.Closest("td");
-                td.Style.Border = string.Empty;
-                if (x.DemDate != null && x.ReturnDate != null && Convert.ToDateTime(x.ReturnDate.Value).Date > Convert.ToDateTime(x.DemDate.Value).Date)
+                td.Style.BackgroundColor = string.Empty;
+                if (item.DemDate != null && item.ReturnDate != null && Convert.ToDateTime(item.ReturnDate.Value).Date > Convert.ToDateTime(item.DemDate.Value).Date)
                 {
                     listViewItem.Element.AddClass("bg-red1");
                 }
-                if (!x.FreeText8.IsNullOrWhiteSpace() || !x.FreeText9.IsNullOrWhiteSpace())
+                if (!item.FreeText8.IsNullOrWhiteSpace())
                 {
-                    td.Style.Border = "1px solid #ffeb3b";
-                    containerCom.Element.SetAttribute("title", $"Nhập yêu cầu trả vỏ: {x.FreeText8} \n Nhập yêu cầu chụp hình: {x.FreeText9}");
+                    System.Console.WriteLine(item.FreeText8);
+                    td.Style.BackgroundColor = "#ffeb3b";
                 }
-            });
+                if (!item.FreeText9.IsNullOrWhiteSpace())
+                {
+                    td.Style.BackgroundColor = "#e9a38a";
+                }
+            }
         }
 
         public void AfterPatchUpdateTransportationReturn(Transportation transportation, PatchUpdate patchUpdate, ListViewItem listViewItem)

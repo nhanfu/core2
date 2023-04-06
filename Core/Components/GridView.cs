@@ -1078,6 +1078,10 @@ namespace Core.Components
                     break;
                 case KeyCodeEnum.DownArrow:
                     var currentItemDown = GetItemFocus();
+                    if (currentItemDown is null)
+                    {
+                        return;
+                    }
                     var upItemDown = AllListViewItem.Where(x => !x.GroupRow).FirstOrDefault(x => x.RowNo == (currentItemDown.RowNo + 1));
                     if (upItemDown is null)
                     {

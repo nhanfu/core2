@@ -995,7 +995,7 @@ td {
 }
 .table-wrapper tbody tr.__selected__,
 .table-wrapper tbody tr.__selected__ > td {
-  background-color: #c9bdd885 !important;
+  background-color: #c9bdd885;
   color: black;
 }
 .table-wrapper tbody tr.new-row,
@@ -1004,7 +1004,7 @@ td {
   color: black;
 }
 .table-wrapper tbody tr.__selected__ > .cell-selected {
-  background-color: #c2aedb !important;
+  background-color: #c2aedb;
 }
 .table-wrapper tbody tr.__selected__ .status-cell {
   background-color: #c9bdd885 !important;
@@ -1026,7 +1026,7 @@ td {
   background-color: #66ff663b;
 }
 .table-wrapper tbody tr.focus td.cell-selected {
-  background-color: #66ff66 !important;
+  background-color: #66ff66;
 }
 .table-wrapper tbody .summary-header {
   text-align: right !important;
@@ -1396,7 +1396,6 @@ form span.icon {
   border: solid 1px rgba(255, 255, 255, 0.1) !important;
 }
 .theme-2 .grid-wrapper tbody > tr .__selected__ > td {
-  background: !important;
   color: #000 !important;
 }
 .theme-2 .grid-wrapper tbody > tr .__selected__ > td .btn {
@@ -1404,7 +1403,7 @@ form span.icon {
 }
 .theme-2 .grid-wrapper tbody > tr.__selected__,
 .theme-2 .grid-wrapper tbody > tr.__selected__ > td {
-  background-color: #18191A !important;
+  background-color: #18191A;
   color: black;
 }
 .theme-2 .grid-wrapper tbody > tr > td {
