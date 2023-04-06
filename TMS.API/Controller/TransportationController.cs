@@ -1502,7 +1502,7 @@ namespace TMS.API.Controllers
             }
             else if (RoleIds.Contains(32))
             {
-                sql += @$" and Active eq true";
+                sql += @$" and Active = 1";
             }
             else if (RoleIds.Contains(25) || RoleIds.Contains(27) || RoleIds.Contains(22))
             {
