@@ -492,9 +492,10 @@ namespace TMS.API.Controllers
             worksheet.Cell("U7").Style.Font.Bold = true;
             worksheet.Cell("U7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("U7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-
-            var sql = @$"select ClosingDate, ClosingDateCheck, ClosingDateUpload
-                    ,ClosingDate, ClosingDateCheck, ClosingDateUpload
+            var sql = string.Empty;
+            if (Type == 1)
+            {
+                sql += @$"select ClosingDate, ClosingDateCheck, ClosingDateUpload
                     ,b.Name as Boss, BossCheck, BossCheckUpload
                     ,ContainerNo, ContainerNoCheck, ContainerNoUpload
                     ,SealNo, SealCheck, SealCheckUpload
@@ -503,8 +504,8 @@ namespace TMS.API.Controllers
                     ,r.Description as Received, ReceivedCheck, ReceivedCheckUpload
                     ,CollectOnBehaftInvoinceNoFee as CollectOnBehaftInvoinceNoFee, CollectOnBehaftInvoinceNoFeeCheck, CollectOnBehaftInvoinceNoFeeUpload
                     ,CollectOnBehaftFee as CollectOnBehaftFee, CollectOnBehaftFeeCheck, CollectOnBehaftFeeUpload,TotalPriceAfterTaxUpload
-                    ,pi.Description as PickupEmpty, PickupEmptyCheck, PickupEmptyUpload
-                    ,po.Description as PortLoading, PortLoadingCheck, PortLoadingUpload
+                    ,pi.Name as PickupEmpty, PickupEmptyCheck, PickupEmptyUpload
+                    ,po.Name as PortLoading, PortLoadingCheck, PortLoadingUpload
                     ,LiftFee as LiftFee, LiftFeeCheck, LiftFeeCheckUpload
                     ,LandingFee as LandingFee, LandingFeeCheck, LandingFeeUpload
                     ,CollectOnSupPrice as CollectOnSupPrice, CollectOnSupPriceCheck, CollectOnSupPriceUpload
@@ -520,15 +521,52 @@ namespace TMS.API.Controllers
                     left join Location r on r.Id = {(transportation.TypeId == 2 ? "t.ReturnId" : "t.ReceivedId")}
                     left join Location pi on pi.Id = {(transportation.TypeId == 2 ? "t.PickupEmptyId" : "t.ReturnEmptyId")}
                     left join Location po on po.Id = {(transportation.TypeId == 2 ? "t.PortLiftId" : "t.PortLoadingId")}";
-            if (transportation.Id > 0)
-            {
-                sql += $" where t.CheckFeeHistoryId = {transportation.Id}";
             }
             else
             {
-                if (Type == 1)
+                sql += @$"select ClosingDateReturn as ClosingDate, ClosingDateReturnCheck as ClosingDateCheck, ClosingDateReturnUpload as ClosingDateUpload
+                    ,b.Name as Boss, BossCheck, BossCheckUpload
+                    ,ContainerNo, ContainerNoCheck, ContainerNoUpload
+                    ,SealNo, SealCheck, SealCheckUpload
+                    ,Cont20 as Cont20, Cont20Check, Cont20CheckUpload
+                    ,Cont40 as Cont40, Cont40Check, Cont40CheckUpload
+                    ,r.Description as Received, ReceivedCheck, ReceivedCheckUpload
+                    ,CollectOnBehaftInvoinceNoFeeReturn as CollectOnBehaftInvoinceNoFee, CollectOnBehaftInvoinceNoFeeReturnCheck, CollectOnBehaftInvoinceNoFeeReturnUpload
+                    ,CollectOnBehaftFee as CollectOnBehaftFee, CollectOnBehaftFeeCheck, CollectOnBehaftFeeUpload,TotalPriceAfterTaxUpload
+                    ,pi.Name as PickupEmpty, PickupEmptyCheck, PickupEmptyUpload
+                    ,po.Name as PortLoading, PortLoadingCheck, PortLoadingUpload
+                    ,LiftFee as LiftFee, LiftFeeCheck, LiftFeeCheckUpload
+                    ,LandingFee as LandingFee, LandingFeeCheck, LandingFeeUpload
+                    ,CollectOnSupPrice as CollectOnSupPrice, CollectOnSupPriceCheck, CollectOnSupPriceUpload
+                    ,ClosingPercent as ClosingPercent, ClosingPercentCheck, ClosingPercentUpload
+                    ,Fee1, Fee2, Fee3,Fee4, Fee5, Fee6
+                    ,Fee1Upload, Fee2Upload, Fee3Upload,Fee4Upload, Fee5Upload, Fee6Upload
+                    ,FeeVat1,FeeVat2,FeeVat3
+                    ,FeeVat1Upload,FeeVat1Upload,FeeVat1Upload
+                    ,ClosingCombinationUnitPrice as ClosingCombinationUnitPrice, ClosingCombinationUnitPriceCheck, ClosingCombinationUnitPriceUpload
+                    ,IsEmptyLift, IsSeftPayment, IsLanding, IsSeftPaymentLand
+                    from Transportation t
+                    left join Vendor b on b.Id = t.BossId
+                    left join Location r on r.Id = {(transportation.TypeId == 2 ? "t.ReturnId" : "t.ReceivedId")}
+                    left join Location pi on pi.Id = {(transportation.TypeId == 2 ? "t.PickupEmptyId" : "t.ReturnEmptyId")}
+                    left join Location po on po.Id = {(transportation.TypeId == 2 ? "t.PortLiftId" : "t.PortLoadingId")}";
+            }
+            if (Type == 1)
+            {
+                if (transportation.Id > 0)
+                {
+                    sql += $" where t.CheckFeeHistoryId = {transportation.Id}";
+                }
+                else
                 {
                     sql += $" where t.ClosingDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})";
+                }
+            }
+            else
+            {
+                if (transportation.Id > 0)
+                {
+                    sql += $" where t.CheckFeeHistoryId = {transportation.Id}";
                 }
                 else
                 {
@@ -597,6 +635,8 @@ namespace TMS.API.Controllers
 
                 var closingPercent = item["ClosingPercent"] is null ? "0" : item["ClosingPercent"].ToString();
                 var closingPercentUpload = item["ClosingPercentUpload"] is null ? "0" : item["ClosingPercentUpload"].ToString();
+                worksheet.Cell("V" + start).SetValue(item["CollectOnSupPrice"] is null ? default(decimal) : decimal.Parse(item["CollectOnSupPrice"].ToString()));
+                worksheet.Cell("V" + start).Style.NumberFormat.Format = "#,##";
                 if (closingPercent != closingPercentUpload)
                 {
                     worksheet.Cell("W" + start).SetValue(decimal.Parse(closingPercent));
