@@ -111,11 +111,7 @@ namespace TMS.UI.Business
                         {
                             return;
                         }
-                        var entity = await new Client(currentFeature.Entity.Name).GetAsync<object>(int.Parse(id), refname: currentFeature.Entity.Name);
-                        if (entity is null)
-                        {
-                            entity = new object();
-                        }
+                        var entity = new object();
                         await this.OpenTab(
                             id: currentFeature.Name + id,
                             featureName: currentFeature.Name,

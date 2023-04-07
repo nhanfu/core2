@@ -517,13 +517,13 @@ namespace Core.Clients
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0034:Simplify 'default' expression", Justification = "<Pending>")]
-        public async Task<T> GetAsync<T>(int? id, string refname = null)
+        public async Task<T> GetAsync<T>(int? id)
         {
             if (id is null || id <= 0)
             {
                 return default(T);
             }
-            EntityName = refname ?? typeof(T).Name;
+            EntityName = typeof(T).Name;
             var odata = await SubmitAsync<OdataResult<T>>(new XHRWrapper
             {
                 Url = $"/Public/?ids={id}",
