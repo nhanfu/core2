@@ -621,158 +621,201 @@ namespace TMS.API.Controllers
             worksheet.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("A1:B2").Column(1).Merge();
-            worksheet.Cell("B1").Value = $"Đã chốt";
+            worksheet.Cell("B1").Value = $"BH cập nhật";
             worksheet.Cell("B1").Style.Alignment.WrapText = true;
             worksheet.Cell("B1").Style.Font.Bold = true;
             worksheet.Cell("B1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("B1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("B1:C2").Column(1).Merge();
-            worksheet.Cell("C1").Value = $"Đã mua BH";
+            worksheet.Cell("C1").Value = $"Đã chốt";
             worksheet.Cell("C1").Style.Alignment.WrapText = true;
             worksheet.Cell("C1").Style.Font.Bold = true;
             worksheet.Cell("C1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("C1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("C1:D2").Column(1).Merge();
-            worksheet.Cell("D1").Value = $"Ngày mua BH";
+            worksheet.Cell("D1").Value = $"Đã mua BH";
             worksheet.Cell("D1").Style.Alignment.WrapText = true;
             worksheet.Cell("D1").Style.Font.Bold = true;
             worksheet.Cell("D1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("D1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("D1:E2").Column(1).Merge();
-            worksheet.Cell("E1").Value = $"Loại vận chuyển";
+            worksheet.Cell("E1").Value = $"Ngày mua BH";
             worksheet.Cell("E1").Style.Alignment.WrapText = true;
             worksheet.Cell("E1").Style.Font.Bold = true;
             worksheet.Cell("E1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("E1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("E1:F2").Column(1).Merge();
-            worksheet.Cell("F1").Value = $"Hành trình BH";
+            worksheet.Cell("F1").Value = $"Loại vận chuyển";
             worksheet.Cell("F1").Style.Alignment.WrapText = true;
             worksheet.Cell("F1").Style.Font.Bold = true;
             worksheet.Cell("F1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("F1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("F1:G2").Column(1).Merge();
-            worksheet.Cell("G1").Value = $"Tuyến vận chuyển";
+            worksheet.Cell("G1").Value = $"Hành trình BH";
             worksheet.Cell("G1").Style.Alignment.WrapText = true;
             worksheet.Cell("G1").Style.Font.Bold = true;
             worksheet.Cell("G1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("G1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("G1:H2").Column(1).Merge();
-            worksheet.Cell("H1").Value = $"Tên tàu";
+            worksheet.Cell("H1").Value = $"Tuyến vận chuyển";
             worksheet.Cell("H1").Style.Alignment.WrapText = true;
             worksheet.Cell("H1").Style.Font.Bold = true;
             worksheet.Cell("H1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("H1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("H1:I2").Column(1).Merge();
-            worksheet.Cell("I1").Value = $"Ngày đóng hàng/Ngày tàu chạy";
+            worksheet.Cell("I1").Value = $"Tên tàu";
             worksheet.Cell("I1").Style.Alignment.WrapText = true;
             worksheet.Cell("I1").Style.Font.Bold = true;
             worksheet.Cell("I1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("I1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("I1:J2").Column(1).Merge();
-            worksheet.Cell("J1").Value = $"Chủ hàng";
+            worksheet.Cell("J1").Value = $"Ngày đóng hàng/Ngày tàu chạy";
             worksheet.Cell("J1").Style.Alignment.WrapText = true;
             worksheet.Cell("J1").Style.Font.Bold = true;
             worksheet.Cell("J1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("J1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("J1:K2").Column(1).Merge();
-            worksheet.Cell("K1").Value = $"Vật tư hàng hóa";
+            worksheet.Cell("K1").Value = $"Địa điểm nhận hàng";
             worksheet.Cell("K1").Style.Alignment.WrapText = true;
             worksheet.Cell("K1").Style.Font.Bold = true;
             worksheet.Cell("K1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("K1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("K1:L2").Column(1).Merge();
-            worksheet.Cell("L1").Value = $"Loại container";
+            worksheet.Cell("L1").Value = $"Chủ hàng";
             worksheet.Cell("L1").Style.Alignment.WrapText = true;
             worksheet.Cell("L1").Style.Font.Bold = true;
             worksheet.Cell("L1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("L1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("L1:M2").Column(1).Merge();
-            worksheet.Cell("M1").Value = $"Số chuyến";
+            worksheet.Cell("M1").Value = $"Nhân viên bán hàng";
             worksheet.Cell("M1").Style.Alignment.WrapText = true;
             worksheet.Cell("M1").Style.Font.Bold = true;
             worksheet.Cell("M1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("M1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("M1:N2").Column(1).Merge();
-            worksheet.Cell("N1").Value = $"Số cont";
+            worksheet.Cell("N1").Value = $"Vật tư hàng hóa";
             worksheet.Cell("N1").Style.Alignment.WrapText = true;
             worksheet.Cell("N1").Style.Font.Bold = true;
             worksheet.Cell("N1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("N1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("N1:O2").Column(1).Merge();
-            worksheet.Cell("O1").Value = $"Số seal";
+            worksheet.Cell("O1").Value = $"Loại container";
             worksheet.Cell("O1").Style.Alignment.WrapText = true;
             worksheet.Cell("O1").Style.Font.Bold = true;
             worksheet.Cell("O1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("O1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("O1:P2").Column(1).Merge();
-            worksheet.Cell("P1").Value = $"GTHH";
+            worksheet.Cell("P1").Value = $"Số chuyến";
             worksheet.Cell("P1").Style.Alignment.WrapText = true;
             worksheet.Cell("P1").Style.Font.Bold = true;
             worksheet.Cell("P1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("P1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("P1:Q2").Column(1).Merge();
-            worksheet.Cell("Q1").Value = $"Ghi chú GTHH";
+            worksheet.Cell("Q1").Value = $"Số cont";
             worksheet.Cell("Q1").Style.Alignment.WrapText = true;
             worksheet.Cell("Q1").Style.Font.Bold = true;
             worksheet.Cell("Q1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("Q1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("Q1:R2").Column(1).Merge();
-            worksheet.Cell("R1").Value = $"Mua hộ BH";
+            worksheet.Cell("R1").Value = $"Số seal";
             worksheet.Cell("R1").Style.Alignment.WrapText = true;
             worksheet.Cell("R1").Style.Font.Bold = true;
             worksheet.Cell("R1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("R1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("R1:S2").Column(1).Merge();
-            worksheet.Cell("S1").Value = $"BH ướt";
+            worksheet.Cell("S1").Value = $"Cont20";
             worksheet.Cell("S1").Style.Alignment.WrapText = true;
             worksheet.Cell("S1").Style.Font.Bold = true;
             worksheet.Cell("S1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("S1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("S1:T2").Column(1).Merge();
-            worksheet.Cell("T1").Value = $"Tỷ lệ phí";
+            worksheet.Cell("T1").Value = $"Cont40";
             worksheet.Cell("T1").Style.Alignment.WrapText = true;
             worksheet.Cell("T1").Style.Font.Bold = true;
             worksheet.Cell("T1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("T1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("T1:U2").Column(1).Merge();
-            worksheet.Cell("U1").Value = $"Phí bảo hiểm (Chưa VAT)";
+            worksheet.Cell("U1").Value = $"GTHH";
             worksheet.Cell("U1").Style.Alignment.WrapText = true;
             worksheet.Cell("U1").Style.Font.Bold = true;
             worksheet.Cell("U1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("U1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("U1:V2").Column(1).Merge();
-            worksheet.Cell("V1").Value = $"VAT";
+            worksheet.Cell("V1").Value = $"Ghi chú GTHH";
             worksheet.Cell("V1").Style.Alignment.WrapText = true;
             worksheet.Cell("V1").Style.Font.Bold = true;
             worksheet.Cell("V1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("V1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("V1:W2").Column(1).Merge();
-            worksheet.Cell("W1").Value = $"Phí bảo hiểm";
+            worksheet.Cell("W1").Value = $"Mua hộ BH";
             worksheet.Cell("W1").Style.Alignment.WrapText = true;
             worksheet.Cell("W1").Style.Font.Bold = true;
             worksheet.Cell("W1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("W1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("W1:X2").Column(1).Merge();
-            worksheet.Cell("X1").Value = $"Yêu cầu chứng thư";
+            worksheet.Cell("X1").Value = $"BH ướt";
             worksheet.Cell("X1").Style.Alignment.WrapText = true;
             worksheet.Cell("X1").Style.Font.Bold = true;
             worksheet.Cell("X1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("X1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("X1:Y2").Column(1).Merge();
-            worksheet.Cell("Y1").Value = $"Ghi chú cont hàng";
+            worksheet.Cell("Y1").Value = $"Hấp hơi";
             worksheet.Cell("Y1").Style.Alignment.WrapText = true;
             worksheet.Cell("Y1").Style.Font.Bold = true;
             worksheet.Cell("Y1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("Y1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("Y1:Z2").Column(1).Merge();
-            worksheet.Cell("Z1").Value = $"Ghi chú phí BH";
+            worksheet.Cell("Z1").Value = $"Bể vỡ";
             worksheet.Cell("Z1").Style.Alignment.WrapText = true;
             worksheet.Cell("Z1").Style.Font.Bold = true;
             worksheet.Cell("Z1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("Z1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("Z1:AA2").Column(1).Merge();
+            worksheet.Cell("AA1").Value = $"Tỷ lệ phí";
+            worksheet.Cell("AA1").Style.Alignment.WrapText = true;
+            worksheet.Cell("AA1").Style.Font.Bold = true;
+            worksheet.Cell("AA1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("AA1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("AA1:AB2").Column(1).Merge();
+            worksheet.Cell("AB1").Value = $"Phí bảo hiểm (Chưa VAT)";
+            worksheet.Cell("AB1").Style.Alignment.WrapText = true;
+            worksheet.Cell("AB1").Style.Font.Bold = true;
+            worksheet.Cell("AB1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("AB1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("AB1:AC2").Column(1).Merge();
+            worksheet.Cell("AC1").Value = $"VAT";
+            worksheet.Cell("AC1").Style.Alignment.WrapText = true;
+            worksheet.Cell("AC1").Style.Font.Bold = true;
+            worksheet.Cell("AC1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("AC1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("AC1:AD2").Column(1).Merge();
+            worksheet.Cell("AD1").Value = $"Phí bảo hiểm";
+            worksheet.Cell("AD1").Style.Alignment.WrapText = true;
+            worksheet.Cell("AD1").Style.Font.Bold = true;
+            worksheet.Cell("AD1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("AD1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("AD1:AE2").Column(1).Merge();
+            worksheet.Cell("AE1").Value = $"Yêu cầu chứng thư";
+            worksheet.Cell("AE1").Style.Alignment.WrapText = true;
+            worksheet.Cell("AE1").Style.Font.Bold = true;
+            worksheet.Cell("AE1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("AE1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("AE1:AF2").Column(1).Merge();
+            worksheet.Cell("AF1").Value = $"Ghi chú cont hàng";
+            worksheet.Cell("AF1").Style.Alignment.WrapText = true;
+            worksheet.Cell("AF1").Style.Font.Bold = true;
+            worksheet.Cell("AF1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("AF1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("AF1:AG2").Column(1).Merge();
+            worksheet.Cell("AG1").Value = $"Ghi chú phí BH";
+            worksheet.Cell("AG1").Style.Alignment.WrapText = true;
+            worksheet.Cell("AG1").Style.Font.Bold = true;
+            worksheet.Cell("AG1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("AG1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("AG1:AH2").Column(1).Merge();
             var ids = expenses.Select(x => x.Id).ToList();
             var sql = @$"select e.Id,
+            e.IsApproveChange,
             e.IsClosing,
             e.IsPurchasedInsurance,
             e.DatePurchasedInsurance,
@@ -781,16 +824,22 @@ namespace TMS.API.Controllers
             r.Name as Route,
             s.Name as Ship,
             e.StartShip,
+            l.Description as Received,
             v1.Name as Boss,
+            u.FullName as Sale,
             m3.Description as Commodity,
             m4.Description as ContainerType,
             e.Trip,
             e.ContainerNo,
             e.SealNo,
+            e.Cont20,
+            e.Cont40,
             e.CommodityValue,
             e.CommodityValueNotes,
             e.IsBought,
             e.IsWet,
+            e.SteamingTerms,
+            e.BreakTerms,
             e.InsuranceFeeRate,
             e.TotalPriceBeforeTax,
             e.Vat,
@@ -807,7 +856,9 @@ namespace TMS.API.Controllers
             left join MasterData m3 on e.CommodityId = m3.Id
             left join MasterData m4 on e.ContainerTypeId = m4.Id
             left join MasterData m5 on e.CustomerTypeId = m5.Id
-            where e.Id in ({ids.Combine()})";
+            left join [User] u on e.SaleId = u.Id
+            left join Location l on e.ReceivedId = l.Id
+            where e.Id in ({ids.Combine()}) order by e.Id desc";
             var data = await ConverSqlToDataSet(sql);
             var start = 3;
             var expensePurchasedIds = expenses.Where(x => x.IsPurchasedInsurance).Select(x => x.Id).ToList();
@@ -815,35 +866,42 @@ namespace TMS.API.Controllers
             foreach (var item in data[0])
             {
                 worksheet.Cell("A" + start).SetValue(start - 2);
-                worksheet.Cell("B" + start).SetValue(item["IsClosing"].ToString().Contains("False") ? "Không" : "Có");
-                worksheet.Cell("C" + start).SetValue(item["IsPurchasedInsurance"].ToString().Contains("False") ? "Không" : "Có");
-                worksheet.Cell("D" + start).SetValue(item["DatePurchasedInsurance"] is null ? "" : DateTime.Parse(item[nameof(Expense.DatePurchasedInsurance)].ToString()));
-                worksheet.Cell("E" + start).SetValue(item["TransportationType"] is null ? "" : item["TransportationType"].ToString());
-                worksheet.Cell("F" + start).SetValue(item["Journey"] is null ? "" : item["Journey"].ToString());
-                worksheet.Cell("G" + start).SetValue(item["Route"] is null ? "" : item["Route"].ToString());
-                worksheet.Cell("H" + start).SetValue(item["Ship"] is null ? "" : item["Ship"].ToString());
-                worksheet.Cell("I" + start).SetValue(item["StartShip"] is null ? "" : DateTime.Parse(item[nameof(Expense.StartShip)].ToString()));
-                worksheet.Cell("J" + start).SetValue(item["Boss"] is null ? "" : item["Boss"].ToString());
-                worksheet.Cell("K" + start).SetValue(item["Commodity"] is null ? "" : item["Commodity"].ToString());
-                worksheet.Cell("L" + start).SetValue(item["ContainerType"] is null ? "" : item["ContainerType"].ToString());
-                worksheet.Cell("M" + start).SetValue(item["Trip"] is null ? "" : item["Trip"].ToString());
-                worksheet.Cell("N" + start).SetValue(item["ContainerNo"] is null ? "" : item["ContainerNo"].ToString());
-                worksheet.Cell("O" + start).SetValue(item["SealNo"] is null ? "" : item["SealNo"].ToString());
-                worksheet.Cell("P" + start).SetValue(item["CommodityValue"] is null ? default(decimal) : decimal.Parse(item["CommodityValue"].ToString()));
-                worksheet.Cell("P" + start).Style.NumberFormat.Format = "#,##";
-                worksheet.Cell("Q" + start).SetValue(item["CommodityValueNotes"] is null ? "" : item["CommodityValueNotes"].ToString());
-                worksheet.Cell("R" + start).SetValue(item["IsBought"].ToString().Contains("False") ? "Không" : "Có");
-                worksheet.Cell("S" + start).SetValue(item["IsWet"].ToString().Contains("False") ? "Không" : "Có");
-                worksheet.Cell("T" + start).SetValue(item["InsuranceFeeRate"] is null ? default(decimal) : decimal.Parse(item["InsuranceFeeRate"].ToString()));
-                worksheet.Cell("U" + start).SetValue(item["TotalPriceBeforeTax"] is null ? default(decimal) : decimal.Parse(item["TotalPriceBeforeTax"].ToString()));
+                worksheet.Cell("B" + start).SetValue(item["IsApproveChange"].ToString().Contains("False") ? "Không" : "Có");
+                worksheet.Cell("C" + start).SetValue(item["IsClosing"].ToString().Contains("False") ? "Không" : "Có");
+                worksheet.Cell("D" + start).SetValue(item["IsPurchasedInsurance"].ToString().Contains("False") ? "Không" : "Có");
+                worksheet.Cell("E" + start).SetValue(item["DatePurchasedInsurance"] is null ? "" : DateTime.Parse(item[nameof(Expense.DatePurchasedInsurance)].ToString()));
+                worksheet.Cell("F" + start).SetValue(item["TransportationType"] is null ? "" : item["TransportationType"].ToString());
+                worksheet.Cell("G" + start).SetValue(item["Journey"] is null ? "" : item["Journey"].ToString());
+                worksheet.Cell("H" + start).SetValue(item["Route"] is null ? "" : item["Route"].ToString());
+                worksheet.Cell("I" + start).SetValue(item["Ship"] is null ? "" : item["Ship"].ToString());
+                worksheet.Cell("J" + start).SetValue(item["StartShip"] is null ? "" : DateTime.Parse(item[nameof(Expense.StartShip)].ToString()));
+                worksheet.Cell("K" + start).SetValue(item["Received"] is null ? "" : item["Received"].ToString());
+                worksheet.Cell("L" + start).SetValue(item["Boss"] is null ? "" : item["Boss"].ToString());
+                worksheet.Cell("M" + start).SetValue(item["Sale"] is null ? "" : item["Sale"].ToString());
+                worksheet.Cell("N" + start).SetValue(item["Commodity"] is null ? "" : item["Commodity"].ToString());
+                worksheet.Cell("O" + start).SetValue(item["ContainerType"] is null ? "" : item["ContainerType"].ToString());
+                worksheet.Cell("P" + start).SetValue(item["Trip"] is null ? "" : item["Trip"].ToString());
+                worksheet.Cell("Q" + start).SetValue(item["ContainerNo"] is null ? "" : item["ContainerNo"].ToString());
+                worksheet.Cell("R" + start).SetValue(item["SealNo"] is null ? "" : item["SealNo"].ToString());
+                worksheet.Cell("S" + start).SetValue(item["Cont20"] is null ? "" : item["Cont20"].ToString());
+                worksheet.Cell("T" + start).SetValue(item["Cont40"] is null ? "" : item["Cont40"].ToString());
+                worksheet.Cell("U" + start).SetValue(item["CommodityValue"] is null ? default(decimal) : decimal.Parse(item["CommodityValue"].ToString()));
                 worksheet.Cell("U" + start).Style.NumberFormat.Format = "#,##";
-                worksheet.Cell("V" + start).SetValue(item["Vat"] is null ? default(decimal) : decimal.Parse(item["Vat"].ToString()));
-                worksheet.Cell("V" + start).Style.NumberFormat.Format = "#,##";
-                worksheet.Cell("W" + start).SetValue(item["TotalPriceAfterTax"] is null ? default(decimal) : decimal.Parse(item["TotalPriceAfterTax"].ToString()));
-                worksheet.Cell("W" + start).Style.NumberFormat.Format = "#,##";
-                worksheet.Cell("X" + start).SetValue(item["CustomerType"] is null ? "" : item["CustomerType"].ToString());
-                worksheet.Cell("Y" + start).SetValue(item["Notes"] is null ? "" : item["Notes"].ToString());
-                worksheet.Cell("Z" + start).SetValue(item["NotesInsuranceFees"] is null ? "" : item["NotesInsuranceFees"].ToString());
+                worksheet.Cell("V" + start).SetValue(item["CommodityValueNotes"] is null ? "" : item["CommodityValueNotes"].ToString());
+                worksheet.Cell("W" + start).SetValue(item["IsBought"].ToString().Contains("False") ? "Không" : "Có");
+                worksheet.Cell("X" + start).SetValue(item["IsWet"].ToString().Contains("False") ? "Không" : "Có");
+                worksheet.Cell("Y" + start).SetValue(item["SteamingTerms"].ToString().Contains("False") ? "Không" : "Có");
+                worksheet.Cell("Z" + start).SetValue(item["BreakTerms"].ToString().Contains("False") ? "Không" : "Có");
+                worksheet.Cell("AA" + start).SetValue(item["InsuranceFeeRate"] is null ? default(decimal) : decimal.Parse(item["InsuranceFeeRate"].ToString()));
+                worksheet.Cell("AB" + start).SetValue(item["TotalPriceBeforeTax"] is null ? default(decimal) : decimal.Parse(item["TotalPriceBeforeTax"].ToString()));
+                worksheet.Cell("AB" + start).Style.NumberFormat.Format = "#,##";
+                worksheet.Cell("AC" + start).SetValue(item["Vat"] is null ? default(decimal) : decimal.Parse(item["Vat"].ToString()));
+                worksheet.Cell("AC" + start).Style.NumberFormat.Format = "#,##";
+                worksheet.Cell("AD" + start).SetValue(item["TotalPriceAfterTax"] is null ? default(decimal) : decimal.Parse(item["TotalPriceAfterTax"].ToString()));
+                worksheet.Cell("AD" + start).Style.NumberFormat.Format = "#,##";
+                worksheet.Cell("AE" + start).SetValue(item["CustomerType"] is null ? "" : item["CustomerType"].ToString());
+                worksheet.Cell("AF" + start).SetValue(item["Notes"] is null ? "" : item["Notes"].ToString());
+                worksheet.Cell("AG" + start).SetValue(item["NotesInsuranceFees"] is null ? "" : item["NotesInsuranceFees"].ToString());
                 var id = int.Parse(item["Id"].ToString());
                 var expenseChangesOfItem = expenseChanges.Where(x => x.RequestChangeId == id && x.StatusId == 2).ToList();
                 if (expenseChangesOfItem != null)
