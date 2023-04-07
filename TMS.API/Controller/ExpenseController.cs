@@ -883,8 +883,8 @@ namespace TMS.API.Controllers
                 worksheet.Cell("P" + start).SetValue(item["Trip"] is null ? "" : item["Trip"].ToString());
                 worksheet.Cell("Q" + start).SetValue(item["ContainerNo"] is null ? "" : item["ContainerNo"].ToString());
                 worksheet.Cell("R" + start).SetValue(item["SealNo"] is null ? "" : item["SealNo"].ToString());
-                worksheet.Cell("S" + start).SetValue(item["Cont20"] is null ? "" : item["Cont20"].ToString());
-                worksheet.Cell("T" + start).SetValue(item["Cont40"] is null ? "" : item["Cont40"].ToString());
+                worksheet.Cell("S" + start).SetValue(item["Cont20"] is null ? "" : decimal.Parse(item["Cont20"].ToString()));
+                worksheet.Cell("T" + start).SetValue(item["Cont40"] is null ? "" : decimal.Parse(item["Cont40"].ToString()));
                 worksheet.Cell("U" + start).SetValue(item["CommodityValue"] is null ? default(decimal) : decimal.Parse(item["CommodityValue"].ToString()));
                 worksheet.Cell("U" + start).Style.NumberFormat.Format = "#,##";
                 worksheet.Cell("V" + start).SetValue(item["CommodityValueNotes"] is null ? "" : item["CommodityValueNotes"].ToString());
