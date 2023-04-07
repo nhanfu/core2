@@ -539,12 +539,12 @@ namespace Core.Components
                     if (isNUll)
                     {
                         advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
-                        where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} is not null" : $"[{GuiInfo.RefName}].{cell.FieldName} is null";
+                        where = cell.Operator == "not in" ? $"([{GuiInfo.RefName}].{cell.FieldName} is not null and [{GuiInfo.RefName}].{cell.FieldName} != '')" : $"([{GuiInfo.RefName}].{cell.FieldName} is null or [{GuiInfo.RefName}].{cell.FieldName} = '')";
                     }
                     else
                     {
                         advo = cell.Operator == "not in" ? AdvSearchOperation.NotLike : AdvSearchOperation.Like;
-                        where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} not like N'%{cell.Value}%'" : $"[{GuiInfo.RefName}].{cell.FieldName} like N'%{cell.Value}%'";
+                        where = cell.Operator == "not in" ? $"([{GuiInfo.RefName}].{cell.FieldName} != N'%{cell.Value}%' or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $"[{GuiInfo.RefName}].{cell.FieldName} like N'%{cell.Value}%'";
                     }
                     lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
