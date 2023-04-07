@@ -111,7 +111,11 @@ namespace TMS.UI.Business
                         {
                             return;
                         }
-                        var entity = new object();
+                        var entity = (await new Client(currentFeature.Entity.Name).GetRawList<object>($"?$filter=Id eq {id}", entityName: currentFeature.Entity.Name)).FirstOrDefault();
+                        if (entity is null)
+                        {
+                            entity = new object();
+                        }
                         await this.OpenTab(
                             id: currentFeature.Name + id,
                             featureName: currentFeature.Name,

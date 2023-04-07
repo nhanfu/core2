@@ -64,8 +64,11 @@ namespace Core.Components.Forms
             html.Li.ClassName("nav-item").Title(TabTitle)
             .A.ClassName("nav-link pl-lg-2 pr-lg-2 pl-xl-3 pr-xl-3")
             .Event(EventType.Click, Focus).Event(EventType.MouseUp, Close);
-            html.Icon(Icon).End
-            .Icon("fa fa-times").Event(EventType.Click, (e) =>
+            if (!Icon.IsNullOrWhiteSpace())
+            {
+                html.Icon(Icon).End.Render();
+            }
+            html.Icon("fa fa-times").Event(EventType.Click, (e) =>
             {
                 e.StopPropagation();
                 DirtyCheckAndCancel();
@@ -335,7 +338,7 @@ namespace Core.Components.Forms
             }
             if (Feature != null && Feature.Name != null && !Popup)
             {
-                Window.History.ReplaceState(null, LangSelect.Get(TabTitle), Window.Location.Origin + "/" + Feature.Name.Replace(" ", "-") + $"{(Feature.IsMenu ? "" : $"?Id={(Entity[IdField] == null ? "0" : (int.Parse(Entity[IdField].ToString())).ToString())}")}");
+                Window.History.ReplaceState(null, LangSelect.Get(TabTitle), Window.Location.Origin + "/" + Feature.Name.Replace(" ", "-") + $"{(Feature.IsMenu ? "" : $"?Id={int.Parse(Entity[IdField].ToString())}")}");
             }
             Document.Title = LangSelect.Get(TabTitle);
             base.Focus();
