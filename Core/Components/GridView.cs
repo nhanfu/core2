@@ -987,6 +987,10 @@ namespace Core.Components
                             }
                             else
                             {
+                                if (!e.ShiftKey())
+                                {
+                                    SortedField.Clear();
+                                }
                                 th.Element.AddClass("desc");
                                 SortedField.Add(new SortedField
                                 {
