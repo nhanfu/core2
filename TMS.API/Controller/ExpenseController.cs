@@ -1053,7 +1053,7 @@ namespace TMS.API.Controllers
         [HttpPost("api/Expense/UpdateDataForInsuranceFees")]
         public async Task<bool> UpdateDataForInsuranceFees([FromBody] Expense expense)
         {
-            var expenses = await db.Expense.Where(x => (x.ExpenseTypeId == 15981 || x.ExpenseTypeId == 15939) && x.RequestChangeId == null && x.IsPurchasedInsurance == false && x.Active).ToListAsync();
+            var expenses = await db.Expense.Where(x => (x.ExpenseTypeId == 15981 || x.ExpenseTypeId == 15939) && x.RequestChangeId == null && x.IsPurchasedInsurance == false && x.Active && x.StartShip >= DateTime.Parse("2023/01/01") && x.IsPurchasedInsurance == false).ToListAsync();
             var commodityValues = await db.CommodityValue.Where(x => x.Active).OrderBy(x => x.Id).ToListAsync();
             var containerTypes = await db.MasterData.Where(x => x.ParentId == 7565).ToListAsync();
             var containerTypeIds = containerTypes.ToDictionary(x => x.Id);
