@@ -222,6 +222,14 @@ namespace TMS.API.Controllers
                     bookingListSuperfluous.ForEach(x => { x.Active = false; });
                 }
             }
+            foreach (var item in bookingList)
+            {
+                var check = rs.Where(x => x.BookingListId == item.Id).Any();
+                if (check == false)
+                {
+                    item.Active = false;
+                }
+            }
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.SaveChangesAsync();
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
