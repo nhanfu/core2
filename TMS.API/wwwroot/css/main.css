@@ -1050,7 +1050,7 @@ td {
 }
 .table-wrapper td {
   background-color: white;
-  text-align: center;
+  text-align: right;
   padding: 0px;
   white-space: nowrap;
   overflow: hidden;
