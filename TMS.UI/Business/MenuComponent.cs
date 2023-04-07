@@ -103,7 +103,35 @@ namespace TMS.UI.Business
                 if (!featureParam.IsNullOrWhiteSpace())
                 {
                     var currentFeature = feature.FirstOrDefault(x => x.Name == featureParam);
-                    await OpenFeature(currentFeature);
+                    var id = Utils.GetUrlParam("Id");
+                    if (currentFeature is null)
+                    {
+                        currentFeature = await new Client(nameof(Feature)).FirstOrDefaultAsync<Feature>($"?$expand=Entity&$filter=Name eq '{featureParam}'");
+                        if (currentFeature is null)
+                        {
+                            return;
+                        }
+                        var entity = await new Client(currentFeature.Entity.Name).GetAsync<object>(int.Parse(id), refname: currentFeature.Entity.Name);
+                        if (entity is null)
+                        {
+                            entity = new object();
+                        }
+                        await this.OpenTab(
+                            id: currentFeature.Name + id,
+                            featureName: currentFeature.Name,
+                            factory: () =>
+                            {
+                                var type = Type.GetType(currentFeature.ViewClass);
+                                var instance = Activator.CreateInstance(type) as TabEditor;
+                                instance.Title = currentFeature.Label;
+                                instance.Entity = entity;
+                                return instance;
+                            });
+                    }
+                    else
+                    {
+                        await OpenFeature(currentFeature);
+                    }
                 }
                 DOMContentLoaded?.Invoke();
             });

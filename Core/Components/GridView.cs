@@ -752,12 +752,17 @@ namespace Core.Components
                     wh.Add($"({filter1})");
                 }
                 var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
+                var submitEntity = GuiInfo.PreQuery;
+                if (_preQueryFn != null)
+                {
+                    submitEntity = (string)_preQueryFn.Call(null, this);
+                }
                 var dataSet = await new Client(GuiInfo.RefName).PostAsync<object[][]>(sum.Combine(), $"ViewSumary?group={header.FieldName}" +
                     $"&tablename={GuiInfo.RefName}" +
                     $"&refname={header.RefName}" +
                     $"&formatsumary={GuiInfo.FormatSumaryField}" +
                     $"&sql={Sql}&orderby={GuiInfo.OrderBySumary}" +
-                    $"&where={stringWh} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {GuiInfo.PreQuery}")}");
+                    $"&where={stringWh} {(submitEntity.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {submitEntity}")}");
                 var sumarys = dataSet[0];
                 object[] refn = null;
                 if (dataSet.Length > 1)
