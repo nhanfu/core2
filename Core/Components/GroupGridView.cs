@@ -197,7 +197,7 @@ namespace Core.Components
                 .TData.ColSpan(headers.Count - 1)
                     .AsyncEvent(EventType.Click, DispatchClick, first)
                     .AsyncEvent(EventType.DblClick, DispatchDblClick, first)
-                    .Icon("fa fa-chevron-right").Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).End
+                    .Icon("fa fa-chevron-down").Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).End
                     .Div.ClassName("d-flex").InnerHTML(groupText);
             groupSection.GroupText = Html.Context;
             groupSection.Chevron = Html.Context.PreviousElementSibling;

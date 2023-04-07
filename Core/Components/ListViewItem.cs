@@ -609,11 +609,11 @@ namespace Core.Components
                 ChildrenItems.ForEach(x => x.Show = value);
                 if (value)
                 {
-                    Chevron.ReplaceClass(ChevronDown, ChevronRight);
+                    Chevron.ReplaceClass(ChevronRight, ChevronDown);
                 }
                 else
                 {
-                    Chevron.ReplaceClass(ChevronRight, ChevronDown);
+                    Chevron.ReplaceClass(ChevronDown, ChevronRight);
                 }
             }
         }
