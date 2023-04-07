@@ -924,103 +924,127 @@ namespace TMS.API.Controllers
                     {
                         if (x == nameof(Expense.IsClosing))
                         {
-                            worksheet.Cell("B" + start).Style.Font.FontColor = XLColor.Red;
+                            worksheet.Cell("C" + start).Style.Font.FontColor = XLColor.Red;
                         }
                         else if (x == nameof(Expense.IsPurchasedInsurance))
                         {
-                            worksheet.Cell("C" + start).Style.Font.FontColor = XLColor.Red;
+                            worksheet.Cell("D" + start).Style.Font.FontColor = XLColor.Red;
                         }
                         else if (x == nameof(Expense.DatePurchasedInsurance))
                         {
-                            worksheet.Cell("D" + start).Style.Font.FontColor = XLColor.Red;
+                            worksheet.Cell("E" + start).Style.Font.FontColor = XLColor.Red;
                         }
                         else if (x == nameof(Expense.TransportationTypeId))
                         {
-                            worksheet.Cell("E" + start).Style.Font.FontColor = XLColor.Red;
+                            worksheet.Cell("F" + start).Style.Font.FontColor = XLColor.Red;
                         }
                         else if (x == nameof(Expense.JourneyId))
                         {
-                            worksheet.Cell("F" + start).Style.Font.FontColor = XLColor.Red;
+                            worksheet.Cell("G" + start).Style.Font.FontColor = XLColor.Red;
                         }
                         else if (x == nameof(Expense.RouteId))
                         {
-                            worksheet.Cell("G" + start).Style.Font.FontColor = XLColor.Red;
+                            worksheet.Cell("H" + start).Style.Font.FontColor = XLColor.Red;
                         }
                         else if (x == nameof(Expense.ShipId))
                         {
-                            worksheet.Cell("H" + start).Style.Font.FontColor = XLColor.Red;
+                            worksheet.Cell("I" + start).Style.Font.FontColor = XLColor.Red;
                         }
                         else if (x == nameof(Expense.StartShip))
                         {
-                            worksheet.Cell("I" + start).Style.Font.FontColor = XLColor.Red;
-                        }
-                        else if (x == nameof(Expense.BossId))
-                        {
                             worksheet.Cell("J" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.CommodityId))
+                        else if (x == nameof(Expense.ReceivedId))
                         {
                             worksheet.Cell("K" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.ContainerTypeId))
+                        else if (x == nameof(Expense.BossId))
                         {
                             worksheet.Cell("L" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.Trip))
+                        else if (x == nameof(Expense.SaleId))
                         {
                             worksheet.Cell("M" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.ContainerNo))
+                        else if (x == nameof(Expense.CommodityId))
                         {
                             worksheet.Cell("N" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.SealNo))
+                        else if (x == nameof(Expense.ContainerTypeId))
                         {
                             worksheet.Cell("O" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.CommodityValue))
+                        else if (x == nameof(Expense.Trip))
                         {
                             worksheet.Cell("P" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.CommodityValueNotes))
+                        else if (x == nameof(Expense.ContainerNo))
                         {
                             worksheet.Cell("Q" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.IsBought))
+                        else if (x == nameof(Expense.SealNo))
                         {
                             worksheet.Cell("R" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.IsWet))
+                        else if (x == nameof(Expense.Cont20))
                         {
                             worksheet.Cell("S" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.InsuranceFeeRate))
+                        else if (x == nameof(Expense.Cont40))
                         {
                             worksheet.Cell("T" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.TotalPriceBeforeTax))
+                        else if (x == nameof(Expense.CommodityValue))
                         {
                             worksheet.Cell("U" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.Vat))
+                        else if (x == nameof(Expense.CommodityValueNotes))
                         {
                             worksheet.Cell("V" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.TotalPriceAfterTax))
+                        else if (x == nameof(Expense.IsBought))
                         {
                             worksheet.Cell("W" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.CustomerTypeId))
+                        else if (x == nameof(Expense.IsWet))
                         {
                             worksheet.Cell("X" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.Notes))
+                        else if (x == nameof(Expense.SteamingTerms))
                         {
                             worksheet.Cell("Y" + start).Style.Font.FontColor = XLColor.Red;
                         }
-                        else if (x == nameof(Expense.NotesInsuranceFees))
+                        else if (x == nameof(Expense.BreakTerms))
                         {
                             worksheet.Cell("Z" + start).Style.Font.FontColor = XLColor.Red;
+                        }
+                        else if (x == nameof(Expense.InsuranceFeeRate))
+                        {
+                            worksheet.Cell("AA" + start).Style.Font.FontColor = XLColor.Red;
+                        }
+                        else if (x == nameof(Expense.TotalPriceBeforeTax))
+                        {
+                            worksheet.Cell("AB" + start).Style.Font.FontColor = XLColor.Red;
+                        }
+                        else if (x == nameof(Expense.Vat))
+                        {
+                            worksheet.Cell("AC" + start).Style.Font.FontColor = XLColor.Red;
+                        }
+                        else if (x == nameof(Expense.TotalPriceAfterTax))
+                        {
+                            worksheet.Cell("AD" + start).Style.Font.FontColor = XLColor.Red;
+                        }
+                        else if (x == nameof(Expense.CustomerTypeId))
+                        {
+                            worksheet.Cell("AE" + start).Style.Font.FontColor = XLColor.Red;
+                        }
+                        else if (x == nameof(Expense.Notes))
+                        {
+                            worksheet.Cell("AF" + start).Style.Font.FontColor = XLColor.Red;
+                        }
+                        else if (x == nameof(Expense.NotesInsuranceFees))
+                        {
+                            worksheet.Cell("AG" + start).Style.Font.FontColor = XLColor.Red;
                         }
                     });
                 }
