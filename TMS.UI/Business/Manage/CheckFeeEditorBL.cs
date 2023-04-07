@@ -9,6 +9,7 @@ using System.Linq;
 using Core.ViewModels;
 using System.Collections.Generic;
 using System;
+using Bridge.Html5;
 
 namespace TMS.UI.Business.Manage
 {
@@ -383,6 +384,138 @@ namespace TMS.UI.Business.Manage
             }
         }
 
+        public virtual void CheckQuotationTransportation()
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
+            if (gridView is null)
+            {
+                return;
+            }
+            var listContext1 = new List<ContextMenuItem>()
+            {
+                new ContextMenuItem { Text = "Tải đính kèm", Click = DownLoadPackingList },
+            };
+            gridView.BodyContextMenuShow += () =>
+            {
+                var menus = new List<ContextMenuItem>();
+                menus.Clear();
+
+                menus.Add(new ContextMenuItem
+                {
+                    Icon = "fas fa-pen",
+                    Text = "Cập nhật cước",
+                    MenuItems = new List<ContextMenuItem>
+                    {
+                        new ContextMenuItem { Text = "Cước khu vực", Click = UpdateQuotationRegion },
+                        new ContextMenuItem { Text = "Cước chi tiết", Click = UpdateQuotation },
+                    }
+                });
+                menus.Add(new ContextMenuItem
+                {
+                    Icon = "fas fa-pen",
+                    Text = "Cập nhật phí",
+                    MenuItems = new List<ContextMenuItem>
+                    {
+                        new ContextMenuItem { Text = "Cập cước tàu", Click = UpdateShipQuotation },
+                        new ContextMenuItem { Text = "Cập phí nâng", Click = UpdateLiftQuotation },
+                        new ContextMenuItem { Text = "Cập phí hạ", Click = UpdateLadingQuotation },
+                    }
+                });
+                menus.Add(new ContextMenuItem { Icon = "fal fa-binoculars", Text = "Tính năng", MenuItems = listContext1 });
+                ContextMenu.Instance.MenuItems = menus;
+            };
+        }
+
+        private void DownLoadPackingList(object arg)
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
+            Task.Run(async () =>
+            {
+                var selected = (await gridView.GetRealTimeSelectedRows()).FirstOrDefault();
+                var coord = selected.Cast<Transportation>();
+                var booking = await new Client(nameof(Booking)).FirstOrDefaultAsync<Booking>($"?$filter=Active eq true and Id eq {coord.BookingId}");
+                if (booking is null || booking.Files.IsNullOrWhiteSpace())
+                {
+                    booking = await new Client(nameof(Booking)).FirstOrDefaultAsync<Booking>($"?$filter=Active eq true and BrandShipId eq {coord.BrandShipId} and ShipId eq {coord.ShipId} and Trip eq '{coord.Trip}' and (Files ne null or Files ne '') and contains(Files,'    ')");
+                    if (booking is null || booking.Files.IsNullOrWhiteSpace())
+                    {
+                        booking = await new Client(nameof(Booking)).FirstOrDefaultAsync<Booking>($"?$filter=Active eq true and BrandShipId eq {coord.BrandShipId} and ShipId eq {coord.ShipId} and Trip eq '{coord.Trip}' and Files ne null or Files ne ''");
+                    }
+                }
+                else
+                {
+                    if (!booking.Files.Contains("    "))
+                    {
+                        var booking1 = await new Client(nameof(Booking)).FirstOrDefaultAsync<Booking>($"?$filter=Active eq true and BrandShipId eq {coord.BrandShipId} and ShipId eq {coord.ShipId} and Trip eq '{coord.Trip}' and (Files ne null or Files ne '') and contains(Files,'    ')");
+                        if (booking1 != null && booking1.Files.Contains("    "))
+                        {
+                            booking = booking1;
+                        }
+                    }
+                }
+                if (booking.Files.IsNullOrWhiteSpace())
+                {
+                    return;
+                }
+                var newPath = booking.Files.Split("    ").Where(x => x.HasAnyChar()).Distinct().ToList();
+                foreach (var path in newPath)
+                {
+                    Client.Download(path.EncodeSpecialChar());
+                }
+            });
+        }
+
+        public virtual void UpdateQuotationRegion(object arg)
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
+            Task.Run(async () =>
+            {
+                var selected = gridView.LastListViewItem;
+                if (selected is null)
+                {
+                    Toast.Warning("Vui lòng chọn cont cần cập nhật giá!");
+                    return;
+                }
+                var coords = selected.Entity.As<Transportation>();
+                var received = selected.Entity["Received"];
+                if (coords.ClosingId is null || (received is null) || (received != null && received["RegionId"] is null))
+                {
+                    Toast.Warning("Vui lòng nhập nhà xe hoặc chọn khu vực cho địa chỉ");
+                    return;
+                }
+                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7592 " +
+                    $"and BossId eq null " +
+                    $"and ContainerTypeId eq {coords.ContainerTypeId} " +
+                    $"and RegionId eq {received["RegionId"]} " +
+                    $"and LocationId eq null " +
+                    $"and StartDate le {coords.ClosingDate.Value.ToOdataFormat()} " +
+                    $"and PackingId eq {coords.ClosingId}&$orderby=StartDate desc");
+                if (quotation is null)
+                {
+                    quotation = new Quotation()
+                    {
+                        TypeId = 7592,
+                        BossId = null,
+                        RegionId = int.Parse(received["RegionId"].ToString()),
+                        ContainerTypeId = coords.ContainerTypeId,
+                        LocationId = null,
+                        StartDate = coords.ClosingDate,
+                        PackingId = coords.ClosingId
+                    };
+                }
+                await this.OpenPopup(
+                featureName: "Quotation Region Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Settings.QuotationRegionEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Chỉnh sửa bảng giá khu vực";
+                    instance.Entity = quotation;
+                    return instance;
+                });
+            });
+        }
+
         public virtual void UpdateQuotation(object arg)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
@@ -395,6 +528,11 @@ namespace TMS.UI.Business.Manage
                     return;
                 }
                 var coords = selected.Entity.As<Transportation>();
+                if (coords.ClosingId is null)
+                {
+                    Toast.Warning("Vui lòng nhập nhà xe");
+                    return;
+                }
                 var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7592 " +
                     $"and BossId eq {coords.BossId} " +
                     $"and ContainerTypeId eq {coords.ContainerTypeId} " +
@@ -426,36 +564,9 @@ namespace TMS.UI.Business.Manage
             });
         }
 
-        public virtual void CheckQuotationTransportation()
-        {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
-            if (gridView is null)
-            {
-                return;
-            }
-            gridView.BodyContextMenuShow += () =>
-            {
-                var menus = new List<ContextMenuItem>();
-                menus.Clear();
-                menus.Add(new ContextMenuItem { Icon = "fas fa-pen", Text = "Cập nhật giá", Click = UpdateQuotation });
-                menus.Add(new ContextMenuItem
-                {
-                    Icon = "fas fa-pen",
-                    Text = "Cập nhật phí",
-                    MenuItems = new List<ContextMenuItem>
-                    {
-                        new ContextMenuItem { Text = "Cập cước tàu", Click = UpdateShipQuotation },
-                        new ContextMenuItem { Text = "Cập phí nâng", Click = UpdateLiftQuotation },
-                        new ContextMenuItem { Text = "Cập phí hạ", Click = UpdateLadingQuotation },
-                    }
-                });
-                ContextMenu.Instance.MenuItems = menus;
-            };
-        }
-
         public void UpdateShipQuotation(object arg)
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
 
             Task.Run(async () =>
             {
@@ -500,9 +611,9 @@ namespace TMS.UI.Business.Manage
             });
         }
 
-        public void UpdateLiftQuotation(object arg)
+        public virtual void UpdateLiftQuotation(object arg)
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
 
             Task.Run(async () =>
             {
@@ -545,9 +656,10 @@ namespace TMS.UI.Business.Manage
             });
         }
 
-        public void UpdateLadingQuotation(object arg)
+        public virtual void UpdateLadingQuotation(object arg)
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
+
             Task.Run(async () =>
             {
                 var selected = gridView.LastListViewItem;
@@ -556,7 +668,7 @@ namespace TMS.UI.Business.Manage
                     Toast.Warning("Vui lòng chọn cont cần cập nhật giá!");
                     return;
                 }
-                var coords = selected.As<Transportation>();
+                var coords = selected.Entity.As<Transportation>();
                 if (coords.PortLoadingId is null || coords.ContainerTypeId is null)
                 {
                     Toast.Warning("Vui lòng nhập đầy đủ thông tin");
