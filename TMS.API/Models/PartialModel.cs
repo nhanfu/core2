@@ -126,4 +126,10 @@ namespace TMS.API.Models
         [NotMapped]
         public bool IsAll { get; set; }
     }
+
+    public partial class Route
+    {
+        [NotMapped]
+        public int Order { get; set; }
+    }
 }

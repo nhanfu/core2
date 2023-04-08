@@ -263,13 +263,16 @@ namespace TMS.UI.Business.Manage
             }
             query += "&$orderby=StartShip desc";
             var bookingList = await new Client(nameof(BookingList)).GetRawList<BookingList>(query);
-            var routes = await new Client(nameof(Route)).GetRawList<Route>($"?$filter=Active eq true and Id in (370, 369, 355, 356, 378, 376)");
+            var settingRoutes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 26363");
+            var routes = await new Client(nameof(Route)).GetRawList<Route>($"?$filter=Active eq true and Id in ({settingRoutes.Select(x => x.Enum).ToList().Combine()})");
+            routes.ForEach(x => x.Order = (int)settingRoutes.Where(y => y.Enum == x.Id).FirstOrDefault().Order);
             var reportBookingList = new List<BookingList>();
             var containerTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 7565");
             var containerTypesCont20 = containerTypes.Where(x => x.Description.Contains("20")).ToList();
             var containerTypesCont40 = containerTypes.Where(x => x.Description.Contains("40")).ToList();
             var containerTypeIdsCont20 = containerTypesCont20.Select(x => x.Id).ToList();
             var containerTypeIdsCont40 = containerTypesCont40.Select(x => x.Id).ToList();
+            routes = routes.OrderBy(x => x.Order).ToList();
             foreach (var item in routes)
             {
                 var filter = bookingList.Where(x => x.RouteId == item.Id).ToList();
@@ -281,13 +284,23 @@ namespace TMS.UI.Business.Manage
                     TotalTotalPriceCont20 = (decimal)filter.Where(x => containerTypeIdsCont20.Contains((int)x.ContainerTypeId)).Sum(x => x.TotalPrice),
                     TotalTotalPriceCont40 = (decimal)filter.Where(x => containerTypeIdsCont40.Contains((int)x.ContainerTypeId)).Sum(x => x.TotalPrice),
                 };
-                newBookingList.AVGTotalPriceCont20 = Math.Round(newBookingList.TotalTotalPriceCont20 / newBookingList.TotalCountCont20);
-                newBookingList.AVGTotalPriceCont40 = Math.Round(newBookingList.TotalTotalPriceCont40 / newBookingList.TotalCountCont40);
+                newBookingList.AVGTotalPriceCont20 = newBookingList.TotalTotalPriceCont20 != 0 && newBookingList.TotalCountCont20 != 0 ? Math.Round(newBookingList.TotalTotalPriceCont20 / newBookingList.TotalCountCont20) : 0;
+                newBookingList.AVGTotalPriceCont40 = newBookingList.TotalTotalPriceCont40 != 0 && newBookingList.TotalCountCont40 != 0 ? Math.Round(newBookingList.TotalTotalPriceCont40 / newBookingList.TotalCountCont40) : 0;
                 reportBookingList.Add(newBookingList);
+                
             }
             await grid.AddRows(reportBookingList);
-            grid.UpdateView(false);
         }
+
+        public void BeforeCreated(MasterData masterData)
+        {
+            masterData.Name = "TVC";
+            masterData.Description = "TVC";
+            masterData.Level = 1;
+            masterData.ParentId = 26363;
+            masterData.Path = @"\26363\";
+        }
+
 
         public PatchUpdate GetPatchEntity(BookingList bookingList)
         {
