@@ -33,6 +33,7 @@ namespace Core.Components
         public List<HTMLElement> _summarys = new List<HTMLElement>();
         public bool _sum = false;
         public bool AutoFocus = false;
+        public bool LoadRerender = false;
         public HTMLElement DataTable { get; set; }
         private UserSetting _settings { get; set; }
         public static GridPolicy ToolbarColumn = new GridPolicy
@@ -132,6 +133,7 @@ namespace Core.Components
 
         protected override void Rerender()
         {
+            LoadRerender = true;
             DisposeNoRecord();
             Editable = GuiInfo.CanAdd && Header.Any(x => !x.Hidden && x.Editable);
             Header = Header.Where(x => !x.Hidden).ToList();
@@ -1447,8 +1449,17 @@ namespace Core.Components
 
         private object EmptyRowData()
         {
-            var type = Type.GetType((GuiInfo.Reference.Namespace ?? Client.ModelNamespace) + GuiInfo.RefName) ?? typeof(object);
-            return Activator.CreateInstance(type);
+            try
+            {
+                var type = Type.GetType((GuiInfo.Reference.Namespace ?? Client.ModelNamespace) + GuiInfo.RefName) ?? typeof(object);
+                return Activator.CreateInstance(type);
+            }
+            catch (Exception)
+            {
+                var type = typeof(object);
+                return Activator.CreateInstance(type);
+            }
+
         }
 
         protected override List<GridPolicy> FilterColumns(List<GridPolicy> gridPolicy)
@@ -1545,6 +1556,10 @@ namespace Core.Components
 
         public override void RenderContent()
         {
+            if (!LoadRerender)
+            {
+                Rerender();
+            }
             AddSections();
             if (!_hasFirstLoad && VirtualScroll)
             {

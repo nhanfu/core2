@@ -72,8 +72,11 @@ namespace Core.Components
 
         public static void Hide()
         {
-            _span.Style.Display = Display.None.ToString();
-            _backdrop.Style.Display = Display.None.ToString();
+            if(_span!= null)
+            {
+                _span.Style.Display = Display.None.ToString();
+                _backdrop.Style.Display = Display.None.ToString();
+            }
         }
     }
 }

@@ -336,7 +336,7 @@ namespace Core.Components.Forms
             {
                 Show = true;
             }
-            if (Feature != null && Feature.Name != null && !Popup)
+            if (Feature != null && Feature.Name != null && !Popup && !ChildForm)
             {
                 Window.History.ReplaceState(null, LangSelect.Get(TabTitle), Window.Location.Origin + "/" + Feature.Name.Replace(" ", "-") + $"{(Feature.IsMenu ? "" : $"?Id={int.Parse(Entity[IdField].ToString())}")}");
             }
