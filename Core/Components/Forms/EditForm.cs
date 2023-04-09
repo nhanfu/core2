@@ -746,7 +746,7 @@ namespace Core.Components.Forms
             {
                 return null;
             }
-            var entity = await Client.GetRawAsync(id.Value) ?? Entity;
+            var entity = (await Client.LoadById($"{id.Value}")).Value.FirstOrDefault() ?? Entity;
             return entity;
         }
 

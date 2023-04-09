@@ -1449,17 +1449,8 @@ namespace Core.Components
 
         private object EmptyRowData()
         {
-            try
-            {
-                var type = Type.GetType((GuiInfo.Reference.Namespace ?? Client.ModelNamespace) + GuiInfo.RefName) ?? typeof(object);
-                return Activator.CreateInstance(type);
-            }
-            catch (Exception)
-            {
-                var type = typeof(object);
-                return Activator.CreateInstance(type);
-            }
-
+            var type = Type.GetType((GuiInfo.Reference.Namespace ?? Client.ModelNamespace) + GuiInfo.RefName) ?? typeof(object);
+            return Activator.CreateInstance(type);
         }
 
         protected override List<GridPolicy> FilterColumns(List<GridPolicy> gridPolicy)

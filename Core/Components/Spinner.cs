@@ -44,6 +44,10 @@ namespace Core.Components
 
         public static void AppendTo(HTMLElement node, bool lockScreen = true, bool autoHide = true, int timeout = 7000)
         {
+            if (_span is null)
+            {
+                return;
+            }
             if (_span.ParentElement == node && _span.Style.Display.ToString() == string.Empty)
             {
                 return;
@@ -72,7 +76,7 @@ namespace Core.Components
 
         public static void Hide()
         {
-            if(_span!= null)
+            if (_span != null)
             {
                 _span.Style.Display = Display.None.ToString();
                 _backdrop.Style.Display = Display.None.ToString();

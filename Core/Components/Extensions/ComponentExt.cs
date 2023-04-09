@@ -309,7 +309,7 @@ namespace Core.Components.Extensions
                 : new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
                 $"?$filter=Active eq true and Feature/Name eq '{featureName}'");
             var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>(
-                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name))" +
+                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name,Namespace))" +
                 $"&$filter=Active eq true and Feature/Name eq '{featureName}'", addTenant: true);
             await Task.WhenAll(featureOdata, policyOdata, componentGroupTask);
             var feature = featureOdata.Result;

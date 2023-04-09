@@ -610,7 +610,7 @@ namespace Core.Clients
         /// <returns></returns>
         public Task<dynamic> UpdateAsync(object value, string subUrl = string.Empty)
         {
-            var refType = Type.GetType(NameSpace + EntityName);
+            var refType = Type.GetType((NameSpace ?? "Core.Models.") + EntityName);
             var httpGetList = GetType().GetMethods()
                 .FirstOrDefault(x => x.Name == nameof(UpdateAsync) && x.IsGenericMethodDefinition);
             if (httpGetList is null)

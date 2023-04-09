@@ -1004,7 +1004,7 @@ namespace Core.Components
 
         public virtual async Task<List<object>> GetRealTimeSelectedRows()
         {
-            return await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetRawListById<object>(SelectedIds.ToList());
+            return (await new Client(GuiInfo.RefName).LoadById(SelectedIds.Combine())).Value;
         }
 
         public void PasteSelected(object ev)

@@ -394,6 +394,9 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.RefListClass)
                 .HasMaxLength(150)
                 .IsUnicode(false);
+            entity.Property(e => e.Namespace)
+                .HasMaxLength(150)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<EntityRef>(entity =>

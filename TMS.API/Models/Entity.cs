@@ -25,6 +25,7 @@ namespace TMS.API.Models
         public int? UpdatedBy { get; set; }
         public string RefDetailClass { get; set; }
         public string RefListClass { get; set; }
+        public string Namespace { get; set; }
 
         public virtual ICollection<Component> Component { get; set; }
         public virtual ICollection<Feature> Feature { get; set; }
