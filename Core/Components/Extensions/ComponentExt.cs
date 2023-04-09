@@ -333,7 +333,7 @@ namespace Core.Components.Extensions
                 : new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
                 $"?$filter=Active eq true and FeatureId eq {feature1.Id}");
             var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>(
-                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name))" +
+                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name,Namespace))" +
                 $"&$filter=Active eq true and FeatureId eq {feature1.Id}", addTenant: true);
             await Task.WhenAll(policyOdata, componentGroupTask);
             feature1.FeaturePolicy = policyOdata.Result;
@@ -355,7 +355,7 @@ namespace Core.Components.Extensions
             var policyTask = new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
                 $"?$filter=Active eq true and (Feature/Name eq '{nameOrViewClass}' or Feature/ViewClass eq '{nameOrViewClass}')");
             var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>(
-                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name))" +
+                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name,Namespace))" +
                 $"&$filter=Active eq true and (Feature/Name eq '{nameOrViewClass}' or Feature/ViewClass eq '{nameOrViewClass}')");
             await Task.WhenAll(featureTask, policyTask, componentGroupTask);
             var feature = featureTask.Result;
@@ -378,7 +378,7 @@ namespace Core.Components.Extensions
             var policyTask = new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
                 $"?$filter=Active eq true and Feature/EntityId eq {entity}");
             var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>(
-                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name))" +
+                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name,Namespace))" +
                 $"&$filter=Active eq true and Feature/EntityId eq {entity} ");
             await Task.WhenAll(featureTask, policyTask, componentGroupTask);
             var feature = featureTask.Result;
