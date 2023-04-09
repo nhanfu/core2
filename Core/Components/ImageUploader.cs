@@ -95,7 +95,7 @@ namespace Core.Components
             Html.Instance.End.Render();
             Html.Instance.Div.ClassName("middle d-flex")
                 .Div.ClassName("preview").Event(EventType.Click, Preview, path.DecodeSpecialChar()).I.ClassName("fas fa-eye").EndOf(MVVM.ElementType.div);
-            if (Disabled)
+            if (!Disabled)
             {
                 Html.Instance.Div.ClassName("delete")
                     .Event(EventType.Click, RemoveFile, path).I.ClassName("fas fa-trash-alt").EndOf(MVVM.ElementType.div);
@@ -122,10 +122,6 @@ namespace Core.Components
             if (canDelete)
             {
                 UpdateView();
-            }
-            else
-            {
-                Element.QuerySelectorAll(".overlay .fa-times").Cast<HTMLElement>().ForEach(x => x.Remove());
             }
         }
 
@@ -335,7 +331,7 @@ namespace Core.Components
             {
                 return;
             }
-            
+
             e.StopPropagation();
             if (removedPath.IsNullOrEmpty())
             {
