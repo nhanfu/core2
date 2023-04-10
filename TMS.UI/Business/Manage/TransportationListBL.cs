@@ -1205,110 +1205,29 @@ namespace TMS.UI.Business.Manage
 
         public async Task SetPolicyTransportationType(Transportation transportation)
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
-            var listViewItem = gridView.GetListViewItems(transportation).FirstOrDefault();
             if (transportation.RouteId != null || transportation.ClosingId != null)
             {
-                transportation.TransportationTypeId = null;
-                var components = new Client(nameof(GridPolicy)).GetRawList<GridPolicy>("?$filter=Id in (20347, 20342)");
-                var operators = new Client(nameof(MasterData)).GetRawList<MasterData>("?$filter=Parent/Name eq 'Operator'");
-                var settingPolicys = new Client(nameof(SettingPolicy)).GetRawList<SettingPolicy>($"?$orderby=Id asc&$expand=SettingPolicyDetail&$filter=TypeId eq 2");
-                await Task.WhenAll(components, operators, settingPolicys);
-                var listpolicy = settingPolicys.Result;
-                var componentrs = components.Result;
-                var operatorrs = operators.Result;
-                var query = new List<string>();
-                var rs = listpolicy.SelectMany(item =>
+                var transportationTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 11670");
+                var route = await new Client(nameof(Route)).FirstOrDefaultAsync<Route>($"?$filter=Active eq true and Id eq {transportation.RouteId}");
+                var vendor = await new Client(nameof(Vendor)).FirstOrDefaultAsync<Vendor>($"?$filter=Active eq true and Id eq {transportation.ClosingId}");
+                if (vendor.Name.ToLower().Contains("sà lan"))
                 {
-                    var detail = item.SettingPolicyDetail.ToList();
-                    var build = detail.GroupBy(z => z.ComponentId).SelectMany(y =>
-                    {
-                        var group = y.ToList().Select(l =>
-                        {
-                            var component = componentrs.FirstOrDefault(k => k.Id == l.ComponentId);
-                            if (component is null)
-                            {
-                                return null;
-                            }
-                            var ope = operatorrs.FirstOrDefault(k => k.Id == l.OperatorId);
-                            if (component.ComponentType == "Dropdown" || component.ComponentType == nameof(SearchEntry))
-                            {
-                                var format = component.FormatCell.Split("}")[0].Replace("{", "");
-                                return new Client(component.RefName).GetRawList<dynamic>(string.Format($"?$select=Id&$filter={ope.Name}", format, l.Value), entityName: component.RefName);
-                            }
-                            else
-                            {
-                                return null;
-                            }
-                        });
-                        return group;
-                    }).ToList();
-                    return build;
-                }).Where(x => x != null).ToList();
-                var data = await Task.WhenAll(rs);
-                var index = 0;
-                if (data.Nothing())
-                {
-                    return;
+                    transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Sà Lan")).FirstOrDefault().Id;
                 }
-                foreach (var item in listpolicy)
+                else if (route.Name.ToLower().Contains("sắt"))
                 {
-                    var detail = item.SettingPolicyDetail.ToList();
-                    var build = detail.GroupBy(z => z.ComponentId).Select(y =>
-                    {
-                        var listAnd = new List<string>();
-                        var group = y.ToList().Select(l =>
-                        {
-                            var component = componentrs.FirstOrDefault(k => k.Id == l.ComponentId);
-                            if (component is null)
-                            {
-                                return null;
-                            }
-                            var ope = operatorrs.FirstOrDefault(k => k.Id == l.OperatorId);
-                            if (component.ComponentType == "Dropdown" || component.ComponentType == nameof(SearchEntry))
-                            {
-                                var rsdynamic = data[index];
-                                index++;
-                                if (rsdynamic.Any())
-                                {
-                                    var ids = rsdynamic.Select(x => x.Id).Cast<int>().Combine();
-                                    var format = component.FormatCell.Split("}")[0].Replace("{", "");
-                                    if (ope.Description == "Chứa" || ope.Description == "Bằng")
-                                    {
-                                        return $"{component.FieldName} in ({ids})";
-                                    }
-                                    else
-                                    {
-                                        return $"{component.FieldName} in ({ids}) eq false";
-                                    }
-                                }
-                                else
-                                {
-                                    return null;
-                                }
-                            }
-                            else
-                            {
-                                listAnd.Add($"{string.Format(ope.Name, component.FieldName, l.Value)}");
-                                return null;
-                            }
-                        }).Where(x => x != "()" && !x.IsNullOrWhiteSpace()).ToList();
-                        return (group.Count == 0 ? "" : $"({group.Where(x => x != "()" && !x.IsNullOrWhiteSpace()).Combine(" or ")})") + (listAnd.Count == 0 ? "" : $" {listAnd.Where(x => !x.IsNullOrWhiteSpace()).Combine(" and ")}");
-                    }).ToList();
-                    var str = build.Where(x => x != "()" && !x.IsNullOrWhiteSpace()).Combine(" or ");
-                    query.Add(str);
-                    Transportation check = null;
-                    if (!string.IsNullOrWhiteSpace(str))
-                    {
-                        check = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportation.Id} and ({str})");
-                    }
-                    if (check != null)
-                    {
-                        transportation.TransportationTypeId = item.TransportationTypeId;
-                    }
+                    transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Sắt")).FirstOrDefault().Id;
                 }
-                await ActionAnalysis(transportation);
+                else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
+                {
+                    transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Bộ")).FirstOrDefault().Id;
+                }
+                else
+                {
+                    transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Tàu")).FirstOrDefault().Id;
+                }
             }
+            await ActionAnalysis(transportation);
         }
 
         private async Task ActionAnalysis(Transportation transportation)
