@@ -519,7 +519,7 @@ namespace TMS.API.Controllers
                     from Transportation t
                     left join Vendor b on b.Id = t.BossId
                     left join Location r on r.Id = {(transportation.TypeId == 2 ? "t.ReturnId" : "t.ReceivedId")}
-                    left join Location pi on pi.Id = {(transportation.TypeId == 2 ? "t.PickupEmptyId" : "t.ReturnEmptyId")}
+                    left join Location pi on pi.Id = {(transportation.TypeId == 2 ? "t.ReturnEmptyId" : "t.PickupEmptyId")}
                     left join Location po on po.Id = {(transportation.TypeId == 2 ? "t.PortLiftId" : "t.PortLoadingId")}";
             }
             else
@@ -561,7 +561,8 @@ namespace TMS.API.Controllers
                 }
                 else
                 {
-                    sql += $" where t.ClosingDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})";
+                    sql += $" where t.ClosingDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})"
+                    + $"  order by t.OrderExcel asc";
                 }
             }
             else
@@ -573,7 +574,8 @@ namespace TMS.API.Controllers
                 }
                 else
                 {
-                    sql += $" where t.ReturnDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnVendorId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})";
+                    sql += $" where t.ReturnDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnVendorId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})"
+                    + $"  order by t.OrderExcel asc";
                 }
             }
             var data = await ConverSqlToDataSet(sql);
