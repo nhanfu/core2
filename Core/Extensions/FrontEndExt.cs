@@ -45,7 +45,6 @@ namespace Core.Models
 
     public partial class Entity
     {
-        public string Namespace { get; set; }
         public Type GetEntityType(string ns = null)
         {
             var name = AliasFor ?? Name;
