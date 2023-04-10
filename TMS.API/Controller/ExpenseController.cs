@@ -592,10 +592,13 @@ namespace TMS.API.Controllers
                         if (tran.StartShip != item.StartShip && (item.JourneyId != 12114 && item.JourneyId != 16001)) { item.StartShip = tran.StartShip; }
                     }
                 }
+                tran.InsuranceFee = expenses.Where(x => x.TransportationId == tran.Id && x.IsPurchasedInsurance).ToList().Sum(x => x.TotalPriceAfterTax);
             }
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
+            db.Expense.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Expense");
             await db.SaveChangesAsync();
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+            db.Expense.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Expense");
             return true;
         }
         
