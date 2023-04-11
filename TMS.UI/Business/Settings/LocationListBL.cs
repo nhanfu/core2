@@ -116,7 +116,7 @@ namespace TMS.UI.Business.Settings
                 var location = gridView.GetFocusedRows().FirstOrDefault() as Location;
                 var quotation = new Quotation()
                 {
-                    TypeId = 7592,
+                    TypeId = 7593,
                     BossId = null,
                     RegionId = location.RegionId,
                     ContainerTypeId = null,
@@ -176,7 +176,7 @@ namespace TMS.UI.Business.Settings
                 var location = gridView.GetFocusedRows().FirstOrDefault() as Location;
                 var quotation = new Quotation()
                 {
-                    TypeId = 7593,
+                    TypeId = 7592,
                     BossId = null,
                     RegionId = location.RegionId,
                     ContainerTypeId = null,
@@ -190,7 +190,7 @@ namespace TMS.UI.Business.Settings
                 {
                     var type = Type.GetType("TMS.UI.Business.Settings.QuotationRegionEditorBL");
                     var instance = Activator.CreateInstance(type) as PopupEditor;
-                    instance.Title = "Chỉnh sửa bảng giá khu vực đóng hàng";
+                    instance.Title = "Chỉnh sửa bảng giá khu vực đóng";
                     instance.Entity = quotation;
                     return instance;
                 });

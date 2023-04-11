@@ -109,10 +109,6 @@ namespace TMS.API.Services
                     obj.SetPropValue(IdField, 0);
                     obj.SetPropValue(nameof(User.InsertedBy), userId ?? UserId);
                     obj.SetPropValue(nameof(User.InsertedDate), DateTime.Now);
-                    if (typeof(K) != typeof(User))
-                    {
-                        obj.SetPropValue(nameof(User.BranchId), BranchId);
-                    }
                     obj.SetPropValue(nameof(User.Active), true);
                 }
                 else
