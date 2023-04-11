@@ -20,7 +20,11 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<Teus>> CreateAsync([FromBody] Teus entity)
         {
-            var check = await db.Teus.FirstOrDefaultAsync(x => x.BrandShipId == entity.BrandShipId && x.ShipId == entity.ShipId && x.Trip == entity.Trip && x.StartShip.Value.Date == entity.StartShip.Value.Date);
+            var check = await db.Teus.FirstOrDefaultAsync(x => x.BrandShipId == entity.BrandShipId 
+            && x.ShipId == entity.ShipId 
+            && x.Trip == entity.Trip
+            && x.PortLoadingId == entity.PortLoadingId
+            && x.StartShip.Value.Date == entity.StartShip.Value.Date);
             if (check != null)
             {
                 throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
@@ -30,7 +34,12 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<Teus>> UpdateAsync([FromBody] Teus entity, string reasonOfChange = "")
         {
-            var check = await db.Teus.FirstOrDefaultAsync(x => x.BrandShipId == entity.BrandShipId && x.ShipId == entity.ShipId && x.Trip == entity.Trip && x.StartShip.Value.Date == entity.StartShip.Value.Date && x.Id != entity.Id);
+            var check = await db.Teus.FirstOrDefaultAsync(x => x.BrandShipId == entity.BrandShipId 
+            && x.ShipId == entity.ShipId 
+            && x.Trip == entity.Trip
+            && x.PortLoadingId == entity.PortLoadingId
+            && x.StartShip.Value.Date == entity.StartShip.Value.Date 
+            && x.Id != entity.Id);
             if (check != null)
             {
                 throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
