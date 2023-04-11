@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
+using static Retyped.dom.Literals.Types;
 
 namespace TMS.UI.Business.Settings
 {
@@ -66,8 +67,10 @@ namespace TMS.UI.Business.Settings
                     Text = "Cập nhật cước",
                     MenuItems = new List<ContextMenuItem>
                     {
-                        new ContextMenuItem { Text = "Cước đóng hàng", Click = UpdateQuotationClosing },
-                        new ContextMenuItem { Text = "Cước trả hàng", Click = UpdateQuotationReturn },
+                        new ContextMenuItem { Text = "Cước đóng hàng chi tiết", Click = UpdateQuotationClosing },
+                        new ContextMenuItem { Text = "Cước đóng hàng khu vực", Click = UpdateQuotationClosingRegion },
+                        new ContextMenuItem { Text = "Cước trả hàng chi tiết", Click = UpdateQuotationReturn },
+                        new ContextMenuItem { Text = "Cước trả hàng khu vực", Click = UpdateQuotationReturnRegion },
                     }
                 });
                 ContextMenu.Instance.MenuItems = menus;
@@ -101,6 +104,39 @@ namespace TMS.UI.Business.Settings
             });
         }
 
+        private void UpdateQuotationReturnRegion(object arg)
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Location));
+                if (gridView is null)
+                {
+                    return;
+                }
+                var location = gridView.GetFocusedRows().FirstOrDefault() as Location;
+                var quotation = new Quotation()
+                {
+                    TypeId = 7592,
+                    BossId = null,
+                    RegionId = location.RegionId,
+                    ContainerTypeId = null,
+                    LocationId = null,
+                    StartDate = DateTime.Now,
+                    PackingId = null
+                };
+                await this.OpenPopup(
+                featureName: "Quotation Region Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Settings.QuotationRegionEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Chỉnh sửa bảng giá khu vực trả hàng";
+                    instance.Entity = quotation;
+                    return instance;
+                });
+            });
+        }
+
         private void UpdateQuotationClosing(object arg)
         {
             Task.Run(async () =>
@@ -125,6 +161,39 @@ namespace TMS.UI.Business.Settings
                         };
                         return instance;
                     });
+            });
+        }
+
+        private void UpdateQuotationClosingRegion(object arg)
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Location));
+                if (gridView is null)
+                {
+                    return;
+                }
+                var location = gridView.GetFocusedRows().FirstOrDefault() as Location;
+                var quotation = new Quotation()
+                {
+                    TypeId = 7593,
+                    BossId = null,
+                    RegionId = location.RegionId,
+                    ContainerTypeId = null,
+                    LocationId = null,
+                    StartDate = DateTime.Now,
+                    PackingId = null
+                };
+                await this.OpenPopup(
+                featureName: "Quotation Region Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Settings.QuotationRegionEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Chỉnh sửa bảng giá khu vực đóng hàng";
+                    instance.Entity = quotation;
+                    return instance;
+                });
             });
         }
     }
