@@ -192,7 +192,7 @@ namespace TMS.UI.Business.Accountant
 
         public async Task UpdateRevenueSimultaneousByRevenue()
         {
-            var gridView = Parent.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "Revenue");
+            var gridView = Parent.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "RevenueList");
             if (gridView is null)
             {
                 return;

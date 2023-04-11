@@ -144,7 +144,7 @@ namespace TMS.UI.Business.Manage
         {
             Task.Run(async () =>
             {
-                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant" || x.GuiInfo.FieldName == "Revenue");
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant" || x.GuiInfo.FieldName == "RevenueList");
                 if (gridView is null)
                 {
                     return;
