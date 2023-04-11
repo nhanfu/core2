@@ -206,7 +206,7 @@ namespace TMS.UI.Business.Manage
             {
                 var menus = new List<ContextMenuItem>();
                 menus.Clear();
-                
+
                 menus.Add(new ContextMenuItem
                 {
                     Icon = "fas fa-pen",
@@ -1021,7 +1021,40 @@ namespace TMS.UI.Business.Manage
                 var listpolicy = await new Client(nameof(SettingPolicy)).GetRawList<SettingPolicy>($"?$expand=SettingPolicyDetail&$filter=ExportListId eq {transportation.ExportListId} and BrandShipId eq {transportation.BrandShipId} and StartDate le {startShip} and (EndDate gt {startShip} or EndDate eq null) and TypeId eq 1&$orderby=UnitPrice desc");
                 if (listpolicy.Nothing())
                 {
-                    Toast.Success("Không tìm thấy chính sách");
+                    transportation.PolicyId = null;
+                    transportation.ShipPolicyPrice = null;
+                    transportation.ShipPrice = transportation.ShipUnitPriceQuotation;
+                    var path = new PatchUpdate
+                    {
+                        Changes = new List<PatchUpdateDetail>()
+                        {
+                            new PatchUpdateDetail()
+                            {
+                                Field= IdField,
+                                Value = transportation.Id.ToString()
+                            },
+                            new PatchUpdateDetail()
+                            {
+                                Field= nameof(Transportation.PolicyId),
+                                Value = null
+                            },
+                            new PatchUpdateDetail()
+                            {
+                                Field = nameof(Transportation.ShipPolicyPrice),
+                                Value = "0"
+                            },
+                            new PatchUpdateDetail()
+                            {
+                                Field = nameof(Transportation.ShipPrice),
+                                Value = transportation.ShipUnitPriceQuotation is null ? null : transportation.ShipUnitPriceQuotation.ToString()
+                            }
+                        }
+                    };
+                    Window.SetTimeout(async () =>
+                    {
+                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(path, ig: $"&disableTrigger=true");
+                        Toast.Success("Không tìm thấy chính sách");
+                    }, 200);
                     return;
                 }
                 Toast.Warning("Hệ thống đang lấy chính sách hãng tàu");
