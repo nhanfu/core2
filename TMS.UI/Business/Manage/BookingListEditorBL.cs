@@ -22,6 +22,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task CreateBookingList()
         {
+            Spinner.AppendTo(this.Element, false, true, 30000);
             if (BookingListEntity.FromDate is null)
             {
                 Toast.Warning("Vui lòng nhập từ ngày");

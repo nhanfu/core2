@@ -173,7 +173,11 @@ public partial class TMSContext : DbContext
 
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.ToTable(tb => tb.HasTrigger("tr_Booking_UpdateClick"));
+            entity.ToTable(tb =>
+                {
+                    tb.HasTrigger("tr_Booking_UpdateClick");
+                    tb.HasTrigger("tr_Booking_UpdateClickAdd");
+                });
 
             entity.Property(e => e.BookingNo)
                 .HasMaxLength(250)
@@ -202,7 +206,7 @@ public partial class TMSContext : DbContext
         modelBuilder.Entity<BookingList>(entity =>
         {
             entity.Property(e => e.ActShipPrice)
-                .HasComputedColumnSql("(case when [ShipPrice]>(0) then [ShipPrice] else [ShipUnitPrice] end)", false)
+                .HasComputedColumnSql("(case when [ShipPrice]>(0) then [ShipPrice] else case when [ShipUnitPrice]>(0) then [ShipUnitPrice] else (0) end end)", false)
                 .HasComment("")
                 .HasColumnType("decimal(20, 5)");
             entity.Property(e => e.InvNo).HasMaxLength(250);

@@ -142,8 +142,8 @@ namespace TMS.API.Controllers
             var groupByPercentileQuery = (from tran in rs
                                           group tran by new
                                           {
-                                              tran.ClosingDate.Value.Month,
-                                              tran.ClosingDate.Value.Year,
+                                              Month = tran.ClosingDate != null ? tran.ClosingDate.Value.Month : 0,
+                                              Year = tran.ClosingDate != null ? tran.ClosingDate.Value.Year : 0,
                                               tran.RouteId,
                                               tran.BrandShipId,
                                               tran.ExportListId,
