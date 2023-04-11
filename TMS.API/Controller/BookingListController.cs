@@ -1,4 +1,5 @@
-﻿using Core.Enums;
+﻿using ClosedXML.Excel;
+using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
@@ -7,7 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Data.SqlClient;
+using System.Reflection;
 using TMS.API.Models;
+using Windows.UI.Xaml;
 
 namespace TMS.API.Controllers
 {
@@ -234,6 +237,183 @@ namespace TMS.API.Controllers
             await db.SaveChangesAsync();
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
             return true;
+        }
+
+        [HttpPost("api/BookingList/ExportExcelReportDataByFilter")]
+        public async Task<string> ExportExcelReportDataByFilter([FromBody] List<BookingList> bookingLists)
+        {
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add(nameof(Transportation));
+            worksheet.Style.Font.SetFontName("Times New Roman");
+            worksheet.Column(1).Width = 5;
+            worksheet.Column(1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(2).Width = 35;
+            worksheet.Column(2).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(2).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(2).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(2).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(3).Width = 15;
+            worksheet.Column(3).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(3).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(3).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(3).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(4).Width = 15;
+            worksheet.Column(4).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(4).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(4).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(4).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(5).Width = 15;
+            worksheet.Column(5).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(5).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(5).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(5).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(6).Width = 15;
+            worksheet.Column(6).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(6).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(6).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(6).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(7).Width = 15;
+            worksheet.Column(7).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(7).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(7).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(7).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(8).Width = 15;
+            worksheet.Column(8).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(8).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(8).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Column(8).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell("A1").Value = $"STT";
+            worksheet.Cell("A1").Style.Alignment.WrapText = true;
+            worksheet.Cell("A1").Style.Font.Bold = true;
+            worksheet.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("A1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("A1:B2").Column(1).Merge();
+            worksheet.Cell("B1").Value = $"Tuyến vận chuyển";
+            worksheet.Cell("B1").Style.Alignment.WrapText = true;
+            worksheet.Cell("B1").Style.Font.Bold = true;
+            worksheet.Cell("B1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("B1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("B1:C2").Column(1).Merge();
+
+            worksheet.Cell("C1").Value = $"Sản lượng";
+            worksheet.Cell("C1").Style.Alignment.WrapText = true;
+            worksheet.Cell("C1").Style.Font.Bold = true;
+            worksheet.Cell("C1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("C1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("C1:D1").Row(1).Merge();
+
+            worksheet.Cell("E1").Value = $"Thành tiền";
+            worksheet.Cell("E1").Style.Alignment.WrapText = true;
+            worksheet.Cell("E1").Style.Font.Bold = true;
+            worksheet.Cell("E1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("E1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("E1:F1").Row(1).Merge();
+            
+            worksheet.Cell("G1").Value = $"Giá trung bình";
+            worksheet.Cell("G1").Style.Alignment.WrapText = true;
+            worksheet.Cell("G1").Style.Font.Bold = true;
+            worksheet.Cell("G1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("G1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("G1:H1").Row(1).Merge();
+
+            worksheet.Cell("C2").Value = $"Cont 20";
+            worksheet.Cell("C2").Style.Alignment.WrapText = true;
+            worksheet.Cell("C2").Style.Font.Bold = true;
+            worksheet.Cell("C2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("C2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Cell("D2").Value = $"Cont 40";
+            worksheet.Cell("D2").Style.Alignment.WrapText = true;
+            worksheet.Cell("D2").Style.Font.Bold = true;
+            worksheet.Cell("D2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("D2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            worksheet.Cell("E2").Value = $"Cont 20";
+            worksheet.Cell("E2").Style.Alignment.WrapText = true;
+            worksheet.Cell("E2").Style.Font.Bold = true;
+            worksheet.Cell("E2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("E2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Cell("F2").Value = $"Cont 40";
+            worksheet.Cell("F2").Style.Alignment.WrapText = true;
+            worksheet.Cell("F2").Style.Font.Bold = true;
+            worksheet.Cell("F2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("F2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            worksheet.Cell("G2").Value = $"Cont 20";
+            worksheet.Cell("G2").Style.Alignment.WrapText = true;
+            worksheet.Cell("G2").Style.Font.Bold = true;
+            worksheet.Cell("G2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("G2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Cell("H2").Value = $"Cont 40";
+            worksheet.Cell("H2").Style.Alignment.WrapText = true;
+            worksheet.Cell("H2").Style.Font.Bold = true;
+            worksheet.Cell("H2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("H2").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            var routeIds = bookingLists.Select(y => y.RouteId).ToList();
+            var routes = await db.Route.Where(x => routeIds.Contains(x.Id)).ToListAsync();
+            var index = 3;
+            bookingLists.Reverse();
+            foreach (var item in bookingLists)
+            {
+                worksheet.Cell("A" + index).SetValue(index - 2);
+                worksheet.Cell("B" + index).SetValue(routes.Where(x => x.Id == item.RouteId).FirstOrDefault().Name);
+                worksheet.Cell("C" + index).SetValue(item.TotalCountCont20);
+                if (item.TotalCountCont20 > 0) { worksheet.Cell("C" + index).Style.NumberFormat.Format = "#,##"; }
+                worksheet.Cell("D" + index).SetValue(item.TotalCountCont40);
+                if (item.TotalCountCont40 > 0) { worksheet.Cell("D" + index).Style.NumberFormat.Format = "#,##"; }
+                worksheet.Cell("E" + index).SetValue(item.TotalTotalPriceCont20);
+                if (item.TotalTotalPriceCont20 > 0) { worksheet.Cell("E" + index).Style.NumberFormat.Format = "#,##"; }
+                worksheet.Cell("F" + index).SetValue(item.TotalTotalPriceCont40);
+                if (item.TotalTotalPriceCont40 > 0) { worksheet.Cell("F" + index).Style.NumberFormat.Format = "#,##"; }
+                worksheet.Cell("G" + index).SetValue(item.AVGTotalPriceCont20);
+                if (item.AVGTotalPriceCont20 > 0) { worksheet.Cell("G" + index).Style.NumberFormat.Format = "#,##"; }
+                worksheet.Cell("H" + index).SetValue(item.AVGTotalPriceCont40);
+                if (item.AVGTotalPriceCont40 > 0) { worksheet.Cell("H" + index).Style.NumberFormat.Format = "#,##"; }
+                index++;
+            }
+            var url = $"Báo cáo.xlsx";
+            workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
+            return url;
+        }
+
+        public async Task<List<List<Dictionary<string, object>>>> ConverSqlToDataSet(string reportQuery)
+        {
+            var connectionStr = _config.GetConnectionString("Default");
+            using var con = new SqlConnection(connectionStr);
+            var sqlCmd = new SqlCommand(reportQuery, con)
+            {
+                CommandType = CommandType.Text
+            };
+            con.Open();
+            var tables = new List<List<Dictionary<string, object>>>();
+            using (var reader = await sqlCmd.ExecuteReaderAsync())
+            {
+                do
+                {
+                    var table = new List<Dictionary<string, object>>();
+                    while (await reader.ReadAsync())
+                    {
+                        table.Add(Read(reader));
+                    }
+                    tables.Add(table);
+                } while (reader.NextResult());
+            }
+            return tables;
+        }
+
+        public IEnumerable<PropertyInfo> GetVariance(Expense change, Expense cutting)
+        {
+            foreach (PropertyInfo pi in change.GetType().GetProperties())
+            {
+                object valuechange = typeof(Expense).GetProperty(pi.Name).GetValue(change);
+                object valuecutting = typeof(Expense).GetProperty(pi.Name).GetValue(cutting);
+                valuechange = valuechange is null ? "NULL" : valuechange;
+                valuecutting = valuecutting is null ? "NULL" : valuecutting;
+                if (!valuechange.Equals(valuecutting))
+                { yield return pi; }
+            }
         }
     }
 }

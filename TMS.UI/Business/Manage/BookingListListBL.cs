@@ -301,6 +301,23 @@ namespace TMS.UI.Business.Manage
             masterData.Path = @"\26363\";
         }
 
+        public async Task ExportExcelReportDataByFilter()
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "BookingListReport");
+            if (gridView is null)
+            {
+                return;
+            }
+            var listViewItems = gridView.RowData.Data.ToList().Cast<BookingList>().ToList();
+            if (listViewItems.Count <= 0)
+            {
+                Toast.Warning("Chưa có dữ liệu");
+                return;
+            }
+            var path = await new Client(nameof(BookingList)).PostAsync<string>(listViewItems, "ExportExcelReportDataByFilter");
+            Client.Download($"/excel/Download/{path}");
+            Toast.Success("Xuất file thành công");
+        }
 
         public PatchUpdate GetPatchEntity(BookingList bookingList)
         {
