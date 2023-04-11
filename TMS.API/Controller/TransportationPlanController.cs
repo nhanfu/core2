@@ -106,7 +106,7 @@ namespace TMS.API.Controllers
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
             var entity = await db.TransportationPlan.FindAsync(idInt);
-            if (entity.IsTransportation)
+            if (entity.IsTransportation && entity.RequestChangeId is null)
             {
                 throw new ApiException("Kế hoạch đã được sử dụng!") { StatusCode = HttpStatusCode.BadRequest };
             }
@@ -373,7 +373,7 @@ namespace TMS.API.Controllers
 
         public override Task<ActionResult<TransportationPlan>> UpdateAsync([FromBody] TransportationPlan entity, string reasonOfChange = "")
         {
-            if (entity.IsTransportation)
+            if (entity.IsTransportation && entity.RequestChangeId is null)
             {
                 throw new ApiException("Kế hoạch đã được sử dụng!") { StatusCode = HttpStatusCode.BadRequest };
             }
