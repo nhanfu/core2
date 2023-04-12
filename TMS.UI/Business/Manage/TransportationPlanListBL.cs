@@ -427,6 +427,7 @@ namespace TMS.UI.Business.Manage
                         {
                             var newCommodityValue = await CreateCommodityValue(item);
                             await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
+                            commodidtyValues.Add(newCommodityValue);
                         }
                         index++;
                     }
