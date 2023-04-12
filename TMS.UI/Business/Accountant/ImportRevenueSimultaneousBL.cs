@@ -280,6 +280,133 @@ namespace TMS.UI.Business.Accountant
             };
         }
 
+        public async Task CreateRevenueSimultaneous()
+        {
+            var gridView = Parent.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
+            if (gridView is null)
+            {
+                return;
+            }
+            var ids = gridView.SelectedIds.ToList();
+            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()})");
+            var listViewItems = transportations.Where(x => x.IsLocked == false).ToList();
+            if (listViewItems.Count <= 0)
+            {
+                Toast.Warning("Không có DSVC nào có thể nhập");
+                return;
+            }
+            var listViewItemsIsSubmit = listViewItems.Where(x => x.IsSubmit == true).ToList();
+            var listViewItemsIsLockedRevenue = listViewItems.Where(x => x.IsLockedRevenue == true).ToList();
+            var idTrans = listViewItems.Select(x => x.Id).ToList();
+            var idTransIsSubmit = listViewItemsIsSubmit.Select(x => x.Id).ToList();
+            var idTransIsLockedRevenue = listViewItemsIsLockedRevenue.Select(x => x.Id).ToList();
+            if (listViewItemsIsSubmit.Count > 0 || listViewItemsIsLockedRevenue.Count > 0)
+            {
+                if ((revenueEntity.IsLotNo ||
+                    revenueEntity.IsLotDate ||
+                    revenueEntity.IsUnitPriceAfterTax ||
+                    revenueEntity.IsUnitPriceBeforeTax ||
+                    revenueEntity.IsReceivedPrice ||
+                    revenueEntity.IsCollectOnBehaftPrice ||
+                    revenueEntity.IsNotePayment) && listViewItemsIsSubmit.Count > 0)
+                {
+                    listViewItems = listViewItems.Where(x => idTransIsSubmit.All(y => y != x.Id)).ToList();
+                }
+                if ((revenueEntity.IsVat ||
+                    revenueEntity.IsVatPrice ||
+                    revenueEntity.IsTotalPriceBeforTax ||
+                    revenueEntity.IsTotalPrice ||
+                    revenueEntity.IsVendorVatId ||
+                    revenueEntity.IsInvoinceNo ||
+                    revenueEntity.IsInvoinceDate) && listViewItemsIsLockedRevenue.Count > 0)
+                {
+                    listViewItems = listViewItems.Where(x => idTransIsLockedRevenue.All(y => y != x.Id)).ToList();
+                }
+                if (listViewItems.Count <= 0)
+                {
+                    Toast.Warning("Không có DSVC nào có thể nhập");
+                    return;
+                }
+            }
+            var confirm = new ConfirmDialog
+            {
+                Content = "Bạn có chắc chắn muốn tạo doanh thu cho " + listViewItems.Count + " DSVC ?",
+            };
+            confirm.Render();
+            var revenues = new List<Revenue>();
+            confirm.YesConfirmed += async () =>
+            {
+                Spinner.AppendTo(this.Element, false, true, 20000);
+                foreach (var item in listViewItems)
+                {
+                    var newRevenue = new Revenue()
+                    {
+                        LotNo = revenueEntity.IsLotNo ? revenueEntity.LotNo : null,
+                        LotDate = revenueEntity.IsLotDate ? revenueEntity.LotDate : null,
+                        InvoinceNo = revenueEntity.IsInvoinceNo ? revenueEntity.InvoinceNo : null,
+                        InvoinceDate = revenueEntity.IsInvoinceDate ? revenueEntity.InvoinceDate : null,
+                        UnitPriceBeforeTax = revenueEntity.IsUnitPriceBeforeTax ? revenueEntity.UnitPriceBeforeTax : null,
+                        UnitPriceAfterTax = revenueEntity.IsUnitPriceAfterTax ? revenueEntity.UnitPriceAfterTax : null,
+                        ReceivedPrice = revenueEntity.IsReceivedPrice ? revenueEntity.ReceivedPrice : null,
+                        CollectOnBehaftPrice = revenueEntity.IsCollectOnBehaftPrice ? revenueEntity.CollectOnBehaftPrice : null,
+                        Vat = revenueEntity.IsVat ? revenueEntity.Vat : null,
+                        TotalPriceBeforTax = revenueEntity.IsTotalPriceBeforTax ? revenueEntity.TotalPriceBeforTax : null,
+                        VatPrice = revenueEntity.IsVatPrice ? revenueEntity.VatPrice : null,
+                        TotalPrice = revenueEntity.IsTotalPrice ? revenueEntity.TotalPrice : null,
+                        NotePayment = revenueEntity.IsNotePayment ? revenueEntity.NotePayment : null,
+                        VendorVatId = revenueEntity.IsVendorVatId ? revenueEntity.VendorVatId : null,
+                        BossId = item.BossId,
+                        ContainerNo = item.ContainerNo,
+                        SealNo = item.SealNo,
+                        ContainerTypeId = item.ContainerTypeId,
+                        ClosingDate = item.ClosingDate,
+                        TransportationId = item.Id,
+                        Id = 0,
+                        Active = true,
+                        InsertedDate = DateTime.Now.Date,
+                        InsertedBy = Client.Token.UserId
+                    };
+                    if (revenueEntity.IsLotNo ||
+                        revenueEntity.IsLotDate ||
+                        revenueEntity.IsUnitPriceAfterTax ||
+                        revenueEntity.IsUnitPriceBeforeTax ||
+                        revenueEntity.IsReceivedPrice ||
+                        revenueEntity.IsCollectOnBehaftPrice ||
+                        revenueEntity.IsNotePayment)
+                    {
+                        if (Client.Token.RoleIds.Where(x => x == 34 || x == 8).Any())
+                        {
+                            revenueEntity.UserUpdate1 = Client.Token.UserId;
+                        }
+                    }
+                    if (revenueEntity.IsVat ||
+                        revenueEntity.IsVatPrice ||
+                        revenueEntity.IsTotalPriceBeforTax ||
+                        revenueEntity.IsTotalPrice ||
+                        revenueEntity.IsInvoinceNo ||
+                        revenueEntity.IsInvoinceDate)
+                    {
+                        if (RoleIds.Where(x => x == 46 || x == 8).Any())
+                        {
+                            revenueEntity.UserUpdate2 = Client.Token.UserId;
+                        }
+                    }
+                    revenues.Add(newRevenue);
+                }
+                var res = await new Client(nameof(Revenue)).PostAsync<bool>(revenues, "CreateRevenueSimultaneous");
+                if (res)
+                {
+                    await gridView.ApplyFilter(true);
+                    Dispose();
+                    Toast.Success("Đã tạo thành công");
+                }
+                else
+                {
+                    Toast.Success("Đã có lỗi trong quá trình xử lý");
+                }
+            };
+        }
+
         public override void Cancel()
         {
             this.Dispose();

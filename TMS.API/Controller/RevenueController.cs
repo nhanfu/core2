@@ -371,6 +371,18 @@ namespace TMS.API.Controllers
             return true;
         }
 
+        [HttpPost("api/Revenue/CreateRevenueSimultaneous")]
+        public async Task<bool> CreateRevenueSimultaneous([FromBody] List<Revenue> revenues)
+        {
+            if (revenues == null)
+            {
+                return false;
+            }
+            await db.AddRangeAsync(revenues);
+            await db.SaveChangesAsync();
+            return true;
+        }
+
         [HttpPost("api/Revenue/CreateRevenues")]
         public async Task<bool> CreateRevenues([FromBody] List<Transportation> transportations)
         {
