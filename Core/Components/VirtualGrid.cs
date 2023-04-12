@@ -178,7 +178,7 @@ namespace Core.Components
             {
                 Window.ClearTimeout(_renderPrepareCacheAwaiter);
                 _waitingLoad = true;
-                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(skip), 5000);
+                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(skip), 10000);
             }
             return rows;
         }
@@ -197,7 +197,7 @@ namespace Core.Components
             if (_waitingLoad)
             {
                 Window.ClearTimeout(_renderPrepareCacheAwaiter);
-                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 3000);
+                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 10000);
             }
             if (_renderingViewPort || !VirtualScroll)
             {
@@ -251,38 +251,36 @@ namespace Core.Components
 
         public override void DisposeSumary()
         {
-            _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 3000);
+            _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 10000);
             base.DisposeSumary();
         }
 
         protected override void HotKeyF6Handler(Event e)
         {
             var keyCode = e.KeyCodeEnum();
-            var selectedRow = AllListViewItem.FirstOrDefault(x => x.Selected);
             if (keyCode == KeyCodeEnum.F6)
             {
                 e.PreventDefault();
                 e.StopPropagation();
-                if (CellSelected.Count > 0)
-                {
-                    CellSelected.RemoveAt(CellSelected.Count - 1);
-                    if (Wheres.Count - 1 >= 0)
-                    {
-                        Wheres.RemoveAt(Wheres.Count - 1);
-                    }
-                    AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
-                    Task.Run(async () =>
-                    {
-                        await ActionFilter();
-                    });
-                }
                 if (_summarys.Any())
                 {
                     var lastElement = _summarys.LastOrDefault();
-                    if (lastElement.InnerHTML == string.Empty || lastElement.Style.Display.ToString() == string.Empty)
+                    if (lastElement.InnerHTML == string.Empty)
                     {
+                        if (CellSelected.Count > 0)
+                        {
+                            CellSelected.RemoveAt(CellSelected.Count - 1);
+                            if (Wheres.Count - 1 >= 0)
+                            {
+                                Wheres.RemoveAt(Wheres.Count - 1);
+                            }
+                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                            Task.Run(async () =>
+                            {
+                                await ActionFilter();
+                            });
+                        }
                         _summarys.RemoveAt(_summarys.Count - 1);
-                        lastElement.Remove();
                     }
                     else
                     {
@@ -290,7 +288,28 @@ namespace Core.Components
                         {
                             Window.ClearTimeout(_renderPrepareCacheAwaiter);
                         }
-                        lastElement.Show();
+                        if (lastElement.Style.Display.ToString() == "none")
+                        {
+                            if (CellSelected.Count > 0)
+                            {
+                                CellSelected.RemoveAt(CellSelected.Count - 1);
+                                if (Wheres.Count - 1 >= 0)
+                                {
+                                    Wheres.RemoveAt(Wheres.Count - 1);
+                                }
+                                AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                                Task.Run(async () =>
+                                {
+                                    await ActionFilter();
+                                });
+                            }
+                            lastElement.Show();
+                        }
+                        else
+                        {
+                            _summarys.RemoveAt(_summarys.Count - 1);
+                            lastElement.Remove();
+                        }
                     }
                 }
             }
@@ -555,7 +574,7 @@ namespace Core.Components
             };
             confirmDialog.Canceled += () =>
             {
-                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 3000);
+                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 10000);
             };
             confirmDialog.Entity = new { ReasonOfChange = string.Empty };
             confirmDialog.Render();

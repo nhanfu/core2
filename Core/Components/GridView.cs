@@ -1274,26 +1274,26 @@ namespace Core.Components
             {
                 e.PreventDefault();
                 e.StopPropagation();
-                if (CellSelected.Count > 0)
-                {
-                    CellSelected.RemoveAt(CellSelected.Count - 1);
-                    if (Wheres.Count - 1 >= 0)
-                    {
-                        Wheres.RemoveAt(Wheres.Count - 1);
-                    }
-                    AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
-                    Task.Run(async () =>
-                    {
-                        await ActionFilter();
-                    });
-                }
                 if (_summarys.Any())
                 {
                     var lastElement = _summarys.LastOrDefault();
-                    if (lastElement.InnerHTML == string.Empty || lastElement.Style.Display.ToString() == string.Empty)
+                    if (lastElement.InnerHTML == string.Empty)
                     {
                         _summarys.RemoveAt(_summarys.Count - 1);
                         lastElement.Remove();
+                        if (CellSelected.Count > 0)
+                        {
+                            CellSelected.RemoveAt(CellSelected.Count - 1);
+                            if (Wheres.Count - 1 >= 0)
+                            {
+                                Wheres.RemoveAt(Wheres.Count - 1);
+                            }
+                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                            Task.Run(async () =>
+                            {
+                                await ActionFilter();
+                            });
+                        }
                     }
                     else
                     {
