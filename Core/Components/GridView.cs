@@ -546,7 +546,7 @@ namespace Core.Components
                     else
                     {
                         advo = cell.Operator == "not in" ? AdvSearchOperation.NotLike : AdvSearchOperation.Like;
-                        where = cell.Operator == "not in" ? $"([{GuiInfo.RefName}].{cell.FieldName} != N'%{cell.Value}%' or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $"[{GuiInfo.RefName}].{cell.FieldName} like N'%{cell.Value}%'";
+                        where = cell.Operator == "not in" ? $"(CHARINDEX('{cell.Value}', [{GuiInfo.RefName}].{cell.FieldName}) = 0 or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $"CHARINDEX('{cell.Value}', [{GuiInfo.RefName}].{cell.FieldName}) > 0";
                     }
                     lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
@@ -1892,7 +1892,10 @@ namespace Core.Components
                     rs = rowSection.Entity;
                     Dirty = true;
                 }
-                Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
+                if(GuiInfo.ComponentType!= nameof(VirtualGrid))
+                {
+                    Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
+                }
                 await LoadMasterData(new object[] { rs });
                 rowSection.UpdateView(true);
                 MoveEmptyRow(rowSection);

@@ -162,7 +162,10 @@ namespace TMS.API.Controllers
             await db.Entry(entity).ReloadAsync();
             var oldEntity = await db.TransportationPlan.FindAsync(entity.RequestChangeId);
             var transportations = await db.Transportation.Where(x => x.TransportationPlanId == oldEntity.Id).ToListAsync();
-            oldEntity.CopyPropFrom(entity, nameof(TransportationPlan.Id), nameof(TransportationPlan.RequestChangeId), nameof(TransportationPlan.InsertedDate), nameof(TransportationPlan.InsertedBy));
+            oldEntity.CopyPropFrom(entity, nameof(TransportationPlan.Id), 
+                nameof(TransportationPlan.RequestChangeId),
+                nameof(TransportationPlan.InsertedDate), 
+                nameof(TransportationPlan.InsertedBy));
             transportations.ForEach(transportation =>
             {
                 transportation.UserId = oldEntity.UserId;
