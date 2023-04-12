@@ -984,8 +984,15 @@ namespace Core.Components
                             var check = SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName);
                             if (check != null)
                             {
-                                SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName).Desc = !check.Desc;
-                                th.Element.AddClass(!check.Desc ? "asc" : "desc");
+                                if ((!check.Desc) == false)
+                                {
+                                    SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName).Desc = !check.Desc;
+                                    th.Element.AddClass(!check.Desc ? "asc" : "desc");
+                                }
+                                else
+                                {
+                                    SortedField.Remove(SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName));
+                                }
                             }
                             else
                             {
@@ -1892,7 +1899,7 @@ namespace Core.Components
                     rs = rowSection.Entity;
                     Dirty = true;
                 }
-                if(GuiInfo.ComponentType!= nameof(VirtualGrid))
+                if (GuiInfo.ComponentType != nameof(VirtualGrid))
                 {
                     Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
                 }
