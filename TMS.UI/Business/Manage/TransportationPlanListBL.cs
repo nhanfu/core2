@@ -544,9 +544,13 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public void Analysis(TransportationPlan transportationPlan)
+        public void Analysis(TransportationPlan transportationPlan, PatchUpdate patchUpdate)
         {
-            if (transportationPlan.TransportationTypeId is null || transportationPlan.BossId is null || transportationPlan.CommodityId is null || transportationPlan.ContainerTypeId is null || transportationPlan.RouteId is null)
+            if ((transportationPlan.TransportationTypeId is null || transportationPlan.BossId is null || transportationPlan.CommodityId is null || transportationPlan.ContainerTypeId is null || transportationPlan.RouteId is null))
+            {
+                return;
+            }
+            if (!patchUpdate.Changes.Any(x => x.Field == nameof(transportationPlan.BossId) || x.Field == nameof(transportationPlan.CommodityId) || x.Field == nameof(transportationPlan.ContainerTypeId) || x.Field == nameof(transportationPlan.RouteId)))
             {
                 return;
             }
@@ -588,12 +592,12 @@ namespace TMS.UI.Business.Manage
                     transportationPlan.IsSettingsInsurance = true;
                     Toast.Success("GTHH đã tồn tại trong hệ thống với giá trị là: " + decimal.Parse(transportationPlan.CommodityValue.ToString()).ToString("N0"));
                 }
-                await new Client(nameof(TransportationPlan)).PatchAsync<object>(GetPatchEntity(transportationPlan));
+                await new Client(nameof(TransportationPlan)).PatchAsync<object>(GetPatchEntity(transportationPlan), ig: $"&disableTrigger=true");
                 if (commodityValueDB == null || (transportationPlan.TransportationTypeId != null && transportationPlan.JourneyId == null))
                 {
                     await SettingsCommodityValue(transportationPlan);
                 }
-            }, 500);
+            }, 200);
         }
 
         private async Task SettingsCommodityValue(TransportationPlan transportationPlan)
@@ -669,12 +673,12 @@ namespace TMS.UI.Business.Manage
 
         private int Awaiter;
 
-        public void SetPolicy(TransportationPlan transportationPlan)
+        public void SetPolicy(TransportationPlan transportationPlan, PatchUpdate patchUpdate)
         {
             Window.ClearTimeout(Awaiter);
             Awaiter = Window.SetTimeout(async () =>
             {
-                if (transportationPlan.RouteId != null)
+                if (transportationPlan.RouteId != null && patchUpdate.Changes.Any(x => x.Field == nameof(TransportationPlan.RouteId)))
                 {
                     var transportationTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 11670");
                     var route = await new Client(nameof(Route)).FirstOrDefaultAsync<Route>($"?$filter=Active eq true and Id eq {transportationPlan.RouteId}");
@@ -690,9 +694,9 @@ namespace TMS.UI.Business.Manage
                     {
                         transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Tàu")).FirstOrDefault().Id;
                     }
-                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityTransportationType(transportationPlan));
+                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityTransportationType(transportationPlan), ig: $"&disableTrigger=true");
                 }
-            }, 500);
+            }, 200);
         }
 
         public void AfterPatchUpdateTransportationPlan(TransportationPlan transportationPlan, PatchUpdate patchUpdate, ListViewItem listViewItem)
@@ -720,8 +724,8 @@ namespace TMS.UI.Business.Manage
                 listViewItem.ListViewSection.ListView.RemoveRowById(transportationPlan.Id);
                 listViewItem.ListViewSection.ListView.SelectedIds.Remove(transportationPlan.Id);
             }
-            SetPolicy(transportationPlan);
-            Analysis(transportationPlan);
+            SetPolicy(transportationPlan, patchUpdate);
+            Analysis(transportationPlan, patchUpdate);
         }
 
         private static bool ListViewItemFilter(object updatedData, EditableComponent x)

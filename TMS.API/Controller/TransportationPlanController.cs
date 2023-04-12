@@ -141,10 +141,7 @@ namespace TMS.API.Controllers
                         }
                         command.ExecuteNonQuery();
                         transaction.Commit();
-                        if (!disableTrigger)
-                        {
-                            await db.Entry(entity).ReloadAsync();
-                        }
+                        await db.Entry(entity).ReloadAsync();
                         return entity;
                     }
                 }
@@ -162,9 +159,9 @@ namespace TMS.API.Controllers
             await db.Entry(entity).ReloadAsync();
             var oldEntity = await db.TransportationPlan.FindAsync(entity.RequestChangeId);
             var transportations = await db.Transportation.Where(x => x.TransportationPlanId == oldEntity.Id).ToListAsync();
-            oldEntity.CopyPropFrom(entity, nameof(TransportationPlan.Id), 
+            oldEntity.CopyPropFrom(entity, nameof(TransportationPlan.Id),
                 nameof(TransportationPlan.RequestChangeId),
-                nameof(TransportationPlan.InsertedDate), 
+                nameof(TransportationPlan.InsertedDate),
                 nameof(TransportationPlan.InsertedBy));
             transportations.ForEach(transportation =>
             {

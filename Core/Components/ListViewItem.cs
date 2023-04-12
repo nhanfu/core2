@@ -312,6 +312,7 @@ namespace Core.Components
                 }
             }
             var rs = await new Client(GuiInfo.Reference.Name).PatchAsync<object>(pathModel, ig: $"&disableTrigger={ignoreSync}");
+            await Task.Delay(50);
             Entity.CopyPropFrom(rs);
             if (GuiInfo.ComponentType == nameof(VirtualGrid))
             {
@@ -319,7 +320,7 @@ namespace Core.Components
             }
             await ListViewSection.ListView.LoadMasterData(new object[] { rs });
             EmptyRow = false;
-            UpdateView(true);
+            UpdateView();
             var changing = BuildTextHistory().ToString();
             if (!changing.IsNullOrWhiteSpace())
             {
