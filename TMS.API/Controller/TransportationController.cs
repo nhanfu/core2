@@ -1872,7 +1872,7 @@ namespace TMS.API.Controllers
                     var task = new TaskNotification()
                     {
                         Title = $"{currentUser.FullName}",
-                        Description = $"Đã gửi yêu cầu mở khóa",
+                        Description = $"Đã gửi yêu cầu mở khóa Khai thác",
                         EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
                         RecordId = transportation.Id,
                         Attachment = "fal fa-paper-plane",
@@ -1939,7 +1939,7 @@ namespace TMS.API.Controllers
                     var task = new TaskNotification()
                     {
                         Title = $"{currentUser.FullName}",
-                        Description = $"Đã gửi yêu cầu mở khóa",
+                        Description = $"Đã gửi yêu cầu mở khóa Kế toán",
                         EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
                         RecordId = transportation.Id,
                         Attachment = "fal fa-paper-plane",
@@ -2006,7 +2006,7 @@ namespace TMS.API.Controllers
                     var task = new TaskNotification()
                     {
                         Title = $"{currentUser.FullName}",
-                        Description = $"Đã gửi yêu cầu mở khóa",
+                        Description = $"Đã gửi yêu cầu mở khóa Hệ thống",
                         EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
                         RecordId = transportation.Id,
                         Attachment = "fal fa-paper-plane",
@@ -2073,7 +2073,7 @@ namespace TMS.API.Controllers
                     var task = new TaskNotification()
                     {
                         Title = $"{currentUser.FullName}",
-                        Description = $"Đã gửi yêu cầu mở khóa",
+                        Description = $"Đã gửi yêu cầu mở khóa Cước tàu",
                         EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
                         RecordId = transportation.Id,
                         Attachment = "fal fa-paper-plane",
