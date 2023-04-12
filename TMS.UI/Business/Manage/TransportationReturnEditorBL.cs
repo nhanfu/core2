@@ -57,6 +57,8 @@ namespace TMS.UI.Business.Manage
                 };
                 var expenses = item.Expense;
                 foreach (var itemDetail in expenseTypes.Select(x => x.Additional).Distinct().ToList())
+
+
                 {
                     var expenseTypeThisIds = expenseTypes.Where(x => x.Additional == itemDetail).Select(x => x.Id).Distinct().ToList();
                     var totalThisValue = expenses.Where(x => expenseTypeThisIds.Contains(x.ExpenseTypeId.Value)).Sum(x => x.TotalPriceAfterTax);

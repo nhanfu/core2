@@ -115,7 +115,15 @@ namespace TMS.UI.Business.Manage
                 return false;
             }
             var rs = await base.Save(entity);
-            Dispose();
+            if (rs)
+            {
+                Toast.Success("Thêm mới thành công");
+                Dispose();
+            }
+            else
+            {
+                Toast.Warning("Lỗi không thể thêm mới");
+            }
             return rs;
         }
 
@@ -145,7 +153,7 @@ namespace TMS.UI.Business.Manage
             {
                 transportationPlanEntity.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Tàu")).FirstOrDefault().Id;
             }
-            this.UpdateView(false, nameof(TransportationPlan.TransportationTypeId));
+            UpdateView(false, nameof(TransportationPlan.TransportationTypeId));
         }
 
         public async Task Analysis()
@@ -197,7 +205,7 @@ namespace TMS.UI.Business.Manage
                 }
                 this.SetDisabled(false, "CustomerTypeId", "IsWet", "IsBought", "CommodityValue", "IsCompany", "SteamingTerms", "BreakTerms", "JourneyId");
             }
-            this.UpdateView(false, nameof(TransportationPlan.CustomerTypeId),
+            UpdateView(false, nameof(TransportationPlan.CustomerTypeId),
                                            nameof(TransportationPlan.IsWet),
                                            nameof(TransportationPlan.IsBought),
                                            nameof(TransportationPlan.CommodityValue),

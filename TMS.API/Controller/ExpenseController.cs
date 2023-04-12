@@ -20,7 +20,7 @@ namespace TMS.API.Controllers
 {
     public class ExpenseController : TMSController<Expense>
     {
-        public ExpenseController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public ExpenseController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 
@@ -29,7 +29,7 @@ namespace TMS.API.Controllers
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
             var entity = await db.Expense.FindAsync(idInt);
-            if (patch.Changes.Any(x => x.Field == nameof(entity.ExpenseTypeId)))
+            if (patch.Changes.Any(x => x.Field == nameof(entity.ExpenseTypeId)) && entity.UnitPrice > 0)
             {
                 var entityCheck = new Expense();
                 entityCheck.CopyPropFrom(entity);
@@ -82,7 +82,7 @@ namespace TMS.API.Controllers
                         {
                             command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
                         }
-                        command.ExecuteNonQuery();
+                        var rs = command.ExecuteNonQuery();
                         transaction.Commit();
                         await db.Entry(entity).ReloadAsync();
                         return entity;
@@ -482,7 +482,7 @@ namespace TMS.API.Controllers
                         containerId = containers.Find(x => x.Name.Contains("50DC")).Id;
                     }
                     var commodityValue = commodityValues.Where(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == containerId && (x.StartDate >= item.StartShip || item.StartShip == null)).FirstOrDefault();
-                    if (commodityValue != null){ commodityValueOfTrans.Add(item.Id, commodityValue); }
+                    if (commodityValue != null) { commodityValueOfTrans.Add(item.Id, commodityValue); }
                 }
             }
 
@@ -563,7 +563,7 @@ namespace TMS.API.Controllers
                                     CalcInsuranceFees(item, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
                                 }
                             }
-                            else if(item.ExpenseTypeId == 15981)
+                            else if (item.ExpenseTypeId == 15981)
                             {
                                 commodityValue = commodityValuesSOC.Where(x => x.ContainerId == containerTypeOfExpenses.GetValueOrDefault(item.Id).Id).FirstOrDefault();
                                 if (commodityValue != null)
@@ -587,7 +587,7 @@ namespace TMS.API.Controllers
                         if (tran.SealNo?.Trim() != item.SealNo?.Trim()) { item.SealNo = tran.SealNo; }
                         if (tran.Cont20 != item.Cont20) { item.Cont20 = tran.Cont20; }
                         if (tran.Cont40 != item.Cont40) { item.Cont40 = tran.Cont40; }
-                        if (tran.Note2?.Trim() != item.Notes?.Trim()) {item.Notes = tran.Note2; }
+                        if (tran.Note2?.Trim() != item.Notes?.Trim()) { item.Notes = tran.Note2; }
                         if (tran.ClosingDate != item.StartShip && (item.JourneyId == 12114 || item.JourneyId == 16001)) { item.StartShip = tran.ClosingDate; }
                         if (tran.StartShip != item.StartShip && (item.JourneyId != 12114 && item.JourneyId != 16001)) { item.StartShip = tran.StartShip; }
                     }
@@ -601,7 +601,7 @@ namespace TMS.API.Controllers
             db.Expense.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Expense");
             return true;
         }
-        
+
 
         [HttpPost("api/Expense/ExportCheckChange")]
         public async Task<string> ExportCheckChange([FromBody] List<int> expenseIds)
