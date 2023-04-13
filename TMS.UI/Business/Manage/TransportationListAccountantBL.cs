@@ -449,10 +449,12 @@ namespace TMS.UI.Business.Manage
                 x.Field == nameof(transportation.PolicyId) ||
                 x.Field == nameof(transportation.RouteId) ||
                 x.Field == nameof(transportation.BrandShipId) ||
+                x.Field == nameof(transportation.LineId) ||
                 x.Field == nameof(transportation.ShipId) ||
                 x.Field == nameof(transportation.Trip) ||
                 x.Field == nameof(transportation.StartShip) ||
                 x.Field == nameof(transportation.ContainerTypeId) ||
+                x.Field == nameof(transportation.SocId) ||
                 x.Field == nameof(transportation.BookingId)))
                 {
                     if (transportation.LockShip)

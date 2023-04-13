@@ -70,7 +70,8 @@ namespace TMS.API.Controllers
                     }
                 }
 
-                if (patch.Changes.Any(x => x.Field == nameof(entity.ClosingDate)
+                if (patch.Changes.Any(x => x.Field == nameof(entity.ShipPrice)
+                || x.Field == nameof(entity.PolicyId)
                 || x.Field == nameof(entity.RouteId)
                 || x.Field == nameof(entity.BrandShipId)
                 || x.Field == nameof(entity.LineId)
@@ -78,7 +79,8 @@ namespace TMS.API.Controllers
                 || x.Field == nameof(entity.Trip)
                 || x.Field == nameof(entity.StartShip)
                 || x.Field == nameof(entity.ContainerTypeId)
-                || x.Field == nameof(entity.SocId)) && entity.BookingId != null)
+                || x.Field == nameof(entity.SocId)
+                || x.Field == nameof(entity.BookingId)) && entity.BookingId != null)
                 {
                     if (entity.LockShip)
                     {
