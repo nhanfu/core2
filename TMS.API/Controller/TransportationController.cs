@@ -527,7 +527,7 @@ namespace TMS.API.Controllers
                 }
                 else
                 {
-                    sql += $" where t.ReturnDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})"
+                    sql += $" where t.ReturnDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnVendorId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})"
                 + $"  order by t.ReturnDate asc";
                 }
             }
