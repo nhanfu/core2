@@ -178,7 +178,7 @@ namespace Core.Components
             {
                 Window.ClearTimeout(_renderPrepareCacheAwaiter);
                 _waitingLoad = true;
-                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(skip), 10000);
+                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(skip), 7000);
             }
             return rows;
         }
@@ -197,7 +197,7 @@ namespace Core.Components
             if (_waitingLoad)
             {
                 Window.ClearTimeout(_renderPrepareCacheAwaiter);
-                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 10000);
+                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 7000);
             }
             if (_renderingViewPort || !VirtualScroll)
             {
@@ -251,7 +251,7 @@ namespace Core.Components
 
         public override void DisposeSumary()
         {
-            _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 10000);
+            _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 7000);
             base.DisposeSumary();
         }
 
@@ -574,7 +574,7 @@ namespace Core.Components
             };
             confirmDialog.Canceled += () =>
             {
-                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 10000);
+                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 7000);
             };
             confirmDialog.Entity = new { ReasonOfChange = string.Empty };
             confirmDialog.Render();
