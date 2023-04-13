@@ -305,7 +305,7 @@ namespace TMS.API.Controllers
             worksheet.Cell("A6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("A6:B7").Column(1).Merge();
 
-            worksheet.Cell("B6").Value = $"Ngày đóng hàng";
+            worksheet.Cell("B6").Value = transportation.TypeId == 1 ? $"Ngày đóng hàng" : "Ngày nhận hàng";
             worksheet.Cell("B6").Style.Alignment.WrapText = true;
             worksheet.Cell("B6").Style.Font.Bold = true;
             worksheet.Cell("B6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -354,14 +354,14 @@ namespace TMS.API.Controllers
             worksheet.Cell("H6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("H6:I7").Column(1).Merge();
 
-            worksheet.Cell("I6").Value = $"Nơi lấy rỗng";
+            worksheet.Cell("I6").Value = transportation.TypeId == 1 ? $"Nơi lấy rỗng" : "Cảng nâng hàng";
             worksheet.Cell("I6").Style.Font.Bold = true;
             worksheet.Cell("I6").Style.Alignment.WrapText = true;
             worksheet.Cell("I6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("I6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("I6:J7").Column(1).Merge();
 
-            worksheet.Cell("J6").Value = $"Cảng hạ hàng";
+            worksheet.Cell("J6").Value = transportation.TypeId == 1 ? $"Cảng hạ hàng" : "Nơi trả rỗng";
             worksheet.Cell("J6").Style.Font.Bold = true;
             worksheet.Cell("J6").Style.Alignment.WrapText = true;
             worksheet.Cell("J6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -492,28 +492,12 @@ namespace TMS.API.Controllers
             worksheet.Cell("U7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("U7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             var sql = string.Empty;
-
-            sql += @$"select ClosingDate, ClosingDateCheck, ClosingDateUpload
-                    ,b.Name as Boss, BossCheck, BossCheckUpload
-                    ,ContainerNo, ContainerNoCheck, ContainerNoUpload
-                    ,SealNo, SealCheck, SealCheckUpload
-                    ,Cont20 as Cont20, Cont20Check, Cont20CheckUpload
-                    ,Cont40 as Cont40, Cont40Check, Cont40CheckUpload
-                    ,r.Description as Received, ReceivedCheck, ReceivedCheckUpload
-                    ,CollectOnBehaftInvoinceNoFee as CollectOnBehaftInvoinceNoFee, CollectOnBehaftInvoinceNoFeeCheck, CollectOnBehaftInvoinceNoFeeUpload
-                    ,CollectOnBehaftFee as CollectOnBehaftFee, CollectOnBehaftFeeCheck, CollectOnBehaftFeeUpload,TotalPriceAfterTaxUpload
-                    ,pi.Name as PickupEmpty, PickupEmptyCheck, PickupEmptyUpload
-                    ,po.Name as PortLoading, PortLoadingCheck, PortLoadingUpload
-                    ,LiftFee as LiftFee, LiftFeeCheck, LiftFeeCheckUpload
-                    ,LandingFee as LandingFee, LandingFeeCheck, LandingFeeUpload
-                    ,CollectOnSupPrice as CollectOnSupPrice, CollectOnSupPriceCheck, CollectOnSupPriceUpload
-                    ,ClosingPercent as ClosingPercent, ClosingPercentCheck, ClosingPercentUpload
-                    ,Fee1, Fee2, Fee3,Fee4, Fee5, Fee6
-                    ,Fee1Upload, Fee2Upload, Fee3Upload,Fee4Upload, Fee5Upload, Fee6Upload
-                    ,FeeVat1,FeeVat2,FeeVat3
-                    ,FeeVat1Upload,FeeVat1Upload,FeeVat1Upload
-                    ,ClosingCombinationUnitPrice as ClosingCombinationUnitPrice, ClosingCombinationUnitPriceCheck, ClosingCombinationUnitPriceUpload
-                    ,IsEmptyLift, IsSeftPayment, IsLanding, IsSeftPaymentLand
+            sql += @$"select 
+                    b.Name as Boss
+                    ,r.Description as Received
+                    ,pi.Name as PickupEmpty
+                    ,po.Name as PortLoading
+                    ,t.*
                     from Transportation t
                     left join Vendor b on b.Id = t.BossId
                     left join Location r on r.Id = {(transportation.TypeId == 2 ? "t.ReturnId" : "t.ReceivedId")}
@@ -521,20 +505,36 @@ namespace TMS.API.Controllers
                     left join Location po on po.Id = {(transportation.TypeId == 2 ? "t.PortLiftId" : "t.PortLoadingId")}";
             if (transportation.Id > 0)
             {
-                sql += $" where t.CheckFeeHistoryId = {transportation.Id}" +
+                if (transportation.TypeId == 1)
+                {
+                    sql += $" where t.CheckFeeHistoryId = {transportation.Id}" +
                     $"  order by t.OrderExcel asc";
+                }
+                else
+                {
+                    sql += $" where t.CheckFeeHistoryReturnId = {transportation.Id}" +
+                    $"  order by t.OrderExcelReturn asc";
+                }
             }
             else
             {
-                sql += $" where t.ClosingDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})"
-                + $"  order by t.OrderExcel asc";
+                if (transportation.TypeId == 1)
+                {
+                    sql += $" where t.ClosingDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})"
+                + $"  order by t.ClosingDate asc";
+                }
+                else
+                {
+                    sql += $" where t.ReturnDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})"
+                + $"  order by t.ReturnDate asc";
+                }
             }
             var data = await ConverSqlToDataSet(sql);
             var start = 8;
             foreach (var item in data[0])
             {
                 worksheet.Cell("A" + start).SetValue(start - 7);
-                worksheet.Cell("B" + start).SetValue(DateTime.Parse(item[nameof(Transportation.ClosingDate)].ToString()));
+                worksheet.Cell("B" + start).SetValue(transportation.TypeId ==1 ? DateTime.Parse(item[nameof(Transportation.ClosingDate)].ToString()) : DateTime.Parse(item[nameof(Transportation.ReturnDate)].ToString()));
                 worksheet.Cell("C" + start).SetValue(item["Boss"] is null ? null : item["Boss"].ToString().DecodeSpecialChar());
                 worksheet.Cell("D" + start).SetValue(item["ContainerNo"] is null ? null : item["ContainerNo"].ToString());
                 var seal = item["SealNo"] is null ? null : item["SealNo"].ToString();
@@ -549,74 +549,121 @@ namespace TMS.API.Controllers
                 worksheet.Cell("H" + start).SetValue(item["Received"] is null ? null : item["Received"].ToString().DecodeSpecialChar());
                 var pick = item["PickupEmpty"];
                 worksheet.Cell("I" + start).SetValue(pick is null ? null : pick.ToString().DecodeSpecialChar());
-                if (bool.Parse(item["IsEmptyLift"].ToString()) || bool.Parse(item["IsSeftPayment"].ToString()))
+                if (bool.Parse(item["IsEmptyLift"].ToString())
+                    || bool.Parse(item["IsSeftPayment"].ToString()))
                 {
                     item["LiftFee"] = null;
                 }
-                worksheet.Cell("K" + start).SetValue(item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()));
+                if (bool.Parse(item["IsSeftPaymentReturn"].ToString())
+                    || bool.Parse(item["IsLiftFee"].ToString()))
+                {
+                    item["ReturnLiftFee"] = null;
+                }
+                worksheet.Cell("K" + start).SetValue(transportation.TypeId == 1 ? (item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()))
+                    : (item["ReturnLiftFee"] is null ? default(decimal) : decimal.Parse(item["ReturnLiftFee"].ToString())));
                 worksheet.Cell("K" + start).Style.NumberFormat.Format = "#,##";
-                if (bool.Parse(item["IsLanding"].ToString()) || bool.Parse(item["IsSeftPaymentLand"].ToString()))
+                if (bool.Parse(item["IsLanding"].ToString())
+                    || bool.Parse(item["IsSeftPaymentLand"].ToString()))
                 {
                     item["LandingFee"] = null;
                 }
-                worksheet.Cell("L" + start).SetValue(item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()));
+                if (bool.Parse(item["IsSeftPaymentLandReturn"].ToString())
+                    || bool.Parse(item["IsClosingEmptyFee"].ToString()))
+                {
+                    item["ReturnClosingFee"] = null;
+                }
+                worksheet.Cell("L" + start).SetValue(transportation.TypeId == 1 ? (item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()))
+                    : (item["ReturnClosingFee"] is null ? default(decimal) : decimal.Parse(item["ReturnClosingFee"].ToString())));
                 worksheet.Cell("L" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("M" + start).SetValue(item["FeeVat1"] is null ? default(decimal) : decimal.Parse(item["FeeVat1"].ToString()));
+                worksheet.Cell("M" + start).SetValue(transportation.TypeId == 1 ? (item["FeeVat1"] is null ? default(decimal) : decimal.Parse(item["FeeVat1"].ToString()))
+                    : (item["FeeVatReturn"] is null ? default(decimal) : decimal.Parse(item["FeeVatReturn"].ToString())));
                 worksheet.Cell("M" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("N" + start).SetValue(item["FeeVat2"] is null ? default(decimal) : decimal.Parse(item["FeeVat2"].ToString()));
+                worksheet.Cell("N" + start).SetValue(transportation.TypeId == 1 ? (item["FeeVat2"] is null ? default(decimal) : decimal.Parse(item["FeeVat2"].ToString()))
+                    : (item["FeeVatReturn2"] is null ? default(decimal) : decimal.Parse(item["FeeVatReturn2"].ToString())));
                 worksheet.Cell("N" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("O" + start).SetValue(item["FeeVat3"] is null ? default(decimal) : decimal.Parse(item["FeeVat3"].ToString()));
+                worksheet.Cell("O" + start).SetValue(transportation.TypeId == 1 ? (item["FeeVat3"] is null ? default(decimal) : decimal.Parse(item["FeeVat3"].ToString()))
+                    : (item["FeeVatReturn3"] is null ? default(decimal) : decimal.Parse(item["FeeVatReturn3"].ToString())));
                 worksheet.Cell("O" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("P" + start).SetValue(item["Fee1"] is null ? default(decimal) : decimal.Parse(item["Fee1"].ToString()));
+                worksheet.Cell("P" + start).SetValue(transportation.TypeId == 1 ? (item["Fee1"] is null ? default(decimal) : decimal.Parse(item["Fee1"].ToString()))
+                    : (item["FeeReturn1"] is null ? default(decimal) : decimal.Parse(item["FeeReturn1"].ToString())));
                 worksheet.Cell("P" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("Q" + start).SetValue(item["Fee2"] is null ? default(decimal) : decimal.Parse(item["Fee2"].ToString()));
+                worksheet.Cell("Q" + start).SetValue(transportation.TypeId == 1 ? (item["Fee2"] is null ? default(decimal) : decimal.Parse(item["Fee2"].ToString()))
+                    : (item["FeeReturn2"] is null ? default(decimal) : decimal.Parse(item["FeeReturn2"].ToString())));
                 worksheet.Cell("Q" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("R" + start).SetValue(item["Fee3"] is null ? default(decimal) : decimal.Parse(item["Fee3"].ToString()));
+                worksheet.Cell("R" + start).SetValue(transportation.TypeId == 1 ? (item["Fee3"] is null ? default(decimal) : decimal.Parse(item["Fee3"].ToString()))
+                    : (item["FeeReturn3"] is null ? default(decimal) : decimal.Parse(item["FeeReturn3"].ToString())));
                 worksheet.Cell("R" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("S" + start).SetValue(item["Fee4"] is null ? default(decimal) : decimal.Parse(item["Fee4"].ToString()));
+                worksheet.Cell("S" + start).SetValue(transportation.TypeId == 1 ? (item["Fee4"] is null ? default(decimal) : decimal.Parse(item["Fee4"].ToString()))
+                    : (item["FeeReturn4"] is null ? default(decimal) : decimal.Parse(item["FeeReturn4"].ToString())));
                 worksheet.Cell("S" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("T" + start).SetValue(item["Fee5"] is null ? default(decimal) : decimal.Parse(item["Fee5"].ToString()));
+                worksheet.Cell("T" + start).SetValue(transportation.TypeId == 1 ? (item["Fee5"] is null ? default(decimal) : decimal.Parse(item["Fee5"].ToString()))
+                    : (item["FeeReturn5"] is null ? default(decimal) : decimal.Parse(item["FeeReturn5"].ToString())));
                 worksheet.Cell("T" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("U" + start).SetValue(item["Fee6"] is null ? default(decimal) : decimal.Parse(item["Fee6"].ToString()));
+                worksheet.Cell("U" + start).SetValue(transportation.TypeId == 1 ? (item["Fee6"] is null ? default(decimal) : decimal.Parse(item["Fee6"].ToString()))
+                    : (item["FeeReturn6"] is null ? default(decimal) : decimal.Parse(item["FeeReturn6"].ToString())));
                 worksheet.Cell("U" + start).Style.NumberFormat.Format = "#,##";
 
                 var closingPercent = item["ClosingPercent"] is null ? "0" : item["ClosingPercent"].ToString();
                 var closingPercentUpload = item["ClosingPercentUpload"] is null ? "0" : item["ClosingPercentUpload"].ToString();
-                worksheet.Cell("V" + start).SetValue(item["CollectOnSupPrice"] is null ? default(decimal) : decimal.Parse(item["CollectOnSupPrice"].ToString()));
+
+                worksheet.Cell("V" + start).SetValue(transportation.TypeId == 1 ? (item["CollectOnSupPrice"] is null ? default(decimal) : decimal.Parse(item["CollectOnSupPrice"].ToString()))
+                    : (item["CollectOnSupPriceReturn"] is null ? default(decimal) : decimal.Parse(item["CollectOnSupPriceReturn"].ToString())));
                 worksheet.Cell("V" + start).Style.NumberFormat.Format = "#,##";
-                if (closingPercent != closingPercentUpload)
+                if (transportation.TypeId == 1)
                 {
-                    worksheet.Cell("W" + start).SetValue(decimal.Parse(closingPercent));
-                    worksheet.Cell("W" + start).Style.Font.FontColor = XLColor.Red;
+                    if (closingPercent != closingPercentUpload)
+                    {
+                        worksheet.Cell("W" + start).SetValue(decimal.Parse(closingPercent));
+                        worksheet.Cell("W" + start).Style.Font.FontColor = XLColor.Red;
+                    }
+                    else
+                    {
+                        worksheet.Cell("W" + start).SetValue(item["ClosingPercent"] is null ? "" : decimal.Parse(item["ClosingPercent"].ToString()));
+                    }
+
+                    worksheet.Cell("W" + start).Style.NumberFormat.Format = "#,##";
+
+                    var closingCombinationUnitPrice = item["ClosingCombinationUnitPrice"] is null ? null : item["ClosingCombinationUnitPrice"].ToString();
+                    var closingCombinationUnitPriceUpload = item["TotalPriceAfterTaxUpload"] is null ? null : item["TotalPriceAfterTaxUpload"].ToString();
+
+                    worksheet.Cell("X" + start).SetValue(closingCombinationUnitPrice is null ? default(decimal) : decimal.Parse(closingCombinationUnitPrice.ToString()));
+                    worksheet.Cell("X" + start).Style.NumberFormat.Format = "#,##";
+                    if (closingCombinationUnitPrice != closingCombinationUnitPriceUpload)
+                    {
+                        worksheet.Cell("X" + start).Style.Font.FontColor = XLColor.Red;
+                    }
+
+                    var sum = (item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()))
+                        + (closingCombinationUnitPrice is null ? default(decimal) : decimal.Parse(closingCombinationUnitPrice.ToString()))
+                        + (item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()))
+                        + (item["CollectOnBehaftInvoinceNoFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()))
+                        + (item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()));
+                    worksheet.Cell("Z" + start).SetValue(sum);
                 }
                 else
                 {
-                    worksheet.Cell("W" + start).SetValue(item["ClosingPercent"] is null ? "" : decimal.Parse(item["ClosingPercent"].ToString()));
+                    worksheet.Cell("W" + start).SetValue(default(decimal));
+
+                    var closingCombinationUnitPrice = item["ReturnUnitPrice"] is null ? null : item["ReturnUnitPrice"].ToString();
+                    worksheet.Cell("X" + start).SetValue(closingCombinationUnitPrice is null ? default(decimal) : decimal.Parse(closingCombinationUnitPrice.ToString()));
+                    worksheet.Cell("X" + start).Style.NumberFormat.Format = "#,##";
+
+                    var sum = (item["ReturnLiftFee"] is null ? default(decimal) : decimal.Parse(item["ReturnLiftFee"].ToString()))
+                        + (closingCombinationUnitPrice is null ? default(decimal) : decimal.Parse(closingCombinationUnitPrice.ToString()))
+                        + (item["ReturnClosingFee"] is null ? default(decimal) : decimal.Parse(item["ReturnClosingFee"].ToString()))
+                        + (item["ReturnCollectOnBehaftInvoinceFee"] is null ? default(decimal) : decimal.Parse(item["ReturnCollectOnBehaftInvoinceFee"].ToString()))
+                        + (item["ReturnCollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["ReturnCollectOnBehaftFee"].ToString()));
+                    worksheet.Cell("Z" + start).SetValue(sum);
                 }
-                worksheet.Cell("W" + start).Style.NumberFormat.Format = "#,##";
-                var closingCombinationUnitPrice = item["ClosingCombinationUnitPrice"] is null ? null : item["ClosingCombinationUnitPrice"].ToString();
-                var closingCombinationUnitPriceUpload = item["TotalPriceAfterTaxUpload"] is null ? null : item["TotalPriceAfterTaxUpload"].ToString();
-                worksheet.Cell("X" + start).SetValue(closingCombinationUnitPrice is null ? default(decimal) : decimal.Parse(closingCombinationUnitPrice.ToString()));
-                worksheet.Cell("X" + start).Style.NumberFormat.Format = "#,##";
-                if (closingCombinationUnitPrice != closingCombinationUnitPriceUpload)
-                {
-                    worksheet.Cell("X" + start).Style.Font.FontColor = XLColor.Red;
-                }
-                var sum = (item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()))
-                    + (closingCombinationUnitPrice is null ? default(decimal) : decimal.Parse(closingCombinationUnitPrice.ToString()))
-                    + (item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()))
-                    + (item["CollectOnBehaftInvoinceNoFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()))
-                    + (item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()));
-                worksheet.Cell("Z" + start).SetValue(sum);
                 worksheet.Cell("Z" + start).Style.NumberFormat.Format = "#,##";
                 worksheet.Range($"A{start}:AA{start}").Style.Border.RightBorder = XLBorderStyleValues.Thin;
                 worksheet.Range($"A{start}:AA{start}").Style.Border.TopBorder = XLBorderStyleValues.Thin;
@@ -633,22 +680,30 @@ namespace TMS.API.Controllers
             worksheet.Cell("G" + tt).Value = data[0].Sum(item => item["Cont40"] is null ? default(decimal) : decimal.Parse(item["Cont40"].ToString()));
             worksheet.Cell("G" + tt).Style.NumberFormat.Format = "#,##";
             worksheet.Cell("G" + tt).Style.Font.Bold = true;
-            worksheet.Cell("K" + tt).Value = data[0].Sum(item => item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()));
+            worksheet.Cell("K" + tt).Value = data[0].Sum(item => transportation.TypeId == 1 ? (item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()))
+            : (item["ReturnLiftFee"] is null ? default(decimal) : decimal.Parse(item["ReturnLiftFee"].ToString())));
             worksheet.Cell("K" + tt).Style.NumberFormat.Format = "#,##";
             worksheet.Cell("K" + tt).Style.Font.Bold = true;
-            var tt1 = data[0].Sum(item => item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()));
+            var tt1 = data[0].Sum(item => transportation.TypeId == 1 ? (item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()))
+            : (item["ReturnClosingFee"] is null ? default(decimal) : decimal.Parse(item["ReturnClosingFee"].ToString())));
             worksheet.Cell("L" + tt).Value = tt1;
             worksheet.Cell("L" + tt).Style.NumberFormat.Format = "#,##";
             worksheet.Cell("L" + tt).Style.Font.Bold = true;
-            var tt2 = data[0].Sum(item => item["CollectOnBehaftInvoinceNoFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()));
+
+            var tt2 = data[0].Sum(item => transportation.TypeId == 1 ? (item["CollectOnBehaftInvoinceNoFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()))
+            : (item["ReturnCollectOnBehaftInvoinceFee"] is null ? default(decimal) : decimal.Parse(item["ReturnCollectOnBehaftInvoinceFee"].ToString())));
             worksheet.Cell("O" + tt).Value = tt2;
             worksheet.Cell("O" + tt).Style.NumberFormat.Format = "#,##";
             worksheet.Cell("O" + tt).Style.Font.Bold = true;
-            var tt3 = data[0].Sum(item => item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()));
-            worksheet.Cell("P" + tt).Value = data[0].Sum(item => item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()));
+            var tt3 = data[0].Sum(item => transportation.TypeId == 1 ? (item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()))
+            : (item["ReturnCollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["ReturnCollectOnBehaftFee"].ToString())));
+
+            worksheet.Cell("P" + tt).Value = tt3;
+
             worksheet.Cell("P" + tt).Style.NumberFormat.Format = "#,##";
             worksheet.Cell("P" + tt).Style.Font.Bold = true;
-            var tt4 = data[0].Sum(item => item["ClosingCombinationUnitPrice"] is null ? default(decimal) : decimal.Parse(item["ClosingCombinationUnitPrice"].ToString()));
+            var tt4 = data[0].Sum(item => transportation.TypeId == 1 ? (item["ClosingCombinationUnitPrice"] is null ? default(decimal) : decimal.Parse(item["ClosingCombinationUnitPrice"].ToString()))
+            : (item["ReturnUnitPrice"] is null ? default(decimal) : decimal.Parse(item["ReturnUnitPrice"].ToString())));
             worksheet.Cell("X" + tt).Value = tt4;
             worksheet.Cell("Z" + tt).Value = tt1 + tt2 + tt3 + tt4;
             worksheet.Cell("Z" + tt).Style.NumberFormat.Format = "#,##";
@@ -1123,22 +1178,22 @@ namespace TMS.API.Controllers
                         Boss = worksheet.Cells.Rows[row][2].Value is null ? null : worksheet.Cells.Rows[row][2].Value.ToString().Trim(),
                         ContainerNo = worksheet.Cells.Rows[row][3].Value is null ? null : worksheet.Cells.Rows[row][3].Value.ToString().Trim(),
                         SealNo = worksheet.Cells.Rows[row][4].Value is null ? null : worksheet.Cells.Rows[row][4].Value.ToString().Trim(),
-                        Cont20 = int.Parse(worksheet.Cells.Rows[row][5].Value is null || worksheet.Cells.Rows[row][5].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][5].Value.ToString().Trim()),
-                        Cont40 = int.Parse(worksheet.Cells.Rows[row][6].Value is null || worksheet.Cells.Rows[row][6].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][6].Value.ToString().Trim()),
+                        Cont20 = int.Parse(worksheet.Cells.Rows[row][5].Value is null || worksheet.Cells.Rows[row][5].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][5].Value.ToString().Trim()),
+                        Cont40 = int.Parse(worksheet.Cells.Rows[row][6].Value is null || worksheet.Cells.Rows[row][6].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][6].Value.ToString().Trim()),
                         Received = worksheet.Cells.Rows[row][7].Value is null ? null : worksheet.Cells.Rows[row][7].Value.ToString().Trim(),
                         PickupEmpty = worksheet.Cells.Rows[row][8].Value is null ? null : worksheet.Cells.Rows[row][8].Value.ToString().Trim(),
                         PortLoading = worksheet.Cells.Rows[row][9].Value is null ? null : worksheet.Cells.Rows[row][9].Value.ToString().Trim(),
-                        LiftFee = decimal.Parse(worksheet.Cells.Rows[row][10].Value is null || worksheet.Cells.Rows[row][10].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][10].Value.ToString().Replace(",", "").Trim()),
-                        LandingFee = decimal.Parse(worksheet.Cells.Rows[row][11].Value is null || worksheet.Cells.Rows[row][11].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][11].Value.ToString().Replace(",", "").Trim()),
-                        FeeVat1 = decimal.Parse(worksheet.Cells.Rows[row][12].Value is null || worksheet.Cells.Rows[row][12].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][12].Value.ToString().Replace(",", "").Trim()),
-                        FeeVat2 = decimal.Parse(worksheet.Cells.Rows[row][13].Value is null || worksheet.Cells.Rows[row][13].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][13].Value.ToString().Replace(",", "").Trim()),
-                        FeeVat3 = decimal.Parse(worksheet.Cells.Rows[row][14].Value is null || worksheet.Cells.Rows[row][14].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][14].Value.ToString().Replace(",", "").Trim()),
-                        Fee1 = decimal.Parse(worksheet.Cells.Rows[row][15].Value is null || worksheet.Cells.Rows[row][15].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][15].Value.ToString().Replace(",", "").Trim()),
-                        Fee2 = decimal.Parse(worksheet.Cells.Rows[row][16].Value is null || worksheet.Cells.Rows[row][16].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][16].Value.ToString().Replace(",", "").Trim()),
-                        Fee3 = decimal.Parse(worksheet.Cells.Rows[row][17].Value is null || worksheet.Cells.Rows[row][17].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][17].Value.ToString().Replace(",", "").Trim()),
-                        Fee4 = decimal.Parse(worksheet.Cells.Rows[row][18].Value is null || worksheet.Cells.Rows[row][18].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][18].Value.ToString().Replace(",", "").Trim()),
-                        Fee5 = decimal.Parse(worksheet.Cells.Rows[row][19].Value is null || worksheet.Cells.Rows[row][19].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][19].Value.ToString().Replace(",", "").Trim()),
-                        Fee6 = decimal.Parse(worksheet.Cells.Rows[row][20].Value is null || worksheet.Cells.Rows[row][20].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][20].Value.ToString().Replace(",", "").Trim()),
+                        LiftFee = decimal.Parse(worksheet.Cells.Rows[row][10].Value is null || worksheet.Cells.Rows[row][10].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][10].Value.ToString().Replace(",", "").Trim()),
+                        LandingFee = decimal.Parse(worksheet.Cells.Rows[row][11].Value is null || worksheet.Cells.Rows[row][11].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][11].Value.ToString().Replace(",", "").Trim()),
+                        FeeVat1 = decimal.Parse(worksheet.Cells.Rows[row][12].Value is null || worksheet.Cells.Rows[row][12].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][12].Value.ToString().Replace(",", "").Trim()),
+                        FeeVat2 = decimal.Parse(worksheet.Cells.Rows[row][13].Value is null || worksheet.Cells.Rows[row][13].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][13].Value.ToString().Replace(",", "").Trim()),
+                        FeeVat3 = decimal.Parse(worksheet.Cells.Rows[row][14].Value is null || worksheet.Cells.Rows[row][14].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][14].Value.ToString().Replace(",", "").Trim()),
+                        Fee1 = decimal.Parse(worksheet.Cells.Rows[row][15].Value is null || worksheet.Cells.Rows[row][15].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][15].Value.ToString().Replace(",", "").Trim()),
+                        Fee2 = decimal.Parse(worksheet.Cells.Rows[row][16].Value is null || worksheet.Cells.Rows[row][16].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][16].Value.ToString().Replace(",", "").Trim()),
+                        Fee3 = decimal.Parse(worksheet.Cells.Rows[row][17].Value is null || worksheet.Cells.Rows[row][17].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][17].Value.ToString().Replace(",", "").Trim()),
+                        Fee4 = decimal.Parse(worksheet.Cells.Rows[row][18].Value is null || worksheet.Cells.Rows[row][18].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][18].Value.ToString().Replace(",", "").Trim()),
+                        Fee5 = decimal.Parse(worksheet.Cells.Rows[row][19].Value is null || worksheet.Cells.Rows[row][19].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][19].Value.ToString().Replace(",", "").Trim()),
+                        Fee6 = decimal.Parse(worksheet.Cells.Rows[row][20].Value is null || worksheet.Cells.Rows[row][20].Value.ToString().Trim() == "" ? "0" : worksheet.Cells.Rows[row][20].Value.ToString().Replace(",", "").Trim()),
                         CollectOnSupPrice = decimal.Parse(worksheet.Cells.Rows[row][21].Value is null || worksheet.Cells.Rows[row][21].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][21].Value.ToString().Replace(",", "").Trim()),
                         ClosingPercentCheck = per > 0 && per < 10 ? per * 100 : per,
                         TotalPriceAfterTax = decimal.Parse(worksheet.Cells.Rows[row][23].Value is null || worksheet.Cells.Rows[row][23].Value.ToString() == "" ? "0" : worksheet.Cells.Rows[row][23].Value.ToString().Replace(",", "").Trim())
