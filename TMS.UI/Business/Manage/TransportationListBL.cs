@@ -998,7 +998,21 @@ namespace TMS.UI.Business.Manage
             {
                 await SetPolicyId(transportation, patchUpdate, listViewItem);
             }, 500);
+        }
 
+        public async void PolicySet()
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+            if (gridView is null)
+            {
+                return;
+            }
+            var selected = (await gridView.GetRealTimeSelectedRows()).Cast<Transportation>().ToList();
+            foreach (var item in selected)
+            {
+                await SetPolicyId(item, new PatchUpdate() { Changes = new List<PatchUpdateDetail>() { new PatchUpdateDetail() { Field = "BookingId", Value = item.BookingId is null ? null : item.BookingId.ToString() } } }, null);
+                await Task.Delay(200);
+            }
         }
 
         private async Task SetPolicyId(Transportation transportation, PatchUpdate patchUpdate, ListViewItem listViewItem)
@@ -1223,16 +1237,50 @@ namespace TMS.UI.Business.Manage
                     }
                 }
                 transportation.ShipPrice = (transportation.ShipUnitPriceQuotation is null ? default(decimal) : transportation.ShipUnitPriceQuotation.Value) - (transportation.ShipPolicyPrice is null ? default(decimal) : transportation.ShipPolicyPrice.Value);
-                listViewItem.UpdateView(true);
-                listViewItem.FilterChildren(x =>
-                x.GuiInfo.FieldName == nameof(Transportation.PolicyId)
-                || x.GuiInfo.FieldName == nameof(Transportation.ShipPolicyPrice)
-                ).ForEach(x => x.Dirty = true);
-                Window.SetTimeout(async () =>
+                if (listViewItem != null)
                 {
-                    await listViewItem.PatchUpdate(true);
+                    listViewItem.UpdateView(true);
+                    listViewItem.FilterChildren(x =>
+                    x.GuiInfo.FieldName == nameof(Transportation.PolicyId)
+                    || x.GuiInfo.FieldName == nameof(Transportation.ShipPolicyPrice)
+                    ).ForEach(x => x.Dirty = true);
+                    Window.SetTimeout(async () =>
+                    {
+                        await listViewItem.PatchUpdate(true);
+                        Toast.Success("Đã áp dụng chính sách");
+                    }, 200);
+                }
+                else
+                {
+                    var path = new PatchUpdate
+                    {
+                        Changes = new List<PatchUpdateDetail>()
+                        {
+                            new PatchUpdateDetail()
+                            {
+                                Field= IdField,
+                                Value = transportation.Id.ToString()
+                            },
+                            new PatchUpdateDetail()
+                            {
+                                Field= nameof(Transportation.PolicyId),
+                                Value = transportation.PolicyId is null ? null : transportation.PolicyId.ToString()
+                            },
+                            new PatchUpdateDetail()
+                            {
+                                Field = nameof(Transportation.ShipPolicyPrice),
+                                Value = transportation.ShipPolicyPrice is null ? null : transportation.ShipPolicyPrice.ToString()
+                            },
+                            new PatchUpdateDetail()
+                            {
+                                Field = nameof(Transportation.ShipPrice),
+                                Value = transportation.ShipPrice is null ? null : transportation.ShipPrice.ToString()
+                            }
+                        }
+                    };
+                    await new Client(nameof(Transportation)).PatchAsync<Transportation>(path, ig: $"&disableTrigger=true");
                     Toast.Success("Đã áp dụng chính sách");
-                }, 200);
+                }
             }
         }
 
