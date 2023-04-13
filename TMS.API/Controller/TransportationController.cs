@@ -80,8 +80,7 @@ namespace TMS.API.Controllers
                 || x.Field == nameof(entity.ContainerTypeId)
                 || x.Field == nameof(entity.SocId)) && entity.BookingId != null)
                 {
-                    var bookingList = await db.BookingList.Where(x => x.Id == entity.BookingListId && x.Active).FirstOrDefaultAsync();
-                    if (bookingList != null && bookingList.Submit)
+                    if (entity.LockShip)
                     {
                         throw new ApiException("DSVC này đã được khóa. Vì đã được khóa ở danh sách book tàu.") { StatusCode = HttpStatusCode.BadRequest };
                     }
