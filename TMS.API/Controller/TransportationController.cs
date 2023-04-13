@@ -288,25 +288,25 @@ namespace TMS.API.Controllers
             worksheet.Cell("A5").Style.Font.Italic = true;
             worksheet.Cell("A5").Style.Font.Bold = true;
 
-            worksheet.Row(6).Style.Fill.BackgroundColor = XLColor.LightGreen;
-            worksheet.Row(7).Style.Fill.BackgroundColor = XLColor.LightGreen;
+            worksheet.Range("A6:AA6").Style.Fill.BackgroundColor = XLColor.LightGreen;
+            worksheet.Range("A7:AA7").Style.Fill.BackgroundColor = XLColor.LightGreen;
             worksheet.Row(6).Height = 30;
-            worksheet.Row(6).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Row(6).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Row(6).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Row(6).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A6:AA6").Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A6:AA6").Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A6:AA6").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A6:AA6").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             worksheet.Row(7).Height = 70;
-            worksheet.Row(7).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Row(7).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Row(7).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Row(7).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A7:AA7").Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A7:AA7").Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A7:AA7").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A7:AA7").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             worksheet.Cell("A6").Value = $"STT";
             worksheet.Cell("A6").Style.Alignment.WrapText = true;
             worksheet.Cell("A6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("A6:B7").Column(1).Merge();
 
-            worksheet.Cell("B6").Value = $"Ngày đóng hàng(ĐỀ NGHỊ ĐỂ ĐÚNG ĐỊNH DẠNG DD/MM/YYYY)";
+            worksheet.Cell("B6").Value = $"Ngày đóng hàng";
             worksheet.Cell("B6").Style.Alignment.WrapText = true;
             worksheet.Cell("B6").Style.Font.Bold = true;
             worksheet.Cell("B6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -493,9 +493,8 @@ namespace TMS.API.Controllers
             worksheet.Cell("U7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("U7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             var sql = string.Empty;
-            if (Type == 1)
-            {
-                sql += @$"select ClosingDate, ClosingDateCheck, ClosingDateUpload
+
+            sql += @$"select ClosingDate, ClosingDateCheck, ClosingDateUpload
                     ,b.Name as Boss, BossCheck, BossCheckUpload
                     ,ContainerNo, ContainerNoCheck, ContainerNoUpload
                     ,SealNo, SealCheck, SealCheckUpload
@@ -521,62 +520,15 @@ namespace TMS.API.Controllers
                     left join Location r on r.Id = {(transportation.TypeId == 2 ? "t.ReturnId" : "t.ReceivedId")}
                     left join Location pi on pi.Id = {(transportation.TypeId == 2 ? "t.ReturnEmptyId" : "t.PickupEmptyId")}
                     left join Location po on po.Id = {(transportation.TypeId == 2 ? "t.PortLiftId" : "t.PortLoadingId")}";
-            }
-            else
+            if (transportation.Id > 0)
             {
-                sql += @$"select ClosingDateReturn as ClosingDate, ClosingDateReturnCheck as ClosingDateCheck, ClosingDateReturnUpload as ClosingDateUpload
-                    ,b.Name as Boss, BossCheck, BossCheckUpload
-                    ,ContainerNo, ContainerNoCheck, ContainerNoUpload
-                    ,SealNo, SealCheck, SealCheckUpload
-                    ,Cont20 as Cont20, Cont20Check, Cont20CheckUpload
-                    ,Cont40 as Cont40, Cont40Check, Cont40CheckUpload
-                    ,r.Description as Received, ReceivedCheck, ReceivedCheckUpload
-                    ,CollectOnBehaftInvoinceNoFeeReturn as CollectOnBehaftInvoinceNoFee, CollectOnBehaftInvoinceNoFeeReturnCheck, CollectOnBehaftInvoinceNoFeeReturnUpload
-                    ,CollectOnBehaftFee as CollectOnBehaftFee, CollectOnBehaftFeeCheck, CollectOnBehaftFeeUpload,TotalPriceAfterTaxUpload
-                    ,pi.Name as PickupEmpty, PickupEmptyCheck, PickupEmptyUpload
-                    ,po.Name as PortLoading, PortLoadingCheck, PortLoadingUpload
-                    ,LiftFee as LiftFee, LiftFeeCheck, LiftFeeCheckUpload
-                    ,LandingFee as LandingFee, LandingFeeCheck, LandingFeeUpload
-                    ,CollectOnSupPrice as CollectOnSupPrice, CollectOnSupPriceCheck, CollectOnSupPriceUpload
-                    ,ClosingPercent as ClosingPercent, ClosingPercentCheck, ClosingPercentUpload
-                    ,Fee1, Fee2, Fee3,Fee4, Fee5, Fee6
-                    ,Fee1Upload, Fee2Upload, Fee3Upload,Fee4Upload, Fee5Upload, Fee6Upload
-                    ,FeeVat1,FeeVat2,FeeVat3
-                    ,FeeVat1Upload,FeeVat1Upload,FeeVat1Upload
-                    ,ClosingCombinationUnitPrice as ClosingCombinationUnitPrice, ClosingCombinationUnitPriceCheck, ClosingCombinationUnitPriceUpload
-                    ,IsEmptyLift, IsSeftPayment, IsLanding, IsSeftPaymentLand
-                    from Transportation t
-                    left join Vendor b on b.Id = t.BossId
-                    left join Location r on r.Id = {(transportation.TypeId == 2 ? "t.ReturnId" : "t.ReceivedId")}
-                    left join Location pi on pi.Id = {(transportation.TypeId == 2 ? "t.ReturnEmptyId" : "t.PickupEmptyId")}
-                    left join Location po on po.Id = {(transportation.TypeId == 2 ? "t.PortLiftId" : "t.PortLoadingId")}";
-            }
-            if (Type == 1)
-            {
-                if (transportation.Id > 0)
-                {
-                    sql += $" where t.CheckFeeHistoryId = {transportation.Id}" +
-                        $"  order by t.OrderExcel asc";
-
-                }
-                else
-                {
-                    sql += $" where t.ClosingDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})"
-                    + $"  order by t.OrderExcel asc";
-                }
-            }
-            else
-            {
-                if (transportation.Id > 0)
-                {
-                    sql += $" where t.CheckFeeHistoryId = {transportation.Id}" +
+                sql += $" where t.CheckFeeHistoryId = {transportation.Id}" +
                     $"  order by t.OrderExcel asc";
-                }
-                else
-                {
-                    sql += $" where t.ReturnDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnVendorId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})"
-                    + $"  order by t.OrderExcel asc";
-                }
+            }
+            else
+            {
+                sql += $" where t.ClosingDate >= '{transportation.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{transportation.ToDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingId = {transportation.ClosingId} and t.RouteId in ({transportation.RouteIds.Combine()})"
+                + $"  order by t.OrderExcel asc";
             }
             var data = await ConverSqlToDataSet(sql);
             var start = 8;
@@ -667,10 +619,10 @@ namespace TMS.API.Controllers
                     + (item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()));
                 worksheet.Cell("Z" + start).SetValue(sum);
                 worksheet.Cell("Z" + start).Style.NumberFormat.Format = "#,##";
-                worksheet.Row(start).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                worksheet.Row(start).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                worksheet.Row(start).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                worksheet.Row(start).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                worksheet.Range($"A{start}:AA{start}").Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                worksheet.Range($"A{start}:AA{start}").Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                worksheet.Range($"A{start}:AA{start}").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                worksheet.Range($"A{start}:AA{start}").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                 start++;
             }
             var tt = 8 + data[0].Count;
