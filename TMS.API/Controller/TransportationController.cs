@@ -1131,6 +1131,10 @@ namespace TMS.API.Controllers
             Workbook workbook = new Workbook(stream);
             Worksheet worksheet = workbook.Worksheets[0];
             var start = 0;
+            if (worksheet.Cells.MaxDisplayRange.Address != "A1:AA108")
+            {
+                throw new ApiException("Sai form! Form đúng: A:AA") { StatusCode = HttpStatusCode.BadRequest };
+            }
             for (int row = 0; row <= 20; row++)
             {
                 if (worksheet.Cells.Rows[row][0].Value != null && (worksheet.Cells.Rows[row][0].Value.ToString() == "1" || worksheet.Cells.Rows[row][0].Value.ToString() == "01"))
