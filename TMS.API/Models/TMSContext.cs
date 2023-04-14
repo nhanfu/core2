@@ -205,6 +205,8 @@ public partial class TMSContext : DbContext
 
         modelBuilder.Entity<BookingList>(entity =>
         {
+            entity.ToTable(tb => tb.HasTrigger("tr_UpdateTransportation"));
+
             entity.Property(e => e.ActShipPrice)
                 .HasComputedColumnSql("(case when [ShipPrice]>(0) then [ShipPrice] else case when [ShipUnitPrice]>(0) then [ShipUnitPrice] else (0) end end)", false)
                 .HasComment("")
@@ -235,10 +237,8 @@ public partial class TMSContext : DbContext
 
         modelBuilder.Entity<Chat>(entity =>
         {
-            entity.ToTable(tb =>
-            {
-                tb.HasTrigger("_LastChat");
-            });
+            entity.ToTable(tb => tb.HasTrigger("_LastChat"));
+
             entity.Property(e => e.Context).HasMaxLength(500);
         });
 
@@ -392,13 +392,13 @@ public partial class TMSContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.Namespace)
+                .HasMaxLength(150)
+                .IsUnicode(false);
             entity.Property(e => e.RefDetailClass)
                 .HasMaxLength(150)
                 .IsUnicode(false);
             entity.Property(e => e.RefListClass)
-                .HasMaxLength(150)
-                .IsUnicode(false);
-            entity.Property(e => e.Namespace)
                 .HasMaxLength(150)
                 .IsUnicode(false);
         });
@@ -858,8 +858,11 @@ public partial class TMSContext : DbContext
 
         modelBuilder.Entity<Quotation>(entity =>
         {
-            entity.ToTable(tb => tb.HasTrigger("Quotation_Update"));
-            entity.ToTable(tb => tb.HasTrigger("Quotation_Insert_Transportation"));
+            entity.ToTable(tb =>
+                {
+                    tb.HasTrigger("Quotation_Insert_Transportation");
+                    tb.HasTrigger("Quotation_Update");
+                });
 
             entity.Property(e => e.Note).HasMaxLength(250);
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(20, 5)");
@@ -1114,7 +1117,25 @@ public partial class TMSContext : DbContext
                     tb.HasTrigger("tr_Transportation_VendorLocation");
                 });
 
-            entity.HasIndex(e => new { e.ClosingDate, e.Active, e.ShipDate, e.RouteId }, "IX_Transportation").IsDescending(true, false, false, false);
+            entity.HasIndex(e => new { e.ClosingDate, e.Active, e.ShipDate, e.RouteId, e.BookingId, e.StartShip, e.Id }, "IX_Transportation").IsDescending(true, false, false, false, false, true, true);
+
+            entity.HasIndex(e => e.Id, "IX_Transportation_1");
+
+            entity.HasIndex(e => e.Id, "IX_Transportation_2").IsDescending();
+
+            entity.HasIndex(e => e.ClosingDate, "IX_Transportation_3");
+
+            entity.HasIndex(e => e.ClosingDate, "IX_Transportation_4").IsDescending();
+
+            entity.HasIndex(e => e.StartShip, "IX_Transportation_5");
+
+            entity.HasIndex(e => e.StartShip, "IX_Transportation_6").IsDescending();
+
+            entity.HasIndex(e => e.ShipDate, "IX_Transportation_7");
+
+            entity.HasIndex(e => e.ShipDate, "IX_Transportation_8").IsDescending();
+
+            entity.HasIndex(e => new { e.ClosingDate, e.BookingId }, "IX_Transportation_9").IsDescending(true, false);
 
             entity.Property(e => e.Bet).HasMaxLength(250);
             entity.Property(e => e.BetAmount).HasColumnType("decimal(20, 5)");
@@ -1158,6 +1179,7 @@ public partial class TMSContext : DbContext
                 .HasDefaultValueSql("((0))")
                 .HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnSupPriceCheck).HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.CollectOnSupPriceReturn).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnSupPriceReturnCheck).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnSupPriceReturnUpload).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.CollectOnSupPriceUpload).HasColumnType("decimal(20, 5)");
@@ -1176,6 +1198,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.CustomerReturnFee)
                 .HasDefaultValueSql("((0))")
                 .HasColumnType("decimal(20, 5)");
+            entity.Property(e => e.CustomerReturnFeeReport).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.DeliveryBetNotes).HasMaxLength(250);
             entity.Property(e => e.Dem).HasColumnType("decimal(20, 5)");
             entity.Property(e => e.DoVsLiftUnitPrice)
