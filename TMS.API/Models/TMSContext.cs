@@ -1117,8 +1117,6 @@ public partial class TMSContext : DbContext
                     tb.HasTrigger("tr_Transportation_VendorLocation");
                 });
 
-            entity.HasIndex(e => new { e.ClosingDate, e.Active, e.ShipDate, e.RouteId, e.BookingId, e.StartShip, e.Id }, "IX_Transportation").IsDescending(true, false, false, false, false, true, true);
-
             entity.HasIndex(e => e.Id, "IX_Transportation_1");
 
             entity.HasIndex(e => e.Id, "IX_Transportation_2").IsDescending();
