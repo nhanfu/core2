@@ -7,35 +7,35 @@
   "scope": "/",
   "icons": [
     {
-      "src": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+      "src": "/logo.jpg",
       "sizes": "144x144",
       "type": "image/png"
     },
     {
-      "src": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_192x192.png",
+      "src": "/logo.jpg",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://www.gstatic.com/youtube/img/web/monochrome/logo_16x16.png",
+      "src": "/logo.jpg",
       "sizes": "16x16",
       "type": "image/png",
       "purpose": "monochrome"
     },
     {
-      "src": "https://www.gstatic.com/youtube/img/web/monochrome/logo_32x32.png",
+      "src": "/logo.jpg",
       "sizes": "32x32",
       "type": "image/png",
       "purpose": "monochrome"
     },
     {
-      "src": "https://fonts.gstatic.com/s/i/googlematerialicons/video_youtube/v11/white-48dp/1x/gm_video_youtube_white_48dp.png",
+      "src": "/logo.jpg",
       "sizes": "48x48",
       "type": "image/png",
       "purpose": "monochrome"
     },
     {
-      "src": "https://www.gstatic.com/youtube/img/web/monochrome/logo_512x512.png",
+      "src": "/logo.jpg",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "monochrome"
@@ -50,11 +50,11 @@
   "capture_links": "none",
   "shortcuts": [
     {
-      "name": "Kênh đăng ký",
-      "url": "/index.html",
+      "name": "Danh sách vận chuyển",
+      "url": "/Transportation-List",
       "icons": [
         {
-          "src": "https://www.gstatic.com/youtube/img/web/shortcuts/subscriptions_512x512.png",
+          "src": "/logo.jpg",
           "sizes": "512x512",
           "type": "image/png",
           "purpose": "any monochrome"
@@ -62,11 +62,11 @@
       ]
     },
     {
-      "name": "Khám phá",
-      "url": "/index.html",
+      "name": "Kế hoạch vận chuyển",
+      "url": "/Transportation-Plan-List",
       "icons": [
         {
-          "src": "https://www.gstatic.com/youtube/img/web/shortcuts/explore_512x512.png",
+          "src": "/logo.jpg",
           "sizes": "512x512",
           "type": "image/png",
           "purpose": "any monochrome"
