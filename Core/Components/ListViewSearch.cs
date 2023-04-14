@@ -504,26 +504,26 @@ namespace Core.Components
                 {
                     finalFilter += " and ";
                 }
+                var endDate = EntityVM.EndDate.Value.Date.AddDays(1);
                 var oldEndDate = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <="));
                 if (oldEndDate is null)
                 {
                     ParentListView.Wheres.Add(new Where()
                     {
-                        FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <= '{EntityVM.EndDate.Value.ToString("yyyy-MM-dd")}'",
+                        FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] < '{endDate.ToString("yyyy-MM-dd")}'",
                         Group = false
                     });
                 }
                 else
                 {
-                    oldEndDate.FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <= '{EntityVM.EndDate.Value.ToString("yyyy-MM-dd")}'";
+                    oldEndDate.FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] < '{endDate.ToString("yyyy-MM-dd")}'";
                 }
-                var endDate = EntityVM.EndDate.Value.Date;
-                finalFilter += $"cast({DateTimeField},Edm.DateTimeOffset) le cast({endDate.ToISOFormat()},Edm.DateTimeOffset)";
+                finalFilter += $"cast({DateTimeField},Edm.DateTimeOffset) lt cast({endDate.ToISOFormat()},Edm.DateTimeOffset)";
                 LocalStorage.SetItem("ToDate" + ParentListView.GuiInfo.Id, EntityVM.EndDate.Value.ToString("MM/dd/yyyy"));
             }
             else
             {
-                var check1 = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <="));
+                var check1 = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <"));
                 if (ParentListView.Wheres.Any() && check1 != null)
                 {
                     ParentListView.Wheres.Remove(check1);
