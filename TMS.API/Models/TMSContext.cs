@@ -1117,23 +1117,29 @@ public partial class TMSContext : DbContext
                     tb.HasTrigger("tr_Transportation_VendorLocation");
                 });
 
-            entity.HasIndex(e => e.Id, "IX_Transportation_1");
+            entity.HasIndex(e => e.ContainerNo, "IX_Transportation");
 
-            entity.HasIndex(e => e.Id, "IX_Transportation_2").IsDescending();
+            entity.HasIndex(e => e.Trip, "IX_Transportation_1");
 
-            entity.HasIndex(e => e.ClosingDate, "IX_Transportation_3");
+            entity.HasIndex(e => e.BookingId, "IX_Transportation_10");
 
-            entity.HasIndex(e => e.ClosingDate, "IX_Transportation_4").IsDescending();
+            entity.HasIndex(e => e.ContainerTypeId, "IX_Transportation_11");
 
-            entity.HasIndex(e => e.StartShip, "IX_Transportation_5");
+            entity.HasIndex(e => e.BossId, "IX_Transportation_2");
 
-            entity.HasIndex(e => e.StartShip, "IX_Transportation_6").IsDescending();
+            entity.HasIndex(e => e.ClosingDate, "IX_Transportation_3").IsDescending();
 
-            entity.HasIndex(e => e.ShipDate, "IX_Transportation_7");
+            entity.HasIndex(e => e.ClosingId, "IX_Transportation_4");
 
-            entity.HasIndex(e => e.ShipDate, "IX_Transportation_8").IsDescending();
+            entity.HasIndex(e => e.StartShip, "IX_Transportation_5").IsDescending();
 
-            entity.HasIndex(e => new { e.ClosingDate, e.BookingId }, "IX_Transportation_9").IsDescending(true, false);
+            entity.HasIndex(e => e.ReturnVendorId, "IX_Transportation_6");
+
+            entity.HasIndex(e => e.ShipDate, "IX_Transportation_7").IsDescending();
+
+            entity.HasIndex(e => e.ShipId, "IX_Transportation_8");
+
+            entity.HasIndex(e => e.BrandShipId, "IX_Transportation_9");
 
             entity.Property(e => e.Bet).HasMaxLength(250);
             entity.Property(e => e.BetAmount).HasColumnType("decimal(20, 5)");

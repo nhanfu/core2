@@ -20,7 +20,9 @@ namespace Core.Components
         private const string VirtualRow = "virtualRow";
         private int _renderViewPortAwaiter;
         internal bool _renderingViewPort;
+        internal List<object> LastData;
         internal bool _waitingLoad;
+        internal bool _f6;
         internal int viewPortCount;
         internal int _skip;
         internal static int cacheAhead = 5;
@@ -114,6 +116,10 @@ namespace Core.Components
                 }
             }
             FormattedRowData = rows;
+            if (scrollTop == 0)
+            {
+                LastData = FormattedRowData;
+            }
             RenderVirtualRow(MainSection.Element as HTMLTableSectionElement, skip, viewPortCount);
             UpdateExistRows(false);
             var existBottomEle = MainSection.Element.Children
