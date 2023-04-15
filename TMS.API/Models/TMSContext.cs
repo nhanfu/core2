@@ -117,6 +117,8 @@ public partial class TMSContext : DbContext
 
     public virtual DbSet<TransportationRequest> TransportationRequest { get; set; }
 
+    public virtual DbSet<TransportationRequestDetails> TransportationRequestDetails { get; set; }
+
     public virtual DbSet<User> User { get; set; }
 
     public virtual DbSet<UserClick> UserClick { get; set; }
@@ -1086,16 +1088,10 @@ public partial class TMSContext : DbContext
                     tb.HasTrigger("tr_Transportation_ClosingUnitPrice");
                     tb.HasTrigger("tr_Transportation_Delete");
                     tb.HasTrigger("tr_Transportation_ReturnUnitPrice");
-                    tb.HasTrigger("tr_Transportation_ReturnVs");
                     tb.HasTrigger("tr_Transportation_Revenue");
-                    tb.HasTrigger("tr_Transportation_ShellDate");
-                    tb.HasTrigger("tr_Transportation_ShipUnitPrice");
-                    tb.HasTrigger("tr_Transportation_ShipUnitPriceQuotation");
-                    tb.HasTrigger("tr_Transportation_TotalBet");
                     tb.HasTrigger("tr_Transportation_TotalContainerUsing");
                     tb.HasTrigger("tr_Transportation_TotalContainerUsing_delete");
                     tb.HasTrigger("tr_Transportation_UpdateBooking");
-                    tb.HasTrigger("tr_Transportation_UpdateTeus");
                     tb.HasTrigger("tr_Transportation_VendorLocation");
                 });
 

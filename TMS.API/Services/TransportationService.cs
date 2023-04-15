@@ -280,10 +280,10 @@ namespace TMS.API.Services
             {
                 return null;
             }
-            return @$"update Transportation set t1.ReturnEmptyId = 114017, t1.ReturnClosingFee = null
+            return @$"update Transportation set ReturnEmptyId = 114017, ReturnClosingFee = null
 					from Transportation
-					join Transportation t1 on Transportation1.Id = Transportation.EmptyCombinationId
-					where Transportation.Id = {Id};";
+					join Transportation t1 on Transportation.Id = t1.EmptyCombinationId
+					where t1.Id = {Id};";
         }
 
         public string Transportation_ReturnLiftFee(PatchUpdate patchUpdate, int Id)
@@ -324,15 +324,82 @@ namespace TMS.API.Services
 
         public string Transportation_ReturnVs(PatchUpdate patchUpdate, int Id)
         {
-            return @$"update Transportation set ReturnNotes = 
-					(CASe when (Transportation.ReturnNotes is null) and Transportation.IsNote = 1  then Transportation.Note2 else Transportation.ReturnNotes end)
-					,[FreeText] = (CASe when (Transportation.[FreeText] is null)  then (select top 1 [FreeText] from Transportation t where t.BossId = Transportation.BossId and t.ReturnId = Transportation.ReturnId and t.[FreeText] is not null and t.[FreeText] != N'' order by t.ReturnDate desc) else Transportation.[FreeText] end)
-					,[FreeText1] = (CASe when (Transportation.[FreeText1] is null)  then (select top 1 [FreeText1] from Transportation t where t.BossId = Transportation.BossId and t.ReturnId = Transportation.ReturnId and t.[FreeText1] is not null and t.[FreeText1] != N'' order by t.ReturnDate desc) else Transportation.[FreeText1] end)
-					from Transportation
-					where (Transportation.ReturnNotes is null
-					or Transportation.[FreeText] is null
-					or Transportation.[FreeText1] is null)
+            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.BrandShipId)
+            || x.Field == nameof(Transportation.LevelId)
+            || x.Field == nameof(Transportation.StartShip)
+            || x.Field == nameof(Transportation.ReturnVs)
+            || x.Field == nameof(Transportation.RouteId)))
+            {
+                return null;
+            }
+            return @$"update Transportation set ReturnVs = case when Transportation.LevelId is null then null
+		            else (select top 1 case when Transportation.Cont20 > 0 then VS20UnitPrice else VS40UnitPrice end
+		            from QuotationExpense
+		            where 
+		            BrandShipId = Transportation.BrandShipId
+		            and ExpenseTypeId = Transportation.LevelId 
+		            and (RouteId = Transportation.RouteId or RouteId is null)
+		            and StartDate <= Transportation.StartShip order by StartDate desc) end
+		            from Transportation
+		            where (Transportation.ReturnVs = 0 or Transportation.ReturnVs is null)
+		            and Transportation.StartShip is not null
 					and Transportation.Id = {Id};";
+        }
+
+        public string Transportation_ShellDate(PatchUpdate patchUpdate, int Id)
+        {
+            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.LeftDate)
+            || x.Field == nameof(Transportation.ReturnVs)))
+            {
+                return null;
+            }
+            return @$"update Transportation set ShellDate = (case when (DATEDIFF(DAY,Transportation.LeftDate,Transportation.ClosingCont) -2) <= 0 then null else DATEDIFF(DAY,Transportation.LeftDate,Transportation.ClosingCont) - 2 end)
+		            from Transportation
+		            where Transportation.Id = {Id};";
+        }
+
+        public string Transportation_ShipUnitPriceQuotation(PatchUpdate patchUpdate, int Id)
+        {
+            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.RouteId)
+            || x.Field == nameof(Transportation.ContainerTypeId)
+            || x.Field == nameof(Transportation.LineId)
+            || x.Field == nameof(Transportation.BrandShipId)
+            || x.Field == nameof(Transportation.StartShip)
+            || x.Field == nameof(Transportation.ShipUnitPriceQuotation)
+            || x.Field == nameof(Transportation.BookingId)))
+            {
+                return null;
+            }
+            return @$"update Transportation set ShipUnitPriceQuotation =  
+		            isnull((select top 1 UnitPrice
+		            from Quotation
+		            where 
+		            TypeId = 7598
+		            and RouteId = Transportation.RouteId 
+		            and ContainerTypeId = Transportation.ContainerTypeId 
+		            and PackingId =ISNULL(Transportation.LineId,Transportation.BrandShipId)
+		            and CONVERT(DATE, Quotation.StartDate) <= CONVERT(DATE, Transportation.StartShip) order by StartDate desc),
+		            case when Transportation.Cont20 = 1 then
+		            (select top 1 UnitPrice
+		            from Quotation
+		            where 
+		            TypeId = 7598
+		            and RouteId = Transportation.RouteId 
+		            and ContainerTypeId = 14910
+		            and PackingId = ISNULL(Transportation.LineId,Transportation.BrandShipId)
+		            and CONVERT(DATE, Quotation.StartDate) <= CONVERT(DATE, Transportation.StartShip) order by StartDate desc)
+		            when Transportation.Cont40 = 1 then
+		            (select top 1 UnitPrice
+		            from Quotation
+		            where 
+		            TypeId = 7598
+		            and RouteId = Transportation.RouteId 
+		            and ContainerTypeId = 14909 
+		            and PackingId = ISNULL(Transportation.LineId,Transportation.BrandShipId)
+		            and CONVERT(DATE, Quotation.StartDate) <= CONVERT(DATE, Transportation.StartShip) order by StartDate desc)
+		            end)
+		            from Transportation
+		            where Transportation.Id = {Id};";
         }
     }
 }
