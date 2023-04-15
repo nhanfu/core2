@@ -68,7 +68,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var gridViewReport = this.FindComponentByName<GridView>("TransportationReport");
-            var selecteds = (await gridView.GetRealTimeSelectedRows()).Cast<Transportation>().Select(x => x.Id).ToList();
+            var selecteds = (await gridView.GetRealTimeSelectedRows()).Select(x => x[IdField].ToString()).ToList();
             gridViewReport.DataSourceFilter = $"?$filter=Active eq true and Id in ({selecteds.Combine()}) and ShipDate ne null&$orderby=StartShip desc";
             await gridViewReport.ApplyFilter(true);
         }
