@@ -976,6 +976,7 @@ namespace TMS.UI.Business.Manage
             transportation.PolicyId = booking is null ? null : transportation.PolicyId;
             transportation.ShipPolicyPrice = booking is null ? 0 : transportation.ShipPolicyPrice;
             transportation.ShipUnitPrice = booking is null ? null : transportation.ShipUnitPrice;
+            transportation.ShipPrice = booking is null ? null : transportation.ShipPrice;
             listViewItem.UpdateView(true);
             listViewItem.FilterChildren(x =>
             x.GuiInfo.FieldName == nameof(Transportation.ShipId)
@@ -1202,7 +1203,7 @@ namespace TMS.UI.Business.Manage
                 if (indexOf == -1)
                 {
                     transportation.PolicyId = null;
-                    transportation.ShipPolicyPrice = null;
+                    transportation.ShipPolicyPrice = 0;
                 }
                 else
                 {
@@ -1236,7 +1237,7 @@ namespace TMS.UI.Business.Manage
                         transportation.ShipPolicyPrice = listpolicy[indexOf].UnitPrice;
                     }
                 }
-                transportation.ShipPrice = (transportation.ShipUnitPriceQuotation is null ? default(decimal) : transportation.ShipUnitPriceQuotation.Value) - (transportation.ShipPolicyPrice is null ? default(decimal) : transportation.ShipPolicyPrice.Value);
+                transportation.ShipPrice = (transportation.ShipUnitPriceQuotation is null ? 0 : transportation.ShipUnitPriceQuotation.Value) - (transportation.ShipPolicyPrice is null ? 0 : transportation.ShipPolicyPrice.Value);
                 if (listViewItem != null)
                 {
                     listViewItem.UpdateView(true);
@@ -1269,7 +1270,7 @@ namespace TMS.UI.Business.Manage
                             new PatchUpdateDetail()
                             {
                                 Field = nameof(Transportation.ShipPolicyPrice),
-                                Value = transportation.ShipPolicyPrice is null ? null : transportation.ShipPolicyPrice.ToString()
+                                Value = transportation.ShipPolicyPrice is null ? "0" : transportation.ShipPolicyPrice.ToString()
                             },
                             new PatchUpdateDetail()
                             {
