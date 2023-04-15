@@ -1125,6 +1125,18 @@ public partial class TMSContext : DbContext
 
             entity.HasIndex(e => e.ContainerTypeId, "IX_Transportation_11");
 
+            entity.HasIndex(e => e.CommodityId, "IX_Transportation_12");
+
+            entity.HasIndex(e => e.RouteId, "IX_Transportation_13");
+
+            entity.HasIndex(e => e.ExportListId, "IX_Transportation_14");
+
+            entity.HasIndex(e => e.UserId, "IX_Transportation_15");
+
+            entity.HasIndex(e => e.ReturnId, "IX_Transportation_16");
+
+            entity.HasIndex(e => e.IsSplitBill, "IX_Transportation_17");
+
             entity.HasIndex(e => e.BossId, "IX_Transportation_2");
 
             entity.HasIndex(e => e.ClosingDate, "IX_Transportation_3").IsDescending();
