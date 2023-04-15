@@ -14,6 +14,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TMS.API.Models;
+using TMS.API.Services;
 using TMS.API.ViewModels;
 using FileIO = System.IO.File;
 
@@ -21,8 +22,10 @@ namespace TMS.API.Controllers
 {
     public class TransportationController : TMSController<Transportation>
     {
-        public TransportationController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public readonly TransportationService _transportationService;
+        public TransportationController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor, TransportationService transportationService) : base(context, entityService, httpContextAccessor)
         {
+            _transportationService = transportationService;
         }
 
         public override async Task<ActionResult<Transportation>> PatchAsync([FromQuery] ODataQueryOptions<Transportation> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
@@ -113,20 +116,27 @@ namespace TMS.API.Controllers
                         }
                         var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
                         var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
-                        if (disableTrigger)
-                        {
-                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(Transportation)}];";
-                        }
-                        else
-                        {
-                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
-                        }
+                        command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(Transportation)}];";
                         command.CommandText += $" UPDATE [{nameof(Transportation)}] SET {update.Combine()} WHERE Id = {idInt};";
-                        //
-                        if (disableTrigger)
-                        {
-                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
-                        }
+                        command.CommandText += " " + _transportationService.Transportation_BetAmount(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_BetFee(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_CombinationFee(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_Cont20_40(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_Dem(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_DemDate(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ExportListId(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_IsSplitBill(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_LandingFee(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_LiftFee(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_MonthText(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_Note4(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ReturnClosingFee(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ReturnClosingFeeReport(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ReturnDate(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ReturnEmptyId(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ReturnLiftFee(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ReturnNotes(patch, idInt);
+                        command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
                         foreach (var item in updates)
                         {
                             command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);

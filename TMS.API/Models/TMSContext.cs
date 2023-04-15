@@ -1082,27 +1082,9 @@ public partial class TMSContext : DbContext
         {
             entity.ToTable(tb =>
                 {
-                    tb.HasTrigger("tr_Transportation_BetAmount");
-                    tb.HasTrigger("tr_Transportation_BetFee");
                     tb.HasTrigger("tr_Transportation_ClosingCombinationUnitPrice");
                     tb.HasTrigger("tr_Transportation_ClosingUnitPrice");
-                    tb.HasTrigger("tr_Transportation_CombinationFee");
-                    tb.HasTrigger("tr_Transportation_Cont20_40");
                     tb.HasTrigger("tr_Transportation_Delete");
-                    tb.HasTrigger("tr_Transportation_Dem");
-                    tb.HasTrigger("tr_Transportation_DemDate");
-                    tb.HasTrigger("tr_Transportation_ExportListId");
-                    tb.HasTrigger("tr_Transportation_IsSplitBill");
-                    tb.HasTrigger("tr_Transportation_LandingFee");
-                    tb.HasTrigger("tr_Transportation_LiftFee");
-                    tb.HasTrigger("tr_Transportation_MonthText");
-                    tb.HasTrigger("tr_Transportation_Note4");
-                    tb.HasTrigger("tr_Transportation_ReturnClosingFee");
-                    tb.HasTrigger("tr_Transportation_ReturnClosingFeeReport");
-                    tb.HasTrigger("tr_Transportation_ReturnDate");
-                    tb.HasTrigger("tr_Transportation_ReturnEmptyId");
-                    tb.HasTrigger("tr_Transportation_ReturnLiftFee");
-                    tb.HasTrigger("tr_Transportation_ReturnNotes");
                     tb.HasTrigger("tr_Transportation_ReturnUnitPrice");
                     tb.HasTrigger("tr_Transportation_ReturnVs");
                     tb.HasTrigger("tr_Transportation_Revenue");

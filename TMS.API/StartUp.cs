@@ -113,6 +113,7 @@ namespace TMS.API
             services.AddScoped<TaskService>();
             services.AddScoped<UserService>();
             services.AddScoped<VendorSvc>();
+            services.AddScoped<TransportationService>();
             //
             services.AddHostedService<StatisticsService>();
         }
