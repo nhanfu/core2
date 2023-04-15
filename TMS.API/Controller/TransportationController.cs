@@ -98,6 +98,14 @@ namespace TMS.API.Controllers
                     {
                         command.Transaction = transaction;
                         command.Connection = connection;
+                        if (!patch.Changes.Any(x => x.Field == nameof(Transportation.UpdatedDate)))
+                        {
+                            patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.UpdatedDate), Value = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") });
+                        }
+                        if (!patch.Changes.Any(x => x.Field == nameof(Transportation.UpdatedBy)))
+                        {
+                            patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.UpdatedBy), Value = UserId.ToString() });
+                        }
                         if (patch.Changes.Any(x => x.Field == nameof(Transportation.ShipDate) && !x.Value.IsNullOrWhiteSpace()))
                         {
                             patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.ExportListReturnId), Value = VendorId.ToString() });
@@ -536,7 +544,7 @@ namespace TMS.API.Controllers
             foreach (var item in data[0])
             {
                 worksheet.Cell("A" + start).SetValue(start - 7);
-                worksheet.Cell("B" + start).SetValue(transportation.TypeId ==1 ? DateTime.Parse(item[nameof(Transportation.ClosingDate)].ToString()) : DateTime.Parse(item[nameof(Transportation.ReturnDate)].ToString()));
+                worksheet.Cell("B" + start).SetValue(transportation.TypeId == 1 ? DateTime.Parse(item[nameof(Transportation.ClosingDate)].ToString()) : DateTime.Parse(item[nameof(Transportation.ReturnDate)].ToString()));
                 worksheet.Cell("C" + start).SetValue(item["Boss"] is null ? null : item["Boss"].ToString().DecodeSpecialChar());
                 worksheet.Cell("D" + start).SetValue(item["ContainerNo"] is null ? null : item["ContainerNo"].ToString());
                 var seal = item["SealNo"] is null ? null : item["SealNo"].ToString();

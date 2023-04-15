@@ -126,7 +126,8 @@ namespace TMS.UI.Business.Manage
         public async Task CreateTransportation()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-            var selected = (await gridView.GetRealTimeSelectedRows()).Cast<TransportationPlan>().ToList();
+            var data = await gridView.GetRealTimeSelectedRows();
+            var selected = data.Cast<TransportationPlan>().ToList();
             if (selected.Nothing())
             {
                 selected = gridView.GetFocusedRows().Cast<TransportationPlan>().ToList();

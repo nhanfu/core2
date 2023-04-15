@@ -120,6 +120,14 @@ namespace TMS.API.Controllers
                     {
                         command.Transaction = transaction;
                         command.Connection = connection;
+                        if (!patch.Changes.Any(x => x.Field == nameof(Transportation.UpdatedDate)))
+                        {
+                            patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.UpdatedDate), Value = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") });
+                        }
+                        if (!patch.Changes.Any(x => x.Field == nameof(Transportation.UpdatedBy)))
+                        {
+                            patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.UpdatedBy), Value = UserId.ToString() });
+                        }
                         var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
                         var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
                         if (disableTrigger)
