@@ -71,8 +71,7 @@ namespace TMS.API.Services
 					Cont40 = case when m.Enum = 2 then 1 else 0 end
 					from Transportation t
 					left join MasterData m on t.ContainerTypeId = m.Id
-					where (t.Cont20 = 0 and t.Cont40 = 0)
-		            and t.Id = {Id};";
+					where t.Id = {Id};";
         }
 
         public string Transportation_Dem(PatchUpdate patchUpdate, int Id)
