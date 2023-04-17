@@ -9,6 +9,7 @@ namespace TMS.API.Models
         {
             Expense = new HashSet<Expense>();
             Revenue = new HashSet<Revenue>();
+            TransportationRequest = new HashSet<TransportationRequest>();
         }
 
         public int Id { get; set; }

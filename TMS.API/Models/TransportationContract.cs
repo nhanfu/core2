@@ -9,8 +9,8 @@ namespace TMS.API.Models
         public string Code { get; set; }
         public string ContractName { get; set; }
         public string ContractNo { get; set; }
-        public int? EntityId { get; set; }
         public int? BossId { get; set; }
+        public int? EntityId { get; set; }
         public string CompanyName { get; set; }
         public int? UserId { get; set; }
         public DateTime? StartDate { get; set; }

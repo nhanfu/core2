@@ -7,8 +7,8 @@ namespace TMS.API.Models
     {
         public Quotation()
         {
-            QuotationExpense = new HashSet<QuotationExpense>();
             InverseParent = new HashSet<Quotation>();
+            QuotationExpense = new HashSet<QuotationExpense>();
         }
 
         public int Id { get; set; }
@@ -40,8 +40,8 @@ namespace TMS.API.Models
         public int? ProvinceId { get; set; }
         public int? ExportListId { get; set; }
 
-        public virtual Quotation Parent { get; set; }
         public virtual Location Location { get; set; }
+        public virtual Quotation Parent { get; set; }
         public virtual QuotationUpdate QuotationUpdate { get; set; }
         public virtual ICollection<Quotation> InverseParent { get; set; }
         public virtual ICollection<QuotationExpense> QuotationExpense { get; set; }
