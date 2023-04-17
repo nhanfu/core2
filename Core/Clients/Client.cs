@@ -15,7 +15,7 @@ namespace Core.Clients
     public class Client
     {
         public static DateTime EpsilonNow => DateTime.Now.AddMinutes(2);
-        public const string ErrorMessage = "Đã có lỗi xảy ra trong quá trình xử lý.<br /> Vui lòng thử lại hoặc liên hệ hỗ trợ!";
+        public const string ErrorMessage = "Hệ thống đang cập nhật vui lòng chờ trong 30s!";
         public static string ModelNamespace;
         private readonly string _nameSpace;
         public string NameSpace => _nameSpace.IsNullOrEmpty() ? ModelNamespace : _nameSpace;

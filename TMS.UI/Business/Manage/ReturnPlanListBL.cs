@@ -291,22 +291,23 @@ namespace TMS.UI.Business.Manage
                 {
                     return;
                 }
-                listViewItem.Element.RemoveClass("bg-red1");
                 var containerCom = listViewItem.FilterChildren<EditableComponent>(y => y.GuiInfo.FieldName == nameof(Transportation.ContainerNo)).FirstOrDefault();
-                var td = containerCom.Element.Closest("td");
-                td.Style.BackgroundColor = string.Empty;
+                var returnDateCom = listViewItem.FilterChildren<EditableComponent>(y => y.GuiInfo.FieldName == nameof(Transportation.ReturnDate)).FirstOrDefault();
+                var tdContainer = containerCom.Element.Closest("td");
+                var tdReturnDate = returnDateCom.Element.Closest("td");
+                tdContainer.Style.BackgroundColor = string.Empty;
+                tdReturnDate.Style.BackgroundColor = string.Empty;
                 if (item.DemDate != null && item.ReturnDate != null && Convert.ToDateTime(item.ReturnDate.Value).Date > Convert.ToDateTime(item.DemDate.Value).Date)
                 {
-                    listViewItem.Element.AddClass("bg-red1");
+                    tdReturnDate.Style.BackgroundColor = "#f26c6c";
                 }
                 if (!item.FreeText8.IsNullOrWhiteSpace())
                 {
-                    System.Console.WriteLine(item.FreeText8);
-                    td.Style.BackgroundColor = "#ffeb3b";
+                    tdContainer.Style.BackgroundColor = "#ffeb3b";
                 }
                 if (!item.FreeText9.IsNullOrWhiteSpace())
                 {
-                    td.Style.BackgroundColor = "#e9a38a";
+                    tdContainer.Style.BackgroundColor = "#e9a38a";
                 }
             }
         }
@@ -317,15 +318,12 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-            listViewItem.Element.RemoveClass("bg-red1");
-            listViewItem.Element.RemoveClass("bg-red");
+            var returnDateCom = listViewItem.FilterChildren<EditableComponent>(y => y.GuiInfo.FieldName == nameof(Transportation.ReturnDate)).FirstOrDefault();
+            var tdReturnDate = returnDateCom.Element.Closest("td");
+            tdReturnDate.Style.BackgroundColor = string.Empty;
             if (transportation.DemDate != null && transportation.ReturnDate != null && Convert.ToDateTime(transportation.ReturnDate.Value).Date > Convert.ToDateTime(transportation.DemDate.Value).Date)
             {
-                listViewItem.Element.AddClass("bg-red1");
-            }
-            if (!transportation.IsQuotationReturn)
-            {
-                listViewItem.Element.AddClass("bg-red");
+                tdReturnDate.Style.BackgroundColor = "#f26c6c";
             }
         }
 

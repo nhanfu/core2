@@ -142,7 +142,23 @@ namespace TMS.API.Services
             {
                 return null;
             }
-            return @$"update Transportation set LandingFee = case when Transportation.LandingFee is null then  (select top 1 CASE
+            if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.IsLanding)))
+            {
+                return @$"update Transportation set LandingFee = (select top 1 CASE
+					WHEN Transportation.IsLanding = 1 THEN UnitPrice1
+					ELSE UnitPrice
+					END as UnitPrice from Quotation 
+					where 
+					TypeId = 7596
+					and ContainerTypeId = Transportation.ContainerTypeId 
+					and LocationId = Transportation.PortLoadingId 
+					and StartDate <= Transportation.ClosingDate order by StartDate desc)
+					from Transportation
+					where Transportation.Id = {Id};";
+            }
+            else
+            {
+                return @$"update Transportation set LandingFee = case when Transportation.LandingFee is null  then  (select top 1 CASE
 					WHEN Transportation.IsLanding = 1 THEN UnitPrice1
 					ELSE UnitPrice
 					END as UnitPrice from Quotation 
@@ -153,6 +169,7 @@ namespace TMS.API.Services
 					and StartDate <= Transportation.ClosingDate order by StartDate desc) else Transportation.LandingFee end
 					from Transportation
 					where Transportation.LandingFee is null and Transportation.Id = {Id};";
+            }
         }
 
         public string Transportation_LiftFee(PatchUpdate patchUpdate, int Id)
@@ -165,7 +182,23 @@ namespace TMS.API.Services
             {
                 return null;
             }
-            return @$"update Transportation set LiftFee = case when
+            if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.IsEmptyLift)))
+            {
+                return @$"update Transportation set LiftFee = (select top 1 CASE
+					WHEN Transportation.IsEmptyLift = 1 THEN UnitPrice1
+					ELSE UnitPrice
+					END as UnitPrice from Quotation 
+					where 
+					TypeId = 7594
+					and ContainerTypeId = Transportation.ContainerTypeId 
+					and LocationId = Transportation.PickupEmptyId 
+					and StartDate <= Transportation.ClosingDate order by StartDate desc)
+					from Transportation
+					where Transportation.Id = {Id};";
+            }
+            else
+            {
+                return @$"update Transportation set LiftFee = case when
 					Transportation.LiftFee is null
 					then (select top 1 CASE
 					WHEN Transportation.IsEmptyLift = 1 THEN UnitPrice1
@@ -179,6 +212,7 @@ namespace TMS.API.Services
 					from Transportation
 					where Transportation.LiftFee is null
 					and Transportation.Id = {Id};";
+            }
         }
 
         public string Transportation_MonthText(PatchUpdate patchUpdate, int Id)
@@ -193,11 +227,11 @@ namespace TMS.API.Services
 					where t.Id = {Id};";
         }
 
-		public string Transportation_Note4(PatchUpdate patchUpdate, int Id)
-		{
-			if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.BossId)
-			|| x.Field == nameof(Transportation.RouteId)
-			|| x.Field == nameof(Transportation.ExportListId)))
+        public string Transportation_Note4(PatchUpdate patchUpdate, int Id)
+        {
+            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.BossId)
+            || x.Field == nameof(Transportation.RouteId)
+            || x.Field == nameof(Transportation.ExportListId)))
             {
                 return null;
             }
@@ -220,7 +254,23 @@ namespace TMS.API.Services
             {
                 return null;
             }
-            return @$"update Transportation set ReturnClosingFee = case when Transportation.ReturnClosingFee is null then (case when Transportation.ISIncluded = 1 then 0 else  (select top 1 CASE
+            if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.IsClosingEmptyFee)))
+            {
+                return @$"update Transportation set ReturnClosingFee = (case when Transportation.ISIncluded = 1 then 0 else  (select top 1 CASE
+					WHEN Transportation.IsClosingEmptyFee = 1 THEN UnitPrice1
+					ELSE UnitPrice
+					END as UnitPrice from Quotation 
+					where 
+					TypeId = 7594
+					and ContainerTypeId = Transportation.ContainerTypeId 
+					and LocationId = Transportation.ReturnEmptyId 
+					and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc) end)
+					from Transportation
+					where Transportation.ShipDate is not null and Transportation.Id = {Id};";
+            }
+            else
+            {
+                return @$"update Transportation set ReturnClosingFee = case when Transportation.ReturnClosingFee is null then (case when Transportation.ISIncluded = 1 then 0 else  (select top 1 CASE
 					WHEN Transportation.IsClosingEmptyFee = 1 THEN UnitPrice1
 					ELSE UnitPrice
 					END as UnitPrice from Quotation 
@@ -232,6 +282,7 @@ namespace TMS.API.Services
 					from Transportation
 					where Transportation.ShipDate is not null
 					and Transportation.Id = {Id};";
+            }
         }
 
         public string Transportation_ReturnClosingFeeReport(PatchUpdate patchUpdate, int Id)
@@ -288,14 +339,29 @@ namespace TMS.API.Services
         public string Transportation_ReturnLiftFee(PatchUpdate patchUpdate, int Id)
         {
             if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ContainerTypeId)
-			|| x.Field == nameof(Transportation.IsLiftFee)
-			|| x.Field == nameof(Transportation.PortLiftId)
-			|| x.Field == nameof(Transportation.ShipDate)
+            || x.Field == nameof(Transportation.IsLiftFee)
+            || x.Field == nameof(Transportation.PortLiftId)
+            || x.Field == nameof(Transportation.ShipDate)
             || x.Field == nameof(Transportation.ReturnLiftFee)))
             {
                 return null;
             }
-            return @$"update Transportation set ReturnLiftFee = case when Transportation.ReturnLiftFee is nul then  (select top 1 CASE
+            if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.IsLiftFee)))
+            {
+                return @$"update Transportation set ReturnLiftFee = case when (select top 1 CASE
+					WHEN Transportation.IsLiftFee = 1 THEN UnitPrice1
+					ELSE UnitPrice
+					END as UnitPrice from Quotation 
+					where TypeId = 7596
+					and ContainerTypeId = Transportation.ContainerTypeId 
+					and LocationId = Transportation.PortLiftId 
+					and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc)
+					from Transportation
+					where Transportation.ShipDate is not null and Transportation.Id = {Id};";
+            }
+            else
+            {
+                return @$"update Transportation set ReturnLiftFee = case when Transportation.ReturnLiftFee is null then  (select top 1 CASE
 					WHEN Transportation.IsLiftFee = 1 THEN UnitPrice1
 					ELSE UnitPrice
 					END as UnitPrice from Quotation 
@@ -306,6 +372,7 @@ namespace TMS.API.Services
 					from Transportation
 					where Transportation.ShipDate is not null
 					and Transportation.Id = {Id};";
+            }
         }
 
         public string Transportation_ReturnNotes(PatchUpdate patchUpdate, int Id)

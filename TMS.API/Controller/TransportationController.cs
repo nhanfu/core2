@@ -1538,9 +1538,24 @@ namespace TMS.API.Controllers
 						join MasterData on MasterData.Id = t.ContainerTypeId
 						where t.DemDate is null
 						and MasterData.Description not like N'%tank%'
-						and t.ShipId = '{entity.ShipId}' and (t.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and t.Trip = '{entity.Trip}' and t.RouteId in ({entity.RouteIds.Combine()});";
+						and t.ShipId = '{entity.ShipId}' and (t.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and t.Trip = '{entity.Trip}' and t.RouteId in ({entity.RouteIds.Combine()});
+                        update Transportation set ReturnDate = Transportation.ShipDate, ReturnId = r.BranchId
+					    from Transportation
+					    join [Route] r on r.Id = Transportation.RouteId
+					    where Transportation.SplitBill is not null 
+					    and Transportation.SplitBill <> '' 
+					    and Transportation.SplitBill <> N'bill riêng'
+					    and Transportation.ShipDate is not null
+					    and Transportation.ReturnDate is null
+                        and Transportation.ShipId = '{entity.ShipId}' and (Transportation.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Transportation.Trip = '{entity.Trip}' and Transportation.RouteId in ({entity.RouteIds.Combine()});
+                        update Transportation set IsSplitBill = 
+					    (case when (l.Description is not null and l.Description like N'%Tách Bill Cho Khách%') 
+					    or (Transportation.SplitBill is not null and trim(Transportation.SplitBill) <> N'') then 1 else 0 end)
+					    from Transportation
+					    left join Location l on Transportation.ReturnId = l.Id
+					    where Transportation.ShipId = '{entity.ShipId}' and (Transportation.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Transportation.Trip = '{entity.Trip}' and Transportation.RouteId in ({entity.RouteIds.Combine()});
+                        ";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER tr_Transportation_ReturnDate ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
             return check;
