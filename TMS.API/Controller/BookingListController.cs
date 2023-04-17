@@ -212,6 +212,19 @@ namespace TMS.API.Controllers
                         checkBookingList.ShipPrice = item.ShipPrice;
                         checkBookingList.ShipPolicyPrice = item.ShipPolicyPrice;
                     }
+                    else if (checkBookingList.Submit && (int)Math.Abs((decimal)(checkBookingList.Count - item.Count)) > 0)
+                    {
+                        var newBookingList = new BookingList();
+                        newBookingList.CopyPropFrom(checkBookingList);
+                        newBookingList.Id = 0;
+                        newBookingList.Submit = false;
+                        newBookingList.Count = (int)Math.Abs((decimal)(checkBookingList.Count - item.Count));
+                        newBookingList.ShipPrice = Math.Abs(checkBookingList.ShipPrice - item.ShipPrice);
+                        newBookingList.ShipPolicyPrice = Math.Abs(checkBookingList.ShipPolicyPrice - item.ShipPolicyPrice);
+                        db.Add(newBookingList);
+                        await db.SaveChangesAsync();
+                        listAdd.Add(newBookingList.Id);
+                    }
                     listAdd.Add(checkBookingList.Id);
                 }
                 var trans = rs.Where(x => item.TransportationIds.Contains(x.Id.ToString())).ToList();
