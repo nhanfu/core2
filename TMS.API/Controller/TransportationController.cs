@@ -1532,7 +1532,13 @@ namespace TMS.API.Controllers
             }
             var cmd = $"Update [{nameof(Transportation)}] set [ShipDate] = '{entity.ShipDate.Value.ToString("yyyy-MM-dd")}',[PortLiftId] = '{entity.PortLiftId}'" +
                 $" ,[ExportListReturnId] = '{VendorId}',[IsLiftFee] = {(entity.IsLiftFee ? 1 : 0)},[UserReturnId] = '{UserId}'" +
-                $" where ShipId = '{entity.ShipId}' and (BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Trip = '{entity.Trip}' and RouteId in ({entity.RouteIds.Combine()})";
+                $" where ShipId = '{entity.ShipId}' and (BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Trip = '{entity.Trip}' and RouteId in ({entity.RouteIds.Combine()});" +
+                @$" update Transportation set DemDate = DATEADD(day,(select top 1 [Day] from SettingTransportation where RouteId = t.RouteId and BranchShipId = isnull(t.LineId,t.BrandShipId) and StartDate <= t.ShipDate order by StartDate desc)-1,t.ShipDate)
+						from Transportation t
+						join MasterData on MasterData.Id = t.ContainerTypeId
+						where t.DemDate is null
+						and MasterData.Description not like N'%tank%'
+						and t.ShipId = '{entity.ShipId}' and (t.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and t.Trip = '{entity.Trip}' and t.RouteId in ({entity.RouteIds.Combine()});";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER tr_Transportation_ReturnDate ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
