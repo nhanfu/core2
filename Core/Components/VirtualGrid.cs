@@ -276,10 +276,7 @@ namespace Core.Components
                         if (CellSelected.Count > 0)
                         {
                             CellSelected.RemoveAt(CellSelected.Count - 1);
-                            if (Wheres.Count - 1 >= 0)
-                            {
-                                Wheres.RemoveAt(Wheres.Count - 1);
-                            }
+                            Wheres.RemoveAt(Wheres.Count - 1);
                             AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
                             Task.Run(async () =>
                             {
@@ -299,10 +296,7 @@ namespace Core.Components
                             if (CellSelected.Count > 0)
                             {
                                 CellSelected.RemoveAt(CellSelected.Count - 1);
-                                if (Wheres.Count - 1 >= 0)
-                                {
-                                    Wheres.RemoveAt(Wheres.Count - 1);
-                                }
+                                Wheres.RemoveAt(Wheres.Count - 1);
                                 AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
                                 Task.Run(async () =>
                                 {
@@ -458,7 +452,7 @@ namespace Core.Components
                         value = item[header.FieldName].ToString();
                         valueText = item[header.FieldName].ToString();
                     }
-                    Html.Instance.TRow.Event(EventType.DblClick, () => FilterSumary(header, value, valueText)).Event(EventType.Click, (e) => FocusCell(e, this.HeaderComponentMap[header.GetHashCode()])).Render();
+                    Html.Instance.TRow.Event(EventType.DblClick, () => FilterSumary(header, value, valueText)).Event(EventType.Click, (e) => FocusCell(e, HeaderComponentMap[header.GetHashCode()])).Render();
                     Html.Instance.TData.Style("max-width: 100%;").ClassName(header.ComponentType == nameof(Number) ? "text-right" : "text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
                     Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item["TotalRecord"].ToString()).End.Render();
                     foreach (var itemDetail in gridPolicy)

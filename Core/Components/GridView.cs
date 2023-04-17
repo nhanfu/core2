@@ -637,7 +637,10 @@ namespace Core.Components
                 var value = ids ?? cell.Value;
                 if (!AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.Value == value && x.CompareOperatorId == advo))
                 {
-                    if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && cell.FieldName != IdField && x.CompareOperatorId == advo && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In)))
+                    if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName 
+                    && cell.FieldName != IdField 
+                    && x.CompareOperatorId == advo 
+                    && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In)))
                     {
                         AdvSearchVM.Conditions.FirstOrDefault(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo).Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value;
                         Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{GuiInfo.RefName}].{cell.FieldName}")).FieldName = where;

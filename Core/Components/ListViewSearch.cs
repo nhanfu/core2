@@ -505,7 +505,7 @@ namespace Core.Components
                     finalFilter += " and ";
                 }
                 var endDate = EntityVM.EndDate.Value.Date.AddDays(1);
-                var oldEndDate = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <="));
+                var oldEndDate = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <"));
                 if (oldEndDate is null)
                 {
                     ParentListView.Wheres.Add(new Where()
