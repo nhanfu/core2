@@ -1281,42 +1281,6 @@ namespace TMS.API.Models
 
             modelBuilder.Entity<Transportation>(entity =>
             {
-                entity.HasIndex(e => e.ContainerNo, "IX_Transportation");
-
-                entity.HasIndex(e => e.Trip, "IX_Transportation_1");
-
-                entity.HasIndex(e => e.BookingId, "IX_Transportation_10");
-
-                entity.HasIndex(e => e.ContainerTypeId, "IX_Transportation_11");
-
-                entity.HasIndex(e => e.CommodityId, "IX_Transportation_12");
-
-                entity.HasIndex(e => e.RouteId, "IX_Transportation_13");
-
-                entity.HasIndex(e => e.ExportListId, "IX_Transportation_14");
-
-                entity.HasIndex(e => e.UserId, "IX_Transportation_15");
-
-                entity.HasIndex(e => e.ReturnId, "IX_Transportation_16");
-
-                entity.HasIndex(e => e.IsSplitBill, "IX_Transportation_17");
-
-                entity.HasIndex(e => e.BossId, "IX_Transportation_2");
-
-                entity.HasIndex(e => e.ClosingDate, "IX_Transportation_3");
-
-                entity.HasIndex(e => e.ClosingId, "IX_Transportation_4");
-
-                entity.HasIndex(e => e.StartShip, "IX_Transportation_5");
-
-                entity.HasIndex(e => e.ReturnVendorId, "IX_Transportation_6");
-
-                entity.HasIndex(e => e.ShipDate, "IX_Transportation_7");
-
-                entity.HasIndex(e => e.ShipId, "IX_Transportation_8");
-
-                entity.HasIndex(e => e.BrandShipId, "IX_Transportation_9");
-
                 entity.Property(e => e.Bet).HasMaxLength(250);
 
                 entity.Property(e => e.BetAmount).HasColumnType("decimal(20, 5)");
