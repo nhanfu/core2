@@ -242,7 +242,7 @@ namespace TMS.UI.Business.Manage
                     confirm.Render();
                     confirm.YesConfirmed += async () =>
                     {
-                        await RequestUnClosing(transportation, patch);
+                        await RequestUnClosing(transportation, patch, this);
                     };
                     confirm.NoConfirmed += async () =>
                     {
@@ -263,7 +263,7 @@ namespace TMS.UI.Business.Manage
                     {
                         if (transportation.IsLocked)
                         {
-                            await RequestUnClosing(transportation, patch);
+                            await RequestUnClosing(transportation, patch, this);
                         }
                         else
                         {
@@ -311,7 +311,7 @@ namespace TMS.UI.Business.Manage
                     confirm.Render();
                     confirm.YesConfirmed += async () =>
                     {
-                        await RequestUnClosing(transportation, patch);
+                        await RequestUnClosing(transportation, patch, this);
                     };
                     confirm.NoConfirmed += async () =>
                     {
@@ -332,7 +332,7 @@ namespace TMS.UI.Business.Manage
                     {
                         if (transportation.IsLocked)
                         {
-                            await RequestUnClosing(transportation, patch);
+                            await RequestUnClosing(transportation, patch, this);
                         }
                         else
                         {
@@ -380,7 +380,7 @@ namespace TMS.UI.Business.Manage
                     confirm.Render();
                     confirm.YesConfirmed += async () =>
                     {
-                        await RequestUnClosing(transportation, patch);
+                        await RequestUnClosing(transportation, patch, this);
                     };
                     confirm.NoConfirmed += async () =>
                     {
@@ -399,7 +399,7 @@ namespace TMS.UI.Business.Manage
                     confirm.Render();
                     confirm.YesConfirmed += async () =>
                     {
-                        await RequestUnClosing(transportation, patch);
+                        await RequestUnClosing(transportation, patch, this);
                     };
                     confirm.NoConfirmed += async () =>
                     {
@@ -412,13 +412,14 @@ namespace TMS.UI.Business.Manage
             }
             else
             {
-                await RequestUnClosing(transportation, patch);
+                await RequestUnClosing(transportation, patch, this);
             }
         }
 
-        public async Task RequestUnClosing(Transportation transportation, PatchUpdate patch)
+        public async Task RequestUnClosing(Transportation transportation, PatchUpdate patch, TabEditor tabEditor)
         {
-            if (transportation.IsLocked == false && transportation.IsKt == false && transportation.IsSubmit == false && transportation.LockShip == false)
+            var tran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportation.Id}");
+            if (tran.IsLocked == false && tran.IsKt == false && tran.IsSubmit == false && tran.LockShip == false)
             {
                 return;
             }
@@ -428,21 +429,23 @@ namespace TMS.UI.Business.Manage
             x.Field != nameof(transportation.UserReturnId) &&
             x.Field != nameof(transportation.IsLocked)))
             {
-                var tran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportation.Id}");
                 if (tran.IsLocked)
                 {
                     var confirm = new ConfirmDialog
                     {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"DSVC này đã bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
+                        Content = $"DSVC này đã bị khóa (Hệ thống). Bạn có muốn tạo yêu cầu mở khóa không ?",
                     };
                     confirm.Render();
                     confirm.YesConfirmed += async () =>
                     {
-                        transportation.ReasonUnLockAll = confirm.Textbox?.Text;
-                        await new Client(nameof(Transportation)).PostAsync<Transportation>(transportation, "RequestUnLockAll");
+                        var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id}");
+                        if (checkRequestExist != null)
+                        {
+                            Toast.Warning("DSVC đã có yêu cầu thay đổi đang chờ được duyệt");
+                            return;
+                        }
+                        else
+                        { await TransportationRequestDetailsBL(tran, tabEditor); }
                     };
                 }
                 if (patch.Changes.Any(x => x.Field == nameof(transportation.ShipPrice) ||
@@ -457,20 +460,23 @@ namespace TMS.UI.Business.Manage
                 x.Field == nameof(transportation.SocId) ||
                 x.Field == nameof(transportation.BookingId)))
                 {
-                    if (transportation.LockShip)
+                    if (tran.LockShip)
                     {
                         var confirm = new ConfirmDialog
                         {
-                            NeedAnswer = true,
-                            ComType = nameof(Textbox),
-                            Content = $"DSVC này đã bị khóa (Cước tàu). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
+                            Content = $"DSVC này đã bị khóa (Cước tàu). Bạn có muốn tạo yêu cầu mở khóa không ?",
                         };
                         confirm.Render();
                         confirm.YesConfirmed += async () =>
                         {
-                            transportation.ReasonUnLockShip = confirm.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(transportation, "RequestUnLockShip");
+                            var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id}");
+                            if (checkRequestExist != null)
+                            {
+                                Toast.Warning("DSVC đã có yêu cầu thay đổi đang chờ được duyệt");
+                                return;
+                            }
+                            else
+                            { await TransportationRequestDetailsBL(tran, tabEditor); }
                         };
                     }
                 }
@@ -498,23 +504,104 @@ namespace TMS.UI.Business.Manage
                 || x.Field == nameof(transportation.ReturnId)
                 || x.Field == nameof(transportation.FreeText3)))
                 {
-                    if (transportation.IsKt)
+                    if (tran.IsKt)
                     {
                         var confirm = new ConfirmDialog
                         {
-                            NeedAnswer = true,
-                            ComType = nameof(Textbox),
-                            Content = $"DSVC này đã bị khóa (Khai thác). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                            "Hãy nhập lý do",
+                            Content = $"DSVC này đã bị khóa (Khai thác). Bạn có muốn tạo yêu cầu mở khóa không ?",
                         };
                         confirm.Render();
                         confirm.YesConfirmed += async () =>
                         {
-                            transportation.ReasonUnLockExploit = confirm.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(transportation, "RequestUnLock");
+                            var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id}");
+                            if (checkRequestExist != null)
+                            {
+                                Toast.Warning("DSVC đã có yêu cầu thay đổi đang chờ được duyệt");
+                                return;
+                            }
+                            else
+                            { await TransportationRequestDetailsBL(tran, tabEditor); }
                         };
                     }
                 }
+            }
+        }
+
+        public async Task ViewRequestChange(TransportationRequest transportationRequest)
+        {
+            var tran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportationRequest.TransportationId}");
+            if (tran != null)
+            {
+                await TransportationRequestDetailsBL(tran, this);
+            }
+        }
+
+        public async Task TransportationRequestDetailsBL(Transportation transportation, TabEditor tabEditor)
+        {
+            if (tabEditor.Name == "Transportation List")
+            {
+                await tabEditor.OpenPopup(
+                featureName: "Transportation Request Details",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationRequestDetailsBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Yêu cầu thay đổi";
+                    instance.Entity = transportation;
+                    return instance;
+                });
+            }
+            else if (tabEditor.Name == "Transportation Return Plan List")
+            {
+                await tabEditor.OpenPopup(
+                featureName: "Transportation Request Details2",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationRequestDetailsBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Yêu cầu thay đổi";
+                    instance.Entity = transportation;
+                    return instance;
+                });
+            }
+            else if (tabEditor.Name == "ReturnPlan List")
+            {
+                await tabEditor.OpenPopup(
+                featureName: "Transportation Request Details2",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationRequestDetailsBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Yêu cầu thay đổi";
+                    instance.Entity = transportation;
+                    return instance;
+                });
+            }
+            else if (tabEditor.Name == "ContainerBetManager List")
+            {
+                await tabEditor.OpenPopup(
+                featureName: "Transportation Request Details3",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationRequestDetailsBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Yêu cầu thay đổi";
+                    instance.Entity = transportation;
+                    return instance;
+                });
+            }
+            else if (tabEditor.Name == "Transportation List Accountant")
+            {
+                await tabEditor.OpenPopup(
+                featureName: "Transportation Request Details Full",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationRequestDetailsBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Yêu cầu thay đổi";
+                    instance.Entity = transportation;
+                    return instance;
+                });
             }
         }
 
@@ -569,22 +656,6 @@ namespace TMS.UI.Business.Manage
                     }
                 }
             }
-            else
-            {
-                var confirm = new ConfirmDialog
-                {
-                    NeedAnswer = true,
-                    ComType = nameof(Textbox),
-                    Content = $"DSVC này đã bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
-                };
-                confirm.Render();
-                confirm.YesConfirmed += async () =>
-                {
-                    selected.ReasonUnLockAll = confirm.Textbox?.Text;
-                    await new Client(nameof(Transportation)).PostAsync<Transportation>(selected, "RequestUnLockAll");
-                };
-            }
         }
 
         public void ApproveUnLock(object arg)
@@ -615,22 +686,7 @@ namespace TMS.UI.Business.Manage
                     var checks = transportations.Where(x => x.IsLocked).ToList();
                     if (checks.Count > 0)
                     {
-                        var confirmRequest = new ConfirmDialog
-                        {
-                            NeedAnswer = true,
-                            ComType = nameof(Textbox),
-                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                            "Hãy nhập lý do",
-                        };
-                        confirmRequest.Render();
-                        confirmRequest.YesConfirmed += async () =>
-                        {
-                            foreach (var item in checks)
-                            {
-                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
-                            }
-                        };
+                        Toast.Warning($"Đã có {checks.Count} DSVC bị khóa (Hệ thống)");
                         var transportationNoLock = transportations.Where(x => x.IsLocked == false).ToList();
                         var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "ApproveUnLockTransportation");
                         if (res)
@@ -688,22 +744,7 @@ namespace TMS.UI.Business.Manage
                     var checks = transportations.Where(x => x.IsLocked).ToList();
                     if (checks.Count > 0)
                     {
-                        var confirmRequest = new ConfirmDialog
-                        {
-                            NeedAnswer = true,
-                            ComType = nameof(Textbox),
-                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                            "Hãy nhập lý do",
-                        };
-                        confirmRequest.Render();
-                        confirmRequest.YesConfirmed += async () =>
-                        {
-                            foreach (var item in checks)
-                            {
-                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
-                            }
-                        };
+                        Toast.Warning($"Đã có {checks.Count} DSVC bị khóa (Hệ thống)");
                         var transportationNoLock = transportations.Where(x => x.IsLocked == false).ToList();
                         var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "ApproveUnLockAccountantTransportation");
                         if (res)

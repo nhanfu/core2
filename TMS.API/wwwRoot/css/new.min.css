@@ -10159,6 +10159,10 @@ a.text-info:focus, a.text-info:hover {
     color: #0768ff !important;
 }
 
+.text-warning-2 {
+    color: #ff0000 !important;
+}
+
 a.text-warning:focus, a.text-warning:hover {
     color: #f63b00 !important
 }
@@ -50538,9 +50542,13 @@ a.fc-more:hover {
     color: #0768ff !important;
 }
 
-    .text-warning[href]:focus, .text-warning[href]:hover {
-        color: #fb3c00
-    }
+.text-warning-2 {
+    color: #ff0000 !important;
+}
+
+.text-warning[href]:focus, .text-warning[href]:hover {
+    color: #fb3c00
+}
 
 .bg-warning {
     background-color: #ff5722

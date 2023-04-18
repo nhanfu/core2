@@ -178,22 +178,7 @@ namespace TMS.UI.Business.Manage
                 var checks = transportations.Where(x => x.IsLocked).ToList();
                 if (checks.Count > 0)
                 {
-                    var confirmRequest = new ConfirmDialog
-                    {
-                        NeedAnswer = true,
-                        ComType = nameof(Textbox),
-                        Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                        "Hãy nhập lý do",
-                    };
-                    confirmRequest.Render();
-                    confirmRequest.YesConfirmed += async () =>
-                    {
-                        foreach (var item in checks)
-                        {
-                            item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                            await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
-                        }
-                    };
+                    Toast.Warning($"Đã có {checks.Count} DSVC bị khóa (Hệ thống)");
                     var transportationNoLock = transportations.Where(x => x.IsLocked == false).ToList();
                     var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "ApproveUnLockShip");
                     if (res)

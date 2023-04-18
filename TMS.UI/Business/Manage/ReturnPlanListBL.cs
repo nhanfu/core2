@@ -470,7 +470,7 @@ namespace TMS.UI.Business.Manage
         public async Task RequestUnClosing(Transportation transportation, PatchUpdate patch)
         {
             var tran = new TransportationListAccountantBL();
-            await tran.RequestUnClosing(transportation, patch);
+            await tran.RequestUnClosing(transportation, patch, this);
         }
 
         public override async Task ProductionReport()

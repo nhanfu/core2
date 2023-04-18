@@ -3512,6 +3512,10 @@ div > [class*="cell"]:last-child {
 #user-active .text-warning {
   color: #ffc107 !important;
 }
+#notification-list .text-warning-2,
+#user-active .text-warning-2 {
+  color: #ff0000 !important;
+}
 #notification-list .text-danger,
 #user-active .text-danger {
   color: #dc3545 !important;

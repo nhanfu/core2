@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using TMS.API.Models;
 using TMS.API.Services;
 using TMS.API.ViewModels;
+using Windows.UI.Xaml;
 using FileIO = System.IO.File;
 
 namespace TMS.API.Controllers
@@ -1878,9 +1879,9 @@ namespace TMS.API.Controllers
         #endregion
         #region  Request
         [HttpPost("api/Transportation/RequestUnLock")]
-        public async Task RequestUnLock([FromBody] Transportation transportation)
+        public async Task RequestUnLock([FromBody] TransportationRequestDetails transportationRequestDetails)
         {
-            var check = await db.TransportationRequest.Where(x => x.TransportationId == transportation.Id && x.Active).ToListAsync();
+            var check = await db.TransportationRequest.Where(x => x.TransportationId == transportationRequestDetails.TransportationId && x.Active).ToListAsync();
             if (check.Count > 0)
             {
                 throw new ApiException("Đã có yêu cầu mở khóa");
@@ -1910,15 +1911,18 @@ namespace TMS.API.Controllers
             ).ToListAsync();
             if (listUser.HasElement())
             {
-                var tran = await db.Transportation.Where(x => x.Id == transportation.Id).FirstOrDefaultAsync();
                 var tranRequest = new TransportationRequest();
                 tranRequest.Id = 0;
                 tranRequest.IsRequestUnLockExploit = true;
-                tranRequest.ReasonUnLockExploit = transportation.ReasonUnLockExploit;
-                tranRequest.TransportationId = transportation.Id;
+                tranRequest.ReasonUnLockExploit = transportationRequestDetails.Reason;
+                tranRequest.TransportationId = transportationRequestDetails.TransportationId;
                 tranRequest.StatusId = (int)ApprovalStatusEnum.Approving;
                 SetAuditInfo(tranRequest);
                 db.Add(tranRequest);
+                await db.SaveChangesAsync();
+                var transportationRequestDetailsDB = await db.TransportationRequestDetails.Where(x => x.Id == transportationRequestDetails.Id).FirstOrDefaultAsync();
+                transportationRequestDetailsDB.TransportationRequestId = tranRequest.Id;
+                transportationRequestDetailsDB.StatusId = (int)ApprovalStatusEnum.Approving;
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
                 var tasks = new List<TaskNotification>();
                 foreach (var user in listUser)
@@ -1927,8 +1931,8 @@ namespace TMS.API.Controllers
                     {
                         Title = $"{currentUser.FullName}",
                         Description = $"Đã gửi yêu cầu mở khóa Khai thác",
-                        EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
-                        RecordId = transportation.Id,
+                        EntityId = _entitySvc.GetEntity(typeof(TransportationRequest).Name).Id,
+                        RecordId = tranRequest.Id,
                         Attachment = "fal fa-paper-plane",
                         AssignedId = user.Id,
                         StatusId = (int)TaskStateEnum.UnreadStatus,
@@ -1945,9 +1949,9 @@ namespace TMS.API.Controllers
         }
 
         [HttpPost("api/Transportation/RequestUnLockAccountant")]
-        public async Task RequestUnLockAccountant([FromBody] Transportation transportation)
+        public async Task RequestUnLockAccountant([FromBody] TransportationRequestDetails transportationRequestDetails)
         {
-            var check = await db.TransportationRequest.Where(x => x.TransportationId == transportation.Id && x.Active).ToListAsync();
+            var check = await db.TransportationRequest.Where(x => x.TransportationId == transportationRequestDetails.TransportationId && x.Active).ToListAsync();
             if (check.Count > 0)
             {
                 throw new ApiException("Đã có yêu cầu mở khóa");
@@ -1977,15 +1981,18 @@ namespace TMS.API.Controllers
             ).ToListAsync();
             if (listUser.HasElement())
             {
-                var tran = await db.Transportation.Where(x => x.Id == transportation.Id).FirstOrDefaultAsync();
                 var tranRequest = new TransportationRequest();
                 tranRequest.Id = 0;
                 tranRequest.IsRequestUnLockAccountant = true;
-                tranRequest.ReasonUnLockAccountant = transportation.ReasonUnLockAccountant;
-                tranRequest.TransportationId = transportation.Id;
+                tranRequest.ReasonUnLockAccountant = transportationRequestDetails.Reason;
+                tranRequest.TransportationId = transportationRequestDetails.TransportationId;
                 tranRequest.StatusId = (int)ApprovalStatusEnum.Approving;
                 SetAuditInfo(tranRequest);
                 db.Add(tranRequest);
+                await db.SaveChangesAsync();
+                var transportationRequestDetailsDB = await db.TransportationRequestDetails.Where(x => x.Id == transportationRequestDetails.Id).FirstOrDefaultAsync();
+                transportationRequestDetailsDB.TransportationRequestId = tranRequest.Id;
+                transportationRequestDetailsDB.StatusId = (int)ApprovalStatusEnum.Approving;
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
                 var tasks = new List<TaskNotification>();
                 foreach (var user in listUser)
@@ -1994,8 +2001,8 @@ namespace TMS.API.Controllers
                     {
                         Title = $"{currentUser.FullName}",
                         Description = $"Đã gửi yêu cầu mở khóa Kế toán",
-                        EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
-                        RecordId = transportation.Id,
+                        EntityId = _entitySvc.GetEntity(typeof(TransportationRequest).Name).Id,
+                        RecordId = tranRequest.Id,
                         Attachment = "fal fa-paper-plane",
                         AssignedId = user.Id,
                         StatusId = (int)TaskStateEnum.UnreadStatus,
@@ -2012,9 +2019,9 @@ namespace TMS.API.Controllers
         }
 
         [HttpPost("api/Transportation/RequestUnLockAll")]
-        public async Task RequestUnLockAll([FromBody] Transportation transportation)
+        public async Task RequestUnLockAll([FromBody] TransportationRequestDetails transportationRequestDetails)
         {
-            var check = await db.TransportationRequest.Where(x => x.TransportationId == transportation.Id && x.Active).ToListAsync();
+            var check = await db.TransportationRequest.Where(x => x.TransportationId == transportationRequestDetails.TransportationId && x.Active).ToListAsync();
             if (check.Count > 0)
             {
                 throw new ApiException("Đã có yêu cầu mở khóa");
@@ -2044,15 +2051,18 @@ namespace TMS.API.Controllers
             ).ToListAsync();
             if (listUser.HasElement())
             {
-                var tran = await db.Transportation.Where(x => x.Id == transportation.Id).FirstOrDefaultAsync();
                 var tranRequest = new TransportationRequest();
                 tranRequest.Id = 0;
                 tranRequest.IsRequestUnLockAll = true;
-                tranRequest.ReasonUnLockAll = transportation.ReasonUnLockAll;
-                tranRequest.TransportationId = transportation.Id;
+                tranRequest.ReasonUnLockAll = transportationRequestDetails.Reason;
+                tranRequest.TransportationId = transportationRequestDetails.TransportationId;
                 tranRequest.StatusId = (int)ApprovalStatusEnum.Approving;
                 SetAuditInfo(tranRequest);
                 db.Add(tranRequest);
+                await db.SaveChangesAsync();
+                var transportationRequestDetailsDB = await db.TransportationRequestDetails.Where(x => x.Id == transportationRequestDetails.Id).FirstOrDefaultAsync();
+                transportationRequestDetailsDB.TransportationRequestId = tranRequest.Id;
+                transportationRequestDetailsDB.StatusId = (int)ApprovalStatusEnum.Approving;
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
                 var tasks = new List<TaskNotification>();
                 foreach (var user in listUser)
@@ -2061,8 +2071,8 @@ namespace TMS.API.Controllers
                     {
                         Title = $"{currentUser.FullName}",
                         Description = $"Đã gửi yêu cầu mở khóa Hệ thống",
-                        EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
-                        RecordId = transportation.Id,
+                        EntityId = _entitySvc.GetEntity(typeof(TransportationRequest).Name).Id,
+                        RecordId = tranRequest.Id,
                         Attachment = "fal fa-paper-plane",
                         AssignedId = user.Id,
                         StatusId = (int)TaskStateEnum.UnreadStatus,
@@ -2079,9 +2089,9 @@ namespace TMS.API.Controllers
         }
 
         [HttpPost("api/Transportation/RequestUnLockShip")]
-        public async Task RequestUnLockShip([FromBody] Transportation transportation)
+        public async Task RequestUnLockShip([FromBody] TransportationRequestDetails transportationRequestDetails)
         {
-            var check = await db.TransportationRequest.Where(x => x.TransportationId == transportation.Id && x.Active).ToListAsync();
+            var check = await db.TransportationRequest.Where(x => x.TransportationId == transportationRequestDetails.TransportationId && x.Active).ToListAsync();
             if (check.Count > 0)
             {
                 throw new ApiException("Đã có yêu cầu mở khóa");
@@ -2111,15 +2121,18 @@ namespace TMS.API.Controllers
             ).ToListAsync();
             if (listUser.HasElement())
             {
-                var tran = await db.Transportation.Where(x => x.Id == transportation.Id).FirstOrDefaultAsync();
                 var tranRequest = new TransportationRequest();
                 tranRequest.Id = 0;
                 tranRequest.IsRequestUnLockShip = true;
-                tranRequest.ReasonUnLockShip = transportation.ReasonUnLockShip;
-                tranRequest.TransportationId = transportation.Id;
+                tranRequest.ReasonUnLockShip = transportationRequestDetails.Reason;
+                tranRequest.TransportationId = transportationRequestDetails.TransportationId;
                 tranRequest.StatusId = (int)ApprovalStatusEnum.Approving;
                 SetAuditInfo(tranRequest);
                 db.Add(tranRequest);
+                await db.SaveChangesAsync();
+                var transportationRequestDetailsDB = await db.TransportationRequestDetails.Where(x => x.Id == transportationRequestDetails.Id).FirstOrDefaultAsync();
+                transportationRequestDetailsDB.TransportationRequestId = tranRequest.Id;
+                transportationRequestDetailsDB.StatusId = (int)ApprovalStatusEnum.Approving;
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
                 var tasks = new List<TaskNotification>();
                 foreach (var user in listUser)
@@ -2128,8 +2141,8 @@ namespace TMS.API.Controllers
                     {
                         Title = $"{currentUser.FullName}",
                         Description = $"Đã gửi yêu cầu mở khóa Cước tàu",
-                        EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
-                        RecordId = transportation.Id,
+                        EntityId = _entitySvc.GetEntity(typeof(TransportationRequest).Name).Id,
+                        RecordId = tranRequest.Id,
                         Attachment = "fal fa-paper-plane",
                         AssignedId = user.Id,
                         StatusId = (int)TaskStateEnum.UnreadStatus,
@@ -2174,11 +2187,21 @@ namespace TMS.API.Controllers
                 await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
             }
             var ids = transportations.Select(x => x.Id).ToList();
-            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
-            var cmd = $"Update [{nameof(Transportation)}] set IsLocked = 0" +
-                $" where Id in ({ids.Combine()})";
+            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId) && x.Active).Select(x => x.Id).ToListAsync();
+            var tranRequestDetails = await db.TransportationRequestDetails.Where(x => ids.Contains((int)x.TransportationId) && x.Active).ToListAsync();
+            var tranRequestDetailsIds = tranRequestDetails.Select(x => x.Id).ToList();
+            var cmd = "";
+            foreach (var item in transportations)
+            {
+                var getTranRequestDetails = tranRequestDetails.Where(x => x.TransportationId == item.Id && x.StatusId == (int)ApprovalStatusEnum.Approving).FirstOrDefault();
+                var queryUpdate = CompareChanges(getTranRequestDetails, item);
+                cmd += queryUpdate;
+                cmd += $" where Id = {item.Id}";
+            }
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
@@ -2214,11 +2237,21 @@ namespace TMS.API.Controllers
                 await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
             }
             var ids = transportations.Select(x => x.Id).ToList();
-            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
-            var cmd = $"Update [{nameof(Transportation)}] set IsKt = 0" +
-                $" where Id in ({ids.Combine()})";
+            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId) && x.Active).Select(x => x.Id).ToListAsync();
+            var tranRequestDetails = await db.TransportationRequestDetails.Where(x => ids.Contains((int)x.TransportationId) && x.Active).ToListAsync();
+            var tranRequestDetailsIds = tranRequestDetails.Select(x => x.Id).ToList();
+            var cmd = "";
+            foreach (var item in transportations)
+            {
+                var getTranRequestDetails = tranRequestDetails.Where(x => x.TransportationId == item.Id && x.StatusId == (int)ApprovalStatusEnum.Approving).FirstOrDefault();
+                var queryUpdate = CompareChanges(getTranRequestDetails, item);
+                cmd += queryUpdate;
+                cmd += $" where Id = {item.Id}";
+            }
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
@@ -2254,11 +2287,23 @@ namespace TMS.API.Controllers
                 await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
             }
             var ids = transportations.Select(x => x.Id).ToList();
-            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
-            var cmd = $"Update [{nameof(Transportation)}] set IsSubmit = 0" +
+            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId) && x.Active).Select(x => x.Id).ToListAsync();
+            var tranRequestDetails = await db.TransportationRequestDetails.Where(x => ids.Contains((int)x.TransportationId) && x.Active).ToListAsync();
+            var tranRequestDetailsIds = tranRequestDetails.Select(x => x.Id).ToList();
+            var cmd = "";
+            foreach (var item in transportations)
+            {
+                var getTranRequestDetails = tranRequestDetails.Where(x => x.TransportationId == item.Id && x.StatusId == (int)ApprovalStatusEnum.Approving).FirstOrDefault();
+                var queryUpdate = CompareChanges(getTranRequestDetails, item);
+                cmd += queryUpdate;
+                cmd += $" where Id = {item.Id}";
+            }
+            cmd += $"Update [{nameof(Transportation)}] set IsSubmit = 0" +
                 $" where Id in ({ids.Combine()})";
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
@@ -2294,11 +2339,21 @@ namespace TMS.API.Controllers
                 await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
             }
             var ids = transportations.Select(x => x.Id).ToList();
-            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
-            var cmd = $"Update [{nameof(Transportation)}] set LockShip = 0" +
-                $" where Id in ({ids.Combine()})";
+            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId) && x.Active).Select(x => x.Id).ToListAsync();
+            var tranRequestDetails = await db.TransportationRequestDetails.Where(x => ids.Contains((int)x.TransportationId) && x.Active).ToListAsync();
+            var tranRequestDetailsIds = tranRequestDetails.Select(x => x.Id).ToList();
+            var cmd = "";
+            foreach (var item in transportations)
+            {
+                var getTranRequestDetails = tranRequestDetails.Where(x => x.TransportationId == item.Id && x.StatusId == (int)ApprovalStatusEnum.Approving).FirstOrDefault();
+                var queryUpdate = CompareChanges(getTranRequestDetails, item);
+                cmd += queryUpdate;
+                cmd += $" where Id = {item.Id}";
+            }
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
@@ -2335,8 +2390,11 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
+            var tranRequestDetailsIds = await db.TransportationRequestDetails.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
             var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
@@ -2373,8 +2431,11 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
+            var tranRequestDetailsIds = await db.TransportationRequestDetails.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
             var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
@@ -2411,8 +2472,11 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
+            var tranRequestDetailsIds = await db.TransportationRequestDetails.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
             var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
@@ -2449,12 +2513,62 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
+            var tranRequestDetailsIds = await db.TransportationRequestDetails.Where(x => ids.Contains((int)x.TransportationId)).Select(x => x.Id).ToListAsync();
             var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.Database.ExecuteSqlRawAsync(cmd);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
             return true;
+        }
+
+        private string CompareChanges(object change, object cutting)
+        {
+            var query = $" Update [{nameof(Transportation)}] set ";
+            if (change != null)
+            {
+                var propsChange = change.GetType().GetProperties().ToList();
+                var propsCutting = cutting.GetType().GetProperties().ToList();
+                foreach (var item in propsChange)
+                {
+                    var a1 = item.GetValue(change);
+                    var a2 = propsCutting.Where(x => x.Name == item.Name).FirstOrDefault()?.GetValue(cutting);
+                    if (a1 == null && a2 == null)
+                    {
+                        continue;
+                    }
+                    if (((a1 != null && a2 == null) || (a1 == null && a2 != null) || (a1 != null && a2 != null) && (a1.ToString() != a2.ToString()))
+                        && item.Name != "Id"
+                        && item.Name != "InsertedDate"
+                        && item.Name != "InsertedBy"
+                        && item.Name != "UpdatedDate"
+                        && item.Name != "UpdatedBy"
+                        && item.Name != "TransportationId"
+                        && item.Name != "TransportationRequestId"
+                        && item.Name != "StatusId"
+                        && item.Name != "Reason"
+                        && item.Name != "ReasonReject")
+                    {
+                        var propType = item.PropertyType.FullName;
+                        if (propType.Contains("System.DateTime"))
+                        {
+                            query += $"{item.Name} = ";
+                            query += a1 != null ? $"'{DateTime.Parse(a1.ToString()).ToString("yyyy/MM/dd")}'" : "NULL";
+                            query += ", ";
+                        }
+                        else
+                        {
+                            query += $"{item.Name} = ";
+                            query += a1 != null ? $"'{a1.ToString()}'" : "NULL";
+                            query += ", ";
+                        }
+                    }
+                }
+            }
+            query = query.TrimEnd(',', ' ');
+            return query;
         }
         #endregion
         #region Lock

@@ -220,6 +220,9 @@
     <Compile Include="..\TMS.API\Models\TransportationRequest.cs">
       <Link>Models\TransportationRequest.cs</Link>
     </Compile>
+    <Compile Include="..\TMS.API\Models\TransportationRequestDetails.cs">
+      <Link>Models\TransportationRequestDetails.cs</Link>
+    </Compile>
     <Compile Include="..\tms.api\models\User.cs">
       <Link>Models\User.cs</Link>
     </Compile>
@@ -309,6 +312,7 @@
     <Compile Include="Business\Manage\BookingListListBL.cs" />
     <Compile Include="Business\Manage\ListShipBookBL.cs" />
     <Compile Include="Business\Manage\TransportationListAccountantBL.cs" />
+    <Compile Include="Business\Manage\TransportationRequestDetailsBL.cs" />
     <Compile Include="Business\Manage\UpdateStartShipBL.cs" />
     <Compile Include="Business\Manage\SpecialCustomerEditorBL.cs" />
     <Compile Include="Business\Manage\SpecialCustomerBL.cs" />
