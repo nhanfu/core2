@@ -458,6 +458,7 @@ namespace TMS.UI.Business.Manage
                 x.Field == nameof(transportation.StartShip) ||
                 x.Field == nameof(transportation.ContainerTypeId) ||
                 x.Field == nameof(transportation.SocId) ||
+                x.Field == nameof(transportation.ShipNotes) ||
                 x.Field == nameof(transportation.BookingId)))
                 {
                     if (tran.LockShip)

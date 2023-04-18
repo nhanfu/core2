@@ -84,6 +84,7 @@ namespace TMS.API.Controllers
                 || x.Field == nameof(entity.StartShip)
                 || x.Field == nameof(entity.ContainerTypeId)
                 || x.Field == nameof(entity.SocId)
+                || x.Field == nameof(entity.ShipNotes)
                 || x.Field == nameof(entity.BookingId)) && entity.BookingId != null)
                 {
                     if (entity.LockShip)
