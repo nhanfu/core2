@@ -528,9 +528,9 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public void Analysis(TransportationPlan transportationPlan, PatchUpdate patchUpdate)
+        public async Task Analysis(TransportationPlan transportationPlan, PatchUpdate patchUpdate)
         {
-            if ((transportationPlan.TransportationTypeId is null || transportationPlan.BossId is null || transportationPlan.CommodityId is null || transportationPlan.ContainerTypeId is null || transportationPlan.RouteId is null))
+            if (transportationPlan.BossId is null || transportationPlan.CommodityId is null || transportationPlan.ContainerTypeId is null || transportationPlan.RouteId is null)
             {
                 return;
             }
@@ -538,50 +538,50 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-            Window.ClearTimeout(Awaiter);
-            Awaiter = Window.SetTimeout(async () =>
+            if (transportationPlan.TransportationTypeId is null)
             {
-                var containerId = await CheckContainerType(transportationPlan);
-                var commodityValueDB = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {transportationPlan.BossId} and CommodityId eq {transportationPlan.CommodityId} and ContainerId eq {containerId}");
-                if (transportationPlan.TransportationTypeId != null || commodityValueDB != null)
+                await SetPolicy(transportationPlan, patchUpdate);
+            }
+            var containerId = await CheckContainerType(transportationPlan);
+            var commodityValueDB = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {transportationPlan.BossId} and CommodityId eq {transportationPlan.CommodityId} and ContainerId eq {containerId}");
+            if (transportationPlan.TransportationTypeId != null || commodityValueDB != null)
+            {
+                if (commodityValueDB != null)
                 {
-                    if (commodityValueDB != null)
+                    transportationPlan.JourneyId = commodityValueDB.JourneyId;
+                    transportationPlan.IsWet = commodityValueDB.IsWet;
+                }
+                else
+                {
+                    if (transportationPlan.TransportationTypeId != null)
                     {
-                        transportationPlan.JourneyId = commodityValueDB.JourneyId;
-                        transportationPlan.IsWet = commodityValueDB.IsWet;
-                    }
-                    else
-                    {
-                        if (transportationPlan.TransportationTypeId != null)
+                        if (transportationPlan.TransportationTypeId != 11673)
                         {
-                            if (transportationPlan.TransportationTypeId != 11673)
-                            {
-                                transportationPlan.JourneyId = 12114;
-                                transportationPlan.IsWet = false;
-                            }
-                            else
-                            {
-                                transportationPlan.JourneyId = null;
-                            }
+                            transportationPlan.JourneyId = 12114;
+                            transportationPlan.IsWet = false;
+                        }
+                        else
+                        {
+                            transportationPlan.JourneyId = null;
                         }
                     }
                 }
-                if (commodityValueDB != null)
-                {
-                    transportationPlan.SteamingTerms = commodityValueDB.SteamingTerms;
-                    transportationPlan.BreakTerms = commodityValueDB.BreakTerms;
-                    transportationPlan.IsBought = commodityValueDB.IsBought;
-                    transportationPlan.CustomerTypeId = commodityValueDB.CustomerTypeId;
-                    transportationPlan.CommodityValue = commodityValueDB.TotalPrice;
-                    transportationPlan.IsSettingsInsurance = true;
-                    Toast.Success("GTHH đã tồn tại trong hệ thống với giá trị là: " + decimal.Parse(transportationPlan.CommodityValue.ToString()).ToString("N0"));
-                }
-                await new Client(nameof(TransportationPlan)).PatchAsync<object>(GetPatchEntity(transportationPlan), ig: $"&disableTrigger=true");
-                if (commodityValueDB == null || (transportationPlan.TransportationTypeId != null && transportationPlan.JourneyId == null))
-                {
-                    await SettingsCommodityValue(transportationPlan);
-                }
-            }, 200);
+            }
+            if (commodityValueDB != null)
+            {
+                transportationPlan.SteamingTerms = commodityValueDB.SteamingTerms;
+                transportationPlan.BreakTerms = commodityValueDB.BreakTerms;
+                transportationPlan.IsBought = commodityValueDB.IsBought;
+                transportationPlan.CustomerTypeId = commodityValueDB.CustomerTypeId;
+                transportationPlan.CommodityValue = commodityValueDB.TotalPrice;
+                transportationPlan.IsSettingsInsurance = true;
+                Toast.Success("GTHH đã tồn tại trong hệ thống với giá trị là: " + decimal.Parse(transportationPlan.CommodityValue.ToString()).ToString("N0"));
+            }
+            await new Client(nameof(TransportationPlan)).PatchAsync<object>(GetPatchEntity(transportationPlan), ig: $"&disableTrigger=true");
+            if (commodityValueDB == null || (transportationPlan.TransportationTypeId != null && transportationPlan.JourneyId == null))
+            {
+                await SettingsCommodityValue(transportationPlan);
+            }
         }
 
         private async Task SettingsCommodityValue(TransportationPlan transportationPlan)
@@ -657,33 +657,29 @@ namespace TMS.UI.Business.Manage
 
         private int Awaiter;
 
-        public void SetPolicy(TransportationPlan transportationPlan, PatchUpdate patchUpdate)
+        public async Task SetPolicy(TransportationPlan transportationPlan, PatchUpdate patchUpdate)
         {
-            Window.ClearTimeout(Awaiter);
-            Awaiter = Window.SetTimeout(async () =>
+            if (transportationPlan.RouteId != null && patchUpdate.Changes.Any(x => x.Field == nameof(TransportationPlan.RouteId)))
             {
-                if (transportationPlan.RouteId != null && patchUpdate.Changes.Any(x => x.Field == nameof(TransportationPlan.RouteId)))
+                var transportationTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 11670");
+                var route = await new Client(nameof(Route)).FirstOrDefaultAsync<Route>($"?$filter=Active eq true and Id eq {transportationPlan.RouteId}");
+                if (route.Name.ToLower().Contains("sắt"))
                 {
-                    var transportationTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 11670");
-                    var route = await new Client(nameof(Route)).FirstOrDefaultAsync<Route>($"?$filter=Active eq true and Id eq {transportationPlan.RouteId}");
-                    if (route.Name.ToLower().Contains("sắt"))
-                    {
-                        transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Sắt")).FirstOrDefault().Id;
-                    }
-                    else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
-                    {
-                        transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Bộ")).FirstOrDefault().Id;
-                    }
-                    else
-                    {
-                        transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Tàu")).FirstOrDefault().Id;
-                    }
-                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityTransportationType(transportationPlan), ig: $"&disableTrigger=true");
+                    transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Sắt")).FirstOrDefault().Id;
                 }
-            }, 200);
+                else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
+                {
+                    transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Bộ")).FirstOrDefault().Id;
+                }
+                else
+                {
+                    transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Tàu")).FirstOrDefault().Id;
+                }
+                await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityTransportationType(transportationPlan), ig: $"&disableTrigger=true");
+            }
         }
 
-        public void AfterPatchUpdateTransportationPlan(TransportationPlan transportationPlan, PatchUpdate patchUpdate, ListViewItem listViewItem)
+        public async Task AfterPatchUpdateTransportationPlan(TransportationPlan transportationPlan, PatchUpdate patchUpdate, ListViewItem listViewItem)
         {
             if (listViewItem is null)
             {
@@ -708,8 +704,8 @@ namespace TMS.UI.Business.Manage
                 listViewItem.ListViewSection.ListView.RemoveRowById(transportationPlan.Id);
                 listViewItem.ListViewSection.ListView.SelectedIds.Remove(transportationPlan.Id);
             }
-            SetPolicy(transportationPlan, patchUpdate);
-            Analysis(transportationPlan, patchUpdate);
+            await SetPolicy(transportationPlan, patchUpdate);
+            await Analysis(transportationPlan, patchUpdate);
         }
 
         private static bool ListViewItemFilter(object updatedData, EditableComponent x)
