@@ -29,14 +29,26 @@ namespace TMS.API.Services
             {
                 return null;
             }
-            return @$"update Transportation set BetFee = isnull(case when (l.Id is null or l.Description not like N'%Giao Lệnh Tại HCM%') then null else t.BetFee end,case when l.Description like N'%Giao Lệnh Tại HCM%' and t.Cont20 = 1 then 1000000
-		            when l.Description like N'%Giao Lệnh Tại HCM%' and t.Cont40 = 1 then 2000000 end)
+            var betFee = patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.BetFee));
+            if(betFee is null)
+            {
+                return @$"update Transportation set BetFee = case 
+                    when (l.Id is null or l.Description not like N'%Giao Lệnh Tại HCM%') then null
+                    when l.Description like N'%Giao Lệnh Tại HCM%' and t.Cont20 = 1 then 1000000
+		            when l.Description like N'%Giao Lệnh Tại HCM%' and t.Cont40 = 1 then 2000000 end
 		            from Transportation t
 		            left join [Location] l on l.Id = t.ReturnId
 		            where t.Id = {Id}
                     update Transportation set TotalBet = (isnull(Transportation.BetFee,0) + isnull(Transportation.ReturnLiftFeeReport,0) + isnull(Transportation.ReturnClosingFee,0) + isnull(Transportation.CustomerReturnFee,0))
 		            from Transportation
 		            where Transportation.Id = {Id};";
+            }
+            else
+            {
+                return @$"update Transportation set TotalBet = (isnull(Transportation.BetFee,0) + isnull(Transportation.ReturnLiftFeeReport,0) + isnull(Transportation.ReturnClosingFee,0) + isnull(Transportation.CustomerReturnFee,0))
+		            from Transportation
+		            where Transportation.Id = {Id};";
+            }
         }
 
         public string Transportation_CombinationFee(PatchUpdate patchUpdate, int Id)
@@ -487,7 +499,7 @@ namespace TMS.API.Services
 			                Insert into VendorLocation(VendorId,LocationId,InsertedBy,Active,InsertedDate,TypeId,ExportListId)
 			                values(@vendorId,@locationId,@insertedby,1,GETDATE(),2, @exportListId)
 		                end
-	                end";
+	                end;";
         }
     }
 }
