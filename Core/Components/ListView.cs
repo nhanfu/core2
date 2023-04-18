@@ -1342,19 +1342,9 @@ namespace Core.Components
                         Active = true,
                         FormatCell="{0: dd/MM/yyyy HH:mm}",
                         ComponentType = "Datepicker",
-                        MaxWidth = "100px",
-                        MinWidth = "100px",
-                    },
-                    new GridPolicy
-                    {
-                        Id = 3,
-                        EntityId = Utils.GetEntity(nameof(Models.History)).Id,
-                        FieldName = nameof(Models.History.ReasonOfChange),
-                        ShortDesc = "Loại thay đổi",
-                        Active = true,
-                        ComponentType = "Label",
-                        MaxWidth = "100px",
-                        MinWidth = "100px",
+                        TextAlign="left",
+                        MaxWidth = "150px",
+                        MinWidth = "150px",
                     },
                     new GridPolicy
                     {

@@ -237,7 +237,7 @@ namespace TMS.UI.Business.Manage
                 td.Style.BackgroundColor = "";
                 if (value != null)
                 {
-                    td.Style.BackgroundColor = "#ffeb3b";
+                    td.Style.BackgroundColor = "#9E9E9E";
                 }
             });
         }
@@ -272,7 +272,7 @@ namespace TMS.UI.Business.Manage
                 td.Style.BackgroundColor = "";
                 if (value != null)
                 {
-                    td.Style.BackgroundColor = "#e9a38a";
+                    td.Style.BackgroundColor = "#ffeb3b";
                 }
             });
         }
@@ -303,11 +303,11 @@ namespace TMS.UI.Business.Manage
                 }
                 if (!item.FreeText8.IsNullOrWhiteSpace())
                 {
-                    tdContainer.Style.BackgroundColor = "#ffeb3b";
+                    tdContainer.Style.BackgroundColor = "#9E9E9E";
                 }
                 if (!item.FreeText9.IsNullOrWhiteSpace())
                 {
-                    tdContainer.Style.BackgroundColor = "#e9a38a";
+                    tdContainer.Style.BackgroundColor = "#ffeb3b";
                 }
             }
         }

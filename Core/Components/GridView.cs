@@ -1508,9 +1508,6 @@ namespace Core.Components
                     const resizer = document.createElement('div');
                     resizer.classList.add('resizer');
 
-                    // Set the height
-                    resizer.style.height = `100%`;
-
                     col.appendChild(resizer);
 
                     createResizableColumn(col, resizer);

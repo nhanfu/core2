@@ -109,6 +109,8 @@ namespace TMS.API.Services
                     obj.SetPropValue(IdField, 0);
                     obj.SetPropValue(nameof(User.InsertedBy), userId ?? UserId);
                     obj.SetPropValue(nameof(User.InsertedDate), DateTime.Now);
+                    obj.SetPropValue(nameof(User.UpdatedBy), userId ?? UserId);
+                    obj.SetPropValue(nameof(User.UpdatedDate), DateTime.Now);
                     obj.SetPropValue(nameof(User.Active), true);
                 }
                 else

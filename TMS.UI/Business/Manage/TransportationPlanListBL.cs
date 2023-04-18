@@ -177,24 +177,7 @@ namespace TMS.UI.Business.Manage
                 Toast.Warning("Vui lòng lưu trước khi vận chuyển");
                 return;
             }
-            //var settingsInsurances = gridView.GetSelectedRows().Cast<TransportationPlan>().Where(x => x.IsSettingsInsurance == false).ToList();
-            //if (settingsInsurances.Count > 0)
-            //{
-            //    Toast.Warning($"Có {settingsInsurances.Count} KHVC chưa được cấu hình GTHH. Vui lòng cấu hình trước khi vận chuyển");
-            //    foreach (var item in settingsInsurances)
-            //    {
-            //        var listViewItem = gridView.GetListViewItems(item).FirstOrDefault();
-            //        if (listViewItem is null)
-            //        {
-            //            return;
-            //        }
-            //        if (listViewItem != null)
-            //        {
-            //            listViewItem.Element.AddClass("bg-red1");
-            //        }
-            //    }
-            //    return;
-            //}
+            
             selected = selected.Where(x => x.TotalContainerRemain > 0).ToList();
             var count = 0;
             var listAccept = new List<TransportationPlan>();
