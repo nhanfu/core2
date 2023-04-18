@@ -467,5 +467,27 @@ namespace TMS.API.Services
 		            from Transportation
 		            where Transportation.Id = {Id};";
         }
+
+        public string Transportation_VendorLocation(PatchUpdate patchUpdate, int Id)
+        {
+            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.BossId)
+            || x.Field == nameof(Transportation.ReturnId)))
+            {
+                return null;
+            }
+            return @$"declare @vendorId int = null
+	                declare @insertedby int = null
+	                declare @locationId int = null
+	                declare @exportListId int = null
+	                select top 1 @vendorId = BossId, @locationId = ReturnId, @insertedby = InsertedBy, @exportListId = ExportListReturnId from Transportation where  Transportation.Id = {Id}
+	                if(@vendorId is not null and @locationId is not null and exists (select Id from Location where Id = @locationId))
+	                begin
+		                if(not exists (select Id from VendorLocation where VendorId=@vendorId and LocationId = @locationId and TypeId = 2 and ExportListId = @exportListId))
+		                begin
+			                Insert into VendorLocation(VendorId,LocationId,InsertedBy,Active,InsertedDate,TypeId,ExportListId)
+			                values(@vendorId,@locationId,@insertedby,1,GETDATE(),2, @exportListId)
+		                end
+	                end";
+        }
     }
 }
