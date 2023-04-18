@@ -1032,8 +1032,13 @@ namespace TMS.UI.Business.Manage
             || x.Field == nameof(Transportation.RouteId)))
             {
                 transportation.StartShip = Convert.ToDateTime(transportation.StartShip);
-                var startShip = transportation.StartShip.Value.AddDays(-1).Date.ToOdataFormat();
-                var listpolicy = await new Client(nameof(SettingPolicy)).GetRawList<SettingPolicy>($"?$expand=SettingPolicyDetail&$filter=ExportListId eq {transportation.ExportListId} and BrandShipId eq {transportation.BrandShipId} and StartDate le {startShip} and (EndDate gt {startShip} or EndDate eq null) and TypeId eq 1&$orderby=UnitPrice desc");
+                var startShip = transportation.StartShip.Value.AddDays(1).Date.ToOdataFormat();
+                var endShip = transportation.StartShip.Value.AddDays(1).Date.ToOdataFormat();
+                var listpolicy = await new Client(nameof(SettingPolicy)).GetRawList<SettingPolicy>($"?$expand=SettingPolicyDetail&$filter=ExportListId eq {transportation.ExportListId} " +
+                    $"and BrandShipId eq {transportation.BrandShipId} " +
+                    $"and StartDate lt {startShip} " +
+                    $"and (EndDate gt {endShip} or EndDate eq null) " +
+                    $"and TypeId eq 1&$orderby=UnitPrice desc");
                 if (listpolicy.Nothing())
                 {
                     transportation.PolicyId = null;
