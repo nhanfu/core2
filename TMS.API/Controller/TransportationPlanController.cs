@@ -10,6 +10,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using TMS.API.Models;
+using TMS.API.Services;
 using TMS.API.ViewModels;
 using FileIO = System.IO.File;
 
@@ -18,9 +19,11 @@ namespace TMS.API.Controllers
     public class TransportationPlanController : TMSController<TransportationPlan>
     {
         private readonly HistoryContext hdb;
-        public TransportationPlanController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor, HistoryContext historyContext) : base(context, entityService, httpContextAccessor)
+        private TransportationService _transportationService;
+        public TransportationPlanController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor, HistoryContext historyContext, TransportationService transportationService) : base(context, entityService, httpContextAccessor)
         {
             hdb = historyContext;
+            _transportationService = transportationService;
         }
 
         protected override IQueryable<TransportationPlan> GetQuery()
@@ -120,13 +123,16 @@ namespace TMS.API.Controllers
                     {
                         command.Transaction = transaction;
                         command.Connection = connection;
-                        if (!patch.Changes.Any(x => x.Field == nameof(Transportation.UpdatedDate)))
+                        if (RoleIds.Contains(43) || RoleIds.Contains(17) || RoleIds.Contains(10))
                         {
-                            patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.UpdatedDate), Value = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") });
-                        }
-                        if (!patch.Changes.Any(x => x.Field == nameof(Transportation.UpdatedBy)))
-                        {
-                            patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.UpdatedBy), Value = UserId.ToString() });
+                            if (!patch.Changes.Any(x => x.Field == nameof(Transportation.UpdatedDate)))
+                            {
+                                patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.UpdatedDate), Value = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") });
+                            }
+                            if (!patch.Changes.Any(x => x.Field == nameof(Transportation.UpdatedBy)))
+                            {
+                                patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.UpdatedBy), Value = UserId.ToString() });
+                            }
                         }
                         var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
                         var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
@@ -166,21 +172,112 @@ namespace TMS.API.Controllers
             var rs = await base.Approve(entity, reasonOfChange);
             await db.Entry(entity).ReloadAsync();
             var oldEntity = await db.TransportationPlan.FindAsync(entity.RequestChangeId);
-            var transportations = await db.Transportation.Where(x => x.TransportationPlanId == oldEntity.Id).ToListAsync();
             oldEntity.CopyPropFrom(entity, nameof(TransportationPlan.Id),
                 nameof(TransportationPlan.RequestChangeId),
                 nameof(TransportationPlan.InsertedDate),
-                nameof(TransportationPlan.InsertedBy));
-            transportations.ForEach(transportation =>
+                nameof(TransportationPlan.InsertedBy),
+                nameof(TransportationPlan.UpdatedBy),
+                nameof(TransportationPlan.UpdatedDate));
+            var transportations = await db.Transportation.AsNoTracking().Where(x => x.TransportationPlanId == oldEntity.Id).ToListAsync();
+            foreach (var item in transportations)
             {
-                transportation.UserId = oldEntity.UserId;
-                transportation.RouteId = oldEntity.RouteId;
-                transportation.BossId = oldEntity.BossId;
-                transportation.ReceivedId = oldEntity.ReceivedId;
-                transportation.ContainerTypeId = oldEntity.ContainerTypeId;
-                transportation.CommodityId = oldEntity.CommodityId;
-                transportation.ClosingDate = oldEntity.ClosingDate;
-            });
+                var idInt = item.Id;
+                var patch = new PatchUpdate()
+                {
+                    Changes = new List<PatchUpdateDetail>()
+                    {
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.Id),
+                            Value = item.Id.ToString()
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.UserId),
+                            Value =oldEntity.UserId is null ? null : oldEntity.UserId.ToString()
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.RouteId),
+                            Value =oldEntity.RouteId is null ? null : oldEntity.RouteId.ToString()
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.BossId),
+                            Value =oldEntity.BossId is null ? null : oldEntity.BossId.ToString()
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.ReceivedId),
+                            Value =oldEntity.ReceivedId is null ? null : oldEntity.ReceivedId.ToString()
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.ContainerTypeId),
+                            Value =oldEntity.ContainerTypeId is null ? null : oldEntity.ContainerTypeId.ToString()
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.CommodityId),
+                            Value =oldEntity.CommodityId is null ? null : oldEntity.CommodityId.ToString()
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.ClosingDate),
+                            Value =oldEntity.ClosingDate is null ? null : oldEntity.ClosingDate.ToString()
+                        }
+                    }
+                };
+                using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+                {
+                    connection.Open();
+                    SqlTransaction transaction = connection.BeginTransaction();
+                    try
+                    {
+                        using (SqlCommand command = new SqlCommand())
+                        {
+                            command.Transaction = transaction;
+                            command.Connection = connection;
+                            var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                            var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                            command.CommandText += $" UPDATE [{nameof(Transportation)}] SET {update.Combine()} WHERE Id = {idInt};";
+                            command.CommandText += " " + _transportationService.Transportation_BetAmount(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_BetFee(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_CombinationFee(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_Cont20_40(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_Dem(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_DemDate(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_ExportListId(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_IsSplitBill(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_LandingFee(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_LiftFee(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_MonthText(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_Note4(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_ReturnClosingFee(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_ReturnClosingFeeReport(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_ReturnDate(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_ReturnEmptyId(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_ReturnLiftFee(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_ReturnNotes(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_ReturnVs(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_ShellDate(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_ShipUnitPriceQuotation(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_VendorLocation(patch, idInt);
+
+                            foreach (var itemDetail in updates)
+                            {
+                                command.Parameters.AddWithValue($"@{itemDetail.Field.ToLower()}", itemDetail.Value is null ? DBNull.Value : itemDetail.Value);
+                            }
+                            command.ExecuteNonQuery();
+                            transaction.Commit();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                    }
+                }
+            }
             var user = await db.User.FindAsync(UserId);
             var taskNotification = new TaskNotification
             {

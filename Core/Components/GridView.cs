@@ -207,7 +207,7 @@ namespace Core.Components
                     .Attr("aria-expanded", "false")
                     .Attr("aria-controls", id).Text(GuiInfo.Label).EndOf(".card");
             }
-            html.Div.ClassName("grid-wrapper " + (GuiInfo.IsCollapsible ? "collapse multi-collapse" : "")).Id(id).Event(EventType.KeyDown, HotKeyF6Handler)
+            html.Div.ClassName("grid-wrapper " + (GuiInfo.IsCollapsible ? "collapse multi-collapse" : "")).Id(id).Event(EventType.KeyDown, (e) => HotKeyF6Handler(e, e.KeyCodeEnum()))
             .ClassName(Editable ? "editable" : string.Empty);
             Element = Html.Context;
             if (GuiInfo.CanSearch)
@@ -489,6 +489,7 @@ namespace Core.Components
                 await ApplyFilter(true);
                 return;
             }
+            Spinner.AppendTo(DataTable);
             var dropdowns = CellSelected.Where(x => (!x.Value.IsNullOrWhiteSpace() || !x.ValueText.IsNullOrWhiteSpace()) && (x.ComponentType == "Dropdown" || x.ComponentType == nameof(SearchEntry))).ToList();
             var data = dropdowns.Select(x =>
             {
@@ -637,9 +638,9 @@ namespace Core.Components
                 var value = ids ?? cell.Value;
                 if (!AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.Value == value && x.CompareOperatorId == advo))
                 {
-                    if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName 
-                    && cell.FieldName != IdField 
-                    && x.CompareOperatorId == advo 
+                    if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName
+                    && cell.FieldName != IdField
+                    && x.CompareOperatorId == advo
                     && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In)))
                     {
                         AdvSearchVM.Conditions.FirstOrDefault(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo).Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value;
@@ -664,6 +665,7 @@ namespace Core.Components
                 }
             });
             await ApplyFilter(true);
+            Spinner.Hide();
             if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.CanSearch)
             {
                 ListViewSearch.Focus();
@@ -912,12 +914,12 @@ namespace Core.Components
             EditableComponent com = focusedRow.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
             var el = e.Target as HTMLElement;
             el = el.Closest(ElementType.td.ToString());
-            ActionKeyHandler(e, header, focusedRow, com, el);
+            var keyCode = e.KeyCodeEnum();
+            ActionKeyHandler(e, header, focusedRow, com, el, keyCode);
         }
 
-        private void ActionKeyHandler(Event e, Component header, ListViewItem focusedRow, EditableComponent com, HTMLElement el)
+        public void ActionKeyHandler(Event e, Component header, ListViewItem focusedRow, EditableComponent com, HTMLElement el, KeyCodeEnum? keyCode)
         {
-            var keyCode = e.KeyCodeEnum();
             var fieldName = "";
             var text = "";
             var value = "";
@@ -1276,10 +1278,8 @@ namespace Core.Components
             // not to do anything
         }
 
-        protected virtual void HotKeyF6Handler(Event e)
+        public virtual void HotKeyF6Handler(Event e, KeyCodeEnum? keyCode)
         {
-            var keyCode = e.KeyCodeEnum();
-            var selectedRow = AllListViewItem.FirstOrDefault(x => x.Selected);
             if (keyCode == KeyCodeEnum.F6)
             {
                 e.PreventDefault();
@@ -2236,7 +2236,7 @@ namespace Core.Components
             return fieldSorts;
         }
 
-        protected virtual void ToggleAll()
+        public virtual void ToggleAll()
         {
             var anySelected = AllListViewItem.Any(x => x.Selected);
             if (anySelected)

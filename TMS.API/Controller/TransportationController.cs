@@ -101,17 +101,6 @@ namespace TMS.API.Controllers
                     {
                         command.Transaction = transaction;
                         command.Connection = connection;
-                        if (RoleIds.Contains(43) || RoleIds.Contains(17) || RoleIds.Contains(10))
-                        {
-                            if (!patch.Changes.Any(x => x.Field == nameof(Transportation.UpdatedDate)))
-                            {
-                                patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.UpdatedDate), Value = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") });
-                            }
-                            if (!patch.Changes.Any(x => x.Field == nameof(Transportation.UpdatedBy)))
-                            {
-                                patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.UpdatedBy), Value = UserId.ToString() });
-                            }
-                        }
                         if (patch.Changes.Any(x => x.Field == nameof(Transportation.ShipDate) && !x.Value.IsNullOrWhiteSpace()))
                         {
                             patch.Changes.Add(new PatchUpdateDetail() { Field = nameof(Transportation.ExportListReturnId), Value = VendorId.ToString() });

@@ -261,9 +261,8 @@ namespace Core.Components
             base.DisposeSumary();
         }
 
-        protected override void HotKeyF6Handler(Event e)
+        public override void HotKeyF6Handler(Event e, KeyCodeEnum? keyCode)
         {
-            var keyCode = e.KeyCodeEnum();
             if (keyCode == KeyCodeEnum.F6)
             {
                 e.PreventDefault();

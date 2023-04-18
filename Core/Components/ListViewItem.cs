@@ -498,7 +498,6 @@ namespace Core.Components
         {
             if (ListViewSection.ListView.SelectedIds.Count % 10 == 0 && ListViewSection.ListView.SelectedIds.Count > 0)
             {
-                Toast.Success($"Bạn đã chọn {ListViewSection.ListView.SelectedIds.Count} dữ liệu", 100);
             }
         }
 

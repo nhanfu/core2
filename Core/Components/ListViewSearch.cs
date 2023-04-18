@@ -38,8 +38,22 @@ namespace Core.Components
             }
             set => parentListView = value;
         }
+
+        private GridView ParentGridView
+        {
+            get
+            {
+                if (parentGridView != null)
+                {
+                    return parentGridView;
+                }
+                return Parent as GridView;
+            }
+            set => parentGridView = value;
+        }
         public GridPolicy[] BasicSearch;
         private ListView parentListView;
+        private GridView parentGridView;
 
         public ListViewSearch(Component ui) : base(ui)
         {
@@ -190,31 +204,55 @@ namespace Core.Components
             if (GuiInfo.ShowHotKey)
             {
                 Html.Take(Element).Div.ClassName("hotkey-block")
-                .Button("F1", className: "btn btn-light btn-sm")
+                .Button("F1", className: "btn btn-light btn-sm").Event(EventType.Click, ParentGridView.ToggleAll)
                     .Attr("title", "Bỏ chọn tất cả").End
-                .Button("F2", className: "btn btn-light btn-sm")
+                .Button("F2", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
+                {
+                    var com = ParentGridView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                    ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(Core.MVVM.ElementType.td.ToString()), KeyCodeEnum.F2);
+                })
                     .Attr("title", "Lọc loại trừ").End
-                .Button("F3", className: "btn btn-light btn-sm")
+                .Button("F3", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
+                {
+                    var com = ParentGridView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                    ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(Core.MVVM.ElementType.td.ToString()), KeyCodeEnum.F3);
+                })
                     .Attr("title", "Cộng tổng dòng được chọn").End
-                .Button("F4", className: "btn btn-light btn-sm")
+                .Button("F4", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
+                {
+                    var com = ParentGridView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                    ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(Core.MVVM.ElementType.td.ToString()), KeyCodeEnum.F4);
+                })
                     .Attr("title", "Lọc tiếp theo các phép tính (Chứa: Bằng; Lớn hơn; Nhỏ hơn; Lớn hơn hoặc bằng;...)").End
-                 .Button("F6", className: "btn btn-light btn-sm")
+                 .Button("F6", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
+                 {
+                     ParentGridView.HotKeyF6Handler(e, KeyCodeEnum.F6);
+                 })
                     .Attr("title", "Quay lại lần lọc trước").End
-                .Button("F8", className: "btn btn-light btn-sm")
+                .Button("F8", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
+                {
+                    var com = ParentGridView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                    ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(Core.MVVM.ElementType.td.ToString()), KeyCodeEnum.F8);
+                })
                     .Attr("title", "Xóa/ Vô hiệu hóa dòng hiện thời hoặc các dòng đánh dấu").End
-                .Button("F9", className: "btn btn-light btn-sm")
+                .Button("F9", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
+                {
+                    var com = ParentGridView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                    ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(Core.MVVM.ElementType.td.ToString()), KeyCodeEnum.F9);
+                })
                     .Attr("title", "Lọc tại chỗ theo giá trị ô hiện thời").End
-                .Button("F10", className: "btn btn-light btn-sm")
+                .Button("F10", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
+                {
+                    var com = ParentGridView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                    ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(Core.MVVM.ElementType.td.ToString()), KeyCodeEnum.F10);
+                })
                     .Attr("title", "Gộp theo cột hiện thời(thống kê lại số nội dung trong cột)").End
-                .Button("Shift + ⇓", className: "btn btn-light btn-sm")
-                    .Attr("title", "Copy dữ liệu từ ô phía trên").End
-                .Button("Shift or Ctrl", className: "btn btn-light btn-sm")
-                    .Attr("title", "Đánh dấu/ bỏ đánh dấu cả bảng(F1 hoặc Ctrl A)").End
-                .Button("Home", className: "btn btn-light btn-sm")
-                    .Attr("title", "Đưa con trỏ về dòng đầu").End
-                .Button("End", className: "btn btn-light btn-sm")
-                    .Attr("title", "Đưa con trỏ về dòng cuối").End
-                    .Render();
+                .Button("F11", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
+                    {
+                        var com = ParentGridView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                        ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(Core.MVVM.ElementType.td.ToString()), KeyCodeEnum.F11);
+                    })
+                    .Attr("title", "Sắp xếp thứ tự tăng dần, giảm dần").End.Render();
             }
         }
 

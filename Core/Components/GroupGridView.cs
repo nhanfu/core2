@@ -225,7 +225,7 @@ namespace Core.Components
             return this.DispatchEventToHandlerAsync(GuiInfo.GroupEvent, EventType.DblClick, row);
         }
 
-        protected override void ToggleAll()
+        public override void ToggleAll()
         {
             var allSelected = AllListViewItem
                 .Where(x => !x.GroupRow && !x.EmptyRow)
