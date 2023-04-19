@@ -223,6 +223,10 @@ namespace Core.Components
             {
                 if (arg.EvType == EventType.Change || arg.EvType == EventType.Abort)
                 {
+                    if (component.Disabled)
+                    {
+                        return;
+                    }
                     await ListView.RowChangeHandler(component.Entity, this, arg, component);
                     await ListView.RealtimeUpdateAsync(this, arg);
                 }
