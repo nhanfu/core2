@@ -179,6 +179,7 @@ namespace TMS.UI.Business.Manage
                     {
                         new ContextMenuItem { Text = "Yêu cầu trả vỏ", Click = NoteFreeText8, Parameter = gridView.GetItemFocus() },
                         new ContextMenuItem { Text = "Yêu cầu chụp hình", Click = NoteFreeText9, Parameter = gridView.GetItemFocus() },
+                        new ContextMenuItem { Text = "Trễ", Click = NoteFreeText7, Parameter = gridView.GetItemFocus() },
                     }
                 });
                 menus.Add(new ContextMenuItem
@@ -277,6 +278,41 @@ namespace TMS.UI.Business.Manage
             });
         }
 
+        private void NoteFreeText7(object arg)
+        {
+            Task.Run(async () =>
+            {
+                var transportation = arg as ListViewItem;
+                var value = transportation.Entity[nameof(Transportation.FreeText7)] is null ? "Trễ" : null;
+                var path = new PatchUpdate
+                {
+                    Changes = new List<PatchUpdateDetail>()
+                    {
+                        new PatchUpdateDetail()
+                        {
+                            Field = IdField,
+                            Value = transportation.Entity[IdField].ToString()
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.FreeText7),
+                            Value = value
+                        }
+                    }
+                };
+                var rs = await new Client(nameof(Transportation)).PatchAsync<Transportation>(path, ig: $"&disableTrigger=true");
+                transportation.Entity.CopyPropFrom(rs);
+                transportation.UpdateView(true);
+                var containerCom = transportation.FilterChildren<EditableComponent>(y => y.GuiInfo.FieldName == nameof(Transportation.ContainerNo)).FirstOrDefault();
+                var td = containerCom.Element.Closest("td");
+                td.Style.BackgroundColor = "";
+                if (value != null)
+                {
+                    td.Style.BackgroundColor = "#b1eaf2";
+                }
+            });
+        }
+
         public void ChangeBackgroudColorReturn(List<Transportation> listViewItems)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
@@ -308,6 +344,10 @@ namespace TMS.UI.Business.Manage
                 if (!item.FreeText9.IsNullOrWhiteSpace())
                 {
                     tdContainer.Style.BackgroundColor = "#ffeb3b";
+                }
+                if (!item.FreeText7.IsNullOrWhiteSpace())
+                {
+                    tdContainer.Style.BackgroundColor = "#b1eaf2";
                 }
             }
         }
