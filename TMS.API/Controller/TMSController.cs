@@ -36,7 +36,7 @@ namespace TMS.API.Controllers
         protected string ChildrenField = "InverseParent";
         private string _address;
 
-        public TMSController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public TMSController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
             db = context;
             _logger = (ILogger<TMSController<T>>)httpContextAccessor.HttpContext.RequestServices.GetService(typeof(ILogger<TMSController<T>>));
@@ -830,6 +830,32 @@ namespace TMS.API.Controllers
             worksheet.Columns().AdjustToContents();
             workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
             return url;
+        }
+
+        public void ExecSql(string sql, string disableTrigger, string enableTrigger)
+        {
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.Connection = connection;
+                        command.CommandText += disableTrigger;
+                        command.CommandText = sql;
+                        command.CommandText += enableTrigger;
+                        command.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
         }
     }
 }

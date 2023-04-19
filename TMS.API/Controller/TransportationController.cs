@@ -1551,9 +1551,7 @@ namespace TMS.API.Controllers
 					    left join Location l on Transportation.ReturnId = l.Id
 					    where Transportation.ShipId = '{entity.ShipId}' and (Transportation.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Transportation.Trip = '{entity.Trip}' and Transportation.RouteId in ({entity.RouteIds.Combine()});
                         ";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return check;
         }
 
