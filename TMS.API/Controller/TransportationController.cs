@@ -2200,10 +2200,8 @@ namespace TMS.API.Controllers
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
-                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2250,10 +2248,8 @@ namespace TMS.API.Controllers
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
-                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2302,10 +2298,8 @@ namespace TMS.API.Controllers
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
-                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2352,10 +2346,8 @@ namespace TMS.API.Controllers
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
-                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2393,10 +2385,8 @@ namespace TMS.API.Controllers
             var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
-                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2434,10 +2424,8 @@ namespace TMS.API.Controllers
             var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
-                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2475,10 +2463,8 @@ namespace TMS.API.Controllers
             var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
-                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2516,10 +2502,8 @@ namespace TMS.API.Controllers
             var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
-                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2581,10 +2565,8 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsLocked = 1" +
-                $" where Id in ({ids.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({ids.Combine()});";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2597,10 +2579,8 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsKt = 1" +
-                $" where Id in ({ids.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({ids.Combine()});";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2613,10 +2593,8 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsSubmit = 1" +
-                $" where Id in ({ids.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({ids.Combine()});";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2629,10 +2607,8 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsLockedRevenue = 1" +
-                $" where Id in ({ids.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({ids.Combine()});";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2645,10 +2621,8 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set LockShip = 1" +
-                $" where Id in ({ids.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({ids.Combine()});";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2661,10 +2635,8 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsLocked = 0" +
-                $" where Id in ({ids.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({ids.Combine()});";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2677,10 +2649,8 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsKt = 0" +
-                $" where Id in ({ids.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({ids.Combine()});";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2693,10 +2663,8 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsSubmit = 0" +
-                $" where Id in ({ids.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({ids.Combine()});";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2709,10 +2677,8 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsLockedRevenue = 0" +
-                $" where Id in ({ids.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({ids.Combine()});";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2725,10 +2691,8 @@ namespace TMS.API.Controllers
             }
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set LockShip = 0" +
-                $" where Id in ({ids.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+                $" where Id in ({ids.Combine()});";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
         #endregion

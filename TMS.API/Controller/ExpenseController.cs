@@ -409,10 +409,8 @@ namespace TMS.API.Controllers
                 return false;
             }
             var cmd = $"Update [{nameof(Expense)}] set IsPurchasedInsurance = 1, DatePurchasedInsurance = '{DateTime.Now.ToString("yyyy-MM-dd")}'" +
-                $" where Id in ({ids.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Expense");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Expense");
+                $" where Id in ({ids.Combine()});";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;");
             return true;
         }
 
@@ -430,10 +428,8 @@ namespace TMS.API.Controllers
             var cmd = $"Update [{nameof(Expense)}] set IsClosing = 1" +
                 $" where Id in ({idPurchaseds.Combine()})";
             cmd += $" Update [{nameof(Expense)}] set IsClosing = 1, IsPurchasedInsurance = 1, DatePurchasedInsurance = '{DateTime.Now.ToString("yyyy-MM-dd")}'" +
-                $" where Id in ({idNoPurchaseds.Combine()})";
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Expense");
-            await db.Database.ExecuteSqlRawAsync(cmd);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Expense");
+                $" where Id in ({idNoPurchaseds.Combine()});";
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;");
             return true;
         }
 
