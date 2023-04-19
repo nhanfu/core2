@@ -845,7 +845,7 @@ namespace TMS.API.Controllers
                         command.Transaction = transaction;
                         command.Connection = connection;
                         command.CommandText += disableTrigger;
-                        command.CommandText = sql;
+                        command.CommandText += sql;
                         command.CommandText += enableTrigger;
                         command.ExecuteNonQuery();
                         transaction.Commit();
