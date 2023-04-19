@@ -16,6 +16,7 @@ namespace Core.Components
     public class ListViewSearchVM
     {
         public string SearchTerm { get; set; }
+        public string ScanTerm { get; set; }
         public DateTime? StartDate { get; set; }
         public int? DateTimeField { get; set; }
         public DateTime? EndDate { get; set; }
@@ -122,6 +123,24 @@ namespace Core.Components
 
             Html.Take(Parent.Element.FirstElementChild).TabIndex(-1).AsyncEvent(EventType.KeyPress, EnterSearch);
             Element = Html.Context;
+            if (GuiInfo.UpperCase)
+            {
+                var txtScan = new Textbox(new Component
+                {
+                    FieldName = nameof(ListViewSearchVM.ScanTerm),
+                    Visibility = true,
+                    Label = "Scan",
+                    PlainText = "Scan",
+                    ShowLabel = false,
+                    Focus = true,
+                    Events = "{'change':'ScanGridView'}"
+                })
+                {
+                    ParentElement = Element
+                };
+                txtScan.UserInput = null;
+                AddChild(txtScan);
+            }
             if (GuiInfo.ComponentType == nameof(GridView))
             {
                 var txtSearch = new Textbox(new Component

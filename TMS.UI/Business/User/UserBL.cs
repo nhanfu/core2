@@ -1,6 +1,9 @@
-﻿using Core.Components.Extensions;
+﻿using Bridge.Html5;
+using Core.Components;
+using Core.Components.Extensions;
 using Core.Components.Forms;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
 
@@ -37,7 +40,7 @@ namespace TMS.UI.Business.User
                     return instance;
                 });
         }
-        
+
         private async Task InitUserForm(API.Models.User user)
         {
             await this.OpenPopup(
