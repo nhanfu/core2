@@ -190,6 +190,9 @@
     <Compile Include="..\TMS.API\Models\RouteUser.cs">
       <Link>Models\RouteUser.cs</Link>
     </Compile>
+    <Compile Include="..\TMS.API\Models\Sale.cs">
+      <Link>Models\Sale.cs</Link>
+    </Compile>
     <Compile Include="..\TMS.API\Models\SettingPolicy.cs">
       <Link>Models\SettingPolicy.cs</Link>
     </Compile>
