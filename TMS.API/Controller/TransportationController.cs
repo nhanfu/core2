@@ -42,7 +42,7 @@ namespace TMS.API.Controllers
             {
                 if (entity.IsLocked)
                 {
-                    throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
+                    throw new ApiException("DSVC này đã được khóa (Hệ thống). Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
                 }
                 if (entity.IsKt)
                 {
@@ -70,7 +70,7 @@ namespace TMS.API.Controllers
                     || x.Field == nameof(entity.ReturnId)
                     || x.Field == nameof(entity.FreeText3)))
                     {
-                        throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
+                        throw new ApiException("DSVC này đã được khóa (Khai thác). Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
                     }
                 }
 
@@ -89,7 +89,7 @@ namespace TMS.API.Controllers
                 {
                     if (entity.LockShip)
                     {
-                        throw new ApiException("DSVC này đã được khóa. Vì đã được khóa ở danh sách book tàu.") { StatusCode = HttpStatusCode.BadRequest };
+                        throw new ApiException("DSVC này đã được khóa (Cước tàu). Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
                     }
                 }
             }
