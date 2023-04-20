@@ -1175,9 +1175,9 @@ namespace TMS.API.Controllers
             foreach (var item in expenses)
             {
                 var commodityValue = commodityValueOfExpenses.GetValueOrDefault(item.Id);
+                var route = routes.Where(x => x.Id == item.RouteId).FirstOrDefault();
                 if (item.TransportationTypeId == null)
                 {
-                    var route = routes.Where(x => x.Id == item.RouteId).FirstOrDefault();
                     if (route.Name.ToLower().Contains("sắt"))
                     {
                         item.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Sắt")).FirstOrDefault().Id;
@@ -1190,6 +1190,10 @@ namespace TMS.API.Controllers
                     {
                         item.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Tàu")).FirstOrDefault().Id;
                     }
+                }
+                if (item.TransportationTypeId == 11672 && route.Name.ToLower().Contains("bộ") == false)
+                {
+                    item.TransportationTypeId = 11673;
                 }
                 if (item.ExpenseTypeId == 15939 && commodityValue != null)
                 {
