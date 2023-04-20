@@ -1003,6 +1003,11 @@ namespace Core.Components
                             {
                                 if (!e.ShiftKey())
                                 {
+                                    HeaderSection.Children.ForEach(x =>
+                                    {
+                                        x.Element.RemoveClass("desc");
+                                        x.Element.RemoveClass("asc");
+                                    });
                                     SortedField.Clear();
                                 }
                                 th.Element.AddClass("desc");
@@ -1021,6 +1026,7 @@ namespace Core.Components
                             FieldId = x.Com.Id,
                             OrderbyOptionId = x.Desc ? OrderbyOption.DESC : OrderbyOption.ASC
                         }).ToList());
+                        LocalStorage.SetItem("OrderBy" + GuiInfo.Id, AdvSearchVM.OrderBy);
                         await ActionFilter();
                     });
                     break;
@@ -2014,7 +2020,11 @@ namespace Core.Components
                 {
                     Html.Instance.Icon("fa fa-edit").Event(EventType.Click, ToggleAll).End.Render();
                 }
-
+                var orderBy = AdvSearchVM.OrderBy.FirstOrDefault(x => x.FieldId == header.Id);
+                if (orderBy != null)
+                {
+                    Html.Instance.ClassName(orderBy.OrderbyOptionId == OrderbyOption.ASC ? "asc" : "desc").Render();
+                }
                 if (!header.Icon.IsNullOrWhiteSpace())
                 {
                     Html.Instance.Icon(header.Icon).Margin(Direction.right, 0).End.Render();

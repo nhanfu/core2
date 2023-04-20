@@ -8,6 +8,7 @@ using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
 using Newtonsoft.Json;
+using Retyped;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -117,7 +118,17 @@ namespace Core.Components
             Header = new List<GridPolicy>();
             RowData = new ObservableList<object>();
             RefData = new Dictionary<string, List<object>>();
-            AdvSearchVM = new AdvSearchVM { ActiveState = ActiveStateEnum.Yes };
+            AdvSearchVM = new AdvSearchVM
+            {
+                ActiveState = ActiveStateEnum.Yes,
+                OrderBy = LocalStorage.GetItem<List<OrderBy>>("OrderBy" + GuiInfo.Id) ?? new List<OrderBy>()
+            };
+            SortedField = AdvSearchVM.OrderBy.Select(x => new SortedField()
+            {
+                Field = x.Field.FieldName,
+                Desc = x.OrderbyOptionId == OrderbyOption.DESC ? true : false,
+                Com = x.Field,
+            }).ToList();
             DataSourceFilter = ui.DataSourceFilter;
             StopChildrenHistory = true;
             _hasLoadRef = false;
