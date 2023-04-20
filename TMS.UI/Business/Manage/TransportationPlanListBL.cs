@@ -63,7 +63,6 @@ namespace TMS.UI.Business.Manage
             };
             confirmDialog.YesConfirmed += async () =>
             {
-                var sourse = 
             };
             confirmDialog.Entity = new { ReasonOfChange = string.Empty };
             confirmDialog.Render();
@@ -186,7 +185,7 @@ namespace TMS.UI.Business.Manage
                 Toast.Warning("Vui lòng lưu trước khi vận chuyển");
                 return;
             }
-            
+
             selected = selected.Where(x => x.TotalContainerRemain > 0).ToList();
             var count = 0;
             var listAccept = new List<TransportationPlan>();
