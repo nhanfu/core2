@@ -263,6 +263,8 @@
       <Link>ViewModels\ReportVM.cs</Link>
     </Compile>
     <Compile Include="Business\Accountant\AccountEditBL.cs" />
+    <Compile Include="Business\Accountant\SaleEditBL.cs" />
+    <Compile Include="Business\Accountant\SaleListBL.cs" />
     <Compile Include="Business\Accountant\ConfirmBusinessFreightRateBL.cs" />
     <Compile Include="Business\Accountant\FreightShipEditBL.cs" />
     <Compile Include="Business\Accountant\PaymentAdvanceVoucherEditBL.cs" />
