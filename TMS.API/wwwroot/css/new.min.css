@@ -57278,7 +57278,6 @@ body.layout-vertical.page-type-datagrid {
     top: 0;
     right: 0;
     width: 10px;
-    height: 37px;
     cursor: col-resize;
     user-select: none;
     z-index: 10000;
