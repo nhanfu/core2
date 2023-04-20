@@ -623,12 +623,12 @@ namespace Core.Components
                             }
                             if (cell.Operator == "gt" || cell.Operator == "lt")
                             {
-                                where = cell.Operator == "gt" ? $"[{GuiInfo.RefName}].{cell.FieldName} > '{va:yyyy-MM-dd}'" : $"[{GuiInfo.RefName}].{cell.FieldName} < '{va:yyyy-MM-dd}'";
+                                where = cell.Operator == "gt" ? $"[{GuiInfo.RefName}].{cell.FieldName} > '{va:yyyy-MM-dd HH:mm}'" : $"[{GuiInfo.RefName}].{cell.FieldName} < '{va:yyyy-MM-dd HH:mm}'";
                                 advo = cell.Operator == "gt" ? AdvSearchOperation.GreaterThanDatime : AdvSearchOperation.LessThanDatime;
                             }
                             else if (cell.Operator == "ge" || cell.Operator == "le")
                             {
-                                where = cell.Operator == "ge" ? $"[{GuiInfo.RefName}].{cell.FieldName} >= '{va:yyyy-MM-dd}'" : $"[{GuiInfo.RefName}].{cell.FieldName} <= '{va:yyyy-MM-dd}'";
+                                where = cell.Operator == "ge" ? $"[{GuiInfo.RefName}].{cell.FieldName} >= '{va:yyyy-MM-dd HH:mm}'" : $"[{GuiInfo.RefName}].{cell.FieldName} <= '{va:yyyy-MM-dd HH:mm}'";
                                 advo = cell.Operator == "ge" ? AdvSearchOperation.GreaterEqualDatime : AdvSearchOperation.LessEqualDatime;
                             }
                         }

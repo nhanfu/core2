@@ -422,7 +422,12 @@ namespace Core.Components
                     finalFilter = OdataExt.GetClausePart(ParentListView.FormattedDataSource, OdataExt.OrderByKeyword);
                     if (finalFilter.Contains(","))
                     {
-                        finalFilter.Split(",").Select(x => $"[{ParentListView.GuiInfo.RefName}].{x}").Combine();
+                        var k = finalFilter.Split(",").ToList();
+                        finalFilter = k.Select(x => $"[{ParentListView.GuiInfo.RefName}].{x}").Combine();
+                    }
+                    else
+                    {
+                        finalFilter = $"[{ParentListView.GuiInfo.RefName}].{finalFilter}";
                     }
                 }
                 var filter = ParentListView.Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
