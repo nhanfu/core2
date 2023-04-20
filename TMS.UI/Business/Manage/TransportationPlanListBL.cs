@@ -5,7 +5,6 @@ using Core.Components.Extensions;
 using Core.Components.Forms;
 using Core.Enums;
 using Core.Extensions;
-using Core.MVVM;
 using Core.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -19,16 +18,9 @@ namespace TMS.UI.Business.Manage
 {
     public class TransportationPlanListBL : TabEditor
     {
-        private HTMLInputElement _uploader;
         public TransportationPlanListBL() : base(nameof(TransportationPlan))
         {
             Name = "TransportationPlan List";
-            DOMContentLoaded += () =>
-            {
-                Html.Take("Body").Form.Attr("method", "POST").Attr("enctype", "multipart/form-data")
-                .Display(false).Input.Event(EventType.Change, async (ev) => await SelectedExcel(ev)).Type("file").Id($"id_{GetHashCode()}").Attr("name", "fileImport").Attr("accept", ".xlsx");
-                _uploader = Html.Context as HTMLInputElement;
-            };
         }
 
         public async Task EditTransportationPlan(TransportationPlan entity)
@@ -58,6 +50,23 @@ namespace TMS.UI.Business.Manage
                 instance.Entity = entity;
                 return instance;
             });
+        }
+
+        public void ReportTransportationPlan()
+        {
+            var confirmDialog = new ConfirmDialog
+            {
+                Content = $"Nhập ngày cần xuất báo cáo trễ sau 5 giờ",
+                NeedAnswer = true,
+                MultipleLine = false,
+                ComType = nameof(Datepicker)
+            };
+            confirmDialog.YesConfirmed += async () =>
+            {
+                var sourse = 
+            };
+            confirmDialog.Entity = new { ReasonOfChange = string.Empty };
+            confirmDialog.Render();
         }
 
         public async Task AddTransportationPlan()
@@ -480,30 +489,6 @@ namespace TMS.UI.Business.Manage
                 transportationPlan.PlanDate = DateTime.Now;
                 return;
             }
-        }
-
-        private async Task SelectedExcel(Event e)
-        {
-            var files = e.Target["files"] as FileList;
-            if (files.Nothing())
-            {
-                return;
-            }
-
-            var uploadForm = _uploader.ParentElement as HTMLFormElement;
-            var formData = new FormData(uploadForm);
-            await Client.SubmitAsync<List<TransportationPlan>>(new XHRWrapper
-            {
-                FormData = formData,
-                Url = "ImportExcel",
-                Method = HttpMethod.POST,
-                ResponseMimeType = Utils.GetMimeType("xlsx")
-            });
-        }
-
-        public void ImportExcel()
-        {
-            _uploader.Click();
         }
 
         public void CheckQuotationTransportation()

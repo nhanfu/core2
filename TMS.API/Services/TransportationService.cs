@@ -360,7 +360,7 @@ namespace TMS.API.Services
             }
             if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.IsLiftFee)))
             {
-                return @$"update Transportation set ReturnLiftFee = case when (select top 1 CASE
+                return @$"update Transportation set ReturnLiftFee = (select top 1 CASE
 					WHEN Transportation.IsLiftFee = 1 THEN UnitPrice1
 					ELSE UnitPrice
 					END as UnitPrice from Quotation 
