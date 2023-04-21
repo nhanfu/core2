@@ -161,7 +161,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task UpdateCommodityValue(Expense expense)
         {
-            var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId ne 7651 and contains(Path, '7651') and contains(Description, 'Vỏ rỗng')");
+            var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and contains(Path, '7651') and contains(Description, 'Vỏ rỗng')");
             if (expense.CommodityId == commodity.Id)
             {
                 return;

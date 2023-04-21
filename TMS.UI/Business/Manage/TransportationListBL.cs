@@ -1493,7 +1493,7 @@ namespace TMS.UI.Business.Manage
                 var expenseType = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'Bảo hiểm')");
                 expense = await new Client(nameof(Expense)).FirstOrDefaultAsync<Expense>($"?$filter=Active eq true and TransportationId eq {transportation.Id} and ExpenseTypeId eq {expenseType.Id} and RequestChangeId eq null");
                 var containerId = await CheckContainerType(expense);
-                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId ne 7651 and contains(Path, '7651') and contains(Description, 'Vỏ rỗng')");
+                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and contains(Path, '7651') and contains(Description, 'Vỏ rỗng')");
                 var commodityValue = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and CommodityId eq {commodity.Id} and ContainerId eq {containerId}");
                 var expenseSOC = new Expense();
                 expenseSOC.CopyPropFrom(expense);

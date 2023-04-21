@@ -45,7 +45,7 @@ namespace TMS.API.Controllers
             || x.Field == nameof(entity.CommodityId)
             || x.Field == nameof(entity.ContainerId)))
             {
-                var commodity = await db.MasterData.Where(x => x.ParentId != 7651 && x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).FirstOrDefaultAsync();
+                var commodity = await db.MasterData.Where(x => x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).FirstOrDefaultAsync();
                 var bossChange = patch.Changes.Where(x => x.Field == nameof(CommodityValue.BossId)).FirstOrDefault();
                 var bossId = bossChange != null ? int.Parse(bossChange.Value) : entity.BossId;
                 var commodityChange = patch.Changes.Where(x => x.Field == nameof(CommodityValue.CommodityId)).FirstOrDefault();
@@ -74,7 +74,7 @@ namespace TMS.API.Controllers
             x.Field == nameof(entity.Notes) ||
             x.Field == nameof(entity.CommodityId)))
             {
-                var commodity = await db.MasterData.Where(x => x.ParentId != 7651 && x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).FirstOrDefaultAsync();
+                var commodity = await db.MasterData.Where(x => x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).FirstOrDefaultAsync();
                 var commodityChange = patch.Changes.Where(x => x.Field == nameof(entity.CommodityId)).FirstOrDefault();
                 var commodityId = commodityChange != null ? int.Parse(commodityChange.Value) : entity.CommodityId;
                 if (commodityId == commodity.Id)
@@ -277,7 +277,7 @@ namespace TMS.API.Controllers
             var rsBoss = await db.Vendor.ToListAsync();
             var vendorDB = rsBoss.Where(x => listBossCodes.Contains(ConvertTextEn(x.Name)) && x.TypeId == 7551).ToDictionary(x => ConvertTextEn(x.Name));
             var rsCommodity = await db.MasterData.ToListAsync();
-            var commodityDB = rsCommodity.Where(x => listCommodityCodes.Contains(ConvertTextEn(x.Description)) && x.Path.Contains(@"\7651\") && x.ParentId != 7651 && x.Description != "" && x.Description != null).ToDictionaryDistinct(x => ConvertTextEn(x.Description));
+            var commodityDB = rsCommodity.Where(x => listCommodityCodes.Contains(ConvertTextEn(x.Description)) && x.Path.Contains(@"\7651\") && x.Description != "" && x.Description != null).ToDictionaryDistinct(x => ConvertTextEn(x.Description));
             var userDB = await db.User.Where(x => listSaleCodes.Contains(x.UserName)).ToDictionaryAsync(x => x.UserName.ToLower());
             var listJourneyCodes = list.Select(x => x.JourneyText).Where(x => x != null && x != "").Distinct().ToList();
             var listCustomerTypeCodes = list.Select(x => x.CustomerTypeText).Where(x => x != null && x != "").Distinct().ToList();

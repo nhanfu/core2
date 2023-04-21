@@ -307,7 +307,7 @@ namespace TMS.UI.Business.Manage
             || x.Field == nameof(oldEntity.CommodityId)
             || x.Field == nameof(oldEntity.ContainerId)))
             {
-                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId ne 7651 and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
+                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
                 var checkBoss = entity.BossId != null ? $"and BossId eq {entity.BossId}" : "";
                 var checkCommodity = entity.CommodityId != null ? $"and CommodityId eq {entity.CommodityId}" : "";
                 var checkContainer = entity.ContainerId != null ? $"and ContainerId eq {entity.ContainerId}" : "";
@@ -340,7 +340,7 @@ namespace TMS.UI.Business.Manage
             (oldEntity.BreakTerms != entity.BreakTerms) ||
             (oldEntity.IsWet != entity.IsWet))
             {
-                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId ne 7651 and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
+                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
                 if (oldEntity.CommodityId == commodity.Id)
                 {
                     return;
@@ -373,7 +373,7 @@ namespace TMS.UI.Business.Manage
                 {
                     return;
                 }
-                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and ParentId ne 7651 and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
+                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
                 if (oldEntity.CommodityId == commodity.Id)
                 {
                     return;
