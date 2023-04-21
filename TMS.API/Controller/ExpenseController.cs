@@ -438,7 +438,7 @@ namespace TMS.API.Controllers
         {
             var expenseTypes = await db.MasterData.Where(x => x.Active && x.ParentId == 7577 && (x.Name.Contains("Bảo hiểm") || x.Name.Contains("BH SOC"))).ToListAsync();
             var expenseTypeIds = expenseTypes.Select(x => x.Id).ToList();
-            var trans = await db.Transportation.Where(x => (x.ClosingDate.Value.Date >= expense.FromDate || x.StartShip.Value.Date >= expense.FromDate) && (x.ClosingDate.Value.Date <= expense.ToDate || x.StartShip.Value.Date <= expense.ToDate) && x.Active).ToListAsync();
+            var trans = await db.Transportation.Where(x => ((x.ClosingDate >= expense.FromDate && x.ClosingDate <= expense.ToDate) || (x.StartShip >= expense.FromDate && x.StartShip <= expense.ToDate)) && x.Active).ToListAsync();
             //var trans = await db.Transportation.Where(x => x.Active).ToListAsync();
             if (trans == null)
             {
@@ -535,6 +535,7 @@ namespace TMS.API.Controllers
                             history.RequestChangeId = ex.Id;
                             ex.IsHasChange = true;
                             db.Add(history);
+                            await db.SaveChangesAsync();
                         }
                         if ((tran.BossId != ex.BossId ||
                             tran.CommodityId != ex.CommodityId ||
