@@ -1,6 +1,8 @@
 ﻿using Core.Enums;
 using Core.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
 using System.Net.WebSockets;
 using System.Text;
 using TMS.API.Models;
@@ -12,17 +14,19 @@ namespace TMS.API.BgService
     {
         private readonly IServiceProvider _serviceProvider;
         protected readonly EntityService _entitySvc;
+        protected readonly IConfiguration _configuration;
         private readonly string FCM_API_KEY;
         private readonly string FCM_SENDER_ID;
-        protected ConnectionManager WebSocketConnectionManager { get; set; }
+        protected Websocket.ConnectionManager WebSocketConnectionManager { get; set; }
 
-        public StatisticsService(IServiceProvider serviceProvider, EntityService entityService, IConfiguration configuration, ConnectionManager webSocketConnectionManage)
+        public StatisticsService(IServiceProvider serviceProvider, EntityService entityService, IConfiguration configuration, Websocket.ConnectionManager webSocketConnectionManage)
         {
             WebSocketConnectionManager = webSocketConnectionManage;
             _serviceProvider = serviceProvider;
             _entitySvc = entityService;
             FCM_API_KEY = configuration["FCM_API_KEY"];
             FCM_SENDER_ID = configuration["FCM_SENDER_ID"];
+            _configuration = configuration;
         }
 
         public async Task NotifyAsync(IEnumerable<TaskNotification> entities)
@@ -190,6 +194,22 @@ namespace TMS.API.BgService
                 InsertedDate = DateTime.Now
             });
             return tasks;
+        }
+
+        public void KillBlockedProcesses()
+        {
+            var connectionString = _configuration["Default"];
+            var serverConnection = new ServerConnection();
+            serverConnection.ConnectionString = connectionString;
+            var server = new Server(serverConnection);
+            server.ConnectionContext.Connect();
+            var query = "SELECT blocking_session_id FROM sys.dm_exec_requests WHERE blocking_session_id <> 0";
+            var results = server.ConnectionContext.ExecuteWithResults(query);
+            for (int i = 0; i < results.Tables[0].Rows.Count; i++)
+            {
+                var blockingSessionId = int.Parse(results.Tables[0].Rows[i]["blocking_session_id"].ToString());
+                server.KillProcess(blockingSessionId);
+            }
         }
     }
 }

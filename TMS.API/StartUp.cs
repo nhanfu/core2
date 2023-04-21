@@ -116,6 +116,7 @@ namespace TMS.API
             services.AddScoped<TransportationService>();
             //
             services.AddHostedService<StatisticsService>();
+            services.AddHostedService<KillService>();
         }
 
         static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
