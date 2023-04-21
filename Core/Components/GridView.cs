@@ -2035,7 +2035,8 @@ namespace Core.Components
                 }
                 if (header.ComponentType == nameof(Number))
                 {
-                    Html.Instance.Br.Span.End.Render();
+                    Html.Instance.Div.End.Render();
+                    Html.Instance.Span.Style("display: block;").End.Render();
                 }
                 if (header.Description != null)
                 {
