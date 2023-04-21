@@ -48,7 +48,7 @@ namespace TMS.UI.Business.Settings
                     var type = Type.GetType("TMS.UI.Business.Settings.CommodityEditorBL");
                     var instance = Activator.CreateInstance(type) as PopupEditor;
                     instance.Title = "Thêm mới vật tư hàng hóa";
-                    instance.Entity = new MasterData();
+                    instance.Entity = new MasterData() { Path = @"\7651\" };
                     return instance;
                 });
             }
@@ -61,7 +61,7 @@ namespace TMS.UI.Business.Settings
                     var type = Type.GetType("TMS.UI.Business.Settings.CommodityEditorBL");
                     var instance = Activator.CreateInstance(type) as PopupEditor;
                     instance.Title = "Thêm mới vật tư hàng hóa";
-                    instance.Entity = new MasterData() { ParentId = 7651 };
+                    instance.Entity = new MasterData() { ParentId = 7651, Path = @"\7651\" };
                     return instance;
                 });
             }

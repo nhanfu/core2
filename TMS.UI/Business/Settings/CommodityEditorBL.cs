@@ -1,5 +1,6 @@
 ﻿using Core.Components.Extensions;
 using Core.Components.Forms;
+using System.Threading.Tasks;
 using TMS.API.Models;
 
 namespace TMS.UI.Business.Settings
@@ -10,6 +11,24 @@ namespace TMS.UI.Business.Settings
         public CommodityEditorBL() : base(nameof(MasterData))
         {
             Name = "Commodity Editor";
+        }
+
+        public override Task<bool> Save(object entity = null)
+        {
+            if (masterDataEntity.ParentId != 7651)
+            {
+                masterDataEntity.Path += $"{masterDataEntity.ParentId}" + @"\";
+            }
+            return base.Save(entity);
+        }
+
+        public override Task<bool> SaveWithouUpdateView(object entity)
+        {
+            if (masterDataEntity.ParentId != 7651)
+            {
+                masterDataEntity.Path += $"{masterDataEntity.ParentId}" + @"\";
+            }
+            return base.SaveWithouUpdateView(entity);
         }
 
         public void CheckParentId(MasterData masterData)
