@@ -1550,6 +1550,17 @@ namespace TMS.API.Controllers
 					    from Transportation
 					    left join Location l on Transportation.ReturnId = l.Id
 					    where Transportation.ShipId = '{entity.ShipId}' and (Transportation.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Transportation.Trip = '{entity.Trip}' and Transportation.RouteId in ({entity.RouteIds.Combine()});
+
+                        update Transportation set ReturnLiftFee = (select top 1 CASE
+					    WHEN Transportation.IsLiftFee = 1 THEN UnitPrice1
+					    ELSE UnitPrice
+					    END as UnitPrice from Quotation 
+					    where TypeId = 7596
+					    and ContainerTypeId = Transportation.ContainerTypeId 
+					    and LocationId = Transportation.PortLiftId 
+					    and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc)
+					    from Transportation
+					    where Transportation.ShipDate is not null and Transportation.ShipId = '{entity.ShipId}' and (Transportation.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Transportation.Trip = '{entity.Trip}' and Transportation.RouteId in ({entity.RouteIds.Combine()});
                         ";
             ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return check;
