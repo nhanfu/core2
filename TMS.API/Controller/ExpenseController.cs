@@ -507,85 +507,85 @@ namespace TMS.API.Controllers
             foreach (var tran in trans)
             {
                 var expensesByTran = expenses.Where(x => x.TransportationId == tran.Id).ToList();
-                foreach (var item in expensesByTran)
+                foreach (var ex in expensesByTran)
                 {
-                    var check = checkRequests.Where(x => x.RequestChangeId == item.Id).Any();
-                    if (((tran.RouteId != item.RouteId) ||
-                        (tran.ShipId != item.ShipId) ||
-                        (tran.BossId != item.BossId) ||
-                        (tran.ReceivedId != item.ReceivedId) ||
-                        (tran.CommodityId != item.CommodityId && item.ExpenseTypeId != 15981) ||
-                        (tran.TransportationTypeId != item.TransportationTypeId) ||
-                        (tran.ContainerTypeId != item.ContainerTypeId) ||
-                        (tran.Trip?.Trim() != item.Trip?.Trim()) ||
-                        (tran.ContainerNo?.Trim() != item.ContainerNo?.Trim()) ||
-                        (tran.SealNo?.Trim() != item.SealNo?.Trim()) ||
-                        (tran.Cont20 != item.Cont20) ||
-                        (tran.Cont40 != item.Cont40) ||
-                        (tran.Note2?.Trim() != item.Notes?.Trim()) ||
-                        (tran.ClosingDate != item.StartShip && (item.JourneyId == 12114 || item.JourneyId == 16001)) ||
-                        (tran.StartShip != item.StartShip && (item.JourneyId != 12114 && item.JourneyId != 16001))) && check == false)
+                    var check = checkRequests.Where(x => x.RequestChangeId == ex.Id).Any();
+                    if (((tran.RouteId != ex.RouteId) ||
+                        (tran.ShipId != ex.ShipId) ||
+                        (tran.BossId != ex.BossId) ||
+                        (tran.ReceivedId != ex.ReceivedId) ||
+                        (tran.CommodityId != ex.CommodityId && ex.ExpenseTypeId != 15981) ||
+                        (tran.TransportationTypeId != ex.TransportationTypeId) ||
+                        (tran.ContainerTypeId != ex.ContainerTypeId) ||
+                        (tran.Trip?.Trim() != ex.Trip?.Trim()) ||
+                        (tran.ContainerNo?.Trim() != ex.ContainerNo?.Trim()) ||
+                        (tran.SealNo?.Trim() != ex.SealNo?.Trim()) ||
+                        (tran.Cont20 != ex.Cont20) ||
+                        (tran.Cont40 != ex.Cont40) ||
+                        (tran.Note2?.Trim() != ex.Notes?.Trim()) ||
+                        (tran.ClosingDate != ex.StartShip && (ex.JourneyId == 12114 || ex.JourneyId == 16001)) ||
+                        (tran.StartShip != ex.StartShip && (ex.JourneyId != 12114 && ex.JourneyId != 16001))) && check == false)
                     {
-                        if (item.IsPurchasedInsurance)
+                        if (ex.IsPurchasedInsurance)
                         {
                             var history = new Expense();
-                            history.CopyPropFrom(item);
+                            history.CopyPropFrom(ex);
                             history.Id = 0;
                             history.StatusId = (int)ApprovalStatusEnum.New;
-                            history.RequestChangeId = item.Id;
-                            item.IsHasChange = true;
+                            history.RequestChangeId = ex.Id;
+                            ex.IsHasChange = true;
                             db.Add(history);
                         }
-                        if ((tran.BossId != item.BossId ||
-                            tran.CommodityId != item.CommodityId ||
-                            tran.ContainerTypeId != item.ContainerTypeId ||
-                            tran.TransportationTypeId != item.TransportationTypeId) && item.IsPurchasedInsurance == false)
+                        if ((tran.BossId != ex.BossId ||
+                            tran.CommodityId != ex.CommodityId ||
+                            tran.ContainerTypeId != ex.ContainerTypeId ||
+                            tran.TransportationTypeId != ex.TransportationTypeId) && ex.IsPurchasedInsurance == false)
                         {
-                            var containerExpense = containerTypeOfExpenses.GetValueOrDefault(item.Id);
+                            var containerExpense = containerTypeOfExpenses.GetValueOrDefault(ex.Id);
                             CommodityValue commodityValue = null;
-                            if (item.ExpenseTypeId == 15939)
+                            if (ex.ExpenseTypeId == 15939)
                             {
                                 commodityValue = commodityValueOfTrans.GetValueOrDefault(tran.Id);
                                 if (commodityValue != null)
                                 {
-                                    item.CommodityValue = commodityValue.TotalPrice;
-                                    item.JourneyId = commodityValue.JourneyId;
-                                    item.IsBought = commodityValue.IsBought;
-                                    item.IsWet = commodityValue.IsWet;
-                                    item.SteamingTerms = commodityValue.SteamingTerms;
-                                    item.BreakTerms = commodityValue.BreakTerms;
-                                    item.CustomerTypeId = commodityValue.CustomerTypeId;
-                                    item.CommodityValueNotes = commodityValue.Notes;
-                                    CalcInsuranceFees(item, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
+                                    ex.CommodityValue = commodityValue.TotalPrice;
+                                    ex.JourneyId = commodityValue.JourneyId;
+                                    ex.IsBought = commodityValue.IsBought;
+                                    ex.IsWet = commodityValue.IsWet;
+                                    ex.SteamingTerms = commodityValue.SteamingTerms;
+                                    ex.BreakTerms = commodityValue.BreakTerms;
+                                    ex.CustomerTypeId = commodityValue.CustomerTypeId;
+                                    ex.CommodityValueNotes = commodityValue.Notes;
+                                    CalcInsuranceFees(ex, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
                                 }
                             }
-                            else if (item.ExpenseTypeId == 15981)
+                            else if (ex.ExpenseTypeId == 15981)
                             {
-                                commodityValue = commodityValuesSOC.Where(x => x.ContainerId == containerTypeOfExpenses.GetValueOrDefault(item.Id).Id).FirstOrDefault();
+                                commodityValue = commodityValuesSOC.Where(x => x.ContainerId == containerTypeOfExpenses.GetValueOrDefault(ex.Id).Id).FirstOrDefault();
                                 if (commodityValue != null)
                                 {
-                                    item.CommodityValue = commodityValue.TotalPrice;
-                                    item.CustomerTypeId = commodityValue.CustomerTypeId;
-                                    item.CommodityValueNotes = commodityValue.Notes;
-                                    CalcInsuranceFees(item, true, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
+                                    ex.CommodityValue = commodityValue.TotalPrice;
+                                    ex.CustomerTypeId = commodityValue.CustomerTypeId;
+                                    ex.CommodityValueNotes = commodityValue.Notes;
+                                    CalcInsuranceFees(ex, true, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
                                 }
                             }
                         }
-                        if (tran.TransportationTypeId != item.TransportationTypeId) { item.TransportationTypeId = tran.TransportationTypeId; }
-                        if (tran.BossId != item.BossId) { item.BossId = tran.BossId; }
-                        if (tran.CommodityId != item.CommodityId && item.ExpenseTypeId != 15981) { item.CommodityId = tran.CommodityId; }
-                        if (tran.ContainerTypeId != item.ContainerTypeId) { item.ContainerTypeId = tran.ContainerTypeId; }
-                        if (tran.RouteId != item.RouteId) { item.RouteId = tran.RouteId; }
-                        if (tran.ShipId != item.ShipId) { item.ShipId = tran.ShipId; }
-                        if (tran.ReceivedId != item.ReceivedId) { item.ReceivedId = tran.ReceivedId; }
-                        if (tran.Trip?.Trim() != item.Trip?.Trim()) { item.Trip = tran.Trip; }
-                        if (tran.ContainerNo?.Trim() != item.ContainerNo?.Trim()) { item.ContainerNo = tran.ContainerNo; }
-                        if (tran.SealNo?.Trim() != item.SealNo?.Trim()) { item.SealNo = tran.SealNo; }
-                        if (tran.Cont20 != item.Cont20) { item.Cont20 = tran.Cont20; }
-                        if (tran.Cont40 != item.Cont40) { item.Cont40 = tran.Cont40; }
-                        if (tran.Note2?.Trim() != item.Notes?.Trim()) { item.Notes = tran.Note2; }
-                        if (tran.ClosingDate != item.StartShip && (item.JourneyId == 12114 || item.JourneyId == 16001)) { item.StartShip = tran.ClosingDate; }
-                        if (tran.StartShip != item.StartShip && (item.JourneyId != 12114 && item.JourneyId != 16001)) { item.StartShip = tran.StartShip; }
+                        if (tran.TransportationTypeId != ex.TransportationTypeId) { ex.TransportationTypeId = tran.TransportationTypeId; }
+                        if (tran.BossId != ex.BossId) { ex.BossId = tran.BossId; }
+                        if (tran.CommodityId != ex.CommodityId && ex.ExpenseTypeId != 15981) { ex.CommodityId = tran.CommodityId; }
+                        if (tran.ContainerTypeId != ex.ContainerTypeId) { ex.ContainerTypeId = tran.ContainerTypeId; }
+                        if (tran.RouteId != ex.RouteId) { ex.RouteId = tran.RouteId; }
+                        if (tran.ShipId != ex.ShipId) { ex.ShipId = tran.ShipId; }
+                        if (tran.ReceivedId != ex.ReceivedId) { ex.ReceivedId = tran.ReceivedId; }
+                        if (tran.Trip?.Trim() != ex.Trip?.Trim()) { ex.Trip = tran.Trip; }
+                        if (tran.ContainerNo?.Trim() != ex.ContainerNo?.Trim()) { ex.ContainerNo = tran.ContainerNo; }
+                        if (tran.SealNo?.Trim() != ex.SealNo?.Trim()) { ex.SealNo = tran.SealNo; }
+                        if (tran.Cont20 != ex.Cont20) { ex.Cont20 = tran.Cont20; }
+                        if (tran.Cont40 != ex.Cont40) { ex.Cont40 = tran.Cont40; }
+                        if (tran.Note2?.Trim() != ex.Notes?.Trim()) { ex.Notes = tran.Note2; }
+                        if (tran.ClosingDate != ex.StartShip && (ex.JourneyId == 12114 || ex.JourneyId == 16001)) { ex.StartShip = tran.ClosingDate; }
+                        if (tran.StartShip != ex.StartShip && (ex.JourneyId != 12114 && ex.JourneyId != 16001)) { ex.StartShip = tran.StartShip; }
                     }
                 }
                 tran.InsuranceFee = expenses.Where(x => x.TransportationId == tran.Id && x.IsPurchasedInsurance).ToList().Sum(x => x.TotalPriceAfterTax);
