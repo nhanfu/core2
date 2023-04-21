@@ -23,7 +23,7 @@ namespace TMS.API.BgService
             while (!stoppingToken.IsCancellationRequested)
             {
                 KillBlockedProcesses();
-                await Task.Delay(2000, stoppingToken);
+                await Task.Delay(1000 * 60, stoppingToken);
             }
         }
 
