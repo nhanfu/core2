@@ -2450,6 +2450,8 @@ namespace TMS.API.Models
 
                 entity.Property(e => e.NameSys).HasMaxLength(250);
 
+                entity.Property(e => e.Notes).HasMaxLength(250);
+
                 entity.Property(e => e.PhoneNumber)
                     .HasMaxLength(111)
                     .IsUnicode(false);

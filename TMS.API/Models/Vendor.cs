@@ -65,6 +65,7 @@ namespace TMS.API.Models
         public int? GroupId { get; set; }
         public int? GroupSaleId { get; set; }
         public int? YearCreated { get; set; }
+        public string Notes { get; set; }
 
         public virtual ICollection<ErrorLog> ErrorLog { get; set; }
         public virtual ICollection<User> User { get; set; }
