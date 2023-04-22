@@ -410,7 +410,10 @@ namespace TMS.API.Services
             {
                 return null;
             }
-            return @$"update Transportation set ReturnVs = case when Transportation.LevelId is null then null
+            var check = patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.BrandShipId));
+            if (!check)
+            {
+                return @$"update Transportation set ReturnVs = case when Transportation.LevelId is null then null
 		            else (select top 1 case when Transportation.Cont20 > 0 then VS20UnitPrice else VS40UnitPrice end
 		            from QuotationExpense
 		            where 
@@ -422,6 +425,21 @@ namespace TMS.API.Services
 		            where (Transportation.ReturnVs = 0 or Transportation.ReturnVs is null)
 		            and Transportation.StartShip is not null
 					and Transportation.Id = {Id};";
+            }
+            else
+            {
+                return @$"update Transportation set ReturnVs = case when Transportation.LevelId is null then null
+		            else (select top 1 case when Transportation.Cont20 > 0 then VS20UnitPrice else VS40UnitPrice end
+		            from QuotationExpense
+		            where 
+		            BrandShipId = Transportation.BrandShipId
+		            and ExpenseTypeId = Transportation.LevelId 
+		            and (RouteId = Transportation.RouteId or RouteId is null)
+		            and StartDate <= Transportation.StartShip order by StartDate desc) end
+		            from Transportation
+		            where Transportation.StartShip is not null
+					and Transportation.Id = {Id};";
+            }
         }
 
         public string Transportation_ShellDate(PatchUpdate patchUpdate, int Id)
