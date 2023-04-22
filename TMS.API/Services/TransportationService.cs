@@ -30,7 +30,7 @@ namespace TMS.API.Services
                 return null;
             }
             var betFee = patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.BetFee));
-            if(betFee is null)
+            if (betFee is null)
             {
                 return @$"update Transportation set BetFee = case 
                     when (l.Id is null or l.Description not like N'%Giao Lệnh Tại HCM%') then null
@@ -342,10 +342,21 @@ namespace TMS.API.Services
             {
                 return null;
             }
-            return @$"update Transportation set ReturnEmptyId = 114017, ReturnClosingFee = null
+            var val = patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.EmptyCombinationId));
+            var sql = string.Empty;
+            if (val.OldVal is not null)
+            {
+                sql += @$" update Transportation set ReturnEmptyId = null, ReturnClosingFee = null
 					from Transportation
-					join Transportation t1 on Transportation.Id = t1.EmptyCombinationId
-					where t1.Id = {Id};";
+					where Transportation.Id = {val.OldVal};";
+            }
+            if (val.Value is not null)
+            {
+                sql += @$" update Transportation set ReturnEmptyId = 114017, ReturnClosingFee = null
+					from Transportation
+					where Transportation.Id = {val.Value};";
+            }
+            return sql;
         }
 
         public string Transportation_ReturnLiftFee(PatchUpdate patchUpdate, int Id)
@@ -410,7 +421,7 @@ namespace TMS.API.Services
             {
                 return null;
             }
-            var check = patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.BrandShipId));
+            var check = patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.LevelId));
             if (!check)
             {
                 return @$"update Transportation set ReturnVs = case when Transportation.LevelId is null then null
