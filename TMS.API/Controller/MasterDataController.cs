@@ -92,7 +92,7 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
             }
-            if (entity.Path.Contains(@"\7651\"))
+            if (entity.Path != null && entity.Path.Contains(@"\7651\"))
             {
                 var commodity = await db.MasterData.Where(x => x.Path.Contains(@"\7651\") && x.Description.Trim().ToLower() == entity.Description.Trim().ToLower()).FirstOrDefaultAsync();
                 if (commodity != null)
@@ -111,7 +111,7 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
             }
-            if (entity.Path.Contains(@"\7651\"))
+            if (entity.Path != null && entity.Path.Contains(@"\7651\"))
             {
                 var commodity = await db.MasterData.Where(x => x.Path.Contains(@"\7651\") && x.Description.Trim().ToLower() == entity.Description.Trim().ToLower()).FirstOrDefaultAsync();
                 if (commodity != null)
