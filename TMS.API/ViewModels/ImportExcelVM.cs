@@ -70,26 +70,6 @@ namespace TMS.API.ViewModels
         public string User { get; set; }
     }
 
-    public class ImportObjectVM
-    {
-        public string CompanyName { get; set; }
-        public string Code { get; set; }
-        public string TaxCode { get; set; }
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
-        public string StaffName { get; set; }
-        public string PositionName { get; set; }
-        public string ClassifyName { get; set; }
-        public string BankNo { get; set; }
-        public string BankName { get; set; }
-        public string CityName { get; set; }
-        public string DepartmentText { get; set; }
-        public string BranchText { get; set; }
-        public string SaleText { get; set; }
-        public string Description { get; set; }
-    }
-
     public class ImportQuotationVM
     {
         public string StartDate { get; set; }
@@ -417,5 +397,29 @@ namespace TMS.API.ViewModels
         public decimal? TotalPriceAfterTaxDB { get; set; }
         public decimal? CollectOnSupPrice { get; set; }
         public decimal? ClosingPercentCheck { get; set; }
+    }
+
+    public class ImportObjectVM
+    {
+        public string Groupid { get; set; }
+        public string YearCreated { get; set; }
+        public string GroupSaleId { get; set; }
+        public string Code { get; set; }
+        public string CompanyName { get; set; }
+        public string TaxCode { get; set; }
+        public string Address { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public string StaffName { get; set; }
+        public string PositionName { get; set; }
+        public string ClassifyName { get; set; }
+        public string BankNo { get; set; }
+        public string BankName { get; set; }
+        public string CityName { get; set; }
+        public string DepartmentName { get; set; }
+        public string BranchName { get; set; }
+        public string VendorId { get; set; }
+        public string Notes { get; set; }
+        public string UserName { get; set; }
     }
 }
