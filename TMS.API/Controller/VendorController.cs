@@ -156,20 +156,26 @@ namespace TMS.API.Controllers
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
-            var checkExist = db.Vendor.Where(x => x.CompanyName.Trim().ToLower() == entity.CompanyName.Trim().ToLower() && x.TypeId == 23741).FirstOrDefaultAsync();
-            if (checkExist != null)
+            if (entity.TypeId == 23741)
             {
-                throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
+                var checkExist = db.Vendor.Where(x => x.CompanyName.Trim().ToLower() == entity.CompanyName.Trim().ToLower() && x.TypeId == 23741).FirstOrDefaultAsync();
+                if (checkExist != null)
+                {
+                    throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
+                }
             }
             return await base.CreateAsync(entity);
         }
 
         public override Task<ActionResult<Vendor>> UpdateAsync([FromBody] Vendor entity, string reasonOfChange = "")
         {
-            var checkExist = db.Vendor.Where(x => x.CompanyName.Trim().ToLower() == entity.CompanyName.Trim().ToLower() && x.TypeId == 23741).FirstOrDefaultAsync();
-            if (checkExist != null)
+            if (entity.TypeId == 23741)
             {
-                throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
+                var checkExist = db.Vendor.Where(x => x.CompanyName.Trim().ToLower() == entity.CompanyName.Trim().ToLower() && x.TypeId == 23741).FirstOrDefaultAsync();
+                if (checkExist != null)
+                {
+                    throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
+                }
             }
             return base.UpdateAsync(entity, reasonOfChange);
         }
