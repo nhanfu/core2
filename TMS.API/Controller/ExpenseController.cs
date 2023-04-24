@@ -5,6 +5,7 @@ using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
 using DocumentFormat.OpenXml.Office.CustomUI;
+using DocumentFormat.OpenXml.Office.Word;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -503,7 +504,7 @@ namespace TMS.API.Controllers
                 var container = containerTypeExpenses.Where(x => x.Id == item.ContainerTypeId).FirstOrDefault();
                 containerTypeOfExpenses.Add(item.Id, container);
             }
-
+            var querys = "";
             foreach (var tran in trans)
             {
                 var expensesByTran = expenses.Where(x => x.TransportationId == tran.Id).ToList();
@@ -535,7 +536,6 @@ namespace TMS.API.Controllers
                             history.RequestChangeId = ex.Id;
                             ex.IsHasChange = true;
                             db.Add(history);
-                            await db.SaveChangesAsync();
                         }
                         if ((tran.BossId != ex.BossId ||
                             tran.CommodityId != ex.CommodityId ||
@@ -589,11 +589,14 @@ namespace TMS.API.Controllers
                         if (tran.StartShip != ex.StartShip && (ex.JourneyId != 12114 && ex.JourneyId != 16001)) { ex.StartShip = tran.StartShip; }
                     }
                 }
-                tran.InsuranceFee = expenses.Where(x => x.TransportationId == tran.Id && x.IsPurchasedInsurance).ToList().Sum(x => x.TotalPriceAfterTax);
+                //tran.InsuranceFee = expenses.Where(x => x.TransportationId == tran.Id && x.IsPurchasedInsurance).ToList().Sum(x => x.TotalPriceAfterTax);
+                var query = $"Update {nameof(Transportation)} set InsuranceFee = {expenses.Where(x => x.TransportationId == tran.Id && x.IsPurchasedInsurance).ToList().Sum(x => x.TotalPriceAfterTax)} where Id = {tran.Id} ";
+                querys += query;
             }
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             db.Expense.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Expense");
             await db.SaveChangesAsync();
+            await db.Database.ExecuteSqlRawAsync(querys);
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
             db.Expense.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Expense");
             return true;
