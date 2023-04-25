@@ -16,5 +16,6 @@ namespace TMS.API.Models
         public DateTime? UpdatedDate { get; set; }
         public string FieldName { get; set; }
         public string EntityName { get; set; }
+        public string FileHost { get; set; }
     }
 }

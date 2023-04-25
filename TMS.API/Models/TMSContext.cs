@@ -596,6 +596,8 @@ namespace TMS.API.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
+                entity.Property(e => e.FileHost).HasMaxLength(3000);
+
                 entity.Property(e => e.FileName).HasMaxLength(200);
 
                 entity.Property(e => e.FilePath).HasMaxLength(3000);
@@ -1794,6 +1796,8 @@ namespace TMS.API.Models
                 entity.Property(e => e.CommodityValue)
                     .HasColumnType("decimal(20, 5)")
                     .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.CommodityValueNotes).HasMaxLength(250);
 
                 entity.Property(e => e.Files).HasMaxLength(250);
 

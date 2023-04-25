@@ -54,5 +54,6 @@ namespace TMS.API.Models
         public int? Cont40Text { get; set; }
         public int? Cont20Text { get; set; }
         public string ReasonChange { get; set; }
+        public string CommodityValueNotes { get; set; }
     }
 }
