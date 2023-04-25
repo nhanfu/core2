@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
+using TMS.UI.Business.Accountant;
 using static Retyped.dom.Literals.Types;
 using Number = Core.Components.Number;
 
@@ -106,6 +107,96 @@ namespace TMS.UI.Business.Manage
                     UpdateListView(item, gridView, expenses, checkHistory);
                 }
             }
+            ReloadMenu();
+        }
+
+        public virtual void ReloadMenu()
+        {
+            var gridView = this.FindComponentByName<GridView>(nameof(Expense));
+            if (gridView == null)
+            {
+                return;
+            }
+            var menus = new List<ContextMenuItem>();
+            gridView.BodyContextMenuShow += () =>
+            {
+                menus.Add(new ContextMenuItem { Icon = "fas fa-download mr-1", Text = "Cập nhật TT GTHH", Click = UpdateCommodityValueOfInsuranceFees });
+                ContextMenu.Instance.MenuItems = menus;
+            };
+        }
+
+        public void UpdateCommodityValueOfInsuranceFees(object arg)
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindComponentByName<GridView>(nameof(Expense));
+                if (gridView is null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and ExpenseTypeId in (15981, 15939) and RequestChangeId eq null and Id in ({ids.Combine()}) and IsPurchasedInsurance eq false");
+                if (expenses != null)
+                {
+                    var bossIds = expenses.Select(x => x.BossId).ToList();
+                    var commodityIds = expenses.Select(x => x.CommodityId).ToList();
+                    var containerTypeIds = new Dictionary<int, int>();
+                    var containerTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 7565");
+                    foreach (var item in expenses)
+                    {
+                        var containerType = containerTypes.Where(x => x.Id == item.ContainerTypeId).FirstOrDefault();
+                        if (containerType.Description.Contains("Cont 20"))
+                        {
+                            containerTypeIds.Add(item.Id, containerTypes.Find(x => x.Name.Contains("20DC")).Id);
+                        }
+                        else if (containerType.Description.Contains("Cont 40"))
+                        {
+                            containerTypeIds.Add(item.Id, containerTypes.Find(x => x.Name.Contains("40HC")).Id);
+                        }
+                        else if (containerType.Description.Contains("Cont 45"))
+                        {
+                            containerTypeIds.Add(item.Id, containerTypes.Find(x => x.Name.Contains("45HC")).Id);
+                        }
+                        else if (containerType.Description.Contains("Cont 50"))
+                        {
+                            containerTypeIds.Add(item.Id, containerTypes.Find(x => x.Name.Contains("50DC")).Id);
+                        }
+                    }
+                    var commodityValueDB = await new Client(nameof(CommodityValue)).GetRawList<CommodityValue>($"?$filter=Active eq true and BossId in ({bossIds.Combine()}) and CommodityId in ({commodityIds.Combine()})");
+                    Spinner.AppendTo(this.Element, false, true, 30000);
+                    var res = new Expense();
+                    foreach (var item in expenses)
+                    {
+                        var containerTypeId = containerTypeIds.GetValueOrDefault(item.Id);
+                        var commodityValue = commodityValueDB.Where(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == containerTypeId).FirstOrDefault();
+                        if (commodityValue != null)
+                        {
+                            item.SteamingTerms = commodityValue.SteamingTerms;
+                            item.BreakTerms = commodityValue.BreakTerms;
+                            item.IsBought = commodityValue.IsBought;
+                            item.IsWet = commodityValue.IsWet;
+                            item.JourneyId = commodityValue.JourneyId;
+                            item.CustomerTypeId = commodityValue.CustomerTypeId;
+                            item.CommodityValue = commodityValue.TotalPrice;
+                            item.CommodityValueNotes = commodityValue.Notes;
+                            if (item.ExpenseTypeId == 15939)
+                            {
+                                await CalcInsuranceFees(item, false);
+                            }
+                            else if(item.ExpenseTypeId == 15981)
+                            {
+                                await CalcInsuranceFees(item, true);
+                            }
+                            res = await new Client(nameof(Expense)).UpdateAsync<Expense>(item);
+                        }
+                    }
+                    if (res != null)
+                    {
+                        Spinner.Hide();
+                        Toast.Success("Đã cập nhật thành công.");
+                    }
+                }
+            });
         }
 
         private void UpdateListView(Expense x, GridView gridView, List<Expense> expenses, List<Expense> checkHistory)
