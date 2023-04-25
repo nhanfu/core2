@@ -141,17 +141,20 @@ namespace TMS.UI.Business.Manage
             }
             var transportationTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 11670");
             var route = await new Client(nameof(Route)).FirstOrDefaultAsync<Route>($"?$filter=Active eq true and Id eq {transportationPlanEntity.RouteId}");
-            if (route.Name.ToLower().Contains("sắt"))
+            if (route != null)
             {
-                transportationPlanEntity.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Sắt")).FirstOrDefault().Id;
-            }
-            else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
-            {
-                transportationPlanEntity.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Bộ")).FirstOrDefault().Id;
-            }
-            else
-            {
-                transportationPlanEntity.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Tàu")).FirstOrDefault().Id;
+                if (route.Name.ToLower().Contains("sắt"))
+                {
+                    transportationPlanEntity.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("sắt")).FirstOrDefault().Id;
+                }
+                else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
+                {
+                    transportationPlanEntity.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("bộ")).FirstOrDefault().Id;
+                }
+                else
+                {
+                    transportationPlanEntity.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("tàu")).FirstOrDefault().Id;
+                }
             }
             UpdateView(false, nameof(TransportationPlan.TransportationTypeId));
         }

@@ -1297,21 +1297,24 @@ namespace TMS.UI.Business.Manage
                 var transportationTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 11670");
                 var route = await new Client(nameof(Route)).FirstOrDefaultAsync<Route>($"?$filter=Active eq true and Id eq {transportation.RouteId}");
                 var vendor = await new Client(nameof(Vendor)).FirstOrDefaultAsync<Vendor>($"?$filter=Active eq true and Id eq {transportation.ClosingId}");
-                if (vendor.Name.ToLower().Contains("sà lan"))
+                if (route != null || vendor != null)
                 {
-                    transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Sà Lan")).FirstOrDefault().Id;
-                }
-                else if (route.Name.ToLower().Contains("sắt"))
-                {
-                    transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Sắt")).FirstOrDefault().Id;
-                }
-                else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
-                {
-                    transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Bộ")).FirstOrDefault().Id;
-                }
-                else
-                {
-                    transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Tàu")).FirstOrDefault().Id;
+                    if (vendor.Name.ToLower().Contains("sà lan"))
+                    {
+                        transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("sà lan")).FirstOrDefault().Id;
+                    }
+                    else if (route.Name.ToLower().Contains("sắt"))
+                    {
+                        transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("sắt")).FirstOrDefault().Id;
+                    }
+                    else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
+                    {
+                        transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("bộ")).FirstOrDefault().Id;
+                    }
+                    else
+                    {
+                        transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("tàu")).FirstOrDefault().Id;
+                    }
                 }
             }
             await ActionAnalysis(transportation);

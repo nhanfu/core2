@@ -448,19 +448,22 @@ namespace TMS.UI.Business.Manage
                 {
                     var transportationTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 11670");
                     var route = await new Client(nameof(Route)).FirstOrDefaultAsync<Route>($"?$filter=Active eq true and Id eq {transportationPlan.RouteId}");
-                    if (route.Name.ToLower().Contains("sắt"))
+                    if (route != null)
                     {
-                        transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Sắt")).FirstOrDefault().Id;
+                        if (route.Name.ToLower().Contains("sắt"))
+                        {
+                            transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("sắt")).FirstOrDefault().Id;
+                        }
+                        else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
+                        {
+                            transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("bộ")).FirstOrDefault().Id;
+                        }
+                        else
+                        {
+                            transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("tàu")).FirstOrDefault().Id;
+                        }
                     }
-                    else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
-                    {
-                        transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Bộ")).FirstOrDefault().Id;
-                    }
-                    else
-                    {
-                        transportationPlan.TransportationTypeId = transportationTypes.Where(x => x.Name.Contains("Tàu")).FirstOrDefault().Id;
-                    }
-                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntity(transportationPlan));
+                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntity(transportationPlan), ig: $"&disableTrigger=true");
                 }
             }, 500);
         }
