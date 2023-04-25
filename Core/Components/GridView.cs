@@ -434,26 +434,23 @@ namespace Core.Components
                     value = confirmDialog.Textbox.Text.Trim().EncodeSpecialChar();
                 }
                 Window.LocalStorage.SetItem("LastSearch" + GuiInfo.Id + header.Id, value);
-                if (!CellSelected.Any(x => x.FieldName == ev["FieldName"].ToString() && x.Value == value && x.Operator == ev["Operator"].ToString()))
+                if (CellSelected.Any(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in") && !(bool)ev["Shift"])
                 {
-                    if (CellSelected.Any(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in") && !(bool)ev["Shift"])
+                    CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").Value = value;
+                    CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").ValueText = valueText;
+                }
+                else
+                {
+                    CellSelected.Add(new CellSelected
                     {
-                        CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").Value = value;
-                        CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").ValueText = valueText;
-                    }
-                    else
-                    {
-                        CellSelected.Add(new CellSelected
-                        {
-                            FieldName = ev["FieldName"].ToString(),
-                            FieldText = header.ShortDesc,
-                            ComponentType = header.ComponentType,
-                            Value = value,
-                            ValueText = valueText,
-                            Operator = ev["Operator"].ToString(),
-                            OperatorText = ev["OperatorText"].ToString(),
-                        });
-                    }
+                        FieldName = ev["FieldName"].ToString(),
+                        FieldText = header.ShortDesc,
+                        ComponentType = header.ComponentType,
+                        Value = value,
+                        ValueText = valueText,
+                        Operator = ev["Operator"].ToString(),
+                        OperatorText = ev["OperatorText"].ToString(),
+                    });
                 }
                 _summarys.Add(new HTMLElement());
                 await ActionFilter();
@@ -636,32 +633,29 @@ namespace Core.Components
                     lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
                 var value = ids ?? cell.Value;
-                if (!AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.Value == value && x.CompareOperatorId == advo))
+                if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName
+                && cell.FieldName != IdField
+                && x.CompareOperatorId == advo
+                && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In || x.CompareOperatorId == AdvSearchOperation.EqualDatime)))
                 {
-                    if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName
-                    && cell.FieldName != IdField
-                    && x.CompareOperatorId == advo
-                    && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In)))
+                    AdvSearchVM.Conditions.FirstOrDefault(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo).Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value;
+                    Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{GuiInfo.RefName}].{cell.FieldName}")).FieldName = where;
+                }
+                else
+                {
+                    AdvSearchVM.Conditions.Add(new FieldCondition
                     {
-                        AdvSearchVM.Conditions.FirstOrDefault(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo).Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value;
-                        Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{GuiInfo.RefName}].{cell.FieldName}")).FieldName = where;
-                    }
-                    else
+                        Field = hl,
+                        CompareOperatorId = advo,
+                        LogicOperatorId = cell.Logic ?? LogicOperation.And,
+                        Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value,
+                        Group = cell.Group
+                    });
+                    Wheres.Add(new Where()
                     {
-                        AdvSearchVM.Conditions.Add(new FieldCondition
-                        {
-                            Field = hl,
-                            CompareOperatorId = advo,
-                            LogicOperatorId = cell.Logic ?? LogicOperation.And,
-                            Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value,
-                            Group = cell.Group
-                        });
-                        Wheres.Add(new Where()
-                        {
-                            FieldName = where,
-                            Group = cell.Group
-                        });
-                    }
+                        FieldName = where,
+                        Group = cell.Group
+                    });
                 }
             });
             await ApplyFilter(true);

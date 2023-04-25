@@ -123,6 +123,22 @@ namespace Core.Components
 
             Html.Take(Parent.Element.FirstElementChild).TabIndex(-1).AsyncEvent(EventType.KeyPress, EnterSearch);
             Element = Html.Context;
+            if (GuiInfo.ComponentType == nameof(GridView))
+            {
+                var txtSearch = new Textbox(new Component
+                {
+                    FieldName = nameof(ListViewSearchVM.SearchTerm),
+                    Visibility = true,
+                    Label = "Tìm kiếm",
+                    PlainText = "Tìm kiếm",
+                    ShowLabel = false,
+                })
+                {
+                    ParentElement = Element
+                };
+                txtSearch.UserInput = null;
+                AddChild(txtSearch);
+            }
             if (GuiInfo.UpperCase)
             {
                 var txtScan = new Textbox(new Component
@@ -140,22 +156,6 @@ namespace Core.Components
                 };
                 txtScan.UserInput = null;
                 AddChild(txtScan);
-            }
-            if (GuiInfo.ComponentType == nameof(GridView))
-            {
-                var txtSearch = new Textbox(new Component
-                {
-                    FieldName = nameof(ListViewSearchVM.SearchTerm),
-                    Visibility = true,
-                    Label = "Tìm kiếm",
-                    PlainText = "Tìm kiếm",
-                    ShowLabel = false,
-                })
-                {
-                    ParentElement = Element
-                };
-                txtSearch.UserInput = null;
-                AddChild(txtSearch);
             }
             var startDate = new Datepicker(new Component
             {

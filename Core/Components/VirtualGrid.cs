@@ -546,26 +546,23 @@ namespace Core.Components
                     value = confirmDialog.Textbox.Text.Trim().EncodeSpecialChar();
                 }
                 Window.LocalStorage.SetItem("LastSearch" + GuiInfo.Id + header.Id, value);
-                if (!CellSelected.Any(x => x.FieldName == ev["FieldName"].ToString() && x.Value == value && x.Operator == ev["Operator"].ToString()))
+                if (CellSelected.Any(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in") && !(bool)ev["Shift"])
                 {
-                    if (CellSelected.Any(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in") && !(bool)ev["Shift"])
+                    CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").Value = value;
+                    CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").ValueText = valueText;
+                }
+                else
+                {
+                    CellSelected.Add(new CellSelected
                     {
-                        CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").Value = value;
-                        CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").ValueText = valueText;
-                    }
-                    else
-                    {
-                        CellSelected.Add(new CellSelected
-                        {
-                            FieldName = ev["FieldName"].ToString(),
-                            FieldText = header.ShortDesc,
-                            ComponentType = header.ComponentType,
-                            Value = value,
-                            ValueText = valueText,
-                            Operator = ev["Operator"].ToString(),
-                            OperatorText = ev["OperatorText"].ToString(),
-                        });
-                    }
+                        FieldName = ev["FieldName"].ToString(),
+                        FieldText = header.ShortDesc,
+                        ComponentType = header.ComponentType,
+                        Value = value,
+                        ValueText = valueText,
+                        Operator = ev["Operator"].ToString(),
+                        OperatorText = ev["OperatorText"].ToString(),
+                    });
                 }
                 _summarys.Add(new HTMLElement());
                 await ActionFilter();
