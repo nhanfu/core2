@@ -1336,11 +1336,14 @@ namespace TMS.UI.Business.Manage
                     var commodityValue = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId eq {expense.BossId} and CommodityId eq {expense.CommodityId} and ContainerId eq {containerId}");
                     if (commodityValue != null)
                     {
-                        expense.CommodityValue = commodityValue.TotalPrice;
-                        expense.IsWet = commodityValue.IsWet;
+                        expense.SteamingTerms = commodityValue.SteamingTerms;
+                        expense.BreakTerms = commodityValue.BreakTerms;
                         expense.IsBought = commodityValue.IsBought;
-                        expense.JourneyId = commodityValue.JourneyId;
                         expense.CustomerTypeId = commodityValue.CustomerTypeId;
+                        expense.CommodityValue = commodityValue.TotalPrice;
+                        expense.CommodityValueNotes = commodityValue.Notes;
+                        expense.JourneyId = commodityValue.JourneyId;
+                        expense.IsWet = commodityValue.IsWet;
                     }
                     else
                     {
@@ -1380,6 +1383,7 @@ namespace TMS.UI.Business.Manage
                             expenseSOC.CommodityValue = commodityValue.TotalPrice;
                             expenseSOC.JourneyId = commodityValue.JourneyId;
                             expenseSOC.CustomerTypeId = commodityValue.CustomerTypeId;
+                            expenseSOC.CommodityValueNotes = commodityValue.Notes;
                         }
                         await CalcInsuranceFees(expenseSOC, true);
                         await new Client(nameof(Expense)).UpdateAsync<Expense>(expenseSOC);
@@ -1506,6 +1510,7 @@ namespace TMS.UI.Business.Manage
                 expenseSOC.BreakTerms = false;
                 expenseSOC.CommodityValue = commodityValue.TotalPrice;
                 expenseSOC.JourneyId = 12114;
+                expenseSOC.IsPurchasedInsurance = false;
                 await CalcInsuranceFees(expenseSOC, true);
                 await new Client(nameof(Expense)).CreateAsync<Expense>(expenseSOC);
             }
