@@ -558,6 +558,7 @@ namespace TMS.UI.Business.Manage
                 transportationPlan.IsBought = commodityValueDB.IsBought;
                 transportationPlan.CustomerTypeId = commodityValueDB.CustomerTypeId;
                 transportationPlan.CommodityValue = commodityValueDB.TotalPrice;
+                transportationPlan.CommodityValueNotes = commodityValueDB.Notes;
                 transportationPlan.IsSettingsInsurance = true;
                 Toast.Success("GTHH đã tồn tại trong hệ thống với giá trị là: " + decimal.Parse(transportationPlan.CommodityValue.ToString()).ToString("N0"));
             }

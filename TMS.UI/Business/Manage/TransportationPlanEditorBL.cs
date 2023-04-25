@@ -373,9 +373,13 @@ namespace TMS.UI.Business.Manage
                 }
                 if (commodityValueDB != null)
                 {
+                    transportationPlan.SteamingTerms = commodityValueDB.SteamingTerms;
+                    transportationPlan.BreakTerms = commodityValueDB.BreakTerms;
                     transportationPlan.IsBought = commodityValueDB.IsBought;
                     transportationPlan.CustomerTypeId = commodityValueDB.CustomerTypeId;
                     transportationPlan.CommodityValue = commodityValueDB.TotalPrice;
+                    transportationPlan.CommodityValueNotes = commodityValueDB.Notes;
+                    transportationPlan.IsSettingsInsurance = true;
                     Toast.Success("GTHH đã tồn tại trong hệ thống với giá trị là: " + decimal.Parse(transportationPlan.CommodityValue.ToString()).ToString("N0"));
                 }
                 await new Client(nameof(TransportationPlan)).PatchAsync<object>(GetPatchEntity(transportationPlan), ig: $"&disableTrigger=true");

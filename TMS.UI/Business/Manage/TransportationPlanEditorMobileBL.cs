@@ -173,6 +173,7 @@ namespace TMS.UI.Business.Manage
                 transportationPlanEntity.CustomerTypeId = commodityValueDB.CustomerTypeId;
                 transportationPlanEntity.CommodityValue = commodityValueDB.TotalPrice;
                 transportationPlanEntity.JourneyId = commodityValueDB.JourneyId;
+                transportationPlanEntity.CommodityValueNotes = commodityValueDB.Notes;
                 transportationPlanEntity.IsSettingsInsurance = true;
                 if (transportationPlanEntity.JourneyId == null)
                 {
