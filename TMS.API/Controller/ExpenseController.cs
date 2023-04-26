@@ -439,8 +439,8 @@ namespace TMS.API.Controllers
         {
             var expenseTypes = await db.MasterData.Where(x => x.Active && x.ParentId == 7577 && (x.Name.Contains("Bảo hiểm") || x.Name.Contains("BH SOC"))).ToListAsync();
             var expenseTypeIds = expenseTypes.Select(x => x.Id).ToList();
-            var trans = await db.Transportation.Where(x => ((x.ClosingDate >= expense.FromDate && x.ClosingDate <= expense.ToDate) || (x.StartShip >= expense.FromDate && x.StartShip <= expense.ToDate)) && x.Active).ToListAsync();
-            //var trans = await db.Transportation.Where(x => x.Active).ToListAsync();
+            var trans = await db.Transportation.AsNoTracking().Where(x => ((x.ClosingDate >= expense.FromDate && x.ClosingDate <= expense.ToDate) || (x.StartShip >= expense.FromDate && x.StartShip <= expense.ToDate)) && x.Active).ToListAsync();
+            //var trans = await db.Transportation.AsNoTracking().Where(x => x.Active).ToListAsync();
             if (trans == null)
             {
                 return false;
@@ -589,16 +589,17 @@ namespace TMS.API.Controllers
                         if (tran.StartShip != ex.StartShip && (ex.JourneyId != 12114 && ex.JourneyId != 16001)) { ex.StartShip = tran.StartShip; }
                     }
                 }
-                //tran.InsuranceFee = expenses.Where(x => x.TransportationId == tran.Id && x.IsPurchasedInsurance).ToList().Sum(x => x.TotalPriceAfterTax);
-                var query = $"Update {nameof(Transportation)} set InsuranceFee = {expenses.Where(x => x.TransportationId == tran.Id && x.IsPurchasedInsurance).ToList().Sum(x => x.TotalPriceAfterTax)} where Id = {tran.Id} ";
-                querys += query;
+                var insuranceFee = expenses.Where(x => x.TransportationId == tran.Id && x.IsPurchasedInsurance).ToList().Sum(x => x.TotalPriceAfterTax);
+                if (tran.InsuranceFee != insuranceFee)
+                {
+                    var query = $"Update {nameof(Transportation)} set InsuranceFee = {insuranceFee} where Id = {tran.Id}; ";
+                    querys += query;
+                }
             }
-            db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             db.Expense.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Expense");
             await db.SaveChangesAsync();
-            await db.Database.ExecuteSqlRawAsync(querys);
-            db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
             db.Expense.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Expense");
+            ExecSql(querys, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
