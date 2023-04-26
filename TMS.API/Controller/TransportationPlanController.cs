@@ -290,22 +290,10 @@ namespace TMS.API.Controllers
                             command.CommandText += " " + _transportationService.Transportation_ShellDate(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_ShipUnitPriceQuotation(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_VendorLocation(patch, idInt);
-
-                            command.CommandText += " " + @"update Transportation set MonthText = CAST(MONTH(t.ClosingDate)as nvarchar(50)) + '%2F' + CAST(Year(t.ClosingDate)as nvarchar(50)),
-	                        YearText = CAST(Year(t.ClosingDate) as nvarchar(50)),
-	                        IsHost = (case when (Ex.RouteId = t.RouteId or Route.Name like N'%Đường%') then 1 else 0 end),
-	                        IsBooking =(case when Route.Name like N'%Đường%' then 0 else 1 end),
-	                        Note4 = Boss.Name,
-	                        Cont20 = case when m.Enum = 1 then 1 else 0 end,
-	                        Cont40 = case when m.Enum = 2 then 1 else 0 end,
-	                        ClosingNotes = isnull(t.ClosingNotes,'') + case when ven1.ContactPhoneNumber is null and ven1.ContactName is null and ven1.ContactUser is null then '' else (' TTLH: '+isnull(ven1.ContactName,'') + '/'+ isnull(ven1.ContactUser,'') + '/' + isnull(ven1.ContactPhoneNumber,'') + '/' + isnull(ven1.Note,'')) end
+                            command.CommandText += " " + @"update t set ClosingNotes = isnull(tr.Notes,'') + case when ven1.ContactPhoneNumber is null and ven1.ContactName is null and ven1.ContactUser is null then '' else (' TTLH: '+isnull(ven1.ContactName,'') + '/'+ isnull(ven1.ContactUser,'') + '/' + isnull(ven1.ContactPhoneNumber,'') + '/' + isnull(ven1.Note,'')) end
 	                        from Transportation t
-	                        left join MasterData m on t.ContainerTypeId = m.Id
 	                        left join TransportationPlan tr on tr.Id = t.TransportationPlanId
 	                        left join VendorContact ven1 on ven1.Id = tr.Contact2Id
-	                        left join Vendor as Ex on t.ExportListId = Ex.Id
-	                        left join Vendor as Boss on t.BossId = Boss.Id
-	                        left join Route on t.RouteId = Route.Id
                             where t.Id = " + idInt + ";";
                             foreach (var itemDetail in updates)
                             {
