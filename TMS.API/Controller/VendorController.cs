@@ -156,7 +156,7 @@ namespace TMS.API.Controllers
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
-            if (entity.TypeId == 23741)
+            if (entity.TypeId == 23741 && entity.CompanyName != null && entity.CompanyName != "")
             {
                 var checkExist = db.Vendor.Where(x => x.CompanyName.Trim().ToLower() == entity.CompanyName.Trim().ToLower() && x.TypeId == 23741).FirstOrDefaultAsync();
                 if (checkExist != null)
