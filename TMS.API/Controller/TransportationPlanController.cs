@@ -185,7 +185,25 @@ namespace TMS.API.Controllers
                 nameof(TransportationPlan.InsertedBy),
                 nameof(TransportationPlan.UpdatedBy),
                 nameof(TransportationPlan.UpdatedDate),
-                nameof(TransportationPlan.StatusId));
+                nameof(TransportationPlan.StatusId)
+                nameof(TransportationPlan.ReasonOfChange));
+            var user = await db.User.FindAsync(UserId);
+            var taskNotification = new TaskNotification
+            {
+                Title = $"{user.FullName}",
+                Description = $"Đã duyệt yêu cầu chỉnh sửa ạ",
+                EntityId = _entitySvc.GetEntity(typeof(TransportationPlan).Name).Id,
+                RecordId = oldEntity.Id,
+                Attachment = "fal fa-check",
+                AssignedId = entity.InsertedBy,
+                StatusId = (int)TaskStateEnum.UnreadStatus,
+                RemindBefore = 540,
+                Deadline = DateTime.Now,
+            };
+            SetAuditInfo(taskNotification);
+            db.AddRange(taskNotification);
+            await db.SaveChangesAsync();
+            await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
             var transportations = await db.Transportation.AsNoTracking().Where(x => x.TransportationPlanId == oldEntity.Id).ToListAsync();
             foreach (var item in transportations)
             {
@@ -302,23 +320,6 @@ namespace TMS.API.Controllers
                     }
                 }
             }
-            var user = await db.User.FindAsync(UserId);
-            var taskNotification = new TaskNotification
-            {
-                Title = $"{user.FullName}",
-                Description = $"Đã duyệt yêu cầu chỉnh sửa ạ",
-                EntityId = _entitySvc.GetEntity(typeof(TransportationPlan).Name).Id,
-                RecordId = oldEntity.Id,
-                Attachment = "fal fa-check",
-                AssignedId = entity.InsertedBy,
-                StatusId = (int)TaskStateEnum.UnreadStatus,
-                RemindBefore = 540,
-                Deadline = DateTime.Now,
-            };
-            SetAuditInfo(taskNotification);
-            db.AddRange(taskNotification);
-            await db.SaveChangesAsync();
-            await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
             return rs;
         }
 
