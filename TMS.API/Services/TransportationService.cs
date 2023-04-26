@@ -350,7 +350,7 @@ namespace TMS.API.Services
 					from Transportation
 					where Transportation.Id = {val.OldVal};";
             }
-            if (val.Value.IsNullOrWhiteSpace())
+            if (!val.Value.IsNullOrWhiteSpace())
             {
                 sql += @$" update Transportation set ReturnEmptyId = 114017, ReturnClosingFee = null
 					from Transportation
