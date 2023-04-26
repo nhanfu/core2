@@ -344,13 +344,13 @@ namespace TMS.API.Services
             }
             var val = patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.EmptyCombinationId));
             var sql = string.Empty;
-            if (val.OldVal is not null)
+            if (!val.OldVal.IsNullOrWhiteSpace())
             {
                 sql += @$" update Transportation set ReturnEmptyId = null, ReturnClosingFee = null
 					from Transportation
 					where Transportation.Id = {val.OldVal};";
             }
-            if (val.Value is not null)
+            if (val.Value.IsNullOrWhiteSpace())
             {
                 sql += @$" update Transportation set ReturnEmptyId = 114017, ReturnClosingFee = null
 					from Transportation

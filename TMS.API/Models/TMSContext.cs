@@ -1809,9 +1809,13 @@ namespace TMS.API.Models
 
                 entity.Property(e => e.ReasonChange).HasMaxLength(250);
 
+                entity.Property(e => e.ReasonOfChange).HasMaxLength(500);
+
                 entity.Property(e => e.RequestChangeNote).HasMaxLength(250);
 
                 entity.Property(e => e.ReturnNotes).HasMaxLength(500);
+
+                entity.Property(e => e.TextOfChange).HasMaxLength(500);
             });
 
             modelBuilder.Entity<TransportationRequest>(entity =>

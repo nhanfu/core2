@@ -131,18 +131,20 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var _gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-            var listViewItem = _gridView.RowData.Data.Cast<TransportationPlan>().OrderByDescending(x => x.Id).FirstOrDefault();
-            if (listViewItem is null)
+            var tran = _gridView.RowData.Data.Cast<TransportationPlan>().OrderByDescending(x => x.Id).FirstOrDefault();
+            if (tran is null)
             {
                 return;
             }
             var confirm = new ConfirmDialog
             {
-                Content = "Bạn có chắc chắn gửi yêu cầu phê duyệt?",
+                Content = "Tóm tắt yêu cầu thay đổi?",
+                NeedAnswer = true,
             };
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
+                tran.ReasonOfChange = confirm.ReasonOfChange;
                 var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$expand=Expense&$filter=Active eq true and TransportationPlanId eq {transportationPlanEntity.Id}");
                 if (transportations != null && transportations.Any())
                 {
@@ -162,23 +164,23 @@ namespace TMS.UI.Business.Manage
                             confirmExpenses.Render();
                             confirmExpenses.YesConfirmed += async () =>
                             {
-                                listViewItem.ReasonChange = confirmExpenses.Textbox?.Text;
-                                await ActionRequest(listViewItem);
+                                tran.ReasonChange = confirmExpenses.Textbox?.Text;
+                                await ActionRequest(tran);
                             };
                         }
                         else
                         {
-                            await ActionRequest(listViewItem);
+                            await ActionRequest(tran);
                         }
                     }
                     else
                     {
-                        await ActionRequest(listViewItem);
+                        await ActionRequest(tran);
                     }
                 }
                 else
                 {
-                    await ActionRequest(listViewItem);
+                    await ActionRequest(tran);
                 }
             };
         }
