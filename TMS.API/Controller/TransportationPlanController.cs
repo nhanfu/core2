@@ -178,14 +178,15 @@ namespace TMS.API.Controllers
                 nameof(TransportationPlan.InsertedDate),
                 nameof(TransportationPlan.InsertedBy),
                 nameof(TransportationPlan.UpdatedBy),
-                nameof(TransportationPlan.UpdatedDate));
+                nameof(TransportationPlan.UpdatedDate),
+                nameof(TransportationPlan.ReasonOfChange));
             entity.CopyPropFrom(tempEntity, nameof(TransportationPlan.Id),
                 nameof(TransportationPlan.RequestChangeId),
                 nameof(TransportationPlan.InsertedDate),
                 nameof(TransportationPlan.InsertedBy),
                 nameof(TransportationPlan.UpdatedBy),
                 nameof(TransportationPlan.UpdatedDate),
-                nameof(TransportationPlan.StatusId)
+                nameof(TransportationPlan.StatusId),
                 nameof(TransportationPlan.ReasonOfChange));
             var user = await db.User.FindAsync(UserId);
             var taskNotification = new TaskNotification
