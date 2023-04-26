@@ -172,12 +172,20 @@ namespace TMS.API.Controllers
             var rs = await base.Approve(entity, reasonOfChange);
             await db.Entry(entity).ReloadAsync();
             var oldEntity = await db.TransportationPlan.FindAsync(entity.RequestChangeId);
+            var tempEntity = await db.TransportationPlan.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entity.RequestChangeId.Value);
             oldEntity.CopyPropFrom(entity, nameof(TransportationPlan.Id),
                 nameof(TransportationPlan.RequestChangeId),
                 nameof(TransportationPlan.InsertedDate),
                 nameof(TransportationPlan.InsertedBy),
                 nameof(TransportationPlan.UpdatedBy),
                 nameof(TransportationPlan.UpdatedDate));
+            entity.CopyPropFrom(tempEntity, nameof(TransportationPlan.Id),
+                nameof(TransportationPlan.RequestChangeId),
+                nameof(TransportationPlan.InsertedDate),
+                nameof(TransportationPlan.InsertedBy),
+                nameof(TransportationPlan.UpdatedBy),
+                nameof(TransportationPlan.UpdatedDate),
+                nameof(TransportationPlan.StatusId));
             var transportations = await db.Transportation.AsNoTracking().Where(x => x.TransportationPlanId == oldEntity.Id).ToListAsync();
             foreach (var item in transportations)
             {
@@ -204,27 +212,27 @@ namespace TMS.API.Controllers
                         new PatchUpdateDetail()
                         {
                             Field = nameof(Transportation.BossId),
-                            Value =oldEntity.BossId is null ? null : oldEntity.BossId.ToString()
+                            Value = oldEntity.BossId is null ? null : oldEntity.BossId.ToString()
                         },
                         new PatchUpdateDetail()
                         {
                             Field = nameof(Transportation.ReceivedId),
-                            Value =oldEntity.ReceivedId is null ? null : oldEntity.ReceivedId.ToString()
+                            Value = oldEntity.ReceivedId is null ? null : oldEntity.ReceivedId.ToString()
                         },
                         new PatchUpdateDetail()
                         {
                             Field = nameof(Transportation.ContainerTypeId),
-                            Value =oldEntity.ContainerTypeId is null ? null : oldEntity.ContainerTypeId.ToString()
+                            Value = oldEntity.ContainerTypeId is null ? null : oldEntity.ContainerTypeId.ToString()
                         },
                         new PatchUpdateDetail()
                         {
                             Field = nameof(Transportation.CommodityId),
-                            Value =oldEntity.CommodityId is null ? null : oldEntity.CommodityId.ToString()
+                            Value = oldEntity.CommodityId is null ? null : oldEntity.CommodityId.ToString()
                         },
                         new PatchUpdateDetail()
                         {
                             Field = nameof(Transportation.ClosingDate),
-                            Value =oldEntity.ClosingDate is null ? null : oldEntity.ClosingDate.ToString()
+                            Value = oldEntity.ClosingDate is null ? null : oldEntity.ClosingDate.ToString()
                         }
                     }
                 };
@@ -264,6 +272,22 @@ namespace TMS.API.Controllers
                             command.CommandText += " " + _transportationService.Transportation_ShipUnitPriceQuotation(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_VendorLocation(patch, idInt);
 
+                            command.CommandText += " " + @"update Transportation set MonthText = CAST(MONTH(t.ClosingDate)as nvarchar(50)) + '%2F' + CAST(Year(t.ClosingDate)as nvarchar(50)),
+	                        YearText = CAST(Year(t.ClosingDate) as nvarchar(50)),
+	                        IsHost = (case when (Ex.RouteId = t.RouteId or Route.Name like N'%Đường%') then 1 else 0 end),
+	                        IsBooking =(case when Route.Name like N'%Đường%' then 0 else 1 end),
+	                        Note4 = Boss.Name,
+	                        Cont20 = case when m.Enum = 1 then 1 else 0 end,
+	                        Cont40 = case when m.Enum = 2 then 1 else 0 end,
+	                        ClosingNotes = isnull(t.ClosingNotes,'') + case when ven1.ContactPhoneNumber is null and ven1.ContactName is null and ven1.ContactUser is null then '' else (' TTLH: '+isnull(ven1.ContactName,'') + '/'+ isnull(ven1.ContactUser,'') + '/' + isnull(ven1.ContactPhoneNumber,'') + '/' + isnull(ven1.Note,'')) end
+	                        from Transportation t
+	                        left join MasterData m on t.ContainerTypeId = m.Id
+	                        left join TransportationPlan tr on tr.Id = t.TransportationPlanId
+	                        left join VendorContact ven1 on ven1.Id = tr.Contact2Id
+	                        left join Vendor as Ex on t.ExportListId = Ex.Id
+	                        left join Vendor as Boss on t.BossId = Boss.Id
+	                        left join Route on t.RouteId = Route.Id
+                            where t.Id = " + idInt + ";";
                             foreach (var itemDetail in updates)
                             {
                                 command.Parameters.AddWithValue($"@{itemDetail.Field.ToLower()}", itemDetail.Value is null ? DBNull.Value : itemDetail.Value);
