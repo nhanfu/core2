@@ -399,7 +399,7 @@ namespace TMS.API.Controllers
 
         public string GetRelativePath(string path, string webRootPath)
         {
-            return path.Replace(webRootPath, string.Empty).Replace("\\", "/");
+            return Request.Scheme + "://" + Request.Host.Value + path.Replace(webRootPath, string.Empty).Replace("\\", "/");
         }
 
         public static void EnsureDirectoryExist(string path)

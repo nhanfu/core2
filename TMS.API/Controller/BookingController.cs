@@ -16,7 +16,7 @@ namespace TMS.API.Controllers
 {
     public class BookingController : TMSController<Booking>
     {
-        public BookingController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public BookingController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 
@@ -460,6 +460,15 @@ namespace TMS.API.Controllers
         public static string ConvertTextVn(string text)
         {
             return text is null || text == "" ? "" : Regex.Replace(text.Trim(), @"\s+", " ");
+        }
+
+        public override async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<int> ids)
+        {
+            if (await db.Transportation.AsNoTracking().FirstOrDefaultAsync(x => x.BookingId != null && ids.Contains(x.BookingId.Value)) != null)
+            {
+                throw new ApiException("Booking đã được chọn không thể xóa") { StatusCode = HttpStatusCode.BadRequest };
+            }
+            return await base.HardDeleteAsync(ids);
         }
     }
 }

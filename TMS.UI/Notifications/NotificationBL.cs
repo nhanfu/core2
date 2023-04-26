@@ -72,7 +72,7 @@ namespace TMS.UI.Notifications
                     var con = await new Client(nameof(Convertation)).FirstOrDefaultAsync<Convertation>($"?$filter=Id eq {chat.ConvertationId}");
                     var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConvertationId eq {chat.ConvertationId}&$orderby=UpdatedDate desc");
                     var check = Convertations.Data.FirstOrDefault(x => x.Id == con.Id);
-                    if(check != null)
+                    if (check != null)
                     {
                         Convertations.Data.FirstOrDefault(x => x.Id == con.Id).CopyPropFrom(con);
                     }
@@ -259,7 +259,7 @@ namespace TMS.UI.Notifications
             UserActive.Data = userActive.Result;
             SetBadgeNumber();
             CurrentUser = Client.Token;
-            CurrentUser.Avatar = Client.Origin + (CurrentUser.Avatar.IsNullOrWhiteSpace() ? "./image/chinese.jfif" : CurrentUser.Avatar);
+            CurrentUser.Avatar = (CurrentUser.Avatar.Contains("://") ? "" : Client.Origin) + (CurrentUser.Avatar.IsNullOrWhiteSpace() ? "./image/chinese.jfif" : CurrentUser.Avatar);
             RenderNotification();
             RenderUserActive();
             RenderUserChat();

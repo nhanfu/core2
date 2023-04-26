@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using PathIO = System.IO.Path;
+using Core.ViewModels;
 
 namespace Core.Components
 {
@@ -85,12 +86,12 @@ namespace Core.Components
             var isImage = PathIO.IsImage(path);
             if (isImage)
             {
-                Html.Instance.Div.ClassName("file-upload").Img.ClassName("image").Style(GuiInfo.ChildStyle).Src(Client.Origin + path.DecodeSpecialChar()).Render();
+                Html.Instance.Div.ClassName("file-upload").Img.ClassName("image").Style(GuiInfo.ChildStyle).Src((path.Contains("://") ? "" : Client.Origin) + path.DecodeSpecialChar()).Render();
             }
             else
             {
                 Html.Instance.Span.ClassName(thumbText.Contains("pdf") ? "fal fa-file-pdf" : "fal fa-file").Title(thumbText.DecodeSpecialChar())
-                    .Style(GuiInfo.ChildStyle).Href(Client.Origin + path.DecodeSpecialChar()).Render();
+                    .Style(GuiInfo.ChildStyle).Href((path.Contains("://") ? "" : Client.Origin) + path.DecodeSpecialChar()).Render();
             }
             Html.Instance.End.Render();
             Html.Instance.Div.ClassName("middle d-flex")
@@ -161,7 +162,7 @@ namespace Core.Components
                 }));
             _preview = Html.Context;
             Html.Instance
-                    .Img.Src(Client.Origin + path);
+                    .Img.Src((path.Contains("://") ? "" : Client.Origin) + path);
             img = Html.Context as HTMLImageElement;
             Html.Instance.End
                 .Span.ClassName("close").Event(EventType.Click, () => _preview.Remove()).End
@@ -264,7 +265,7 @@ namespace Core.Components
                 index--;
             }
 
-            img.Src = Client.Origin + _imageSources[index];
+            img.Src = (path.Contains("://") ? "" : Client.Origin) + _imageSources[index];
             return _imageSources[index];
         }
 
@@ -280,7 +281,7 @@ namespace Core.Components
                 index--;
             }
 
-            img.Src = Client.Origin + _imageSources[index];
+            img.Src = (path.Contains("://") ? "" : Client.Origin) + _imageSources[index];
             return _imageSources[index];
         }
 
@@ -435,7 +436,7 @@ namespace Core.Components
             {
                 Task.Run(async () =>
                 {
-                    var path = await new Client(nameof(User)).PostFilesAsync<string>(file, "file");
+                    var path = await new Client(nameof(User)).PostFilesAsync<string>(file, "file?");
                     tcs.SetResult(path);
                 });
             }
@@ -474,6 +475,16 @@ namespace Core.Components
                 ctx.DrawImage(image, 0, 0, width, height);
                 var dataUrl = canvas.ToDataURL();
                 var path = await UploadBase64Image(dataUrl, fileName);
+                var upload = new FileUpload
+                {
+                    EntityName = Entity.GetType().Name,
+                    RecordId = EntityId,
+                    SectionId = GuiInfo.ComponentGroupId,
+                    FieldName = GuiInfo.FieldName,
+                    FileName = fileName,
+                    FilePath = path,
+                };
+                await new Client(nameof(FileUpload)).CreateAsync(upload);
                 tcs.SetResult(path);
             };
             image.Src = src;
