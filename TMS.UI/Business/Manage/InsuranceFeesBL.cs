@@ -214,13 +214,13 @@ namespace TMS.UI.Business.Manage
             {
                 if (expenses.Count > 0)
                 {
-                    listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
                     listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange").ForEach(y => y.Disabled = false);
+                    listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange").ForEach(y => y.Disabled = true);
                 }
                 else
                 {
-                    listViewItem.FilterChildren(y => y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
                     listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange").ForEach(y => y.Disabled = true);
+                    listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange").ForEach(y => y.Disabled = false);
                 }
             }
             if (checkHistory.Count > 0)
