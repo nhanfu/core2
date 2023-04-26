@@ -440,7 +440,7 @@ namespace TMS.API.Controllers
             var expenseTypes = await db.MasterData.Where(x => x.Active && x.ParentId == 7577 && (x.Name.Contains("Bảo hiểm") || x.Name.Contains("BH SOC"))).ToListAsync();
             var expenseTypeIds = expenseTypes.Select(x => x.Id).ToList();
             var trans = await db.Transportation.AsNoTracking().Where(x => ((x.ClosingDate >= expense.FromDate && x.ClosingDate <= expense.ToDate) || (x.StartShip >= expense.FromDate && x.StartShip <= expense.ToDate)) && x.Active).ToListAsync();
-            //var trans = await db.Transportation.AsNoTracking().Where(x => x.Active).ToListAsync();
+            //var trans = await db.Transportation.AsNoTracking().Where(x => (x.ClosingDate >= DateTime.Parse("2023/01/01") || x.StartShip >= DateTime.Parse("2023/01/01")) && x.Active).ToListAsync();
             if (trans == null)
             {
                 return false;
@@ -599,7 +599,7 @@ namespace TMS.API.Controllers
             db.Expense.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Expense");
             await db.SaveChangesAsync();
             db.Expense.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Expense");
-            ExecSql(querys, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            if (querys != null && querys != "") { ExecSql(querys, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;"); }
             return true;
         }
 
