@@ -336,6 +336,29 @@ namespace TMS.UI.Business.Manage
             Toast.Success("Xuất file thành công");
         }
 
+        public async Task ViewRequestChange(TransportationRequest transportationRequest)
+        {
+            var tran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportationRequest.TransportationId}");
+            if (tran != null)
+            {
+                await TransportationRequestDetailsBL(tran, this);
+            }
+        }
+
+        public async Task TransportationRequestDetailsBL(Transportation transportation, TabEditor tabEditor)
+        {
+            await tabEditor.OpenPopup(
+               featureName: "Transportation Request Details",
+               factory: () =>
+               {
+                   var type = Type.GetType("TMS.UI.Business.Manage.TransportationRequestDetailsBL");
+                   var instance = Activator.CreateInstance(type) as PopupEditor;
+                   instance.Title = "Yêu cầu thay đổi";
+                   instance.Entity = transportation;
+                   return instance;
+               });
+        }
+
         public PatchUpdate GetPatchEntity(BookingList bookingList)
         {
             var details = new List<PatchUpdateDetail>();

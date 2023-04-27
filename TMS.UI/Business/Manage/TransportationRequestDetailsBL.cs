@@ -42,7 +42,7 @@ namespace TMS.UI.Business.Manage
                 grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
             }
             var listViewItems = grid.RowData.Data.Cast<TransportationRequestDetails>().ToList();
-            if (Parent.Name == "Transportation List Accountant")
+            if (Parent.Name == "Transportation List Accountant" || Parent.Name == "List Ship Book")
             {
                 return;
             }
