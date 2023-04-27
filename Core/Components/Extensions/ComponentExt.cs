@@ -182,7 +182,7 @@ namespace Core.Components.Extensions
 
                 return gp.FilterTemplate.HasAnyChar() ? string.Format(gp.FilterTemplate, searchNumber) : $"{fieldName} eq {searchNumber}";
             }
-            return gp.FilterTemplate.HasAnyChar() ? string.Format(gp.FilterTemplate, searchTerm) : $"contains({fieldName}, '{searchTerm}')";
+            return gp.FilterTemplate.HasAnyChar() ? string.Format(gp.FilterTemplate, searchTerm) : (gp.FilterEq ? $"{fieldName} eq '{searchTerm}'" : $"contains({fieldName}, '{searchTerm}')");
         }
 
         public static string FilterById(string searchTerm, IEnumerable<GridPolicy> headers)

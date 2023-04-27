@@ -93,6 +93,7 @@ namespace TMS.API.Models
         public bool? ShowDatetimeField { get; set; }
         public bool? ShowNull { get; set; }
         public bool? AddDate { get; set; }
+        public bool FilterEq { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }
