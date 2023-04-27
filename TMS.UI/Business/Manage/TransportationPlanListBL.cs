@@ -118,11 +118,11 @@ namespace TMS.UI.Business.Manage
             listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
             if (x.IsTransportation)
             {
-                listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange" && y.GuiInfo.FieldName != nameof(TransportationPlan.NotesContract) && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
             }
             else
             {
-                listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange" && y.GuiInfo.FieldName != nameof(TransportationPlan.NotesContract) && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
             }
             listViewItem.Element.RemoveClass("bg-host");
             if (x.StatusId == (int)ApprovalStatusEnum.Approving)
