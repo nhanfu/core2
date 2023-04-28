@@ -170,7 +170,7 @@ namespace TMS.API.Controllers
             //Sale
             if (AllRoleIds.Contains(10))
             {
-                rs = rs.Where(x => x.UserId == UserId || x.InsertedBy == UserId);
+                rs = rs.Where(x => x.UserId == UserId || x.InsertedBy == UserId).AsNoTracking();
             }
             return rs;
         }
@@ -1594,7 +1594,7 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
             }
-            var qr = db.Transportation.FromSqlRaw(sql);
+            var qr = db.Transportation.FromSqlRaw(sql).AsNoTracking();
             return ApplyQuery(options, qr, sql: sql);
         }
 
@@ -1618,7 +1618,7 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
             }
-            var qr = db.Transportation.FromSqlRaw(sql);
+            var qr = db.Transportation.FromSqlRaw(sql).AsNoTracking();
             return ApplyQuery(options, qr, sql: sql);
         }
 
@@ -1642,7 +1642,7 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId} and TypeId = 25044))";
             }
-            var qr = db.Transportation.FromSqlRaw(sql);
+            var qr = db.Transportation.FromSqlRaw(sql).AsNoTracking();
             return ApplyQuery(options, qr, sql: sql);
         }
 

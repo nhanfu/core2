@@ -496,7 +496,7 @@ namespace TMS.UI.Business.Manage
             {
                 var confirmDialog = new ConfirmDialog
                 {
-                    Content = "Ngày đóng hàng nhỏ hơn ngày tàu cập?"
+                    Content = "Ngày trả hàng nhỏ hơn ngày tàu cập?"
                 };
                 confirmDialog.NoConfirmed += () =>
                 {

@@ -79,7 +79,7 @@ namespace TMS.API.Controllers
 
         protected virtual IQueryable<T> GetQuery()
         {
-            return ctx.Set<T>();
+            return ctx.Set<T>().AsNoTracking();
         }
 
         [AllowAnonymous]
@@ -217,6 +217,17 @@ namespace TMS.API.Controllers
                 result = new OdataResult<K>
                 {
                     odata = new Odata { count = shouldCount ? (await (totalResult as IQueryable<K>).CountAsync()) : null },
+                    Sql = sql,
+                    value = options.Top == null && !shouldCount || top != null && top.Value > 0 ? resultSet : null
+                };
+                return result;
+            }
+            if (options.SelectExpand != null && options.SelectExpand.RawExpand is null)
+            {
+                var resultSet = await limitResult.ToDynamicListAsync();
+                result = new OdataResult<K>
+                {
+                    odata = new Odata { count = shouldCount ? totalResult.Count() : null },
                     Sql = sql,
                     value = options.Top == null && !shouldCount || top != null && top.Value > 0 ? resultSet : null
                 };
