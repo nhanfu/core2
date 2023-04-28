@@ -1570,10 +1570,10 @@ namespace TMS.UI.Business.Manage
             }
             if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ContainerNo) && !x.Value.IsNullOrWhiteSpace()))
             {
-                var tran = await Client.FirstOrDefaultAsync<Transportation>($"?$top=1&$select=ClosingDate&$filter=ContainerNo eq '{patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.ContainerNo)).Value}' and Id ne {transportation.Id} and ExportListId eq {transportation.ExportListId}");
+                var tran = await Client.FirstOrDefaultAsync<Transportation>($"?$filter=ContainerNo eq '{patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.ContainerNo)).Value}' and Id ne {transportation.Id} and ExportListId eq {transportation.ExportListId}&$orderby=ClosingDate desc");
                 if (tran != null)
                 {
-                    if ((tran.ClosingDate.Value - transportation.ClosingDate.Value).Days < 7)
+                    if ((transportation.ClosingDate.Value - tran.ClosingDate.Value).Days < 7)
                     {
                         /*@
                          var swalWithBootstrapButtons = Swal.mixin({
