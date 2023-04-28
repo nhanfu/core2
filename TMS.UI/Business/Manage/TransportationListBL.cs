@@ -1570,12 +1570,31 @@ namespace TMS.UI.Business.Manage
             }
             if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ContainerNo) && !x.Value.IsNullOrWhiteSpace()))
             {
-                var tran = await Client.FirstOrDefaultAsync<Transportation>($"?$top=1&$select=ClosingDate&$filter=ContainerNo eq '{patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.ContainerNo)).Value}' and Id ne {transportation.Id}");
+                var tran = await Client.FirstOrDefaultAsync<Transportation>($"?$top=1&$select=ClosingDate&$filter=ContainerNo eq '{patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.ContainerNo)).Value}' and Id ne {transportation.Id} and ExportListId eq {transportation.ExportListId}");
                 if (tran != null)
                 {
                     if ((tran.ClosingDate.Value - transportation.ClosingDate.Value).Days < 7)
                     {
-                        Toast.Warning("Số cont bạn chọn đã đóng hàng chưa được 7 ngày");
+                        /*@
+                         var swalWithBootstrapButtons = Swal.mixin({
+                          customClass: {
+                            confirmButton: 'btn btn-success',
+                            cancelButton: 'btn btn-danger'
+                          },
+                          buttonsStyling: false
+                        })
+
+                         swalWithBootstrapButtons.fire({
+                          title: 'Cảnh báo !',
+                          text: 'Số cont bạn chọn đã đóng hàng chưa được 7 ngày!',
+                          icon: 'error',
+                          showCancelButton: true,
+                          confirmButtonText: 'Yes, Cập nhật!',
+                          cancelButtonText: 'No, Không!',
+                          reverseButtons: true
+                        }).then((result) => {
+                        })
+                         */
                     }
                 }
             }
