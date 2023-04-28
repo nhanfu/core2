@@ -86,12 +86,12 @@ namespace Core.Components
             var isImage = PathIO.IsImage(path);
             if (isImage)
             {
-                Html.Instance.Div.ClassName("file-upload").Img.ClassName("image").Style(GuiInfo.ChildStyle).Src((path.Contains("://") ? "" : Client.Origin) + path.DecodeSpecialChar()).Render();
+                Html.Instance.Div.ClassName("file-upload").Img.ClassName("image").Style(GuiInfo.ChildStyle).Src((path.Contains("http") ? "" : Client.Origin) + path.DecodeSpecialChar()).Render();
             }
             else
             {
                 Html.Instance.Span.ClassName(thumbText.Contains("pdf") ? "fal fa-file-pdf" : "fal fa-file").Title(thumbText.DecodeSpecialChar())
-                    .Style(GuiInfo.ChildStyle).Href((path.Contains("://") ? "" : Client.Origin) + path.DecodeSpecialChar()).Render();
+                    .Style(GuiInfo.ChildStyle).Href((path.Contains("http") ? "" : Client.Origin) + path.DecodeSpecialChar()).Render();
             }
             Html.Instance.End.Render();
             Html.Instance.Div.ClassName("middle d-flex")
@@ -162,7 +162,7 @@ namespace Core.Components
                 }));
             _preview = Html.Context;
             Html.Instance
-                    .Img.Src((path.Contains("://") ? "" : Client.Origin) + path);
+                    .Img.Src((path.Contains("http") ? "" : Client.Origin) + path);
             img = Html.Context as HTMLImageElement;
             Html.Instance.End
                 .Span.ClassName("close").Event(EventType.Click, () => _preview.Remove()).End
@@ -265,7 +265,7 @@ namespace Core.Components
                 index--;
             }
 
-            img.Src = (path.Contains("://") ? "" : Client.Origin) + _imageSources[index];
+            img.Src = (path.Contains("http") ? "" : Client.Origin) + _imageSources[index];
             return _imageSources[index];
         }
 
@@ -281,7 +281,7 @@ namespace Core.Components
                 index--;
             }
 
-            img.Src = (path.Contains("://") ? "" : Client.Origin) + _imageSources[index];
+            img.Src = (path.Contains("http") ? "" : Client.Origin) + _imageSources[index];
             return _imageSources[index];
         }
 

@@ -287,7 +287,7 @@ namespace TMS.UI.Business.Manage
                 var newPath = booking.Files.Split("    ").Where(x => x.HasAnyChar()).Distinct().ToList();
                 foreach (var path in newPath)
                 {
-                    Client.Download(path.EncodeSpecialChar());
+                    Client.Download(path.DecodeSpecialChar());
                 }
             });
         }

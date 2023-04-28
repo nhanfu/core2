@@ -846,10 +846,10 @@ namespace Core.Clients
         {
             var a = new HTMLAnchorElement
             {
-                Href = path.Contains("://") ? path : System.IO.Path.Combine(Origin, path),
+                Href = path.Contains("http") ? path : System.IO.Path.Combine(Origin, path),
                 Target = "_blank"
             };
-            a.SetAttribute("download", System.IO.Path.GetFileName(path));
+            a.SetAttribute("download", path.Contains("http") ? path : System.IO.Path.Combine(Origin, path));
             Document.Body.AppendChild(a);
             a.Click();
             Document.Body.RemoveChild(a);
