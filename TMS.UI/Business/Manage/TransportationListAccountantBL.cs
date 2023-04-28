@@ -438,7 +438,7 @@ namespace TMS.UI.Business.Manage
                     confirm.Render();
                     confirm.YesConfirmed += async () =>
                     {
-                        var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id}");
+                        var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id} and IsRequestUnLockAll eq true");
                         if (checkRequestExist != null)
                         {
                             Toast.Warning("DSVC đã có yêu cầu thay đổi đang chờ được duyệt");
@@ -470,7 +470,7 @@ namespace TMS.UI.Business.Manage
                         confirm.Render();
                         confirm.YesConfirmed += async () =>
                         {
-                            var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id}");
+                            var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id} and IsRequestUnLockShip eq true");
                             if (checkRequestExist != null)
                             {
                                 Toast.Warning("DSVC đã có yêu cầu thay đổi đang chờ được duyệt");
@@ -514,7 +514,7 @@ namespace TMS.UI.Business.Manage
                         confirm.Render();
                         confirm.YesConfirmed += async () =>
                         {
-                            var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id}");
+                            var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id} and IsRequestUnLockExploit eq true");
                             if (checkRequestExist != null)
                             {
                                 Toast.Warning("DSVC đã có yêu cầu thay đổi đang chờ được duyệt");
