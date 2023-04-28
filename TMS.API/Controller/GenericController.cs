@@ -213,23 +213,11 @@ namespace TMS.API.Controllers
             if (options.SelectExpand is null)
             {
                 var limitedQuery = limitResult as IQueryable<K>;
-                var resultSet = await limitedQuery.ToListAsync();
                 result = new OdataResult<K>
                 {
                     odata = new Odata { count = shouldCount ? (await (totalResult as IQueryable<K>).CountAsync()) : null },
                     Sql = sql,
-                    value = options.Top == null && !shouldCount || top != null && top.Value > 0 ? resultSet : null
-                };
-                return result;
-            }
-            if (options.SelectExpand != null && options.SelectExpand.RawExpand is null)
-            {
-                var resultSet = await limitResult.ToDynamicListAsync();
-                result = new OdataResult<K>
-                {
-                    odata = new Odata { count = shouldCount ? totalResult.Count() : null },
-                    Sql = sql,
-                    value = options.Top == null && !shouldCount || top != null && top.Value > 0 ? resultSet : null
+                    value = options.Top == null && !shouldCount || top != null && top.Value > 0 ? await limitedQuery.ToListAsync() : null
                 };
                 return result;
             }
@@ -237,7 +225,7 @@ namespace TMS.API.Controllers
             {
                 odata = new Odata { count = shouldCount ? totalResult.Count() : 0 },
                 Sql = sql,
-                value = options.Top == null && !shouldCount || top != null && top.Value > 0 ? limitResult : null
+                value = options.Top == null && !shouldCount || top != null && top.Value > 0 ? await limitResult.ToDynamicArrayAsync() : null
             };
             return result;
         }
