@@ -484,7 +484,7 @@ namespace Core.Components
                     FileName = fileName,
                     FilePath = path,
                 };
-                await new Client(nameof(FileUpload)).CreateAsync(upload);
+                await new Client(nameof(FileUpload)).CreateAsync<FileUpload>(upload);
                 tcs.SetResult(path);
             };
             image.Src = src;
