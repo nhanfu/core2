@@ -378,12 +378,12 @@ namespace Core.Components.Forms
             {
                 if (updating)
                 {
-                    data = await Client.UpdateAsync(Entity);
+                    data = await Client.UpdateAsync<object>(Entity);
                 }
                 else
                 {
                     Entity[IdField] = 0;
-                    data = await Client.CreateAsync(Entity);
+                    data = await Client.CreateAsync<object>(Entity);
                 }
             }
             catch
