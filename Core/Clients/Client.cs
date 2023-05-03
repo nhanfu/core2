@@ -473,14 +473,14 @@ namespace Core.Clients
             filter = OdataExt.ApplyClause(filter, 1.ToString(), OdataExt.TopKeyword);
             EntityName = type.Name;
             var headers = ClearCacheHeader(clearCache);
-            var response = await SubmitAsync<string>(new XHRWrapper
+            var response = await SubmitAsync<OdataResult<object>>(new XHRWrapper
             {
                 Value = null,
                 Url = filter,
                 Headers = headers,
                 Method = HttpMethod.GET
             });
-            var res = JsonConvert.DeserializeObject(response, type);
+            var res = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(response.Value.FirstOrDefault()), type);
             return res;
         }
 
