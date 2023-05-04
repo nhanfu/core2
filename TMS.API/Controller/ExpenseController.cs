@@ -509,6 +509,7 @@ namespace TMS.API.Controllers
                 containerTypeOfExpenses.Add(item.Id, container);
             }
             var querys = "";
+            var queryExs = "";
             foreach (var tran in trans)
             {
                 var expensesByTran = expenses.Where(x => x.TransportationId == tran.Id).ToList();
@@ -539,7 +540,38 @@ namespace TMS.API.Controllers
                             history.StatusId = (int)ApprovalStatusEnum.New;
                             history.RequestChangeId = ex.Id;
                             ex.IsHasChange = true;
-                            db.Add(history);
+
+                            var stringPropNames = history.GetType().GetProperties().Where(x =>
+                                    x.Name != nameof(Expense.Id) &&
+                                    x.Name != nameof(Expense.FromDate) &&
+                                    x.Name != nameof(Expense.ToDate) &&
+                                    x.Name != nameof(Expense.TransportationIds) &&
+                                    x.Name != nameof(Expense.Allotment) &&
+                                    x.Name != nameof(Expense.Transportation)).Select(x => x.Name).ToList();
+                            var queryIn = $"INSERT INTO {nameof(Expense)}({stringPropNames.Combine()}";
+                            queryIn += $") VALUES (";
+                            foreach (var prop in ex.GetType().GetProperties())
+                            {
+                                if (prop.Name != nameof(Expense.Id) &&
+                                   prop.Name != nameof(Expense.FromDate) &&
+                                   prop.Name != nameof(Expense.ToDate) &&
+                                   prop.Name != nameof(Expense.TransportationIds) &&
+                                   prop.Name != nameof(Expense.Allotment) &&
+                                   prop.Name != nameof(Expense.Transportation))
+                                {
+                                    if (prop.PropertyType.Name == nameof(DateTime) || prop.PropertyType.FullName.Contains(nameof(DateTime)))
+                                    {
+                                        queryIn += prop.GetValue(ex) != null ? $"'{DateTime.Parse(prop.GetValue(ex).ToString()).ToString("yyyy-MM-dd")}', " : "NULL, ";
+                                    }
+                                    else
+                                    {
+                                        queryIn += prop.GetValue(ex) != null ? $"'{prop.GetValue(ex).ToString()}', " : "NULL, ";
+                                    }
+                                }
+                            }
+                            queryIn = queryIn.Remove(queryIn.Length - 2);
+                            queryIn += "); ";
+                            queryExs += queryIn;
                         }
                         if ((tran.BossId != ex.BossId ||
                             tran.CommodityId != ex.CommodityId ||
@@ -591,6 +623,31 @@ namespace TMS.API.Controllers
                         if (tran.Note2?.Trim() != ex.Notes?.Trim()) { ex.Notes = tran.Note2; }
                         if (tran.ClosingDate != ex.StartShip && (ex.JourneyId == 12114 || ex.JourneyId == 16001)) { ex.StartShip = tran.ClosingDate; }
                         if (tran.StartShip != ex.StartShip && (ex.JourneyId != 12114 && ex.JourneyId != 16001)) { ex.StartShip = tran.StartShip; }
+
+                        var query = $"Update {nameof(Expense)} set ";
+                        foreach (var prop in ex.GetType().GetProperties())
+                        {
+                            if (prop.Name != nameof(Expense.Id) &&
+                               prop.Name != nameof(Expense.FromDate) &&
+                               prop.Name != nameof(Expense.ToDate) &&
+                               prop.Name != nameof(Expense.TransportationIds) &&
+                               prop.Name != nameof(Expense.Allotment) &&
+                               prop.Name != nameof(Expense.Transportation))
+                            {
+                                query += $"{prop.Name} = ";
+                                if (prop.PropertyType.Name == nameof(DateTime) || prop.PropertyType.FullName.Contains(nameof(DateTime)))
+                                {
+                                    query += prop.GetValue(ex) != null ? $"'{DateTime.Parse(prop.GetValue(ex).ToString()).ToString("yyyy-MM-dd")}', " : "NULL, ";
+                                }
+                                else
+                                {
+                                    query += prop.GetValue(ex) != null ? $"'{prop.GetValue(ex).ToString()}', " : "NULL, ";
+                                }
+                            }
+                        }
+                        query = query.Remove(query.Length - 2);
+                        query += $" where Id = {ex.Id}; ";
+                        queryExs += query;
                     }
                 }
                 var insuranceFee = expenses.Where(x => x.TransportationId == tran.Id && x.IsPurchasedInsurance).ToList().Sum(x => x.TotalPriceAfterTax);
@@ -600,9 +657,7 @@ namespace TMS.API.Controllers
                     querys += query;
                 }
             }
-            db.Expense.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Expense");
-            await db.SaveChangesAsync();
-            db.Expense.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Expense");
+            if (queryExs != null && queryExs != "") { ExecSql(queryExs, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;"); }
             if (querys != null && querys != "") { ExecSql(querys, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;"); }
             return true;
         }
