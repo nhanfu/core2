@@ -461,6 +461,10 @@ namespace TMS.API.Controllers
                 if (item.ContainerTypeId != null)
                 {
                     container = containerTypeIds.GetValueOrDefault((int)item.ContainerTypeId);
+                    if (container == null)
+                    {
+                        continue;
+                    }
                     var containerId = 0;
                     if (container.Description.Contains("Cont 20"))
                     {
