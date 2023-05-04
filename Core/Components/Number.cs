@@ -74,11 +74,14 @@ namespace Core.Components
         public override void Render()
         {
             SetDefaultVal();
-            var fieldVal = Entity.GetComplexPropValue(GuiInfo.FieldName);
-            _isString = fieldVal is string;
-            _nullable = IsNullable<int>() || IsNullable<long>() || IsNullable<decimal>();
-            _value = GetDecimalValue();
-            Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+            if (Entity != null)
+            {
+                var fieldVal = Entity.GetComplexPropValue(GuiInfo.FieldName);
+                _isString = fieldVal is string;
+                _nullable = IsNullable<int>() || IsNullable<long>() || IsNullable<decimal>();
+                _value = GetDecimalValue();
+                Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+            }
             if (_input is null)
             {
                 Html.Take(ParentElement).Input.Render();

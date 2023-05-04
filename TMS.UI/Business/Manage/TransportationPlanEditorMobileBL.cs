@@ -3,6 +3,7 @@ using Core.Clients;
 using Core.Components;
 using Core.Components.Extensions;
 using Core.Components.Forms;
+using Core.Enums;
 using Core.Extensions;
 using Core.ViewModels;
 using System;
@@ -21,14 +22,52 @@ namespace TMS.UI.Business.Manage
             Name = "TransportationPlan Editor Mobile";
             DOMContentLoaded += () =>
             {
-                if (transportationPlanEntity.Id <= 0)
+                this.SetShow(false, "btnDelete", "btnDeActive", "btnSave");
+                if (!transportationPlanEntity.IsTransportation && Convert.ToInt32(transportationPlanEntity.TotalContainerRemain) == Convert.ToInt32(transportationPlanEntity.TotalContainer))
                 {
-                    this.SetShow(false, "btnDelete");
+                    this.SetShow(true, "btnDelete", "btnSave");
                 }
                 if (transportationPlanEntity.IsTransportation)
                 {
+                    this.SetShow(true, "btnDeActive");
                     LockUpdateButCancel();
+                    this.SetDisabled(false, "btnDeActive");
                 }
+            };
+        }
+
+        public void DeActive()
+        {
+            var confirm = new ConfirmDialog
+            {
+                Content = "Vui lòng nhập số cont cần hủy?",
+                NeedAnswer = true,
+                ComType = nameof(Number),
+            };
+            confirm.Render();
+            confirm.YesConfirmed += async () =>
+            {
+                var number = confirm.Number.Value;
+                if (number is null || Convert.ToInt32(number.Value) == Convert.ToInt32(0))
+                {
+                    Toast.Warning("Vui lòng nhập số cont cần hủy");
+                    return;
+                }
+                if (Convert.ToInt32(number.Value) > Convert.ToInt32(transportationPlanEntity.TotalContainerUsing))
+                {
+                    Toast.Warning("Số cont hủy không được lớn hơn số cont sử dụng");
+                    return;
+                }
+                var tran = new TransportationPlan();
+                tran.CopyPropFrom(transportationPlanEntity, nameof(transportationPlanEntity.Id), nameof(transportationPlanEntity.RequestChangeId));
+                tran.RequestChangeId = transportationPlanEntity.Id;
+                tran.TotalContainer = tran.TotalContainer - Convert.ToInt32(number.Value);
+                tran.TotalContainerUsing = tran.TotalContainerUsing - Convert.ToInt32(number.Value);
+                tran.TotalContainerRemain = tran.TotalContainer - tran.TotalContainerUsing;
+                tran.StatusId = (int)ApprovalStatusEnum.New;
+                var rs = await new Client(nameof(TransportationPlan)).CreateAsync<TransportationPlan>(tran);
+                var res = await RequestApprove(rs);
+                ProcessEnumMessage(res);
             };
         }
 

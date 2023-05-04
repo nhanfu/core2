@@ -10,8 +10,8 @@ namespace Core.Components.Forms
     {
         private bool _cancel;
         private HTMLElement _yesBtn;
-
         public Textbox Textbox { get; private set; }
+        public Number Number { get; private set; }
         public Datepicker Datepicker { get; private set; }
         public SearchEntry SearchEntry { get; private set; }
         public bool IgnoreNoButton { get; set; }
@@ -59,6 +59,18 @@ namespace Core.Components.Forms
                         MultipleLine = MultipleLine
                     };
                     AddChild(Textbox);
+                    Html.Instance.End.Render();
+                }
+                if (ComType == nameof(Number))
+                {
+                    Number = new Number(new Models.Component
+                    {
+                        PlainText = "Nhập câu trả lời",
+                        FieldName = CompareGridView.ReasonOfChange,
+                        Visibility = true,
+                        ShowLabel = false,
+                    });
+                    AddChild(Number);
                     Html.Instance.End.Render();
                 }
                 if (ComType == nameof(Datepicker))
