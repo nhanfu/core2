@@ -1721,7 +1721,7 @@ namespace TMS.UI.Business.Manage
             {
                 var confirmRequets = new ConfirmDialog
                 {
-                    Content = $"Có {checkRequests.Count} DSVC cần duyệt bạn có muốn duyệt mở khóa toàn bộ không ?",
+                    Content = $"Có {checkRequests.Count} DSVC cần duyệt bạn có muốn duyệt yêu cầu khóa toàn bộ không ?",
                 };
                 confirmRequets.Render();
                 confirmRequets.YesConfirmed += async () =>

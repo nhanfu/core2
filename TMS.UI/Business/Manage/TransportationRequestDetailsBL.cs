@@ -18,6 +18,7 @@ namespace TMS.UI.Business.Manage
     public class TransportationRequestDetailsBL : PopupEditor
     {
         public Transportation transportationEntity => Entity as Transportation;
+        public List<string> propNameChanges = new List<string>();
         public TransportationRequestDetailsBL() : base(nameof(Transportation))
         {
             Name = "Transportation Request Details";
@@ -147,6 +148,7 @@ namespace TMS.UI.Business.Manage
                     {
                         listViewItem.FilterChildren(x => x.Name == item.Name).FirstOrDefault()?.Element?.AddClass("text-warning-2");
                         listViewItemCutting.FilterChildren(x => x.Name == item.Name).FirstOrDefault()?.Element?.AddClass("text-warning-2");
+                        propNameChanges.Add(item.Name);
                     }
                 }
             }
@@ -210,6 +212,12 @@ namespace TMS.UI.Business.Manage
                 grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
             }
             var listViewItem = grid.RowData.Data.Cast<TransportationRequestDetails>().OrderByDescending(x => x.Id).FirstOrDefault();
+            var selected = grid.GetSelectedRows().Cast<TransportationRequestDetails>().OrderByDescending(x => x.Id).FirstOrDefault();
+            if (listViewItem.Id != selected.Id)
+            {
+                Toast.Warning("Bạn chưa chọn thông tin thay đổi có thể gửi");
+                return;
+            }
             if (transportationEntity.IsLocked)
             {
                 var confirm = new ConfirmDialog
@@ -228,41 +236,83 @@ namespace TMS.UI.Business.Manage
                     await new Client(nameof(Transportation)).PostAsync<bool>(listViewItem, "RequestUnLockAll");
                 };
             }
-            else if (transportationEntity.LockShip)
+            else
             {
-                var confirm = new ConfirmDialog
+                if (propNameChanges.Any(x => x == nameof(TransportationRequestDetails.ShipPrice) ||
+                x == nameof(TransportationRequestDetails.PolicyId) ||
+                x == nameof(TransportationRequestDetails.RouteId) ||
+                x == nameof(TransportationRequestDetails.BrandShipId) ||
+                x == nameof(TransportationRequestDetails.LineId) ||
+                x == nameof(TransportationRequestDetails.ShipId) ||
+                x == nameof(TransportationRequestDetails.Trip) ||
+                x == nameof(TransportationRequestDetails.StartShip) ||
+                x == nameof(TransportationRequestDetails.ContainerTypeId) ||
+                x == nameof(TransportationRequestDetails.SocId) ||
+                x == nameof(TransportationRequestDetails.ShipNotes) ||
+                x == nameof(TransportationRequestDetails.BookingId)))
                 {
-                    NeedAnswer = true,
-                    ComType = nameof(Textbox),
-                    Content = $"Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                "Hãy nhập lý do",
-                };
-                confirm.Render();
-                confirm.YesConfirmed += async () =>
+                    if (transportationEntity.LockShip)
+                    {
+                        var confirm = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                        "Hãy nhập lý do",
+                        };
+                        confirm.Render();
+                        confirm.YesConfirmed += async () =>
+                        {
+                            listViewItem.Reason = confirm.Textbox?.Text;
+                            Toast.Success("Đã gửi yêu cầu thành công");
+                            this.Dispose();
+                            await new Client(nameof(Transportation)).PostAsync<bool>(listViewItem, "RequestUnLockShip");
+                        };
+                    }
+                }
+                if (propNameChanges.Any(x => x == nameof(TransportationRequestDetails.MonthText)
+                || x == nameof(TransportationRequestDetails.YearText)
+                || x == nameof(TransportationRequestDetails.ExportListId)
+                || x == nameof(TransportationRequestDetails.RouteId)
+                || x == nameof(TransportationRequestDetails.ShipId)
+                || x == nameof(TransportationRequestDetails.Trip)
+                || x == nameof(TransportationRequestDetails.ClosingDate)
+                || x == nameof(TransportationRequestDetails.StartShip)
+                || x == nameof(TransportationRequestDetails.ContainerTypeId)
+                || x == nameof(TransportationRequestDetails.ContainerNo)
+                || x == nameof(TransportationRequestDetails.SealNo)
+                || x == nameof(TransportationRequestDetails.BossId)
+                || x == nameof(TransportationRequestDetails.UserId)
+                || x == nameof(TransportationRequestDetails.CommodityId)
+                || x == nameof(TransportationRequestDetails.Cont20)
+                || x == nameof(TransportationRequestDetails.Cont40)
+                || x == nameof(TransportationRequestDetails.Weight)
+                || x == nameof(TransportationRequestDetails.ReceivedId)
+                || x == nameof(TransportationRequestDetails.FreeText2)
+                || x == nameof(TransportationRequestDetails.ShipDate)
+                || x == nameof(TransportationRequestDetails.ReturnDate)
+                || x == nameof(TransportationRequestDetails.ReturnId)
+                || x == nameof(TransportationRequestDetails.FreeText3)))
                 {
-                    listViewItem.Reason = confirm.Textbox?.Text;
-                    Toast.Success("Đã gửi yêu cầu thành công");
-                    this.Dispose();
-                    await new Client(nameof(Transportation)).PostAsync<bool>(listViewItem, "RequestUnLockShip");
-                };
-            }
-            else if (transportationEntity.IsKt)
-            {
-                var confirm = new ConfirmDialog
-                {
-                    NeedAnswer = true,
-                    ComType = nameof(Textbox),
-                    Content = $"Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                    "Hãy nhập lý do",
-                };
-                confirm.Render();
-                confirm.YesConfirmed += async () =>
-                {
-                    listViewItem.Reason = confirm.Textbox?.Text;
-                    Toast.Success("Đã gửi yêu cầu thành công");
-                    this.Dispose();
-                    await new Client(nameof(Transportation)).PostAsync<bool>(listViewItem, "RequestUnLock");
-                };
+                    if (transportationEntity.IsKt)
+                    {
+                        var confirm = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            "Hãy nhập lý do",
+                        };
+                        confirm.Render();
+                        confirm.YesConfirmed += async () =>
+                        {
+                            listViewItem.Reason = confirm.Textbox?.Text;
+                            Toast.Success("Đã gửi yêu cầu thành công");
+                            this.Dispose();
+                            await new Client(nameof(Transportation)).PostAsync<bool>(listViewItem, "RequestUnLock");
+                        };
+                    }
+                }
             }
         }
     }

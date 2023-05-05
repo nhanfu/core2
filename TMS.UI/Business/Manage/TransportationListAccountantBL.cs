@@ -102,8 +102,8 @@ namespace TMS.UI.Business.Manage
                 {
                     if (featurePolicy.Where(x => x.RecordId == 17749).Any())
                     {
-                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt mở khóa", Click = ApproveUnLockAll });
-                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy mở khóa", Click = RejectUnLockAll });
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt yêu cầu", Click = ApproveUnLockAll });
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy yêu cầu", Click = RejectUnLockAll });
                     }
                     ContextMenu.Instance.MenuItems = menus;
                 };
@@ -115,8 +115,8 @@ namespace TMS.UI.Business.Manage
                 {
                     if (featurePolicy.Where(x => x.RecordId == 17718).Any())
                     {
-                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt mở khóa", Click = ApproveUnLock });
-                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy mở khóa", Click = RejectUnLock });
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt yêu cầu", Click = ApproveUnLock });
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy yêu cầu", Click = RejectUnLock });
                     }
                     ContextMenu.Instance.MenuItems = menus;
                 };
@@ -128,8 +128,8 @@ namespace TMS.UI.Business.Manage
                 {
                     if (featurePolicy.Where(x => x.RecordId == 17724).Any())
                     {
-                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt mở khóa", Click = ApproveUnLockAccountant });
-                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy mở khóa", Click = RejectUnLockAccountant });
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt yêu cầu", Click = ApproveUnLockAccountant });
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy yêu cầu", Click = RejectUnLockAccountant });
                     }
                     ContextMenu.Instance.MenuItems = menus;
                 };
@@ -204,7 +204,7 @@ namespace TMS.UI.Business.Manage
                         {
                             var confirmRequets = new ConfirmDialog
                             {
-                                Content = $"Cont này có yêu cần duyệt bạn có muốn duyệt mở khóa không ?",
+                                Content = $"Cont này có yêu cần duyệt bạn có muốn duyệt yêu cầu không ?",
                             };
                             confirmRequets.Render();
                             confirmRequets.YesConfirmed += async () =>
@@ -272,7 +272,7 @@ namespace TMS.UI.Business.Manage
                             {
                                 var confirmRequets = new ConfirmDialog
                                 {
-                                    Content = $"Cont này có yêu cần duyệt bạn có muốn duyệt mở khóa không ?",
+                                    Content = $"Cont này có yêu cần duyệt bạn có muốn duyệt yêu cầu không ?",
                                 };
                                 confirmRequets.Render();
                                 confirmRequets.YesConfirmed += async () =>
@@ -341,7 +341,7 @@ namespace TMS.UI.Business.Manage
                             {
                                 var confirmRequets = new ConfirmDialog
                                 {
-                                    Content = $"Cont này có yêu cần duyệt bạn có muốn duyệt mở khóa không ?",
+                                    Content = $"Cont này có yêu cần duyệt bạn có muốn duyệt yêu cầu không ?",
                                 };
                                 confirmRequets.Render();
                                 confirmRequets.YesConfirmed += async () =>
@@ -1395,7 +1395,7 @@ namespace TMS.UI.Business.Manage
                     {
                         var confirmRequets = new ConfirmDialog
                         {
-                            Content = $"Có {checkRequests.Count} yêu cầu cần duyệt bạn có muốn duyệt mở khóa toàn bộ không ?",
+                            Content = $"Có {checkRequests.Count} yêu cầu cần duyệt bạn có muốn duyệt yêu cầu khóa toàn bộ không ?",
                         };
                         confirmRequets.Render();
                         confirmRequets.YesConfirmed += async () =>
@@ -1504,7 +1504,7 @@ namespace TMS.UI.Business.Manage
             {
                 var confirmRequets = new ConfirmDialog
                 {
-                    Content = $"Có {checkRequests.Count} yêu cầu cần duyệt bạn có muốn duyệt mở khóa toàn bộ không ?",
+                    Content = $"Có {checkRequests.Count} yêu cầu cần duyệt bạn có muốn duyệt yêu cầu khóa toàn bộ không ?",
                 };
                 confirmRequets.Render();
                 confirmRequets.YesConfirmed += async () =>
@@ -1526,7 +1526,7 @@ namespace TMS.UI.Business.Manage
             {
                 var confirmRequets = new ConfirmDialog
                 {
-                    Content = $"Có {checkRequests.Count} yêu cầu cần duyệt bạn có muốn duyệt mở khóa toàn bộ không ?",
+                    Content = $"Có {checkRequests.Count} yêu cầu cần duyệt bạn có muốn duyệt yêu cầu khóa toàn bộ không ?",
                 };
                 confirmRequets.Render();
                 confirmRequets.YesConfirmed += async () =>
