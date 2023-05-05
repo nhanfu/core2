@@ -550,7 +550,7 @@ namespace TMS.API.Controllers
                                     x.Name != nameof(Expense.Transportation)).Select(x => x.Name).ToList();
                             var queryIn = $"INSERT INTO {nameof(Expense)}({stringPropNames.Combine()}";
                             queryIn += $") VALUES (";
-                            foreach (var prop in ex.GetType().GetProperties())
+                            foreach (var prop in history.GetType().GetProperties())
                             {
                                 if (prop.Name != nameof(Expense.Id) &&
                                    prop.Name != nameof(Expense.FromDate) &&
@@ -561,11 +561,11 @@ namespace TMS.API.Controllers
                                 {
                                     if (prop.PropertyType.Name == nameof(DateTime) || prop.PropertyType.FullName.Contains(nameof(DateTime)))
                                     {
-                                        queryIn += prop.GetValue(ex) != null ? $"'{DateTime.Parse(prop.GetValue(ex).ToString()).ToString("yyyy-MM-dd")}', " : "NULL, ";
+                                        queryIn += prop.GetValue(history) != null ? $"'{DateTime.Parse(prop.GetValue(history).ToString()).ToString("yyyy-MM-dd")}', " : "NULL, ";
                                     }
                                     else
                                     {
-                                        queryIn += prop.GetValue(ex) != null ? $"'{prop.GetValue(ex).ToString()}', " : "NULL, ";
+                                        queryIn += prop.GetValue(history) != null ? $"'{prop.GetValue(history).ToString()}', " : "NULL, ";
                                     }
                                 }
                             }
