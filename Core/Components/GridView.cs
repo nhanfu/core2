@@ -1,5 +1,4 @@
-﻿using Bridge;
-using Bridge.Html5;
+﻿using Bridge.Html5;
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
@@ -12,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 using TextAlign = Core.Enums.TextAlign;
@@ -1609,8 +1607,17 @@ namespace Core.Components
                     .FirstOrDefault(x => x.Entity[IdField].As<int>() == EntityFocusId && x.GuiInfo.Id == LastComponentFocus.Id);
                 if (element != null)
                 {
-                    element.ParentElement.Focus();
-                    element.Focus();
+                    var scrollLeft = DataTable.ParentElement.ScrollLeft;
+                    var cellLeft = element.ParentElement.OffsetLeft;
+                    if (scrollLeft <= cellLeft)
+                    {
+                        element.ParentElement.Focus();
+                        element.Focus();
+                    }
+                    else
+                    {
+                        AllListViewItem.FirstOrDefault(x => x.Entity[IdField].As<int>() == EntityFocusId).Focused = true;
+                    }
                 }
                 else
                 {

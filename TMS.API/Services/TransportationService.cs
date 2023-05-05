@@ -273,7 +273,7 @@ namespace TMS.API.Services
 					ELSE UnitPrice
 					END as UnitPrice from Quotation 
 					where 
-					TypeId = 7594
+					TypeId = 7596
 					and ContainerTypeId = Transportation.ContainerTypeId 
 					and LocationId = Transportation.ReturnEmptyId 
 					and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc) end)
@@ -287,7 +287,7 @@ namespace TMS.API.Services
 					ELSE UnitPrice
 					END as UnitPrice from Quotation 
 					where 
-					TypeId = 7594
+					TypeId = 7596
 					and ContainerTypeId = Transportation.ContainerTypeId 
 					and LocationId = Transportation.ReturnEmptyId 
 					and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc) end) else Transportation.ReturnClosingFee end
@@ -375,7 +375,7 @@ namespace TMS.API.Services
 					WHEN Transportation.IsLiftFee = 1 THEN UnitPrice1
 					ELSE UnitPrice
 					END as UnitPrice from Quotation 
-					where TypeId = 7596
+					where TypeId = 7594
 					and ContainerTypeId = Transportation.ContainerTypeId 
 					and LocationId = Transportation.PortLiftId 
 					and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc)
@@ -388,7 +388,7 @@ namespace TMS.API.Services
 					WHEN Transportation.IsLiftFee = 1 THEN UnitPrice1
 					ELSE UnitPrice
 					END as UnitPrice from Quotation 
-					where TypeId = 7596
+					where TypeId = 7594
 					and ContainerTypeId = Transportation.ContainerTypeId 
 					and LocationId = Transportation.PortLiftId 
 					and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc) else Transportation.ReturnLiftFee end
