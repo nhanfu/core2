@@ -200,6 +200,7 @@ namespace TMS.UI.Business.Manage
             var listContext1 = new List<ContextMenuItem>()
             {
                 new ContextMenuItem { Text = "Xem booking", Click = ViewBooking },
+                new ContextMenuItem { Text = "Tách kế hoạch", Click = SplitTransportation },
                 new ContextMenuItem { Text = "Tải đính kèm", Click = DownLoadPackingList },
             };
             gridView.BodyContextMenuShow += () =>
@@ -292,6 +293,74 @@ namespace TMS.UI.Business.Manage
             });
         }
 
+        public void SplitTransportation(object arg)
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+            Task.Run(async () =>
+            {
+                var selected = (await gridView.GetRealTimeSelectedRows()).LastOrDefault();
+                var confirm = new ConfirmDialog
+                {
+                    Content = "Bạn muốn tách ra bao nhiêu cont?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var transportationPlan = await new Client(nameof(TransportationPlan)).GetAsync<TransportationPlan>(int.Parse(selected[nameof(Transportation.TransportationPlanId)].ToString()));
+                    if (transportationPlan.TotalContainer <= 1)
+                    {
+                        Toast.Warning("Số lượng cont phải lớn hơn 1");
+                        return;
+                    }
+                    var transportation = new TransportationPlan();
+                    transportation.CopyPropFrom(selected, nameof(TransportationPlan.Id));
+                    transportation.IsTransportation = true;
+                    transportation.TotalContainer = 1;
+                    transportation.TotalContainerRemain = 0;
+                    transportation.TotalContainerUsing = 1;
+                    transportation = await new Client(nameof(TransportationPlan)).CreateAsync<TransportationPlan>(transportation);
+                    var pathUpdateTran = new PatchUpdate()
+                    {
+                        Changes = new List<PatchUpdateDetail>()
+                        {
+                            new PatchUpdateDetail()
+                            {
+                                Field = nameof(Transportation.Id),
+                                Value =  selected[nameof(Transportation.TransportationPlanId)].ToString()
+                            },
+                            new PatchUpdateDetail()
+                            {
+                                Field = nameof(Transportation.TransportationPlanId),
+                                Value =  transportation.Id.ToString()
+                            }
+                        }
+                    };
+                    var pathUpdateTranPlan = new PatchUpdate()
+                    {
+                        Changes = new List<PatchUpdateDetail>()
+                        {
+                            new PatchUpdateDetail()
+                            {
+                                Field = nameof(transportationPlan.Id),
+                                Value =  transportationPlan.Id.ToString()
+                            },
+                            new PatchUpdateDetail()
+                            {
+                                Field = nameof(transportationPlan.TotalContainer),
+                                Value =  (transportationPlan.TotalContainer-1).ToString()
+                            },
+                            new PatchUpdateDetail()
+                            {
+                                Field = nameof(transportationPlan.TotalContainerUsing),
+                                Value =  (transportationPlan.TotalContainerUsing-1).ToString()
+                            }
+                        }
+                    };
+                    await new Client(nameof(Transportation)).PatchAsync<Transportation>(pathUpdateTran);
+                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(pathUpdateTranPlan);
+                };
+            });
+        }
         public void ViewBooking(object arg)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));

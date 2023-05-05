@@ -641,19 +641,23 @@ namespace Core.Components
                 }
                 else
                 {
-                    AdvSearchVM.Conditions.Add(new FieldCondition
+                    if (!AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo && x.Value == cell.Value))
                     {
-                        Field = hl,
-                        CompareOperatorId = advo,
-                        LogicOperatorId = cell.Logic ?? LogicOperation.And,
-                        Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value,
-                        Group = cell.Group
-                    });
-                    Wheres.Add(new Where()
-                    {
-                        FieldName = where,
-                        Group = cell.Group
-                    });
+                        AdvSearchVM.Conditions.Add(new FieldCondition
+                        {
+                            Field = hl,
+                            CompareOperatorId = advo,
+                            LogicOperatorId = cell.Logic ?? LogicOperation.And,
+                            Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value,
+                            Group = cell.Group
+                        });
+                        Wheres.Add(new Where()
+                        {
+                            FieldName = where,
+                    
+                            Group = cell.Group
+                        });
+                    }
                 }
             });
             await ApplyFilter(true);

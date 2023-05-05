@@ -109,7 +109,7 @@ namespace TMS.API.Controllers
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
             var entity = await db.TransportationPlan.FindAsync(idInt);
-            if (entity.IsTransportation && entity.RequestChangeId is null)
+            if (entity.IsTransportation && entity.RequestChangeId is null && !patch.Changes.Any(x => x.Field == nameof(TransportationPlan.TotalContainer)))
             {
                 throw new ApiException("Kế hoạch đã được sử dụng!") { StatusCode = HttpStatusCode.BadRequest };
             }
