@@ -43,8 +43,19 @@ namespace TMS.UI.Business.Manage
                 grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
             }
             var listViewItems = grid.RowData.Data.Cast<TransportationRequestDetails>().ToList();
-            if (Parent.Name == "Transportation List Accountant" || Parent.Name == "List Ship Book")
+            var bl = Parent as TransportationListBL;
+            if (Parent.Name == "Transportation List Accountant" || Parent.Name == "List Ship Book" || bl.getCheckView())
             {
+                listViewItems.ForEach(x =>
+                {
+                    var listViewItem = grid.GetListViewItems(x).FirstOrDefault();
+                    if (listViewItem is null)
+                    {
+                        return;
+                    }
+                    listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
+                    listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+                });
                 return;
             }
             ToggleApprovalBtn(null);

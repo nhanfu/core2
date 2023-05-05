@@ -20,6 +20,7 @@ namespace TMS.UI.Business.Manage
         public GridView gridViewExpense;
         public Transportation selected;
         public TabEditor _expensePopup;
+        public bool checkView = false;
 
         public TransportationListBL() : base(nameof(Transportation))
         {
@@ -1803,6 +1804,35 @@ namespace TMS.UI.Business.Manage
             {
                 await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "UnLockShipTransportation");
             }
+        }
+
+        public async Task ViewRequestChange(TransportationRequest transportationRequest)
+        {
+            checkView = true;
+            var tran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportationRequest.TransportationId}");
+            if (tran != null)
+            {
+                await TransportationRequestDetailsBL(tran, this);
+            }
+        }
+
+        public async Task TransportationRequestDetailsBL(Transportation transportation, TabEditor tabEditor)
+        {
+            await tabEditor.OpenPopup(
+               featureName: "Transportation Request Details",
+               factory: () =>
+               {
+                   var type = Type.GetType("TMS.UI.Business.Manage.TransportationRequestDetailsBL");
+                   var instance = Activator.CreateInstance(type) as PopupEditor;
+                   instance.Title = "Yêu cầu thay đổi";
+                   instance.Entity = transportation;
+                   return instance;
+               });
+        }
+
+        public bool getCheckView()
+        {
+            return checkView;
         }
     }
 }

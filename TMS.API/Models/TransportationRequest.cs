@@ -5,6 +5,11 @@ namespace TMS.API.Models
 {
     public partial class TransportationRequest
     {
+        public TransportationRequest()
+        {
+            TransportationRequestDetails = new HashSet<TransportationRequestDetails>();
+        }
+
         public int Id { get; set; }
         public int? TransportationId { get; set; }
         public bool IsRequestUnLockAll { get; set; }
@@ -26,5 +31,6 @@ namespace TMS.API.Models
         public int? UpdatedBy { get; set; }
 
         public virtual Transportation Transportation { get; set; }
+        public virtual ICollection<TransportationRequestDetails> TransportationRequestDetails { get; set; }
     }
 }

@@ -2325,6 +2325,11 @@ namespace TMS.API.Models
                 entity.Property(e => e.Weight).HasColumnType("decimal(20, 5)");
 
                 entity.Property(e => e.YearText).HasMaxLength(50);
+
+                entity.HasOne(d => d.TransportationRequest)
+                    .WithMany(p => p.TransportationRequestDetails)
+                    .HasForeignKey(d => d.TransportationRequestId)
+                    .HasConstraintName("FK_TransportationRequestDetails_TransportationRequest");
             });
 
             modelBuilder.Entity<User>(entity =>
