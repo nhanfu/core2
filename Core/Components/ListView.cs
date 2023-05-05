@@ -8,7 +8,6 @@ using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
 using Newtonsoft.Json;
-using Retyped;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -101,7 +100,7 @@ namespace Core.Components
         public PatchUpdate LastUpdate { get; set; }
 
         public bool IgnoreConfirmHardDelete { get; set; }
-        public List<CellSelected> CellSelected { get; set; } = new List<CellSelected>();
+        public List<CellSelected> CellSelected = new List<CellSelected>();
         public List<Where> Wheres = new List<Where>();
         public HashSet<int> SelectedIds { get; set; } = new HashSet<int>();
         public int? FocusId { get; set; }

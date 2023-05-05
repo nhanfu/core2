@@ -547,7 +547,7 @@ namespace TMS.UI.Business.Manage
                     Toast.Warning("Vui lòng nhập đầy đủ thông tin");
                     return;
                 }
-                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7596 " +
+                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7594 " +
                     $"and ContainerTypeId eq {coords.ContainerTypeId} " +
                     $"and LocationId eq {coords.ReturnEmptyId} " +
                     $"and StartDate le {coords.ReturnDate.Value.ToOdataFormat()}&$orderby=StartDate desc");
@@ -555,7 +555,7 @@ namespace TMS.UI.Business.Manage
                 {
                     quotation = new Quotation()
                     {
-                        TypeId = 7596,
+                        TypeId = 7594,
                         LocationId = coords.ReturnEmptyId,
                         ContainerTypeId = coords.ContainerTypeId,
                         StartDate = coords.ReturnDate,
@@ -591,7 +591,7 @@ namespace TMS.UI.Business.Manage
                     Toast.Warning("Vui lòng nhập đầy đủ thông tin");
                     return;
                 }
-                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7594 " +
+                var quotation = await new Client(nameof(Quotation)).FirstOrDefaultAsync<Quotation>($"?$filter=TypeId eq 7596 " +
                    $"and ContainerTypeId eq {coords.ContainerTypeId} " +
                    $"and LocationId eq {coords.PortLiftId} " +
                    $"and StartDate le {coords.ReturnDate.Value.ToOdataFormat()}&$orderby=StartDate desc");
@@ -599,7 +599,7 @@ namespace TMS.UI.Business.Manage
                 {
                     quotation = new Quotation()
                     {
-                        TypeId = 7594,
+                        TypeId = 7596,
                         LocationId = coords.PortLiftId,
                         ContainerTypeId = coords.ContainerTypeId,
                         StartDate = coords.ReturnDate,

@@ -272,17 +272,14 @@ namespace Core.Components
                     var lastElement = _summarys.LastOrDefault();
                     if (lastElement.InnerHTML == string.Empty)
                     {
-                        if (CellSelected.Count > 0)
+                        CellSelected.RemoveAt(CellSelected.Count - 1);
+                        Wheres.RemoveAt(Wheres.Count - 1);
+                        AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                        Task.Run(async () =>
                         {
-                            CellSelected.RemoveAt(CellSelected.Count - 1);
-                            Wheres.RemoveAt(Wheres.Count - 1);
-                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
-                            Task.Run(async () =>
-                            {
-                                await ActionFilter();
-                            });
-                        }
-                        _summarys.RemoveAt(_summarys.Count - 1);
+                            await ActionFilter();
+                            _summarys.RemoveAt(_summarys.Count - 1);
+                        });
                     }
                     else
                     {
@@ -292,16 +289,13 @@ namespace Core.Components
                         }
                         if (lastElement.Style.Display.ToString() == "none")
                         {
-                            if (CellSelected.Count > 0)
+                            CellSelected.RemoveAt(CellSelected.Count - 1);
+                            Wheres.RemoveAt(Wheres.Count - 1);
+                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                            Task.Run(async () =>
                             {
-                                CellSelected.RemoveAt(CellSelected.Count - 1);
-                                Wheres.RemoveAt(Wheres.Count - 1);
-                                AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
-                                Task.Run(async () =>
-                                {
-                                    await ActionFilter();
-                                });
-                            }
+                                await ActionFilter();
+                            });
                             lastElement.Show();
                         }
                         else
