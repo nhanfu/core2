@@ -55,6 +55,7 @@ namespace TMS.UI.Business.Manage
                 {
                     return;
                 }
+                listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
                 if (x.StatusId != (int)ApprovalStatusEnum.New)
                 {
                     listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
@@ -193,6 +194,7 @@ namespace TMS.UI.Business.Manage
                 await grid.ApplyFilter();
                 this.SetShow(false, "btnCreate");
                 this.SetShow(true, "btnSend");
+                SetGridView();
             }
         }
 
