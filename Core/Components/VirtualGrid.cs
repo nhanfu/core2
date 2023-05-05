@@ -523,7 +523,7 @@ namespace Core.Components
                 Content = $"Nhập {header.ShortDesc} cần tìm" + ev["Text"],
                 NeedAnswer = true,
                 MultipleLine = false,
-                ComType = header.ComponentType == nameof(Datepicker) ? header.ComponentType : nameof(Textbox)
+                ComType = header.ComponentType == nameof(Datepicker) || header.ComponentType == nameof(Number) ? header.ComponentType : nameof(Textbox)
             };
             confirmDialog.YesConfirmed += async () =>
             {
@@ -533,6 +533,11 @@ namespace Core.Components
                 {
                     valueText = confirmDialog.Datepicker.OriginalText;
                     value = confirmDialog.Datepicker.Value.ToString();
+                }
+                else if (header.ComponentType == nameof(Number))
+                {
+                    valueText = confirmDialog.Number.GetValueText();
+                    value = confirmDialog.Number.Value.ToString();
                 }
                 else
                 {
@@ -574,6 +579,13 @@ namespace Core.Components
                 {
                     confirmDialog.Datepicker.Value = DateTime.Parse(subFilter);
                     var input = confirmDialog.Datepicker.Element as HTMLInputElement;
+                    input.SelectionStart = 0;
+                    input.SelectionEnd = subFilter.Length;
+                }
+                else if (header.ComponentType == nameof(Number))
+                {
+                    confirmDialog.Number.Value = Convert.ToDecimal(subFilter);
+                    var input = confirmDialog.Number.Element as HTMLInputElement;
                     input.SelectionStart = 0;
                     input.SelectionEnd = subFilter.Length;
                 }

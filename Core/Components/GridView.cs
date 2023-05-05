@@ -415,7 +415,7 @@ namespace Core.Components
                 Content = $"Nhập {header.ShortDesc} cần tìm" + ev["Text"],
                 NeedAnswer = true,
                 MultipleLine = false,
-                ComType = header.ComponentType == nameof(Datepicker) ? header.ComponentType : nameof(Textbox)
+                ComType = header.ComponentType == nameof(Datepicker) || header.ComponentType == nameof(Number) ? header.ComponentType : nameof(Textbox)
             };
             confirmDialog.YesConfirmed += async () =>
             {
@@ -425,6 +425,11 @@ namespace Core.Components
                 {
                     valueText = confirmDialog.Datepicker.OriginalText;
                     value = confirmDialog.Datepicker.Value.ToString();
+                }
+                else if (header.ComponentType == nameof(Number))
+                {
+                    valueText = confirmDialog.Number.GetValueText();
+                    value = confirmDialog.Number.Value.ToString();
                 }
                 else
                 {
@@ -462,6 +467,13 @@ namespace Core.Components
                 {
                     confirmDialog.Datepicker.Value = DateTime.Parse(subFilter);
                     var input = confirmDialog.Datepicker.Element as HTMLInputElement;
+                    input.SelectionStart = 0;
+                    input.SelectionEnd = subFilter.Length;
+                }
+                else if (header.ComponentType == nameof(Number))
+                {
+                    confirmDialog.Number.Value = Convert.ToDecimal(subFilter);
+                    var input = confirmDialog.Number.Element as HTMLInputElement;
                     input.SelectionStart = 0;
                     input.SelectionEnd = subFilter.Length;
                 }
@@ -548,15 +560,31 @@ namespace Core.Components
                 }
                 else if (hl.ComponentType == nameof(Number) || (hl.ComponentType == "Label" && hl.FieldName.Contains("Id")))
                 {
-                    if (isNUll)
+                    if (cell.Operator == "not in" || cell.Operator == "in")
                     {
-                        advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
-                        where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} is not null" : $"[{GuiInfo.RefName}].{cell.FieldName} is null";
+                        if (isNUll)
+                        {
+                            advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                            where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} is not null" : $"[{GuiInfo.RefName}].{cell.FieldName} is null";
+                        }
+                        else
+                        {
+                            advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal;
+                            where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} != {cell.Value.Replace(",", "")}" : $"[{GuiInfo.RefName}].{cell.FieldName} = {cell.Value.Replace(",", "")}";
+                        }
                     }
                     else
                     {
-                        advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal;
-                        where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} != {cell.Value.Replace(",", "")}" : $"[{GuiInfo.RefName}].{cell.FieldName} = {cell.Value.Replace(",", "")}";
+                        if (cell.Operator == "gt" || cell.Operator == "lt")
+                        {
+                            where = cell.Operator == "gt" ? $"[{GuiInfo.RefName}].{cell.FieldName} > {cell.Value}" : $"[{GuiInfo.RefName}].{cell.FieldName} < {cell.Value}";
+                            advo = cell.Operator == "gt" ? AdvSearchOperation.GreaterThan : AdvSearchOperation.LessThan;
+                        }
+                        else if (cell.Operator == "ge" || cell.Operator == "le")
+                        {
+                            where = cell.Operator == "ge" ? $"[{GuiInfo.RefName}].{cell.FieldName} >= {cell.Value}" : $"[{GuiInfo.RefName}].{cell.FieldName} <= {cell.Value}";
+                            advo = cell.Operator == "ge" ? AdvSearchOperation.GreaterThanOrEqual : AdvSearchOperation.LessThanOrEqual;
+                        }
                     }
                     lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
@@ -654,7 +682,7 @@ namespace Core.Components
                         Wheres.Add(new Where()
                         {
                             FieldName = where,
-                    
+
                             Group = cell.Group
                         });
                     }

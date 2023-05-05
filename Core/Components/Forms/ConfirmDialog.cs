@@ -152,6 +152,10 @@ namespace Core.Components.Forms
                 {
                     Datepicker.Element.Focus();
                 }
+                if (Number != null)
+                {
+                    Number.Element.Focus();
+                }
             }
             else
             {
