@@ -144,7 +144,7 @@ namespace TMS.UI.Business.Manage
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                tran.ReasonOfChange = confirm.ReasonOfChange;
+                tran.ReasonOfChange = confirm.Textbox.GetValueText();
                 var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$expand=Expense&$filter=Active eq true and TransportationPlanId eq {transportationPlanEntity.Id}");
                 if (transportations != null && transportations.Any())
                 {
