@@ -19,12 +19,14 @@ namespace TMS.UI.Business.Manage
     {
         public Transportation transportationEntity => Entity as Transportation;
         public List<string> propNameChanges = new List<string>();
-        public TransportationRequestDetailsBL() : base(nameof(Transportation))
+        public TransportationRequestDetailsBL() : base(nameof(TransportationRequest))
         {
             Name = "Transportation Request Details";
         }
 
-        public void SetGridView()
+        private int awaiter;
+
+        public async Task SetGridView()
         {
             GridView grid;
             this.SetShow(false, "btnCreate", "btnSend");
@@ -43,23 +45,15 @@ namespace TMS.UI.Business.Manage
                 grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
             }
             var listViewItems = grid.RowData.Data.Cast<TransportationRequestDetails>().ToList();
-            var blTranList = Parent as TransportationListBL;
-            var blReturnList = Parent as ReturnPlanListBL;
-            if (Parent.Name == "Transportation List Accountant" || Parent.Name == "List Ship Book" || blTranList.getCheckView() || blReturnList.getCheckView())
+            var check = await new Client(nameof(TransportationRequestDetails)).FirstOrDefaultAsync<TransportationRequestDetails>($"?$orderby=Id desc&$filter=Active eq true and TransportationId eq {transportationEntity.Id}");
+            if (check != null && check.StatusId == (int)ApprovalStatusEnum.New)
             {
-                listViewItems.ForEach(x =>
-                {
-                    var listViewItem = grid.GetListViewItems(x).FirstOrDefault();
-                    if (listViewItem is null)
-                    {
-                        return;
-                    }
-                    listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
-                    listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
-                });
-                return;
+                this.SetShow(true, "btnSend");
             }
-            ToggleApprovalBtn(null);
+            else
+            {
+                this.SetShow(true, "btnCreate");
+            }
             listViewItems.ForEach(x =>
             {
                 var listViewItem = grid.GetListViewItems(x).FirstOrDefault();
@@ -73,35 +67,40 @@ namespace TMS.UI.Business.Manage
                     listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
                 }
             });
-        }
-
-        protected override void ToggleApprovalBtn(object entity = null)
-        {
-            GridView grid;
-            if (Parent.Name == "Transportation Return Plan List")
+            var bl = Parent as TransportationListBL;
+            if (Parent.Name == "Transportation List Accountant" || Parent.Name == "List Ship Book" || bl.getCheckView())
             {
-                grid = this.FindComponentByName<GridView>("TransportationRequestDetails1");
-            }
-            else if (Parent.Name == "ReturnPlan List")
-            {
-                grid = this.FindComponentByName<GridView>("TransportationRequestDetails2");
-            }
-            else
-            {
-                grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
-            }
-            Task.Run(async () => 
-            {
-                var check = await new Client(nameof(TransportationRequestDetails)).FirstOrDefaultAsync<TransportationRequestDetails>($"?$orderby=Id desc&$filter=Active eq true and TransportationId eq {transportationEntity.Id}");
-                if (check != null && check.StatusId == (int)ApprovalStatusEnum.New)
+                listViewItems.ForEach(x =>
                 {
-                    this.SetShow(true, "btnSend");
-                }
-                else
+                    var listViewItem = grid.GetListViewItems(x).FirstOrDefault();
+                    if (listViewItem is null)
+                    {
+                        return;
+                    }
+                    listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
+                    listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+                });
+                this.SetShow(false, "btnCreate", "btnSend");
+                Window.ClearTimeout(awaiter);
+                awaiter = Window.SetTimeout(() =>
                 {
-                    this.SetShow(true, "btnCreate");
-                }
-            });
+                    bl.setFalseCheckView();
+                    if (Parent.Name == "ReturnPlan List")
+                    {
+                        if (bl.getCheckView() == false)
+                        {
+                            if (check != null && check.StatusId == (int)ApprovalStatusEnum.New)
+                            {
+                                this.SetShow(true, "btnSend");
+                            }
+                            else
+                            {
+                                this.SetShow(true, "btnCreate");
+                            }
+                        }
+                    }
+                }, 500);
+            }
         }
 
         private void CompareChanges(object change, object cutting)

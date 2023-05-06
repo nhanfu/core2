@@ -1830,6 +1830,11 @@ namespace TMS.UI.Business.Manage
                });
         }
 
+        public void setFalseCheckView()
+        {
+            checkView = false;
+        }
+
         public bool getCheckView()
         {
             return checkView;
