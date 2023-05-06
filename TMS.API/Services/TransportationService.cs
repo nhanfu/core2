@@ -108,12 +108,18 @@ namespace TMS.API.Services
             {
                 return null;
             }
-            return @$"update Transportation set DemDate = DATEADD(day,(select top 1 [Day] from SettingTransportation where RouteId = t.RouteId and BranchShipId = isnull(t.LineId,t.BrandShipId) and StartDate <= t.ShipDate order by StartDate desc)-1,t.ShipDate)
+            if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ShipDate) || x.Field == nameof(Transportation.ContainerTypeId)))
+            {
+                return @$"update Transportation set DemDate = DATEADD(day,(select top 1 [Day] from SettingTransportation where RouteId = t.RouteId and BranchShipId = isnull(t.LineId,t.BrandShipId) and StartDate <= t.ShipDate order by StartDate desc)-1,t.ShipDate)
 						from Transportation t
 						join MasterData on MasterData.Id = t.ContainerTypeId
-						where t.DemDate is null
-						and MasterData.Description not like N'%tank%'
+						where MasterData.Description not like N'%tank%'
 						and t.Id = {Id};";
+            }
+            else
+            {
+                return @$"";
+            }
         }
 
         public string Transportation_ExportListId(PatchUpdate patchUpdate, int Id)
