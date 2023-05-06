@@ -43,8 +43,9 @@ namespace TMS.UI.Business.Manage
                 grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
             }
             var listViewItems = grid.RowData.Data.Cast<TransportationRequestDetails>().ToList();
-            var bl = Parent as TransportationListBL;
-            if (Parent.Name == "Transportation List Accountant" || Parent.Name == "List Ship Book" || bl.getCheckView())
+            var blTranList = Parent as TransportationListBL;
+            var blReturnList = Parent as ReturnPlanListBL;
+            if (Parent.Name == "Transportation List Accountant" || Parent.Name == "List Ship Book" || blTranList.getCheckView() || blReturnList.getCheckView())
             {
                 listViewItems.ForEach(x =>
                 {
