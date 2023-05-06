@@ -21,7 +21,7 @@ namespace TMS.API.Controllers
             sql += @$"
                     select *
                     from [{typeof(TransportationRequest).Name}]
-                    where 1 = 1 and Active = 1 and InsertedBy = {UserId}";
+                    where 1 = 1 and (Active = 1 or Active = 0) and InsertedBy = {UserId}";
             var qr = db.TransportationRequest.FromSqlRaw(sql);
             return ApplyQuery(options, qr, sql: sql);
         }
