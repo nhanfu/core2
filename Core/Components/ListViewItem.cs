@@ -354,7 +354,7 @@ namespace Core.Components
                     {
                         Field = child.GuiInfo.FieldName,
                         OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
-                        Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : value?.ToString().Trim().EncodeSpecialChar(),
+                        Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
                     };
                 }).ToList();
             details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = EntityId.ToString() });

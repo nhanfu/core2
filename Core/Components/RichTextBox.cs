@@ -63,7 +63,7 @@ namespace Core.Components
             reader.OnLoad += async (Event e) =>
             {
                 var uploader = new ImageUploader(new Component());
-                var path = await uploader.ResizeAndUploadImage(e.Target["result"].ToString(), file.Name);
+                var path = await uploader.UploadBase64Image(e.Target["result"].ToString(), file.Name);
                 if (success != null)
                 {
                     success.Invoke(path);

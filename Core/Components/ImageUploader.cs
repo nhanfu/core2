@@ -378,7 +378,7 @@ namespace Core.Components
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
         }
 
-        private async Task<string> UploadBase64Image(string base64Image, string fileName)
+        public async Task<string> UploadBase64Image(string base64Image, string fileName)
         {
             if (base64Image.Contains(PNGUrlPrefix))
             {
@@ -427,7 +427,17 @@ namespace Core.Components
             {
                 reader.OnLoad = async (e) =>
                 {
-                    var path = await ResizeAndUploadImage(e.Target["result"].ToString(), file.Name);
+                    var path = await UploadBase64Image(e.Target["result"].ToString(), file.Name);
+                    var upload = new FileUpload
+                    {
+                        EntityName = Entity.GetType().Name,
+                        RecordId = EntityId,
+                        SectionId = GuiInfo.ComponentGroupId,
+                        FieldName = GuiInfo.FieldName,
+                        FileName = file.Name,
+                        FilePath = path,
+                    };
+                    await new Client(nameof(FileUpload)).CreateAsync<FileUpload>(upload);
                     tcs.SetResult(path);
                 };
                 reader.ReadAsDataURL(file);
@@ -440,54 +450,6 @@ namespace Core.Components
                     tcs.SetResult(path);
                 });
             }
-            return tcs.Task;
-        }
-
-        public Task<string> ResizeAndUploadImage(string src, string fileName)
-        {
-            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
-            var image = new HTMLImageElement();
-            image.OnLoad += async (imageEvent) =>
-            {
-                var canvas = Document.CreateElement("canvas").As<HTMLCanvasElement>();
-                var max_size = 1024;
-                var width = image.Width;
-                var height = image.Height;
-                if (width > height)
-                {
-                    if (width > max_size)
-                    {
-                        height = (int)(height * ((float)max_size / width));
-                        width = max_size;
-                    }
-                }
-                else
-                {
-                    if (height > max_size)
-                    {
-                        width = (int)(width * ((float)max_size / height));
-                        height = max_size;
-                    }
-                }
-                canvas.Width = width;
-                canvas.Height = height;
-                var ctx = canvas.GetContext("2d").As<CanvasRenderingContext2D>();
-                ctx.DrawImage(image, 0, 0, width, height);
-                var dataUrl = canvas.ToDataURL();
-                var path = await UploadBase64Image(dataUrl, fileName);
-                var upload = new FileUpload
-                {
-                    EntityName = Entity.GetType().Name,
-                    RecordId = EntityId,
-                    SectionId = GuiInfo.ComponentGroupId,
-                    FieldName = GuiInfo.FieldName,
-                    FileName = fileName,
-                    FilePath = path,
-                };
-                await new Client(nameof(FileUpload)).CreateAsync<FileUpload>(upload);
-                tcs.SetResult(path);
-            };
-            image.Src = src;
             return tcs.Task;
         }
 
