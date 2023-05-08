@@ -630,7 +630,7 @@ namespace Core.Components
 
         protected virtual List<GridPolicy> MergeGridPolicy(List<GridPolicy> sysSetting, List<GridPolicy> userSetting)
         {
-            if (userSetting.Nothing())
+            if (userSetting.Nothing() || GuiInfo.Focus)
             {
                 return sysSetting;
             }

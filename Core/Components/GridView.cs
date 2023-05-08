@@ -324,6 +324,10 @@ namespace Core.Components
 
         protected void ThHotKeyHandler(Event e, GridPolicy header)
         {
+            if (GuiInfo.Focus)
+            {
+                return;
+            }
             var keyCode = e.KeyCodeEnum();
             if (keyCode == KeyCodeEnum.RightArrow)
             {
@@ -2101,7 +2105,10 @@ namespace Core.Components
                 });
             }
             HeaderSection.Children = HeaderSection.Children.OrderBy(x => x.GuiInfo.PostOrder).ToList();
-            ColumnResizeHandler();
+            if (!GuiInfo.Focus)
+            {
+                ColumnResizeHandler();
+            }
         }
         private int _imeout;
 
