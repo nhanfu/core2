@@ -1,4 +1,5 @@
-﻿using Core.Enums;
+﻿using Azure.Storage.Blobs;
+using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
@@ -385,15 +386,33 @@ namespace TMS.API.Controllers
             return GetRelativePath(path, host.WebRootPath);
         }
 
+        //[HttpPost("api/[Controller]/Image")]
+        //public async Task<string> PostImageAsync([FromServices] IWebHostEnvironment host, [FromBody] string image, string name = "Captured", bool reup = false)
+        //{
+        //    var fileName = $"{Path.GetFileNameWithoutExtension(name)}{Guid.NewGuid()}{Path.GetExtension(name)}";
+        //    var path = GetUploadPath(fileName, host.WebRootPath);
+        //    EnsureDirectoryExist(path);
+        //    path = reup ? IncreaseFileName(path) : path;
+        //    await FileIO.WriteAllBytesAsync(path, Convert.FromBase64String(image));
+        //    return GetRelativePath(path, host.WebRootPath);
+        //}
+
         [HttpPost("api/[Controller]/Image")]
-        public async Task<string> PostImageAsync([FromServices] IWebHostEnvironment host, [FromBody] string image, string name = "Captured", bool reup = false)
+        public async Task<string> PostImageAsync(
+            [FromServices] IWebHostEnvironment host,
+            [FromBody] string image, string name = "Captured", bool reup = false)
         {
             var fileName = $"{Path.GetFileNameWithoutExtension(name)}{Guid.NewGuid()}{Path.GetExtension(name)}";
             var path = GetUploadPath(fileName, host.WebRootPath);
             EnsureDirectoryExist(path);
             path = reup ? IncreaseFileName(path) : path;
             await FileIO.WriteAllBytesAsync(path, Convert.FromBase64String(image));
-            return GetRelativePath(path, host.WebRootPath);
+
+            BlobContainerClient containerClient = new(_config["blob_constr"], _config["blob_container"]);
+            BlobClient blobClient = containerClient.GetBlobClient(path.Replace(host.WebRootPath, string.Empty));
+            using FileStream fileStream = FileIO.OpenRead(path);
+            await blobClient.UploadAsync(fileStream, overwrite: true);
+            return blobClient.Uri.ToString();
         }
 
         public string GetRelativePath(string path, string webRootPath)

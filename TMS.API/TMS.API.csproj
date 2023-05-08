@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aspose.Cells" Version="23.3.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.16.0" />
     <PackageReference Include="ClosedXML" Version="0.100.3" />
     <PackageReference Include="EPPlus" Version="6.1.3" />
     <PackageReference Include="Jering.Javascript.NodeJS" Version="6.3.1" />
