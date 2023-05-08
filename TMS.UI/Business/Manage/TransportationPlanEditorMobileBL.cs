@@ -40,35 +40,46 @@ namespace TMS.UI.Business.Manage
         {
             var confirm = new ConfirmDialog
             {
-                Content = "Vui lòng nhập số cont cần hủy?",
+                Content = "Nhập lý lo điều chỉnh?",
                 NeedAnswer = true,
-                ComType = nameof(Number),
             };
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                var number = confirm.Number.Value;
-                if (number is null || Convert.ToInt32(number.Value) == Convert.ToInt32(0))
+                var value = confirm.Textbox.GetValueText();
+                var tran = await new Client(nameof(TransportationPlan)).FirstOrDefaultAsync<TransportationPlan>($"?$filter={nameof(TransportationPlan.RequestChangeId)} eq {transportationPlanEntity.Id} and StatusId eq {(int)ApprovalStatusEnum.New}");
+                if(tran is null)
                 {
-                    Toast.Warning("Vui lòng nhập số cont cần hủy");
-                    return;
+                    tran = new TransportationPlan();
+                    tran.CopyPropFrom(transportationPlanEntity, nameof(transportationPlanEntity.Id), nameof(transportationPlanEntity.RequestChangeId));
+                    tran.RequestChangeId = transportationPlanEntity.Id;
+                    tran.ReasonOfChange = value;
+                    tran.StatusId = (int)ApprovalStatusEnum.New;
+                    tran = await new Client(nameof(TransportationPlan)).CreateAsync<TransportationPlan>(tran);
                 }
-                if (Convert.ToInt32(number.Value) > Convert.ToInt32(transportationPlanEntity.TotalContainerUsing))
+                else
                 {
-                    Toast.Warning("Số cont hủy không được lớn hơn số cont sử dụng");
-                    return;
+                    tran.ReasonOfChange = value;
                 }
-                var tran = new TransportationPlan();
-                tran.CopyPropFrom(transportationPlanEntity, nameof(transportationPlanEntity.Id), nameof(transportationPlanEntity.RequestChangeId));
-                tran.RequestChangeId = transportationPlanEntity.Id;
-                tran.TotalContainer = tran.TotalContainer - Convert.ToInt32(number.Value);
-                tran.TotalContainerUsing = tran.TotalContainerUsing - Convert.ToInt32(number.Value);
-                tran.TotalContainerRemain = tran.TotalContainer - tran.TotalContainerUsing;
-                tran.StatusId = (int)ApprovalStatusEnum.New;
-                var rs = await new Client(nameof(TransportationPlan)).CreateAsync<TransportationPlan>(tran);
-                var res = await RequestApprove(rs);
-                ProcessEnumMessage(res);
+                await EditTransportationPlan(tran);
             };
+        }
+
+        public async Task EditTransportationPlan(TransportationPlan entity)
+        {
+            var id = "EditTransportationPlanChangeMobile" + entity.Id;
+            await this.OpenTab(
+                id: id,
+                featureName: "TransportationPlan Change Editor Mobile",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationPlanChangeEditorMobileBL");
+                    var instance = Activator.CreateInstance(type) as TabEditor;
+                    instance.Title = "Điều chỉnh KHVC";
+                    instance.Icon = "fal fa-sitemap mr-1";
+                    instance.Entity = entity;
+                    return instance;
+                });
         }
 
         public override async Task<bool> Save(object entity = null)
