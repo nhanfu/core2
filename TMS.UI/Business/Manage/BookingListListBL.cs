@@ -207,6 +207,84 @@ namespace TMS.UI.Business.Manage
             };
         }
 
+        public void RejectUnLockShip()
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLockShip");
+                if (gridView == null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=Active eq true and Id in ({ids.Combine()}) and IsRequestUnLockShip eq true");
+                var tranIds = tranRequests.Select(x => x.TransportationId).ToList();
+                var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({tranIds.Combine()}) and LockShip eq true");
+                if (transportations.Count <= 0)
+                {
+                    Toast.Warning("Không có cont nào bị khóa !!!");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    NeedAnswer = true,
+                    ComType = nameof(Textbox),
+                    Content = $"Bạn có chắc chắn muốn hủy yêu cầu cho {transportations.Count} cont không??<br />" +
+                            "Hãy nhập lý do",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    tranRequests.ForEach(x => x.ReasonReject = confirm.Textbox?.Text);
+                    await new Client(nameof(TransportationRequest)).BulkUpdateAsync<TransportationRequest>(tranRequests);
+                    var checks = transportations.Where(x => x.IsLocked).ToList();
+                    if (checks.Count > 0)
+                    {
+                        var confirmRequest = new ConfirmDialog
+                        {
+                            NeedAnswer = true,
+                            ComType = nameof(Textbox),
+                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            "Hãy nhập lý do",
+                        };
+                        confirmRequest.Render();
+                        confirmRequest.YesConfirmed += async () =>
+                        {
+                            foreach (var item in checks)
+                            {
+                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
+                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
+                            }
+                        };
+                        var transportationNoLock = transportations.Where(x => x.IsLocked == false).ToList();
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "RejectUnLockShip");
+                        if (res)
+                        {
+                            await gridView.ApplyFilter(true);
+                            Toast.Success("Hủy yêu cầu thành công");
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                    else
+                    {
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "RejectUnLockShip");
+                        if (res)
+                        {
+                            await gridView.ApplyFilter(true);
+                            Toast.Success("Hủy yêu cầu thành công");
+                        }
+                        else
+                        {
+                            Toast.Warning("Đã có lỗi xảy ra");
+                        }
+                    }
+                };
+            });
+        }
+
         public async Task ReportDataByFilter()
         {
             var query = $"?$filter=Active eq true";
