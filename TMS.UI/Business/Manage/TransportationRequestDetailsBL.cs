@@ -156,7 +156,8 @@ namespace TMS.UI.Business.Manage
                         && item.Name != "TransportationRequestId"
                         && item.Name != "StatusId"
                         && item.Name != "Reason"
-                        && item.Name != "ReasonReject")
+                        && item.Name != "ReasonReject"
+                        && item.Name != "TransportationRequest")
                     {
                         listViewItem.FilterChildren(x => x.Name == item.Name).FirstOrDefault()?.Element?.AddClass("text-warning-2");
                         listViewItemCutting.FilterChildren(x => x.Name == item.Name).FirstOrDefault()?.Element?.AddClass("text-warning-2");
