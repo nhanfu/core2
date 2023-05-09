@@ -532,7 +532,7 @@ namespace TMS.API.Controllers
                 var tasks = listUser.Select(user => new TaskNotification
                 {
                     Title = $"{currentUser.FullName}",
-                    Description = $"Đã gửi yêu chỉnh sửa ạ ",
+                    Description = entity.ReasonOfChange.IsNullOrWhiteSpace() ? $"Đã gửi yêu chỉnh sửa ạ lý do: " : entity.ReasonOfChange,
                     EntityId = _entitySvc.GetEntity(typeof(TransportationPlan).Name).Id,
                     RecordId = oldEntity.Id,
                     Attachment = "fal fa-paper-plane",
