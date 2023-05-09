@@ -322,6 +322,11 @@ namespace TMS.UI.Business.Manage
                         Field = nameof(Transportation.CheckFeeHistoryId),
                         Value = CheckFeeHistoryEntity.Id.ToString(),
                     });
+                    changes.Add(new PatchUpdateDetail()
+                    {
+                        Field = nameof(Transportation.OrderExcel),
+                        Value = transportation.OrderExcel.ToString(),
+                    });
                     patchUpdate.Changes = changes;
                     var rs = await new Client(nameof(Transportation)).PatchAsync<Transportation>(patchUpdate);
                     listViewItem.Entity.CopyPropFrom(rs);
@@ -369,6 +374,7 @@ namespace TMS.UI.Business.Manage
                         Fee4Upload = transportation.Fee4,
                         Fee5Upload = transportation.Fee5,
                         Fee6Upload = transportation.Fee6,
+                        OrderExcel = transportation.OrderExcel,
                         CheckFeeHistoryId = CheckFeeHistoryEntity.Id
                     };
                     listViewItem.Entity.CopyPropFrom(tran);
