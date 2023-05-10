@@ -117,7 +117,7 @@ namespace TMS.API.Controllers
             }
             if (patch.Changes.Any(x => x.Field == nameof(oldEntity.Name)))
             {
-                if (oldEntity.Name != null && oldEntity.Name != "")
+                if (oldEntity.Name != null && oldEntity.Name != "" && entity.TypeId != 23741)
                 {
                     var name = patch.Changes.FirstOrDefault(x => x.Field == nameof(oldEntity.Name));
                     var vendorDB = await db.Vendor.Where(x => x.Active && x.TypeId == entity.TypeId && x.NameSys.ToLower().Contains(entity.Name) && (x.Id != id.TryParseInt() || (int)entity.GetPropValue(IdField) <= 0)).FirstOrDefaultAsync();
@@ -131,7 +131,7 @@ namespace TMS.API.Controllers
             SetAuditInfo(entity);
             if (patch.Changes.Any(x => x.Field == nameof(entity.CompanyName)) && entity.TypeId == 23741)
             {
-                var checkExist = db.Vendor.Where(x => x.CompanyName.Trim().ToLower() == entity.CompanyName.Trim().ToLower() && x.TypeId == 23741).FirstOrDefaultAsync();
+                var checkExist = await db.Vendor.Where(x => x.CompanyName.Trim().ToLower() == entity.CompanyName.Trim().ToLower() && x.TypeId == 23741).FirstOrDefaultAsync();
                 if (checkExist != null)
                 {
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
@@ -148,7 +148,7 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<Vendor>> CreateAsync([FromBody] Vendor entity)
         {
-            if (entity.Name != null && entity.Name != "")
+            if (entity.Name != null && entity.Name != "" && entity.TypeId != 23741)
             {
                 var vendorDB = await db.Vendor.Where(x => x.NameSys.ToLower() == entity.Name.ToLower() && x.TypeId == entity.TypeId).FirstOrDefaultAsync();
                 if (vendorDB != null)
@@ -158,7 +158,7 @@ namespace TMS.API.Controllers
             }
             if (entity.TypeId == 23741 && entity.CompanyName != null && entity.CompanyName != "")
             {
-                var checkExist = db.Vendor.Where(x => x.CompanyName.Trim().ToLower() == entity.CompanyName.Trim().ToLower() && x.TypeId == 23741).FirstOrDefaultAsync();
+                var checkExist = await db.Vendor.Where(x => x.CompanyName.Trim().ToLower() == entity.CompanyName.Trim().ToLower() && x.TypeId == 23741).FirstOrDefaultAsync();
                 if (checkExist != null)
                 {
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
