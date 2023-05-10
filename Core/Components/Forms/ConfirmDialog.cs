@@ -82,7 +82,6 @@ namespace Core.Components.Forms
                         FieldName = CompareGridView.ReasonOfChange,
                         Row = 2,
                         FocusSearch = true,
-                        Precision = 7,
                         Visibility = true,
                     });
                     AddChild(Datepicker);

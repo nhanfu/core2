@@ -561,6 +561,7 @@ namespace Core.Components
                         FieldText = header.ShortDesc,
                         ComponentType = header.ComponentType,
                         Value = value,
+                        Shift = (bool)ev["Shift"],
                         ValueText = valueText,
                         Operator = ev["Operator"].ToString(),
                         OperatorText = ev["OperatorText"].ToString(),

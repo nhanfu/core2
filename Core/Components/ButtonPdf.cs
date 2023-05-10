@@ -42,58 +42,60 @@ namespace Core.Components
                     var selectedRow = await parentGridView.GetRealTimeSelectedRows();
                     foreach (var item in selectedRow)
                     {
+                        await Task.Delay(200);
                         var js = new PdfReport(GuiInfo)
                         {
                             ParentElement = body,
+                            Selected = item
                         };
                         Parent.AddChild(js);
                     }
                     Window.SetTimeout(() =>
                     {
-                    var ele = _preview.QuerySelectorAll(".printable").Cast<HTMLElement>().ToList();
-                    var htmlBuilder = new StringBuilder("<html><head>");
-                    htmlBuilder.Append("<body><div style='padding:7pt'>").Append(ele.Select(x => x.InnerHTML).Combine("</br>")).Append("</div></body></html>");
-                    var html = htmlBuilder.ToString();
-                    var printWindow = Window.Open("", "_blank");
-                    printWindow.Document.Write(html);
-                    printWindow.Document.Close();
-                    printWindow.Print();
-                    printWindow.AddEventListener(EventType.MouseMove, e => printWindow.Close());
-                    printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
-                    printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
-                    _pdfReport.Dispose();
-                    _preview.Remove();
-                }, 2000);
+                        var ele = _preview.QuerySelectorAll(".printable").Cast<HTMLElement>().ToList();
+                        var htmlBuilder = new StringBuilder("<html><head>");
+                        htmlBuilder.Append("<body><div style='padding:7pt'>").Append(ele.Select(x => x.OuterHTML).Combine("</br>")).Append("</div></body></html>");
+                        var html = htmlBuilder.ToString();
+                        var printWindow = Window.Open("", "_blank");
+                        printWindow.Document.Write(html);
+                        printWindow.Document.Close();
+                        printWindow.Print();
+                        printWindow.AddEventListener(EventType.MouseMove, e => printWindow.Close());
+                        printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
+                        printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
+                        _pdfReport.Dispose();
+                        _preview.Remove();
+                    }, 2000);
+                }
+                else
+                {
+                    Parent.AddChild(_pdfReport);
+                    Window.SetTimeout(() =>
+                    {
+                        var htmlBuilder = new StringBuilder("<html><head>");
+                        htmlBuilder.Append("<body><div style='padding:7pt'>").Append(_pdfReport.Element.QuerySelector(".printable").OuterHTML).Append("</div></body></html>");
+                        var html = htmlBuilder.ToString();
+                        var printWindow = Window.Open("", "_blank");
+                        printWindow.Document.Write(html);
+                        printWindow.Document.Close();
+                        printWindow.Print();
+                        printWindow.AddEventListener(EventType.MouseMove, e => printWindow.Close());
+                        printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
+                        printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
+                        _pdfReport.Dispose();
+                        _preview.Remove();
+                    }, 2000);
+                }
             }
             else
             {
                 Parent.AddChild(_pdfReport);
-                Window.SetTimeout(() =>
-                {
-                    var htmlBuilder = new StringBuilder("<html><head>");
-                    htmlBuilder.Append("<body><div style='padding:7pt'>").Append(_pdfReport.Element.QuerySelector(".printable").InnerHTML).Append("</div></body></html>");
-                    var html = htmlBuilder.ToString();
-                    var printWindow = Window.Open("", "_blank");
-                    printWindow.Document.Write(html);
-                    printWindow.Document.Close();
-                    printWindow.Print();
-                    printWindow.AddEventListener(EventType.MouseMove, e => printWindow.Close());
-                    printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
-                    printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
-                    _pdfReport.Dispose();
-                    _preview.Remove();
-                }, 2000);
             }
         }
-            else
-            {
-                Parent.AddChild(_pdfReport);
-            }
-}
 
-private void ClosePreview()
-{
-    _preview.Remove();
-}
+        private void ClosePreview()
+        {
+            _preview.Remove();
+        }
     }
 }

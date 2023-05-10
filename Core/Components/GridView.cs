@@ -453,6 +453,7 @@ namespace Core.Components
                         FieldName = ev["FieldName"].ToString(),
                         FieldText = header.ShortDesc,
                         ComponentType = header.ComponentType,
+                        Shift = (bool)ev["Shift"],
                         Value = value,
                         ValueText = valueText,
                         Operator = ev["Operator"].ToString(),
@@ -666,7 +667,7 @@ namespace Core.Components
                 if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName
                 && cell.FieldName != IdField
                 && x.CompareOperatorId == advo
-                && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In || x.CompareOperatorId == AdvSearchOperation.EqualDatime)))
+                && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In || x.CompareOperatorId == AdvSearchOperation.EqualDatime)) && !cell.Shift)
                 {
                     AdvSearchVM.Conditions.FirstOrDefault(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo).Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value;
                     Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{GuiInfo.RefName}].{cell.FieldName}")).FieldName = where;

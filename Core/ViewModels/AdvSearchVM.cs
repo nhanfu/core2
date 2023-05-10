@@ -28,6 +28,7 @@ namespace Core.Models
         public LogicOperation? Logic { get; set; }
         public bool IsSearch { get; set; }
         public bool Group { get; set; }
+        public bool Shift { get; set; }
     }
 
     public class Where

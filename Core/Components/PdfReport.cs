@@ -18,6 +18,7 @@ namespace Core.Components
         private const string DataNotFound = "Không tìm thấy dữ liệu";
         private const string TemplateNotFound = "Template is null or empty";
         private HTMLElement _rptContent;
+        public object Selected { get; set; }
         public object[][] Data { get; set; }
         public bool HiddenButton { get; set; }
         public PdfReport(Component ui, HTMLElement ele = null) : base(ui)
@@ -71,7 +72,7 @@ namespace Core.Components
             }
 
             html.EndOf(".menuBar");
-            html.Div.ClassName("printable");
+            html.Div.ClassName("printable").Style("page-break-before: always;");
             _rptContent = html.GetContext();
 
         }
@@ -316,11 +317,11 @@ namespace Core.Components
             {
                 var isFnPowerQuery = Utils.IsFunction(GuiInfo.Query, out var fn);
                 var isFnPreQuery = Utils.IsFunction(GuiInfo.PreQuery, out var preQueryFn);
-                var preQuery = isFnPreQuery ? preQueryFn.Call(this, Entity, this) : null;
+                var preQuery = isFnPreQuery ? preQueryFn.Call(this, Entity, this, Selected) : null;
                 string datasource = null;
                 if (isFnPowerQuery)
                 {
-                    var query = fn.Call(this, preQuery ?? Entity, this);
+                    var query = fn.Call(this, preQuery ?? Entity, this, Selected);
                     if (query == null)
                     {
                         tcs.SetException(new NullReferenceException("Query is null"));

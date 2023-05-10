@@ -299,7 +299,7 @@ namespace TMS.UI.Business.Manage
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
             Task.Run(async () =>
             {
-                var selected = (await gridView.GetRealTimeSelectedRows()).LastOrDefault();
+                var selected = (await gridView.GetRealTimeSelectedRows()).FirstOrDefault();
                 var confirm = new ConfirmDialog
                 {
                     Content = "Bạn muốn tách ra bao nhiêu cont?",
@@ -307,19 +307,20 @@ namespace TMS.UI.Business.Manage
                 confirm.Render();
                 confirm.YesConfirmed += async () =>
                 {
-                    var transportationPlan = await new Client(nameof(TransportationPlan)).GetAsync<TransportationPlan>(int.Parse(selected[nameof(Transportation.TransportationPlanId)].ToString()));
+                    var transportationPlan = await new Client(nameof(TransportationPlan))
+                    .GetAsync<TransportationPlan>(int.Parse(selected[nameof(Transportation.TransportationPlanId)].ToString()));
                     if (transportationPlan.TotalContainer <= 1)
                     {
                         Toast.Warning("Số lượng cont phải lớn hơn 1");
                         return;
                     }
-                    var transportation = new TransportationPlan();
-                    transportation.CopyPropFrom(selected, nameof(TransportationPlan.Id));
-                    transportation.IsTransportation = true;
-                    transportation.TotalContainer = 1;
-                    transportation.TotalContainerRemain = 0;
-                    transportation.TotalContainerUsing = 1;
-                    transportation = await new Client(nameof(TransportationPlan)).CreateAsync<TransportationPlan>(transportation);
+                    var tp = new TransportationPlan();
+                    tp.CopyPropFrom(selected, nameof(TransportationPlan.Id));
+                    tp.IsTransportation = true;
+                    tp.TotalContainer = 1;
+                    tp.TotalContainerRemain = 0;
+                    tp.TotalContainerUsing = 1;
+                    tp = await new Client(nameof(TransportationPlan)).CreateAsync<TransportationPlan>(tp);
                     var pathUpdateTran = new PatchUpdate()
                     {
                         Changes = new List<PatchUpdateDetail>()
@@ -327,12 +328,12 @@ namespace TMS.UI.Business.Manage
                             new PatchUpdateDetail()
                             {
                                 Field = nameof(Transportation.Id),
-                                Value =  selected[nameof(Transportation.TransportationPlanId)].ToString()
+                                Value =  selected[nameof(Transportation.Id)].ToString()
                             },
                             new PatchUpdateDetail()
                             {
                                 Field = nameof(Transportation.TransportationPlanId),
-                                Value =  transportation.Id.ToString()
+                                Value =  tp.Id.ToString()
                             }
                         }
                     };
