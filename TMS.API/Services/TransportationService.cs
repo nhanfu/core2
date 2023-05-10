@@ -24,8 +24,8 @@ namespace TMS.API.Services
         public string Transportation_BetFee(PatchUpdate patchUpdate, int Id)
         {
             if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ReturnId) || x.Field == nameof(Transportation.CompanyId)
-            || x.Field == nameof(Transportation.BetFee) || x.Field == nameof(Transportation.ReturnClosingFee)
-            || x.Field == nameof(Transportation.ReturnLiftFeeReport) || x.Field == nameof(Transportation.CustomerReturnFee)))
+            || x.Field == nameof(Transportation.BetFee) || x.Field == nameof(Transportation.ReturnClosingFeeReport)
+            || x.Field == nameof(Transportation.ReturnLiftFeeReport) || x.Field == nameof(Transportation.CustomerReturnFeeReport)))
             {
                 return null;
             }
@@ -39,13 +39,13 @@ namespace TMS.API.Services
 		            from Transportation t
 		            left join [Location] l on l.Id = t.ReturnId
 		            where t.Id = {Id}
-                    update Transportation set TotalBet = (isnull(Transportation.BetFee,0) + isnull(Transportation.ReturnLiftFeeReport,0) + isnull(Transportation.ReturnClosingFee,0) + isnull(Transportation.CustomerReturnFee,0))
+                    update Transportation set TotalBet = (isnull(Transportation.BetFee,0) + isnull(Transportation.ReturnLiftFeeReport,0) + isnull(Transportation.ReturnClosingFeeReport,0) + isnull(Transportation.CustomerReturnFeeReport,0))
 		            from Transportation
 		            where Transportation.Id = {Id};";
             }
             else
             {
-                return @$"update Transportation set TotalBet = (isnull(Transportation.BetFee,0) + isnull(Transportation.ReturnLiftFeeReport,0) + isnull(Transportation.ReturnClosingFee,0) + isnull(Transportation.CustomerReturnFee,0))
+                return @$"update Transportation set TotalBet = (isnull(Transportation.BetFee,0) + isnull(Transportation.ReturnLiftFeeReport,0) + isnull(Transportation.ReturnClosingFeeReport,0) + isnull(Transportation.CustomerReturnFeeReport,0))
 		            from Transportation
 		            where Transportation.Id = {Id};";
             }
@@ -301,19 +301,6 @@ namespace TMS.API.Services
 					where Transportation.ShipDate is not null
 					and Transportation.Id = {Id};";
             }
-        }
-
-        public string Transportation_ReturnClosingFeeReport(PatchUpdate patchUpdate, int Id)
-        {
-            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ContainerTypeId)
-            || x.Field == nameof(Transportation.ReturnClosingFee)))
-            {
-                return null;
-            }
-            return @$"update Transportation set ReturnClosingFeeReport = Transportation.ReturnClosingFee
-					from Transportation
-					where Transportation.ReturnClosingFeeReport is null
-					and Transportation.Id = {Id};";
         }
 
         public string Transportation_ReturnDate(PatchUpdate patchUpdate, int Id)

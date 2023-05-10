@@ -559,7 +559,7 @@ namespace Core.Components
                     else
                     {
                         advo = cell.Operator == "not in" ? AdvSearchOperation.NotLike : AdvSearchOperation.Like;
-                        where = cell.Operator == "not in" ? $"(CHARINDEX('{cell.Value}', [{GuiInfo.RefName}].{cell.FieldName}) = 0 or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $"CHARINDEX('{cell.Value}', [{GuiInfo.RefName}].{cell.FieldName}) > 0";
+                        where = cell.Operator == "not in" ? $"(CHARINDEX(N'{cell.Value}', [{GuiInfo.RefName}].{cell.FieldName}) = 0 or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $"CHARINDEX(N'{cell.Value}', [{GuiInfo.RefName}].{cell.FieldName}) > 0";
                     }
                     lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }

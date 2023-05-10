@@ -281,7 +281,6 @@ namespace TMS.API.Controllers
                             command.CommandText += " " + _transportationService.Transportation_MonthText(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_Note4(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_ReturnClosingFee(patch, idInt);
-                            command.CommandText += " " + _transportationService.Transportation_ReturnClosingFeeReport(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_ReturnDate(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_ReturnEmptyId(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_ReturnLiftFee(patch, idInt);
