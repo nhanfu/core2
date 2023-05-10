@@ -412,6 +412,11 @@ ul.tabs-list {
         &:hover {
             cursor: pointer;
 
+            > .fa-compress-wide {
+                display: inline;
+                color: @darkCobalt;
+            }
+
             > .fa-times {
                 display: inline;
                 color: @darkCobalt;
@@ -519,6 +524,10 @@ ul.tabs-list {
             .fa-times {
                 display: inline-block;
             }
+
+            .fa-compress-wide {
+                display: inline-block;
+            }
         }
 
         .title {
@@ -545,7 +554,17 @@ ul.tabs-list {
         position: absolute;
         top: 0;
         right: 0;
-        font-size: 1.25rem;
+        font-size: 1rem;
+        color: @theadColor;
+        transition: all 0.5s ease-in;
+    }
+
+    .fa-compress-wide {
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 1rem;
+        font-size: 1rem;
         color: @theadColor;
         transition: all 0.5s ease-in;
     }
@@ -3835,6 +3854,7 @@ div > [class*="cell"]:last-child {
         top: 77px;
         height: calc(100vh - 77px);
         overflow: auto;
+        background: #ececec;
     }
 }
 
