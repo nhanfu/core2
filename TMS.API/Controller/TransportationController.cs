@@ -1162,7 +1162,7 @@ namespace TMS.API.Controllers
             using var stream = FileIO.Create(path);
             await formFile.CopyToAsync(stream);
             Workbook workbook = new Workbook(stream);
-            Worksheet worksheet = workbook.Worksheets[0];
+            Worksheet worksheet = workbook.Worksheets.FirstOrDefault(x => x.IsVisible);
             var start = 0;
             for (int row = 0; row <= 20; row++)
             {
