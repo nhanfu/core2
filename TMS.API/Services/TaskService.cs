@@ -45,6 +45,11 @@ namespace TMS.API.Services
             await _fcmSvc.SendMessageToUsersAsync(new List<int>() { task.Data.ToId.Value }, task.ToJson(), null);
         }
 
+        public async Task ChatGptSendToUser(WebSocketResponse<Chat> task)
+        {
+            await _fcmSvc.SendMessageToUsersAsync(new List<int>() { task.Data.FromId.Value }, task.ToJson(), null);
+        }
+
         private async Task SendMessageToUser(WebSocketResponse<TaskNotification> task)
         {
             var tenantCode = _userService.TenantCode;

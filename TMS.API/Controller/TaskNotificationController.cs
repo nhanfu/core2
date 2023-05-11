@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
 using TMS.API.Models;
+using TMS.API.ViewModels;
 
 namespace TMS.API.Controllers
 {
@@ -47,44 +48,37 @@ namespace TMS.API.Controllers
             return Ok(true);
         }
 
-        [AllowAnonymous]
         [HttpGet("api/[Controller]/SendChat")]
-        public async Task<string> SendChat([FromQuery] string chat)
+        public async Task<string> SendChat([FromBody] string chat)
         {
-            string apiKey = "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";
-            // Thiết lập endpoint API
-            string endpoint = "https://api.openai.com/v1/engines/davinci-codex/completions";
-            Console.WriteLine("Bot: Chào! Tôi là ChatBot. Hãy nói gì đó để bắt đầu.");
-            var listString = new List<string>();
-            while (true)
-            {
-                string response = await GetChatGPTResponse(apiKey, endpoint, chat);
-                return response;
-            }
+            var apiKey = "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";
+            var endpoint = "https://api.openai.com/v1/chat/completions";
+            string response = await GetChatGPTResponse(apiKey, endpoint, chat);
+            return response;
         }
 
-        private static async Task<string> GetChatGPTResponse(string apiKey, string endpoint, string input)
+        private async Task<string> GetChatGPTResponse(string apiKey, string endpoint, string input)
         {
             using (var httpClient = new HttpClient())
             {
-                // Thiết lập header chứa API key
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-
-                // Tạo dữ liệu yêu cầu dựa trên input
-                var requestData = new
+                var requestData = new ChatGptVM
                 {
-                    prompt = input,
-                    max_tokens = 50 // Số từ tối đa trong phản hồi
+                    model = "gpt-3.5-turbo",
+                    messages = new List<ChatGptMessVM>()
+                    {
+                        new ChatGptMessVM
+                        {
+                            role = "user",
+                            content = "Tôi muốn học c#",
+                            name = "1212121",
+                        }
+                    }
                 };
                 var jsonRequestData = JsonConvert.SerializeObject(requestData);
-
-                // Gửi yêu cầu POST đến API
                 var response = await httpClient.PostAsync(endpoint, new StringContent(jsonRequestData, Encoding.UTF8, "application/json"));
-
-                // Đọc và trả về nội dung phản hồi từ API
                 var jsonResponseData = await response.Content.ReadAsStringAsync();
-                var responseObject = JsonConvert.DeserializeObject<dynamic>(jsonResponseData);
-                return responseObject.choices[0].text;
+                return jsonResponseData;
             }
         }
 
