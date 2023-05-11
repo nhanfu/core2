@@ -2,6 +2,7 @@
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
+using DocumentFormat.OpenXml.Office.Word;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -405,6 +406,205 @@ namespace TMS.API.Controllers
             }
             await db.Database.ExecuteSqlRawAsync(cmd);
             return true;
+        }
+
+        [HttpPost("api/Revenue/RequestUnLock")]
+        public async Task RequestUnLock([FromBody] RevenueRequest revenueRequest)
+        {
+            var check = await db.RevenueRequest.Where(x => x.RevenueId == revenueRequest.RevenueId && x.StatusId == (int)ApprovalStatusEnum.Approving && x.Active).ToListAsync();
+            if (check.Count > 0)
+            {
+                throw new ApiException("Đã có yêu cầu mở khóa");
+            }
+            var entityType = _entitySvc.GetEntity(typeof(Revenue).Name);
+            var approvalConfig = await db.ApprovalConfig.AsNoTracking().OrderBy(x => x.Level)
+                .Where(x => x.Active && x.EntityId == entityType.Id).ToListAsync();
+            if (approvalConfig.Nothing())
+            {
+                throw new ApiException("Quy trình duyệt chưa được cấu hình");
+            }
+            var matchApprovalConfig = approvalConfig.FirstOrDefault(x => x.Level == 1);
+            if (matchApprovalConfig is null)
+            {
+                throw new ApiException("Quy trình duyệt chưa được cấu hình");
+            }
+            if (approvalConfig is null)
+            {
+                throw new ApiException("Quy trình duyệt chưa được cấu hình");
+            }
+            var listUser = await (
+                from user in db.User
+                join userRole in db.UserRole on user.Id equals userRole.UserId
+                join role in db.Role on userRole.RoleId equals role.Id
+                where userRole.RoleId == matchApprovalConfig.RoleId
+                select user
+            ).ToListAsync();
+            if (listUser.HasElement())
+            {
+                var revenueRequestDB = await db.RevenueRequest.Where(x => x.Id == revenueRequest.Id).FirstOrDefaultAsync();
+                revenueRequestDB.StatusId = (int)ApprovalStatusEnum.Approving;
+                revenueRequestDB.Reason = revenueRequest.Reason;
+                var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
+                var tasks = new List<TaskNotification>();
+                foreach (var user in listUser)
+                {
+                    var task = new TaskNotification()
+                    {
+                        Title = $"{currentUser.FullName}",
+                        Description = $"Đã gửi yêu cầu thay đổi doanh thu",
+                        EntityId = _entitySvc.GetEntity(typeof(RevenueRequest).Name).Id,
+                        RecordId = revenueRequestDB.Id,
+                        Attachment = "fal fa-paper-plane",
+                        AssignedId = user.Id,
+                        StatusId = (int)TaskStateEnum.UnreadStatus,
+                        RemindBefore = 540,
+                        Deadline = DateTime.Now,
+                    };
+                    SetAuditInfo(task);
+                    db.AddRange(task);
+                    tasks.Add(task);
+                }
+                await db.SaveChangesAsync();
+                await _taskService.NotifyAsync(tasks);
+            }
+        }
+
+        [HttpPost("api/Revenue/ApproveUnLock")]
+        public async Task<bool> ApproveUnLock([FromBody] List<RevenueRequest> revenueRequests)
+        {
+            if (revenueRequests == null)
+            {
+                return false;
+            }
+            var user = await db.User.Where(x => x.Active && x.Id == UserId).FirstOrDefaultAsync();
+            foreach (var item in revenueRequests)
+            {
+                var taskNotification = new TaskNotification
+                {
+                    Title = $"{user.FullName}",
+                    Description = $"Đã duyệt yêu cầu thay đổi (Doanh thu)",
+                    EntityId = _entitySvc.GetEntity(typeof(Revenue).Name).Id,
+                    RecordId = item.Id,
+                    Attachment = "fal fa-check",
+                    AssignedId = item.InsertedBy,
+                    StatusId = (int)TaskStateEnum.UnreadStatus,
+                    RemindBefore = 540,
+                    Deadline = DateTime.Now,
+                };
+                SetAuditInfo(taskNotification);
+                db.AddRange(taskNotification);
+                await db.SaveChangesAsync();
+                await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
+            }
+            var ids = revenueRequests.Select(x => x.RevenueId).ToList();
+            var revenues = await db.Revenue.Where(x => ids.Contains((int)x.Id) && x.Active).ToListAsync();
+            var cmd = "";
+            foreach (var item in revenueRequests)
+            {
+                var revenue = revenues.Where(x => x.Id == item.RevenueId).FirstOrDefault();
+                var queryUpdate = CompareChanges(item, revenue);
+                cmd += queryUpdate;
+                cmd += $" where Id = {revenue.Id}";
+            }
+            cmd += $" Update [{nameof(RevenueRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
+                $" where Id in ({revenueRequests.Select(x => x.Id).Combine()}) and Active = 1";
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
+
+        [HttpPost("api/Revenue/RejectUnLock")]
+        public async Task<bool> RejectUnLock([FromBody] List<RevenueRequest> revenueRequests)
+        {
+            if (revenueRequests == null)
+            {
+                return false;
+            }
+            var user = await db.User.Where(x => x.Active && x.Id == UserId).FirstOrDefaultAsync();
+            foreach (var item in revenueRequests)
+            {
+                var taskNotification = new TaskNotification
+                {
+                    Title = $"{user.FullName}",
+                    Description = $"Đã hủy yêu cầu thay đổi. Lý do: {item.ReasonReject}",
+                    EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                    RecordId = item.Id,
+                    Attachment = "fal fa-check",
+                    AssignedId = item.InsertedBy,
+                    StatusId = (int)TaskStateEnum.UnreadStatus,
+                    RemindBefore = 540,
+                    Deadline = DateTime.Now,
+                };
+                SetAuditInfo(taskNotification);
+                db.AddRange(taskNotification);
+                await db.SaveChangesAsync();
+                await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
+            }
+            var cmd = "";
+            cmd += $" Update [{nameof(RevenueRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
+                $" where Id in ({revenueRequests.Select(x => x.Id).Combine()}) and Active = 1";
+            await db.Database.ExecuteSqlRawAsync(cmd);
+            return true;
+        }
+
+        private string CompareChanges(object change, object cutting)
+        {
+            var query = $" Update [{nameof(Revenue)}] set ";
+            if (change != null)
+            {
+                var propsChange = change.GetType().GetProperties().ToList();
+                var propsCutting = cutting.GetType().GetProperties().ToList();
+                foreach (var item in propsChange)
+                {
+                    var a1 = item.GetValue(change);
+                    var a2 = propsCutting.Where(x => x.Name == item.Name).FirstOrDefault()?.GetValue(cutting);
+                    if (a1 == null && a2 == null)
+                    {
+                        continue;
+                    }
+                    if (((a1 != null && a2 == null) || (a1 == null && a2 != null) || (a1 != null && a2 != null) && (a1.ToString() != a2.ToString()))
+                        && item.Name != "Id"
+                        && item.Name != "InsertedDate"
+                        && item.Name != "InsertedBy"
+                        && item.Name != "UpdatedDate"
+                        && item.Name != "UpdatedBy"
+                        && item.Name != "RevenueId"
+                        && item.Name != "StatusId"
+                        && item.Name != "Reason"
+                        && item.Name != "ReasonReject"
+                        && item.Name != "IsLotNo"
+                        && item.Name != "IsLotDate"
+                        && item.Name != "IsInvoinceNo"
+                        && item.Name != "IsInvoinceDate"
+                        && item.Name != "IsUnitPriceBeforeTax"
+                        && item.Name != "IsUnitPriceAfterTax"
+                        && item.Name != "IsReceivedPrice"
+                        && item.Name != "IsCollectOnBehaftPrice"
+                        && item.Name != "IsVat"
+                        && item.Name != "IsTotalPriceBeforTax"
+                        && item.Name != "IsVatPrice"
+                        && item.Name != "IsTotalPrice"
+                        && item.Name != "IsNotePayment"
+                        && item.Name != "IsVendorVatId"
+                        && item.Name != "IsAll")
+                    {
+                        var propType = item.PropertyType.FullName;
+                        if (propType.Contains("System.DateTime"))
+                        {
+                            query += $"{item.Name} = ";
+                            query += a1 != null ? $"'{DateTime.Parse(a1.ToString()).ToString("yyyy/MM/dd")}'" : "NULL";
+                            query += ", ";
+                        }
+                        else
+                        {
+                            query += $"{item.Name} = ";
+                            query += a1 != null ? $"'{a1.ToString()}'" : "NULL";
+                            query += ", ";
+                        }
+                    }
+                }
+            }
+            query = query.TrimEnd(',', ' ');
+            return query;
         }
     }
 }

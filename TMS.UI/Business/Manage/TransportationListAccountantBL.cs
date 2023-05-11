@@ -11,12 +11,14 @@ using System.Threading.Tasks;
 using Core.ViewModels;
 using Bridge.Html5;
 using static Retyped.es5;
+using static Retyped.dom.Literals.Types;
 
 namespace TMS.UI.Business.Manage
 {
     public class TransportationListAccountantBL : TabEditor
     {
         public Transportation selected;
+        public bool checkView = false;
         public TransportationListAccountantBL() : base(nameof(Transportation))
         {
             Name = "Transportation List Accountant";
@@ -31,7 +33,7 @@ namespace TMS.UI.Business.Manage
             }
             var featurePolicy = await CheckRoleList();
             var menus = new List<ContextMenuItem>();
-            if (gridView.Any(x=>x.Name == "TransportationAccountant"))
+            if (gridView.Any(x => x.Name == "TransportationAccountant"))
             {
                 var grid = gridView.Where(x => x.Name == "TransportationAccountant").FirstOrDefault();
                 grid.BodyContextMenuShow += () =>
@@ -130,6 +132,19 @@ namespace TMS.UI.Business.Manage
                     {
                         menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt yêu cầu", Click = ApproveUnLockAccountant });
                         menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy yêu cầu", Click = RejectUnLockAccountant });
+                    }
+                    ContextMenu.Instance.MenuItems = menus;
+                };
+            }
+            else if (gridView.Any(x => x.Name == "TransportationUnLockRevenue"))
+            {
+                var grid = gridView.Where(x => x.Name == "TransportationUnLockRevenue").FirstOrDefault();
+                grid.BodyContextMenuShow += () =>
+                {
+                    if (featurePolicy.Where(x => x.RecordId == 19450).Any())
+                    {
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-up mr-1", Text = "Duyệt yêu cầu", Click = ApproveUnLockRevenue });
+                        menus.Add(new ContextMenuItem { Icon = "fas fa-thumbs-down mr-1", Text = "Hủy yêu cầu", Click = RejectUnLockRevenue });
                     }
                     ContextMenu.Instance.MenuItems = menus;
                 };
@@ -625,9 +640,20 @@ namespace TMS.UI.Business.Manage
                     Toast.Warning("Bạn không có quyền chỉnh sửa dữ liệu của cột này.");
                     return;
                 }
-                if (selected.IsSubmit)
+                if (patch.Changes.Any(x => x.Field == nameof(Revenue.InvoinceNo)
+                || x.Field == nameof(Revenue.InvoinceDate)
+                || x.Field == nameof(Revenue.Vat)
+                || x.Field == nameof(Revenue.TotalPriceBeforTax)
+                || x.Field == nameof(Revenue.VatPrice)
+                || x.Field == nameof(Revenue.TotalPrice)
+                || x.Field == nameof(Revenue.VendorVatId)))
                 {
-                    if (patch.Changes.Any(x => x.Field == nameof(Revenue.Name)
+                    if (selected != null && selected.IsLockedRevenue)
+                    {
+                        OpenRevenueRequestBL(revenue);
+                    }
+                }
+                if (patch.Changes.Any(x => x.Field == nameof(Revenue.Name)
                     || x.Field == nameof(Revenue.LotNo)
                     || x.Field == nameof(Revenue.LotDate)
                     || x.Field == nameof(Revenue.UnitPriceAfterTax)
@@ -637,26 +663,49 @@ namespace TMS.UI.Business.Manage
                     || x.Field == nameof(Revenue.NotePayment)
                     || x.Field == nameof(Revenue.Note)
                     || x.Field == nameof(Revenue.RevenueAdjustment)))
+                {
+                    if (selected != null && selected.IsSubmit)
                     {
-                        if (selected.IsSubmit)
-                        {
-                            var confirm = new ConfirmDialog
-                            {
-                                NeedAnswer = true,
-                                ComType = nameof(Textbox),
-                                Content = $"DSVC này đã bị khóa (Kế toán). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                                "Hãy nhập lý do",
-                            };
-                            confirm.Render();
-                            confirm.YesConfirmed += async () =>
-                            {
-                                selected.ReasonUnLockAccountant = confirm.Textbox?.Text;
-                                await new Client(nameof(Transportation)).PostAsync<Transportation>(selected, "RequestUnLockAccountant");
-                            };
-                        }
+                        OpenRevenueRequestBL(revenue);
                     }
                 }
             }
+            else
+            {
+                OpenRevenueRequestBL(revenue);
+            }
+        }
+
+        public void OpenRevenueRequestBL(Revenue revenue)
+        {
+            var confirm = new ConfirmDialog
+            {
+                Content = $"Doanh này đã bị khóa. Bạn có muốn tạo yêu cầu thay đổi không ?",
+            };
+            confirm.Render();
+            confirm.YesConfirmed += async () =>
+            {
+                var checkRequestExist = await new Client(nameof(RevenueRequest)).FirstOrDefaultAsync<RevenueRequest>($"?$filter=Active eq true and RevenueId eq {revenue.Id} and StatusId eq 4");
+                if (checkRequestExist != null)
+                {
+                    Toast.Warning("Đã có yêu cầu thay đổi đang chờ được duyệt");
+                    return;
+                }
+                else
+                {
+                    revenue = await new Client(nameof(Revenue)).FirstOrDefaultAsync<Revenue>($"?$filter=Active eq true and Id eq {revenue.Id}");
+                    await this.OpenPopup(
+                    featureName: "Revenue Request",
+                    factory: () =>
+                    {
+                        var type = Type.GetType("TMS.UI.Business.Manage.RevenueRequestBL");
+                        var instance = Activator.CreateInstance(type) as PopupEditor;
+                        instance.Title = "Yêu cầu thay đổi";
+                        instance.Entity = revenue;
+                        return instance;
+                    });
+                }
+            };
         }
 
         public void ApproveUnLock(object arg)
@@ -801,6 +850,43 @@ namespace TMS.UI.Business.Manage
                 confirm.YesConfirmed += async () =>
                 {
                     var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "ApproveUnLockAll");
+                    if (res)
+                    {
+                        await gridView.ApplyFilter(true);
+                        Toast.Success("Mở khóa thành công");
+                    }
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
+                };
+            });
+        }
+
+        public void ApproveUnLockRevenue(object arg)
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLockRevenue");
+                if (gridView == null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var requests = await new Client(nameof(RevenueRequest)).GetRawList<RevenueRequest>($"?$filter=Active eq true and Id in ({ids.Combine()})");
+                if (requests.Count <= 0)
+                {
+                    Toast.Warning("Không có DT nào bị khóa !!!");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    Content = $"Bạn có chắc chắn muốn mở khóa cho {requests.Count} DT không?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    var res = await new Client(nameof(Revenue)).PostAsync<bool>(requests, "ApproveUnLock");
                     if (res)
                     {
                         await gridView.ApplyFilter(true);
@@ -1001,6 +1087,48 @@ namespace TMS.UI.Business.Manage
                     tranRequests.ForEach(x => x.ReasonReject = confirm.Textbox?.Text);
                     await new Client(nameof(TransportationRequest)).BulkUpdateAsync<TransportationRequest>(tranRequests);
                     var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportations, "RejectUnLockAll");
+                    if (res)
+                    {
+                        await gridView.ApplyFilter(true);
+                        Toast.Success("Hủy yêu cầu thành công");
+                    }
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
+                };
+            });
+        }
+
+        public void RejectUnLockRevenue(object arg)
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLockRevenue");
+                if (gridView == null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var requests = await new Client(nameof(RevenueRequest)).GetRawList<RevenueRequest>($"?$filter=Active eq true and Id in ({ids.Combine()})");
+                if (requests.Count <= 0)
+                {
+                    Toast.Warning("Không có DT nào bị khóa !!!");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    NeedAnswer = true,
+                    ComType = nameof(Textbox),
+                    Content = $"Bạn có chắc chắn muốn hủy yêu cầu cho {requests.Count} DT không??<br />" +
+                            "Hãy nhập lý do",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    requests.ForEach(x => x.ReasonReject = confirm.Textbox?.Text);
+                    await new Client(nameof(RevenueRequest)).BulkUpdateAsync<RevenueRequest>(requests);
+                    var res = await new Client(nameof(Revenue)).PostAsync<bool>(requests, "RejectUnLock");
                     if (res)
                     {
                         await gridView.ApplyFilter(true);
@@ -1626,9 +1754,38 @@ namespace TMS.UI.Business.Manage
             Toast.Success("Xuất file thành công");
         }
 
+        public async Task ViewRequestChangeRevenue(RevenueRequest revenueRequest)
+        {
+            var revenue = await new Client(nameof(Revenue)).FirstOrDefaultAsync<Revenue>($"?$filter=Active eq true and Id eq {revenueRequest.RevenueId}");
+            if (revenue != null)
+            {
+                checkView = true;
+                await this.OpenPopup(
+                featureName: "Revenue Request",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.RevenueRequestBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Yêu cầu thay đổi";
+                    instance.Entity = revenue;
+                    return instance;
+                });
+            }
+        }
+
+        public bool getCheckView()
+        {
+            return checkView;
+        }
+
+        public void setFalseCheckView()
+        {
+            checkView = false;
+        }
+
         public async Task<List<FeaturePolicy>> CheckRoleList()
         {
-            return await new Client(nameof(FeaturePolicy)).GetRawList<FeaturePolicy>($"?$filter=Active eq true and EntityId eq 20 and RecordId in (18111, 17758, 17752, 17756, 18142, 17749, 17718, 17724) and RoleId in ({Token.RoleIds.Combine()})");
+            return await new Client(nameof(FeaturePolicy)).GetRawList<FeaturePolicy>($"?$filter=Active eq true and EntityId eq 20 and RecordId in (18111, 17758, 17752, 17756, 18142, 17749, 17718, 17724, 19450) and RoleId in ({Token.RoleIds.Combine()})");
         }
 
         public PatchUpdate GetPatchIsLockedEntity(Transportation transportation)

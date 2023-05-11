@@ -181,6 +181,9 @@
     <Compile Include="..\TMS.API\Models\Revenue.cs">
       <Link>Models\Revenue.cs</Link>
     </Compile>
+    <Compile Include="..\TMS.API\Models\RevenueRequest.cs">
+      <Link>Models\RevenueRequest.cs</Link>
+    </Compile>
     <Compile Include="..\TMS.API\Models\Role.cs">
       <Link>Models\Role.cs</Link>
     </Compile>
@@ -307,6 +310,7 @@
     <Compile Include="Business\Manage\ExtraInsuranceFeesRateBL.cs" />
     <Compile Include="Business\Manage\BossEditorMobileBL.cs" />
     <Compile Include="Business\Manage\TransportationPlanChangeEditorMobileBL.cs" />
+    <Compile Include="Business\Manage\RevenueRequestBL.cs" />
     <Compile Include="Business\Manage\TransportationReturnEditorBL.cs" />
     <Compile Include="Business\Manage\TransportationPlanEditorMobileBL.cs" />
     <Compile Include="Business\Manage\TransportationPlanListMobileBL.cs" />

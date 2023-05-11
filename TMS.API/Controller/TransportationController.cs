@@ -1937,7 +1937,7 @@ namespace TMS.API.Controllers
                     var task = new TaskNotification()
                     {
                         Title = $"{currentUser.FullName}",
-                        Description = $"Đã gửi yêu cầu mở khóa Khai thác",
+                        Description = $"Đã gửi yêu cầu thay đổi (Khai thác)",
                         EntityId = _entitySvc.GetEntity(typeof(TransportationRequest).Name).Id,
                         RecordId = tranRequest.Id,
                         Attachment = "fal fa-paper-plane",
@@ -2007,7 +2007,7 @@ namespace TMS.API.Controllers
                     var task = new TaskNotification()
                     {
                         Title = $"{currentUser.FullName}",
-                        Description = $"Đã gửi yêu cầu mở khóa Kế toán",
+                        Description = $"Đã gửi yêu cầu thay đổi (Kế toán)",
                         EntityId = _entitySvc.GetEntity(typeof(TransportationRequest).Name).Id,
                         RecordId = tranRequest.Id,
                         Attachment = "fal fa-paper-plane",
@@ -2077,7 +2077,7 @@ namespace TMS.API.Controllers
                     var task = new TaskNotification()
                     {
                         Title = $"{currentUser.FullName}",
-                        Description = $"Đã gửi yêu cầu mở khóa Hệ thống",
+                        Description = $"Đã gửi yêu cầu thay đổi (Hệ thống)",
                         EntityId = _entitySvc.GetEntity(typeof(TransportationRequest).Name).Id,
                         RecordId = tranRequest.Id,
                         Attachment = "fal fa-paper-plane",
@@ -2147,7 +2147,7 @@ namespace TMS.API.Controllers
                     var task = new TaskNotification()
                     {
                         Title = $"{currentUser.FullName}",
-                        Description = $"Đã gửi yêu cầu mở khóa Cước tàu",
+                        Description = $"Đã gửi yêu cầu thay đổi (Cước tàu)",
                         EntityId = _entitySvc.GetEntity(typeof(TransportationRequest).Name).Id,
                         RecordId = tranRequest.Id,
                         Attachment = "fal fa-paper-plane",
@@ -2179,7 +2179,7 @@ namespace TMS.API.Controllers
                 var taskNotification = new TaskNotification
                 {
                     Title = $"{user.FullName}",
-                    Description = $"Đã duyệt yêu cầu mở khóa",
+                    Description = $"Đã duyệt yêu cầu thay đổi",
                     EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
                     RecordId = item.Id,
                     Attachment = "fal fa-check",
@@ -2201,9 +2201,9 @@ namespace TMS.API.Controllers
             foreach (var item in transportations)
             {
                 var getTranRequestDetails = tranRequestDetails.Where(x => x.TransportationId == item.Id && x.StatusId == (int)ApprovalStatusEnum.Approving).FirstOrDefault();
-                var queryUpdate = CompareChanges(getTranRequestDetails, item);
-                cmd += queryUpdate;
-                cmd += $" where Id = {item.Id}";
+                    var queryUpdate = CompareChanges(getTranRequestDetails, item);
+                    cmd += queryUpdate;
+                    cmd += $" where Id = {item.Id}";
             }
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
@@ -2227,7 +2227,7 @@ namespace TMS.API.Controllers
                 var taskNotification = new TaskNotification
                 {
                     Title = $"{user.FullName}",
-                    Description = $"Đã duyệt yêu cầu mở khóa",
+                    Description = $"Đã duyệt yêu cầu thay đổi",
                     EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
                     RecordId = item.Id,
                     Attachment = "fal fa-check",
@@ -2275,7 +2275,7 @@ namespace TMS.API.Controllers
                 var taskNotification = new TaskNotification
                 {
                     Title = $"{user.FullName}",
-                    Description = $"Đã duyệt yêu cầu mở khóa",
+                    Description = $"Đã duyệt yêu cầu thay đổi",
                     EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
                     RecordId = item.Id,
                     Attachment = "fal fa-check",
@@ -2325,7 +2325,7 @@ namespace TMS.API.Controllers
                 var taskNotification = new TaskNotification
                 {
                     Title = $"{user.FullName}",
-                    Description = $"Đã duyệt yêu cầu mở khóa",
+                    Description = $"Đã duyệt yêu cầu thay đổi",
                     EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
                     RecordId = item.Id,
                     Attachment = "fal fa-check",
@@ -2373,7 +2373,7 @@ namespace TMS.API.Controllers
                 var taskNotification = new TaskNotification
                 {
                     Title = $"{user.FullName}",
-                    Description = $"Đã hủy yêu cầu mở khóa. Lý do: {tranRequest.ReasonReject}",
+                    Description = $"Đã hủy yêu cầu thay đổi. Lý do: {tranRequest.ReasonReject}",
                     EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
                     RecordId = item.Id,
                     Attachment = "fal fa-check",
@@ -2412,7 +2412,7 @@ namespace TMS.API.Controllers
                 var taskNotification = new TaskNotification
                 {
                     Title = $"{user.FullName}",
-                    Description = $"Đã hủy yêu cầu mở khóa. Lý do: {tranRequest.ReasonReject}",
+                    Description = $"Đã hủy yêu cầu thay đổi. Lý do: {tranRequest.ReasonReject}",
                     EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
                     RecordId = item.Id,
                     Attachment = "fal fa-check",
@@ -2451,7 +2451,7 @@ namespace TMS.API.Controllers
                 var taskNotification = new TaskNotification
                 {
                     Title = $"{user.FullName}",
-                    Description = $"Đã hủy yêu cầu mở khóa. Lý do: {tranRequest.ReasonReject}",
+                    Description = $"Đã hủy yêu cầu thay đổi. Lý do: {tranRequest.ReasonReject}",
                     EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
                     RecordId = item.Id,
                     Attachment = "fal fa-check",
@@ -2490,7 +2490,7 @@ namespace TMS.API.Controllers
                 var taskNotification = new TaskNotification
                 {
                     Title = $"{user.FullName}",
-                    Description = $"Đã hủy yêu cầu mở khóa. Lý do: {tranRequest.ReasonReject}",
+                    Description = $"Đã hủy yêu cầu thay đổi. Lý do: {tranRequest.ReasonReject}",
                     EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
                     RecordId = item.Id,
                     Attachment = "fal fa-check",

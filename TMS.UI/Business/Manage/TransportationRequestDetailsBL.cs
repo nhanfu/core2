@@ -206,7 +206,7 @@ namespace TMS.UI.Business.Manage
                 await grid.ApplyFilter();
                 this.SetShow(false, "btnCreate");
                 this.SetShow(true, "btnSend");
-                SetGridView();
+                await SetGridView();
             }
         }
 
@@ -238,7 +238,7 @@ namespace TMS.UI.Business.Manage
                 {
                     NeedAnswer = true,
                     ComType = nameof(Textbox),
-                    Content = $"Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                    Content = $"Bạn có muốn gửi yêu cầu thay đổi không?<br />" +
                         "Hãy nhập lý do",
                 };
                 confirm.Render();
@@ -271,7 +271,7 @@ namespace TMS.UI.Business.Manage
                         {
                             NeedAnswer = true,
                             ComType = nameof(Textbox),
-                            Content = $"Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            Content = $"Bạn có muốn gửi yêu cầu thay đổi không?<br />" +
                         "Hãy nhập lý do",
                         };
                         confirm.Render();
@@ -314,7 +314,7 @@ namespace TMS.UI.Business.Manage
                         {
                             NeedAnswer = true,
                             ComType = nameof(Textbox),
-                            Content = $"Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
+                            Content = $"Bạn có muốn gửi yêu cầu thay đổi không?<br />" +
                             "Hãy nhập lý do",
                         };
                         confirm.Render();
