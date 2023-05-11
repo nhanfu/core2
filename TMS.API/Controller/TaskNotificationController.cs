@@ -2,8 +2,11 @@
 using Core.Extensions;
 using DocumentFormat.OpenXml.Office2021.DocumentTasks;
 using Microsoft.AspNet.OData.Query;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Text;
 using TMS.API.Models;
 
 namespace TMS.API.Controllers
@@ -42,6 +45,47 @@ namespace TMS.API.Controllers
                 await _taskService.NotifyAsync(tasks);
             }
             return Ok(true);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("api/[Controller]/SendChat")]
+        public async Task<string> SendChat([FromQuery] string chat)
+        {
+            string apiKey = "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";
+            // Thiết lập endpoint API
+            string endpoint = "https://api.openai.com/v1/engines/davinci-codex/completions";
+            Console.WriteLine("Bot: Chào! Tôi là ChatBot. Hãy nói gì đó để bắt đầu.");
+            var listString = new List<string>();
+            while (true)
+            {
+                string response = await GetChatGPTResponse(apiKey, endpoint, chat);
+                return response;
+            }
+        }
+
+        private static async Task<string> GetChatGPTResponse(string apiKey, string endpoint, string input)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                // Thiết lập header chứa API key
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+
+                // Tạo dữ liệu yêu cầu dựa trên input
+                var requestData = new
+                {
+                    prompt = input,
+                    max_tokens = 50 // Số từ tối đa trong phản hồi
+                };
+                var jsonRequestData = JsonConvert.SerializeObject(requestData);
+
+                // Gửi yêu cầu POST đến API
+                var response = await httpClient.PostAsync(endpoint, new StringContent(jsonRequestData, Encoding.UTF8, "application/json"));
+
+                // Đọc và trả về nội dung phản hồi từ API
+                var jsonResponseData = await response.Content.ReadAsStringAsync();
+                var responseObject = JsonConvert.DeserializeObject<dynamic>(jsonResponseData);
+                return responseObject.choices[0].text;
+            }
         }
 
         [HttpPost("api/[Controller]/MarkAllAsRead")]

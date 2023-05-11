@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
+using static Retyped.dom.Literals.Types;
 
 namespace TMS.UI.Business.Manage
 {
@@ -60,6 +61,11 @@ namespace TMS.UI.Business.Manage
                     var expenseTypeThisIds = expenseTypes.Where(x => x.Additional == itemDetail).Select(x => x.Id).Distinct().ToList();
                     var totalThisValue = expenses.Where(x => expenseTypeThisIds.Contains(x.ExpenseTypeId.Value)).Sum(x => x.TotalPriceAfterTax);
                     details.Add(new PatchUpdateDetail { Field = itemDetail, Value = totalThisValue.ToString() });
+                }
+                var cus = details.FirstOrDefault(x => x.Field == nameof(Transportation.CustomerReturnFee));
+                if (cus != null)
+                {
+                    details.Add(new PatchUpdateDetail { Field = nameof(Transportation.CustomerReturnFeeReport), Value = cus.Value });
                 }
                 var path = new PatchUpdate { Changes = details.Where(x => x.Field != null && x.Field != "null" && x.Field != "").DistinctBy(x => x.Field).ToList() };
                 await new Client(nameof(Transportation)).PatchAsync<Transportation>(path,ig: $"&disableTrigger=true");
