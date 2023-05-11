@@ -3,6 +3,7 @@ using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
+using DocumentFormat.OpenXml.Office.Word;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -249,6 +250,8 @@ namespace TMS.API.Controllers
             db.Transportation.FromSqlInterpolated($"DISABLE TRIGGER ALL ON Transportation");
             await db.SaveChangesAsync();
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
+            var queryUnActiveRecordNotUsing = $"update {nameof(BookingList)} set Active = 0 FROM {nameof(BookingList)} bl WHERE bl.Id NOT IN (SELECT t.BookingListId FROM {nameof(Transportation)} t WHERE t.BookingListId is not null and t.BookingId is not null) AND bl.Active = 1";
+            ExecSql(queryUnActiveRecordNotUsing, "DISABLE TRIGGER ALL ON BookingList;", "ENABLE TRIGGER ALL ON BookingList;");
             return true;
         }
 
