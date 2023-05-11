@@ -269,7 +269,6 @@ namespace TMS.API.Controllers
                             var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
                             command.CommandText += $" UPDATE [{nameof(Transportation)}] SET {update.Combine()} WHERE Id = {idInt};";
                             command.CommandText += " " + _transportationService.Transportation_BetAmount(patch, idInt);
-                            command.CommandText += " " + _transportationService.Transportation_BetFee(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_CombinationFee(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_Cont20_40(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_Dem(patch, idInt);

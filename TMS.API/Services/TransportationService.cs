@@ -21,36 +21,6 @@ namespace TMS.API.Services
 		            where t.IsBet = 0 and t.BetAmount <> 0 and t.Id = {Id};";
         }
 
-        public string Transportation_BetFee(PatchUpdate patchUpdate, int Id)
-        {
-            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ReturnId) || x.Field == nameof(Transportation.CompanyId)
-            || x.Field == nameof(Transportation.BetFee) || x.Field == nameof(Transportation.ReturnClosingFeeReport)
-            || x.Field == nameof(Transportation.ReturnLiftFeeReport) || x.Field == nameof(Transportation.CustomerReturnFeeReport)))
-            {
-                return null;
-            }
-            var betFee = patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.BetFee));
-            if (betFee is null)
-            {
-                return @$"update Transportation set BetFee = case 
-                    when (l.Id is null or l.Description not like N'%Giao Lệnh Tại HCM%') then null
-                    when l.Description like N'%Giao Lệnh Tại HCM%' and t.Cont20 = 1 then 1000000
-		            when l.Description like N'%Giao Lệnh Tại HCM%' and t.Cont40 = 1 then 2000000 end
-		            from Transportation t
-		            left join [Location] l on l.Id = t.ReturnId
-		            where t.Id = {Id}
-                    update Transportation set TotalBet = (isnull(Transportation.BetFee,0) + isnull(Transportation.ReturnLiftFeeReport,0) + isnull(Transportation.ReturnClosingFeeReport,0) + isnull(Transportation.CustomerReturnFeeReport,0))
-		            from Transportation
-		            where Transportation.Id = {Id};";
-            }
-            else
-            {
-                return @$"update Transportation set TotalBet = (isnull(Transportation.BetFee,0) + isnull(Transportation.ReturnLiftFeeReport,0) + isnull(Transportation.ReturnClosingFeeReport,0) + isnull(Transportation.CustomerReturnFeeReport,0))
-		            from Transportation
-		            where Transportation.Id = {Id};";
-            }
-        }
-
         public string Transportation_CombinationFee(PatchUpdate patchUpdate, int Id)
         {
             if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.BrandShipId) || x.Field == nameof(Transportation.StartShip)

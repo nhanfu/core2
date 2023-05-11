@@ -55,6 +55,7 @@ namespace TMS.API.Models
         public virtual DbSet<QuotationUpdate> QuotationUpdate { get; set; }
         public virtual DbSet<ReturnPlan> ReturnPlan { get; set; }
         public virtual DbSet<Revenue> Revenue { get; set; }
+        public virtual DbSet<RevenueRequest> RevenueRequest { get; set; }
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<Route> Route { get; set; }
         public virtual DbSet<RouteUser> RouteUser { get; set; }
@@ -1150,6 +1151,45 @@ namespace TMS.API.Models
                     .HasConstraintName("FK_Revenue_Transportation");
             });
 
+            modelBuilder.Entity<RevenueRequest>(entity =>
+            {
+                entity.Property(e => e.CollectOnBehaftPrice).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.ContainerNo).HasMaxLength(250);
+
+                entity.Property(e => e.InvoinceNo).HasColumnType("decimal(20, 0)");
+
+                entity.Property(e => e.LotNo).HasMaxLength(250);
+
+                entity.Property(e => e.Name).HasMaxLength(250);
+
+                entity.Property(e => e.Note).HasMaxLength(250);
+
+                entity.Property(e => e.NotePayment).HasMaxLength(250);
+
+                entity.Property(e => e.Reason).HasMaxLength(250);
+
+                entity.Property(e => e.ReasonReject).HasMaxLength(250);
+
+                entity.Property(e => e.ReceivedPrice).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.RevenueAdjustment).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.SealNo).HasMaxLength(250);
+
+                entity.Property(e => e.TotalPrice).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.TotalPriceBeforTax).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.UnitPriceAfterTax).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.UnitPriceBeforeTax).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Vat).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.VatPrice).HasColumnType("decimal(20, 5)");
+            });
+
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.Property(e => e.Description).HasMaxLength(100);
@@ -1696,8 +1736,12 @@ namespace TMS.API.Models
                 entity.Property(e => e.SplitBill).HasMaxLength(250);
 
                 entity.Property(e => e.TotalBet)
-                    .HasColumnType("decimal(20, 5)")
-                    .HasDefaultValueSql("((0))");
+                    .HasColumnType("decimal(23, 5)")
+                    .HasComputedColumnSql("(((isnull([BetFee],(0))+isnull([ReturnLiftFee],(0)))+isnull([ReturnClosingFee],(0)))+isnull([CustomerReturnFee],(0)))", false);
+
+                entity.Property(e => e.TotalBetReport)
+                    .HasColumnType("decimal(23, 5)")
+                    .HasComputedColumnSql("(((isnull([BetFee],(0))+isnull([ReturnLiftFeeReport],(0)))+isnull([ReturnClosingFeeReport],(0)))+isnull([CustomerReturnFeeReport],(0)))", false);
 
                 entity.Property(e => e.TotalCOBNoTaxClosing)
                     .HasColumnType("decimal(20, 5)")
