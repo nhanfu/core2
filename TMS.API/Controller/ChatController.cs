@@ -50,10 +50,11 @@ namespace TMS.API.Controllers
             var languageRules = new[]
             {
                 new { Language = "javascript", Regex = @"```javascript([\s\S]+?)```", Replacement = "<pre><code class=\"language-javascript\">$1</code></pre>" },
-                new { Language = "python", Regex = @"```python([\s\S]+?)```", Replacement = "<pre><code class=\"language-python\">$1</code></pre>" },
                 new { Language = "html", Regex = @"```html([\s\S]+?)```", Replacement = "<pre><code class=\"language-html\">$1</code></pre>" },
-                new { Language = "csharp", Regex = @"```csharp([\s\S]+?)```", Replacement = "<pre><code class=\"language-csharp\">$1</code></pre>" }
-        };
+                new { Language = "csharp", Regex = @"```csharp([\s\S]+?)```", Replacement = "<pre><code class=\"language-csharp\">$1</code></pre>" },
+                new { Language = "code", Regex = @"```([\s\S]+?)```", Replacement = "<pre><code>$1</code></pre>" }
+            };
+
             var apiKey = "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";
             var endpoint = "https://api.openai.com/v1/chat/completions";
             using (var httpClient = new HttpClient())
@@ -84,6 +85,7 @@ namespace TMS.API.Controllers
                     var replacement = rule.Replacement;
                     text = regex.Replace(text, replacement);
                 }
+
                 return new Chat()
                 {
                     FromId = entity.ToId,

@@ -528,7 +528,7 @@ namespace TMS.UI.Notifications
                 val.Value = string.Empty;
                 Chats.Data.Add(chat);
                 RenderActionChat(chat);
-                var loader = Document.GetElementById("loader1");
+                var loader = Document.GetElementsByClassName("lds-ellipsis").FirstOrDefault();
                 loader.Style.Display = "block";
                 await new Client(nameof(Chat)).CreateAsync<Chat>(chat);
                 loader.Style.Display = "none";
