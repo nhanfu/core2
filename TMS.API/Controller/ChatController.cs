@@ -9,6 +9,7 @@ namespace TMS.API.Controllers
 {
     public class ChatController : TMSController<Chat>
     {
+
         public ChatController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
@@ -16,6 +17,7 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<Chat>> CreateAsync([FromBody] Chat entity)
         {
+
             var rs = await base.CreateAsync(entity);
             if (entity.ToId == 552)
             {
@@ -45,6 +47,13 @@ namespace TMS.API.Controllers
 
         private async Task<Chat> GetChatGPTResponse(Chat entity)
         {
+            var languageRules = new[]
+            {
+                new { Language = "javascript", Regex = @"```javascript([\s\S]+?)```", Replacement = "<pre><code class=\"language-javascript\">$1</code></pre>" },
+                new { Language = "python", Regex = @"```python([\s\S]+?)```", Replacement = "<pre><code class=\"language-python\">$1</code></pre>" },
+                new { Language = "html", Regex = @"```html([\s\S]+?)```", Replacement = "<pre><code class=\"language-html\">$1</code></pre>" },
+                new { Language = "csharp", Regex = @"```csharp([\s\S]+?)```", Replacement = "<pre><code class=\"language-csharp\">$1</code></pre>" }
+        };
             var apiKey = "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";
             var endpoint = "https://api.openai.com/v1/chat/completions";
             using (var httpClient = new HttpClient())
@@ -67,15 +76,25 @@ namespace TMS.API.Controllers
                 var response = await httpClient.PostAsync(endpoint, new StringContent(jsonRequestData, Encoding.UTF8, "application/json"));
                 var jsonResponseData = await response.Content.ReadAsStringAsync();
                 var rs = JsonConvert.DeserializeObject<RsChatGpt>(jsonResponseData);
+                var text = rs.choices.FirstOrDefault().message.content;
+                foreach (var rule in languageRules)
+                {
+                    var language = rule.Language;
+                    var regex = new System.Text.RegularExpressions.Regex(rule.Regex);
+                    var replacement = rule.Replacement;
+                    text = regex.Replace(text, replacement);
+                }
                 return new Chat()
                 {
                     FromId = entity.ToId,
                     ToId = entity.FromId,
-                    Context = rs.choices.FirstOrDefault().message.content,
+                    Context = text,
                     ConvertationId = entity.ConvertationId,
                     IsSeft = true,
                 };
             }
         }
+
+
     }
 }

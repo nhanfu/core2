@@ -284,11 +284,11 @@ namespace TMS.UI.Notifications
                 {
                     if (task.FromId == Client.Token.UserId)
                     {
-                        Html.Instance.Div.ClassName("message parker").Text(task.Context).End.Render();
+                        Html.Instance.Div.ClassName("message parker").InnerHTML(task.Context).End.Render();
                     }
                     else
                     {
-                        Html.Instance.Div.ClassName("message stark").Text(task.Context).End.Render();
+                        Html.Instance.Div.ClassName("message stark").InnerHTML(task.Context).End.Render();
                     }
                 });
                 var chat = Document.GetElementById("chat");
@@ -300,11 +300,11 @@ namespace TMS.UI.Notifications
         {
             if (chat.FromId == Client.Token.UserId)
             {
-                Html.Take("#chat").Div.ClassName("message parker").Text(chat.Context).End.Render();
+                Html.Take("#chat").Div.ClassName("message parker").InnerHTML(chat.Context).End.Render();
             }
             else
             {
-                Html.Take("#chat").Div.ClassName("message stark").Text(chat.Context).End.Render();
+                Html.Take("#chat").Div.ClassName("message stark").InnerHTML(chat.Context).End.Render();
             }
             var c = Document.GetElementById("chat");
             c.ScrollTop = c.ScrollHeight - c.ClientHeight;
