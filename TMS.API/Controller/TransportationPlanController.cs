@@ -288,6 +288,7 @@ namespace TMS.API.Controllers
                             command.CommandText += " " + _transportationService.Transportation_ShellDate(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_ShipUnitPriceQuotation(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_VendorLocation(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_BetFee(patch, idInt);
                             command.CommandText += " " + @"update t set ClosingNotes = isnull(tr.Notes,'') + case when ven1.ContactPhoneNumber is null and ven1.ContactName is null and ven1.ContactUser is null then '' else (' TTLH: '+isnull(ven1.ContactName,'') + '/'+ isnull(ven1.ContactUser,'') + '/' + isnull(ven1.ContactPhoneNumber,'') + '/' + isnull(ven1.Note,'')) end
 	                        from Transportation t
 	                        left join TransportationPlan tr on tr.Id = t.TransportationPlanId

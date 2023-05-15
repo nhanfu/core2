@@ -119,6 +119,7 @@ namespace TMS.API.Controllers
                             command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
                         }
                         command.CommandText += $" UPDATE [{nameof(Transportation)}] SET {update.Combine()} WHERE Id = {idInt};";
+                        command.CommandText += " " + _transportationService.Transportation_BetFee(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_BetAmount(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_CombinationFee(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_Cont20_40(patch, idInt);

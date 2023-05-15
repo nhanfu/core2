@@ -493,5 +493,23 @@ namespace TMS.API.Services
 		                end
 	                end;";
         }
+
+        public string Transportation_BetFee(PatchUpdate patchUpdate, int Id)
+        {
+            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ReturnId)
+            || x.Field == nameof(Transportation.CompanyId)))
+            {
+                return null;
+            }
+            if(patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.BetFee)))
+            {
+                return null;
+            }
+            return @$"update Transportation set BetFee = (case when l.Description like N'%Giao Lệnh Tại HCM%' and t.Cont20 = 1 then 1000000
+	                when l.Description like N'%Giao Lệnh Tại HCM%' and t.Cont40 = 1 then 2000000 end)
+	                from Transportation t
+	                left join [Location] l on l.Id = t.ReturnId
+	                where t.Id = {Id};";
+        }
     }
 }
