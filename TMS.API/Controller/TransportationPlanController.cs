@@ -179,6 +179,7 @@ namespace TMS.API.Controllers
                 nameof(TransportationPlan.InsertedBy),
                 nameof(TransportationPlan.UpdatedBy),
                 nameof(TransportationPlan.UpdatedDate),
+                nameof(TransportationPlan.StatusId),
                 nameof(TransportationPlan.ReasonOfChange));
             entity.CopyPropFrom(tempEntity, nameof(TransportationPlan.Id),
                 nameof(TransportationPlan.RequestChangeId),
