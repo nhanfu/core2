@@ -613,6 +613,7 @@ namespace Core.Components
             Element.SetAttribute(ValidationRule.Required, true.ToString());
             if (EqualityComparer<T>.Default.Equals(Value, default(T)) || Value.ToString().IsNullOrWhiteSpace())
             {
+                Element.RemoveAttribute("readonly");
                 ValidationResult.TryAdd(ValidationRule.Required, string.Format(requiredRule.Message, LangSelect.Get(GuiInfo.Label), Entity));
                 return true;
             }
