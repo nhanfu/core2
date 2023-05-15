@@ -21,6 +21,8 @@ namespace Core.Components
     public class ListView : EditableComponent
     {
         internal int _rowHeight = 26;
+        internal int _theadTable = 40;
+        internal int _tfooterTable = 28;
         private const string PermissionLoaded = "PermissionLoaded";
         private const string IsOwner = "IsOwner";
         private const string CmdUrl = "Cmd";
@@ -1761,7 +1763,11 @@ namespace Core.Components
             {
                 return RowData.Data.Count();
             }
-            var mainSectionHeight = Element.ClientHeight - (ListViewSearch.Element?.ClientHeight ?? 0) - Paginator.Element.ClientHeight;
+            var mainSectionHeight = Element.ClientHeight - (ListViewSearch.Element?.ClientHeight ?? 0) - Paginator.Element.ClientHeight - _theadTable;
+            if (!Header.All(x => x.Summary.IsNullOrEmpty()))
+            {
+                mainSectionHeight -= _tfooterTable;
+            }
             return GetRowCountByHeight(mainSectionHeight);
         }
 
