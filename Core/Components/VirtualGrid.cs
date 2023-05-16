@@ -130,7 +130,7 @@ namespace Core.Components
             Entity?.SetComplexPropValue(GuiInfo.FieldName, rows);
             SetRowHeight();
             RowAction(x => x.Focused = false);
-            if (!IsSmallUp)
+            if (IsSmallUp)
             {
                 SetFocusingCom();
             }
