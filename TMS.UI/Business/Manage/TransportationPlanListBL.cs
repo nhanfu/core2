@@ -295,19 +295,22 @@ namespace TMS.UI.Business.Manage
                 if (item.TransportationTypeId == null && item.RouteId != null)
                 {
                     var route = routes.Where(x => x.Id == item.RouteId).FirstOrDefault();
-                    if (route.Name.ToLower().Contains("sắt"))
+                    if(route != null)
                     {
-                        item.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("sắt")).FirstOrDefault().Id;
+                        if (route.Name.ToLower().Contains("sắt"))
+                        {
+                            item.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("sắt")).FirstOrDefault().Id;
+                        }
+                        else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
+                        {
+                            item.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("bộ")).FirstOrDefault().Id;
+                        }
+                        else
+                        {
+                            item.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("tàu")).FirstOrDefault().Id;
+                        }
+                        await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityTransportationType(item), ig: $"&disableTrigger=true");
                     }
-                    else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
-                    {
-                        item.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("bộ")).FirstOrDefault().Id;
-                    }
-                    else
-                    {
-                        item.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("tàu")).FirstOrDefault().Id;
-                    }
-                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityTransportationType(item), ig: $"&disableTrigger=true");
                 }
                 if (item.JourneyId == null)
                 {

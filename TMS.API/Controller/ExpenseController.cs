@@ -455,6 +455,10 @@ namespace TMS.API.Controllers
             var commodityValues = await db.CommodityValue.Where(x => bossIds.Contains(x.BossId) && commodityIds.Contains(x.CommodityId) && x.Active).ToListAsync();
             var commodityValuesSOC = await db.CommodityValue.Where(x => x.CommodityId == 15764 && x.Active).ToListAsync();
             var commodityValueOfTrans = new Dictionary<int, CommodityValue>();
+
+            var transportationTypes = await db.MasterData.Where(x => x.ParentId == 11670).ToListAsync();
+            var routes = await db.Route.Where(x => trans.Select(y => y.RouteId).ToList().Contains(x.Id)).ToListAsync();
+            var vendors = await db.Vendor.Where(x => trans.Select(y => y.ClosingId).ToList().Contains(x.Id)).ToListAsync();
             foreach (var item in trans)
             {
                 MasterData container = null;
@@ -512,6 +516,30 @@ namespace TMS.API.Controllers
             var queryExs = "";
             foreach (var tran in trans)
             {
+                if (tran.RouteId != null || tran.ClosingId != null)
+                {
+                    var route = routes.Where(x => x.Id == tran.RouteId).FirstOrDefault();
+                    var vendor = vendors.Where(x => x.Id == tran.ClosingId).FirstOrDefault();
+                    if (route != null || vendor != null)
+                    {
+                        if (vendor != null && vendor.Name.ToLower().Contains("sà lan"))
+                        {
+                            tran.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("sà lan")).FirstOrDefault().Id;
+                        }
+                        else if (route != null && route.Name.ToLower().Contains("sắt"))
+                        {
+                            tran.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("sắt")).FirstOrDefault().Id;
+                        }
+                        else if (route != null && (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt")))
+                        {
+                            tran.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("bộ")).FirstOrDefault().Id;
+                        }
+                        else
+                        {
+                            tran.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("tàu")).FirstOrDefault().Id;
+                        }
+                    }
+                }
                 var expensesByTran = expenses.Where(x => x.TransportationId == tran.Id).ToList();
                 foreach (var ex in expensesByTran)
                 {

@@ -1370,15 +1370,15 @@ namespace TMS.UI.Business.Manage
                 var vendor = await new Client(nameof(Vendor)).FirstOrDefaultAsync<Vendor>($"?$filter=Active eq true and Id eq {transportation.ClosingId}");
                 if (route != null || vendor != null)
                 {
-                    if (vendor.Name.ToLower().Contains("sà lan"))
+                    if (vendor != null && vendor.Name.ToLower().Contains("sà lan"))
                     {
                         transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("sà lan")).FirstOrDefault().Id;
                     }
-                    else if (route.Name.ToLower().Contains("sắt"))
+                    else if (route != null && route.Name.ToLower().Contains("sắt"))
                     {
                         transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("sắt")).FirstOrDefault().Id;
                     }
-                    else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
+                    else if (route != null && (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt")))
                     {
                         transportation.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("bộ")).FirstOrDefault().Id;
                     }
