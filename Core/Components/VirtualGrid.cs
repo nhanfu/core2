@@ -344,6 +344,8 @@ namespace Core.Components
                 e.StopPropagation();
                 ToggleAll();
             }
+            var com = LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
+            ActionKeyHandler(e, LastComponentFocus, LastListViewItem, com, com.Element.Closest(ElementType.td.ToString()), keyCode);
         }
 
         public override void ViewSumary(object ev, GridPolicy header)

@@ -123,7 +123,7 @@ namespace Core.Components
                 .AsyncEvent(EventType.Click, SEClickOpenRef)
                 .Event(EventType.Change, SEChangeHandler)
                 .Event(EventType.KeyDown, SEKeydownHanlder)
-                .Event(EventType.Input, () => Search(_input.Value));
+                .Event(EventType.Input, () => Search(_input.Value, delete: true));
         }
 
         private async Task SEClickOpenRef()
@@ -384,14 +384,16 @@ namespace Core.Components
             }
         }
 
-        private void Search(string term = null, bool changeEvent = true, int timeout = 500)
+        private void Search(string term = null, bool changeEvent = true, int timeout = 500, bool delete = false)
         {
+            
+
             Window.ClearTimeout(_waitForInput);
             _waitForInput = Window.SetTimeout(() =>
             {
                 if (changeEvent && _input.Value.IsNullOrEmpty())
                 {
-                    InputEmptyHandler();
+                    InputEmptyHandler(delete);
                     return;
                 }
                 TriggerSearch(term);
@@ -526,7 +528,7 @@ namespace Core.Components
             _input.Focus();
         }
 
-        private void InputEmptyHandler()
+        private void InputEmptyHandler(bool delete)
         {
             var oldValue = _value;
             var oldMatch = Matched;
@@ -546,6 +548,10 @@ namespace Core.Components
                 {
                     UserInput.Invoke(new ObservableArgs { NewData = null, OldData = oldValue, EvType = EventType.Change });
                 }
+            }
+            if (delete && _input.Value.IsNullOrEmpty())
+            {
+                return;
             }
             TriggerSearch(null);
         }

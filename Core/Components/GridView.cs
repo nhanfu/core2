@@ -1377,6 +1377,8 @@ namespace Core.Components
                 e.StopPropagation();
                 ToggleAll();
             }
+            var com = LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
+            ActionKeyHandler(e, LastComponentFocus, LastListViewItem, com, com.Element.Closest(ElementType.td.ToString()), keyCode);
         }
 
         private void CoppyValue(Event e, EditableComponent com, string fieldName, ListViewItem currentItem, ListViewItem upItem)
@@ -1644,17 +1646,12 @@ namespace Core.Components
                     .FirstOrDefault(x => x.Entity[IdField].As<int>() == EntityFocusId && x.GuiInfo.Id == LastComponentFocus.Id);
                 if (element != null)
                 {
-                    var scrollLeft = DataTable.ParentElement.ScrollLeft;
-                    var cellLeft = element.ParentElement.OffsetLeft;
-                    if (scrollLeft <= cellLeft)
-                    {
-                        element.ParentElement.Focus();
-                        element.Focus();
-                    }
-                    else
-                    {
-                        AllListViewItem.FirstOrDefault(x => x.Entity[IdField].As<int>() == EntityFocusId).Focused = true;
-                    }
+                    var lastListView = AllListViewItem.FirstOrDefault(x => x.Entity[IdField].As<int>() == EntityFocusId);
+                    lastListView.Focused = true;
+                    element.ParentElement.AddClass("cell-selected");
+                    LastListViewItem = lastListView;
+                    LastComponentFocus = element.GuiInfo;
+                    LastElementFocus = element.Element;
                 }
                 else
                 {

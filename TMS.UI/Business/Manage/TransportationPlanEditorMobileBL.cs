@@ -3,6 +3,7 @@ using Core.Clients;
 using Core.Components;
 using Core.Components.Extensions;
 using Core.Components.Forms;
+using Core.Components.Framework;
 using Core.Enums;
 using Core.Extensions;
 using Core.ViewModels;
@@ -177,21 +178,23 @@ namespace TMS.UI.Business.Manage
             return rs;
         }
 
-        public async Task SetPolicyAndAnalysis(TransportationPlan transportationPlan, Vendor vendor)
+        public async Task BossChange(TransportationPlan transportationPlan, Vendor vendor)
         {
             if (vendor != null && vendor.TaxCode.IsNullOrWhiteSpace())
             {
                 Toast.Warning("MST/CCCD không được để trống");
-                await this.OpenPopup(
-                featureName: "Vendor Editor Mobile",
-                factory: () =>
-                {
-                    var type = Type.GetType("TMS.UI.Business.Manage.BossEditorMobileBL");
-                    var instance = Activator.CreateInstance(type) as PopupEditor;
-                    instance.Title = "Chỉnh sửa chủ hàng";
-                    instance.Entity = vendor;
-                    return instance;
-                });
+                var id = "Vendor" + vendor.Id;
+                await this.OpenTab(
+                           id: id,
+                           featureName: "Vendor Editor Mobile",
+                           factory: () =>
+                           {
+                               var type = Type.GetType("TMS.UI.Business.Manage.BossEditorMobileBL");
+                               var instance = Activator.CreateInstance(type) as TabEditor;
+                               instance.Title = "Vendor Editor Mobile";
+                               instance.Entity = vendor;
+                               return instance;
+                           });
             }
             await SetPolicy();
             await Analysis();

@@ -1,17 +1,8 @@
-﻿using Core.Components;
-using Core.Components.Extensions;
+﻿using Core.Components.Extensions;
 using Core.Components.Forms;
-using Core.Extensions;
-using System.Linq;
+using System;
 using System.Threading.Tasks;
 using TMS.API.Models;
-using System;
-using TMS.API.Enums;
-using Core.Clients;
-using System.Collections.Generic;
-using Bridge.Html5;
-using Core.MVVM;
-using Core.Enums;
 
 namespace TMS.UI.Business.Manage
 {
