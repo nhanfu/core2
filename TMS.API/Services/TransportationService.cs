@@ -223,13 +223,29 @@ namespace TMS.API.Services
             {
                 return null;
             }
-            return @$"update Transportation set Note4 = Vendor.Name, IsHost= (case when (Ex.RouteId = Transportation.RouteId or Route.Name like N'%Đường%') then 1 else 0 end)
+            return @$"update Transportation set Note4 = Vendor.Name, 
+                    IsHost= (case when (Ex.RouteId = Transportation.RouteId or Route.Name like N'%Đường%') then 1 else 0 end)
 					,IsBooking =(case when Route.Name like N'%Đường%' then 0 else 1 end)
 					from Transportation
 					left join Vendor as Ex on Transportation.ExportListId = Ex.Id
 					left join Route on Transportation.RouteId = Route.Id
 					left join Vendor on Vendor.Id = Transportation.BossId
-					where Transportation.Id = {Id};";
+					where Transportation.Id = {Id};
+                    update Transportation set 
+                    BookingId = null, 
+                    ShipId = null,
+					PolicyId = null,
+					BrandShipId = null,
+					Trip = null,
+					LineId = null,
+					StartShip = null,
+					PortLoadingId = null,
+					PickupEmptyId = null,
+					ShipUnitPrice = null,
+					ShipPrice = null,
+                    ShipPolicyPrice = null
+					from Transportation
+					where Transportation.Id = {Id} and IsBooking = 0;";
         }
 
         public string Transportation_ReturnClosingFee(PatchUpdate patchUpdate, int Id)

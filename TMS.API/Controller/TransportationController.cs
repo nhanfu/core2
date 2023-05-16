@@ -119,6 +119,7 @@ namespace TMS.API.Controllers
                             command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
                         }
                         command.CommandText += $" UPDATE [{nameof(Transportation)}] SET {update.Combine()} WHERE Id = {idInt};";
+                        command.CommandText += " " + _transportationService.Transportation_Note4(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_BetFee(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_BetAmount(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_CombinationFee(patch, idInt);
@@ -130,7 +131,6 @@ namespace TMS.API.Controllers
                         command.CommandText += " " + _transportationService.Transportation_LandingFee(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_LiftFee(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_MonthText(patch, idInt);
-                        command.CommandText += " " + _transportationService.Transportation_Note4(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_ReturnClosingFee(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_ReturnDate(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_ReturnEmptyId(patch, idInt);
