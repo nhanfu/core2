@@ -192,7 +192,7 @@ namespace TMS.UI.Business.Manage
             var listAcceptNoContract = new List<TransportationPlan>();
             foreach (var item in selected)
             {
-                if (!await CheckContract(item))
+                if (!await CheckContract(item, null))
                 {
                     count++;
                 }
@@ -438,7 +438,7 @@ namespace TMS.UI.Business.Manage
                 return;
             }
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-            await CheckContract(transportationPlan);
+            await CheckContract(transportationPlan, null);
             gridView = gridView ?? this.FindActiveComponent<GridView>().FirstOrDefault();
             if (transportationPlan.ClosingDate.Value.Date < DateTime.Now.Date)
             {
@@ -456,8 +456,22 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public async Task<bool> CheckContract(TransportationPlan transportationPlan)
+        public async Task<bool> CheckContract(TransportationPlan transportationPlan, Vendor vendor)
         {
+            if (vendor != null && vendor.TaxCode.IsNullOrWhiteSpace())
+            {
+                Toast.Warning("MST/CCCD không được để trống");
+                await this.OpenPopup(
+                featureName: "Vendor Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Shop.VendorEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Chỉnh sửa chủ hàng";
+                    instance.Entity = vendor;
+                    return instance;
+                });
+            }
             if (transportationPlan.BossId != null && transportationPlan.ClosingDate != null)
             {
                 var contact = await new Client(nameof(TransportationContract)).FirstOrDefaultAsync<TransportationContract>($"?$filter=BossId eq {transportationPlan.BossId} and cast(StartDate,Edm.DateTimeOffset) lt {transportationPlan.ClosingDate.Value.ToOdataFormat()} and cast(EndDate,Edm.DateTimeOffset) gt {transportationPlan.ClosingDate.Value.ToOdataFormat()}");

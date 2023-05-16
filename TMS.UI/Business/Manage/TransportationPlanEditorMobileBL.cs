@@ -48,7 +48,7 @@ namespace TMS.UI.Business.Manage
             {
                 var value = confirm.Textbox.GetValueText();
                 var tran = await new Client(nameof(TransportationPlan)).FirstOrDefaultAsync<TransportationPlan>($"?$filter={nameof(TransportationPlan.RequestChangeId)} eq {transportationPlanEntity.Id} and StatusId eq {(int)ApprovalStatusEnum.New}");
-                if(tran is null)
+                if (tran is null)
                 {
                     tran = new TransportationPlan();
                     tran.CopyPropFrom(transportationPlanEntity, nameof(transportationPlanEntity.Id), nameof(transportationPlanEntity.RequestChangeId));
@@ -177,8 +177,22 @@ namespace TMS.UI.Business.Manage
             return rs;
         }
 
-        public async Task SetPolicyAndAnalysis()
+        public async Task SetPolicyAndAnalysis(TransportationPlan transportationPlan, Vendor vendor)
         {
+            if (vendor != null && vendor.TaxCode.IsNullOrWhiteSpace())
+            {
+                Toast.Warning("MST/CCCD không được để trống");
+                await this.OpenPopup(
+                featureName: "Vendor Editor Mobile",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.BossEditorMobileBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Chỉnh sửa chủ hàng";
+                    instance.Entity = vendor;
+                    return instance;
+                });
+            }
             await SetPolicy();
             await Analysis();
         }

@@ -438,7 +438,7 @@ namespace Core.Components
             }
             if (GuiInfo.Row is null || GuiInfo.Row == 0)
             {
-                GuiInfo.Row = 12;
+                GuiInfo.Row = 20;
             }
 
             if (Paginator is null)
@@ -446,8 +446,8 @@ namespace Core.Components
                 Paginator = new Paginator(new PaginationOptions
                 {
                     Total = 0,
-                    PageSize = GuiInfo.Row ?? 12,
-                    CurrentPageCount = RowData.Data.Count()
+                    PageSize = GuiInfo.Row ?? 20,
+                    CurrentPageCount = RowData.Data.Count(),
                 });
                 AddChild(Paginator);
             }
@@ -1763,10 +1763,14 @@ namespace Core.Components
             {
                 return RowData.Data.Count();
             }
-            var mainSectionHeight = Element.ClientHeight - (ListViewSearch.Element?.ClientHeight ?? 0) - Paginator.Element.ClientHeight - _theadTable;
+            var mainSectionHeight = Element.ClientHeight - (ListViewSearch.Element?.ClientHeight ?? 0) - Paginator.Element.ClientHeight - _theadTable - _rowHeight;
             if (!Header.All(x => x.Summary.IsNullOrEmpty()))
             {
                 mainSectionHeight -= _tfooterTable;
+            }
+            if (GuiInfo.CanAdd)
+            {
+                mainSectionHeight -= _rowHeight;
             }
             return GetRowCountByHeight(mainSectionHeight);
         }
