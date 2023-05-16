@@ -178,9 +178,9 @@ namespace TMS.UI.Business.Manage
                     Text = "Ghi chú",
                     MenuItems = new List<ContextMenuItem>
                     {
-                        new ContextMenuItem { Text = "Yêu cầu trả vỏ", Click = NoteFreeText8, Parameter = gridView.GetItemFocus() },
-                        new ContextMenuItem { Text = "Yêu cầu chụp hình", Click = NoteFreeText9, Parameter = gridView.GetItemFocus() },
-                        new ContextMenuItem { Text = "Trễ", Click = NoteFreeText7, Parameter = gridView.GetItemFocus() },
+                        new ContextMenuItem { Text = "Yêu cầu trả vỏ", Click = NoteFreeText8, Parameter = gridView.GetItemFocus(),Style="background-color:#9E9E9E" },
+                        new ContextMenuItem { Text = "Yêu cầu chụp hình", Click = NoteFreeText9, Parameter = gridView.GetItemFocus(),Style="background-color:#ffeb3b" },
+                        new ContextMenuItem { Text = "Trễ", Click = NoteFreeText7, Parameter = gridView.GetItemFocus(),Style="background-color:#b1eaf2" },
                     }
                 });
                 menus.Add(new ContextMenuItem

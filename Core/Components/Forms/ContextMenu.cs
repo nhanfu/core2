@@ -13,6 +13,7 @@ namespace Core.Components.Forms
     {
         public HTMLElement Ele { get; set; }
         public string Icon { get; set; }
+        public string Style { get; set; }
         public string Text { get; set; }
         public Action<object> Click { get; set; }
         public bool Disabled { get; set; }
@@ -86,7 +87,7 @@ namespace Core.Components.Forms
                     continue;
                 }
 
-                Html.Instance.Li.Render();
+                Html.Instance.Li.Style(item.Style).Render();
                 item.Ele = Html.Context;
                 if (i == 0 && level == 0 && (items[i].MenuItems is null || items[i].MenuItems.Nothing()))
                 {
