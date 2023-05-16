@@ -10,7 +10,6 @@ namespace Core.Components
 {
     public class GridViewItem : ListViewItem
     {
-        private GridView Grid { get; set; }
         public GridViewItem(ElementType tr) : base(tr)
         {
         }
@@ -18,7 +17,6 @@ namespace Core.Components
         public override void Render()
         {
             base.Render();
-            Grid = ListView as GridView;
         }
 
         internal override void RenderTableCell(object rowData, Component header, HTMLElement cellWrapper = null)
@@ -46,7 +44,6 @@ namespace Core.Components
             }
             var td = e.Target as HTMLElement;
             td.Closest(ElementType.td.ToString()).AddClass("cell-selected");
-            ListViewSection.ListView.LastListViewItem = this;
             ListViewSection.ListView.LastElementFocus = td;
             ListViewSection.ListView.LastComponentFocus = header;
             ListViewSection.ListView.EntityFocusId = Entity[IdField].As<int>();
