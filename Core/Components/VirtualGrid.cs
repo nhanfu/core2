@@ -91,6 +91,10 @@ namespace Core.Components
         {
             _renderingViewPort = true;
             viewPortCount = GetViewPortItem();
+            if (firstLoad)
+            {
+                viewPortCount += 1;
+            }
             var scrollTop = DataTable.ParentElement.ScrollTop;
             if (scrollTop == _lastScrollTop)
             {

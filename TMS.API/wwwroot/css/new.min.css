@@ -57281,6 +57281,7 @@ body.layout-vertical.page-type-datagrid {
     cursor: col-resize;
     user-select: none;
     z-index: 10000;
+    height: 37px;
 }
 
     .resizer:hover, .resizing {
