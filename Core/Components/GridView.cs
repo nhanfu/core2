@@ -916,20 +916,29 @@ namespace Core.Components
 
         public void FilterSumary(GridPolicy gridPolicy, string value, string valueText)
         {
-            if (!CellSelected.Any(x => x.FieldName == gridPolicy.FieldName && x.Value == value && x.Operator == "in"))
+            var dateTime = CellSelected.FirstOrDefault(x => gridPolicy.ComponentType == nameof(Datepicker) && x.FieldName == gridPolicy.FieldName && x.Operator == "in");
+            if (dateTime is null)
             {
-                var header = Header.FirstOrDefault(x => x.FieldName == gridPolicy.FieldName);
-                CellSelected.Add(new CellSelected
+                if (!CellSelected.Any(x => x.FieldName == gridPolicy.FieldName && x.Value == value && x.Operator == "in"))
                 {
-                    FieldName = gridPolicy.FieldName,
-                    FieldText = header.ShortDesc,
-                    ComponentType = header.ComponentType,
-                    Value = value,
-                    ValueText = valueText,
-                    Operator = "in",
-                    OperatorText = "chứa",
-                    IsSearch = true
-                });
+                    var header = Header.FirstOrDefault(x => x.FieldName == gridPolicy.FieldName);
+                    CellSelected.Add(new CellSelected
+                    {
+                        FieldName = gridPolicy.FieldName,
+                        FieldText = header.ShortDesc,
+                        ComponentType = header.ComponentType,
+                        Value = value,
+                        ValueText = valueText,
+                        Operator = "in",
+                        OperatorText = "chứa",
+                        IsSearch = true
+                    });
+                }
+            }
+            else
+            {
+                dateTime.Value = value;
+                dateTime.ValueText = valueText;
             }
             HiddenSumary();
             Task.Run(async () =>
