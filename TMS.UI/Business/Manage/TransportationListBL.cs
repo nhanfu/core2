@@ -337,6 +337,22 @@ namespace TMS.UI.Business.Manage
                             }
                         }
                     };
+                    var pathUpdateTran1 = new PatchUpdate()
+                    {
+                        Changes = new List<PatchUpdateDetail>()
+                        {
+                            new PatchUpdateDetail()
+                            {
+                                Field = nameof(Transportation.Id),
+                                Value =  tp.Id.ToString()
+                            },
+                            new PatchUpdateDetail()
+                            {
+                                Field = nameof(Transportation.Active),
+                                Value =  true.ToString()
+                            }
+                        }
+                    };
                     var pathUpdateTranPlan = new PatchUpdate()
                     {
                         Changes = new List<PatchUpdateDetail>()
@@ -360,6 +376,7 @@ namespace TMS.UI.Business.Manage
                     };
                     await new Client(nameof(Transportation)).PatchAsync<Transportation>(pathUpdateTran);
                     await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(pathUpdateTranPlan);
+                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(pathUpdateTran1);
                 };
             });
         }
