@@ -57,6 +57,7 @@ namespace Core.Components
                         htmlBuilder.Append("<body><div style='padding:7pt'>").Append(ele.Select(x => x.OuterHTML).Combine("</br>")).Append("</div></body></html>");
                         var html = htmlBuilder.ToString();
                         var printWindow = Window.Open("", "_blank");
+                        printWindow.Document.Open();
                         printWindow.Document.Write(html);
                         printWindow.Document.Close();
                         printWindow.Print();

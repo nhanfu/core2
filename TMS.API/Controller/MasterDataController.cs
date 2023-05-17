@@ -87,10 +87,13 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<MasterData>> UpdateAsync([FromBody] MasterData entity, string reasonOfChange = "")
         {
-            var masterDataDB = await db.MasterData.Where(x => x.ParentId == entity.ParentId && x.Description.ToLower() == entity.Description.ToLower() && (x.Id != entity.Id)).FirstOrDefaultAsync();
-            if (masterDataDB != null)
+            if (entity.ParentId != null)
             {
-                throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
+                var masterDataDB = await db.MasterData.Where(x => x.ParentId == entity.ParentId && x.Description.ToLower() == entity.Description.ToLower() && (x.Id != entity.Id)).FirstOrDefaultAsync();
+                if (masterDataDB != null)
+                {
+                    throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
+                }
             }
             if (entity.Path != null && entity.Path.Contains(@"\7651\"))
             {
@@ -105,11 +108,14 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<MasterData>> CreateAsync([FromBody] MasterData entity)
         {
-            await CheckDuplicatesSettingsTrainSchedule(entity);
-            var masterDataDB = await db.MasterData.Where(x => x.ParentId == entity.ParentId && x.Description.ToLower() == entity.Description.ToLower()).FirstOrDefaultAsync();
-            if (masterDataDB != null)
+            if (entity.ParentId != null)
             {
-                throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
+                await CheckDuplicatesSettingsTrainSchedule(entity);
+                var masterDataDB = await db.MasterData.Where(x => x.ParentId == entity.ParentId && x.Description.ToLower() == entity.Description.ToLower()).FirstOrDefaultAsync();
+                if (masterDataDB != null)
+                {
+                    throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
+                }
             }
             if (entity.Path != null && entity.Path.Contains(@"\7651\"))
             {

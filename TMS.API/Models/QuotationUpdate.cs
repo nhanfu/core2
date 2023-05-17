@@ -17,6 +17,7 @@ namespace TMS.API.Models
         public int? RegionId { get; set; }
         public decimal UnitPrice { get; set; }
         public int? TypeId { get; set; }
+        public int? TypeRegionId { get; set; }
         public bool Active { get; set; }
         public DateTime InsertedDate { get; set; }
         public int InsertedBy { get; set; }

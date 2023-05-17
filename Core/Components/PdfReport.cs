@@ -46,35 +46,42 @@ namespace Core.Components
             }
             Element.Style.Display = Display.None;
             var html = Html.Take(Element);
-            html.Div.ClassName("container-rpt");
-            html.Div.ClassName("menuBar")
-            .Div.ClassName("printBtn")
-                .Button.ClassName("fa fal fa-expand").Event(EventType.Click, () =>
-                {
-                    Element["requestFullscreen"].As<Function>()?.Call(Element);
-                    Element.Style.Overflow = Overflow.Auto;
-                }).End
-                .Button.ClassName("fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement, printPreview: true)).End
-                .Button.ClassName("fal fa-file-pdf").Event(EventType.Click, async () => await GeneratePdf()).End
-                .Button.ClassName("fa fa-file-excel").Event(EventType.Click, () =>
-                {
-                    if (!(_rptContent.QuerySelector("table") is HTMLTableElement table))
-                    {
-                        ConfirmDialog.RenderConfirm("Excel data not found in the report");
-                        return;
-                    }
-                    ExcelExt.ExportTableToExcel(null, GuiInfo.Label ?? GuiInfo.FieldName, table);
-                }).End.Render();
-            if (Client.SystemRole)
+            if (GuiInfo.Precision == 2)
             {
-                html.Button.ClassName("far fa-eye")
-                        .Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement)).End.Render();
+                html.Div.ClassName("printable").Style("page-break-before: always;");
+                _rptContent = html.GetContext();
             }
+            else
+            {
+                html.Div.ClassName("container-rpt");
+                html.Div.ClassName("menuBar")
+                .Div.ClassName("printBtn")
+                    .Button.ClassName("fa fal fa-expand").Event(EventType.Click, () =>
+                    {
+                        Element["requestFullscreen"].As<Function>()?.Call(Element);
+                        Element.Style.Overflow = Overflow.Auto;
+                    }).End
+                    .Button.ClassName("fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement, printPreview: true)).End
+                    .Button.ClassName("fal fa-file-pdf").Event(EventType.Click, async () => await GeneratePdf()).End
+                    .Button.ClassName("fa fa-file-excel").Event(EventType.Click, () =>
+                    {
+                        if (!(_rptContent.QuerySelector("table") is HTMLTableElement table))
+                        {
+                            ConfirmDialog.RenderConfirm("Excel data not found in the report");
+                            return;
+                        }
+                        ExcelExt.ExportTableToExcel(null, GuiInfo.Label ?? GuiInfo.FieldName, table);
+                    }).End.Render();
+                if (Client.SystemRole)
+                {
+                    html.Button.ClassName("far fa-eye")
+                            .Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement)).End.Render();
+                }
 
-            html.EndOf(".menuBar");
-            html.Div.ClassName("printable").Style("page-break-before: always;");
-            _rptContent = html.GetContext();
-
+                html.EndOf(".menuBar");
+                html.Div.ClassName("printable").Style("page-break-before: always;");
+                _rptContent = html.GetContext();
+            }
         }
 
         public async Task GeneratePdf()

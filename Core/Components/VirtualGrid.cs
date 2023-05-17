@@ -344,6 +344,10 @@ namespace Core.Components
                 e.StopPropagation();
                 ToggleAll();
             }
+            if(LastListViewItem is null)
+            {
+                return;
+            }
             var com = LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
             ActionKeyHandler(e, LastComponentFocus, LastListViewItem, com, com.Element.Closest(ElementType.td.ToString()), keyCode);
         }
