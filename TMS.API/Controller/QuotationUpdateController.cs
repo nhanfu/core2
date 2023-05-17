@@ -18,7 +18,7 @@ namespace TMS.API.Controllers
             var cmd = $@";WITH cte AS
                         (
                            SELECT *,
-                                 ROW_NUMBER() OVER (PARTITION BY PackingId,BossId,ContainerTypeId,LocationId,RouteId ORDER BY StartDate DESC) AS rn
+                                 ROW_NUMBER() OVER (PARTITION BY PackingId,BossId,ContainerTypeId,LocationId,RouteId,RegionId ORDER BY StartDate DESC) AS rn
                            FROM Quotation
                            where TypeId = {entity.TypeId}
                            and ExportListId = {VendorId}
@@ -30,6 +30,10 @@ namespace TMS.API.Controllers
             if (entity.PackingIds != null && entity.PackingIds.Any())
             {
                 cmd += $@" and PackingId in ({entity.PackingIds.Combine()})";
+            }
+            if (entity.RegionIds != null && entity.RegionIds.Any())
+            {
+                cmd += $@" and RegionId in ({entity.RegionIds.Combine()})";
             }
             if (entity.Packing1Ids != null && entity.Packing1Ids.Any())
             {
