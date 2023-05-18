@@ -43,8 +43,8 @@ namespace TMS.API.Controllers
                     var regions = await db.MasterData.Where(x => entity.RegionIds.Contains(x.Id)).ToListAsync();
                     foreach (var item in regions)
                     {
-                        var ids = await db.MasterData.AsNoTracking().Where(x => x.Path.Contains(item.Path + $"{item.Id}\\")).ToListAsync();
-                        regionIds.AddRange(ids.Select(x => x.Id).ToList());
+                        var ids = await db.MasterData.AsNoTracking().Where(x => x.Path.Contains(item.Path + $"{item.Id}\\")).Select(x => x.Id).ToListAsync();
+                        regionIds.AddRange(ids);
                         regionIds.Add(item.Id);
                     }
                 }
