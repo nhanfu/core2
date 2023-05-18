@@ -555,19 +555,38 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public void SetPurchasedForExpenses()
+        public async Task SetPurchasedForExpenses()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Expense));
             if (gridView is null)
             {
                 return;
             }
-            var ids = gridView.SelectedIds.ToList();
-            var expenses = gridView.GetSelectedRows().Cast<Expense>().ToList();
+            var ids = gridView.SelectedIds.ToList(); 
+            if (ids.Count <= 0)
+            {
+                Toast.Warning("Bạn chưa chọn dữ liệu");
+                return;
+            }
+            var expenses = new List<Expense>();
+            if (ids.Count > 0)
+            {
+                var index = ids.Count / 100;
+                for (int i = 1; i <= index + 1; i++)
+                {
+                    var idTakes = ids.Take(100).ToList();
+                    var expenseTakes = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and Id in ({idTakes.Combine()})");
+                    if (expenseTakes != null)
+                    {
+                        expenses.AddRange(expenseTakes);
+                        ids.RemoveRange(0, expenseTakes.Count);
+                    }
+                }
+            }
             var listViewItems = expenses.Where(x => x.IsPurchasedInsurance == false).ToList();
             if (listViewItems.Count <= 0)
             {
-                Toast.Warning("Bạn chưa chọn dữ liệu");
+                Toast.Warning("Không có cont nào để thao tác");
                 return;
             }
             var confirm = new ConfirmDialog
@@ -598,19 +617,38 @@ namespace TMS.UI.Business.Manage
             };
         }
 
-        public void SetClosingForExpenses()
+        public async Task SetClosingForExpenses()
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Expense));
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Expense) || x.GuiInfo.FieldName == "ExpensePurchasedInsurance");
             if (gridView is null)
             {
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var expenses = gridView.GetSelectedRows().Cast<Expense>().ToList();
+            if (ids.Count <= 0)
+            {
+                Toast.Warning("Bạn chưa chọn dữ liệu");
+                return;
+            }
+            var expenses = new List<Expense>();
+            if (ids.Count > 0)
+            {
+                var index = ids.Count / 100;
+                for (int i = 1; i <= index + 1; i++)
+                {
+                    var idTakes = ids.Take(100).ToList();
+                    var expenseTakes = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and Id in ({idTakes.Combine()})");
+                    if (expenseTakes != null)
+                    {
+                        expenses.AddRange(expenseTakes);
+                        ids.RemoveRange(0, expenseTakes.Count);
+                    }
+                }
+            }
             var listViewItems = expenses.Where(x => x.IsClosing == false).ToList();
             if (listViewItems.Count <= 0)
             {
-                Toast.Warning("Bạn chưa chọn dữ liệu");
+                Toast.Warning("Không có cont nào để thao tác");
                 return;
             }
             var confirm = new ConfirmDialog
