@@ -101,7 +101,7 @@ namespace TMS.API.Controllers
             			   ,[RegionId]
             			   ,[DistrictId]
             			   ,[ProvinceId]
-                           ,[ProvinceId])
+                           ,[ExportListId])
                 SELECT [BranchId]
             ,[TypeId]
             ,[RouteId]
