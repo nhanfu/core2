@@ -170,6 +170,11 @@ namespace TMS.UI.Business.Manage
                 Toast.Warning("Vui lòng nhập số lượng cont");
                 return;
             }
+            if (selected.Any(x => x.TotalContainerRemain == 0))
+            {
+                Toast.Warning("Có kế hoạch vận chuyển đã được lấy qua");
+                return;
+            }
             if (selected.Any(x => x.ReceivedId is null))
             {
                 Toast.Warning("Vui lòng chọn địa chỉ nhận hàng");
@@ -185,7 +190,6 @@ namespace TMS.UI.Business.Manage
                 Toast.Warning("Vui lòng lưu trước khi vận chuyển");
                 return;
             }
-
             selected = selected.Where(x => x.TotalContainerRemain > 0).ToList();
             var count = 0;
             var listAccept = new List<TransportationPlan>();
@@ -295,7 +299,7 @@ namespace TMS.UI.Business.Manage
                 if (item.TransportationTypeId == null && item.RouteId != null)
                 {
                     var route = routes.Where(x => x.Id == item.RouteId).FirstOrDefault();
-                    if(route != null)
+                    if (route != null)
                     {
                         if (route.Name.ToLower().Contains("sắt"))
                         {

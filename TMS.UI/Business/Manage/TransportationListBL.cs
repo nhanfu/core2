@@ -603,6 +603,45 @@ namespace TMS.UI.Business.Manage
             });
         }
 
+        public async Task CalcQuotationClosing()
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
+            var selected = await gridView.GetRealTimeSelectedRows();
+            if (selected.Nothing())
+            {
+                Toast.Warning("Vui lòng chọn cont cần tính lại giá!");
+                return;
+            }
+            var coords = selected.Cast<Transportation>().ToList();
+            foreach (var item in coords)
+            {
+                var path = new PatchUpdate
+                {
+                    Changes = new List<PatchUpdateDetail>()
+                    {
+                            new PatchUpdateDetail()
+                            {
+                                Field= IdField,
+                                Value = item.Id.ToString()
+                            },
+                            new PatchUpdateDetail()
+                            {
+                                Field= nameof(Transportation.ClosingUnitPrice),
+                                Value = null
+                            },
+                            new PatchUpdateDetail()
+                            {
+                                Field= nameof(Transportation.ClosingCombinationUnitPrice),
+                                Value = null
+                            }
+                        }
+                };
+                await new Client(nameof(Transportation)).PatchAsync<Transportation>(path);
+                Toast.Success($"Đã áp dụng thành công cont: {item.ContainerNo}");
+                await Task.Delay(200);
+            }
+        }
+
         public void UpdateShipQuotation(object arg)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
