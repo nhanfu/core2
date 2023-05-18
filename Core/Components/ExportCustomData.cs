@@ -314,7 +314,7 @@ namespace Core.Components
                 userSetting.Value = JsonConvert.SerializeObject(_headers);
                 await new Client(nameof(UserSetting)).UpdateAsync<UserSetting>(userSetting);
             }
-            var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"[{ParentListView.GuiInfo.RefName}].[{orderby.Field.FieldName}] {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
+            var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"[{ParentListView.GuiInfo.RefName}].{orderby.Field.FieldName} {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
             var finalFilter = string.Empty;
             if (orderbyList.HasElement())
             {
