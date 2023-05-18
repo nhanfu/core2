@@ -463,18 +463,18 @@ namespace TMS.UI.Business.Manage
                         { await TransportationRequestDetailsBL(tran, tabEditor); }
                     };
                 }
-                if (patch.Changes.Any(x => x.Field == nameof(transportation.ShipPrice) ||
-                x.Field == nameof(transportation.PolicyId) ||
-                x.Field == nameof(transportation.RouteId) ||
-                x.Field == nameof(transportation.BrandShipId) ||
-                x.Field == nameof(transportation.LineId) ||
-                x.Field == nameof(transportation.ShipId) ||
-                x.Field == nameof(transportation.Trip) ||
-                x.Field == nameof(transportation.StartShip) ||
-                x.Field == nameof(transportation.ContainerTypeId) ||
-                x.Field == nameof(transportation.SocId) ||
-                x.Field == nameof(transportation.ShipNotes) ||
-                x.Field == nameof(transportation.BookingId)))
+                if (patch.Changes.Any(x => (x.Field == nameof(transportation.ShipPrice) && int.Parse(x.Value) != tran.ShipPrice)
+                || (x.Field == nameof(transportation.PolicyId) && int.Parse(x.Value) != tran.PolicyId)
+                || (x.Field == nameof(transportation.RouteId) && int.Parse(x.Value) != tran.RouteId)
+                || (x.Field == nameof(transportation.BrandShipId) && int.Parse(x.Value) != tran.BrandShipId)
+                || (x.Field == nameof(transportation.LineId) && int.Parse(x.Value) != tran.LineId)
+                || (x.Field == nameof(transportation.ShipId) && int.Parse(x.Value) != tran.ShipId)
+                || (x.Field == nameof(transportation.Trip) && x.Value.Trim() != tran.Trip.Trim())
+                || (x.Field == nameof(transportation.StartShip) && DateTime.Parse(x.Value).Date != tran.StartShip.Value.Date)
+                || (x.Field == nameof(transportation.ContainerTypeId) && int.Parse(x.Value) != tran.ContainerTypeId)
+                || (x.Field == nameof(transportation.SocId) && int.Parse(x.Value) != tran.SocId)
+                || (x.Field == nameof(transportation.ShipNotes) && x.Value.Trim() != tran.ShipNotes.Trim())
+                || (x.Field == nameof(transportation.BookingId) && int.Parse(x.Value) != tran.BookingId)))
                 {
                     if (tran.LockShip)
                     {
@@ -496,29 +496,29 @@ namespace TMS.UI.Business.Manage
                         };
                     }
                 }
-                if (patch.Changes.Any(x => x.Field == nameof(transportation.MonthText)
-                || x.Field == nameof(transportation.YearText)
-                || x.Field == nameof(transportation.ExportListId)
-                || x.Field == nameof(transportation.RouteId)
-                || x.Field == nameof(transportation.ShipId)
-                || x.Field == nameof(transportation.Trip)
-                || x.Field == nameof(transportation.ClosingDate)
-                || x.Field == nameof(transportation.StartShip)
-                || x.Field == nameof(transportation.ContainerTypeId)
-                || x.Field == nameof(transportation.ContainerNo)
-                || x.Field == nameof(transportation.SealNo)
-                || x.Field == nameof(transportation.BossId)
-                || x.Field == nameof(transportation.UserId)
-                || x.Field == nameof(transportation.CommodityId)
-                || x.Field == nameof(transportation.Cont20)
-                || x.Field == nameof(transportation.Cont40)
-                || x.Field == nameof(transportation.Weight)
-                || x.Field == nameof(transportation.ReceivedId)
-                || x.Field == nameof(transportation.FreeText2)
-                || x.Field == nameof(transportation.ShipDate)
-                || x.Field == nameof(transportation.ReturnDate)
-                || x.Field == nameof(transportation.ReturnId)
-                || x.Field == nameof(transportation.FreeText3)))
+                if (patch.Changes.Any(x => (x.Field == nameof(transportation.MonthText) && x.Value.Trim() != tran.MonthText.Trim())
+                    || (x.Field == nameof(transportation.YearText) && x.Value.Trim() != tran.YearText.Trim())
+                    || (x.Field == nameof(transportation.ExportListId) && int.Parse(x.Value) != tran.ExportListId)
+                    || (x.Field == nameof(transportation.RouteId) && int.Parse(x.Value) != tran.RouteId)
+                    || (x.Field == nameof(transportation.ShipId) && int.Parse(x.Value) != tran.ShipId)
+                    || (x.Field == nameof(transportation.Trip) && x.Value.Trim() != tran.Trip.Trim())
+                    || (x.Field == nameof(transportation.ClosingDate) && DateTime.Parse(x.Value).Date != tran.ClosingDate.Value.Date)
+                    || (x.Field == nameof(transportation.StartShip) && DateTime.Parse(x.Value).Date != tran.StartShip.Value.Date)
+                    || (x.Field == nameof(transportation.ContainerTypeId) && int.Parse(x.Value) != tran.ContainerTypeId)
+                    || (x.Field == nameof(transportation.ContainerNo) && x.Value.Trim() != tran.ContainerNo.Trim())
+                    || (x.Field == nameof(transportation.SealNo) && x.Value.Trim() != tran.SealNo.Trim())
+                    || (x.Field == nameof(transportation.BossId) && int.Parse(x.Value) != tran.BossId)
+                    || (x.Field == nameof(transportation.UserId) && int.Parse(x.Value) != tran.UserId)
+                    || (x.Field == nameof(transportation.CommodityId) && int.Parse(x.Value) != tran.CommodityId)
+                    || (x.Field == nameof(transportation.Cont20) && int.Parse(x.Value) != tran.Cont20)
+                    || (x.Field == nameof(transportation.Cont40) && int.Parse(x.Value) != tran.Cont40)
+                    || (x.Field == nameof(transportation.Weight) && int.Parse(x.Value) != tran.Weight)
+                    || (x.Field == nameof(transportation.ReceivedId) && int.Parse(x.Value) != tran.ReceivedId)
+                    || (x.Field == nameof(transportation.FreeText2) && x.Value.Trim() != tran.FreeText2.Trim())
+                    || (x.Field == nameof(transportation.ShipDate) && DateTime.Parse(x.Value).Date != tran.ShipDate.Value.Date)
+                    || (x.Field == nameof(transportation.ReturnDate) && DateTime.Parse(x.Value).Date != tran.ReturnDate.Value.Date)
+                    || (x.Field == nameof(transportation.ReturnId) && int.Parse(x.Value) != tran.ReturnId)
+                    || (x.Field == nameof(transportation.FreeText3) && x.Value.Trim() != tran.FreeText3.Trim())))
                 {
                     if (tran.IsKt)
                     {
