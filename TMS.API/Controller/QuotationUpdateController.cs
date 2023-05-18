@@ -43,8 +43,9 @@ namespace TMS.API.Controllers
                     var regions = await db.MasterData.Where(x => entity.RegionIds.Contains(x.Id)).ToListAsync();
                     foreach (var item in regions)
                     {
-                        var ids = await db.MasterData.Where(x => x.Path.Contains(item.Path)).Select(x => x.Id).ToListAsync();
+                        var ids = await db.MasterData.Where(x => x.Path.Contains(item.Path) && x.Path != item.Path).Select(x => x.Id).ToListAsync();
                         regionIds.AddRange(ids);
+                        ids.Add(item.Id);
                     }
                 }
                 else
@@ -99,7 +100,8 @@ namespace TMS.API.Controllers
             			   ,[IsParent]
             			   ,[RegionId]
             			   ,[DistrictId]
-            			   ,[ProvinceId])
+            			   ,[ProvinceId]
+                           ,[ProvinceId])
                 SELECT [BranchId]
             ,[TypeId]
             ,[RouteId]
@@ -115,7 +117,7 @@ namespace TMS.API.Controllers
             ,[Note]
             ,[Active]
             ,GETDATE() as InsertedDate
-            ,[InsertedBy]
+            ,{UserId}
             ,[QuotationUpdateId]
             ,isnull(case when [UnitPrice3] > 0 then case when {entity.TypeId} = 7592 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice3] + {entity.UnitPrice} else [UnitPrice3] - {entity.UnitPrice} end else [UnitPrice3] end end,0)
             ,[ParentId]
@@ -123,6 +125,7 @@ namespace TMS.API.Controllers
             ,[RegionId]
             ,[DistrictId]
             ,[ProvinceId]
+            ,{VendorId}
                             FROM cte
                             WHERE rn = 1";
             await db.Database.ExecuteSqlRawAsync(cmd);
