@@ -30,8 +30,8 @@ namespace TMS.API.Controllers
         [HttpPost("api/QuotationUpdate/QuotationUpdate")]
         public async Task<bool> QuotationUpdate([FromBody] QuotationUpdate entity)
         {
-            db.Add(entity);
             SetAuditInfo(entity);
+            db.Add(entity);
             await db.SaveChangesAsync();
             var regionIds = new List<int>();
             if (entity.RegionIds != null && entity.RegionIds.Any())
