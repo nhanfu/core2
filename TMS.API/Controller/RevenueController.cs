@@ -29,7 +29,7 @@ namespace TMS.API.Controllers
                 throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
             }
             if (patch.Changes.Any(x => (x.Field == nameof(entity.InvoinceNo) && int.Parse(x.Value) != entity.InvoinceNo)
-                || (x.Field == nameof(entity.InvoinceDate) && DateTime.Parse(x.Value).Date != entity.InvoinceDate.Value.Date)
+                || (x.Field == nameof(entity.InvoinceDate) && DateTime.Parse(x.Value) != entity.InvoinceDate)
                 || (x.Field == nameof(entity.Vat) && int.Parse(x.Value) != entity.Vat)
                 || (x.Field == nameof(entity.TotalPriceBeforTax) && decimal.Parse(x.Value) != entity.TotalPriceBeforTax)
                 || (x.Field == nameof(entity.VatPrice) && decimal.Parse(x.Value) != entity.VatPrice)
@@ -44,7 +44,7 @@ namespace TMS.API.Controllers
             var oldEntity = await db.Revenue.Where(x => x.Id == entity.Id).FirstOrDefaultAsync();
             if (patch.Changes.Any(x => (x.Field == nameof(entity.Name) && x.Value.Trim() != entity.Name.Trim())
                 || (x.Field == nameof(entity.LotNo) && x.Value.Trim() != entity.LotNo.Trim())
-                || (x.Field == nameof(entity.LotDate) && DateTime.Parse(x.Value).Date != entity.LotDate.Value.Date)
+                || (x.Field == nameof(entity.LotDate) && DateTime.Parse(x.Value) != entity.LotDate)
                 || (x.Field == nameof(entity.UnitPriceAfterTax) && decimal.Parse(x.Value) != entity.UnitPriceAfterTax)
                 || (x.Field == nameof(entity.UnitPriceBeforeTax) && decimal.Parse(x.Value) != entity.UnitPriceBeforeTax)
                 || (x.Field == nameof(entity.ReceivedPrice) && decimal.Parse(x.Value) != entity.ReceivedPrice)

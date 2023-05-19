@@ -470,7 +470,7 @@ namespace TMS.UI.Business.Manage
                 || (x.Field == nameof(transportation.LineId) && int.Parse(x.Value) != tran.LineId)
                 || (x.Field == nameof(transportation.ShipId) && int.Parse(x.Value) != tran.ShipId)
                 || (x.Field == nameof(transportation.Trip) && x.Value.Trim() != tran.Trip.Trim())
-                || (x.Field == nameof(transportation.StartShip) && DateTime.Parse(x.Value).Date != tran.StartShip.Value.Date)
+                || (x.Field == nameof(transportation.StartShip) && DateTime.Parse(x.Value) != tran.StartShip)
                 || (x.Field == nameof(transportation.ContainerTypeId) && int.Parse(x.Value) != tran.ContainerTypeId)
                 || (x.Field == nameof(transportation.SocId) && int.Parse(x.Value) != tran.SocId)
                 || (x.Field == nameof(transportation.ShipNotes) && x.Value.Trim() != tran.ShipNotes.Trim())
@@ -502,8 +502,8 @@ namespace TMS.UI.Business.Manage
                     || (x.Field == nameof(transportation.RouteId) && int.Parse(x.Value) != tran.RouteId)
                     || (x.Field == nameof(transportation.ShipId) && int.Parse(x.Value) != tran.ShipId)
                     || (x.Field == nameof(transportation.Trip) && x.Value.Trim() != tran.Trip.Trim())
-                    || (x.Field == nameof(transportation.ClosingDate) && DateTime.Parse(x.Value).Date != tran.ClosingDate.Value.Date)
-                    || (x.Field == nameof(transportation.StartShip) && DateTime.Parse(x.Value).Date != tran.StartShip.Value.Date)
+                    || (x.Field == nameof(transportation.ClosingDate) && DateTime.Parse(x.Value) != tran.ClosingDate)
+                    || (x.Field == nameof(transportation.StartShip) && DateTime.Parse(x.Value) != tran.StartShip)
                     || (x.Field == nameof(transportation.ContainerTypeId) && int.Parse(x.Value) != tran.ContainerTypeId)
                     || (x.Field == nameof(transportation.ContainerNo) && x.Value.Trim() != tran.ContainerNo.Trim())
                     || (x.Field == nameof(transportation.SealNo) && x.Value.Trim() != tran.SealNo.Trim())
@@ -515,8 +515,8 @@ namespace TMS.UI.Business.Manage
                     || (x.Field == nameof(transportation.Weight) && int.Parse(x.Value) != tran.Weight)
                     || (x.Field == nameof(transportation.ReceivedId) && int.Parse(x.Value) != tran.ReceivedId)
                     || (x.Field == nameof(transportation.FreeText2) && x.Value.Trim() != tran.FreeText2.Trim())
-                    || (x.Field == nameof(transportation.ShipDate) && DateTime.Parse(x.Value).Date != tran.ShipDate.Value.Date)
-                    || (x.Field == nameof(transportation.ReturnDate) && DateTime.Parse(x.Value).Date != tran.ReturnDate.Value.Date)
+                    || (x.Field == nameof(transportation.ShipDate) && DateTime.Parse(x.Value) != tran.ShipDate)
+                    || (x.Field == nameof(transportation.ReturnDate) && DateTime.Parse(x.Value) != tran.ReturnDate)
                     || (x.Field == nameof(transportation.ReturnId) && int.Parse(x.Value) != tran.ReturnId)
                     || (x.Field == nameof(transportation.FreeText3) && x.Value.Trim() != tran.FreeText3.Trim())))
                 {
@@ -641,7 +641,7 @@ namespace TMS.UI.Business.Manage
                     return;
                 }
                 if (patch.Changes.Any(x => (x.Field == nameof(Revenue.InvoinceNo) && int.Parse(x.Value) != revenue.InvoinceNo)
-                || (x.Field == nameof(Revenue.InvoinceDate) && DateTime.Parse(x.Value).Date != revenue.InvoinceDate.Value.Date)
+                || (x.Field == nameof(Revenue.InvoinceDate) && DateTime.Parse(x.Value) != revenue.InvoinceDate)
                 || (x.Field == nameof(Revenue.Vat) && int.Parse(x.Value) != revenue.Vat)
                 || (x.Field == nameof(Revenue.TotalPriceBeforTax) && decimal.Parse(x.Value) != revenue.TotalPriceBeforTax)
                 || (x.Field == nameof(Revenue.VatPrice) && decimal.Parse(x.Value) != revenue.VatPrice)
@@ -655,7 +655,7 @@ namespace TMS.UI.Business.Manage
                 }
                 if (patch.Changes.Any(x => (x.Field == nameof(Revenue.Name) && x.Value.Trim() != revenue.Name.Trim())
                 || (x.Field == nameof(Revenue.LotNo) && x.Value.Trim() != revenue.LotNo.Trim())
-                || (x.Field == nameof(Revenue.LotDate) && DateTime.Parse(x.Value).Date != revenue.LotDate.Value.Date)
+                || (x.Field == nameof(Revenue.LotDate) && DateTime.Parse(x.Value) != revenue.LotDate)
                 || (x.Field == nameof(Revenue.UnitPriceAfterTax) && decimal.Parse(x.Value) != revenue.UnitPriceAfterTax)
                 || (x.Field == nameof(Revenue.UnitPriceBeforeTax) && decimal.Parse(x.Value) != revenue.UnitPriceBeforeTax)
                 || (x.Field == nameof(Revenue.ReceivedPrice) && decimal.Parse(x.Value) != revenue.ReceivedPrice)
