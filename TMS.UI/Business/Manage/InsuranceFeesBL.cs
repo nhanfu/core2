@@ -596,6 +596,7 @@ namespace TMS.UI.Business.Manage
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
+                ids = expenses.Select(x => x.Id).ToList();
                 var res = await new Client(nameof(Expense)).PostAsync<bool>(ids, "PurchasedInsuranceFees");
                 if (res)
                 {
