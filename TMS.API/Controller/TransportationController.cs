@@ -74,7 +74,7 @@ namespace TMS.API.Controllers
                     }
                 }
 
-                if (patch.Changes.Any(x => (x.Field == nameof(entity.ShipPrice) && int.Parse(x.Value) != entity.ShipPrice)
+                if (patch.Changes.Any(x => (x.Field == nameof(entity.ShipPrice) && decimal.Parse(x.Value) != entity.ShipPrice)
                 || (x.Field == nameof(entity.PolicyId) && int.Parse(x.Value) != entity.PolicyId)
                 || (x.Field == nameof(entity.RouteId) && int.Parse(x.Value) != entity.RouteId)
                 || (x.Field == nameof(entity.BrandShipId) && int.Parse(x.Value) != entity.BrandShipId)

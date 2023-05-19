@@ -463,7 +463,7 @@ namespace TMS.UI.Business.Manage
                         { await TransportationRequestDetailsBL(tran, tabEditor); }
                     };
                 }
-                if (patch.Changes.Any(x => (x.Field == nameof(transportation.ShipPrice) && int.Parse(x.Value) != tran.ShipPrice)
+                if (patch.Changes.Any(x => (x.Field == nameof(transportation.ShipPrice) && decimal.Parse(x.Value) != tran.ShipPrice)
                 || (x.Field == nameof(transportation.PolicyId) && int.Parse(x.Value) != tran.PolicyId)
                 || (x.Field == nameof(transportation.RouteId) && int.Parse(x.Value) != tran.RouteId)
                 || (x.Field == nameof(transportation.BrandShipId) && int.Parse(x.Value) != tran.BrandShipId)
@@ -640,29 +640,29 @@ namespace TMS.UI.Business.Manage
                     Toast.Warning("Bạn không có quyền chỉnh sửa dữ liệu của cột này.");
                     return;
                 }
-                if (patch.Changes.Any(x => x.Field == nameof(Revenue.InvoinceNo)
-                || x.Field == nameof(Revenue.InvoinceDate)
-                || x.Field == nameof(Revenue.Vat)
-                || x.Field == nameof(Revenue.TotalPriceBeforTax)
-                || x.Field == nameof(Revenue.VatPrice)
-                || x.Field == nameof(Revenue.TotalPrice)
-                || x.Field == nameof(Revenue.VendorVatId)))
+                if (patch.Changes.Any(x => (x.Field == nameof(Revenue.InvoinceNo) && int.Parse(x.Value) != revenue.InvoinceNo)
+                || (x.Field == nameof(Revenue.InvoinceDate) && DateTime.Parse(x.Value).Date != revenue.InvoinceDate.Value.Date)
+                || (x.Field == nameof(Revenue.Vat) && int.Parse(x.Value) != revenue.Vat)
+                || (x.Field == nameof(Revenue.TotalPriceBeforTax) && decimal.Parse(x.Value) != revenue.TotalPriceBeforTax)
+                || (x.Field == nameof(Revenue.VatPrice) && decimal.Parse(x.Value) != revenue.VatPrice)
+                || (x.Field == nameof(Revenue.TotalPrice) && decimal.Parse(x.Value) != revenue.TotalPrice)
+                || (x.Field == nameof(Revenue.VendorVatId) && int.Parse(x.Value) != revenue.VendorVatId)))
                 {
                     if (selected != null && selected.IsLockedRevenue)
                     {
                         OpenRevenueRequestBL(revenue);
                     }
                 }
-                if (patch.Changes.Any(x => x.Field == nameof(Revenue.Name)
-                    || x.Field == nameof(Revenue.LotNo)
-                    || x.Field == nameof(Revenue.LotDate)
-                    || x.Field == nameof(Revenue.UnitPriceAfterTax)
-                    || x.Field == nameof(Revenue.UnitPriceBeforeTax)
-                    || x.Field == nameof(Revenue.ReceivedPrice)
-                    || x.Field == nameof(Revenue.CollectOnBehaftPrice)
-                    || x.Field == nameof(Revenue.NotePayment)
-                    || x.Field == nameof(Revenue.Note)
-                    || x.Field == nameof(Revenue.RevenueAdjustment)))
+                if (patch.Changes.Any(x => (x.Field == nameof(Revenue.Name) && x.Value.Trim() != revenue.Name.Trim())
+                || (x.Field == nameof(Revenue.LotNo) && x.Value.Trim() != revenue.LotNo.Trim())
+                || (x.Field == nameof(Revenue.LotDate) && DateTime.Parse(x.Value).Date != revenue.LotDate.Value.Date)
+                || (x.Field == nameof(Revenue.UnitPriceAfterTax) && decimal.Parse(x.Value) != revenue.UnitPriceAfterTax)
+                || (x.Field == nameof(Revenue.UnitPriceBeforeTax) && decimal.Parse(x.Value) != revenue.UnitPriceBeforeTax)
+                || (x.Field == nameof(Revenue.ReceivedPrice) && decimal.Parse(x.Value) != revenue.ReceivedPrice)
+                || (x.Field == nameof(Revenue.CollectOnBehaftPrice) && decimal.Parse(x.Value) != revenue.CollectOnBehaftPrice)
+                || (x.Field == nameof(Revenue.NotePayment) && x.Value.Trim() != revenue.NotePayment.Trim())
+                || (x.Field == nameof(Revenue.Note) && x.Value.Trim() != revenue.Note.Trim())
+                || (x.Field == nameof(Revenue.RevenueAdjustment) && decimal.Parse(x.Value) != revenue.RevenueAdjustment)))
                 {
                     if (selected != null && selected.IsSubmit)
                     {
