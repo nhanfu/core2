@@ -1627,9 +1627,6 @@ namespace TMS.API.Controllers
             sql += @$"
                     select *
                     from [{typeof(Transportation).Name}]
-                    union
-                    select *
-                    from {nameof(Expense)}
                     where 1 = 1";
             if (RoleIds.Contains(10))
             {
