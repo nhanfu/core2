@@ -410,7 +410,7 @@ namespace TMS.API.Controllers
                 return false;
             }
             var cmd = $"Update [{nameof(Expense)}] set IsPurchasedInsurance = 1, DatePurchasedInsurance = '{DateTime.Now.ToString("yyyy-MM-dd")}'" +
-                $" where Id in ({ids.Combine()});";
+                $" where Id in ({ids.Combine()}) and ExpenseTypeId in (15981, 15939) and RequestChangeId is null;";
             await ExecSql(cmd, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;");
             return true;
         }
@@ -427,9 +427,9 @@ namespace TMS.API.Controllers
             var expenseNoPurchased = expenses.Where(x => x.IsPurchasedInsurance == false).ToList();
             var idNoPurchaseds = expenseNoPurchased.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Expense)}] set IsClosing = 1" +
-                $" where Id in ({idPurchaseds.Combine()})";
+                $" where Id in ({idPurchaseds.Combine()}) and ExpenseTypeId in (15981, 15939) and RequestChangeId is null";
             cmd += $" Update [{nameof(Expense)}] set IsClosing = 1, IsPurchasedInsurance = 1, DatePurchasedInsurance = '{DateTime.Now.ToString("yyyy-MM-dd")}'" +
-                $" where Id in ({idNoPurchaseds.Combine()});";
+                $" where Id in ({idNoPurchaseds.Combine()}) and ExpenseTypeId in (15981, 15939) and RequestChangeId is null;";
             await ExecSql(cmd, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;");
             return true;
         }

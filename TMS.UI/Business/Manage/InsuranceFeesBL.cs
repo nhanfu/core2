@@ -575,7 +575,7 @@ namespace TMS.UI.Business.Manage
                 for (int i = 1; i <= index + 1; i++)
                 {
                     var idTakes = ids.Take(100).ToList();
-                    var expenseTakes = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and Id in ({idTakes.Combine()})");
+                    var expenseTakes = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and Id in ({idTakes.Combine()}) and ExpenseTypeId in (15981, 15939) and RequestChangeId eq null");
                     if (expenseTakes != null)
                     {
                         expenses.AddRange(expenseTakes);
@@ -638,7 +638,7 @@ namespace TMS.UI.Business.Manage
                 for (int i = 1; i <= index + 1; i++)
                 {
                     var idTakes = ids.Take(100).ToList();
-                    var expenseTakes = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and Id in ({idTakes.Combine()})");
+                    var expenseTakes = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and Id in ({idTakes.Combine()}) and ExpenseTypeId in (15981, 15939) and RequestChangeId eq null");
                     if (expenseTakes != null)
                     {
                         expenses.AddRange(expenseTakes);
@@ -692,7 +692,7 @@ namespace TMS.UI.Business.Manage
             confirm.YesConfirmed += async () =>
             {
                 var transportation = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {expense.TransportationId}");
-                var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId eq {expense.TransportationId} and RequestChangeId eq null");
+                var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and TransportationId eq {expense.TransportationId} and ExpenseTypeId in (15981, 15939) and RequestChangeId eq null");
                 foreach (var x in expenses)
                 {
                     if (x.IsClosing && x.IsPurchasedInsurance)
@@ -709,10 +709,10 @@ namespace TMS.UI.Business.Manage
                                 Toast.Warning("Không tìm thấy cont phù hợp!");
                             }
                             var saleFilter = x.SaleId == null ? "" : $"and SaleId eq {x.SaleId}";
-                            var findReplace = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and IsPurchasedInsurance eq false and TransportationTypeId eq {x.TransportationTypeId} and IsWet eq {x.IsWet.ToString().ToLower()} and IsBought eq {x.IsBought.ToString().ToLower()} and JourneyId eq {x.JourneyId} and CustomerTypeId eq {x.CustomerTypeId} {saleFilter} and Id ne {x.Id}");
+                            var findReplace = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and IsPurchasedInsurance eq false and TransportationTypeId eq {x.TransportationTypeId} and IsWet eq {x.IsWet.ToString().ToLower()} and IsBought eq {x.IsBought.ToString().ToLower()} and JourneyId eq {x.JourneyId} and CustomerTypeId eq {x.CustomerTypeId} {saleFilter} and Id ne {x.Id} and ExpenseTypeId in (15981, 15939) and RequestChangeId eq null");
                             if (findReplace == null)
                             {
-                                findReplace = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and IsPurchasedInsurance eq false and TransportationTypeId eq {x.TransportationTypeId} and IsWet eq {x.IsWet.ToString().ToLower()} and IsBought eq {x.IsBought.ToString().ToLower()} and JourneyId eq {x.JourneyId} and CustomerTypeId eq {x.CustomerTypeId} and Id ne {x.Id}");
+                                findReplace = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and IsPurchasedInsurance eq false and TransportationTypeId eq {x.TransportationTypeId} and IsWet eq {x.IsWet.ToString().ToLower()} and IsBought eq {x.IsBought.ToString().ToLower()} and JourneyId eq {x.JourneyId} and CustomerTypeId eq {x.CustomerTypeId} and Id ne {x.Id} and ExpenseTypeId in (15981, 15939) and RequestChangeId eq null");
                             }
                             if (findReplace.Count <= 0)
                             {
@@ -721,7 +721,7 @@ namespace TMS.UI.Business.Manage
                             else
                             {
                                 var selectExpenseReplace = findReplace.OrderBy(item => Math.Abs((int)x.CommodityValue - (int)item.CommodityValue)).FirstOrDefault();
-                                var expenseReplace = await new Client(nameof(Expense)).FirstOrDefaultAsync<Expense>($"?$filter=Active eq true and Id eq {selectExpenseReplace.Id}");
+                                var expenseReplace = await new Client(nameof(Expense)).FirstOrDefaultAsync<Expense>($"?$filter=Active eq true and Id eq {selectExpenseReplace.Id} and ExpenseTypeId in (15981, 15939) and RequestChangeId eq null");
                                 var confirmReplace = new ConfirmDialog
                                 {
                                     Content = $"Đã tìm thấy cont Id: {expenseReplace.Id} có GTHH " + decimal.Parse(expenseReplace.CommodityValue.ToString()).ToString("N0") + ". Bạn có muốn thay thế không?",
