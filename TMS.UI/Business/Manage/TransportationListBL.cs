@@ -233,11 +233,10 @@ namespace TMS.UI.Business.Manage
                 menus.Add(new ContextMenuItem { Icon = "fal fa-binoculars", Text = "Tính năng", MenuItems = listContext1 });
                 ContextMenu.Instance.MenuItems = menus;
             };
-            var listViewItems = gridView.RowData.Data.Cast<Transportation>().ToList();
-            listViewItems.ForEach(x =>
+            foreach (var listViewItem in gridView.MainSection.FilterChildren<ListViewItem>())
             {
-                var listViewItem = gridView.GetListViewItems(x).FirstOrDefault();
-                if (listViewItem is null)
+                var x = listViewItem.Entity as Transportation;
+                if (listViewItem is null || x is null)
                 {
                     return;
                 }
@@ -252,7 +251,7 @@ namespace TMS.UI.Business.Manage
                 {
                     bookingId.Disabled = true;
                 }
-            });
+            }
         }
 
         private void DownLoadPackingList(object arg)
@@ -776,45 +775,6 @@ namespace TMS.UI.Business.Manage
                     instance.Entity = quotation;
                     return instance;
                 });
-            });
-        }
-
-        public void ChangeBackgroudColor(List<Transportation> listViewItems)
-        {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
-            if (gridView is null)
-            {
-                return;
-            }
-            listViewItems.ForEach(x =>
-            {
-                var listViewItem = gridView.GetListViewItems(x).FirstOrDefault();
-                if (listViewItem is null)
-                {
-                    return;
-                }
-                listViewItem.Element.RemoveClass("bg-red");
-                listViewItem.Element.RemoveClass("bg-red1");
-                if (x.DemDate != null && x.ReturnDate != null && Convert.ToDateTime(x.ReturnDate.Value).Date > Convert.ToDateTime(x.DemDate.Value).Date)
-                {
-                    if (listViewItem != null && !listViewItem.Element.HasClass("bg-red1"))
-                    {
-                        listViewItem.Element.RemoveClass("bg-red");
-                        listViewItem.Element.AddClass("bg-red1");
-                    }
-                }
-                else if (x.DemDate != null && x.ReturnDate != null && Convert.ToDateTime(x.ReturnDate.Value).Date < Convert.ToDateTime(x.DemDate.Value).Date)
-                {
-                    if (listViewItem != null && listViewItem.Element.HasClass("bg-red1"))
-                    {
-                        listViewItem.Element.RemoveClass("bg-red1");
-                    }
-                }
-                else
-                {
-                    listViewItem.Element.RemoveClass("bg-red");
-                    listViewItem.Element.RemoveClass("bg-red1");
-                }
             });
         }
 

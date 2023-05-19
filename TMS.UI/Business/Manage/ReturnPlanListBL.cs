@@ -205,8 +205,7 @@ namespace TMS.UI.Business.Manage
                 });
                 ContextMenu.Instance.MenuItems = menus;
             };
-            var listViewItems = gridView.RowData.Data.Cast<Transportation>().ToList();
-            ChangeBackgroudColorReturn(listViewItems);
+            ChangeBackgroudColorReturn();
         }
 
         private void NoteFreeText8(object arg)
@@ -314,17 +313,17 @@ namespace TMS.UI.Business.Manage
             });
         }
 
-        public void ChangeBackgroudColorReturn(List<Transportation> listViewItems)
+        public void ChangeBackgroudColorReturn()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
             if (gridView is null)
             {
                 return;
             }
-            foreach (var item in listViewItems)
+            foreach (var listViewItem in gridView.MainSection.FilterChildren<ListViewItem>())
             {
-                var listViewItem = gridView.AllListViewItem.FirstOrDefault(y => y.Entity[IdField].ToString() == item.Id.ToString());
-                if (listViewItem is null)
+                var item = listViewItem.Entity as Transportation;
+                if (listViewItem is null || item is null)
                 {
                     return;
                 }
