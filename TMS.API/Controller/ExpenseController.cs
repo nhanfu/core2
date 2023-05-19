@@ -557,6 +557,8 @@ namespace TMS.API.Controllers
                         (tran.Cont20 != ex.Cont20) ||
                         (tran.Cont40 != ex.Cont40) ||
                         (tran.Note2?.Trim() != ex.Notes?.Trim()) ||
+                        (tran.YearText?.Trim() != ex.YearText?.Trim()) ||
+                        (tran.MonthText?.Trim() != ex.MonthText?.Trim()) ||
                         (tran.ClosingDate != ex.StartShip && (ex.JourneyId == 12114 || ex.JourneyId == 16001)) ||
                         (tran.StartShip != ex.StartShip && (ex.JourneyId != 12114 && ex.JourneyId != 16001))) && check == false)
                     {
@@ -649,6 +651,8 @@ namespace TMS.API.Controllers
                         if (tran.Cont20 != ex.Cont20) { ex.Cont20 = tran.Cont20; }
                         if (tran.Cont40 != ex.Cont40) { ex.Cont40 = tran.Cont40; }
                         if (tran.Note2?.Trim() != ex.Notes?.Trim()) { ex.Notes = tran.Note2; }
+                        if (tran.YearText?.Trim() != ex.YearText?.Trim()) { ex.YearText = tran.YearText; }
+                        if (tran.MonthText?.Trim() != ex.MonthText?.Trim()) { ex.MonthText = tran.MonthText; }
                         if (tran.ClosingDate != ex.StartShip && (ex.JourneyId == 12114 || ex.JourneyId == 16001)) { ex.StartShip = tran.ClosingDate; }
                         if (tran.StartShip != ex.StartShip && (ex.JourneyId != 12114 && ex.JourneyId != 16001)) { ex.StartShip = tran.StartShip; }
 
