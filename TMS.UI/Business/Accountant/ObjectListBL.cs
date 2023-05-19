@@ -29,6 +29,57 @@ namespace TMS.UI.Business.Accountant
             };
         }
 
+        public void GridViewDOMContentLoaded()
+        {
+            var grid = this.FindActiveComponent<GridView>().FirstOrDefault();
+            if (grid != null)
+            {
+                grid.SetDisabled(true);
+                SetDisabledGridView(grid);
+            }
+        }
+
+        public void OpenEdit()
+        {
+            this.SetDisabled(false);
+            this.SetShow(false, "btnEdit");
+            var grid = this.FindActiveComponent<GridView>().FirstOrDefault();
+            if (grid != null)
+            {
+                grid.AddNewEmptyRow();
+                SetDefaultGridView(grid);
+            }
+        }
+
+        public void SetDefaultGridView(GridView grid)
+        {
+            var listViewItems = grid.RowData.Data.Cast<Vendor>().ToList();
+            listViewItems.ForEach(x =>
+            {
+                var listViewItem = grid.GetListViewItems(x).FirstOrDefault();
+                if (listViewItem is null)
+                {
+                    return;
+                }
+                listViewItem.FilterChildren(y => y.GuiInfo.Active).ForEach(y => y.Disabled = true);
+                listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
+            });
+        }
+
+        public void SetDisabledGridView(GridView grid)
+        {
+            var listViewItems = grid.RowData.Data.Cast<Vendor>().ToList();
+            listViewItems.ForEach(x =>
+            {
+                var listViewItem = grid.GetListViewItems(x).FirstOrDefault();
+                if (listViewItem is null)
+                {
+                    return;
+                }
+                listViewItem.FilterChildren(y => y.GuiInfo.Active).ForEach(y => y.Disabled = true);
+            });
+        }
+
         public async Task AddObject()
         {
             await this.OpenPopup(
