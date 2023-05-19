@@ -832,7 +832,7 @@ namespace TMS.API.Controllers
             return url;
         }
 
-        public void ExecSql(string sql, string disableTrigger, string enableTrigger)
+        public async Task ExecSql(string sql, string disableTrigger, string enableTrigger)
         {
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
             {
@@ -847,7 +847,7 @@ namespace TMS.API.Controllers
                         command.CommandText += disableTrigger;
                         command.CommandText += sql;
                         command.CommandText += enableTrigger;
-                        command.ExecuteNonQuery();
+                        await command.ExecuteNonQueryAsync();
                         transaction.Commit();
                     }
                 }

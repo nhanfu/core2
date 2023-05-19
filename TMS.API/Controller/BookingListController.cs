@@ -251,7 +251,7 @@ namespace TMS.API.Controllers
             await db.SaveChangesAsync();
             db.Transportation.FromSqlInterpolated($"ENABLE TRIGGER ALL ON Transportation");
             var queryUnActiveRecordNotUsing = $"update {nameof(BookingList)} set Active = 0 FROM {nameof(BookingList)} bl WHERE bl.Id NOT IN (SELECT t.BookingListId FROM {nameof(Transportation)} t WHERE t.BookingListId is not null and t.BookingId is not null) AND bl.Active = 1";
-            ExecSql(queryUnActiveRecordNotUsing, "DISABLE TRIGGER ALL ON BookingList;", "ENABLE TRIGGER ALL ON BookingList;");
+            await ExecSql(queryUnActiveRecordNotUsing, "DISABLE TRIGGER ALL ON BookingList;", "ENABLE TRIGGER ALL ON BookingList;");
             return true;
         }
 

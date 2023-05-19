@@ -468,8 +468,8 @@ namespace TMS.API.BgService
                     querys += query;
                 }
             }
-            if (queryExs != null && queryExs != "") { ExecSql(queryExs, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;"); }
-            if (querys != null && querys != "") { ExecSql(querys, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;"); }
+            if (queryExs != null && queryExs != "") { await ExecSql(queryExs, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;"); }
+            if (querys != null && querys != "") { await ExecSql(querys, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;"); }
         }
 
         private void CalcInsuranceFees(Expense expense, bool isSOC, List<InsuranceFeesRate> insuranceFeesRates, List<MasterData> extraInsuranceFeesRateDB, MasterData containerExpense, MasterData insuranceFeesRateColdDB)
@@ -531,7 +531,7 @@ namespace TMS.API.BgService
             }
         }
 
-        public void ExecSql(string sql, string disableTrigger, string enableTrigger)
+        public async Task ExecSql(string sql, string disableTrigger, string enableTrigger)
         {
             using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default")))
             {
@@ -546,7 +546,7 @@ namespace TMS.API.BgService
                         command.CommandText += disableTrigger;
                         command.CommandText += sql;
                         command.CommandText += enableTrigger;
-                        command.ExecuteNonQuery();
+                        await command.ExecuteNonQueryAsync();
                         transaction.Commit();
                     }
                 }

@@ -1560,7 +1560,7 @@ namespace TMS.API.Controllers
 					    from Transportation
 					    where Transportation.ShipDate is not null and Transportation.ShipId = '{entity.ShipId}' and (Transportation.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Transportation.Trip = '{entity.Trip}' and Transportation.RouteId in ({entity.RouteIds.Combine()});
                         ";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return check;
         }
 
@@ -1627,6 +1627,9 @@ namespace TMS.API.Controllers
             sql += @$"
                     select *
                     from [{typeof(Transportation).Name}]
+                    union
+                    select *
+                    from {nameof(Expense)}
                     where 1 = 1";
             if (RoleIds.Contains(10))
             {
@@ -2210,7 +2213,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2258,7 +2261,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2308,7 +2311,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2356,7 +2359,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2395,7 +2398,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2434,7 +2437,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2473,7 +2476,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2512,7 +2515,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2576,7 +2579,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsLocked = 1" +
                 $" where Id in ({ids.Combine()});";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2590,7 +2593,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsKt = 1" +
                 $" where Id in ({ids.Combine()});";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2604,7 +2607,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsSubmit = 1" +
                 $" where Id in ({ids.Combine()});";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2618,7 +2621,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsLockedRevenue = 1" +
                 $" where Id in ({ids.Combine()});";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2632,7 +2635,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set LockShip = 1" +
                 $" where Id in ({ids.Combine()});";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2646,7 +2649,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsLocked = 0" +
                 $" where Id in ({ids.Combine()});";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2660,7 +2663,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsKt = 0" +
                 $" where Id in ({ids.Combine()});";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2674,7 +2677,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsSubmit = 0" +
                 $" where Id in ({ids.Combine()});";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2688,7 +2691,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsLockedRevenue = 0" +
                 $" where Id in ({ids.Combine()});";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2702,7 +2705,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set LockShip = 0" +
                 $" where Id in ({ids.Combine()});";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
         #endregion

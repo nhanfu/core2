@@ -411,7 +411,7 @@ namespace TMS.API.Controllers
             }
             var cmd = $"Update [{nameof(Expense)}] set IsPurchasedInsurance = 1, DatePurchasedInsurance = '{DateTime.Now.ToString("yyyy-MM-dd")}'" +
                 $" where Id in ({ids.Combine()});";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;");
             return true;
         }
 
@@ -430,7 +430,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({idPurchaseds.Combine()})";
             cmd += $" Update [{nameof(Expense)}] set IsClosing = 1, IsPurchasedInsurance = 1, DatePurchasedInsurance = '{DateTime.Now.ToString("yyyy-MM-dd")}'" +
                 $" where Id in ({idNoPurchaseds.Combine()});";
-            ExecSql(cmd, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;");
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;");
             return true;
         }
 
@@ -685,8 +685,8 @@ namespace TMS.API.Controllers
                     querys += query;
                 }
             }
-            if (queryExs != null && queryExs != "") { ExecSql(queryExs, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;"); }
-            if (querys != null && querys != "") { ExecSql(querys, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;"); }
+            if (queryExs != null && queryExs != "") { await ExecSql(queryExs, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;"); }
+            if (querys != null && querys != "") { await ExecSql(querys, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;"); }
             return true;
         }
 
