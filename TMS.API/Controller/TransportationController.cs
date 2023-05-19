@@ -46,46 +46,46 @@ namespace TMS.API.Controllers
                 }
                 if (entity.IsKt)
                 {
-                    if (patch.Changes.Any(x => (x.Field == nameof(entity.MonthText) && x.Value.Trim() != entity.MonthText.Trim())
-                    || (x.Field == nameof(entity.YearText) && x.Value.Trim() != entity.YearText.Trim())
-                    || (x.Field == nameof(entity.ExportListId) && int.Parse(x.Value) != entity.ExportListId)
-                    || (x.Field == nameof(entity.RouteId) && int.Parse(x.Value) != entity.RouteId)
-                    || (x.Field == nameof(entity.ShipId) && int.Parse(x.Value) != entity.ShipId)
-                    || (x.Field == nameof(entity.Trip) && x.Value.Trim() != entity.Trip.Trim())
-                    || (x.Field == nameof(entity.ClosingDate) && DateTime.Parse(x.Value) != entity.ClosingDate)
-                    || (x.Field == nameof(entity.StartShip) && DateTime.Parse(x.Value) != entity.StartShip)
-                    || (x.Field == nameof(entity.ContainerTypeId) && int.Parse(x.Value) != entity.ContainerTypeId)
-                    || (x.Field == nameof(entity.ContainerNo) && x.Value.Trim() != entity.ContainerNo.Trim())
-                    || (x.Field == nameof(entity.SealNo) && x.Value.Trim() != entity.SealNo.Trim())
-                    || (x.Field == nameof(entity.BossId) && int.Parse(x.Value) != entity.BossId)
-                    || (x.Field == nameof(entity.UserId) && int.Parse(x.Value) != entity.UserId)
-                    || (x.Field == nameof(entity.CommodityId) && int.Parse(x.Value) != entity.CommodityId)
-                    || (x.Field == nameof(entity.Cont20) && int.Parse(x.Value) != entity.Cont20)
-                    || (x.Field == nameof(entity.Cont40) && int.Parse(x.Value) != entity.Cont40)
-                    || (x.Field == nameof(entity.Weight) && int.Parse(x.Value) != entity.Weight)
-                    || (x.Field == nameof(entity.ReceivedId) && int.Parse(x.Value) != entity.ReceivedId)
-                    || (x.Field == nameof(entity.FreeText2) && x.Value.Trim() != entity.FreeText2.Trim())
-                    || (x.Field == nameof(entity.ShipDate) && DateTime.Parse(x.Value) != entity.ShipDate)
-                    || (x.Field == nameof(entity.ReturnDate) && DateTime.Parse(x.Value) != entity.ReturnDate)
-                    || (x.Field == nameof(entity.ReturnId) && int.Parse(x.Value) != entity.ReturnId)
-                    || (x.Field == nameof(entity.FreeText3) && x.Value.Trim() != entity.FreeText3.Trim())))
+                    if (patch.Changes.Any(x => x.Field == nameof(entity.MonthText)
+                    || x.Field == nameof(entity.YearText)
+                    || x.Field == nameof(entity.ExportListId)
+                    || x.Field == nameof(entity.RouteId)
+                    || x.Field == nameof(entity.ShipId)
+                    || x.Field == nameof(entity.Trip)
+                    || x.Field == nameof(entity.ClosingDate)
+                    || x.Field == nameof(entity.StartShip)
+                    || x.Field == nameof(entity.ContainerTypeId)
+                    || x.Field == nameof(entity.ContainerNo)
+                    || x.Field == nameof(entity.SealNo)
+                    || x.Field == nameof(entity.BossId)
+                    || x.Field == nameof(entity.UserId)
+                    || x.Field == nameof(entity.CommodityId)
+                    || x.Field == nameof(entity.Cont20)
+                    || x.Field == nameof(entity.Cont40)
+                    || x.Field == nameof(entity.Weight)
+                    || x.Field == nameof(entity.ReceivedId)
+                    || x.Field == nameof(entity.FreeText2)
+                    || x.Field == nameof(entity.ShipDate)
+                    || x.Field == nameof(entity.ReturnDate)
+                    || x.Field == nameof(entity.ReturnId)
+                    || x.Field == nameof(entity.FreeText3)))
                     {
                         throw new ApiException("DSVC này đã được khóa (Khai thác). Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
                     }
                 }
 
-                if (patch.Changes.Any(x => (x.Field == nameof(entity.ShipPrice) && decimal.Parse(x.Value) != entity.ShipPrice)
-                || (x.Field == nameof(entity.PolicyId) && int.Parse(x.Value) != entity.PolicyId)
-                || (x.Field == nameof(entity.RouteId) && int.Parse(x.Value) != entity.RouteId)
-                || (x.Field == nameof(entity.BrandShipId) && int.Parse(x.Value) != entity.BrandShipId)
-                || (x.Field == nameof(entity.LineId) && int.Parse(x.Value) != entity.LineId)
-                || (x.Field == nameof(entity.ShipId) && int.Parse(x.Value) != entity.ShipId)
-                || (x.Field == nameof(entity.Trip) && x.Value.Trim() != entity.Trip.Trim())
-                || (x.Field == nameof(entity.StartShip) && DateTime.Parse(x.Value) != entity.StartShip)
-                || (x.Field == nameof(entity.ContainerTypeId) && int.Parse(x.Value) != entity.ContainerTypeId)
-                || (x.Field == nameof(entity.SocId) && int.Parse(x.Value) != entity.SocId)
-                || (x.Field == nameof(entity.ShipNotes) && x.Value.Trim() != entity.ShipNotes.Trim())
-                || (x.Field == nameof(entity.BookingId) && int.Parse(x.Value) != entity.BookingId)) && entity.BookingId != null)
+                if (patch.Changes.Any(x => x.Field == nameof(entity.ShipPrice)
+                || x.Field == nameof(entity.PolicyId)
+                || x.Field == nameof(entity.RouteId)
+                || x.Field == nameof(entity.BrandShipId)
+                || x.Field == nameof(entity.LineId)
+                || x.Field == nameof(entity.ShipId)
+                || x.Field == nameof(entity.Trip)
+                || x.Field == nameof(entity.StartShip)
+                || x.Field == nameof(entity.ContainerTypeId)
+                || x.Field == nameof(entity.SocId)
+                || x.Field == nameof(entity.ShipNotes)
+                || x.Field == nameof(entity.BookingId)) && entity.BookingId != null)
                 {
                     if (entity.LockShip)
                     {
@@ -1560,7 +1560,7 @@ namespace TMS.API.Controllers
 					    from Transportation
 					    where Transportation.ShipDate is not null and Transportation.ShipId = '{entity.ShipId}' and (Transportation.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Transportation.Trip = '{entity.Trip}' and Transportation.RouteId in ({entity.RouteIds.Combine()});
                         ";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return check;
         }
 
@@ -2202,15 +2202,15 @@ namespace TMS.API.Controllers
             foreach (var item in transportations)
             {
                 var getTranRequestDetails = tranRequestDetails.Where(x => x.TransportationId == item.Id && x.StatusId == (int)ApprovalStatusEnum.Approving).FirstOrDefault();
-                    var queryUpdate = CompareChanges(getTranRequestDetails, item);
-                    cmd += queryUpdate;
-                    cmd += $" where Id = {item.Id}";
+                var queryUpdate = CompareChanges(getTranRequestDetails, item);
+                cmd += queryUpdate;
+                cmd += $" where Id = {item.Id}";
             }
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2258,7 +2258,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2308,7 +2308,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2356,7 +2356,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2395,7 +2395,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2434,7 +2434,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2473,7 +2473,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2512,7 +2512,7 @@ namespace TMS.API.Controllers
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
             cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
                 $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2576,7 +2576,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsLocked = 1" +
                 $" where Id in ({ids.Combine()});";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2590,7 +2590,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsKt = 1" +
                 $" where Id in ({ids.Combine()});";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2604,7 +2604,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsSubmit = 1" +
                 $" where Id in ({ids.Combine()});";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2618,7 +2618,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsLockedRevenue = 1" +
                 $" where Id in ({ids.Combine()});";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2632,7 +2632,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set LockShip = 1" +
                 $" where Id in ({ids.Combine()});";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2646,7 +2646,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsLocked = 0" +
                 $" where Id in ({ids.Combine()});";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2660,7 +2660,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsKt = 0" +
                 $" where Id in ({ids.Combine()});";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2674,7 +2674,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsSubmit = 0" +
                 $" where Id in ({ids.Combine()});";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2688,7 +2688,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set IsLockedRevenue = 0" +
                 $" where Id in ({ids.Combine()});";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
 
@@ -2702,7 +2702,7 @@ namespace TMS.API.Controllers
             var ids = transportations.Select(x => x.Id).ToList();
             var cmd = $"Update [{nameof(Transportation)}] set LockShip = 0" +
                 $" where Id in ({ids.Combine()});";
-            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return true;
         }
         #endregion
