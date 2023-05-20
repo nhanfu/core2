@@ -11,12 +11,10 @@ using Newtonsoft.Json;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 using TMS.API.Models;
 using TMS.API.Services;
 using TMS.API.ViewModels;
-using Windows.UI.Xaml;
 using FileIO = System.IO.File;
 
 namespace TMS.API.Controllers
@@ -46,7 +44,7 @@ namespace TMS.API.Controllers
                 }
                 if (entity.IsKt)
                 {
-                    if (patch.Changes.Any(x => 
+                    if (patch.Changes.Any(x =>
                     (x.Field == nameof(entity.Trip) && x.Value != entity.Trip)
                     || (x.Field == nameof(entity.BookingId) && int.Parse(x.Value) != entity.BookingId)
                     || (x.Field == nameof(entity.ContainerTypeId) && int.Parse(x.Value) != entity.ContainerTypeId)
