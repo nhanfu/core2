@@ -869,7 +869,14 @@ namespace TMS.API.Controllers
             {
                 selects1.Add("us.FullName,us.Id");
             }
-            sql += $" where t.ClosingDate >= '{entity.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{entity.ToDate.Value.ToString("yyyy-MM-dd")}'";
+            if (!entity.Return)
+            {
+                sql += $" where t.ClosingDate >= '{entity.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{entity.ToDate.Value.ToString("yyyy-MM-dd")}' and ContainerTypeId not in (14805,14806)";
+            }
+            else
+            {
+                sql += $" where t.ReturnDate >= '{entity.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{entity.ToDate.Value.ToString("yyyy-MM-dd")}' and ContainerTypeId not in (14805,14806)";
+            }
             sql += @$" group by {selects1.Combine()}";
             sql += @$" order by {selects1.Combine()} asc";
             var data = await ConverSqlToDataSet(sql);
