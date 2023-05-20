@@ -6,6 +6,7 @@ using Core.Extensions;
 using Core.ViewModels;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Data;
@@ -872,10 +873,18 @@ namespace TMS.API.Controllers
             if (!entity.Return)
             {
                 sql += $" where t.ClosingDate >= '{entity.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{entity.ToDate.Value.ToString("yyyy-MM-dd")}' and ContainerTypeId not in (14805,14806)";
+                if (entity.Combination)
+                {
+                    sql += $" and t.ReturnEmptyId = 114017";
+                }
             }
             else
-            {
-                sql += $" where t.ReturnDate >= '{entity.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{entity.ToDate.Value.ToString("yyyy-MM-dd")}' and ContainerTypeId not in (14805,14806)";
+            { 
+                sql += $" where t.ReturnDate >= '{entity.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{entity.ToDate.Value.ToString("yyyy-MM-dd")}' and ContainerTypeId not in (14805,14806)  and Transportation.Active = 1 and Transportation.ShipDate is not null and Transportation.IsSplitBill = 0";
+                if (entity.Combination)
+                {
+                    sql += $" and t.ReturnEmptyId = 114017";
+                }
             }
             sql += @$" group by {selects1.Combine()}";
             sql += @$" order by {selects1.Combine()} asc";
