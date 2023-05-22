@@ -33,11 +33,11 @@ namespace TMS.API.Controllers
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
             var entity = await db.Transportation.FindAsync(idInt);
-            if (patch.Changes.Any(x => x.Field != nameof(entity.Notes) &&
+            if (patch.Changes.Any(x => x.Value != null && (x.Field != nameof(entity.Notes) &&
             x.Field != nameof(entity.Id) &&
             x.Field != nameof(entity.ExportListReturnId) &&
             x.Field != nameof(entity.UserReturnId) &&
-            x.Field != nameof(entity.IsLocked)))
+            x.Field != nameof(entity.IsLocked))))
             {
                 if (entity.IsLocked)
                 {
@@ -46,7 +46,7 @@ namespace TMS.API.Controllers
                 if (entity.IsKt)
                 {
                     if (patch.Changes.Any(x =>
-                    (x.Field == nameof(entity.Trip) && x.Value != entity.Trip)
+                    x.Value != null && ((x.Field == nameof(entity.Trip) && x.Value != entity.Trip)
                     || (x.Field == nameof(entity.BookingId) && int.Parse(x.Value) != entity.BookingId)
                     || (x.Field == nameof(entity.ContainerTypeId) && int.Parse(x.Value) != entity.ContainerTypeId)
                     || (x.Field == nameof(entity.ContainerNo) && x.Value != entity.ContainerNo)
@@ -57,20 +57,20 @@ namespace TMS.API.Controllers
                     || (x.Field == nameof(entity.ShipDate) && DateTime.Parse(x.Value) != entity.ShipDate)
                     || (x.Field == nameof(entity.ReturnDate) && DateTime.Parse(x.Value) != entity.ReturnDate)
                     || (x.Field == nameof(entity.ReturnId) && int.Parse(x.Value) != entity.ReturnId)
-                    || (x.Field == nameof(entity.FreeText3) && x.Value != entity.FreeText3)))
+                    || (x.Field == nameof(entity.FreeText3) && x.Value != entity.FreeText3))))
                     {
                         throw new ApiException("DSVC này đã được khóa (Khai thác). Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
                     }
                 }
 
-                if (patch.Changes.Any(x => (x.Field == nameof(entity.ShipPrice) && decimal.Parse(x.Value) != entity.ShipPrice)
+                if (patch.Changes.Any(x => x.Value != null && ((x.Field == nameof(entity.ShipPrice) && decimal.Parse(x.Value) != entity.ShipPrice)
                 || (x.Field == nameof(entity.PolicyId) && int.Parse(x.Value) != entity.PolicyId)
                 || (x.Field == nameof(entity.Trip) && x.Value != entity.Trip)
                 || (x.Field == nameof(entity.StartShip) && DateTime.Parse(x.Value) != entity.StartShip)
                 || (x.Field == nameof(entity.ContainerTypeId) && int.Parse(x.Value) != entity.ContainerTypeId)
                 || (x.Field == nameof(entity.SocId) && int.Parse(x.Value) != entity.SocId)
                 || (x.Field == nameof(entity.ShipNotes) && x.Value != entity.ShipNotes)
-                || (x.Field == nameof(entity.BookingId) && int.Parse(x.Value) != entity.BookingId)) && entity.BookingId != null)
+                || (x.Field == nameof(entity.BookingId) && int.Parse(x.Value) != entity.BookingId))) && entity.BookingId != null)
                 {
                     if (entity.LockShip)
                     {
@@ -879,7 +879,7 @@ namespace TMS.API.Controllers
                 }
             }
             else
-            { 
+            {
                 sql += $" where t.ReturnDate >= '{entity.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{entity.ToDate.Value.ToString("yyyy-MM-dd")}' and ContainerTypeId not in (14805,14806)  and Transportation.Active = 1 and Transportation.ShipDate is not null and Transportation.IsSplitBill = 0";
                 if (entity.Combination)
                 {
