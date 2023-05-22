@@ -129,6 +129,10 @@ namespace TMS.API.Controllers
             }
             patch.ApplyTo(entity);
             SetAuditInfo(entity);
+            if (entity.TypeId == 23741 && entity.IsUpdate == false)
+            {
+                return entity;
+            }
             if (patch.Changes.Any(x => x.Field == nameof(entity.CompanyName)) && entity.TypeId == 23741)
             {
                 var checkExist = await db.Vendor.Where(x => x.CompanyName.Trim().ToLower() == entity.CompanyName.Trim().ToLower() && x.TypeId == 23741).FirstOrDefaultAsync();

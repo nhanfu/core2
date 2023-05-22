@@ -6,6 +6,7 @@ using Core.Components.Forms;
 using Core.Enums;
 using Core.Extensions;
 using Core.MVVM;
+using Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -138,6 +139,26 @@ namespace TMS.UI.Business.Accountant
         public void ImportObject()
         {
             _uploader.Click();
+        }
+
+        public void MessageConfirmUpdate(Vendor entity, PatchUpdate patch)
+        {
+            var grid = this.FindActiveComponent<GridView>().FirstOrDefault();
+            var confirm = new ConfirmDialog
+            {
+                Content = "Bạn có chắc chắn muốn cập nhật dữ liệu không?",
+            };
+            confirm.Render();
+            confirm.YesConfirmed += async () =>
+            {
+                entity.IsUpdate = true;
+                patch.Changes.Add(new PatchUpdateDetail { Field = nameof(Vendor.IsUpdate), Value = entity.IsUpdate.ToString() });
+                var res = await new Client(nameof(Vendor)).PatchAsync<Vendor>(patch);
+            };
+            confirm.NoConfirmed += async () =>
+            {
+                await grid.ApplyFilter(true);
+            };
         }
     }
 }

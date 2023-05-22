@@ -132,4 +132,10 @@ namespace TMS.API.Models
         [NotMapped]
         public int Order { get; set; }
     }
+
+    public partial class Vendor
+    {
+        [NotMapped]
+        public bool IsUpdate { get; set; }
+    }
 }
