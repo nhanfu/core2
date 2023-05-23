@@ -1,11 +1,6 @@
-﻿using Bridge.Html5;
-using Core.Clients;
-using Core.Components;
-using Core.Components.Extensions;
+﻿using Core.Clients;
 using Core.Components.Forms;
 using Core.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
@@ -22,6 +17,11 @@ namespace TMS.UI.Business.Manage
 
         public async Task SaveChanges()
         {
+            if (QuotationUpdateEntity.PackingIds == null && QuotationUpdateEntity.PackingIds.Nothing())
+            {
+                Toast.Warning("Vui lòng chọn nhà xe cần lấy!");
+                return;
+            }
             if (!await IsFormValid())
             {
                 return;
