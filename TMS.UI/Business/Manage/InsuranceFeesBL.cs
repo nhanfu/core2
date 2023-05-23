@@ -210,18 +210,15 @@ namespace TMS.UI.Business.Manage
             {
                 listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "IsClosing").ForEach(y => y.Disabled = true);
             }
+            if (expenses.Count > 0)
+            {
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange").ForEach(y => y.Disabled = false);
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange").ForEach(y => y.Disabled = true);
+            }
             else
             {
-                if (expenses.Count > 0)
-                {
-                    listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange").ForEach(y => y.Disabled = false);
-                    listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange").ForEach(y => y.Disabled = true);
-                }
-                else
-                {
-                    listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange").ForEach(y => y.Disabled = true);
-                    listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange").ForEach(y => y.Disabled = false);
-                }
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange").ForEach(y => y.Disabled = true);
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange").ForEach(y => y.Disabled = false);
             }
             if (checkHistory.Count > 0)
             {
