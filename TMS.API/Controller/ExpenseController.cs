@@ -410,7 +410,7 @@ namespace TMS.API.Controllers
                 return false;
             }
             var cmd = $"Update [{nameof(Expense)}] set IsPurchasedInsurance = 1, DatePurchasedInsurance = '{DateTime.Now.ToString("yyyy-MM-dd")}'" +
-                $" where Id in ({ids.Combine()}) and ExpenseTypeId in (15981, 15939) and RequestChangeId is null;";
+                $" where Id in ({ids.Combine()}) and ExpenseTypeId in (15981, 15939) and RequestChangeId is null";
             cmd += $" UPDATE Transportation " +
                 $"SET InsuranceFee = ISNULL((SELECT SUM(ISNULL(e.TotalPriceAfterTax, 0)) " +
                 $"FROM Expense e " +
@@ -418,7 +418,8 @@ namespace TMS.API.Controllers
                 $"e.IsPurchasedInsurance = 1 AND " +
                 $"e.RequestChangeId IS NULL AND " +
                 $"e.Active = 1 AND " +
-                $"e.ExpenseTypeId IN (15981, 15939)), 0)";
+                $"e.ExpenseTypeId IN (15981, 15939)), 0);";
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Expense;", "ENABLE TRIGGER ALL ON Expense;");
             return true;
         }
 
