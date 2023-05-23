@@ -13,6 +13,7 @@ namespace Core.Components.Forms
         public Textbox Textbox { get; private set; }
         public Number Number { get; private set; }
         public Datepicker Datepicker { get; private set; }
+        public int? Precision;
         public SearchEntry SearchEntry { get; private set; }
         public bool IgnoreNoButton { get; set; }
         public bool MultipleLine { get; set; } = true;
@@ -83,6 +84,7 @@ namespace Core.Components.Forms
                         Row = 2,
                         FocusSearch = true,
                         Visibility = true,
+                        Precision = Precision,
                     });
                     AddChild(Datepicker);
                     Html.Instance.EndOf(".datetime-picker");

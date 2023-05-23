@@ -344,7 +344,7 @@ namespace Core.Components
                 e.StopPropagation();
                 ToggleAll();
             }
-            if(LastListViewItem is null)
+            if (LastListViewItem is null)
             {
                 return;
             }
@@ -536,7 +536,8 @@ namespace Core.Components
                 Content = $"Nhập {header.ShortDesc} cần tìm" + ev["Text"],
                 NeedAnswer = true,
                 MultipleLine = false,
-                ComType = header.ComponentType == nameof(Datepicker) || header.ComponentType == nameof(Number) ? header.ComponentType : nameof(Textbox)
+                ComType = header.ComponentType == nameof(Datepicker) || header.ComponentType == nameof(Number) ? header.ComponentType : nameof(Textbox),
+                Precision = header.Precision,
             };
             confirmDialog.YesConfirmed += async () =>
             {
