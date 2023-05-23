@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TMS.API.Models;
 using TMS.API.ViewModels;
@@ -45,7 +46,7 @@ namespace TMS.API.Controllers
             || x.Field == nameof(entity.CommodityId)
             || x.Field == nameof(entity.ContainerId)))
             {
-                var commodity = await db.MasterData.Where(x => x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).FirstOrDefaultAsync();
+                var commoditys = await db.MasterData.Where(x => x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).ToListAsync();
                 var bossChange = patch.Changes.Where(x => x.Field == nameof(CommodityValue.BossId)).FirstOrDefault();
                 var bossId = bossChange != null ? int.Parse(bossChange.Value) : entity.BossId;
                 var commodityChange = patch.Changes.Where(x => x.Field == nameof(CommodityValue.CommodityId)).FirstOrDefault();
@@ -56,7 +57,7 @@ namespace TMS.API.Controllers
                 x.BossId == bossId &&
                 x.CommodityId == commodityId &&
                 x.ContainerId == containerId).FirstOrDefaultAsync();
-                if (commodityValueDB != null || commodityId == commodity.Id)
+                if (commodityValueDB != null || commoditys.Select(x => x.Id).ToList().Contains((int)commodityId))
                 {
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
                 }
@@ -74,10 +75,10 @@ namespace TMS.API.Controllers
             x.Field == nameof(entity.Notes) ||
             x.Field == nameof(entity.CommodityId)))
             {
-                var commodity = await db.MasterData.Where(x => x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).FirstOrDefaultAsync();
+                var commoditys = await db.MasterData.Where(x => x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).ToListAsync();
                 var commodityChange = patch.Changes.Where(x => x.Field == nameof(entity.CommodityId)).FirstOrDefault();
                 var commodityId = commodityChange != null ? int.Parse(commodityChange.Value) : entity.CommodityId;
-                if (commodityId == commodity.Id)
+                if (commoditys.Select(x => x.Id).ToList().Contains((int)commodityId))
                 {
                     throw new ApiException("Không được cập nhật thông tin khác ngoài GTHH") { StatusCode = HttpStatusCode.BadRequest };
                 }

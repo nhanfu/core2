@@ -307,12 +307,12 @@ namespace TMS.UI.Business.Manage
             || x.Field == nameof(oldEntity.CommodityId)
             || x.Field == nameof(oldEntity.ContainerId)))
             {
-                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
+                var commoditys = await new Client(nameof(MasterData)).GetRawList<MasterData>($@"?$filter=Active eq true and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
                 var checkBoss = entity.BossId != null ? $"and BossId eq {entity.BossId}" : "";
                 var checkCommodity = entity.CommodityId != null ? $"and CommodityId eq {entity.CommodityId}" : "";
                 var checkContainer = entity.ContainerId != null ? $"and ContainerId eq {entity.ContainerId}" : "";
                 var commodityValueDB = await new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($@"?$filter=Active eq true {checkBoss} {checkCommodity} {checkContainer}");
-                if (commodityValueDB != null || entity.CommodityId == commodity.Id)
+                if (commodityValueDB != null || commoditys.Select(x => x.Id).ToList().Contains((int)entity.CommodityId))
                 {
                     return;
                 }
@@ -340,8 +340,8 @@ namespace TMS.UI.Business.Manage
             (oldEntity.BreakTerms != entity.BreakTerms) ||
             (oldEntity.IsWet != entity.IsWet))
             {
-                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
-                if (oldEntity.CommodityId == commodity.Id)
+                var commoditys = await new Client(nameof(MasterData)).GetRawList<MasterData>($@"?$filter=Active eq true and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
+                if (commoditys.Select(x => x.Id).ToList().Contains((int)oldEntity.CommodityId))
                 {
                     return;
                 }
@@ -373,8 +373,8 @@ namespace TMS.UI.Business.Manage
                 {
                     return;
                 }
-                var commodity = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($@"?$filter=Active eq true and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
-                if (oldEntity.CommodityId == commodity.Id)
+                var commoditys = await new Client(nameof(MasterData)).GetRawList<MasterData>($@"?$filter=Active eq true and contains(Path,'\7651\') and contains(Description,'Vỏ rỗng')");
+                if (commoditys.Select(x => x.Id).ToList().Contains((int)oldEntity.CommodityId))
                 {
                     return;
                 }
@@ -410,7 +410,7 @@ namespace TMS.UI.Business.Manage
                         x.CommodityValueNotes = entity.Notes;
                         x.JourneyId = entity.JourneyId;
                         var expenseType = expenseTypeDictionary.GetValueOrDefault((int)x.ExpenseTypeId);
-                        if (x.CommodityId != commodity.Id && expenseType.Name.Contains("BH SOC") == false)
+                        if (commoditys.Select(y => y.Id).ToList().Contains((int)x.CommodityId) == false && expenseType.Name.Contains("BH SOC") == false)
                         {
                             x.IsWet = entity.IsWet;
                             x.IsBought = entity.IsBought;
