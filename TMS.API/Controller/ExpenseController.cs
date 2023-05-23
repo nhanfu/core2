@@ -664,6 +664,7 @@ namespace TMS.API.Controllers
                         if (tran.TransportationTypeId != ex.TransportationTypeId) { ex.TransportationTypeId = tran.TransportationTypeId; }
                         if (tran.BossId != ex.BossId) { ex.BossId = tran.BossId; }
                         if (tran.CommodityId != ex.CommodityId && ex.ExpenseTypeId != 15981) { ex.CommodityId = tran.CommodityId; }
+                        if (ex.ExpenseTypeId == 15981 && ex.CommodityId != 15763 && ex.CommodityId != 15764) { ex.CommodityId = 15763; }
                         if (tran.ContainerTypeId != ex.ContainerTypeId) { ex.ContainerTypeId = tran.ContainerTypeId; }
                         if (tran.RouteId != ex.RouteId) { ex.RouteId = tran.RouteId; }
                         if (tran.ShipId != ex.ShipId) { ex.ShipId = tran.ShipId; }
