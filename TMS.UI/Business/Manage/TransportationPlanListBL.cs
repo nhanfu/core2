@@ -101,33 +101,28 @@ namespace TMS.UI.Business.Manage
                         new ContextMenuItem { Icon = "fal fa-street-view", Text = "Xem danh sách vận chuyển", Click = ViewTransportation },
                 };
             };
-            var listViewItems = gridView.RowData.Data.Cast<TransportationPlan>().ToList();
-            listViewItems.ForEach(x =>
-            {
-                UpdateListView(x, gridView);
-            });
+            UpdateListView(gridView);
         }
 
-        private static void UpdateListView(TransportationPlan x, GridView gridView)
+        private void UpdateListView(GridView gridView)
         {
-            var listViewItem = gridView.GetListViewItems(x).FirstOrDefault();
-            if (listViewItem is null)
+            foreach (var listViewItem in gridView.MainSection.FilterChildren<ListViewItem>())
             {
-                return;
-            }
-            listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
-            if (x.IsTransportation)
-            {
-                listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange" && y.GuiInfo.FieldName != nameof(TransportationPlan.NotesContract) && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
-            }
-            else
-            {
-                listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange" && y.GuiInfo.FieldName != nameof(TransportationPlan.NotesContract) && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
-            }
-            listViewItem.Element.RemoveClass("bg-host");
-            if (x.StatusId == (int)ApprovalStatusEnum.Approving)
-            {
-                listViewItem.Element.AddClass("bg-host");
+                if (listViewItem is null)
+                {
+                    return;
+                }
+                var x = listViewItem.Entity as TransportationPlan;
+                listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
+                if (x.IsTransportation)
+                {
+                    listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange" && y.GuiInfo.FieldName != nameof(TransportationPlan.NotesContract) && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+                }
+                listViewItem.Element.RemoveClass("bg-host");
+                if (x.StatusId == (int)ApprovalStatusEnum.Approving)
+                {
+                    listViewItem.Element.AddClass("bg-host");
+                }
             }
         }
 
