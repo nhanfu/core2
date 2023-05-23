@@ -80,6 +80,8 @@ namespace TMS.API.Controllers
             {
                 cmd += $@" and PackingId not in ({entity.Packing1Ids.Combine()})";
             }
+            var unitPrice1 = entity.UnitPrice1 ?? entity.UnitPrice;
+            var unitPrice3 = entity.UnitPrice3 ?? entity.UnitPrice;
             cmd += $@")
                 insert into Quotation(BranchId
             			   ,[TypeId]
@@ -114,7 +116,7 @@ namespace TMS.API.Controllers
             ,[LocationId]
             ,[PolicyTypeId]
             ,case when [UnitPrice] > 0 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice] + {entity.UnitPrice} else [UnitPrice] - {entity.UnitPrice} end else [UnitPrice] end
-            ,isnull(case when [UnitPrice1] > 0 then case when {entity.TypeId} = 7592 or {entity.TypeId} = 7593 or {entity.TypeId} = 7594 or {entity.TypeId} = 7596 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice1] + {entity.UnitPrice} else [UnitPrice1] - {entity.UnitPrice} end else [UnitPrice1] end end,0)
+            ,isnull(case when [UnitPrice1] > 0 then case when {entity.TypeId} = 7592 or {entity.TypeId} = 7593 or {entity.TypeId} = 7594 or {entity.TypeId} = 7596 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice1] + {unitPrice1} else [UnitPrice1] - {unitPrice1} end else [UnitPrice1] end end,0)
             ,UnitPrice2
             ,'{entity.StartDate:yyyy-MM-dd}' as [StartDate]
             ,[Note]
@@ -122,7 +124,7 @@ namespace TMS.API.Controllers
             ,GETDATE() as InsertedDate
             ,{UserId}
             ,{entity.Id}
-            ,isnull(case when [UnitPrice3] > 0 then case when {entity.TypeId} = 7592 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice3] + {entity.UnitPrice} else [UnitPrice3] - {entity.UnitPrice} end else [UnitPrice3] end end,0)
+            ,isnull(case when [UnitPrice3] > 0 then case when {entity.TypeId} = 7592 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice3] + {unitPrice3} else [UnitPrice3] - {unitPrice3} end else [UnitPrice3] end end,0)
             ,[ParentId]
             ,[IsParent]
             ,[RegionId]

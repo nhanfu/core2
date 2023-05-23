@@ -85,6 +85,10 @@ namespace TMS.API.Models
         public List<int?> RegionIds { get; set; }
         [NotMapped]
         public List<int?> Region1Ids { get; set; }
+        [NotMapped]
+        public decimal? UnitPrice1 { get; set; }
+        [NotMapped]
+        public decimal? UnitPrice3 { get; set; }
     }
 
     public partial class CheckFeeHistory
