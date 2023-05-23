@@ -352,6 +352,10 @@ namespace TMS.API.Models
         public decimal? CustomerReturnFeeReport { get; set; }
         public decimal? CollectOnSupPriceReturn { get; set; }
         public decimal? TotalBetReport { get; set; }
+        public DateTime? ClosingDateHD { get; set; }
+        public int? ReceivedIdHD { get; set; }
+        public DateTime? ReturnDateHD { get; set; }
+        public int? ReturnIdHD { get; set; }
 
         public virtual ICollection<Expense> Expense { get; set; }
         public virtual ICollection<Revenue> Revenue { get; set; }
