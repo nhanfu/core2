@@ -619,29 +619,29 @@ namespace TMS.UI.Business.Manage
                     Toast.Warning("Bạn không có quyền chỉnh sửa dữ liệu của cột này.");
                     return;
                 }
-                if (patch.Changes.Any(x => (x.Field == nameof(Revenue.InvoinceNo) && int.Parse(x.Value) != revenue.InvoinceNo)
-                || (x.Field == nameof(Revenue.InvoinceDate) && DateTime.Parse(x.Value) != revenue.InvoinceDate)
-                || (x.Field == nameof(Revenue.Vat) && int.Parse(x.Value) != revenue.Vat)
-                || (x.Field == nameof(Revenue.TotalPriceBeforTax) && decimal.Parse(x.Value) != revenue.TotalPriceBeforTax)
-                || (x.Field == nameof(Revenue.VatPrice) && decimal.Parse(x.Value) != revenue.VatPrice)
-                || (x.Field == nameof(Revenue.TotalPrice) && decimal.Parse(x.Value) != revenue.TotalPrice)
-                || (x.Field == nameof(Revenue.VendorVatId) && int.Parse(x.Value) != revenue.VendorVatId)))
+                if (patch.Changes.Any(x => (x.Field == nameof(Revenue.InvoinceNo))
+                || (x.Field == nameof(Revenue.InvoinceDate))
+                || (x.Field == nameof(Revenue.Vat))
+                || (x.Field == nameof(Revenue.TotalPriceBeforTax))
+                || (x.Field == nameof(Revenue.VatPrice))
+                || (x.Field == nameof(Revenue.TotalPrice))
+                || (x.Field == nameof(Revenue.VendorVatId))))
                 {
                     if (selected != null && selected.IsLockedRevenue)
                     {
                         OpenRevenueRequestBL(revenue);
                     }
                 }
-                if (patch.Changes.Any(x => (x.Field == nameof(Revenue.Name) && x.Value.Trim() != revenue.Name.Trim())
-                || (x.Field == nameof(Revenue.LotNo) && x.Value.Trim() != revenue.LotNo.Trim())
-                || (x.Field == nameof(Revenue.LotDate) && DateTime.Parse(x.Value) != revenue.LotDate)
-                || (x.Field == nameof(Revenue.UnitPriceAfterTax) && decimal.Parse(x.Value) != revenue.UnitPriceAfterTax)
-                || (x.Field == nameof(Revenue.UnitPriceBeforeTax) && decimal.Parse(x.Value) != revenue.UnitPriceBeforeTax)
-                || (x.Field == nameof(Revenue.ReceivedPrice) && decimal.Parse(x.Value) != revenue.ReceivedPrice)
-                || (x.Field == nameof(Revenue.CollectOnBehaftPrice) && decimal.Parse(x.Value) != revenue.CollectOnBehaftPrice)
-                || (x.Field == nameof(Revenue.NotePayment) && x.Value.Trim() != revenue.NotePayment.Trim())
-                || (x.Field == nameof(Revenue.Note) && x.Value.Trim() != revenue.Note.Trim())
-                || (x.Field == nameof(Revenue.RevenueAdjustment) && decimal.Parse(x.Value) != revenue.RevenueAdjustment)))
+                if (patch.Changes.Any(x => (x.Field == nameof(Revenue.Name))
+                || (x.Field == nameof(Revenue.LotNo))
+                || (x.Field == nameof(Revenue.LotDate))
+                || (x.Field == nameof(Revenue.UnitPriceAfterTax))
+                || (x.Field == nameof(Revenue.UnitPriceBeforeTax))
+                || (x.Field == nameof(Revenue.ReceivedPrice))
+                || (x.Field == nameof(Revenue.CollectOnBehaftPrice))
+                || (x.Field == nameof(Revenue.NotePayment))
+                || (x.Field == nameof(Revenue.Note))
+                || (x.Field == nameof(Revenue.RevenueAdjustment))))
                 {
                     if (selected != null && selected.IsSubmit)
                     {

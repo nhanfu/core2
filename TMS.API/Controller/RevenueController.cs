@@ -28,13 +28,13 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
             }
-            if (patch.Changes.Any(x => (x.Field == nameof(entity.InvoinceNo) && int.Parse(x.Value) != entity.InvoinceNo)
-                || (x.Field == nameof(entity.InvoinceDate) && DateTime.Parse(x.Value) != entity.InvoinceDate)
-                || (x.Field == nameof(entity.Vat) && int.Parse(x.Value) != entity.Vat)
-                || (x.Field == nameof(entity.TotalPriceBeforTax) && decimal.Parse(x.Value) != entity.TotalPriceBeforTax)
-                || (x.Field == nameof(entity.VatPrice) && decimal.Parse(x.Value) != entity.VatPrice)
-                || (x.Field == nameof(entity.TotalPrice) && decimal.Parse(x.Value) != entity.TotalPrice)
-                || (x.Field == nameof(entity.VendorVatId) && int.Parse(x.Value) != entity.VendorVatId)))
+            if (patch.Changes.Any(x => (x.Field == nameof(entity.InvoinceNo))
+                || (x.Field == nameof(entity.InvoinceDate))
+                || (x.Field == nameof(entity.Vat))
+                || (x.Field == nameof(entity.TotalPriceBeforTax))
+                || (x.Field == nameof(entity.VatPrice))
+                || (x.Field == nameof(entity.TotalPrice))
+                || (x.Field == nameof(entity.VendorVatId))))
             {
                 if (tran != null && tran.IsLockedRevenue)
                 {
@@ -42,16 +42,16 @@ namespace TMS.API.Controllers
                 }
             }
             var oldEntity = await db.Revenue.Where(x => x.Id == entity.Id).FirstOrDefaultAsync();
-            if (patch.Changes.Any(x => (x.Field == nameof(entity.Name) && x.Value.Trim() != entity.Name.Trim())
-                || (x.Field == nameof(entity.LotNo) && x.Value.Trim() != entity.LotNo.Trim())
-                || (x.Field == nameof(entity.LotDate) && DateTime.Parse(x.Value) != entity.LotDate)
-                || (x.Field == nameof(entity.UnitPriceAfterTax) && decimal.Parse(x.Value) != entity.UnitPriceAfterTax)
-                || (x.Field == nameof(entity.UnitPriceBeforeTax) && decimal.Parse(x.Value) != entity.UnitPriceBeforeTax)
-                || (x.Field == nameof(entity.ReceivedPrice) && decimal.Parse(x.Value) != entity.ReceivedPrice)
-                || (x.Field == nameof(entity.CollectOnBehaftPrice) && decimal.Parse(x.Value) != entity.CollectOnBehaftPrice)
-                || (x.Field == nameof(entity.NotePayment) && x.Value.Trim() != entity.NotePayment.Trim())
-                || (x.Field == nameof(entity.Note) && x.Value.Trim() != entity.Note.Trim())
-                || (x.Field == nameof(entity.RevenueAdjustment) && decimal.Parse(x.Value) != entity.RevenueAdjustment)))
+            if (patch.Changes.Any(x => (x.Field == nameof(entity.Name))
+                || (x.Field == nameof(entity.LotNo))
+                || (x.Field == nameof(entity.LotDate))
+                || (x.Field == nameof(entity.UnitPriceAfterTax))
+                || (x.Field == nameof(entity.UnitPriceBeforeTax))
+                || (x.Field == nameof(entity.ReceivedPrice))
+                || (x.Field == nameof(entity.CollectOnBehaftPrice))
+                || (x.Field == nameof(entity.NotePayment))
+                || (x.Field == nameof(entity.Note))
+                || (x.Field == nameof(entity.RevenueAdjustment))))
             {
                 if (tran != null && tran.IsSubmit)
                 {
