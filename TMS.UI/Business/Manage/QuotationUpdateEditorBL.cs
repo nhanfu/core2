@@ -17,7 +17,7 @@ namespace TMS.UI.Business.Manage
 
         public async Task SaveChanges()
         {
-            if (QuotationUpdateEntity.PackingIds == null && QuotationUpdateEntity.PackingIds.Nothing())
+            if (QuotationUpdateEntity.PackingIds == null || QuotationUpdateEntity.PackingIds.Nothing())
             {
                 Toast.Warning("Vui lòng chọn nhà xe cần lấy!");
                 return;
