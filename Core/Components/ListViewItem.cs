@@ -315,12 +315,24 @@ namespace Core.Components
                     ignoreSync = "true";
                 }
             }
-            var rs = await new Client(GuiInfo.Reference.Name).PatchAsync<object>(pathModel, ig: $"&disableTrigger={ignoreSync}");
-            Entity.CopyPropFrom(rs);
+            var rs = Entity;
+            try
+            {
+                rs = await new Client(GuiInfo.Reference.Name).PatchAsync<object>(pathModel, ig: $"&disableTrigger={ignoreSync}");
+            }
+            catch
+            {
+                Toast.Warning("Dữ liệu của bạn chưa được lưu vui lòng nhập lại!");
+                rs = (await new Client(GuiInfo.Reference.Name).GetList<object>($"?$filter=Id eq {Entity[IdField]}")).Value.FirstOrDefault();
+                Entity.CopyPropFrom(rs);
+                UpdateView();
+                return;
+            }
             if (GuiInfo.ComponentType == nameof(VirtualGrid))
             {
                 ListViewSection.ListView.CacheData.FirstOrDefault(x => x[IdField] == rs[IdField]).CopyPropFrom(rs);
             }
+            Entity.CopyPropFrom(rs);
             await ListViewSection.ListView.LoadMasterData(new object[] { rs });
             EmptyRow = false;
             UpdateView(true);
