@@ -226,6 +226,11 @@ namespace TMS.API.Controllers
                         },
                         new PatchUpdateDetail()
                         {
+                            Field = nameof(Transportation.User2Id),
+                            Value = oldEntity.User2Id is null ? null : oldEntity.User2Id.ToString()
+                        },
+                        new PatchUpdateDetail()
+                        {
                             Field = nameof(Transportation.RouteId),
                             Value =oldEntity.RouteId is null ? null : oldEntity.RouteId.ToString()
                         },

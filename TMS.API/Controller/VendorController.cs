@@ -55,7 +55,7 @@ namespace TMS.API.Controllers
                         .Where(x => x.UserId == _userSvc.UserId || _userSvc.AllRoleIds.Contains(x.RoleId.Value))
                         .DefaultIfEmpty()
                     where vendor.InsertedBy == _userSvc.UserId
-                        || policy != null || vendor.Id == _userSvc.VendorId || vendor.UserId == _userSvc.UserId || vendor.UserId == 78
+                        || policy != null || vendor.Id == _userSvc.VendorId || vendor.UserId == _userSvc.UserId || vendor.UserId == 78 || vendor.IsSeft
                     select vendor;
             }
             return rs;

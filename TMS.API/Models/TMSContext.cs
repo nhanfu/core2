@@ -206,11 +206,6 @@ namespace TMS.API.Models
                 entity.Property(e => e.OldCode).HasMaxLength(100);
             });
 
-            modelBuilder.Entity<Chat>(entity =>
-            {
-                entity.Property(e => e.Context).HasMaxLength(500);
-            });
-
             modelBuilder.Entity<CommodityValue>(entity =>
             {
                 entity.Property(e => e.TotalPrice).HasColumnType("decimal(20, 5)");
@@ -384,8 +379,6 @@ namespace TMS.API.Models
             modelBuilder.Entity<Convertation>(entity =>
             {
                 entity.Property(e => e.FromName).HasMaxLength(250);
-
-                entity.Property(e => e.LastContext).HasMaxLength(500);
 
                 entity.Property(e => e.ToName).HasMaxLength(250);
             });

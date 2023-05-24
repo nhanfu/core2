@@ -57,5 +57,6 @@ namespace TMS.API.Models
         public string CommodityValueNotes { get; set; }
         public string ReasonOfChange { get; set; }
         public string TextOfChange { get; set; }
+        public int? User2Id { get; set; }
     }
 }

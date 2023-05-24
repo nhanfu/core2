@@ -356,6 +356,7 @@ namespace TMS.API.Models
         public int? ReceivedIdHD { get; set; }
         public DateTime? ReturnDateHD { get; set; }
         public int? ReturnIdHD { get; set; }
+        public int? User2Id { get; set; }
 
         public virtual ICollection<Expense> Expense { get; set; }
         public virtual ICollection<Revenue> Revenue { get; set; }
