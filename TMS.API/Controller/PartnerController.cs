@@ -22,6 +22,11 @@ namespace TMS.API.Controllers
             return ApplyQuery(options, query);
         }
 
+        public override Task<ActionResult<Partner>> UpdateAsync([FromBody] Partner entity, string reasonOfChange = "")
+        {
+            return base.UpdateAsync(entity, reasonOfChange);
+        }
+
         public override async Task<OdataResult<Partner>> LoadById([FromServices] IServiceProvider serviceProvider, [FromServices] IConfiguration config, [FromBody] string ids, [FromQuery] string FieldName)
         {
             if (ids.IsNullOrWhiteSpace())

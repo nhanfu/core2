@@ -181,6 +181,11 @@ namespace TMS.UI.Business.Accountant
                     if (vendor != null)
                     {
                         revenueEntity.VendorVatName = vendor.CompanyName;
+                        if (vendor.ParentId == null)
+                        {
+                            vendor.ParentId = revenues.OrderByDescending(x => x.Id).FirstOrDefault().BossId;
+                            var resUpdate = await new Client(nameof(Partner)).UpdateAsync(vendor);
+                        }
                     }
                 }
                 revenues.Add(revenueEntity);
@@ -279,6 +284,11 @@ namespace TMS.UI.Business.Accountant
                     if (vendor != null)
                     {
                         revenueEntity.VendorVatName = vendor.CompanyName;
+                        if (vendor.ParentId == null)
+                        {
+                            vendor.ParentId = revenues.OrderByDescending(x => x.Id).FirstOrDefault().BossId;
+                            var resUpdate = await new Client(nameof(Partner)).UpdateAsync(vendor);
+                        }
                     }
                 }
                 revenues.Add(revenueEntity);

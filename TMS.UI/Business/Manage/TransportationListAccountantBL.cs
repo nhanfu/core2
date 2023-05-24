@@ -1718,6 +1718,11 @@ namespace TMS.UI.Business.Manage
                 {
                     entity.VendorVatName = vendorVat.CompanyName;
                     var res = await new Client(nameof(Revenue)).PatchAsync<Revenue>(GetPatchVendorVatId(entity));
+                    if (vendorVat.ParentId == null)
+                    {
+                        vendorVat.ParentId = entity.BossId;
+                        var resUpdate = await new Client(nameof(Partner)).UpdateAsync(vendorVat);
+                    }
                 }
             }
             var grid = this.FindComponentByName<GridView>("TransportationAccountant");
