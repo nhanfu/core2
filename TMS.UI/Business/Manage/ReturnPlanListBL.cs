@@ -205,7 +205,7 @@ namespace TMS.UI.Business.Manage
                 });
                 ContextMenu.Instance.MenuItems = menus;
             };
-            ChangeBackgroudColorReturn();
+            ChangeBackgroudColorReturn(gridView);
         }
 
         private void NoteFreeText8(object arg)
@@ -227,6 +227,16 @@ namespace TMS.UI.Business.Manage
                         {
                             Field = nameof(Transportation.FreeText8),
                             Value = value
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.FreeText7),
+                            Value = null
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.FreeText9),
+                            Value = null
                         }
                     }
                 };
@@ -262,6 +272,16 @@ namespace TMS.UI.Business.Manage
                         {
                             Field = nameof(Transportation.FreeText9),
                             Value = value
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.FreeText7),
+                            Value = null
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.FreeText8),
+                            Value = null
                         }
                     }
                 };
@@ -297,6 +317,16 @@ namespace TMS.UI.Business.Manage
                         {
                             Field = nameof(Transportation.FreeText7),
                             Value = value
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.FreeText9),
+                            Value = null
+                        },
+                        new PatchUpdateDetail()
+                        {
+                            Field = nameof(Transportation.FreeText8),
+                            Value = null
                         }
                     }
                 };
@@ -313,9 +343,8 @@ namespace TMS.UI.Business.Manage
             });
         }
 
-        public void ChangeBackgroudColorReturn()
+        public void ChangeBackgroudColorReturn(GridView gridView)
         {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
             if (gridView is null)
             {
                 return;
