@@ -134,7 +134,7 @@ namespace Core.Components
             SetEntityPath();
             if (GuiInfo.IsRealtime && EntityId > 0)
             {
-                await RealtimeUpdateAsync(rowSection, observableArgs);
+                RealtimeUpdateAsync(rowSection, observableArgs);
             }
             Dirty = true;
         }

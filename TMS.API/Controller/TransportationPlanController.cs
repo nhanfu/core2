@@ -86,15 +86,15 @@ namespace TMS.API.Controllers
                     where 1 = 1 and RequestChangeId is null";
             if (RoleIds.Contains(10))
             {
-                sql += @$" and ((UserId = {UserId} or InsertedBy = {UserId}) or BossId in (select RecordId from FeaturePolicy where EntityId = {_entitySvc.GetEntity(nameof(Vendor)).Id} and CanRead = 1 and UserId = {UserId}))";
+                sql += @$" and ((UserId = {UserId} or InsertedBy = {UserId} or User2Id = {UserId}) or BossId in (select RecordId from FeaturePolicy where EntityId = {_entitySvc.GetEntity(nameof(Vendor)).Id} and CanRead = 1 and UserId = {UserId}))";
             }
             if (RoleIds.Contains(17))
             {
-                sql += @$" and ((UserId = 78 and BossId in (select RecordId from FeaturePolicy where EntityId = {_entitySvc.GetEntity(nameof(Vendor)).Id} and CanRead = 1 and UserId = {UserId})) or UserId = {UserId} or InsertedBy = {UserId}) or BossId in (select RecordId from FeaturePolicy where EntityId = {_entitySvc.GetEntity(nameof(Vendor)).Id} and CanRead = 1 and UserId = {UserId})";
+                sql += @$" and ((UserId = 78  and BossId in (select RecordId from FeaturePolicy where EntityId = {_entitySvc.GetEntity(nameof(Vendor)).Id} and CanRead = 1 and UserId = {UserId})) or User2Id = {UserId} or UserId = {UserId} or InsertedBy = {UserId}) or BossId in (select RecordId from FeaturePolicy where EntityId = {_entitySvc.GetEntity(nameof(Vendor)).Id} and CanRead = 1 and UserId = {UserId})";
             }
             if (RoleIds.Contains(43))
             {
-                sql += @$" and (UserId = 78 or UserId = {UserId} or InsertedBy = {UserId}) or BossId in (select RecordId from FeaturePolicy where EntityId = {_entitySvc.GetEntity(nameof(Vendor)).Id} and CanRead = 1 and UserId = {UserId})";
+                sql += @$" and (UserId = 78 or User2Id = {UserId} or UserId = {UserId} or InsertedBy = {UserId}) or BossId in (select RecordId from FeaturePolicy where EntityId = {_entitySvc.GetEntity(nameof(Vendor)).Id} and CanRead = 1 and UserId = {UserId})";
             }
             if (RoleIds.Contains(25) || RoleIds.Contains(27))
             {

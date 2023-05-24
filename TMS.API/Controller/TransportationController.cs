@@ -1567,15 +1567,15 @@ namespace TMS.API.Controllers
                     where 1 = 1";
             if (RoleIds.Contains(10))
             {
-                sql += @$" and (UserId = {UserId} or InsertedBy = {UserId})";
+                sql += @$" and (UserId = {UserId} or InsertedBy = {UserId} or User2Id = {UserId})";
             }
             else if (RoleIds.Contains(43))
             {
-                sql += @$" and (UserId = 78 or InsertedBy = {UserId} or UserId = {UserId})";
+                sql += @$" and (UserId = 78 or InsertedBy = {UserId} or UserId = {UserId} or User2Id = {UserId})";
             }
             else if (RoleIds.Contains(17))
             {
-                sql += @$" and (UserId = 78 or  UserId = {UserId})";
+                sql += @$" and (UserId = 78 or UserId = {UserId} or User2Id = {UserId})";
             }
             else if (RoleIds.Contains(25))
             {

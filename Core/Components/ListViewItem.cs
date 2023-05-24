@@ -9,7 +9,6 @@ using Core.MVVM;
 using Core.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -182,6 +181,8 @@ namespace Core.Components
             Dirty = (!id.HasValue || id <= 0) && !emptyRow;
         }
 
+        private int awaitUpdate = 0;
+
         internal virtual void RenderTableCell(object rowData, Component header, HTMLElement cellWrapper = null)
         {
             if (string.IsNullOrEmpty(header.FieldName))
@@ -221,14 +222,33 @@ namespace Core.Components
             }
             component.UserInput += async (arg) =>
             {
-                if (arg.EvType == EventType.Change || arg.EvType == EventType.Abort)
+                if (component.ComponentType == "Input" || component.ComponentType == nameof(Textbox) || component.ComponentType == "Textarea")
                 {
-                    if (component.Disabled)
+                    if (arg.EvType == EventType.Abort || arg.EvType == EventType.Input)
                     {
-                        return;
+                        if (component.Disabled)
+                        {
+                            return;
+                        }
+                        Window.ClearTimeout(awaitUpdate);
+                        awaitUpdate = Window.SetTimeout(async () =>
+                        {
+                            await ListView.RowChangeHandler(component.Entity, this, arg, component);
+                            await ListView.RealtimeUpdateAsync(this, arg);
+                        }, 2000);
                     }
-                    await ListView.RowChangeHandler(component.Entity, this, arg, component);
-                    await ListView.RealtimeUpdateAsync(this, arg);
+                }
+                else
+                {
+                    if (arg.EvType == EventType.Change)
+                    {
+                        if (component.Disabled)
+                        {
+                            return;
+                        }
+                        await ListView.RowChangeHandler(component.Entity, this, arg, component);
+                        await ListView.RealtimeUpdateAsync(this, arg);
+                    }
                 }
             };
         }
