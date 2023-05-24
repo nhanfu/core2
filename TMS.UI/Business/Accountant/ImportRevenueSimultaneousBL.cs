@@ -175,6 +175,14 @@ namespace TMS.UI.Business.Accountant
                     Toast.Warning("Không có doanh thu nào có thể nhập");
                     return;
                 }
+                if (revenueEntity.IsVendorVatId && revenueEntity.VendorVatId != null)
+                {
+                    var vendor = await new Client(nameof(Partner)).FirstOrDefaultAsync<Partner>($"?$filter=Active eq true and Id eq {revenueEntity.VendorVatId}");
+                    if (vendor != null)
+                    {
+                        revenueEntity.VendorVatName = vendor.CompanyName;
+                    }
+                }
                 revenues.Add(revenueEntity);
                 var res = await new Client(nameof(Revenue)).PostAsync<bool>(revenues, "UpdateRevenueSimultaneous");
                 if (res)
@@ -265,6 +273,14 @@ namespace TMS.UI.Business.Accountant
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
+                if (revenueEntity.IsVendorVatId && revenueEntity.VendorVatId != null)
+                {
+                    var vendor = await new Client(nameof(Partner)).FirstOrDefaultAsync<Partner>($"?$filter=Active eq true and Id eq {revenueEntity.VendorVatId}");
+                    if (vendor != null)
+                    {
+                        revenueEntity.VendorVatName = vendor.CompanyName;
+                    }
+                }
                 revenues.Add(revenueEntity);
                 var res = await new Client(nameof(Revenue)).PostAsync<bool>(revenues, "UpdateRevenueSimultaneous");
                 if (res)

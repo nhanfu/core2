@@ -160,6 +160,9 @@
     <Compile Include="..\TMS.API\Models\PartialModel.cs">
       <Link>Models\PartialModel.cs</Link>
     </Compile>
+    <Compile Include="..\TMS.API\Models\Partner.cs">
+      <Link>Models\Partner.cs</Link>
+    </Compile>
     <Compile Include="..\TMS.API\Models\Quotation.cs">
       <Link>Models\Quotation.cs</Link>
     </Compile>
@@ -195,6 +198,9 @@
     </Compile>
     <Compile Include="..\TMS.API\Models\Sale.cs">
       <Link>Models\Sale.cs</Link>
+    </Compile>
+    <Compile Include="..\TMS.API\Models\SaleAC.cs">
+      <Link>Models\SaleAC.cs</Link>
     </Compile>
     <Compile Include="..\TMS.API\Models\SettingPolicy.cs">
       <Link>Models\SettingPolicy.cs</Link>

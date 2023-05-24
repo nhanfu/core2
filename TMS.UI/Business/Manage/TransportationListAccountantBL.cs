@@ -1700,17 +1700,26 @@ namespace TMS.UI.Business.Manage
 
         private int updateRevenue;
 
-        public void UpdateTransportationWhenUpdateRevenue()
+        public void UpdateTransportationWhenUpdateRevenue(Revenue entity, PatchUpdate patch)
         {
             Window.ClearTimeout(updateRevenue);
             updateRevenue = Window.SetTimeout(async () =>
             {
-                await UpdateTransportationWhenUpdateRevenueAsync();
+                await UpdateTransportationWhenUpdateRevenueAsync(entity, patch);
             }, 1000);
         }
 
-        public async Task UpdateTransportationWhenUpdateRevenueAsync()
+        public async Task UpdateTransportationWhenUpdateRevenueAsync(Revenue entity, PatchUpdate patch)
         {
+            if (entity.VendorVatId != null)
+            {
+                var vendorVat = await new Client(nameof(Partner)).FirstOrDefaultAsync<Partner>($"?$filter=Active eq true and Id eq {entity.VendorVatId}");
+                if (vendorVat != null)
+                {
+                    entity.VendorVatName = vendorVat.CompanyName;
+                    var res = await new Client(nameof(Revenue)).PatchAsync<Revenue>(GetPatchVendorVatId(entity));
+                }
+            }
             var grid = this.FindComponentByName<GridView>("TransportationAccountant");
             await grid.ApplyFilter(true);
         }
@@ -1809,6 +1818,14 @@ namespace TMS.UI.Business.Manage
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockAll), Value = transportation.IsRequestUnLockAll.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockExploit), Value = transportation.IsRequestUnLockExploit.ToString() });
             details.Add(new PatchUpdateDetail { Field = nameof(Transportation.IsRequestUnLockAccountant), Value = transportation.IsRequestUnLockAccountant.ToString() });
+            return new PatchUpdate { Changes = details };
+        }
+
+        public PatchUpdate GetPatchVendorVatId(Revenue revenue)
+        {
+            var details = new List<PatchUpdateDetail>();
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = revenue.Id.ToString() });
+            details.Add(new PatchUpdateDetail { Field = nameof(Revenue.VendorVatName), Value = revenue.VendorVatName.ToString() });
             return new PatchUpdate { Changes = details };
         }
     }

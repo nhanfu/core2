@@ -75,6 +75,13 @@ namespace TMS.API
                 options.EnableSensitiveDataLogging();
 #endif
             });
+            services.AddDbContext<DBAccountantContext>((serviceProvider, options) =>
+            {
+                options.UseSqlServer(_configuration.GetConnectionString($"DBAccountant"), x => x.EnableRetryOnFailure());
+#if DEBUG
+                options.EnableSensitiveDataLogging();
+#endif
+            });
             services.AddDbContext<TMSContext>((serviceProvider, options) =>
             {
                 string connectionStr = GetConnectionString(serviceProvider, _configuration, "Default");

@@ -338,6 +338,7 @@ namespace TMS.API.Controllers
             if (item.IsVendorVatId)
             {
                 cmd += $"{nameof(Revenue.VendorVatId)} = " + (item.VendorVatId != null ? $"'{item.VendorVatId}'" : "NULL") + ",";
+                cmd += $"{nameof(Revenue.VendorVatName)} = " + (item.VendorVatName != null ? $"N'{item.VendorVatName}'" : "NULL") + ",";
             }
             if (item.IsLotNo ||
                 item.IsLotDate ||
