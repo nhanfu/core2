@@ -31,6 +31,8 @@ namespace TMS.API.Models
         public int? Length { get; set; }
         public string Additional2 { get; set; }
         public int? ActId { get; set; }
+        public string NameEnglish { get; set; }
+        public string DescriptionEnglish { get; set; }
 
         public virtual MasterData Parent { get; set; }
         public virtual ICollection<MasterData> InverseParent { get; set; }

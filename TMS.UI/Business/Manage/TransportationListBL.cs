@@ -1193,6 +1193,7 @@ namespace TMS.UI.Business.Manage
                                 var format = component.FormatCell.Split("}")[0].Replace("{", "");
                                 if (component.FieldName == nameof(Transportation.CommodityId))
                                 {
+                                    format = "DescriptionEnglish";
                                     return new Client(component.RefName).GetRawList<dynamic>(string.Format($"?$expand=InverseParent&$filter={ope.Name}", format, l.Value), entityName: component.RefName);
                                 }
                                 else

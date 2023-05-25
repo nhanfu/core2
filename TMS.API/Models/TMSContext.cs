@@ -1011,6 +1011,8 @@ namespace TMS.API.Models
                     .HasMaxLength(250)
                     .UseCollation("SQL_Latin1_General_CP1_CI_AI");
 
+                entity.Property(e => e.NameEnglish).HasMaxLength(50);
+
                 entity.Property(e => e.Path)
                     .HasMaxLength(100)
                     .IsUnicode(false);
@@ -1137,6 +1139,8 @@ namespace TMS.API.Models
                 entity.Property(e => e.Vat).HasColumnType("decimal(20, 5)");
 
                 entity.Property(e => e.VatPrice).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.VendorVatName).HasMaxLength(250);
 
                 entity.HasOne(d => d.Transportation)
                     .WithMany(p => p.Revenue)

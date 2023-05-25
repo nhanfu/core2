@@ -35,6 +35,18 @@ namespace TMS.UI.Business.User
             dialog.Render();
         }
 
+        public void ChangeType()
+        {
+            var dialog = new ConfirmDialog()
+            {
+                Title = $"Chuyển cộng tác viên",
+                Content = $"Vui lòng nhập thời gian áp dụng",
+                NeedAnswer = true,
+                ComponentType = nameof(Datepicker)
+            };
+            dialog.Render();
+        }
+
         public void PrintDebitCredit()
         {
             var preview = this.FindComponentByName<Section>("ViewA4");
