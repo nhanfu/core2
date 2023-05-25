@@ -648,6 +648,10 @@ namespace TMS.API.Controllers
                                     ex.CommodityValueNotes = commodityValue.Notes;
                                     CalcInsuranceFees(ex, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
                                 }
+                                else if (commodityValue == null && ex.CommodityValue > 0)
+                                {
+                                    CalcInsuranceFees(ex, false, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
+                                }
                             }
                             else if (ex.ExpenseTypeId == 15981)
                             {
@@ -657,6 +661,10 @@ namespace TMS.API.Controllers
                                     ex.CommodityValue = commodityValue.TotalPrice;
                                     ex.CustomerTypeId = commodityValue.CustomerTypeId;
                                     ex.CommodityValueNotes = commodityValue.Notes;
+                                    CalcInsuranceFees(ex, true, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
+                                }
+                                else if (commodityValue == null && ex.CommodityValue > 0)
+                                {
                                     CalcInsuranceFees(ex, true, insuranceFeesRates, extraInsuranceFeesRateDB, containerExpense, insuranceFeesRateColdDB);
                                 }
                             }

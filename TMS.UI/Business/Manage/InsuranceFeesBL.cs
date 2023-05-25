@@ -138,8 +138,8 @@ namespace TMS.UI.Business.Manage
                 var expenses = await new Client(nameof(Expense)).GetRawList<Expense>($"?$filter=Active eq true and ExpenseTypeId in (15981, 15939) and RequestChangeId eq null and Id in ({ids.Combine()}) and IsPurchasedInsurance eq false");
                 if (expenses != null)
                 {
-                    var bossIds = expenses.Select(x => x.BossId).ToList();
-                    var commodityIds = expenses.Select(x => x.CommodityId).ToList();
+                    var bossIds = expenses.Where(x => x.BossId != null).Select(x => x.BossId).ToList();
+                    var commodityIds = expenses.Where(x => x.CommodityId != null).Select(x => x.CommodityId).ToList();
                     var containerTypeIds = new Dictionary<int, int>();
                     var containerTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 7565");
                     foreach (var item in expenses)
@@ -163,10 +163,14 @@ namespace TMS.UI.Business.Manage
                         }
                     }
                     var commodityValueDB = await new Client(nameof(CommodityValue)).GetRawList<CommodityValue>($"?$filter=Active eq true and BossId in ({bossIds.Combine()}) and CommodityId in ({commodityIds.Combine()})");
-                    Spinner.AppendTo(this.Element, false, true, 30000);
+                    Spinner.AppendTo(this.Element, true, true, 30000);
                     var res = new Expense();
                     foreach (var item in expenses)
                     {
+                        if (item.JourneyId == null)
+                        {
+                            item.JourneyId = 12114;
+                        }
                         var containerTypeId = containerTypeIds.GetValueOrDefault(item.Id);
                         var commodityValue = commodityValueDB.Where(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == containerTypeId).FirstOrDefault();
                         if (commodityValue != null)
@@ -184,6 +188,18 @@ namespace TMS.UI.Business.Manage
                                 await CalcInsuranceFees(item, false);
                             }
                             else if(item.ExpenseTypeId == 15981)
+                            {
+                                await CalcInsuranceFees(item, true);
+                            }
+                            res = await new Client(nameof(Expense)).UpdateAsync<Expense>(item);
+                        }
+                        else if (commodityValue == null && item.CommodityValue > 0)
+                        {
+                            if (item.ExpenseTypeId == 15939)
+                            {
+                                await CalcInsuranceFees(item, false);
+                            }
+                            else if (item.ExpenseTypeId == 15981)
                             {
                                 await CalcInsuranceFees(item, true);
                             }
@@ -310,6 +326,8 @@ namespace TMS.UI.Business.Manage
                         newCommodityValue.CreatedBy = Client.Token.UserId;
                         await new Client(nameof(CommodityValue)).CreateAsync(newCommodityValue);
                     };
+                    await CalcInsuranceFees(expense, false);
+                    await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntity(expense));
                 }
                 else
                 {
