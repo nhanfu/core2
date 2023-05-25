@@ -697,7 +697,7 @@ namespace TMS.API.Controllers
                                 }
                                 else
                                 {
-                                    query += prop.GetValue(ex) != null ? $"'{prop.GetValue(ex).ToString()}', " : "NULL, ";
+                                    query += prop.GetValue(ex) != null ? $"N'{prop.GetValue(ex).ToString()}', " : "NULL, ";
                                 }
                             }
                         }
