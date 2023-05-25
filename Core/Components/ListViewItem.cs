@@ -224,18 +224,14 @@ namespace Core.Components
             {
                 if (component.ComponentType == "Input" || component.ComponentType == nameof(Textbox) || component.ComponentType == "Textarea")
                 {
-                    if (arg.EvType == EventType.Abort || arg.EvType == EventType.Input)
+                    if (arg.EvType == EventType.Abort || arg.EvType == EventType.Change || arg.EvType == EventType.Blur)
                     {
                         if (component.Disabled)
                         {
                             return;
                         }
-                        Window.ClearTimeout(awaitUpdate);
-                        awaitUpdate = Window.SetTimeout(async () =>
-                        {
-                            await ListView.RowChangeHandler(component.Entity, this, arg, component);
-                            await ListView.RealtimeUpdateAsync(this, arg);
-                        }, 2000);
+                        await ListView.RowChangeHandler(component.Entity, this, arg, component);
+                        await ListView.RealtimeUpdateAsync(this, arg);
                     }
                 }
                 else
@@ -355,7 +351,12 @@ namespace Core.Components
             Entity.CopyPropFrom(rs);
             await ListViewSection.ListView.LoadMasterData(new object[] { rs });
             EmptyRow = false;
-            UpdateView(true);
+            var arr = pathModel.Changes.Select(x => x.Field).ToArray();
+            if (ListViewSection.ListView.LastComponentFocus != null)
+            {
+                arr.Push(ListViewSection.ListView.LastComponentFocus.FieldName);
+            }
+            UpdateView(true, arr);
             var changing = BuildTextHistory().ToString();
             if (!changing.IsNullOrWhiteSpace())
             {

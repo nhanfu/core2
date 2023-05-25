@@ -692,7 +692,7 @@ namespace Core.Components
                 EmptyRow = false;
                 return;
             }
-            if (!GuiInfo.IsRealtime || arg is null || arg.EvType == EventType.Abort)
+            if (!GuiInfo.IsRealtime || arg is null)
             {
                 return;
             }
