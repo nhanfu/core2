@@ -360,7 +360,7 @@ namespace TMS.UI.Business.Manage
                     {
                         expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
                     }
-                    if (isSubRatio && insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
+                    if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
                     {
                         extraInsuranceFeesRateDB.ForEach(x =>
                         {
