@@ -131,6 +131,8 @@ namespace TMS.UI.Business.Manage
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
             var data = await gridView.GetRealTimeSelectedRows();
             var selected = data.Cast<TransportationPlan>().ToList();
+            var selectedIds = selected.Select(x => x.Id).ToList();
+            selected = await new Client(nameof(TransportationPlan)).GetRawListById<TransportationPlan>(selectedIds);
             if (selected.Nothing())
             {
                 selected = gridView.GetFocusedRows().Cast<TransportationPlan>().ToList();
