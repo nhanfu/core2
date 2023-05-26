@@ -2535,7 +2535,9 @@ namespace TMS.API.Controllers
                         && item.Name != "StatusId"
                         && item.Name != "Reason"
                         && item.Name != "ReasonReject"
-                        && item.Name != "TransportationRequest")
+                        && item.Name != "TransportationRequest"
+                        && item.Name != "TotalBet"
+                        && item.Name != "TotalBetReport")
                     {
                         var propType = item.PropertyType.FullName;
                         if (propType.Contains("System.DateTime"))
