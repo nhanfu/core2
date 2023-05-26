@@ -300,20 +300,20 @@ namespace TMS.UI.Business.Manage
 
         public void SetInfoChangeExpense(Expense item, TransportationPlan listViewItem, MasterData expenseType)
         {
-            if (item.TransportationTypeId != listViewItem.TransportationTypeId) { item.TransportationTypeId = listViewItem.TransportationTypeId; }
+            if (item.TransportationTypeId != listViewItem.TransportationTypeId && item.IsPurchasedInsurance == false) { item.TransportationTypeId = listViewItem.TransportationTypeId; }
             if (item.BossId != listViewItem.BossId) { item.BossId = listViewItem.BossId; }
             if (item.SaleId != listViewItem.UserId) { item.SaleId = listViewItem.UserId; }
             if (item.CommodityId != listViewItem.CommodityId && item.ExpenseTypeId == expenseType.Id) { item.CommodityId = listViewItem.CommodityId; }
             if (item.RouteId != listViewItem.RouteId) { item.RouteId = listViewItem.RouteId; }
             if (item.ContainerTypeId != listViewItem.ContainerTypeId) { item.ContainerTypeId = listViewItem.ContainerTypeId; }
-            if (item.JourneyId != listViewItem.JourneyId) { item.JourneyId = listViewItem.JourneyId; }
+            if (item.JourneyId != listViewItem.JourneyId && item.IsPurchasedInsurance == false) { item.JourneyId = listViewItem.JourneyId; }
             if (item.StartShip != listViewItem.ClosingDate && (item.JourneyId == 12114 || item.JourneyId == 16001)) { item.StartShip = listViewItem.ClosingDate; }
-            if (item.IsBought != listViewItem.IsBought) { item.IsBought = listViewItem.IsBought; }
-            if (item.IsWet != listViewItem.IsWet) { item.IsWet = listViewItem.IsWet; }
-            if (item.SteamingTerms != listViewItem.SteamingTerms) { item.SteamingTerms = listViewItem.SteamingTerms; }
-            if (item.BreakTerms != listViewItem.BreakTerms) { item.BreakTerms = listViewItem.BreakTerms; }
-            if (item.CustomerTypeId != listViewItem.CustomerTypeId) { item.CustomerTypeId = listViewItem.CustomerTypeId; }
-            if (item.CommodityValue != listViewItem.CommodityValue) { item.CommodityValue = listViewItem.CommodityValue; }
+            if (item.IsBought != listViewItem.IsBought && item.IsPurchasedInsurance == false) { item.IsBought = listViewItem.IsBought; }
+            if (item.IsWet != listViewItem.IsWet && item.IsPurchasedInsurance == false) { item.IsWet = listViewItem.IsWet; }
+            if (item.SteamingTerms != listViewItem.SteamingTerms && item.IsPurchasedInsurance == false) { item.SteamingTerms = listViewItem.SteamingTerms; }
+            if (item.BreakTerms != listViewItem.BreakTerms && item.IsPurchasedInsurance == false) { item.BreakTerms = listViewItem.BreakTerms; }
+            if (item.CustomerTypeId != listViewItem.CustomerTypeId && item.IsPurchasedInsurance == false) { item.CustomerTypeId = listViewItem.CustomerTypeId; }
+            if (item.CommodityValue != listViewItem.CommodityValue && item.IsPurchasedInsurance == false) { item.CommodityValue = listViewItem.CommodityValue; }
             if (item.ReceivedId != listViewItem.ReceivedId) { item.ReceivedId = listViewItem.ReceivedId; }
             if (item.IsCompany != listViewItem.IsCompany) { item.IsCompany = listViewItem.IsCompany; }
         }
