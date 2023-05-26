@@ -351,12 +351,7 @@ namespace Core.Components
             Entity.CopyPropFrom(rs);
             await ListViewSection.ListView.LoadMasterData(new object[] { rs });
             EmptyRow = false;
-            var ig = pathModel.Changes.Select(x => x.Field).ToArray();
-            if (ListViewSection.ListView.LastComponentFocus != null)
-            {
-                ig.Push(ListViewSection.ListView.LastComponentFocus.FieldName);
-            }
-            var arr = ListViewSection.ListView.Header.Where(x => !ig.Contains(x.FieldName)).Select(x => x.FieldName).ToArray();
+            var arr = FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.GuiInfo.FieldName).ToArray();
             UpdateView(true, arr);
             var changing = BuildTextHistory().ToString();
             if (!changing.IsNullOrWhiteSpace())
