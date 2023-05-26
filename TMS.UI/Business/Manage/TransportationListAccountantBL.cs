@@ -386,43 +386,50 @@ namespace TMS.UI.Business.Manage
             }
             else if (patch.Changes.Any(x => x.Field == nameof(transportation.IsLockedRevenue)))
             {
-                if (transportation.IsLockedRevenue)
+                if (Client.Token.UserId == 223)
                 {
-                    var confirm = new ConfirmDialog
-                    {
-                        Content = "Bạn có chắc chắn muốn khóa doanh thu ?",
-                    };
-                    confirm.Render();
-                    confirm.YesConfirmed += async () =>
-                    {
-                        await RequestUnClosing(transportation, patch, this);
-                    };
-                    confirm.NoConfirmed += async () =>
-                    {
-                        transportation.IsLockedRevenue = false;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedRevenueEntity(transportation), ig: "true");
-                        var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
-                        listViewItem.UpdateView(false, nameof(Transportation.IsLockedRevenue));
-                    };
+                    await RequestUnClosing(transportation, patch, this);
                 }
                 else
                 {
-                    var confirm = new ConfirmDialog
+                    if (transportation.IsLockedRevenue)
                     {
-                        Content = "Bạn có chắc chắn muốn mở khóa doanh thu ?",
-                    };
-                    confirm.Render();
-                    confirm.YesConfirmed += async () =>
+                        var confirm = new ConfirmDialog
+                        {
+                            Content = "Bạn có chắc chắn muốn khóa doanh thu ?",
+                        };
+                        confirm.Render();
+                        confirm.YesConfirmed += async () =>
+                        {
+                            await RequestUnClosing(transportation, patch, this);
+                        };
+                        confirm.NoConfirmed += async () =>
+                        {
+                            transportation.IsLockedRevenue = false;
+                            await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedRevenueEntity(transportation), ig: "true");
+                            var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                            listViewItem.UpdateView(false, nameof(Transportation.IsLockedRevenue));
+                        };
+                    }
+                    else
                     {
-                        await RequestUnClosing(transportation, patch, this);
-                    };
-                    confirm.NoConfirmed += async () =>
-                    {
-                        transportation.IsLockedRevenue = true;
-                        await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedRevenueEntity(transportation), ig: "true");
-                        var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
-                        listViewItem.UpdateView(false, nameof(Transportation.IsLockedRevenue));
-                    };
+                        var confirm = new ConfirmDialog
+                        {
+                            Content = "Bạn có chắc chắn muốn mở khóa doanh thu ?",
+                        };
+                        confirm.Render();
+                        confirm.YesConfirmed += async () =>
+                        {
+                            await RequestUnClosing(transportation, patch, this);
+                        };
+                        confirm.NoConfirmed += async () =>
+                        {
+                            transportation.IsLockedRevenue = true;
+                            await new Client(nameof(Transportation)).PatchAsync<Transportation>(GetPatchIsLockedRevenueEntity(transportation), ig: "true");
+                            var listViewItem = grid.GetListViewItems(transportation).FirstOrDefault();
+                            listViewItem.UpdateView(false, nameof(Transportation.IsLockedRevenue));
+                        };
+                    }
                 }
             }
             else
