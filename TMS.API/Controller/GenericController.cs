@@ -217,7 +217,7 @@ namespace TMS.API.Controllers
                 {
                     odata = new Odata { count = shouldCount ? (await (totalResult as IQueryable<K>).CountAsync()) : null },
                     Sql = sql,
-                    value = options.Top == null && !shouldCount || top != null && top.Value > 0 ? await limitedQuery.ToListAsync() : null
+                    value = options.Top == null && !shouldCount || top != null && top.Value > 0 ? await limitedQuery.ToListAsync() : null,
                 };
                 return result;
             }

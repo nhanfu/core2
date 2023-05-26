@@ -178,9 +178,10 @@ namespace TMS.UI.Business.Manage
                     Text = "Ghi chú",
                     MenuItems = new List<ContextMenuItem>
                     {
-                        new ContextMenuItem { Text = "Yêu cầu trả vỏ", Click = NoteFreeText8, Parameter = gridView.GetItemFocus(),Style="background-color:#9E9E9E" },
-                        new ContextMenuItem { Text = "Yêu cầu chụp hình", Click = NoteFreeText9, Parameter = gridView.GetItemFocus(),Style="background-color:#ffeb3b" },
-                        new ContextMenuItem { Text = "Trễ", Click = NoteFreeText7, Parameter = gridView.GetItemFocus(),Style="background-color:#b1eaf2" },
+                        new ContextMenuItem { Text = "Yêu cầu trả vỏ", Click = NoteFreeText, Parameter = new { StatusId = "1", Header = gridView.GetItemFocus() },Style="background-color:#9E9E9E" },
+                        new ContextMenuItem { Text = "Yêu cầu chụp hình", Click = NoteFreeText, Parameter = new { StatusId = "2", Header = gridView.GetItemFocus() },Style="background-color:#ffeb3b" },
+                        new ContextMenuItem { Text = "Trễ", Click = NoteFreeText, Parameter = new { StatusId = "3", Header = gridView.GetItemFocus() },Style="background-color:#b1eaf2" },
+                        new ContextMenuItem { Text = "Chuyển kho", Click = NoteFreeText, Parameter = new { StatusId = "4", Header = gridView.GetItemFocus() },Style="background-color:#5bcad3" },
                     }
                 });
                 menus.Add(new ContextMenuItem
@@ -208,12 +209,12 @@ namespace TMS.UI.Business.Manage
             ChangeBackgroudColorReturn(gridView);
         }
 
-        private void NoteFreeText8(object arg)
+        private void NoteFreeText(object arg)
         {
             Task.Run(async () =>
             {
-                var transportation = arg as ListViewItem;
-                var value = transportation.Entity[nameof(Transportation.FreeText8)] is null ? "Yêu cầu trả vỏ" : null;
+                var transportation = arg["Header"] as ListViewItem;
+                var value = arg["StatusId"] == transportation.Entity["FreeText9"] ? null : arg["StatusId"].ToString();
                 var path = new PatchUpdate
                 {
                     Changes = new List<PatchUpdateDetail>()
@@ -225,18 +226,8 @@ namespace TMS.UI.Business.Manage
                         },
                         new PatchUpdateDetail()
                         {
-                            Field = nameof(Transportation.FreeText8),
-                            Value = value
-                        },
-                        new PatchUpdateDetail()
-                        {
-                            Field = nameof(Transportation.FreeText7),
-                            Value = null
-                        },
-                        new PatchUpdateDetail()
-                        {
                             Field = nameof(Transportation.FreeText9),
-                            Value = null
+                            Value = value
                         }
                     }
                 };
@@ -246,99 +237,21 @@ namespace TMS.UI.Business.Manage
                 var containerCom = transportation.FilterChildren<EditableComponent>(y => y.GuiInfo.FieldName == nameof(Transportation.ContainerNo)).FirstOrDefault();
                 var td = containerCom.Element.Closest("td");
                 td.Style.BackgroundColor = "";
-                if (value != null)
+                if (value == "1")
                 {
                     td.Style.BackgroundColor = "#9E9E9E";
                 }
-            });
-        }
-
-        private void NoteFreeText9(object arg)
-        {
-            Task.Run(async () =>
-            {
-                var transportation = arg as ListViewItem;
-                var value = transportation.Entity[nameof(Transportation.FreeText9)] is null ? "Yêu cầu chụp hình" : null;
-                var path = new PatchUpdate
-                {
-                    Changes = new List<PatchUpdateDetail>()
-                    {
-                        new PatchUpdateDetail()
-                        {
-                            Field = IdField,
-                            Value = transportation.Entity[IdField].ToString()
-                        },
-                        new PatchUpdateDetail()
-                        {
-                            Field = nameof(Transportation.FreeText9),
-                            Value = value
-                        },
-                        new PatchUpdateDetail()
-                        {
-                            Field = nameof(Transportation.FreeText7),
-                            Value = null
-                        },
-                        new PatchUpdateDetail()
-                        {
-                            Field = nameof(Transportation.FreeText8),
-                            Value = null
-                        }
-                    }
-                };
-                var rs = await new Client(nameof(Transportation)).PatchAsync<Transportation>(path, ig: $"&disableTrigger=true");
-                transportation.Entity.CopyPropFrom(rs);
-                transportation.UpdateView(true);
-                var containerCom = transportation.FilterChildren<EditableComponent>(y => y.GuiInfo.FieldName == nameof(Transportation.ContainerNo)).FirstOrDefault();
-                var td = containerCom.Element.Closest("td");
-                td.Style.BackgroundColor = "";
-                if (value != null)
+                else if (value == "2")
                 {
                     td.Style.BackgroundColor = "#ffeb3b";
                 }
-            });
-        }
-
-        private void NoteFreeText7(object arg)
-        {
-            Task.Run(async () =>
-            {
-                var transportation = arg as ListViewItem;
-                var value = transportation.Entity[nameof(Transportation.FreeText7)] is null ? "Trễ" : null;
-                var path = new PatchUpdate
-                {
-                    Changes = new List<PatchUpdateDetail>()
-                    {
-                        new PatchUpdateDetail()
-                        {
-                            Field = IdField,
-                            Value = transportation.Entity[IdField].ToString()
-                        },
-                        new PatchUpdateDetail()
-                        {
-                            Field = nameof(Transportation.FreeText7),
-                            Value = value
-                        },
-                        new PatchUpdateDetail()
-                        {
-                            Field = nameof(Transportation.FreeText9),
-                            Value = null
-                        },
-                        new PatchUpdateDetail()
-                        {
-                            Field = nameof(Transportation.FreeText8),
-                            Value = null
-                        }
-                    }
-                };
-                var rs = await new Client(nameof(Transportation)).PatchAsync<Transportation>(path, ig: $"&disableTrigger=true");
-                transportation.Entity.CopyPropFrom(rs);
-                transportation.UpdateView(true);
-                var containerCom = transportation.FilterChildren<EditableComponent>(y => y.GuiInfo.FieldName == nameof(Transportation.ContainerNo)).FirstOrDefault();
-                var td = containerCom.Element.Closest("td");
-                td.Style.BackgroundColor = "";
-                if (value != null)
+                else if (value == "3")
                 {
                     td.Style.BackgroundColor = "#b1eaf2";
+                }
+                else if (value == "4")
+                {
+                    td.Style.BackgroundColor = "#5bcad3";
                 }
             });
         }
@@ -366,17 +279,21 @@ namespace TMS.UI.Business.Manage
                 {
                     tdReturnDate.Style.BackgroundColor = "#f26c6c";
                 }
-                if (!item.FreeText8.IsNullOrWhiteSpace())
+                if (item.FreeText9 == "1")
                 {
                     tdContainer.Style.BackgroundColor = "#9E9E9E";
                 }
-                if (!item.FreeText9.IsNullOrWhiteSpace())
+                else if (item.FreeText9 == "2")
                 {
                     tdContainer.Style.BackgroundColor = "#ffeb3b";
                 }
-                if (!item.FreeText7.IsNullOrWhiteSpace())
+                else if (item.FreeText9 == "3")
                 {
                     tdContainer.Style.BackgroundColor = "#b1eaf2";
+                }
+                else if (item.FreeText9 == "4")
+                {
+                    tdContainer.Style.BackgroundColor = "#5bcad3";
                 }
             }
         }
