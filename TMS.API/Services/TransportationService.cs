@@ -66,7 +66,7 @@ namespace TMS.API.Services
             }
             return @$"update Transportation set Dem = (case when DATEDIFF(DAY,Transportation.DemDate,Transportation.ReturnDate) <= 0 then null else DATEDIFF(DAY,Transportation.DemDate,Transportation.ReturnDate) end)
 						from Transportation
-						where (Transportation.DemDate is null and Transportation.ShipDate is not null)
+						where (Transportation.DemDate is not null and Transportation.ShipDate is not null)
 						and Transportation.Id = {Id};";
         }
 
