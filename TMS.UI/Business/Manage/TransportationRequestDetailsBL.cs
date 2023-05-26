@@ -329,5 +329,38 @@ namespace TMS.UI.Business.Manage
                 }
             }
         }
+
+        public void BookingChange(TransportationRequestDetails transportation, Booking booking)
+        {
+            var gridView = this.FindComponentByName<GridView>("TransportationRequestDetails");
+            if (gridView == null)
+            { return; }
+            var listViewItem = gridView.GetListViewItems(transportation).FirstOrDefault();
+            transportation.ShipId = booking is null ? null : booking.ShipId;
+            transportation.BrandShipId = booking is null ? null : booking.BrandShipId;
+            transportation.Trip = booking is null ? null : booking.Trip;
+            transportation.StartShip = booking is null ? null : booking.StartShip;
+            transportation.PickupEmptyId = booking is null ? null : booking.PickupEmptyId;
+            transportation.PortLoadingId = booking is null ? null : booking.PortLoadingId;
+            transportation.LineId = booking is null ? null : booking.LineId;
+            transportation.PolicyId = booking is null ? null : transportation.PolicyId;
+            transportation.ShipPolicyPrice = booking is null ? 0 : transportation.ShipPolicyPrice;
+            transportation.ShipUnitPrice = booking is null ? null : transportation.ShipUnitPrice;
+            transportation.ShipPrice = booking is null ? null : transportation.ShipPrice;
+            listViewItem.UpdateView(true);
+            listViewItem.FilterChildren(x =>
+            x.GuiInfo.FieldName == nameof(TransportationRequestDetails.ShipId)
+            || x.GuiInfo.FieldName == nameof(TransportationRequestDetails.PolicyId)
+            || x.GuiInfo.FieldName == nameof(TransportationRequestDetails.BrandShipId)
+            || x.GuiInfo.FieldName == nameof(TransportationRequestDetails.Trip)
+            || x.GuiInfo.FieldName == nameof(TransportationRequestDetails.LineId)
+            || x.GuiInfo.FieldName == nameof(TransportationRequestDetails.StartShip)
+            || x.GuiInfo.FieldName == nameof(TransportationRequestDetails.PortLoadingId)
+            || x.GuiInfo.FieldName == nameof(TransportationRequestDetails.PickupEmptyId)
+            || x.GuiInfo.FieldName == nameof(TransportationRequestDetails.ShipUnitPrice)
+            || x.GuiInfo.FieldName == nameof(TransportationRequestDetails.ShipPrice)
+            || x.GuiInfo.FieldName == nameof(TransportationRequestDetails.ShipPolicyPrice)
+            ).ForEach(x => x.Dirty = true);
+        }
     }
 }
