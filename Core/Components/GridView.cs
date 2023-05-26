@@ -1405,7 +1405,7 @@ namespace Core.Components
                 return;
             }
             var nextcom = upItem.FilterChildren(x => x.GuiInfo.Id == com.GuiInfo.Id).FirstOrDefault();
-            if (nextcom != null)
+            if (nextcom != null && nextcom.GuiInfo.Editable)
             {
                 LastComponentFocus = nextcom.GuiInfo;
                 nextcom.ParentElement?.Focus();
