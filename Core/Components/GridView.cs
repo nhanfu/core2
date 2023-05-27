@@ -2480,8 +2480,11 @@ namespace Core.Components
         {
             var entity = arg["header"] as GridPolicy;
             BasicHeader.FirstOrDefault(x => x.Id == entity.Id).Frozen = !entity.Frozen;
-            Task.Run(async () => await UpdateUserSetting());
-            Window.Location.Reload();
+            Task.Run(async () =>
+            {
+                await UpdateUserSetting();
+                Window.Location.Reload();
+            });
         }
 
         public void CloneHeader(object arg)
