@@ -1405,7 +1405,7 @@ namespace Core.Components
                 return;
             }
             var nextcom = upItem.FilterChildren(x => x.GuiInfo.Id == com.GuiInfo.Id).FirstOrDefault();
-            if (nextcom != null && nextcom.GuiInfo.Editable)
+            if (nextcom != null)
             {
                 LastComponentFocus = nextcom.GuiInfo;
                 nextcom.ParentElement?.Focus();
@@ -1430,7 +1430,7 @@ namespace Core.Components
                 {
                     upItem.Entity.SetComplexPropValue(fieldName, com.GetValue());
                     var updated = upItem.FilterChildren(x => x.GuiInfo.FieldName == nextcom.GuiInfo.FieldName).FirstOrDefault();
-                    if (updated.Disabled)
+                    if (updated.Disabled || updated.GuiInfo.Editable)
                     {
                         return;
                     }
