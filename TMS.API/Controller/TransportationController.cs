@@ -37,6 +37,21 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("DSVC này đã được khóa (Hệ thống). Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
             }
+            if (entity.LockShip && !patch.Changes.Any(x => x.Field == nameof(entity.LockShip)))
+            {
+                if (patch.Changes.Any(x => (x.Field == nameof(entity.ShipPrice) && x.Value != $"{entity.ShipPrice:N0}")
+                || (x.Field == nameof(entity.PolicyId) && x.Value != $"{entity.PolicyId}")
+                || (x.Field == nameof(entity.ShipPolicyPrice) && x.Value != $"{entity.ShipPolicyPrice:N0}")
+                || (x.Field == nameof(entity.Trip) && x.Value != entity.Trip)
+                || (x.Field == nameof(entity.StartShip) && x.Value != $"{entity.StartShip:yyyy/MM/dd hh:mm:ss}")
+                || (x.Field == nameof(entity.ContainerTypeId) && x.Value != $"{entity.ContainerTypeId}")
+                || (x.Field == nameof(entity.SocId) && x.Value != $"{entity.SocId}")
+                || (x.Field == nameof(entity.ShipNotes) && x.Value != entity.ShipNotes)
+                || (x.Field == nameof(entity.BookingId) && x.Value != $"{entity.BookingId}")))
+                {
+                    throw new ApiException("DSVC này đã được khóa (Cước tàu). Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
+                }
+            }
             if (entity.IsKt && !patch.Changes.Any(x => x.Field == nameof(entity.IsKt)))
             {
                 if (patch.Changes.Any(x => (x.Field == nameof(entity.Trip) && x.Value != entity.Trip)
@@ -53,21 +68,6 @@ namespace TMS.API.Controllers
                 || (x.Field == nameof(entity.FreeText3) && x.Value != entity.FreeText3)))
                 {
                     throw new ApiException("DSVC này đã được khóa (Khai thác). Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
-                }
-            }
-            if (entity.LockShip && !patch.Changes.Any(x => x.Field == nameof(entity.LockShip)))
-            {
-                if (patch.Changes.Any(x => (x.Field == nameof(entity.ShipPrice) && x.Value != $"{entity.ShipPrice:N0}")
-                || (x.Field == nameof(entity.PolicyId) && x.Value != $"{entity.PolicyId}")
-                || (x.Field == nameof(entity.ShipPolicyPrice) && x.Value != $"{entity.ShipPolicyPrice:N0}")
-                || (x.Field == nameof(entity.Trip) && x.Value != entity.Trip)
-                || (x.Field == nameof(entity.StartShip) && x.Value != $"{entity.StartShip:yyyy/MM/dd hh:mm:ss}")
-                || (x.Field == nameof(entity.ContainerTypeId) && x.Value != $"{entity.ContainerTypeId}")
-                || (x.Field == nameof(entity.SocId) && x.Value != $"{entity.SocId}")
-                || (x.Field == nameof(entity.ShipNotes) && x.Value != entity.ShipNotes)
-                || (x.Field == nameof(entity.BookingId) && x.Value != $"{entity.BookingId}")))
-                {
-                    throw new ApiException("DSVC này đã được khóa (Cước tàu). Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
                 }
             }
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))

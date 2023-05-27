@@ -461,8 +461,9 @@ namespace TMS.UI.Business.Manage
                         return;
                     }
                     else
-                    { await TransportationRequestDetailsBL(tran, tabEditor); return; }
+                    { await TransportationRequestDetailsBL(tran, tabEditor); }
                 };
+                return;
             }
             if (tran.LockShip && !patch.Changes.Any(x => x.Field == nameof(tran.LockShip)))
             {
@@ -490,8 +491,9 @@ namespace TMS.UI.Business.Manage
                             return;
                         }
                         else
-                        { await TransportationRequestDetailsBL(tran, tabEditor); return; }
+                        { await TransportationRequestDetailsBL(tran, tabEditor); }
                     };
+                    return;
                 }
             }
             if (tran.IsKt && !patch.Changes.Any(x => x.Field == nameof(tran.IsKt)))
@@ -523,8 +525,9 @@ namespace TMS.UI.Business.Manage
                             return;
                         }
                         else
-                        { await TransportationRequestDetailsBL(tran, tabEditor); return; }
+                        { await TransportationRequestDetailsBL(tran, tabEditor); }
                     };
+                    return;
                 }
             }
         }
@@ -637,6 +640,7 @@ namespace TMS.UI.Business.Manage
                     if (selected != null && selected.IsLockedRevenue)
                     {
                         OpenRevenueRequestBL(revenue);
+                        return;
                     }
                 }
                 if (patch.Changes.Any(x => (x.Field == nameof(Revenue.Name))
@@ -653,6 +657,7 @@ namespace TMS.UI.Business.Manage
                     if (selected != null && selected.IsSubmit)
                     {
                         OpenRevenueRequestBL(revenue);
+                        return;
                     }
                 }
             }
