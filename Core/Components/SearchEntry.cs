@@ -386,7 +386,7 @@ namespace Core.Components
 
         private void Search(string term = null, bool changeEvent = true, int timeout = 500, bool delete = false)
         {
-            
+
 
             Window.ClearTimeout(_waitForInput);
             _waitForInput = Window.SetTimeout(() =>
@@ -459,6 +459,12 @@ namespace Core.Components
             {
                 _gv.Paginator.Element.TabIndex = -1;
                 _gv.Paginator.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
+            }
+            if (_gv.HeaderSection?.Element != null)
+            {
+                _gv.HeaderSection.Element.TabIndex = -1;
+                _gv.HeaderSection?.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
+                _gv.HeaderSection?.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
             }
             if (GuiInfo.LocalHeader is null)
             {

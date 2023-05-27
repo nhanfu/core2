@@ -664,6 +664,7 @@ namespace Core.Components
                         x.MaxWidth = current.MaxWidth;
                         x.MinWidth = current.MinWidth;
                         x.Order = current.Order;
+                        x.Frozen = current.Frozen;
                     }
                 }
             });

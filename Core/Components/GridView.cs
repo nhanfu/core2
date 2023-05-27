@@ -156,14 +156,6 @@ namespace Core.Components
 
         private void StickyColumn(EditableComponent rows, string top = null)
         {
-            if (MainSection.Children.Nothing() || MainSection.Children.Count > CellCountNoSticky || (BasicHeader != null && BasicHeader.Count > CellCountNoSticky))
-            {
-                if (MainSection.Element != null)
-                {
-                    MainSection.Element.ParentElement.ParentElement.Style.Transform = "translateZ(0)";
-                }
-                return;
-            }
             var shouldStickEle = new string[] { "th", "td" };
             var frozen = rows.FilterChildren<EditableComponent>(predicate: x => x.GuiInfo != null && x.GuiInfo.Frozen, ignorePredicate: x => x is ListViewSearch).ToArray();
             frozen.ForEach(x =>
@@ -2348,8 +2340,7 @@ namespace Core.Components
             {
                 new ContextMenuItem { Icon = "fal fa-eye", Text = "Hiện tiêu đề", Click = ShowWidth, Parameter = new {header= header, events= e }},
                 new ContextMenuItem { Icon = "fal fa-eye-slash", Text = "Ẩn tiêu đề", Click = HideWidth, Parameter = new {header= header, events= e }},
-                new ContextMenuItem { Icon = "fal fa-eye", Text = "Hiện cột", Click = ShowColumn, Parameter = new {header= header, events= e }},
-                new ContextMenuItem { Icon = "fal fa-eye-slash", Text = "Ẩn cột", Click = HideColumn, Parameter = new {header= header, events= e }},
+                new ContextMenuItem { Icon = "fal fa-eye", Text = header.Frozen ? "Hủy định cột" : "Cố định cột", Click = FrozenColumn, Parameter = new {header= header, events= e }},
             };
             if (Client.SystemRole)
             {
@@ -2485,16 +2476,12 @@ namespace Core.Components
             Task.Run(async () => await UpdateUserSetting());
         }
 
-        private void ShowColumn(object arg)
+        private void FrozenColumn(object arg)
         {
             var entity = arg["header"] as GridPolicy;
-            var e = arg["events"] as Event;
-            /*@
-             var $table = $(e.target).closest('table');
-             $table.find("th, td").show();
-             console.log($(e.target).attr("data-field"));
-             */
+            BasicHeader.FirstOrDefault(x => x.Id == entity.Id).Frozen = !entity.Frozen;
             Task.Run(async () => await UpdateUserSetting());
+            Window.Location.Reload();
         }
 
         public void CloneHeader(object arg)
