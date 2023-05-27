@@ -85,7 +85,7 @@ namespace TMS.UI.Business.Manage
                 awaiter = Window.SetTimeout(() =>
                 {
                     bl.setFalseCheckView();
-                    if (Parent.Name == "ReturnPlan List")
+                    if (Parent.Name == "ReturnPlan List" || Parent.Name == "Transportation Return Plan List")
                     {
                         if (bl.getCheckView() == false)
                         {
