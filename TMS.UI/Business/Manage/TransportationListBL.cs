@@ -203,6 +203,7 @@ namespace TMS.UI.Business.Manage
                 new ContextMenuItem { Text = "Xem booking", Click = ViewBooking },
                 new ContextMenuItem { Text = "Tách kế hoạch", Click = SplitTransportation },
                 new ContextMenuItem { Text = "Tải đính kèm", Click = DownLoadPackingList },
+                new ContextMenuItem { Text = "Tạo yêu cầu thay đổi", Click = CreateTransportationRequests },
             };
             gridView.BodyContextMenuShow += () =>
             {
@@ -252,6 +253,23 @@ namespace TMS.UI.Business.Manage
                     bookingId.Disabled = true;
                 }
             }
+        }
+
+        private void CreateTransportationRequests(object arg)
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
+            Task.Run(async () =>
+            {
+                var selected = (await gridView.GetRealTimeSelectedRows()).ToList();
+                var tranSelecteds = selected.Cast<Transportation>().ToList();
+                tranSelecteds = tranSelecteds.Where(x => x.IsLocked || x.LockShip || x.IsKt).ToList();
+                if (tranSelecteds.Count <= 0)
+                {
+                    Toast.Warning("Không có cont nào bị khóa !!!");
+                    return;
+                }
+                await TransportationRequestDetailsBLWithTrans(tranSelecteds, this);
+            });
         }
 
         private void DownLoadPackingList(object arg)
@@ -1844,6 +1862,20 @@ namespace TMS.UI.Business.Manage
                    var instance = Activator.CreateInstance(type) as PopupEditor;
                    instance.Title = "Yêu cầu thay đổi";
                    instance.Entity = transportation;
+                   return instance;
+               });
+        }
+
+        public async Task TransportationRequestDetailsBLWithTrans(List<Transportation> transportations, TabEditor tabEditor)
+        {
+            await tabEditor.OpenPopup(
+               featureName: "Transportation Request Details",
+               factory: () =>
+               {
+                   var type = Type.GetType("TMS.UI.Business.Manage.TransportationRequestDetailsBL");
+                   var instance = Activator.CreateInstance(type) as PopupEditor;
+                   instance.Title = "Yêu cầu thay đổi";
+                   instance.Entity["Transportations"] = transportations;
                    return instance;
                });
         }

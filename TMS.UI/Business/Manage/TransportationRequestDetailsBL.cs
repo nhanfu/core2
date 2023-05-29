@@ -18,7 +18,9 @@ namespace TMS.UI.Business.Manage
     public class TransportationRequestDetailsBL : PopupEditor
     {
         public Transportation transportationEntity => Entity as Transportation;
+        public List<Transportation> transportationsEntity => Entity["Transportations"] as List<Transportation>;
         public List<string> propNameChanges = new List<string>();
+        public bool checkLoad = false;
         public TransportationRequestDetailsBL() : base(nameof(TransportationRequest))
         {
             Name = "Transportation Request Details";
@@ -28,8 +30,18 @@ namespace TMS.UI.Business.Manage
 
         public async Task SetGridView()
         {
+            if (transportationsEntity != null && !checkLoad)
+            {
+                var gridTran = this.FindComponentByName<GridView>(nameof(Transportation));
+                if (gridTran != null)
+                {
+                    var tranIds = transportationsEntity.Select(x => x.Id).ToList();
+                    gridTran.DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and Id in ({tranIds.Combine()})";
+                    await gridTran.ApplyFilter();
+                }
+            }
             GridView grid;
-            this.SetShow(false, "btnCreate", "btnSend");
+            this.SetShow(false, "btnCreate", "btnCreates", "btnSend", "btnSends");
             if (Parent.Name == "Transportation Return Plan List")
             {
                 this.SetShow(false, "TransportationRequestDetails2", "Transportation2");
@@ -44,16 +56,47 @@ namespace TMS.UI.Business.Manage
             {
                 grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
             }
-            var listViewItems = grid.RowData.Data.Cast<TransportationRequestDetails>().ToList();
-            var check = await new Client(nameof(TransportationRequestDetails)).FirstOrDefaultAsync<TransportationRequestDetails>($"?$orderby=Id desc&$filter=Active eq true and TransportationId eq {transportationEntity.Id}");
-            if (check != null && check.StatusId == (int)ApprovalStatusEnum.New)
+            object check = null;
+            if (transportationsEntity != null)
             {
-                this.SetShow(true, "btnSend");
+                var tranIds = transportationsEntity.Select(x => x.Id).ToList();
+                check = await new Client(nameof(TransportationRequestDetails)).GetRawList<TransportationRequestDetails>($"?$orderby=Id desc&$filter=Active eq true and TransportationId in ({tranIds.Combine()})");
             }
             else
             {
-                this.SetShow(true, "btnCreate");
+                check = await new Client(nameof(TransportationRequestDetails)).FirstOrDefaultAsync<TransportationRequestDetails>($"?$orderby=Id desc&$filter=Active eq true and TransportationId eq {transportationEntity.Id}");
             }
+            if (check != null && ((transportationsEntity == null && (check as TransportationRequestDetails).StatusId == (int)ApprovalStatusEnum.New)
+                || (transportationsEntity != null && (check as List<TransportationRequestDetails>).Where(x => x.StatusId == (int)ApprovalStatusEnum.New).ToList().Count == transportationsEntity.Count)))
+            {
+                if (transportationsEntity != null)
+                {
+                    this.SetShow(true, "btnSends");
+                }
+                else
+                {
+                    this.SetShow(true, "btnSend");
+                }
+            }
+            else
+            {
+                if (transportationsEntity != null)
+                {
+                    this.SetShow(true, "btnCreates");
+                }
+                else
+                {
+                    this.SetShow(true, "btnCreate");
+                }
+            }
+            if (transportationsEntity != null && grid != null && !checkLoad)
+            {
+                var tranIds = transportationsEntity.Select(x => x.Id).ToList();
+                grid.DataSourceFilter = $"?$orderby=Id desc&$filter=TransportationId in ({tranIds.Combine()})";
+                await grid.ApplyFilter();
+                checkLoad = true;
+            }
+            var listViewItems = grid.RowData.Data.Cast<TransportationRequestDetails>().ToList();
             listViewItems.ForEach(x =>
             {
                 var listViewItem = grid.GetListViewItems(x).FirstOrDefault();
@@ -80,7 +123,7 @@ namespace TMS.UI.Business.Manage
                     listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
                     listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
                 });
-                this.SetShow(false, "btnCreate", "btnSend");
+                this.SetShow(false, "btnCreate", "btnCreates", "btnSend", "btnSends");
                 Window.ClearTimeout(awaiter);
                 awaiter = Window.SetTimeout(() =>
                 {
@@ -89,13 +132,28 @@ namespace TMS.UI.Business.Manage
                     {
                         if (bl.getCheckView() == false)
                         {
-                            if (check != null && check.StatusId == (int)ApprovalStatusEnum.New)
+                            if (check != null && ((transportationsEntity == null && (check as TransportationRequestDetails).StatusId == (int)ApprovalStatusEnum.New)
+                                || (transportationsEntity != null && (check as List<TransportationRequestDetails>).Where(x => x.StatusId == (int)ApprovalStatusEnum.New).ToList().Count == transportationsEntity.Count)))
                             {
-                                this.SetShow(true, "btnSend");
+                                if (transportationsEntity != null)
+                                {
+                                    this.SetShow(true, "btnSends");
+                                }
+                                else
+                                {
+                                    this.SetShow(true, "btnSend");
+                                }
                             }
                             else
                             {
-                                this.SetShow(true, "btnCreate");
+                                if (transportationsEntity != null)
+                                {
+                                    this.SetShow(true, "btnCreates");
+                                }
+                                else
+                                {
+                                    this.SetShow(true, "btnCreate");
+                                }
                             }
                         }
                     }
@@ -136,8 +194,10 @@ namespace TMS.UI.Business.Manage
                     gridViewCutting = this.FindComponentByName<GridView>(nameof(Transportation));
                 }
                 var listViewItemCutting = gridViewCutting.GetListViewItems(cutting).FirstOrDefault();
+                RemoveCompareChanges(grid, gridViewCutting);
                 listViewItem.FilterChildren(x => true).ForEach(x => x.Element.RemoveClass("text-warning-2"));
                 listViewItemCutting.FilterChildren(x => true).ForEach(x => x.Element.RemoveClass("text-warning-2"));
+                propNameChanges.Clear();
                 foreach (var item in listItem)
                 {
                     var a1 = change[item.Name];
@@ -167,9 +227,23 @@ namespace TMS.UI.Business.Manage
             }
         }
 
+        public void RemoveCompareChanges(GridView gridViewChange, GridView gridViewCutting)
+        {
+            gridViewChange.FilterChildren<EditableComponent>().ForEach(x => x.Element?.RemoveClass("text-warning-2"));
+            gridViewCutting.FilterChildren<EditableComponent>().ForEach(x => x.Element?.RemoveClass("text-warning-2"));
+        }
+
         public void SelectedCompare(TransportationRequestDetails transportationRequestDetails)
         {
-            CompareChanges(transportationRequestDetails, transportationEntity);
+            if (transportationsEntity != null)
+            {
+                var tran = transportationsEntity.Where(x => x.Id == transportationRequestDetails.TransportationId).FirstOrDefault();
+                CompareChanges(transportationRequestDetails, tran);
+            }
+            else
+            {
+                CompareChanges(transportationRequestDetails, transportationEntity);
+            }
         }
 
         public async Task CreateRequestChange()
@@ -206,8 +280,53 @@ namespace TMS.UI.Business.Manage
                 await grid.ApplyFilter();
                 this.SetShow(false, "btnCreate");
                 this.SetShow(true, "btnSend");
+                checkLoad = false;
                 await SetGridView();
             }
+        }
+
+        public async Task CreateRequestChanges()
+        {
+            GridView grid;
+            if (Parent.Name == "Transportation Return Plan List")
+            {
+                grid = this.FindComponentByName<GridView>("TransportationRequestDetails1");
+            }
+            else if (Parent.Name == "ReturnPlan List")
+            {
+                grid = this.FindComponentByName<GridView>("TransportationRequestDetails2");
+            }
+            else
+            {
+                grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
+            }
+            var tranIds = transportationsEntity.Select(x => x.Id).ToList();
+            var checkExist = await new Client(nameof(TransportationRequestDetails)).GetRawList<TransportationRequestDetails>($"?$orderby=Id desc&$filter=TransportationId in ({tranIds.Combine()}) and StatusId eq {(int)ApprovalStatusEnum.New}");
+            if (checkExist.Count == transportationsEntity.Count)
+            {
+                Toast.Warning("Có yêu cầu thay đổi đã được tạo trước đó vui lòng thay đổi ở dưới là gửi đi");
+                return;
+            }
+            foreach (var item in transportationsEntity)
+            {
+                var checkExistRequest = checkExist.Where(x => x.TransportationId == item.Id).FirstOrDefault();
+                if (checkExistRequest == null)
+                {
+                    var requestChange = new TransportationRequestDetails();
+                    requestChange.CopyPropFrom(item);
+                    requestChange.Id = 0;
+                    requestChange.TransportationId = item.Id;
+                    requestChange.InsertedBy = Client.Token.UserId;
+                    requestChange.InsertedDate = DateTime.Now;
+                    requestChange.StatusId = (int)ApprovalStatusEnum.New;
+                    var res = await new Client(nameof(TransportationRequestDetails)).CreateAsync<TransportationRequestDetails>(requestChange);
+                }
+            }
+            await grid.ApplyFilter();
+            this.SetShow(false, "btnCreates");
+            this.SetShow(true, "btnSends");
+            checkLoad = false;
+            await SetGridView();
         }
 
         public void SendRequestApprove()
@@ -330,6 +449,107 @@ namespace TMS.UI.Business.Manage
             }
         }
 
+        public void SendRequestApproves()
+        {
+            GridView grid;
+            if (Parent.Name == "Transportation Return Plan List")
+            {
+                grid = this.FindComponentByName<GridView>("TransportationRequestDetails1");
+            }
+            else if (Parent.Name == "ReturnPlan List")
+            {
+                grid = this.FindComponentByName<GridView>("TransportationRequestDetails2");
+            }
+            else
+            {
+                grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
+            }
+            var listViewItems = grid.RowData.Data.Cast<TransportationRequestDetails>().OrderByDescending(x => x.Id).ToList();
+            listViewItems = listViewItems.Where(x => x.StatusId == (int)ApprovalStatusEnum.New).ToList();
+            if (listViewItems.Count <= 0)
+            {
+                Toast.Warning("Không có yêu cầu thay đổi có thể gửi");
+                return;
+            }
+            var confirm = new ConfirmDialog
+            {
+                NeedAnswer = true,
+                ComType = nameof(Textbox),
+                Content = $"Bạn có muốn gửi yêu cầu thay đổi không?<br />" +
+                            "Hãy nhập lý do",
+            };
+            confirm.Render();
+            confirm.YesConfirmed += async () =>
+            {
+                Spinner.AppendTo(this.Element, true, true, listViewItems.Count * 2000);
+                foreach (var item in listViewItems)
+                {
+                    var tran = transportationsEntity.Where(x => x.Id == item.TransportationId).FirstOrDefault();
+                    if (tran.IsLocked)
+                    {
+                        item.Reason = confirm.Textbox?.Text;
+                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(item, "RequestUnLockAll");
+                    }
+                    else
+                    {
+                        GetChanges(item, tran);
+                        if (propNameChanges.Any(x => x == nameof(TransportationRequestDetails.ShipPrice) ||
+                            x == nameof(TransportationRequestDetails.PolicyId) ||
+                            x == nameof(TransportationRequestDetails.RouteId) ||
+                            x == nameof(TransportationRequestDetails.BrandShipId) ||
+                            x == nameof(TransportationRequestDetails.LineId) ||
+                            x == nameof(TransportationRequestDetails.ShipId) ||
+                            x == nameof(TransportationRequestDetails.Trip) ||
+                            x == nameof(TransportationRequestDetails.StartShip) ||
+                            x == nameof(TransportationRequestDetails.ContainerTypeId) ||
+                            x == nameof(TransportationRequestDetails.SocId) ||
+                            x == nameof(TransportationRequestDetails.ShipNotes) ||
+                            x == nameof(TransportationRequestDetails.BookingId)))
+                        {
+                            if (tran.LockShip)
+                            {
+                                item.Reason = confirm.Textbox?.Text;
+                                var res = await new Client(nameof(Transportation)).PostAsync<bool>(item, "RequestUnLockShip");
+                            }
+                        }
+                        if (propNameChanges.Any(x => x == nameof(TransportationRequestDetails.MonthText)
+                        || x == nameof(TransportationRequestDetails.YearText)
+                        || x == nameof(TransportationRequestDetails.ExportListId)
+                        || x == nameof(TransportationRequestDetails.RouteId)
+                        || x == nameof(TransportationRequestDetails.ShipId)
+                        || x == nameof(TransportationRequestDetails.Trip)
+                        || x == nameof(TransportationRequestDetails.ClosingDate)
+                        || x == nameof(TransportationRequestDetails.StartShip)
+                        || x == nameof(TransportationRequestDetails.ContainerTypeId)
+                        || x == nameof(TransportationRequestDetails.ContainerNo)
+                        || x == nameof(TransportationRequestDetails.SealNo)
+                        || x == nameof(TransportationRequestDetails.BossId)
+                        || x == nameof(TransportationRequestDetails.UserId)
+                        || x == nameof(TransportationRequestDetails.CommodityId)
+                        || x == nameof(TransportationRequestDetails.Cont20)
+                        || x == nameof(TransportationRequestDetails.Cont40)
+                        || x == nameof(TransportationRequestDetails.Weight)
+                        || x == nameof(TransportationRequestDetails.ReceivedId)
+                        || x == nameof(TransportationRequestDetails.FreeText2)
+                        || x == nameof(TransportationRequestDetails.ShipDate)
+                        || x == nameof(TransportationRequestDetails.ReturnDate)
+                        || x == nameof(TransportationRequestDetails.ReturnId)
+                        || x == nameof(TransportationRequestDetails.FreeText3)))
+                        {
+                            if (tran.IsKt)
+                            {
+                                item.Reason = confirm.Textbox?.Text;
+                                var res = await new Client(nameof(Transportation)).PostAsync<bool>(item, "RequestUnLock");
+                            }
+                        }
+                    }
+                }
+                Spinner.Hide();
+                Toast.Success("Đã gửi yêu cầu thành công");
+                this.Dispose();
+            };
+        }
+
         public void BookingChange(TransportationRequestDetails transportation, Booking booking)
         {
             var gridView = this.FindComponentByName<GridView>("TransportationRequestDetails");
@@ -361,6 +581,39 @@ namespace TMS.UI.Business.Manage
             || x.GuiInfo.FieldName == nameof(TransportationRequestDetails.ShipPrice)
             || x.GuiInfo.FieldName == nameof(TransportationRequestDetails.ShipPolicyPrice)
             ).ForEach(x => x.Dirty = true);
+        }
+
+        private void GetChanges(object change, object cutting)
+        {
+            if (change != null)
+            {
+                var listItem = change.GetType().GetProperties();
+                propNameChanges.Clear();
+                foreach (var item in listItem)
+                {
+                    var a1 = change[item.Name];
+                    var a2 = cutting[item.Name];
+                    if (a1 == null && a2 == null)
+                    {
+                        continue;
+                    }
+                    if (((a1 != null && a2 == null) || (a1 == null && a2 != null) || (a1 != null && a2 != null) && (a1.ToString() != a2.ToString()))
+                        && item.Name != "Id"
+                        && item.Name != "InsertedDate"
+                        && item.Name != "InsertedBy"
+                        && item.Name != "UpdatedDate"
+                        && item.Name != "UpdatedBy"
+                        && item.Name != "TransportationId"
+                        && item.Name != "TransportationRequestId"
+                        && item.Name != "StatusId"
+                        && item.Name != "Reason"
+                        && item.Name != "ReasonReject"
+                        && item.Name != "TransportationRequest")
+                    {
+                        propNameChanges.Add(item.Name);
+                    }
+                }
+            }
         }
     }
 }
