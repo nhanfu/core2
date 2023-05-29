@@ -415,15 +415,14 @@ namespace Core.Components
         {
             var query = ParentListView.FormattedDataSource;
             query = query.Replace(new RegExp(@"(Active eq true (and|or)?)|( (and|or)?Active eq true^)"), "");
-            if (AdvSearchEntity.ActiveState == ActiveStateEnum.Yes)
+            if (AdvSearchEntity.ActiveState == ActiveStateEnum.Yes && query.Contains("Active eq false"))
             {
                 query = OdataExt.AppendClause(query, " and Active eq true");
             }
-            else if (AdvSearchEntity.ActiveState == ActiveStateEnum.No)
+            else if (AdvSearchEntity.ActiveState == ActiveStateEnum.No && query.Contains("Active eq true"))
             {
                 query = OdataExt.AppendClause(query, " and Active eq false");
             }
-
             var originFilter = OdataExt.GetClausePart(query);
             var conditions = AdvSearchEntity.Conditions.Select((x, index) => new
             {
