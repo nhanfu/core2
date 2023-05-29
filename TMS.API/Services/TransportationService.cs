@@ -485,6 +485,10 @@ namespace TMS.API.Services
 		            and CONVERT(DATE, Quotation.StartDate) <= CONVERT(DATE, Transportation.StartShip) order by StartDate desc)
 		            end)
 		            from Transportation
+		            where Transportation.Id = {Id};
+
+                    update Transportation set ShipPrice =  ShipUnitPriceQuotation - isnull(ShipPolicyPrice,0)
+                    from Transportation
 		            where Transportation.Id = {Id};";
         }
 
