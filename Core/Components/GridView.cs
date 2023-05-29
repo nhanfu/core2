@@ -1422,7 +1422,7 @@ namespace Core.Components
                 {
                     upItem.Entity.SetComplexPropValue(fieldName, com.GetValue());
                     var updated = upItem.FilterChildren(x => x.GuiInfo.FieldName == nextcom.GuiInfo.FieldName).FirstOrDefault();
-                    if (updated.Disabled || updated.GuiInfo.Editable)
+                    if (updated.Disabled || !updated.GuiInfo.Editable)
                     {
                         return;
                     }
