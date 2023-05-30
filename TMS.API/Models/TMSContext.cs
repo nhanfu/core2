@@ -1011,7 +1011,7 @@ namespace TMS.API.Models
                     .HasMaxLength(250)
                     .UseCollation("SQL_Latin1_General_CP1_CI_AI");
 
-                entity.Property(e => e.NameEnglish).HasMaxLength(50);
+                entity.Property(e => e.NameEnglish).HasMaxLength(250);
 
                 entity.Property(e => e.Path)
                     .HasMaxLength(100)

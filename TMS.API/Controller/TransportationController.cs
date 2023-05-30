@@ -118,7 +118,7 @@ namespace TMS.API.Controllers
                         command.CommandText += " " + _transportationService.Transportation_ShellDate(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_ShipUnitPriceQuotation(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_VendorLocation(patch, idInt);
-
+                        command.CommandText += " " + _transportationService.Transportation_Expense(patch, idInt);
                         if (disableTrigger)
                         {
                             command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";

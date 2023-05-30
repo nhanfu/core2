@@ -661,5 +661,31 @@ end
 				return "";
             }
         }
+
+        public string Transportation_Expense(PatchUpdate patchUpdate, int Id)
+        {
+            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ContainerNo)
+            || x.Field == nameof(Transportation.SealNo)
+            || x.Field == nameof(Transportation.CommodityId)
+            || x.Field == nameof(Transportation.MonthText)
+            || x.Field == nameof(Transportation.YearText)
+            || x.Field == nameof(Transportation.RouteId)
+            || x.Field == nameof(Transportation.BrandShipId)))
+            {
+                return null;
+            }
+            return @$"update e set BossId = t.BossId,
+					ContainerNo = t.ContainerNo,
+					SealNo = t.SealNo,
+					CommodityId = t.CommodityId,
+					MonthText = t.MonthText,
+					YearText = t.YearText,
+					RouteId = t.RouteId,
+					BrandShipId = t.BrandShipId
+					from Expense e
+					JOIN Transportation t ON t.Id = e.TransportationId
+					where e.ExpenseTypeId not in (15981, 15939)
+	                and e.TransportationId = {Id};";
+        }
     }
 }
