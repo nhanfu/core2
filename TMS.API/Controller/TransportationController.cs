@@ -870,13 +870,21 @@ namespace TMS.API.Controllers
                 {
                     sql += $" and t.ReturnEmptyId = 114017";
                 }
+                if (entity.Maintenance)
+                {
+                    sql += $" and exists (select Id  from Expense where ExpenseTypeId = 15955 and IsReturn = 0 and TransportationId = t.Id)";
+                }
             }
             else
             {
-                sql += $" where t.ReturnDate >= '{entity.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{entity.ToDate.Value.ToString("yyyy-MM-dd")}' and ContainerTypeId not in (14805,14806)  and Transportation.Active = 1 and Transportation.ShipDate is not null and Transportation.IsSplitBill = 0";
+                sql += $" where t.ReturnDate >= '{entity.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{entity.ToDate.Value.ToString("yyyy-MM-dd")}' and ContainerTypeId not in (14805,14806)  and t.Active = 1 and t.ShipDate is not null and t.IsSplitBill = 0";
                 if (entity.Combination)
                 {
                     sql += $" and t.ReturnEmptyId = 114017";
+                }
+                if (entity.Maintenance)
+                {
+                    sql += $" and exists (select Id  from Expense where ExpenseTypeId = 15955 and IsReturn = 1 and TransportationId = t.Id)";
                 }
             }
             sql += @$" group by {selects1.Combine()}";
