@@ -17,6 +17,7 @@ namespace TMS.API.ViewModels
         public bool BrandShip { get; set; }
         public bool User { get; set; }
         public bool Return { get; set; }
+        public bool Maintenance { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
     }
