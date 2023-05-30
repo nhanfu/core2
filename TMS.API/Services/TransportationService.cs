@@ -521,7 +521,7 @@ namespace TMS.API.Services
             {
                 return null;
             }
-            if(patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ClosingUnitPrice)))
+            if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ClosingUnitPrice)))
             {
                 return null;
             }
@@ -572,7 +572,7 @@ select  @startDate = (select top 1 StartDate
                         from Transportation t
 						join Location re on t.ReceivedId = re.Id
 						where t.Id = {Id};
-if(@startDate > @startDate1 and @startDate is not null and @startDate1 is not null)
+if(@startDate >= @startDate1 and @startDate is not null and @startDate1 is not null)
 begin
 							update Transportation set ClosingUnitPrice = 
 							(select top 1 CASE
@@ -656,9 +656,120 @@ begin
 end
                         ";
             }
-			else
-			{
-				return "";
+            else
+            {
+                return "";
+            }
+        }
+
+        public string Transportation_ReturnUnitPrice(PatchUpdate patchUpdate, int Id)
+        {
+            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ReturnVendorId)
+            || x.Field == nameof(Transportation.ReturnId)
+            || x.Field == nameof(Transportation.ReturnDate)
+            || x.Field == nameof(Transportation.ContainerTypeId)
+            || x.Field == nameof(Transportation.IsClampingReturnFee)
+            || x.Field == nameof(Transportation.ReturnUnitPrice)))
+            {
+                return null;
+            }
+            var update = patchUpdate.Changes.Any(x => (x.Field == nameof(Transportation.ReturnUnitPrice) && !x.Value.IsNullOrWhiteSpace()) || x.Field == nameof(Transportation.IsClampingReturnFee));
+            if (!update)
+            {
+                return @$"
+                        declare @startDate datetime2(7) = null;
+declare @startDate1 datetime2(7) = null;
+select  @startDate = (select top 1 StartDate
+		                from Quotation 
+		                where BossId = t.BossId 
+							and TypeId = 7593
+							and PackingId = t.ReturnVendorId 
+							and ContainerTypeId = t.ContainerTypeId 
+							and LocationId = t.ReturnId 
+							and StartDate <= t.ReturnDate order by StartDate desc),
+                        @startDate1 = (select top 1 StartDate
+		                from Quotation
+		                where BossId is null
+							and TypeId = 7593
+							and re.RegionId = RegionId
+							and PackingId = t.ReturnVendorId 
+							and ContainerTypeId = t.ContainerTypeId 
+							and LocationId is null
+							and StartDate <= t.ReturnDate order by StartDate desc)
+                        from Transportation t
+						join Location re on t.ReturnId = re.Id
+						where t.Id = {Id};
+if(@startDate >= @startDate1 and @startDate is not null and @startDate1 is not null)
+begin
+							update Transportation set ReturnUnitPrice = 
+								(select top 1 CASE
+								WHEN t.IsClampingReturnFee = 1 THEN UnitPrice1
+								ELSE UnitPrice
+								END as UnitPrice from Quotation 
+								where BossId = t.BossId 
+								and TypeId = 7593
+								and PackingId = t.ReturnVendorId 
+								and ContainerTypeId = t.ContainerTypeId 
+								and LocationId = t.ReturnId 
+								and StartDate <= t.ReturnDate order by StartDate desc)
+							from Transportation t
+							where t.Id = {Id};
+end
+if(@startDate < @startDate1 and @startDate is not null and @startDate1 is not null)
+begin
+							update Transportation set ReturnUnitPrice = (select top 1 CASE
+								WHEN t.IsClampingReturnFee = 1 THEN UnitPrice1
+								ELSE UnitPrice
+								END as UnitPrice from Quotation 
+								where BossId is null
+								and TypeId = 7593
+								and PackingId = t.ReturnVendorId 
+								and re.RegionId = RegionId
+								and ContainerTypeId = t.ContainerTypeId 
+								and LocationId is null
+								and StartDate <= t.ReturnDate order by StartDate desc)
+							from Transportation t
+							join Location re on t.ReturnId = re.Id
+							where t.Id = {Id};
+end
+if(@startDate is not null and @startDate1 is null)
+begin
+							update Transportation set ReturnUnitPrice = 
+								(select top 1 CASE
+								WHEN t.IsClampingReturnFee = 1 THEN UnitPrice1
+								ELSE UnitPrice
+								END as UnitPrice from Quotation 
+								where BossId = t.BossId 
+								and TypeId = 7593
+								and PackingId = t.ReturnVendorId 
+								and ContainerTypeId = t.ContainerTypeId 
+								and LocationId = t.ReturnId 
+								and StartDate <= t.ReturnDate order by StartDate desc)
+							from Transportation t
+							where t.Id = {Id};
+end
+if(@startDate1 is not null and @startDate is null)
+begin
+							update Transportation set ReturnUnitPrice = (select top 1 CASE
+								WHEN t.IsClampingReturnFee = 1 THEN UnitPrice1
+								ELSE UnitPrice
+								END as UnitPrice from Quotation 
+								where BossId is null
+								and TypeId = 7593
+								and PackingId = t.ReturnVendorId 
+								and re.RegionId = RegionId
+								and ContainerTypeId = t.ContainerTypeId 
+								and LocationId is null
+								and StartDate <= t.ReturnDate order by StartDate desc)
+							from Transportation t
+							join Location re on t.ReturnId = re.Id
+							where t.Id = {Id};
+end
+                        ";
+            }
+            else
+            {
+                return "";
             }
         }
 
