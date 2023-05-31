@@ -342,6 +342,36 @@ namespace TMS.API.Controllers
             return rs;
         }
 
+        [HttpPost("api/Expense/RejectRequestDelete")]
+        public async Task<bool> RejectRequestDelete([FromBody] Expense entity)
+        {
+            if (entity == null)
+            {
+                return false;
+            }
+            var entityDB = await db.Expense.Where(x => x.Id == entity.Id).FirstOrDefaultAsync();
+            var user = await db.User.Where(x => x.Active && x.Id == UserId).FirstOrDefaultAsync();
+            var taskNotification = new TaskNotification
+            {
+                Title = $"{user.FullName}",
+                Description = $"Đã hủy yêu cầu xóa cont. Lý do: {entity.Reason}",
+                EntityId = _entitySvc.GetEntity(typeof(Expense).Name).Id,
+                RecordId = entity.Id,
+                Attachment = "fal fa-check",
+                AssignedId = entity.DeleteBy,
+                StatusId = (int)TaskStateEnum.UnreadStatus,
+                RemindBefore = 540,
+                Deadline = DateTime.Now,
+            };
+            SetAuditInfo(taskNotification);
+            db.AddRange(taskNotification);
+            entityDB.StatusId = (int)ApprovalStatusEnum.Rejected;
+            entityDB.isDelete = false;
+            await db.SaveChangesAsync();
+            await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
+            return true;
+        }
+
         private void RealTimeUpdateUser(Expense entity)
         {
             var thead = new Thread(async () =>

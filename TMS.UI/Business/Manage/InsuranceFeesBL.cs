@@ -796,6 +796,33 @@ namespace TMS.UI.Business.Manage
             };
         }
 
+        public void RejectRequestDelete(Expense expense)
+        {
+            var confirm = new ConfirmDialog
+            {
+                NeedAnswer = true,
+                ComType = nameof(Textbox),
+                Content = $"Bạn có chắc chắn muốn trả về yêu cầu xóa không?<br />" +
+                            "Hãy nhập lý do",
+            };
+            confirm.Render();
+            confirm.YesConfirmed += async () =>
+            {
+                expense.Reason = confirm.Textbox?.Text;
+                var res = await new Client(nameof(Expense)).PostAsync<bool>(expense, "RejectRequestDelete");
+                if (res)
+                {
+                    var grid = this.FindComponentByName<GridView>("ExpenseIsDelete");
+                    await grid.ApplyFilter(true);
+                    Toast.Success("Đã trả về thành công.");
+                }
+                else
+                {
+                    Toast.Warning("Đã trả về thất bại.");
+                }
+            };
+        }
+
         public async Task ExportCheckChange()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Expense));

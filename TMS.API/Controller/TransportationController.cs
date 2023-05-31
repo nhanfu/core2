@@ -202,6 +202,7 @@ namespace TMS.API.Controllers
                     {
                         item.isDelete = true;
                         item.StatusId = (int)ApprovalStatusEnum.Approving;
+                        item.DeleteBy = UserId;
                         var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
                         var tasks = listUser.Select(user => new TaskNotification
                         {
