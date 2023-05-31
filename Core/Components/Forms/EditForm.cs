@@ -261,11 +261,11 @@ namespace Core.Components.Forms
             if (res)
             {
                 Entity.CopyPropFrom(data);
-                UpdateViewAwait();
+                UpdateViewAwait(true);
             }
             if (ShouldUpdateParentForm)
             {
-                ParentForm?.UpdateView();
+                ParentForm?.UpdateView(true);
             }
             return res;
         }
