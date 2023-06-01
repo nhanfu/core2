@@ -1,7 +1,7 @@
 {
   "name": "Đông Á",
   "short_name": "Đông Á",
-  "background_color": "#FFFFFF",
+  "background_color": "#fff",
   "display": "minimal-ui",
   "start_url": "/index.html",
   "scope": "/",
@@ -41,7 +41,7 @@
       "purpose": "monochrome"
     }
   ],
-  "theme_color": "#27388f",
+  "theme_color": "#fff",
   "gcm_sender_id": "402845223712",
   "gcm_user_visible_only": true,
   "related_applications": [
