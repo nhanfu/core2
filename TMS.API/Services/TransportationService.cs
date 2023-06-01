@@ -677,9 +677,9 @@ end
             if (!update)
             {
                 return @$"
-                        declare @startDate datetime2(7) = null;
-declare @startDate1 datetime2(7) = null;
-select  @startDate = (select top 1 StartDate
+                        declare @startDate5 datetime2(7) = null;
+declare @startDate6 datetime2(7) = null;
+select  @startDate5 = (select top 1 StartDate
 		                from Quotation 
 		                where BossId = t.BossId 
 							and TypeId = 7593
@@ -687,7 +687,7 @@ select  @startDate = (select top 1 StartDate
 							and ContainerTypeId = t.ContainerTypeId 
 							and LocationId = t.ReturnId 
 							and StartDate <= t.ReturnDate order by StartDate desc),
-                        @startDate1 = (select top 1 StartDate
+                        @startDate6 = (select top 1 StartDate
 		                from Quotation
 		                where BossId is null
 							and TypeId = 7593
@@ -699,7 +699,7 @@ select  @startDate = (select top 1 StartDate
                         from Transportation t
 						join Location re on t.ReturnId = re.Id
 						where t.Id = {Id};
-if(@startDate >= @startDate1 and @startDate is not null and @startDate1 is not null)
+if(@startDate5 >= @startDate6 and @startDate5 is not null and @startDate6 is not null)
 begin
 							update Transportation set ReturnUnitPrice = 
 								(select top 1 CASE
@@ -715,7 +715,7 @@ begin
 							from Transportation t
 							where t.Id = {Id};
 end
-if(@startDate < @startDate1 and @startDate is not null and @startDate1 is not null)
+if(@startDate5 < @startDate6 and @startDate5 is not null and @startDate6 is not null)
 begin
 							update Transportation set ReturnUnitPrice = (select top 1 CASE
 								WHEN t.IsClampingReturnFee = 1 THEN UnitPrice1
@@ -732,7 +732,7 @@ begin
 							join Location re on t.ReturnId = re.Id
 							where t.Id = {Id};
 end
-if(@startDate is not null and @startDate1 is null)
+if(@startDate5 is not null and @startDate6 is null)
 begin
 							update Transportation set ReturnUnitPrice = 
 								(select top 1 CASE
@@ -748,7 +748,7 @@ begin
 							from Transportation t
 							where t.Id = {Id};
 end
-if(@startDate1 is not null and @startDate is null)
+if(@startDate6 is not null and @startDate5 is null)
 begin
 							update Transportation set ReturnUnitPrice = (select top 1 CASE
 								WHEN t.IsClampingReturnFee = 1 THEN UnitPrice1
