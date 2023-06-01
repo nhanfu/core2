@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PathIO = System.IO.Path;
 
 namespace Core.Clients
 {
@@ -26,6 +27,7 @@ namespace Core.Clients
         public string EntityName { get; set; }
         private static Dictionary<int, Entity> entities;
         private static Token token;
+        public static int GuidLength = 36;
         public static string Tenant => Document.Head.Children.Where(x => x is HTMLMetaElement).Cast<HTMLMetaElement>().FirstOrDefault(x =>
         {
             return x is HTMLMetaElement meta && meta.Name == "tenant";
@@ -844,12 +846,13 @@ namespace Core.Clients
 
         public static void Download(string path)
         {
+            var removePath = RemoveGuid(path);
             var a = new HTMLAnchorElement
             {
                 Href = path.Contains("http") ? path : System.IO.Path.Combine(Origin, path),
                 Target = "_blank"
             };
-            a.SetAttribute("download", path);
+            a.SetAttribute("download", removePath);
             Document.Body.AppendChild(a);
             a.Click();
             Document.Body.RemoveChild(a);
@@ -859,6 +862,17 @@ namespace Core.Clients
         {
             var entities = await new Client(nameof(Entity), typeof(Entity).Namespace).GetRawList<Entity>(addTenant: true);
             Entities = entities.ToDictionary(x => x.Id);
+        }
+        internal static string RemoveGuid(string path)
+        {
+            string thumbText = path;
+            if (path.Length > GuidLength)
+            {
+                var fileName = PathIO.GetFileNameWithoutExtension(path);
+                thumbText = fileName.SubStrIndex(0, fileName.Length - GuidLength) + PathIO.GetExtension(path);
+            }
+
+            return thumbText;
         }
     }
 }
