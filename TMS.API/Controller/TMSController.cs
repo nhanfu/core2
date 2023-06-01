@@ -628,7 +628,7 @@ namespace TMS.API.Controllers
             var joins = gridPolicy.Where(x => x.ComponentType == "Dropdown").ToList().Select(x =>
             {
                 var objField = x.FieldName.Substring(0, x.FieldName.Length - 2);
-                return $"left join [{x.RefName}] as [{objField}] on [{objField}].Id = [{component.RefName}].{x.FieldName}";
+                return $"left join {(!x.DatabaseName.IsNullOrWhiteSpace() ? $"{x.DatabaseName}.dbo." : "")}[{x.RefName}] as [{objField}] on [{objField}].Id = [{component.RefName}].{x.FieldName}";
             }).Distinct().ToList();
 
             var idFields = gridPolicy.Where(x => x.ComponentType == "Dropdown").ToList().Select(x =>
