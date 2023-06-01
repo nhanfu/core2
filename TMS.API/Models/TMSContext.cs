@@ -714,6 +714,8 @@ namespace TMS.API.Models
                     .HasMaxLength(1000)
                     .IsUnicode(false);
 
+                entity.Property(e => e.DatabaseName).HasMaxLength(250);
+
                 entity.Property(e => e.DefaultVal).HasMaxLength(500);
 
                 entity.Property(e => e.Description).HasMaxLength(100);
