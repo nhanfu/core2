@@ -420,11 +420,11 @@ namespace TMS.UI.Business.Manage
                     {
                         var containerTypeId = containerTypes.ElementAt(index);
                         var commodidtyValue = commodidtyValues.FirstOrDefault(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == containerTypeId);
-                        if (commodidtyValue is null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null && item.IsCompany == false)
+                        if (commodidtyValue == null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null)
                         {
                             var newCommodityValue = await CreateCommodityValue(item);
-                            await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
-                            commodidtyValues.Add(newCommodityValue);
+                            var res = await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
+                            commodidtyValues.Add(res);
                         }
                         index++;
                     }
