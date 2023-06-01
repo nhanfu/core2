@@ -1410,7 +1410,7 @@ namespace Core.Components
                         html.SelectionEnd = nextcom.GetValueText().Length;
                     }
                 }
-                if (!VirtualScroll)
+                if (!GuiInfo.VirtualScroll)
                 {
                     if (SelectedIds.Count == 1)
                     {
