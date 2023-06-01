@@ -566,6 +566,7 @@ namespace Core.Components
             Validate(ValidationRule.LessThanOrEqual, _value, (DateTime? value, DateTime? ruleValue) => ruleValue is null || value != null && value <= ruleValue);
             Validate(ValidationRule.Equal, _value, (DateTime? value, DateTime? ruleValue) => value == ruleValue);
             Validate(ValidationRule.NotEqual, _value, (DateTime? value, DateTime? ruleValue) => value != ruleValue);
+            ValidateRequired(_value);
             return IsValid;
         }
 
