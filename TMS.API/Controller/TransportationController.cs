@@ -584,7 +584,7 @@ namespace TMS.API.Controllers
                     : (item["ReturnClosingFee"] is null ? default(decimal) : decimal.Parse(item["ReturnClosingFee"].ToString())));
                 worksheet.Cell("L" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("M" + start).SetValue(transportation.TypeId == 1 ? (item["FeeVat1"] is null ? default(decimal) : decimal.Parse(item["FeeVat1"].ToString()))
+                worksheet.Cell("M" + start).SetValue(transportation.TypeId == 1 ? (item["CollectOnBehaftInvoinceNoFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()))
                     : (item["FeeVatReturn"] is null ? default(decimal) : decimal.Parse(item["FeeVatReturn"].ToString())));
                 worksheet.Cell("M" + start).Style.NumberFormat.Format = "#,##";
 
@@ -596,7 +596,7 @@ namespace TMS.API.Controllers
                     : (item["FeeVatReturn3"] is null ? default(decimal) : decimal.Parse(item["FeeVatReturn3"].ToString())));
                 worksheet.Cell("O" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("P" + start).SetValue(transportation.TypeId == 1 ? (item["Fee1"] is null ? default(decimal) : decimal.Parse(item["Fee1"].ToString()))
+                worksheet.Cell("P" + start).SetValue(transportation.TypeId == 1 ? (item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()))
                     : (item["FeeReturn1"] is null ? default(decimal) : decimal.Parse(item["FeeReturn1"].ToString())));
                 worksheet.Cell("P" + start).Style.NumberFormat.Format = "#,##";
 
