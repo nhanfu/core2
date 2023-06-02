@@ -184,6 +184,35 @@ namespace TMS.API.Controllers
             return base.UpdateAsync(entity, reasonOfChange);
         }
 
+
+        [HttpPost("api/Vendor/BackToSale")]
+        public async Task<bool> BackToSale([FromBody] User entity, [FromQuery] DateTime? dateTime)
+        {
+            if (dateTime is null)
+            {
+                return false;
+            }
+            var sql = $" Update Vendor set IsSeft = 1 where UserId = {entity.Id};";
+            sql += $" Update TransportationPlan set User2Id = {entity.Id},UserId = 78 where UserId = {entity.Id} and ClosingDate >= '{dateTime:yyyy-MM-dd}';";
+            sql += $" Update Transportation set User2Id = {entity.Id},UserId = 78 where UserId = {entity.Id} and ClosingDate >= '{dateTime:yyyy-MM-dd}';";
+            await ExecSql(sql, "disable trigger all on TransportationPlan;disable trigger all on Transportation;", $"enable trigger all on TransportationPlan;enable trigger all on Transportation;");
+            return true;
+        }
+
+        [HttpPost("api/Vendor/ReturnToSale")]
+        public async Task<bool> ReturnToSale([FromBody] User entity, [FromQuery] DateTime? dateTime)
+        {
+            if (dateTime is null)
+            {
+                return false;
+            }
+            var sql = $" Update Vendor set IsSeft = 0 where UserId = {entity.Id};";
+            sql += $" Update TransportationPlan set User2Id = {entity.Id},UserId = {entity.Id} where BossId in (select Id from VendorId where UserId = {entity.Id}) and ClosingDate >= '{dateTime:yyyy-MM-dd}';";
+            sql += $" Update Transportation set User2Id = {entity.Id},UserId = {entity.Id} where BossId in (select Id from VendorId where UserId = {entity.Id}) and ClosingDate >= '{dateTime:yyyy-MM-dd}';";
+            await ExecSql(sql, "disable trigger all on TransportationPlan;disable trigger all on Transportation;", $"enable trigger all on TransportationPlan;enable trigger all on Transportation;");
+            return true;
+        }
+
         [HttpPost("api/Vendor/ImportObject")]
         public async Task<List<Vendor>> ImportObject([FromServices] IWebHostEnvironment host, List<IFormFile> fileImport)
         {

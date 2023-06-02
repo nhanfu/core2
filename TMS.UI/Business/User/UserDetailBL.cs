@@ -1,13 +1,12 @@
 ﻿using Bridge.Html5;
-using Core.Models;
 using Core.Clients;
 using Core.Components;
 using Core.Components.Extensions;
 using Core.Components.Forms;
 using Core.Extensions;
-using Core.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using TMS.API.Models;
 using UserModel = TMS.API.Models.User;
 
 namespace TMS.UI.Business.User
@@ -42,9 +41,47 @@ namespace TMS.UI.Business.User
                 Title = $"Chuyển cộng tác viên",
                 Content = $"Vui lòng nhập thời gian áp dụng",
                 NeedAnswer = true,
-                ComponentType = nameof(Datepicker)
+                ComType = nameof(Datepicker)
             };
             dialog.Render();
+            dialog.YesConfirmed += async () =>
+            {
+                var value = dialog.Datepicker.Value;
+                var rs = await new Client(nameof(Vendor)).PostAsync<bool>(UserEntity, "BackToSale?dateTime=" + value);
+                if (rs)
+                {
+                    Toast.Success("Thay đổi thành công");
+                }
+                else
+                { 
+                    Toast.Warning("Thay đổi thất bại");
+                }
+            };
+        }
+
+        public void ChangeType1()
+        {
+            var dialog = new ConfirmDialog()
+            {
+                Title = $"Chuyển sale chỉnh thức",
+                Content = $"Vui lòng nhập thời gian áp dụng",
+                NeedAnswer = true,
+                ComType = nameof(Datepicker)
+            };
+            dialog.Render();
+            dialog.YesConfirmed += async () =>
+            {
+                var value = dialog.Datepicker.Value;
+                var rs = await new Client(nameof(Vendor)).PostAsync<bool>(UserEntity, "ReturnToSale?dateTime=" + value);
+                if (rs)
+                {
+                    Toast.Success("Thay đổi thành công");
+                }
+                else
+                {
+                    Toast.Warning("Thay đổi thất bại");
+                }
+            };
         }
 
         public void PrintDebitCredit()
