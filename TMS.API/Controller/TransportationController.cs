@@ -688,10 +688,13 @@ namespace TMS.API.Controllers
             worksheet.Cell("G" + tt).Value = data[0].Sum(item => item["Cont40"] is null ? default(decimal) : decimal.Parse(item["Cont40"].ToString()));
             worksheet.Cell("G" + tt).Style.NumberFormat.Format = "#,##";
             worksheet.Cell("G" + tt).Style.Font.Bold = true;
-            worksheet.Cell("K" + tt).Value = data[0].Sum(item => transportation.TypeId == 1 ? (item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()))
+            var t = data[0].Sum(item => transportation.TypeId == 1 ? (item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()))
             : (item["ReturnLiftFee"] is null ? default(decimal) : decimal.Parse(item["ReturnLiftFee"].ToString())));
+            worksheet.Cell("K" + tt).Value = t;
             worksheet.Cell("K" + tt).Style.NumberFormat.Format = "#,##";
             worksheet.Cell("K" + tt).Style.Font.Bold = true;
+
+
             var tt1 = data[0].Sum(item => transportation.TypeId == 1 ? (item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()))
             : (item["ReturnClosingFee"] is null ? default(decimal) : decimal.Parse(item["ReturnClosingFee"].ToString())));
             worksheet.Cell("L" + tt).Value = tt1;
@@ -713,7 +716,7 @@ namespace TMS.API.Controllers
             var tt4 = data[0].Sum(item => transportation.TypeId == 1 ? (item["ClosingCombinationUnitPrice"] is null ? default(decimal) : decimal.Parse(item["ClosingCombinationUnitPrice"].ToString()))
             : (item["ReturnUnitPrice"] is null ? default(decimal) : decimal.Parse(item["ReturnUnitPrice"].ToString())));
             worksheet.Cell("X" + tt).Value = tt4;
-            worksheet.Cell("Z" + tt).Value = tt1 + tt2 + tt3 + tt4;
+            worksheet.Cell("Z" + tt).Value = t + tt1 + tt2 + tt3 + tt4;
             worksheet.Cell("Z" + tt).Style.NumberFormat.Format = "#,##";
             worksheet.Cell("X" + tt).Style.NumberFormat.Format = "#,##";
             worksheet.Cell("X" + tt).Style.Font.Bold = true;
