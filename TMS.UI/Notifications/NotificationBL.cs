@@ -643,8 +643,12 @@ namespace TMS.UI.Notifications
         public async Task OpenNotification(TaskNotification notification, Event e)
         {
             await MarkAsRead(notification);
-            var element = e.Target as HTMLElement;
-            element.FirstChild.ReplaceClass("fa-bell", "fa-bell-slash");
+            var element = (e.Target as HTMLElement).Closest("a");
+            var span = element.QuerySelector(".text-danger");
+            if (span != null)
+            {
+                element.QuerySelector(".text-danger").ReplaceClass("text-danger", "text-muted");
+            }
             if (notification.EntityId == Utils.GetEntity(nameof(TransportationPlan)).Id)
             {
                 var entity = await new Client(nameof(TransportationPlan)).GetRawAsync(notification.RecordId.Value);
