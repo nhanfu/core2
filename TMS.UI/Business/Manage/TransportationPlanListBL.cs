@@ -94,13 +94,6 @@ namespace TMS.UI.Business.Manage
         public void LockTransportation()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-            gridView.BodyContextMenuShow += () =>
-            {
-                ContextMenu.Instance.MenuItems = new List<ContextMenuItem>
-                {
-                        new ContextMenuItem { Icon = "fal fa-street-view", Text = "Xem danh sách vận chuyển", Click = ViewTransportation },
-                };
-            };
             UpdateListView(gridView);
         }
 

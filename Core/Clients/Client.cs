@@ -863,6 +863,7 @@ namespace Core.Clients
             var entities = await new Client(nameof(Entity), typeof(Entity).Namespace).GetRawList<Entity>(addTenant: true);
             Entities = entities.ToDictionary(x => x.Id);
         }
+
         internal static string RemoveGuid(string path)
         {
             string thumbText = path;
