@@ -338,7 +338,7 @@ namespace Core.Components
             {
                 return;
             }
-            ConfirmDialog.RenderConfirm($"Bạn chắc chắn muốn xóa {RemoveGuid(removedPath)}", async () =>
+            ConfirmDialog.RenderConfirm($"Bạn chắc chắn muốn xóa {PathIO.GetFileNameWithoutExtension(RemoveGuid(removedPath.DecodeSpecialChar())) + PathIO.GetExtension(RemoveGuid(removedPath.DecodeSpecialChar()))}", async () =>
             {
                 var removed = await new Client(nameof(User)).PostAsync<bool>(removedPath, "DeleteFile");
                 var oldVal = _path;

@@ -852,7 +852,7 @@ namespace Core.Clients
                 Href = path.Contains("http") ? path : System.IO.Path.Combine(Origin, path),
                 Target = "_blank"
             };
-            a.SetAttribute("download", removePath);
+            a.SetAttribute("download", PathIO.GetFileNameWithoutExtension(RemoveGuid(path)));
             Document.Body.AppendChild(a);
             a.Click();
             Document.Body.RemoveChild(a);
@@ -872,7 +872,6 @@ namespace Core.Clients
                 var fileName = PathIO.GetFileNameWithoutExtension(path);
                 thumbText = fileName.SubStrIndex(0, fileName.Length - GuidLength) + PathIO.GetExtension(path);
             }
-
             return thumbText;
         }
     }
