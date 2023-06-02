@@ -315,29 +315,6 @@ namespace TMS.API.Services
 					where Transportation.Id = {Id};";
         }
 
-        public string Transportation_ReturnEmptyId(PatchUpdate patchUpdate, int Id)
-        {
-            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.EmptyCombinationId)))
-            {
-                return null;
-            }
-            var val = patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.EmptyCombinationId));
-            var sql = string.Empty;
-            if (!val.OldVal.IsNullOrWhiteSpace())
-            {
-                sql += @$" update Transportation set ReturnEmptyId = null, ReturnClosingFee = null
-					from Transportation
-					where Transportation.Id = {val.OldVal};";
-            }
-            if (!val.Value.IsNullOrWhiteSpace())
-            {
-                sql += @$" update Transportation set ReturnEmptyId = 114017, ReturnClosingFee = null
-					from Transportation
-					where Transportation.Id = {val.Value};";
-            }
-            return sql;
-        }
-
         public string Transportation_ReturnLiftFee(PatchUpdate patchUpdate, int Id)
         {
             if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ContainerTypeId)
