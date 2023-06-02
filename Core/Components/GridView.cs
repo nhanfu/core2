@@ -1705,7 +1705,8 @@ namespace Core.Components
             {
                 updatedData.Skip(dataSections.Length).ForEach(newRow =>
                 {
-                    RenderRowData(Header, newRow, MainSection);
+                    var rs = RenderRowData(Header, newRow, MainSection);
+                    StickyColumn(rs);
                 });
             }
             else

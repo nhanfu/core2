@@ -375,7 +375,7 @@ namespace Core.Components
         {
             var columns = await LoadGridPolicy();
             columns = FilterColumns(columns);
-            BasicHeader = columns;
+            BasicHeader = columns.OrderBy(x => x.Order).ToList();
             BasicHeaderSearch = columns.Where(x => x.ComponentType == "Dropdown").ToList();
             ResetOrder();
             HeaderLoaded?.Invoke(columns);
