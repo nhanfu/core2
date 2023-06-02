@@ -81,7 +81,7 @@ namespace Core.Components
             if (!_show)
             {
                 Element.Style.Display = "none";
-                if (GuiInfo != null && GuiInfo.ShowLabel && Parent is Section)
+                if (GuiInfo != null && GuiInfo.ShowLabel && Parent is Section && GuiInfo.FieldName != null)
                 {
                     Element.ParentElement.Style.Display = "none";
                     Element.ParentElement.PreviousElementSibling.Style.Display = "none";
@@ -90,7 +90,7 @@ namespace Core.Components
             else
             {
                 Element.Style.Display = "";
-                if (GuiInfo != null && GuiInfo.ShowLabel && Parent is Section)
+                if (GuiInfo != null && GuiInfo.ShowLabel && Parent is Section && GuiInfo.FieldName != null)
                 {
                     Element.ParentElement.Style.Display = "";
                     Element.ParentElement.PreviousElementSibling.Style.Display = "";
