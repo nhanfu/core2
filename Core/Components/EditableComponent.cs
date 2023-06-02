@@ -81,10 +81,20 @@ namespace Core.Components
             if (!_show)
             {
                 Element.Style.Display = "none";
+                if (GuiInfo != null && GuiInfo.ShowLabel && Parent is Section)
+                {
+                    Element.ParentElement.Style.Display = "none";
+                    Element.ParentElement.PreviousElementSibling.Style.Display = "none";
+                }
             }
             else
             {
                 Element.Style.Display = "";
+                if (GuiInfo != null && GuiInfo.ShowLabel && Parent is Section)
+                {
+                    Element.ParentElement.Style.Display = "";
+                    Element.ParentElement.PreviousElementSibling.Style.Display = "";
+                }
             }
 
             OnToggle?.Invoke(_show);

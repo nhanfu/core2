@@ -999,6 +999,10 @@ namespace Core.Components
                 case KeyCodeEnum.F11:
                     Task.Run(async () =>
                     {
+                        if (com.GuiInfo.ComponentType == "Label" || com.GuiInfo.ComponentType == "Button")
+                        {
+                            return;
+                        }
                         var th = HeaderSection.Children.FirstOrDefault(x => x.GuiInfo.Id == com.GuiInfo.Id);
                         th.Element.RemoveClass("desc");
                         th.Element.RemoveClass("asc");
