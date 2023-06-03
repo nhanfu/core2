@@ -460,7 +460,7 @@ namespace Core.Components
         {
             bool ignoreSearch = false;
             var value = condition.Value?.ToString();
-            if (value.IsNullOrWhiteSpace() && condition.CompareOperatorId != AdvSearchOperation.EqualNull && condition.CompareOperatorId != AdvSearchOperation.NotEqualNull)
+            if (value is null && condition.CompareOperatorId != AdvSearchOperation.EqualNull && condition.CompareOperatorId != AdvSearchOperation.NotEqualNull)
             {
                 return null;
             }

@@ -669,18 +669,39 @@ namespace Core.Components
                 {
                     if (!AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo && x.Value == cell.Value))
                     {
-                        AdvSearchVM.Conditions.Add(new FieldCondition
+                        if (cell.ComponentType == "Input" && cell.Value.IsNullOrWhiteSpace())
                         {
-                            Field = hl,
-                            CompareOperatorId = advo,
-                            LogicOperatorId = cell.Logic ?? LogicOperation.And,
-                            Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value,
-                            Group = cell.Group
-                        });
+                            AdvSearchVM.Conditions.Add(new FieldCondition
+                            {
+                                Field = hl,
+                                CompareOperatorId = cell.Operator == "not in" ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull,
+                                LogicOperatorId = LogicOperation.And,
+                                Value = null,
+                                Group = true
+                            });
+                            AdvSearchVM.Conditions.Add(new FieldCondition
+                            {
+                                Field = hl,
+                                CompareOperatorId = cell.Operator == "not in" ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal,
+                                LogicOperatorId = cell.Operator == "not in" ? LogicOperation.And : LogicOperation.Or,
+                                Value = string.Empty,
+                                Group = true
+                            });
+                        }
+                        else
+                        {
+                            AdvSearchVM.Conditions.Add(new FieldCondition
+                            {
+                                Field = hl,
+                                CompareOperatorId = advo,
+                                LogicOperatorId = cell.Logic ?? LogicOperation.And,
+                                Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value,
+                                Group = cell.Group
+                            });
+                        }
                         Wheres.Add(new Where()
                         {
                             FieldName = where,
-
                             Group = cell.Group
                         });
                     }
