@@ -1889,5 +1889,62 @@ namespace TMS.UI.Business.Manage
         {
             return checkView;
         }
+
+        public virtual void AddMenuForTransportationRequest()
+        {
+            var gridView = this.FindComponentByName<GridView>("TransportationUnLockAll");
+            if (gridView == null)
+            {
+                return;
+            }
+            var menus = new List<ContextMenuItem>();
+            gridView.BodyContextMenuShow += () =>
+            {
+                menus.Add(new ContextMenuItem { Icon = "far fa-undo-alt mr-1", Text = "Hủy yêu cầu thay đổi", Click = CancelRequestChangeTransportation });
+                ContextMenu.Instance.MenuItems = menus;
+            };
+        }
+
+        public void CancelRequestChangeTransportation(object arg)
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindComponentByName<GridView>("TransportationUnLockAll");
+                if (gridView == null)
+                {
+                    return;
+                }
+                var ids = gridView.SelectedIds.ToList();
+                var tranRequests = await new Client(nameof(TransportationRequest)).GetRawList<TransportationRequest>($"?$filter=(Active eq true or Active eq false) and Id in ({ids.Combine()}) and StatusId eq {(int)ApprovalStatusEnum.Approving}");
+                if (tranRequests.Count <= 0)
+                {
+                    Toast.Warning("Không có yêu cầu nào có thể hủy !!!");
+                    return;
+                }
+                var confirm = new ConfirmDialog
+                {
+                    NeedAnswer = true,
+                    ComType = nameof(Textbox),
+                    Content = $"Bạn có chắc chắn muốn hủy {tranRequests.Count} yêu cầu thay đổi không??<br />" +
+                            "Hãy nhập lý do",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    tranRequests.ForEach(x => x.ReasonReject = confirm.Textbox?.Text);
+                    await new Client(nameof(TransportationRequest)).BulkUpdateAsync<TransportationRequest>(tranRequests);
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(tranRequests, "CancelRequestChaneTransportation");
+                    if (res)
+                    {
+                        await gridView.ApplyFilter(true);
+                        Toast.Success("Hủy yêu cầu thành công");
+                    }
+                    else
+                    {
+                        Toast.Warning("Đã có lỗi xảy ra");
+                    }
+                };
+            });
+        }
     }
 }

@@ -2522,6 +2522,74 @@ namespace TMS.API.Controllers
             return true;
         }
 
+        [HttpPost("api/Transportation/CancelRequestChaneTransportation")]
+        public async Task<bool> CancelRequestChaneTransportation([FromBody] List<TransportationRequest> transportationRequests)
+        {
+            if (transportationRequests == null)
+            {
+                return false;
+            }
+            var user = await db.User.Where(x => x.Active && x.Id == UserId).FirstOrDefaultAsync();
+            var entityType = _entitySvc.GetEntity(typeof(Transportation).Name);
+            var approvalConfig = await db.ApprovalConfig.AsNoTracking().OrderBy(x => x.Level)
+                .Where(x => x.Active && x.EntityId == entityType.Id).ToListAsync();
+            if (approvalConfig.Nothing())
+            {
+                throw new ApiException("Quy trình duyệt chưa được cấu hình");
+            }
+            var matchApprovalConfig = approvalConfig.FirstOrDefault(x => x.Level == 1);
+            if (matchApprovalConfig is null)
+            {
+                throw new ApiException("Quy trình duyệt chưa được cấu hình");
+            }
+            if (approvalConfig is null)
+            {
+                throw new ApiException("Quy trình duyệt chưa được cấu hình");
+            }
+            var listUser = await (
+                    from u in db.User
+                    join userRole in db.UserRole on u.Id equals userRole.UserId
+                    join role in db.Role on userRole.RoleId equals role.Id
+                    where userRole.RoleId == matchApprovalConfig.RoleId
+                    select u).ToListAsync();
+            foreach (var item in transportationRequests)
+            {
+                if (listUser.HasElement())
+                {
+                    var tasks = new List<TaskNotification>();
+                    foreach (var u in listUser)
+                    {
+                        var task = new TaskNotification()
+                        {
+                            Title = $"{user.FullName}",
+                            Description = $"Đã hủy yêu cầu thay đổi",
+                            EntityId = _entitySvc.GetEntity(typeof(TransportationRequest).Name).Id,
+                            RecordId = item.Id,
+                            Attachment = "fal fa-paper-plane",
+                            AssignedId = u.Id,
+                            StatusId = (int)TaskStateEnum.UnreadStatus,
+                            RemindBefore = 540,
+                            Deadline = DateTime.Now,
+                        };
+                        SetAuditInfo(task);
+                        db.AddRange(task);
+                        tasks.Add(task);
+                    }
+                    await db.SaveChangesAsync();
+                    await _taskService.NotifyAsync(tasks);
+                }
+            }
+            var ids = transportationRequests.Select(x => x.Id).ToList();
+            var tranRequestIds = await db.TransportationRequest.Where(x => ids.Contains((int)x.Id)).Select(x => x.Id).ToListAsync();
+            var tranRequestDetailsIds = await db.TransportationRequestDetails.Where(x => ids.Contains((int)x.TransportationRequestId)).Select(x => x.Id).ToListAsync();
+            var cmd = $"Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
+                $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
+            cmd += $" Update [{nameof(TransportationRequestDetails)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Rejected}" +
+                $" where Id in ({tranRequestDetailsIds.Combine()}) and Active = 1;";
+            await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
+            return true;
+        }
+
         private string CompareChanges(object change, object cutting)
         {
             var query = $" Update [{nameof(Transportation)}] set ";
