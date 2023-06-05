@@ -787,7 +787,7 @@ namespace Core.Components
                 .Select(x => new
                 {
                     Header = x,
-                    Data = new Client(x.RefName).LoadById(x.DataSourceOptimized, action: $"ById?FieldName={x.FormatExcell}")
+                    Data = new Client(x.RefName).LoadById(x.DataSourceOptimized, action: $"ById?FieldName={x.FormatExcell}&DatabaseName={x.DatabaseName}")
                 }).ToArray();
             await Task.WhenAll(dataTask.Select(x => x.Data).ToArray());
             foreach (var remoteSource in dataTask)

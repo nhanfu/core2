@@ -102,7 +102,7 @@ namespace TMS.API.Controllers
         }
 
         [HttpPost("api/[Controller]/ById")]
-        public virtual async Task<OdataResult<T>> LoadById([FromServices] IServiceProvider serviceProvider, [FromServices] IConfiguration config, [FromBody] string ids, [FromQuery] string FieldName)
+        public virtual async Task<OdataResult<T>> LoadById([FromServices] IServiceProvider serviceProvider, [FromServices] IConfiguration config, [FromBody] string ids, [FromQuery] string FieldName, [FromQuery] string DatabaseName)
         {
             if (ids.IsNullOrWhiteSpace())
             {
@@ -112,7 +112,7 @@ namespace TMS.API.Controllers
             {
                 var connectionStr = _config.GetConnectionString("Default");
                 using var con = new SqlConnection(connectionStr);
-                var sqlCmd = new SqlCommand(GetByIds(ids, FieldName), con)
+                var sqlCmd = new SqlCommand(GetByIds(ids, FieldName, DatabaseName), con)
                 {
                     CommandType = CommandType.Text
                 };
@@ -149,9 +149,9 @@ namespace TMS.API.Controllers
             }
         }
 
-        private static string GetByIds(string ids, string FieldName = null)
+        private static string GetByIds(string ids, string FieldName = null, string DatabaseName = null)
         {
-            var query = $"select {FieldName ?? "*"} from [{typeof(T).Name}] where Id in ({ids})";
+            var query = $"select {FieldName ?? "*"} from {(DatabaseName.IsNullOrWhiteSpace() ? "" : $"{DatabaseName}.")}[{typeof(T).Name}] where Id in ({ids})";
             return query;
         }
 
