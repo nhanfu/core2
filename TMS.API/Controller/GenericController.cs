@@ -151,7 +151,7 @@ namespace TMS.API.Controllers
 
         private static string GetByIds(string ids, string FieldName = null, string DatabaseName = null)
         {
-            var query = $"select {FieldName ?? "*"} from {(DatabaseName.IsNullOrWhiteSpace() ? "" : $"{DatabaseName}.")}[{typeof(T).Name}] where Id in ({ids})";
+            var query = $"select {FieldName ?? "*"} from {(DatabaseName.IsNullOrWhiteSpace() ? "" : $"{DatabaseName}.dbo.")}[{typeof(T).Name}] where Id in ({ids})";
             return query;
         }
 
