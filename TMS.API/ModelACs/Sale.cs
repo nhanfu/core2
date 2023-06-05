@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TMS.API.Models
+namespace TMS.API.ModelACs
 {
-    public partial class SaleAC
+    public partial class Sale
     {
         public int Id { get; set; }
         public string Name { get; set; }

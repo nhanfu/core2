@@ -1,27 +1,18 @@
-﻿using Core.Extensions;
-using Microsoft.AspNet.OData.Query;
+﻿using Core.Enums;
+using Core.Exceptions;
+using Core.Extensions;
+using Core.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using TMS.API.Models;
+using Microsoft.EntityFrameworkCore;
+using TMS.API.Controller;
+using TMS.API.ModelACs;
 
 namespace TMS.API.Controllers
 {
-    public class PartnerController : GenericController<Partner>
+    public class PartnerController : ACController<Partner>
     {
-        private readonly DBAccountantContext db;
-        public PartnerController(DBAccountantContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public PartnerController(ACContext context, API.Models.TMSContext tMSContext, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, tMSContext, entityService, httpContextAccessor)
         {
-            db = context;
-        }
-
-        public override Task<OdataResult<Partner>> Get(ODataQueryOptions<Partner> options)
-        {
-            var query = db.Vendor.AsQueryable();
-            return ApplyQuery(options, query);
-        }
-
-        public override Task<ActionResult<Partner>> UpdateAsync([FromBody] Partner entity, string reasonOfChange = "")
-        {
-            return base.UpdateAsync(entity, reasonOfChange);
         }
     }
 }

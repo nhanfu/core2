@@ -177,14 +177,14 @@ namespace TMS.UI.Business.Accountant
                 }
                 if (revenueEntity.IsVendorVatId && revenueEntity.VendorVatId != null)
                 {
-                    var vendor = await new Client(nameof(Partner)).FirstOrDefaultAsync<Partner>($"?$filter=Active eq true and Id eq {revenueEntity.VendorVatId}");
+                    var vendor = await new Client(nameof(API.ModelACs.Partner)).FirstOrDefaultAsync<API.ModelACs.Partner>($"?$filter=Active eq true and Id eq {revenueEntity.VendorVatId}");
                     if (vendor != null)
                     {
                         revenueEntity.VendorVatName = vendor.CompanyName;
                         if (vendor.ParentId == null)
                         {
                             vendor.ParentId = revenues.OrderByDescending(x => x.Id).FirstOrDefault().BossId;
-                            var resUpdate = await new Client(nameof(Partner)).UpdateAsync(vendor);
+                            var resUpdate = await new Client(nameof(API.ModelACs.Partner)).UpdateAsync(vendor);
                         }
                     }
                 }
@@ -280,14 +280,14 @@ namespace TMS.UI.Business.Accountant
             {
                 if (revenueEntity.IsVendorVatId && revenueEntity.VendorVatId != null)
                 {
-                    var vendor = await new Client(nameof(Partner)).FirstOrDefaultAsync<Partner>($"?$filter=Active eq true and Id eq {revenueEntity.VendorVatId}");
+                    var vendor = await new Client(nameof(API.ModelACs.Partner)).FirstOrDefaultAsync<API.ModelACs.Partner>($"?$filter=Active eq true and Id eq {revenueEntity.VendorVatId}");
                     if (vendor != null)
                     {
                         revenueEntity.VendorVatName = vendor.CompanyName;
                         if (vendor.ParentId == null)
                         {
                             vendor.ParentId = revenues.OrderByDescending(x => x.Id).FirstOrDefault().BossId;
-                            var resUpdate = await new Client(nameof(Partner)).UpdateAsync(vendor);
+                            var resUpdate = await new Client(nameof(API.ModelACs.Partner)).UpdateAsync(vendor);
                         }
                     }
                 }

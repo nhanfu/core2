@@ -15,6 +15,7 @@ using System.IO.Compression;
 using System.Security.Claims;
 using System.Text;
 using TMS.API.BgService;
+using TMS.API.Controllers;
 using TMS.API.Extensions;
 using TMS.API.Models;
 using TMS.API.Services;
@@ -75,7 +76,7 @@ namespace TMS.API
                 options.EnableSensitiveDataLogging();
 #endif
             });
-            services.AddDbContext<DBAccountantContext>((serviceProvider, options) =>
+            services.AddDbContext<API.ModelACs.ACContext>((serviceProvider, options) =>
             {
                 options.UseSqlServer(_configuration.GetConnectionString($"DBAccountant"), x => x.EnableRetryOnFailure());
 #if DEBUG
