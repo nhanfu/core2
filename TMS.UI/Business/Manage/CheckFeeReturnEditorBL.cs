@@ -396,6 +396,28 @@ namespace TMS.UI.Business.Manage
             {
                 await listViewItem.PatchUpdate();
             }
+            if (!CheckData())
+            {
+                Dispose();
+                await this.OpenTab(
+                               id: "CheckFee Return Editor" + CheckFeeHistoryEntity.Id,
+                               featureName: "CheckFee Return Editor",
+                               factory: () =>
+                               {
+                                   var type = Type.GetType("TMS.UI.Business.Manage.CheckFeeReturnEditorBL");
+                                   var instance = Activator.CreateInstance(type) as TabEditor;
+                                   instance.Title = "Kiểm tra phí trả hàng";
+                                   instance.Icon = "fal fa-sitemap mr-1";
+                                   instance.Entity = CheckFeeHistoryEntity;
+                                   return instance;
+                               });
+            }
+        }
+
+        public bool CheckData()
+        {
+            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
+            return gridView.RowData.Data.Any(x => int.Parse(x[IdField].ToString()) <= 0);
         }
 
         public void CheckStatusQuotationReturn()

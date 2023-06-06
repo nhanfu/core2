@@ -154,7 +154,7 @@ namespace TMS.UI.Business.Manage
                             if (entity.Id > 0)
                             {
                                 await this.OpenTab(
-                                id: "CheckFee Return Editor" + rs.FirstOrDefault().CheckFeeHistoryReturnId,
+                                id: "Add CheckFee Return Editor" + rs.FirstOrDefault().CheckFeeHistoryReturnId,
                                 featureName: "Add CheckFee Return Editor",
                                 factory: () =>
                                 {
