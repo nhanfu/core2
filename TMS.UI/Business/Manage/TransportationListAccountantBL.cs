@@ -1725,7 +1725,7 @@ namespace TMS.UI.Business.Manage
         {
             if (entity.VendorVatId != null)
             {
-                var vendorVat = await new Client(nameof(API.ModelACs.Vendor)).FirstOrDefaultAsync<API.ModelACs.Vendor>($"?$filter=Active eq true and Id eq {entity.VendorVatId}");
+                var vendorVat = await new Client(nameof(API.ModelACs.Partner)).FirstOrDefaultAsync<API.ModelACs.Partner>($"?$filter=Active eq true and Id eq {entity.VendorVatId}");
                 if (vendorVat != null)
                 {
                     entity.VendorVatName = vendorVat.CompanyName;
@@ -1733,7 +1733,7 @@ namespace TMS.UI.Business.Manage
                     if (vendorVat.ParentId == null)
                     {
                         vendorVat.ParentId = entity.BossId;
-                        var resUpdate = await new Client(nameof(API.ModelACs.Vendor)).UpdateAsync(vendorVat);
+                        var resUpdate = await new Client(nameof(API.ModelACs.Partner)).UpdateAsync(vendorVat);
                     }
                 }
             }
