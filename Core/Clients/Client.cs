@@ -852,7 +852,7 @@ namespace Core.Clients
                 Href = path.Contains("http") ? path : System.IO.Path.Combine(Origin, path),
                 Target = "_blank"
             };
-            a.SetAttribute("download", PathIO.GetFileNameWithoutExtension(RemoveGuid(path)));
+            a.SetAttribute("download", removePath);
             Document.Body.AppendChild(a);
             a.Click();
             Document.Body.RemoveChild(a);

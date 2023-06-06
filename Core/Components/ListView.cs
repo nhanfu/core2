@@ -23,7 +23,7 @@ namespace Core.Components
     {
         internal int _rowHeight = 26;
         internal int _theadTable = 40;
-        internal int _tfooterTable = 28;
+        internal int _tfooterTable = 45;
         private const string PermissionLoaded = "PermissionLoaded";
         private const string IsOwner = "IsOwner";
         private const string CmdUrl = "Cmd";
