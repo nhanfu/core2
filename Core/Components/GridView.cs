@@ -517,7 +517,7 @@ namespace Core.Components
                 var where = string.Empty;
                 var hl = Header.FirstOrDefault(y => y.FieldName == cell.FieldName);
                 string ids = null;
-                var isNUll = cell.Value.IsNullOrWhiteSpace() && cell.ValueText.IsNullOrWhiteSpace();
+                var isNUll = cell.Value.IsNullOrWhiteSpace();
                 AdvSearchOperation advo = cell.Operator == "not in" ? AdvSearchOperation.NotIn : AdvSearchOperation.In;
                 if ((hl.ComponentType == "Dropdown" || hl.ComponentType == nameof(SearchEntry)) && !hl.FormatCell.IsNullOrWhiteSpace())
                 {
@@ -532,11 +532,11 @@ namespace Core.Components
                         if (rsdynamic.Any())
                         {
                             ids = rsdynamic.Select(x => x.Id).Cast<int>().Combine();
-                            where = cell.Operator == "not in" ? $"([{GuiInfo.RefName}].{cell.FieldName} not in ({ids}) {(!cell.Value.IsNullOrWhiteSpace() ? $" or [{GuiInfo.RefName}].{cell.FieldName} is null" : "")})" : $"[{GuiInfo.RefName}].{cell.FieldName} in ({ids})";
+                            where = cell.Operator == "not in" ? $"([{GuiInfo.RefName}].{cell.FieldName} not in ({ids})" : $"[{GuiInfo.RefName}].{cell.FieldName} in ({ids})";
                         }
                         else
                         {
-                            where = cell.Operator == "not in" ? $"([{GuiInfo.RefName}].{cell.FieldName} != {cell.Value} {(!cell.Value.IsNullOrWhiteSpace() ? $" or [{GuiInfo.RefName}].{cell.FieldName} is null" : "")})" : $"[{GuiInfo.RefName}].{cell.FieldName} = {cell.Value}";
+                            where = cell.Operator == "not in" ? $"([{GuiInfo.RefName}].{cell.FieldName} != {cell.Value}" : $"[{GuiInfo.RefName}].{cell.FieldName} = {cell.Value}";
                         }
                         index++;
                     }
@@ -675,7 +675,7 @@ namespace Core.Components
                             {
                                 Field = hl,
                                 CompareOperatorId = cell.Operator == "not in" ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull,
-                                LogicOperatorId = LogicOperation.And,
+                                LogicOperatorId = cell.Operator == "not in" ? LogicOperation.And : LogicOperation.Or,
                                 Value = null,
                                 Group = true
                             });
@@ -1351,25 +1351,53 @@ namespace Core.Components
                     var lastElement = _summarys.LastOrDefault();
                     if (lastElement.InnerHTML == string.Empty)
                     {
-                        _summarys.RemoveAt(_summarys.Count - 1);
-                        lastElement.Remove();
-                        if (CellSelected.Count > 0)
+                        CellSelected.RemoveAt(CellSelected.Count - 1);
+                        Wheres.RemoveAt(Wheres.Count - 1);
+                        var last = CellSelected.LastOrDefault();
+                        if (last != null && last.ComponentType == "Input" && last.Value.IsNullOrWhiteSpace())
+                        {
+                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                        }
+                        else
+                        {
+
+                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                        }
+                        Task.Run(async () =>
+                        {
+                            await ActionFilter();
+                            _summarys.RemoveAt(_summarys.Count - 1);
+                        });
+                    }
+                    else
+                    {
+                        if (lastElement.Style.Display.ToString() == "none")
                         {
                             CellSelected.RemoveAt(CellSelected.Count - 1);
-                            if (Wheres.Count - 1 >= 0)
+                            Wheres.RemoveAt(Wheres.Count - 1);
+                            var last = CellSelected.LastOrDefault();
+                            if (last != null && last.ComponentType == "Input" && last.Value.IsNullOrWhiteSpace())
                             {
-                                Wheres.RemoveAt(Wheres.Count - 1);
+                                AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                                AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
                             }
-                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                            else
+                            {
+
+                                AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                            }
                             Task.Run(async () =>
                             {
                                 await ActionFilter();
                             });
+                            lastElement.Show();
                         }
-                    }
-                    else
-                    {
-                        lastElement.Show();
+                        else
+                        {
+                            _summarys.RemoveAt(_summarys.Count - 1);
+                            lastElement.Remove();
+                        }
                     }
                 }
             }

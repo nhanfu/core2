@@ -97,10 +97,6 @@ namespace TMS.API.Controllers
                 {
                     cmd += $@" and ContainerId = {entity.ContainerId}";
                 }
-                if (entity.PackingIds != null && entity.PackingIds.Any())
-                {
-                    cmd += $@" and PackingId not in ({entity.PackingIds.Combine()})";
-                }
                 if (regionIds != null && regionIds.Any())
                 {
                     cmd += $@" and RegionId in ({regionIds.Combine()})";

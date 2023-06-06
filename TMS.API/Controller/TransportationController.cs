@@ -1379,7 +1379,7 @@ namespace TMS.API.Controllers
                     return tran;
                 }).ToList();
                 await db.SaveChangesAsync();
-                return checks.Where(x => x.Id <= 0).ToList();
+                return checks;
             }
             else
             {
@@ -1518,7 +1518,7 @@ namespace TMS.API.Controllers
                     return tran;
                 }).ToList();
                 await db.SaveChangesAsync();
-                return checks.Where(x => x.Id <= 0).ToList();
+                return checks;
             }
         }
 

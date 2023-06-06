@@ -281,7 +281,17 @@ namespace Core.Components
                     {
                         CellSelected.RemoveAt(CellSelected.Count - 1);
                         Wheres.RemoveAt(Wheres.Count - 1);
-                        AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                        var last = CellSelected.LastOrDefault();
+                        if (last != null && last.ComponentType == "Input" && last.Value.IsNullOrWhiteSpace())
+                        {
+                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                        }
+                        else
+                        {
+
+                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                        }
                         Task.Run(async () =>
                         {
                             await ActionFilter();
@@ -298,7 +308,17 @@ namespace Core.Components
                         {
                             CellSelected.RemoveAt(CellSelected.Count - 1);
                             Wheres.RemoveAt(Wheres.Count - 1);
-                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                            var last = CellSelected.LastOrDefault();
+                            if (last != null && last.ComponentType == "Input" && last.Value.IsNullOrWhiteSpace())
+                            {
+                                AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                                AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                            }
+                            else
+                            {
+
+                                AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                            }
                             Task.Run(async () =>
                             {
                                 await ActionFilter();
@@ -349,6 +369,10 @@ namespace Core.Components
                 return;
             }
             var com = LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
+            if (com is null)
+            {
+                return;
+            }
             ActionKeyHandler(e, LastComponentFocus, LastListViewItem, com, com.Element.Closest(ElementType.td.ToString()), keyCode);
         }
 
