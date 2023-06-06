@@ -1353,8 +1353,8 @@ namespace Core.Components
                     {
                         CellSelected.RemoveAt(CellSelected.Count - 1);
                         Wheres.RemoveAt(Wheres.Count - 1);
-                        var last = CellSelected.LastOrDefault();
-                        if (last != null && last.ComponentType == "Input" && last.Value.IsNullOrWhiteSpace())
+                        var last = AdvSearchVM.Conditions.LastOrDefault();
+                        if (last != null && last.Field.ComponentType == "Input" && last.Value.IsNullOrWhiteSpace())
                         {
                             AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
                             AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
@@ -1376,8 +1376,8 @@ namespace Core.Components
                         {
                             CellSelected.RemoveAt(CellSelected.Count - 1);
                             Wheres.RemoveAt(Wheres.Count - 1);
-                            var last = CellSelected.LastOrDefault();
-                            if (last != null && last.ComponentType == "Input" && last.Value.IsNullOrWhiteSpace())
+                            var last = AdvSearchVM.Conditions.LastOrDefault();
+                            if (last != null && last.Field.ComponentType == "Input" && last.Value.IsNullOrWhiteSpace())
                             {
                                 AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
                                 AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
