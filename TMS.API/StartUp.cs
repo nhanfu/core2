@@ -212,7 +212,7 @@ namespace TMS.API
                 app.UseHttpStatusCodeExceptionMiddleware();
                 app.UseHsts();
             }
-            //app.UseMiddleware<RequestLoggingMiddleware>();
+            app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseHttpsRedirection();
             var options = new DefaultFilesOptions();
             app.UseResponseCompression();

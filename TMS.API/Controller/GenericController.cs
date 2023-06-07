@@ -468,7 +468,7 @@ namespace TMS.API.Controllers
             return await HardDeleteAsync(new List<int> { id });
         }
 
-        [HttpPost("api/[Controller]/Delete", Order = 1)]
+        [HttpDelete("api/[Controller]/Delete", Order = 1)]
         public virtual async Task<ActionResult<bool>> DeactivateAsync([FromBody] List<int> ids)
         {
             var updateCommand = string.Format("Update [{0}] set Active = 0 where Id in ({1})", typeof(T).Name, string.Join(",", ids));
@@ -476,7 +476,7 @@ namespace TMS.API.Controllers
             return true;
         }
 
-        [HttpPost("api/[Controller]/HardDelete", Order = 1)]
+        [HttpDelete("api/[Controller]/HardDelete", Order = 1)]
         public virtual async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<int> ids)
         {
             if (ids.Nothing())

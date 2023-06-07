@@ -688,7 +688,7 @@ namespace Core.Clients
                 Url = "Delete",
                 Value = ids.Combine(),
                 AllowNestedObject = true,
-                Method = HttpMethod.POST
+                Method = HttpMethod.DELETE
             });
         }
 
@@ -739,7 +739,7 @@ namespace Core.Clients
                 Url = "HardDelete",
                 Value = ids,
                 AllowNestedObject = true,
-                Method = HttpMethod.POST
+                Method = HttpMethod.DELETE
             });
         }
 
