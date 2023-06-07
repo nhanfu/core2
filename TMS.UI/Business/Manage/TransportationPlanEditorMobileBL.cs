@@ -245,7 +245,7 @@ namespace TMS.UI.Business.Manage
                 transportationPlanEntity.JourneyId = commodityValueDB.JourneyId;
                 transportationPlanEntity.CommodityValueNotes = commodityValueDB.Notes;
                 transportationPlanEntity.IsSettingsInsurance = true;
-                if (transportationPlanEntity.JourneyId == null)
+                if (transportationPlanEntity.JourneyId == null || transportationPlanEntity.JourneyId == 0)
                 {
                     this.SetDisabled(true, "CustomerTypeId", "IsWet", "IsBought", "CommodityValue", "IsCompany", "SteamingTerms", "BreakTerms");
                     this.SetDisabled(false, "JourneyId");

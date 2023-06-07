@@ -575,7 +575,7 @@ namespace TMS.UI.Business.Manage
                 Toast.Success("GTHH đã tồn tại trong hệ thống với giá trị là: " + decimal.Parse(transportationPlan.CommodityValue.ToString()).ToString("N0"));
             }
             await new Client(nameof(TransportationPlan)).PatchAsync<object>(GetPatchEntity(transportationPlan), ig: $"&disableTrigger=true");
-            if (commodityValueDB == null || (transportationPlan.TransportationTypeId != null && transportationPlan.JourneyId == null))
+            if (commodityValueDB == null || (transportationPlan.TransportationTypeId != null && (transportationPlan.JourneyId == null || transportationPlan.JourneyId == 0)))
             {
                 await SettingsCommodityValue(transportationPlan);
             }
