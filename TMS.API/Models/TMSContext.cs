@@ -53,6 +53,7 @@ namespace TMS.API.Models
         public virtual DbSet<QuotationExpenseRoute> QuotationExpenseRoute { get; set; }
         public virtual DbSet<QuotationService> QuotationService { get; set; }
         public virtual DbSet<QuotationUpdate> QuotationUpdate { get; set; }
+        public virtual DbSet<RequestLog> RequestLog { get; set; }
         public virtual DbSet<ReturnPlan> ReturnPlan { get; set; }
         public virtual DbSet<Revenue> Revenue { get; set; }
         public virtual DbSet<RevenueRequest> RevenueRequest { get; set; }
@@ -1087,6 +1088,13 @@ namespace TMS.API.Models
             modelBuilder.Entity<QuotationUpdate>(entity =>
             {
                 entity.Property(e => e.UnitPrice).HasColumnType("decimal(20, 5)");
+            });
+
+            modelBuilder.Entity<RequestLog>(entity =>
+            {
+                entity.Property(e => e.HttpMethod).HasMaxLength(250);
+
+                entity.Property(e => e.Path).HasMaxLength(500);
             });
 
             modelBuilder.Entity<ReturnPlan>(entity =>

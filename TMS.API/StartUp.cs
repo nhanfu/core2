@@ -83,6 +83,13 @@ namespace TMS.API
                 options.EnableSensitiveDataLogging();
 #endif
             });
+            services.AddDbContext<LOGContext>((serviceProvider, options) =>
+            {
+                options.UseSqlServer(_configuration.GetConnectionString($"Log"), x => x.EnableRetryOnFailure());
+#if DEBUG
+                options.EnableSensitiveDataLogging();
+#endif
+            });
             services.AddDbContext<TMSContext>((serviceProvider, options) =>
             {
                 string connectionStr = GetConnectionString(serviceProvider, _configuration, "Default");
@@ -205,6 +212,7 @@ namespace TMS.API
                 app.UseHttpStatusCodeExceptionMiddleware();
                 app.UseHsts();
             }
+            app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseHttpsRedirection();
             var options = new DefaultFilesOptions();
             app.UseResponseCompression();
@@ -212,7 +220,6 @@ namespace TMS.API
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
             app.MapWebSocketManager("/task", serviceProvider.GetService<RealtimeService>());
-
             options.DefaultFileNames.Clear();
             options.DefaultFileNames.Add("index.html");
             app.UseDefaultFiles(options);
