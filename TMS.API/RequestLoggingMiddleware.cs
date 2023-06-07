@@ -1,9 +1,7 @@
 ﻿using Core.Extensions;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TMS.API.Models;
-using System.Linq;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.VisualBasic;
 
 namespace TMS.API
 {
