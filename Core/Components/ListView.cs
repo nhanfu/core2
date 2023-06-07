@@ -23,7 +23,8 @@ namespace Core.Components
     {
         internal int _rowHeight = 26;
         internal int _theadTable = 40;
-        internal int _tfooterTable = 45;
+        internal int _tfooterTable = 35;
+        internal int _scrollTable = 10;
         private const string PermissionLoaded = "PermissionLoaded";
         private const string IsOwner = "IsOwner";
         private const string CmdUrl = "Cmd";
@@ -139,6 +140,10 @@ namespace Core.Components
                 Resolve(ui, ele);
             }
             Utils.IsFunction(GuiInfo.PreQuery, out _preQueryFn);
+            _rowHeight = GuiInfo.BodyItemHeight ?? 26;
+            _theadTable = GuiInfo.HeaderHeight ?? 40;
+            _tfooterTable = GuiInfo.FooterHeight ?? 35;
+            _scrollTable = GuiInfo.FooterHeight ?? 10;
         }
 
         public void Resolve(Component com, HTMLElement ele = null)
@@ -1757,24 +1762,6 @@ namespace Core.Components
                 dirty.ForEach(x => x.BuildTextHistory(builder));
             }
             return builder;
-        }
-
-        internal int GetViewPortItem()
-        {
-            if (Element is null || !Element.HasClass(Position.sticky.ToString()))
-            {
-                return RowData.Data.Count();
-            }
-            var mainSectionHeight = Element.ClientHeight - (ListViewSearch.Element?.ClientHeight ?? 0) - Paginator.Element.ClientHeight - _theadTable - _rowHeight;
-            if (!Header.All(x => x.Summary.IsNullOrEmpty()))
-            {
-                mainSectionHeight -= _tfooterTable;
-            }
-            if (GuiInfo.CanAdd)
-            {
-                mainSectionHeight -= _rowHeight;
-            }
-            return GetRowCountByHeight(mainSectionHeight);
         }
 
         internal int GetRowCountByHeight(double scrollTop)

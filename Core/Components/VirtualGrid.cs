@@ -218,6 +218,11 @@ namespace Core.Components
                 e.PreventDefault();
                 return;
             }
+            if (DataTable.ClientHeight <= DataTable.ScrollTop + _rowHeight)
+            {
+                _renderingViewPort = false;
+                return;
+            }
             Window.ClearTimeout(_renderViewPortAwaiter);
             _renderViewPortAwaiter = Window.SetTimeout(async () => await RenderViewPort(false), 100);
         }

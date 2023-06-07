@@ -2701,5 +2701,27 @@ namespace Core.Components
             RenderIndex();
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, rowData);
         }
+
+        internal int GetViewPortItem()
+        {
+            if (Element is null || !Element.HasClass(Position.sticky.ToString()))
+            {
+                return RowData.Data.Count();
+            }
+            var mainSectionHeight = Element.ClientHeight - (ListViewSearch.Element?.ClientHeight ?? 0) - Paginator.Element.ClientHeight - _theadTable - _rowHeight - _scrollTable;
+            if (!Header.All(x => x.Summary.IsNullOrEmpty()))
+            {
+                mainSectionHeight -= _tfooterTable;
+            }
+            else
+            {
+                mainSectionHeight -= _scrollTable;
+            }
+            if (GuiInfo.CanAdd)
+            {
+                mainSectionHeight -= _rowHeight;
+            }
+            return GetRowCountByHeight(mainSectionHeight);
+        }
     }
 }

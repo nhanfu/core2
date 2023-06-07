@@ -94,6 +94,10 @@ namespace TMS.API.Models
         public bool? ShowNull { get; set; }
         public bool? AddDate { get; set; }
         public bool FilterEq { get; set; }
+        public int? HeaderHeight { get; set; }
+        public int? BodyItemHeight { get; set; }
+        public int? FooterHeight { get; set; }
+        public int? ScrollHeight { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }
