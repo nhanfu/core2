@@ -34,12 +34,12 @@ namespace TMS.API
                     {
                         HttpMethod = request.Method,
                         Path = request.Path,
-                        InsertedDate = DateTime.UtcNow,
+                        InsertedDate = DateTime.Now,
                         Active = true,
                     };
                     await _next(context);
                     logEntry.StatusCode = context.Response.StatusCode;
-                    logEntry.UpdatedDate = DateTime.UtcNow;
+                    logEntry.UpdatedDate = DateTime.Now;
                     logEntry.RequestBody = requestBody;
                     var userId = jwtToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value?.TryParseInt() ?? 0;
                     logEntry.InsertedBy = userId;
