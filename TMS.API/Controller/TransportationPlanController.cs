@@ -76,6 +76,72 @@ namespace TMS.API.Controllers
             return qr;
         }
 
+        [HttpGet("api/[Controller]/CreateTransportation")]
+        public async Task<List<TransportationPlan>> CreateTransportation([FromBody] List<int> selectedIds)
+        {
+            var selected = await db.TransportationPlan.AsNoTracking().Where(x => selectedIds.Contains(x.Id)).ToListAsync();
+            if (selected.Nothing())
+            {
+                throw new ApiException("Vui lòng chọn kết hoạch vận chuyển");
+            }
+            if (selected.Any(x => x.ContainerTypeId is null))
+            {
+                throw new ApiException("Vui lòng chọn loại cont");
+            }
+            if (selected.Any(x => x.RouteId is null))
+            {
+                throw new ApiException("Vui lòng chọn tuyến đường");
+            }
+            if (selected.Any(x => x.BossId is null))
+            {
+                throw new ApiException("Vui lòng chọn chủ hàng");
+            }
+            if (selected.Any(x => x.CommodityId is null))
+            {
+                throw new ApiException("Vui lòng chọn vật tư hàng hóa");
+            }
+            if (selected.Any(x => x.TotalContainer is null || x.TotalContainer == 0))
+            {
+                throw new ApiException("Vui lòng nhập số lượng cont");
+            }
+            if (selected.Any(x => x.TotalContainerRemain == 0))
+            {
+                throw new ApiException("Có kế hoạch vận chuyển đã được lấy qua");
+            }
+            if (selected.Any(x => x.ReceivedId is null))
+            {
+                throw new ApiException("Vui lòng chọn địa chỉ nhận hàng");
+            }
+            if (selected.Any(x => x.ClosingDate is null))
+            {
+                throw new ApiException("Vui lòng chọn ngày đóng hàng");
+            }
+            if (selected.Any(x => x.Id < 0))
+            {
+                throw new ApiException("Vui lòng lưu trước khi vận chuyển");
+            }
+            var list = new List<TransportationPlan>();
+            foreach (var item in selected)
+            {
+                if (await CheckContract(item))
+                {
+                    list.Add(item);
+                }
+                else
+                {
+                    list.Remove(item);
+                }
+            }
+            return list;
+        }
+
+        public async Task<bool> CheckContract(TransportationPlan transportationPlan)
+        {
+            var transportationContract = await db.TransportationContract.FirstOrDefaultAsync(x => x.BossId == transportationPlan.BossId && x.StartDate >= transportationPlan.ClosingDate && x.EndDate <= transportationPlan.ClosingDate);
+            return transportationContract is not null;
+        }
+
+
         [HttpGet("api/[Controller]/GetByRole")]
         public Task<OdataResult<TransportationPlan>> UserClick(ODataQueryOptions<TransportationPlan> options)
         {
