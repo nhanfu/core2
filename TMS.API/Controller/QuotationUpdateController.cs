@@ -62,8 +62,12 @@ namespace TMS.API.Controllers
                                      ROW_NUMBER() OVER (PARTITION BY PackingId,BossId,ContainerTypeId,LocationId,RouteId,RegionId ORDER BY StartDate DESC) AS rn
                                FROM Quotation
                                where TypeId = {entity.TypeId}
-                               and ExportListId = {VendorId}
-                               and StartDate < '{entity.StartDate:yyyy-MM-dd}'";
+                               and ExportListId = {VendorId}";
+            if (!entity.Support)
+            {
+                cmd = $@" and Support = 0";
+            }
+            cmd = $@" and StartDate < '{entity.StartDate:yyyy-MM-dd}'";
             if (entity.ContainerId != null)
             {
                 cmd += $@" and ContainerId = {entity.ContainerId}";
@@ -91,8 +95,12 @@ namespace TMS.API.Controllers
                                      ROW_NUMBER() OVER (PARTITION BY PackingId,BossId,ContainerTypeId,LocationId,RouteId,RegionId ORDER BY StartDate DESC) AS rn1
                                FROM Quotation
                                where TypeId = {entity.TypeId}
-                               and ExportListId = {VendorId}
-                               and StartDate < '{entity.StartDate:yyyy-MM-dd}'";
+                               and ExportListId = {VendorId}";
+                if (!entity.Support)
+                {
+                    cmd = $@" and Support = 0";
+                }
+                cmd = $@" and StartDate < '{entity.StartDate:yyyy-MM-dd}'";
                 if (entity.ContainerId != null)
                 {
                     cmd += $@" and ContainerId = {entity.ContainerId}";
@@ -107,31 +115,59 @@ namespace TMS.API.Controllers
                 }
                 cmd += $@")";
             }
+            if (!entity.Support)
+            {
+                cmd += $@";WITH cte2 AS
+                            (
+                               SELECT *,
+                                     ROW_NUMBER() OVER (PARTITION BY PackingId,BossId,ContainerTypeId,LocationId,RouteId,RegionId ORDER BY StartDate DESC) AS rn1
+                               FROM Quotation
+                               where TypeId = {entity.TypeId}
+                               and ExportListId = {VendorId}";
+                if (!entity.Support)
+                {
+                    cmd = $@" and Support = 1";
+                }
+                cmd = $@" and StartDate < '{entity.StartDate:yyyy-MM-dd}'";
+                if (entity.ContainerId != null)
+                {
+                    cmd += $@" and ContainerId = {entity.ContainerId}";
+                }
+                if (regionIds != null && regionIds.Any())
+                {
+                    cmd += $@" and RegionId in ({regionIds.Combine()})";
+                }
+                if (entity.PackingIds != null && entity.PackingIds.Any())
+                {
+                    cmd += $@" and PackingId in ({entity.PackingIds.Combine()})";
+                }
+                cmd += $@")";
+            }
             cmd += $@"insert into Quotation(BranchId
-            			   ,[TypeId]
-            			   ,[RouteId]
-            			   ,[ContainerTypeId]
-            			   ,[PackingId]
-            			   ,[BossId]
-            			   ,[LocationId]
-            			   ,[PolicyTypeId]
-            			   ,[UnitPrice]
-            			   ,[UnitPrice1]
-            			   ,[UnitPrice2]
-            			   ,[StartDate]
-            			   ,[Note]
-            			   ,[Active]
-            			   ,[InsertedDate]
-            			   ,[InsertedBy]
-            			   ,[QuotationUpdateId]
-            			   ,[UnitPrice3]
-            			   ,[ParentId]
-            			   ,[IsParent]
-            			   ,[RegionId]
-            			   ,[DistrictId]
-            			   ,[ProvinceId]
+                           ,[TypeId]
+                           ,[RouteId]
+                           ,[ContainerTypeId]
+                           ,[PackingId]
+                           ,[BossId]
+                           ,[LocationId]
+                           ,[PolicyTypeId]
+                           ,[UnitPrice]
+                           ,[UnitPrice1]
+                           ,[UnitPrice2]
+                           ,[StartDate]
+                           ,[Note]
+                           ,[Active]
+                           ,[InsertedDate]
+                           ,[InsertedBy]
+                           ,[QuotationUpdateId]
+                           ,[UnitPrice3]
+                           ,[ParentId]
+                           ,[IsParent]
+                           ,[RegionId]
+                           ,[DistrictId]
+                           ,[ProvinceId]
                            ,[ExportListId])
-                SELECT [BranchId]
+                SELECT[BranchId]
             ,[TypeId]
             ,[RouteId]
             ,[ContainerTypeId]
@@ -139,8 +175,10 @@ namespace TMS.API.Controllers
             ,[BossId]
             ,[LocationId]
             ,[PolicyTypeId]
-            ,case when [UnitPrice] > 0 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice] + {entity.UnitPrice} else [UnitPrice] - {entity.UnitPrice} end else [UnitPrice] end
-            ,isnull(case when [UnitPrice1] > 0 then case when {entity.TypeId} = 7592 or {entity.TypeId} = 7593 or {entity.TypeId} = 7594 or {entity.TypeId} = 7596 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice1] + {unitPrice1} else [UnitPrice1] - {unitPrice1} end else [UnitPrice1] end end,0)
+            ,case when[UnitPrice] > 0 then case when {(entity.IsAdd ? 1 : 0)} = 1 then[UnitPrice] + {entity.UnitPrice} else [UnitPrice] - {entity.UnitPrice}
+                end else [UnitPrice] end
+            ,isnull(case when[UnitPrice1] > 0 then case when {entity.TypeId} = 7592 or {entity.TypeId} = 7593 or {entity.TypeId} = 7594 or {entity.TypeId} = 7596 then case when {(entity.IsAdd ? 1 : 0)} = 1 then[UnitPrice1] + {unitPrice1} else [UnitPrice1] - {unitPrice1}
+                end else [UnitPrice1] end end,0)
             ,UnitPrice2
             ,'{entity.StartDate:yyyy-MM-dd}' as [StartDate]
             ,[Note]
@@ -148,14 +186,15 @@ namespace TMS.API.Controllers
             ,GETDATE() as InsertedDate
             ,{UserId}
             ,{entity.Id}
-            ,isnull(case when [UnitPrice3] > 0 then case when {entity.TypeId} = 7592 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice3] + {unitPrice3} else [UnitPrice3] - {unitPrice3} end else [UnitPrice3] end end,0)
+            ,isnull(case when[UnitPrice3] > 0 then case when {entity.TypeId} = 7592 then case when {(entity.IsAdd ? 1 : 0)} = 1 then[UnitPrice3] + {unitPrice3} else [UnitPrice3] - {unitPrice3}
+                end else [UnitPrice3] end end,0)
             ,[ParentId]
             ,[IsParent]
             ,[RegionId]
             ,[DistrictId]
             ,[ProvinceId]
             ,{VendorId}
-                            FROM cte
+                FROM cte
                             WHERE rn = 1";
 
 
@@ -211,6 +250,60 @@ namespace TMS.API.Controllers
             ,{VendorId}
                             FROM cte1
                             WHERE rn1 = 1";
+            }
+
+            if (!entity.Support)
+            {
+                cmd += $@"insert into Quotation(BranchId
+            			   ,[TypeId]
+            			   ,[RouteId]
+            			   ,[ContainerTypeId]
+            			   ,[PackingId]
+            			   ,[BossId]
+            			   ,[LocationId]
+            			   ,[PolicyTypeId]
+            			   ,[UnitPrice]
+            			   ,[UnitPrice1]
+            			   ,[UnitPrice2]
+            			   ,[StartDate]
+            			   ,[Note]
+            			   ,[Active]
+            			   ,[InsertedDate]
+            			   ,[InsertedBy]
+            			   ,[QuotationUpdateId]
+            			   ,[UnitPrice3]
+            			   ,[ParentId]
+            			   ,[IsParent]
+            			   ,[RegionId]
+            			   ,[DistrictId]
+            			   ,[ProvinceId]
+                           ,[ExportListId])
+                SELECT [BranchId]
+            ,[TypeId]
+            ,[RouteId]
+            ,[ContainerTypeId]
+            ,[PackingId]
+            ,[BossId]
+            ,[LocationId]
+            ,[PolicyTypeId]
+            ,case when [UnitPrice] > 0 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice] else [UnitPrice] end else [UnitPrice] end
+            ,isnull(case when [UnitPrice1] > 0 then case when {entity.TypeId} = 7592 or {entity.TypeId} = 7593 or {entity.TypeId} = 7594 or {entity.TypeId} = 7596 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice1] else [UnitPrice1] end else [UnitPrice1] end end,0)
+            ,UnitPrice2
+            ,'{entity.StartDate:yyyy-MM-dd}' as [StartDate]
+            ,[Note]
+            ,[Active]
+            ,GETDATE() as InsertedDate
+            ,{UserId}
+            ,{entity.Id}
+            ,isnull(case when [UnitPrice3] > 0 then case when {entity.TypeId} = 7592 then case when {(entity.IsAdd ? 1 : 0)} = 1 then [UnitPrice3] else [UnitPrice3] end else [UnitPrice3] end end,0)
+            ,[ParentId]
+            ,[IsParent]
+            ,[RegionId]
+            ,[DistrictId]
+            ,[ProvinceId]
+            ,{VendorId}
+                            FROM cte2
+                            WHERE rn2 = 1";
             }
             await db.Database.ExecuteSqlRawAsync(cmd);
             return true;

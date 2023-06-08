@@ -23,6 +23,7 @@ namespace TMS.API.Models
         public int InsertedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public int? UpdatedBy { get; set; }
+        public bool Support { get; set; }
 
         public virtual ICollection<Quotation> Quotation { get; set; }
     }

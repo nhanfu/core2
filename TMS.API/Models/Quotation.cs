@@ -39,6 +39,7 @@ namespace TMS.API.Models
         public int? DistrictId { get; set; }
         public int? ProvinceId { get; set; }
         public int? ExportListId { get; set; }
+        public bool Support { get; set; }
 
         public virtual Location Location { get; set; }
         public virtual Quotation Parent { get; set; }
