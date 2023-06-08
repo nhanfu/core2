@@ -2715,7 +2715,7 @@ namespace Core.Components
             }
             if (GuiInfo.CanAdd)
             {
-                mainSectionHeight -= _rowHeight;
+                mainSectionHeight -= _rowHeight - 1;
             }
             return GetRowCountByHeight(mainSectionHeight);
         }
