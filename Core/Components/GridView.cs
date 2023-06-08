@@ -274,7 +274,7 @@ namespace Core.Components
 
         protected void ClickHeader(Event e, GridPolicy header)
         {
-            var th = e.Target as HTMLElement;
+            var th = (e.Target as HTMLElement).Closest("th");
             var tr = th.ParentElement.QuerySelectorAll("th");
             var index = tr.FindItemAndIndex(x => x == th).Item2;
             if (index < 0)
@@ -283,7 +283,7 @@ namespace Core.Components
             }
             /*@
                 th.parentElement.parentElement.parentElement.querySelectorAll('tr:not(.summary)').forEach(function(row) {
-                    if(row.hasAttribute('virtualrow')){
+                    if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
                         return;
                     }
                     const cells = [].slice.call(row.querySelectorAll('th, td'));
@@ -295,7 +295,7 @@ namespace Core.Components
 
         protected void FocusOutHeader(Event e, GridPolicy header)
         {
-            var th = e.Target as HTMLElement;
+            var th = (e.Target as HTMLElement).Closest("th");
             var tr = th.ParentElement.QuerySelectorAll("th");
             var index = tr.FindItemAndIndex(x => x == th).Item2;
             if (index < 0)
@@ -304,7 +304,7 @@ namespace Core.Components
             }
             /*@
                 th.parentElement.parentElement.parentElement.querySelectorAll('tr:not(.summary)').forEach(function(row) {
-                    if(row.hasAttribute('virtualrow')){
+                    if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
                        return;
                     }
                     const cells = [].slice.call(row.querySelectorAll('th, td'));
@@ -324,12 +324,12 @@ namespace Core.Components
             if (keyCode == KeyCodeEnum.RightArrow)
             {
                 e.StopPropagation();
-                var th = e.Target as HTMLElement;
+                var th = (e.Target as HTMLElement).Closest("th");
                 var tr = th.ParentElement.QuerySelectorAll("th");
                 var index = tr.FindItemAndIndex(x => x == th).Item2;
                 /*@
                 th.parentElement.parentElement.parentElement.querySelectorAll('tr').forEach(function(row) {
-                        if(row.hasAttribute('virtualrow')){
+                        if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
                             return;
                         }
                         const cells = [].slice.call(row.querySelectorAll('th, td'));
@@ -359,12 +359,12 @@ namespace Core.Components
             else if (keyCode == KeyCodeEnum.LeftArrow)
             {
                 e.StopPropagation();
-                var th1 = e.Target as HTMLElement;
+                var th1 = (e.Target as HTMLElement).Closest("th");
                 var tr1 = th1.ParentElement.QuerySelectorAll("th");
                 var index1 = tr1.FindItemAndIndex(x => x == th1).Item2;
                 /*@
                 th1.parentElement.parentElement.parentElement.querySelectorAll('tr').forEach(function(row) {
-                        if(row.hasAttribute('virtualrow')){
+                        if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
                             return;
                         }
                         const cells = [].slice.call(row.querySelectorAll('th, td'));
