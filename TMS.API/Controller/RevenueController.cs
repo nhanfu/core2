@@ -26,7 +26,17 @@ namespace TMS.API.Controllers
             var tran = await db.Transportation.Where(x => x.Id == entity.TransportationId).FirstOrDefaultAsync();
             if (tran != null && tran.IsLocked)
             {
-                throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
+                if (!patch.Changes.Any(x => (x.Field == nameof(entity.InvoinceNo))
+                || (x.Field == nameof(entity.InvoinceDate))
+                || (x.Field == nameof(entity.LotNo))
+                || (x.Field == nameof(entity.LotDate))
+                || (x.Field == nameof(entity.TotalPriceBeforTax))
+                || (x.Field == nameof(entity.VatPrice))
+                || (x.Field == nameof(entity.Vat)
+                || (x.Field == nameof(entity.VendorVatId)))))
+                {
+                    throw new ApiException("DSVC này đã được khóa. Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
+                }
             }
             if (patch.Changes.Any(x => (x.Field == nameof(entity.InvoinceNo))
                 || (x.Field == nameof(entity.InvoinceDate))

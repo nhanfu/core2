@@ -445,7 +445,10 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-            if (tran.IsLocked && !patch.Changes.Any(x => x.Field == nameof(tran.IsLocked)))
+            if (tran.IsLocked && !patch.Changes.Any(x => x.Field == nameof(tran.IsLocked)
+                                                    || x.Field == nameof(tran.Notes)
+                                                    || x.Field == nameof(tran.IsLockedRevenue)
+                                                    || x.Field == nameof(tran.IsSubmit)))
             {
                 var confirm = new ConfirmDialog
                 {
@@ -663,7 +666,17 @@ namespace TMS.UI.Business.Manage
             }
             else
             {
-                OpenRevenueRequestBL(revenue);
+                if (!patch.Changes.Any(x => (x.Field == nameof(revenue.InvoinceNo))
+                || (x.Field == nameof(revenue.InvoinceDate))
+                || (x.Field == nameof(revenue.LotNo))
+                || (x.Field == nameof(revenue.LotDate))
+                || (x.Field == nameof(revenue.TotalPriceBeforTax))
+                || (x.Field == nameof(revenue.VatPrice))
+                || (x.Field == nameof(revenue.Vat)
+                || (x.Field == nameof(revenue.VendorVatId)))))
+                {
+                    OpenRevenueRequestBL(revenue);
+                }
             }
         }
 
