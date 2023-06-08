@@ -91,16 +91,11 @@ namespace Core.Components
         {
             _renderingViewPort = true;
             viewPortCount = GetViewPortItem();
-            if (firstLoad)
-            {
-                viewPortCount += 1;
-            }
             var scrollTop = DataTable.ParentElement.ScrollTop;
             if (scrollTop == _lastScrollTop)
             {
                 return;
             }
-            SetRowHeight();
             var skip = GetRowCountByHeight(scrollTop);
             if (viewPortCount <= 0)
             {
@@ -132,7 +127,6 @@ namespace Core.Components
             RowData.Data.Clear();
             rows.ForEach(RowData.Data.Add);
             Entity?.SetComplexPropValue(GuiInfo.FieldName, rows);
-            SetRowHeight();
             RowAction(x => x.Focused = false);
             if (IsSmallUp)
             {
