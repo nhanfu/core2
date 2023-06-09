@@ -412,7 +412,7 @@ namespace TMS.API.Services
         public string Transportation_ShellDate(PatchUpdate patchUpdate, int Id)
         {
             if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.LeftDate)
-            || x.Field == nameof(Transportation.ReturnVs)))
+            || x.Field == nameof(Transportation.ClosingCont)))
             {
                 return null;
             }

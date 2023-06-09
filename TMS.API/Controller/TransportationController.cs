@@ -1555,7 +1555,7 @@ namespace TMS.API.Controllers
 					    and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc),
                         Dem = (case when DATEDIFF(DAY,Transportation.DemDate,Transportation.ReturnDate) <= 0 then null else DATEDIFF(DAY,Transportation.DemDate,Transportation.ReturnDate) end)
 					    from Transportation
-					    where Transportation.ShipDate is not null and Transportation.ShipId = '{entity.ShipId}' and (Transportation.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Transportation.Trip = '{entity.Trip}' and Transportation.RouteId in ({entity.RouteIds.Combine()});
+					    where Transportation.ShipId = '{entity.ShipId}' and (Transportation.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Transportation.Trip = '{entity.Trip}' and Transportation.RouteId in ({entity.RouteIds.Combine()});
                         ";
             await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return check;
