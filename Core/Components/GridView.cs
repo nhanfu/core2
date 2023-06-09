@@ -2098,7 +2098,7 @@ namespace Core.Components
                     .TabIndex(-1)
                     .DataAttr("field", header.FieldName)
                     .DataAttr("id", header.Id).Width(header.AutoFit ? "auto" : header.Width)
-                    .Style($"min-width: {header.MinWidth}; max-width: {header.MaxWidth}")
+                    .Style($"{header.Style};min-width: {header.MinWidth}; max-width: {header.MaxWidth}")
                     .TextAlign(TextAlign.center)
                     .Event(EventType.ContextMenu, HeaderContextMenu, header)
                     .Event(EventType.FocusOut, (e) => FocusOutHeader(e, header))
