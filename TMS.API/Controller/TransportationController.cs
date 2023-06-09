@@ -90,6 +90,14 @@ namespace TMS.API.Controllers
                         }
                         var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
                         var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(Transportation)}];";
+                        }
+                        else
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
+                        }
                         command.CommandText += $" UPDATE [{nameof(Transportation)}] SET {update.Combine()} WHERE Id = {idInt};";
                         command.CommandText += " " + _transportationService.Transportation_ClosingUnitPrice(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_ReturnUnitPrice(patch, idInt);
@@ -114,6 +122,10 @@ namespace TMS.API.Controllers
                         command.CommandText += " " + _transportationService.Transportation_ShipUnitPriceQuotation(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_VendorLocation(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_Expense(patch, idInt);
+                        if (disableTrigger)
+                        {
+                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
+                        }
                         foreach (var item in updates)
                         {
                             command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
@@ -1555,7 +1567,7 @@ namespace TMS.API.Controllers
 					    and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc),
                         Dem = (case when DATEDIFF(DAY,Transportation.DemDate,Transportation.ReturnDate) <= 0 then null else DATEDIFF(DAY,Transportation.DemDate,Transportation.ReturnDate) end)
 					    from Transportation
-					    where Transportation.ShipId = '{entity.ShipId}' and (Transportation.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Transportation.Trip = '{entity.Trip}' and Transportation.RouteId in ({entity.RouteIds.Combine()});
+					    where Transportation.ShipDate is not null and Transportation.ShipId = '{entity.ShipId}' and (Transportation.BrandShipId = '{entity.BrandShipId}' or '{entity.BrandShipId}' = '') and Transportation.Trip = '{entity.Trip}' and Transportation.RouteId in ({entity.RouteIds.Combine()});
                         ";
             await ExecSql(cmd, "DISABLE TRIGGER ALL ON Transportation;", "ENABLE TRIGGER ALL ON Transportation;");
             return check;
