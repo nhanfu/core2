@@ -673,6 +673,7 @@ namespace TMS.UI.Business.Manage
                 || (x.Field == nameof(revenue.TotalPriceBeforTax))
                 || (x.Field == nameof(revenue.VatPrice))
                 || (x.Field == nameof(revenue.Vat)
+                || (x.Field == nameof(revenue.TotalPrice))
                 || (x.Field == nameof(revenue.VendorVatId)))))
                 {
                     OpenRevenueRequestBL(revenue);

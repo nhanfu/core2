@@ -33,6 +33,7 @@ namespace TMS.API.Controllers
                 || (x.Field == nameof(entity.TotalPriceBeforTax))
                 || (x.Field == nameof(entity.VatPrice))
                 || (x.Field == nameof(entity.Vat)
+                || (x.Field == nameof(entity.TotalPrice))
                 || (x.Field == nameof(entity.VendorVatId))
                 || (x.Field == nameof(entity.VendorVatName)))))
                 {
