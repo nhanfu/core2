@@ -90,14 +90,6 @@ namespace TMS.API.Controllers
                         }
                         var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
                         var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
-                        if (disableTrigger)
-                        {
-                            command.CommandText += $" DISABLE TRIGGER ALL ON [{nameof(Transportation)}];";
-                        }
-                        else
-                        {
-                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
-                        }
                         command.CommandText += $" UPDATE [{nameof(Transportation)}] SET {update.Combine()} WHERE Id = {idInt};";
                         command.CommandText += " " + _transportationService.Transportation_ClosingUnitPrice(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_ReturnUnitPrice(patch, idInt);
@@ -122,10 +114,6 @@ namespace TMS.API.Controllers
                         command.CommandText += " " + _transportationService.Transportation_ShipUnitPriceQuotation(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_VendorLocation(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_Expense(patch, idInt);
-                        if (disableTrigger)
-                        {
-                            command.CommandText += $" ENABLE TRIGGER ALL ON [{nameof(Transportation)}];";
-                        }
                         foreach (var item in updates)
                         {
                             command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
