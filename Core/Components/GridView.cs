@@ -2708,14 +2708,17 @@ namespace Core.Components
             {
                 return RowData.Data.Count();
             }
-            var mainSectionHeight = Element.ClientHeight - (ListViewSearch.Element?.ClientHeight ?? 0) - Paginator.Element.ClientHeight - _theadTable - _rowHeight;
+            var mainSectionHeight = Element.ClientHeight 
+                - (ListViewSearch.Element?.ClientHeight ?? 0) 
+                - Paginator.Element.ClientHeight 
+                - _theadTable;
             if (!Header.All(x => x.Summary.IsNullOrEmpty()))
             {
                 mainSectionHeight -= _tfooterTable;
             }
             if (GuiInfo.CanAdd)
             {
-                mainSectionHeight -= _rowHeight - 1;
+                mainSectionHeight -= _rowHeight;
             }
             return GetRowCountByHeight(mainSectionHeight);
         }
