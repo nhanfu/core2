@@ -101,8 +101,15 @@ namespace TMS.UI.Business.Accountant
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()})");
-            var listViewItems = transportations.Where(x => x.IsLocked == false).ToList();
+            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()})");
+            if (revenueEntity.IsUnitPriceAfterTax ||
+                    revenueEntity.IsUnitPriceBeforeTax ||
+                    revenueEntity.IsReceivedPrice ||
+                    revenueEntity.IsCollectOnBehaftPrice ||
+                    revenueEntity.IsNotePayment)
+            {
+                listViewItems = listViewItems.Where(x => x.IsLocked == false).ToList();
+            }
             if (listViewItems.Count <= 0)
             {
                 Toast.Warning("Không có DSVC nào có thể nhập");
@@ -212,8 +219,15 @@ namespace TMS.UI.Business.Accountant
             }
             var ids = gridView.SelectedIds.ToList();
             var revenueSelecteds = await new Client(nameof(Revenue)).GetRawList<Revenue>($"?$filter=Active eq true and Id in ({ids.Combine()})");
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({revenueSelecteds.Select(x => x.TransportationId).Combine()})");
-            var listViewItems = transportations.Where(x => x.IsLocked == false).ToList();
+            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({revenueSelecteds.Select(x => x.TransportationId).Combine()})");
+            if (revenueEntity.IsUnitPriceAfterTax ||
+                    revenueEntity.IsUnitPriceBeforeTax ||
+                    revenueEntity.IsReceivedPrice ||
+                    revenueEntity.IsCollectOnBehaftPrice ||
+                    revenueEntity.IsNotePayment)
+            {
+                listViewItems = listViewItems.Where(x => x.IsLocked == false).ToList();
+            }
             var listViewItemsIsSubmit = listViewItems.Where(x => x.IsSubmit == true).ToList();
             var listViewItemsIsLockedRevenue = listViewItems.Where(x => x.IsLockedRevenue == true).ToList();
             var idTrans = listViewItems.Select(x => x.Id).ToList();
@@ -314,8 +328,15 @@ namespace TMS.UI.Business.Accountant
                 return;
             }
             var ids = gridView.SelectedIds.ToList();
-            var transportations = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()})");
-            var listViewItems = transportations.Where(x => x.IsLocked == false).ToList();
+            var listViewItems = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$filter=Active eq true and Id in ({ids.Combine()})");
+            if (revenueEntity.IsUnitPriceAfterTax ||
+                    revenueEntity.IsUnitPriceBeforeTax ||
+                    revenueEntity.IsReceivedPrice ||
+                    revenueEntity.IsCollectOnBehaftPrice ||
+                    revenueEntity.IsNotePayment)
+            {
+                listViewItems = listViewItems.Where(x => x.IsLocked == false).ToList();
+            }
             if (listViewItems.Count <= 0)
             {
                 Toast.Warning("Không có DSVC nào có thể nhập");
