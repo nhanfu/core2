@@ -29,7 +29,7 @@ namespace TMS.API.Controllers
             var listVendorContact = new List<VendorContact>();
             if (!entity.Description1.IsNullOrWhiteSpace())
             {
-                var v1 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description1);
+                var v1 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description1);
                 if (v1 != null)
                 {
                     listVendorContact.AddRange(v1.VendorContact);
@@ -37,7 +37,7 @@ namespace TMS.API.Controllers
             }
             if (!entity.Description2.IsNullOrWhiteSpace())
             {
-                var v2 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description2);
+                var v2 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description2);
                 if (v2 != null)
                 {
                     listVendorContact.AddRange(v2.VendorContact);
@@ -45,7 +45,7 @@ namespace TMS.API.Controllers
             }
             if (!entity.Description3.IsNullOrWhiteSpace())
             {
-                var v3 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description3);
+                var v3 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description3);
                 if (v3 != null)
                 {
                     listVendorContact.AddRange(v3.VendorContact);
@@ -72,7 +72,7 @@ namespace TMS.API.Controllers
                 var listVendorContact = new List<VendorContact>();
                 if (!entity.Description1.IsNullOrWhiteSpace())
                 {
-                    var v1 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description1);
+                    var v1 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description1);
                     if (v1 != null)
                     {
                         listVendorContact.AddRange(v1.VendorContact);
@@ -80,7 +80,7 @@ namespace TMS.API.Controllers
                 }
                 if (!entity.Description2.IsNullOrWhiteSpace())
                 {
-                    var v2 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description2);
+                    var v2 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description2);
                     if (v2 != null)
                     {
                         listVendorContact.AddRange(v2.VendorContact);
@@ -88,7 +88,7 @@ namespace TMS.API.Controllers
                 }
                 if (!entity.Description3.IsNullOrWhiteSpace())
                 {
-                    var v3 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description3);
+                    var v3 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description3);
                     if (v3 != null)
                     {
                         listVendorContact.AddRange(v3.VendorContact);
