@@ -88,9 +88,9 @@ namespace Core.Clients
             EntityAction.Add(new EntityAction { EntityId = entity.Id, Action = entityAction });
         }
 
-        public void RemoveListener(Action<object> action)
+        public void RemoveListener(Action<object> action, int entityId)
         {
-            EntityAction.RemoveAll(x => x.Action == action);
+            EntityAction.RemoveAll(x => x.Action == action && x.EntityId == entityId);
         }
 
         public void Close() => _socket.Close();

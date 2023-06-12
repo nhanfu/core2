@@ -146,23 +146,23 @@ namespace Core.Components
             _scrollTable = GuiInfo.FooterHeight ?? 10;
             if (GuiInfo.IsRealtime)
             {
-                EditForm.NotificationClient.AddListener(GuiInfo.ReferenceId.Value, RealtimeUpdate);
+                EditForm.NotificationClient.AddListener(GuiInfo.ReferenceId.Value, RealtimeUpdateListViewItem);
             }
         }
 
-        internal void RealtimeUpdate(object updatedData)
+        internal void RealtimeUpdateListViewItem(object updatedData)
         {
             Task.Run(async () =>
             {
                 await LoadMasterData(new object[] { updatedData });
-                var listViewItem = AllListViewItem.FirstOrDefault(x => x.Entity[IdField] == updatedData[IdField]);
+                var listViewItem = MainSection.FilterChildren<ListViewItem>(x => x.Entity[IdField] == updatedData[IdField]).FirstOrDefault();
                 if (GuiInfo.ComponentType == nameof(VirtualGrid))
                 {
                     CacheData.FirstOrDefault(x => x[IdField] == updatedData[IdField]).CopyPropFrom(updatedData);
                 }
                 listViewItem.Entity.CopyPropFrom(updatedData);
                 var arr = listViewItem.FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.GuiInfo.FieldName).ToArray();
-                UpdateView(true, arr);
+                listViewItem.UpdateView(true, arr);
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem);
             });
         }
@@ -1818,7 +1818,7 @@ namespace Core.Components
 
         public override void Dispose()
         {
-            EditForm.NotificationClient?.RemoveListener(RealtimeUpdate);
+            EditForm.NotificationClient?.RemoveListener(RealtimeUpdateListViewItem, GuiInfo.ReferenceId.Value);
             base.Dispose();
         }
     }
