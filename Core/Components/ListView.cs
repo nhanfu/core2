@@ -927,7 +927,15 @@ namespace Core.Components
         {
             Task.Run(async () =>
             {
-                var deletedItems = await GetRealTimeSelectedRows();
+                var deletedItems = new List<object>();
+                if (GuiInfo.ComponentType == nameof(VirtualGrid))
+                {
+                    deletedItems = await GetRealTimeSelectedRows();
+                }
+                else
+                {
+                    deletedItems = GetSelectedRows();
+                }
                 if (GuiInfo.IgnoreConfirmHardDelete && OnDeleteConfirmed != null)
                 {
                     OnDeleteConfirmed.Invoke();
@@ -950,7 +958,7 @@ namespace Core.Components
                         deletedItems = GetFocusedRows().ToList();
                     }
                     await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems);
-                    await HardDeleteConfirmed();
+                    await HardDeleteConfirmed(deletedItems);
                     DOMContentLoaded?.Invoke();
                     await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems);
                 };
@@ -978,11 +986,20 @@ namespace Core.Components
             }
         }
 
-        public virtual async Task<IEnumerable<object>> HardDeleteConfirmed()
+        public virtual async Task<IEnumerable<object>> HardDeleteConfirmed(List<object> deleted)
         {
             var entity = GuiInfo.RefName;
-            var deleted = await GetRealTimeSelectedRows();
-            var ids = deleted.Select(x => (int)x[IdField]).ToList();
+            var ids = deleted.Select(x => (int)x[IdField]).Where(x => x > 0).ToList();
+            var removeRow = deleted.Where(x => (int)x[IdField] <= 0).ToList();
+            if (removeRow.Any())
+            {
+                RemoveRange(removeRow);
+            }
+            if (ids.Nothing())
+            {
+                Toast.Success("Xóa dữ liệu thành công");
+                return null;
+            }
             var client = new Client(entity);
             var success = await client.HardDeleteAsync(ids);
             if (success)

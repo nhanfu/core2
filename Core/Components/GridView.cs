@@ -2611,9 +2611,9 @@ namespace Core.Components
             RenderIndex();
         }
 
-        public override async Task<IEnumerable<object>> HardDeleteConfirmed()
+        public override async Task<IEnumerable<object>> HardDeleteConfirmed(List<object> deleted)
         {
-            var res = await base.HardDeleteConfirmed();
+            var res = await base.HardDeleteConfirmed(deleted);
             if (GuiInfo.ComponentType == nameof(VirtualGrid) && res != null)
             {
                 var ids = res.Select(x => int.Parse(x[IdField].ToString())).ToList();

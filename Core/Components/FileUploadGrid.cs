@@ -197,12 +197,12 @@ namespace Core.Components
             return listData;
         }
 
-        public override async Task<IEnumerable<object>> HardDeleteConfirmed()
+        public override async Task<IEnumerable<object>> HardDeleteConfirmed(List<object> deleted)
         {
-            var deleted = await base.HardDeleteConfirmed();
+            var deleted1 = await base.HardDeleteConfirmed(deleted);
             Dirty = true;
             SetEntityPath();
-            return deleted;
+            return deleted1;
         }
     }
 }
