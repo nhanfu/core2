@@ -27,17 +27,29 @@ namespace TMS.API.Controllers
                 throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
             }
             var listVendorContact = new List<VendorContact>();
-            if (entity.Description1.IsNullOrWhiteSpace())
+            if (!entity.Description1.IsNullOrWhiteSpace())
             {
-                listVendorContact.AddRange((await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description1)).VendorContact);
+                var v1 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description1);
+                if (v1 != null)
+                {
+                    listVendorContact.AddRange(v1.VendorContact);
+                }
             }
-            if (entity.Description2.IsNullOrWhiteSpace())
+            if (!entity.Description2.IsNullOrWhiteSpace())
             {
-                listVendorContact.AddRange((await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description2)).VendorContact);
+                var v2 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description2);
+                if (v2 != null)
+                {
+                    listVendorContact.AddRange(v2.VendorContact);
+                }
             }
-            if (entity.Description3.IsNullOrWhiteSpace())
+            if (!entity.Description3.IsNullOrWhiteSpace())
             {
-                listVendorContact.AddRange((await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description3)).VendorContact);
+                var v3 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description3);
+                if (v3 != null)
+                {
+                    listVendorContact.AddRange(v3.VendorContact);
+                }
             }
             listVendorContact.ForEach(x =>
             {
@@ -58,17 +70,29 @@ namespace TMS.API.Controllers
             if (entity.VendorContact.Nothing())
             {
                 var listVendorContact = new List<VendorContact>();
-                if (entity.Description1.IsNullOrWhiteSpace())
+                if (!entity.Description1.IsNullOrWhiteSpace())
                 {
-                    listVendorContact.AddRange((await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description1)).VendorContact);
+                    var v1 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description1);
+                    if (v1 != null)
+                    {
+                        listVendorContact.AddRange(v1.VendorContact);
+                    }
                 }
-                if (entity.Description2.IsNullOrWhiteSpace())
+                if (!entity.Description2.IsNullOrWhiteSpace())
                 {
-                    listVendorContact.AddRange((await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description2)).VendorContact);
+                    var v2 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description2);
+                    if (v2 != null)
+                    {
+                        listVendorContact.AddRange(v2.VendorContact);
+                    }
                 }
-                if (entity.Description3.IsNullOrWhiteSpace())
+                if (!entity.Description3.IsNullOrWhiteSpace())
                 {
-                    listVendorContact.AddRange((await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description3)).VendorContact);
+                    var v3 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description3);
+                    if (v3 != null)
+                    {
+                        listVendorContact.AddRange(v3.VendorContact);
+                    }
                 }
                 listVendorContact.ForEach(x =>
                 {
