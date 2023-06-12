@@ -1,6 +1,5 @@
 ﻿using Core.Extensions;
 using Microsoft.AspNet.OData.Query;
-using Microsoft.AspNetCore.Mvc;
 using TMS.API.Models;
 
 namespace TMS.API.Controllers
