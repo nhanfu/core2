@@ -14,27 +14,68 @@ namespace TMS.API.Controllers
 {
     public class LocationController : TMSController<Location>
     {
-        public LocationController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public LocationController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
         }
 
         public override async Task<ActionResult<Location>> CreateAsync([FromBody] Location entity)
         {
-            var check = await db.Location.FirstOrDefaultAsync(x => x.Description1 == entity.Description1 && x.Description2 == entity.Description2);
+            var check = await db.Location.FirstOrDefaultAsync(x => x.Description1 == entity.Description1 && x.Description2 == entity.Description2 && x.Description3 == entity.Description3);
             if (check != null)
             {
                 throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
             }
+            var listVendorContact = new List<VendorContact>();
+            if (entity.Description1.IsNullOrWhiteSpace())
+            {
+                listVendorContact.AddRange((await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description1)).VendorContact);
+            }
+            if (entity.Description2.IsNullOrWhiteSpace())
+            {
+                listVendorContact.AddRange((await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description2)).VendorContact);
+            }
+            if (entity.Description3.IsNullOrWhiteSpace())
+            {
+                listVendorContact.AddRange((await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description3)).VendorContact);
+            }
+            listVendorContact.ForEach(x =>
+            {
+                x.Id = 0;
+                x.LocationId = null;
+            });
+            entity.VendorContact = listVendorContact;
             return await base.CreateAsync(entity);
         }
 
         public override async Task<ActionResult<Location>> UpdateAsync([FromBody] Location entity, string reasonOfChange = "")
         {
-            var check = await db.Location.FirstOrDefaultAsync(x => x.Description1 == entity.Description1 && x.Description2 == entity.Description2 && x.Id != entity.Id);
+            var check = await db.Location.FirstOrDefaultAsync(x => x.Description1 == entity.Description1 && x.Description2 == entity.Description2 && x.Description3 == entity.Description3 && x.Id != entity.Id);
             if (check != null)
             {
                 throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
+            }
+            if (entity.VendorContact.Nothing())
+            {
+                var listVendorContact = new List<VendorContact>();
+                if (entity.Description1.IsNullOrWhiteSpace())
+                {
+                    listVendorContact.AddRange((await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description1)).VendorContact);
+                }
+                if (entity.Description2.IsNullOrWhiteSpace())
+                {
+                    listVendorContact.AddRange((await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description2)).VendorContact);
+                }
+                if (entity.Description3.IsNullOrWhiteSpace())
+                {
+                    listVendorContact.AddRange((await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Name == entity.Description3)).VendorContact);
+                }
+                listVendorContact.ForEach(x =>
+                {
+                    x.Id = 0;
+                    x.LocationId = null;
+                });
+                entity.VendorContact = listVendorContact;
             }
             return await base.UpdateAsync(entity, reasonOfChange);
         }
