@@ -75,7 +75,11 @@ namespace Core.Clients
 
         public void AddListener(int entityId, Action<object> entityAction)
         {
-            EntityAction.Add(new EntityAction { EntityId = entityId, Action = entityAction });
+            var lastUpdate = EntityAction.FirstOrDefault(x => x.EntityId == entityId && x.Action == entityAction);
+            if (lastUpdate is null)
+            {
+                EntityAction.Add(new EntityAction { EntityId = entityId, Action = entityAction });
+            }
         }
 
         public void AddListener(string entityName, Action<object> entityAction)

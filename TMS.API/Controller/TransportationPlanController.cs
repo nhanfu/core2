@@ -2,17 +2,14 @@
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
+using Hangfire;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text.RegularExpressions;
 using TMS.API.Models;
 using TMS.API.Services;
-using TMS.API.ViewModels;
-using FileIO = System.IO.File;
 
 namespace TMS.API.Controllers
 {
@@ -175,7 +172,7 @@ namespace TMS.API.Controllers
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
             var entity = await db.TransportationPlan.FindAsync(idInt);
-            if (entity.IsTransportation && entity.RequestChangeId is null && !patch.Changes.Any(x => x.Field == nameof(TransportationPlan.TotalContainer)))
+            if (entity.IsTransportation && entity.RequestChangeId is null && !patch.Changes.Any(x => x.Field == nameof(TransportationPlan.TotalContainer) || x.Field == nameof(TransportationPlan.IsTransportation)))
             {
                 throw new ApiException("Kế hoạch đã được sử dụng!") { StatusCode = HttpStatusCode.BadRequest };
             }
@@ -222,6 +219,11 @@ namespace TMS.API.Controllers
                         command.ExecuteNonQuery();
                         transaction.Commit();
                         await db.Entry(entity).ReloadAsync();
+                        BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<TransportationPlan>
+                        {
+                            EntityId = _entitySvc.GetEntity(typeof(TransportationPlan).Name).Id,
+                            Data = entity
+                        }, UserId));
                         return entity;
                     }
                 }
@@ -271,8 +273,13 @@ namespace TMS.API.Controllers
             SetAuditInfo(taskNotification);
             db.AddRange(taskNotification);
             await db.SaveChangesAsync();
+            BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<TransportationPlan>
+            {
+                EntityId = _entitySvc.GetEntity(typeof(TransportationPlan).Name).Id,
+                Data = entity
+            }, UserId));
             await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
-            var transportations = await db.Transportation.AsNoTracking().Where(x => x.TransportationPlanId == oldEntity.Id).ToListAsync();
+            var transportations = await db.Transportation.Where(x => x.TransportationPlanId == oldEntity.Id).ToListAsync();
             foreach (var item in transportations)
             {
                 var idInt = item.Id;
@@ -370,8 +377,14 @@ namespace TMS.API.Controllers
                             {
                                 command.Parameters.AddWithValue($"@{itemDetail.Field.ToLower()}", itemDetail.Value is null ? DBNull.Value : itemDetail.Value);
                             }
-                            command.ExecuteNonQuery();
+                            await command.ExecuteNonQueryAsync();
                             transaction.Commit();
+                            await db.Entry(item).ReloadAsync();
+                            BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<Transportation>
+                            {
+                                EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                                Data = item
+                            }, UserId));
                         }
                     }
                     catch (Exception ex)

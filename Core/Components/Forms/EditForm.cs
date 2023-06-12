@@ -123,52 +123,6 @@ namespace Core.Components.Forms
             LayoutForm = LayoutForm ?? new EditForm(null);
         }
 
-        protected virtual void RealtimeUpdate(object updatedData)
-        {
-            updatedData.SetComplexPropValue(nameof(User.InsertedDate), Convert.ToDateTime(updatedData.GetComplexPropValue(nameof(User.InsertedDate))));
-            if (updatedData is null)
-            {
-                return;
-            }
-
-            var id = updatedData[IdField].As<int?>();
-            if (id is null)
-            {
-                return;
-            }
-
-            if (Entity != null && Entity[IdField].As<int?>() == id.Value)
-            {
-                Entity.CopyPropFrom(updatedData);
-                UpdateViewAwait();
-                return;
-            }
-            var listViewItems = FilterChildren(x => ListViewItemFilter(updatedData, x), stopWhere: x => x is TabEditor).ToArray();
-            if (listViewItems.Nothing())
-            {
-                return;
-            }
-            foreach (var listViewItem in listViewItems)
-            {
-                listViewItem.Entity.CopyPropFrom(updatedData);
-                listViewItem.EmptyRow = false;
-                var itemD = listViewItem as ListViewItem;
-                if (itemD != null)
-                {
-                    Task.Run(async () =>
-                    {
-                        await itemD.ListViewSection.ListView.LoadMasterData(new object[] { updatedData });
-                        itemD.EmptyRow = false;
-                        itemD.UpdateView(true);
-                    });
-                }
-                else
-                {
-                    listViewItem.UpdateView(true);
-                }
-            }
-        }
-
         private static bool ListViewItemFilter(object updatedData, EditableComponent x)
         {
             if (x is GroupViewItem)
@@ -1261,7 +1215,6 @@ namespace Core.Components.Forms
         public override void Dispose()
         {
             Client = null;
-            NotificationClient?.RemoveListener(RealtimeUpdate);
             Window.RemoveEventListener(EventType.Resize, ResizeHandler);
             base.Dispose();
         }

@@ -93,5 +93,13 @@ namespace TMS.API.Services
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             }));
         }
+
+        public async Task SendMessageAllUserOtherMe(object task, int UserId)
+        {
+            await _fcmSvc.SendMessageToAllOtherMe(JsonConvert.SerializeObject(task, new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            }), UserId);
+        }
     }
 }

@@ -1,6 +1,7 @@
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
+using Hangfire;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -98,6 +99,7 @@ namespace TMS.API
                 options.EnableSensitiveDataLogging();
 #endif
             });
+            services.AddHangfire(configuration => configuration.UseSqlServerStorage(_configuration.GetConnectionString($"Log")));
             services.AddOData();
             var tokenOptions = new TokenValidationParameters()
             {
@@ -190,6 +192,7 @@ namespace TMS.API
             return tenantCode;
         }
 
+        [Obsolete]
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TMSContext tms, EntityService entity)
         {
             if (entity.Entities.Nothing())
@@ -212,6 +215,8 @@ namespace TMS.API
                 app.UseHttpStatusCodeExceptionMiddleware();
                 app.UseHsts();
             }
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseHttpsRedirection();
             var options = new DefaultFilesOptions();

@@ -2,6 +2,7 @@
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
+using Hangfire;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -271,6 +272,11 @@ namespace TMS.API.Controllers
                         {
                             await ctx.Entry(entity).ReloadAsync();
                         }
+                        BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<T>
+                        {
+                            EntityId = _entitySvc.GetEntity(typeof(T).Name).Id,
+                            Data = entity
+                        }, UserId));
                         return entity;
                     }
                 }

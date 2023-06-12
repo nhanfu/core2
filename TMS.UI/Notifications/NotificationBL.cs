@@ -43,7 +43,6 @@ namespace TMS.UI.Notifications
             _countNtf = new Observable<string>();
             _countUser = new Observable<string>();
             EditForm.NotificationClient?.AddListener(nameof(TaskNotification), ProcessIncomMessage);
-            EditForm.NotificationClient?.AddListener(nameof(User), Kick);
             EditForm.NotificationClient?.AddListener(nameof(Chat), GetChat);
         }
 

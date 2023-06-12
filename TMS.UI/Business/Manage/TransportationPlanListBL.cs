@@ -397,6 +397,7 @@ namespace TMS.UI.Business.Manage
                     transportation.Revenue.Add(revenue);
                     await new Client(nameof(Transportation)).CreateAsync<Transportation>(transportation);
                 }
+                await new Client(nameof(TransportationPlan)).PatchAsync<Transportation>(GetPatchIsTransportation(item), ig: $"&disableTrigger=true");
             }
             Toast.Success("Tạo chuyến xe thành công");
             await gridView.ApplyFilter(true);
@@ -707,6 +708,33 @@ namespace TMS.UI.Business.Manage
             await Analysis(transportationPlan, patchUpdate);
         }
 
+        public void AfterWebsocketTransportationPlan(TransportationPlan transportationPlan, ListViewItem listViewItem)
+        {
+            if (listViewItem is null)
+            {
+                return;
+            }
+            listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = false);
+            if (transportationPlan.IsTransportation)
+            {
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+            }
+            else
+            {
+                listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+            }
+            listViewItem.Element.RemoveClass("bg-host");
+            if (transportationPlan.StatusId == (int)ApprovalStatusEnum.Approving)
+            {
+                listViewItem.Element.AddClass("bg-host");
+            }
+            if (listViewItem.ListViewSection.ListView.GuiInfo.FieldName == "TransportationPlan2" && transportationPlan.IsTransportation)
+            {
+                listViewItem.ListViewSection.ListView.RemoveRowById(transportationPlan.Id);
+                listViewItem.ListViewSection.ListView.SelectedIds.Remove(transportationPlan.Id);
+            }
+        }
+
         private static bool ListViewItemFilter(object updatedData, EditableComponent x)
         {
             if (x is GroupViewItem)
@@ -762,6 +790,16 @@ namespace TMS.UI.Business.Manage
             {
                 new PatchUpdateDetail { Field = Utils.IdField, Value = transportationPlan.Id.ToString() },
                 new PatchUpdateDetail { Field = nameof(TransportationPlan.JourneyId), Value = transportationPlan.JourneyId.ToString() }
+            };
+            return new PatchUpdate { Changes = details };
+        }
+
+        public PatchUpdate GetPatchIsTransportation(TransportationPlan transportationPlan)
+        {
+            var details = new List<PatchUpdateDetail>
+            {
+                new PatchUpdateDetail { Field = Utils.IdField, Value = transportationPlan.Id.ToString() },
+                new PatchUpdateDetail { Field = nameof(TransportationPlan.IsTransportation), Value = true.ToString() }
             };
             return new PatchUpdate { Changes = details };
         }

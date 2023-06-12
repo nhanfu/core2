@@ -144,6 +144,27 @@ namespace Core.Components
             _theadTable = GuiInfo.HeaderHeight ?? 40;
             _tfooterTable = GuiInfo.FooterHeight ?? 35;
             _scrollTable = GuiInfo.FooterHeight ?? 10;
+            if (GuiInfo.IsRealtime)
+            {
+                EditForm.NotificationClient.AddListener(GuiInfo.ReferenceId.Value, RealtimeUpdate);
+            }
+        }
+
+        internal void RealtimeUpdate(object updatedData)
+        {
+            Task.Run(async () =>
+            {
+                await LoadMasterData(new object[] { updatedData });
+                var listViewItem = AllListViewItem.FirstOrDefault(x => x.Entity[IdField] == updatedData[IdField]);
+                if (GuiInfo.ComponentType == nameof(VirtualGrid))
+                {
+                    CacheData.FirstOrDefault(x => x[IdField] == updatedData[IdField]).CopyPropFrom(updatedData);
+                }
+                listViewItem.Entity.CopyPropFrom(updatedData);
+                var arr = listViewItem.FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.GuiInfo.FieldName).ToArray();
+                UpdateView(true, arr);
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem);
+            });
         }
 
         public void Resolve(Component com, HTMLElement ele = null)
@@ -1793,6 +1814,12 @@ namespace Core.Components
             {
                 _rowHeight = existRow.ScrollHeight > 0 ? existRow.ScrollHeight : _rowHeight;
             }
+        }
+
+        public override void Dispose()
+        {
+            EditForm.NotificationClient?.RemoveListener(RealtimeUpdate);
+            base.Dispose();
         }
     }
 }

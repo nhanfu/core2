@@ -3,6 +3,7 @@
     public enum CustomEventType
     {
         BeforeCopied,
+        AfterWebsocket,
         AfterCopied,
         BeforeDeleted,
         AfterDeleted,

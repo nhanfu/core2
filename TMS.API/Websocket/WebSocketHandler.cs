@@ -113,6 +113,18 @@ namespace TMS.API.Websocket
             }
         }
 
+        public async Task SendMessageToAllOtherMe(string message, int UserId)
+        {
+            var users = WebSocketConnectionManager.GetAll().Where(x => !x.Key.StartsWith($"{UserId}/"));
+            foreach (var pair in users)
+            {
+                if (pair.Value.State == WebSocketState.Open)
+                {
+                    await SendMessageAsync(pair.Value, message);
+                }
+            }
+        }
+
         public ConcurrentDictionary<string, WebSocket> GetAll()
         {
             return WebSocketConnectionManager.GetAll();

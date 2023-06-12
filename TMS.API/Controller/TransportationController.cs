@@ -4,6 +4,7 @@ using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
+using Hangfire;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
@@ -133,6 +134,11 @@ namespace TMS.API.Controllers
                         command.ExecuteNonQuery();
                         transaction.Commit();
                         await db.Entry(entity).ReloadAsync();
+                        BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<Transportation>
+                        {
+                            EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                            Data = entity
+                        }, UserId));
                         return entity;
                     }
                 }
