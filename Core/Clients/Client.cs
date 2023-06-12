@@ -314,7 +314,10 @@ namespace Core.Clients
             }
             if (xhr.Status >= (int)HttpStatusCode.BadRequest && xhr.Status < (int)HttpStatusCode.InternalServerError)
             {
-                Toast.Warning(exp?.Message);
+                if ((bool)!(exp?.Message.IsNullOrWhiteSpace()))
+                {
+                    Toast.Warning(exp?.Message);
+                }
                 Console.WriteLine(exp);
             }
             else if (xhr.Status == (int)HttpStatusCode.InternalServerError || xhr.Status == (int)HttpStatusCode.NotFound)

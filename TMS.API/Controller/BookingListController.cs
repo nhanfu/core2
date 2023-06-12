@@ -3,7 +3,6 @@ using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
-using DocumentFormat.OpenXml.Office.Word;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +10,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 using TMS.API.Models;
-using Windows.UI.Xaml;
 
 namespace TMS.API.Controllers
 {

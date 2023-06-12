@@ -228,7 +228,7 @@ namespace TMS.API.Controllers
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    return entity;
+                    return StatusCode(409, entity);
                 }
             }
         }
@@ -561,13 +561,14 @@ namespace TMS.API.Controllers
             }
         }
 
-        public override Task<ActionResult<TransportationPlan>> UpdateAsync([FromBody] TransportationPlan entity, string reasonOfChange = "")
+        public override async Task<ActionResult<TransportationPlan>> UpdateAsync([FromBody] TransportationPlan entity, string reasonOfChange = "")
         {
-            if (entity.IsTransportation && entity.RequestChangeId is null)
+            var oldEntity = await db.TransportationPlan.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            if (oldEntity.IsTransportation && oldEntity.RequestChangeId is null)
             {
                 throw new ApiException("Kế hoạch đã được sử dụng!") { StatusCode = HttpStatusCode.BadRequest };
             }
-            return base.UpdateAsync(entity, reasonOfChange);
+            return await base.UpdateAsync(entity, reasonOfChange);
         }
 
         public override async Task<ActionResult<bool>> RequestApprove([FromBody] TransportationPlan entity)

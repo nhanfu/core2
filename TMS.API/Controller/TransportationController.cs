@@ -139,7 +139,7 @@ namespace TMS.API.Controllers
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    return entity;
+                    return StatusCode(409, entity);
                 }
             }
         }

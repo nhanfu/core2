@@ -278,7 +278,7 @@ namespace TMS.API.Controllers
                 {
                     transaction.Rollback();
                     var entity = await ctx.Set<T>().FindAsync(idInt);
-                    return entity;
+                    return StatusCode(409, entity);
                 }
             }
         }
