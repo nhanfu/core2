@@ -146,7 +146,7 @@ namespace Core.Components
             _scrollTable = GuiInfo.FooterHeight ?? 10;
             if (GuiInfo.IsRealtime)
             {
-                EditForm.NotificationClient.AddListener(GuiInfo.ReferenceId.Value, RealtimeUpdateListViewItem);
+                EditForm.NotificationClient?.AddListener(GuiInfo.ReferenceId.Value, RealtimeUpdateListViewItem);
             }
         }
 
