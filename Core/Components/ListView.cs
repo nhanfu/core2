@@ -154,16 +154,19 @@ namespace Core.Components
         {
             Task.Run(async () =>
             {
-                await LoadMasterData(new object[] { updatedData });
                 var listViewItem = MainSection.FilterChildren<ListViewItem>(x => x.Entity[IdField] == updatedData[IdField]).FirstOrDefault();
-                if (GuiInfo.ComponentType == nameof(VirtualGrid))
+                if(listViewItem != null)
                 {
-                    CacheData.FirstOrDefault(x => x[IdField] == updatedData[IdField]).CopyPropFrom(updatedData);
+                    await LoadMasterData(new object[] { updatedData });
+                    if (GuiInfo.ComponentType == nameof(VirtualGrid))
+                    {
+                        CacheData.FirstOrDefault(x => x[IdField] == updatedData[IdField]).CopyPropFrom(updatedData);
+                    }
+                    listViewItem.Entity.CopyPropFrom(updatedData);
+                    var arr = listViewItem.FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.GuiInfo.FieldName).ToArray();
+                    listViewItem.UpdateView(false, arr);
+                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem);
                 }
-                listViewItem.Entity.CopyPropFrom(updatedData);
-                var arr = listViewItem.FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.GuiInfo.FieldName).ToArray();
-                listViewItem.UpdateView(true, arr);
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem);
             });
         }
 
