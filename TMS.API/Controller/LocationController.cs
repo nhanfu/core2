@@ -51,13 +51,15 @@ namespace TMS.API.Controllers
                     listVendorContact.AddRange(v3.VendorContact);
                 }
             }
+            var rs = await base.CreateAsync(entity);
             listVendorContact.ForEach(x =>
             {
                 x.Id = 0;
-                x.LocationId = null;
+                x.LocationId = rs.Value.Id;
+                x.Location = null;
             });
-            entity.VendorContact = listVendorContact;
-            return await base.CreateAsync(entity);
+            db.AddRange(listVendorContact);
+            return rs;
         }
 
         public override async Task<ActionResult<Location>> UpdateAsync([FromBody] Location entity, string reasonOfChange = "")
@@ -66,40 +68,6 @@ namespace TMS.API.Controllers
             if (check != null)
             {
                 throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
-            }
-            if (entity.VendorContact.Nothing())
-            {
-                var listVendorContact = new List<VendorContact>();
-                if (!entity.Description1.IsNullOrWhiteSpace())
-                {
-                    var v1 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description1);
-                    if (v1 != null)
-                    {
-                        listVendorContact.AddRange(v1.VendorContact);
-                    }
-                }
-                if (!entity.Description2.IsNullOrWhiteSpace())
-                {
-                    var v2 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description2);
-                    if (v2 != null)
-                    {
-                        listVendorContact.AddRange(v2.VendorContact);
-                    }
-                }
-                if (!entity.Description3.IsNullOrWhiteSpace())
-                {
-                    var v3 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description3);
-                    if (v3 != null)
-                    {
-                        listVendorContact.AddRange(v3.VendorContact);
-                    }
-                }
-                listVendorContact.ForEach(x =>
-                {
-                    x.Id = 0;
-                    x.LocationId = null;
-                });
-                entity.VendorContact = listVendorContact;
             }
             return await base.UpdateAsync(entity, reasonOfChange);
         }
