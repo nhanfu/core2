@@ -236,13 +236,13 @@ namespace Core.Components
                 }
                 else
                 {
-                    if (arg.EvType == EventType.Change)
+                    await ListView.RowChangeHandler(component.Entity, this, arg, component);
+                    if (arg.EvType == EventType.Change )
                     {
                         if (component.Disabled)
                         {
                             return;
                         }
-                        await ListView.RowChangeHandler(component.Entity, this, arg, component);
                         await ListView.RealtimeUpdateAsync(this, arg);
                     }
                 }

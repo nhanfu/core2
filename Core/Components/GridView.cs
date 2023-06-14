@@ -2012,25 +2012,28 @@ namespace Core.Components
                 AddNewEmptyRow();
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
-            PopulateFields();
-            RenderIndex();
-            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, rowData, rowSection);
-            if (GuiInfo.IsSumary)
+            await this.DispatchEventToHandlerAsync(GuiInfo.Events, observableArgs.EvType, rowData, rowSection);
+            if (observableArgs.EvType == EventType.Change)
             {
-                AddSummaries();
-            }
-            LastListViewItem = rowSection;
-            var headers = Header.Where(y => y.Editable).ToList();
-            var currentComponent = headers.FirstOrDefault(y => y.FieldName == component?.GuiInfo.FieldName);
-            if (currentComponent.ComponentType == nameof(SearchEntry) || currentComponent.ComponentType == "Dropdown")
-            {
-                var index = headers.IndexOf(currentComponent);
-                if (headers.Count > index + 1)
+                PopulateFields();
+                RenderIndex();
+                if (GuiInfo.IsSumary)
                 {
-                    var nextGrid = headers[index + 1];
-                    var nextComponent = rowSection.Children.Where(y => y?.GuiInfo.FieldName == nextGrid.FieldName).FirstOrDefault();
-                    rowSection.Focused = true;
-                    nextComponent.Focus();
+                    AddSummaries();
+                }
+                LastListViewItem = rowSection;
+                var headers = Header.Where(y => y.Editable).ToList();
+                var currentComponent = headers.FirstOrDefault(y => y.FieldName == component?.GuiInfo.FieldName);
+                if (currentComponent.ComponentType == nameof(SearchEntry) || currentComponent.ComponentType == "Dropdown")
+                {
+                    var index = headers.IndexOf(currentComponent);
+                    if (headers.Count > index + 1)
+                    {
+                        var nextGrid = headers[index + 1];
+                        var nextComponent = rowSection.Children.Where(y => y?.GuiInfo.FieldName == nextGrid.FieldName).FirstOrDefault();
+                        rowSection.Focused = true;
+                        nextComponent.Focus();
+                    }
                 }
             }
         }
@@ -2708,9 +2711,9 @@ namespace Core.Components
             {
                 return RowData.Data.Count();
             }
-            var mainSectionHeight = Element.ClientHeight 
-                - (ListViewSearch.Element?.ClientHeight ?? 0) 
-                - Paginator.Element.ClientHeight 
+            var mainSectionHeight = Element.ClientHeight
+                - (ListViewSearch.Element?.ClientHeight ?? 0)
+                - Paginator.Element.ClientHeight
                 - _theadTable;
             if (!Header.All(x => x.Summary.IsNullOrEmpty()))
             {
