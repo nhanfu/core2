@@ -149,7 +149,7 @@ namespace Core.Components
                     PlainText = "Scan",
                     ShowLabel = false,
                     Focus = true,
-                    Events = "{'change':'ScanGridView'}"
+                    Events = "{'input':'ScanGridView'}"
                 })
                 {
                     ParentElement = Element
