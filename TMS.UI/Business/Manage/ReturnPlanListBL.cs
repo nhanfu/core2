@@ -17,6 +17,7 @@ namespace TMS.UI.Business.Manage
     public class ReturnPlanListBL : TransportationListBL
     {
         public bool checkView = false;
+        public List<MasterData> NoteContaners = new List<MasterData>();
         public ReturnPlanListBL()
         {
             Name = "ReturnPlan List";
@@ -161,12 +162,16 @@ namespace TMS.UI.Business.Manage
             });
         }
 
-        public void CheckStatusQuotationReturn()
+        public async Task CheckStatusQuotationReturn()
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
             if (gridView is null)
             {
                 return;
+            }
+            if (NoteContaners.Nothing())
+            {
+                NoteContaners = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and Parent/Name eq 'Note Container'");
             }
             gridView.BodyContextMenuShow += () =>
             {
@@ -176,13 +181,13 @@ namespace TMS.UI.Business.Manage
                 {
                     Icon = "fas fa-pen",
                     Text = "Ghi chú",
-                    MenuItems = new List<ContextMenuItem>
+                    MenuItems = NoteContaners.Select(x => new ContextMenuItem
                     {
-                        new ContextMenuItem { Text = "Yêu cầu trả vỏ", Click = NoteFreeText, Parameter = new { StatusId = "1", Header = gridView.GetItemFocus() },Style="background-color:#9E9E9E" },
-                        new ContextMenuItem { Text = "Yêu cầu chụp hình", Click = NoteFreeText, Parameter = new { StatusId = "2", Header = gridView.GetItemFocus() },Style="background-color:#ffeb3b" },
-                        new ContextMenuItem { Text = "Trễ", Click = NoteFreeText, Parameter = new { StatusId = "3", Header = gridView.GetItemFocus() },Style="background-color:#b1eaf2" },
-                        new ContextMenuItem { Text = "Chuyển kho", Click = NoteFreeText, Parameter = new { StatusId = "4", Header = gridView.GetItemFocus() },Style="background-color:#5bcad3" },
-                    }
+                        Text = x.Description,
+                        Click = NoteFreeText,
+                        Parameter = new { StatusId = $"{x.Name}", Header = gridView.GetItemFocus() },
+                        Style = $"background-color:{x.Additional}"
+                    }).ToList()
                 });
                 menus.Add(new ContextMenuItem
                 {
@@ -237,21 +242,10 @@ namespace TMS.UI.Business.Manage
                 var containerCom = transportation.FilterChildren<EditableComponent>(y => y.GuiInfo.FieldName == nameof(Transportation.ContainerNo)).FirstOrDefault();
                 var td = containerCom.Element.Closest("td");
                 td.Style.BackgroundColor = "";
-                if (value == "1")
+                var col = NoteContaners.FirstOrDefault(x => x.Name == value);
+                if (col != null)
                 {
-                    td.Style.BackgroundColor = "#9E9E9E";
-                }
-                else if (value == "2")
-                {
-                    td.Style.BackgroundColor = "#ffeb3b";
-                }
-                else if (value == "3")
-                {
-                    td.Style.BackgroundColor = "#b1eaf2";
-                }
-                else if (value == "4")
-                {
-                    td.Style.BackgroundColor = "#5bcad3";
+                    td.Style.BackgroundColor = col.Additional;
                 }
             });
         }
@@ -279,21 +273,10 @@ namespace TMS.UI.Business.Manage
                 {
                     tdReturnDate.Style.BackgroundColor = "#f26c6c";
                 }
-                if (item.FreeText9 == "1")
+                var col = NoteContaners.FirstOrDefault(x => x.Name == item.FreeText9);
+                if (col != null)
                 {
-                    tdContainer.Style.BackgroundColor = "#9E9E9E";
-                }
-                else if (item.FreeText9 == "2")
-                {
-                    tdContainer.Style.BackgroundColor = "#ffeb3b";
-                }
-                else if (item.FreeText9 == "3")
-                {
-                    tdContainer.Style.BackgroundColor = "#b1eaf2";
-                }
-                else if (item.FreeText9 == "4")
-                {
-                    tdContainer.Style.BackgroundColor = "#5bcad3";
+                    tdContainer.Style.BackgroundColor = col.Additional;
                 }
             }
         }
