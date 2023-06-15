@@ -291,8 +291,9 @@ namespace TMS.UI.Business.Manage
                         requestChange.RequestChangeId = item.Id;
                         requestChange.Reason = listViewItem.ReasonChange;
                         item.StatusId = (int)ApprovalStatusEnum.Approving;
-                        await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(item));
-                        await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
+                        var resCreateRequest = await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
+                        if (resCreateRequest) { var resUpdate = await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(item)); }
+                        
                     }
                 }
             }
