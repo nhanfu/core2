@@ -320,7 +320,10 @@ namespace TMS.UI.Business.Manage
                 CommodityId = x.CommodityId,
                 ClosingDate = x.ClosingDate,
                 ReturnDate = x.ReturnDate,
-                TransportationId = x.Id
+                TransportationId = x.Id,
+                MonthText = x.MonthText,
+                YearText = x.YearText,
+                BrandShipId = x.BrandShipId,
             }).ToList();
             await this.OpenPopup(
                 featureName: "Allotment Editor",

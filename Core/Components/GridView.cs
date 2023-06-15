@@ -2012,6 +2012,10 @@ namespace Core.Components
                 AddNewEmptyRow();
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
+            if (component != null && component.ComponentType == nameof(GridView))
+            {
+                await this.DispatchEventToHandlerAsync(component.GuiInfo.Events, observableArgs.EvType, rowData, rowSection);
+            }
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, observableArgs.EvType, rowData, rowSection);
             if (observableArgs.EvType == EventType.Change)
             {
