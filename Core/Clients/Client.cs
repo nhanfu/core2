@@ -32,6 +32,10 @@ namespace Core.Clients
         {
             return x is HTMLMetaElement meta && meta.Name == "tenant";
         })?.Content;
+        public static string FileFTP => Document.Head.Children.Where(x => x is HTMLMetaElement).Cast<HTMLMetaElement>().FirstOrDefault(x =>
+        {
+            return x is HTMLMetaElement meta && meta.Name == "file";
+        })?.Content;
         public static BadGatewayQueue BadGatewayRequest = new BadGatewayQueue();
         private static int _errorMessageAwaiter;
 
@@ -656,6 +660,7 @@ namespace Core.Clients
         {
             var formData = new FormData();
             formData.Append("file", file);
+            CustomPrefix = FileFTP;
             return SubmitAsync<T>(new XHRWrapper
             {
                 FormData = formData,

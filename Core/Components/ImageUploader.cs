@@ -340,7 +340,7 @@ namespace Core.Components
             }
             ConfirmDialog.RenderConfirm($"Bạn chắc chắn muốn xóa {PathIO.GetFileNameWithoutExtension(RemoveGuid(removedPath.DecodeSpecialChar())) + PathIO.GetExtension(RemoveGuid(removedPath.DecodeSpecialChar()))}", async () =>
             {
-                var removed = await new Client(nameof(User)).PostAsync<bool>(removedPath, "DeleteFile");
+                var removed = await new Client(nameof(User)) { CustomPrefix = Client.FileFTP }.PostAsync<bool>(removedPath, "DeleteFile");
                 var oldVal = _path;
                 var newPath = _path.Replace(removedPath, string.Empty)
                     .Replace(PathSeparator + PathSeparator, string.Empty)
@@ -388,7 +388,7 @@ namespace Core.Components
             {
                 base64Image = base64Image.Substring(JpegUrlPrefix.Length);
             }
-            return await new Client(nameof(User)).PostAsync<string>(base64Image, $"Image?name={fileName.DecodeSpecialChar()}", allowNested: true);
+            return await new Client(nameof(FileUpload)) { CustomPrefix = Client.FileFTP }.PostAsync<string>(base64Image, $"Image?name={fileName.DecodeSpecialChar()}&tanentcode={Client.Tenant}&userid={Client.Token.UserId}", allowNested: true);
         }
 
         public override bool Disabled
@@ -446,7 +446,7 @@ namespace Core.Components
             {
                 Task.Run(async () =>
                 {
-                    var path = await new Client(nameof(User)).PostFilesAsync<string>(file, "file?");
+                    var path = await new Client(nameof(FileUpload)).PostFilesAsync<string>(file, $"file?&tanentcode={Client.Tenant}&userid={Client.Token.UserId}");
                     tcs.SetResult(path);
                 });
             }
