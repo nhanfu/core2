@@ -110,6 +110,10 @@ namespace TMS.UI.Business.Manage
                 {
                     listViewItem.FilterChildren(y => y.GuiInfo.FieldName != "btnRequestChange" && y.GuiInfo.FieldName != nameof(TransportationPlan.NotesContract) && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
                 }
+                else
+                {
+                    listViewItem.FilterChildren(y => y.GuiInfo.FieldName == "btnRequestChange" && !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
+                }
                 listViewItem.Element.RemoveClass("bg-host");
                 if (x.StatusId == (int)ApprovalStatusEnum.Approving)
                 {
