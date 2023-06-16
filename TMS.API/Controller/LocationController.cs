@@ -21,7 +21,7 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<Location>> CreateAsync([FromBody] Location entity)
         {
-            var check = await db.Location.FirstOrDefaultAsync(x => x.Description1 == entity.Description1 && x.Description2 == entity.Description2 && x.Description3 == entity.Description3);
+            var check = await db.Location.FirstOrDefaultAsync(x => x.Description1 == entity.Description1.TrimAndRemoveWhiteSpace() && x.Description2 == entity.Description2.TrimAndRemoveWhiteSpace() && x.Description3 == entity.Description3.TrimAndRemoveWhiteSpace());
             if (check != null)
             {
                 throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
@@ -29,7 +29,7 @@ namespace TMS.API.Controllers
             var listVendorContact = new List<VendorContact>();
             if (!entity.Description1.IsNullOrWhiteSpace())
             {
-                var v1 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description1);
+                var v1 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description1.TrimAndRemoveWhiteSpace());
                 if (v1 != null)
                 {
                     listVendorContact.AddRange(v1.VendorContact);
@@ -37,7 +37,7 @@ namespace TMS.API.Controllers
             }
             if (!entity.Description2.IsNullOrWhiteSpace())
             {
-                var v2 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description2);
+                var v2 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description2.TrimAndRemoveWhiteSpace());
                 if (v2 != null)
                 {
                     listVendorContact.AddRange(v2.VendorContact);
@@ -45,7 +45,7 @@ namespace TMS.API.Controllers
             }
             if (!entity.Description3.IsNullOrWhiteSpace())
             {
-                var v3 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description3);
+                var v3 = await db.Location.Include(x => x.VendorContact).FirstOrDefaultAsync(x => x.Description == entity.Description3.TrimAndRemoveWhiteSpace());
                 if (v3 != null)
                 {
                     listVendorContact.AddRange(v3.VendorContact);
@@ -64,7 +64,7 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<Location>> UpdateAsync([FromBody] Location entity, string reasonOfChange = "")
         {
-            var check = await db.Location.FirstOrDefaultAsync(x => x.Description1 == entity.Description1 && x.Description2 == entity.Description2 && x.Description3 == entity.Description3 && x.Id != entity.Id);
+            var check = await db.Location.FirstOrDefaultAsync(x => x.Description1 == entity.Description1.TrimAndRemoveWhiteSpace() && x.Description2 == entity.Description2.TrimAndRemoveWhiteSpace() && x.Description3 == entity.Description3.TrimAndRemoveWhiteSpace() && x.Id != entity.Id);
             if (check != null)
             {
                 throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
@@ -84,7 +84,8 @@ namespace TMS.API.Controllers
                 return false;
             }
             var check = await db.TransportationPlan.AnyAsync(x => ids.Contains(x.ReceivedId.Value));
-            if (check)
+            var check1 = await db.Transportation.AnyAsync(x => ids.Contains(x.ReturnId.Value));
+            if (check || check1)
             {
                 return false;
             }

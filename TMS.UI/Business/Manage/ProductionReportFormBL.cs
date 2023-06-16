@@ -26,5 +26,16 @@ namespace TMS.UI.Business.Manage
             Client.Download($"/excel/Download/{path.EncodeSpecialChar()}");
             Toast.Success("Xuất file thành công");
         }
+
+        public async Task ExportTruckMaintenance()
+        {
+            if (!await IsFormValid())
+            {
+                return;
+            }
+            var path = await new Client(nameof(Transportation)).PostAsync<string>(EReportGroupVM, "ExportTruckMaintenance");
+            Client.Download($"/excel/Download/{path.EncodeSpecialChar()}");
+            Toast.Success("Xuất file thành công");
+        }
     }
 }

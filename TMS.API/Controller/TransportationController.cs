@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using TMS.API.Models;
 using TMS.API.Services;
@@ -279,6 +280,50 @@ namespace TMS.API.Controllers
             await db.SaveChangesAsync();
             db.Database.ExecuteSqlRaw($"ENABLE TRIGGER ALL ON [{nameof(Transportation)}]");
             return true;
+        }
+
+        [HttpPost("api/Transportation/ExportTruckMaintenance")]
+        public async Task<string> ExportTruckMaintenance([FromBody] CheckFeeHistory transportation)
+        {
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add(nameof(Transportation));
+            var index = 1;
+            worksheet.Style.Font.SetFontName("Times New Roman");
+            worksheet.Cell($"A{index}").Value = $"BẢNG BÁO CÁO PHÍ PHÁT SINH PHẠT SỬA CHỮA HÀNG NHẬP HP THEO LIST TRẢ HÀNG TỪ {transportation.FromDate.Value.ToString("dd-MM-yyyy")} => {transportation.ToDate.Value.ToString("dd-MM-yyyy")} \r\n ( Tổng 1.921 cont trong đó Trả vỏ ~ 979 cont ~ 51%)";
+            worksheet.Cell($"A{index}").Style.Font.Bold = true;
+            worksheet.Cell($"A{index}").Style.Font.FontSize = 20;
+            worksheet.Cell($"A{index}").Style.Font.FontColor = XLColor.Red;
+            worksheet.Cell($"A{index}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell($"A{index}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range($"A{index}:R{index}").Row(1).Merge();
+            index++;
+            worksheet.Cell($"A{index}").Value = "STT";
+            worksheet.Cell($"B{index}").Value = "Hãng tàu";
+            worksheet.Cell($"C{index}").Value = "Số cont\r\n trả vỏ ";
+            worksheet.Cell($"D{index}").Value = "Số cont bị phạt";
+            worksheet.Cell($"E{index}").Value = "Tổng số \r\ntiền phạt \r\n";
+            worksheet.Cell($"F{index}").Value = "Trung bình\r\nsố tiền\r\nphạt/cont trả vỏ (VNĐ)";
+            worksheet.Cell($"G{index}").Value = "Đặc điểm chung hãng tàu";
+            worksheet.Range($"G{index}:M{index}").Row(1).Merge();
+            worksheet.Cell($"N{index}").Value = "Ghi chú chung";
+            worksheet.Cell($"O{index}").Value = "Ghi chú trong tháng 04/2023";
+            worksheet.Range($"O{index}:P{index}").Row(1).Merge();
+            worksheet.Cell($"Q{index}").Value = "Ghi chú chính sách dem det hãng tàu";
+            worksheet.Cell($"R{index}").Value = "";
+            worksheet.Range($"A{index}:R{index}").Style.Font.Bold = true;
+            worksheet.Range($"A{index}:R{index}").Style.Alignment.WrapText = true;
+            worksheet.Range($"A{index}:R{index}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Range($"A{index}:R{index}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            var sql = @$"select BranchShipId, 
+            from Expense
+            join Vendor br on Expense
+            where InsertedDate >= '{transportation.FromDate.Value:yyyy-MM-dd}' 
+            and InsertedDate <= '{transportation.ToDate.Value:yyyy-MM-dd}'
+            group by BranchShipId,Tr";
+
+            var url = $"BaoCaoSuaChua{transportation.FromDate.Value.ToString("dd-MM-yyyy")}-{transportation.ToDate.Value.ToString("dd-MM-yyyy")}.xlsx";
+            workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
+            return url;
         }
 
         [HttpPost("api/Transportation/ExportCheckFee")]
