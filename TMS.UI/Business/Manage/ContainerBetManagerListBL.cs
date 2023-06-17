@@ -14,6 +14,11 @@ namespace TMS.UI.Business.Manage
 {
     public class ContainerBetManagerListBL : TabEditor
     {
+        public bool openPopup;
+        public GridView gridViewExpense;
+        public Transportation selected;
+        public TabEditor _expensePopup;
+        public bool checkView = false;
         public ContainerBetManagerListBL() : base(nameof(Transportation))
         {
             Name = "ContainerBetManager List";
@@ -21,13 +26,42 @@ namespace TMS.UI.Business.Manage
 
         public async Task EditTransportation(Transportation entity)
         {
-            await this.OpenPopup(
-                featureName: "Transportation Editor",
+            selected = entity;
+            var gridView1 = TabEditor.FindComponentByName<GridView>(nameof(Expense));
+            if (_expensePopup != null && gridView1 != null)
+            {
+                return;
+            }
+            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
+            _expensePopup = await gridView.OpenPopup(
+                featureName: "Transportation Return Editor",
                 factory: () =>
                 {
-                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationEditorBL");
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationReturnEditorBL");
                     var instance = Activator.CreateInstance(type) as PopupEditor;
-                    instance.Title = "Chỉnh sửa danh sách vận chuyển";
+                    instance.Title = "Xem chi phí trả hàng";
+                    instance.Entity = entity;
+                    return instance;
+                });
+        }
+
+        public async Task ReloadExpense(Transportation entity)
+        {
+            selected = entity;
+            var gridView1 = TabEditor.FindComponentByName<GridView>(nameof(Expense));
+            if (_expensePopup is null || gridView1 is null)
+            {
+                return;
+            }
+            _expensePopup.Dispose();
+            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
+            _expensePopup = await gridView.OpenPopup(
+                featureName: "Transportation Return Editor",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationReturnEditorBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Xem chi phí";
                     instance.Entity = entity;
                     return instance;
                 });
