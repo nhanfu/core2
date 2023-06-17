@@ -576,7 +576,7 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<TransportationPlan>> UpdateAsync([FromBody] TransportationPlan entity, string reasonOfChange = "")
         {
-            var oldEntity = await db.TransportationPlan.FirstOrDefaultAsync(x => x.Id == entity.Id);
+            var oldEntity = await db.TransportationPlan.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entity.Id);
             if (oldEntity.IsTransportation && oldEntity.RequestChangeId is null)
             {
                 throw new ApiException("Kế hoạch đã được sử dụng!") { StatusCode = HttpStatusCode.BadRequest };

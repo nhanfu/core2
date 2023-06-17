@@ -26,42 +26,14 @@ namespace TMS.UI.Business.Manage
 
         public async Task EditTransportation(Transportation entity)
         {
-            selected = entity;
-            var gridView1 = TabEditor.FindComponentByName<GridView>(nameof(Expense));
-            if (_expensePopup != null && gridView1 != null)
-            {
-                return;
-            }
             var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
-            _expensePopup = await gridView.OpenPopup(
+            await gridView.OpenPopup(
                 featureName: "Transportation Return Editor",
                 factory: () =>
                 {
                     var type = Type.GetType("TMS.UI.Business.Manage.TransportationReturnEditorBL");
                     var instance = Activator.CreateInstance(type) as PopupEditor;
                     instance.Title = "Xem chi phí trả hàng";
-                    instance.Entity = entity;
-                    return instance;
-                });
-        }
-
-        public async Task ReloadExpense(Transportation entity)
-        {
-            selected = entity;
-            var gridView1 = TabEditor.FindComponentByName<GridView>(nameof(Expense));
-            if (_expensePopup is null || gridView1 is null)
-            {
-                return;
-            }
-            _expensePopup.Dispose();
-            var gridView = this.FindActiveComponent<GridView>(x => x.GuiInfo.RefName == nameof(Transportation)).FirstOrDefault();
-            _expensePopup = await gridView.OpenPopup(
-                featureName: "Transportation Return Editor",
-                factory: () =>
-                {
-                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationReturnEditorBL");
-                    var instance = Activator.CreateInstance(type) as PopupEditor;
-                    instance.Title = "Xem chi phí";
                     instance.Entity = entity;
                     return instance;
                 });

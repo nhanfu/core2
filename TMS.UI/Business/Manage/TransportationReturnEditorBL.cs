@@ -89,7 +89,10 @@ namespace TMS.UI.Business.Manage
         public override void Dispose()
         {
             var parent = TabEditor as ReturnPlanListBL;
-            parent._expensePopup = null;
+            if(parent != null)
+            {
+                parent._expensePopup = null;
+            }
             base.Dispose();
         }
     }
