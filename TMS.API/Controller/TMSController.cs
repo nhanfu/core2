@@ -3,6 +3,7 @@ using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -565,6 +566,25 @@ namespace TMS.API.Controllers
             entity.SetPropValue("Level", path.IsNullOrWhiteSpace() ? 0 : path.Split(@"\").Where(x => !x.IsNullOrWhiteSpace()).Count());
         }
 
+        private void OrderHeaderGroup(List<GridPolicy> headers)
+        {
+            GridPolicy tmp;
+            for (int i = 0; i < headers.Count - 1; i++)
+            {
+                for (int j = i + 2; j < headers.Count; j++)
+                {
+                    if (headers[i].GroupName.HasAnyChar()
+                        && headers[i].GroupName == headers[j].GroupName
+                        && headers[i + 1].GroupName != headers[j].GroupName)
+                    {
+                        tmp = headers[i + 1];
+                        headers[i + 1] = headers[j];
+                        headers[j] = tmp;
+                    }
+                }
+            }
+        }
+
         [HttpGet("api/[Controller]/ExportExcel")]
         public async Task<string> ExportExcel([FromServices] IServiceProvider serviceProvider
             , [FromServices] IConfiguration config
@@ -610,6 +630,7 @@ namespace TMS.API.Controllers
                 });
             }
             gridPolicy = gridPolicy.Where(x => x.ComponentType != "Button" && !x.ShortDesc.IsNullOrWhiteSpace() && ((custom && x.IsExport) || !custom)).OrderBy(x => custom ? x.OrderExport : x.Order).ToList().ToList();
+            OrderHeaderGroup(gridPolicy);
             var reportQuery = string.Empty;
             var pros = typeof(T).GetProperties().Where(x => x.CanRead && x.PropertyType.IsSimple()).Select(x => x.Name).ToList();
             var selects = gridPolicy.Where(x => x.ComponentType == "Dropdown" && pros.Contains(x.FieldName)).ToList().Select(x =>
@@ -705,7 +726,7 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException(e.Message);
             }
-
+            bool anyGroup = gridPolicy.Any(x => !string.IsNullOrEmpty(x.GroupName));
             using var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add(typeof(T).Name);
             worksheet.Cell("A1").Value = component.Label.IsNullOrWhiteSpace() ? component.RefName : component.Label;
@@ -722,17 +743,77 @@ namespace TMS.API.Controllers
             worksheet.Cell(2, 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
             worksheet.Cell(2, 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
             worksheet.Cell(2, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            if (anyGroup)
+            {
+                worksheet.Range(2, 1, 3, 1).Merge();
+            }
             foreach (var item in gridPolicy)
             {
+                if (anyGroup && !string.IsNullOrEmpty(item.GroupName))
+                {
+                    var colspan = gridPolicy.Count(x => x.GroupName == item.GroupName);
+                    if (item != gridPolicy.FirstOrDefault(x => x.GroupName == item.GroupName))
+                    {
+                        i++;
+                        continue;
+                    }
+                    worksheet.Cell(2, i).SetValue(item.GroupName);
+                    worksheet.Range(2, i, 2, i + colspan - 1).Merge();
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Font.Bold = true;
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    i++;
+                    continue;
+                }
                 worksheet.Cell(2, i).SetValue(item.ShortDesc);
                 worksheet.Cell(2, i).Style.Font.Bold = true;
                 worksheet.Cell(2, i).Style.Border.RightBorder = XLBorderStyleValues.Thin;
                 worksheet.Cell(2, i).Style.Border.TopBorder = XLBorderStyleValues.Thin;
                 worksheet.Cell(2, i).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                 worksheet.Cell(2, i).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(2, i).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell(2, i).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                if (anyGroup && string.IsNullOrEmpty(item.GroupName))
+                {
+                    worksheet.Range(2, i, 3, i).Merge();
+                    worksheet.Cell(3, i).Style.Font.Bold = true;
+                    worksheet.Cell(3, i).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(3, i).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(3, i).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(3, i).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(3, i).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(3, i).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                }
                 i++;
             }
+            var h = 2;
+            if (anyGroup)
+            {
+                foreach (var item in gridPolicy)
+                {
+                    if (anyGroup && !string.IsNullOrEmpty(item.GroupName))
+                    {
+                        worksheet.Cell(3, h).SetValue(item.ShortDesc);
+                        worksheet.Cell(3, h).Style.Font.Bold = true;
+                        worksheet.Cell(3, h).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(3, h).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(3, h).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(3, h).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(3, h).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Cell(3, h).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    }
+                    h++;
+                }
+            }
             var x = 3;
+            if (anyGroup)
+            {
+                x++;
+            }
             var j = 1;
             foreach (var item in tables[0])
             {

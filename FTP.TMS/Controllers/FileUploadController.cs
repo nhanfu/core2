@@ -78,7 +78,7 @@ namespace FTP.Controllers
 
         private string GetUploadPath(string fileName, string webRootPath, string tanentcode, int userid)
         {
-            return Path.Combine(webRootPath, "upload", tanentcode, $"U{userid:00000000}", fileName);
+            return Path.Combine(webRootPath, "upload", tanentcode, $"{DateTime.Now:MMyyyy}", $"U{userid:00000000}", fileName);
         }
     }
 }
