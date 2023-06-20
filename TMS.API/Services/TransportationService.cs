@@ -78,7 +78,7 @@ namespace TMS.API.Services
             {
                 return null;
             }
-            if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ShipDate) || x.Field == nameof(Transportation.ContainerTypeId) || x.Field == nameof(Transportation.DemDate)))
+            if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ShipDate) || x.Field == nameof(Transportation.ContainerTypeId) || (x.Field == nameof(Transportation.DemDate) && x.Value.IsNullOrWhiteSpace())))
             {
                 return @$"update Transportation set DemDate = DATEADD(day,(select top 1 [Day] from SettingTransportation where RouteId = t.RouteId and BranchShipId = isnull(t.LineId,t.BrandShipId) and StartDate <= t.ShipDate order by StartDate desc)-1,t.ShipDate)
 						from Transportation t
