@@ -1463,14 +1463,7 @@ namespace Core.Components
                         html.SelectionEnd = nextcom.GetValueText().Length;
                     }
                 }
-                if (!GuiInfo.VirtualScroll)
-                {
-                    if (SelectedIds.Count == 1)
-                    {
-                        ClearSelected();
-                    }
-                    upItem.Selected = true;
-                }
+                LastElementFocus = nextcom.Element;
                 if (e.ShiftKey())
                 {
                     upItem.Entity.SetComplexPropValue(fieldName, com.GetValue());
