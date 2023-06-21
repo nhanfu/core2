@@ -314,13 +314,61 @@ namespace TMS.API.Controllers
             worksheet.Range($"A{index}:R{index}").Style.Alignment.WrapText = true;
             worksheet.Range($"A{index}:R{index}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Range($"A{index}:R{index}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            var sql = @$"select BranchShipId, 
-            from Expense
-            join Vendor br on Expense
-            where InsertedDate >= '{transportation.FromDate.Value:yyyy-MM-dd}' 
-            and InsertedDate <= '{transportation.ToDate.Value:yyyy-MM-dd}'
-            group by BranchShipId,Tr";
-
+            var sql = @$"select br.Name as BrandShip,
+            (select COUNT(Id) 
+            from Transportation t 
+            where t.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+            and BrandShipId = tb.BrandShipId
+            and t.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}') as ContainerTraVo,
+            (select COUNT(Id)
+            from Expense e 
+            where e.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+            and e.BrandShipId = tb.BrandShipId
+            and e.ExpenseTypeId = 15955
+            and e.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}') as ContainerBiPhat,
+            (select sum(e.UnitPrice*e.Quantity)
+            from Expense e 
+            where e.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+            and e.BrandShipId = tb.BrandShipId
+            and e.ExpenseTypeId = 15955
+            and e.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}') as SoTienBiPhat,
+            ((select sum(e.UnitPrice*e.Quantity)
+            from Expense e 
+            where e.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+            and e.BrandShipId = tb.BrandShipId
+            and e.ExpenseTypeId = 15955
+            and e.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}')/
+            (select COUNT(Id) 
+            from Transportation t 
+            where t.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+            and BrandShipId = tb.BrandShipId
+            and t.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}')) as TrungBinhSoTien
+            from (select distinct t.BrandShipId
+            from Transportation t
+            where t.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}' 
+            and t.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}') as tb
+            join Vendor br on br.Id = tb.BrandShipId 
+            ";
+            var data = await ConverSqlToDataSet(sql);
+            var k = 1;
+            foreach (var item in data[0])
+            {
+                worksheet.Cell($"A{index}").Value = k;
+                worksheet.Cell($"B{index}").Value = item["BrandShip"].ToString();
+                worksheet.Cell($"C{index}").Value = item["ContainerTraVo"] is null ? default(decimal?) : decimal.Parse(item["ContainerTraVo"].ToString());
+                worksheet.Cell($"D{index}").Value = item["ContainerBiPhat"] is null ? default(decimal?) : decimal.Parse(item["ContainerBiPhat"].ToString());
+                worksheet.Cell($"E{index}").Value = item["SoTienBiPhat"] is null ? default(decimal?) : decimal.Parse(item["SoTienBiPhat"].ToString());
+                worksheet.Cell($"F{index}").Value = item["TrungBinhSoTien"] is null ? default(decimal?) : decimal.Parse(item["TrungBinhSoTien"].ToString());
+                worksheet.Cell($"G{index}").Value = "";
+                worksheet.Range($"G{index}:M{index}").Row(1).Merge();
+                worksheet.Cell($"N{index}").Value = "";
+                worksheet.Cell($"O{index}").Value = "";
+                worksheet.Range($"O{index}:P{index}").Row(1).Merge();
+                worksheet.Cell($"Q{index}").Value = "";
+                worksheet.Cell($"R{index}").Value = "";
+                index++;
+                k++;
+            }
             var url = $"BaoCaoSuaChua{transportation.FromDate.Value.ToString("dd-MM-yyyy")}-{transportation.ToDate.Value.ToString("dd-MM-yyyy")}.xlsx";
             workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
             return url;
