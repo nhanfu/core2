@@ -264,19 +264,12 @@ namespace TMS.API.Controllers
             }
         }
 
-        public override async Task<ActionResult<bool>> RequestApprove([FromBody] Expense entity)
+        [HttpPost("api/Expense/RequestApproveInsuranceFees")]
+        public async Task<bool> RequestApproveInsuranceFees([FromBody] Expense entity)
         {
-            var id = entity.GetPropValue(nameof(GridPolicy.Id)) as int?;
-            var (statusField, value) = entity.GetComplexProp("StatusId");
-            if (statusField)
-            {
-                entity.SetPropValue("StatusId", (int)ApprovalStatusEnum.Approving);
-            }
-            if (id <= 0)
-            {
-                await CreateAsync(entity);
-            }
-            var approvalConfig = await GetApprovalConfig(entity);
+            var entityType = _entitySvc.GetEntity(typeof(Expense).Name);
+            var approvalConfig = await db.ApprovalConfig.AsNoTracking().OrderBy(x => x.Level)
+                .Where(x => x.Active && x.EntityId == entityType.Id).ToListAsync();
             if (approvalConfig.Nothing())
             {
                 throw new ApiException("Quy trình duyệt chưa được cấu hình");
@@ -286,20 +279,37 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Quy trình duyệt chưa được cấu hình");
             }
-            await Approving(entity);
-            var oldEntity = await db.Expense.FindAsync(entity.RequestChangeId);
-            await db.Entry(oldEntity).ReloadAsync();
-            await db.SaveChangesAsync();
-            var listUser = await GetApprovalUsers(entity, matchApprovalConfig);
+            if (approvalConfig is null)
+            {
+                throw new ApiException("Quy trình duyệt chưa được cấu hình");
+            }
+            var listUser = await (
+                from user in db.User
+                join userRole in db.UserRole on user.Id equals userRole.UserId
+                join role in db.Role on userRole.RoleId equals role.Id
+                where userRole.RoleId == matchApprovalConfig.RoleId
+                select user
+            ).ToListAsync();
             if (listUser.HasElement())
             {
+                var requestChange = new Expense();
+                requestChange.CopyPropFrom(entity);
+                requestChange.Id = 0;
+                requestChange.StatusId = (int)ApprovalStatusEnum.Approving;
+                requestChange.RequestChangeId = entity.Id;
+                requestChange.Reason = entity.Reason;
+                SetAuditInfo(requestChange);
+                db.Add(requestChange);
+                await db.SaveChangesAsync();
+                var entityDB = await db.Expense.Where(x => x.Id == entity.Id).FirstOrDefaultAsync();
+                entityDB.StatusId = (int)ApprovalStatusEnum.Approving;
                 var currentUser = await db.User.FirstOrDefaultAsync(x => x.Id == UserId);
                 var tasks = listUser.Select(user => new TaskNotification
                 {
                     Title = $"{currentUser.FullName}",
                     Description = $"Đã gửi yêu chỉnh sửa ạ ",
                     EntityId = _entitySvc.GetEntity(typeof(Expense).Name).Id,
-                    RecordId = oldEntity.Id,
+                    RecordId = requestChange.Id,
                     Attachment = "fal fa-paper-plane",
                     AssignedId = user.Id,
                     StatusId = (int)TaskStateEnum.UnreadStatus,

@@ -284,16 +284,8 @@ namespace TMS.UI.Business.Manage
                     }
                     else
                     {
-                        var requestChange = new Expense();
-                        requestChange.CopyPropFrom(item);
-                        requestChange.Id = 0;
-                        requestChange.StatusId = (int)ApprovalStatusEnum.Approving;
-                        requestChange.RequestChangeId = item.Id;
-                        requestChange.Reason = listViewItem.ReasonChange;
-                        item.StatusId = (int)ApprovalStatusEnum.Approving;
-                        var resCreateRequest = await new Client(nameof(Expense)).PostAsync<bool>(requestChange, "RequestApprove");
-                        if (resCreateRequest) { var resUpdate = await new Client(nameof(Expense)).PatchAsync<Expense>(GetPatchEntityApprove(item)); }
-                        
+                        item.Reason = listViewItem.ReasonChange;
+                        var resCreateRequest = await new Client(nameof(Expense)).PostAsync<bool>(item, "RequestApproveInsuranceFees");
                     }
                 }
             }
