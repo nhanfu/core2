@@ -309,11 +309,14 @@ namespace TMS.API.Controllers
             worksheet.Cell($"O{index}").Value = "Ghi chú trong tháng 04/2023";
             worksheet.Range($"O{index}:P{index}").Row(1).Merge();
             worksheet.Cell($"Q{index}").Value = "Ghi chú chính sách dem det hãng tàu";
-            worksheet.Cell($"R{index}").Value = "";
-            worksheet.Range($"A{index}:R{index}").Style.Font.Bold = true;
-            worksheet.Range($"A{index}:R{index}").Style.Alignment.WrapText = true;
-            worksheet.Range($"A{index}:R{index}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            worksheet.Range($"A{index}:R{index}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range($"A{index}:Q{index}").Style.Font.Bold = true;
+            worksheet.Range($"A{index}:Q{index}").Style.Alignment.WrapText = true;
+            worksheet.Range($"A{index}:Q{index}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Range($"A{index}:Q{index}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range($"A{index}:Q{index}").Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Range($"A{index}:Q{index}").Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Range($"A{index}:Q{index}").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Range($"A{index}:Q{index}").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             var sql = @$"select br.Name as BrandShip,
             (select COUNT(Id) 
             from Transportation t 
@@ -349,6 +352,7 @@ namespace TMS.API.Controllers
             and t.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}') as tb
             join Vendor br on br.Id = tb.BrandShipId 
             ";
+            index++;
             var data = await ConverSqlToDataSet(sql);
             var k = 1;
             foreach (var item in data[0])
@@ -359,17 +363,106 @@ namespace TMS.API.Controllers
                 worksheet.Cell($"D{index}").Value = item["ContainerBiPhat"] is null ? default(decimal?) : decimal.Parse(item["ContainerBiPhat"].ToString());
                 worksheet.Cell($"E{index}").Value = item["SoTienBiPhat"] is null ? default(decimal?) : decimal.Parse(item["SoTienBiPhat"].ToString());
                 worksheet.Cell($"F{index}").Value = item["TrungBinhSoTien"] is null ? default(decimal?) : decimal.Parse(item["TrungBinhSoTien"].ToString());
+                worksheet.Cell($"C{index}").Style.NumberFormat.Format = "#,##";
+                worksheet.Cell($"D{index}").Style.NumberFormat.Format = "#,##";
+                worksheet.Cell($"E{index}").Style.NumberFormat.Format = "#,##";
+                worksheet.Cell($"F{index}").Style.NumberFormat.Format = "#,##";
                 worksheet.Cell($"G{index}").Value = "";
                 worksheet.Range($"G{index}:M{index}").Row(1).Merge();
                 worksheet.Cell($"N{index}").Value = "";
                 worksheet.Cell($"O{index}").Value = "";
                 worksheet.Range($"O{index}:P{index}").Row(1).Merge();
                 worksheet.Cell($"Q{index}").Value = "";
-                worksheet.Cell($"R{index}").Value = "";
+                worksheet.Range($"A{index}:Q{index}").Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                worksheet.Range($"A{index}:Q{index}").Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                worksheet.Range($"A{index}:Q{index}").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                worksheet.Range($"A{index}:Q{index}").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                 index++;
                 k++;
             }
+            index += 3;
+            worksheet.Cell($"A{index}").Value = "Ngày nhập";
+            worksheet.Cell($"B{index}").Value = "Hãng tàu";
+            worksheet.Cell($"C{index}").Value = "Tên tàu";
+            worksheet.Cell($"D{index}").Value = "Số chuyến";
+            worksheet.Cell($"E{index}").Value = "Nhân viên bán hàng";
+            worksheet.Cell($"F{index}").Value = "Ngày trả hàng";
+            worksheet.Cell($"G{index}").Value = "Chủ hàng";
+            worksheet.Cell($"H{index}").Value = "Vật tư hàng hóa";
+            worksheet.Cell($"I{index}").Value = "Loại Container";
+            worksheet.Cell($"J{index}").Value = "Số Cont";
+            worksheet.Cell($"K{index}").Value = "Số tiền";
+            worksheet.Cell($"L{index}").Value = "Hóa đơn";
+            worksheet.Cell($"M{index}").Value = "Tháng đóng";
+            worksheet.Cell($"N{index}").Value = "Năm";
+            worksheet.Cell($"O{index}").Value = "[Phí khác (trả hàng)] Ghi chú";
+            worksheet.Cell($"P{index}").Value = "User tạo";
+            worksheet.Range($"A{index}:P{index}").Style.Font.Bold = true;
+            worksheet.Range($"A{index}:P{index}").Style.Alignment.WrapText = true;
+            worksheet.Range($"A{index}:P{index}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Range($"A{index}:P{index}").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range($"A{index}:P{index}").Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Range($"A{index}:P{index}").Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Range($"A{index}:P{index}").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Range($"A{index}:P{index}").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            var sql1 = @$"select e.InsertedDate,
+                        br.Name as BrandShip,
+                        s.Name as Ship,
+                        t.Trip,
+                        u.FullName,
+                        t.ReturnDate,
+                        REPLACE(b.Name,'%26','&') as Boss,
+                        com.Description as Com,
+                        cont.Description as ContainerType,
+                        t.ContainerNo,
+                        e.UnitPrice*e.Quantity as UnitPrice,
+                        e.IsVat,
+                        REPLACE(t.MonthText,'%2F','/') as MonthText,
+                        t.YearText,	
+                        REPLACE(e.Notes,'%2F','/') as Notes,
+                        ins.FullName as InsertedBy
+                        from Expense e 
+                        left join Transportation t on e.TransportationId = t.Id 
+                        left join Vendor br on t.BrandShipId = br.Id 
+                        left join Vendor b on t.BossId = b.Id 
+                        left join Ship s on t.ShipId = s.Id 
+                        left join [User] u on t.UserId = u.Id 
+                        left join [User] ins on t.InsertedBy = ins.Id 
+                        left join MasterData com on t.CommodityId = com.Id 
+                        left join MasterData cont on t.ContainerTypeId = cont.Id 
+                        where e.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+                        and e.ExpenseTypeId = 15955
+                        and e.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}'
+            ";
+            index++;
+            var data1 = await ConverSqlToDataSet(sql1);
+            foreach (var item in data1[0])
+            {
+                worksheet.Cell($"A{index}").Value = DateTime.Parse(item["InsertedDate"].ToString());
+                worksheet.Cell($"B{index}").Value = item["BrandShip"].ToString();
+                worksheet.Cell($"C{index}").Value = item["Ship"].ToString();
+                worksheet.Cell($"D{index}").Value = item["Trip"].ToString();
+                worksheet.Cell($"E{index}").Value = item["FullName"].ToString();
+                worksheet.Cell($"F{index}").Value = item["ReturnDate"] is null ? default(DateTime?) : DateTime.Parse(item["ReturnDate"].ToString());
+                worksheet.Cell($"G{index}").Value = item["Boss"].ToString();
+                worksheet.Cell($"H{index}").Value = item["Com"].ToString();
+                worksheet.Cell($"I{index}").Value = item["ContainerType"].ToString();
+                worksheet.Cell($"J{index}").Value = item["ContainerNo"].ToString();
+                worksheet.Cell($"K{index}").Value = decimal.Parse(item["UnitPrice"].ToString());
+                worksheet.Cell($"K{index}").Style.NumberFormat.Format = "#,##";
+                worksheet.Cell($"L{index}").Value = item["IsVat"].ToString() == "False" ? default(int?) : 1;
+                worksheet.Cell($"M{index}").Value = item["MonthText"].ToString();
+                worksheet.Cell($"N{index}").Value = int.Parse(item["YearText"].ToString());
+                worksheet.Cell($"O{index}").Value = item["Notes"].ToString().DecodeSpecialChar();
+                worksheet.Cell($"P{index}").Value = item["InsertedBy"].ToString();
+                worksheet.Range($"A{index}:P{index}").Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                worksheet.Range($"A{index}:P{index}").Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                worksheet.Range($"A{index}:P{index}").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                worksheet.Range($"A{index}:P{index}").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                index++;
+            }
             var url = $"BaoCaoSuaChua{transportation.FromDate.Value.ToString("dd-MM-yyyy")}-{transportation.ToDate.Value.ToString("dd-MM-yyyy")}.xlsx";
+            worksheet.Columns().AdjustToContents();
             workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
             return url;
         }
