@@ -5,6 +5,7 @@ using Core.Components.Extensions;
 using Core.Components.Forms;
 using Core.Enums;
 using Core.Extensions;
+using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
 using System;
@@ -30,24 +31,14 @@ namespace TMS.UI.Business.Manage
 
         public async Task SetGridView()
         {
-            if (transportationsEntity != null && !checkLoad)
-            {
-                var gridTran = this.FindComponentByName<GridView>(nameof(Transportation));
-                if (gridTran != null)
-                {
-                    var tranIds = transportationsEntity.Select(x => x.Id).ToList();
-                    gridTran.DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and Id in ({tranIds.Combine()})";
-                    await gridTran.ApplyFilter();
-                }
-            }
             GridView grid;
             this.SetShow(false, "btnCreate", "btnCreates", "btnSend", "btnSends");
-            if (Parent.Name == "Transportation Return Plan List")
+            if (Parent.EditForm.Feature.Name == "Transportation Return Plan List")
             {
                 this.SetShow(false, "TransportationRequestDetails2", "Transportation2");
                 grid = this.FindComponentByName<GridView>("TransportationRequestDetails1");
             }
-            else if (Parent.Name == "ReturnPlan List")
+            else if (Parent.EditForm.Feature.Name == "ReturnPlan List")
             {
                 this.SetShow(false, "TransportationRequestDetails1", "Transportation1");
                 grid = this.FindComponentByName<GridView>("TransportationRequestDetails2");
@@ -55,6 +46,16 @@ namespace TMS.UI.Business.Manage
             else
             {
                 grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
+            }
+            if (transportationsEntity != null && !checkLoad)
+            {
+                var gridTran = this.FindActiveComponent<GridView>().Where(x => x.Show).FirstOrDefault();
+                if (gridTran != null)
+                {
+                    var tranIds = transportationsEntity.Select(x => x.Id).ToList();
+                    gridTran.DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and Id in ({tranIds.Combine()})";
+                    await gridTran.ApplyFilter();
+                }
             }
             object check = null;
             if (transportationsEntity != null)
@@ -110,7 +111,7 @@ namespace TMS.UI.Business.Manage
                     listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
                 }
             });
-            var bl = Parent.Name == "Transportation Return Plan List" || Parent.Name == "ReturnPlan List" ? Parent as ReturnPlanListBL : Parent as TransportationListBL;
+            var bl = Parent.EditForm.Feature.Name == "Transportation Return Plan List" || Parent.EditForm.Feature.Name == "ReturnPlan List" ? Parent as ReturnPlanListBL : Parent as TransportationListBL;
             if (Parent.Name == "Transportation List Accountant" || Parent.Name == "List Ship Book" || bl.getCheckView())
             {
                 listViewItems.ForEach(x =>

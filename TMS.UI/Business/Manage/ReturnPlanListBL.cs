@@ -239,7 +239,7 @@ namespace TMS.UI.Business.Manage
         public async Task TransportationRequestDetailsBLWithTransReturn(List<Transportation> transportations, TabEditor tabEditor)
         {
             await tabEditor.OpenPopup(
-               featureName: "Transportation Request Details",
+               featureName: "Transportation Request Details2",
                factory: () =>
                {
                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationRequestDetailsBL");
@@ -601,15 +601,15 @@ namespace TMS.UI.Business.Manage
         public async Task TransportationRequestDetailsBL(Transportation transportation, TabEditor tabEditor)
         {
             await tabEditor.OpenPopup(
-               featureName: "Transportation Request Details",
-               factory: () =>
-               {
-                   var type = Type.GetType("TMS.UI.Business.Manage.TransportationRequestDetailsBL");
-                   var instance = Activator.CreateInstance(type) as PopupEditor;
-                   instance.Title = "Yêu cầu thay đổi";
-                   instance.Entity = transportation;
-                   return instance;
-               });
+                featureName: "Transportation Request Details2",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationRequestDetailsBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Yêu cầu thay đổi";
+                    instance.Entity = transportation;
+                    return instance;
+                });
         }
 
         public bool getCheckView()
