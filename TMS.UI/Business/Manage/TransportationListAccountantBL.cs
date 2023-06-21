@@ -1344,47 +1344,14 @@ namespace TMS.UI.Business.Manage
                 confirm.Render();
                 confirm.YesConfirmed += async () =>
                 {
-                    var checks = listViewItems.Where(x => x.IsLocked).ToList();
-                    if (checks.Count > 0)
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockRevenueTransportation");
+                    if (res)
                     {
-                        var confirmRequest = new ConfirmDialog
-                        {
-                            NeedAnswer = true,
-                            ComType = nameof(Textbox),
-                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                            "Hãy nhập lý do",
-                        };
-                        confirmRequest.Render();
-                        confirmRequest.YesConfirmed += async () =>
-                        {
-                            foreach (var item in checks)
-                            {
-                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
-                            }
-                        };
-                        var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
-                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(transportationNoLock, "LockRevenueTransportation");
-                        if (res)
-                        {
-                            await gridView.ApplyFilter(true);
-                        }
-                        else
-                        {
-                            Toast.Warning("Đã có lỗi xảy ra");
-                        }
+                        await gridView.ApplyFilter(true);
                     }
                     else
                     {
-                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "LockRevenueTransportation");
-                        if (res)
-                        {
-                            await gridView.ApplyFilter(true);
-                        }
-                        else
-                        {
-                            Toast.Warning("Đã có lỗi xảy ra");
-                        }
+                        Toast.Warning("Đã có lỗi xảy ra");
                     }
                 };
             });
@@ -1592,39 +1559,10 @@ namespace TMS.UI.Business.Manage
                 confirm.Render();
                 confirm.YesConfirmed += async () =>
                 {
-                    var checks = listViewItems.Where(x => x.IsLocked).ToList();
-                    if (checks.Count > 0)
+                    var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "UnLockRevenueTransportation");
+                    if (res)
                     {
-                        var confirmRequest = new ConfirmDialog
-                        {
-                            NeedAnswer = true,
-                            ComType = nameof(Textbox),
-                            Content = $"Đã có {checks.Count} DSVC bị khóa (Hệ thống). Bạn có muốn gửi yêu cầu mở khóa không?<br />" +
-                            "Hãy nhập lý do",
-                        };
-                        confirmRequest.Render();
-                        confirmRequest.YesConfirmed += async () =>
-                        {
-                            foreach (var item in checks)
-                            {
-                                item.ReasonUnLockAll = confirmRequest.Textbox?.Text;
-                                await new Client(nameof(Transportation)).PostAsync<Transportation>(item, "RequestUnLockAll");
-                            }
-                        };
-                        var transportationNoLock = listViewItems.Where(x => x.IsLocked == false).ToList();
-                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "UnLockRevenueTransportation");
-                        if (res)
-                        {
-                            await gridView.ApplyFilter(true);
-                        }
-                    }
-                    else
-                    {
-                        var res = await new Client(nameof(Transportation)).PostAsync<bool>(listViewItems, "UnLockRevenueTransportation");
-                        if (res)
-                        {
-                            await gridView.ApplyFilter(true);
-                        }
+                        await gridView.ApplyFilter(true);
                     }
                 };
             });
