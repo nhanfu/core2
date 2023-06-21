@@ -346,7 +346,7 @@ namespace TMS.UI.Business.Manage
             }
             var listViewItem = grid.RowData.Data.Cast<TransportationRequestDetails>().OrderByDescending(x => x.Id).FirstOrDefault();
             var selected = grid.GetSelectedRows().Cast<TransportationRequestDetails>().OrderByDescending(x => x.Id).FirstOrDefault();
-            if (listViewItem.Id != selected.Id)
+            if (selected == null || (listViewItem.Id != selected.Id && selected != null))
             {
                 Toast.Warning("Bạn chưa chọn thông tin thay đổi có thể gửi");
                 return;
