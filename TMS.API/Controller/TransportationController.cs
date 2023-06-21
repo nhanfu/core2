@@ -442,7 +442,7 @@ namespace TMS.API.Controllers
                         left join Vendor b on t.BossId = b.Id 
                         left join Ship s on t.ShipId = s.Id 
                         left join [User] u on t.UserId = u.Id 
-                        left join [User] ins on t.InsertedBy = ins.Id 
+                        left join [User] ins on e.InsertedBy = ins.Id 
                         left join MasterData com on t.CommodityId = com.Id 
                         left join MasterData cont on t.ContainerTypeId = cont.Id 
                         where e.InsertedDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
