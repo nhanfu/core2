@@ -320,36 +320,51 @@ namespace TMS.API.Controllers
             var sql = @$"select br.Name as BrandShip,
             (select COUNT(Id) 
             from Transportation t 
-            where t.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
-            and BrandShipId = tb.BrandShipId
-            and t.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}') as ContainerTraVo,
+            where t.Id in (
+			select distinct TransportationId
+            from Expense e 
+            where e.InsertedDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+            and e.ExpenseTypeId = 15955
+			and BrandShipId = tb.BrandShipId
+            and e.InsertedDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}'
+			)) as ContainerTraVo,
             (select COUNT(Id)
             from Expense e 
-            where e.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+            where e.InsertedDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
             and e.BrandShipId = tb.BrandShipId
             and e.ExpenseTypeId = 15955
-            and e.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}') as ContainerBiPhat,
+            and e.InsertedDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}') as ContainerBiPhat,
             (select sum(e.UnitPrice*e.Quantity)
             from Expense e 
-            where e.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+            where e.InsertedDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
             and e.BrandShipId = tb.BrandShipId
             and e.ExpenseTypeId = 15955
-            and e.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}') as SoTienBiPhat,
+            and e.InsertedDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}') as SoTienBiPhat,
             ((select sum(e.UnitPrice*e.Quantity)
             from Expense e 
-            where e.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+            where e.InsertedDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
             and e.BrandShipId = tb.BrandShipId
             and e.ExpenseTypeId = 15955
-            and e.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}')/
+            and e.InsertedDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}')/
             (select COUNT(Id) 
             from Transportation t 
-            where t.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
-            and BrandShipId = tb.BrandShipId
-            and t.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}')) as TrungBinhSoTien
+            where t.Id in (
+			select distinct TransportationId
+            from Expense e 
+            where e.InsertedDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+            and e.ExpenseTypeId = 15955
+			and BrandShipId = tb.BrandShipId
+            and e.InsertedDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}'
+			))) as TrungBinhSoTien
             from (select distinct t.BrandShipId
             from Transportation t
-            where t.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}' 
-            and t.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}') as tb
+            where t.Id in (
+			select distinct TransportationId
+            from Expense e 
+            where e.InsertedDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+            and e.ExpenseTypeId = 15955
+            and e.InsertedDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}'
+			)) as tb
             join Vendor br on br.Id = tb.BrandShipId 
             ";
             index++;
@@ -430,9 +445,9 @@ namespace TMS.API.Controllers
                         left join [User] ins on t.InsertedBy = ins.Id 
                         left join MasterData com on t.CommodityId = com.Id 
                         left join MasterData cont on t.ContainerTypeId = cont.Id 
-                        where e.ClosingDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
+                        where e.InsertedDate > '{transportation.FromDate.Value.AddDays(-1):yyyy-MM-dd}'
                         and e.ExpenseTypeId = 15955
-                        and e.ClosingDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}'
+                        and e.InsertedDate < '{transportation.ToDate.Value.AddDays(1):yyyy-MM-dd}'
             ";
             index++;
             var data1 = await ConverSqlToDataSet(sql1);
