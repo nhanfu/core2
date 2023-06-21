@@ -110,7 +110,7 @@ namespace TMS.UI.Business.Manage
                     listViewItem.FilterChildren(y => !y.GuiInfo.Disabled).ForEach(y => y.Disabled = true);
                 }
             });
-            var bl = Parent as TransportationListBL;
+            var bl = Parent.Name == "Transportation Return Plan List" || Parent.Name == "ReturnPlan List" ? Parent as ReturnPlanListBL : Parent as TransportationListBL;
             if (Parent.Name == "Transportation List Accountant" || Parent.Name == "List Ship Book" || bl.getCheckView())
             {
                 listViewItems.ForEach(x =>
