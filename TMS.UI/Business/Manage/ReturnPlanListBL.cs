@@ -353,8 +353,8 @@ namespace TMS.UI.Business.Manage
                     instance.Entity = new CheckFeeHistory()
                     {
                         RouteIds = routeIds,
-                        FromDate = LocalStorage.GetItem<string>("FromDateCheckFeeClosing") is null ? default(DateTime) : DateTime.Parse(LocalStorage.GetItem<string>("FromDateCheckFeeClosing")),
-                        ToDate = LocalStorage.GetItem<string>("ToDateCheckFeeClosing") is null ? default(DateTime) : DateTime.Parse(LocalStorage.GetItem<string>("ToDateCheckFeeClosing")),
+                        FromDate = LocalStorage.GetItem<string>("FromDateCheckFeeClosing") is null ? default(DateTime?) : DateTime.Parse(LocalStorage.GetItem<string>("FromDateCheckFeeClosing")),
+                        ToDate = LocalStorage.GetItem<string>("ToDateCheckFeeClosing") is null ? default(DateTime?) : DateTime.Parse(LocalStorage.GetItem<string>("ToDateCheckFeeClosing")),
                         TypeId = 2,
                     };
                     return instance;
@@ -456,7 +456,9 @@ namespace TMS.UI.Business.Manage
                     instance.Title = "Báo cáo sản lượng";
                     instance.Entity = new ReportGroupVM()
                     {
-                        Return = true
+                        Return = true,
+                        FromDate = LocalStorage.GetItem<string>("FromDateProductionReport") is null ? default(DateTime?) : DateTime.Parse(LocalStorage.GetItem<string>("FromDateProductionReport")),
+                        ToDate = LocalStorage.GetItem<string>("ToDateProductionReport") is null ? default(DateTime?) : DateTime.Parse(LocalStorage.GetItem<string>("ToDateProductionReport")),
                     };
                     return instance;
                 });

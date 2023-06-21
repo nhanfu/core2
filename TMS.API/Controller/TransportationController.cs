@@ -923,7 +923,7 @@ namespace TMS.API.Controllers
             }
             if (!entity.Return)
             {
-                sql += $" where t.ClosingDate >= '{entity.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ClosingDate <= '{entity.ToDate.Value.ToString("yyyy-MM-dd")}' and ContainerTypeId not in (14805,14806)";
+                sql += $" where t.ClosingDate > '{entity.FromDate.Value.AddDays(-1).ToString("yyyy-MM-dd")}' and t.ClosingDate < '{entity.ToDate.Value.AddDays(1).ToString("yyyy-MM-dd")}' and ContainerTypeId not in (14805,14806)";
                 if (entity.Combination)
                 {
                     sql += $" and t.ReturnEmptyId = 114017";
@@ -935,7 +935,7 @@ namespace TMS.API.Controllers
             }
             else
             {
-                sql += $" where t.ReturnDate >= '{entity.FromDate.Value.ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{entity.ToDate.Value.ToString("yyyy-MM-dd")}' and ContainerTypeId not in (14805,14806)  and t.Active = 1 and t.ShipDate is not null and t.IsSplitBill = 0";
+                sql += $" where t.ReturnDate >= '{entity.FromDate.Value.AddDays(-1).ToString("yyyy-MM-dd")}' and t.ReturnDate <= '{entity.ToDate.Value.AddDays(1).ToString("yyyy-MM-dd")}' and ContainerTypeId not in (14805,14806)  and t.Active = 1 and t.ShipDate is not null and t.IsSplitBill = 0";
                 if (entity.Combination)
                 {
                     sql += $" and t.ReturnEmptyId = 114017";

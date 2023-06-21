@@ -18,6 +18,8 @@ namespace TMS.UI.Business.Manage
 
         public async Task ExportExcel()
         {
+            LocalStorage.SetItem("FromDateProductionReport", EReportGroupVM.FromDate?.ToString("MM/dd/yyyy"));
+            LocalStorage.SetItem("ToDateProductionReport", EReportGroupVM.ToDate?.ToString("MM/dd/yyyy"));
             if (!await IsFormValid())
             {
                 return;
