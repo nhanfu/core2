@@ -178,7 +178,7 @@ namespace TMS.UI.Business.Authentication
 
         public void InitAppIfEmpty()
         {
-            Client.SystemRole = Client.Token.RoleIds.Contains((int)RoleEnum.System);
+            Client.SystemRole = Client.Token.RoleIds.Contains((int)RoleEnum.System) || Client.Token.RoleIds.Contains(51);
             if (_initApp)
             {
                 return;
