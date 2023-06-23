@@ -296,7 +296,7 @@ namespace TMS.API.Services
                 return null;
             }
             var emptyCombination = patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.EmptyCombinationId) && !x.OldVal.IsNullOrWhiteSpace());
-            var emptyCombinationNew = patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.EmptyCombinationId) && x.Value.IsNullOrWhiteSpace());
+            var emptyCombinationNew = patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.EmptyCombinationId) && !x.Value.IsNullOrWhiteSpace());
             var sql = string.Empty;
             if (emptyCombination != null)
             {
