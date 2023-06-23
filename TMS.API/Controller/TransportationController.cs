@@ -2427,9 +2427,8 @@ namespace TMS.API.Controllers
             foreach (var item in transportations)
             {
                 var getTranRequestDetails = tranRequestDetails.Where(x => x.TransportationId == item.Id && x.StatusId == (int)ApprovalStatusEnum.Approving).FirstOrDefault();
-                var queryUpdate = CompareChanges(getTranRequestDetails, item);
-                cmd += queryUpdate;
-                cmd += $" where Id = {item.Id}";
+                var patchUpdate = CompareChanges(getTranRequestDetails, item);
+                await AddTriggerTransportation(patchUpdate, item);
             }
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
@@ -2475,9 +2474,8 @@ namespace TMS.API.Controllers
             foreach (var item in transportations)
             {
                 var getTranRequestDetails = tranRequestDetails.Where(x => x.TransportationId == item.Id && x.StatusId == (int)ApprovalStatusEnum.Approving).FirstOrDefault();
-                var queryUpdate = CompareChanges(getTranRequestDetails, item);
-                cmd += queryUpdate;
-                cmd += $" where Id = {item.Id}";
+                var patchUpdate = CompareChanges(getTranRequestDetails, item);
+                await AddTriggerTransportation(patchUpdate, item);
             }
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
@@ -2523,9 +2521,8 @@ namespace TMS.API.Controllers
             foreach (var item in transportations)
             {
                 var getTranRequestDetails = tranRequestDetails.Where(x => x.TransportationId == item.Id && x.StatusId == (int)ApprovalStatusEnum.Approving).FirstOrDefault();
-                var queryUpdate = CompareChanges(getTranRequestDetails, item);
-                cmd += queryUpdate;
-                cmd += $" where Id = {item.Id}";
+                var patchUpdate = CompareChanges(getTranRequestDetails, item);
+                await AddTriggerTransportation(patchUpdate, item);
             }
             cmd += $"Update [{nameof(Transportation)}] set IsSubmit = 0" +
                 $" where Id in ({ids.Combine()})";
@@ -2573,9 +2570,8 @@ namespace TMS.API.Controllers
             foreach (var item in transportations)
             {
                 var getTranRequestDetails = tranRequestDetails.Where(x => x.TransportationId == item.Id && x.StatusId == (int)ApprovalStatusEnum.Approving).FirstOrDefault();
-                var queryUpdate = CompareChanges(getTranRequestDetails, item);
-                cmd += queryUpdate;
-                cmd += $" where Id = {item.Id}";
+                var patchUpdate = CompareChanges(getTranRequestDetails, item);
+                await AddTriggerTransportation(patchUpdate, item);
             }
             cmd += $" Update [{nameof(TransportationRequest)}] set Active = 0, StatusId = {(int)ApprovalStatusEnum.Approved}" +
                 $" where Id in ({tranRequestIds.Combine()}) and Active = 1";
@@ -2809,9 +2805,10 @@ namespace TMS.API.Controllers
             return true;
         }
 
-        private string CompareChanges(object change, object cutting)
+        private PatchUpdate CompareChanges(object change, object cutting)
         {
-            var query = $" Update [{nameof(Transportation)}] set ";
+            var patch = new PatchUpdate();
+            patch.Changes = new List<PatchUpdateDetail>();
             if (change != null)
             {
                 var propsChange = change.GetType().GetProperties().ToList();
@@ -2842,21 +2839,88 @@ namespace TMS.API.Controllers
                         var propType = item.PropertyType.FullName;
                         if (propType.Contains("System.DateTime"))
                         {
-                            query += $"{item.Name} = ";
-                            query += a1 != null ? $"'{DateTime.Parse(a1.ToString()).ToString("yyyy/MM/dd")}'" : "NULL";
-                            query += ", ";
+                            patch.Changes.Add(new PatchUpdateDetail()
+                            {
+                                Field = item.Name,
+                                Value = a1 != null ? $"{DateTime.Parse(a1.ToString()).ToString("yyyy/MM/dd")}" : "NULL",
+                            });
                         }
                         else
                         {
-                            query += $"{item.Name} = ";
-                            query += a1 != null ? $"'{a1.ToString()}'" : "NULL";
-                            query += ", ";
+                            patch.Changes.Add(new PatchUpdateDetail()
+                            {
+                                Field = item.Name,
+                                Value = a1 != null ? $"{a1.ToString()}" : "NULL",
+                            });
                         }
                     }
                 }
             }
-            query = query.TrimEnd(',', ' ');
-            return query;
+            return patch;
+        }
+
+        public async Task AddTriggerTransportation(PatchUpdate patch, Transportation item)
+        {
+            var idInt = item.Id;
+            patch.Changes.Add(new PatchUpdateDetail
+            {
+                Field = nameof(Transportation.Id),
+                Value = item.Id.ToString()
+            });
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.Connection = connection;
+                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                        command.CommandText += $" UPDATE [{nameof(Transportation)}] SET {update.Combine()} WHERE Id = {idInt};";
+                        command.CommandText += " " + _transportationService.Transportation_ClosingUnitPrice(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_Note4(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_EmptyCombinationId(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_BetAmount(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_CombinationFee(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_Cont20_40(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_Dem(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_DemDate(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ExportListId(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_IsSplitBill(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_LandingFee(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_LiftFee(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_MonthText(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ReturnClosingFee(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ReturnDate(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ReturnLiftFee(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ReturnNotes(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ReturnVs(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ShellDate(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_ShipUnitPriceQuotation(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_VendorLocation(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_BetFee(patch, idInt);
+                        command.CommandText += " " + @"update t set ClosingNotes = isnull(tr.Notes,'') + case when ven1.ContactPhoneNumber is null and ven1.ContactName is null and ven1.ContactUser is null then '' else (' TTLH: '+isnull(ven1.ContactName,'') + '/'+ isnull(ven1.ContactUser,'') + '/' + isnull(ven1.ContactPhoneNumber,'') + '/' + isnull(ven1.Note,'')) end
+	                        from Transportation t
+	                        left join TransportationPlan tr on tr.Id = t.TransportationPlanId
+	                        left join VendorContact ven1 on ven1.Id = tr.Contact2Id
+                            where t.Id = " + idInt + ";";
+                        foreach (var itemDetail in updates)
+                        {
+                            command.Parameters.AddWithValue($"@{itemDetail.Field.ToLower()}", itemDetail.Value is null ? DBNull.Value : itemDetail.Value);
+                        }
+                        await command.ExecuteNonQueryAsync();
+                        transaction.Commit();
+                        await db.Entry(item).ReloadAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
         }
         #endregion
         #region Lock
