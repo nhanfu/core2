@@ -289,6 +289,30 @@ namespace TMS.API.Services
             }
         }
 
+        public string Transportation_EmptyCombinationId(PatchUpdate patchUpdate, int Id)
+        {
+            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.EmptyCombinationId)))
+            {
+                return null;
+            }
+            var emptyCombination = patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.EmptyCombinationId) && !x.OldVal.IsNullOrWhiteSpace());
+            var emptyCombinationNew = patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.EmptyCombinationId) && x.Value.IsNullOrWhiteSpace());
+            var sql = string.Empty;
+            if (emptyCombination != null)
+            {
+                sql += @$"update Transportation set ReturnEmptyId = null, ReturnClosingFee = null,CombinationId = null
+				from Transportation
+				where Transportation.Id = {emptyCombination.OldVal};";
+            }
+            if (emptyCombinationNew != null)
+            {
+                sql += @$"update Transportation set ReturnEmptyId = 114017, ReturnClosingFee = null,CombinationId = {Id}
+				from Transportation
+				where Transportation.Id = {emptyCombinationNew.Value};";
+            }
+            return sql;
+        }
+
         public string Transportation_ReturnDate(PatchUpdate patchUpdate, int Id)
         {
             if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.SplitBill)

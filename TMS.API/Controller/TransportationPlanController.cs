@@ -349,6 +349,7 @@ namespace TMS.API.Controllers
                             command.CommandText += $" UPDATE [{nameof(Transportation)}] SET {update.Combine()} WHERE Id = {idInt};";
                             command.CommandText += " " + _transportationService.Transportation_ClosingUnitPrice(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_Note4(patch, idInt);
+                            command.CommandText += " " + _transportationService.Transportation_EmptyCombinationId(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_BetAmount(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_CombinationFee(patch, idInt);
                             command.CommandText += " " + _transportationService.Transportation_Cont20_40(patch, idInt);

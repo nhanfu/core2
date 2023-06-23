@@ -104,6 +104,7 @@ namespace TMS.API.Controllers
                         command.CommandText += " " + _transportationService.Transportation_ClosingUnitPrice(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_ReturnUnitPrice(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_Note4(patch, idInt);
+                        command.CommandText += " " + _transportationService.Transportation_EmptyCombinationId(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_BetFee(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_BetAmount(patch, idInt);
                         command.CommandText += " " + _transportationService.Transportation_CombinationFee(patch, idInt);
