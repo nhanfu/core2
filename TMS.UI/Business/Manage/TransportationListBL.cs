@@ -1205,23 +1205,23 @@ namespace TMS.UI.Business.Manage
                 var rs = listpolicy.SelectMany(item =>
                 {
                     var detail = item.SettingPolicyDetail.ToList();
-                    var build = detail.GroupBy(z => z.ComponentId).SelectMany(y =>
+                    var build = detail.GroupBy(z => new { z.ComponentId, z.OperatorId }).SelectMany(y =>
                     {
+                        var component = componentrs.FirstOrDefault(k => k.Id == y.Key.ComponentId);
+                        var ope = operatorrs.FirstOrDefault(k => k.Id == y.Key.OperatorId);
                         var group = y.ToList().Select(l =>
                         {
-                            var component = componentrs.FirstOrDefault(k => k.Id == l.ComponentId);
                             if (component is null)
                             {
                                 return null;
                             }
-                            var ope = operatorrs.FirstOrDefault(k => k.Id == l.OperatorId);
                             if (component.ComponentType == "Dropdown" || component.ComponentType == nameof(SearchEntry))
                             {
                                 var format = component.FormatCell.Split("}")[0].Replace("{", "");
                                 if (component.FieldName == nameof(Transportation.CommodityId))
                                 {
                                     format = "DescriptionEnglish";
-                                    return new Client(component.RefName).GetRawList<dynamic>(string.Format($"?$expand=InverseParent&$filter={ope.Name}", format, l.Value), entityName: component.RefName);
+                                    return new Client(component.RefName).GetRawList<dynamic>(string.Format($"?$expand=InverseParent&$filter={ope.Name} and contains(Path,'\\7651\\')", format, l.Value), entityName: component.RefName);
                                 }
                                 else
                                 {
@@ -1251,17 +1251,18 @@ namespace TMS.UI.Business.Manage
                 foreach (var item in listpolicy)
                 {
                     var detail = item.SettingPolicyDetail.ToList();
-                    var build = detail.GroupBy(z => z.ComponentId).Select(y =>
+                    var groupBuild = detail.GroupBy(z => new { z.ComponentId, z.OperatorId }).ToList();
+                    var build = groupBuild.Select(y =>
                     {
                         var listAnd = new List<string>();
+                        var component = componentrs.FirstOrDefault(k => k.Id == y.Key.ComponentId);
+                        var ope = operatorrs.FirstOrDefault(k => k.Id == y.Key.OperatorId);
                         var group = y.ToList().Select(l =>
                         {
-                            var component = componentrs.FirstOrDefault(k => k.Id == l.ComponentId);
                             if (component is null)
                             {
                                 return null;
                             }
-                            var ope = operatorrs.FirstOrDefault(k => k.Id == l.OperatorId);
                             if (component.ComponentType == "Dropdown" || component.ComponentType == nameof(SearchEntry))
                             {
                                 var rsdynamic = data[index];
@@ -1272,7 +1273,7 @@ namespace TMS.UI.Business.Manage
                                     if (component.FieldName == nameof(Transportation.CommodityId))
                                     {
                                         var listMasterData = rsdynamic.Select(x => new MasterData() { Id = x.Id, ParentId = x.ParentId, InverseParent = x.InverseParent }).ToList();
-                                        var child = listMasterData.Where(x => x.InverseParent.Any()).SelectMany(x => x.InverseParent).ToList();
+                                        var child = listMasterData.Where(x => x.InverseParent != null && x.InverseParent.Any()).SelectMany(x => x.InverseParent).ToList();
                                         if (child.Any())
                                         {
                                             var childIds = child.Select(x => x.Id).ToList();
