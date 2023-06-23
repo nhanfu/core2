@@ -129,6 +129,22 @@ namespace TMS.API.Models
         public bool IsVendorVatId { get; set; }
         [NotMapped]
         public bool IsAll { get; set; }
+        [NotMapped]
+        public DateTime? ClosingDateHD { get; set; }
+        [NotMapped]
+        public bool IsClosingDateHD { get; set; }
+        [NotMapped]
+        public DateTime? ReturnDateHD { get; set; }
+        [NotMapped]
+        public bool IsReturnDateHD { get; set; }
+        [NotMapped]
+        public int? ReceivedIdHD { get; set; }
+        [NotMapped]
+        public bool IsReceivedIdHD { get; set; }
+        [NotMapped]
+        public int? ReturnIdHD { get; set; }
+        [NotMapped]
+        public bool IsReturnIdHD { get; set; }
     }
 
     public partial class Route

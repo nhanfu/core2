@@ -293,95 +293,138 @@ namespace TMS.API.Controllers
             {
                 return false;
             }
-            var cmd = $"Update [{nameof(Revenue)}] set ";
+            var cmd = "";
+            string cmdTran = "";
             var item = revenues.Where(x => x.Id <= 0).FirstOrDefault();
-            if (item.IsLotNo)
-            {
-                cmd += $"{nameof(Revenue.LotNo)} = " + (item.LotNo != null ? $"'{item.LotNo}'" : "NULL") + ",";
-            }
-            if (item.IsLotDate)
-            {
-                cmd += $"{nameof(Revenue.LotDate)} = " + (item.LotDate != null ? $"'{item.LotDate.Value.ToString("yyyy-MM-dd")}'" : "NULL") + ",";
-            }
-            if (item.IsInvoinceNo)
-            {
-                cmd += $"{nameof(Revenue.InvoinceNo)} = " + (item.InvoinceNo != null ? $"'{item.InvoinceNo}'" : "NULL") + ",";
-            }
-            if (item.IsInvoinceDate)
-            {
-                cmd += $"{nameof(Revenue.InvoinceDate)} = " + (item.InvoinceDate != null ? $"'{item.InvoinceDate.Value.ToString("yyyy-MM-dd")}'" : "NULL") + ",";
-            }
-            if (item.IsUnitPriceBeforeTax)
-            {
-                cmd += $"{nameof(Revenue.UnitPriceBeforeTax)} = " + (item.UnitPriceBeforeTax != null ? $"'{item.UnitPriceBeforeTax}'" : "NULL") + ",";
-            }
-            if (item.IsUnitPriceAfterTax)
-            {
-                cmd += $"{nameof(Revenue.UnitPriceAfterTax)} = " + (item.UnitPriceAfterTax != null ? $"'{item.UnitPriceAfterTax}'" : "NULL") + ",";
-            }
-            if (item.IsReceivedPrice)
-            {
-                cmd += $"{nameof(Revenue.ReceivedPrice)} = " + (item.ReceivedPrice != null ? $"'{item.ReceivedPrice}'" : "NULL") + ",";
-            }
-            if (item.IsCollectOnBehaftPrice)
-            {
-                cmd += $"{nameof(Revenue.CollectOnBehaftPrice)} = " + (item.CollectOnBehaftPrice != null ? $"'{item.CollectOnBehaftPrice}'" : "NULL") + ",";
-            }
-            if (item.IsVat)
-            {
-                cmd += $"{nameof(Revenue.Vat)} = " + (item.Vat != null ? $"'{item.Vat}'" : "NULL") + ",";
-            }
-            if (item.IsTotalPriceBeforTax)
-            {
-                cmd += $"{nameof(Revenue.TotalPriceBeforTax)} = " + (item.TotalPriceBeforTax != null ? $"'{item.TotalPriceBeforTax}'" : "NULL") + ",";
-            }
-            if (item.IsVatPrice)
-            {
-                cmd += $"{nameof(Revenue.VatPrice)} = " + (item.VatPrice != null ? $"'{item.VatPrice}'" : "NULL") + ",";
-            }
-            if (item.IsTotalPrice)
-            {
-                cmd += $"{nameof(Revenue.TotalPrice)} = " + (item.TotalPrice != null ? $"'{item.TotalPrice}'" : "NULL") + ",";
-            }
-            if (item.IsNotePayment)
-            {
-                cmd += $"{nameof(Revenue.NotePayment)} = " + (item.NotePayment != null ? $"N'{item.NotePayment}'" : "NULL") + ",";
-            }
-            if (item.IsVendorVatId)
-            {
-                cmd += $"{nameof(Revenue.VendorVatId)} = " + (item.VendorVatId != null ? $"'{item.VendorVatId}'" : "NULL") + ",";
-                cmd += $"{nameof(Revenue.VendorVatName)} = " + (item.VendorVatName != null ? $"N'{item.VendorVatName}'" : "NULL") + ",";
-            }
+            revenues.Remove(item);
             if (item.IsLotNo ||
                 item.IsLotDate ||
-                item.IsUnitPriceAfterTax ||
+                item.IsInvoinceNo ||
+                item.IsInvoinceDate ||
                 item.IsUnitPriceBeforeTax ||
+                item.IsUnitPriceAfterTax ||
                 item.IsReceivedPrice ||
                 item.IsCollectOnBehaftPrice ||
-                item.IsNotePayment)
-            {
-                if (RoleIds.Where(x => x == 34 || x == 8).Any())
-                {
-                    cmd += $"{nameof(Revenue.UserUpdate1)} = {UserId},";
-                }
-            }
-            if (item.IsVat ||
-                item.IsVatPrice ||
+                item.IsVat ||
                 item.IsTotalPriceBeforTax ||
+                item.IsVatPrice ||
                 item.IsTotalPrice ||
-                item.IsInvoinceNo ||
-                item.IsInvoinceDate)
+                item.IsNotePayment ||
+                item.IsVendorVatId
+                )
             {
-                if (RoleIds.Where(x => x == 46 || x == 8).Any())
+                cmd += $"Update [{nameof(Revenue)}] set ";
+                if (item.IsLotNo)
                 {
-                    cmd += $"{nameof(Revenue.UserUpdate2)} = {UserId},";
+                    cmd += $"{nameof(Revenue.LotNo)} = " + (item.LotNo != null ? $"'{item.LotNo}'" : "NULL") + ",";
                 }
+                if (item.IsLotDate)
+                {
+                    cmd += $"{nameof(Revenue.LotDate)} = " + (item.LotDate != null ? $"'{item.LotDate.Value.ToString("yyyy-MM-dd")}'" : "NULL") + ",";
+                }
+                if (item.IsInvoinceNo)
+                {
+                    cmd += $"{nameof(Revenue.InvoinceNo)} = " + (item.InvoinceNo != null ? $"'{item.InvoinceNo}'" : "NULL") + ",";
+                }
+                if (item.IsInvoinceDate)
+                {
+                    cmd += $"{nameof(Revenue.InvoinceDate)} = " + (item.InvoinceDate != null ? $"'{item.InvoinceDate.Value.ToString("yyyy-MM-dd")}'" : "NULL") + ",";
+                }
+                if (item.IsUnitPriceBeforeTax)
+                {
+                    cmd += $"{nameof(Revenue.UnitPriceBeforeTax)} = " + (item.UnitPriceBeforeTax != null ? $"'{item.UnitPriceBeforeTax}'" : "NULL") + ",";
+                }
+                if (item.IsUnitPriceAfterTax)
+                {
+                    cmd += $"{nameof(Revenue.UnitPriceAfterTax)} = " + (item.UnitPriceAfterTax != null ? $"'{item.UnitPriceAfterTax}'" : "NULL") + ",";
+                }
+                if (item.IsReceivedPrice)
+                {
+                    cmd += $"{nameof(Revenue.ReceivedPrice)} = " + (item.ReceivedPrice != null ? $"'{item.ReceivedPrice}'" : "NULL") + ",";
+                }
+                if (item.IsCollectOnBehaftPrice)
+                {
+                    cmd += $"{nameof(Revenue.CollectOnBehaftPrice)} = " + (item.CollectOnBehaftPrice != null ? $"'{item.CollectOnBehaftPrice}'" : "NULL") + ",";
+                }
+                if (item.IsVat)
+                {
+                    cmd += $"{nameof(Revenue.Vat)} = " + (item.Vat != null ? $"'{item.Vat}'" : "NULL") + ",";
+                }
+                if (item.IsTotalPriceBeforTax)
+                {
+                    cmd += $"{nameof(Revenue.TotalPriceBeforTax)} = " + (item.TotalPriceBeforTax != null ? $"'{item.TotalPriceBeforTax}'" : "NULL") + ",";
+                }
+                if (item.IsVatPrice)
+                {
+                    cmd += $"{nameof(Revenue.VatPrice)} = " + (item.VatPrice != null ? $"'{item.VatPrice}'" : "NULL") + ",";
+                }
+                if (item.IsTotalPrice)
+                {
+                    cmd += $"{nameof(Revenue.TotalPrice)} = " + (item.TotalPrice != null ? $"'{item.TotalPrice}'" : "NULL") + ",";
+                }
+                if (item.IsNotePayment)
+                {
+                    cmd += $"{nameof(Revenue.NotePayment)} = " + (item.NotePayment != null ? $"N'{item.NotePayment}'" : "NULL") + ",";
+                }
+                if (item.IsVendorVatId)
+                {
+                    cmd += $"{nameof(Revenue.VendorVatId)} = " + (item.VendorVatId != null ? $"'{item.VendorVatId}'" : "NULL") + ",";
+                    cmd += $"{nameof(Revenue.VendorVatName)} = " + (item.VendorVatName != null ? $"N'{item.VendorVatName}'" : "NULL") + ",";
+                }
+                if (item.IsLotNo ||
+                    item.IsLotDate ||
+                    item.IsUnitPriceAfterTax ||
+                    item.IsUnitPriceBeforeTax ||
+                    item.IsReceivedPrice ||
+                    item.IsCollectOnBehaftPrice ||
+                    item.IsNotePayment)
+                {
+                    if (RoleIds.Where(x => x == 34 || x == 8).Any())
+                    {
+                        cmd += $"{nameof(Revenue.UserUpdate1)} = {UserId},";
+                    }
+                }
+                if (item.IsVat ||
+                    item.IsVatPrice ||
+                    item.IsTotalPriceBeforTax ||
+                    item.IsTotalPrice ||
+                    item.IsInvoinceNo ||
+                    item.IsInvoinceDate)
+                {
+                    if (RoleIds.Where(x => x == 46 || x == 8).Any())
+                    {
+                        cmd += $"{nameof(Revenue.UserUpdate2)} = {UserId},";
+                    }
+                }
+                cmd = cmd.TrimEnd(',');
+                var ids = revenues.Select(x => x.Id).ToList();
+                cmd += $" where Id in ({ids.Combine()})";
+                await db.Database.ExecuteSqlRawAsync(cmd);
             }
-            cmd = cmd.TrimEnd(',');
-            revenues.Remove(item);
-            var ids = revenues.Select(x => x.Id).ToList();
-            cmd += $" where Id in ({ids.Combine()})";
-            await db.Database.ExecuteSqlRawAsync(cmd);
+            if (item.IsClosingDateHD || item.IsReturnDateHD || item.IsReceivedIdHD || item.IsReturnIdHD)
+            {
+                cmdTran += $"Update [{nameof(Transportation)}] set ";
+                if (item.IsClosingDateHD)
+                {
+                    cmdTran += $"{nameof(Transportation.ClosingDateHD)} = " + (item.ClosingDateHD != null ? $"'{item.ClosingDateHD.Value.ToString("yyyy-MM-dd")}'" : "NULL") + ",";
+                }
+                if (item.IsReturnDateHD)
+                {
+                    cmdTran += $"{nameof(Transportation.ReturnDateHD)} = " + (item.ReturnDateHD != null ? $"'{item.ReturnDateHD.Value.ToString("yyyy-MM-dd")}'" : "NULL") + ",";
+                }
+                if (item.IsReceivedIdHD)
+                {
+                    cmdTran += $"{nameof(Transportation.ReceivedIdHD)} = " + (item.ReceivedIdHD != null ? $"'{item.ReceivedIdHD}'" : "NULL") + ",";
+                }
+                if (item.IsReturnIdHD)
+                {
+                    cmdTran += $"{nameof(Transportation.ReturnIdHD)} = " + (item.ReturnIdHD != null ? $"'{item.ReturnIdHD}'" : "NULL") + ",";
+                }
+                cmdTran = cmdTran.TrimEnd(',');
+                var tranIds = revenues.Select(x => x.TransportationId).ToList();
+                cmdTran += $" where Id in ({tranIds.Combine()})";
+                await db.Database.ExecuteSqlRawAsync(cmdTran);
+            }
             return true;
         }
 
