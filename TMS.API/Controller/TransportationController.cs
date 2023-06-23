@@ -1825,6 +1825,10 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (UserId = {UserId} or InsertedBy = {UserId})";
             }
+            else if (RoleIds.Contains(17))
+            {
+                sql += @$" and (UserId = 78 or UserId = {UserId} or User2Id = {UserId})";
+            }
             else if (RoleIds.Contains(32))
             {
                 sql += @$" and Active = 1";
@@ -1848,6 +1852,10 @@ namespace TMS.API.Controllers
             if (RoleIds.Contains(10))
             {
                 sql += @$" and (UserId = {UserId} or InsertedBy = {UserId})";
+            }
+            else if (RoleIds.Contains(17))
+            {
+                sql += @$" and (UserId = 78 or UserId = {UserId} or User2Id = {UserId})";
             }
             else if (RoleIds.Contains(27))
             {
