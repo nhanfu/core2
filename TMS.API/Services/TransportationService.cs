@@ -300,13 +300,21 @@ namespace TMS.API.Services
             var sql = string.Empty;
             if (emptyCombination != null)
             {
-                sql += @$"update Transportation set ReturnEmptyId = null, ReturnClosingFee = null,CombinationId = null
+                sql += @$" update Transportation set ReturnEmptyId = null, ReturnClosingFee = null
 				from Transportation
-				where Transportation.Id = {emptyCombination.OldVal};";
+				where Transportation.Id = {emptyCombination.OldVal}
+				and ReturnEmptyId = 114017 and ReturnClosingFee = null;";
+                sql += @$" update Transportation set CombinationId = null
+				from Transportation
+				where Transportation.Id = {emptyCombination.OldVal}";
             }
             if (emptyCombinationNew != null)
             {
-                sql += @$"update Transportation set ReturnEmptyId = 114017, ReturnClosingFee = null,CombinationId = {Id}
+                sql += @$" update Transportation set ReturnEmptyId = 114017, ReturnClosingFee = null
+				from Transportation
+				where Transportation.Id = {emptyCombinationNew.Value}
+				and ReturnEmptyId is null;";
+                sql += @$" update Transportation set CombinationId = {Id}
 				from Transportation
 				where Transportation.Id = {emptyCombinationNew.Value};";
             }
