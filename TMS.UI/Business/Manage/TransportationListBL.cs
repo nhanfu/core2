@@ -1676,7 +1676,6 @@ namespace TMS.UI.Business.Manage
             details.Add(new PatchUpdateDetail { Field = nameof(Expense.TotalPriceBeforeTax), Value = expense.TotalPriceBeforeTax.ToString() });
             return new PatchUpdate { Changes = details };
         }
-
         public async Task BeforePatchUpdateTransportation(Transportation transportation, PatchUpdate patchUpdate)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
@@ -1693,10 +1692,6 @@ namespace TMS.UI.Business.Manage
                     {
                         /*@
                          var swalWithBootstrapButtons = Swal.mixin({
-                          customClass: {
-                            confirmButton: 'btn btn-success',
-                            cancelButton: 'btn btn-danger'
-                          },
                           buttonsStyling: false
                         })
 
@@ -1704,9 +1699,6 @@ namespace TMS.UI.Business.Manage
                           title: 'Cảnh báo !',
                           text: 'Số cont bạn chọn đã đóng hàng chưa được 7 ngày!',
                           icon: 'error',
-                          showCancelButton: true,
-                          confirmButtonText: 'Yes, Cập nhật!',
-                          cancelButtonText: 'No, Không!',
                           reverseButtons: true
                         }).then((result) => {
                         })
@@ -1718,20 +1710,13 @@ namespace TMS.UI.Business.Manage
             {
                 /*@
                  var swalWithBootstrapButtons = Swal.mixin({
-                  customClass: {
-                    confirmButton: 'btn btn-success',
-                    cancelButton: 'btn btn-danger'
-                  },
                   buttonsStyling: false
                 })
 
                  swalWithBootstrapButtons.fire({
                   title: 'Cảnh báo !',
-                  text: 'Bạn có muốn xóa ngày trả hàng không!',
+                  text: 'Bạn đã xóa ngày trả hàng!',
                   icon: 'error',
-                  showCancelButton: true,
-                  confirmButtonText: 'Yes, Cập nhật!',
-                  cancelButtonText: 'No, Không!',
                   reverseButtons: true
                 }).then((result) => {
                 })

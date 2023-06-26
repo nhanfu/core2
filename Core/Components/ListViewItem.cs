@@ -237,7 +237,7 @@ namespace Core.Components
                 else
                 {
                     await ListView.RowChangeHandler(component.Entity, this, arg, component);
-                    if (arg.EvType == EventType.Change )
+                    if (arg.EvType == EventType.Change)
                     {
                         if (component.Disabled)
                         {

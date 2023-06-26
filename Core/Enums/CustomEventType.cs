@@ -23,6 +23,7 @@
         RowMouseLeave,
         OpenRef,
         BeforePatchUpdate,
+        ValidatePatchUpdate,
         BeforePatchCreate,
         AfterPatchUpdate,
     }
