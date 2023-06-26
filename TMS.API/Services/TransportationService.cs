@@ -316,7 +316,8 @@ namespace TMS.API.Services
 				and ReturnEmptyId is null;";
                 sql += @$" update Transportation set CombinationId = {Id}
 				from Transportation
-				where Transportation.Id = {emptyCombinationNew.Value};";
+				where Transportation.Id = {emptyCombinationNew.Value}
+				and ReturnEmptyId is null";
             }
             return sql;
         }
