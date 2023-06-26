@@ -79,10 +79,10 @@ namespace TMS.UI.Business.Manage
             await gridViewReport.ApplyFilter(true);
         }
 
-        public async Task RequestUnClosing(Transportation transportation, PatchUpdate patch)
+        public void RequestUnClosing(Transportation transportation, PatchUpdate patch)
         {
             var tran = new TransportationListAccountantBL();
-            await tran.RequestUnClosing(transportation, patch, this);
+            tran.RequestUnClosing(transportation, patch, this);
         }
     }
 }

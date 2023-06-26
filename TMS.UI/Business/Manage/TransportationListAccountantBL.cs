@@ -257,7 +257,7 @@ namespace TMS.UI.Business.Manage
                     confirm.Render();
                     confirm.YesConfirmed += async () =>
                     {
-                        await RequestUnClosing(transportation, patch, this);
+                        RequestUnClosing(transportation, patch, this);
                     };
                     confirm.NoConfirmed += async () =>
                     {
@@ -278,7 +278,7 @@ namespace TMS.UI.Business.Manage
                     {
                         if (transportation.IsLocked)
                         {
-                            await RequestUnClosing(transportation, patch, this);
+                            RequestUnClosing(transportation, patch, this);
                         }
                         else
                         {
@@ -324,9 +324,9 @@ namespace TMS.UI.Business.Manage
                         Content = "Bạn có chắc chắn muốn khóa khai thác ?",
                     };
                     confirm.Render();
-                    confirm.YesConfirmed += async () =>
+                    confirm.YesConfirmed += () =>
                     {
-                        await RequestUnClosing(transportation, patch, this);
+                        RequestUnClosing(transportation, patch, this);
                     };
                     confirm.NoConfirmed += async () =>
                     {
@@ -347,7 +347,7 @@ namespace TMS.UI.Business.Manage
                     {
                         if (transportation.IsLocked)
                         {
-                            await RequestUnClosing(transportation, patch, this);
+                            RequestUnClosing(transportation, patch, this);
                         }
                         else
                         {
@@ -388,7 +388,7 @@ namespace TMS.UI.Business.Manage
             {
                 if (Client.Token.UserId == 223)
                 {
-                    await RequestUnClosing(transportation, patch, this);
+                    RequestUnClosing(transportation, patch, this);
                 }
                 else
                 {
@@ -399,9 +399,9 @@ namespace TMS.UI.Business.Manage
                             Content = "Bạn có chắc chắn muốn khóa doanh thu ?",
                         };
                         confirm.Render();
-                        confirm.YesConfirmed += async () =>
+                        confirm.YesConfirmed += () =>
                         {
-                            await RequestUnClosing(transportation, patch, this);
+                            RequestUnClosing(transportation, patch, this);
                         };
                         confirm.NoConfirmed += async () =>
                         {
@@ -418,9 +418,9 @@ namespace TMS.UI.Business.Manage
                             Content = "Bạn có chắc chắn muốn mở khóa doanh thu ?",
                         };
                         confirm.Render();
-                        confirm.YesConfirmed += async () =>
+                        confirm.YesConfirmed += () =>
                         {
-                            await RequestUnClosing(transportation, patch, this);
+                            RequestUnClosing(transportation, patch, this);
                         };
                         confirm.NoConfirmed += async () =>
                         {
@@ -434,13 +434,12 @@ namespace TMS.UI.Business.Manage
             }
             else
             {
-                await RequestUnClosing(transportation, patch, this);
+                RequestUnClosing(transportation, patch, this);
             }
         }
 
-        public async Task RequestUnClosing(Transportation transportation, PatchUpdate patch, TabEditor tabEditor)
+        public void RequestUnClosing(Transportation tran, PatchUpdate patch, TabEditor tabEditor)
         {
-            var tran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {transportation.Id}");
             if (tran.IsLocked == false && tran.IsKt == false && tran.IsSubmit == false && tran.LockShip == false)
             {
                 return;
@@ -464,21 +463,23 @@ namespace TMS.UI.Business.Manage
                         return;
                     }
                     else
-                    { await TransportationRequestDetailsBL(tran, tabEditor); }
+                    {
+                        await TransportationRequestDetailsBL(tran, tabEditor);
+                    }
                 };
                 return;
             }
             if (tran.LockShip && !patch.Changes.Any(x => x.Field == nameof(tran.LockShip)))
             {
-                if (patch.Changes.Any(x => (x.Field == nameof(transportation.ShipPrice) && x.Value != $"{tran.ShipPrice:N0}")
-                || (x.Field == nameof(transportation.PolicyId) && x.Value != $"{tran.PolicyId}")
-                || (x.Field == nameof(transportation.ShipPolicyPrice) && x.Value != $"{tran.ShipPolicyPrice:N0}")
-                || (x.Field == nameof(transportation.Trip) && x.Value != tran.Trip)
-                || (x.Field == nameof(transportation.StartShip) && x.Value != $"{tran.StartShip:yyyy/MM/dd hh:mm:ss}")
-                || (x.Field == nameof(transportation.ContainerTypeId) && x.Value != $"{tran.ContainerTypeId}")
-                || (x.Field == nameof(transportation.SocId) && x.Value != $"{tran.SocId}")
-                || (x.Field == nameof(transportation.ShipNotes) && x.Value != tran.ShipNotes)
-                || (x.Field == nameof(transportation.BookingId) && x.Value != $"{tran.BookingId}")))
+                if (patch.Changes.Any(x => (x.Field == nameof(tran.ShipPrice) && x.Value != $"{tran.ShipPrice:N0}")
+                || (x.Field == nameof(tran.PolicyId) && x.Value != $"{tran.PolicyId}")
+                || (x.Field == nameof(tran.ShipPolicyPrice) && x.Value != $"{tran.ShipPolicyPrice:N0}")
+                || (x.Field == nameof(tran.Trip) && x.Value != tran.Trip)
+                || (x.Field == nameof(tran.StartShip) && x.Value != $"{tran.StartShip:yyyy/MM/dd hh:mm:ss}")
+                || (x.Field == nameof(tran.ContainerTypeId) && x.Value != $"{tran.ContainerTypeId}")
+                || (x.Field == nameof(tran.SocId) && x.Value != $"{tran.SocId}")
+                || (x.Field == nameof(tran.ShipNotes) && x.Value != tran.ShipNotes)
+                || (x.Field == nameof(tran.BookingId) && x.Value != $"{tran.BookingId}")))
                 {
                     var confirm = new ConfirmDialog
                     {
@@ -501,18 +502,18 @@ namespace TMS.UI.Business.Manage
             }
             if (tran.IsKt && !patch.Changes.Any(x => x.Field == nameof(tran.IsKt)))
             {
-                if (patch.Changes.Any(x => (x.Field == nameof(transportation.Trip) && x.Value != tran.Trip)
-                || (x.Field == nameof(transportation.BookingId) && x.Value != $"{tran.BookingId}")
-                || (x.Field == nameof(transportation.ContainerTypeId) && x.Value != $"{tran.ContainerTypeId}")
-                || (x.Field == nameof(transportation.ContainerNo) && x.Value != $"{tran.ContainerNo}")
-                || (x.Field == nameof(transportation.SealNo) && x.Value != $"{tran.SealNo}")
-                || (x.Field == nameof(transportation.CommodityId) && x.Value != $"{tran.CommodityId}")
-                || (x.Field == nameof(transportation.Weight) && x.Value != $"{tran.Weight}")
-                || (x.Field == nameof(transportation.FreeText2) && x.Value != $"{tran.FreeText2}")
-                || (x.Field == nameof(transportation.ShipDate) && x.Value != $"{tran.ShipDate:yyyy/MM/dd hh:mm:ss}")
-                || (x.Field == nameof(transportation.ReturnDate) && x.Value != $"{tran.ReturnDate:yyyy/MM/dd hh:mm:ss}")
-                || (x.Field == nameof(transportation.ReturnId) && x.Value != $"{tran.ReturnId}")
-                || (x.Field == nameof(transportation.FreeText3) && x.Value != tran.FreeText3)))
+                if (patch.Changes.Any(x => (x.Field == nameof(tran.Trip) && x.Value != tran.Trip)
+                || (x.Field == nameof(tran.BookingId) && x.Value != $"{tran.BookingId}")
+                || (x.Field == nameof(tran.ContainerTypeId) && x.Value != $"{tran.ContainerTypeId}")
+                || (x.Field == nameof(tran.ContainerNo) && x.Value != $"{tran.ContainerNo}")
+                || (x.Field == nameof(tran.SealNo) && x.Value != $"{tran.SealNo}")
+                || (x.Field == nameof(tran.CommodityId) && x.Value != $"{tran.CommodityId}")
+                || (x.Field == nameof(tran.Weight) && x.Value != $"{tran.Weight}")
+                || (x.Field == nameof(tran.FreeText2) && x.Value != $"{tran.FreeText2}")
+                || (x.Field == nameof(tran.ShipDate) && x.Value != $"{tran.ShipDate:yyyy/MM/dd hh:mm:ss}")
+                || (x.Field == nameof(tran.ReturnDate) && x.Value != $"{tran.ReturnDate:yyyy/MM/dd hh:mm:ss}")
+                || (x.Field == nameof(tran.ReturnId) && x.Value != $"{tran.ReturnId}")
+                || (x.Field == nameof(tran.FreeText3) && x.Value != tran.FreeText3)))
                 {
                     var confirm = new ConfirmDialog
                     {
@@ -528,7 +529,9 @@ namespace TMS.UI.Business.Manage
                             return;
                         }
                         else
-                        { await TransportationRequestDetailsBL(tran, tabEditor); }
+                        {
+                            await TransportationRequestDetailsBL(tran, tabEditor);
+                        }
                     };
                     return;
                 }
@@ -715,7 +718,7 @@ namespace TMS.UI.Business.Manage
 
         public void ApproveUnLock(object arg)
         {
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLock");
                 if (gridView == null)
@@ -773,7 +776,7 @@ namespace TMS.UI.Business.Manage
 
         public void ApproveUnLockAccountant(object arg)
         {
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLockAccountant");
                 if (gridView == null)
@@ -831,7 +834,7 @@ namespace TMS.UI.Business.Manage
 
         public void ApproveUnLockAll(object arg)
         {
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationUnLockAll");
                 if (gridView == null)
@@ -1218,7 +1221,7 @@ namespace TMS.UI.Business.Manage
 
         public void LockAccountantTransportation(object arg)
         {
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
                 if (gridView is null)
@@ -1287,7 +1290,7 @@ namespace TMS.UI.Business.Manage
 
         public void LockAllTransportation(object arg)
         {
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
                 if (gridView is null)
@@ -1414,7 +1417,7 @@ namespace TMS.UI.Business.Manage
 
         public void UnLockAccountantTransportation(object arg)
         {
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
                 if (gridView is null)
@@ -1469,7 +1472,7 @@ namespace TMS.UI.Business.Manage
 
         public void UnLockAllTransportation(object arg)
         {
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
                 if (gridView is null)
@@ -1538,7 +1541,7 @@ namespace TMS.UI.Business.Manage
 
         public void UnLockRevenueTransportation(object arg)
         {
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == "TransportationAccountant");
                 if (gridView is null)
@@ -1628,11 +1631,11 @@ namespace TMS.UI.Business.Manage
             }
             if (selected.IsSubmit &&
                     (revenue.Name != null ||
-                    revenue.LotNo != null || 
+                    revenue.LotNo != null ||
                     revenue.LotDate != null ||
-                    (revenue.UnitPriceAfterTax != null && revenue.UnitPriceAfterTax != 0) || 
-                    (revenue.UnitPriceBeforeTax != null && revenue.UnitPriceBeforeTax != 0) || 
-                    (revenue.ReceivedPrice != null && revenue.ReceivedPrice != 0) || 
+                    (revenue.UnitPriceAfterTax != null && revenue.UnitPriceAfterTax != 0) ||
+                    (revenue.UnitPriceBeforeTax != null && revenue.UnitPriceBeforeTax != 0) ||
+                    (revenue.ReceivedPrice != null && revenue.ReceivedPrice != 0) ||
                     (revenue.CollectOnBehaftPrice != null && revenue.CollectOnBehaftPrice != 0) ||
                     revenue.NotePayment != null ||
                     revenue.Note != null ||
@@ -1657,7 +1660,7 @@ namespace TMS.UI.Business.Manage
             revenue.ContainerNo = selected.ContainerNo;
             revenue.SealNo = selected.SealNo;
             revenue.ContainerTypeId = selected.ContainerTypeId;
-            revenue.ClosingDate= selected.ClosingDate;
+            revenue.ClosingDate = selected.ClosingDate;
             revenue.TransportationId = selected.Id;
             revenue.Id = 0;
         }

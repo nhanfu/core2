@@ -1714,8 +1714,31 @@ namespace TMS.UI.Business.Manage
                     }
                 }
             }
+            if (patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.ReturnDate) && !x.OldVal.IsNullOrWhiteSpace() && x.Value.IsNullOrWhiteSpace()))
+            {
+                /*@
+                 var swalWithBootstrapButtons = Swal.mixin({
+                  customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                  },
+                  buttonsStyling: false
+                })
+
+                 swalWithBootstrapButtons.fire({
+                  title: 'Cảnh báo !',
+                  text: 'Bạn có muốn xóa ngày trả hàng không!',
+                  icon: 'error',
+                  showCancelButton: true,
+                  confirmButtonText: 'Yes, Cập nhật!',
+                  cancelButtonText: 'No, Không!',
+                  reverseButtons: true
+                }).then((result) => {
+                })
+                 */
+            }
             var checkLock = new TransportationListAccountantBL();
-            await checkLock.RequestUnClosing(transportation, patchUpdate, this);
+            checkLock.RequestUnClosing(transportation, patchUpdate, this);
         }
 
         public async Task LockShipTransportation()
