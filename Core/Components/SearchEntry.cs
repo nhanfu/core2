@@ -533,7 +533,10 @@ namespace Core.Components
         {
             Window.ClearTimeout(_waitForDispose);
             Window.ClearTimeout(_waitForInput);
-            _input.Focus();
+            if (!GuiInfo.IsPivot)
+            {
+                _input.Focus();
+            }
         }
 
         private void InputEmptyHandler(bool delete)
