@@ -37,7 +37,7 @@ namespace Core.Components
             Title = "Tìm kiếm nâng cao";
             Icon = "fa fa-search-plus";
             ParentListView = parent;
-            _entityType = Type.GetType((ParentListView.GuiInfo.Reference.Namespace ?? Client.ModelNamespace) + ParentListView.GuiInfo.RefName);
+            _entityType = Type.GetType((ParentListView.GuiInfo.Reference?.Namespace ?? Client.ModelNamespace) + ParentListView.GuiInfo.RefName);
             DOMContentLoaded += LocalRender;
         }
 

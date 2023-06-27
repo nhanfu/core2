@@ -24,6 +24,7 @@ namespace Core.Components.Forms
     public class ContextMenu : EditableComponent
     {
         private static HTMLElement _root;
+        public HTMLElement PElement;
         public double Top { get; set; }
         public double Left { get; set; }
         public ContextMenu _selectedContextMenuItem;
@@ -58,12 +59,16 @@ namespace Core.Components.Forms
         {
             if (_root == null)
             {
-                Html.Take(Document.Body).Ul.ClassName("context-menu").Event(EventType.FocusOut, Dispose).Event(EventType.KeyDown, HotKeyHandler);
+                Html.Take(PElement ?? Document.Body).Ul.ClassName("context-menu").Event(EventType.FocusOut, Dispose).Event(EventType.KeyDown, HotKeyHandler);
                 _root = Html.Context;
+            }
+            if (PElement is null && _root != null)
+            {
+                Document.Body.AppendChild(_root);
             }
             else
             {
-                Document.Body.AppendChild(_root);
+                PElement.AppendChild(_root);
             }
             Element = _root;
             Html.Take(_root).Clear().TabIndex(-1).Floating(Top, Left);

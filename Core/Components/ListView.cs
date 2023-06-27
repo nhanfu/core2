@@ -30,6 +30,7 @@ namespace Core.Components
         private const string CmdUrl = "Cmd";
         protected static List<object> _copiedRows;
         public Action<object> RowClick;
+        public Action<object> DblClick;
         protected bool _isFocusCell;
         public bool CanWrite;
         protected bool _firstCache;

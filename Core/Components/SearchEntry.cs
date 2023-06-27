@@ -172,9 +172,6 @@ namespace Core.Components
                 case KeyCodeEnum.Enter:
                     EnterKeydownHandler(code);
                     break;
-                case KeyCodeEnum.F4:
-                    DiposeGvWrapper();
-                    break;
                 default:
                     if (e.ShiftKey() && code == KeyCodeEnum.Delete)
                     {
@@ -453,18 +450,32 @@ namespace Core.Components
             _gv.ListViewSearch.EntityVM.SearchTerm = term;
             _gv.Render();
             _gv.Element.AddClass("floating");
-            _gv.RowClick = EntrySelected;
+            if (!GuiInfo.IsPivot)
+            {
+                _gv.RowClick = EntrySelected;
+            }
+            else
+            {
+                _gv.DblClick = EntrySelected;
+            }
             _isRendering = false;
             if (_gv.Paginator?.Element != null)
             {
                 _gv.Paginator.Element.TabIndex = -1;
                 _gv.Paginator.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
+                _gv.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
+            }
+            if (_gv.MainSection?.Element != null && GuiInfo.IsPivot)
+            {
+                _gv.MainSection.Element.TabIndex = -1;
+                _gv.MainSection?.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
+                _gv.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
             }
             if (_gv.HeaderSection?.Element != null)
             {
                 _gv.HeaderSection.Element.TabIndex = -1;
                 _gv.HeaderSection?.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
-                _gv.HeaderSection?.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
+                _gv.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper); ;
             }
             if (GuiInfo.LocalHeader is null)
             {

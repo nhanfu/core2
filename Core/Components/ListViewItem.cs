@@ -393,6 +393,7 @@ namespace Core.Components
         private async Task RowDblClick(Event e)
         {
             e.StopPropagation();
+            ListViewSection.ListView.DblClick?.Invoke(Entity);
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.DblClick, Entity);
         }
 

@@ -413,6 +413,7 @@ namespace Core.Components
                 MultipleLine = false,
                 ComType = header.ComponentType == nameof(Datepicker) || header.ComponentType == nameof(Number) ? header.ComponentType : nameof(Textbox),
                 Precision = header.Precision,
+                PElement = MainSection.Element
             };
             confirmDialog.YesConfirmed += async () =>
             {
@@ -1092,6 +1093,7 @@ namespace Core.Components
                         return;
                     }
                     var menu = ContextMenu.Instance;
+                    menu.PElement = MainSection.Element;
                     menu.Top = el.GetBoundingClientRect().Top;
                     menu.Left = el.GetBoundingClientRect().Left;
                     menu.MenuItems = new List<ContextMenuItem>
@@ -1433,6 +1435,10 @@ namespace Core.Components
                 ToggleAll();
             }
             if (LastListViewItem is null)
+            {
+                return;
+            }
+            if(LastListViewItem.Children is null)
             {
                 return;
             }

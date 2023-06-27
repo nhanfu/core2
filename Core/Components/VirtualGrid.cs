@@ -556,6 +556,7 @@ namespace Core.Components
                 MultipleLine = false,
                 ComType = header.ComponentType == nameof(Datepicker) || header.ComponentType == nameof(Number) ? header.ComponentType : nameof(Textbox),
                 Precision = header.Precision,
+                PElement = MainSection.Element
             };
             confirmDialog.YesConfirmed += async () =>
             {

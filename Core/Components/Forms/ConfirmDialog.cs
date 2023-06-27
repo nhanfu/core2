@@ -10,6 +10,7 @@ namespace Core.Components.Forms
     {
         private bool _cancel;
         private HTMLElement _yesBtn;
+        public HTMLElement PElement;
         public Textbox Textbox { get; private set; }
         public Number Number { get; private set; }
         public Datepicker Datepicker { get; private set; }
@@ -33,7 +34,7 @@ namespace Core.Components.Forms
 
         public override void Render()
         {
-            Html.Take(Document.Body).Div.ClassName("backdrop")
+            Html.Take(PElement ?? Document.Body).Div.ClassName("backdrop")
                 .Style("align-items: center;").Escape((e) => Dispose());
             Element = Html.Context;
             ParentElement = Element.ParentElement;
