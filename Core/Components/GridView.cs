@@ -197,7 +197,7 @@ namespace Core.Components
                     .Attr("aria-expanded", "false")
                     .Attr("aria-controls", id).Text(GuiInfo.Label).EndOf(".card");
             }
-            html.Div.ClassName("grid-wrapper " + (GuiInfo.IsCollapsible ? "collapse multi-collapse" : "")).Id(id).Event(EventType.KeyDown, (e) => HotKeyF6Handler(e, e.KeyCodeEnum()))
+            html.Div.ClassName("grid-wrapper " + (GuiInfo.IsCollapsible ? "collapse multi-collapse" : "")).Id(id)
             .ClassName(Editable ? "editable" : string.Empty);
             Element = Html.Context;
             if (GuiInfo.CanSearch)
@@ -240,7 +240,7 @@ namespace Core.Components
                 ListViewSearch.EntityVM.EndDate = DateTime.Parse(lTo.ToString());
             }
             AddChild(ListViewSearch);
-            DataTable = Html.Take(Element).Div.ClassName("table-wrapper").Table.ClassName("table").Id(idtb).GetContext();
+            DataTable = Html.Take(Element).Div.ClassName("table-wrapper").Event(EventType.KeyDown, (e) => HotKeyF6Handler(e, e.KeyCodeEnum())).Table.ClassName("table").Id(idtb).GetContext();
             Html.Instance.Thead.End.TBody.ClassName("empty").End.TBody.End.TFooter.Render();
 
             FooterSection = new ListViewSection(Html.Context) { ParentElement = DataTable };
