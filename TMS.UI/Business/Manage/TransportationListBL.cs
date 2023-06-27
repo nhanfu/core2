@@ -19,6 +19,7 @@ namespace TMS.UI.Business.Manage
     {
         public bool openPopup;
         public GridView gridViewExpense;
+        public string RouteReturnIds { get; set; }
         public Transportation selected;
         public TabEditor _expensePopup;
         public bool checkView = false;
@@ -26,6 +27,10 @@ namespace TMS.UI.Business.Manage
         public TransportationListBL() : base(nameof(Transportation))
         {
             Name = "Transportation List";
+            DOMContentLoaded += async () =>
+            {
+                RouteReturnIds = (await new Client(nameof(UserRoute)).GetRawList<UserRoute>($"?$filter=TypeId eq 25044 and UserId eq {Client.Token.UserId}")).Select(x => x.RouteId).Where(x => x != null).Combine();
+            };
         }
 
         public virtual async Task ViewCheckFee(CheckFeeHistory entity)
