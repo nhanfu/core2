@@ -47,12 +47,12 @@ namespace TMS.UI.Business.Manage
             {
                 grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
             }
+            var tranIds = transportationsEntity.Select(x => x.Id).ToList();
             if (transportationsEntity != null && !checkLoad)
             {
                 var gridTran = this.FindActiveComponent<GridView>().Where(x => x.Show).FirstOrDefault();
                 if (gridTran != null)
                 {
-                    var tranIds = transportationsEntity.Select(x => x.Id).ToList();
                     gridTran.DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and Id in ({tranIds.Combine()})";
                     await gridTran.ApplyFilter();
                 }
@@ -60,7 +60,6 @@ namespace TMS.UI.Business.Manage
             object check = null;
             if (transportationsEntity != null)
             {
-                var tranIds = transportationsEntity.Select(x => x.Id).ToList();
                 check = await new Client(nameof(TransportationRequestDetails)).GetRawList<TransportationRequestDetails>($"?$orderby=Id desc&$filter=Active eq true and TransportationId in ({tranIds.Combine()})");
             }
             else
@@ -83,16 +82,17 @@ namespace TMS.UI.Business.Manage
             {
                 if (transportationsEntity != null)
                 {
-                    this.SetShow(true, "btnCreates");
+                    //this.SetShow(true, "btnCreates");
+                    await CreateRequestChanges();
                 }
                 else
                 {
-                    this.SetShow(true, "btnCreate");
+                    //this.SetShow(true, "btnCreate");
+                    await CreateRequestChange();
                 }
             }
             if (transportationsEntity != null && grid != null && !checkLoad)
             {
-                var tranIds = transportationsEntity.Select(x => x.Id).ToList();
                 grid.DataSourceFilter = $"?$orderby=Id desc&$filter=TransportationId in ({tranIds.Combine()})";
                 await grid.ApplyFilter();
                 checkLoad = true;
@@ -126,10 +126,10 @@ namespace TMS.UI.Business.Manage
                 });
                 this.SetShow(false, "btnCreate", "btnCreates", "btnSend", "btnSends");
                 Window.ClearTimeout(awaiter);
-                awaiter = Window.SetTimeout(() =>
+                awaiter = Window.SetTimeout(async () =>
                 {
                     bl.setFalseCheckView();
-                    if (Parent.Name == "ReturnPlan List" || Parent.Name == "Transportation Return Plan List")
+                    if (Parent.EditForm.Feature.Name == "ReturnPlan List" || Parent.EditForm.Feature.Name == "Transportation Return Plan List")
                     {
                         if (bl.getCheckView() == false)
                         {
@@ -149,11 +149,13 @@ namespace TMS.UI.Business.Manage
                             {
                                 if (transportationsEntity != null)
                                 {
-                                    this.SetShow(true, "btnCreates");
+                                    //this.SetShow(true, "btnCreates");
+                                    await CreateRequestChanges();
                                 }
                                 else
                                 {
-                                    this.SetShow(true, "btnCreate");
+                                    //this.SetShow(true, "btnCreate");
+                                    await CreateRequestChange();
                                 }
                             }
                         }
@@ -282,7 +284,6 @@ namespace TMS.UI.Business.Manage
                 this.SetShow(false, "btnCreate");
                 this.SetShow(true, "btnSend");
                 checkLoad = false;
-                await SetGridView();
             }
         }
 
@@ -327,7 +328,6 @@ namespace TMS.UI.Business.Manage
             this.SetShow(false, "btnCreates");
             this.SetShow(true, "btnSends");
             checkLoad = false;
-            await SetGridView();
         }
 
         public void SendRequestApprove()

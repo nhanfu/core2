@@ -282,7 +282,15 @@ namespace TMS.UI.Business.Manage
                     Toast.Warning("Không có cont nào bị khóa !!!");
                     return;
                 }
-                await TransportationRequestDetailsBLWithTrans(tranSelecteds, this);
+                var confirm = new ConfirmDialog
+                {
+                    Content = $"Bạn có chắc chắn muốn tạo yêu cầu thay đổi cho {tranSelecteds.Count} cont không ?",
+                };
+                confirm.Render();
+                confirm.YesConfirmed += async () =>
+                {
+                    await TransportationRequestDetailsBLWithTrans(tranSelecteds, this);
+                };
             });
         }
 
