@@ -236,8 +236,12 @@ namespace Core.Components
             base.Dispose();
         }
 
-        protected virtual void DiposeGvWrapper()
+        protected virtual void DiposeGvWrapper(Event e = null)
         {
+            if (e != null && e.ShiftKey())
+            {
+                return;
+            }
             Window.ClearTimeout(_waitForDispose);
             _waitForDispose = Window.SetTimeout(DisposeGv, 300);
         }
@@ -450,14 +454,7 @@ namespace Core.Components
             _gv.ListViewSearch.EntityVM.SearchTerm = term;
             _gv.Render();
             _gv.Element.AddClass("floating");
-            if (!GuiInfo.IsPivot)
-            {
-                _gv.RowClick = EntrySelected;
-            }
-            else
-            {
-                _gv.DblClick = EntrySelected;
-            }
+            _gv.RowClick = EntrySelected;
             _isRendering = false;
             if (_gv.Paginator?.Element != null)
             {
@@ -465,17 +462,11 @@ namespace Core.Components
                 _gv.Paginator.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
                 _gv.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
             }
-            if (_gv.MainSection?.Element != null && GuiInfo.IsPivot)
-            {
-                _gv.MainSection.Element.TabIndex = -1;
-                _gv.MainSection?.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
-                _gv.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
-            }
             if (_gv.HeaderSection?.Element != null)
             {
                 _gv.HeaderSection.Element.TabIndex = -1;
                 _gv.HeaderSection?.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
-                _gv.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper); ;
+                _gv.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
             }
             if (GuiInfo.LocalHeader is null)
             {
