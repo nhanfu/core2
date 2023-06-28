@@ -139,6 +139,41 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
+            if (tran.ContainerTypeId is null)
+            {
+                Toast.Warning("Vui lòng chọn loại cont");
+                return;
+            }
+            if (tran.RouteId is null)
+            {
+                Toast.Warning("Vui lòng chọn tuyến đường");
+                return;
+            }
+            if (tran.BossId is null)
+            {
+                Toast.Warning("Vui lòng chọn chủ hàng");
+                return;
+            }
+            if (tran.CommodityId is null)
+            {
+                Toast.Warning("Vui lòng chọn vật tư hàng hóa");
+                return;
+            }
+            if (tran.TotalContainer is null || tran.TotalContainer == 0)
+            {
+                Toast.Warning("Vui lòng nhập số lượng cont");
+                return;
+            }
+            if (tran.ReceivedId is null)
+            {
+                Toast.Warning("Vui lòng chọn địa chỉ nhận hàng");
+                return;
+            }
+            if (tran.ClosingDate is null)
+            {
+                Toast.Warning("Vui lòng chọn ngày đóng hàng");
+                return;
+            }
             var confirm = new ConfirmDialog
             {
                 Content = "Tóm tắt yêu cầu thay đổi?",
