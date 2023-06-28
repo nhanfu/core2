@@ -444,6 +444,8 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
+            var oldTran = new Transportation();
+            Task.Run(async () => { oldTran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"filter=Active eq true and Id eq {tran.Id}"); });
             if (tran.IsLocked && !patch.Changes.Any(x => x.Field == nameof(tran.IsLocked)
                                                     || x.Field == nameof(tran.Notes)
                                                     || x.Field == nameof(tran.IsLockedRevenue)
@@ -471,15 +473,15 @@ namespace TMS.UI.Business.Manage
             }
             if (tran.LockShip && !patch.Changes.Any(x => x.Field == nameof(tran.LockShip)))
             {
-                if (patch.Changes.Any(x => (x.Field == nameof(tran.ShipPrice) && x.Value != $"{tran.ShipPrice:N0}")
-                || (x.Field == nameof(tran.PolicyId) && x.Value != $"{tran.PolicyId}")
-                || (x.Field == nameof(tran.ShipPolicyPrice) && x.Value != $"{tran.ShipPolicyPrice:N0}")
-                || (x.Field == nameof(tran.Trip) && x.Value != tran.Trip)
-                || (x.Field == nameof(tran.StartShip) && x.Value != $"{tran.StartShip:yyyy/MM/dd hh:mm:ss}")
-                || (x.Field == nameof(tran.ContainerTypeId) && x.Value != $"{tran.ContainerTypeId}")
-                || (x.Field == nameof(tran.SocId) && x.Value != $"{tran.SocId}")
-                || (x.Field == nameof(tran.ShipNotes) && x.Value != tran.ShipNotes)
-                || (x.Field == nameof(tran.BookingId) && x.Value != $"{tran.BookingId}")))
+                if (patch.Changes.Any(x => (x.Field == nameof(tran.ShipPrice) && x.Value != $"{oldTran.ShipPrice:N0}")
+                || (x.Field == nameof(tran.PolicyId) && x.Value != $"{oldTran.PolicyId}")
+                || (x.Field == nameof(tran.ShipPolicyPrice) && x.Value != $"{oldTran.ShipPolicyPrice:N0}")
+                || (x.Field == nameof(tran.Trip) && x.Value != oldTran.Trip)
+                || (x.Field == nameof(tran.StartShip) && x.Value != $"{oldTran.StartShip:yyyy/MM/dd hh:mm:ss}")
+                || (x.Field == nameof(tran.ContainerTypeId) && x.Value != $"{oldTran.ContainerTypeId}")
+                || (x.Field == nameof(tran.SocId) && x.Value != $"{oldTran.SocId}")
+                || (x.Field == nameof(tran.ShipNotes) && x.Value != oldTran.ShipNotes)
+                || (x.Field == nameof(tran.BookingId) && x.Value != $"{oldTran.BookingId}")))
                 {
                     var confirm = new ConfirmDialog
                     {
@@ -502,18 +504,18 @@ namespace TMS.UI.Business.Manage
             }
             if (tran.IsKt && !patch.Changes.Any(x => x.Field == nameof(tran.IsKt)))
             {
-                if (patch.Changes.Any(x => (x.Field == nameof(tran.Trip) && x.Value != tran.Trip)
-                || (x.Field == nameof(tran.BookingId) && x.Value != $"{tran.BookingId}")
-                || (x.Field == nameof(tran.ContainerTypeId) && x.Value != $"{tran.ContainerTypeId}")
-                || (x.Field == nameof(tran.ContainerNo) && x.Value != $"{tran.ContainerNo}")
-                || (x.Field == nameof(tran.SealNo) && x.Value != $"{tran.SealNo}")
-                || (x.Field == nameof(tran.CommodityId) && x.Value != $"{tran.CommodityId}")
-                || (x.Field == nameof(tran.Weight) && x.Value != $"{tran.Weight}")
-                || (x.Field == nameof(tran.FreeText2) && x.Value != $"{tran.FreeText2}")
-                || (x.Field == nameof(tran.ShipDate) && x.Value != $"{tran.ShipDate:yyyy/MM/dd hh:mm:ss}")
-                || (x.Field == nameof(tran.ReturnDate) && x.Value != $"{tran.ReturnDate:yyyy/MM/dd hh:mm:ss}")
-                || (x.Field == nameof(tran.ReturnId) && x.Value != $"{tran.ReturnId}")
-                || (x.Field == nameof(tran.FreeText3) && x.Value != tran.FreeText3)))
+                if (patch.Changes.Any(x => (x.Field == nameof(tran.Trip) && x.Value != oldTran.Trip)
+                || (x.Field == nameof(tran.BookingId) && x.Value != $"{oldTran.BookingId}")
+                || (x.Field == nameof(tran.ContainerTypeId) && x.Value != $"{oldTran.ContainerTypeId}")
+                || (x.Field == nameof(tran.ContainerNo) && x.Value != $"{oldTran.ContainerNo}")
+                || (x.Field == nameof(tran.SealNo) && x.Value != $"{oldTran.SealNo}")
+                || (x.Field == nameof(tran.CommodityId) && x.Value != $"{oldTran.CommodityId}")
+                || (x.Field == nameof(tran.Weight) && x.Value != $"{oldTran.Weight}")
+                || (x.Field == nameof(tran.FreeText2) && x.Value != $"{oldTran.FreeText2}")
+                || (x.Field == nameof(tran.ShipDate) && x.Value != $"{oldTran.ShipDate:yyyy/MM/dd hh:mm:ss}")
+                || (x.Field == nameof(tran.ReturnDate) && x.Value != $"{oldTran.ReturnDate:yyyy/MM/dd hh:mm:ss}")
+                || (x.Field == nameof(tran.ReturnId) && x.Value != $"{oldTran.ReturnId}")
+                || (x.Field == nameof(tran.FreeText3) && x.Value != oldTran.FreeText3)))
                 {
                     var confirm = new ConfirmDialog
                     {
