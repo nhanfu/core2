@@ -21,16 +21,23 @@ namespace TMS.UI.Business.Manage
         public Transportation transportationEntity => Entity as Transportation;
         public List<Transportation> transportationsEntity => Entity["Transportations"] as List<Transportation>;
         public List<string> propNameChanges = new List<string>();
-        public bool checkLoad = false;
+        public bool checkLoaded = false;
         public TransportationRequestDetailsBL() : base(nameof(TransportationRequest))
         {
             Name = "Transportation Request Details";
         }
 
         private int awaiter;
+        private int awaiterUpdateView;
 
         public async Task SetGridView()
         {
+            var awaiterLoad = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true");
+            if (checkLoaded)
+            {
+                return;
+            }
+            checkLoaded = true;
             GridView grid;
             this.SetShow(false, "btnCreate", "btnCreates", "btnSend", "btnSends");
             if (Parent.EditForm.Feature.Name == "Transportation Return Plan List")
@@ -47,15 +54,10 @@ namespace TMS.UI.Business.Manage
             {
                 grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
             }
-            var tranIds = transportationsEntity.Select(x => x.Id).ToList();
-            if (transportationsEntity != null && !checkLoad)
+            var tranIds = new List<int>();
+            if (transportationsEntity != null)
             {
-                var gridTran = this.FindActiveComponent<GridView>().Where(x => x.Show).FirstOrDefault();
-                if (gridTran != null)
-                {
-                    gridTran.DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and Id in ({tranIds.Combine()})";
-                    await gridTran.ApplyFilter();
-                }
+                tranIds = transportationsEntity.Select(x => x.Id).ToList();
             }
             object check = null;
             if (transportationsEntity != null)
@@ -90,12 +92,6 @@ namespace TMS.UI.Business.Manage
                     //this.SetShow(true, "btnCreate");
                     await CreateRequestChange();
                 }
-            }
-            if (transportationsEntity != null && grid != null && !checkLoad)
-            {
-                grid.DataSourceFilter = $"?$orderby=Id desc&$filter=TransportationId in ({tranIds.Combine()})";
-                await grid.ApplyFilter();
-                checkLoad = true;
             }
             var listViewItems = grid.RowData.Data.Cast<TransportationRequestDetails>().ToList();
             listViewItems.ForEach(x =>
@@ -162,6 +158,24 @@ namespace TMS.UI.Business.Manage
                     }
                 }, 500);
             }
+            Window.ClearTimeout(awaiterUpdateView);
+            awaiterUpdateView = Window.SetTimeout(() =>
+            {
+                if (transportationsEntity != null)
+                {
+                    var gridTran = this.FindActiveComponent<GridView>().Where(x => x.Show).FirstOrDefault();
+                    if (gridTran != null)
+                    {
+                        gridTran.GuiInfo.DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and Id in ({tranIds.Combine()})";
+                        gridTran.UpdateView(true);
+                    }
+                }
+                if (transportationsEntity != null && grid != null)
+                {
+                    grid.GuiInfo.DataSourceFilter = $"?$orderby=Id desc&$filter=TransportationId in ({tranIds.Combine()})";
+                }
+                grid.UpdateView(true);
+            }, 550);
         }
 
         private void CompareChanges(object change, object cutting)
@@ -251,19 +265,6 @@ namespace TMS.UI.Business.Manage
 
         public async Task CreateRequestChange()
         {
-            GridView grid;
-            if (Parent.Name == "Transportation Return Plan List")
-            {
-                grid = this.FindComponentByName<GridView>("TransportationRequestDetails1");
-            }
-            else if (Parent.Name == "ReturnPlan List")
-            {
-                grid = this.FindComponentByName<GridView>("TransportationRequestDetails2");
-            }
-            else
-            {
-                grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
-            }
             var checkExist = await new Client(nameof(TransportationRequestDetails)).FirstOrDefaultAsync<TransportationRequestDetails>($"?$orderby=Id desc&$filter=TransportationId eq {transportationEntity.Id} and StatusId eq {(int)ApprovalStatusEnum.New}");
             if (checkExist != null)
             {
@@ -280,28 +281,13 @@ namespace TMS.UI.Business.Manage
             var rs = await new Client(nameof(TransportationRequestDetails)).CreateAsync<TransportationRequestDetails>(requestChange);
             if(rs != null) 
             {
-                await grid.ApplyFilter();
                 this.SetShow(false, "btnCreate");
                 this.SetShow(true, "btnSend");
-                checkLoad = false;
             }
         }
 
         public async Task CreateRequestChanges()
         {
-            GridView grid;
-            if (Parent.Name == "Transportation Return Plan List")
-            {
-                grid = this.FindComponentByName<GridView>("TransportationRequestDetails1");
-            }
-            else if (Parent.Name == "ReturnPlan List")
-            {
-                grid = this.FindComponentByName<GridView>("TransportationRequestDetails2");
-            }
-            else
-            {
-                grid = this.FindComponentByName<GridView>(nameof(TransportationRequestDetails));
-            }
             var tranIds = transportationsEntity.Select(x => x.Id).ToList();
             var checkExist = await new Client(nameof(TransportationRequestDetails)).GetRawList<TransportationRequestDetails>($"?$orderby=Id desc&$filter=TransportationId in ({tranIds.Combine()}) and StatusId eq {(int)ApprovalStatusEnum.New}");
             if (checkExist.Count == transportationsEntity.Count)
@@ -324,10 +310,8 @@ namespace TMS.UI.Business.Manage
                     var res = await new Client(nameof(TransportationRequestDetails)).CreateAsync<TransportationRequestDetails>(requestChange);
                 }
             }
-            await grid.ApplyFilter();
             this.SetShow(false, "btnCreates");
             this.SetShow(true, "btnSends");
-            checkLoad = false;
         }
 
         public void SendRequestApprove()
