@@ -36,6 +36,10 @@ namespace Core.Components.Forms
         {
             Html.Take(PElement ?? Document.Body).Div.ClassName("backdrop")
                 .Style("align-items: center;").Escape((e) => Dispose());
+            if (PElement != null)
+            {
+                Html.Instance.Style("position: fixed !important;");
+            }
             Element = Html.Context;
             ParentElement = Element.ParentElement;
             Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: auto;")

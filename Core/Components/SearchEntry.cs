@@ -41,7 +41,7 @@ namespace Core.Components
             }
         }
         public string Text { get { return _input.Value; } set { _input.Value = value; } }
-        protected HTMLInputElement _input;
+        public HTMLInputElement _input;
         public HTMLElement SearchResultEle { get; private set; }
 
         public GridView _gv;
@@ -172,6 +172,13 @@ namespace Core.Components
                 case KeyCodeEnum.Enter:
                     EnterKeydownHandler(code);
                     break;
+                case KeyCodeEnum.F6:
+                    if (_gv != null && _gv.Show)
+                    {
+                        e.PreventDefault();
+                        _gv.HotKeyF6Handler(e, KeyCodeEnum.F6);
+                    }
+                    break;
                 default:
                     if (e.ShiftKey() && code == KeyCodeEnum.Delete)
                     {
@@ -238,7 +245,7 @@ namespace Core.Components
 
         protected virtual void DiposeGvWrapper(Event e = null)
         {
-            if (e != null && e.ShiftKey())
+            if (e != null && e["shiftKey"] != null && e.ShiftKey())
             {
                 return;
             }
@@ -392,6 +399,12 @@ namespace Core.Components
             Window.ClearTimeout(_waitForInput);
             _waitForInput = Window.SetTimeout(() =>
             {
+                if (_gv != null)
+                {
+                    _gv.Wheres.Clear();
+                    _gv.AdvSearchVM.Conditions.Clear();
+                    _gv.CellSelected.Clear();
+                }
                 if (changeEvent && _input.Value.IsNullOrEmpty())
                 {
                     InputEmptyHandler(delete);
@@ -460,13 +473,19 @@ namespace Core.Components
             {
                 _gv.Paginator.Element.TabIndex = -1;
                 _gv.Paginator.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
-                _gv.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
+                _gv.Paginator.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
+            }
+            if (_gv.MainSection?.Element != null)
+            {
+                _gv.MainSection.Element.TabIndex = -1;
+                _gv.MainSection.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
+                _gv.MainSection.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
             }
             if (_gv.HeaderSection?.Element != null)
             {
                 _gv.HeaderSection.Element.TabIndex = -1;
-                _gv.HeaderSection?.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
-                _gv.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
+                _gv.HeaderSection.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
+                _gv.HeaderSection.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
             }
             if (GuiInfo.LocalHeader is null)
             {

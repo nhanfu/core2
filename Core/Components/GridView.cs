@@ -714,6 +714,11 @@ namespace Core.Components
             {
                 ListViewSearch.Focus();
             }
+            if (GuiInfo.ComponentType == "Dropdown")
+            {
+                var search = Parent as SearchEntry;
+                search?._input.Focus();
+            }
             Toast.Success(lisToast.Combine("</br>"));
         }
 
