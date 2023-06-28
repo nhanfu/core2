@@ -712,7 +712,14 @@ namespace Core.Components
             Spinner.Hide();
             if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.CanSearch)
             {
-                ListViewSearch.Focus();
+                if (LastElementFocus != null)
+                {
+                    LastElementFocus.Focus();
+                }
+                else
+                {
+                    HeaderSection.Focus();
+                }
             }
             if (GuiInfo.ComponentType == "Dropdown")
             {
@@ -1443,7 +1450,7 @@ namespace Core.Components
             {
                 return;
             }
-            if(LastListViewItem.Children is null)
+            if (LastListViewItem.Children is null)
             {
                 return;
             }
@@ -1718,12 +1725,12 @@ namespace Core.Components
                 }
                 else
                 {
-                    ListViewSearch.Element.Focus();
+                    HeaderSection.Element.Focus();
                 }
             }
             else
             {
-                ListViewSearch.Element.Focus();
+                HeaderSection.Element.Focus();
             }
         }
 
@@ -2720,7 +2727,7 @@ namespace Core.Components
                 return RowData.Data.Count();
             }
             var mainSectionHeight = Element.ClientHeight
-                - (ListViewSearch.Element?.ClientHeight ?? 0)
+                - (HeaderSection.Element?.ClientHeight ?? 0)
                 - Paginator.Element.ClientHeight
                 - _theadTable;
             if (!Header.All(x => x.Summary.IsNullOrEmpty()))

@@ -362,6 +362,10 @@ namespace Core.Components
             {
                 return;
             }
+            if (LastListViewItem.Children is null)
+            {
+                return;
+            }
             var com = LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
             if (com is null)
             {

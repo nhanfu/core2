@@ -17,10 +17,10 @@ namespace TMS.UI.Business.Manage
     public class TransportationPlanEditorBL : PopupEditor
     {
         public TransportationPlan transportationPlanEntity => Entity as TransportationPlan;
+        public string PlanIds = "-1";
         public TransportationPlanEditorBL() : base(nameof(TransportationPlan))
         {
             Name = "TransportationPlan Editor";
-
         }
 
         public void SetGridView()
@@ -99,9 +99,12 @@ namespace TMS.UI.Business.Manage
             }
         }
 
-        public void SelectedCompare(TransportationPlan transportationPlan)
+        public async Task SelectedCompare(TransportationPlan transportationPlan)
         {
             CompareChanges(transportationPlan, transportationPlanEntity);
+            var grid = this.FindComponentByName<GridView>("Approvement");
+            grid.DataSourceFilter = $"?$filter=Active eq true and EntityId eq 5024 and RecordId eq {transportationPlan.Id}";
+            await grid.ApplyFilter();
         }
 
         public async Task CreateRequestChange(TransportationPlan transportationPlan)
