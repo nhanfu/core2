@@ -228,6 +228,15 @@ namespace TMS.UI.Business.Manage
 
         public async Task Analysis()
         {
+            if (transportationPlanEntity.BossId != null && transportationPlanEntity.ContainerTypeId != null && transportationPlanEntity.ReceivedId != null && transportationPlanEntity.ClosingDate != null)
+            {
+                var lastTranPan = await new Client(nameof(TransportationPlan)).FirstOrDefaultAsync<TransportationPlan>($"?$filter=BossId eq {transportationPlanEntity.BossId} and ContainerTypeId eq {transportationPlanEntity.ContainerTypeId} and ReceivedId eq {transportationPlanEntity.ReceivedId}  and ClosingDate lt {transportationPlanEntity.ClosingDate} and Id ne {transportationPlanEntity.Id}&$orderby=ClosingDate desc");
+                if (lastTranPan != null)
+                {
+                    transportationPlanEntity.Notes = lastTranPan.Notes;
+                    UpdateView(false, nameof(TransportationPlan.Notes));
+                }
+            }
             if (transportationPlanEntity.BossId == null || transportationPlanEntity.CommodityId == null || transportationPlanEntity.ContainerTypeId == null)
             {
                 return;

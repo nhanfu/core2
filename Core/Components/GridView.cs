@@ -714,6 +714,7 @@ namespace Core.Components
             {
                 if (LastElementFocus != null)
                 {
+                    LastElementFocus.ParentElement.Focus();
                     LastElementFocus.Focus();
                 }
                 else
