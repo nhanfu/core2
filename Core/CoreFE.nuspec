@@ -2,22 +2,22 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<!-- Identifier that must be unique within the hosting gallery -->
-		<id>CoreFE</id>
+		<id>FAST.CRUD.FE</id>
 
 		<!-- Package version number that is used when resolving dependencies -->
-		<version>1.0.64</version>
+		<version>1.0.0</version>
 
 		<!-- Authors contain text that appears directly on the gallery -->
-		<authors>Nhan Nguyen</authors>
+		<authors>Tin Nguyen</authors>
 
 		<!-- 
             Owners are typically nuget.org identities that allow gallery
             users to easily find other packages by the same owners.  
         -->
-		<owners>Nhan Nguyen</owners>
+		<owners>Tin Nguyen</owners>
 
 		<!-- Project URL provides a link for the gallery -->
-		<projectUrl>https://github.com/nhanfu/htmljs</projectUrl>
+		<projectUrl>https://www.facebook.com/tinitqn</projectUrl>
 
 
 		<!-- Icon is used in Visual Studio's package manager UI -->
@@ -39,7 +39,7 @@
 		<description>This package includes the core engine and nescesary components for front end</description>
 
 		<!-- Copyright information -->
-		<copyright>Copyright ©2022 NhanJS</copyright>
+		<copyright>Copyright ©2023 TinJS</copyright>
 
 		<!-- Tags appear in the gallery and can be used for tag searches -->
 		<tags>JS engine, JS Component</tags>
