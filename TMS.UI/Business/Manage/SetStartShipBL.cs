@@ -30,13 +30,13 @@ namespace TMS.UI.Business.Manage
             var transportations = await new Client(nameof(Transportation)).PostAsync<int>(TransportationEntity, $"SetStartShip");
             if (transportations > 0)
             {
-                var listTran = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$select=Id&$filter=ShipId eq {TransportationEntity.ShipId} and (BrandShipId eq {TransportationEntity.BrandShipId} or {TransportationEntity.BrandShipId} eq {(TransportationEntity.BrandShipId is null ? "null" : TransportationEntity.BrandShipId.ToString())}) and Trip = '{TransportationEntity.Trip}' and RouteId in ({TransportationEntity.RouteIds.Combine()})");
+                var listTran = await new Client(nameof(Transportation)).GetRawList<Transportation>($"?$select=Id&$filter=ShipId eq {TransportationEntity.ShipId} and (BrandShipId eq {(TransportationEntity.BrandShipId is null ? "null" : TransportationEntity.BrandShipId.ToString())} or {(TransportationEntity.BrandShipId is null ? "null" : TransportationEntity.BrandShipId.ToString())} eq {(TransportationEntity.BrandShipId is null ? "null" : TransportationEntity.BrandShipId.ToString())}) and Trip eq '{TransportationEntity.Trip}' and RouteId in ({TransportationEntity.RouteIds.Combine()})");
                 foreach (var item in listTran)
                 {
                     await new Client(nameof(History)).CreateAsync<History>(new History
                     {
                         ReasonOfChange = "Tàu cập",
-                        TextHistory = $"Ngày tàu cập: {TransportationEntity.StartShip.Value:dd/MM/yyyy}",
+                        TextHistory = $"Ngày tàu cập: {TransportationEntity.ShipDate.Value:dd/MM/yyyy}",
                         RecordId = item.Id,
                         EntityId = Utils.GetEntity(nameof(Transportation)).Id
                     });

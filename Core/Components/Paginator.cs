@@ -13,6 +13,7 @@ namespace Core.Components
     {
         public int Total { get; set; }
         public int PageSize { get; set; }
+        public int Selected { get; set; }
         public int PageIndex { get; set; }
         public int PageNumber { get; set; }
         public int CurrentPageCount { get; set; }
@@ -44,6 +45,7 @@ namespace Core.Components
             var startIndex = new CellText(new Component { FieldName = nameof(PaginationOptions.StartIndex) });
             var endIndex = new CellText(new Component { FieldName = nameof(PaginationOptions.EndIndex) });
             var total = new CellText(new Component { FieldName = nameof(PaginationOptions.Total), FormatData = "{0:n0}" });
+            var selected = new CellText(new Component { FieldName = nameof(PaginationOptions.Selected), FormatData = "{0:n0}" });
             var pageNum = new Number(new Component { FieldName = nameof(PaginationOptions.PageNumber) }, null)
             {
                 AlwaysValid = true,
@@ -57,7 +59,9 @@ namespace Core.Components
             AddChild(endIndex);
             Html.Instance.IText(" trong số ");
             AddChild(total);
-
+            Html.Instance.IText($" đang chọn ");
+            AddChild(selected);
+            Html.Instance.IText($" dòng ");
             Html.Take(Element).Ul.ClassName("pagination").Li.Text("❮").Event(EventType.Click, PrevPage).End.Render();
             AddChild(pageNum);
             pageNum.Element.AddEventListener(EventType.Change.ToString(), () =>

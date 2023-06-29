@@ -212,7 +212,9 @@ namespace TMS.UI.Business.Manage
             }
             else
             {
+                Spinner.AppendTo(TabEditor.Element);
                 await ActionCreateTransportation(selected);
+                Spinner.Hide();
             }
         }
 
