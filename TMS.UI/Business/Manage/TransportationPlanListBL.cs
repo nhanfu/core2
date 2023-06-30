@@ -264,6 +264,7 @@ namespace TMS.UI.Business.Manage
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
             this.SetDisabled(true, "btnTransportation");
+            Toast.Warning("Đang tạo kết hoạch vui lòng chờ");
             var res = await new Client(nameof(TransportationPlan)).PostAsync<bool>(selected, "CreateTransportation");
             this.SetDisabled(false, "btnTransportation");
             if (res)
