@@ -212,9 +212,7 @@ namespace TMS.UI.Business.Manage
             }
             else
             {
-                Spinner.AppendTo(TabEditor.Element);
                 await ActionCreateTransportation(selected);
-                Spinner.Hide();
             }
         }
 
@@ -265,7 +263,9 @@ namespace TMS.UI.Business.Manage
         private async Task ActionCreateTransportation(List<TransportationPlan> selected)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
+            this.SetDisabled(true, "btnTransportation");
             var res = await new Client(nameof(TransportationPlan)).PostAsync<bool>(selected, "CreateTransportation");
+            this.SetDisabled(false, "btnTransportation");
             if (res)
             {
                 Toast.Success("Tạo chuyến xe thành công");
