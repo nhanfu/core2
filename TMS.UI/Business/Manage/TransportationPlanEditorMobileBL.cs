@@ -234,8 +234,12 @@ namespace TMS.UI.Business.Manage
                 if (lastTranPan != null)
                 {
                     transportationPlanEntity.Notes = lastTranPan.Notes;
-                    UpdateView(false, nameof(TransportationPlan.Notes));
                 }
+                else
+                {
+                    transportationPlanEntity.Notes = string.Empty;
+                }
+                UpdateView(false, nameof(TransportationPlan.Notes));
             }
             if (transportationPlanEntity.BossId == null || transportationPlanEntity.CommodityId == null || transportationPlanEntity.ContainerTypeId == null)
             {
