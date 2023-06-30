@@ -156,7 +156,7 @@ namespace Core.Components
             Task.Run(async () =>
             {
                 var listViewItem = MainSection.FilterChildren<ListViewItem>(x => x.Entity[IdField] == updatedData[IdField]).FirstOrDefault();
-                if(listViewItem != null)
+                if (listViewItem != null)
                 {
                     await LoadMasterData(new object[] { updatedData });
                     if (GuiInfo.ComponentType == nameof(VirtualGrid))
@@ -1105,7 +1105,7 @@ namespace Core.Components
         {
             var originalRows = GetSelectedRows();
             var copiedRows = ReflectionExt.CopyRowWithoutId(originalRows).ToList();
-            if (copiedRows.Nothing())
+            if (copiedRows.Nothing() || !CanWrite)
             {
                 return;
             }
@@ -1470,7 +1470,7 @@ namespace Core.Components
             var canWrite = GuiInfo.CanAdd && CanWrite;
             await RenderViewMenu();
             RenderCopyPasteMenu(canWrite);
-            RenderEditMenu(selectedRows, gridPolicies, canWrite);
+            RenderEditMenu(selectedRows, gridPolicies);
             await RenderShareMenu(selectedRows, gridPolicies);
             ctxMenu.Top = e.Top();
             ctxMenu.Left = e.Left();
@@ -1597,16 +1597,12 @@ namespace Core.Components
             await gridView1.ActionFilter();
         }
 
-        private void RenderCopyPasteMenu(bool canWrite)
+        public virtual void RenderCopyPasteMenu(bool canWrite)
         {
-            ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-copy", Text = "Copy", Click = CopySelected });
-            if (canWrite && _copiedRows.HasElement())
-            {
-                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fal fa-paste", Text = "Dán", Click = PasteSelected });
-            }
+            //
         }
 
-        private void RenderEditMenu(List<object> selectedRows, IEnumerable<FeaturePolicy> gridPolicies, bool canWrite)
+        private void RenderEditMenu(List<object> selectedRows, IEnumerable<FeaturePolicy> gridPolicies)
         {
             var lockDeleteDate = gridPolicies.Any() ? gridPolicies.Max(x => x.LockDeleteAfterCreated)
                 : EditForm.Feature.FeaturePolicy.Any() ? EditForm.Feature.FeaturePolicy.Max(x => x.LockDeleteAfterCreated) : 0;
@@ -1618,10 +1614,6 @@ namespace Core.Components
                 Text = "Xem lịch sử",
                 Click = ViewHistory,
             });
-            if (canWrite)
-            {
-                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-clone", Text = "Copy & Dán", Click = DuplicateSelected });
-            }
             var canDeactivate = CanDo(gridPolicies, x => x.CanDeactivate);
             if (canDeactivate)
             {

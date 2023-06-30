@@ -1,16 +1,11 @@
-﻿using Core.Enums;
-using Core.Extensions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
-using System.Net.WebSockets;
-using System.Text;
-using TMS.API.Models;
-using TMS.API.Websocket;
+using Hangfire;
 
 namespace TMS.API.BgService
 {
-    public class KillService : BackgroundService
+    public class KillService
     {
         protected readonly IConfiguration _configuration;
         public KillService(IConfiguration configuration)
@@ -18,13 +13,10 @@ namespace TMS.API.BgService
             _configuration = configuration;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        [Obsolete]
+        public void ScheduleJob()
         {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                KillBlockedProcesses();
-                await Task.Delay(1000 * 60, stoppingToken);
-            }
+            RecurringJob.AddOrUpdate<KillService>(x => x.KillBlockedProcesses(), Cron.Minutely);
         }
 
         public void KillBlockedProcesses()

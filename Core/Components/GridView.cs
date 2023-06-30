@@ -1349,37 +1349,15 @@ namespace Core.Components
 
         public virtual void HotKeyF6Handler(Event e, KeyCodeEnum? keyCode)
         {
-            if (keyCode == KeyCodeEnum.F6)
+            switch (keyCode)
             {
-                e.PreventDefault();
-                e.StopPropagation();
-                if (_summarys.Any())
-                {
-                    var lastElement = _summarys.LastOrDefault();
-                    if (lastElement.InnerHTML == string.Empty)
+                case KeyCodeEnum.F6:
+                    e.PreventDefault();
+                    e.StopPropagation();
+                    if (_summarys.Any())
                     {
-                        CellSelected.RemoveAt(CellSelected.Count - 1);
-                        Wheres.RemoveAt(Wheres.Count - 1);
-                        var last = AdvSearchVM.Conditions.LastOrDefault();
-                        if (last != null && last.Field.ComponentType == "Input" && last.Value.IsNullOrWhiteSpace())
-                        {
-                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
-                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
-                        }
-                        else
-                        {
-
-                            AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
-                        }
-                        Task.Run(async () =>
-                        {
-                            await ActionFilter();
-                            _summarys.RemoveAt(_summarys.Count - 1);
-                        });
-                    }
-                    else
-                    {
-                        if (lastElement.Style.Display.ToString() == "none")
+                        var lastElement = _summarys.LastOrDefault();
+                        if (lastElement.InnerHTML == string.Empty)
                         {
                             CellSelected.RemoveAt(CellSelected.Count - 1);
                             Wheres.RemoveAt(Wheres.Count - 1);
@@ -1397,47 +1375,79 @@ namespace Core.Components
                             Task.Run(async () =>
                             {
                                 await ActionFilter();
+                                _summarys.RemoveAt(_summarys.Count - 1);
                             });
-                            lastElement.Show();
                         }
                         else
                         {
-                            _summarys.RemoveAt(_summarys.Count - 1);
-                            lastElement.Remove();
+                            if (lastElement.Style.Display.ToString() == "none")
+                            {
+                                CellSelected.RemoveAt(CellSelected.Count - 1);
+                                Wheres.RemoveAt(Wheres.Count - 1);
+                                var last = AdvSearchVM.Conditions.LastOrDefault();
+                                if (last != null && last.Field.ComponentType == "Input" && last.Value.IsNullOrWhiteSpace())
+                                {
+                                    AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                                    AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                                }
+                                else
+                                {
+
+                                    AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
+                                }
+                                Task.Run(async () =>
+                                {
+                                    await ActionFilter();
+                                });
+                                lastElement.Show();
+                            }
+                            else
+                            {
+                                _summarys.RemoveAt(_summarys.Count - 1);
+                                lastElement.Remove();
+                            }
                         }
                     }
-                }
-            }
-            else if (keyCode == KeyCodeEnum.F3)
-            {
-                e.PreventDefault();
-                e.StopPropagation();
-                Task.Run(async () =>
-                {
-                    var selected = await GetRealTimeSelectedRows();
-                    if (selected.Count == 0)
+                    break;
+                case KeyCodeEnum.F3:
+                    e.PreventDefault();
+                    e.StopPropagation();
+                    Task.Run(async () =>
                     {
-                        selected = RowData.Data.ToList();
-                    }
-                    var numbers = Header.Where(x => x.ComponentType == nameof(Number)).ToList();
-                    if (numbers.Count == 0)
-                    {
-                        Toast.Warning("Vui lòng cấu hình");
-                        return;
-                    }
-                    var listString = numbers.Select(x =>
-                    {
-                        var val = selected.Select(k => k[x.FieldName]).Where(k => k != null).Select(y => Convert.ToDecimal(y)).Sum();
-                        return x.ShortDesc + " : " + (val % 2 > 0 ? val.ToString("N2") : val.ToString("N0"));
+                        var selected = await GetRealTimeSelectedRows();
+                        if (selected.Count == 0)
+                        {
+                            selected = RowData.Data.ToList();
+                        }
+                        var numbers = Header.Where(x => x.ComponentType == nameof(Number)).ToList();
+                        if (numbers.Count == 0)
+                        {
+                            Toast.Warning("Vui lòng cấu hình");
+                            return;
+                        }
+                        var listString = numbers.Select(x =>
+                        {
+                            var val = selected.Select(k => k[x.FieldName]).Where(k => k != null).Select(y => Convert.ToDecimal(y)).Sum();
+                            return x.ShortDesc + " : " + (val % 2 > 0 ? val.ToString("N2") : val.ToString("N0"));
+                        });
+                        Toast.Success(listString.Combine("</br>"), 6000);
                     });
-                    Toast.Success(listString.Combine("</br>"), 6000);
-                });
-            }
-            else if (keyCode == KeyCodeEnum.F1)
-            {
-                e.PreventDefault();
-                e.StopPropagation();
-                ToggleAll();
+                    break;
+                case KeyCodeEnum.F1:
+                    e.PreventDefault();
+                    e.StopPropagation();
+                    ToggleAll();
+                    break;
+                case KeyCodeEnum.U:
+                    if (e.CtrlOrMetaKey())
+                    {
+                        e.PreventDefault();
+                        e.StopPropagation();
+                        DuplicateSelected(e);
+                    }
+                    break;
+                default:
+                    break;
             }
             if (LastListViewItem is null)
             {
@@ -1449,6 +1459,19 @@ namespace Core.Components
             }
             var com = LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
             ActionKeyHandler(e, LastComponentFocus, LastListViewItem, com, com.Element.Closest(ElementType.td.ToString()), keyCode);
+        }
+
+        public override void RenderCopyPasteMenu(bool canWrite)
+        {
+            if (canWrite)
+            {
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-copy", Text = "Copy", Click = CopySelected });
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-clone", Text = "Copy & Dán", Click = DuplicateSelected });
+            }
+            if (canWrite && _copiedRows.HasElement())
+            {
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fal fa-paste", Text = "Dán", Click = PasteSelected });
+            }
         }
 
         private void CoppyValue(Event e, EditableComponent com, string fieldName, ListViewItem currentItem, ListViewItem upItem)

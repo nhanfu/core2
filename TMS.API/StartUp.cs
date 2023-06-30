@@ -131,9 +131,6 @@ namespace TMS.API
             services.AddScoped<UserService>();
             services.AddScoped<VendorSvc>();
             services.AddScoped<TransportationService>();
-            //
-            services.AddHostedService<StatisticsService>();
-            services.AddHostedService<KillService>();
         }
 
         static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
@@ -193,7 +190,7 @@ namespace TMS.API
         }
 
         [Obsolete]
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TMSContext tms, EntityService entity)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TMSContext tms, EntityService entity, IConfiguration configuration, ConnectionManager connectionManager)
         {
             if (entity.Entities.Nothing())
             {
@@ -224,6 +221,12 @@ namespace TMS.API
             app.UseWebSockets();
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
+            var backgroundJobs = new KillService(configuration);
+            backgroundJobs.ScheduleJob();
+            var statisticsService = new StatisticsService(serviceProvider, entity, configuration, connectionManager);
+            statisticsService.ScheduleJob();
+            var deleteDowloadService = new DeleteDowloadService(env);
+            deleteDowloadService.ScheduleJob();
             app.MapWebSocketManager("/task", serviceProvider.GetService<RealtimeService>());
             options.DefaultFileNames.Clear();
             options.DefaultFileNames.Add("index.html");
@@ -238,7 +241,6 @@ namespace TMS.API
                 builder.Select().Expand().Filter().OrderBy().MaxTop(null).Count();
             });
             app.UseRouting();
-
         }
 
         private IEdmModel GetEdmModel(IServiceProvider applicationServices)

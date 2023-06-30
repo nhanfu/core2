@@ -1,7 +1,7 @@
 ﻿using Core.Enums;
 using Core.Extensions;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OData.Edm;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using System.Data.SqlClient;
@@ -9,11 +9,10 @@ using System.Net.WebSockets;
 using System.Text;
 using TMS.API.Models;
 using TMS.API.Websocket;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace TMS.API.BgService
 {
-    public class StatisticsService : BackgroundService
+    public class StatisticsService
     {
         private readonly IServiceProvider _serviceProvider;
         protected readonly EntityService _entitySvc;
@@ -120,29 +119,25 @@ namespace TMS.API.BgService
             await Task.WhenAll(realtimeTasks);
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        [Obsolete]
+        public void ScheduleJob()
         {
-            while (!stoppingToken.IsCancellationRequested)
+            RecurringJob.AddOrUpdate<StatisticsService>(x => x.StatisticsProcesses(), Cron.Daily(0, 0));
+        }
+
+        public async Task StatisticsProcesses()
+        {
+            using (var scope = _serviceProvider.CreateScope())
             {
-                var now = DateTime.Now;
-                var waitTime = new DateTime(now.Year, now.Month, now.Day, 6, 0, 0) - now;
-                if (waitTime < TimeSpan.Zero)
-                {
-                    waitTime = waitTime.Add(TimeSpan.FromDays(1));
-                }
-                await Task.Delay(waitTime, stoppingToken);
-                using (var scope = _serviceProvider.CreateScope())
-                {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<TMSContext>();
-                    var rs1 = await CheckVendorLv1(dbContext);
-                    var rs = await CheckVendorLv2(dbContext);
-                    dbContext.AddRange(rs);
-                    dbContext.AddRange(rs1);
-                    await dbContext.SaveChangesAsync();
-                    await NotifyAsync(rs);
-                    await NotifyAsync(rs1);
-                    await UpdateInsuranceFeesDataFromTransportation(dbContext);
-                }
+                var dbContext = scope.ServiceProvider.GetRequiredService<TMSContext>();
+                var rs1 = await CheckVendorLv1(dbContext);
+                var rs = await CheckVendorLv2(dbContext);
+                dbContext.AddRange(rs);
+                dbContext.AddRange(rs1);
+                await dbContext.SaveChangesAsync();
+                await NotifyAsync(rs);
+                await NotifyAsync(rs1);
+                await UpdateInsuranceFeesDataFromTransportation(dbContext);
             }
         }
 
