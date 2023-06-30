@@ -241,7 +241,7 @@ namespace Core.Components
             }
             AddChild(ListViewSearch);
             DataTable = Html.Take(Element).Div.ClassName("table-wrapper").Event(EventType.KeyDown, (e) => HotKeyF6Handler(e, e.KeyCodeEnum())).Table.ClassName("table").Id(idtb).GetContext();
-            Html.Instance.Thead.End.TBody.ClassName("empty").End.TBody.End.TFooter.Render();
+            Html.Instance.Thead.TabIndex(-1).End.TBody.ClassName("empty").End.TBody.End.TFooter.Render();
 
             FooterSection = new ListViewSection(Html.Context) { ParentElement = DataTable };
             AddChild(FooterSection);
@@ -712,15 +712,7 @@ namespace Core.Components
             Spinner.Hide();
             if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.CanSearch)
             {
-                if (LastElementFocus != null)
-                {
-                    LastElementFocus.ParentElement.Focus();
-                    LastElementFocus.Focus();
-                }
-                else
-                {
-                    HeaderSection.Focus();
-                }
+                HeaderSection.Element.Focus();
             }
             if (GuiInfo.ComponentType == "Dropdown")
             {

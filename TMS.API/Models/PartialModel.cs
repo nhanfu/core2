@@ -19,6 +19,12 @@ namespace TMS.API.Models
         public int CountDate => EndDate is null ? 0 : Convert.ToInt32((EndDate.Value.Date - DateTime.Now.Date).TotalDays);
     }
 
+    public partial class TransportationPlan
+    {
+        [NotMapped]
+        public int ActContainerId { get; set; }
+    }
+
     public partial class Transportation
     {
         [NotMapped]

@@ -138,6 +138,217 @@ namespace TMS.API.Controllers
             return transportationContract is not null;
         }
 
+        private void SetContainerTypes(List<TransportationPlan> transportationPlans, List<MasterData> containerTypes)
+        {
+            foreach (var item in transportationPlans)
+            {
+                var containerTypeName = containerTypes.FirstOrDefault(x => x.Id == (int)item.ContainerTypeId);
+                if (containerTypeName.Description.Contains("Cont 20"))
+                {
+                    item.ActContainerId = containerTypes.FirstOrDefault(x => x.Name == "20DC").Id;
+                }
+                else if (containerTypeName.Description.Contains("Cont 40"))
+                {
+                    item.ActContainerId = containerTypes.FirstOrDefault(x => x.Name == "40HC").Id;
+                }
+                else if (containerTypeName.Description.Contains("Cont 45"))
+                {
+                    item.ActContainerId = containerTypes.FirstOrDefault(x => x.Name == "45HC").Id;
+                }
+                else if (containerTypeName.Description.Contains("Cont 50"))
+                {
+                    item.ActContainerId = containerTypes.FirstOrDefault(x => x.Name == "50DC").Id;
+                }
+            }
+        }
+
+        private async Task ActionCreateTransportation(List<TransportationPlan> transportationPlans)
+        {
+            var containerId = 0;
+            var containerTypeIds = transportationPlans.Where(x => x.ContainerTypeId != null).Select(x => x.ContainerTypeId.Value).ToList();
+            var containerTypeDb = await db.MasterData.AsNoTracking().Where(x => containerTypeIds.Contains(x.Id)).ToListAsync();
+            var containers = await db.MasterData.AsNoTracking().Where(x => x.Active && x.ParentId == 7565).ToListAsync();
+            var commodityTypeIds = transportationPlans.Where(x => x.CommodityId != null).Select(x => x.CommodityId.Value).ToList();
+            var bossIds = transportationPlans.Where(x => x.BossId != null).Select(x => x.BossId.Value).ToList();
+            var commodityValueDB = await db.CommodityValue.AsNoTracking().Where(x => x.Active && x.BossId != null && x.CommodityId != null && bossIds.Contains(x.BossId.Value) && commodityTypeIds.Contains(x.CommodityId.Value)).ToListAsync();
+            var expenseTypeDB = await db.MasterData.AsNoTracking().FirstOrDefaultAsync(x => x.Active && x.ParentId == 7577 && x.Name.Contains("Bảo hiểm"));
+            var masterDataDB = await db.MasterData.AsNoTracking().FirstOrDefaultAsync(x => x.Active && x.Id == 11685);
+            var isWets = transportationPlans.Select(x => x.IsWet).Distinct().ToList();
+            var isBoughts = transportationPlans.Select(x => x.IsBought).Distinct().ToList();
+            var insuranceFeesRates = await db.InsuranceFeesRate.AsNoTracking().Where(x => x.Active && (x.IsSOC == null || !x.IsSOC.Value)).ToListAsync();
+            var cont20Rs = containers.FirstOrDefault(x => x.Name == "20DC");
+            var cont40Rs = containers.FirstOrDefault(x => x.Name == "40HC");
+            var dir = containerTypeDb.ToDictionary(x => x.Id);
+            SetContainerTypes(transportationPlans, containers);
+            var rs = new List<Transportation>();
+            var insuranceFeesRateColdDB = await db.MasterData.AsNoTracking().FirstOrDefaultAsync(x => x.Active && x.Id == 25391);
+            var extraInsuranceFeesRateDB = await db.MasterData.AsNoTracking().Where(x => x.ParentId == 25374).ToListAsync();
+            var transportationTypes = await db.MasterData.AsNoTracking().Where(x => x.Active && x.ParentId == 11670).ToListAsync();
+            var routeIds = transportationPlans.Select(x => x.RouteId).ToList();
+            var routes = await db.Route.AsNoTracking().Where(x => x.Active && routeIds.Contains(x.Id)).ToListAsync();
+            foreach (var item in transportationPlans)
+            {
+                if (item.TransportationTypeId == null && item.RouteId != null)
+                {
+                    var route = routes.Where(x => x.Id == item.RouteId).FirstOrDefault();
+                    if (route != null)
+                    {
+                        if (route.Name.ToLower().Contains("sắt"))
+                        {
+                            item.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("sắt")).FirstOrDefault().Id;
+                        }
+                        else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
+                        {
+                            item.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("bộ")).FirstOrDefault().Id;
+                        }
+                        else
+                        {
+                            item.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("tàu")).FirstOrDefault().Id;
+                        }
+                    }
+                }
+                if (item.JourneyId == null)
+                {
+                    item.JourneyId = 12114;
+                }
+                var expense = new Expense();
+                expense.CopyPropFrom(item);
+                expense.Id = 0;
+                expense.Quantity = 1;
+                expense.ExpenseTypeId = expenseTypeDB.Id;
+                expense.Vat = masterDataDB is null ? 0 : decimal.Parse(masterDataDB.Name);
+                expense.SaleId = item.UserId;
+                expense.Notes = "";
+                if (expense.JourneyId == 12114 || expense.JourneyId == 16001)
+                {
+                    expense.StartShip = item.ClosingDate;
+                }
+                bool isSubRatio = false;
+                if (((expense.IsWet || expense.SteamingTerms || expense.BreakTerms) && expense.IsBought == false) || (expense.IsBought && expense.IsWet))
+                {
+                    isSubRatio = true;
+                }
+                InsuranceFeesRate insuranceFeesRateDB = null;
+                if (expense.IsBought)
+                {
+                    insuranceFeesRateDB = insuranceFeesRates.FirstOrDefault(x => x.TransportationTypeId == expense.TransportationTypeId
+                    && x.JourneyId == expense.JourneyId
+                    && x.IsBought == expense.IsBought
+                    && x.IsSOC == false
+                    && x.IsSubRatio == isSubRatio);
+                }
+                else
+                {
+                    insuranceFeesRateDB = insuranceFeesRates.FirstOrDefault(x => x.TransportationTypeId == expense.TransportationTypeId
+                    && x.JourneyId == expense.JourneyId
+                    && x.IsBought == expense.IsBought
+                    && x.IsSOC == false);
+                }
+                if (insuranceFeesRateDB != null)
+                {
+                    var getContainerType = dir.GetValueOrDefault(expense.ContainerTypeId ?? 0);
+                    if (getContainerType != null && getContainerType.Description.ToLower().Contains("lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
+                    {
+                        expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? decimal.Parse(insuranceFeesRateColdDB.Name) : 0;
+                    }
+                    else
+                    {
+                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
+                    }
+                    if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
+                    {
+                        extraInsuranceFeesRateDB.ForEach(x =>
+                        {
+                            var prop = expense.GetType().GetProperties().Where(y => y.Name == x.Name && bool.Parse(y.GetValue(expense, null).ToString())).FirstOrDefault();
+                            if (prop != null)
+                            {
+                                expense.InsuranceFeeRate += decimal.Parse(x.Code);
+                            }
+                        });
+                    }
+                }
+                else
+                {
+                    expense.InsuranceFeeRate = 0;
+                }
+                if (insuranceFeesRateDB != null && insuranceFeesRateDB.IsVAT == true)
+                {
+                    expense.TotalPriceAfterTax = (decimal)expense.InsuranceFeeRate * (decimal)expense.CommodityValue / 100;
+                    expense.TotalPriceBeforeTax = Math.Round(expense.TotalPriceAfterTax / (decimal)1.1, 0);
+                }
+                else if (insuranceFeesRateDB != null && insuranceFeesRateDB.IsVAT == false)
+                {
+                    expense.TotalPriceBeforeTax = (decimal)expense.InsuranceFeeRate * (decimal)expense.CommodityValue / 100;
+                    expense.TotalPriceAfterTax = expense.TotalPriceBeforeTax + Math.Round(expense.TotalPriceBeforeTax * expense.Vat / 100, 0);
+                }
+                var revenue = new Revenue();
+                revenue.BossId = item.BossId;
+                revenue.ContainerTypeId = item.ContainerTypeId;
+                revenue.ClosingDate = item.ClosingDate;
+                for (int i = 0; i < item.TotalContainerRemain; i++)
+                {
+                    var transportation = new Transportation();
+                    transportation.CopyPropFrom(item, nameof(Transportation.Contact2Id));
+                    transportation.Id = 0;
+                    transportation.TransportationPlanId = item.Id;
+                    transportation.Notes = null;
+                    transportation.ClosingNotes = item.Notes;
+                    transportation.ExportListId = VendorId;
+                    SetAuditInfo(expense);
+                    SetAuditInfo(revenue);
+                    transportation.Expense.Add(expense);
+                    transportation.Revenue.Add(revenue);
+                    SetAuditInfo(transportation);
+                    db.Add(transportation);
+                }
+                item.IsTransportation = true;
+                var commodidtyValue = commodityValueDB.FirstOrDefault(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == item.ActContainerId);
+                if (commodidtyValue == null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null)
+                {
+                    var startDate1 = new DateTime(DateTime.Now.Year, 1, 1);
+                    var endDate1 = new DateTime(DateTime.Now.Year, 6, 30);
+                    var startDate2 = new DateTime(DateTime.Now.Year, 7, 1);
+                    var endDate2 = new DateTime(DateTime.Now.Year, 12, 31);
+                    var newCommodityValue = new CommodityValue();
+                    newCommodityValue.CopyPropFrom(item);
+                    newCommodityValue.Id = 0;
+                    newCommodityValue.ContainerId = containerId;
+                    newCommodityValue.TotalPrice = (decimal)item.CommodityValue;
+                    newCommodityValue.SaleId = item.UserId;
+                    newCommodityValue.StartDate = DateTime.Now.Date;
+                    newCommodityValue.Notes = "";
+                    newCommodityValue.Active = true;
+                    newCommodityValue.InsertedDate = DateTime.Now.Date;
+                    newCommodityValue.CreatedBy = item.InsertedBy;
+                    if (DateTime.Now.Date >= startDate1 && DateTime.Now.Date <= endDate1)
+                    {
+                        newCommodityValue.EndDate = endDate1;
+                    }
+                    if (DateTime.Now.Date >= startDate2 && DateTime.Now.Date <= endDate2)
+                    {
+                        newCommodityValue.EndDate = endDate2;
+                    }
+                    SetAuditInfo(newCommodityValue);
+                    db.Add(newCommodityValue);
+                }
+            }
+            await db.SaveChangesAsync();
+        }
+
+        [HttpPost("api/[Controller]/CreateTransportation")]
+        public async Task<bool> CreateTransportation([FromBody] List<TransportationPlan> transportationPlans)
+        {
+            try
+            {
+                await ActionCreateTransportation(transportationPlans);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
 
         [HttpGet("api/[Controller]/GetByRole")]
         public Task<OdataResult<TransportationPlan>> UserClick(ODataQueryOptions<TransportationPlan> options)

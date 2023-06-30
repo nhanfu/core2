@@ -265,173 +265,18 @@ namespace TMS.UI.Business.Manage
         private async Task ActionCreateTransportation(List<TransportationPlan> selected)
         {
             var gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-            var containerTypeIds = selected.Where(x => x.ContainerTypeId != null).Select(x => x.ContainerTypeId.Value).ToList();
-            var containerTypeDb = new Client(nameof(MasterData)).GetRawListById<MasterData>(containerTypeIds);
-            var containers = new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and (contains(Name, '40HC') or contains(Name, '20DC'))");
-            var commodityTypeIds = selected.Where(x => x.CommodityId != null).Select(x => x.CommodityId.Value).ToList();
-            var bossIds = selected.Where(x => x.BossId != null).Select(x => x.BossId.Value).ToList();
-            var commodityValueDB = new Client(nameof(CommodityValue)).FirstOrDefaultAsync<CommodityValue>($"?$filter=Active eq true and BossId in ({bossIds.Combine()}) and CommodityId in ({commodityTypeIds.Combine()}) and ContainerId eq {containerId}");
-            var expenseTypeDB = new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and ParentId eq 7577 and contains(Name, 'Bảo hiểm')");
-            var masterDataDB = new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 11685");
-
-            var isWets = selected.Select(x => x.IsWet.ToLower()).Distinct().ToList();
-            var isBoughts = selected.Select(x => x.IsBought.ToLower()).Distinct().ToList();
-
-            var insuranceFeesRates = new Client(nameof(InsuranceFeesRate)).GetRawList<InsuranceFeesRate>($"?$filter=Active eq true and IsSOC eq false");
-            await Task.WhenAll(containerTypeDb, containers, commodityValueDB, expenseTypeDB, masterDataDB, insuranceFeesRates);
-            var cont20Rs = containers.Result.FirstOrDefault(x => x.Name.Contains("20DC"));
-            var cont40Rs = containers.Result.FirstOrDefault(x => x.Name.Contains("40HC"));
-            var dir = containerTypeDb.Result.ToDictionary(x => x.Id);
-            var rs = new List<Transportation>();
-            var insuranceFeesRateColdDB = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Active eq true and Id eq 25391");
-            var extraInsuranceFeesRateDB = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 25374");
-            var containerTypes = new List<int>(await CheckContainerTypes(selected));
-            var transportationTypes = await new Client(nameof(MasterData)).GetRawList<MasterData>($"?$filter=Active eq true and ParentId eq 11670");
-            var routeIds = selected.Select(x => x.RouteId).ToList();
-            var routes = await new Client(nameof(Route)).GetRawList<Route>($"?$filter=Active eq true and Id in ({routeIds.Combine()})");
-            foreach (var item in selected)
+            var res = await new Client(nameof(TransportationPlan)).PostAsync<bool>(selected, "CreateTransportation");
+            if (res)
             {
-                if (item.TransportationTypeId == null && item.RouteId != null)
-                {
-                    var route = routes.Where(x => x.Id == item.RouteId).FirstOrDefault();
-                    if (route != null)
-                    {
-                        if (route.Name.ToLower().Contains("sắt"))
-                        {
-                            item.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("sắt")).FirstOrDefault().Id;
-                        }
-                        else if (route.Name.ToLower().Contains("bộ") || route.Name.ToLower().Contains("trucking vtqt"))
-                        {
-                            item.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("bộ")).FirstOrDefault().Id;
-                        }
-                        else
-                        {
-                            item.TransportationTypeId = transportationTypes.Where(x => x.Name.Trim().ToLower().Contains("tàu")).FirstOrDefault().Id;
-                        }
-                        await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityTransportationType(item), ig: $"&disableTrigger=true");
-                    }
-                }
-                if (item.JourneyId == null)
-                {
-                    item.JourneyId = 12114;
-                    await new Client(nameof(TransportationPlan)).PatchAsync<TransportationPlan>(GetPatchEntityJourneyId(item), ig: $"&disableTrigger=true");
-                }
-                var expense = new Expense();
-                expense.CopyPropFrom(item);
-                expense.Id = 0;
-                expense.Quantity = 1;
-                expense.ExpenseTypeId = expenseTypeDB.Result.Id; //Bảo hiểm
-                expense.Vat = masterDataDB is null ? 0 : decimal.Parse(masterDataDB.Result.Name);
-                expense.SaleId = item.UserId;
-                expense.Notes = "";
-                if (expense.JourneyId == 12114 || expense.JourneyId == 16001)
-                {
-                    expense.StartShip = item.ClosingDate;
-                }
-                bool isSubRatio = false;
-                if (((expense.IsWet || expense.SteamingTerms || expense.BreakTerms) && expense.IsBought == false) || (expense.IsBought && expense.IsWet))
-                {
-                    isSubRatio = true;
-                }
-                InsuranceFeesRate insuranceFeesRateDB = null;
-                if (expense.IsBought)
-                {
-                    insuranceFeesRateDB = insuranceFeesRates.Result.FirstOrDefault(x => x.TransportationTypeId == expense.TransportationTypeId
-                    && x.JourneyId == expense.JourneyId
-                    && x.IsBought == expense.IsBought
-                    && x.IsSOC == false
-                    && x.IsSubRatio == isSubRatio);
-                }
-                else
-                {
-                    insuranceFeesRateDB = insuranceFeesRates.Result.FirstOrDefault(x => x.TransportationTypeId == expense.TransportationTypeId
-                    && x.JourneyId == expense.JourneyId
-                    && x.IsBought == expense.IsBought
-                    && x.IsSOC == false);
-                }
-                if (insuranceFeesRateDB != null)
-                {
-                    var getContainerType = dir.GetValueOrDefault(expense.ContainerTypeId ?? 0);
-                    if (getContainerType != null && getContainerType.Description.ToLower().Contains("lạnh") && insuranceFeesRateDB.TransportationTypeId == 11673 && insuranceFeesRateDB.JourneyId == 12114)
-                    {
-                        expense.InsuranceFeeRate = insuranceFeesRateColdDB != null ? decimal.Parse(insuranceFeesRateColdDB.Name) : 0;
-                    }
-                    else
-                    {
-                        expense.InsuranceFeeRate = insuranceFeesRateDB.Rate;
-                    }
-                    if (insuranceFeesRateDB.IsSubRatio && expense.IsBought == false)
-                    {
-                        extraInsuranceFeesRateDB.ForEach(x =>
-                        {
-                            var prop = expense.GetType().GetProperties().Where(y => y.Name == x.Name && bool.Parse(y.GetValue(expense, null).ToString())).FirstOrDefault();
-                            if (prop != null)
-                            {
-                                expense.InsuranceFeeRate += decimal.Parse(x.Code);
-                            }
-                        });
-                    }
-                }
-                else
-                {
-                    expense.InsuranceFeeRate = 0;
-                }
-                if (insuranceFeesRateDB != null && insuranceFeesRateDB.IsVAT == true)
-                {
-                    expense.TotalPriceAfterTax = (decimal)expense.InsuranceFeeRate * (decimal)expense.CommodityValue / 100;
-                    expense.TotalPriceBeforeTax = Math.Round(expense.TotalPriceAfterTax / (decimal)1.1, 0);
-                }
-                else if (insuranceFeesRateDB != null && insuranceFeesRateDB.IsVAT == false)
-                {
-                    expense.TotalPriceBeforeTax = (decimal)expense.InsuranceFeeRate * (decimal)expense.CommodityValue / 100;
-                    expense.TotalPriceAfterTax = expense.TotalPriceBeforeTax + Math.Round(expense.TotalPriceBeforeTax * expense.Vat / 100, 0);
-                }
-                var revenue = new Revenue();
-                revenue.BossId = item.BossId;
-                revenue.ContainerTypeId = item.ContainerTypeId;
-                revenue.ClosingDate = item.ClosingDate;
-                for (int i = 0; i < item.TotalContainerRemain; i++)
-                {
-                    var transportation = new Transportation();
-                    transportation.CopyPropFrom(item, nameof(Transportation.Contact2Id));
-                    transportation.Id = 0;
-                    transportation.TransportationPlanId = item.Id;
-                    transportation.Notes = null;
-                    transportation.ClosingNotes = item.Notes;
-                    transportation.ExportListId = Client.Token.Vendor.Id;
-                    transportation.Expense.Add(expense);
-                    transportation.Revenue.Add(revenue);
-                    await new Client(nameof(Transportation)).CreateAsync<Transportation>(transportation);
-                }
-                await new Client(nameof(TransportationPlan)).PatchAsync<Transportation>(GetPatchIsTransportation(item), ig: $"&disableTrigger=true");
+                Toast.Success("Tạo chuyến xe thành công");
+                await gridView.ApplyFilter(true);
+                Toast.Success("Khóa kế hoạch vận chuyển thành công");
+                gridView.ClearSelected();
             }
-            Toast.Success("Tạo chuyến xe thành công");
-            await gridView.ApplyFilter(true);
-            Toast.Success("Khóa kế hoạch vận chuyển thành công");
-            gridView.ClearSelected();
-            Window.SetTimeout(async () =>
+            else
             {
-                try
-                {
-                    var index = 0;
-                    var commodidtyValues = await new Client(nameof(CommodityValue)).GetRawList<CommodityValue>($"?$filter=Active eq true and BossId in ({bossIds.Combine()}) and CommodityId in ({commodityTypeIds.Combine()})");
-                    foreach (var item in selected)
-                    {
-                        var containerTypeId = containerTypes.ElementAt(index);
-                        var commodidtyValue = commodidtyValues.FirstOrDefault(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == containerTypeId);
-                        if (commodidtyValue == null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null)
-                        {
-                            var newCommodityValue = await CreateCommodityValue(item);
-                            var res = await new Client(nameof(CommodityValue)).CreateAsync<CommodityValue>(newCommodityValue);
-                            commodidtyValues.Add(res);
-                        }
-                        index++;
-                    }
-                }
-                catch
-                {
-                }
-            }, 100);
+                Toast.Warning("Lỗi tạo chuyến xe");
+            }
         }
 
         public async Task CheckClosingDate(TransportationPlan transportationPlan)
