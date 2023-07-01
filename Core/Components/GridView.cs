@@ -2604,8 +2604,8 @@ namespace Core.Components
 
             menu.MenuItems = new List<ContextMenuItem>
             {
-                new ContextMenuItem { Icon = "fal fa-eye", Text = "Hiện tiêu đề", Click = ShowWidth, Parameter = new {header= header, events= e }},
-                new ContextMenuItem { Icon = "fal fa-eye-slash", Text = "Ẩn tiêu đề", Click = HideWidth, Parameter = new {header= header, events= e }},
+                new ContextMenuItem { Icon = "fal fa-eye", Text = "Hiện tiêu đề", Click = ShowWidth, Parameter = new {header, events= e }},
+                new ContextMenuItem { Icon = "fal fa-eye-slash", Text = "Ẩn tiêu đề", Click = HideWidth, Parameter = new {header, events= e }},
                 new ContextMenuItem { Icon = header.Frozen ? "fal fa-snowflakes" : "fal fa-snowflake", Text = header.Frozen ? "Hủy định cột" : "Cố định cột", Click = FrozenColumn, Parameter = new {header= header, events= e }},
             };
             if (Client.SystemRole)

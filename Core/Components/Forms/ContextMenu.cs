@@ -66,7 +66,7 @@ namespace Core.Components.Forms
             {
                 Document.Body.AppendChild(_root);
             }
-            else
+            if (PElement != null && _root != null)
             {
                 PElement.AppendChild(_root);
             }

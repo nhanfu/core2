@@ -303,10 +303,10 @@ namespace TMS.API.Services
                 sql += @$" update Transportation set ReturnEmptyId = null, ReturnClosingFee = null
 				from Transportation
 				where Transportation.Id = {emptyCombination.OldVal}
-				and ReturnEmptyId = 114017 and ReturnClosingFee = null;";
+				and ReturnEmptyId = 114017 and ReturnClosingFee is null;";
                 sql += @$" update Transportation set CombinationId = null
 				from Transportation
-				where Transportation.Id = {emptyCombination.OldVal}";
+				where Transportation.Id = {emptyCombination.OldVal};";
             }
             if (emptyCombinationNew != null)
             {
