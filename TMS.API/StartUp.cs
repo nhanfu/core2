@@ -221,12 +221,14 @@ namespace TMS.API
             app.UseWebSockets();
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
+#if RELEASE
             var backgroundJobs = new KillService(configuration);
             backgroundJobs.ScheduleJob();
             var statisticsService = new StatisticsService(serviceProvider, entity, configuration, connectionManager);
             statisticsService.ScheduleJob();
             var deleteDowloadService = new DeleteDowloadService(env);
             deleteDowloadService.ScheduleJob();
+#endif
             app.MapWebSocketManager("/task", serviceProvider.GetService<RealtimeService>());
             options.DefaultFileNames.Clear();
             options.DefaultFileNames.Add("index.html");
