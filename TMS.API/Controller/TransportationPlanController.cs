@@ -433,6 +433,7 @@ namespace TMS.API.Controllers
                         BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<TransportationPlan>
                         {
                             EntityId = _entitySvc.GetEntity(typeof(TransportationPlan).Name).Id,
+                            TypeId = 1,
                             Data = entity
                         }, UserId));
                         return entity;
@@ -487,6 +488,7 @@ namespace TMS.API.Controllers
             BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<TransportationPlan>
             {
                 EntityId = _entitySvc.GetEntity(typeof(TransportationPlan).Name).Id,
+                TypeId = 1,
                 Data = entity
             }, UserId));
             await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
@@ -595,6 +597,7 @@ namespace TMS.API.Controllers
                             BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<Transportation>
                             {
                                 EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                                TypeId = 1,
                                 Data = item
                             }, UserId));
                         }

@@ -1,5 +1,6 @@
 ﻿using Bridge.Html5;
 using Core.Components.Extensions;
+using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
@@ -115,6 +116,7 @@ namespace Core.Components.Forms
             if (DisplayBadge)
             {
                 Html.Instance.Text(Badge ?? string.Empty);
+                EditForm.NotificationClient?.AddListener(GuiInfo.ReferenceId.Value, (int)TypeEntityAction.UpdateCountBadge, RealtimeUpdateBadge);
             }
             else
             {
@@ -136,6 +138,14 @@ namespace Core.Components.Forms
                 }
             });
             Task.Run(CountBage);
+        }
+
+        internal void RealtimeUpdateBadge(object updatedData)
+        {
+            Task.Run(async () =>
+            {
+                await CountBage();
+            });
         }
 
         internal async Task CountBage()

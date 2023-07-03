@@ -33,7 +33,7 @@ namespace Core.Notifications
         {
             Notifications = new ObservableList<TaskNotification>();
             _countNtf = new Observable<string>();
-            EditForm.NotificationClient?.AddListener(nameof(TaskNotification), ProcessIncomMessage);
+            EditForm.NotificationClient?.AddListener(nameof(TaskNotification), (int)TypeEntityAction.Message, ProcessIncomMessage);
         }
 
         public void ProcessIncomMessage(object obj)

@@ -140,6 +140,7 @@ namespace TMS.API.Controllers
                         BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<Transportation>
                         {
                             EntityId = _entitySvc.GetEntity(typeof(Transportation).Name).Id,
+                            TypeId = 1,
                             Data = entity
                         }, UserId));
                         return entity;

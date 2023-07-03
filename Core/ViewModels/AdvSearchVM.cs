@@ -57,4 +57,11 @@ namespace Core.Models
         public GridPolicy Field { get; set; }
         public OrderbyOption? OrderbyOptionId { get; set; }
     }
+
+    public class SocketResponse
+    {
+        public int EntityId { get; set; }
+        public int TypeId { get; set; } = 1;
+        public object Data { get; set; }
+    }
 }

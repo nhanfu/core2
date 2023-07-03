@@ -31,6 +31,7 @@ namespace TMS.API.Models
     public class WebSocketResponse<T>
     {
         public int EntityId { get; set; }
+        public int TypeId { get; set; }
         public T Data { get; set; }
         public List<T> DataList { get; set; }
     }

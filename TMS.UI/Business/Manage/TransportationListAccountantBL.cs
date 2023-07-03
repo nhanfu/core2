@@ -444,100 +444,105 @@ namespace TMS.UI.Business.Manage
             {
                 return;
             }
-            var oldTran = new Transportation();
-            Task.Run(async () => { oldTran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"filter=Active eq true and Id eq {tran.Id}"); });
-            if (tran.IsLocked && !patch.Changes.Any(x => x.Field == nameof(tran.IsLocked)
+            Task.Run(async () =>
+            {
+                if (tran.IsLocked || tran.LockShip || tran.IsKt)
+                {
+                    var oldTran = await new Client(nameof(Transportation)).FirstOrDefaultAsync<Transportation>($"?$filter=Active eq true and Id eq {tran.Id}");
+                    if (tran.IsLocked && !patch.Changes.Any(x => x.Field == nameof(tran.IsLocked)
                                                     || x.Field == nameof(tran.Notes)
                                                     || x.Field == nameof(tran.IsLockedRevenue)
                                                     || x.Field == nameof(tran.IsSubmit)))
-            {
-                var confirm = new ConfirmDialog
-                {
-                    Content = $"DSVC này đã bị khóa (Hệ thống). Bạn có muốn tạo yêu cầu mở khóa không ?",
-                };
-                confirm.Render();
-                confirm.YesConfirmed += async () =>
-                {
-                    var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id} and IsRequestUnLockAll eq true");
-                    if (checkRequestExist != null)
                     {
-                        Toast.Warning("DSVC đã có yêu cầu thay đổi đang chờ được duyệt");
+                        var confirm = new ConfirmDialog
+                        {
+                            Content = $"DSVC này đã bị khóa (Hệ thống). Bạn có muốn tạo yêu cầu mở khóa không ?",
+                        };
+                        confirm.Render();
+                        confirm.YesConfirmed += async () =>
+                        {
+                            var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id} and IsRequestUnLockAll eq true");
+                            if (checkRequestExist != null)
+                            {
+                                Toast.Warning("DSVC đã có yêu cầu thay đổi đang chờ được duyệt");
+                                return;
+                            }
+                            else
+                            {
+                                await TransportationRequestDetailsBL(tran, tabEditor);
+                            }
+                        };
                         return;
                     }
-                    else
+                    if (tran.LockShip && !patch.Changes.Any(x => x.Field == nameof(tran.LockShip)))
                     {
-                        await TransportationRequestDetailsBL(tran, tabEditor);
+                        if (patch.Changes.Any(x => (x.Field == nameof(tran.ShipPrice) && x.Value != $"{oldTran.ShipPrice:N0}")
+                        || (x.Field == nameof(tran.PolicyId) && x.Value != $"{oldTran.PolicyId}")
+                        || (x.Field == nameof(tran.ShipPolicyPrice) && x.Value != $"{oldTran.ShipPolicyPrice:N0}")
+                        || (x.Field == nameof(tran.Trip) && x.Value != oldTran.Trip)
+                        || (x.Field == nameof(tran.StartShip) && x.Value != $"{oldTran.StartShip:yyyy/MM/dd hh:mm:ss}")
+                        || (x.Field == nameof(tran.ContainerTypeId) && x.Value != $"{oldTran.ContainerTypeId}")
+                        || (x.Field == nameof(tran.SocId) && x.Value != $"{oldTran.SocId}")
+                        || (x.Field == nameof(tran.ShipNotes) && x.Value != oldTran.ShipNotes)
+                        || (x.Field == nameof(tran.BookingId) && x.Value != $"{oldTran.BookingId}")))
+                        {
+                            var confirm = new ConfirmDialog
+                            {
+                                Content = $"DSVC này đã bị khóa (Cước tàu). Bạn có muốn tạo yêu cầu mở khóa không ?",
+                            };
+                            confirm.Render();
+                            confirm.YesConfirmed += async () =>
+                            {
+                                var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id} and IsRequestUnLockShip eq true");
+                                if (checkRequestExist != null)
+                                {
+                                    Toast.Warning("DSVC đã có yêu cầu thay đổi đang chờ được duyệt");
+                                    return;
+                                }
+                                else
+                                { await TransportationRequestDetailsBL(tran, tabEditor); }
+                            };
+                            return;
+                        }
                     }
-                };
-                return;
-            }
-            if (tran.LockShip && !patch.Changes.Any(x => x.Field == nameof(tran.LockShip)))
-            {
-                if (patch.Changes.Any(x => (x.Field == nameof(tran.ShipPrice) && x.Value != $"{oldTran.ShipPrice:N0}")
-                || (x.Field == nameof(tran.PolicyId) && x.Value != $"{oldTran.PolicyId}")
-                || (x.Field == nameof(tran.ShipPolicyPrice) && x.Value != $"{oldTran.ShipPolicyPrice:N0}")
-                || (x.Field == nameof(tran.Trip) && x.Value != oldTran.Trip)
-                || (x.Field == nameof(tran.StartShip) && x.Value != $"{oldTran.StartShip:yyyy/MM/dd hh:mm:ss}")
-                || (x.Field == nameof(tran.ContainerTypeId) && x.Value != $"{oldTran.ContainerTypeId}")
-                || (x.Field == nameof(tran.SocId) && x.Value != $"{oldTran.SocId}")
-                || (x.Field == nameof(tran.ShipNotes) && x.Value != oldTran.ShipNotes)
-                || (x.Field == nameof(tran.BookingId) && x.Value != $"{oldTran.BookingId}")))
-                {
-                    var confirm = new ConfirmDialog
+                    if (tran.IsKt && !patch.Changes.Any(x => x.Field == nameof(tran.IsKt)))
                     {
-                        Content = $"DSVC này đã bị khóa (Cước tàu). Bạn có muốn tạo yêu cầu mở khóa không ?",
-                    };
-                    confirm.Render();
-                    confirm.YesConfirmed += async () =>
-                    {
-                        var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id} and IsRequestUnLockShip eq true");
-                        if (checkRequestExist != null)
+                        if (patch.Changes.Any(x => (x.Field == nameof(tran.Trip) && x.Value != oldTran.Trip)
+                        || (x.Field == nameof(tran.BookingId) && x.Value != $"{oldTran.BookingId}")
+                        || (x.Field == nameof(tran.ContainerTypeId) && x.Value != $"{oldTran.ContainerTypeId}")
+                        || (x.Field == nameof(tran.ContainerNo) && x.Value != $"{oldTran.ContainerNo}")
+                        || (x.Field == nameof(tran.SealNo) && x.Value != $"{oldTran.SealNo}")
+                        || (x.Field == nameof(tran.CommodityId) && x.Value != $"{oldTran.CommodityId}")
+                        || (x.Field == nameof(tran.Weight) && x.Value != $"{oldTran.Weight}")
+                        || (x.Field == nameof(tran.FreeText2) && x.Value != $"{oldTran.FreeText2}")
+                        || (x.Field == nameof(tran.ShipDate) && x.Value != $"{oldTran.ShipDate:yyyy/MM/dd hh:mm:ss}")
+                        || (x.Field == nameof(tran.ReturnDate) && x.Value != $"{oldTran.ReturnDate:yyyy/MM/dd hh:mm:ss}")
+                        || (x.Field == nameof(tran.ReturnId) && x.Value != $"{oldTran.ReturnId}")
+                        || (x.Field == nameof(tran.FreeText3) && x.Value != oldTran.FreeText3)))
                         {
-                            Toast.Warning("DSVC đã có yêu cầu thay đổi đang chờ được duyệt");
+                            var confirm = new ConfirmDialog
+                            {
+                                Content = $"DSVC này đã bị khóa (Khai thác). Bạn có muốn tạo yêu cầu mở khóa không ?",
+                            };
+                            confirm.Render();
+                            confirm.YesConfirmed += async () =>
+                            {
+                                var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id} and IsRequestUnLockExploit eq true");
+                                if (checkRequestExist != null)
+                                {
+                                    Toast.Warning("DSVC đã có yêu cầu thay đổi đang chờ được duyệt");
+                                    return;
+                                }
+                                else
+                                {
+                                    await TransportationRequestDetailsBL(tran, tabEditor);
+                                }
+                            };
                             return;
                         }
-                        else
-                        { await TransportationRequestDetailsBL(tran, tabEditor); }
-                    };
-                    return;
+                    }
                 }
-            }
-            if (tran.IsKt && !patch.Changes.Any(x => x.Field == nameof(tran.IsKt)))
-            {
-                if (patch.Changes.Any(x => (x.Field == nameof(tran.Trip) && x.Value != oldTran.Trip)
-                || (x.Field == nameof(tran.BookingId) && x.Value != $"{oldTran.BookingId}")
-                || (x.Field == nameof(tran.ContainerTypeId) && x.Value != $"{oldTran.ContainerTypeId}")
-                || (x.Field == nameof(tran.ContainerNo) && x.Value != $"{oldTran.ContainerNo}")
-                || (x.Field == nameof(tran.SealNo) && x.Value != $"{oldTran.SealNo}")
-                || (x.Field == nameof(tran.CommodityId) && x.Value != $"{oldTran.CommodityId}")
-                || (x.Field == nameof(tran.Weight) && x.Value != $"{oldTran.Weight}")
-                || (x.Field == nameof(tran.FreeText2) && x.Value != $"{oldTran.FreeText2}")
-                || (x.Field == nameof(tran.ShipDate) && x.Value != $"{oldTran.ShipDate:yyyy/MM/dd hh:mm:ss}")
-                || (x.Field == nameof(tran.ReturnDate) && x.Value != $"{oldTran.ReturnDate:yyyy/MM/dd hh:mm:ss}")
-                || (x.Field == nameof(tran.ReturnId) && x.Value != $"{oldTran.ReturnId}")
-                || (x.Field == nameof(tran.FreeText3) && x.Value != oldTran.FreeText3)))
-                {
-                    var confirm = new ConfirmDialog
-                    {
-                        Content = $"DSVC này đã bị khóa (Khai thác). Bạn có muốn tạo yêu cầu mở khóa không ?",
-                    };
-                    confirm.Render();
-                    confirm.YesConfirmed += async () =>
-                    {
-                        var checkRequestExist = await new Client(nameof(TransportationRequest)).FirstOrDefaultAsync<TransportationRequest>($"?$filter=Active eq true and TransportationId eq {tran.Id} and IsRequestUnLockExploit eq true");
-                        if (checkRequestExist != null)
-                        {
-                            Toast.Warning("DSVC đã có yêu cầu thay đổi đang chờ được duyệt");
-                            return;
-                        }
-                        else
-                        {
-                            await TransportationRequestDetailsBL(tran, tabEditor);
-                        }
-                    };
-                    return;
-                }
-            }
+            });
         }
 
         public async Task ViewRequestChange(TransportationRequest transportationRequest)

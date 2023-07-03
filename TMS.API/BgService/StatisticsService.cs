@@ -38,7 +38,8 @@ namespace TMS.API.BgService
                 .Select(x => new WebSocketResponse<TaskNotification>
                 {
                     EntityId = _entitySvc.GetEntity(nameof(TaskNotification))?.Id ?? 0,
-                    Data = x
+                    Data = x,
+                    TypeId = 3
                 })
                 .ForEachAsync(SendMessageToUser);
         }

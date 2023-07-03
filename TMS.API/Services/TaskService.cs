@@ -35,6 +35,7 @@ namespace TMS.API.Services
                 .Select(x => new WebSocketResponse<TaskNotification>
                 {
                     EntityId = _entitySvc.GetEntity(nameof(TaskNotification))?.Id ?? 0,
+                    TypeId = 3,
                     Data = x
                 })
                 .ForEachAsync(SendMessageToUser);
@@ -81,6 +82,7 @@ namespace TMS.API.Services
             var entity = new WebSocketResponse<TaskNotification>
             {
                 EntityId = _entitySvc.GetEntity(nameof(User))?.Id ?? 0,
+                TypeId = 3,
                 Data = task
             };
             await _fcmSvc.SendMessageToSocketAsync(socket, entity.ToJson());

@@ -28,7 +28,8 @@ namespace TMS.API.Controllers
                 var chat = new WebSocketResponse<Chat>
                 {
                     EntityId = _entitySvc.GetEntity(nameof(Chat))?.Id ?? 0,
-                    Data = rs1
+                    Data = rs1,
+                    TypeId = 1,
                 };
                 await _taskService.SendChatToUser(chat);
                 return rs;
@@ -38,7 +39,8 @@ namespace TMS.API.Controllers
                 var chat = new WebSocketResponse<Chat>
                 {
                     EntityId = _entitySvc.GetEntity(nameof(Chat))?.Id ?? 0,
-                    Data = rs.Value
+                    Data = rs.Value,
+                    TypeId = 1,
                 };
                 await _taskService.SendChatToUser(chat);
                 return rs;

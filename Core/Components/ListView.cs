@@ -147,7 +147,7 @@ namespace Core.Components
             _scrollTable = GuiInfo.FooterHeight ?? 10;
             if (GuiInfo.IsRealtime)
             {
-                EditForm.NotificationClient?.AddListener(GuiInfo.ReferenceId.Value, RealtimeUpdateListViewItem);
+                EditForm.NotificationClient?.AddListener(GuiInfo.ReferenceId.Value, (int)TypeEntityAction.UpdateEntity, RealtimeUpdateListViewItem);
             }
         }
 
@@ -1814,7 +1814,7 @@ namespace Core.Components
 
         public override void Dispose()
         {
-            EditForm.NotificationClient?.RemoveListener(RealtimeUpdateListViewItem, GuiInfo.ReferenceId.Value);
+            EditForm.NotificationClient?.RemoveListener(RealtimeUpdateListViewItem, (int)TypeEntityAction.UpdateEntity, GuiInfo.ReferenceId.Value);
             base.Dispose();
         }
     }

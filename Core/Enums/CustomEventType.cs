@@ -27,4 +27,11 @@
         BeforePatchCreate,
         AfterPatchUpdate,
     }
+
+    public enum TypeEntityAction
+    {
+        UpdateEntity = 1,
+        UpdateCountBadge = 2,
+        Message = 3,
+    }
 }
