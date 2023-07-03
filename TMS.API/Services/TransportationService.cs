@@ -808,5 +808,108 @@ end
 					where e.ExpenseTypeId not in (15981, 15939)
 	                and e.TransportationId = {Id};";
         }
+
+        public string Transportation_BookingId(PatchUpdate patchUpdate, int Id)
+        {
+            if (!patchUpdate.Changes.Any(x => x.Field == nameof(Transportation.BookingId)))
+            {
+                return null;
+            }
+            var bookingId = patchUpdate.Changes.FirstOrDefault(x => x.Field == nameof(Transportation.BookingId));
+            var sql = string.Empty;
+            if (!bookingId.OldVal.IsNullOrWhiteSpace())
+            {
+                sql += @$"WITH TransportationCounts AS (
+						SELECT 
+							BookingId,
+							COUNT(CASE WHEN Cont20 = 1 THEN Id END) AS Teus20Count,
+							COUNT(CASE WHEN Cont40 = 1 THEN Id END) AS Teus40Count
+						FROM 
+							Transportation
+						GROUP BY 
+							BookingId
+					)
+					UPDATE b
+					SET 
+						b.Teus20Using = ISNULL(tc.Teus20Count, 0),
+						b.Teus40Using = ISNULL(tc.Teus40Count, 0),
+						b.Teus20Remain = b.Teus20 - ISNULL(tc.Teus20Count, 0),
+						b.Teus40Remain = b.Teus40 - ISNULL(tc.Teus40Count, 0)
+					FROM 
+						Booking AS b
+					LEFT JOIN 
+						TransportationCounts AS tc ON tc.BookingId = b.Id
+					WHERE 
+						b.Id = {bookingId.OldVal};";
+				sql += $@"UPDATE t
+							SET 
+								t.Teus20Using = ISNULL(b.Teus20UsingSum, 0),
+								t.Teus40Using = ISNULL(b.Teus40UsingSum, 0),
+								t.Teus20Remain = t.Teus20 - ISNULL(b.Teus20UsingSum, 0),
+								t.Teus40Remain = t.Teus40 - ISNULL(b.Teus40UsingSum, 0)
+							FROM 
+								Teus AS t
+							JOIN 
+								(
+								SELECT 
+									TeusId,
+									SUM(Teus20Using) AS Teus20UsingSum,
+									SUM(Teus40Using) AS Teus40UsingSum
+								FROM 
+									Booking
+								WHERE 
+									TeusId IN (SELECT TeusId FROM Booking WHERE Id = {bookingId.OldVal})
+								GROUP BY 
+									TeusId
+								) AS b ON t.Id = b.TeusId ;";
+            }
+            if (!bookingId.Value.IsNullOrWhiteSpace())
+            {
+                sql += @$"WITH TransportationCounts AS (
+						SELECT 
+							BookingId,
+							COUNT(CASE WHEN Cont20 = 1 THEN Id END) AS Teus20Count,
+							COUNT(CASE WHEN Cont40 = 1 THEN Id END) AS Teus40Count
+						FROM 
+							Transportation
+						GROUP BY 
+							BookingId
+					)
+					UPDATE b
+					SET 
+						b.Teus20Using = ISNULL(tc.Teus20Count, 0),
+						b.Teus40Using = ISNULL(tc.Teus40Count, 0),
+						b.Teus20Remain = b.Teus20 - ISNULL(tc.Teus20Count, 0),
+						b.Teus40Remain = b.Teus40 - ISNULL(tc.Teus40Count, 0)
+					FROM 
+						Booking AS b
+					LEFT JOIN 
+						TransportationCounts AS tc ON tc.BookingId = b.Id
+					WHERE 
+						b.Id = {bookingId.Value};";
+                sql += $@"UPDATE t
+							SET 
+								t.Teus20Using = ISNULL(b.Teus20UsingSum, 0),
+								t.Teus40Using = ISNULL(b.Teus40UsingSum, 0),
+								t.Teus20Remain = t.Teus20 - ISNULL(b.Teus20UsingSum, 0),
+								t.Teus40Remain = t.Teus40 - ISNULL(b.Teus40UsingSum, 0)
+							FROM 
+								Teus AS t
+							JOIN 
+								(
+								SELECT 
+									TeusId,
+									SUM(Teus20Using) AS Teus20UsingSum,
+									SUM(Teus40Using) AS Teus40UsingSum
+								FROM 
+									Booking
+								WHERE 
+									TeusId IN (SELECT TeusId FROM Booking WHERE Id = {bookingId.Value})
+								GROUP BY 
+									TeusId
+								) AS b ON t.Id = b.TeusId ;";
+            }
+			return sql;
+        }
     }
 }

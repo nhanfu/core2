@@ -343,7 +343,7 @@ namespace TMS.API.Controllers
                 await ActionCreateTransportation(transportationPlans);
                 return true;
             }
-            catch
+            catch (Exception e)
             {
                 return false;
             }
