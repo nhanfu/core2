@@ -116,7 +116,6 @@ namespace Core.Components.Forms
             if (DisplayBadge)
             {
                 Html.Instance.Text(Badge ?? string.Empty);
-                EditForm.NotificationClient?.AddListener(GuiInfo.ReferenceId.Value, (int)TypeEntityAction.UpdateCountBadge, RealtimeUpdateBadge);
             }
             else
             {
@@ -137,18 +136,18 @@ namespace Core.Components.Forms
                     RenderTabContent();
                 }
             });
-            Task.Run(CountBage);
+            Task.Run(CountBadge);
         }
 
         internal void RealtimeUpdateBadge(object updatedData)
         {
             Task.Run(async () =>
             {
-                await CountBage();
+                await CountBadge();
             });
         }
 
-        internal async Task CountBage()
+        internal async Task CountBadge()
         {
             var parent = Parent as TabGroup;
             if (ComponentGroup.BadgeMonth is null)
@@ -160,6 +159,8 @@ namespace Core.Components.Forms
             {
                 return;
             }
+            EditForm.NotificationClient?.AddListener(gridView.ReferenceId.Value, (int)TypeEntityAction.UpdateCountBadge, RealtimeUpdateBadge);
+            EditForm.NotificationClient?.AddListener(gridView.ReferenceId.Value, (int)TypeEntityAction.MessageCountBadge, RealtimeUpdateBadge);
             try
             {
                 var query = ListView.GetFormattedDataSource(this, gridView.DataSourceFilter);
@@ -315,7 +316,7 @@ namespace Core.Components.Forms
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            Task.Run(CountBage);
+            Task.Run(CountBadge);
             base.UpdateView(force, dirty, componentNames);
         }
     }

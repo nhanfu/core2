@@ -33,5 +33,6 @@
         UpdateEntity = 1,
         UpdateCountBadge = 2,
         Message = 3,
+        MessageCountBadge = 4,
     }
 }

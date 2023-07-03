@@ -481,6 +481,9 @@ namespace TMS.API.Controllers
                 StatusId = (int)TaskStateEnum.UnreadStatus,
                 RemindBefore = 540,
                 Deadline = DateTime.Now,
+                InsertedBy = UserId,
+                InsertedDate = DateTime.Now,
+                Active = true
             };
             SetAuditInfo(taskNotification);
             db.AddRange(taskNotification);
@@ -491,7 +494,7 @@ namespace TMS.API.Controllers
                 TypeId = 1,
                 Data = entity
             }, UserId));
-            await _taskService.NotifyAsync(new List<TaskNotification> { taskNotification });
+            BackgroundJob.Enqueue<TaskService>(x => x.NotifyAndCountBadgeAsync(new List<TaskNotification> { taskNotification }));
             var transportations = await db.Transportation.Where(x => x.TransportationPlanId == oldEntity.Id).ToListAsync();
             foreach (var item in transportations)
             {
@@ -840,11 +843,13 @@ namespace TMS.API.Controllers
                     StatusId = (int)TaskStateEnum.UnreadStatus,
                     RemindBefore = 540,
                     Deadline = DateTime.Now,
+                    InsertedBy = UserId,
+                    InsertedDate = DateTime.Now,
+                    Active = true
                 });
-                SetAuditInfo(tasks);
                 db.AddRange(tasks);
                 await db.SaveChangesAsync();
-                await _taskService.NotifyAsync(tasks);
+                BackgroundJob.Enqueue<TaskService>(x => x.NotifyAndCountBadgeAsync(tasks));
             }
             return true;
         }
