@@ -13,7 +13,7 @@ namespace TMS.API.BgService
         [Obsolete]
         public void ScheduleJob()
         {
-            RecurringJob.AddOrUpdate<DeleteDowloadService>(x => x.DeleteProcesses(), Cron.Daily(0, 3));
+            RecurringJob.AddOrUpdate<DeleteDowloadService>(x => x.DeleteProcesses(), Cron.Daily(3, 0));
         }
 
         public void DeleteProcesses()

@@ -329,11 +329,11 @@ namespace TMS.UI.Notifications
             }
             if (isSave is null)
             {
-                html.A.ClassName("dropdown-item ui-mode").Event(EventType.Click, RemoveSetting).I.ClassName("fal fa-trash").End.Text("Remove settings").EndOf(ElementType.a);
+                html.A.ClassName("dropdown-item ui-mode").Event(EventType.Click, RemoveSetting).I.ClassName("fal fa-trash").End.Text("Đang không lưu cài đặt").EndOf(ElementType.a);
             }
             else
             {
-                html.A.ClassName("dropdown-item ui-mode").Event(EventType.Click, SaveSetting).I.ClassName("fal fa-save").End.Text("Save settings").EndOf(ElementType.a);
+                html.A.ClassName("dropdown-item ui-mode").Event(EventType.Click, SaveSetting).I.ClassName("fal fa-save").End.Text("Đang lưu cài đặt").EndOf(ElementType.a);
             }
             html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
             var langSelect = new LangSelect(new Core.Models.Component(), html.GetContext());
