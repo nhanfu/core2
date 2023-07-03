@@ -345,10 +345,15 @@ namespace Core.Components
                 wh.Add($"({filter1})");
             }
             var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
+            var pre = ParentListView.GuiInfo.PreQuery;
+            if (pre != null && Utils.IsFunction(pre, out Function fn))
+            {
+                pre = fn.Call(this, this, EditForm).ToString();
+            }
             var path = await new Client(ParentListView.GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}" +
                 $"&sql={ParentListView.Sql}" +
                 $"&showNull={ParentListView.GuiInfo.ShowNull ?? false}" +
-                $"&where={stringWh} {(ParentListView.GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(ParentListView.Wheres.Any() ? " and " : "")} {ParentListView.GuiInfo.PreQuery}")}" +
+                $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(ParentListView.Wheres.Any() ? " and " : "")} {pre}")}" +
                 $"&custom=true&featureId={Parent.EditForm.Feature.Id}&orderby={finalFilter}");
             Client.Download($"/excel/Download/{path}");
             Toast.Success("Xuất file thành công");

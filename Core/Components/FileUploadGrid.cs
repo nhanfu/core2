@@ -27,7 +27,6 @@ namespace Core.Components
                     Editable = true,
                     ShortDesc = "Name",
                     ComponentType = "Input",
-                    Style = "width: 250px;",
                     Order = 2
                 },
                 new GridPolicy

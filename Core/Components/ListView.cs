@@ -8,6 +8,7 @@ using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
 using Newtonsoft.Json;
+using Retyped;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -140,7 +141,7 @@ namespace Core.Components
             {
                 Resolve(ui, ele);
             }
-            Utils.IsFunction(GuiInfo.PreQuery, out _preQueryFn);
+            
             _rowHeight = GuiInfo.BodyItemHeight ?? 26;
             _theadTable = GuiInfo.HeaderHeight ?? 40;
             _tfooterTable = GuiInfo.FooterHeight ?? 35;
