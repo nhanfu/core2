@@ -268,9 +268,9 @@ namespace TMS.API.Services
 					TypeId = 7594
 					and ContainerTypeId = Transportation.ContainerTypeId 
 					and LocationId = Transportation.ReturnEmptyId 
-					and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc) end)
+					and (StartDate <= Transportation.ReturnDate or Transportation.ReturnDate is null) order by StartDate desc) end)
 					from Transportation
-					where Transportation.ShipDate is not null and Transportation.Id = {Id};";
+					where Transportation.ReturnDate is not null and Transportation.Id = {Id};";
             }
             else
             {
@@ -282,9 +282,9 @@ namespace TMS.API.Services
 					TypeId = 7594
 					and ContainerTypeId = Transportation.ContainerTypeId 
 					and LocationId = Transportation.ReturnEmptyId 
-					and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc) end) else Transportation.ReturnClosingFee end
+					and (StartDate <= Transportation.ReturnDate or Transportation.ReturnDate is null) order by StartDate desc) end) else Transportation.ReturnClosingFee end
 					from Transportation
-					where Transportation.ShipDate is not null
+					where Transportation.ReturnDate is not null
 					and Transportation.Id = {Id};";
             }
         }
@@ -366,9 +366,9 @@ namespace TMS.API.Services
 					where TypeId = 7596
 					and ContainerTypeId = Transportation.ContainerTypeId 
 					and LocationId = Transportation.PortLiftId 
-					and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc)
+					and (StartDate <= Transportation.ReturnDate or Transportation.ReturnDate is null) order by StartDate desc)
 					from Transportation
-					where Transportation.ShipDate is not null and Transportation.Id = {Id};";
+					where Transportation.ReturnDate is not null and Transportation.Id = {Id};";
             }
             else
             {
@@ -379,9 +379,9 @@ namespace TMS.API.Services
 					where TypeId = 7596
 					and ContainerTypeId = Transportation.ContainerTypeId 
 					and LocationId = Transportation.PortLiftId 
-					and (StartDate <= Transportation.ShipDate or Transportation.ShipDate is null) order by StartDate desc) else Transportation.ReturnLiftFee end
+					and (StartDate <= Transportation.ReturnDate or Transportation.ReturnDate is null) order by StartDate desc) else Transportation.ReturnLiftFee end
 					from Transportation
-					where Transportation.ShipDate is not null
+					where Transportation.ReturnDate is not null
 					and Transportation.Id = {Id};";
             }
         }

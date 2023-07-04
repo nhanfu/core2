@@ -35,6 +35,12 @@ namespace TMS.API.Controllers
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             var idInt = id.TryParseInt() ?? 0;
             var entity = await db.Transportation.FindAsync(idInt);
+            if (entity.IsLocked && !patch.Changes.Any(x => x.Field == nameof(entity.ContainerNo)))
+            {
+                throw new ApiException("DSVC này đã được khóa (Hệ thống). Vui lòng tạo yêu cầu mở khóa để được cập nhật.") { StatusCode = HttpStatusCode.BadRequest };
+            }
+
+
             if (entity.IsLocked && !patch.Changes.Any(x => x.Field == nameof(entity.IsLocked)
                                                     || x.Field == nameof(entity.Notes)
                                                     || x.Field == nameof(entity.IsLockedRevenue)
