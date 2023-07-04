@@ -6,6 +6,7 @@ using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -807,6 +808,15 @@ namespace Core.Components
                 }
             }
         }
+
+        private async Task ExportExcel(Event e)
+        {
+            var input = e.Target as HTMLInputElement;
+            var table = Document.GetElementById(_summaryId) as HTMLTableElement;
+            var url = await new Client(nameof(FileUpload)) { CustomPrefix = "https://cdn-tms.softek.com.vn/api" }.PostAsync<string>(table.OuterHTML, $"ExportExcelFromHtml?fileName=Summary{DateTime.Now:ddMMyyyyHHmm}", allowNested: true);
+            Client.Download(url);
+        }
+
         /*@
             function sortTable(columnIndex) {
               var table = document.getElementById('myTable');
@@ -1415,8 +1425,9 @@ namespace Core.Components
                 .EndOf(".popup-title")
                 .Div.ClassName("popup-body scroll-content");
             Html.Instance.Div.ClassName("container-rpt");
-            Html.Instance.Div.ClassName("menuBar");
-            Html.Instance.Div.ClassName("search-input").Style("margin-bottom: 12px;").Input.Style("width: 300px;").Event(EventType.Input, (e) => SearchTable(e)).PlaceHolder("Tìm kiếm");
+            Html.Instance.Div.ClassName("menuBar d-flex");
+            Html.Instance.Div.ClassName("search-input").Style("margin-bottom: 12px;").Input.Style("width: 300px;").Event(EventType.Input, (e) => SearchTable(e)).PlaceHolder("Tìm kiếm").End.End.Render();
+            Html.Instance.Div.ClassName("search-button").Style("margin-bottom: 12px;").Button.ClassName("btn btn-info").AsyncEvent(EventType.Click, async (e) => await ExportExcel(e)).I.ClassName("fa fal fa-print").End.End.End.Render();
             Html.Instance.EndOf(".menuBar");
             Html.Instance.Div.ClassName("printable");
             var body = Html.Context;
