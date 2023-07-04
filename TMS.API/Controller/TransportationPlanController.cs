@@ -302,7 +302,7 @@ namespace TMS.API.Controllers
                     db.Add(transportation);
                 }
                 item.IsTransportation = true;
-                var commodidtyValue = commodityValueDB.FirstOrDefault(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == item.ActContainerId);
+                var commodidtyValue = commodityValueDB.FirstOrDefault(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == item.ContainerTypeId);
                 if (commodidtyValue == null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null)
                 {
                     var startDate1 = new DateTime(DateTime.Now.Year, 1, 1);
