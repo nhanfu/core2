@@ -308,8 +308,8 @@ namespace TMS.API.Controllers
                     db.Add(transportation);
                 }
                 item.IsTransportation = true;
-                var commodidtyValue = commodityValueDB.FirstOrDefault(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == item.ContainerTypeId);
-                if (commodidtyValue == null && item.BossId != null && item.CommodityId != null && item.ContainerTypeId != null)
+                var commodidtyValue = commodityValueDB.FirstOrDefault(x => x.BossId == item.BossId && x.CommodityId == item.CommodityId && x.ContainerId == item.ActContainerId);
+                if (commodidtyValue == null && item.BossId != null && item.CommodityId != null && item.ActContainerId > 0)
                 {
                     var startDate1 = new DateTime(DateTime.Now.Year, 1, 1);
                     var endDate1 = new DateTime(DateTime.Now.Year, 6, 30);
@@ -318,7 +318,7 @@ namespace TMS.API.Controllers
                     var newCommodityValue = new CommodityValue();
                     newCommodityValue.CopyPropFrom(item);
                     newCommodityValue.Id = 0;
-                    newCommodityValue.ContainerId = containerId;
+                    newCommodityValue.ContainerId = item.ActContainerId;
                     newCommodityValue.TotalPrice = (decimal)item.CommodityValue;
                     newCommodityValue.SaleId = item.UserId;
                     newCommodityValue.StartDate = DateTime.Now.Date;
