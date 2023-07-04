@@ -601,8 +601,10 @@ namespace TMS.API.Controllers
                         (tran.Note2?.Trim() != ex.Notes?.Trim()) ||
                         (tran.YearText?.Trim() != ex.YearText?.Trim()) ||
                         (tran.MonthText?.Trim() != ex.MonthText?.Trim()) ||
+                        (tran.UserId != ex.SaleId) ||
                         (tran.ClosingDate != ex.StartShip && (ex.JourneyId == 12114 || ex.JourneyId == 16001)) ||
-                        (tran.StartShip != ex.StartShip && (ex.JourneyId != 12114 && ex.JourneyId != 16001))) && check == false)
+                        (tran.StartShip != ex.StartShip && (ex.JourneyId != 12114 && ex.JourneyId != 16001)) ||
+                        (tran.StartShip != ex.StartShip && ex.JourneyId == null)) && check == false)
                     {
                         if (ex.IsPurchasedInsurance)
                         {
@@ -704,9 +706,10 @@ namespace TMS.API.Controllers
                         if (tran.Note2?.Trim() != ex.Notes?.Trim()) { ex.Notes = tran.Note2; }
                         if (tran.YearText?.Trim() != ex.YearText?.Trim()) { ex.YearText = tran.YearText; }
                         if (tran.MonthText?.Trim() != ex.MonthText?.Trim()) { ex.MonthText = tran.MonthText; }
+                        if (tran.UserId != ex.SaleId) { ex.SaleId = tran.UserId; }
                         if (tran.ClosingDate != ex.StartShip && (ex.JourneyId == 12114 || ex.JourneyId == 16001)) { ex.StartShip = tran.ClosingDate; }
                         if (tran.StartShip != ex.StartShip && (ex.JourneyId != 12114 && ex.JourneyId != 16001)) { ex.StartShip = tran.StartShip; }
-
+                        if (tran.StartShip != ex.StartShip && (ex.JourneyId == null)) { ex.StartShip = tran.StartShip; }
                         var query = $"Update {nameof(Expense)} set ";
                         foreach (var prop in ex.GetType().GetProperties())
                         {
