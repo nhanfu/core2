@@ -279,43 +279,50 @@ namespace Core.Components
         protected void ClickHeader(Event e, GridPolicy header)
         {
             var th = (e.Target as HTMLElement).Closest("th");
-            var tr = th.ParentElement.QuerySelectorAll("th");
-            var index = tr.FindItemAndIndex(x => x == th).Item2;
+            var index = int.Parse(th.GetAttribute("data-order"));
+            var table = th.Closest("table") as HTMLTableElement;
+            var tbody = table.TBodies;
             if (index < 0)
             {
                 return;
             }
-            /*@
-                th.parentElement.parentElement.parentElement.querySelectorAll('tr:not(.summary)').forEach(function(row) {
-                    if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
-                        return;
+            tbody.ForEach(tb =>
+            {
+                tb.Children.ForEach(row =>
+                {
+                    /*@
+                    const cells = [].slice.call(row.querySelectorAll('td'));
+                    if (cells[index] != null)
+                    {
+                        cells[index].style.backgroundColor = "#cbdcc2";
+                        cells[index].style.color = "#000";
                     }
-                    const cells = [].slice.call(row.querySelectorAll('th, td'));
-                    cells[index].style.backgroundColor= "#cbdcc2";
-                    cells[index].style.color = "#000";
+                    */
                 });
-                */
+            });
         }
 
         protected void FocusOutHeader(Event e, GridPolicy header)
         {
             var th = (e.Target as HTMLElement).Closest("th");
-            var tr = th.ParentElement.QuerySelectorAll("th");
-            var index = tr.FindItemAndIndex(x => x == th).Item2;
+            var index = int.Parse(th.GetAttribute("data-order"));
+            var table = th.Closest("table") as HTMLTableElement;
+            var tbody = table.TBodies.LastOrDefault();
             if (index < 0)
             {
                 return;
             }
-            /*@
-                th.parentElement.parentElement.parentElement.querySelectorAll('tr:not(.summary)').forEach(function(row) {
-                    if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
-                       return;
-                    }
-                    const cells = [].slice.call(row.querySelectorAll('th, td'));
-                    cells[index].style.removeProperty("background-color");
-                    cells[index].style.removeProperty("color");
-                });
+            tbody.Children.ForEach(row =>
+            {
+                /*@
+                const cells = [].slice.call(row.querySelectorAll('th, td'));
+                if (cells[index] != null)
+                {
+                    cells[index].style.backgroundColor = "";
+                    cells[index].style.color = "";
+                }
                 */
+            });
         }
 
         protected void ThHotKeyHandler(Event e, GridPolicy header)
@@ -329,31 +336,35 @@ namespace Core.Components
             {
                 e.StopPropagation();
                 var th = (e.Target as HTMLElement).Closest("th");
-                var tr = th.ParentElement.QuerySelectorAll("th");
-                var index = tr.FindItemAndIndex(x => x == th).Item2;
-                /*@
-                th.parentElement.parentElement.parentElement.querySelectorAll('tr').forEach(function(row) {
-                        if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
-                            return;
-                        }
-                        const cells = [].slice.call(row.querySelectorAll('th, td'));
-                        if(cells[0].classList.contains('summary-header')){
-                            return;
-                        }
-                        var draggingColumnIndex = index;
-                        var endColumnIndex = index + 1;
-                        draggingColumnIndex > endColumnIndex
-                            ? cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
-                                  cells[draggingColumnIndex],
-                                  cells[endColumnIndex]
-                              )
-                            : cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
-                                  cells[draggingColumnIndex],
-                                  cells[endColumnIndex].nextSibling
-                              );
-                        cells[draggingColumnIndex].style.backgroundColor= "#cbdcc2";
+                var index = int.Parse(th.GetAttribute("data-order"));
+                var table = th.Closest("table") as HTMLTableElement;
+                table.TBodies.ForEach(tb =>
+                {
+                    tb.Children.ForEach(row =>
+                    {
+                        /*@
+                            if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
+                                return;
+                            }
+                            const cells = [].slice.call(row.querySelectorAll('td'));
+                            if(cells[0].classList.contains('summary-header')){
+                                return;
+                            }
+                            var draggingColumnIndex = index;
+                            var endColumnIndex = index + 1;
+                            draggingColumnIndex > endColumnIndex
+                                ? cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
+                                      cells[draggingColumnIndex],
+                                      cells[endColumnIndex]
+                                  )
+                                : cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
+                                      cells[draggingColumnIndex],
+                                      cells[endColumnIndex].nextSibling
+                                  );
+                            cells[draggingColumnIndex].style.backgroundColor= "#cbdcc2";
+                        */
+                    });
                 });
-                */
                 SwapList(index - 1, index);
                 SwapHeader(index, index + 1);
                 ResetOrder();
@@ -364,31 +375,35 @@ namespace Core.Components
             {
                 e.StopPropagation();
                 var th1 = (e.Target as HTMLElement).Closest("th");
-                var tr1 = th1.ParentElement.QuerySelectorAll("th");
-                var index1 = tr1.FindItemAndIndex(x => x == th1).Item2;
-                /*@
-                th1.parentElement.parentElement.parentElement.querySelectorAll('tr').forEach(function(row) {
-                        if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
-                            return;
-                        }
-                        const cells = [].slice.call(row.querySelectorAll('th, td'));
-                        if(cells[0].classList.contains('summary-header')){
-                            return;
-                        }
-                        var draggingColumnIndex = index1;
-                        var endColumnIndex = index1 - 1;
-                        draggingColumnIndex > endColumnIndex
-                            ? cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
-                                  cells[draggingColumnIndex],
-                                  cells[endColumnIndex]
-                              )
-                            : cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
-                                  cells[draggingColumnIndex],
-                                  cells[endColumnIndex].nextSibling
-                              );
-                        cells[draggingColumnIndex].style.backgroundColor= "#cbdcc2";
+                var index1 = int.Parse(th1.GetAttribute("data-order"));
+                var table1 = th1.Closest("table") as HTMLTableElement;
+                table1.TBodies.ForEach(tb =>
+                {
+                    tb.Children.ForEach(row =>
+                    {
+                        /*@
+                                if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
+                                    return;
+                                }
+                                const cells = [].slice.call(row.querySelectorAll('th, td'));
+                                if(cells[0].classList.contains('summary-header')){
+                                    return;
+                                }
+                                var draggingColumnIndex = index1;
+                                var endColumnIndex = index1 - 1;
+                                draggingColumnIndex > endColumnIndex
+                                    ? cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
+                                          cells[draggingColumnIndex],
+                                          cells[endColumnIndex]
+                                      )
+                                    : cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
+                                          cells[draggingColumnIndex],
+                                          cells[endColumnIndex].nextSibling
+                                      );
+                                cells[draggingColumnIndex].style.backgroundColor= "#cbdcc2";
+                        */
+                    });
                 });
-                */
                 SwapList(index1 - 1, index1 - 2);
                 SwapHeader(index1, index1 - 1);
                 ResetOrder();
@@ -2218,14 +2233,13 @@ namespace Core.Components
                         return;
                     }
 
-                    Html.Instance.Th.Render();
-                    Html.Instance.ColSpan(headers.Count(x => x.GroupName == header.GroupName));
-                    Html.Instance.IHtml(header.GroupName).Render();
+                    Html.Instance.Th.DataAttr("order", header.PostOrder).ColSpan(headers.Count(x => x.GroupName == header.GroupName)).IHtml(header.GroupName).Render();
                     return;
                 }
                 Html.Instance.Th
                     .TabIndex(-1)
                     .DataAttr("field", header.FieldName)
+                    .DataAttr("order", header.PostOrder)
                     .DataAttr("id", header.Id).Width(header.AutoFit ? "auto" : header.Width)
                     .Style($"{header.Style};min-width: {header.MinWidth}; max-width: {header.MaxWidth}")
                     .TextAlign(TextAlign.center)
