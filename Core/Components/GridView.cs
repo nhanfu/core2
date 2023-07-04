@@ -781,18 +781,17 @@ namespace Core.Components
         private void SearchTable(Event e)
         {
             var input = e.Target as HTMLInputElement;
-            var table = Document.GetElementById(_summaryId);
-            var rows = table.GetElementsByTagName("tr");
-
+            var table = Document.GetElementById(_summaryId) as HTMLTableElement;
+            var rows = table.TBodies.FirstOrDefault().Children;
             // Loop through all table rows
             for (var i = 0; i < rows.Length; i++)
             {
-                var cells = rows[i].GetElementsByTagName("td");
+                var cells = rows[i].ChildNodes;
                 var found = false;
                 for (var j = 0; j < cells.Length; j++)
                 {
                     var cellText = cells[j].TextContent;
-                    if (cellText.ToLowerCase().IndexOf(input.Value) > -1)
+                    if (cellText.ToLowerCase().IndexOf(input.Value.ToLowerCase()) > -1)
                     {
                         found = true;
                         break;
@@ -800,11 +799,11 @@ namespace Core.Components
                 }
                 if (found)
                 {
-                    rows[i].Style.Display = "";
+                    rows[i].RemoveClass("d-none");
                 }
                 else
                 {
-                    rows[i].Style.Display = "none";
+                    rows[i].AddClass("d-none");
                 }
             }
         }
@@ -1417,7 +1416,7 @@ namespace Core.Components
                 .Div.ClassName("popup-body scroll-content");
             Html.Instance.Div.ClassName("container-rpt");
             Html.Instance.Div.ClassName("menuBar");
-            Html.Instance.Div.ClassName("search-input").Input.Event(EventType.Input, (e) => SearchTable(e));
+            Html.Instance.Div.ClassName("search-input").Style("margin-bottom: 12px;").Input.Style("width: 300px;").Event(EventType.Input, (e) => SearchTable(e)).PlaceHolder("Tìm kiếm");
             Html.Instance.EndOf(".menuBar");
             Html.Instance.Div.ClassName("printable");
             var body = Html.Context;
