@@ -292,7 +292,7 @@ namespace TMS.API.Controllers
                     var ex = new Expense();
                     transportation.CopyPropFrom(item, nameof(Transportation.Contact2Id));
                     re.CopyPropFrom(revenue);
-                    ex.CopyPropFrom(revenue);
+                    ex.CopyPropFrom(expense);
                     re.Id = 0;
                     ex.Id = 0;
                     transportation.Id = 0;
