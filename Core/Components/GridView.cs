@@ -30,8 +30,11 @@ namespace Core.Components
         private const int CellCountNoSticky = 50;
         public List<HTMLElement> _summarys = new List<HTMLElement>();
         public bool _sum = false;
+        private string _summaryId;
         public bool AutoFocus = false;
         public bool LoadRerender = false;
+        public bool _waitingLoad;
+        public int _renderPrepareCacheAwaiter;
         public HTMLElement DataTable { get; set; }
         private UserSetting _settings { get; set; }
         public static GridPolicy ToolbarColumn = new GridPolicy
@@ -775,183 +778,43 @@ namespace Core.Components
             _summarys.ElementAtOrDefault(_summarys.Count - 1).Hide();
         }
 
-        public virtual void ViewSumary(object ev, GridPolicy header)
+        private void SearchTable(Event e)
         {
-            Html.Take(Element).Div.ClassName("backdrop")
-            .Style("align-items: center;").Escape((e) => DisposeSumary());
-            _summarys.Add(Html.Context);
-            Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;min-width: 90%")
-                .Div.ClassName("popup-title").InnerHTML("Gộp theo cột hiện thời")
-                .Div.ClassName("icon-box").Span.ClassName("fa fa-times")
-                    .Event(EventType.Click, DisposeSumary)
-                .EndOf(".popup-title")
-                .Div.ClassName("popup-body scroll-content");
-            Html.Instance.Div.ClassName("container-rpt");
-            Html.Instance.Div.ClassName("menuBar");
-            Html.Instance.EndOf(".menuBar");
-            Html.Instance.Div.ClassName("printable");
-            var body = Html.Context;
-            Task.Run(async () =>
+            var input = e.Target as HTMLInputElement;
+            var table = Document.GetElementById(_summaryId);
+            var rows = table.GetElementsByTagName("tr");
+
+            // Loop through all table rows
+            for (var i = 0; i < rows.Length; i++)
             {
-                var gridPolicy = BasicHeader.Where(x => x.ComponentType == nameof(Number) && x.FieldName != header.FieldName).ToList();
-                var sum = gridPolicy.Select(x => $"FORMAT(SUM(isnull([{GuiInfo.RefName}].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
-
-                var filter = Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
-                var filter1 = Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
-                var wh = new List<string>();
-                if (!filter.IsNullOrWhiteSpace())
-                {
-                    wh.Add($"({filter})");
-                }
-                if (!filter1.IsNullOrWhiteSpace())
-                {
-                    wh.Add($"({filter1})");
-                }
-                var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
-                var submitEntity = GuiInfo.PreQuery;
-                if (_preQueryFn != null)
-                {
-                    submitEntity = (string)_preQueryFn.Call(null, this);
-                }
-                var dataSet = await new Client(GuiInfo.RefName).PostAsync<object[][]>(sum.Combine(), $"ViewSumary?group={header.FieldName}" +
-                    $"&tablename={GuiInfo.RefName}" +
-                    $"&refname={header.RefName}" +
-                    $"&formatsumary={GuiInfo.FormatSumaryField}" +
-                    $"&sql={Sql}&orderby={GuiInfo.OrderBySumary}" +
-                    $"&where={stringWh} {(submitEntity.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {submitEntity}")}");
-                var sumarys = dataSet[0];
-                object[] refn = null;
-                if (dataSet.Length > 1)
-                {
-                    refn = dataSet[1];
-                }
-                var id = "sumary" + (new Random(10)).GetHashCode();
-                var dir = refn?.ToDictionary(x => x[IdField]);
-                Html.Instance.Div.ClassName("grid-wrapper sticky").Style("max-height: calc(100vh - 317px) !important;").Div.ClassName("table-wrapper printable").Table.Id(id).Width("100%").ClassName("table")
-                .Thead
-                    .TRow.Render();
-                Html.Instance.Th.Style("max-width: 100%;").IText(header.ShortDesc).End.Render();
-                Html.Instance.Th.Style("max-width: 100%;").IText("Tổng dữ liệu").End.Render();
-                foreach (var item in gridPolicy)
-                {
-                    var datasorttype = string.Empty;
-                    if (item.ComponentType == "Dropdown")
-                    {
-                        datasorttype = "text";
-                    }
-                    else if (item.ComponentType == nameof(Datepicker))
-                    {
-                        datasorttype = "date";
-                    }
-                    else if (item.ComponentType == nameof(Number))
-                    {
-                        datasorttype = "number";
-                    }
-                    else
-                    {
-                        datasorttype = "text";
-                    }
-                    Html.Instance.Th.DataAttr("sort-type", datasorttype).Style("max-width: 100%;").IHtml(item.ShortDesc).End.Render();
-                }
-                Html.Instance.EndOf(ElementType.thead);
-                Html.Instance.TBody.Render();
-                var ttCount = sumarys.Sum(x => Convert.ToDecimal(x["TotalRecord"].ToString().Replace(",", "") == "" ? "0" : x["TotalRecord"].ToString().Replace(",", "")));
-                foreach (var item in sumarys)
-                {
-                    item[header.FieldName] = item[header.FieldName] ?? "";
-                    var dataHeader = item[header.FieldName].ToString();
-                    var value = string.Empty;
-                    var valueText = string.Empty;
-                    if (header.ComponentType == "Dropdown")
-                    {
-                        var ob = dir.GetValueOrDefault(item[header.FieldName]);
-                        if (ob is null)
-                        {
-                            dataHeader = "";
-                        }
-                        else
-                        {
-                            dataHeader = ob[header.FormatCell.Split("}")[0].Replace("{", "")].ToString();
-                            value = ob["Id"].ToString();
-                            valueText = dataHeader;
-                        }
-                    }
-                    else if (header.ComponentType == nameof(Datepicker))
-                    {
-                        var datetime = DateTimeExt.TryParseDateTime(item[header.FieldName].ToString());
-                        dataHeader = datetime?.ToString("dd/MM/yyyy");
-                        value = datetime?.ToString("dd/MM/yyyy");
-                        valueText = datetime?.ToString("dd/MM/yyyy");
-                    }
-                    else if (header.ComponentType == nameof(Number))
-                    {
-                        var datetime = (item[header.FieldName] is null || item[header.FieldName].ToString() == "") ? default(decimal) : decimal.Parse(item[header.FieldName].ToString());
-                        dataHeader = datetime == default(decimal) ? "" : datetime.ToString("N0");
-                        value = item[header.FieldName].ToString();
-                        valueText = dataHeader;
-                    }
-                    else
-                    {
-                        value = item[header.FieldName].ToString();
-                        valueText = item[header.FieldName].ToString();
-                    }
-                    Html.Instance.TRow.Event(EventType.DblClick, () => FilterSumary(header, value, valueText)).Event(EventType.Click, (e) => FocusCell(e, this.HeaderComponentMap[header.GetHashCode()])).Render();
-                    Html.Instance.TData.Style("max-width: 100%;").ClassName(header.ComponentType == nameof(Number) ? "text-right" : "text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
-                    Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item["TotalRecord"].ToString()).End.Render();
-                    foreach (var itemDetail in gridPolicy)
-                    {
-                        Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item[itemDetail.FieldName].ToString()).End.Render();
-                    }
-                    Html.Instance.EndOf(ElementType.tr);
-                }
-                Html.Instance.EndOf(ElementType.tbody);
-                Html.Instance.TFooter.TRow.ClassName("summary").Render();
-                Html.Instance.TData.Style("max-width: 100%;").IText("Tổng cộng").End.Render();
-                Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IText(ttCount.ToString("N0")).End.Render();
-                foreach (var item in gridPolicy)
-                {
-                    var de = sumarys.Select(x => x[item.FieldName].ToString().Replace(",", "")).ToList();
-                    var ttCount1 = de.Where(x => !x.IsNullOrWhiteSpace()).Sum(x => decimal.Parse(x));
-                    Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IHtml(ttCount1.ToString("N0")).End.Render();
-                }
-            });
-        }
-
-        /*@
-         function searchTable() {
-              var input = document.getElementById('searchInput').value.toLowerCase();
-              var table = document.getElementById('myTable');
-              var rows = table.getElementsByTagName('tr');
-
-              // Loop through all table rows
-              for (var i = 0; i < rows.length; i++) {
-                var cells = rows[i].getElementsByTagName('td');
+                var cells = rows[i].GetElementsByTagName("td");
                 var found = false;
-
-                // Loop through all table cells in current row
-                for (var j = 0; j < cells.length; j++) {
-                  var cellText = cells[j].textContent || cells[j].innerText;
-                  if (cellText.toLowerCase().indexOf(input) > -1) {
-                    found = true;
-                    break;
-                  }
+                for (var j = 0; j < cells.Length; j++)
+                {
+                    var cellText = cells[j].TextContent;
+                    if (cellText.ToLowerCase().IndexOf(input.Value) > -1)
+                    {
+                        found = true;
+                        break;
+                    }
                 }
-
-                // Show/hide row based on search result
-                if (found) {
-                  rows[i].style.display = '';
-                } else {
-                  rows[i].style.display = 'none';
+                if (found)
+                {
+                    rows[i].Style.Display = "";
                 }
-              }
+                else
+                {
+                    rows[i].Style.Display = "none";
+                }
             }
-
+        }
+        /*@
             function sortTable(columnIndex) {
               var table = document.getElementById('myTable');
               var rows = Array.from(table.getElementsByTagName('tr')).slice(1); // Exclude the header row
               var sortOrder = table.getAttribute('data-sort-order');
               var dataType = table.getAttribute('data-sort-type');
-  
+
               rows.sort(function(rowA, rowB) {
                 var cellA = rowA.getElementsByTagName('td')[columnIndex];
                 var cellB = rowB.getElementsByTagName('td')[columnIndex];
@@ -1413,7 +1276,9 @@ namespace Core.Components
             // not to do anything
         }
 
-        public virtual void HotKeyF6Handler(Event e, KeyCodeEnum? keyCode)
+
+
+        public void HotKeyF6Handler(Event e, KeyCodeEnum? keyCode)
         {
             switch (keyCode)
             {
@@ -1446,6 +1311,10 @@ namespace Core.Components
                         }
                         else
                         {
+                            if (_waitingLoad)
+                            {
+                                Window.ClearTimeout(_renderPrepareCacheAwaiter);
+                            }
                             if (lastElement.Style.Display.ToString() == "none")
                             {
                                 CellSelected.RemoveAt(CellSelected.Count - 1);
@@ -1524,7 +1393,157 @@ namespace Core.Components
                 return;
             }
             var com = LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
+            if (com is null)
+            {
+                return;
+            }
             ActionKeyHandler(e, LastComponentFocus, LastListViewItem, com, com.Element.Closest(ElementType.td.ToString()), keyCode);
+        }
+
+        public void ViewSumary(object ev, GridPolicy header)
+        {
+            if (_waitingLoad)
+            {
+                Window.ClearTimeout(_renderPrepareCacheAwaiter);
+            }
+            Html.Take(Element).Div.ClassName("backdrop")
+            .Style("align-items: center;").Escape((e) => DisposeSumary());
+            _summarys.Add(Html.Context);
+            Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;min-width: 90%")
+                .Div.ClassName("popup-title").InnerHTML("Gộp theo cột hiện thời")
+                .Div.ClassName("icon-box").Span.ClassName("fa fa-times")
+                    .Event(EventType.Click, DisposeSumary)
+                .EndOf(".popup-title")
+                .Div.ClassName("popup-body scroll-content");
+            Html.Instance.Div.ClassName("container-rpt");
+            Html.Instance.Div.ClassName("menuBar");
+            Html.Instance.Div.ClassName("search-input").Input.Event(EventType.Input, (e) => SearchTable(e));
+            Html.Instance.EndOf(".menuBar");
+            Html.Instance.Div.ClassName("printable");
+            var body = Html.Context;
+            Task.Run(async () =>
+            {
+                var filter = Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
+                var filter1 = Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
+                var wh = new List<string>();
+                if (!filter.IsNullOrWhiteSpace())
+                {
+                    wh.Add($"({filter})");
+                }
+                if (!filter1.IsNullOrWhiteSpace())
+                {
+                    wh.Add($"({filter1})");
+                }
+                var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
+                var gridPolicy = BasicHeader.Where(x => x.ComponentType == nameof(Number) && x.FieldName != header.FieldName).ToList();
+                var sum = gridPolicy.Select(x => $"FORMAT(SUM(isnull([{GuiInfo.RefName}].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
+                var submitEntity = GuiInfo.PreQuery;
+                if (_preQueryFn != null)
+                {
+                    submitEntity = (string)_preQueryFn.Call(null, this);
+                }
+                var dataSet = await new Client(GuiInfo.RefName).PostAsync<object[][]>(sum.Combine(), $"ViewSumary?group={header.FieldName}" +
+                    $"&tablename={GuiInfo.RefName}" +
+                    $"&refname={header.RefName}" +
+                    $"&formatsumary={GuiInfo.FormatSumaryField}" +
+                    $"&sql={Sql}&orderby={GuiInfo.OrderBySumary}" +
+                    $"&where={stringWh} {(submitEntity.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {submitEntity}")}");
+                var sumarys = dataSet[0];
+                object[] refn = null;
+                if (dataSet.Length > 1)
+                {
+                    refn = dataSet[1];
+                }
+                _summaryId = "sumary" + (new Random(10)).GetHashCode();
+                var dir = refn?.ToDictionary(x => x[IdField]);
+                Html.Instance.Div.ClassName("grid-wrapper sticky").Style("max-height: calc(100vh - 317px) !important;").Div.ClassName("table-wrapper printable").Table.Id(_summaryId).Width("100%").ClassName("table")
+                .Thead
+                    .TRow.Render();
+                Html.Instance.Th.Style("max-width: 100%;").IText(header.ShortDesc).End.Render();
+                Html.Instance.Th.Style("max-width: 100%;").IText("Tổng dữ liệu").End.Render();
+                foreach (var item in gridPolicy)
+                {
+                    var datasorttype = string.Empty;
+                    if (item.ComponentType == "Dropdown")
+                    {
+                        datasorttype = "text";
+                    }
+                    else if (item.ComponentType == nameof(Datepicker))
+                    {
+                        datasorttype = "date";
+                    }
+                    else if (item.ComponentType == nameof(Number))
+                    {
+                        datasorttype = "number";
+                    }
+                    else
+                    {
+                        datasorttype = "text";
+                    }
+                    Html.Instance.Th.DataAttr("sort-type", datasorttype).Style("max-width: 100%;").IHtml(item.ShortDesc).End.Render();
+                }
+                Html.Instance.EndOf(ElementType.thead);
+                Html.Instance.TBody.Render();
+                var ttCount = sumarys.Sum(x => Convert.ToDecimal(x["TotalRecord"].ToString().Replace(",", "") == "" ? "0" : x["TotalRecord"].ToString().Replace(",", "")));
+                foreach (var item in sumarys)
+                {
+                    item[header.FieldName] = item[header.FieldName] ?? "";
+                    var dataHeader = item[header.FieldName].ToString();
+                    var value = string.Empty;
+                    var valueText = string.Empty;
+                    if (header.ComponentType == "Dropdown")
+                    {
+                        var ob = dir.GetValueOrDefault(item[header.FieldName]);
+                        if (ob is null)
+                        {
+                            dataHeader = "";
+                        }
+                        else
+                        {
+                            dataHeader = ob[header.FormatCell.Split("}")[0].Replace("{", "")].ToString();
+                            value = ob["Id"].ToString();
+                            valueText = dataHeader;
+                        }
+                    }
+                    else if (header.ComponentType == nameof(Datepicker))
+                    {
+                        var datetime = DateTimeExt.TryParseDateTime(item[header.FieldName].ToString());
+                        dataHeader = datetime?.ToString("dd/MM/yyyy");
+                        value = datetime?.ToString("dd/MM/yyyy");
+                        valueText = datetime?.ToString("dd/MM/yyyy");
+                    }
+                    else if (header.ComponentType == nameof(Number))
+                    {
+                        var datetime = (item[header.FieldName] is null || item[header.FieldName].ToString() == "") ? default(decimal) : decimal.Parse(item[header.FieldName].ToString());
+                        dataHeader = datetime == default(decimal) ? "" : datetime.ToString("N0");
+                        value = item[header.FieldName].ToString();
+                        valueText = dataHeader;
+                    }
+                    else
+                    {
+                        value = item[header.FieldName].ToString();
+                        valueText = item[header.FieldName].ToString();
+                    }
+                    Html.Instance.TRow.Event(EventType.DblClick, () => FilterSumary(header, value, valueText)).Event(EventType.Click, (e) => FocusCell(e, this.HeaderComponentMap[header.GetHashCode()])).Render();
+                    Html.Instance.TData.Style("max-width: 100%;").ClassName(header.ComponentType == nameof(Number) ? "text-right" : "text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
+                    Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item["TotalRecord"].ToString()).End.Render();
+                    foreach (var itemDetail in gridPolicy)
+                    {
+                        Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item[itemDetail.FieldName].ToString()).End.Render();
+                    }
+                    Html.Instance.EndOf(ElementType.tr);
+                }
+                Html.Instance.EndOf(ElementType.tbody);
+                Html.Instance.TFooter.TRow.ClassName("summary").Render();
+                Html.Instance.TData.Style("max-width: 100%;").IText("Tổng cộng").End.Render();
+                Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IText(ttCount.ToString("N0")).End.Render();
+                foreach (var item in gridPolicy)
+                {
+                    var de = sumarys.Select(x => x[item.FieldName].ToString().Replace(",", "")).ToList();
+                    var ttCount1 = de.Where(x => !x.IsNullOrWhiteSpace()).Sum(x => decimal.Parse(x));
+                    Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IHtml(ttCount1.ToString("N0")).End.Render();
+                }
+            });
         }
 
         public override void RenderCopyPasteMenu(bool canWrite)

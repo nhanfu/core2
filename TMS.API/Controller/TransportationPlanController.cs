@@ -288,16 +288,22 @@ namespace TMS.API.Controllers
                 for (int i = 0; i < item.TotalContainerRemain; i++)
                 {
                     var transportation = new Transportation();
+                    var re = new Revenue();
+                    var ex = new Expense();
                     transportation.CopyPropFrom(item, nameof(Transportation.Contact2Id));
+                    re.CopyPropFrom(revenue);
+                    ex.CopyPropFrom(revenue);
+                    re.Id = 0;
+                    ex.Id = 0;
                     transportation.Id = 0;
                     transportation.TransportationPlanId = item.Id;
                     transportation.Notes = null;
                     transportation.ClosingNotes = item.Notes;
                     transportation.ExportListId = VendorId;
-                    SetAuditInfo(expense);
-                    SetAuditInfo(revenue);
-                    transportation.Expense.Add(expense);
-                    transportation.Revenue.Add(revenue);
+                    SetAuditInfo(ex);
+                    SetAuditInfo(re);
+                    transportation.Expense.Add(ex);
+                    transportation.Revenue.Add(re);
                     SetAuditInfo(transportation);
                     db.Add(transportation);
                 }
@@ -332,7 +338,14 @@ namespace TMS.API.Controllers
                     db.Add(newCommodityValue);
                 }
             }
-            await db.SaveChangesAsync();
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         [HttpPost("api/[Controller]/CreateTransportation")]
