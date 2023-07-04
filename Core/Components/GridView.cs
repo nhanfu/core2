@@ -75,11 +75,6 @@ namespace Core.Components
                 return;
             }
             var sum = gridPolicy.Select(x => $"FORMAT(SUM(isnull([{GuiInfo.RefName}].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
-            var submitEntity = GuiInfo.PreQuery;
-            if (_preQueryFn != null)
-            {
-                submitEntity = (string)_preQueryFn.Call(null, this);
-            }
             var filter = Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
             var filter1 = Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
             var wh = new List<string>();
@@ -90,6 +85,11 @@ namespace Core.Components
             if (!filter1.IsNullOrWhiteSpace())
             {
                 wh.Add($"({filter1})");
+            }
+            var pre = GuiInfo.PreQuery;
+            if (pre != null && Utils.IsFunction(pre, out Function fn))
+            {
+                pre = fn.Call(this, this, EditForm).ToString();
             }
             var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
             var dataSet = await new Client(GuiInfo.RefName)
@@ -104,7 +104,7 @@ namespace Core.Components
                     $"&showNull={GuiInfo.ShowNull ?? false}" +
                     $"&sql={Sql}" +
                     $"&orderby={GuiInfo.OrderBySumary}" +
-                    $"&where={stringWh} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {submitEntity}")}",
+                    $"&where={stringWh} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")}",
                     Method = HttpMethod.POST,
                     AllowNestedObject = true,
                     ErrorHandler = (x) => { }
@@ -197,7 +197,7 @@ namespace Core.Components
                     .Attr("aria-expanded", "false")
                     .Attr("aria-controls", id).Text(GuiInfo.Label).EndOf(".card");
             }
-            html.Div.ClassName("grid-wrapper " + (GuiInfo.IsCollapsible ? "collapse multi-collapse" : "")).Id(id)
+            html.Div.Event(EventType.KeyDown, (e) => HotKeyF6Handler(e, e.KeyCodeEnum())).ClassName("grid-wrapper " + (GuiInfo.IsCollapsible ? "collapse multi-collapse" : "")).Id(id)
             .ClassName(Editable ? "editable" : string.Empty);
             Element = Html.Context;
             if (GuiInfo.CanSearch)
@@ -240,7 +240,7 @@ namespace Core.Components
                 ListViewSearch.EntityVM.EndDate = DateTime.Parse(lTo.ToString());
             }
             AddChild(ListViewSearch);
-            DataTable = Html.Take(Element).Div.ClassName("table-wrapper").Event(EventType.KeyDown, (e) => HotKeyF6Handler(e, e.KeyCodeEnum())).Table.ClassName("table").Id(idtb).GetContext();
+            DataTable = Html.Take(Element).Div.ClassName("table-wrapper").Table.ClassName("table").Id(idtb).GetContext();
             Html.Instance.Thead.TabIndex(-1).End.TBody.ClassName("empty").End.TBody.End.TFooter.Render();
 
             FooterSection = new ListViewSection(Html.Context) { ParentElement = DataTable };
@@ -827,14 +827,31 @@ namespace Core.Components
                 }
                 var id = "sumary" + (new Random(10)).GetHashCode();
                 var dir = refn?.ToDictionary(x => x[IdField]);
-                Html.Instance.Div.ClassName("grid-wrapper sticky").Div.ClassName("table-wrapper printable").Table.Id(id).Width("100%").ClassName("table")
+                Html.Instance.Div.ClassName("grid-wrapper sticky").Style("max-height: calc(100vh - 317px) !important;").Div.ClassName("table-wrapper printable").Table.Id(id).Width("100%").ClassName("table")
                 .Thead
                     .TRow.Render();
                 Html.Instance.Th.Style("max-width: 100%;").IText(header.ShortDesc).End.Render();
                 Html.Instance.Th.Style("max-width: 100%;").IText("Tổng dữ liệu").End.Render();
                 foreach (var item in gridPolicy)
                 {
-                    Html.Instance.Th.Style("max-width: 100%;").IHtml(item.ShortDesc).End.Render();
+                    var datasorttype = string.Empty;
+                    if (item.ComponentType == "Dropdown")
+                    {
+                        datasorttype = "text";
+                    }
+                    else if (item.ComponentType == nameof(Datepicker))
+                    {
+                        datasorttype = "date";
+                    }
+                    else if (item.ComponentType == nameof(Number))
+                    {
+                        datasorttype = "number";
+                    }
+                    else
+                    {
+                        datasorttype = "text";
+                    }
+                    Html.Instance.Th.DataAttr("sort-type", datasorttype).Style("max-width: 100%;").IHtml(item.ShortDesc).End.Render();
                 }
                 Html.Instance.EndOf(ElementType.thead);
                 Html.Instance.TBody.Render();
@@ -897,28 +914,77 @@ namespace Core.Components
                     var ttCount1 = de.Where(x => !x.IsNullOrWhiteSpace()).Sum(x => decimal.Parse(x));
                     Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IHtml(ttCount1.ToString("N0")).End.Render();
                 }
-                await Client.LoadScript("//cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js");
-                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js");
-                await Client.LoadScript("//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js");
-                await Client.LoadScript("//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js");
-                await Client.LoadScript("//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js");
-                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js");
-                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js");
-                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/buttons.print.min.js");
-                /*@
-                if (!$.fn.DataTable.isDataTable('#'+id)){
-                  $('#'+id).DataTable({
-                    paging: false,
-                    info: false,
-                    dom: 'Bfrtip',
-                    buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
-                    ]
-                });
-                }
-                */
             });
         }
+
+        /*@
+         function searchTable() {
+              var input = document.getElementById('searchInput').value.toLowerCase();
+              var table = document.getElementById('myTable');
+              var rows = table.getElementsByTagName('tr');
+
+              // Loop through all table rows
+              for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName('td');
+                var found = false;
+
+                // Loop through all table cells in current row
+                for (var j = 0; j < cells.length; j++) {
+                  var cellText = cells[j].textContent || cells[j].innerText;
+                  if (cellText.toLowerCase().indexOf(input) > -1) {
+                    found = true;
+                    break;
+                  }
+                }
+
+                // Show/hide row based on search result
+                if (found) {
+                  rows[i].style.display = '';
+                } else {
+                  rows[i].style.display = 'none';
+                }
+              }
+            }
+
+            function sortTable(columnIndex) {
+              var table = document.getElementById('myTable');
+              var rows = Array.from(table.getElementsByTagName('tr')).slice(1); // Exclude the header row
+              var sortOrder = table.getAttribute('data-sort-order');
+              var dataType = table.getAttribute('data-sort-type');
+  
+              rows.sort(function(rowA, rowB) {
+                var cellA = rowA.getElementsByTagName('td')[columnIndex];
+                var cellB = rowB.getElementsByTagName('td')[columnIndex];
+                var valueA = cellA.textContent || cellA.innerText;
+                var valueB = cellB.textContent || cellB.innerText;
+
+                // Perform comparison based on data type
+                if (dataType === 'number') {
+                  valueA = parseFloat(valueA);
+                  valueB = parseFloat(valueB);
+                } else if (dataType === 'date') {
+                  valueA = new Date(valueA);
+                  valueB = new Date(valueB);
+                }
+
+                if (valueA < valueB) {
+                  return sortOrder === 'asc' ? -1 : 1;
+                } else if (valueA > valueB) {
+                  return sortOrder === 'asc' ? 1 : -1;
+                } else {
+                  return 0;
+                }
+              });
+
+              // Update the table rows
+              for (var i = 0; i < rows.length; i++) {
+                table.appendChild(rows[i]);
+              }
+
+              // Toggle sort order for next click
+              table.setAttribute('data-sort-order', sortOrder === 'asc' ? 'desc' : 'asc');
+            }
+         */
 
         private void FocusCell(Event e, Component header)
         {

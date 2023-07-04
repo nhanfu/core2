@@ -439,14 +439,31 @@ namespace Core.Components
                 }
                 var id = "sumary" + (new Random(10)).GetHashCode();
                 var dir = refn?.ToDictionary(x => x[IdField]);
-                Html.Instance.Div.ClassName("grid-wrapper sticky").Div.ClassName("table-wrapper printable").Table.Id(id).Width("100%").ClassName("table")
+                Html.Instance.Div.ClassName("grid-wrapper sticky").Style("max-height: calc(100vh - 317px) !important;").Div.ClassName("table-wrapper printable").Table.Id(id).Width("100%").ClassName("table")
                 .Thead
                     .TRow.Render();
                 Html.Instance.Th.Style("max-width: 100%;").IText(header.ShortDesc).End.Render();
                 Html.Instance.Th.Style("max-width: 100%;").IText("Tổng dữ liệu").End.Render();
                 foreach (var item in gridPolicy)
                 {
-                    Html.Instance.Th.Style("max-width: 100%;").IHtml(item.ShortDesc).End.Render();
+                    var datasorttype = string.Empty;
+                    if (item.ComponentType == "Dropdown")
+                    {
+                        datasorttype = "text";
+                    }
+                    else if (item.ComponentType == nameof(Datepicker))
+                    {
+                        datasorttype = "date";
+                    }
+                    else if (item.ComponentType == nameof(Number))
+                    {
+                        datasorttype = "number";
+                    }
+                    else
+                    {
+                        datasorttype = "text";
+                    }
+                    Html.Instance.Th.DataAttr("sort-type", datasorttype).Style("max-width: 100%;").IHtml(item.ShortDesc).End.Render();
                 }
                 Html.Instance.EndOf(ElementType.thead);
                 Html.Instance.TBody.Render();
@@ -490,7 +507,7 @@ namespace Core.Components
                         value = item[header.FieldName].ToString();
                         valueText = item[header.FieldName].ToString();
                     }
-                    Html.Instance.TRow.Event(EventType.DblClick, () => FilterSumary(header, value, valueText)).Event(EventType.Click, (e) => FocusCell(e, HeaderComponentMap[header.GetHashCode()])).Render();
+                    Html.Instance.TRow.Event(EventType.DblClick, () => FilterSumary(header, value, valueText)).Event(EventType.Click, (e) => FocusCell(e, this.HeaderComponentMap[header.GetHashCode()])).Render();
                     Html.Instance.TData.Style("max-width: 100%;").ClassName(header.ComponentType == nameof(Number) ? "text-right" : "text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
                     Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item["TotalRecord"].ToString()).End.Render();
                     foreach (var itemDetail in gridPolicy)
@@ -509,26 +526,6 @@ namespace Core.Components
                     var ttCount1 = de.Where(x => !x.IsNullOrWhiteSpace()).Sum(x => decimal.Parse(x));
                     Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IHtml(ttCount1.ToString("N0")).End.Render();
                 }
-                await Client.LoadScript("//cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js");
-                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js");
-                await Client.LoadScript("//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js");
-                await Client.LoadScript("//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js");
-                await Client.LoadScript("//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js");
-                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js");
-                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js");
-                await Client.LoadScript("//cdn.datatables.net/buttons/2.3.4/js/buttons.print.min.js");
-                /*@
-                if (!$.fn.DataTable.isDataTable('#'+id)){
-                  $('#'+id).DataTable({
-                    paging: false,
-                    info: false,
-                    dom: 'Bfrtip',
-                    buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
-                    ]
-                });
-                }
-                */
             });
         }
 
