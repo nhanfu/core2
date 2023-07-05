@@ -39,7 +39,12 @@ namespace Core.Components
                 if (GuiInfo.Precision == 2)
                 {
                     var parentGridView = TabEditor.FindActiveComponent<GridView>().FirstOrDefault();
-                    var selectedRow = await parentGridView.GetRealTimeSelectedRows();
+                    var selectedData = parentGridView.CacheData;
+                    if (selectedData.Nothing())
+                    {
+                        selectedData = parentGridView.RowData.Data;
+                    }
+                    var selectedRow = selectedData.Where(x => parentGridView.SelectedIds.Contains(int.Parse(x["Id"].ToString()))).ToList();
                     foreach (var item in selectedRow)
                     {
                         await Task.Delay(200);

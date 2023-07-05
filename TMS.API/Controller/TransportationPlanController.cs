@@ -507,7 +507,13 @@ namespace TMS.API.Controllers
                 TypeId = 1,
                 Data = entity
             }, UserId));
-            BackgroundJob.Enqueue<TaskService>(x => x.NotifyAndCountBadgeAsync(new List<TaskNotification> { taskNotification }));
+            BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<TransportationPlan>
+            {
+                EntityId = _entitySvc.GetEntity(typeof(TransportationPlan).Name).Id,
+                TypeId = 4,
+                Data = entity
+            }, UserId));
+            BackgroundJob.Enqueue<TaskService>(x => x.NotifyAsync(new List<TaskNotification> { taskNotification }));
             var transportations = await db.Transportation.Where(x => x.TransportationPlanId == oldEntity.Id).ToListAsync();
             foreach (var item in transportations)
             {
@@ -863,6 +869,7 @@ namespace TMS.API.Controllers
                 db.AddRange(tasks);
                 await db.SaveChangesAsync();
                 BackgroundJob.Enqueue<TaskService>(x => x.NotifyAndCountBadgeAsync(tasks));
+                BackgroundJob.Enqueue<TaskService>(x => x.NotifyAsync(tasks));
             }
             return true;
         }

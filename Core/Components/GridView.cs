@@ -779,6 +779,14 @@ namespace Core.Components
             _summarys.ElementAtOrDefault(_summarys.Count - 1).Hide();
         }
 
+        private async Task ExportExcel(Event e)
+        {
+            var input = e.Target as HTMLInputElement;
+            var table = Document.GetElementById(_summaryId) as HTMLTableElement;
+            var url = await new Client(nameof(FileUpload)) { CustomPrefix = "https://cdn-tms.softek.com.vn/api" }.PostAsync<string>(table.OuterHTML, $"ExportExcelFromHtml?fileName=Summary{DateTime.Now:ddMMyyyyHHmm}", allowNested: true);
+            Client.Download(url);
+        }
+
         private void SearchTable(Event e)
         {
             var input = e.Target as HTMLInputElement;
@@ -809,36 +817,42 @@ namespace Core.Components
             }
         }
 
-        private async Task ExportExcel(Event e)
+        private void SortTable(Event e, int columnIndex)
         {
-            var input = e.Target as HTMLInputElement;
-            var table = Document.GetElementById(_summaryId) as HTMLTableElement;
-            var url = await new Client(nameof(FileUpload)) { CustomPrefix = "https://cdn-tms.softek.com.vn/api" }.PostAsync<string>(table.OuterHTML, $"ExportExcelFromHtml?fileName=Summary{DateTime.Now:ddMMyyyyHHmm}", allowNested: true);
-            Client.Download(url);
-        }
-
-        /*@
-            function sortTable(columnIndex) {
-              var table = document.getElementById('myTable');
-              var rows = Array.from(table.getElementsByTagName('tr')).slice(1); // Exclude the header row
-              var sortOrder = table.getAttribute('data-sort-order');
-              var dataType = table.getAttribute('data-sort-type');
-
+            var th = e.Target as HTMLElement;
+            var tr = th.Closest("tr");
+            tr.Children.ForEach(td =>
+            {
+                td.RemoveClass("desc");
+                td.RemoveClass("asc");
+            });
+            var table = Document.GetElementById(_summaryId);
+            var tbody = table.QuerySelector("tbody");
+            var thead = table.QuerySelector("thead");
+            var sortOrder = table.GetAttribute("data-sort-order");
+            var dataType = th.GetAttribute("data-sort-type");
+            /*@
+              var rows = Array.from(tbody.children);
               rows.sort(function(rowA, rowB) {
                 var cellA = rowA.getElementsByTagName('td')[columnIndex];
                 var cellB = rowB.getElementsByTagName('td')[columnIndex];
                 var valueA = cellA.textContent || cellA.innerText;
                 var valueB = cellB.textContent || cellB.innerText;
-
-                // Perform comparison based on data type
+                
                 if (dataType === 'number') {
-                  valueA = parseFloat(valueA);
-                  valueB = parseFloat(valueB);
-                } else if (dataType === 'date') {
+                  if (valueA === null || valueA === undefined || valueA === '') {
+                      valueA = '0';
+                  }
+                  if (valueB === null || valueB === undefined || valueB === '') {
+                      valueB = '0';
+                  }
+                  valueA = parseFloat(valueA.replaceAll(',', ''));
+                  valueB = parseFloat(valueB.replaceAll(',', ''));
+                } else if (dataType === 'date') 
+                {
                   valueA = new Date(valueA);
                   valueB = new Date(valueB);
                 }
-
                 if (valueA < valueB) {
                   return sortOrder === 'asc' ? -1 : 1;
                 } else if (valueA > valueB) {
@@ -847,16 +861,13 @@ namespace Core.Components
                   return 0;
                 }
               });
-
-              // Update the table rows
-              for (var i = 0; i < rows.length; i++) {
-                table.appendChild(rows[i]);
-              }
-
-              // Toggle sort order for next click
-              table.setAttribute('data-sort-order', sortOrder === 'asc' ? 'desc' : 'asc');
-            }
-         */
+              rows.forEach(function(row) {
+                tbody.appendChild(row);
+              });
+            */
+            th.AddClass(sortOrder == "asc" ? "desc" : "asc");
+            table.SetAttribute("data-sort-order", sortOrder == "asc" ? "desc" : "asc");
+        }
 
         private void FocusCell(Event e, Component header)
         {
@@ -1285,8 +1296,6 @@ namespace Core.Components
             // not to do anything
         }
 
-
-
         public void HotKeyF6Handler(Event e, KeyCodeEnum? keyCode)
         {
             switch (keyCode)
@@ -1464,14 +1473,32 @@ namespace Core.Components
                 {
                     refn = dataSet[1];
                 }
+                var datasorttypeHeader = string.Empty;
+                if (header.ComponentType == "Dropdown")
+                {
+                    datasorttypeHeader = "text";
+                }
+                else if (header.ComponentType == nameof(Datepicker))
+                {
+                    datasorttypeHeader = "date";
+                }
+                else if (header.ComponentType == nameof(Number))
+                {
+                    datasorttypeHeader = "number";
+                }
+                else
+                {
+                    datasorttypeHeader = "text";
+                }
+
                 _summaryId = "sumary" + (new Random(10)).GetHashCode();
                 var dir = refn?.ToDictionary(x => x[IdField]);
                 Html.Instance.Div.ClassName("grid-wrapper sticky").Style("max-height: calc(100vh - 317px) !important;").Div.ClassName("table-wrapper printable").Table.Id(_summaryId).Width("100%").ClassName("table")
                 .Thead
                     .TRow.Render();
-                Html.Instance.Th.Style("max-width: 100%;").IText(header.ShortDesc).End.Render();
-                Html.Instance.Th.Style("max-width: 100%;").IText("Tổng dữ liệu").End.Render();
-                foreach (var item in gridPolicy)
+                Html.Instance.Th.DataAttr("sort-type", datasorttypeHeader).Event(EventType.Click, (e) => SortTable(e, 0)).Style("max-width: 100%;").IText(header.ShortDesc).End.Render();
+                Html.Instance.Th.DataAttr("sort-type", "number").Event(EventType.Click, (e) => SortTable(e, 1)).Style("max-width: 100%;").IText("Tổng dữ liệu").End.Render();
+                gridPolicy.ForEach((item, index) =>
                 {
                     var datasorttype = string.Empty;
                     if (item.ComponentType == "Dropdown")
@@ -1490,8 +1517,9 @@ namespace Core.Components
                     {
                         datasorttype = "text";
                     }
-                    Html.Instance.Th.DataAttr("sort-type", datasorttype).Style("max-width: 100%;").IHtml(item.ShortDesc).End.Render();
-                }
+                    Html.Instance.Th.Event(EventType.Click, (e) => SortTable(e, index + 2)).DataAttr("sort-type", datasorttype).Style("max-width: 100%;").IHtml(item.ShortDesc).End.Render();
+
+                });
                 Html.Instance.EndOf(ElementType.thead);
                 Html.Instance.TBody.Render();
                 var ttCount = sumarys.Sum(x => Convert.ToDecimal(x["TotalRecord"].ToString().Replace(",", "") == "" ? "0" : x["TotalRecord"].ToString().Replace(",", "")));
@@ -1813,7 +1841,6 @@ namespace Core.Components
             RenderIndex();
             DomLoaded();
         }
-
 
         protected void SetFocusingCom()
         {
@@ -2150,7 +2177,7 @@ namespace Core.Components
                 LastListViewItem = rowSection;
                 var headers = Header.Where(y => y.Editable).ToList();
                 var currentComponent = headers.FirstOrDefault(y => y.FieldName == component?.GuiInfo.FieldName);
-                if (currentComponent.ComponentType == nameof(SearchEntry) || currentComponent.ComponentType == "Dropdown")
+                if ((currentComponent.ComponentType == nameof(SearchEntry) || currentComponent.ComponentType == "Dropdown") && rowData[currentComponent.FieldName] != null)
                 {
                     var index = headers.IndexOf(currentComponent);
                     if (headers.Count > index + 1)
