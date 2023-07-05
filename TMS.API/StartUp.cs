@@ -222,8 +222,6 @@ namespace TMS.API
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
 #if RELEASE
-            var backgroundJobs = new KillService(configuration);
-            backgroundJobs.ScheduleJob();
             var statisticsService = new StatisticsService(serviceProvider, entity, configuration, connectionManager);
             statisticsService.ScheduleJob();
             var deleteDowloadService = new DeleteDowloadService(env);

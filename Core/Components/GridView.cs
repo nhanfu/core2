@@ -279,50 +279,43 @@ namespace Core.Components
         protected void ClickHeader(Event e, GridPolicy header)
         {
             var th = (e.Target as HTMLElement).Closest("th");
-            var index = int.Parse(th.GetAttribute("data-order"));
-            var table = th.Closest("table") as HTMLTableElement;
-            var tbody = table.TBodies;
+            var tr = th.ParentElement.QuerySelectorAll("th");
+            var index = tr.FindItemAndIndex(x => x == th).Item2;
             if (index < 0)
             {
                 return;
             }
-            tbody.ForEach(tb =>
-            {
-                tb.Children.ForEach(row =>
-                {
-                    /*@
-                    const cells = [].slice.call(row.querySelectorAll('td'));
-                    if (cells[index] != null)
-                    {
-                        cells[index].style.backgroundColor = "#cbdcc2";
-                        cells[index].style.color = "#000";
+            /*@
+                th.parentElement.parentElement.parentElement.querySelectorAll('tr:not(.summary)').forEach(function(row) {
+                    if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
+                        return;
                     }
-                    */
+                    const cells = [].slice.call(row.querySelectorAll('th, td'));
+                    cells[index].style.backgroundColor= "#cbdcc2";
+                    cells[index].style.color = "#000";
                 });
-            });
+                */
         }
 
         protected void FocusOutHeader(Event e, GridPolicy header)
         {
             var th = (e.Target as HTMLElement).Closest("th");
-            var index = int.Parse(th.GetAttribute("data-order"));
-            var table = th.Closest("table") as HTMLTableElement;
-            var tbody = table.TBodies.LastOrDefault();
+            var tr = th.ParentElement.QuerySelectorAll("th");
+            var index = tr.FindItemAndIndex(x => x == th).Item2;
             if (index < 0)
             {
                 return;
             }
-            tbody.Children.ForEach(row =>
-            {
-                /*@
-                const cells = [].slice.call(row.querySelectorAll('th, td'));
-                if (cells[index] != null)
-                {
-                    cells[index].style.backgroundColor = "";
-                    cells[index].style.color = "";
-                }
+            /*@
+                th.parentElement.parentElement.parentElement.querySelectorAll('tr:not(.summary)').forEach(function(row) {
+                    if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
+                       return;
+                    }
+                    const cells = [].slice.call(row.querySelectorAll('th, td'));
+                    cells[index].style.removeProperty("background-color");
+                    cells[index].style.removeProperty("color");
+                });
                 */
-            });
         }
 
         protected void ThHotKeyHandler(Event e, GridPolicy header)
@@ -336,35 +329,31 @@ namespace Core.Components
             {
                 e.StopPropagation();
                 var th = (e.Target as HTMLElement).Closest("th");
-                var index = int.Parse(th.GetAttribute("data-order"));
-                var table = th.Closest("table") as HTMLTableElement;
-                table.TBodies.ForEach(tb =>
-                {
-                    tb.Children.ForEach(row =>
-                    {
-                        /*@
-                            if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
-                                return;
-                            }
-                            const cells = [].slice.call(row.querySelectorAll('td'));
-                            if(cells[0].classList.contains('summary-header')){
-                                return;
-                            }
-                            var draggingColumnIndex = index;
-                            var endColumnIndex = index + 1;
-                            draggingColumnIndex > endColumnIndex
-                                ? cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
-                                      cells[draggingColumnIndex],
-                                      cells[endColumnIndex]
-                                  )
-                                : cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
-                                      cells[draggingColumnIndex],
-                                      cells[endColumnIndex].nextSibling
-                                  );
-                            cells[draggingColumnIndex].style.backgroundColor= "#cbdcc2";
-                        */
-                    });
+                var tr = th.ParentElement.QuerySelectorAll("th");
+                var index = tr.FindItemAndIndex(x => x == th).Item2;
+                /*@
+                th.parentElement.parentElement.parentElement.querySelectorAll('tr').forEach(function(row) {
+                        if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
+                            return;
+                        }
+                        const cells = [].slice.call(row.querySelectorAll('th, td'));
+                        if(cells[0].classList.contains('summary-header')){
+                            return;
+                        }
+                        var draggingColumnIndex = index;
+                        var endColumnIndex = index + 1;
+                        draggingColumnIndex > endColumnIndex
+                            ? cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
+                                  cells[draggingColumnIndex],
+                                  cells[endColumnIndex]
+                              )
+                            : cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
+                                  cells[draggingColumnIndex],
+                                  cells[endColumnIndex].nextSibling
+                              );
+                        cells[draggingColumnIndex].style.backgroundColor= "#cbdcc2";
                 });
+                */
                 SwapList(index - 1, index);
                 SwapHeader(index, index + 1);
                 ResetOrder();
@@ -375,35 +364,31 @@ namespace Core.Components
             {
                 e.StopPropagation();
                 var th1 = (e.Target as HTMLElement).Closest("th");
-                var index1 = int.Parse(th1.GetAttribute("data-order"));
-                var table1 = th1.Closest("table") as HTMLTableElement;
-                table1.TBodies.ForEach(tb =>
-                {
-                    tb.Children.ForEach(row =>
-                    {
-                        /*@
-                                if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
-                                    return;
-                                }
-                                const cells = [].slice.call(row.querySelectorAll('th, td'));
-                                if(cells[0].classList.contains('summary-header')){
-                                    return;
-                                }
-                                var draggingColumnIndex = index1;
-                                var endColumnIndex = index1 - 1;
-                                draggingColumnIndex > endColumnIndex
-                                    ? cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
-                                          cells[draggingColumnIndex],
-                                          cells[endColumnIndex]
-                                      )
-                                    : cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
-                                          cells[draggingColumnIndex],
-                                          cells[endColumnIndex].nextSibling
-                                      );
-                                cells[draggingColumnIndex].style.backgroundColor= "#cbdcc2";
-                        */
-                    });
+                var tr1 = th1.ParentElement.QuerySelectorAll("th");
+                var index1 = tr1.FindItemAndIndex(x => x == th1).Item2;
+                /*@
+                th1.parentElement.parentElement.parentElement.querySelectorAll('tr').forEach(function(row) {
+                        if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
+                            return;
+                        }
+                        const cells = [].slice.call(row.querySelectorAll('th, td'));
+                        if(cells[0].classList.contains('summary-header')){
+                            return;
+                        }
+                        var draggingColumnIndex = index1;
+                        var endColumnIndex = index1 - 1;
+                        draggingColumnIndex > endColumnIndex
+                            ? cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
+                                  cells[draggingColumnIndex],
+                                  cells[endColumnIndex]
+                              )
+                            : cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
+                                  cells[draggingColumnIndex],
+                                  cells[endColumnIndex].nextSibling
+                              );
+                        cells[draggingColumnIndex].style.backgroundColor= "#cbdcc2";
                 });
+                */
                 SwapList(index1 - 1, index1 - 2);
                 SwapHeader(index1, index1 - 1);
                 ResetOrder();
@@ -1462,17 +1447,17 @@ namespace Core.Components
                 var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
                 var gridPolicy = BasicHeader.Where(x => x.ComponentType == nameof(Number) && x.FieldName != header.FieldName).ToList();
                 var sum = gridPolicy.Select(x => $"FORMAT(SUM(isnull([{GuiInfo.RefName}].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
-                var submitEntity = GuiInfo.PreQuery;
-                if (_preQueryFn != null)
+                var pre = GuiInfo.PreQuery;
+                if (pre != null && Utils.IsFunction(pre, out Function fn))
                 {
-                    submitEntity = (string)_preQueryFn.Call(null, this);
+                    pre = fn.Call(this, this, EditForm).ToString();
                 }
                 var dataSet = await new Client(GuiInfo.RefName).PostAsync<object[][]>(sum.Combine(), $"ViewSumary?group={header.FieldName}" +
                     $"&tablename={GuiInfo.RefName}" +
                     $"&refname={header.RefName}" +
                     $"&formatsumary={GuiInfo.FormatSumaryField}" +
                     $"&sql={Sql}&orderby={GuiInfo.OrderBySumary}" +
-                    $"&where={stringWh} {(submitEntity.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {submitEntity}")}");
+                    $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {pre}")}");
                 var sumarys = dataSet[0];
                 object[] refn = null;
                 if (dataSet.Length > 1)
@@ -2233,13 +2218,14 @@ namespace Core.Components
                         return;
                     }
 
-                    Html.Instance.Th.DataAttr("order", header.PostOrder).ColSpan(headers.Count(x => x.GroupName == header.GroupName)).IHtml(header.GroupName).Render();
+                    Html.Instance.Th.Render();
+                    Html.Instance.ColSpan(headers.Count(x => x.GroupName == header.GroupName));
+                    Html.Instance.IHtml(header.GroupName).Render();
                     return;
                 }
                 Html.Instance.Th
                     .TabIndex(-1)
                     .DataAttr("field", header.FieldName)
-                    .DataAttr("order", header.PostOrder)
                     .DataAttr("id", header.Id).Width(header.AutoFit ? "auto" : header.Width)
                     .Style($"{header.Style};min-width: {header.MinWidth}; max-width: {header.MaxWidth}")
                     .TextAlign(TextAlign.center)

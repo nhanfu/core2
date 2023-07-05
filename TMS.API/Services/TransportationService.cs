@@ -663,6 +663,12 @@ begin
 							join Location re on t.ReceivedId = re.Id
 							where t.Id = {Id};
 end
+if(@startDate1 is null and @startDate is null)
+begin
+							update Transportation set ClosingUnitPrice = null
+							from Transportation t
+							where t.Id = {Id};
+end
                         ";
             }
             else
@@ -772,6 +778,12 @@ begin
 								and StartDate <= t.ReturnDate order by StartDate desc)
 							from Transportation t
 							join Location re on t.ReturnId = re.Id
+							where t.Id = {Id};
+end
+if(@startDate6 is null and @startDate5 is null)
+begin
+							update Transportation set ReturnUnitPrice = null
+							from Transportation t
 							where t.Id = {Id};
 end
                         ";
