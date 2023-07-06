@@ -16,6 +16,7 @@ namespace Core.Components
     public class ListViewSearchVM
     {
         public string SearchTerm { get; set; }
+        public string FullTextSearch { get; set; }
         public string ScanTerm { get; set; }
         public DateTime? StartDate { get; set; }
         public int? DateTimeField { get; set; }
@@ -25,6 +26,7 @@ namespace Core.Components
     public class ListViewSearch : EditableComponent
     {
         private HTMLInputElement _uploader;
+        private HTMLInputElement _fullTextSearch;
         public ListViewSearchVM EntityVM => Entity as ListViewSearchVM;
         public string DateTimeField { get; set; }
         private ListView ParentListView
@@ -139,6 +141,21 @@ namespace Core.Components
                 txtSearch.UserInput = null;
                 AddChild(txtSearch);
             }
+            var txtFullTextSearch = new Textbox(new Component
+            {
+                FieldName = nameof(ListViewSearchVM.FullTextSearch),
+                Visibility = true,
+                Label = "Lọc hiển thị",
+                PlainText = "Lọc hiển thị",
+                ShowLabel = false,
+            })
+            {
+                ParentElement = Element
+            };
+            txtFullTextSearch.UserInput = null;
+            AddChild(txtFullTextSearch);
+            _fullTextSearch = txtFullTextSearch.Input;
+            _fullTextSearch.AddEventListener(EventType.Input, ParentGridView.FullTextSearch);
             if (GuiInfo.UpperCase)
             {
                 var txtScan = new Textbox(new Component

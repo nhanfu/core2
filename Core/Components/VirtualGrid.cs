@@ -218,9 +218,9 @@ namespace Core.Components
         {
             var existTopEle = tbody.Children.FirstOrDefault(x => x.GetAttribute(VirtualRow) == Direction.top.ToString());
             var topVirtualRow = existTopEle ?? Document.CreateElement(ElementType.tr.ToString());
-            if (!topVirtualRow.HasClass("demo"))
+            if (!topVirtualRow.HasClass("virtual-row"))
             {
-                topVirtualRow.AddClass("demo");
+                topVirtualRow.AddClass("virtual-row");
                 for (int i = 0; i < Header.Count; i++)
                 {
                     topVirtualRow.AppendChild(Document.CreateElement(ElementType.td.ToString()));
@@ -232,9 +232,9 @@ namespace Core.Components
 
             var existBottomEle = tbody.Children.LastOrDefault(x => x.GetAttribute(VirtualRow) == Direction.bottom.ToString());
             var bottomVirtualRow = existBottomEle ?? Document.CreateElement(ElementType.tr.ToString());
-            if (!bottomVirtualRow.HasClass("demo"))
+            if (!bottomVirtualRow.HasClass("virtual-row"))
             {
-                bottomVirtualRow.AddClass("demo");
+                bottomVirtualRow.AddClass("virtual-row");
                 for (int i = 0; i < Header.Count; i++)
                 {
                     bottomVirtualRow.AppendChild(Document.CreateElement(ElementType.td.ToString()));

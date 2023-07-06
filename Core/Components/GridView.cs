@@ -1,4 +1,5 @@
-﻿using Bridge.Html5;
+﻿using Bridge;
+using Bridge.Html5;
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
@@ -801,6 +802,48 @@ namespace Core.Components
                 {
                     var cellText = cells[j].TextContent;
                     if (cellText.ToLowerCase().IndexOf(input.Value.ToLowerCase()) > -1)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                {
+                    rows[i].RemoveClass("d-none");
+                }
+                else
+                {
+                    rows[i].AddClass("d-none");
+                }
+            }
+        }
+
+        public void FullTextSearch()
+        {
+            var table = DataTable as HTMLTableElement;
+            var rows = table.TBodies.LastOrDefault().Children;
+            for (var i = 0; i < rows.Length; i++)
+            {
+                if (rows[i].HasClass("virtual-row"))
+                {
+                    continue;
+                }
+                var cells = rows[i].ChildNodes;
+                var found = false;
+                for (var j = 0; j < cells.Length; j++)
+                {
+                    var htmlElement = cells[j] as HTMLElement;
+                    var cellText = string.Empty;
+                    var input = htmlElement.QuerySelector("input:first-child");
+                    if (input != null)
+                    {
+                        cellText = input.GetPropValue("value").ToString();
+                    }
+                    else
+                    {
+                        cellText = cells[j].TextContent is null ? "" : cells[j].TextContent;
+                    }
+                    if (cellText.DecodeSpecialChar().ToLowerCase().IndexOf(ListViewSearch.EntityVM.FullTextSearch.ToLowerCase().DecodeSpecialChar()) > -1)
                     {
                         found = true;
                         break;
