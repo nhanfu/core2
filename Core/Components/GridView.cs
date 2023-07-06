@@ -833,35 +833,46 @@ namespace Core.Components
             var dataType = th.GetAttribute("data-sort-type");
             /*@
               var rows = Array.from(tbody.children);
-              rows.sort(function(rowA, rowB) {
+              rows.sort(function(rowA, rowB)
+              {
                 var cellA = rowA.getElementsByTagName('td')[columnIndex];
                 var cellB = rowB.getElementsByTagName('td')[columnIndex];
                 var valueA = cellA.textContent || cellA.innerText;
                 var valueB = cellB.textContent || cellB.innerText;
                 
-                if (dataType === 'number') {
-                  if (valueA === null || valueA === undefined || valueA === '') {
+                if (dataType === 'number')
+                {
+                  if (valueA === null || valueA === undefined || valueA === '')
+                  {
                       valueA = '0';
                   }
-                  if (valueB === null || valueB === undefined || valueB === '') {
+                  if (valueB === null || valueB === undefined || valueB === '')
+                  {
                       valueB = '0';
                   }
                   valueA = parseFloat(valueA.replaceAll(',', ''));
                   valueB = parseFloat(valueB.replaceAll(',', ''));
-                } else if (dataType === 'date') 
+                }
+                else if (dataType === 'date') 
                 {
+                  valueA = cellA.getAttribute('data-value');
+                  valueB = cellB.getAttribute('data-value');
                   valueA = new Date(valueA);
                   valueB = new Date(valueB);
                 }
-                if (valueA < valueB) {
+                if (valueA < valueB) 
+                {
                   return sortOrder === 'asc' ? -1 : 1;
-                } else if (valueA > valueB) {
+                } else if (valueA > valueB)
+                {
                   return sortOrder === 'asc' ? 1 : -1;
-                } else {
+                } else 
+                {
                   return 0;
                 }
               });
-              rows.forEach(function(row) {
+              rows.forEach(function(row)
+              {
                 tbody.appendChild(row);
               });
             */
@@ -1528,6 +1539,7 @@ namespace Core.Components
                     item[header.FieldName] = item[header.FieldName] ?? "";
                     var dataHeader = item[header.FieldName].ToString();
                     var value = string.Empty;
+                    var actValue = string.Empty;
                     var valueText = string.Empty;
                     if (header.ComponentType == "Dropdown")
                     {
@@ -1549,6 +1561,7 @@ namespace Core.Components
                         dataHeader = datetime?.ToString("dd/MM/yyyy");
                         value = datetime?.ToString("dd/MM/yyyy");
                         valueText = datetime?.ToString("dd/MM/yyyy");
+                        actValue = datetime.ToString();
                     }
                     else if (header.ComponentType == nameof(Number))
                     {
@@ -1563,7 +1576,7 @@ namespace Core.Components
                         valueText = item[header.FieldName].ToString();
                     }
                     Html.Instance.TRow.Event(EventType.DblClick, () => FilterSumary(header, value, valueText)).Event(EventType.Click, (e) => FocusCell(e, this.HeaderComponentMap[header.GetHashCode()])).Render();
-                    Html.Instance.TData.Style("max-width: 100%;").ClassName(header.ComponentType == nameof(Number) ? "text-right" : "text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
+                    Html.Instance.TData.Style("max-width: 100%;").DataAttr("value", actValue).ClassName(header.ComponentType == nameof(Number) ? "text-right" : "text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
                     Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item["TotalRecord"].ToString()).End.Render();
                     foreach (var itemDetail in gridPolicy)
                     {
