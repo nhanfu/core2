@@ -1533,6 +1533,7 @@ namespace TMS.API.Models
                 entity.Property(e => e.FeeVatReturn2).HasColumnType("decimal(20, 5)");
 
                 entity.Property(e => e.FeeVatReturn3).HasColumnType("decimal(20, 5)");
+                entity.Property(e => e.COBVatNoInv).HasColumnType("decimal(20, 5)");
 
                 entity.Property(e => e.FreeText).HasMaxLength(250);
 

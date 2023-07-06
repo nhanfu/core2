@@ -498,7 +498,7 @@ namespace TMS.API.Services
 
                     update Transportation set ShipPrice =  ShipUnitPriceQuotation - isnull(ShipPolicyPrice,0)
                     from Transportation
-		            where Transportation.Id = {Id};";
+		            where Transportation.Id = {Id} and Transportation.LockShip = 0;";
         }
 
         public string Transportation_VendorLocation(PatchUpdate patchUpdate, int Id)

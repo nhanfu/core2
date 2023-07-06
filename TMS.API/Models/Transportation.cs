@@ -359,6 +359,7 @@ namespace TMS.API.Models
         public int? User2Id { get; set; }
         public int? Contact3Id { get; set; }
         public int? CombinationId { get; set; }
+        public decimal? COBVatNoInv { get; set; }
 
         public virtual ICollection<Expense> Expense { get; set; }
         public virtual ICollection<Revenue> Revenue { get; set; }
