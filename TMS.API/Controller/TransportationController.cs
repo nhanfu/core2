@@ -880,7 +880,7 @@ namespace TMS.API.Controllers
                     worksheet.Cell("Z" + start).SetValue(double.Parse(closingCombinationUnitPrice.ToString()) / 1.1);
                     worksheet.Cell("Z" + start).Style.NumberFormat.Format = "#,##";
 
-                    worksheet.Cell("AA" + start).SetValue((double.Parse(closingCombinationUnitPrice.ToString()) / 1.1) + (cOBVatNoInv / (1 + (10 / 100))) + sum);
+                    worksheet.Cell("AA" + start).SetValue((double.Parse(closingCombinationUnitPrice.ToString()) / 1.1) + (cOBVatNoInv - (cOBVatNoInv * 10 / 100)) + sum);
                     worksheet.Cell("AA" + start).Style.NumberFormat.Format = "#,##";
                 }
                 else
