@@ -508,23 +508,23 @@ namespace TMS.API.Controllers
             worksheet.Cell("A4").Style.Font.FontColor = XLColor.Red;
             worksheet.Cell("A4").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A4").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range("A4:AA4").Row(1).Merge();
+            worksheet.Range("A4:AB4").Row(1).Merge();
             worksheet.Cell("A5").Value = $"Kính gửi: Công Ty Cổ Phần Logistics Đông Á";
             worksheet.Cell("A5").Style.Font.Italic = true;
             worksheet.Cell("A5").Style.Font.Bold = true;
 
-            worksheet.Range("A6:AA6").Style.Fill.BackgroundColor = XLColor.LightGreen;
-            worksheet.Range("A7:AA7").Style.Fill.BackgroundColor = XLColor.LightGreen;
+            worksheet.Range("A6:AB6").Style.Fill.BackgroundColor = XLColor.LightGreen;
+            worksheet.Range("A7:AB7").Style.Fill.BackgroundColor = XLColor.LightGreen;
             worksheet.Row(6).Height = 30;
-            worksheet.Range("A6:AA6").Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Range("A6:AA6").Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Range("A6:AA6").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Range("A6:AA6").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A6:AB6").Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A6:AB6").Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A6:AB6").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A6:AB6").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             worksheet.Row(7).Height = 70;
-            worksheet.Range("A7:AA7").Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            worksheet.Range("A7:AA7").Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            worksheet.Range("A7:AA7").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Range("A7:AA7").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A7:AB7").Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A7:AB7").Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A7:AB7").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Range("A7:AB7").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             worksheet.Cell("A6").Value = $"STT";
             worksheet.Cell("A6").Style.Alignment.WrapText = true;
             worksheet.Cell("A6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -643,26 +643,33 @@ namespace TMS.API.Controllers
             worksheet.Cell("X6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("X6:Y7").Column(1).Merge();
 
-            worksheet.Cell("Y6").Value = $"Cước 8%";
+            worksheet.Cell("Y6").Value = $"Cước \r\nVC theo VAT hiện hành";
             worksheet.Cell("Y6").Style.Alignment.WrapText = true;
             worksheet.Cell("Y6").Style.Font.Bold = true;
             worksheet.Cell("Y6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("Y6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("Y6:Z7").Column(1).Merge();
 
-            worksheet.Cell("Z6").Value = $"Tổng Cước VC(theo thuế hiện hành";
-            worksheet.Cell("Z6").Style.Font.Bold = true;
+            worksheet.Cell("Z6").Value = $"Cước \r\nVC chưa bao gồm VAT";
             worksheet.Cell("Z6").Style.Alignment.WrapText = true;
+            worksheet.Cell("Z6").Style.Font.Bold = true;
             worksheet.Cell("Z6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("Z6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("Z6:AA7").Column(1).Merge();
 
-            worksheet.Cell("AA6").Value = $"Ghi chú";
-            worksheet.Cell("AA6").Style.Alignment.WrapText = true;
+            worksheet.Cell("AA6").Value = $"Tổng \r\nCước VC chưa VAT \r\n+ CP phát sinh và Thu/ Chi hộ";
             worksheet.Cell("AA6").Style.Font.Bold = true;
+            worksheet.Cell("AA6").Style.Alignment.WrapText = true;
             worksheet.Cell("AA6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("AA6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             worksheet.Range("AA6:AB7").Column(1).Merge();
+
+            worksheet.Cell("AB6").Value = $"Ghi chú";
+            worksheet.Cell("AB6").Style.Alignment.WrapText = true;
+            worksheet.Cell("AB6").Style.Font.Bold = true;
+            worksheet.Cell("AB6").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("AB6").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range("AB6:AC7").Column(1).Merge();
 
             worksheet.Cell("M7").Value = $"HĐ xuất cho ĐA (phí cân ở cảng, hạ ngoài)";
             worksheet.Cell("M7").Style.Alignment.WrapText = true;
@@ -682,7 +689,7 @@ namespace TMS.API.Controllers
             worksheet.Cell("O7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("O7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            worksheet.Cell("P7").Value = $"Bốc xếp";
+            worksheet.Cell("P7").Value = $"Bốc xếp, cân";
             worksheet.Cell("P7").Style.Alignment.WrapText = true;
             worksheet.Cell("P7").Style.Font.Bold = true;
             worksheet.Cell("P7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -700,7 +707,7 @@ namespace TMS.API.Controllers
             worksheet.Cell("R7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("R7").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            worksheet.Cell("S7").Value = $"Neo xe/Cân";
+            worksheet.Cell("S7").Value = $"Neo xe";
             worksheet.Cell("S7").Style.Alignment.WrapText = true;
             worksheet.Cell("S7").Style.Font.Bold = true;
             worksheet.Cell("S7").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -773,6 +780,7 @@ namespace TMS.API.Controllers
                 worksheet.Cell("F" + start).SetValue(item["Cont20"] is null ? default(decimal) : decimal.Parse(item["Cont20"].ToString()));
                 worksheet.Cell("G" + start).SetValue(item["Cont40"] is null ? default(decimal) : decimal.Parse(item["Cont40"].ToString()));
                 worksheet.Cell("H" + start).SetValue(item["Received"] is null ? null : item["Received"].ToString().DecodeSpecialChar());
+                var cOBVatNoInv = double.Parse(item["COBVatNoInv"] is null ? "0" : item["COBVatNoInv"].ToString());
                 var pick = item["PickupEmpty"];
                 worksheet.Cell("I" + start).SetValue(pick is null ? null : pick.ToString().DecodeSpecialChar());
                 if (bool.Parse(item["IsEmptyLift"].ToString())
@@ -802,14 +810,14 @@ namespace TMS.API.Controllers
                     : (item["ReturnClosingFee"] is null ? default(decimal) : decimal.Parse(item["ReturnClosingFee"].ToString())));
                 worksheet.Cell("L" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("M" + start).SetValue(transportation.TypeId == 1 ? (item["CollectOnBehaftInvoinceNoFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()))
+                worksheet.Cell("M" + start).SetValue(transportation.TypeId == 1 ? (item["CollectOnBehaftInvoinceNoFee"] is null ? default(double) : double.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()) - cOBVatNoInv)
                     : (item["FeeVatReturn"] is null ? default(decimal) : decimal.Parse(item["FeeVatReturn"].ToString())));
                 worksheet.Cell("M" + start).Style.NumberFormat.Format = "#,##";
 
                 worksheet.Cell("N" + start).SetValue(default(decimal));
                 worksheet.Cell("N" + start).Style.NumberFormat.Format = "#,##";
 
-                worksheet.Cell("O" + start).SetValue(default(decimal));
+                worksheet.Cell("O" + start).SetValue(cOBVatNoInv);
                 worksheet.Cell("O" + start).Style.NumberFormat.Format = "#,##";
 
                 worksheet.Cell("P" + start).SetValue(transportation.TypeId == 1 ? (item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()))
@@ -851,8 +859,8 @@ namespace TMS.API.Controllers
 
                     worksheet.Cell("W" + start).Style.NumberFormat.Format = "#,##";
 
-                    var closingCombinationUnitPrice = item["ClosingCombinationUnitPrice"] is null ? null : item["ClosingCombinationUnitPrice"].ToString();
-                    var closingCombinationUnitPriceUpload = item["TotalPriceAfterTaxUpload"] is null ? null : item["TotalPriceAfterTaxUpload"].ToString();
+                    var closingCombinationUnitPrice = item["ClosingCombinationUnitPrice"] is null ? "0" : item["ClosingCombinationUnitPrice"].ToString();
+                    var closingCombinationUnitPriceUpload = item["TotalPriceAfterTaxUpload"] is null ? "0" : item["TotalPriceAfterTaxUpload"].ToString();
 
                     worksheet.Cell("X" + start).SetValue(closingCombinationUnitPrice is null ? default(decimal) : decimal.Parse(closingCombinationUnitPrice.ToString()));
                     worksheet.Cell("X" + start).Style.NumberFormat.Format = "#,##";
@@ -860,13 +868,20 @@ namespace TMS.API.Controllers
                     {
                         worksheet.Cell("X" + start).Style.Font.FontColor = XLColor.Red;
                     }
+                    var sum = (item["LiftFee"] is null ? default(double) : double.Parse(item["LiftFee"].ToString()))
+                        + (item["LandingFee"] is null ? default(double) : double.Parse(item["LandingFee"].ToString()))
+                        + (item["CollectOnBehaftInvoinceNoFee"] is null ? default(double) : double.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()))
+                        + (item["CollectOnBehaftFee"] is null ? default(double) : double.Parse(item["CollectOnBehaftFee"].ToString()))
+                        - cOBVatNoInv;
+                    var vat = (double.Parse(closingCombinationUnitPrice.ToString()) / 1.1) + (double.Parse(closingCombinationUnitPrice.ToString()) / 1.1) * 10 / 100;
+                    worksheet.Cell("Y" + start).SetValue(vat);
+                    worksheet.Cell("Y" + start).Style.NumberFormat.Format = "#,##";
 
-                    var sum = (item["LiftFee"] is null ? default(decimal) : decimal.Parse(item["LiftFee"].ToString()))
-                        + (closingCombinationUnitPrice is null ? default(decimal) : decimal.Parse(closingCombinationUnitPrice.ToString()))
-                        + (item["LandingFee"] is null ? default(decimal) : decimal.Parse(item["LandingFee"].ToString()))
-                        + (item["CollectOnBehaftInvoinceNoFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftInvoinceNoFee"].ToString()))
-                        + (item["CollectOnBehaftFee"] is null ? default(decimal) : decimal.Parse(item["CollectOnBehaftFee"].ToString()));
-                    worksheet.Cell("Z" + start).SetValue(sum);
+                    worksheet.Cell("Z" + start).SetValue(double.Parse(closingCombinationUnitPrice.ToString()) / 1.1);
+                    worksheet.Cell("Z" + start).Style.NumberFormat.Format = "#,##";
+
+                    worksheet.Cell("AA" + start).SetValue((double.Parse(closingCombinationUnitPrice.ToString()) / 1.1) + (cOBVatNoInv / (1 + (10 / 100))) + sum);
+                    worksheet.Cell("AA" + start).Style.NumberFormat.Format = "#,##";
                 }
                 else
                 {
@@ -892,7 +907,8 @@ namespace TMS.API.Controllers
             }
             var tt = 8 + data[0].Count;
             worksheet.Row(tt).Style.Fill.BackgroundColor = XLColor.LightGreen;
-            worksheet.Cell("A" + tt).Value = $"Tổng cộng";
+            worksheet.Cell("A" + tt).Value = $"";
+            worksheet.Cell("B" + tt).Value = $"Tổng cộng";
             worksheet.Cell("F" + tt).Value = data[0].Sum(item => item["Cont20"] is null ? default(decimal) : decimal.Parse(item["Cont20"].ToString()));
             worksheet.Cell("F" + tt).Style.NumberFormat.Format = "#,##";
             worksheet.Cell("F" + tt).Style.Font.Bold = true;
@@ -936,7 +952,7 @@ namespace TMS.API.Controllers
             worksheet.Cell("A" + tt).Style.Alignment.WrapText = true;
             worksheet.Cell("A" + tt).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             worksheet.Cell("A" + tt).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            worksheet.Range($"A{tt}:E{tt}").Row(1).Merge();
+            worksheet.Range($"B{tt}:E{tt}").Row(1).Merge();
             worksheet.Column(2).AdjustToContents();
             worksheet.Column(4).AdjustToContents();
             worksheet.Column(11).AdjustToContents();
@@ -944,7 +960,7 @@ namespace TMS.API.Controllers
             worksheet.Column(16).AdjustToContents();
             worksheet.Column(24).AdjustToContents();
             worksheet.Column(26).AdjustToContents();
-            var url = $"BangKe{closing.Name}{transportation.FromDate.Value.ToString("dd-MM-yyyy")}Den{transportation.ToDate.Value.ToString("dd-MM-yyyy")}.xlsx";
+            var url = $"BangKe{closing.Name}{transportation.FromDate.Value.ToString("dd-MM-yyyy")}Den{transportation.ToDate.Value.ToString("dd-MM-yyyy")}{Guid.NewGuid()}.xlsx";
             workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
             return url;
         }
