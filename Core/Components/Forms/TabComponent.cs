@@ -111,7 +111,7 @@ namespace Core.Components.Forms
                 .A.ClassName("nav-link tab-default")
                 .I.ClassName(ComponentGroup.Icon ?? string.Empty).End
                 .IText(ComponentGroup.Label ?? ComponentGroup.Name)
-                .Span.ClassName("ml-1 badge badge-pill badge-warning");
+                .Span.ClassName("ml-1 badge badge-warning");
             BadgeElement = Html.Context;
             if (DisplayBadge)
             {
