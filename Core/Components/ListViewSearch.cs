@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Retyped;
 
 namespace Core.Components
 {
@@ -349,11 +350,11 @@ namespace Core.Components
             ctxMenu.Left = buttonRect.Left;
             ctxMenu.MenuItems = new List<ContextMenuItem>
             {
-                    new ContextMenuItem { Icon = "fa fa-search-plus", Text = "Nâng cao", Click = AdvancedSearch },
-                    new ContextMenuItem { Icon = "icon fa fa-line-columns", Text = show is null ? "Ẩn cột khép" : (!show.Value ? "Ẩn cột khép" : "Hiện cột khép"), Click = LiteGridView },
-                    new ContextMenuItem { Icon = "fa fa-cloud-upload-alt", Text = "Nhập excel", Click = OpenExcelFileDialog },
-                    new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất toàn bộ", Click = ExportAllData },
-                    new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất tùy chọn", Click = ExportCustomData },
+                    new ContextMenuItem { Icon = "fa fa-search-plus mr-1", Text = "Nâng cao", Click = AdvancedSearch },
+                    new ContextMenuItem { Icon = "fa fa-search mr-1", Text = "Lọc dữ liệu đã chọn", Click = FilterSelected },
+                    new ContextMenuItem { Icon = "fa fa-download mr-1", Text = "Excel toàn bộ", Click = ExportAllData },
+                    new ContextMenuItem { Icon = "fa fal fa-ballot-check mr-1", Text = "Excel đã chọn", Click = ExportSelectedData },
+                    new ContextMenuItem { Icon = "fa fa-download mr-1", Text = "Excel tùy chọn", Click = ExportCustomData },
             };
             ctxMenu.Render();
             Html.Take(Element).Form.Attr("method", "POST").Attr("enctype", "multipart/form-data")
@@ -361,6 +362,40 @@ namespace Core.Components
             _uploader = Html.Context as HTMLInputElement;
             _uploader.AddEventListener(EventType.Change.ToString(), async (ev) => await UploadCsv(ev));
             ctxMenu.Element.Children.FirstOrDefault()?.AppendChild(_uploader.ParentElement);
+        }
+
+        private void FilterSelected(object arg)
+        {
+            var selectedIds = ParentListView.SelectedIds;
+            if (selectedIds.Nothing())
+            {
+                Toast.Warning("Vui lòng chọn dòng cần lọc");
+                return;
+            }
+            Task.Run(async () =>
+            {
+                if (ParentListView.CellSelected.Any(x => x.FieldName == IdField))
+                {
+                    ParentListView.CellSelected.FirstOrDefault(x => x.FieldName == IdField).Value = selectedIds.Combine();
+                    ParentListView.CellSelected.FirstOrDefault(x => x.FieldName == IdField).ValueText = selectedIds.Combine();
+                }
+                else
+                {
+                    ParentListView.CellSelected.Add(new CellSelected()
+                    {
+                        FieldName = IdField,
+                        FieldText = "Mã",
+                        ComponentType = "Input",
+                        Value = selectedIds.Combine(),
+                        ValueText = selectedIds.Combine(),
+                        Operator = "in",
+                        OperatorText = "Chứa",
+                        Logic = LogicOperation.And,
+                    });
+                    ParentGridView._summarys.Add(new HTMLElement());
+                }
+                await ParentListView.ActionFilter();
+            });
         }
 
         private void LiteGridView(object arg)
@@ -468,6 +503,64 @@ namespace Core.Components
                     $"&sql={ParentListView.Sql}" +
                     $"&showNull={GuiInfo.ShowNull ?? false}" +
                     $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")}" +
+                    $"&custom=false&featureId={EditForm.Feature.Id}&orderby={finalFilter}");
+                Client.Download($"/excel/Download/{path}");
+                Toast.Success("Xuất file thành công");
+            });
+        }
+
+        private void ExportSelectedData(object arg)
+        {
+            var selectedIds = ParentListView.SelectedIds;
+            if (selectedIds.Nothing())
+            {
+                Toast.Warning("Vui lòng chọn dòng muốn xuất");
+                return;
+            }
+
+            Task.Run(async () =>
+            {
+                Toast.Success("Đang xuất excel");
+                var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"[{ParentListView.GuiInfo.RefName}].{orderby.Field.FieldName} {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
+                var finalFilter = string.Empty;
+                if (orderbyList.HasElement())
+                {
+                    finalFilter = orderbyList.Combine();
+                }
+                if (finalFilter.IsNullOrWhiteSpace())
+                {
+                    finalFilter = OdataExt.GetClausePart(ParentListView.FormattedDataSource, OdataExt.OrderByKeyword);
+                    if (finalFilter.Contains(","))
+                    {
+                        var k = finalFilter.Split(",").ToList();
+                        finalFilter = k.Select(x => $"[{ParentListView.GuiInfo.RefName}].{x}").Combine();
+                    }
+                    else
+                    {
+                        finalFilter = $"[{ParentListView.GuiInfo.RefName}].{finalFilter}";
+                    }
+                }
+                var filter = ParentListView.Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
+                var filter1 = ParentListView.Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
+                var wh = new List<string>();
+                if (!filter.IsNullOrWhiteSpace())
+                {
+                    wh.Add($"({filter})");
+                }
+                if (!filter1.IsNullOrWhiteSpace())
+                {
+                    wh.Add($"({filter1})");
+                }
+                var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
+                var pre = ParentListView.GuiInfo.PreQuery;
+                if (pre != null && Utils.IsFunction(pre, out Function fn))
+                {
+                    pre = fn.Call(this, this, EditForm).ToString();
+                }
+                var path = await new Client(GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}" +
+                    $"&sql={ParentListView.Sql}" +
+                    $"&showNull={GuiInfo.ShowNull ?? false}" +
+                    $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")} {$" and [{ParentListView.GuiInfo.RefName}].Id in ({selectedIds.Combine()})"}" +
                     $"&custom=false&featureId={EditForm.Feature.Id}&orderby={finalFilter}");
                 Client.Download($"/excel/Download/{path}");
                 Toast.Success("Xuất file thành công");
