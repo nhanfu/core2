@@ -13,6 +13,7 @@ namespace TMS.API.ModelACs
         public string City { get; set; }
         public int? AccountantId { get; set; }
         public int? ObjectId { get; set; }
+        public string ObjectName { get; set; }
         public string SwiftCode { get; set; }
         public int? AccountNo { get; set; }
         public string Notes { get; set; }

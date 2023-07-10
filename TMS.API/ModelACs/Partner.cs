@@ -15,7 +15,7 @@ namespace TMS.API.ModelACs
         public string Address { get; set; }
         public int? ParentId { get; set; }
         public string StaffName { get; set; }
-        public string PositionName { get; set; }
+        public int? PositionId { get; set; }
         public string ClassifyName { get; set; }
         public string BankNo { get; set; }
         public string BankName { get; set; }
@@ -25,6 +25,8 @@ namespace TMS.API.ModelACs
         public int? GroupSaleId { get; set; }
         public int? YearCreated { get; set; }
         public string Notes { get; set; }
+        public int? CountId { get; set; }
+        public int? StaffId { get; set; }
         public bool Active { get; set; }
         public DateTime InsertedDate { get; set; }
         public int InsertedBy { get; set; }

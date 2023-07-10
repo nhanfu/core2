@@ -22,6 +22,12 @@ namespace TMS.API.ModelACs
         public string BankName { get; set; }
         public string Note { get; set; }
         public int? CountId { get; set; }
+        public string CitizenIdentityNum { get; set; }
+        public DateTime? CitizenIdentityDate { get; set; }
+        public string CitizenIdentityAddress { get; set; }
+        public string ContractType { get; set; }
+        public string ContractNo { get; set; }
+        public int? UserId { get; set; }
         public bool Active { get; set; }
         public DateTime InsertedDate { get; set; }
         public int InsertedBy { get; set; }

@@ -16,8 +16,11 @@ namespace TMS.API.ModelACs
         {
         }
 
+        public virtual DbSet<AccountBook> AccountBook { get; set; }
+        public virtual DbSet<AccountBookDetails> AccountBookDetails { get; set; }
         public virtual DbSet<AccountingVoucher> AccountingVoucher { get; set; }
         public virtual DbSet<AccountingVoucherDetails> AccountingVoucherDetails { get; set; }
+        public virtual DbSet<AccountingVoucherDetailsService> AccountingVoucherDetailsService { get; set; }
         public virtual DbSet<AccountingVoucherDetailsSum> AccountingVoucherDetailsSum { get; set; }
         public virtual DbSet<Allotment> Allotment { get; set; }
         public virtual DbSet<ApprovalConfig> ApprovalConfig { get; set; }
@@ -28,12 +31,15 @@ namespace TMS.API.ModelACs
         public virtual DbSet<BrandShip> BrandShip { get; set; }
         public virtual DbSet<Chat> Chat { get; set; }
         public virtual DbSet<CheckFeeHistory> CheckFeeHistory { get; set; }
+        public virtual DbSet<ClosingEntrySettings> ClosingEntrySettings { get; set; }
         public virtual DbSet<CommodityValue> CommodityValue { get; set; }
         public virtual DbSet<Component> Component { get; set; }
         public virtual DbSet<ComponentGroup> ComponentGroup { get; set; }
         public virtual DbSet<Convertation> Convertation { get; set; }
         public virtual DbSet<DeleteHistory> DeleteHistory { get; set; }
         public virtual DbSet<Dictionary> Dictionary { get; set; }
+        public virtual DbSet<EmployeePayroll> EmployeePayroll { get; set; }
+        public virtual DbSet<EmployeePayrollHistory> EmployeePayrollHistory { get; set; }
         public virtual DbSet<Entity> Entity { get; set; }
         public virtual DbSet<EntityRef> EntityRef { get; set; }
         public virtual DbSet<ErrorLog> ErrorLog { get; set; }
@@ -54,6 +60,7 @@ namespace TMS.API.ModelACs
         public virtual DbSet<OriginAccountingVoucherDetails> OriginAccountingVoucherDetails { get; set; }
         public virtual DbSet<OriginAccountingVoucherDetailsSum> OriginAccountingVoucherDetailsSum { get; set; }
         public virtual DbSet<Partner> Partner { get; set; }
+        public virtual DbSet<PaymentHistory> PaymentHistory { get; set; }
         public virtual DbSet<Quotation> Quotation { get; set; }
         public virtual DbSet<QuotationExpense> QuotationExpense { get; set; }
         public virtual DbSet<QuotationExpenseRoute> QuotationExpenseRoute { get; set; }
@@ -63,6 +70,8 @@ namespace TMS.API.ModelACs
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<Route> Route { get; set; }
         public virtual DbSet<RouteUser> RouteUser { get; set; }
+        public virtual DbSet<SalaryFormulaSettingDetails> SalaryFormulaSettingDetails { get; set; }
+        public virtual DbSet<SalaryFormulaSettings> SalaryFormulaSettings { get; set; }
         public virtual DbSet<Sale> Sale { get; set; }
         public virtual DbSet<Services> Services { get; set; }
         public virtual DbSet<SettingPolicy> SettingPolicy { get; set; }
@@ -75,6 +84,8 @@ namespace TMS.API.ModelACs
         public virtual DbSet<Transportation> Transportation { get; set; }
         public virtual DbSet<TransportationContract> TransportationContract { get; set; }
         public virtual DbSet<TransportationPlan> TransportationPlan { get; set; }
+        public virtual DbSet<TrialBalance> TrialBalance { get; set; }
+        public virtual DbSet<TrialBalanceDetails> TrialBalanceDetails { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserClick> UserClick { get; set; }
         public virtual DbSet<UserLogin> UserLogin { get; set; }
@@ -89,6 +100,40 @@ namespace TMS.API.ModelACs
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<AccountBook>(entity =>
+            {
+                entity.Property(e => e.CreditAmount).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.CreditBalance).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.DebitAmount).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.DebitBalance).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Note).HasMaxLength(500);
+
+                entity.Property(e => e.VoucherNo).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<AccountBookDetails>(entity =>
+            {
+                entity.Property(e => e.CreditAmount).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.CreditBalance).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.DebitAmount).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.DebitBalance).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Note).HasMaxLength(500);
+
+                entity.Property(e => e.VATInvoiceNo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.VoucherNo).HasMaxLength(50);
+            });
+
             modelBuilder.Entity<AccountingVoucher>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
@@ -98,6 +143,8 @@ namespace TMS.API.ModelACs
                     .IsUnicode(false);
 
                 entity.Property(e => e.Address).HasMaxLength(250);
+
+                entity.Property(e => e.Address2).HasMaxLength(250);
 
                 entity.Property(e => e.AddressBank).HasMaxLength(250);
 
@@ -156,6 +203,10 @@ namespace TMS.API.ModelACs
                 entity.Property(e => e.TotalAmountBeforeTax).HasColumnType("decimal(20, 5)");
 
                 entity.Property(e => e.TotalAmountBeforeTaxCy).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.TotalAmountOwed).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.TotalAmountPaid).HasColumnType("decimal(20, 5)");
 
                 entity.Property(e => e.TotalAmountTax).HasColumnType("decimal(20, 5)");
 
@@ -220,6 +271,10 @@ namespace TMS.API.ModelACs
 
                 entity.Property(e => e.TotalAmountBeforeTaxCy).HasColumnType("decimal(20, 5)");
 
+                entity.Property(e => e.TotalAmountOwed).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.TotalAmountPaid).HasColumnType("decimal(20, 5)");
+
                 entity.Property(e => e.TotalAmountTax).HasColumnType("decimal(20, 5)");
 
                 entity.Property(e => e.TotalAmountTaxCy).HasColumnType("decimal(20, 5)");
@@ -236,6 +291,10 @@ namespace TMS.API.ModelACs
 
                 entity.Property(e => e.VatReduction).HasColumnType("decimal(20, 5)");
 
+                entity.Property(e => e.VoucherNo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Voyage)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -244,6 +303,14 @@ namespace TMS.API.ModelACs
                     .WithMany(p => p.AccountingVoucherDetails)
                     .HasForeignKey(d => d.AccountingVoucherId)
                     .HasConstraintName("FK_AccountingVoucherDetails_AccountingVoucher");
+            });
+
+            modelBuilder.Entity<AccountingVoucherDetailsService>(entity =>
+            {
+                entity.HasOne(d => d.AccountingVoucherDetails)
+                    .WithMany(p => p.AccountingVoucherDetailsService)
+                    .HasForeignKey(d => d.AccountingVoucherDetailsId)
+                    .HasConstraintName("FK_AccountingVoucherDetailsService_OriginAccountingVoucherDetails");
             });
 
             modelBuilder.Entity<AccountingVoucherDetailsSum>(entity =>
@@ -310,6 +377,8 @@ namespace TMS.API.ModelACs
                 entity.Property(e => e.Code).HasMaxLength(50);
 
                 entity.Property(e => e.Name).HasMaxLength(250);
+
+                entity.Property(e => e.ObjectName).HasMaxLength(250);
 
                 entity.Property(e => e.SwiftCode).HasMaxLength(50);
             });
@@ -592,6 +661,154 @@ namespace TMS.API.ModelACs
                 entity.Property(e => e.LangCode)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<EmployeePayroll>(entity =>
+            {
+                entity.Property(e => e.AccidentInsurance)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.AccidentInsuranceAbatement)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.AccountNum).HasMaxLength(50);
+
+                entity.Property(e => e.ActualSalary)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.AdvanceSalaryPay)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.ClothesAllowance)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Dependent).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.EMPCode).HasMaxLength(50);
+
+                entity.Property(e => e.EndMonthSalaryPay)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.FamilyCircumstanceDeductions)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.FoodAllowance)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.FullName).HasMaxLength(250);
+
+                entity.Property(e => e.HealthInsurance)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.HealthInsuranceAbatement)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.InsuranceDeduction)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.MonthText).HasMaxLength(50);
+
+                entity.Property(e => e.NumOfWorkdays).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.OrtherAllowance)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.OrtherDeduction)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.OrtherSalary)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.PersonalIncomeDeduction)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Salary)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.SalaryByNumOfWorkdays)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.SocialInsurance)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.SocialInsuranceAbatement)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.SocialInsuranceSalary)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TaxableIncome)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalAbatement)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalDeductions)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalInsurance)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalProvisioning)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalSalary)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.TotalUnionDues)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.UnionDues)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.UnionDuesAbatement)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.UnionDuesDeduction)
+                    .HasColumnType("decimal(20, 5)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.WorkdaysOfMonth).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.YearText).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<EmployeePayrollHistory>(entity =>
+            {
+                entity.Property(e => e.MonthText).HasMaxLength(50);
+
+                entity.Property(e => e.RecordIds).IsUnicode(false);
+
+                entity.Property(e => e.YearText).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Entity>(entity =>
@@ -1090,6 +1307,8 @@ namespace TMS.API.ModelACs
 
                 entity.Property(e => e.Address).HasMaxLength(250);
 
+                entity.Property(e => e.Address2).HasMaxLength(250);
+
                 entity.Property(e => e.AddressBank).HasMaxLength(250);
 
                 entity.Property(e => e.AdvanceNo).HasMaxLength(50);
@@ -1155,6 +1374,10 @@ namespace TMS.API.ModelACs
                 entity.Property(e => e.TotalAmountBeforeTax).HasColumnType("decimal(20, 5)");
 
                 entity.Property(e => e.TotalAmountBeforeTaxCy).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.TotalAmountOwed).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.TotalAmountPaid).HasColumnType("decimal(20, 5)");
 
                 entity.Property(e => e.TotalAmountTax).HasColumnType("decimal(20, 5)");
 
@@ -1233,6 +1456,10 @@ namespace TMS.API.ModelACs
 
                 entity.Property(e => e.TotalAmountBeforeTaxCy).HasColumnType("decimal(20, 5)");
 
+                entity.Property(e => e.TotalAmountOwed).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.TotalAmountPaid).HasColumnType("decimal(20, 5)");
+
                 entity.Property(e => e.TotalAmountTax).HasColumnType("decimal(20, 5)");
 
                 entity.Property(e => e.TotalAmountTaxCy).HasColumnType("decimal(20, 5)");
@@ -1256,6 +1483,10 @@ namespace TMS.API.ModelACs
                 entity.Property(e => e.Vat).HasColumnType("decimal(20, 5)");
 
                 entity.Property(e => e.VatReduction).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.VoucherNo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Voyage)
                     .HasMaxLength(50)
@@ -1315,11 +1546,16 @@ namespace TMS.API.ModelACs
                     .HasMaxLength(111)
                     .IsUnicode(false);
 
-                entity.Property(e => e.PositionName).HasMaxLength(250);
-
                 entity.Property(e => e.StaffName).HasMaxLength(250);
 
                 entity.Property(e => e.TaxCode).HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<PaymentHistory>(entity =>
+            {
+                entity.Property(e => e.TotalAmountOwed).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.TotalAmountPaid).HasColumnType("decimal(20, 5)");
             });
 
             modelBuilder.Entity<Quotation>(entity =>
@@ -1432,8 +1668,44 @@ namespace TMS.API.ModelACs
                 entity.Property(e => e.Used).HasColumnType("decimal(20, 5)");
             });
 
+            modelBuilder.Entity<SalaryFormulaSettingDetails>(entity =>
+            {
+                entity.Property(e => e.Deductions).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.FromValue).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.TaxRate).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.ToValue).HasColumnType("decimal(20, 5)");
+            });
+
+            modelBuilder.Entity<SalaryFormulaSettings>(entity =>
+            {
+                entity.Property(e => e.AccidentInsurance).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.AccidentInsuranceAbatement).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.DeductionsDependent).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.DeductionsIndividual).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.HealthInsurance).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.HealthInsuranceAbatement).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.SocialInsurance).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.SocialInsuranceAbatement).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.UnionDues).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.UnionDuesAbatement).HasColumnType("decimal(20, 5)");
+            });
+
             modelBuilder.Entity<Sale>(entity =>
             {
+                entity.Property(e => e.Code).HasMaxLength(250);
+
                 entity.Property(e => e.Name).HasMaxLength(250);
             });
 
@@ -1490,7 +1762,17 @@ namespace TMS.API.ModelACs
 
                 entity.Property(e => e.BankName).HasMaxLength(250);
 
+                entity.Property(e => e.CitizenIdentityAddress).HasMaxLength(250);
+
+                entity.Property(e => e.CitizenIdentityNum)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Code).HasMaxLength(250);
+
+                entity.Property(e => e.ContractNo).HasMaxLength(50);
+
+                entity.Property(e => e.ContractType).HasMaxLength(50);
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(50)
@@ -1960,6 +2242,38 @@ namespace TMS.API.ModelACs
                 entity.Property(e => e.RequestChangeNote).HasMaxLength(250);
 
                 entity.Property(e => e.ReturnNotes).HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<TrialBalance>(entity =>
+            {
+                entity.Property(e => e.CreditArisingAmount).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.CreditClosingBalance).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.CreditOpeningBalance).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.DebitArisingAmount).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.DebitClosingBalance).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.DebitOpeningBalance).HasColumnType("decimal(20, 5)");
+            });
+
+            modelBuilder.Entity<TrialBalanceDetails>(entity =>
+            {
+                entity.Property(e => e.CreditAmount).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.CreditBalance).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.DebitAmount).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.DebitBalance).HasColumnType("decimal(20, 5)");
+
+                entity.Property(e => e.Note).HasMaxLength(500);
+
+                entity.Property(e => e.VoucherNo).HasMaxLength(50);
+
+                entity.Property(e => e.VoucherNoName).HasMaxLength(50);
             });
 
             modelBuilder.Entity<User>(entity =>

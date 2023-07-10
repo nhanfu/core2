@@ -31,7 +31,7 @@ namespace TMS.API.ModelACs
         public int? Length { get; set; }
         public string Additional2 { get; set; }
         public int? ActId { get; set; }
-        public int? CurrencyId { get; set; }
+        public int? Count { get; set; }
 
         public virtual MasterData Parent { get; set; }
         public virtual ICollection<MasterData> InverseParent { get; set; }

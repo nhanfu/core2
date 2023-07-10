@@ -5,6 +5,11 @@ namespace TMS.API.ModelACs
 {
     public partial class OriginAccountingVoucherDetails
     {
+        public OriginAccountingVoucherDetails()
+        {
+            AccountingVoucherDetailsService = new HashSet<AccountingVoucherDetailsService>();
+        }
+
         public int Id { get; set; }
         public int? VoucherFormId { get; set; }
         public int? AccountingVoucherId { get; set; }
@@ -62,6 +67,12 @@ namespace TMS.API.ModelACs
         public decimal? StockQuantity { get; set; }
         public string LotNo { get; set; }
         public DateTime? LotDate { get; set; }
+        public int? TransportationId { get; set; }
+        public string VoucherNo { get; set; }
+        public DateTime? OriginRefDate { get; set; }
+        public int? FixedAssets { get; set; }
+        public decimal? TotalAmountOwed { get; set; }
+        public decimal? TotalAmountPaid { get; set; }
         public bool Active { get; set; }
         public DateTime InsertedDate { get; set; }
         public int InsertedBy { get; set; }
@@ -69,5 +80,6 @@ namespace TMS.API.ModelACs
         public int? UpdatedBy { get; set; }
 
         public virtual OriginAccountingVoucher AccountingVoucher { get; set; }
+        public virtual ICollection<AccountingVoucherDetailsService> AccountingVoucherDetailsService { get; set; }
     }
 }

@@ -22,6 +22,7 @@ namespace TMS.API.ModelACs
         public int? PayerId { get; set; }
         public int? DepartmentId { get; set; }
         public string Address { get; set; }
+        public string Address2 { get; set; }
         public string Reason { get; set; }
         public int? CashierId { get; set; }
         public DateTime? PaidDate { get; set; }
@@ -82,6 +83,10 @@ namespace TMS.API.ModelACs
         public decimal? FreightPrice { get; set; }
         public bool INVLockInsert { get; set; }
         public string AdvanceNo { get; set; }
+        public bool IsLocked { get; set; }
+        public bool IsTypeEInv { get; set; }
+        public decimal? TotalAmountOwed { get; set; }
+        public decimal? TotalAmountPaid { get; set; }
         public bool Active { get; set; }
         public DateTime InsertedDate { get; set; }
         public int InsertedBy { get; set; }

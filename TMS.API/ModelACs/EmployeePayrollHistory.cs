@@ -3,14 +3,13 @@ using System.Collections.Generic;
 
 namespace TMS.API.ModelACs
 {
-    public partial class Sale
+    public partial class EmployeePayrollHistory
     {
         public int Id { get; set; }
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public int? GroupId { get; set; }
-        public int? SaleId { get; set; }
-        public int? TotalCount { get; set; }
+        public string MonthText { get; set; }
+        public string YearText { get; set; }
+        public string RecordIds { get; set; }
+        public int? StatusId { get; set; }
         public bool Active { get; set; }
         public DateTime InsertedDate { get; set; }
         public int InsertedBy { get; set; }

@@ -53,6 +53,12 @@ namespace TMS.API.ModelACs
         public decimal? StockQuantity { get; set; }
         public string LotNo { get; set; }
         public DateTime? LotDate { get; set; }
+        public int? TransportationId { get; set; }
+        public string VoucherNo { get; set; }
+        public DateTime? OriginRefDate { get; set; }
+        public int? FixedAssets { get; set; }
+        public decimal? TotalAmountOwed { get; set; }
+        public decimal? TotalAmountPaid { get; set; }
         public bool Active { get; set; }
         public DateTime InsertedDate { get; set; }
         public int InsertedBy { get; set; }
