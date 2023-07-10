@@ -67,6 +67,9 @@
     <Compile Include="..\TMS.API\ModelACs\AccountingVoucherDetails.cs">
       <Link>ModelACs\AccountingVoucherDetails.cs</Link>
     </Compile>
+    <Compile Include="..\TMS.API\ModelACs\AccountingVoucherDetailsService.cs">
+      <Link>ModelACs\AccountingVoucherDetailsService.cs</Link>
+    </Compile>
     <Compile Include="..\TMS.API\ModelACs\AccountingVoucherDetailsSum.cs">
       <Link>ModelACs\AccountingVoucherDetailsSum.cs</Link>
     </Compile>
