@@ -79,6 +79,7 @@ namespace Core.Models
         public int? Row { get; set; }
         public bool FilterEq { get; set; }
         public string DatabaseName { get; set; }
+        public bool AddDate { get; set; }
 
         public virtual Entity Entity { get; set; }
         public virtual Feature Feature { get; set; }

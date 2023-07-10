@@ -644,7 +644,9 @@ namespace Core.Components
                 var operators = headers.Select(x => x.MapToFilterOperator(searchTerm)).Where(x => x.HasAnyChar());
                 finalFilter = string.Join(" or ", operators);
             }
-            if (EntityVM.StartDate != null)
+            var basicsAddDate = ParentGridView.BasicHeader.Where(x => x.AddDate).Select(x => x.Id).ToArray();
+            var parentGrid = basicsAddDate.Any() && ParentGridView.AdvSearchVM.Conditions.Any(x => basicsAddDate.Contains(x.FieldId) && !x.Value.IsNullOrWhiteSpace());
+            if (!parentGrid && EntityVM.StartDate != null)
             {
                 if (finalFilter.HasAnyChar())
                 {
@@ -667,7 +669,7 @@ namespace Core.Components
                 finalFilter += $"cast({DateTimeField},Edm.DateTimeOffset) ge cast({EntityVM.StartDate.Value.ToISOFormat()},Edm.DateTimeOffset)";
                 LocalStorage.SetItem("FromDate" + ParentListView.GuiInfo.Id, EntityVM.StartDate.Value.ToString("MM/dd/yyyy"));
             }
-            else
+            else if (EntityVM.StartDate is null)
             {
                 var check = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] >="));
                 if (ParentListView.Wheres.Any() && check != null)
@@ -676,7 +678,7 @@ namespace Core.Components
                 }
                 LocalStorage.RemoveItem("FromDate" + ParentListView.GuiInfo.Id);
             }
-            if (EntityVM.EndDate != null)
+            if (!parentGrid && EntityVM.EndDate != null)
             {
                 if (finalFilter.HasAnyChar())
                 {
@@ -699,7 +701,7 @@ namespace Core.Components
                 finalFilter += $"cast({DateTimeField},Edm.DateTimeOffset) lt cast({endDate.ToISOFormat()},Edm.DateTimeOffset)";
                 LocalStorage.SetItem("ToDate" + ParentListView.GuiInfo.Id, EntityVM.EndDate.Value.ToString("MM/dd/yyyy"));
             }
-            else
+            else if (EntityVM.EndDate is null)
             {
                 var check1 = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <"));
                 if (ParentListView.Wheres.Any() && check1 != null)
