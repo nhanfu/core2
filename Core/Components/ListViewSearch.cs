@@ -142,21 +142,25 @@ namespace Core.Components
                 txtSearch.UserInput = null;
                 AddChild(txtSearch);
             }
-            var txtFullTextSearch = new Textbox(new Component
+            if (GuiInfo.ComponentType != nameof(ListView))
             {
-                FieldName = nameof(ListViewSearchVM.FullTextSearch),
-                Visibility = true,
-                Label = "Lọc hiển thị",
-                PlainText = "Lọc hiển thị",
-                ShowLabel = false,
-            })
-            {
-                ParentElement = Element
-            };
-            txtFullTextSearch.UserInput = null;
-            AddChild(txtFullTextSearch);
-            _fullTextSearch = txtFullTextSearch.Input;
-            _fullTextSearch.AddEventListener(EventType.Input, ParentGridView.FullTextSearch);
+                var txtFullTextSearch = new Textbox(new Component
+                {
+                    FieldName = nameof(ListViewSearchVM.FullTextSearch),
+                    Visibility = true,
+                    Label = "Lọc hiển thị",
+                    PlainText = "Lọc hiển thị",
+                    ShowLabel = false,
+                })
+                {
+                    ParentElement = Element
+                };
+                txtFullTextSearch.UserInput = null;
+                AddChild(txtFullTextSearch);
+                _fullTextSearch = txtFullTextSearch.Input;
+                _fullTextSearch.AddEventListener(EventType.Input, ParentGridView.FullTextSearch);
+            }
+
             if (GuiInfo.UpperCase)
             {
                 var txtScan = new Textbox(new Component
