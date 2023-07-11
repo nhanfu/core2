@@ -498,6 +498,15 @@ namespace Core.Components
                 var dataSourceFilter = GuiInfo.DataSourceFilter;
                 MainSection.DisposeChildren();
                 await ApplyFilter(true);
+                if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.CanSearch)
+                {
+                    HeaderSection.Element.Focus();
+                }
+                if (GuiInfo.ComponentType == "Dropdown")
+                {
+                    var search = Parent as SearchEntry;
+                    search?._input.Focus();
+                }
                 return;
             }
             Spinner.AppendTo(DataTable);

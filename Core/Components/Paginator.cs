@@ -99,7 +99,7 @@ namespace Core.Components
 
         private void ReloadListView()
         {
-            Task.Run(() =>(Parent as ListView).ApplyFilter(true));
+            Task.Run(() =>(Parent as ListView).ActionFilter());
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)

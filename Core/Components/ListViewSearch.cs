@@ -648,8 +648,8 @@ namespace Core.Components
                 var operators = headers.Select(x => x.MapToFilterOperator(searchTerm)).Where(x => x.HasAnyChar());
                 finalFilter = string.Join(" or ", operators);
             }
-            var basicsAddDate = ParentGridView.BasicHeader.Where(x => x.AddDate).Select(x => x.Id).ToArray();
-            var parentGrid = basicsAddDate.Any() && ParentGridView.AdvSearchVM.Conditions.Any(x => basicsAddDate.Contains(x.FieldId) && !x.Value.IsNullOrWhiteSpace());
+            var basicsAddDate = ParentGridView.BasicHeader?.Where(x => x.AddDate)?.Select(x => x.Id)?.ToArray();
+            var parentGrid = basicsAddDate != null && basicsAddDate.Any() && ParentGridView.AdvSearchVM.Conditions.Any(x => basicsAddDate.Contains(x.FieldId) && !x.Value.IsNullOrWhiteSpace());
             if (!parentGrid && EntityVM.StartDate != null)
             {
                 if (finalFilter.HasAnyChar())

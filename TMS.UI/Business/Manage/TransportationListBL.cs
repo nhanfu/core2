@@ -63,6 +63,24 @@ namespace TMS.UI.Business.Manage
                 });
         }
 
+        public void ViewMap(object obj)
+        {
+            Task.Run(async () =>
+            {
+                var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
+                await this.OpenPopup(
+                featureName: "ViewMap Transportation",
+                factory: () =>
+                {
+                    var type = Type.GetType("TMS.UI.Business.Manage.ViewMapTransportationBL");
+                    var instance = Activator.CreateInstance(type) as PopupEditor;
+                    instance.Title = "Xem bản đồ kết hợp";
+                    instance.Entity = gridView.LastListViewItem.Entity;
+                    return instance;
+                });
+            });
+        }
+
         public virtual async Task CheckFee()
         {
             var routeIds = LocalStorage.GetItem<List<int>>("RouteCheckFeeClosing");
@@ -214,7 +232,7 @@ namespace TMS.UI.Business.Manage
             }
             var listContext1 = new List<ContextMenuItem>()
             {
-                new ContextMenuItem { Text = "Xem booking", Click = ViewBooking },
+                new ContextMenuItem { Text = "Xem bản đồ", Click = ViewMap },
                 new ContextMenuItem { Text = "Tách kế hoạch", Click = SplitTransportation },
                 new ContextMenuItem { Text = "Tải đính kèm", Click = DownLoadPackingList },
                 new ContextMenuItem { Text = "Tạo yêu cầu thay đổi", Click = CreateTransportationRequests },

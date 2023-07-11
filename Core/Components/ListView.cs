@@ -51,7 +51,7 @@ namespace Core.Components
         public Paginator Paginator { get; set; }
         public List<SortedField> SortedField { get; set; }
         public List<GridPolicy> Header { get; set; }
-        public List<GridPolicy> BasicHeader { get; set; }
+        public List<GridPolicy> BasicHeader { get; set; } = new List<GridPolicy>();
         public List<GridPolicy> BasicHeaderSearch { get; set; }
         public Dictionary<int, Component> HeaderComponentMap { get; set; }
         public ObservableList<object> RowData { get; set; }
@@ -141,7 +141,7 @@ namespace Core.Components
             {
                 Resolve(ui, ele);
             }
-            
+
             _rowHeight = GuiInfo.BodyItemHeight ?? 26;
             _theadTable = GuiInfo.HeaderHeight ?? 40;
             _tfooterTable = GuiInfo.FooterHeight ?? 35;

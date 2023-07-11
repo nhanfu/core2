@@ -522,6 +522,7 @@
     <Compile Include="Business\Manage\CheckFeeFormBL.cs" />
     <Compile Include="Business\Manage\ExtraInsuranceFeesRateBL.cs" />
     <Compile Include="Business\Manage\BossEditorMobileBL.cs" />
+    <Compile Include="Business\Manage\ViewMapTransportationBL.cs" />
     <Compile Include="Business\Manage\TransportationPlanChangeEditorMobileBL.cs" />
     <Compile Include="Business\Manage\RevenueRequestBL.cs" />
     <Compile Include="Business\Manage\TransportationReturnEditorBL.cs" />

@@ -436,7 +436,7 @@ namespace Core.Components
                     _gv.Entity = Entity;
                     _gv.ListViewSearch.EntityVM.SearchTerm = term;
                     _gv.ClearRowData();
-                    await _gv.ApplyFilter(true);
+                    await _gv.ActionFilter();
                     GridResultDomLoaded();
                     _isRendering = false;
                 });
@@ -546,6 +546,7 @@ namespace Core.Components
                 _gv.Element.Style.MaxWidth = "100%";
                 _gv.Element.Style.MinWidth = "calc(100% - 2rem)";
             }
+            FocusBackWithoutEvent();
         }
 
         private void FocusBackWithoutEvent()
