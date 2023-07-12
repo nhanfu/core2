@@ -599,7 +599,7 @@ begin
 							and LocationId = t.ReceivedId 
 							and StartDate <= t.ClosingDate order by StartDate desc)
 							from Transportation t
-							where t.Id = {Id};
+							where t.Id = {Id} and LockUnitPrice = 0;
 end
 if(@startDate < @startDate1 and @startDate is not null and @startDate1 is not null)
 begin
@@ -620,7 +620,7 @@ begin
 							and StartDate <= t.ClosingDate order by StartDate desc)
 							from Transportation t
 							join Location re on t.ReceivedId = re.Id
-							where t.Id = {Id};
+							where t.Id = {Id} and LockUnitPrice = 0;
 end
 if(@startDate is not null and @startDate1 is null)
 begin
@@ -640,7 +640,7 @@ begin
 							and LocationId = t.ReceivedId 
 							and StartDate <= t.ClosingDate order by StartDate desc)
 							from Transportation t
-							where t.Id = {Id};
+							where t.Id = {Id} and LockUnitPrice = 0;
 end
 if(@startDate1 is not null and @startDate is null)
 begin
@@ -661,13 +661,13 @@ begin
 							and StartDate <= t.ClosingDate order by StartDate desc)
 							from Transportation t
 							join Location re on t.ReceivedId = re.Id
-							where t.Id = {Id};
+							where t.Id = {Id} and LockUnitPrice = 0;
 end
 if(@startDate1 is null and @startDate is null)
 begin
 							update Transportation set ClosingUnitPrice = null
 							from Transportation t
-							where t.Id = {Id};
+							where t.Id = {Id} and LockUnitPrice = 0;
 end
                         ";
             }
@@ -713,7 +713,7 @@ select  @startDate5 = (select top 1 StartDate
 							and StartDate <= t.ReturnDate order by StartDate desc)
                         from Transportation t
 						join Location re on t.ReturnId = re.Id
-						where t.Id = {Id};
+						where t.Id = {Id}  and LockUnitPriceReturn = 0;
 if(@startDate5 >= @startDate6 and @startDate5 is not null and @startDate6 is not null)
 begin
 							update Transportation set ReturnUnitPrice = 
@@ -728,7 +728,7 @@ begin
 								and LocationId = t.ReturnId 
 								and StartDate <= t.ReturnDate order by StartDate desc)
 							from Transportation t
-							where t.Id = {Id};
+							where t.Id = {Id}  and LockUnitPriceReturn = 0;
 end
 if(@startDate5 < @startDate6 and @startDate5 is not null and @startDate6 is not null)
 begin
@@ -745,7 +745,7 @@ begin
 								and StartDate <= t.ReturnDate order by StartDate desc)
 							from Transportation t
 							join Location re on t.ReturnId = re.Id
-							where t.Id = {Id};
+							where t.Id = {Id}  and LockUnitPriceReturn = 0;
 end
 if(@startDate5 is not null and @startDate6 is null)
 begin
@@ -761,7 +761,7 @@ begin
 								and LocationId = t.ReturnId 
 								and StartDate <= t.ReturnDate order by StartDate desc)
 							from Transportation t
-							where t.Id = {Id};
+							where t.Id = {Id}  and LockUnitPriceReturn = 0;
 end
 if(@startDate6 is not null and @startDate5 is null)
 begin
@@ -778,13 +778,13 @@ begin
 								and StartDate <= t.ReturnDate order by StartDate desc)
 							from Transportation t
 							join Location re on t.ReturnId = re.Id
-							where t.Id = {Id};
+							where t.Id = {Id}  and LockUnitPriceReturn = 0;
 end
 if(@startDate6 is null and @startDate5 is null)
 begin
 							update Transportation set ReturnUnitPrice = null
 							from Transportation t
-							where t.Id = {Id};
+							where t.Id = {Id}  and LockUnitPriceReturn = 0;
 end
                         ";
             }

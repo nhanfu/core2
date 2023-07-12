@@ -360,6 +360,8 @@ namespace TMS.API.Models
         public int? Contact3Id { get; set; }
         public int? CombinationId { get; set; }
         public decimal? COBVatNoInv { get; set; }
+        public bool LockUnitPrice { get; set; }
+        public bool LockUnitPriceReturn { get; set; }
 
         public virtual ICollection<Expense> Expense { get; set; }
         public virtual ICollection<Revenue> Revenue { get; set; }
