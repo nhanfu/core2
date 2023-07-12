@@ -68,7 +68,7 @@ namespace TMS.UI.Business.Manage
             Task.Run(async () =>
             {
                 var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.RefName == nameof(Transportation));
-                await this.OpenPopup(
+                await gridView.OpenPopup(
                 featureName: "ViewMap Transportation",
                 factory: () =>
                 {

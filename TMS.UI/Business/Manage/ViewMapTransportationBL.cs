@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
-using static Retyped.googlemaps;
 using static Retyped.googlemaps.google.maps;
 
 namespace TMS.UI.Business.Manage
@@ -79,21 +78,21 @@ namespace TMS.UI.Business.Manage
                 mapTypeId = MapTypeId.ROADMAP
             });
             var infoWindowE = new InfoWindow();
-            infoWindowE.setContent($@"<ul style='margin: 0;padding: 0;'><li  style='text-align: left;'>Địa điểm: {received.Description}</li>
-                    <li  style='text-align: left;'>Số cont: {TransportationE.ContainerNo}</li>
-                    <li style='text-align: left;'>Loại cont: {(TransportationE["ContainerType"] is null ? "" : TransportationE["ContainerType"]["Description"])}</li>
-                    <li style='text-align: left;'>Mặt hàng: {(TransportationE["Commodity"] is null ? "" : TransportationE["Commodity"]["Description"])}</li>
-                    <li  style='text-align: left;'>SOC: {(TransportationE["Soc"] is null ? "" : TransportationE["Soc"]["Name"])}</li>
-                    <li  style='text-align: left;'>Hãng tàu: {(TransportationE["BrandShip"] is null ? "" : TransportationE["BrandShip"]["Name"])}</li>
-                    <li  style='text-align: left;'>Tên tàu: {(TransportationE["Ship"] is null ? "" : TransportationE["Ship"]["Name"])}</li>
-                    <li  style='text-align: left;'>Số chuyến: {TransportationE.Trip}</li>
-                    <li  style='text-align: left;'>Chủ hàng : {TransportationE.Note4}</li>
+            infoWindowE.setContent($@"<ul style='margin: 0;padding: 0;'><li  style='text-align: left;'>Địa điểm: {received.Description.DecodeSpecialChar()}</li>
+                    <li  style='text-align: left;'>Số cont: {TransportationE.ContainerNo.DecodeSpecialChar()}</li>
+                    <li style='text-align: left;'>Loại cont: {(TransportationE["ContainerType"] is null ? "" : TransportationE["ContainerType"]["Description"].ToString().DecodeSpecialChar())}</li>
+                    <li style='text-align: left;'>Mặt hàng: {(TransportationE["Commodity"] is null ? "" : TransportationE["Commodity"]["Description"].ToString().DecodeSpecialChar())}</li>
+                    <li  style='text-align: left;'>SOC: {(TransportationE["Soc"] is null ? "" : TransportationE["Soc"]["Name"].ToString().DecodeSpecialChar())}</li>
+                    <li  style='text-align: left;'>Hãng tàu: {(TransportationE["BrandShip"] is null ? "" : TransportationE["BrandShip"]["Name"].ToString().DecodeSpecialChar())}</li>
+                    <li  style='text-align: left;'>Tên tàu: {(TransportationE["Ship"] is null ? "" : TransportationE["Ship"]["Name"].ToString().DecodeSpecialChar())}</li>
+                    <li  style='text-align: left;'>Số chuyến: {TransportationE.Trip.DecodeSpecialChar()}</li>
+                    <li  style='text-align: left;'>Chủ hàng : {TransportationE.Note4.DecodeSpecialChar()}</li>
                     <li  style='text-align: left;'>Ngày đóng hàng : {TransportationE.ClosingDate:dd/MM/yyyy}</li></ul>");
             var marker1 = new Marker(new MarkerOptions
             {
                 position = new LatLng(lat, lng),
                 map = map,
-                icon = "/icons/Fcl.png",
+                icon = "/icons/from.png",
             });
             infoWindows.Add(infoWindowE);
             marker1.addListener("click", (e) =>
@@ -121,7 +120,7 @@ namespace TMS.UI.Business.Manage
                 {
                     position = new LatLng(re.Lat, re.Long),
                     map = map,
-                    icon = "/icons/TransportRequest.png"
+                    icon = "/icons/to.png"
                 });
                 marker.addListener("click", (e) =>
                 {
@@ -133,39 +132,50 @@ namespace TMS.UI.Business.Manage
                     {
                         inf.setMap(null);
                     }
+                    var directionsService = new DirectionsService();
                     var directionsRenderer = new DirectionsRenderer();
                     directionsRenderer.setMap(map);
-                    var directionsService = new DirectionsService();
-                    //var route = directionsRenderer.getDirections().routes[0];
-                    //var duration = route.legs[0].duration.text;
-                    var infoWindow = new InfoWindow();
-                    infoWindow.setContent($@"<ul style='margin: 0;padding: 0;'><li  style='text-align: left;'>Địa điểm: {re.Description.DecodeSpecialChar()}</li>
-                    <li style='text-align: left;'>Số cont: {tran.ContainerNo}</li>
-                    <li style='text-align: left;'>Loại cont: {(cont is null ? "" : cont.Description.DecodeSpecialChar())}</li>
-                    <li style='text-align: left;'>Mặt hàng: {(com is null ? "" : com.Description.DecodeSpecialChar())}</li>
-                    <li style='text-align: left;'>SOC: {(soc is null ? "" : soc.Name.DecodeSpecialChar())}</li>
-                    <li style='text-align: left;'>Hãng tàu: {(brs is null ? "" : brs.Name.DecodeSpecialChar())}</li>
-                    <li style='text-align: left;'>Tên tàu: {(ship is null ? "" : ship.Name.DecodeSpecialChar())}</li>
-                    <li style='text-align: left;'>Số chuyến: {tran.Trip}</li>
-                    <li style='text-align: left;'>Chủ hàng : {tran.Note4}</li>
-                    <li style='text-align: left;'>Đơn vị trả hàng : {(rev is null ? "" : rev.Name.DecodeSpecialChar())}</li>
-                    <li style='text-align: left;'>Ngày trả hàng : {tran.ReturnDate:dd/MM/yyyy}</li>
-                    <li style='text-align: left;'>Thời gian : </li></ul>");
-                    infoWindows.Add(infoWindow);
-                    /*@
-                     directionsService
-                    .route({
-                      origin: { lat: lat, lng: lng },
-                      destination: { lat: re.Lat, lng: re.Long },
-                      travelMode: 'DRIVING',
-                    })
-                    .then((response) => {
-                      directionsRenderer.setDirections(response);
-                    })
-                    .catch((e) => {});
-                     */
-                    directionsRenderers.Add(directionsRenderer);
-                    infoWindow.open(map, infoWindow);
+                    directionsRenderer.setOptions(new DirectionsRendererOptions()
+                    {
+                        suppressMarkers = true
+                    });
+                    var request = new DirectionsRequest
+                    {
+                        origin = new LatLng(lat, lng),
+                        destination = new LatLng(re.Lat, re.Long),
+                        travelMode = TravelMode.DRIVING,
+                        region = "VN",
+                        provideRouteAlternatives = true,
+                        avoidFerries = true
+                    };
+                    directionsService.route(request, (response, status) =>
+                    {
+                        if (status == DirectionsStatus.OK)
+                        {
+                            directionsRenderer.setDirections(response);
+                            var route = directionsRenderer.getDirections().routes[0];
+                            var duration = route.legs[0].duration.text;
+                            var infoWindow = new InfoWindow();
+                            infoWindow.setContent($@"<ul style='margin: 0;padding: 0;'><li  style='text-align: left;'>Địa điểm: {re.Description.DecodeSpecialChar()}</li>
+                            <li style='text-align: left;'>Số cont: {tran.ContainerNo.DecodeSpecialChar()}</li>
+                            <li style='text-align: left;'>Loại cont: {(cont is null ? "" : cont.Description.DecodeSpecialChar())}</li>
+                            <li style='text-align: left;'>Mặt hàng: {(com is null ? "" : com.Description.DecodeSpecialChar())}</li>
+                            <li style='text-align: left;'>SOC: {(soc is null ? "" : soc.Name.DecodeSpecialChar())}</li>
+                            <li style='text-align: left;'>Hãng tàu: {(brs is null ? "" : brs.Name.DecodeSpecialChar())}</li>
+                            <li style='text-align: left;'>Tên tàu: {(ship is null ? "" : ship.Name.DecodeSpecialChar())}</li>
+                            <li style='text-align: left;'>Số chuyến: {tran.Trip}</li>
+                            <li style='text-align: left;'>Chủ hàng : {tran.Note4.DecodeSpecialChar()}</li>
+                            <li style='text-align: left;'>Đơn vị trả hàng : {(rev is null ? "" : rev.Name.DecodeSpecialChar())}</li>
+                            <li style='text-align: left;'>Ngày trả hàng : {tran.ReturnDate:dd/MM/yyyy}</li>
+                            <li style='text-align: left;'>Thời gian : {duration}</li></ul>");
+                            directionsRenderers.Add(directionsRenderer);
+                            infoWindows.Add(infoWindow);
+                            infoWindow.open(map, marker);
+                        }
+                        else
+                        {
+                        }
+                    });
                 });
             });
         }
