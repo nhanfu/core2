@@ -226,6 +226,8 @@ namespace TMS.API
             statisticsService.ScheduleJob();
             var deleteDowloadService = new DeleteDowloadService(env);
             deleteDowloadService.ScheduleJob();
+            var killService = new KillService(configuration);
+            killService.ScheduleJob();
 #endif
             app.MapWebSocketManager("/task", serviceProvider.GetService<RealtimeService>());
             options.DefaultFileNames.Clear();
