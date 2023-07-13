@@ -44,7 +44,7 @@ namespace TMS.API.Controllers
             }
             if (patch.Changes.Any(x => x.Field == nameof(entity.BossId)
             || x.Field == nameof(entity.CommodityId)
-            || x.Field == nameof(entity.ContainerId)))
+            || x.Field == nameof(entity.ContainerId)) && entity.BossId != null && entity.CommodityId != null && entity.ContainerId != null)
             {
                 var commoditys = await db.MasterData.Where(x => x.Path.Contains(@"\7651\") && x.Description.Contains("Vỏ rỗng")).ToListAsync();
                 var bossChange = patch.Changes.Where(x => x.Field == nameof(CommodityValue.BossId)).FirstOrDefault();
@@ -82,6 +82,10 @@ namespace TMS.API.Controllers
                 {
                     throw new ApiException("Không được cập nhật thông tin khác ngoài GTHH") { StatusCode = HttpStatusCode.BadRequest };
                 }
+            }
+            if (entity.CreatedBy == null)
+            {
+                entity.CreatedBy = UserId;
             }
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
             {
