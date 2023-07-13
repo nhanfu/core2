@@ -1849,7 +1849,7 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and Active = 1";
             }
-            else if (RoleIds.Contains(25) || RoleIds.Contains(27) || RoleIds.Contains(22))
+            else if (RoleIds.Contains(25) || RoleIds.Contains(27))
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
             }
@@ -1877,7 +1877,7 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
             }
-            else if (RoleIds.Contains(25) || RoleIds.Contains(22))
+            else if (RoleIds.Contains(25))
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId} and TypeId = 25044))";
             }
