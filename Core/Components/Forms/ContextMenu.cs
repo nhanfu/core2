@@ -50,7 +50,7 @@ namespace Core.Components.Forms
                     _instance = new ContextMenu();
                     _instance.MenuItems.Clear();
                 }
-
+                _instance.PElement = null;
                 return _instance;
             }
         }
