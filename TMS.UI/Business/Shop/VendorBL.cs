@@ -1,17 +1,16 @@
-﻿using Core.Components.Extensions;
-using Core.Components.Forms;
-using System;
+﻿using Bridge.Html5;
 using Core.Clients;
-using System.Threading.Tasks;
-using TMS.API.Enums;
-using TMS.API.Models;
-using System.Linq;
 using Core.Components;
-using Core.Extensions;
-using Bridge.Html5;
-using Core.MVVM;
-using System.Collections.Generic;
+using Core.Components.Extensions;
+using Core.Components.Forms;
 using Core.Enums;
+using Core.Extensions;
+using Core.MVVM;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using TMS.API.Models;
 using VendorTypeEnum = TMS.API.Enums.VendorTypeEnum;
 
 namespace TMS.UI.Business.Shop
@@ -29,22 +28,6 @@ namespace TMS.UI.Business.Shop
                 Html.Take("Body").Form.Attr("method", "POST").Attr("enctype", "multipart/form-data")
                 .Display(false).Input.Event(EventType.Change, async (ev) => await SelectedExcel(ev)).Type("file").Id($"id_{GetHashCode()}").Attr("name", "fileImport").Attr("accept", ".xlsx");
                 _uploader = Html.Context as HTMLInputElement;
-            };
-        }
-
-        public virtual void CheckQuotationTransportation()
-        {
-            var gridView = this.FindActiveComponent<GridView>().FirstOrDefault(x => x.GuiInfo.FieldName == nameof(Transportation));
-            if (gridView is null)
-            {
-                return;
-            }
-            gridView.BodyContextMenuShow += () =>
-            {
-                ContextMenu.Instance.MenuItems = new List<ContextMenuItem>
-                {
-                    new ContextMenuItem { Icon = "fas fa-pen", Text = "Gộp khách hàng", Click = CompareCustomer},
-                };
             };
         }
 

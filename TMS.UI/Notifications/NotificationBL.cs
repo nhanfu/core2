@@ -649,20 +649,6 @@ namespace TMS.UI.Notifications
             {
                 element.QuerySelector(".text-danger").ReplaceClass("text-danger", "text-muted");
             }
-            if (notification.EntityId == Utils.GetEntity(nameof(TransportationPlan)).Id)
-            {
-                var entity = await new Client(nameof(TransportationPlan)).GetRawAsync(notification.RecordId.Value);
-                await this.OpenPopup(
-                featureName: "TransportationPlan Editor",
-                factory: () =>
-                {
-                    var type = Type.GetType("TMS.UI.Business.Manage.TransportationPlanEditorBL");
-                    var instance = Activator.CreateInstance(type) as PopupEditor;
-                    instance.Title = "Chỉnh sửa kế hoạch vận chuyển";
-                    instance.Entity = entity;
-                    return instance;
-                });
-            }
         }
 
         protected override void RemoveDOM()

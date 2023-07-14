@@ -7,9 +7,7 @@ namespace TMS.API.Models
     {
         public User()
         {
-            ErrorLog = new HashSet<ErrorLog>();
             UserRole = new HashSet<UserRole>();
-            UserRoute = new HashSet<UserRoute>();
         }
 
         public int Id { get; set; }
@@ -48,8 +46,6 @@ namespace TMS.API.Models
         public int? StateId { get; set; }
 
         public virtual Vendor Vendor { get; set; }
-        public virtual ICollection<ErrorLog> ErrorLog { get; set; }
         public virtual ICollection<UserRole> UserRole { get; set; }
-        public virtual ICollection<UserRoute> UserRoute { get; set; }
     }
 }

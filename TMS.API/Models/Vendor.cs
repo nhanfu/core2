@@ -7,11 +7,7 @@ namespace TMS.API.Models
     {
         public Vendor()
         {
-            ErrorLog = new HashSet<ErrorLog>();
             User = new HashSet<User>();
-            VendorContact = new HashSet<VendorContact>();
-            VendorLocation = new HashSet<VendorLocation>();
-            VendorService = new HashSet<VendorService>();
         }
 
         public int Id { get; set; }
@@ -68,10 +64,6 @@ namespace TMS.API.Models
         public string Notes { get; set; }
         public int? CountId { get; set; }
 
-        public virtual ICollection<ErrorLog> ErrorLog { get; set; }
         public virtual ICollection<User> User { get; set; }
-        public virtual ICollection<VendorContact> VendorContact { get; set; }
-        public virtual ICollection<VendorLocation> VendorLocation { get; set; }
-        public virtual ICollection<VendorService> VendorService { get; set; }
     }
 }

@@ -77,13 +77,6 @@ namespace TMS.API
                 options.EnableSensitiveDataLogging();
 #endif
             });
-            services.AddDbContext<API.ModelACs.ACContext>((serviceProvider, options) =>
-            {
-                options.UseSqlServer(_configuration.GetConnectionString($"DBAccountant"), x => x.EnableRetryOnFailure());
-#if DEBUG
-                options.EnableSensitiveDataLogging();
-#endif
-            });
             services.AddDbContext<LOGContext>((serviceProvider, options) =>
             {
                 options.UseSqlServer(_configuration.GetConnectionString($"Log"), x => x.EnableRetryOnFailure());
@@ -130,7 +123,6 @@ namespace TMS.API
             services.AddScoped<TaskService>();
             services.AddScoped<UserService>();
             services.AddScoped<VendorSvc>();
-            services.AddScoped<TransportationService>();
         }
 
         static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
@@ -221,14 +213,6 @@ namespace TMS.API
             app.UseWebSockets();
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
-#if RELEASE
-            var statisticsService = new StatisticsService(serviceProvider, entity, configuration, connectionManager);
-            statisticsService.ScheduleJob();
-            var deleteDowloadService = new DeleteDowloadService(env);
-            deleteDowloadService.ScheduleJob();
-            var killService = new KillService(configuration);
-            killService.ScheduleJob();
-#endif
             app.MapWebSocketManager("/task", serviceProvider.GetService<RealtimeService>());
             options.DefaultFileNames.Clear();
             options.DefaultFileNames.Add("index.html");

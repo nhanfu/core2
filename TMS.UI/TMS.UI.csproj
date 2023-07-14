@@ -61,248 +61,14 @@
     <Compile Include="..\TMS.API\Enums\TruckEnum.cs">
       <Link>Enums\TruckEnum.cs</Link>
     </Compile>
-    <Compile Include="..\TMS.API\ModelACs\AccountingVoucher.cs">
-      <Link>ModelACs\AccountingVoucher.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\AccountingVoucherDetails.cs">
-      <Link>ModelACs\AccountingVoucherDetails.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\AccountingVoucherDetailsService.cs">
-      <Link>ModelACs\AccountingVoucherDetailsService.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\AccountingVoucherDetailsSum.cs">
-      <Link>ModelACs\AccountingVoucherDetailsSum.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Allotment.cs">
-      <Link>ModelACs\Allotment.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\ApprovalConfig.cs">
-      <Link>ModelACs\ApprovalConfig.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Approvement.cs">
-      <Link>ModelACs\Approvement.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\BankAccount.cs">
-      <Link>ModelACs\BankAccount.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Booking.cs">
-      <Link>ModelACs\Booking.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\BookingList.cs">
-      <Link>ModelACs\BookingList.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\BrandShip.cs">
-      <Link>ModelACs\BrandShip.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Chat.cs">
-      <Link>ModelACs\Chat.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\CheckFeeHistory.cs">
-      <Link>ModelACs\CheckFeeHistory.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\CommodityValue.cs">
-      <Link>ModelACs\CommodityValue.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Component.cs">
-      <Link>ModelACs\Component.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\ComponentGroup.cs">
-      <Link>ModelACs\ComponentGroup.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Convertation.cs">
-      <Link>ModelACs\Convertation.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\DeleteHistory.cs">
-      <Link>ModelACs\DeleteHistory.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Dictionary.cs">
-      <Link>ModelACs\Dictionary.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Entity.cs">
-      <Link>ModelACs\Entity.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\EntityRef.cs">
-      <Link>ModelACs\EntityRef.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\ErrorLog.cs">
-      <Link>ModelACs\ErrorLog.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Expense.cs">
-      <Link>ModelACs\Expense.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Feature.cs">
-      <Link>ModelACs\Feature.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\FeaturePolicy.cs">
-      <Link>ModelACs\FeaturePolicy.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\FileUpload.cs">
-      <Link>ModelACs\FileUpload.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\FreightRate.cs">
-      <Link>ModelACs\FreightRate.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\GridPolicy.cs">
-      <Link>ModelACs\GridPolicy.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\ImageEntity.cs">
-      <Link>ModelACs\ImageEntity.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\InsuranceFeesRate.cs">
-      <Link>ModelACs\InsuranceFeesRate.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\InsurancePremium.cs">
-      <Link>ModelACs\InsurancePremium.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\InvoiceForm.cs">
-      <Link>ModelACs\InvoiceForm.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Location.cs">
-      <Link>ModelACs\Location.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\LocationService.cs">
-      <Link>ModelACs\LocationService.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\MasterData.cs">
-      <Link>ModelACs\MasterData.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\OriginAccountingVoucher.cs">
-      <Link>ModelACs\OriginAccountingVoucher.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\OriginAccountingVoucherDetails.cs">
-      <Link>ModelACs\OriginAccountingVoucherDetails.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\OriginAccountingVoucherDetailsSum.cs">
-      <Link>ModelACs\OriginAccountingVoucherDetailsSum.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Partner.cs">
-      <Link>ModelACs\Partner.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Quotation.cs">
-      <Link>ModelACs\Quotation.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\QuotationExpense.cs">
-      <Link>ModelACs\QuotationExpense.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\QuotationExpenseRoute.cs">
-      <Link>ModelACs\QuotationExpenseRoute.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\QuotationService.cs">
-      <Link>ModelACs\QuotationService.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\QuotationUpdate.cs">
-      <Link>ModelACs\QuotationUpdate.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\ReturnPlan.cs">
-      <Link>ModelACs\ReturnPlan.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Role.cs">
-      <Link>ModelACs\Role.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Route.cs">
-      <Link>ModelACs\Route.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\RouteUser.cs">
-      <Link>ModelACs\RouteUser.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Sale.cs">
-      <Link>ModelACs\Sale.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Services.cs">
-      <Link>ModelACs\Services.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\SettingPolicy.cs">
-      <Link>ModelACs\SettingPolicy.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\SettingPolicyDetail.cs">
-      <Link>ModelACs\SettingPolicyDetail.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\SettingTransportation.cs">
-      <Link>ModelACs\SettingTransportation.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Ship.cs">
-      <Link>ModelACs\Ship.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Staff.cs">
-      <Link>ModelACs\Staff.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\TaskNotification.cs">
-      <Link>ModelACs\TaskNotification.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Teus.cs">
-      <Link>ModelACs\Teus.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Transportation.cs">
-      <Link>ModelACs\Transportation.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\TransportationContract.cs">
-      <Link>ModelACs\TransportationContract.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\TransportationPlan.cs">
-      <Link>ModelACs\TransportationPlan.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\User.cs">
-      <Link>ModelACs\User.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\UserClick.cs">
-      <Link>ModelACs\UserClick.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\UserLogin.cs">
-      <Link>ModelACs\UserLogin.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\UserRole.cs">
-      <Link>ModelACs\UserRole.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\UserRoute.cs">
-      <Link>ModelACs\UserRoute.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\UserSetting.cs">
-      <Link>ModelACs\UserSetting.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Vendor.cs">
-      <Link>ModelACs\Vendor.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\VendorContact.cs">
-      <Link>ModelACs\VendorContact.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\VendorLocation.cs">
-      <Link>ModelACs\VendorLocation.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\VendorService.cs">
-      <Link>ModelACs\VendorService.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ModelACs\Webhook.cs">
-      <Link>ModelACs\Webhook.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\Allotment.cs">
-      <Link>Models\Allotment.cs</Link>
-    </Compile>
     <Compile Include="..\tms.api\models\ApprovalConfig.cs">
       <Link>Models\ApprovalConfig.cs</Link>
     </Compile>
     <Compile Include="..\tms.api\models\Approvement.cs">
       <Link>Models\Approvement.cs</Link>
     </Compile>
-    <Compile Include="..\TMS.API\Models\BankAccount.cs">
-      <Link>Models\BankAccount.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\Booking.cs">
-      <Link>Models\Booking.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\BookingList.cs">
-      <Link>Models\BookingList.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\BrandShip.cs">
-      <Link>Models\BrandShip.cs</Link>
-    </Compile>
     <Compile Include="..\TMS.API\Models\Chat.cs">
       <Link>Models\Chat.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\CheckFeeHistory.cs">
-      <Link>Models\CheckFeeHistory.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\CommodityValue.cs">
-      <Link>Models\CommodityValue.cs</Link>
     </Compile>
     <Compile Include="..\TMS.API\Models\Component.cs">
       <Link>Models\Component.cs</Link>
@@ -319,12 +85,6 @@
     <Compile Include="..\TMS.API\Models\EntityRef.cs">
       <Link>Models\EntityRef.cs</Link>
     </Compile>
-    <Compile Include="..\TMS.API\Models\ErrorLog.cs">
-      <Link>Models\ErrorLog.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\Expense.cs">
-      <Link>Models\Expense.cs</Link>
-    </Compile>
     <Compile Include="..\TMS.API\Models\Feature.cs">
       <Link>Models\Feature.cs</Link>
     </Compile>
@@ -334,35 +94,11 @@
     <Compile Include="..\TMS.API\Models\FileUpload.cs">
       <Link>Models\FileUpload.cs</Link>
     </Compile>
-    <Compile Include="..\TMS.API\Models\FreightRate.cs">
-      <Link>Models\FreightRate.cs</Link>
-    </Compile>
     <Compile Include="..\TMS.API\Models\GridPolicy.cs">
       <Link>Models\GridPolicy.cs</Link>
     </Compile>
     <Compile Include="..\TMS.API\Models\History.cs">
       <Link>Models\History.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\ImageEntity.cs">
-      <Link>Models\ImageEntity.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\Images.cs">
-      <Link>Models\Images.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\InsuranceFeesRate.cs">
-      <Link>Models\InsuranceFeesRate.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\Ledger.cs">
-      <Link>Models\Ledger.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\LedgerService.cs">
-      <Link>Models\LedgerService.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\Location.cs">
-      <Link>Models\Location.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\LocationService.cs">
-      <Link>Models\LocationService.cs</Link>
     </Compile>
     <Compile Include="..\tms.api\models\MasterData.cs">
       <Link>Models\MasterData.cs</Link>
@@ -373,74 +109,11 @@
     <Compile Include="..\TMS.API\Models\PartialModel.cs">
       <Link>Models\PartialModel.cs</Link>
     </Compile>
-    <Compile Include="..\TMS.API\Models\Quotation.cs">
-      <Link>Models\Quotation.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\QuotationExpense.cs">
-      <Link>Models\QuotationExpense.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\QuotationExpenseRoute.cs">
-      <Link>Models\QuotationExpenseRoute.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\QuotationService.cs">
-      <Link>Models\QuotationService.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\QuotationUpdate.cs">
-      <Link>Models\QuotationUpdate.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\ReturnPlan.cs">
-      <Link>Models\ReturnPlan.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\Revenue.cs">
-      <Link>Models\Revenue.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\RevenueRequest.cs">
-      <Link>Models\RevenueRequest.cs</Link>
-    </Compile>
     <Compile Include="..\TMS.API\Models\Role.cs">
       <Link>Models\Role.cs</Link>
     </Compile>
-    <Compile Include="..\TMS.API\Models\Route.cs">
-      <Link>Models\Route.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\RouteUser.cs">
-      <Link>Models\RouteUser.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\Sale.cs">
-      <Link>Models\Sale.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\SettingPolicy.cs">
-      <Link>Models\SettingPolicy.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\SettingPolicyDetail.cs">
-      <Link>Models\SettingPolicyDetail.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\SettingTransportation.cs">
-      <Link>Models\SettingTransportation.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\Ship.cs">
-      <Link>Models\Ship.cs</Link>
-    </Compile>
     <Compile Include="..\tms.api\models\TaskNotification.cs">
       <Link>Models\TaskNotification.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\Teus.cs">
-      <Link>Models\Teus.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\Transportation.cs">
-      <Link>Models\Transportation.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\TransportationContract.cs">
-      <Link>Models\TransportationContract.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\TransportationPlan.cs">
-      <Link>Models\TransportationPlan.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\TransportationRequest.cs">
-      <Link>Models\TransportationRequest.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\TransportationRequestDetails.cs">
-      <Link>Models\TransportationRequestDetails.cs</Link>
     </Compile>
     <Compile Include="..\tms.api\models\User.cs">
       <Link>Models\User.cs</Link>
@@ -448,26 +121,11 @@
     <Compile Include="..\tms.api\models\UserRole.cs">
       <Link>Models\UserRole.cs</Link>
     </Compile>
-    <Compile Include="..\TMS.API\Models\UserRoute.cs">
-      <Link>Models\UserRoute.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\UserSeq.cs">
-      <Link>Models\UserSeq.cs</Link>
-    </Compile>
     <Compile Include="..\tms.api\models\UserSetting.cs">
       <Link>Models\UserSetting.cs</Link>
     </Compile>
     <Compile Include="..\tms.api\models\Vendor.cs">
       <Link>Models\Vendor.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\VendorContact.cs">
-      <Link>Models\VendorContact.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\VendorLocation.cs">
-      <Link>Models\VendorLocation.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Models\VendorService.cs">
-      <Link>Models\VendorService.cs</Link>
     </Compile>
     <Compile Include="..\TMS.API\Models\Webhook.cs">
       <Link>Models\Webhook.cs</Link>
@@ -478,128 +136,7 @@
     <Compile Include="..\TMS.API\ViewModels\ReportVM.cs">
       <Link>ViewModels\ReportVM.cs</Link>
     </Compile>
-    <Compile Include="Business\Accountant\AccountEditBL.cs" />
-    <Compile Include="Business\Accountant\SaleEditBL.cs" />
-    <Compile Include="Business\Accountant\SaleListBL.cs" />
-    <Compile Include="Business\Accountant\ConfirmBusinessFreightRateBL.cs" />
-    <Compile Include="Business\Accountant\FreightShipEditBL.cs" />
-    <Compile Include="Business\Accountant\PaymentAdvanceVoucherEditBL.cs" />
-    <Compile Include="Business\Accountant\PaymentAdvanceVoucherListBL.cs" />
-    <Compile Include="Business\Accountant\ReceiptVoucherEditBL.cs" />
-    <Compile Include="Business\Accountant\PaymentVoucherEditBL.cs" />
-    <Compile Include="Business\Accountant\ReceiptVoucherListBL.cs" />
-    <Compile Include="Business\Accountant\PaymentVoucherListBL.cs" />
-    <Compile Include="Business\Accountant\FreightRateChangeBL.cs" />
-    <Compile Include="Business\Accountant\BusinessFreightRateBL.cs" />
-    <Compile Include="Business\Accountant\FreightRateEditBL.cs" />
-    <Compile Include="Business\Accountant\FreightRateListBL.cs" />
-    <Compile Include="Business\Accountant\CreditNoteListBL.cs" />
-    <Compile Include="Business\Accountant\CreditNoteEditBL.cs" />
-    <Compile Include="Business\Accountant\CaseEditBL.cs" />
-    <Compile Include="Business\Accountant\DepartmentEditBL.cs" />
-    <Compile Include="Business\Accountant\CaseListBL.cs" />
-    <Compile Include="Business\Accountant\DepartmentListBL.cs" />
-    <Compile Include="Business\Accountant\ImportRevenueSimultaneousBL.cs" />
-    <Compile Include="Business\Accountant\MakeUpFeeBL.cs" />
-    <Compile Include="Business\Accountant\SettingsInvoiceVendorListBL.cs" />
-    <Compile Include="Business\Accountant\AccountListBL.cs" />
-    <Compile Include="Business\Accountant\FilterDataBL.cs" />
-    <Compile Include="Business\Accountant\BankAccountEditBL.cs" />
-    <Compile Include="Business\Accountant\BankAccountListBL.cs" />
-    <Compile Include="Business\Accountant\TaxExpenseItemsEditBL.cs" />
-    <Compile Include="Business\Accountant\ItemsEditBL.cs" />
-    <Compile Include="Business\Accountant\TaxExpenseItemsListBL.cs" />
-    <Compile Include="Business\Accountant\ItemsListBL.cs" />
-    <Compile Include="Business\Accountant\ObjectListBL.cs" />
-    <Compile Include="Business\Accountant\ObjectEditBL.cs" />
-    <Compile Include="Business\Accountant\FreightTransportationEditBL.cs" />
-    <Compile Include="Business\Accountant\FreightTransportationListBL.cs" />
-    <Compile Include="Business\Accountant\FreightShipListBL.cs" />
-    <Compile Include="Business\Manage\CheckFeeReturnEditorBL.cs" />
-    <Compile Include="Business\Manage\InsuranceFeesUpdateDataBL.cs" />
-    <Compile Include="Business\Manage\InsuranceFeesViewChangeBL.cs" />
-    <Compile Include="Business\Manage\ProductionReportFormBL.cs" />
-    <Compile Include="Business\Manage\CheckFeeFormBL.cs" />
-    <Compile Include="Business\Manage\ExtraInsuranceFeesRateBL.cs" />
-    <Compile Include="Business\Manage\BossEditorMobileBL.cs" />
-    <Compile Include="Business\Manage\ViewMapTransportationBL.cs" />
-    <Compile Include="Business\Manage\TransportationPlanChangeEditorMobileBL.cs" />
-    <Compile Include="Business\Manage\RevenueRequestBL.cs" />
-    <Compile Include="Business\Manage\TransportationReturnEditorBL.cs" />
-    <Compile Include="Business\Manage\TransportationPlanEditorMobileBL.cs" />
-    <Compile Include="Business\Manage\TransportationPlanListMobileBL.cs" />
-    <Compile Include="Business\Manage\CheckFeeEditorBL.cs" />
-    <Compile Include="Business\Manage\InsuranceFeesEditorBL.cs" />
-    <Compile Include="Business\Manage\BookingListEditorBL.cs" />
-    <Compile Include="Business\Manage\InsuranceFeesRateBL.cs" />
-    <Compile Include="Business\Manage\InsuranceFeesRateEditorBL.cs" />
-    <Compile Include="Business\Manage\BookingListListBL.cs" />
-    <Compile Include="Business\Manage\ListShipBookBL.cs" />
-    <Compile Include="Business\Manage\TransportationListAccountantBL.cs" />
-    <Compile Include="Business\Manage\TransportationRequestDetailsBL.cs" />
-    <Compile Include="Business\Manage\UpdateStartShipBL.cs" />
-    <Compile Include="Business\Manage\SpecialCustomerEditorBL.cs" />
-    <Compile Include="Business\Manage\SpecialCustomerBL.cs" />
-    <Compile Include="Business\Manage\ReturnTransportationPlanEditorBL.cs" />
-    <Compile Include="Business\Manage\SetStartShipBL.cs" />
-    <Compile Include="Business\Manage\InsuranceFeesBL.cs" />
-    <Compile Include="Business\Manage\CommodityValueEditorBL.cs" />
-    <Compile Include="Business\Manage\CommodityValueBL.cs" />
-    <Compile Include="Business\Manage\QuotationUpdateEditorBL.cs" />
-    <Compile Include="Business\Manage\AllotmentEditorBL.cs" />
-    <Compile Include="Business\Manage\ReturnPlanListBL.cs" />
-    <Compile Include="Business\Manage\TeusEditorBL.cs" />
-    <Compile Include="Business\Manage\TeusListBL.cs" />
-    <Compile Include="Business\Manage\TransportationContractListBL.cs" />
-    <Compile Include="Business\Manage\TransportationContractEditorBL.cs" />
-    <Compile Include="Business\Manage\ContainerBetManagerListBL.cs" />
-    <Compile Include="Business\Manage\TransportationListSaleBL.cs" />
-    <Compile Include="Business\Manage\TransportationPlanEditorBL.cs" />
-    <Compile Include="Business\Manage\TransportationEditorBL.cs" />
-    <Compile Include="Business\Manage\BookingEditorBL.cs" />
-    <Compile Include="Business\Manage\TransportationListBL.cs" />
-    <Compile Include="Business\Manage\TransportationPlanListBL.cs" />
-    <Compile Include="Business\Manage\BookingListBL.cs" />
     <Compile Include="Business\Settings\ApiException.cs" />
-    <Compile Include="Business\Settings\QuotationRegionEditorBL.cs" />
-    <Compile Include="Business\Settings\VendorContactEditorBL.cs" />
-    <Compile Include="Business\Settings\VendorContactListBL.cs" />
-    <Compile Include="Business\Settings\SettingTransportationEditorBL.cs" />
-    <Compile Include="Business\Settings\BrandShipEditorBL.cs" />
-    <Compile Include="Business\Settings\SettingTransportationListBL.cs" />
-    <Compile Include="Business\Settings\RegionEditorBL.cs" />
-    <Compile Include="Business\Settings\RegionListBL.cs" />
-    <Compile Include="Business\Settings\CommodityValueOfCompanyBL.cs" />
-    <Compile Include="Business\Settings\CommodityValueOfCompanyEditorBL.cs" />
-    <Compile Include="Business\Settings\CommodityListBL.cs" />
-    <Compile Include="Business\Settings\CommodityEditorBL.cs" />
-    <Compile Include="Business\Settings\GetOrderEditorBL.cs" />
-    <Compile Include="Business\Settings\TransportationTypeEditorBL.cs" />
-    <Compile Include="Business\Settings\TransportationTypeBL.cs" />
-    <Compile Include="Business\Settings\ContainerTypeEditorBL.cs" />
-    <Compile Include="Business\Settings\LocationEditorBL.cs" />
-    <Compile Include="Business\Settings\QuotationAdjustmentEditorBL.cs" />
-    <Compile Include="Business\Settings\SettingPolicyEditorBL.cs" />
-    <Compile Include="Business\Settings\QuotationExpenseEditorBL.cs" />
-    <Compile Include="Business\Settings\QuotationEditorBL.cs" />
-    <Compile Include="Business\Settings\QuotationAdjustmentListBL.cs" />
-    <Compile Include="Business\Settings\SettingPolicyListBL.cs" />
-    <Compile Include="Business\Settings\QuotationExpenseListBL.cs" />
-    <Compile Include="Business\Settings\QuotationListBL.cs" />
-    <Compile Include="Business\Settings\PackingReturnEditorBL.cs" />
-    <Compile Include="Business\Settings\PackingReturnListBL.cs" />
-    <Compile Include="Business\Settings\LocationListBL.cs" />
-    <Compile Include="Business\Settings\ContainerTypeListBL.cs" />
-    <Compile Include="Business\Settings\RouteEditorBL.cs" />
-    <Compile Include="Business\Settings\ShipEditorBL.cs" />
-    <Compile Include="Business\Settings\ShipListBL.cs" />
-    <Compile Include="Business\Settings\BrandShipListBL.cs" />
-    <Compile Include="Business\Settings\RouteListBL.cs" />
-    <Compile Include="Business\Setting\SettingsTrainScheduleBL.cs" />
-    <Compile Include="Business\Setting\SettingsCommodityValueBL.cs" />
-    <Compile Include="Business\Setting\UpdateBetAmountBL.cs" />
-    <Compile Include="Business\Setting\UpdateVATInsuranceFeesBL.cs" />
-    <Compile Include="Business\Setting\UserSeqBL.cs" />
     <Compile Include="Business\Setting\GridPolicyDetailBL.cs" />
     <Compile Include="Business\Setting\SettingDataBL.cs" />
     <Compile Include="Business\Shop\VendorEditorBL.cs" />
@@ -666,7 +203,10 @@
       <HintPath>..\packages\Retyped.googlemaps.3.30.6733\lib\net40\Retyped.googlemaps.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Business\Accountant\" />
+    <Folder Include="Business\Manage\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{a1e39d33-d84c-4595-b7ac-6ef005935b80}</Project>
