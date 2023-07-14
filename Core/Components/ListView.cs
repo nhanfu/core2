@@ -145,7 +145,7 @@ namespace Core.Components
             _rowHeight = GuiInfo.BodyItemHeight ?? 26;
             _theadTable = GuiInfo.HeaderHeight ?? 40;
             _tfooterTable = GuiInfo.FooterHeight ?? 35;
-            _scrollTable = GuiInfo.FooterHeight ?? 10;
+            _scrollTable = GuiInfo.ScrollHeight ?? 10;
             if (GuiInfo.IsRealtime)
             {
                 EditForm.NotificationClient?.AddListener(GuiInfo.ReferenceId.Value, (int)TypeEntityAction.UpdateEntity, RealtimeUpdateListViewItem);

@@ -1877,7 +1877,7 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
             }
-            else if (RoleIds.Contains(25))
+            else if (RoleIds.Contains(25) || RoleIds.Contains(22))
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId} and TypeId = 25044))";
             }
