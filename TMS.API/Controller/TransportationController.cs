@@ -1849,7 +1849,7 @@ namespace TMS.API.Controllers
             {
                 sql += @$" and Active = 1";
             }
-            else if (RoleIds.Contains(25) || RoleIds.Contains(27))
+            else if (RoleIds.Contains(25) || RoleIds.Contains(27) || RoleIds.Contains(22))
             {
                 sql += @$" and (RouteId in (select RouteId from UserRoute where UserId = {UserId}))";
             }
