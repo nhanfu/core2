@@ -126,7 +126,7 @@ namespace Core.Components
 
             Html.Take(Parent.Element.FirstElementChild).TabIndex(-1).AsyncEvent(EventType.KeyPress, EnterSearch);
             Element = Html.Context;
-            if (GuiInfo.ComponentType == nameof(GridView))
+            if (GuiInfo.ComponentType == nameof(GridView) || GuiInfo.ComponentType == nameof(TreeView))
             {
                 var txtSearch = new Textbox(new Component
                 {
@@ -142,7 +142,7 @@ namespace Core.Components
                 txtSearch.UserInput = null;
                 AddChild(txtSearch);
             }
-            if (GuiInfo.ComponentType != nameof(ListView))
+            if (GuiInfo.ComponentType != nameof(ListView) && GuiInfo.ComponentType != nameof(TreeView))
             {
                 var txtFullTextSearch = new Textbox(new Component
                 {
