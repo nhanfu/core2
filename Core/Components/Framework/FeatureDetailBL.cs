@@ -18,6 +18,7 @@ namespace Core.Components.Framework
         {
             Name = "FeatureEditor";
             Title = "Feature";
+            Config = true;
             PopulateDirty = false;
             Entity = new Feature();
             DOMContentLoaded += AlterPosition;

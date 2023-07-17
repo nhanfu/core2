@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Dynamic.Core;
 using System.Text;
@@ -699,6 +700,7 @@ namespace TMS.API.Controllers
                     reportQuery += $" order by {orderby}".Replace(" Id desc", $" [{component.RefName}].Id desc").Replace(" Id asc", $" [{component.RefName}].Id asc");
                 }
             }
+            var s = $"";
             var connectionStr = _config.GetConnectionString("Default");
             using var con = new SqlConnection(connectionStr);
             var sqlCmd = new SqlCommand(reportQuery, con)

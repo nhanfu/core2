@@ -19,6 +19,7 @@ namespace Core.Components
             DOMContentLoaded += AlterPosition;
             PopulateDirty = false;
             ShouldLoadEntity = true;
+            Config = true;
         }
 
         private void AlterPosition()

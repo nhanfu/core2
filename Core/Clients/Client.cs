@@ -19,6 +19,7 @@ namespace Core.Clients
         public const string ErrorMessage = "Hệ thống đang cập nhật vui lòng chờ trong 30s!";
         public static string ModelNamespace;
         private readonly string _nameSpace;
+        private bool _config;
         public string NameSpace => _nameSpace.IsNullOrEmpty() ? ModelNamespace : _nameSpace;
         public static string Host => Window.Instance["Host"] != null ? Window.Instance["Host"].ToString() : Window.Location.Host;
         public static string Origin => Window.Instance["OriginLocation"] != null ? Window.Instance["OriginLocation"].ToString() : (Window.Location.Origin + "/");
@@ -35,6 +36,10 @@ namespace Core.Clients
         public static string FileFTP => Document.Head.Children.Where(x => x is HTMLMetaElement).Cast<HTMLMetaElement>().FirstOrDefault(x =>
         {
             return x is HTMLMetaElement meta && meta.Name == "file";
+        })?.Content;
+        public static string Config => Document.Head.Children.Where(x => x is HTMLMetaElement).Cast<HTMLMetaElement>().FirstOrDefault(x =>
+        {
+            return x is HTMLMetaElement meta && meta.Name == "config";
         })?.Content;
         public static BadGatewayQueue BadGatewayRequest = new BadGatewayQueue();
         private static int _errorMessageAwaiter;
@@ -114,9 +119,10 @@ namespace Core.Clients
 
         }
 
-        public Client(string entityName, string ns = string.Empty)
+        public Client(string entityName, string ns = string.Empty, bool config = false)
         {
             _nameSpace = ns;
+            _config = config;
             if (_nameSpace.HasAnyChar() && _nameSpace.Last() != '.')
             {
                 _nameSpace += '.';
@@ -221,6 +227,7 @@ namespace Core.Clients
 
         private Task<T> SubmitAsyncWithToken<T>(XHRWrapper options)
         {
+            CustomPrefix = _config ? Config : null;
             var isNotFormData = options.FormData is null;
             var tcs = new TaskCompletionSource<T>();
             var xhr = new XMLHttpRequest();

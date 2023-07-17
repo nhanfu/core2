@@ -103,6 +103,7 @@ namespace Core.Components.Forms
         public static EditForm LayoutForm { get; set; }
         public string ReasonOfChange { get; set; }
         public static bool Portal { get; internal set; }
+        public bool Config { get; set; }
 
         public EditForm(string entity) : base(null)
         {
@@ -503,13 +504,13 @@ namespace Core.Components.Forms
         protected virtual async Task RenderAsync()
         {
             var token = Client.Token;
-            var featureTask = Feature != null ? Task.FromResult(Feature) : ComponentExt.LoadFeatureByName(Name, Public);
+            var featureTask = Feature != null ? Task.FromResult(Feature) : ComponentExt.LoadFeatureByName(Name, Public, Config);
             var entityTask = LoadEntity();
             await Task.WhenAll(featureTask, entityTask);
             var feature = featureTask.Result;
             var layout = feature.LayoutId is null || InnerEntry != null
                 ? null
-                : await new Client(nameof(Models.Feature), typeof(User).Namespace).FirstOrDefaultAsync<Feature>(
+                : await new Client(nameof(Models.Feature), typeof(User).Namespace, Config).FirstOrDefaultAsync<Feature>(
                     $"/Public/?$filter=Active eq true and Id eq {feature.LayoutId} and {nameof(feature.Template)} ne null");
             Entity.CopyPropFrom(entityTask.Result);
             SetFeatureProperties(feature);

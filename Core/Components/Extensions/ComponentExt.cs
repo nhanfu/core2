@@ -294,7 +294,7 @@ namespace Core.Components.Extensions
             return tcs.Task;
         }
 
-        public static async Task<Feature> LoadFeatureByName(string featureName, bool publicForm = false)
+        public static async Task<Feature> LoadFeatureByName(string featureName, bool publicForm = false, bool config = false)
         {
 #if RELEASE
             if (FeatureMap.ContainsKey(featureName))
@@ -303,12 +303,12 @@ namespace Core.Components.Extensions
             }
 #endif
             var prefix = publicForm ? "/Public/" : string.Empty;
-            var featureOdata = new Client(nameof(Feature), typeof(User).Namespace).FirstOrDefaultAsync<Feature>(
+            var featureOdata = new Client(nameof(Feature), typeof(User).Namespace, config).FirstOrDefaultAsync<Feature>(
                 $"{prefix}?$filter=Active eq true and Name eq '{featureName}'", addTenant: true);
             var policyOdata = publicForm ? Task.FromResult(new List<FeaturePolicy>())
-                : new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
+                : new Client(nameof(FeaturePolicy), typeof(User).Namespace, config).GetRawList<FeaturePolicy>(
                 $"?$filter=Active eq true and Feature/Name eq '{featureName}'");
-            var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>(
+            var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace, config).GetRawList<ComponentGroup>(
                 $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name,Namespace))" +
                 $"&$filter=Active eq true and Feature/Name eq '{featureName}'", addTenant: true);
             await Task.WhenAll(featureOdata, policyOdata, componentGroupTask);
