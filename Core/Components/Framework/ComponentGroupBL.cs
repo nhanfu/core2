@@ -16,7 +16,6 @@ namespace Core.Components.Framework
         {
             Name = "ComponentGroup";
             Title = "Section properties";
-            Config = true;
             Icon = "fa fa-wrench";
             PopulateDirty = false;
             DOMContentLoaded += AlterPosition;
