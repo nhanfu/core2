@@ -1,12 +1,9 @@
-﻿using Core.Models;
-using Core.ViewModels;
-using Core.Components.Forms;
+﻿using Core.Components.Forms;
 using Core.Extensions;
+using Core.Models;
+using Core.ViewModels;
 using System;
 using System.Threading.Tasks;
-using Core.MVVM;
-using System.Linq;
-using Core.Components.Extensions;
 
 namespace Core.Components.Framework
 {

@@ -17,6 +17,7 @@ namespace TMS.API.Controllers
             _IConfiguration = iConfiguration;
         }
 
+        [AllowAnonymous]
         public override Task<OdataResult<Feature>> Get(ODataQueryOptions<Feature> options)
         {
             var query =
