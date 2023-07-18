@@ -18,6 +18,7 @@ namespace Core.Components
             Icon = "fa fa-wrench";
             DOMContentLoaded += AlterPosition;
             PopulateDirty = false;
+            Config = true;
             ShouldLoadEntity = true;
         }
 
