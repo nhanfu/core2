@@ -1,13 +1,8 @@
-﻿using Core.Models;
-using Core.ViewModels;
-using Core.Components.Forms;
+﻿using Core.Components.Forms;
 using Core.Extensions;
+using Core.Models;
 using System;
 using System.Threading.Tasks;
-using Core.Components.Extensions;
-using Core.MVVM;
-using System.Linq;
-using static Retyped.dom.DragEvent;
 
 namespace Core.Components.Framework
 {
@@ -21,6 +16,7 @@ namespace Core.Components.Framework
             Id = "EditComponent_" + Id;
             Entity = new Component();
             PopulateDirty = false;
+            Config = true;
             DOMContentLoaded += AlterPosition;
         }
 

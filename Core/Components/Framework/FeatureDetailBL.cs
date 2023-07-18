@@ -20,6 +20,7 @@ namespace Core.Components.Framework
             Title = "Feature";
             PopulateDirty = false;
             Entity = new Feature();
+            Config = true;
             DOMContentLoaded += AlterPosition;
         }
 

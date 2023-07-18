@@ -18,6 +18,7 @@ namespace Core.Components.Framework
             Title = "Section properties";
             Icon = "fa fa-wrench";
             PopulateDirty = false;
+            Config = true;
             DOMContentLoaded += AlterPosition;
         }
 

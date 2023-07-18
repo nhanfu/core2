@@ -12,6 +12,7 @@ namespace Core.Components.Framework
             Name = "Feature management";
             Title = "Feature";
             Icon = "icons/config.png";
+            Config = true;
             DOMContentLoaded += AlterPosition;
         }
 
