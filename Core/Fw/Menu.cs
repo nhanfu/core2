@@ -295,13 +295,13 @@ namespace Core.Fw
         private void EditFeature(object ev)
         {
             var feature = ev as Feature;
-            var id = feature.Name + "Prop" + feature.Id;
-            this.OpenTab(id, () => new FeatureDetailBL
+            var editor = new FeatureDetailBL()
             {
-                Id = id,
                 Entity = feature,
-                Title = $"Feature {feature.Name ?? feature.Label ?? feature.Description}"
-            });
+                ParentElement = TabEditor.Element,
+                OpenFrom = this.FindClosest<EditForm>(),
+            };
+            AddChild(editor);
         }
 
         private void CloneFeature(object ev)

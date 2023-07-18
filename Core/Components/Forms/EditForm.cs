@@ -1179,21 +1179,13 @@ namespace Core.Components.Forms
 
         public void FeatureProperties(object arg)
         {
-            var id = Feature.Name + "Prop" + Feature.Id;
-            Task.Run(async () =>
+            var editor = new FeatureDetailBL()
             {
-                await this.OpenPopup(
-                featureName: "FeatureEditor",
-                factory: () =>
-                {
-                    var type = Type.GetType("Core.Components.Framework.FeatureDetailBL");
-                    var instance = Activator.CreateInstance(type) as PopupEditor;
-                    instance.Title = "Feature configuration";
-                    instance.Entity = Feature;
-                    instance.ParentElement = TabEditor.Element;
-                    return instance;
-                });
-            });
+                Entity = Feature,
+                ParentElement = TabEditor.Element,
+                OpenFrom = this.FindClosest<EditForm>(),
+            };
+            AddChild(editor);
         }
 
         public void SecurityRecord(object arg)
