@@ -227,7 +227,7 @@ namespace Core.Clients
 
         private Task<T> SubmitAsyncWithToken<T>(XHRWrapper options)
         {
-            CustomPrefix = _config ? Config : null;
+            CustomPrefix = _config ? Config : CustomPrefix;
             var isNotFormData = options.FormData is null;
             var tcs = new TaskCompletionSource<T>();
             var xhr = new XMLHttpRequest();
