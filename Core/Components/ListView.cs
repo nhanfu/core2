@@ -8,13 +8,11 @@ using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
 using Newtonsoft.Json;
-using Retyped;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 
@@ -1680,7 +1678,7 @@ namespace Core.Components
             {
                 SelectedIndex++;
             }
-            RowAction(SelectedIndex, x => x.Selected = true);
+            RowAction(SelectedIndex, x => x.Selected = true, false);
         }
 
         public void ClearSelected()
@@ -1690,14 +1688,17 @@ namespace Core.Components
             LastListViewItem = null;
         }
 
-        public void RowAction(int index, Action<ListViewItem> action)
+        public void RowAction(int index, Action<ListViewItem> action, bool sub)
         {
             if (index < 0 || action is null || index >= AllListViewItem.Count())
             {
                 return;
             }
-
-            var row = AllListViewItem.ElementAt(index);
+            var row = AllListViewItem.Where(x => !x.GroupRow).FirstOrDefault(x => x.RowNo == index);
+            if (row.GroupRow)
+            {
+                row = AllListViewItem.Where(x => !x.GroupRow).FirstOrDefault(x => x.RowNo == (sub ? (index - 1) : (index + 1)));
+            }
             action.Invoke(row);
         }
 
@@ -1724,7 +1725,7 @@ namespace Core.Components
             {
                 SelectedIndex--;
             }
-            RowAction(SelectedIndex, x => x.Selected = true);
+            RowAction(SelectedIndex, x => x.Selected = true, true);
         }
 
         public bool IsRowDirty(object row)
