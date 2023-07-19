@@ -1005,6 +1005,10 @@ td {
         }
     }
 
+    td:not(.choose-files) {
+        max-width: 0px;
+    }
+
     td {
         background-color: white;
         text-align: center;
@@ -1012,7 +1016,6 @@ td {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 0px;
 
         &:first-child {
             border-left: 0;

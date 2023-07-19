@@ -2052,13 +2052,16 @@ namespace Core.Components
             {
                 rowSection.SetDisabled(false, "btnEdit");
             }
-            if (row["Id"].As<int?>() > 0)
+            if (GuiInfo.ComponentType != nameof(FileUploadGrid))
             {
-                rowSection.Element.RemoveClass("new-row");
-            }
-            else
-            {
-                rowSection.Element.AddClass("new-row");
+                if (row["Id"].As<int?>() > 0)
+                {
+                    rowSection.Element.RemoveClass("new-row");
+                }
+                else
+                {
+                    rowSection.Element.AddClass("new-row");
+                }
             }
             return rowSection;
         }
