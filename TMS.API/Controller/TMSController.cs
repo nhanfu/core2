@@ -16,6 +16,7 @@ using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Dynamic.Core;
 using System.Text;
+using System.Text.RegularExpressions;
 using TMS.API.Models;
 using ApprovalStatusEnum = Core.Enums.ApprovalStatusEnum;
 using AuthVerEnum = Core.Enums.AuthVerEnum;
@@ -586,6 +587,36 @@ namespace TMS.API.Controllers
             }
         }
 
+        public string DecodeEntity(string entity)
+        {
+            switch (entity)
+            {
+                case "amp":
+                    return "&";
+                case "quot":
+                    return "\"";
+                case "gt":
+                    return ">";
+                case "lt":
+                    return "<";
+                case "nbsp":
+                    return " ";
+                default:
+                    return entity;
+            }
+        }
+
+        public string ConvertHtmlToPlainText(string htmlContent)
+        {
+            // Remove HTML tags using regular expression
+            string plainText = Regex.Replace(htmlContent, @"<[^>]+>|&nbsp;", "").Trim();
+
+            // Decode HTML entities using regular expression
+            plainText = Regex.Replace(plainText, @"&(amp|quot|gt|lt|nbsp);", m => DecodeEntity(m.Groups[1].Value));
+
+            return plainText;
+        }
+
         [HttpGet("api/[Controller]/ExportExcel")]
         public async Task<string> ExportExcel([FromServices] IServiceProvider serviceProvider
             , [FromServices] IConfiguration config
@@ -759,7 +790,7 @@ namespace TMS.API.Controllers
                         i++;
                         continue;
                     }
-                    worksheet.Cell(2, i).SetValue(item.GroupName);
+                    worksheet.Cell(2, i).SetValue(ConvertHtmlToPlainText(item.GroupName));
                     worksheet.Range(2, i, 2, i + colspan - 1).Merge();
                     worksheet.Range(2, i, 2, i + colspan - 1).Style.Font.Bold = true;
                     worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
@@ -771,7 +802,7 @@ namespace TMS.API.Controllers
                     i++;
                     continue;
                 }
-                worksheet.Cell(2, i).SetValue(item.ShortDesc);
+                worksheet.Cell(2, i).SetValue(ConvertHtmlToPlainText(item.ShortDesc));
                 worksheet.Cell(2, i).Style.Font.Bold = true;
                 worksheet.Cell(2, i).Style.Border.RightBorder = XLBorderStyleValues.Thin;
                 worksheet.Cell(2, i).Style.Border.TopBorder = XLBorderStyleValues.Thin;
@@ -799,7 +830,7 @@ namespace TMS.API.Controllers
                 {
                     if (anyGroup && !string.IsNullOrEmpty(item.GroupName))
                     {
-                        worksheet.Cell(3, h).SetValue(item.ShortDesc);
+                        worksheet.Cell(3, h).SetValue(ConvertHtmlToPlainText(item.ShortDesc));
                         worksheet.Cell(3, h).Style.Font.Bold = true;
                         worksheet.Cell(3, h).Style.Border.RightBorder = XLBorderStyleValues.Thin;
                         worksheet.Cell(3, h).Style.Border.TopBorder = XLBorderStyleValues.Thin;
