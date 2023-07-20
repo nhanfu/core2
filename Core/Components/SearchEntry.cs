@@ -205,7 +205,8 @@ namespace Core.Components
         {
             if (_gv.SelectedIndex >= 0)
             {
-                EntrySelected(_gv?.RowData?.Data[_gv.SelectedIndex]);
+                var row = _gv?.AllListViewItem.FirstOrDefault(x => x.RowNo == _gv.SelectedIndex).Entity;
+                EntrySelected(row);
             }
             else
             {

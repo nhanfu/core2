@@ -1694,10 +1694,10 @@ namespace Core.Components
             {
                 return;
             }
-            var row = AllListViewItem.Where(x => !x.GroupRow).FirstOrDefault(x => x.RowNo == index);
+            var row = AllListViewItem.FirstOrDefault(x => x.RowNo == index);
             if (row.GroupRow)
             {
-                row = AllListViewItem.Where(x => !x.GroupRow).FirstOrDefault(x => x.RowNo == (sub ? (index - 1) : (index + 1)));
+                row = AllListViewItem.FirstOrDefault(x => x.RowNo == (sub ? (index - 1) : (index + 1)));
             }
             action.Invoke(row);
         }
