@@ -325,7 +325,7 @@ namespace TMS.UI.Business
         {
             var editor = new FeatureBL()
             {
-                ParentElement = TabEditor.Element,
+                ParentElement = Document.Body,
                 OpenFrom = this.FindClosest<EditForm>(),
             };
             AddChild(editor);

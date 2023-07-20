@@ -324,7 +324,7 @@ namespace Core.Fw
         {
             var editor = new FeatureBL()
             {
-                ParentElement = TabEditor.Element,
+                ParentElement = Document.Body,
                 OpenFrom = this.FindClosest<EditForm>(),
             };
             AddChild(editor);

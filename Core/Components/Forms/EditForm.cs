@@ -1182,7 +1182,7 @@ namespace Core.Components.Forms
             var editor = new FeatureDetailBL()
             {
                 Entity = Feature,
-                ParentElement = TabEditor.Element,
+                ParentElement = this.FindClosest<EditForm>().Element,
                 OpenFrom = this.FindClosest<EditForm>(),
             };
             AddChild(editor);
