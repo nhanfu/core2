@@ -322,11 +322,12 @@ namespace Core.Fw
 
         private void FeatureManagement(object ev)
         {
-            var id = GetHashCode().ToString();
-            this.OpenTab(id, () => new FeatureBL
+            var editor = new FeatureBL()
             {
-                Id = GetHashCode().ToString(),
-            });
+                ParentElement = TabEditor.Element,
+                OpenFrom = this.FindClosest<EditForm>(),
+            };
+            AddChild(editor);
         }
 
         private void Deactivate(object ev)

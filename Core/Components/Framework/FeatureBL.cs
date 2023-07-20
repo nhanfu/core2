@@ -5,7 +5,7 @@ using Core.Models;
 
 namespace Core.Components.Framework
 {
-    public class FeatureBL : TabEditor
+    public class FeatureBL : PopupEditor
     {
         public FeatureBL() : base(nameof(Feature))
         {
