@@ -113,6 +113,7 @@ namespace Core.Components
                     }
                 }
             }, 100);
+            Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
             DOMContentLoaded?.Invoke();
         }
 

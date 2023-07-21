@@ -54,6 +54,7 @@ namespace Core.Components
             }
             html.Span.ClassName("caption").IText(GuiInfo.Label ?? string.Empty);
             _textEle = Html.Context as HTMLSpanElement;
+            Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
             DOMContentLoaded?.Invoke();
         }
 

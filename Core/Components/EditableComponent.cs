@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 using Newtonsoft.Json;
+using Core.Enums;
 
 namespace Core.Components
 {
@@ -67,6 +68,55 @@ namespace Core.Components
             set
             {
                 Toggle(value);
+            }
+        }
+
+        public void ListViewItemTab(Event e)
+        {
+            var code = e.KeyCodeEnum();
+            switch (code)
+            {
+                case KeyCodeEnum.Tab:
+                    var listViewItem = this.FindClosest<ListViewItem>();
+                    if (listViewItem != null)
+                    {
+                        e.PreventDefault();
+                        var td = Element.Closest("td");
+                        if (e.ShiftKey())
+                        {
+                            var nextElement = listViewItem.FilterChildren(x => x.Element.Closest("td") == td.PreviousElementSibling).FirstOrDefault();
+                            if (nextElement != null)
+                            {
+                                FocusElement(nextElement);
+                            }
+                        }
+                        else
+                        {
+                            var nextElement = listViewItem.FilterChildren(x => x.Element.Closest("td") == td.NextElementSibling).FirstOrDefault();
+                            if (nextElement is null)
+                            {
+                                nextElement = listViewItem.Children.FirstOrDefault();
+                            }
+                            FocusElement(nextElement);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        private static void FocusElement(EditableComponent nextElement)
+        {
+            nextElement.ParentElement.Focus();
+            nextElement.Focus();
+            if (nextElement.Element is HTMLInputElement html)
+            {
+                html.SelectionStart = 0;
+                html.SelectionEnd = nextElement.GetValueText().Length;
+            }
+            else if (nextElement.Element is HTMLTextAreaElement htmlArea)
+            {
+                htmlArea.SelectionStart = 0;
+                htmlArea.SelectionEnd = nextElement.GetValueText().Length;
             }
         }
 

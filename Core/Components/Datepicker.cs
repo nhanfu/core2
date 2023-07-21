@@ -150,6 +150,7 @@ namespace Core.Components
                         RenderCalendar();
                     }
                 });
+            Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
             DOMContentLoaded?.Invoke();
         }
 

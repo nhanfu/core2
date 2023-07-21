@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TextAlign = Core.Enums.TextAlign;
+using Core.Enums;
 
 namespace Core.Components
 {
@@ -42,6 +43,7 @@ namespace Core.Components
                 cellText = CalcCellText(cellData);
                 UpdateEle(cellText, cellData, isBool);
             }
+            Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
             Element.ParentElement.TabIndex = -1;
         }
 

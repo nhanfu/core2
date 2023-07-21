@@ -51,6 +51,7 @@ namespace Core.Components
             Input.Style.BackgroundColor = "transparent";
             Input.AddEventListener(EventType.FocusIn, RenderTimepicker);
             Input.AddEventListener(EventType.FocusOut, WaitToClose);
+            Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
         }
 
         private void WaitToClose()

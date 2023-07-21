@@ -77,6 +77,7 @@ namespace Core.Components
             RenderUploadForm();
             Path = _path;
             DOMContentLoaded?.Invoke();
+            Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
         }
 
         private HTMLElement RenderFileThumb(string path)

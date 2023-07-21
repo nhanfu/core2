@@ -37,6 +37,7 @@ namespace Core.Components
             SetDefaultVal();
             Value = (bool?)Entity.GetComplexPropValue(GuiInfo.FieldName);
             Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+            Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
             DOMContentLoaded?.Invoke();
         }
 

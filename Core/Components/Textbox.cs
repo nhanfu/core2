@@ -230,7 +230,7 @@ namespace Core.Components
             {
                 Html.Instance.PlaceHolder(GuiInfo.PlainText);
             }
-
+            Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
             DOMContentLoaded?.Invoke();
         }
 
