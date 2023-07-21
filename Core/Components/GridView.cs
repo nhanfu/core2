@@ -31,6 +31,8 @@ namespace Core.Components
         private const string SummaryClass = "summary";
         private const int CellCountNoSticky = 50;
         public List<HTMLElement> _summarys = new List<HTMLElement>();
+        public HTMLElement LastThClick;
+        public int? LastNumClick;
         public bool _sum = false;
         private string _summaryId;
         public bool AutoFocus = false;
@@ -279,15 +281,32 @@ namespace Core.Components
 
         protected void ClickHeader(Event e, GridPolicy header)
         {
+            var index = LastNumClick;
+            var table = DataTable;
+            if (LastNumClick != null)
+            {
+                /*@
+                table.querySelectorAll('tr:not(.summary)').forEach(function(row) {
+                    if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
+                       return;
+                    }
+                    const cells = [].slice.call(row.querySelectorAll('th, td'));
+                    cells[index].style.removeProperty("background-color");
+                    cells[index].style.removeProperty("color");
+                });
+                */
+            }
             var th = (e.Target as HTMLElement).Closest("th");
             var tr = th.ParentElement.QuerySelectorAll("th");
-            var index = tr.FindItemAndIndex(x => x == th).Item2;
+            index = tr.FindItemAndIndex(x => x == th).Item2;
             if (index < 0)
             {
                 return;
             }
+            LastThClick = th;
+            LastNumClick = index;
             /*@
-                th.parentElement.parentElement.parentElement.querySelectorAll('tr:not(.summary)').forEach(function(row) {
+                table.querySelectorAll('tr:not(.summary)').forEach(function(row) {
                     if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
                         return;
                     }
@@ -300,15 +319,12 @@ namespace Core.Components
 
         protected void FocusOutHeader(Event e, GridPolicy header)
         {
-            var th = (e.Target as HTMLElement).Closest("th");
-            var tr = th.ParentElement.QuerySelectorAll("th");
-            var index = tr.FindItemAndIndex(x => x == th).Item2;
-            if (index < 0)
+            var index = LastNumClick;
+            var table = DataTable;
+            if (LastNumClick != null)
             {
-                return;
-            }
-            /*@
-                th.parentElement.parentElement.parentElement.querySelectorAll('tr:not(.summary)').forEach(function(row) {
+                /*@
+                table.querySelectorAll('tr:not(.summary)').forEach(function(row) {
                     if(row.hasAttribute('virtualrow') || row.classList.contains('group-row')){
                        return;
                     }
@@ -317,6 +333,7 @@ namespace Core.Components
                     cells[index].style.removeProperty("color");
                 });
                 */
+            }
         }
 
         protected void ThHotKeyHandler(Event e, GridPolicy header)
