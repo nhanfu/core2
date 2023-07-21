@@ -172,6 +172,18 @@ namespace Core.Components
                 case KeyCodeEnum.Enter:
                     EnterKeydownHandler(code);
                     break;
+                case KeyCodeEnum.Tab:
+                    e.StopPropagation();
+                    e.PreventDefault();
+                    var listViewItem = this.FindClosest<ListViewItem>();
+                    if (listViewItem != null)
+                    {
+                        var td = Element.Closest("td");
+                        var nextElement = listViewItem.FilterChildren(x => x.Element.ParentElement == td.NextElementSibling).FirstOrDefault();
+                        nextElement.Focus();
+                        nextElement.ParentElement.Focus();
+                    }
+                    break;
                 case KeyCodeEnum.F6:
                     if (_gv != null && _gv.Show)
                     {
