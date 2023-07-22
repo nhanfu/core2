@@ -787,8 +787,8 @@ namespace Core.Components
                     OperatorText = opText,
                     IsSearch = isSearch
                 });
+                _summarys.Add(new HTMLElement());
             }
-            _summarys.Add(new HTMLElement());
             Task.Run(async () =>
             {
                 await ActionFilter();
