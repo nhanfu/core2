@@ -98,6 +98,7 @@ namespace TMS.API.Models
         public int? BodyItemHeight { get; set; }
         public int? FooterHeight { get; set; }
         public int? ScrollHeight { get; set; }
+        public string ScriptValidation { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

@@ -80,6 +80,7 @@ namespace Core.Models
         public bool FilterEq { get; set; }
         public string DatabaseName { get; set; }
         public bool AddDate { get; set; }
+        public string ScriptValidation { get; set; }
 
         public virtual Entity Entity { get; set; }
         public virtual Feature Feature { get; set; }

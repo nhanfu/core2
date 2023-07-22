@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 using TextAlign = Core.Enums.TextAlign;
@@ -2043,7 +2044,10 @@ namespace Core.Components
             }
             if (headers.HasElement())
             {
-                headers.ForEach(header => rowSection.RenderTableCell(row, HeaderComponentMap[header.GetHashCode()]));
+                headers.ForEach(header =>
+                {
+                    rowSection.RenderTableCell(row, HeaderComponentMap[header.GetHashCode()]);
+                });
             }
             if (emptyRow)
             {
@@ -2080,6 +2084,13 @@ namespace Core.Components
                     rowSection.Element.AddClass("new-row");
                 }
             }
+            headers.Where(x => !x.ScriptValidation.IsNullOrWhiteSpace()).ForEach(header =>
+            {
+                if (Utils.IsFunction(header.ScriptValidation, out Function fn))
+                {
+                    fn.Call(this, rowSection);
+                }
+            });
             return rowSection;
         }
 
@@ -2279,6 +2290,13 @@ namespace Core.Components
                         rowSection.Focused = true;
                         nextComponent.Focus();
                     }
+                    headers.Where(x => !x.ScriptValidation.IsNullOrWhiteSpace()).ForEach(header =>
+                    {
+                        if (Utils.IsFunction(header.ScriptValidation, out Function fn))
+                        {
+                            fn.Call(this, rowSection);
+                        }
+                    });
                 }
             }
         }
