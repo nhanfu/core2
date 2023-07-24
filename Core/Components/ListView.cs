@@ -1670,15 +1670,21 @@ namespace Core.Components
         public void MoveDown()
         {
             ClearSelected();
-            if (SelectedIndex >= RowData.Data.Count - 1)
+            if (SelectedIndex == -1 || SelectedIndex == AllListViewItem.Count())
             {
                 SelectedIndex = 0;
             }
-            else if (SelectedIndex < RowData.Data.Count - 1)
+            RowAction(x => x.Selected = true, false);
+        }
+
+        public virtual void MoveUp()
+        {
+            ClearSelected();
+            if (SelectedIndex <= 0 || SelectedIndex == AllListViewItem.Count())
             {
-                SelectedIndex++;
+                SelectedIndex = AllListViewItem.Count() - 1;
             }
-            RowAction(SelectedIndex, x => x.Selected = true, false);
+            RowAction(x => x.Selected = true, true);
         }
 
         public void ClearSelected()
@@ -1688,16 +1694,24 @@ namespace Core.Components
             LastListViewItem = null;
         }
 
-        public void RowAction(int index, Action<ListViewItem> action, bool sub)
+        public void RowAction(Action<ListViewItem> action, bool sub)
         {
-            if (index < 0 || action is null || index >= AllListViewItem.Count())
+            var row = AllListViewItem.FirstOrDefault(x => x.RowNo == (sub ? (SelectedIndex - 1) : (SelectedIndex + 1)));
+            if (row is null)
             {
                 return;
             }
-            var row = AllListViewItem.FirstOrDefault(x => x.RowNo == index);
+            if (sub)
+            {
+                SelectedIndex--;
+            }
+            else
+            {
+                SelectedIndex++;
+            }
             if (row.GroupRow)
             {
-                row = AllListViewItem.FirstOrDefault(x => x.RowNo == (sub ? (index - 1) : (index + 1)));
+                row = AllListViewItem.FirstOrDefault(x => x.RowNo == (sub ? (SelectedIndex - 1) : (SelectedIndex + 1)));
             }
             action.Invoke(row);
         }
@@ -1712,20 +1726,6 @@ namespace Core.Components
             AllListViewItem
                 .Where(x => predicate == null || predicate(x))
                 .ToList().ForEach(x => action.Invoke(x));
-        }
-
-        public virtual void MoveUp()
-        {
-            ClearSelected();
-            if (SelectedIndex <= 0)
-            {
-                SelectedIndex = RowData.Data.Count - 1;
-            }
-            else if (SelectedIndex > 0)
-            {
-                SelectedIndex--;
-            }
-            RowAction(SelectedIndex, x => x.Selected = true, true);
         }
 
         public bool IsRowDirty(object row)
