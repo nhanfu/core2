@@ -529,14 +529,38 @@ namespace Core.Components.Forms
             LockUpdate();
             ToggleApprovalBtn();
             Html.Take(Element).TabIndex(-1).Trigger(EventType.Focus).Event(EventType.FocusIn, async () => await this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusIn, Entity))
+                .Event(EventType.KeyDown, async (e) => await KeyDownIntro(e))
                 .Event(EventType.FocusOut, async () => await this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusOut, Entity));
             DOMContentLoaded?.Invoke();
             await this.DispatchEventToHandlerAsync(Feature.Events, EventType.DOMContentLoaded, Entity);
-            var script = Document.CreateElement(Bridge.Html5.ElementType.Script.ToString()) as HTMLScriptElement;
-            script.TextContent = feature.Script;
-            script.Type = "text/javascript";
-            Document.Head.AppendChild(script);
-            script.Remove();
+        }
+
+        private async Task KeyDownIntro(Event evt)
+        {
+            if (evt.KeyCode() == (int)KeyCodeEnum.H && evt.CtrlOrMetaKey())
+            {
+                evt.PreventDefault();
+                var intro = await new Client(nameof(Intro)).GetRawList<Intro>($"?$filter=FeatureId eq {Feature.Id}&$orderby=Order asc");
+                var script = @"(x) => {
+                                debugger;
+                                introJs().setOptions({
+                                  steps: [
+                                  {
+                                    intro: ""Hướng dẫn sử dụng chức năng!""
+                                  }";
+                foreach (var item in intro)
+                {
+                    script += @",{
+                                    intro: '" + item.Label + @"',
+                                    element: Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.EditableComponent, x, '" + item.FieldName + @"').Element
+                                  }";
+                }
+                script += @"]}).start();}";
+                if (Utils.IsFunction(script, out Function fn))
+                {
+                    fn.Call(this, this);
+                }
+            }
         }
 
         private HTMLElement RenderTemplate(Feature layout, Feature feature)

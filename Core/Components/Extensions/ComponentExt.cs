@@ -316,6 +316,7 @@ namespace Core.Components.Extensions
             feature.FeaturePolicy = policyOdata.Result;
             feature.ComponentGroup = componentGroupTask.Result;
             FeatureMap.TryAdd(featureName, feature);
+            ExecuteFeatureScript(feature);
             return feature;
         }
 

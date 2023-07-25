@@ -29,6 +29,7 @@ namespace TMS.API.Models
         public virtual DbSet<FeaturePolicy> FeaturePolicy { get; set; }
         public virtual DbSet<FileUpload> FileUpload { get; set; }
         public virtual DbSet<GridPolicy> GridPolicy { get; set; }
+        public virtual DbSet<Intro> Intro { get; set; }
         public virtual DbSet<MasterData> MasterData { get; set; }
         public virtual DbSet<RequestLog> RequestLog { get; set; }
         public virtual DbSet<Role> Role { get; set; }
@@ -494,6 +495,11 @@ namespace TMS.API.Models
                     .WithMany(p => p.GridPolicyReference)
                     .HasForeignKey(d => d.ReferenceId)
                     .HasConstraintName("FK_GridPolicy_RefEntity");
+            });
+
+            modelBuilder.Entity<Intro>(entity =>
+            {
+                entity.Property(e => e.FieldName).HasMaxLength(250);
             });
 
             modelBuilder.Entity<MasterData>(entity =>

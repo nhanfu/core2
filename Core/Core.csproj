@@ -61,6 +61,9 @@
     <Compile Include="..\Core.API\Models\Images.cs">
       <Link>Models\Images.cs</Link>
     </Compile>
+    <Compile Include="..\Core.API\Models\Intro.cs">
+      <Link>Models\Intro.cs</Link>
+    </Compile>
     <Compile Include="..\Core.API\Models\VendorBranch.cs">
       <Link>Models\VendorBranch.cs</Link>
     </Compile>
