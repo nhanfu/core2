@@ -532,6 +532,11 @@ namespace Core.Components.Forms
                 .Event(EventType.FocusOut, async () => await this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusOut, Entity));
             DOMContentLoaded?.Invoke();
             await this.DispatchEventToHandlerAsync(Feature.Events, EventType.DOMContentLoaded, Entity);
+            var script = Document.CreateElement(Bridge.Html5.ElementType.Script.ToString()) as HTMLScriptElement;
+            script.TextContent = feature.Script;
+            script.Type = "text/javascript";
+            Document.Head.AppendChild(script);
+            script.Remove();
         }
 
         private HTMLElement RenderTemplate(Feature layout, Feature feature)

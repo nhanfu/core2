@@ -39,7 +39,7 @@ namespace Core.Components
             var html = Html.Instance;
             if (ButtonEle is null)
             {
-                Html.Take(ParentElement).Button.Render();
+                Html.Take(ParentElement).Button.ClassName("btn" + GuiInfo.Id).Render();
                 Element = ButtonEle = Html.Context;
             }
             else
