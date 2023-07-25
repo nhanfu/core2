@@ -50,6 +50,7 @@ namespace Core.Models
         public int? LayoutId { get; set; }
         public string DataSource { get; set; }
         public string Gallery { get; set; }
+        public bool DeleteTemp { get; set; }
 
         public virtual Entity Entity { get; set; }
         public virtual Feature Parent { get; set; }

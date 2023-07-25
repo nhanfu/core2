@@ -39,6 +39,7 @@ namespace Core.Components
         public Component LastComponentFocus;
         public int LastHeaderId;
         public int _delay = 0;
+        public List<int> DeleteTempIds;
         public AdvSearchVM AdvSearchVM { get; set; }
         public bool Editable { get; set; }
         public ListViewItem LastListViewItem { get; set; }
@@ -115,6 +116,7 @@ namespace Core.Components
 
         public ListView(Component ui, HTMLElement ele = null) : base(ui)
         {
+            DeleteTempIds = new List<int>();
             GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
             Id = ui.Id.ToString();
             Name = ui.FieldName;
@@ -1024,22 +1026,31 @@ namespace Core.Components
                 Toast.Success("Xóa dữ liệu thành công");
                 return null;
             }
-            var client = new Client(entity);
-            var success = await client.HardDeleteAsync(ids);
-            if (success)
+            if (EditForm.Feature.DeleteTemp)
             {
-                var deletedHistory = AllListViewItem
-                    .Where(x => x.Selected).Select(x => x.OriginalText).Combine(Utils.NewLine);
+                DeleteTempIds = ids;
                 AllListViewItem.Where(x => x.Selected).ToArray().ForEach(x => x.Dispose());
-                Toast.Success("Xóa dữ liệu thành công");
                 ClearSelected();
+                Toast.Success("Xóa tạm thành công");
                 return deleted;
             }
             else
             {
-                Toast.Warning("Xóa không thành công");
+                var client = new Client(entity);
+                var success = await client.HardDeleteAsync(ids);
+                if (success)
+                {
+                    AllListViewItem.Where(x => x.Selected).ToArray().ForEach(x => x.Dispose());
+                    Toast.Success("Xóa dữ liệu thành công");
+                    ClearSelected();
+                    return deleted;
+                }
+                else
+                {
+                    Toast.Warning("Xóa không thành công");
+                }
+                return null;
             }
-            return null;
         }
 
         public virtual void RemoveRange(IEnumerable<object> deleted)

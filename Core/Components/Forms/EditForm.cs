@@ -272,6 +272,14 @@ namespace Core.Components.Forms
                 .ToArray();
         }
 
+        private ListView[] GetDeleteGrid()
+        {
+            return ListViews
+                .Where(x => x.GuiInfo.IdField.HasAnyChar())
+                .Where(x => x.DeleteTempIds.Any())
+                .ToArray();
+        }
+
         public async Task<object> AddOrUpdate(object entity)
         {
             var showMessage = entity != null;
@@ -301,6 +309,28 @@ namespace Core.Components.Forms
                 x.UpdatedRows.ForEach(row => row.SetPropValue(x.GuiInfo.IdField, id));
             });
             await Task.WhenAll(dirtyGrid.Select(x => x.BatchUpdate()));
+        }
+
+        private async Task DeleteGridView()
+        {
+            var dirtyGrid = GetDeleteGrid();
+            if (dirtyGrid.Nothing())
+            {
+                return;
+            }
+            foreach (var item in dirtyGrid)
+            {
+                var client = new Client(item.GuiInfo.RefName);
+                var success = await client.HardDeleteAsync(item.DeleteTempIds);
+                if (success)
+                {
+                    item.DeleteTempIds.Clear();
+                }
+                else
+                {
+                    Toast.Warning("Lỗi xóa chi tiết vui lòng kiểm tra lại");
+                }
+            }
         }
 
         private async Task UpdateHistory(string changedLog)
@@ -351,6 +381,10 @@ namespace Core.Components.Forms
             }
             Entity.CopyPropFrom(data);
             await UpdateIndependantGridView();
+            if (Feature.DeleteTemp)
+            {
+                await DeleteGridView();
+            }
             return data;
         }
 
