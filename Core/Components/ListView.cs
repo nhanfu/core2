@@ -1031,6 +1031,7 @@ namespace Core.Components
                 DeleteTempIds = ids;
                 AllListViewItem.Where(x => x.Selected).ToArray().ForEach(x => x.Dispose());
                 ClearSelected();
+                base.Dirty = true;
                 Toast.Success("Xóa tạm thành công");
                 return deleted;
             }
