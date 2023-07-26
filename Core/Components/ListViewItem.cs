@@ -215,7 +215,6 @@ namespace Core.Components
             {
                 component.SetDisabled(true);
             }
-
             if (component.Element != null && !header.ChildStyle.IsNullOrWhiteSpace())
             {
                 component.Element.Style.CssText = header.ChildStyle;

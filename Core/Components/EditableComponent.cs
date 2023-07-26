@@ -84,30 +84,29 @@ namespace Core.Components
                 case KeyCodeEnum.Tab:
                     if (listViewItem != null)
                     {
-                        e.PreventDefault();
                         var td = Element.Closest("td");
-                        if (e.ShiftKey())
-                        {
-                            var nextElement = listViewItem.FilterChildren(x => x.Element.Closest("td") == td.PreviousElementSibling).FirstOrDefault();
-                            if (nextElement != null)
-                            {
-                                FocusElement(nextElement);
-                            }
-                        }
-                        else
+                        if (!e.ShiftKey())
                         {
                             var nextElement = listViewItem.FilterChildren(x => x.Element.Closest("td") == td.NextElementSibling).FirstOrDefault();
                             if (nextElement is null)
                             {
+                                e.PreventDefault();
                                 nextElement = listViewItem.Children.FirstOrDefault();
+                                FocusElement(nextElement);
                             }
-                            FocusElement(nextElement);
                         }
                     }
                     break;
                 case KeyCodeEnum.Enter:
-                    if (listViewItem != null && GuiInfo.ShowAudit)
+                    if (listViewItem != null && EditForm.Feature.CustomNextCell)
                     {
+                        if (this is SearchEntry search)
+                        {
+                            if (search._gv != null && search._gv.Show)
+                            {
+                                return;
+                            }
+                        }
                         e.PreventDefault();
                         var td = Element.Closest("td");
                         if (e.ShiftKey())

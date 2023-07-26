@@ -574,6 +574,8 @@ namespace Core.Components.Forms
             if (evt.KeyCode() == (int)KeyCodeEnum.H && evt.CtrlOrMetaKey())
             {
                 evt.PreventDefault();
+                await Client.LoadLink("https://unpkg.com/intro.js/introjs.css");
+                await Client.LoadScript("https://unpkg.com/intro.js/intro.js");
                 var intro = await new Client(nameof(Intro)).GetRawList<Intro>($"?$filter=FeatureId eq {Feature.Id}&$orderby=Order asc");
                 var script = @"(x) => {
                                 debugger;
