@@ -192,6 +192,10 @@ namespace Core.Components
 
         private void EnterKeydownHandler(KeyCodeEnum? code)
         {
+            if (EditForm.Feature.CustomNextCell)
+            {
+                return;
+            }
             if (_gv != null && _gv.Show)
             {
                 EnterKeydownTableStillShow(code);
@@ -396,8 +400,6 @@ namespace Core.Components
 
         private void Search(string term = null, bool changeEvent = true, int timeout = 500, bool delete = false)
         {
-
-
             Window.ClearTimeout(_waitForInput);
             _waitForInput = Window.SetTimeout(() =>
             {

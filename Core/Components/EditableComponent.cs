@@ -74,10 +74,14 @@ namespace Core.Components
         public void ListViewItemTab(Event e)
         {
             var code = e.KeyCodeEnum();
+            var listViewItem = this.FindClosest<ListViewItem>();
+            if (listViewItem is null)
+            {
+                return;
+            }
             switch (code)
             {
                 case KeyCodeEnum.Tab:
-                    var listViewItem = this.FindClosest<ListViewItem>();
                     if (listViewItem != null)
                     {
                         e.PreventDefault();
@@ -100,6 +104,32 @@ namespace Core.Components
                             FocusElement(nextElement);
                         }
                     }
+                    break;
+                case KeyCodeEnum.Enter:
+                    if (listViewItem != null && GuiInfo.ShowAudit)
+                    {
+                        e.PreventDefault();
+                        var td = Element.Closest("td");
+                        if (e.ShiftKey())
+                        {
+                            var nextElement = listViewItem.FilterChildren(x => x.Element.Closest("td") == td.PreviousElementSibling).FirstOrDefault();
+                            if (nextElement != null)
+                            {
+                                FocusElement(nextElement);
+                            }
+                        }
+                        else
+                        {
+                            var nextElement = listViewItem.FilterChildren(x => x.Element.Closest("td") == td.NextElementSibling).FirstOrDefault();
+                            if (nextElement is null)
+                            {
+                                nextElement = listViewItem.Children.FirstOrDefault();
+                            }
+                            FocusElement(nextElement);
+                        }
+                    }
+                    break;
+                default:
                     break;
             }
         }

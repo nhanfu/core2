@@ -51,6 +51,7 @@ namespace Core.Models
         public string DataSource { get; set; }
         public string Gallery { get; set; }
         public bool DeleteTemp { get; set; }
+        public bool CustomNextCell { get; set; }
 
         public virtual Entity Entity { get; set; }
         public virtual Feature Parent { get; set; }
