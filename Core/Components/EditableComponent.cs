@@ -85,7 +85,7 @@ namespace Core.Components
                     if (listViewItem != null)
                     {
                         var td = Element.Closest("td");
-                        if(td.NextElementSibling is null)
+                        if (td.NextElementSibling is null)
                         {
                             e.PreventDefault();
                             var nextElement = listViewItem.Children.FirstOrDefault();

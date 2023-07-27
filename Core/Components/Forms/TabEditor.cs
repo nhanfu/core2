@@ -84,7 +84,7 @@ namespace Core.Components.Forms
 
             _li = Html.Context.ParentElement;
             IconElement = _li.FirstElementChild;
-            Html.Take(TabContainer).Div.TabIndex(-1).Trigger(EventType.Focus).Event(EventType.KeyDown, HotKeyHandler).Render();
+            Html.Take(TabContainer).Div.Event(EventType.KeyDown, HotKeyHandler).Render();
             Element = Html.Context;
             ParentElement = TabContainer;
             Tabs.Add(this);
