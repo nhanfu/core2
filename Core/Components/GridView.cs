@@ -2262,6 +2262,7 @@ namespace Core.Components
                 MoveEmptyRow(rowSection);
                 EmptyRowSection.Children.Clear();
                 AddNewEmptyRow();
+                LastElementFocus.Focus();
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
             if (component != null && component.ComponentType == nameof(GridView))
