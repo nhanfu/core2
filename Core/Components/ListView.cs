@@ -1016,12 +1016,11 @@ namespace Core.Components
         {
             var entity = GuiInfo.RefName;
             var ids = deleted.Select(x => (int)x[IdField]).Where(x => x > 0).ToList();
-            var removeRow = deleted.Where(x => (int)x[IdField] <= 0).ToList();
-            if (removeRow.Any())
+            if (deleted.Any())
             {
-                RemoveRange(removeRow);
+                RemoveRange(deleted);
             }
-            if (ids.Nothing())
+            if (deleted.Nothing())
             {
                 Toast.Success("Xóa dữ liệu thành công");
                 return null;
