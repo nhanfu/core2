@@ -99,6 +99,7 @@ namespace TMS.API.Models
         public int? FooterHeight { get; set; }
         public int? ScrollHeight { get; set; }
         public string ScriptValidation { get; set; }
+        public bool FilterLocal { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

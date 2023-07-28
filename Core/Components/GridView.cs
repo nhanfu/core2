@@ -511,6 +511,11 @@ namespace Core.Components
 
         public override async Task ActionFilter()
         {
+            if (GuiInfo.FilterLocal)
+            {
+                ApplyLocal();
+                return;
+            }
             if (CellSelected.Nothing())
             {
                 var dataSourceFilter = GuiInfo.DataSourceFilter;
@@ -759,6 +764,50 @@ namespace Core.Components
                 search?._input.Focus();
             }
             Toast.Success(lisToast.Combine("</br>"));
+        }
+
+        private void ApplyLocal()
+        {
+            var tb = DataTable as HTMLTableElement;
+            HTMLCollection rows;
+            if (GuiInfo.TopEmpty)
+            {
+                rows = tb.TBodies.LastOrDefault().Children;
+            }
+            else
+            {
+                rows = tb.TBodies.FirstOrDefault().Children;
+            }
+            if (CellSelected.Nothing())
+            {
+                for (var i = 0; i < rows.Length; i++)
+                {
+                    rows[i].RemoveClass("d-none");
+                }
+                return;
+            }
+            CellSelected.ForEach(cell =>
+            {
+                var header = Header.IndexOf(y => y.FieldName == cell.FieldName);
+                for (var i = 0; i < rows.Length; i++)
+                {
+                    var cells = rows[i].ChildNodes;
+                    var found = false;
+                    var cellText = cells[header].TextContent ?? string.Empty;
+                    if (cellText.ToLowerCase().IndexOf(cell.ValueText.ToLowerCase()) > -1)
+                    {
+                        found = true;
+                    }
+                    if (found)
+                    {
+                        rows[i].RemoveClass("d-none");
+                    }
+                    else
+                    {
+                        rows[i].AddClass("d-none");
+                    }
+                }
+            });
         }
 
         public void FilterSelected(object ev)
@@ -1391,6 +1440,37 @@ namespace Core.Components
                 case KeyCodeEnum.F6:
                     e.PreventDefault();
                     e.StopPropagation();
+                    if (GuiInfo.FilterLocal)
+                    {
+                        var lastElement = _summarys.LastOrDefault();
+                        if (lastElement.InnerHTML == string.Empty)
+                        {
+                            CellSelected.RemoveAt(CellSelected.Count - 1);
+                            Task.Run(async () =>
+                            {
+                                await ActionFilter();
+                                _summarys.RemoveAt(_summarys.Count - 1);
+                            });
+                        }
+                        else
+                        {
+                            if (lastElement.Style.Display.ToString() == "none")
+                            {
+                                CellSelected.RemoveAt(CellSelected.Count - 1);
+                                Task.Run(async () =>
+                                {
+                                    await ActionFilter();
+                                });
+                                lastElement.Show();
+                            }
+                            else
+                            {
+                                _summarys.RemoveAt(_summarys.Count - 1);
+                                lastElement.Remove();
+                            }
+                        }
+                        return;
+                    }
                     if (_summarys.Any())
                     {
                         var lastElement = _summarys.LastOrDefault();

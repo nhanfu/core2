@@ -80,6 +80,7 @@ namespace TMS.API.Models
         public string DatabaseName { get; set; }
         public bool AddDate { get; set; }
         public string ScriptValidation { get; set; }
+        public bool FilterLocal { get; set; }
 
         public virtual Entity Entity { get; set; }
         public virtual Feature Feature { get; set; }
