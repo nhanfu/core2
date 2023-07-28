@@ -786,13 +786,18 @@ namespace Core.Components
                 }
                 return;
             }
+            LastElementFocus = null;
             CellSelected.ForEach(cell =>
             {
                 var header = Header.IndexOf(y => y.FieldName == cell.FieldName);
                 for (var i = 0; i < rows.Length; i++)
                 {
-                    var cells = rows[i].ChildNodes;
+                    var cells = rows[i].Children;
                     var found = false;
+                    if (cells[header] is null)
+                    {
+                        continue;
+                    }
                     var cellText = cells[header].TextContent ?? string.Empty;
                     if (cellText.ToLowerCase().IndexOf(cell.ValueText.ToLowerCase()) > -1)
                     {
@@ -800,6 +805,7 @@ namespace Core.Components
                     }
                     if (found)
                     {
+                        LastElementFocus = cells[header];
                         rows[i].RemoveClass("d-none");
                     }
                     else
@@ -808,6 +814,10 @@ namespace Core.Components
                     }
                 }
             });
+            if (LastElementFocus != null)
+            {
+                LastElementFocus.Focus();
+            }
         }
 
         public void FilterSelected(object ev)
@@ -1440,40 +1450,40 @@ namespace Core.Components
                 case KeyCodeEnum.F6:
                     e.PreventDefault();
                     e.StopPropagation();
-                    if (GuiInfo.FilterLocal)
+                    if (_summarys.Any())
                     {
+                        
                         var lastElement = _summarys.LastOrDefault();
-                        if (lastElement.InnerHTML == string.Empty)
+                        if (GuiInfo.FilterLocal)
                         {
-                            CellSelected.RemoveAt(CellSelected.Count - 1);
-                            Task.Run(async () =>
-                            {
-                                await ActionFilter();
-                                _summarys.RemoveAt(_summarys.Count - 1);
-                            });
-                        }
-                        else
-                        {
-                            if (lastElement.Style.Display.ToString() == "none")
+                            if (lastElement.InnerHTML == string.Empty)
                             {
                                 CellSelected.RemoveAt(CellSelected.Count - 1);
                                 Task.Run(async () =>
                                 {
                                     await ActionFilter();
+                                    _summarys.RemoveAt(_summarys.Count - 1);
                                 });
-                                lastElement.Show();
                             }
                             else
                             {
-                                _summarys.RemoveAt(_summarys.Count - 1);
-                                lastElement.Remove();
+                                if (lastElement.Style.Display.ToString() == "none")
+                                {
+                                    CellSelected.RemoveAt(CellSelected.Count - 1);
+                                    Task.Run(async () =>
+                                    {
+                                        await ActionFilter();
+                                    });
+                                    lastElement.Show();
+                                }
+                                else
+                                {
+                                    _summarys.RemoveAt(_summarys.Count - 1);
+                                    lastElement.Remove();
+                                }
                             }
+                            return;
                         }
-                        return;
-                    }
-                    if (_summarys.Any())
-                    {
-                        var lastElement = _summarys.LastOrDefault();
                         if (lastElement.InnerHTML == string.Empty)
                         {
                             CellSelected.RemoveAt(CellSelected.Count - 1);

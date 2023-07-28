@@ -1016,9 +1016,10 @@ namespace Core.Components
         {
             var entity = GuiInfo.RefName;
             var ids = deleted.Select(x => (int)x[IdField]).Where(x => x > 0).ToList();
-            if (deleted.Any())
+            var removeRow = deleted.Where(x => (int)x[IdField] <= 0).ToList();
+            if (removeRow.Any())
             {
-                RemoveRange(deleted);
+                RemoveRange(removeRow);
             }
             if (deleted.Nothing())
             {
@@ -1027,6 +1028,10 @@ namespace Core.Components
             }
             if (EditForm.Feature.DeleteTemp)
             {
+                if (ids.Nothing())
+                {
+                    RemoveRange(deleted);
+                }
                 DeleteTempIds = ids;
                 AllListViewItem.Where(x => x.Selected).ToArray().ForEach(x => x.Dispose());
                 ClearSelected();
@@ -1043,6 +1048,10 @@ namespace Core.Components
                     AllListViewItem.Where(x => x.Selected).ToArray().ForEach(x => x.Dispose());
                     Toast.Success("Xóa dữ liệu thành công");
                     ClearSelected();
+                    if (ids.Nothing())
+                    {
+                        RemoveRange(deleted);
+                    }
                     return deleted;
                 }
                 else
