@@ -439,7 +439,14 @@ namespace Core.Components
                     _gv.ParentElement = _rootResult;
                     _gv.Entity = Entity;
                     _gv.ListViewSearch.EntityVM.SearchTerm = term;
-                    _gv.ClearRowData();
+                    if (this is MultipleSearchEntry)
+                    {
+                        _gv.RowData.Data = new List<object>();
+                    }
+                    else
+                    {
+                        _gv.ClearRowData();
+                    }
                     await _gv.ActionFilter();
                     GridResultDomLoaded();
                     _isRendering = false;
@@ -457,6 +464,10 @@ namespace Core.Components
             _gv.FeatureId = "null";
             RenderRootResult();
             ParentElement = _rootResult;
+            if (this is MultipleSearchEntry)
+            {
+                _gv.RowData.Data = new List<object>();
+            }
             _gv.EditForm = EditForm;
             _gv.GuiInfo = GuiInfo;
             _gv.ParentElement = _rootResult;
@@ -587,6 +598,10 @@ namespace Core.Components
             if (delete && _input.Value.IsNullOrEmpty())
             {
                 return;
+            }
+            if (this is MultipleSearchEntry)
+            {
+                _isRendering = false;
             }
             TriggerSearch(null);
         }

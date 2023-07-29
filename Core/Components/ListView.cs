@@ -1028,9 +1028,10 @@ namespace Core.Components
             }
             if (EditForm.Feature.DeleteTemp)
             {
-                if (ids.Nothing())
+                var deleteIds = deleted.Where(x => (int)x[IdField] > 0).ToList();
+                if (deleteIds.Any())
                 {
-                    RemoveRange(deleted);
+                    RemoveRange(deleteIds);
                 }
                 DeleteTempIds = ids;
                 AllListViewItem.Where(x => x.Selected).ToArray().ForEach(x => x.Dispose());
@@ -1298,7 +1299,7 @@ namespace Core.Components
 
         public void ClearRowData()
         {
-            RowData.Data.Clear();
+            RowData?.Data?.Clear();
             RowAction(x => !x.EmptyRow, x => x.Dispose());
             MainSection.Element.InnerHTML = null;
             if (Entity is null || Parent is SearchEntry)

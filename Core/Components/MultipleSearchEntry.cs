@@ -229,7 +229,7 @@ namespace Core.Components
                 FindMatchText();
                 if (UserInput != null)
                 {
-                    UserInput.Invoke(new ObservableArgs { NewData = ListValues, OldData = oldList });
+                    UserInput.Invoke(new ObservableArgs { NewData = ListValues, OldData = oldList, EvType = EventType.Change });
                 }
                 await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, ListValues, oldList);
                 tag.Remove();
@@ -266,7 +266,7 @@ namespace Core.Components
             _input.Focus();
             if (UserInput != null)
             {
-                UserInput.Invoke(new ObservableArgs { NewData = ListValues, OldData = ListValues, NewMatch = rowData });
+                UserInput.Invoke(new ObservableArgs { NewData = ListValues, OldData = ListValues, NewMatch = rowData, EvType = EventType.Change });
             }
             Task.Run(async () =>
             {

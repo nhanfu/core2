@@ -201,7 +201,7 @@ namespace Core.Components
                 var source = header.LocalData ?? (ListView.RefData.Nothing() ? null : ListView.RefData.GetValueOrDefault(header.RefName));
                 header.LocalData = source;
             }
-            if (component is SearchEntry searchEntry)
+            if (component is SearchEntry searchEntry && !(component is MultipleSearchEntry))
             {
                 var matched = header.LocalData?.FirstOrDefault(x => (int)x[IdField] == (int?)rowData?.GetComplexPropValue(header.FieldName));
                 searchEntry.Matched = matched;
