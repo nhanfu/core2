@@ -84,23 +84,13 @@ namespace Core.Components
                 case KeyCodeEnum.Tab:
                     if (listViewItem != null)
                     {
-                        var td = Element.Closest("td");
-                        if (td.NextElementSibling is null)
+                        var td = (e.Target as HTMLElement).Closest("td");
+                        if (td != null && td.NextElementSibling is null)
                         {
                             e.PreventDefault();
-                            var nextElement = listViewItem.Children.FirstOrDefault();
+                            var nextElement = listViewItem.Children.FirstOrDefault(x => x.GuiInfo.Editable);
                             FocusElement(nextElement);
                             return;
-                        }
-                        if (!e.ShiftKey())
-                        {
-                            var nextElement = listViewItem.FilterChildren(x => x.Element.Closest("td") == td.NextElementSibling).FirstOrDefault();
-                            if (nextElement is null)
-                            {
-                                e.PreventDefault();
-                                nextElement = listViewItem.Children.FirstOrDefault();
-                                FocusElement(nextElement);
-                            }
                         }
                     }
                     break;
