@@ -359,8 +359,7 @@ namespace Core.Components.Forms
                 Window.History.ReplaceState(null, LangSelect.Get(TabTitle), Window.Location.Origin + "/" + Feature.Name.Replace(" ", "-") + $"{(Feature.IsMenu ? "" : $"?Id={int.Parse(Entity[IdField].ToString())}")}");
             }
             Document.Title = LangSelect.Get(TabTitle);
-            base.Focus();
-            Window.DispatchEvent(new Event(EventType.Resize.ToString()));
+            this.FindActiveComponent<EditableComponent>().FirstOrDefault()?.Focus();
         }
 
         public override bool Show
@@ -378,7 +377,6 @@ namespace Core.Components.Forms
                 {
                     _li.AddClass(ActiveClass);
                     _li.QuerySelector(ElementType.a.ToString()).AddClass(ActiveClass);
-                    Element.Focus();
                 }
                 else
                 {
