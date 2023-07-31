@@ -68,6 +68,10 @@ namespace Core.Components
                         printWindow.Print();
                         printWindow.AddEventListener(EventType.MouseMove, e => printWindow.Close());
                         printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
+                        printWindow.AddEventListener(EventType.AfterPrint, async e =>
+                        {
+                            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.AfterPrint, selectedRow);
+                        });
                         printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
                         _pdfReport.Dispose();
                         _preview.Remove();
@@ -88,6 +92,10 @@ namespace Core.Components
                         printWindow.AddEventListener(EventType.MouseMove, e => printWindow.Close());
                         printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
                         printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
+                        printWindow.AddEventListener(EventType.AfterPrint, async e =>
+                        {
+                            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.AfterPrint, EditForm);
+                        });
                         _pdfReport.Dispose();
                         _preview.Remove();
                     }, 2000);
