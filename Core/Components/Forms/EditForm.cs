@@ -1359,7 +1359,7 @@ namespace Core.Components.Forms
             PrintSection(printable);
         }
 
-        public static string PrintSection(HTMLElement ele, bool openWindow = true, List<string> styles = null, bool printPreview = false)
+        public string PrintSection(HTMLElement ele, bool openWindow = true, List<string> styles = null, bool printPreview = false,Component component = null)
         {
             if (ele is null)
             {
@@ -1396,8 +1396,10 @@ namespace Core.Components.Forms
 
             printWindow.Document.Write(html);
             printWindow.Document.Close();
-
-            printWindow.AddEventListener(EventType.AfterPrint.ToString(), printWindow.Close);
+            printWindow.AddEventListener(EventType.AfterPrint, async e =>
+            {
+                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.AfterPrint, this);
+            });
             if (printPreview)
             {
                 Window.SetTimeout(printWindow.Print, 250);

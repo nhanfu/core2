@@ -61,7 +61,7 @@ namespace Core.Components
                         Element["requestFullscreen"].As<Function>()?.Call(Element);
                         Element.Style.Overflow = Overflow.Auto;
                     }).End
-                    .Button.ClassName("fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement, printPreview: true)).End
+                    .Button.ClassName("fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement, printPreview: true, component: GuiInfo)).End
                     .Button.ClassName("fal fa-file-pdf").Event(EventType.Click, async () => await GeneratePdf()).End
                     .Button.ClassName("fa fa-file-excel").Event(EventType.Click, () =>
                     {
