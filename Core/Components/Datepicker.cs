@@ -156,7 +156,7 @@ namespace Core.Components
 
         private async Task KeyDownDateTime(Event evt)
         {
-            if (evt.KeyCodeEnum() == KeyCodeEnum.Enter && _value is null)
+            if (evt.KeyCodeEnum() == KeyCodeEnum.Enter && _value is null && !EditForm.Feature.CustomNextCell)
             {
                 if (Input.Disabled)
                 {

@@ -89,6 +89,17 @@ namespace Core.Components
                         {
                             e.PreventDefault();
                             var nextElement = listViewItem.Children.FirstOrDefault(x => x.GuiInfo.Editable);
+                            if (nextElement is null)
+                            {
+                                nextElement = listViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id > 0);
+                            }
+                            FocusElement(nextElement);
+                            return;
+                        }
+                        if (this is CellText && td != null && td.NextElementSibling != null)
+                        {
+                            e.PreventDefault();
+                            var nextElement = listViewItem.Children.FirstOrDefault(x => x.Element.Closest("td") == td.NextElementSibling);
                             FocusElement(nextElement);
                             return;
                         }
