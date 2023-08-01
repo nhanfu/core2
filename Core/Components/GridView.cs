@@ -1901,7 +1901,7 @@ namespace Core.Components
                 gridPolicy = gridPolicy.Where(x => x.ComponentId == null).ToList();
             }
 
-            var permission = EditForm.GetElementPolicies(gridPolicy.Select(x => x.Id).ToArray(), Utils.GridPolicyId);
+            var permission = EditForm.GetGridPolicies(gridPolicy.Select(x => x.Id).ToArray(), Utils.GridPolicyId);
             var headers = gridPolicy.Where(x => !x.Hidden)
                 .Where(header => !header.IsPrivate || permission.Where(x => x.RecordId == header.Id).HasElementAndAll(policy => policy.CanRead))
                 .Select(CalcTextAlign).OrderByDescending(x => x.Frozen).ThenByDescending(header => header.ComponentType == "Button")

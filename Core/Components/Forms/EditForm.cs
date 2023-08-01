@@ -986,7 +986,16 @@ namespace Core.Components.Forms
         public FeaturePolicy[] GetElementPolicies(int[] recordIds, int entityId = Utils.ComponentGroupId) // Default of component group
         {
             var hasHidden = Feature.FeaturePolicy
-                    .Where(x => x.RoleId.HasValue && Client.Token.AllRoleIds.Contains(x.RoleId.Value))
+                    .Where(x => x.RoleId.HasValue && Client.Token.AllRoleIds.Contains(x.RoleId.Value) || (x.UserId.HasValue && Client.Token.UserId == x.UserId))
+                    .Where(x => x.EntityId == entityId && recordIds.Contains(x.RecordId))
+                    .ToArray();
+            return hasHidden;
+        }
+
+        public FeaturePolicy[] GetGridPolicies(int[] recordIds, int entityId = Utils.ComponentGroupId) // Default of component group
+        {
+            var hasHidden = Feature.FeaturePolicy
+                    .Where(x => x.RoleId.HasValue && Client.Token.AllRoleIds.Contains(x.RoleId.Value) || (x.UserId.HasValue && Client.Token.UserId == x.UserId))
                     .Where(x => x.EntityId == entityId && recordIds.Contains(x.RecordId))
                     .ToArray();
             return hasHidden;
@@ -995,7 +1004,16 @@ namespace Core.Components.Forms
         public FeaturePolicy[] GetElementPolicies(int recordId, int entityId = Utils.ComponentId) // Default of component
         {
             var hasHidden = Feature.FeaturePolicy
-                    .Where(x => x.RoleId.HasValue && Client.Token.AllRoleIds.Contains(x.RoleId.Value))
+                    .Where(x => x.RoleId.HasValue && Client.Token.AllRoleIds.Contains(x.RoleId.Value) || (x.UserId.HasValue && Client.Token.UserId == x.UserId))
+                    .Where(x => x.EntityId == entityId && recordId == x.RecordId)
+                    .ToArray();
+            return hasHidden;
+        }
+
+        public FeaturePolicy[] GetGridPolicies(int recordId, int entityId = Utils.ComponentId) // Default of component
+        {
+            var hasHidden = Feature.FeaturePolicy
+                    .Where(x => (x.RoleId.HasValue && Client.Token.AllRoleIds.Contains(x.RoleId.Value)) || (x.UserId.HasValue && Client.Token.UserId == x.UserId))
                     .Where(x => x.EntityId == entityId && recordId == x.RecordId)
                     .ToArray();
             return hasHidden;

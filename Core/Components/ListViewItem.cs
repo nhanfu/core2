@@ -189,7 +189,9 @@ namespace Core.Components
             {
                 return;
             }
-            var component = ((header.Editable || NotCellText.Contains(header.ComponentType)) && ListViewSection.ListView.CanWrite)
+            var gridPolicies = EditForm.GetGridPolicies(header.Id, Utils.GridPolicyId);
+            var canWrite = ListViewSection.ListView.CanDo(gridPolicies, x => x.CanWrite);
+            var component = ((header.Editable || NotCellText.Contains(header.ComponentType)) && ListViewSection.ListView.CanWrite && canWrite)
                 ? ComponentFactory.GetComponent(header, EditForm)
                 : new CellText(header);
             if (component is CellText cellText)
