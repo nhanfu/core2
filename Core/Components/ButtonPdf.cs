@@ -70,6 +70,7 @@ namespace Core.Components
                         printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
                         printWindow.AddEventListener(EventType.AfterPrint, async e =>
                         {
+                            Window.Alert("OK");
                             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.AfterPrint, selectedRow);
                         });
                         printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
@@ -94,6 +95,7 @@ namespace Core.Components
                         printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
                         printWindow.AddEventListener(EventType.AfterPrint, async e =>
                         {
+                            Window.Alert("OK");
                             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.AfterPrint, EditForm);
                         });
                         _pdfReport.Dispose();

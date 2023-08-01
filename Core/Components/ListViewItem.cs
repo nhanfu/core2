@@ -183,6 +183,29 @@ namespace Core.Components
 
         private int awaitUpdate = 0;
 
+        private bool CanDo(IEnumerable<FeaturePolicy> gridPolicies, Func<FeaturePolicy, bool> permissionPredicate)
+        {
+            var grid = gridPolicies.FirstOrDefault(x => x.UserId == Client.Token.UserId);
+            if (grid != null)
+            {
+                return grid.CanWrite;
+            }
+            else
+            {
+                var featurePolicy = EditForm.Feature.FeaturePolicy.Where(x => x.EntityId == null).Any(permissionPredicate);
+                if (!featurePolicy)
+                {
+                    return false;
+                }
+                var gridPolicy = gridPolicies.Any();
+                if (!gridPolicy)
+                {
+                    return true;
+                }
+                return gridPolicies.Any(permissionPredicate);
+            }
+        }
+
         internal virtual void RenderTableCell(object rowData, Component header, HTMLElement cellWrapper = null)
         {
             if (string.IsNullOrEmpty(header.FieldName))
@@ -190,7 +213,7 @@ namespace Core.Components
                 return;
             }
             var gridPolicies = EditForm.GetGridPolicies(header.Id, Utils.GridPolicyId);
-            var canWrite = ListViewSection.ListView.CanDo(gridPolicies, x => x.CanWrite);
+            var canWrite = CanDo(gridPolicies, x => x.CanWrite);
             var component = ((header.Editable || NotCellText.Contains(header.ComponentType)) && ListViewSection.ListView.CanWrite && canWrite)
                 ? ComponentFactory.GetComponent(header, EditForm)
                 : new CellText(header);
