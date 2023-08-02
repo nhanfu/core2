@@ -52,11 +52,11 @@ namespace Core.Components
             {
                 return;
             }
-            Html.Take(node.Element).Ul.ClassName((!first ? "d-block " : " ") + (first ? " treeview" : " "));
+            Html.Take(node.Element).Ul.ClassName((!first ? "d-block " : " ") + (first ? " wtree" : " "));
             var ul = Html.Context;
             rowDatas.ForEach(async (row) =>
             {
-                 await RenderRow(headers, node, row, ul);
+                await RenderRow(headers, node, row, ul);
             });
         }
 
@@ -72,20 +72,18 @@ namespace Core.Components
                 ListViewSection = MainSection
             };
             node.AddChild(rowSection);
-            rowSection.Element.AddClass("tree-node");
-            Html.Instance.Div.ClassName("d-inline-flex-fs").Table.ClassName("table").TRow.Render();
-            var tr = Html.Context;
-            var width = 95 / headers.Count();
+            Html.Instance.Div.ClassName(count > 0 ? "has" : "").Render();
+            var label = Html.Context;
             headers.ForEach(header =>
             {
                 var com = header.MapToComponent();
-                Html.Take(tr).TData.Width($"{width}%").Render();
+                Html.Take(label).P.Render();
                 rowSection.RenderTableCell(row, com);
-                Html.Take(tr).EndOf(MVVM.ElementType.td);
+                Html.Take(label).EndOf(MVVM.ElementType.p);
             });
             if (count > 0)
             {
-                Html.Take(rowSection.Element).Span.ClassName("node-toggle").Event(EventType.Click, () => FocusIn(rowSection, row, datas));
+                rowSection.Element.AddEventListener(EventType.Click, () => FocusIn(rowSection, row, datas));
             }
         }
 
