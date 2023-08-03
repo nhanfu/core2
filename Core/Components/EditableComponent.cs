@@ -98,7 +98,7 @@ namespace Core.Components
                         }
                         if (e.ShiftKey())
                         {
-                            if (this is CellText && !GuiInfo.Editable && td != null && td.PreviousElementSibling != null)
+                            if (this is CellText && GuiInfo.ComponentType != null && !GuiInfo.Editable && td != null && td.PreviousElementSibling != null)
                             {
                                 e.PreventDefault();
                                 var nextElement = listViewItem.Children.FirstOrDefault(x => x.Element.Closest("td") == td.PreviousElementSibling);
@@ -108,7 +108,7 @@ namespace Core.Components
                         }
                         else
                         {
-                            if (this is CellText && !GuiInfo.Editable && td != null && td.NextElementSibling != null)
+                            if (this is CellText && GuiInfo.ComponentType != null && !GuiInfo.Editable && td != null && td.NextElementSibling != null)
                             {
                                 e.PreventDefault();
                                 var nextElement = listViewItem.Children.FirstOrDefault(x => x.Element.Closest("td") == td.NextElementSibling);
