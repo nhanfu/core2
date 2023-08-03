@@ -107,6 +107,7 @@ namespace Core.Models
         public int? ScrollHeight { get; set; }
         public string ScriptValidation { get; set; }
         public bool FilterLocal { get; set; }
+        public bool HideGrid { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

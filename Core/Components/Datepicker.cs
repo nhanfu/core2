@@ -234,6 +234,10 @@ namespace Core.Components
             var (parsed, datetime, format) = TryParseDateTime(Input.Value);
             if (!parsed || Input.Value.IsNullOrWhiteSpace())
             {
+                if (EditForm.Feature.CustomNextCell)
+                {
+                    return;
+                }
                 Input.Value = string.Empty;
                 TriggerUserChange(null);
             }

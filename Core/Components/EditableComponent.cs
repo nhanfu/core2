@@ -128,24 +128,26 @@ namespace Core.Components
                                 return;
                             }
                         }
-                        e.PreventDefault();
                         var td = Element.Closest("td");
-                        if (e.ShiftKey())
+                        if (GuiInfo.ComponentType != null && td != null && td.PreviousElementSibling != null)
                         {
-                            var nextElement = listViewItem.FilterChildren(x => x.Element.Closest("td") == td.PreviousElementSibling).FirstOrDefault();
-                            if (nextElement != null)
+                            if (e.ShiftKey())
                             {
+                                var nextElement = listViewItem.FilterChildren(x => x.Element.Closest("td") == td.PreviousElementSibling).FirstOrDefault();
+                                if (nextElement != null)
+                                {
+                                    FocusElement(nextElement);
+                                }
+                            }
+                            else
+                            {
+                                var nextElement = listViewItem.FilterChildren(x => x.Element.Closest("td") == td.NextElementSibling).FirstOrDefault();
+                                if (nextElement is null)
+                                {
+                                    nextElement = listViewItem.Children.FirstOrDefault();
+                                }
                                 FocusElement(nextElement);
                             }
-                        }
-                        else
-                        {
-                            var nextElement = listViewItem.FilterChildren(x => x.Element.Closest("td") == td.NextElementSibling).FirstOrDefault();
-                            if (nextElement is null)
-                            {
-                                nextElement = listViewItem.Children.FirstOrDefault();
-                            }
-                            FocusElement(nextElement);
                         }
                     }
                     break;

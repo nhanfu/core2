@@ -192,7 +192,12 @@ namespace Core.Components
 
         private void EnterKeydownHandler(KeyCodeEnum? code)
         {
-            if (EditForm.Feature.CustomNextCell)
+            if (GuiInfo.HideGrid)
+            {
+                Search(term: _input.Value, timeout: 0, search: true);
+                return;
+            }
+            if (EditForm.Feature.CustomNextCell && (_gv is null || !_gv.Show))
             {
                 return;
             }
@@ -398,8 +403,12 @@ namespace Core.Components
             }
         }
 
-        private void Search(string term = null, bool changeEvent = true, int timeout = 500, bool delete = false)
+        private void Search(string term = null, bool changeEvent = true, int timeout = 500, bool delete = false, bool search = false)
         {
+            if (GuiInfo.HideGrid && !search)
+            {
+                return;
+            }
             Window.ClearTimeout(_waitForInput);
             _waitForInput = Window.SetTimeout(() =>
             {
@@ -551,7 +560,10 @@ namespace Core.Components
             _gv.Element.Style["inset"] = null;
             RenderRootResult();
             _rootResult.AppendChild(_gv.Element);
-            _gv.Show = true;
+            if (!GuiInfo.HideGrid)
+            {
+                _gv.Show = true;
+            }
             if (IsSmallUp)
             {
                 _gv.Element.AlterPosition(_input);
@@ -560,6 +572,10 @@ namespace Core.Components
             {
                 _gv.Element.Style.MaxWidth = "100%";
                 _gv.Element.Style.MinWidth = "calc(100% - 2rem)";
+            }
+            if (GuiInfo.HideGrid)
+            {
+                EntrySelected(_gv?.RowData.Data[0]);
             }
             FocusBackWithoutEvent();
         }
