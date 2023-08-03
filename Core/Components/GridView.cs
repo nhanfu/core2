@@ -787,36 +787,60 @@ namespace Core.Components
                 return;
             }
             LastElementFocus = null;
+            var listNone = new List<HTMLElement>();
+            var header = Header.IndexOf(y => y.FieldName == CellSelected.FirstOrDefault().FieldName);
             CellSelected.ForEach(cell =>
             {
-                var header = Header.IndexOf(y => y.FieldName == cell.FieldName);
                 for (var i = 0; i < rows.Length; i++)
                 {
                     var cells = rows[i].Children;
-                    var found = false;
                     if (cells[header] is null)
                     {
                         continue;
                     }
                     var cellText = cells[header].TextContent ?? string.Empty;
-                    if (cellText.ToLowerCase().IndexOf(cell.ValueText.ToLowerCase()) > -1)
+                    if (cell.Operator == "in")
                     {
-                        found = true;
-                    }
-                    if (found)
-                    {
-                        LastElementFocus = cells[header];
-                        rows[i].RemoveClass("d-none");
+                        if (!(cellText.ToLowerCase().IndexOf(cell.ValueText.ToLowerCase()) > -1))
+                        {
+                            if (!listNone.Any(x => x == rows[i]))
+                            {
+                                listNone.Add(rows[i]);
+                            }
+                        }
                     }
                     else
                     {
-                        rows[i].AddClass("d-none");
+                        if (!(cellText.ToLowerCase().IndexOf(cell.ValueText.ToLowerCase()) <= -1))
+                        {
+                            if (!listNone.Any(x => x == rows[i]))
+                            {
+                                listNone.Add(rows[i]);
+                            }
+                        }
                     }
                 }
             });
+            for (var i = 0; i < rows.Length; i++)
+            {
+                var cells = rows[i].Children;
+                if (listNone.Any(x => x == rows[i].Cast<HTMLElement>()))
+                {
+                    rows[i].AddClass("d-none");
+                }
+                else
+                {
+                    if (LastElementFocus is null)
+                    {
+                        LastElementFocus = cells[header];
+                    }
+                    rows[i].RemoveClass("d-none");
+                }
+            }
             if (LastElementFocus != null)
             {
                 LastElementFocus.Focus();
+                LastElementFocus = null;
             }
         }
 
@@ -1452,7 +1476,7 @@ namespace Core.Components
                     e.StopPropagation();
                     if (_summarys.Any())
                     {
-                        
+
                         var lastElement = _summarys.LastOrDefault();
                         if (GuiInfo.FilterLocal)
                         {

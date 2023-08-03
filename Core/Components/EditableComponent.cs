@@ -96,12 +96,25 @@ namespace Core.Components
                             FocusElement(nextElement);
                             return;
                         }
-                        if (this is CellText && td != null && td.NextElementSibling != null)
+                        if (e.ShiftKey())
                         {
-                            e.PreventDefault();
-                            var nextElement = listViewItem.Children.FirstOrDefault(x => x.Element.Closest("td") == td.NextElementSibling);
-                            FocusElement(nextElement);
-                            return;
+                            if (this is CellText && !GuiInfo.Editable && td != null && td.PreviousElementSibling != null)
+                            {
+                                e.PreventDefault();
+                                var nextElement = listViewItem.Children.FirstOrDefault(x => x.Element.Closest("td") == td.PreviousElementSibling);
+                                FocusElement(nextElement);
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (this is CellText && !GuiInfo.Editable && td != null && td.NextElementSibling != null)
+                            {
+                                e.PreventDefault();
+                                var nextElement = listViewItem.Children.FirstOrDefault(x => x.Element.Closest("td") == td.NextElementSibling);
+                                FocusElement(nextElement);
+                                return;
+                            }
                         }
                     }
                     break;
