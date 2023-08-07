@@ -1379,7 +1379,7 @@ namespace Core.Components
         protected void ViewHistory(object ev)
         {
             var currentItem = GetSelectedRows().LastOrDefault();
-            Html.Take(Document.Body).Div.ClassName("backdrop")
+            Html.Take(EditForm.Element).Div.ClassName("backdrop")
             .Style("align-items: center;").Escape((e) => Dispose());
             _history = Html.Context;
             Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;")
