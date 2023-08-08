@@ -469,3 +469,7 @@ th.asc::after {
 .wtree .has::after {
     display: block; /* Show the arrow only if the parent has a child */
 }
+
+.select2-container {
+    width: 100% !important;
+}

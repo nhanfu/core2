@@ -178,6 +178,7 @@
     <Compile Include="Clients\LocalStorage.cs" />
     <Compile Include="Components\ExportCustomData.cs" />
     <Compile Include="Components\ButtonPdf.cs" />
+    <Compile Include="Components\Select2.cs" />
     <Compile Include="Components\VirtualGrid.cs" />
     <Compile Include="Components\GridViewItem.cs" />
     <Compile Include="Components\ImageServer.cs" />
