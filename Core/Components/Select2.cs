@@ -113,17 +113,38 @@ namespace Core.Components
         {
             Task.Run(async () =>
             {
+                await Client.LoadScript("https://lib.softek.com.vn/js/select2.min.js");
                 var result = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(GuiInfo.DataSourceFilter);
                 RowData.Data = result.Value;
                 _select.Add(new HTMLOptionElement() { Text = "--Chọn dữ diệu--", Selected = false, Value = null });
                 RowData.Data.ForEach(x =>
                 {
-                    _select.Add(new HTMLOptionElement() { Text = Utils.FormatEntity(GuiInfo.FormatData, x), Selected = Value == (int)x[IdField] ? true : false, Value = x[IdField].ToString() });
+                    _select.Add(new HTMLOptionElement() { Text = Utils.FormatEntity(GuiInfo.FormatData, x), Selected = Value == (int)x[IdField] ? true : false, Value = x[IdField].ToString(), Title = Utils.FormatEntity(GuiInfo.FormatEntity, x) });
                 });
                 var eq = GuiInfo.FilterEq;
                 var seft = this;
                 /*@
-                 $(seft.idGuid).select2().on('select2:select', function (e) {
+                 $("#" + seft.idGuid).select2({
+                  matcher: function(params, data) {
+                    if(eq)
+                    {
+                        if (params.term == null || params.term == "" || data.title.toLowerCase() == params.term.toLowerCase()) {
+                          return data;
+                        }
+                    }
+                    else
+                    {
+                        if (params.term == null || params.term == "" || data.text.toLowerCase().indexOf(params.term.toLowerCase()) >= 0) {
+                          return data;
+                        }
+                    }
+                    
+                    return null;
+                  },
+                  templateSelection: function (selectedOption) {
+                    return selectedOption.title;
+                  }
+                }).on('select2:select', function (e) {
                   var id = parseInt(e.params.data.id);
                   var math = System.Linq.Enumerable.from(seft.RowData.Data, System.Object).firstOrDefault(function (x) {
                                                 return System.Nullable.getValue(Bridge.cast(Bridge.unbox(x[Core.Components.EditableComponent.IdField], System.Int32), System.Int32)) === id;

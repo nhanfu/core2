@@ -55648,7 +55648,7 @@ textarea.ta-row-1 {
 }
 
 .select2-dropdown.select2-dropdown--below {
-    min-width: 300px !important
+    min-width: 150px !important
 }
 
 .card .cke_chrome {
