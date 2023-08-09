@@ -1596,7 +1596,7 @@ namespace Core.Components
                     {
                         e.PreventDefault();
                         e.StopPropagation();
-                        DuplicateSelected(e);
+                        DuplicateSelected(e, true);
                     }
                     break;
                 default:
@@ -1791,7 +1791,7 @@ namespace Core.Components
             if (canWrite)
             {
                 ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-copy", Text = "Copy", Click = CopySelected });
-                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-clone", Text = "Copy & Dán", Click = DuplicateSelected });
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-clone", Text = "Copy & Dán", Click = (e) => DuplicateSelected(e, false) });
             }
             if (canWrite && _copiedRows.HasElement())
             {
@@ -1872,13 +1872,13 @@ namespace Core.Components
             return rowSection;
         }
 
-        public override void AddNewEmptyRow()
+        public override void AddNewEmptyRow(object entityR = null)
         {
             if (Disabled || !Editable || EmptyRowSection?.Children.HasElement() == true)
             {
                 return;
             }
-            var emptyRowData = EmptyRowData();
+            var emptyRowData = entityR ?? EmptyRowData();
             if (!GuiInfo.DefaultVal.IsNullOrWhiteSpace())
             {
                 var json = string.Empty;
@@ -2220,6 +2220,57 @@ namespace Core.Components
             {
                 AddNewEmptyRow();
                 RenderSummaryRow(header, Header, FooterSection.Element as HTMLTableSectionElement, count);
+            });
+        }
+
+        public override void DuplicateSelected(object ev, bool addRow = false)
+        {
+            var originalRows = GetSelectedRows();
+            var copiedRows = ReflectionExt.CopyRowWithoutId(originalRows).ToList();
+            if (copiedRows.Nothing() || !CanWrite)
+            {
+                return;
+            }
+
+            _ = Task.Run(async () =>
+            {
+                Toast.Success("Đang Sao chép liệu !");
+                await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows);
+                var index = AllListViewItem.IndexOf(x => x.Selected);
+                if (addRow)
+                {
+                    if (GuiInfo.TopEmpty)
+                    {
+                        index = 0;
+                    }
+                    else
+                    {
+                        index = AllListViewItem.LastOrDefault().RowNo;
+                    }
+                }
+                var list = await AddRows(copiedRows, index);
+                base.Dirty = true;
+                base.Focus();
+                await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows);
+                RenderIndex();
+                if (GuiInfo.IsSumary)
+                {
+                    AddSummaries();
+                }
+                ClearSelected();
+                if (GuiInfo.IsRealtime)
+                {
+                    foreach (var item in list)
+                    {
+                        await item.CreateUpdate();
+                    }
+                    Toast.Success("Sao chép dữ liệu thành công !");
+                    base.Dirty = false;
+                }
+                else
+                {
+                    Toast.Success("Sao chép dữ liệu thành công !");
+                }
             });
         }
 
@@ -3008,34 +3059,6 @@ namespace Core.Components
 
         protected int _renderIndexAwaiter;
         internal int _lastScrollTop;
-
-        protected virtual void RenderIndex(int? skip = null)
-        {
-            if (skip is null)
-            {
-                skip = Paginator?.Options?.StartIndex ?? 0;
-            }
-            if (MainSection.Children.Nothing())
-            {
-                return;
-            }
-            MainSection.Children.Cast<ListViewItem>().ForEach((row, rowIndex) =>
-            {
-                if (row.Children.Nothing() || row.FirstChild is null || row.FirstChild.Element is null)
-                {
-                    return;
-                }
-                var previous = row.FirstChild.Element.Closest("td").PreviousElementSibling;
-                if (previous is null)
-                {
-                    return;
-                }
-                var index = skip + rowIndex;
-                previous.InnerHTML = index.ToString();
-                row.Selected = SelectedIds.Contains(row.Entity[IdField].As<int>());
-                row.RowNo = index.Value;
-            });
-        }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {

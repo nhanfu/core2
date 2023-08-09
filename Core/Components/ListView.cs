@@ -760,7 +760,7 @@ namespace Core.Components
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, rowData);
         }
 
-        public virtual void AddNewEmptyRow()
+        public virtual void AddNewEmptyRow(object entityR = null)
         {
             // not to add empty row into list view
         }
@@ -1121,7 +1121,35 @@ namespace Core.Components
             }));
         }
 
-        public void DuplicateSelected(object ev)
+        protected virtual void RenderIndex(int? skip = null)
+        {
+            if (skip is null)
+            {
+                skip = Paginator?.Options?.StartIndex ?? 0;
+            }
+            if (MainSection.Children.Nothing())
+            {
+                return;
+            }
+            MainSection.Children.Cast<ListViewItem>().ForEach((row, rowIndex) =>
+            {
+                if (row.Children.Nothing() || row.FirstChild is null || row.FirstChild.Element is null)
+                {
+                    return;
+                }
+                var previous = row.FirstChild.Element.Closest("td").PreviousElementSibling;
+                if (previous is null)
+                {
+                    return;
+                }
+                var index = skip + rowIndex;
+                previous.InnerHTML = index.ToString();
+                row.Selected = SelectedIds.Contains(row.Entity[IdField].As<int>());
+                row.RowNo = index.Value;
+            });
+        }
+
+        public virtual void DuplicateSelected(object ev, bool addRow = false)
         {
             var originalRows = GetSelectedRows();
             var copiedRows = ReflectionExt.CopyRowWithoutId(originalRows).ToList();
@@ -1135,10 +1163,23 @@ namespace Core.Components
                 Toast.Success("Đang Sao chép liệu !");
                 await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows);
                 var index = AllListViewItem.IndexOf(x => x.Selected);
+                if (addRow)
+                {
+                    if (GuiInfo.TopEmpty)
+                    {
+                        index = 0;
+                    }
+                    else
+                    {
+                        index = AllListViewItem.LastOrDefault().RowNo;
+                    }
+                }
                 var list = await AddRows(copiedRows, index);
                 base.Dirty = true;
                 base.Focus();
                 await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows);
+                RenderIndex();
+                ClearSelected();
                 if (GuiInfo.IsRealtime)
                 {
                     foreach (var item in list)
@@ -1147,7 +1188,6 @@ namespace Core.Components
                     }
                     Toast.Success("Sao chép dữ liệu thành công !");
                     base.Dirty = false;
-                    ClearSelected();
                 }
                 else
                 {
