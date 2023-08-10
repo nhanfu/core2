@@ -44,6 +44,13 @@ namespace Core.Components
             }
             var td = e.Target as HTMLElement;
             td.Closest(ElementType.td.ToString()).AddClass("cell-selected");
+            if (header.Editable && !Disabled && header.ComponentType == nameof(Select2))
+            {
+                var id = td.GetAttribute("aria-labelledby").Replace("-container", "").Replace("select2-", "");
+                /*@
+                    $("#" + id).select2('open');
+                 */
+            }
             ListViewSection.ListView.LastElementFocus = td;
             ListViewSection.ListView.LastComponentFocus = header;
             ListViewSection.ListView.EntityFocusId = Entity[IdField].As<int>();

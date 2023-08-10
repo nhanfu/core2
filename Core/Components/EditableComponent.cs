@@ -22,6 +22,7 @@ namespace Core.Components
         public const int MediumScreen = 992;
         public const int LargeScreen = 1200;
         public const int ExLargeScreen = 1452;
+        public string idGuid;
         public string Id { get; set; }
         public string ComponentType { get; set; }
         public string Name { get; set; }

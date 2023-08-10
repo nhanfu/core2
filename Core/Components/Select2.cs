@@ -41,7 +41,6 @@ namespace Core.Components
         protected int _waitForDispose;
         public ObservableList<object> RowData;
         private string dataSourceFilter;
-        private string idGuid;
         public string DataSourceFilter { get => dataSourceFilter; set => dataSourceFilter = value.DecodeSpecialChar(); }
         public object Matched { get; set; }
 
@@ -70,7 +69,8 @@ namespace Core.Components
             RenderInputAndEvents();
             RenderOption();
             FindMatchText();
-            Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
+            var td = Element.Closest("td");
+            td?.AddEventListener(EventType.KeyDown, ListViewItemTab);
         }
 
         private void RenderInputAndEvents()
