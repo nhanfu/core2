@@ -2,11 +2,9 @@
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
-using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,17 +38,10 @@ namespace Core.Components
         }
         public string Text { get { return _select.Value; } set { _select.Value = value; } }
         public HTMLSelectElement _select;
-        public HTMLElement SearchResultEle { get; private set; }
-
-        public GridView _gv;
-        protected int _waitForInput;
         protected int _waitForDispose;
-        private int _findMatchTextAwaiter;
         public ObservableList<object> RowData;
         private string dataSourceFilter;
         private string idGuid;
-        private HTMLElement _backdrop;
-
         public string DataSourceFilter { get => dataSourceFilter; set => dataSourceFilter = value.DecodeSpecialChar(); }
         public object Matched { get; set; }
 
@@ -164,40 +155,16 @@ namespace Core.Components
 
         public virtual void FindMatchText(int delay = 0)
         {
-            if (delay == 0)
-            {
-                FindMatchTextAsync();
-                return;
-            }
-            Window.ClearTimeout(_findMatchTextAwaiter);
-            _findMatchTextAwaiter = Window.SetTimeout(() => FindMatchTextAsync(), delay);
+            FindMatchTextAsync();
         }
 
         protected void FindMatchTextAsync(bool force = false)
         {
-            if (EmptyRow || !force && ProcessLocalMatch())
+            if (EmptyRow || !force)
             {
                 return;
             }
             SetMatchedValue();
-        }
-
-        protected virtual bool ProcessLocalMatch()
-        {
-            var isLocalMatched = _gv != null && RowData.Data.HasElement() || GuiInfo.LocalData != null;
-            if (isLocalMatched)
-            {
-                Matched = GuiInfo.LocalData.HasElement() ? GuiInfo.LocalData.FirstOrDefault(x => (int)x[IdField] == _value)
-                    : RowData.Data.FirstOrDefault(x => (int)x[IdField] == Value.Value);
-            }
-            if (isLocalMatched
-                || Matched != null && (int?)Matched[IdField] == Value
-                || Matched is null && (Value is null || Value == 0))
-            {
-                SetMatchedValue();
-                return true;
-            }
-            return false;
         }
 
         protected void CascadeAndPopulate()
@@ -225,49 +192,7 @@ namespace Core.Components
             }
         }
 
-        protected string GetMatchedText(object matched)
-        {
-            if (matched is null)
-            {
-                return string.Empty;
-            }
-            string res;
-            if (GuiInfo.FormatEntity.HasNonSpaceChar())
-            {
-                if (Utils.IsFunction(GuiInfo.FormatEntity, out var fn))
-                {
-                    res = fn.Call(this, matched, Entity, Element).ToString();
-                }
-                else
-                {
-                    res = Utils.FormatEntity(GuiInfo.FormatEntity, null, matched, Utils.EmptyFormat, Utils.EmptyFormat);
-                }
-            }
-            else
-            {
-                res = matched != null ? Utils.FormatEntity(GuiInfo.FormatData, null, matched, Utils.EmptyFormat, Utils.EmptyFormat) : string.Empty;
-            }
-            return res.DecodeSpecialChar();
-        }
-
-        public string FormattedDataSource
-        {
-            get
-            {
-                if (Utils.IsFunction(DataSourceFilter, out Function fn))
-                {
-                    return fn.Call(this, this, EditForm).ToString();
-                }
-                var dataSourceFilter = DataSourceFilter.HasAnyChar() ? DataSourceFilter : string.Empty;
-                var checkContain = dataSourceFilter.Contains(nameof(EditForm) + ".")
-                    || dataSourceFilter.Contains(nameof(TabEditor) + ".")
-                    || dataSourceFilter.Contains(nameof(Entity) + ".");
-                var dataSource = Utils.FormatEntity(dataSourceFilter, null, checkContain ? this : Entity, notFoundHandler: x => "null");
-                return dataSource;
-            }
-        }
-
-        protected virtual void EntrySelected(object rowData)
+        private void EntrySelected(object rowData)
         {
             Window.ClearTimeout(_waitForDispose);
             EmptyRow = false;
@@ -288,10 +213,6 @@ namespace Core.Components
             Dirty = true;
             Matched = rowData;
             SetMatchedValue();
-            if (_gv != null)
-            {
-                _gv.Show = false;
-            }
             CascadeAndPopulate();
             Task.Run(async () =>
             {
