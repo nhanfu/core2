@@ -21,6 +21,7 @@ namespace Core.Components.Forms
         public static List<TabEditor> Tabs = new List<TabEditor>();
         public static TabEditor ActiveTab => Tabs.FirstOrDefault(x => x.Show);
         public static EditableComponent FindTab(string id) => Tabs.FirstOrDefault(x => x.Id == id);
+        public Dictionary<string, List<object>> DataSearchEntry = new Dictionary<string, List<object>>();
         private HTMLElement _li;
         public bool Popup { get; set; }
         public bool ChildForm { get; set; }

@@ -33,11 +33,9 @@ namespace Core.Components
                 }
                 _value = value;
                 Entity?.SetComplexPropValue(GuiInfo.FieldName, value);
-                Task.Run(() =>
-                {
-                    _value = value;
-                    FindMatchTextAsync();
-                });
+
+                _value = value;
+                FindMatchTextAsync();
             }
         }
         public string Text { get { return _select.Value; } set { _select.Value = value; } }
@@ -115,13 +113,14 @@ namespace Core.Components
             {
                 await Client.LoadScript("https://lib.softek.com.vn/js/select2.min.js");
                 var result = new List<object>();
-                if (!EditForm.DataSearchEntry.Any(x => x.Key == GuiInfo.DataSourceFilter))
+                if (!TabEditor.DataSearchEntry.Any(x => x.Key == GuiInfo.DataSourceFilter))
                 {
                     result = (await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(GuiInfo.DataSourceFilter)).Value;
+                    TabEditor.DataSearchEntry.Add(GuiInfo.DataSourceFilter, result);
                 }
                 else
                 {
-                    result = EditForm.DataSearchEntry.GetValueOrDefault(GuiInfo.DataSourceFilter);
+                    result = TabEditor.DataSearchEntry.GetValueOrDefault(GuiInfo.DataSourceFilter);
                 }
                 RowData.Data = result;
                 _select.Add(new HTMLOptionElement() { Text = "--Chọn dữ diệu--", Selected = false, Value = null });
@@ -167,7 +166,7 @@ namespace Core.Components
         {
             if (delay == 0)
             {
-                Task.Run(() => FindMatchTextAsync());
+                FindMatchTextAsync();
                 return;
             }
             Window.ClearTimeout(_findMatchTextAwaiter);
@@ -215,6 +214,9 @@ namespace Core.Components
 
         private void UpdateValue()
         {
+            /*@
+            $("#" + this.idGuid).trigger("change.select2");
+            */
             if (!Dirty)
             {
                 OriginalText = _select.Title;
@@ -324,7 +326,7 @@ namespace Core.Components
                 UpdateValue();
                 return;
             }
-            Task.Run(() => FindMatchTextAsync(force));
+            FindMatchTextAsync(force);
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously

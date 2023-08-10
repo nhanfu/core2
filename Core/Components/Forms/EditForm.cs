@@ -39,7 +39,6 @@ namespace Core.Components.Forms
         protected URLSearchParams UrlSearch;
         protected Entity _entityEnum;
         public List<TabGroup> TabGroup;
-        public Dictionary<string, List<object>> DataSearchEntry = new Dictionary<string, List<object>>();
         protected ConfirmDialog _confirm;
         private string _title;
         private string _icon;
