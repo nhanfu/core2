@@ -33,10 +33,10 @@ namespace Core.Components
                 }
                 _value = value;
                 Entity?.SetComplexPropValue(GuiInfo.FieldName, value);
-                Task.Run(async () =>
+                Task.Run(() =>
                 {
                     _value = value;
-                    await FindMatchTextAsync();
+                    FindMatchTextAsync();
                 });
             }
         }
@@ -167,52 +167,19 @@ namespace Core.Components
         {
             if (delay == 0)
             {
-                Task.Run(async () => await FindMatchTextAsync());
+                Task.Run(() => FindMatchTextAsync());
                 return;
             }
             Window.ClearTimeout(_findMatchTextAwaiter);
-            _findMatchTextAwaiter = Window.SetTimeout(async () => await FindMatchTextAsync(), delay);
+            _findMatchTextAwaiter = Window.SetTimeout(() => FindMatchTextAsync(), delay);
         }
 
-        protected virtual async Task FindMatchTextAsync(bool force = false)
+        protected void FindMatchTextAsync(bool force = false)
         {
             if (EmptyRow || !force && ProcessLocalMatch())
             {
                 return;
             }
-
-            string query;
-            OdataResult<object> list = null;
-            if (GuiInfo.DefaultVal?.Trim() == 0.ToString() && Value is null && Entity[IdField].As<int>() <= 0)
-            {
-                query = FormattedDataSource + "&$top=1";
-                list = await new Client(GuiInfo.RefName).GetList<object>(query);
-            }
-            else if (Value.HasValue)
-            {
-                var formatted = FormattedDataSource;
-                if (formatted.StartsWith("/"))
-                {
-                    formatted = OdataExt.ApplyClause(formatted, $"Id in ({Value})");
-                    list = await new Client(GuiInfo.RefName).GetList<object>(formatted + "&$top=1");
-                }
-                else
-                {
-                    list = await new Client(GuiInfo.RefName).LoadById(Value.ToString());
-                }
-            }
-            else if (Value is null)
-            {
-                Matched = null;
-                _select.Value = null;
-                return;
-            }
-            if (list is null || list.Value is null)
-            {
-                return;
-            }
-
-            Matched = list.Value.FirstOrDefault(x => (int)x[IdField] == _value);
             SetMatchedValue();
         }
 
@@ -250,7 +217,7 @@ namespace Core.Components
         {
             if (!Dirty)
             {
-                OriginalText = _select.Value;
+                OriginalText = _select.Title;
                 DOMContentLoaded?.Invoke();
                 OldValue = _value.ToString();
             }
@@ -357,7 +324,7 @@ namespace Core.Components
                 UpdateValue();
                 return;
             }
-            Task.Run(async () => await FindMatchTextAsync(force));
+            Task.Run(() => FindMatchTextAsync(force));
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
