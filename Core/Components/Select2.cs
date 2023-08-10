@@ -114,8 +114,16 @@ namespace Core.Components
             Task.Run(async () =>
             {
                 await Client.LoadScript("https://lib.softek.com.vn/js/select2.min.js");
-                var result = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(GuiInfo.DataSourceFilter);
-                RowData.Data = result.Value;
+                var result = new List<object>();
+                if (!EditForm.DataSearchEntry.Any(x => x.Key == GuiInfo.DataSourceFilter))
+                {
+                    result = (await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(GuiInfo.DataSourceFilter)).Value;
+                }
+                else
+                {
+                    result = EditForm.DataSearchEntry.GetValueOrDefault(GuiInfo.DataSourceFilter);
+                }
+                RowData.Data = result;
                 _select.Add(new HTMLOptionElement() { Text = "--Chọn dữ diệu--", Selected = false, Value = null });
                 RowData.Data.ForEach(x =>
                 {
@@ -128,7 +136,7 @@ namespace Core.Components
                   matcher: function(params, data) {
                     if(eq)
                     {
-                        if (params.term == null || params.term == "" || data.title.toLowerCase() == params.term.toLowerCase()) {
+                        if (params.term == null || params.term == "" || data.title.toLowerCase().startsWith(params.term.toLowerCase())) {
                           return data;
                         }
                     }

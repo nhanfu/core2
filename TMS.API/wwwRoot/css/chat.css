@@ -473,3 +473,19 @@ th.asc::after {
 span.select2.select2-container.select2-container--default {
     width: 100% !important;
 }
+
+.cell-selected .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
+    background-color: #6f6 !important;
+}
+
+.select2-container .select2-selection--single {
+    height: calc(1.5385em + 0.6rem + 1px) !important;
+}
+
+.select2-selection--single {
+    padding: 3px !important;
+}
+
+    .select2-selection--single .select2-selection__arrow:after {
+        top: 37% !important
+    }
