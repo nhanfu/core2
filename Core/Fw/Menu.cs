@@ -23,7 +23,7 @@ namespace Core.Fw
         private static HTMLElement _main;
         private static Menu _instance;
         private bool _hasRender;
-        private Menu() : base (null)
+        private Menu() : base(null)
         {
 
         }
@@ -298,7 +298,7 @@ namespace Core.Fw
             var editor = new FeatureDetailBL()
             {
                 Entity = feature,
-                ParentElement = TabEditor.Element,
+                ParentElement = TabEditor is null ? Document.Body : TabEditor.Element,
                 OpenFrom = this.FindClosest<EditForm>(),
             };
             AddChild(editor);

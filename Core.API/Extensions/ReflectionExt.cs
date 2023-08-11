@@ -301,7 +301,7 @@ namespace Core.Extensions
             var copiedRows = selectedRows.Select(x =>
             {
                 var res = (T)DeepCopy(x);
-                res.SetPropValue(IdField, 0);
+                res.SetPropValue(IdField, -Math.Abs(res.GetHashCode()));
                 ProcessObjectRecursive(res, obj =>
                 {
                     var id = obj.GetPropValue(IdField) as int?;
