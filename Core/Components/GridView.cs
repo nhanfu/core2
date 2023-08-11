@@ -1243,6 +1243,10 @@ namespace Core.Components
                     menu.Render();
                     break;
                 case KeyCodeEnum.F8:
+                    if (Disabled)
+                    {
+                        return;
+                    }
                     var selectedRows = GetSelectedRows().ToList();
                     if (selectedRows.Nothing())
                     {
@@ -1291,12 +1295,14 @@ namespace Core.Components
                     var upItemUp = AllListViewItem.Where(x => !x.GroupRow).FirstOrDefault(x => x.RowNo == (currentItemUp.RowNo - 1));
                     if (upItemUp is null)
                     {
-                        currentItemUp.Focus();
-                        return;
-                    }
-                    if (upItemUp.EmptyRow)
-                    {
-                        return;
+                        if (GuiInfo.CanAdd)
+                        {
+                            upItemUp = EmptyRowSection.FirstChild as ListViewItem;
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
                     CoppyValue(e, com, fieldName, currentItemUp, upItemUp);
                     break;
@@ -1309,12 +1315,14 @@ namespace Core.Components
                     var upItemDown = AllListViewItem.Where(x => !x.GroupRow).FirstOrDefault(x => x.RowNo == (currentItemDown.RowNo + 1));
                     if (upItemDown is null)
                     {
-                        currentItemDown.Focus();
-                        return;
-                    }
-                    if (upItemDown.EmptyRow)
-                    {
-                        return;
+                        if (GuiInfo.CanAdd)
+                        {
+                            upItemDown = EmptyRowSection.FirstChild as ListViewItem;
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
                     CoppyValue(e, com, fieldName, currentItemDown, upItemDown);
                     break;
@@ -1594,6 +1602,10 @@ namespace Core.Components
                 case KeyCodeEnum.U:
                     if (e.CtrlOrMetaKey())
                     {
+                        if (Disabled || !GuiInfo.CanAdd)
+                        {
+                            return;
+                        }
                         e.PreventDefault();
                         e.StopPropagation();
                         DuplicateSelected(e, true);
@@ -2395,6 +2407,7 @@ namespace Core.Components
         internal override async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
         {
             await Task.Delay(50);
+            var com = new List<string>() { nameof(SearchEntry), "Dropdown", nameof(Select2) };
             if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData, this);
@@ -2425,7 +2438,10 @@ namespace Core.Components
                 MoveEmptyRow(rowSection);
                 EmptyRowSection.Children.Clear();
                 AddNewEmptyRow();
-                LastElementFocus.Focus();
+                if (!com.Contains(component?.GuiInfo.ComponentType))
+                {
+                    LastElementFocus.Focus();
+                }
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
             if (component != null && component.ComponentType == nameof(GridView))
@@ -2444,7 +2460,7 @@ namespace Core.Components
                 LastListViewItem = rowSection;
                 var headers = Header.Where(y => y.Editable).ToList();
                 var currentComponent = headers.FirstOrDefault(y => y.FieldName == component?.GuiInfo.FieldName);
-                if ((currentComponent.ComponentType == nameof(SearchEntry) || currentComponent.ComponentType == "Dropdown") && rowData[currentComponent.FieldName] != null)
+                if (com.Contains(currentComponent.ComponentType) && rowData[currentComponent.FieldName] != null)
                 {
                     var index = headers.IndexOf(currentComponent);
                     if (headers.Count > index + 1)
