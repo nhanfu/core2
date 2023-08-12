@@ -761,7 +761,7 @@ namespace Core.Clients
         public static Task<bool> LoadScript(string src)
         {
             var tcs = new TaskCompletionSource<bool>();
-            var scriptExists = Document.Head.Children
+            var scriptExists = Document.Body.Children
                 .Where(x => x is HTMLScriptElement)
                 .Cast<HTMLScriptElement>()
                 .Any(x => x.Src.Split("/").LastOrDefault() == src.Split("/").LastOrDefault());
@@ -781,7 +781,7 @@ namespace Core.Clients
                 tcs.SetResult(true);
                 return false;
             };
-            Document.Head.AppendChild(script);
+            Document.Body.AppendChild(script);
             return tcs.Task;
         }
 
