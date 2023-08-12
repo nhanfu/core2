@@ -39,7 +39,7 @@ namespace Core.Components
         public string Text { get { return _select.Value; } set { _select.Value = value; } }
         public HTMLSelectElement _select;
         protected int _waitForDispose;
-        public ObservableList<object> RowData;
+        public List<object> RowData;
         private string dataSourceFilter;
         public string DataSourceFilter { get => dataSourceFilter; set => dataSourceFilter = value.DecodeSpecialChar(); }
         public object Matched { get; set; }
@@ -49,7 +49,7 @@ namespace Core.Components
             DataSourceFilter = ui.DataSourceFilter;
             GuiInfo.ComponentGroup = null;
             idGuid = "js-example-templating" + Guid.NewGuid().ToString();
-            RowData = new ObservableList<object>();
+            RowData = new List<object>();
             Element = ele;
             IdFieldName = GuiInfo.FieldName;
         }
@@ -67,10 +67,33 @@ namespace Core.Components
                 _value = entityVal as int?;
             }
             RenderInputAndEvents();
-            RenderOption();
+            if (!TabEditor.DataSearchEntry.Any(x => x.Key == GuiInfo.DataSourceFilter))
+            {
+                LoadData();
+            }
+            else
+            {
+                RowData = TabEditor.DataSearchEntry.GetValueOrDefault(GuiInfo.DataSourceFilter);
+                RenderOption();
+            }
             FindMatchText();
             var td = Element.Closest("td");
             td?.AddEventListener(EventType.KeyDown, ListViewItemTab);
+        }
+
+        private void LoadData()
+        {
+            Task.Run(async () =>
+            {
+                await Client.LoadScript("https://lib.softek.com.vn/js/select2.min.js");
+                if (!TabEditor.DataSearchEntry.Any(x => x.Key == GuiInfo.DataSourceFilter))
+                {
+                    var rsData = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(GuiInfo.DataSourceFilter);
+                    RowData = rsData.Value;
+                    RenderOption();
+                    TabEditor.DataSearchEntry.Add(GuiInfo.DataSourceFilter, rsData.Value);
+                }
+            });
         }
 
         private void RenderInputAndEvents()
@@ -100,57 +123,42 @@ namespace Core.Components
 
         public void RenderOption()
         {
-            Task.Run(async () =>
+            _select.Add(new HTMLOptionElement() { Text = "--Chọn dữ diệu--", Selected = false, Value = null });
+            RowData.ForEach(x =>
             {
-                await Client.LoadScript("https://lib.softek.com.vn/js/select2.min.js");
-                var result = new List<object>();
-                if (!TabEditor.DataSearchEntry.Any(x => x.Key == GuiInfo.DataSourceFilter))
+                _select.Add(new HTMLOptionElement() { Text = Utils.FormatEntity(GuiInfo.FormatData, x).DecodeSpecialChar(), Selected = Value == (int)x[IdField] ? true : false, Value = x[IdField].ToString(), Title = Utils.FormatEntity(GuiInfo.FormatEntity, x).DecodeSpecialChar() });
+            });
+            var eq = GuiInfo.FilterEq;
+            var seft = this;
+            /*@
+             $("#" + seft.idGuid).select2({
+              matcher: function(params, data) {
+                if(eq)
                 {
-                    result = (await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(GuiInfo.DataSourceFilter)).Value;
-                    TabEditor.DataSearchEntry.Add(GuiInfo.DataSourceFilter, result);
+                    if (params.term == null || params.term == "" || data.title.toLowerCase().startsWith(params.term.toLowerCase())) {
+                      return data;
+                    }
                 }
                 else
                 {
-                    result = TabEditor.DataSearchEntry.GetValueOrDefault(GuiInfo.DataSourceFilter);
+                    if (params.term == null || params.term == "" || data.text.toLowerCase().indexOf(params.term.toLowerCase()) >= 0) {
+                      return data;
+                    }
                 }
-                RowData.Data = result;
-                _select.Add(new HTMLOptionElement() { Text = "--Chọn dữ diệu--", Selected = false, Value = null });
-                RowData.Data.ForEach(x =>
-                {
-                    _select.Add(new HTMLOptionElement() { Text = Utils.FormatEntity(GuiInfo.FormatData, x), Selected = Value == (int)x[IdField] ? true : false, Value = x[IdField].ToString(), Title = Utils.FormatEntity(GuiInfo.FormatEntity, x) });
-                });
-                var eq = GuiInfo.FilterEq;
-                var seft = this;
-                /*@
-                 $("#" + seft.idGuid).select2({
-                  matcher: function(params, data) {
-                    if(eq)
-                    {
-                        if (params.term == null || params.term == "" || data.title.toLowerCase().startsWith(params.term.toLowerCase())) {
-                          return data;
-                        }
-                    }
-                    else
-                    {
-                        if (params.term == null || params.term == "" || data.text.toLowerCase().indexOf(params.term.toLowerCase()) >= 0) {
-                          return data;
-                        }
-                    }
-                    
-                    return null;
-                  },
-                  templateSelection: function (selectedOption) {
-                    return selectedOption.title;
-                  }
-                }).on('select2:select', function (e) {
-                  var id = parseInt(e.params.data.id);
-                  var math = System.Linq.Enumerable.from(seft.RowData.Data, System.Object).firstOrDefault(function (x) {
-                                                return System.Nullable.getValue(Bridge.cast(Bridge.unbox(x[Core.Components.EditableComponent.IdField], System.Int32), System.Int32)) === id;
-                                            }, null);
-                  seft.EntrySelected(math);
-                });
-                 */
+
+                return null;
+              },
+              templateSelection: function (selectedOption) {
+                return selectedOption.title;
+              }
+            }).on('select2:select', function (e) {
+              var id = parseInt(e.params.data.id);
+              var math = System.Linq.Enumerable.from(seft.RowData, System.Object).firstOrDefault(function (x) {
+                                            return System.Nullable.getValue(Bridge.cast(Bridge.unbox(x[Core.Components.EditableComponent.IdField], System.Int32), System.Int32)) === id;
+                                        }, null);
+              seft.EntrySelected(math);
             });
+             */
         }
 
         public virtual void FindMatchText(int delay = 0)
