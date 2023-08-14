@@ -538,11 +538,11 @@ namespace Core.Components
                 if (!x.IsSearch)
                 {
                     var format = header.FormatCell.Split("}")[0].Replace("{", "");
-                    return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$filter=contains({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.RefName);
+                    return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$top=50&$filter=contains({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.RefName);
                 }
                 else
                 {
-                    return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$filter=Id eq " + x.Value.EncodeSpecialChar(), entityName: header.RefName);
+                    return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$top=50&$filter=Id eq " + x.Value.EncodeSpecialChar(), entityName: header.RefName);
                 }
             }).ToList();
             await Task.WhenAll(data);
