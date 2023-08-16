@@ -1016,6 +1016,7 @@ namespace Core.Components
         {
             var entity = GuiInfo.RefName;
             var ids = deleted.Select(x => (int)x[IdField]).Where(x => x > 0).ToList();
+            var deletes = deleted.Where(x => (int)x[IdField] > 0).ToList();
             var removeRow = deleted.Where(x => (int)x[IdField] <= 0).ToList();
             if (removeRow.Any())
             {
@@ -1049,9 +1050,9 @@ namespace Core.Components
                     AllListViewItem.Where(x => x.Selected).ToArray().ForEach(x => x.Dispose());
                     Toast.Success("Xóa dữ liệu thành công");
                     ClearSelected();
-                    if (ids.Nothing())
+                    if (deletes.Any())
                     {
-                        RemoveRange(deleted);
+                        RemoveRange(deletes);
                     }
                     return deleted;
                 }
