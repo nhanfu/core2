@@ -392,10 +392,9 @@ namespace Core.Components
             if (UserInput != null)
             {
                 CascadeAndPopulate();
-                var listViewItem = this.FindClosest<ListViewItem>();
                 Task.Run(async () =>
                 {
-                    await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, currentItem.Entity, Matched, listViewItem);
+                    await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, currentItem.Entity, Matched);
                 });
                 if (UserInput != null)
                 {
@@ -603,10 +602,9 @@ namespace Core.Components
                 Entity?.SetComplexPropValue(GuiInfo.FieldName, null);
                 Dirty = true;
                 CascadeAndPopulate();
-                var listViewItem = this.FindClosest<ListViewItem>();
                 Task.Run(async () =>
                 {
-                    await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, Matched, oldMatch, listViewItem);
+                    await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, Matched, oldMatch);
                 });
                 if (UserInput != null)
                 {
@@ -789,10 +787,9 @@ namespace Core.Components
                 _gv.Show = false;
             }
             CascadeAndPopulate();
-            var listViewItem = this.FindClosest<ListViewItem>();
             Task.Run(async () =>
             {
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, rowData, oldMatch, listViewItem);
+                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, rowData, oldMatch);
             });
             if (UserInput != null)
             {

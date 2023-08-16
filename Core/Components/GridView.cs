@@ -1038,7 +1038,7 @@ namespace Core.Components
             table.SetAttribute("data-sort-order", sortOrder == "asc" ? "desc" : "asc");
         }
 
-        private void FocusCell(Event e, Component header)
+        public void FocusCell(Event e, Component header)
         {
             var td = e.Target as HTMLElement;
 

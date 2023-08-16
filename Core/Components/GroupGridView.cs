@@ -173,6 +173,7 @@ namespace Core.Components
                 });
                 return rowResult;
             }
+            var first = groupRow.Children.FirstOrDefault();
             var groupSection = new GroupViewItem(ElementType.tr)
             {
                 Entity = row,
@@ -183,7 +184,6 @@ namespace Core.Components
             };
             section.AddChild(groupSection);
             groupSection.Element.TabIndex = -1;
-            var first = groupRow.Children.FirstOrDefault();
             string groupText;
             if (Utils.IsFunction(GuiInfo.GroupFormat, out var fn))
             {
@@ -193,16 +193,34 @@ namespace Core.Components
             {
                 groupText = Utils.FormatEntity(GuiInfo.GroupFormat, null, first, Utils.EmptyFormat, Utils.EmptyFormat);
             }
-            Html.Instance.TData.ClassName("status-cell").Icon("mif-pencil").EndOf(ElementType.td)
+            if (GuiInfo.GroupReferenceId != null)
+            {
+                var val = first.GetPropValue(GuiInfo.GroupBy.Substr(0, GuiInfo.GroupBy.Length - 2));
+                groupSection.SetPropValue(nameof(Entity), val);
+                headers.Where(x => !x.Hidden).ForEach(header =>
+                {
+                    Html.Instance.TData.TabIndex(-1)
+                   .Style(header.Style)
+                   .Event(EventType.FocusIn, (e) => FocusCell(e, HeaderComponentMap[header.GetHashCode()]))
+                   .DataAttr("field", header.FieldName).Render();
+                    var td = Html.Context;
+                    groupSection.RenderTableCell(val, HeaderComponentMap[header.GetHashCode()], td);
+                    Html.Instance.EndOf(ElementType.td);
+                });
+            }
+            else
+            {
+                Html.Instance.TData.ClassName("status-cell").Icon("mif-pencil").EndOf(ElementType.td)
                 .TData.ColSpan(headers.Count - 1)
                     .AsyncEvent(EventType.Click, DispatchClick, first)
                     .AsyncEvent(EventType.DblClick, DispatchDblClick, first)
                     .Icon("fa fa-chevron-down").Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).End
                     .Div.ClassName("d-flex").InnerHTML(groupText);
-            groupSection.GroupText = Html.Context;
-            groupSection.Chevron = Html.Context.PreviousElementSibling;
-            groupSection.Chevron.ParentElement.PreviousElementSibling.AppendChild(groupSection.Chevron);
-            Html.Instance.EndOf(ElementType.td);
+                groupSection.GroupText = Html.Context;
+                groupSection.Chevron = Html.Context.PreviousElementSibling;
+                groupSection.Chevron.ParentElement.PreviousElementSibling.AppendChild(groupSection.Chevron);
+                Html.Instance.EndOf(ElementType.td);
+            }
             Html.Instance.EndOf(ElementType.tr);
             groupRow.Children.ForEach(child =>
             {

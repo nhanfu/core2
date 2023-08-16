@@ -38,9 +38,10 @@ namespace TMS.API.Controllers
                 oldEntity = await GetEntityByOdataOptions(options);
             }
             await CheckDuplicatesSettingsTrainSchedule(entity);
-            if (patch.Changes.Any(x => x.Field == nameof(oldEntity.Description)))
+            var des = patch.Changes.FirstOrDefault(x => x.Field == nameof(oldEntity.Description));
+            if (des.Value != null)
             {
-                var masterDataDB = await db.MasterData.Where(x => x.ParentId == entity.ParentId && x.Description.ToLower() == entity.Description.ToLower() && (x.Id != id.TryParseInt())).FirstOrDefaultAsync();
+                var masterDataDB = await db.MasterData.Where(x => x.ParentId == entity.ParentId && x.Description != null && x.Description.ToLower() == des.Value.ToLower() && (x.Id != id.TryParseInt())).FirstOrDefaultAsync();
                 if (masterDataDB != null)
                 {
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };
@@ -48,9 +49,9 @@ namespace TMS.API.Controllers
             }
             patch.ApplyTo(entity);
             SetAuditInfo(entity);
-            if (entity.Path.Contains(@"\7651\"))
+            if (!entity.Path.IsNullOrWhiteSpace() && entity.Path.Contains(@"\7651\"))
             {
-                var commodity = await db.MasterData.Where(x => x.Path.Contains(@"\7651\") && x.Description.Trim().ToLower() == entity.Description.Trim().ToLower()).FirstOrDefaultAsync();
+                var commodity = await db.MasterData.Where(x => x.Path.Contains(@"\7651\") && x.Description.Trim().ToLower() == des.Value.ToLower()).FirstOrDefaultAsync();
                 if (commodity != null)
                 {
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };

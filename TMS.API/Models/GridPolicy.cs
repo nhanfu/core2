@@ -82,6 +82,8 @@ namespace TMS.API.Models
         public string ScriptValidation { get; set; }
         public bool FilterLocal { get; set; }
         public bool HideGrid { get; set; }
+        public int? GroupReferenceId { get; set; }
+        public string GroupReferenceName { get; set; }
 
         public virtual Entity Entity { get; set; }
         public virtual Feature Feature { get; set; }
