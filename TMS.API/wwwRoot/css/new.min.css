@@ -57289,10 +57289,6 @@ body.layout-vertical.page-type-datagrid {
     position: relative;
 }
 
-.group-row td {
-    border-right: 0 !important;
-}
-
 #notifyBox .dropdown-item:hover a {
     -webkit-transition: -webkit-transform 6s linear;
     transform: translateX(calc(450px - 100%));
