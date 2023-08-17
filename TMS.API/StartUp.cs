@@ -67,7 +67,7 @@ namespace TMS.API
             {
                 options.SerializerSettings.ContractResolver = new IgnoreNullOrEmptyEnumResolver();
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Include;
                 options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Local;
             });
             services.AddDbContext<HistoryContext>((serviceProvider, options) =>

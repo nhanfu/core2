@@ -249,7 +249,7 @@ namespace Core.Extensions
             return value.ToString();
         }
 
-        public static object DeepCopy(object obj)
+        public static object DeepCopy(object obj, string path = null)
         {
             if (obj == null)
             {
@@ -257,7 +257,11 @@ namespace Core.Extensions
             }
 
             Type type = obj.GetType();
-
+            var modelName = obj.GetPropValue("ModelName");
+            if (modelName != null)
+            {
+                type = Type.GetType(path + modelName);
+            }
             if (type.IsSimple())
             {
                 return obj;
@@ -276,7 +280,15 @@ namespace Core.Extensions
             }
             else if (type.IsClass)
             {
-                object toret = Activator.CreateInstance(obj.GetType());
+                object toret = new object();
+                if (modelName != null)
+                {
+                    toret = Activator.CreateInstance(Type.GetType(path + modelName));
+                }
+                else
+                {
+                    toret = Activator.CreateInstance(obj.GetType());
+                }
                 FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                 foreach (FieldInfo field in fields)
                 {
@@ -296,11 +308,11 @@ namespace Core.Extensions
         public const string IdField = "Id";
         public const string StatusIdField = "StatusId";
         public const string FreightStateId = "FreightStateId";
-        public static List<T> CopyRowWithoutId<T>(List<T> selectedRows)
+        public static List<T> CopyRowWithoutId<T>(List<T> selectedRows, string path = null)
         {
             var copiedRows = selectedRows.Select(x =>
             {
-                var res = (T)DeepCopy(x);
+                var res = (T)DeepCopy(x, path);
                 res.SetPropValue(IdField, -Math.Abs(res.GetHashCode()));
                 ProcessObjectRecursive(res, obj =>
                 {

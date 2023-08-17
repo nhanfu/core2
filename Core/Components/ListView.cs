@@ -1081,7 +1081,14 @@ namespace Core.Components
 
         public virtual List<object> GetSelectedRows()
         {
-            return MainSection.Children.Where(x => x is ListViewItem item && item.Selected).Select(x => x.Entity).ToList();
+            if (LastListViewItem.GroupRow)
+            {
+                return new List<object>() { LastListViewItem.Entity };
+            }
+            else
+            {
+                return MainSection.Children.Where(x => x is ListViewItem item && item.Selected).Select(x => x.Entity).ToList();
+            }
         }
 
         public virtual async Task<List<object>> GetRealTimeSelectedRows()
@@ -1545,7 +1552,7 @@ namespace Core.Components
             var target = e.Target as HTMLElement;
             var rawRow = target.Closest(ElementType.tr.ToString());
             var currentRow = this.FirstOrDefault(x => x.Element == rawRow) as ListViewItem;
-            if (!(currentRow is GroupViewItem))
+            if (!(currentRow is GroupViewItem) || GuiInfo.GroupReferenceId != null)
             {
                 if (SelectedIds.Count == 1)
                 {

@@ -2238,7 +2238,7 @@ namespace Core.Components
         public override void DuplicateSelected(object ev, bool addRow = false)
         {
             var originalRows = GetSelectedRows();
-            var copiedRows = ReflectionExt.CopyRowWithoutId(originalRows).ToList();
+            var copiedRows = ReflectionExt.CopyRowWithoutId(originalRows, GuiInfo.RefClass).ToList();
             if (copiedRows.Nothing() || !CanWrite)
             {
                 return;

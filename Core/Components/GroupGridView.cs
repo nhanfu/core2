@@ -196,7 +196,8 @@ namespace Core.Components
             if (GuiInfo.GroupReferenceId != null)
             {
                 var val = first.GetPropValue(GuiInfo.GroupBy.Substr(0, GuiInfo.GroupBy.Length - 2));
-                groupSection.SetPropValue(nameof(Entity), val);
+                groupSection.Entity = val;
+                groupSection.Entity.SetPropValue("ModelName", GuiInfo.RefName);
                 headers.Where(x => !x.Hidden).ForEach(header =>
                 {
                     Html.Instance.TData.TabIndex(-1)

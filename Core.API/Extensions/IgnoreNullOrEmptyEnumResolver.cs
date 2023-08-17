@@ -25,7 +25,7 @@ namespace Core.Extensions
                         value = prop.GetValue(instance);
                         if (value is null)
                         {
-                            return false;
+                            return true;
                         }
 
                         if (value is IQueryable queryable)
