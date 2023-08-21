@@ -1157,7 +1157,7 @@ namespace Core.Components
             });
         }
 
-        public virtual void DuplicateSelected(object ev, bool addRow = false)
+        public virtual void DuplicateSelected(Event ev, bool addRow = false)
         {
             var originalRows = GetSelectedRows();
             var copiedRows = ReflectionExt.CopyRowWithoutId(originalRows).ToList();
@@ -1182,7 +1182,7 @@ namespace Core.Components
                         index = AllListViewItem.LastOrDefault().RowNo;
                     }
                 }
-                var list = await AddRows(copiedRows, index);
+                var list = await AddRowsNo(copiedRows, index);
                 base.Dirty = true;
                 base.Focus();
                 await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows);
@@ -1303,6 +1303,39 @@ namespace Core.Components
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
             var listItem = new List<ListViewItem>();
             await rows.AsEnumerable().Reverse().ForEachAsync(async data =>
+            {
+                listItem.Add(await AddRow(data, index, false));
+            });
+            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreatedList, rows);
+            AddNewEmptyRow();
+            return listItem;
+        }
+
+        public virtual async Task<List<ListViewItem>> AddRowsNo(IEnumerable<object> rows, int index = 0)
+        {
+            if (index < 0)
+            {
+                index = 0;
+            }
+
+            rows.ForEach(row =>
+            {
+                if (RowData.Data is IList)
+                {
+                    RowData.Data.Insert(index, row);
+                }
+                else
+                {
+                    RowData.Data.Add(row);
+                }
+            });
+            if (!GuiInfo.IsRealtime)
+            {
+                await LoadMasterData(rows);
+            }
+            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
+            var listItem = new List<ListViewItem>();
+            await rows.ForEachAsync(async data =>
             {
                 listItem.Add(await AddRow(data, index, false));
             });

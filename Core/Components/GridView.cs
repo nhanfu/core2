@@ -1803,7 +1803,7 @@ namespace Core.Components
             if (canWrite)
             {
                 ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-copy", Text = "Copy", Click = CopySelected });
-                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-clone", Text = "Copy & Dán", Click = (e) => DuplicateSelected(e, false) });
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-clone", Text = "Copy & Dán", Click = (e) => DuplicateSelected(null, false) });
             }
             if (canWrite && _copiedRows.HasElement())
             {
@@ -2235,7 +2235,7 @@ namespace Core.Components
             });
         }
 
-        public override void DuplicateSelected(object ev, bool addRow = false)
+        public override void DuplicateSelected(Event ev, bool addRow = false)
         {
             var originalRows = GetSelectedRows();
             var copiedRows = ReflectionExt.CopyRowWithoutId(originalRows, GuiInfo.RefClass).ToList();
@@ -2251,13 +2251,20 @@ namespace Core.Components
                 var index = AllListViewItem.IndexOf(x => x.Selected);
                 if (addRow)
                 {
-                    if (GuiInfo.TopEmpty)
+                    if (ev.KeyCodeEnum() == KeyCodeEnum.U && ev.CtrlOrMetaKey())
                     {
-                        index = 0;
+                        if (GuiInfo.TopEmpty)
+                        {
+                            index = 0;
+                        }
+                        else
+                        {
+                            index = AllListViewItem.LastOrDefault().RowNo;
+                        }
                     }
                     else
                     {
-                        index = AllListViewItem.LastOrDefault().RowNo;
+                        index = LastListViewItem is null ? 0 : LastListViewItem.RowNo;
                     }
                 }
                 var list = await AddRows(copiedRows, index);
