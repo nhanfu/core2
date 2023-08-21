@@ -1108,7 +1108,7 @@ namespace Core.Components
                 Toast.Success("Đang Sao chép liệu !");
                 await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.BeforePasted, _originRows, _copiedRows);
                 var index = AllListViewItem.IndexOf(x => x.Selected);
-                var list = await AddRows(_copiedRows, index);
+                var list = await AddRowsNo(_copiedRows, index);
                 base.Dirty = true;
                 base.Focus();
                 await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.AfterPasted, _originRows, _copiedRows);

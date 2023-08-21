@@ -2,7 +2,6 @@
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp.Formats.Jpeg;
-using System.IO.Pipelines;
 using FileIO = System.IO.File;
 
 namespace FTP.Controllers

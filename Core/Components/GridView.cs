@@ -2267,7 +2267,7 @@ namespace Core.Components
                         index = LastListViewItem is null ? 0 : LastListViewItem.RowNo;
                     }
                 }
-                var list = await AddRows(copiedRows, index);
+                var list = await AddRowsNo(copiedRows, index);
                 base.Dirty = true;
                 base.Focus();
                 await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows);
