@@ -592,7 +592,7 @@ namespace Core.Components.Extensions
             var search = component.FirstOrDefault(x => x.Name == name && x is SearchEntry) as SearchEntry;
             if (search != null)
             {
-                search.DataSourceFilter = datasource;
+                search.GuiInfo.DataSourceFilter = datasource;
             }
         }
 

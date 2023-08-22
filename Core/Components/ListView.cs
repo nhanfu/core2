@@ -100,7 +100,7 @@ namespace Core.Components
         public string DataSourceFilter { get; set; }
         public Action OnDeleteConfirmed { get; set; }
         public IEnumerable<ListViewItem> AllListViewItem => MainSection.Children.Cast<ListViewItem>();
-        public List<object> UpdatedRows => AllListViewItem.Where(x => x.Dirty).Select(x => x.Entity).Distinct().ToList();
+        public List<object> UpdatedRows => AllListViewItem.OrderBy(x => x.RowNo).Where(x => x.Dirty).Select(x => x.Entity).Distinct().ToList();
 
         public PatchUpdate LastUpdate { get; set; }
 
@@ -1847,7 +1847,18 @@ namespace Core.Components
                 return null;
             }
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchCreate, Entity, null, this);
-            var updatedRows = await new Client(GuiInfo.Reference.Name).BulkUpdateAsync(UpdatedRows);
+            var updatedRows = new List<object>();
+            foreach (var item in UpdatedRows)
+            {
+                if (int.Parse(item[IdField].ToString()) > 0)
+                {
+                    updatedRows.Add(await new Client(GuiInfo.Reference.Name).UpdateAsync(item));
+                }
+                else
+                {
+                    updatedRows.Add(await new Client(GuiInfo.Reference.Name).CreateAsync(item));
+                }
+            }
             await InternalUpdateRows(updateView, updatedRows);
             return updatedRows;
         }
