@@ -538,11 +538,11 @@ namespace Core.Components
                 if (!x.IsSearch)
                 {
                     var format = header.FormatCell.Split("}")[0].Replace("{", "");
-                    return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$top=50&$filter=contains({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.RefName);
+                    return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$top=1000&$filter=contains({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.RefName);
                 }
                 else
                 {
-                    return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$top=50&$filter=Id eq " + x.Value.EncodeSpecialChar(), entityName: header.RefName);
+                    return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$top=1000&$filter=Id eq " + x.Value.EncodeSpecialChar(), entityName: header.RefName);
                 }
             }).ToList();
             await Task.WhenAll(data);
@@ -575,6 +575,8 @@ namespace Core.Components
                             if (rsdynamic.Any())
                             {
                                 ids = rsdynamic.Select(x => x.Id).Cast<int>().Combine();
+                                var rs = 
+
                                 where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} not in ({ids})" : $"[{GuiInfo.RefName}].{cell.FieldName} in ({ids})";
                             }
                             else
