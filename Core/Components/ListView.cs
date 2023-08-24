@@ -1284,17 +1284,18 @@ namespace Core.Components
             {
                 index = 0;
             }
-
+            var indextemp = index;
             rows.ForEach(row =>
             {
                 if (RowData.Data is IList)
                 {
-                    RowData.Data.Insert(index, row);
+                    RowData.Data.Insert(indextemp, row);
                 }
                 else
                 {
                     RowData.Data.Add(row);
                 }
+                indextemp++;
             });
             if (!GuiInfo.IsRealtime)
             {
@@ -1302,9 +1303,11 @@ namespace Core.Components
             }
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
             var listItem = new List<ListViewItem>();
+            indextemp = index;
             await rows.AsEnumerable().Reverse().ForEachAsync(async data =>
             {
-                listItem.Add(await AddRow(data, index, false));
+                listItem.Add(await AddRow(data, indextemp, false));
+                indextemp++;
             });
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreatedList, rows);
             AddNewEmptyRow();
@@ -1317,17 +1320,18 @@ namespace Core.Components
             {
                 index = 0;
             }
-
+            var indextemp = index;
             rows.ForEach(row =>
             {
                 if (RowData.Data is IList)
                 {
-                    RowData.Data.Insert(index, row);
+                    RowData.Data.Insert(indextemp, row);
                 }
                 else
                 {
                     RowData.Data.Add(row);
                 }
+                indextemp++;
             });
             if (!GuiInfo.IsRealtime)
             {
@@ -1335,9 +1339,11 @@ namespace Core.Components
             }
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
             var listItem = new List<ListViewItem>();
+            indextemp = index;
             await rows.ForEachAsync(async data =>
             {
-                listItem.Add(await AddRow(data, index, false));
+                listItem.Add(await AddRow(data, indextemp, false));
+                indextemp++;
             });
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreatedList, rows);
             AddNewEmptyRow();
