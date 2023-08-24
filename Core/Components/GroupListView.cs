@@ -109,6 +109,20 @@ namespace Core.Components
             return listItem;
         }
 
+        public override async Task<List<ListViewItem>> AddRowsNo(IEnumerable<object> rowsData, int index = 0)
+        {
+            if (!GuiInfo.IsRealtime)
+            {
+                await LoadMasterData(rowsData);
+            }
+            var listItem = new List<ListViewItem>();
+            await rowsData.ForEachAsync(async x =>
+            {
+                listItem.Add(await AddRow(x, 0, false));
+            });
+            return listItem;
+        }
+
         public override ListViewItem RenderRowData(List<GridPolicy> headers, object row, Section listViewSection, int? index, bool emptyRow = false)
         {
             if (!(row is GroupRowData groupRow))

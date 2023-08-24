@@ -20,6 +20,7 @@ namespace Core.Components
 
         public override async Task DispatchClickAsync()
         {
+            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity, GuiInfo);
             Html.Take(Document.Body).Div.ClassName("backdrop")
                 .Style("align-items: center;").Escape((e) => Dispose());
             _preview = Html.Context;

@@ -154,10 +154,7 @@ namespace Core.Components
                 return;
             }
             RenderIndex();
-            if (MainSection.Element is HTMLTableSectionElement tableElement)
-            {
-                tableElement.AddEventListener(EventType.ContextMenu, BodyContextMenuHandler);
-            }
+            MainSection?.Element?.AddEventListener(EventType.ContextMenu, BodyContextMenuHandler);
         }
 
         private void StickyColumn(EditableComponent rows, string top = null)
@@ -575,7 +572,7 @@ namespace Core.Components
                             if (rsdynamic.Any())
                             {
                                 ids = rsdynamic.Select(x => x.Id).Cast<int>().Combine();
-                                var rs = 
+                                var rs =
 
                                 where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} not in ({ids})" : $"[{GuiInfo.RefName}].{cell.FieldName} in ({ids})";
                             }
@@ -2263,10 +2260,6 @@ namespace Core.Components
                         {
                             index = AllListViewItem.LastOrDefault().RowNo;
                         }
-                    }
-                    else
-                    {
-                        index = LastListViewItem is null ? 0 : LastListViewItem.RowNo;
                     }
                 }
                 var list = await AddRowsNo(copiedRows, index);
