@@ -300,7 +300,7 @@ namespace Core.Components
             var listItem = new List<ListViewItem>();
             await rowsData.ForEachAsync(async x =>
             {
-                listItem.Add(await AddRow(x, index, false));
+                listItem.Add(await AddRow(x, 0, false));
             });
             return listItem;
         }

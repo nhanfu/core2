@@ -20,15 +20,7 @@ namespace TMS.API.Controllers
         [AllowAnonymous]
         public override Task<OdataResult<Feature>> Get(ODataQueryOptions<Feature> options)
         {
-            var query =
-                from feature in db.Feature
-                join policyLeft in db.FeaturePolicy on feature.Id equals policyLeft.FeatureId into policyLeftJoin
-                from policy in policyLeftJoin.DefaultIfEmpty()
-                where feature.IsPublic || RoleIds.Contains(feature.RoleId) || feature.InsertedBy == UserId || policy.RoleId != null
-                    && policy.CanRead && (RoleIds.Contains(policy.RoleId.Value) || feature.IsPermissionInherited && AllRoleIds.Contains(policy.RoleId.Value) && policy.RecordId <= 0)
-                select feature;
-
-            return ApplyQuery(options, query.Distinct());
+            return base.Get(options);
         }
 
         [AllowAnonymous]

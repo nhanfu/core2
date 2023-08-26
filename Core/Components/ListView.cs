@@ -51,6 +51,7 @@ namespace Core.Components
         public List<SortedField> SortedField { get; set; }
         public List<GridPolicy> Header { get; set; }
         public List<GridPolicy> BasicHeader { get; set; } = new List<GridPolicy>();
+        public List<GridPolicy> RefBasicHeader { get; set; } = new List<GridPolicy>();
         public List<GridPolicy> BasicHeaderSearch { get; set; }
         public Dictionary<int, Component> HeaderComponentMap { get; set; }
         public ObservableList<object> RowData { get; set; }
@@ -405,6 +406,11 @@ namespace Core.Components
         public async Task LoadHeader()
         {
             var columns = await LoadGridPolicy();
+            if (GuiInfo.GroupReferenceId != null && GuiInfo.GroupReferenceId != GuiInfo.ReferenceId)
+            {
+                var columnsRef = await LoadRefGridPolicy();
+                RefBasicHeader = columns.OrderBy(x => x.Order).ToList();
+            }
             columns = FilterColumns(columns);
             BasicHeader = columns.OrderBy(x => x.Order).ToList();
             BasicHeaderSearch = columns.Where(x => x.ComponentType == "Dropdown").ToList();
@@ -660,6 +666,13 @@ namespace Core.Components
                 var column = userSetting.Value;
                 return MergeGridPolicy(sysSetting, JsonConvert.DeserializeObject<List<GridPolicy>>(column));
             }
+        }
+
+        public async Task<List<GridPolicy>> LoadRefGridPolicy()
+        {
+            var sysSetting = await new Client(nameof(GridPolicy), config: EditForm.Config).GetRawList<GridPolicy>(
+                $"?$filter=Active eq true and EntityId eq {GuiInfo.GroupReferenceId} and FeatureId eq {FeatureId}");
+            return sysSetting;
         }
 
         protected virtual List<GridPolicy> MergeGridPolicy(List<GridPolicy> sysSetting, List<GridPolicy> userSetting)

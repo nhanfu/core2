@@ -1641,7 +1641,7 @@ namespace Core.Components.Forms
             }
             var statusId = entity[StatusIdField].As<int>();
             this.SetShow(false, BtnSend, BtnApprove, BtnReject, BtnExpired);
-            if (statusId == (int)ApprovalStatusEnum.Approved)
+            if (statusId == (int)ApprovalStatusEnum.Approved && !Feature.IsPublic)
             {
                 LockUpdateButCancel();
                 this.SetShow(false, BtnSave, BtnSend, BtnApprove, BtnReject);
@@ -1652,7 +1652,7 @@ namespace Core.Components.Forms
                     this.SetDisabled(false, BtnExpired);
                 }
             }
-            else if (statusId == (int)ApprovalStatusEnum.Approving)
+            else if (statusId == (int)ApprovalStatusEnum.Approving && !Feature.IsPublic)
             {
                 this.SetShow(true, BtnApprove, BtnReject);
                 this.SetShow(false, BtnSend);

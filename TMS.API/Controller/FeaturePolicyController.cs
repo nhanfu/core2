@@ -3,6 +3,7 @@ using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
 using Microsoft.AspNet.OData.Query;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
@@ -16,6 +17,7 @@ namespace TMS.API.Controllers
         {
         }
 
+        [AllowAnonymous]
         public override Task<OdataResult<FeaturePolicy>> Get(ODataQueryOptions<FeaturePolicy> options)
         {
             var query = db.FeaturePolicy.Where(x => x.Active)
