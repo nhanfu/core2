@@ -148,13 +148,13 @@ namespace Core.Components
             }
             RenderContent();
             StickyColumn(this);
+            MainSection?.Element?.AddEventListener(EventType.ContextMenu, BodyContextMenuHandler);
             if (!Editable && RowData.Data.Nothing())
             {
                 NoRecordFound();
                 return;
             }
             RenderIndex();
-            MainSection?.Element?.AddEventListener(EventType.ContextMenu, BodyContextMenuHandler);
         }
 
         private void StickyColumn(EditableComponent rows, string top = null)

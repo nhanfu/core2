@@ -1047,7 +1047,7 @@ namespace Core.Components
                 {
                     RemoveRange(deleteIds);
                 }
-                DeleteTempIds = ids;
+                DeleteTempIds.AddRange(ids);
                 AllListViewItem.Where(x => x.Selected).ToArray().ForEach(x => x.Dispose());
                 ClearSelected();
                 base.Dirty = true;

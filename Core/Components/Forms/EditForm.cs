@@ -275,7 +275,7 @@ namespace Core.Components.Forms
         private ListView[] GetDeleteGrid()
         {
             return ListViews
-                .Where(x => x.GuiInfo.IdField.HasAnyChar())
+                .Where(x => x.GuiInfo.Id > 0)
                 .Where(x => x.DeleteTempIds.Any())
                 .ToArray();
         }
