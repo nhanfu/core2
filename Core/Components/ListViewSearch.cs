@@ -391,7 +391,7 @@ namespace Core.Components
                         ComponentType = "Input",
                         Value = selectedIds.Combine(),
                         ValueText = selectedIds.Combine(),
-                        Operator = "in",
+                        Operator = (int)OperatorEnum.In,
                         OperatorText = "Chứa",
                         Logic = LogicOperation.And,
                     });

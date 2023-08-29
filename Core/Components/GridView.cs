@@ -411,13 +411,18 @@ namespace Core.Components
             }
         }
 
-        public virtual void FilterInSelected(object ev)
+        public virtual void FilterInSelected(object e)
         {
-            if (ev["Operator"] is null)
+            var hotKeyModel = e as HotKeyModel;
+            if (_waitingLoad)
+            {
+                Window.ClearTimeout(_renderPrepareCacheAwaiter);
+            }
+            if (hotKeyModel.Operator is null)
             {
                 return;
             }
-            var header = Header.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString());
+            var header = Header.FirstOrDefault(x => x.FieldName == hotKeyModel.FieldName);
             var subFilter = string.Empty;
             var lastFilter = Window.LocalStorage.GetItem("LastSearch" + GuiInfo.Id + header.Id);
             if (lastFilter != null)
@@ -426,7 +431,7 @@ namespace Core.Components
             }
             var confirmDialog = new ConfirmDialog
             {
-                Content = $"Nhập {header.ShortDesc} cần tìm" + ev["Text"],
+                Content = $"Nhập {header.ShortDesc} cần tìm " + hotKeyModel.OperatorText,
                 NeedAnswer = true,
                 MultipleLine = false,
                 ComType = header.ComponentType == nameof(Datepicker) || header.ComponentType == nameof(Number) ? header.ComponentType : nameof(Textbox),
@@ -453,23 +458,23 @@ namespace Core.Components
                     value = confirmDialog.Textbox.Text.Trim().EncodeSpecialChar();
                 }
                 Window.LocalStorage.SetItem("LastSearch" + GuiInfo.Id + header.Id, value);
-                if (CellSelected.Any(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in") && !(bool)ev["Shift"])
+                if (CellSelected.Any(x => x.FieldName == hotKeyModel.FieldName && x.Operator == (int)OperatorEnum.In) && !hotKeyModel.Shift)
                 {
-                    CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").Value = value;
-                    CellSelected.FirstOrDefault(x => x.FieldName == ev["FieldName"].ToString() && x.Operator == "in").ValueText = valueText;
+                    CellSelected.FirstOrDefault(x => x.FieldName == hotKeyModel.FieldName && x.Operator == (int)OperatorEnum.In).Value = value;
+                    CellSelected.FirstOrDefault(x => x.FieldName == hotKeyModel.FieldName && x.Operator == (int)OperatorEnum.In).ValueText = valueText;
                 }
                 else
                 {
                     CellSelected.Add(new CellSelected
                     {
-                        FieldName = ev["FieldName"].ToString(),
+                        FieldName = hotKeyModel.FieldName,
                         FieldText = header.ShortDesc,
                         ComponentType = header.ComponentType,
-                        Shift = (bool)ev["Shift"],
+                        Shift = hotKeyModel.Shift,
                         Value = value,
                         ValueText = valueText,
-                        Operator = ev["Operator"].ToString(),
-                        OperatorText = ev["OperatorText"].ToString(),
+                        Operator = hotKeyModel.Operator,
+                        OperatorText = hotKeyModel.OperatorText,
                     });
                 }
                 _summarys.Add(new HTMLElement());
@@ -551,10 +556,10 @@ namespace Core.Components
                 var hl = Header.FirstOrDefault(y => y.FieldName == cell.FieldName);
                 string ids = null;
                 var isNUll = cell.Value.IsNullOrWhiteSpace();
-                AdvSearchOperation advo = cell.Operator == "not in" ? AdvSearchOperation.NotIn : AdvSearchOperation.In;
+                AdvSearchOperation advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotIn : AdvSearchOperation.In;
                 if (hl.FieldName == IdField)
                 {
-                    where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} not in ({cell.Value})" : $"[{GuiInfo.RefName}].{cell.FieldName} in ({cell.Value})";
+                    where = cell.Operator == (int)OperatorEnum.NotIn ? $"[{GuiInfo.RefName}].{cell.FieldName} not in ({cell.Value})" : $"[{GuiInfo.RefName}].{cell.FieldName} in ({cell.Value})";
                     lisToast.Add(cell.FieldText + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
                 else
@@ -563,8 +568,8 @@ namespace Core.Components
                     {
                         if (isNUll)
                         {
-                            advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
-                            where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} is not null" : $"[{GuiInfo.RefName}].{cell.FieldName} is null";
+                            advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                            where = cell.Operator == (int)OperatorEnum.NotIn ? $"[{GuiInfo.RefName}].{cell.FieldName} is not null" : $"[{GuiInfo.RefName}].{cell.FieldName} is null";
                         }
                         else
                         {
@@ -574,11 +579,11 @@ namespace Core.Components
                                 ids = rsdynamic.Select(x => x.Id).Cast<int>().Combine();
                                 var rs =
 
-                                where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} not in ({ids})" : $"[{GuiInfo.RefName}].{cell.FieldName} in ({ids})";
+                                where = cell.Operator == (int)OperatorEnum.NotIn ? $"[{GuiInfo.RefName}].{cell.FieldName} not in ({ids})" : $"[{GuiInfo.RefName}].{cell.FieldName} in ({ids})";
                             }
                             else
                             {
-                                where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} != {cell.Value}" : $"[{GuiInfo.RefName}].{cell.FieldName} = {cell.Value}";
+                                where = cell.Operator == (int)OperatorEnum.NotIn ? $"[{GuiInfo.RefName}].{cell.FieldName} != {cell.Value}" : $"[{GuiInfo.RefName}].{cell.FieldName} = {cell.Value}";
                             }
                             index++;
                         }
@@ -588,42 +593,42 @@ namespace Core.Components
                     {
                         if (isNUll)
                         {
-                            advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
-                            where = cell.Operator == "not in" ? $"([{GuiInfo.RefName}].{cell.FieldName} is not null and [{GuiInfo.RefName}].{cell.FieldName} != '')" : $"([{GuiInfo.RefName}].{cell.FieldName} is null or [{GuiInfo.RefName}].{cell.FieldName} = '')";
+                            advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                            where = cell.Operator == (int)OperatorEnum.NotIn ? $"([{GuiInfo.RefName}].{cell.FieldName} is not null and [{GuiInfo.RefName}].{cell.FieldName} != '')" : $"([{GuiInfo.RefName}].{cell.FieldName} is null or [{GuiInfo.RefName}].{cell.FieldName} = '')";
                         }
                         else
                         {
-                            advo = cell.Operator == "not in" ? AdvSearchOperation.NotLike : AdvSearchOperation.Like;
-                            where = cell.Operator == "not in" ? $"(CHARINDEX(N'{cell.Value}', [{GuiInfo.RefName}].{cell.FieldName}) = 0 or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $"CHARINDEX(N'{cell.Value}', [{GuiInfo.RefName}].{cell.FieldName}) > 0";
+                            advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotLike : AdvSearchOperation.Like;
+                            where = cell.Operator == (int)OperatorEnum.NotIn ? $"(CHARINDEX(N'{cell.Value}', [{GuiInfo.RefName}].{cell.FieldName}) = 0 or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $"CHARINDEX(N'{cell.Value}', [{GuiInfo.RefName}].{cell.FieldName}) > 0";
                         }
                         lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                     }
                     else if (hl.ComponentType == nameof(Number) || (hl.ComponentType == "Label" && hl.FieldName.Contains("Id")))
                     {
-                        if (cell.Operator == "not in" || cell.Operator == "in")
+                        if (cell.Operator == (int)OperatorEnum.NotIn || cell.Operator == (int)OperatorEnum.In)
                         {
                             if (isNUll)
                             {
-                                advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
-                                where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} is not null" : $"[{GuiInfo.RefName}].{cell.FieldName} is null";
+                                advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                                where = cell.Operator == (int)OperatorEnum.NotIn ? $"[{GuiInfo.RefName}].{cell.FieldName} is not null" : $"[{GuiInfo.RefName}].{cell.FieldName} is null";
                             }
                             else
                             {
-                                advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal;
-                                where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} != {cell.Value.Replace(",", "")}" : $"[{GuiInfo.RefName}].{cell.FieldName} = {cell.Value.Replace(",", "")}";
+                                advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal;
+                                where = cell.Operator == (int)OperatorEnum.NotIn ? $"[{GuiInfo.RefName}].{cell.FieldName} != {cell.Value.Replace(",", "")}" : $"[{GuiInfo.RefName}].{cell.FieldName} = {cell.Value.Replace(",", "")}";
                             }
                         }
                         else
                         {
-                            if (cell.Operator == "gt" || cell.Operator == "lt")
+                            if (cell.Operator == (int)OperatorEnum.Gt || cell.Operator == (int)OperatorEnum.Lt)
                             {
-                                where = cell.Operator == "gt" ? $"[{GuiInfo.RefName}].{cell.FieldName} > {cell.Value}" : $"[{GuiInfo.RefName}].{cell.FieldName} < {cell.Value}";
-                                advo = cell.Operator == "gt" ? AdvSearchOperation.GreaterThan : AdvSearchOperation.LessThan;
+                                where = cell.Operator == (int)OperatorEnum.Gt ? $"[{GuiInfo.RefName}].{cell.FieldName} > {cell.Value}" : $"[{GuiInfo.RefName}].{cell.FieldName} < {cell.Value}";
+                                advo = cell.Operator == (int)OperatorEnum.Gt ? AdvSearchOperation.GreaterThan : AdvSearchOperation.LessThan;
                             }
-                            else if (cell.Operator == "ge" || cell.Operator == "le")
+                            else if (cell.Operator == (int)OperatorEnum.Ge || cell.Operator == (int)OperatorEnum.Le)
                             {
-                                where = cell.Operator == "ge" ? $"[{GuiInfo.RefName}].{cell.FieldName} >= {cell.Value}" : $"[{GuiInfo.RefName}].{cell.FieldName} <= {cell.Value}";
-                                advo = cell.Operator == "ge" ? AdvSearchOperation.GreaterThanOrEqual : AdvSearchOperation.LessThanOrEqual;
+                                where = cell.Operator == (int)OperatorEnum.Ge ? $"[{GuiInfo.RefName}].{cell.FieldName} >= {cell.Value}" : $"[{GuiInfo.RefName}].{cell.FieldName} <= {cell.Value}";
+                                advo = cell.Operator == (int)OperatorEnum.Ge ? AdvSearchOperation.GreaterThanOrEqual : AdvSearchOperation.LessThanOrEqual;
                             }
                         }
                         lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
@@ -632,12 +637,12 @@ namespace Core.Components
                     {
                         if (isNUll)
                         {
-                            advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
-                            where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} is not null" : $"[{GuiInfo.RefName}].{cell.FieldName} is null";
+                            advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                            where = cell.Operator == (int)OperatorEnum.NotIn ? $"[{GuiInfo.RefName}].{cell.FieldName} is not null" : $"[{GuiInfo.RefName}].{cell.FieldName} is null";
                         }
                         else
                         {
-                            where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} != {(cell.Value == "true" ? "1" : "0")}" : $"[{GuiInfo.RefName}].{cell.FieldName} = {(cell.Value == "true" ? "1" : "0")}";
+                            where = cell.Operator == (int)OperatorEnum.NotIn ? $"[{GuiInfo.RefName}].{cell.FieldName} != {(cell.Value == "true" ? "1" : "0")}" : $"[{GuiInfo.RefName}].{cell.FieldName} = {(cell.Value == "true" ? "1" : "0")}";
                         }
                         lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                     }
@@ -645,29 +650,29 @@ namespace Core.Components
                     {
                         cell.Value = cell.Value.DecodeSpecialChar();
                         cell.ValueText = cell.Value.DecodeSpecialChar();
-                        if (cell.Operator == "not in" || cell.Operator == "in")
+                        if (cell.Operator == (int)OperatorEnum.NotIn || cell.Operator == (int)OperatorEnum.In)
                         {
                             if (isNUll)
                             {
-                                where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} is not null" : $"[{GuiInfo.RefName}].{cell.FieldName} is null";
-                                advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                                where = cell.Operator == (int)OperatorEnum.NotIn ? $"[{GuiInfo.RefName}].{cell.FieldName} is not null" : $"[{GuiInfo.RefName}].{cell.FieldName} is null";
+                                advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
                             }
                             else
                             {
                                 try
                                 {
                                     var va = DateTime.ParseExact(cell.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                                    if (cell.Operator == "not in" || cell.Operator == "in")
+                                    if (cell.Operator == (int)OperatorEnum.NotIn || cell.Operator == (int)OperatorEnum.In)
                                     {
-                                        where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} != '{va:yyyy-MM-dd}'" : $"[{GuiInfo.RefName}].{cell.FieldName} = '{va:yyyy-MM-dd}'";
-                                        advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqualDatime : AdvSearchOperation.EqualDatime;
+                                        where = cell.Operator == (int)OperatorEnum.NotIn ? $"[{GuiInfo.RefName}].{cell.FieldName} != '{va:yyyy-MM-dd}'" : $"[{GuiInfo.RefName}].{cell.FieldName} = '{va:yyyy-MM-dd}'";
+                                        advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualDatime : AdvSearchOperation.EqualDatime;
                                     }
                                 }
                                 catch
                                 {
                                     var va = DateTime.ParseExact(cell.Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                                    where = cell.Operator == "not in" ? $"[{GuiInfo.RefName}].{cell.FieldName} != '{va:yyyy-MM-dd}'" : $"[{GuiInfo.RefName}].{cell.FieldName} = '{va:yyyy-MM-dd}'";
-                                    advo = cell.Operator == "not in" ? AdvSearchOperation.NotEqualDatime : AdvSearchOperation.EqualDatime;
+                                    where = cell.Operator == (int)OperatorEnum.NotIn ? $"[{GuiInfo.RefName}].{cell.FieldName} != '{va:yyyy-MM-dd}'" : $"[{GuiInfo.RefName}].{cell.FieldName} = '{va:yyyy-MM-dd}'";
+                                    advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualDatime : AdvSearchOperation.EqualDatime;
                                 }
                             }
                         }
@@ -684,15 +689,15 @@ namespace Core.Components
                                 {
                                     va = DateTime.ParseExact(cell.Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                                 }
-                                if (cell.Operator == "gt" || cell.Operator == "lt")
+                                if (cell.Operator == (int)OperatorEnum.Gt || cell.Operator == (int)OperatorEnum.Lt)
                                 {
-                                    where = cell.Operator == "gt" ? $"[{GuiInfo.RefName}].{cell.FieldName} > '{va:yyyy-MM-dd HH:mm}'" : $"[{GuiInfo.RefName}].{cell.FieldName} < '{va:yyyy-MM-dd HH:mm}'";
-                                    advo = cell.Operator == "gt" ? AdvSearchOperation.GreaterThanDatime : AdvSearchOperation.LessThanDatime;
+                                    where = cell.Operator == (int)OperatorEnum.Gt ? $"[{GuiInfo.RefName}].{cell.FieldName} > '{va:yyyy-MM-dd HH:mm}'" : $"[{GuiInfo.RefName}].{cell.FieldName} < '{va:yyyy-MM-dd HH:mm}'";
+                                    advo = cell.Operator == (int)OperatorEnum.Gt ? AdvSearchOperation.GreaterThanDatime : AdvSearchOperation.LessThanDatime;
                                 }
-                                else if (cell.Operator == "ge" || cell.Operator == "le")
+                                else if (cell.Operator == (int)OperatorEnum.Ge || cell.Operator == (int)OperatorEnum.Le)
                                 {
-                                    where = cell.Operator == "ge" ? $"[{GuiInfo.RefName}].{cell.FieldName} >= '{va:yyyy-MM-dd HH:mm}'" : $"[{GuiInfo.RefName}].{cell.FieldName} <= '{va:yyyy-MM-dd HH:mm}'";
-                                    advo = cell.Operator == "ge" ? AdvSearchOperation.GreaterEqualDatime : AdvSearchOperation.LessEqualDatime;
+                                    where = cell.Operator == (int)OperatorEnum.Ge ? $"[{GuiInfo.RefName}].{cell.FieldName} >= '{va:yyyy-MM-dd HH:mm}'" : $"[{GuiInfo.RefName}].{cell.FieldName} <= '{va:yyyy-MM-dd HH:mm}'";
+                                    advo = cell.Operator == (int)OperatorEnum.Ge ? AdvSearchOperation.GreaterEqualDatime : AdvSearchOperation.LessEqualDatime;
                                 }
                             }
                         }
@@ -716,16 +721,16 @@ namespace Core.Components
                             AdvSearchVM.Conditions.Add(new FieldCondition
                             {
                                 Field = hl,
-                                CompareOperatorId = cell.Operator == "not in" ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull,
-                                LogicOperatorId = cell.Operator == "not in" ? LogicOperation.And : LogicOperation.Or,
+                                CompareOperatorId = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull,
+                                LogicOperatorId = cell.Operator == (int)OperatorEnum.NotIn ? LogicOperation.And : LogicOperation.Or,
                                 Value = null,
                                 Group = true
                             });
                             AdvSearchVM.Conditions.Add(new FieldCondition
                             {
                                 Field = hl,
-                                CompareOperatorId = cell.Operator == "not in" ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal,
-                                LogicOperatorId = cell.Operator == "not in" ? LogicOperation.And : LogicOperation.Or,
+                                CompareOperatorId = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal,
+                                LogicOperatorId = cell.Operator == (int)OperatorEnum.NotIn ? LogicOperation.And : LogicOperation.Or,
                                 Value = string.Empty,
                                 Group = true
                             });
@@ -796,7 +801,7 @@ namespace Core.Components
                         continue;
                     }
                     var cellText = cells[header].TextContent ?? string.Empty;
-                    if (cell.Operator == "in")
+                    if (cell.Operator == (int)OperatorEnum.In)
                     {
                         if (!(cellText.ToLowerCase().IndexOf(cell.ValueText.ToLowerCase()) > -1))
                         {
@@ -841,31 +846,24 @@ namespace Core.Components
             }
         }
 
-        public void FilterSelected(object ev)
+        public void FilterSelected(HotKeyModel hotKeyModel)
         {
-            if (ev["Operator"] is null)
+            if (hotKeyModel.Operator is null)
             {
                 return;
             }
-            var value = ev["Value"] is null ? null : ev["Value"].ToString();
-            var valueText = ev["ValueText"] is null ? null : ev["ValueText"].ToString();
-            var fileName = ev["FieldName"] is null ? null : ev["FieldName"].ToString();
-            var op = ev["Operator"] is null ? null : ev["Operator"].ToString();
-            var opText = ev["OperatorText"] is null ? null : ev["OperatorText"].ToString();
-            var isSearch = ev["IsSearch"] is null ? true : false;
-            if (!CellSelected.Any(x => x.FieldName == fileName && x.Value == value && x.ValueText == valueText && x.Operator == op))
+            if (!CellSelected.Any(x => x.FieldName == hotKeyModel.FieldName && x.Value == hotKeyModel.Value && x.ValueText == hotKeyModel.ValueText && x.Operator == hotKeyModel.Operator))
             {
-                var header = Header.FirstOrDefault(x => x.FieldName == fileName);
+                var header = Header.FirstOrDefault(x => x.FieldName == hotKeyModel.FieldName);
                 CellSelected.Add(new CellSelected
                 {
-                    FieldName = fileName,
+                    FieldName = hotKeyModel.FieldName,
                     FieldText = header.ShortDesc,
                     ComponentType = header.ComponentType,
-                    Value = value,
-                    ValueText = valueText,
-                    Operator = op,
-                    OperatorText = opText,
-                    IsSearch = isSearch
+                    Value = hotKeyModel.Value,
+                    ValueText = hotKeyModel.ValueText,
+                    Operator = hotKeyModel.Operator,
+                    OperatorText = hotKeyModel.OperatorText,
                 });
                 _summarys.Add(new HTMLElement());
             }
@@ -1053,10 +1051,10 @@ namespace Core.Components
 
         public void FilterSumary(GridPolicy gridPolicy, string value, string valueText)
         {
-            var dateTime = CellSelected.FirstOrDefault(x => gridPolicy.ComponentType == nameof(Datepicker) && x.FieldName == gridPolicy.FieldName && x.Operator == "in");
+            var dateTime = CellSelected.FirstOrDefault(x => gridPolicy.ComponentType == nameof(Datepicker) && x.FieldName == gridPolicy.FieldName && x.Operator == (int)OperatorEnum.In);
             if (dateTime is null)
             {
-                if (!CellSelected.Any(x => x.FieldName == gridPolicy.FieldName && x.Value == value && x.Operator == "in"))
+                if (!CellSelected.Any(x => x.FieldName == gridPolicy.FieldName && x.Value == value && x.Operator == (int)OperatorEnum.In))
                 {
                     var header = Header.FirstOrDefault(x => x.FieldName == gridPolicy.FieldName);
                     CellSelected.Add(new CellSelected
@@ -1066,7 +1064,7 @@ namespace Core.Components
                         ComponentType = header.ComponentType,
                         Value = value,
                         ValueText = valueText,
-                        Operator = "in",
+                        Operator = (int)OperatorEnum.In,
                         OperatorText = "chứa",
                         IsSearch = true
                     });
@@ -1230,13 +1228,13 @@ namespace Core.Components
                         menu.MenuItems.AddRange(new List<ContextMenuItem>
                         {
                             new ContextMenuItem { Icon = "fal fa-greater-than", Text = "Lớn hơn", Click = FilterInSelected,
-                                    Parameter = new { Operator="gt", OperatorText= "Lớn hơn", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
+                                    Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Gt, OperatorText= "Lớn hơn", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
                             new ContextMenuItem { Icon = "fal fa-less-than", Text = "Nhỏ hơn", Click = FilterInSelected,
-                                    Parameter = new { Operator="lt", OperatorText= "Nhỏ hơn", Value = value, FieldName = fieldName, ValueText=text, Shift = e.ShiftKey() }},
+                                    Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Lt, OperatorText= "Nhỏ hơn", Value = value, FieldName = fieldName, ValueText=text, Shift = e.ShiftKey() }},
                             new ContextMenuItem { Icon = "fal fa-greater-than-equal", Text = "Lớn hơn bằng", Click = FilterInSelected,
-                                    Parameter = new { Operator="ge", OperatorText= "Lớn hơn bằng", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
+                                    Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Ge, OperatorText= "Lớn hơn bằng", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
                             new ContextMenuItem { Icon = "fal fa-less-than-equal", Text = "Nhỏ hơn bằng", Click = FilterInSelected,
-                                    Parameter = new { Operator="le", OperatorText= "Nhỏ hơn bằng", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
+                                    Parameter = new  { Operator= (int)OperatorEnum.Le, OperatorText= "Nhỏ hơn bằng", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
                         });
                     }
                     menu.Render();
@@ -1261,14 +1259,7 @@ namespace Core.Components
                     }
                     break;
                 case KeyCodeEnum.F9:
-                    if (value.IsNullOrWhiteSpace())
-                    {
-                        FilterSelected(new { Operator = "in", OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text, IsSearch = false });
-                    }
-                    else
-                    {
-                        FilterSelected(new { Operator = "in", OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text });
-                    }
+                    FilterSelected(new HotKeyModel { Operator = 1, OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text });
                     com.Focus();
                     break;
                 case KeyCodeEnum.F10:
@@ -1276,14 +1267,7 @@ namespace Core.Components
                     ViewSumary(e, header1);
                     break;
                 case KeyCodeEnum.F2:
-                    if (value.IsNullOrWhiteSpace())
-                    {
-                        FilterSelected(new { Operator = "not in", OperatorText = "Loại trừ", Value = value, FieldName = fieldName, ValueText = text, IsSearch = false });
-                    }
-                    else
-                    {
-                        FilterSelected(new { Operator = "not in", OperatorText = "Loại trừ", Value = value, FieldName = fieldName, ValueText = text });
-                    }
+                    FilterSelected(new HotKeyModel { Operator = 2, OperatorText = "Loại trừ", Value = value, FieldName = fieldName, ValueText = text });
                     break;
                 case KeyCodeEnum.UpArrow:
                     var currentItemUp = GetItemFocus();

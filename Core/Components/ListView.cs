@@ -1706,7 +1706,7 @@ namespace Core.Components
                     ComponentType = com.ComponentType,
                     Value = selected.GetPropValue(e.FieldName).ToString(),
                     ValueText = selected.GetPropValue(e.FieldName).ToString(),
-                    Operator = "in",
+                    Operator = (int)OperatorEnum.In,
                     OperatorText = "Chứa",
                     Logic = LogicOperation.Or,
                     IsSearch = true,

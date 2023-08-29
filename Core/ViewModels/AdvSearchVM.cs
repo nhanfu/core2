@@ -23,7 +23,7 @@ namespace Core.Models
         public string ComponentType { get; set; }
         public string Value { get; set; }
         public string ValueText { get; set; }
-        public string Operator { get; set; }
+        public int? Operator { get; set; }
         public string OperatorText { get; set; }
         public LogicOperation? Logic { get; set; }
         public bool IsSearch { get; set; }
