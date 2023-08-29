@@ -187,5 +187,6 @@ namespace Core.Components
             PrepareUpdateView(force, dirty);
             Render();
         }
+
     }
 }
