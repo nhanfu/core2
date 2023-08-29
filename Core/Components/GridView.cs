@@ -1659,6 +1659,7 @@ namespace Core.Components
                 var dataSet = await new Client(GuiInfo.RefName).PostAsync<object[][]>(sum.Combine(), $"ViewSumary?group={header.FieldName}" +
                     $"&tablename={GuiInfo.RefName}" +
                     $"&refname={header.RefName}" +
+                    $"&join={GuiInfo.JoinTable}" +
                     $"&formatsumary={GuiInfo.FormatSumaryField}" +
                     $"&sql={Sql}&orderby={GuiInfo.OrderBySumary}" +
                     $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {pre}")}");

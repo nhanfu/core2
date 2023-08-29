@@ -103,6 +103,7 @@ namespace TMS.API.Models
         public bool HideGrid { get; set; }
         public int? GroupReferenceId { get; set; }
         public string GroupReferenceName { get; set; }
+        public string JoinTable { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

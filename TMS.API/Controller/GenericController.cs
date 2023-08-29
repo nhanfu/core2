@@ -741,7 +741,7 @@ namespace TMS.API.Controllers
         public virtual async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ViewSumary(
             [FromServices] IServiceProvider serviceProvider, [FromServices] IConfiguration config, [FromBody] string sum,
             [FromQuery] string group, [FromQuery] string tablename, [FromQuery] string refname,
-            [FromQuery] string formatsumary, [FromQuery] string orderby, [FromQuery] string sql, [FromQuery] string where)
+            [FromQuery] string formatsumary, [FromQuery] string orderby, [FromQuery] string sql, [FromQuery] string where, [FromQuery] string join)
         {
             var connectionStr = _config.GetConnectionString("Default");
             using var con = new SqlConnection(connectionStr);
@@ -750,7 +750,8 @@ namespace TMS.API.Controllers
             {
                 reportQuery = $@"select {group},{formatsumary} as TotalRecord,{sum}
                                  from [{tablename}]
-                                 where Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where}")}
+                                 {join}
+                                 where [{tablename}].Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where}")}
                                  group by {group}
                                  order by {formatsumary} {orderby}";
             }
@@ -758,17 +759,19 @@ namespace TMS.API.Controllers
             {
                 reportQuery = $@"select {group},{formatsumary} as TotalRecord,{sum}
                                  from ({sql})  as [{tablename}]
-                                 where Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where}")}
+                                 {join}
+                                 where [{tablename}].Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where}")}
                                  group by {group}
                                  order by {formatsumary} {orderby}";
             }
             if (!refname.IsNullOrEmpty())
             {
                 reportQuery += $@" select *
-                                 from [{refname}] 
+                                 from [{refname}]
                                  where Id in (select {group}
-                                              from [{tablename}] 
-                                              where Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where} ")}
+                                              from [{tablename}]
+                                              {join}
+                                              where [{tablename}].Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where} ")}
                                               group by {group})";
             }
             var sqlCmd = new SqlCommand(reportQuery, con)
@@ -805,7 +808,8 @@ namespace TMS.API.Controllers
             [FromQuery] string sql,
             [FromQuery] bool showNull,
             [FromQuery] string datetimeField,
-            [FromQuery] string where)
+            [FromQuery] string where,
+            [FromQuery] string join)
         {
             var connectionStr = _config.GetConnectionString("Default");
             using var con = new SqlConnection(connectionStr);
@@ -815,13 +819,15 @@ namespace TMS.API.Controllers
             {
                 reportQuery = $@"select {sum}
                                  from [{tablename}] as {tablename}
-                                 where Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where}")}";
+                                 {join}
+                                 where [{tablename}].Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where}")}";
             }
             else
             {
                 reportQuery = $@"select {sum}
                                  from ({sql})  as [{tablename}]
-                                 where Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where}")}";
+                                 {join}
+                                 where [{tablename}].Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where}")}";
             }
             var sqlCmd = new SqlCommand(reportQuery, con)
             {
