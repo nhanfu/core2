@@ -56,14 +56,10 @@ namespace Core.Components
                 html.Div.ClassName("container-rpt");
                 html.Div.ClassName("menuBar")
                 .Div.ClassName("printBtn")
-                    .Button.ClassName("fa fal fa-expand").Event(EventType.Click, () =>
-                    {
-                        Element["requestFullscreen"].As<Function>()?.Call(Element);
-                        Element.Style.Overflow = Overflow.Auto;
-                    }).End
-                    .Button.ClassName("fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement, printPreview: true, component: GuiInfo)).End
-                    .Button.ClassName("fal fa-file-pdf").Event(EventType.Click, async () => await GeneratePdf()).End
-                    .Button.ClassName("fa fa-file-excel").Event(EventType.Click, () =>
+                    .Button.ClassName("btn btn-success mr-1 fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement, printPreview: true, component: GuiInfo)).End
+                    .Button.ClassName("btn btn-success mr-1").Text("a4").Event(EventType.Click, async () => await GeneratePdf("a4")).End
+                    .Button.ClassName("btn btn-success mr-1").Text("a5").Event(EventType.Click, async () => await GeneratePdf("a5")).End
+                    .Button.ClassName("btn btn-success mr-1 fa fa-file-excel").Event(EventType.Click, () =>
                     {
                         if (!(_rptContent.QuerySelector("table") is HTMLTableElement table))
                         {
@@ -74,7 +70,7 @@ namespace Core.Components
                     }).End.Render();
                 if (Client.SystemRole)
                 {
-                    html.Button.ClassName("far fa-eye")
+                    html.Button.ClassName("btn btn-success mr-1").ClassName("far fa-eye")
                             .Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement)).End.Render();
                 }
 
@@ -84,21 +80,21 @@ namespace Core.Components
             }
         }
 
-        public async Task GeneratePdf()
+        public async Task GeneratePdf(string format)
         {
             await Client.LoadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
-            var element = Element.QuerySelector(".printable") as HTMLElement;
+            var element = (Element.QuerySelector(".printable") as HTMLElement);
+            var printEl = element;
+            printEl.Style.PageBreakBefore = null;
             /*@
             const openPdfInNewWindow = (pdf) => {
             const blob = pdf.output('blob');
             window.open(window.URL.createObjectURL(blob));
             };
-            html2pdf(element, { // my selector
-                margin: 0,
-                filename: 'bb', // some name
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 2, logging: true },
-                jsPDF: { unit: 'pt', format: 'a4', orientation: 'l' },
+            html2pdf(printEl, {
+                filename : this.GuiInfo.PlainText,
+                jsPDF: { format: format},
+                image: { type: 'jpeg', quality: 0.98 },
                 pdfCallback: openPdfInNewWindow,
             });
 
