@@ -1219,9 +1219,9 @@ namespace Core.Components
                     menu.MenuItems = new List<ContextMenuItem>
                     {
                         new ContextMenuItem { Icon = "fal fa-angle-double-right", Text = "Chứa", Click = FilterInSelected,
-                                Parameter = new { Operator = "in", OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey()  } },
+                                Parameter = new HotKeyModel { Operator = (int)OperatorEnum.In, OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey()  } },
                         new ContextMenuItem { Icon = "fal fa-not-equal", Text = "Không chứa", Click = FilterInSelected,
-                                Parameter = new { Operator="not in",OperatorText= "Không chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }}
+                                Parameter = new HotKeyModel { Operator=(int)OperatorEnum.NotIn,OperatorText= "Không chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }}
                     };
                     if (com.GuiInfo.ComponentType == nameof(Number) || com.GuiInfo.ComponentType == nameof(Datepicker))
                     {
