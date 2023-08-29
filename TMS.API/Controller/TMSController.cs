@@ -627,7 +627,8 @@ namespace TMS.API.Controllers
             , [FromQuery] int featureId
             , [FromQuery] string order
             , [FromQuery] bool showNull
-            , [FromQuery] string orderby)
+            , [FromQuery] string orderby
+            , [FromQuery] string join)
         {
             var component = await db.Component.FindAsync(componentId);
             var userSetting = await db.UserSetting.FirstOrDefaultAsync(x => x.Name == $"{(custom ? "Export" : "ListView")}-" + componentId && x.UserId == UserId);
@@ -706,6 +707,7 @@ namespace TMS.API.Controllers
             {
                 reportQuery = $@"select {fieldNames.Combine()}
                                   from ({sql})  as [{component.RefName}]
+                                  {join}
                                   {joins.Combine(" ")}
                                   where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
             }
@@ -713,6 +715,7 @@ namespace TMS.API.Controllers
             {
                 reportQuery = $@"select {fieldNames.Combine()}
                                   from [{component.RefName}] as [{component.RefName}]
+                                  {join}
                                   {joins.Combine(" ")}
                                   where 1=1 {(where.IsNullOrWhiteSpace() ? $"" : $" and {where}")}";
             }
