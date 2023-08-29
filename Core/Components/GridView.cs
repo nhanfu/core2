@@ -411,9 +411,9 @@ namespace Core.Components
             }
         }
 
-        public virtual void FilterInSelected(object e)
+        public void FilterInSelected(object e)
         {
-            var hotKeyModel = e as HotKeyModel;
+            var hotKeyModel = e.As<HotKeyModel>();
             if (_waitingLoad)
             {
                 Window.ClearTimeout(_renderPrepareCacheAwaiter);
@@ -1132,7 +1132,7 @@ namespace Core.Components
                 }
                 else
                 {
-                    text = com.GetValue() is null ? null : com.GetValue().ToString().DecodeSpecialChar();
+                    text = com.GetValueText() is null ? null : com.GetValueText().ToString().DecodeSpecialChar();
                 }
             }
 

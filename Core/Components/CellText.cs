@@ -188,5 +188,9 @@ namespace Core.Components
             Render();
         }
 
+        public override string GetValueText()
+        {
+            return Element.TextContent;
+        }
     }
 }
