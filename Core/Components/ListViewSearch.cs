@@ -504,6 +504,7 @@ namespace Core.Components
                 }
                 var path = await new Client(GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}" +
                     $"&sql={ParentListView.Sql}" +
+                    $"&join={ParentListView.GuiInfo.JoinTable}" +
                     $"&showNull={GuiInfo.ShowNull ?? false}" +
                     $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")}" +
                     $"&custom=false&featureId={EditForm.Feature.Id}&orderby={finalFilter}");
@@ -562,6 +563,7 @@ namespace Core.Components
                 }
                 var path = await new Client(GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}" +
                     $"&sql={ParentListView.Sql}" +
+                    $"&join={ParentListView.GuiInfo.JoinTable}" +
                     $"&showNull={GuiInfo.ShowNull ?? false}" +
                     $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")} {$" and [{ParentListView.GuiInfo.RefName}].Id in ({selectedIds.Combine()})"}" +
                     $"&custom=false&featureId={EditForm.Feature.Id}&orderby={finalFilter}");
