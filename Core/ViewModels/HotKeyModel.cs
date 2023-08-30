@@ -8,5 +8,6 @@
         public string FieldName { get; set; }
         public string ValueText { get; set; }
         public bool Shift { get; set; }
+        public bool ActValue { get; set; }
     }
 }

@@ -864,6 +864,7 @@ namespace Core.Components
                     ValueText = hotKeyModel.ValueText,
                     Operator = hotKeyModel.Operator,
                     OperatorText = hotKeyModel.OperatorText,
+                    IsSearch = hotKeyModel.ActValue,
                 });
                 _summarys.Add(new HTMLElement());
             }
@@ -1132,7 +1133,14 @@ namespace Core.Components
                 }
                 else
                 {
-                    text = com.GetValueText() is null ? null : com.GetValueText().ToString().DecodeSpecialChar();
+                    if (!com.GuiInfo.Editable)
+                    {
+                        text = com.GetValueTextAct() is null ? null : com.GetValueTextAct().ToString().DecodeSpecialChar();
+                    }
+                    else
+                    {
+                        text = com.GetValueText() is null ? null : com.GetValueText().ToString().DecodeSpecialChar();
+                    }
                 }
             }
 
@@ -1259,7 +1267,7 @@ namespace Core.Components
                     }
                     break;
                 case KeyCodeEnum.F9:
-                    FilterSelected(new HotKeyModel { Operator = 1, OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text });
+                    FilterSelected(new HotKeyModel { Operator = 1, OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text, ActValue = true });
                     com.Focus();
                     break;
                 case KeyCodeEnum.F10:
@@ -1267,7 +1275,7 @@ namespace Core.Components
                     ViewSumary(e, header1);
                     break;
                 case KeyCodeEnum.F2:
-                    FilterSelected(new HotKeyModel { Operator = 2, OperatorText = "Loại trừ", Value = value, FieldName = fieldName, ValueText = text });
+                    FilterSelected(new HotKeyModel { Operator = 2, OperatorText = "Loại trừ", Value = value, FieldName = fieldName, ValueText = text, ActValue = true });
                     break;
                 case KeyCodeEnum.UpArrow:
                     var currentItemUp = GetItemFocus();

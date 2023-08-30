@@ -305,6 +305,20 @@ namespace Core.Components
             return listItem;
         }
 
+        public override async Task<List<ListViewItem>> AddRowsNo(IEnumerable<object> rows, int index = 0)
+        {
+            if (!GuiInfo.IsRealtime)
+            {
+                await LoadMasterData(rows);
+            }
+            var listItem = new List<ListViewItem>();
+            await rows.ForEachAsync(async x =>
+            {
+                listItem.Add(await AddRow(x, 0, false));
+            });
+            return listItem;
+        }
+
         public override async Task AddOrUpdateRow(object rowData, bool singleAdd = true, bool force = false, params string[] fields)
         {
             var existRowData = this

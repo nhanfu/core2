@@ -916,5 +916,10 @@ namespace Core.Components
                     });
             });
         }
+
+        public virtual string GetValueTextAct()
+        {
+            return Element.TextContent;
+        }
     }
 }

@@ -188,7 +188,7 @@ namespace Core.Components
             Render();
         }
 
-        public override string GetValueText()
+        public override string GetValueTextAct()
         {
             return Element.TextContent;
         }
