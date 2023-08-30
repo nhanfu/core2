@@ -649,16 +649,6 @@ namespace Core.Components
             }
             if (userSetting is null)
             {
-                if (sysSetting.Count <= 10 && GuiInfo.ComponentType == "GridView")
-                {
-                    var pe = (100 / sysSetting.Count) + "%";
-                    sysSetting.ForEach(x =>
-                    {
-                        x.Width = pe;
-                        x.MaxWidth = pe;
-                        x.MinWidth = pe;
-                    });
-                }
                 return sysSetting;
             }
             else
