@@ -749,7 +749,7 @@ namespace TMS.API.Controllers
             group = group.Contains(".") ? $"{group}" : $"[{tablename}].{group}";
             if (sql.IsNullOrWhiteSpace())
             {
-                reportQuery = $@"select {group} as '{group}',{formatsumary} as TotalRecord,{sum}
+                reportQuery = $@"select {group} as '{group.Replace($"[{tablename}].","")}',{formatsumary} as TotalRecord,{sum}
                                  from [{tablename}]
                                  {join}
                                  where [{tablename}].Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where}")}
@@ -758,7 +758,7 @@ namespace TMS.API.Controllers
             }
             else
             {
-                reportQuery = $@"select {group}  as '{group}',{formatsumary} as TotalRecord,{sum}
+                reportQuery = $@"select {group}  as '{group.Replace($"[{tablename}].", "")}',{formatsumary} as TotalRecord,{sum}
                                  from ({sql})  as [{tablename}]
                                  {join}
                                  where [{tablename}].Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where}")}
