@@ -36,7 +36,7 @@ namespace Core.Components
                 Html.Instance.Div.ClassName("container-rpt");
                 Html.Instance.Div.ClassName("menuBar")
                 .Div.ClassName("printBtn")
-                    .Button.ClassName("btn btn-success mr-1 fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement, printPreview: true, component: GuiInfo)).End
+                    .Button.ClassName("btn btn-success mr-1 fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(_preview.QuerySelector(".print-group") as HTMLElement, printPreview: true, component: GuiInfo)).End
                     .Button.ClassName("btn btn-success mr-1").Text("a4").Event(EventType.Click, async () => await GeneratePdf("a4")).End
                     .Button.ClassName("btn btn-success mr-1").Text("a5").Event(EventType.Click, async () => await GeneratePdf("a5")).End
                     .Render();
@@ -70,7 +70,7 @@ namespace Core.Components
                     }
                     Window.SetTimeout(() =>
                     {
-                        var ele = _preview.QuerySelectorAll(".printable").Cast<HTMLElement>().ToList();
+                        var ele = _preview.QuerySelectorAll(".print-group").Cast<HTMLElement>().ToList();
                         var htmlBuilder = new StringBuilder("<html><head>");
                         htmlBuilder.Append("<body><div style='padding:7pt'>").Append(ele.Select(x => x.OuterHTML).Combine("</br>")).Append("</div></body></html>");
                         var html = htmlBuilder.ToString();
