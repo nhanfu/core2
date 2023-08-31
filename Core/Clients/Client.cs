@@ -24,7 +24,10 @@ namespace Core.Clients
         public static string Host => Window.Instance["Host"] != null ? Window.Instance["Host"].ToString() : Window.Location.Host;
         public static string Origin => Window.Instance["OriginLocation"] != null ? Window.Instance["OriginLocation"].ToString() : (Window.Location.Origin + "/");
         public static string Prefix => Origin + "api";
-        public string CustomPrefix { get; set; }
+        public string CustomPrefix { get; set; } = Document.Head.Children.Where(x => x is HTMLMetaElement).Cast<HTMLMetaElement>().FirstOrDefault(x =>
+        {
+            return x is HTMLMetaElement meta && meta.Name == "prefix";
+        })?.Content;
         public string EntityName { get; set; }
         private static Dictionary<int, Entity> entities;
         private static Token token;
