@@ -352,6 +352,7 @@ namespace Core.Components
             }
             var path = await new Client(ParentListView.GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}" +
                 $"&sql={ParentListView.Sql}" +
+                $"&join={ParentListView.GuiInfo.JoinTable}" +
                 $"&showNull={ParentListView.GuiInfo.ShowNull ?? false}" +
                 $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(ParentListView.Wheres.Any() ? " and " : "")} {pre}")}" +
                 $"&custom=true&featureId={Parent.EditForm.Feature.Id}&orderby={finalFilter}");

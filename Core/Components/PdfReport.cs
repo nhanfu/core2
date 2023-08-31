@@ -93,7 +93,19 @@ namespace Core.Components
             /*@
             const openPdfInNewWindow = (pdf) => {
             const blob = pdf.output('blob');
-            window.open(window.URL.createObjectURL(blob));
+            var isMobile = Window.Instance["Cordova"] != null;
+            if (!isMobile)
+            {
+                window.open(window.URL.createObjectURL(blob));
+                return;
+            }
+            var isAndroid = Window.Instance["device"]["platform"].ToString() == "Android";
+                if (isAndroid)
+                {
+                    Window.Location.Href = window.URL.createObjectURL(blob);
+                    return;
+                }
+                cordova.InAppBrowser.open(window.URL.createObjectURL(blob), "_system");
             };
             html2pdf(printEl, {
                 filename : this.GuiInfo.PlainText,
