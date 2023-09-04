@@ -190,6 +190,86 @@ namespace Core.Components.Forms
             return res;
         }
 
+        public PatchUpdate GetPathEntity()
+        {
+            var details = FilterChildren(child => child is EditableComponent editable && !(child.Parent is ListViewItem) && editable.Dirty && child.GuiInfo != null && child.GuiInfo.ComponentType != nameof(GridView) && child.GuiInfo.ComponentType != nameof(VirtualGrid))
+                .Select(child =>
+                {
+                    var value = child.Entity.GetComplexPropValue(child.GuiInfo.FieldName);
+                    var propType = child.Entity.GetType().GetComplexPropType(child.GuiInfo.FieldName, child.Entity);
+                    return new PatchUpdateDetail
+                    {
+                        Field = child.GuiInfo.FieldName,
+                        OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
+                        Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
+                    };
+                }).ToList();
+            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = EntityId.ToString() });
+            return new PatchUpdate { Changes = details };
+        }
+
+        public virtual async Task<bool> SavePatch(object entity = null)
+        {
+            if (!Dirty)
+            {
+                Toast.Warning(NotDirtyMessage);
+                return false;
+            }
+            var pathModel = GetPathEntity();
+            if (pathModel.Changes.Count == 1)
+            {
+                Toast.Warning(NotDirtyMessage);
+                return false;
+            }
+            BeforeSaved?.Invoke();
+            var rs = Entity;
+            var updating = Entity[IdField].As<int>() > 0;
+            if (updating)
+            {
+                try
+                {
+                    rs = await Client.PatchAsync<object>(pathModel);
+                }
+                catch
+                {
+                    Toast.Warning("Dữ liệu của bạn chưa được lưu vui lòng nhập lại!");
+                    rs = (await Client.GetList<object>($"?$filter=Id eq {Entity[IdField]}")).Value.FirstOrDefault();
+                    Entity.CopyPropFrom(rs);
+                    UpdateView();
+                    return false;
+                }
+            }
+            else
+            {
+                Entity[IdField] = 0;
+                rs = await Client.CreateAsync<object>(Entity);
+            }
+            Entity.CopyPropFrom(rs);
+            await UpdateIndependantGridView();
+            if (Feature.DeleteTemp)
+            {
+                await DeleteGridView();
+            }
+            var arr = FilterChildren<EditableComponent>(x => (!x.Dirty || x.GetValueText().IsNullOrWhiteSpace()) && x.GuiInfo != null).Select(x => x.GuiInfo.FieldName).ToArray();
+            UpdateView(true, arr);
+            var changing = BuildTextHistory().ToString();
+            if (!changing.IsNullOrWhiteSpace())
+            {
+                await new Client(nameof(History)).CreateAsync<History>(new History
+                {
+                    ReasonOfChange = "Auto update",
+                    TextHistory = changing.ToString(),
+                    RecordId = EntityId,
+                    EntityId = Utils.GetEntity(Client.EntityName).Id
+                });
+            }
+            var prefix = updating ? "Cập nhật" : "Tạo mới";
+            Toast.Success($"{prefix} thành công");
+            Dirty = false;
+            AfterSaved?.Invoke(true);
+            return true;
+        }
+
         public virtual async Task<bool> Save(object entity = null)
         {
             if (Entity is null)
