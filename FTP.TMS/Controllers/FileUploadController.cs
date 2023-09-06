@@ -1,7 +1,9 @@
 ﻿using ClosedXML.Excel;
+using FTP.TMS;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using System.Web;
 using FileIO = System.IO.File;
 
 namespace FTP.Controllers
@@ -147,7 +149,7 @@ namespace FTP.Controllers
 
                         var cell = worksheet.Cell(row, column);
                         double numericValue;
-                        if (double.TryParse(cellNode.InnerText.Trim(), out numericValue))
+                        if (double.TryParse(HttpUtility.HtmlDecode(cellNode.InnerHtml.Trim()), out numericValue))
                         {
                             cell.Value = numericValue;
                             cell.Style.NumberFormat.NumberFormatId = 2;
@@ -155,7 +157,7 @@ namespace FTP.Controllers
                         }
                         else
                         {
-                            cell.Value = cellNode.InnerText.Trim();
+                            cell.Value = HttpUtility.HtmlDecode(cellNode.InnerHtml.Trim());
                         }
 
                         // Lưu trạng thái rowspan của ô hiện tại cho các hàng phía sau

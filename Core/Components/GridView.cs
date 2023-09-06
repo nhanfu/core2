@@ -537,18 +537,27 @@ namespace Core.Components
             var groups = CellSelected.Where(x => x.FieldName.Contains(".")).ToList();
             var data = dropdowns.Select(x =>
             {
+                var filterString = "contains";
+                if (x.Operator == (int)OperatorEnum.Lr)
+                {
+                    filterString = "startswith";
+                }
+                if (x.Operator == (int)OperatorEnum.Rl)
+                {
+                    filterString = "endswith";
+                }
                 var header = Header.FirstOrDefault(y => y.FieldName == x.FieldName);
                 if (!x.IsSearch)
                 {
                     if (x.FieldName.Contains("."))
                     {
                         var format = header.FieldName.Split(".").LastOrDefault();
-                        return new Client(header.GroupReferenceName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$top=1000&$filter=contains({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.GroupReferenceName);
+                        return new Client(header.GroupReferenceName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$top=1000&$filter={filterString}({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.GroupReferenceName);
                     }
                     else
                     {
                         var format = header.FormatCell.Split("}")[0].Replace("{", "");
-                        return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$top=1000&$filter=contains({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.RefName);
+                        return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$top=1000&$filter={filterString}({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.RefName);
                     }
                 }
                 else
@@ -556,7 +565,7 @@ namespace Core.Components
                     if (x.FieldName.Contains("."))
                     {
                         var format = header.FieldName.Split(".").LastOrDefault();
-                        return new Client(header.GroupReferenceName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$top=1000&$filter=contains({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.GroupReferenceName);
+                        return new Client(header.GroupReferenceName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$top=1000&$filter={filterString}({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.GroupReferenceName);
                     }
                     else
                     {
@@ -631,6 +640,16 @@ namespace Core.Components
                             {
                                 advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotLike : AdvSearchOperation.Like;
                                 where = cell.Operator == (int)OperatorEnum.NotIn ? $"(CHARINDEX(N'{cell.Value}', [{GuiInfo.RefName}].{cell.FieldName}) = 0 or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $"CHARINDEX(N'{cell.Value}', [{GuiInfo.RefName}].{cell.FieldName}) > 0";
+                                if (cell.Operator == (int)OperatorEnum.Lr)
+                                {
+                                    advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotStartWith : AdvSearchOperation.StartWith;
+                                    where = cell.Operator == (int)OperatorEnum.NotIn ? $" [{GuiInfo.RefName}].{cell.FieldName} not like N'{cell.Value}%' or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $" [{GuiInfo.RefName}].{cell.FieldName} like N'{cell.Value}%'";
+                                }
+                                if (cell.Operator == (int)OperatorEnum.Rl)
+                                {
+                                    advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEndWidth : AdvSearchOperation.EndWidth;
+                                    where = cell.Operator == (int)OperatorEnum.NotIn ? $" [{GuiInfo.RefName}].{cell.FieldName} not like N'%{cell.Value}' or [{GuiInfo.RefName}].{cell.FieldName} is null)" : $" [{GuiInfo.RefName}].{cell.FieldName} like N'%{cell.Value}'";
+                                }
                             }
                         }
                         lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
@@ -1277,7 +1296,11 @@ namespace Core.Components
                         new ContextMenuItem { Icon = "fal fa-angle-double-right", Text = "Chứa", Click = FilterInSelected,
                                 Parameter = new HotKeyModel { Operator = (int)OperatorEnum.In, OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey()  } },
                         new ContextMenuItem { Icon = "fal fa-not-equal", Text = "Không chứa", Click = FilterInSelected,
-                                Parameter = new HotKeyModel { Operator=(int)OperatorEnum.NotIn,OperatorText= "Không chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }}
+                                Parameter = new HotKeyModel { Operator=(int)OperatorEnum.NotIn,OperatorText= "Không chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
+                        new ContextMenuItem { Icon = "fal fa-hourglass-start", Text = "Trái phải", Click = FilterInSelected,
+                                Parameter = new HotKeyModel { Operator = (int)OperatorEnum.Lr, OperatorText = "Trái phải", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey()  } },
+                        new ContextMenuItem { Icon = "fal fa-hourglass-end", Text = "Phải trái", Click = FilterInSelected,
+                                Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Rl,OperatorText= "Phải trái", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }}
                     };
                     if (com.GuiInfo.ComponentType == nameof(Number) || com.GuiInfo.ComponentType == nameof(Datepicker))
                     {
