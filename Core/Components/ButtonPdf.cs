@@ -6,7 +6,6 @@ using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Components
@@ -31,7 +30,7 @@ namespace Core.Components
                     .Event(EventType.Click, ClosePreview)
                 .EndOf(".popup-title")
                 .Div.ClassName("popup-body scroll-content");
-            if(GuiInfo.Precision == 2)
+            if (GuiInfo.Precision == 2)
             {
                 Html.Instance.Div.ClassName("container-rpt");
                 Html.Instance.Div.ClassName("menuBar")
@@ -71,13 +70,9 @@ namespace Core.Components
                     Window.SetTimeout(() =>
                     {
                         var ele = _preview.QuerySelectorAll(".print-group").Cast<HTMLElement>().ToList();
-                        var htmlBuilder = new StringBuilder("<html><head>");
-                        htmlBuilder.Append("<body><div style='padding:7pt'>").Append(ele.Select(x => x.OuterHTML).Combine("</br>")).Append("</div></body></html>");
-                        var html = htmlBuilder.ToString();
                         var printWindow = Window.Open("", "_blank");
-                        printWindow.Document.Open();
-                        printWindow.Document.Write(html);
                         printWindow.Document.Close();
+                        printWindow.Document.Body.InnerHTML = ele.Select(x => x.OuterHTML).Combine("</br>");
                         printWindow.Print();
                         printWindow.AddEventListener(EventType.MouseMove, e => printWindow.Close());
                         printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
@@ -86,6 +81,12 @@ namespace Core.Components
                             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.AfterPrint, selectedRow);
                         });
                         printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
+                        if (!GuiInfo.Style.IsNullOrWhiteSpace())
+                        {
+                            var style = Document.CreateElement(MVVM.ElementType.style.ToString()) as HTMLStyleElement;
+                            style.AppendChild(new Text(GuiInfo.Style));
+                            printWindow.Document.Head.AppendChild(style);
+                        }
                         _pdfReport.Dispose();
                         _preview.Remove();
                     }, 2000);
@@ -93,14 +94,11 @@ namespace Core.Components
                 else
                 {
                     Parent.AddChild(_pdfReport);
+                    var printWindow = Window.Open("", "_blank");
+                    printWindow.Document.Close();
                     Window.SetTimeout(() =>
                     {
-                        var htmlBuilder = new StringBuilder("<html><head>");
-                        htmlBuilder.Append("<body><div style='padding:7pt'>").Append(_pdfReport.Element.QuerySelector(".printable").OuterHTML).Append("</div></body></html>");
-                        var html = htmlBuilder.ToString();
-                        var printWindow = Window.Open("", "_blank");
-                        printWindow.Document.Write(html);
-                        printWindow.Document.Close();
+                        printWindow.Document.Body.InnerHTML = _pdfReport.Element.QuerySelector(".printable").OuterHTML;
                         printWindow.Print();
                         printWindow.AddEventListener(EventType.MouseMove, e => printWindow.Close());
                         printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
@@ -109,6 +107,12 @@ namespace Core.Components
                         {
                             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.AfterPrint, EditForm);
                         });
+                        if (!GuiInfo.Style.IsNullOrWhiteSpace())
+                        {
+                            var style = Document.CreateElement(MVVM.ElementType.style.ToString()) as HTMLStyleElement;
+                            style.AppendChild(new Text(GuiInfo.Style));
+                            printWindow.Document.Head.AppendChild(style);
+                        }
                         _pdfReport.Dispose();
                         _preview.Remove();
                     }, 2000);
@@ -116,7 +120,7 @@ namespace Core.Components
             }
             else
             {
-                if(GuiInfo.Precision == 2)
+                if (GuiInfo.Precision == 2)
                 {
                     var parentGridView = TabEditor.FindActiveComponent<GridView>().FirstOrDefault();
                     var selectedData = parentGridView.CacheData;

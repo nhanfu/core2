@@ -1445,46 +1445,34 @@ namespace Core.Components.Forms
             {
                 return null;
             }
-            if (styles == null)
-            {
-                styles = new List<string>
-                {
-                    "./css/styleprint.css",
-                    "./css/font-awesome.css",
-                    "./css/metro-all.css",
-                    "./css/LineIcons.css",
-                    "./css/main.css"
-                };
-            }
-
-            var htmlBuilder = new StringBuilder("<html><head>");
-            styles?.ForEach(x =>
-            {
-                if (!x.Contains(Window.Location.Origin))
-                {
-                    x = Path.Combine(Window.Location.Origin, x);
-                }
-                htmlBuilder.Append("<link href=\"").Append(x).Append("\" ");
-            });
-            htmlBuilder.Append("<body><div style='padding:7pt'>").Append(ele.InnerHTML).Append("</div></body></html>");
-            var html = htmlBuilder.ToString();
             if (!openWindow)
             {
-                return html;
+                return ele.InnerHTML;
             }
             var printWindow = Window.Open("", "_blank");
-
-            printWindow.Document.Write(html);
+            printWindow.Document.Body.InnerHTML = ele.InnerHTML;
             printWindow.Document.Close();
-            printWindow.AddEventListener(EventType.AfterPrint, async e =>
-            {
-                await this.DispatchEventToHandlerAsync(component.Events, EventType.AfterPrint, this);
-            });
             if (printPreview)
             {
-                Window.SetTimeout(printWindow.Print, 250);
+                Window.SetTimeout(() =>
+                {
+                    printWindow.AddEventListener(EventType.BeforePrint, e =>
+                    {
+                        var pageStyle = printWindow.Document.CreateElement(MVVM.ElementType.style.ToString());
+                        pageStyle.InnerHTML = component.Style;
+                        printWindow.Document.Head.AppendChild(pageStyle);
+                    });
+                    printWindow.Print();
+                    printWindow.AddEventListener(EventType.AfterPrint, async e =>
+                    {
+                        await this.DispatchEventToHandlerAsync(component.Events, EventType.AfterPrint, this);
+                    });
+                    printWindow.AddEventListener(EventType.MouseMove, e => printWindow.Close());
+                    printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
+                    printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
+                }, 250);
             }
-            return html;
+            return ele.InnerHTML;
         }
 
         public override void Focus()
