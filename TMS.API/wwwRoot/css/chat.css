@@ -472,6 +472,7 @@ th.asc::after {
 
 span.select2.select2-container.select2-container--default {
     width: 100% !important;
+    height: 26px;
 }
 
 .cell-selected .select2-selection--single:not([class*=bg-]):not([class*=border-]) {

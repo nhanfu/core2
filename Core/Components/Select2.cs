@@ -189,9 +189,6 @@ namespace Core.Components
 
         private void UpdateValue()
         {
-            /*@
-            $("#" + this.idGuid).trigger("change.select2");
-            */
             if (!Dirty)
             {
                 OriginalText = _select.Title;
@@ -253,9 +250,15 @@ namespace Core.Components
                 Matched = null;
                 _select.Value = null;
                 UpdateValue();
+                /*@
+                $("#" + this.idGuid).trigger("change.select2");
+                */
                 return;
             }
             FindMatchTextAsync(force);
+            /*@
+                $("#" + this.idGuid).trigger("change.select2");
+                */
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously

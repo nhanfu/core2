@@ -2337,6 +2337,11 @@ namespace Core.Components
                     AddSummaries();
                 }
                 ClearSelected();
+                foreach (var item in list)
+                {
+                    item.Selected = true;
+                }
+                LastListViewItem = list.FirstOrDefault();
                 if (GuiInfo.IsRealtime)
                 {
                     foreach (var item in list)
@@ -2507,6 +2512,10 @@ namespace Core.Components
                 AddNewEmptyRow();
                 if (!com.Contains(component?.GuiInfo.ComponentType))
                 {
+                    ClearSelected();
+                    rowSection.Selected = true;
+                    rowSection.Focus();
+                    LastListViewItem = rowSection;
                     LastElementFocus.Focus();
                 }
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
@@ -2534,7 +2543,10 @@ namespace Core.Components
                     {
                         var nextGrid = headers[index + 1];
                         var nextComponent = rowSection.Children.Where(y => y?.GuiInfo.FieldName == nextGrid.FieldName).FirstOrDefault();
-                        rowSection.Focused = true;
+                        ClearSelected();
+                        rowSection.Selected = true;
+                        rowSection.Focus();
+                        LastListViewItem = rowSection;
                         nextComponent.Focus();
                     }
                     headers.Where(x => !x.ScriptValidation.IsNullOrWhiteSpace()).ForEach(header =>
