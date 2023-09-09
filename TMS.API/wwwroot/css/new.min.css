@@ -1,7 +1,7 @@
 ﻿@font-face {
     font-display: swap;
     font-family: 'Roboto';
-    font-style: normal;
+    resizer font-style: normal;
     font-weight: 100;
     src: local('Roboto Thin'),local('Roboto-Thin'),url(https://fonts.gstatic.com/s/roboto/v20/KFOkCnqEu92Fr1MmgVxFIzIFKw.woff2) format('woff2');
     unicode-range: U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F
@@ -583,7 +583,8 @@ th {
 
 label {
     display: inline-block;
-    margin-bottom: .5rem
+    margin-bottom: 0rem;
+    margin-top: 4px;
 }
 
 button {
@@ -3216,7 +3217,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
         margin-left: .46875rem;
         line-height: 1;
         position: relative;
-        content: ""
+        content: "î§‰"
     }
 
     .dropdown-toggle:empty::after {
@@ -3318,7 +3319,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
     margin-left: .46875rem;
     line-height: 1;
     position: relative;
-    content: ""
+    content: "î§Š"
 }
 
 .dropup .dropdown-toggle:empty::after {
@@ -3342,7 +3343,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
     margin-left: .46875rem;
     line-height: 1;
     position: relative;
-    content: ""
+    content: "î§‹"
 }
 
 .dropright .dropdown-toggle:empty::after {
@@ -3384,7 +3385,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
     margin-right: .46875rem;
     line-height: 1;
     position: relative;
-    content: ""
+    content: "î§ˆ"
 }
 
 .dropleft .dropdown-toggle:empty::after {
@@ -27394,7 +27395,7 @@ ul.list-circle {
 }
 
     .list-inline-dotted .list-inline-item:not(:last-child):after {
-        content: "";
+        content: "ï’";
         font-family: icomoon;
         font-size: .5rem;
         width: .4rem;
@@ -28409,7 +28410,7 @@ input[class*=bg-]:not(.bg-light):not(.bg-white):not(.bg-transparent) + .form-con
     }
 
         .dropdown-menu > .dropdown-submenu > .dropdown-item:after {
-            content: "";
+            content: "î§‡";
             font-family: icomoon;
             position: absolute;
             top: 50%;
@@ -28453,7 +28454,7 @@ input[class*=bg-]:not(.bg-light):not(.bg-white):not(.bg-transparent) + .form-con
 
 @media (max-width:991.98px) {
     .dropdown-menu > .dropdown-submenu .dropdown-toggle:after {
-        content: ""
+        content: "î§…"
     }
 
     .dropdown-menu > .dropdown-submenu .dropdown-menu, .dropdown-menu > .dropdown-submenu.dropdown-submenu-left .dropdown-menu {
@@ -29229,7 +29230,7 @@ input[class*=bg-]:not(.bg-light):not(.bg-white):not(.bg-transparent) + .form-con
     }
 
     .navbar-expand-sm .dropdown-submenu .dropdown-toggle:after {
-        content: ""
+        content: "î§…"
     }
 
     .navbar-expand-sm .dropdown-submenu .dropdown-menu, .navbar-expand-sm .dropdown-submenu.dropdown-submenu-left .dropdown-menu {
@@ -29317,7 +29318,7 @@ input[class*=bg-]:not(.bg-light):not(.bg-white):not(.bg-transparent) + .form-con
     }
 
     .navbar-expand-md .dropdown-submenu .dropdown-toggle:after {
-        content: ""
+        content: "î§…"
     }
 
     .navbar-expand-md .dropdown-submenu .dropdown-menu, .navbar-expand-md .dropdown-submenu.dropdown-submenu-left .dropdown-menu {
@@ -29405,7 +29406,7 @@ input[class*=bg-]:not(.bg-light):not(.bg-white):not(.bg-transparent) + .form-con
     }
 
     .navbar-expand-lg .dropdown-submenu .dropdown-toggle:after {
-        content: ""
+        content: "î§…"
     }
 
     .navbar-expand-lg .dropdown-submenu .dropdown-menu, .navbar-expand-lg .dropdown-submenu.dropdown-submenu-left .dropdown-menu {
@@ -29493,7 +29494,7 @@ input[class*=bg-]:not(.bg-light):not(.bg-white):not(.bg-transparent) + .form-con
     }
 
     .navbar-expand-xl .dropdown-submenu .dropdown-toggle:after {
-        content: ""
+        content: "î§…"
     }
 
     .navbar-expand-xl .dropdown-submenu .dropdown-menu, .navbar-expand-xl .dropdown-submenu.dropdown-submenu-left .dropdown-menu {
@@ -29580,7 +29581,7 @@ input[class*=bg-]:not(.bg-light):not(.bg-white):not(.bg-transparent) + .form-con
 }
 
 .navbar-expand .dropdown-submenu .dropdown-toggle:after {
-    content: ""
+    content: "î§…"
 }
 
 .navbar-expand .dropdown-submenu .dropdown-menu, .navbar-expand .dropdown-submenu.dropdown-submenu-left .dropdown-menu {
@@ -30519,7 +30520,7 @@ a.breadcrumb-elements-item, a.breadcrumb-item {
     }
 
 .alert[class*=alert-styled-]:after {
-    content: "";
+    content: "î¦¢";
     font-family: icomoon;
     color: #fff;
     width: 2.875rem;
@@ -30536,19 +30537,19 @@ a.breadcrumb-elements-item, a.breadcrumb-item {
 }
 
 .alert[class*=alert-styled-].alert-danger:after, .alert[class*=alert-styled-][class*=bg-danger]:after {
-    content: ""
+    content: "îµ¤"
 }
 
 .alert[class*=alert-styled-].alert-success:after, .alert[class*=alert-styled-][class*=bg-success]:after {
-    content: ""
+    content: "îµ®"
 }
 
 .alert[class*=alert-styled-].alert-warning:after, .alert[class*=alert-styled-][class*=bg-warning]:after {
-    content: ""
+    content: "î¦½"
 }
 
 .alert[class*=alert-styled-].alert-info:after, .alert[class*=alert-styled-][class*=bg-info]:after {
-    content: ""
+    content: "î¦¹"
 }
 
 .alert.alert-styled-left {
@@ -30573,7 +30574,7 @@ a.breadcrumb-elements-item, a.breadcrumb-item {
     }
 
 .alert.alert-styled-custom:after {
-    content: ""
+    content: "î ›"
 }
 
 .alert.ui-pnotify[class*=alert-arrow-] > .brighttheme:before, .alert:not(.ui-pnotify)[class*=alert-arrow-]:before {
@@ -31430,7 +31431,7 @@ body {
 }
 
     .nav-item-submenu > .nav-link:after {
-        content: "";
+        content: "î§‡";
         font-family: icomoon;
         display: inline-block;
         font-size: 1rem;
@@ -33199,7 +33200,7 @@ input[type=text].noui-height-helper:not(.noUi-target)[data-fouc] {
 }
 
 .uniform-checker span:after {
-    content: "";
+    content: "î˜€";
     font-family: icomoon;
     font-size: 1rem;
     position: absolute;
@@ -33430,7 +33431,7 @@ input[type=text].noui-height-helper:not(.noUi-target)[data-fouc] {
 }
 
     .uniform-select span:after {
-        content: "";
+        content: "î§…";
         font-family: icomoon;
         display: inline-block;
         position: absolute;
@@ -34261,7 +34262,7 @@ input[type=text].noui-height-helper:not(.noUi-target)[data-fouc] {
 }
 
     .select2-search--dropdown:after {
-        content: "";
+        content: "î¦Ž";
         font-family: icomoon;
         position: absolute;
         top: 50%;
@@ -34564,7 +34565,7 @@ input[type=text].noui-height-helper:not(.noUi-target)[data-fouc] {
 }
 
 .multiselect-item input[type=checkbox] ~ .form-check-control-indicator:after {
-    content: "";
+    content: "î˜€";
     font-family: icomoon;
     font-size: 1rem;
     position: absolute;
@@ -34816,7 +34817,7 @@ input[type=text].noui-height-helper:not(.noUi-target)[data-fouc] {
 }
 
 .validation-valid-label:before {
-    content: ""
+    content: "î¹³"
 }
 
 .form-group-float-label {
@@ -34900,7 +34901,7 @@ input[type=text].noui-height-helper:not(.noUi-target)[data-fouc] {
 }
 
 .alpaca-field .glyphicon-exclamation-sign:before {
-    content: ""
+    content: "îµ£"
 }
 
 .alpaca-icon-required {
@@ -35122,7 +35123,7 @@ input[type=text].noui-height-helper:not(.noUi-target)[data-fouc] {
 }
 
 .tokenfield .token > .close:after {
-    content: "";
+    content: "îµª";
     font-family: icomoon;
     display: block;
     font-size: .6875rem;
@@ -35299,7 +35300,7 @@ input[type=text].noui-height-helper:not(.noUi-target)[data-fouc] {
 }
 
 .bootstrap-tagsinput .tag [data-role=remove]:after {
-    content: "";
+    content: "îµª";
     font-family: icomoon;
     display: block;
     font-size: .6875rem;
@@ -35479,7 +35480,7 @@ input[type=text].noui-height-helper:not(.noUi-target)[data-fouc] {
     }
 
         .sidebar .bootstrap-duallistbox-container .box1:after {
-            content: "";
+            content: "î§…";
             font-size: 1rem;
             font-family: icomoon;
             display: block;
@@ -35597,7 +35598,7 @@ input[type=text].noui-height-helper:not(.noUi-target)[data-fouc] {
                 }
 
                     .wizard > .steps > ul > li.current .number:after {
-                        content: "";
+                        content: "î¤“";
                         font-family: icomoon;
                         display: inline-block;
                         font-size: 1rem;
@@ -35628,7 +35629,7 @@ input[type=text].noui-height-helper:not(.noUi-target)[data-fouc] {
 }
 
     .wizard > .steps > ul > li.done .number:after {
-        content: "";
+        content: "îµ¯";
         font-family: icomoon;
         display: inline-block;
         font-size: 1rem;
@@ -37234,7 +37235,7 @@ body.trumbowyg-body-fullscreen {
 }
 
     .daterange-custom-display:after {
-        content: "";
+        content: "î§…";
         font-family: icomoon;
         display: block;
         font-size: 1rem;
@@ -37423,7 +37424,7 @@ body.trumbowyg-body-fullscreen {
 }
 
     .picker__nav--prev:before {
-        content: ""
+        content: "î§ˆ"
     }
 
 .picker__nav--next {
@@ -37431,7 +37432,7 @@ body.trumbowyg-body-fullscreen {
 }
 
     .picker__nav--next:before {
-        content: ""
+        content: "î§‹"
     }
 
 .picker__nav--disabled, .picker__nav--disabled:before, .picker__nav--disabled:before:hover, .picker__nav--disabled:hover {
@@ -37747,7 +37748,7 @@ body.trumbowyg-body-fullscreen {
     }
 
     .AnyTime-x-btn:after {
-        content: "";
+        content: "îµª";
         font-family: icomoon;
         font-size: 1rem;
         line-height: 1;
@@ -38058,7 +38059,7 @@ body.trumbowyg-body-fullscreen {
 }
 
     .sp-clear-display:after {
-        content: "";
+        content: "î¹®";
         display: block;
         font-family: icomoon;
         font-size: 1rem;
@@ -38207,7 +38208,7 @@ body.trumbowyg-body-fullscreen {
 }
 
     .sp-dd:after {
-        content: "";
+        content: "î§…";
         display: block;
         font-family: icomoon;
         font-size: 1rem;
@@ -38293,7 +38294,7 @@ body.trumbowyg-body-fullscreen {
         }
 
 .sp-palette .sp-thumb-active.sp-thumb-dark .sp-thumb-inner:after, .sp-palette .sp-thumb-active.sp-thumb-light .sp-thumb-inner:after {
-    content: "";
+    content: "î˜€";
     display: block;
     font-family: icomoon;
     font-size: 1rem;
@@ -38422,7 +38423,7 @@ body.trumbowyg-body-fullscreen {
 }
 
     .plupload_header:after {
-        content: "";
+        content: "î¨Ž";
         font-size: 2rem;
         position: absolute;
         top: 50%;
@@ -38564,7 +38565,7 @@ a.plupload_disabled {
 }
 
     .plupload_filelist li.plupload_droptext:before, .plupload_filelist:empty:before {
-        content: "";
+        content: "î¨Ž";
         font-size: 5rem;
         position: absolute;
         top: 50%;
@@ -38684,7 +38685,7 @@ a.plupload_disabled {
     }
 
     .plupload_file_action:after {
-        content: ""
+        content: "î±§"
     }
 
 .plupload_filelist .plupload_file_action:after {
@@ -38713,7 +38714,7 @@ a.plupload_disabled {
 }
 
 .plupload_delete a:after {
-    content: ""
+    content: "îµ«"
 }
 
 .plupload_failed a {
@@ -38722,7 +38723,7 @@ a.plupload_disabled {
 }
 
     .plupload_failed a:after {
-        content: ""
+        content: "îµ£"
     }
 
 .plupload_done {
@@ -38735,7 +38736,7 @@ a.plupload_disabled {
     }
 
         .plupload_done a:after {
-            content: ""
+            content: "î¹³"
         }
 
 .plupload_progress, .plupload_upload_status {
@@ -38918,7 +38919,7 @@ a.plupload_disabled {
 }
 
     .file-preview-other:after {
-        content: "";
+        content: "î¨Ž";
         font-family: icomoon;
         line-height: 1;
         position: absolute;
@@ -38972,7 +38973,7 @@ a.plupload_disabled {
     }
 
     .file-thumb-loading:after, .file-uploading:after {
-        content: "";
+        content: "î­‘";
         font-family: icomoon;
         display: inline-block;
         position: absolute;
@@ -39259,7 +39260,7 @@ a.plupload_disabled {
 }
 
 .dropzone .dz-default.dz-message:before {
-    content: "";
+    content: "î¨Ž";
     font-family: icomoon;
     font-size: 4rem;
     display: inline-block;
@@ -39367,7 +39368,7 @@ a.plupload_disabled {
     }
 
         .dropzone .dz-preview .dz-error-mark:after, .dropzone-previews .dz-preview .dz-error-mark:after {
-            content: ""
+            content: "îµ£"
         }
 
     .dropzone .dz-preview .dz-success-mark, .dropzone-previews .dz-preview .dz-success-mark {
@@ -39375,7 +39376,7 @@ a.plupload_disabled {
     }
 
         .dropzone .dz-preview .dz-success-mark:after, .dropzone-previews .dz-preview .dz-success-mark:after {
-            content: ""
+            content: "î¹³"
         }
 
     .dropzone .dz-preview.dz-error .dz-error-mark, .dropzone .dz-preview.dz-success .dz-success-mark, .dropzone-previews .dz-preview.dz-error .dz-error-mark, .dropzone-previews .dz-preview.dz-success .dz-success-mark {
@@ -40051,15 +40052,15 @@ body > .ui-pnotify-modal-overlay {
     }
 
     .brighttheme-icon-closer:after {
-        content: ""
+        content: "îµª"
     }
 
     .brighttheme-icon-sticker:after {
-        content: ""
+        content: "î¹°"
     }
 
     .brighttheme-icon-sticker.brighttheme-icon-stuck:after {
-        content: ""
+        content: "î¹µ"
     }
 
 .ui-pnotify[class*=alert-styled-] {
@@ -40548,7 +40549,7 @@ body:not(.swal2-no-backdrop) .swal2-container.swal2-shown {
     }
 
 .swal2-loading .swal2-confirm:before {
-    content: "";
+    content: "î­‘";
     font-family: icomoon;
     display: inline-block;
     font-size: 1rem;
@@ -40668,7 +40669,7 @@ body:not(.swal2-no-backdrop) .swal2-container.swal2-shown {
 }
 
     .swal2-validation-message:before {
-        content: "";
+        content: "îµ£";
         font-family: icomoon;
         font-size: 1rem;
         position: absolute;
@@ -42248,7 +42249,7 @@ body.swal2-toast-column .swal2-toast {
     }
 
         .ui-accordion .ui-accordion-header .ui-accordion-header-icon:before {
-            content: "";
+            content: "î¦¸";
             font-family: icomoon;
             display: block;
             width: 1rem;
@@ -42259,7 +42260,7 @@ body.swal2-toast-column .swal2-toast {
         }
 
 .ui-accordion .ui-accordion-header-active .ui-accordion-header-icon:before {
-    content: ""
+    content: "î¦·"
 }
 
 .ui-accordion .ui-accordion-icons {
@@ -42302,7 +42303,7 @@ body.swal2-toast-column .swal2-toast {
         }
 
 .ui-autocomplete-processing:after {
-    content: "";
+    content: "î­‘";
     font-family: icomoon;
     display: inline-block;
     position: absolute;
@@ -42578,7 +42579,7 @@ body.swal2-toast-column .swal2-toast {
 }
 
     .ui-datepicker .ui-datepicker-prev:after {
-        content: ""
+        content: "î§ˆ"
     }
 
 .ui-datepicker .ui-datepicker-next {
@@ -42586,7 +42587,7 @@ body.swal2-toast-column .swal2-toast {
 }
 
     .ui-datepicker .ui-datepicker-next:after {
-        content: ""
+        content: "î§‹"
     }
 
 .ui-datepicker .ui-datepicker-next-hover, .ui-datepicker .ui-datepicker-prev-hover {
@@ -42771,7 +42772,7 @@ body.swal2-toast-column .swal2-toast {
 }
 
     .ui-dialog-titlebar-close:after {
-        content: "";
+        content: "îµª";
         font-family: icomoon;
         display: block;
         width: .8125rem;
@@ -42867,7 +42868,7 @@ body.swal2-toast-column .swal2-toast {
 }
 
     .ui-menu .ui-menu-item-wrapper > .ui-menu-icon:after {
-        content: "";
+        content: "î§‡";
         font-family: icomoon;
         font-size: 1rem;
         line-height: 1;
@@ -43028,7 +43029,7 @@ body.swal2-toast-column .swal2-toast {
 }
 
 .ui-selectmenu-button:after {
-    content: "";
+    content: "î§…";
     font-family: icomoon;
     display: inline-block;
     position: absolute;
@@ -43386,11 +43387,11 @@ body.swal2-toast-column .swal2-toast {
     }
 
 .ui-spinner-up:after {
-    content: ""
+    content: "î§·"
 }
 
 .ui-spinner-down:after {
-    content: ""
+    content: "î§¢"
 }
 
 .ui-tabs {
@@ -43813,7 +43814,7 @@ pre.code-toolbar {
 }
 
     .slinky-menu .next:after {
-        content: "";
+        content: "î§‡";
         right: 1rem
     }
 
@@ -43826,7 +43827,7 @@ pre.code-toolbar {
 }
 
     .slinky-menu .back:before {
-        content: "";
+        content: "î·§";
         left: 1rem
     }
 
@@ -44313,27 +44314,27 @@ img.fancytree-icon {
 }
 
 .fancytree-exp-c .fancytree-expander:after {
-    content: ""
+    content: "î§‡"
 }
 
 .fancytree-exp-cl .fancytree-expander:after {
-    content: ""
+    content: "î§‡"
 }
 
 .fancytree-exp-cd .fancytree-expander:after, .fancytree-exp-cdl .fancytree-expander:after {
-    content: ""
+    content: "î§‡"
 }
 
 .fancytree-exp-e .fancytree-expander:after, .fancytree-exp-ed .fancytree-expander:after {
-    content: ""
+    content: "î§…"
 }
 
 .fancytree-exp-edl .fancytree-expander:after, .fancytree-exp-el .fancytree-expander:after {
-    content: ""
+    content: "î§…"
 }
 
 .fancytree-statusnode-error .fancytree-icon:after {
-    content: ""
+    content: "îµ£"
 }
 
 .fancytree-loading .fancytree-expander, .fancytree-statusnode-wait .fancytree-icon {
@@ -44346,7 +44347,7 @@ img.fancytree-icon {
 }
 
     .fancytree-loading .fancytree-expander:after, .fancytree-statusnode-wait .fancytree-icon:after {
-        content: "";
+        content: "î˜€";
         transition: all ease-in-out .15s
     }
 
@@ -44357,27 +44358,27 @@ img.fancytree-icon {
 }
 
 .fancytree-ico-c .fancytree-icon:after, .fancytree-ico-e .fancytree-icon:after {
-    content: ""
+    content: "î¨š"
 }
 
 .fancytree-has-children.fancytree-ico-c .fancytree-icon:after {
-    content: ""
+    content: "î¨"
 }
 
 .fancytree-has-children.fancytree-ico-e .fancytree-icon:after {
-    content: ""
+    content: "î¨‘"
 }
 
 .fancytree-ico-cf .fancytree-icon:after, .fancytree-ico-ef .fancytree-icon:after {
-    content: ""
+    content: "î¨½"
 }
 
 .fancytree-has-children.fancytree-ico-cf .fancytree-icon:after {
-    content: ""
+    content: "î©"
 }
 
 .fancytree-has-children.fancytree-ico-ef .fancytree-icon:after {
-    content: ""
+    content: "î©ƒ"
 }
 
 .fancytree-checkbox {
@@ -44407,7 +44408,7 @@ img.fancytree-icon {
 }
 
 .fancytree-selected .fancytree-checkbox:after {
-    content: "";
+    content: "î˜€";
     border: 0;
     top: 0;
     left: 0
@@ -44434,12 +44435,12 @@ img.fancytree-icon {
 }
 
 .fancytree-drop-accept .fancytree-drag-helper-img:after {
-    content: "";
+    content: "î¹³";
     color: #4caf50
 }
 
 .fancytree-drop-reject .fancytree-drag-helper-img:after {
-    content: "";
+    content: "îµ£";
     color: #f44336
 }
 
@@ -44991,19 +44992,19 @@ img.fancytree-icon {
 }
 
 .fc-icon-chevron-left:after {
-    content: ""
+    content: "î§€"
 }
 
 .fc-rtl .fc-icon-chevron-left:after {
-    content: ""
+    content: "î§€"
 }
 
 .fc-icon-chevron-right:after {
-    content: ""
+    content: "î§ƒ"
 }
 
 .fc-rtl .fc-icon-chevron-right:after {
-    content: ""
+    content: "î§ƒ"
 }
 
 .fc-icon-chevrons-left:after {
@@ -45023,7 +45024,7 @@ img.fancytree-icon {
 }
 
 .fc-icon-x:after {
-    content: "";
+    content: "îµª";
     font-size: .8125rem;
     display: block;
     margin-top: .21877rem;
@@ -46345,7 +46346,7 @@ a.fc-more:hover {
 }
 
     #fancybox-loading div:after {
-        content: "";
+        content: "î­‘";
         font-family: icomoon;
         font-size: 1rem;
         margin-top: -.5rem;
@@ -46386,7 +46387,7 @@ a.fc-more:hover {
 }
 
 .fancybox-close:after {
-    content: "";
+    content: "îµª";
     font-family: icomoon;
     font-size: 1rem;
     display: block;
@@ -46516,7 +46517,7 @@ a.fc-more:hover {
     }
 
         .fancybox-prev span:after {
-            content: ""
+            content: "î§ˆ"
         }
 
 .fancybox-next {
@@ -46528,7 +46529,7 @@ a.fc-more:hover {
     }
 
         .fancybox-next span:after {
-            content: ""
+            content: "î§‹"
         }
 
 .fancybox-lock {
@@ -46587,7 +46588,7 @@ a.fc-more:hover {
     }
 
         .footable.breakpoint > tbody > tr .footable-toggle:before {
-            content: "";
+            content: "î§¤";
             display: block;
             font-family: icomoon;
             font-size: 1rem;
@@ -46607,7 +46608,7 @@ a.fc-more:hover {
     }
 
     .footable.breakpoint > tbody > tr[data-expanded=true] .footable-toggle:before {
-        content: ""
+        content: "î§§"
     }
 
     .footable .footable-detail-row:hover {
@@ -46660,34 +46661,34 @@ a.fc-more:hover {
         }
 
         .dataTable thead .sorting:before {
-            content: "";
+            content: "î§";
             margin-top: -.125rem;
             opacity: .5
         }
 
         .dataTable thead .sorting:after {
-            content: "";
+            content: "î§‚";
             margin-top: -.625rem;
             opacity: .5
         }
 
         .dataTable thead .sorting_asc:after {
-            content: "";
+            content: "î§‚";
             opacity: 1
         }
 
         .dataTable thead .sorting_desc:after {
-            content: "";
+            content: "î§";
             opacity: 1
         }
 
         .dataTable thead .sorting_asc_disabled:after {
-            content: "";
+            content: "î§‚";
             opacity: .25
         }
 
         .dataTable thead .sorting_desc_disabled:after {
-            content: "";
+            content: "î§";
             opacity: .25
         }
 
@@ -46828,7 +46829,7 @@ a.fc-more:hover {
     }
 
         .dataTables_filter > label:after {
-            content: "";
+            content: "î¦Ž";
             font-family: icomoon;
             font-size: .75rem;
             display: inline-block;
@@ -47287,7 +47288,7 @@ a.fc-more:hover {
     }
 
         .dt-autofill-list .dt-autofill-button .btn:after {
-            content: "";
+            content: "îµ®";
             font-family: icomoon;
             display: block;
             font-size: 1rem;
@@ -47352,7 +47353,7 @@ a.fc-more:hover {
     }
 
 .dataTable tbody .selected .select-checkbox:after {
-    content: "";
+    content: "î˜€";
     font-family: icomoon;
     font-size: 1rem;
     line-height: 1;
@@ -47625,7 +47626,7 @@ a.fc-more:hover {
 }
 
 .dtr-column tbody tr td.control:before, .dtr-column tbody tr th.control:before, .dtr-inline.collapsed tbody tr td:first-child:before, .dtr-inline.collapsed tbody tr th:first-child:before {
-    content: "";
+    content: "î§¤";
     font-family: icomoon;
     display: inline-block;
     font-size: 1rem;
@@ -47639,7 +47640,7 @@ a.fc-more:hover {
 }
 
 .dataTable.dtr-column tbody tr.parent td.control:before, .dataTable.dtr-column tbody tr.parent th.control:before, .dataTable.dtr-inline.collapsed tbody tr.parent td:first-child:before, .dataTable.dtr-inline.collapsed tbody tr.parent th:first-child:before {
-    content: ""
+    content: "î§§"
 }
 
 .dtr-inline.collapsed tbody tr.child td:before {
@@ -54262,7 +54263,7 @@ a.fc-more:hover {
 
     .select2-container--default .select2-selection--single .select2-selection__rendered {
         color: #444;
-        line-height: 28px
+        line-height: 19px;
     }
 
     .select2-container--default .select2-selection--single .select2-selection__clear {
@@ -55284,7 +55285,7 @@ table {
             width: 100%;
             height: 10px;
             z-index: 16;
-            content: 'Vuốt sang để xem thêm menu';
+            content: 'Vuá»‘t sang Ä‘á»ƒ xem thÃªm menu';
             display: block;
             font-size: 11px;
             font-style: italic;
@@ -55505,8 +55506,7 @@ img {
     }
 
 .table > thead > tr {
-    background: #f5f5f5;
-    height: 40px;
+    background: #f5f5f5
 }
 
 .table thead th {
@@ -55648,7 +55648,7 @@ textarea.ta-row-1 {
 }
 
 .select2-dropdown.select2-dropdown--below {
-    min-width: 150px !important
+    min-width: 300px !important
 }
 
 .card .cke_chrome {
@@ -57287,6 +57287,10 @@ body.layout-vertical.page-type-datagrid {
     height: 100px;
     width: 100px;
     position: relative;
+}
+
+.group-row td {
+    border-right: 0 !important;
 }
 
 #notifyBox .dropdown-item:hover a {

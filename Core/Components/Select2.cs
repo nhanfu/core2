@@ -251,12 +251,14 @@ namespace Core.Components
                 _select.Value = null;
                 UpdateValue();
                 /*@
+                $("#" + this.idGuid).val(null);
                 $("#" + this.idGuid).trigger("change.select2");
                 */
                 return;
             }
             FindMatchTextAsync(force);
             /*@
+                $("#" + this.idGuid).val(this._value);
                 $("#" + this.idGuid).trigger("change.select2");
                 */
         }
