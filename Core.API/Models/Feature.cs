@@ -9,7 +9,7 @@ namespace Core.Models
         {
             ComponentGroup = new HashSet<ComponentGroup>();
             FeaturePolicy = new HashSet<FeaturePolicy>();
-            GridPolicy = new HashSet<GridPolicy>();
+            Component = new HashSet<Component>();
             InverseParent = new HashSet<Feature>();
         }
 
@@ -48,7 +48,7 @@ namespace Core.Models
         public string Properties { get; set; }
         public string Template { get; set; }
         public int? LayoutId { get; set; }
-        public string DataSource { get; set; }
+        public string DataSourceFilter { get; set; }
         public string Gallery { get; set; }
         public bool DeleteTemp { get; set; }
         public bool CustomNextCell { get; set; }
@@ -57,7 +57,7 @@ namespace Core.Models
         public virtual Feature Parent { get; set; }
         public virtual ICollection<ComponentGroup> ComponentGroup { get; set; }
         public virtual ICollection<FeaturePolicy> FeaturePolicy { get; set; }
-        public virtual ICollection<GridPolicy> GridPolicy { get; set; }
+        public virtual ICollection<Component> Component { get; set; }
         public virtual ICollection<Feature> InverseParent { get; set; }
     }
 }

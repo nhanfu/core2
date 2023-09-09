@@ -85,9 +85,5 @@ namespace TMS.API.Models
         public int? GroupReferenceId { get; set; }
         public string GroupReferenceName { get; set; }
         public string JoinTable { get; set; }
-
-        public virtual Entity Entity { get; set; }
-        public virtual Feature Feature { get; set; }
-        public virtual Entity Reference { get; set; }
     }
 }

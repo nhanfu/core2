@@ -64,17 +64,17 @@ namespace Core.Components
         {
             if (GuiInfo.FormatData.HasAnyChar())
             {
-                Header = JsonConvert.DeserializeObject<GridPolicy[]>(GuiInfo.FormatData).ToList();
+                Header = JsonConvert.DeserializeObject<Component[]>(GuiInfo.FormatData).ToList();
             }
             var isFn = Utils.IsFunction(GuiInfo.Query, out var fn);
             if (!isFn)
             {
                 return;
             }
-            var datasource = fn.Call(this, Entity).ToString();
+            var DataSourceFilter = fn.Call(this, Entity).ToString();
             if (Data is null)
             {
-                Data = await new Client(nameof(User)).PostAsync<object[][]>(datasource, "ReportDataSet");
+                Data = await new Client(nameof(User)).PostAsync<object[][]>(DataSourceFilter, "ReportDataSet");
             }
             if (Data.Nothing())
             {
@@ -84,7 +84,6 @@ namespace Core.Components
             DisposeNoRecord();
             var firstData = Data.FirstOrDefault()?.FirstOrDefault();
             var header = Header.ToArray();
-            HeaderComponentMap = Header.DistinctBy(x => x.GetHashCode()).ToDictionary(x => x.GetHashCode(), x => x.MapToComponent());
             Html.Take(_headerEle).Render();
             var html = Html.Instance;
             /*@
@@ -105,7 +104,7 @@ namespace Core.Components
                 for (var key in firstData) {
                     if (header != null && header.map(x => x.FieldName).indexOf(key) >= 0) {
                         var matchHeader = header.filter(x => x.FieldName == key);
-                        this.RenderCell(data[key], matchHeader[0] && matchHeader[0].FormatCell);
+                        this.RenderCell(data[key], matchHeader[0] && matchHeader[0].FormatData);
                     } else {
                         this.RenderCell(data[key]);
                     }
@@ -117,7 +116,7 @@ namespace Core.Components
 
         private void RenderHeader(string text)
         {
-            Header.Add(new GridPolicy
+            Header.Add(new Component
             {
                 ShortDesc = text
             });

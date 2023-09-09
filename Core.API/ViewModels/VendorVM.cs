@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Core.Models;
+﻿using Core.Models;
+using System.Collections.Generic;
 
 namespace Core.ViewModels
 {

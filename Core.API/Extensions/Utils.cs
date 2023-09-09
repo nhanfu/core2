@@ -732,7 +732,7 @@ namespace Core.Extensions
                 case "cur": return "application/octet-stream";
                 case "cxx": return "text/plain";
                 case "dat": return "application/octet-stream";
-                case "datasource": return "application/xml";
+                case "DataSourceFilter": return "application/xml";
                 case "dbproj": return "text/plain";
                 case "dcr": return "application/x-director";
                 case "def": return "text/plain";

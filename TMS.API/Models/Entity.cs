@@ -9,8 +9,6 @@ namespace TMS.API.Models
         {
             Component = new HashSet<Component>();
             Feature = new HashSet<Feature>();
-            GridPolicyEntity = new HashSet<GridPolicy>();
-            GridPolicyReference = new HashSet<GridPolicy>();
             TaskNotification = new HashSet<TaskNotification>();
         }
 
@@ -29,8 +27,6 @@ namespace TMS.API.Models
 
         public virtual ICollection<Component> Component { get; set; }
         public virtual ICollection<Feature> Feature { get; set; }
-        public virtual ICollection<GridPolicy> GridPolicyEntity { get; set; }
-        public virtual ICollection<GridPolicy> GridPolicyReference { get; set; }
         public virtual ICollection<TaskNotification> TaskNotification { get; set; }
     }
 }

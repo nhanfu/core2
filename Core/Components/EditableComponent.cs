@@ -344,8 +344,8 @@ namespace Core.Components
 
             Html.Take(child.ParentElement);
             child.Render();
-            child.ToggleShow(showExp ?? child.GuiInfo?.ShowExp);
-            child.ToggleDisabled(disabledExp ?? child.GuiInfo?.DisabledExp);
+            child.ToggleShow(showExp ?? (child.GuiInfo is null ? "" : child.GuiInfo.ShowExp));
+            child.ToggleDisabled(disabledExp ?? (child.GuiInfo is null ? "" : child.GuiInfo.DisabledExp));
         }
 
         public void RemoveChild(EditableComponent child)

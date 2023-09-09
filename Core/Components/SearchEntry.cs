@@ -55,12 +55,12 @@ namespace Core.Components
         private HTMLElement _parentInput;
         private HTMLElement _backdrop;
 
-        public string DataSourceFilter { get => dataSourceFilter; set => dataSourceFilter = value.DecodeSpecialChar(); }
+        public string DataSource { get => dataSourceFilter; set => dataSourceFilter = value.DecodeSpecialChar(); }
         public object Matched { get; set; }
 
         public SearchEntry(Component ui, HTMLElement ele = null) : base(ui)
         {
-            DataSourceFilter = ui.DataSourceFilter;
+            DataSource = ui.DataSourceFilter;
             DeserializeLocalData(ui);
             GuiInfo.ComponentGroup = null;
             GuiInfo.Row = GuiInfo.Row ?? 20;
@@ -513,7 +513,7 @@ namespace Core.Components
             }
             if (GuiInfo.LocalHeader is null)
             {
-                GuiInfo.LocalHeader = new List<GridPolicy>(_gv.Header.Where(x => x.Id > 0));
+                GuiInfo.LocalHeader = new List<Component>(_gv.Header.Where(x => x.Id > 0));
             }
         }
 
@@ -748,16 +748,16 @@ namespace Core.Components
         {
             get
             {
-                if (Utils.IsFunction(DataSourceFilter, out Function fn))
+                if (Utils.IsFunction(DataSource, out Function fn))
                 {
                     return fn.Call(this, this, EditForm).ToString();
                 }
-                var dataSourceFilter = DataSourceFilter.HasAnyChar() ? DataSourceFilter : string.Empty;
+                var dataSourceFilter = DataSource.HasAnyChar() ? DataSource : string.Empty;
                 var checkContain = dataSourceFilter.Contains(nameof(EditForm) + ".")
                     || dataSourceFilter.Contains(nameof(TabEditor) + ".")
                     || dataSourceFilter.Contains(nameof(Entity) + ".");
-                var dataSource = Utils.FormatEntity(dataSourceFilter, null, checkContain ? this : Entity, notFoundHandler: x => "null");
-                return dataSource;
+                var DataSourceFilter = Utils.FormatEntity(dataSourceFilter, null, checkContain ? this : Entity, notFoundHandler: x => "null");
+                return DataSourceFilter;
             }
         }
 

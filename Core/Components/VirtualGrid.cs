@@ -188,7 +188,7 @@ namespace Core.Components
             return rows;
         }
 
-        public override async Task<List<object>> ReloadData(string dataSource = null, bool cache = false, int? skip = null, int? pageSize = null, bool search = false)
+        public override async Task<List<object>> ReloadData(string DataSourceFilter = null, bool cache = false, int? skip = null, int? pageSize = null, bool search = false)
         {
             DisposeNoRecord();
             VirtualScroll = GuiInfo.GroupBy.Nothing() && GuiInfo.VirtualScroll && Element.Style.Display.ToString() != Display.None.ToString();

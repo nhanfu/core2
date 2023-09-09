@@ -94,9 +94,6 @@
     <Compile Include="..\TMS.API\Models\FileUpload.cs">
       <Link>Models\FileUpload.cs</Link>
     </Compile>
-    <Compile Include="..\TMS.API\Models\GridPolicy.cs">
-      <Link>Models\GridPolicy.cs</Link>
-    </Compile>
     <Compile Include="..\TMS.API\Models\History.cs">
       <Link>Models\History.cs</Link>
     </Compile>

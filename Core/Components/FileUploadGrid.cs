@@ -19,9 +19,9 @@ namespace Core.Components
         public FileUploadGrid(Component ui) : base(ui)
         {
             GuiInfo = ui;
-            ui.LocalHeader = new List<GridPolicy>
+            ui.LocalHeader = new List<Component>
             {
-                new GridPolicy
+                new Component
                 {
                     FieldName = nameof(FileUpload.FileName),
                     Editable = true,
@@ -29,30 +29,30 @@ namespace Core.Components
                     ComponentType = "Input",
                     Order = 2
                 },
-                new GridPolicy
+                new Component
                 {
                     FieldName = nameof(FileUpload.FilePath),
                     Editable = true,
                     Active = true,
                     ComponentType = nameof(ImageUploader),
-                    DataSource= ui.DataSourceFilter.IsNullOrEmpty() ?  "*.*" : ui.DataSourceFilter,
+                    DataSourceFilter= ui.DataSourceFilter.IsNullOrEmpty() ?  "*.*" : ui.DataSourceFilter,
                     ShortDesc = "File",
                     IsRealtime = GuiInfo.IsRealtime,
                     Precision = 1,
                     Order = 1
                 },
-                new GridPolicy
+                new Component
                 {
                     FieldName = nameof(FileUpload.InsertedBy),
                     Active = true,
                     RefName = nameof(User),
                     ReferenceId = Utils.GetEntity(nameof(User))?.Id ?? 0,
-                    FormatCell = "{" + nameof(User.FullName) + "}",
+                    FormatData = "{" + nameof(User.FullName) + "}",
                     ComponentType = "Label",
                     ShortDesc = "Created by",
                     Order = 3
                 },
-                new GridPolicy
+                new Component
                 {
                     FieldName = nameof(FileUpload.InsertedDate),
                     Active = true,
@@ -60,18 +60,18 @@ namespace Core.Components
                     ShortDesc = "Created date",
                     Order = 4
                 },
-                new GridPolicy
+                new Component
                 {
                     FieldName = nameof(FileUpload.UpdatedBy),
                     Active = true,
                     RefName = nameof(User),
                     ReferenceId = Utils.GetEntity(nameof(User))?.Id ?? 0,
-                    FormatCell = "{" + nameof(User.FullName) + "}",
+                    FormatData = "{" + nameof(User.FullName) + "}",
                     ComponentType = "Label",
                     ShortDesc = "Updated by",
                     Order = 5
                 },
-                new GridPolicy
+                new Component
                 {
                     FieldName = nameof(FileUpload.UpdatedDate),
                     Active = true,

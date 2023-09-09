@@ -152,7 +152,7 @@ namespace Core.Components
             return row;
         }
 
-        public override ListViewItem RenderRowData(List<GridPolicy> headers, object row, Section section, int? index, bool emptyRow = false)
+        public override ListViewItem RenderRowData(List<Component> headers, object row, Section section, int? index, bool emptyRow = false)
         {
             if (!(row is GroupRowData groupRow))
             {
@@ -202,10 +202,10 @@ namespace Core.Components
                 {
                     Html.Instance.TData.TabIndex(-1)
                    .Style(header.Style)
-                   .Event(EventType.FocusIn, (e) => FocusCell(e, HeaderComponentMap[header.GetHashCode()]))
+                   .Event(EventType.FocusIn, (e) => FocusCell(e, header))
                    .DataAttr("field", header.FieldName).Render();
                     var td = Html.Context;
-                    groupSection.RenderTableCell(val, HeaderComponentMap[header.GetHashCode()], td);
+                    groupSection.RenderTableCell(val, header, td);
                     Html.Instance.EndOf(ElementType.td);
                 });
             }

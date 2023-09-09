@@ -62,12 +62,12 @@ namespace Core.Components
             };
         }
 
-        protected override List<Component> FilterColumns(List<Component> gridPolicy)
+        protected override List<Component> FilterColumns(List<Component> Component)
         {
-            base.FilterColumns(gridPolicy);
-            gridPolicy.ForEach(x => x.Frozen = false);
+            base.FilterColumns(Component);
+            Component.ForEach(x => x.Frozen = false);
             Header.Remove(Header.FirstOrDefault(x => x == ToolbarColumn));
-            return gridPolicy;
+            return Component;
         }
     }
 }

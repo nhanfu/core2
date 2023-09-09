@@ -49,9 +49,4 @@ namespace Core.Models
             return Type.GetType((ns ?? Namespace ?? Clients.Client.ModelNamespace) + name);
         }
     }
-
-    public partial class Feature
-    {
-        public virtual ICollection<Component> Component { get; set; }
-    }
 }

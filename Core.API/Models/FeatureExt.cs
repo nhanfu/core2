@@ -6,6 +6,6 @@ namespace Core.Models
     public partial class Feature
     {
         [NotMapped]
-        public ICollection<Component> Component { get; set; } = new List<Component>();
+        public ICollection<Component> GridPolicy { get; set; } = new List<Component>();
     }
 }

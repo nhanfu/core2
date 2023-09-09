@@ -48,10 +48,10 @@ namespace Core.Components
         {
             AddElement();
             var isFn = Utils.IsFunction(GuiInfo.Query, out var fn);
-            var datasource = isFn ? fn.Call(this, Entity, this).ToString() : Utils.FormatEntity(GuiInfo.Query, Entity);
+            var DataSourceFilter = isFn ? fn.Call(this, Entity, this).ToString() : Utils.FormatEntity(GuiInfo.Query, Entity);
             if (Data is null)
             {
-                Data = await new Client(nameof(User)).PostAsync<object[]>(datasource, "ReportQuery");
+                Data = await new Client(nameof(User)).PostAsync<object[]>(DataSourceFilter, "ReportQuery");
             }
             var type = GuiInfo.ClassName ?? "pie";
             var text = GuiInfo.PlainText;

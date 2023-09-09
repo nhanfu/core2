@@ -266,14 +266,14 @@ namespace Core.Components
         private async Task<object> LoadData()
         {
             object[][] dataSet = null;
-            var datasource = await TryGetDataSource();
-            if (datasource.IsNullOrWhiteSpace())
+            var DataSourceFilter = await TryGetDataSource();
+            if (DataSourceFilter.IsNullOrWhiteSpace())
             {
                 return null;
             }
             if (Data is null)
             {
-                dataSet = Data = await new Client(nameof(User)).PostAsync<object[][]>(datasource, $"ReportDataSet?sys={GuiInfo.System ?? GuiInfo.IdField}");
+                dataSet = Data = await new Client(nameof(User)).PostAsync<object[][]>(DataSourceFilter, $"ReportDataSet?sys={GuiInfo.System ?? GuiInfo.IdField}");
                 if (dataSet.Nothing() || dataSet.All(x => x.Nothing()))
                 {
                     return null;
@@ -337,7 +337,7 @@ namespace Core.Components
                 var isFnPowerQuery = Utils.IsFunction(GuiInfo.Query, out var fn);
                 var isFnPreQuery = Utils.IsFunction(GuiInfo.PreQuery, out var preQueryFn);
                 var preQuery = isFnPreQuery ? preQueryFn.Call(this, Entity, this, Selected) : null;
-                string datasource = null;
+                string DataSourceFilter = null;
                 if (isFnPowerQuery)
                 {
                     var query = fn.Call(this, preQuery ?? Entity, this, Selected);
@@ -360,8 +360,8 @@ namespace Core.Components
                 }
                 else
                 {
-                    datasource = Utils.FormatEntity(GuiInfo.Query, Entity);
-                    tcs.SetResult(datasource);
+                    DataSourceFilter = Utils.FormatEntity(GuiInfo.Query, Entity);
+                    tcs.SetResult(DataSourceFilter);
                 }
             }
             catch (Exception ex)

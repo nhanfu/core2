@@ -10,7 +10,7 @@ namespace Core.Models
         public string Description { get; set; }
         public int? UserId { get; set; }
         public int? RoleId { get; set; }
-        public string DataSource { get; set; }
+        public string DataSourceFilter { get; set; }
         public int EntityId { get; set; }
         public int? WorkflowId { get; set; }
         public decimal MinAmount { get; set; }

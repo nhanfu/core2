@@ -210,7 +210,7 @@ namespace Core.Components
             return source;
         }
 
-        public virtual async Task<List<object>> ReloadData(string dataSource = null, bool cache = false, int? skip = null, int? pageSize = null, bool search = false)
+        public virtual async Task<List<object>> ReloadData(string DataSourceFilter = null, bool cache = false, int? skip = null, int? pageSize = null, bool search = false)
         {
             if (GuiInfo.LocalRender && GuiInfo.LocalData != null)
             {
@@ -228,10 +228,10 @@ namespace Core.Components
                 });
             }
 
-            dataSource = dataSource.IsNullOrEmpty() ? CalcFilterQuery(true) : dataSource;
-            if (dataSource.IsNullOrWhiteSpace())
+            DataSourceFilter = DataSourceFilter.IsNullOrEmpty() ? CalcFilterQuery(true) : DataSourceFilter;
+            if (DataSourceFilter.IsNullOrWhiteSpace())
             {
-                dataSource = "?$filter=true";
+                DataSourceFilter = "?$filter=true";
             }
 
             if (Paginator != null)
@@ -240,12 +240,12 @@ namespace Core.Components
             }
             pageSize = pageSize ?? Paginator?.Options?.PageSize ?? GuiInfo.Row ?? 12;
             skip = skip ?? Paginator?.Options?.PageIndex * pageSize ?? 0;
-            if (!dataSource.Contains("?"))
+            if (!DataSourceFilter.Contains("?"))
             {
-                dataSource += "?";
+                DataSourceFilter += "?";
             }
 
-            var pagingQuery = dataSource + $"&$skip={skip}&$top={pageSize}&$count=true";
+            var pagingQuery = DataSourceFilter + $"&$skip={skip}&$top={pageSize}&$count=true";
             OdataResult<object> result;
             var val = (Entity?.GetComplexPropValue(GuiInfo.FieldName) as IEnumerable<object>)?.ToList();
             if (GuiInfo.CanCache && val != null && val.Any() && !search)
@@ -258,7 +258,7 @@ namespace Core.Components
             }
             else
             {
-                result = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(pageSize > 0 ? pagingQuery : dataSource, true);
+                result = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(pageSize > 0 ? pagingQuery : DataSourceFilter, true);
             }
             Sql = result.Sql;
             UpdatePagination(result.Odata.Count ?? result.Value.Count, result.Value.Count);
@@ -270,7 +270,7 @@ namespace Core.Components
                 {
                     Paginator.Options.PageIndex = 0;
                 }
-                await ReloadData(dataSource, cache: cache);
+                await ReloadData(DataSourceFilter, cache: cache);
             }
             Spinner.Hide();
             return result.Value;
@@ -293,7 +293,7 @@ namespace Core.Components
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0019:Use pattern matching", Justification = "<Pending>")]
-        public virtual async Task<bool> LoadCache(string dataSource, bool cache, int pageSize)
+        public virtual async Task<bool> LoadCache(string DataSourceFilter, bool cache, int pageSize)
         {
             if (Entity is null)
             {
@@ -403,10 +403,10 @@ namespace Core.Components
 
         public async Task LoadHeader()
         {
-            var columns = await LoadGridPolicy();
+            var columns = await LoadComponent();
             if (GuiInfo.GroupReferenceId != null && GuiInfo.GroupReferenceId != GuiInfo.ReferenceId)
             {
-                var columnsRef = await LoadRefGridPolicy();
+                var columnsRef = await LoadRefComponent();
                 RefBasicHeader = columns.OrderBy(x => x.Order).ToList();
             }
             columns = FilterColumns(columns);
@@ -426,20 +426,20 @@ namespace Core.Components
             });
         }
 
-        protected virtual List<Component> FilterColumns(List<Component> gridPolicy)
+        protected virtual List<Component> FilterColumns(List<Component> Component)
         {
-            var specificComponent = gridPolicy.Any(x => x.ComponentId == GuiInfo.Id);
+            var specificComponent = Component.Any(x => x.ComponentId == GuiInfo.Id);
             if (specificComponent)
             {
-                gridPolicy = gridPolicy.Where(x => x.ComponentId == GuiInfo.Id).ToList();
+                Component = Component.Where(x => x.ComponentId == GuiInfo.Id).ToList();
             }
             else
             {
-                gridPolicy = gridPolicy.Where(x => x.ComponentId == null).ToList();
+                Component = Component.Where(x => x.ComponentId == null).ToList();
             }
 
-            var permission = EditForm.GetGridPolicies(gridPolicy.Select(x => x.Id).ToArray(), Utils.GridPolicyId);
-            var headers = gridPolicy
+            var permission = EditForm.GetGridPolicies(Component.Select(x => x.Id).ToArray(), Utils.ComponentId);
+            var headers = Component
                 .Where(header => !header.IsPrivate || permission.Where(x => x.RecordId == header.Id).HasElementAndAll(policy => policy.CanRead))
                 .Select(CalcTextAlign).OrderByDescending(x => x.Frozen).ThenBy(x => x.Order).ToList();
             OrderHeaderGroup(headers);
@@ -618,7 +618,7 @@ namespace Core.Components
             }
         }
 
-        protected virtual async Task<List<Component>> LoadGridPolicy()
+        protected virtual async Task<List<Component>> LoadComponent()
         {
             List<Component> sysSetting = null;
             UserSetting userSetting = null;
@@ -638,11 +638,11 @@ namespace Core.Components
             {
                 sysSetting = new List<Component>(GuiInfo.LocalHeader);
             }
-            var dataSource = default(string);
+            var DataSourceFilter = default(string);
             if (GuiInfo.Precision.HasValue && !GuiInfo.DateTimeField.IsNullOrWhiteSpace())
             {
                 var calcFilter = CalcFilterQuery(true);
-                dataSource = ListViewSearch.CalcFilterQuery(calcFilter);
+                DataSourceFilter = ListViewSearch.CalcFilterQuery(calcFilter);
             }
             if (userSetting is null)
             {
@@ -651,24 +651,24 @@ namespace Core.Components
             else
             {
                 var column = userSetting.Value;
-                return MergeGridPolicy(sysSetting, JsonConvert.DeserializeObject<List<Component>>(column));
+                return MergeComponent(sysSetting, JsonConvert.DeserializeObject<List<Component>>(column));
             }
         }
 
-        public async Task<List<Component>> LoadRefGridPolicy()
+        public async Task<List<Component>> LoadRefComponent()
         {
             var sysSetting = await new Client(nameof(Component), config: EditForm.Config).GetRawList<Component>(
                 $"?$filter=Active eq true and EntityId eq {GuiInfo.GroupReferenceId} and FeatureId eq {FeatureId}");
             return sysSetting;
         }
 
-        protected virtual List<Component> MergeGridPolicy(List<Component> sysSetting, List<Component> userSetting)
+        protected virtual List<Component> MergeComponent(List<Component> sysSetting, List<Component> userSetting)
         {
             if (userSetting.Nothing() || GuiInfo.Focus)
             {
                 return sysSetting;
             }
-            var gridPolicys = new List<Component>();
+            var Components = new List<Component>();
             var userSettings = userSetting.ToDictionary(x => x.Id);
             sysSetting.ForEach(x =>
             {
@@ -803,16 +803,16 @@ namespace Core.Components
             rows = rows ?? RowData.Data;
             var refHeaders = headers.Where(x => x.RefName.HasAnyChar()).ToList();
             SyncMasterData(rows, headers);
-            var dataSource = refHeaders
+            var DataSourceFilter = refHeaders
                 .DistinctBy(x => x.ReferenceId)
                 .Select(x => FormatDataSourceByEntity(x, headers, rows))
                 .Where(x => x != null).ToList();
-            if (dataSource.Nothing())
+            if (DataSourceFilter.Nothing())
             {
                 return;
             }
 
-            var dataTask = dataSource
+            var dataTask = DataSourceFilter
                 .Where(x => !x.DataSourceOptimized.IsNullOrWhiteSpace())
                 .DistinctBy(x => x.ReferenceId + "/" + x.DataSourceOptimized)
                 .Select(x => new
@@ -1549,8 +1549,8 @@ namespace Core.Components
             {
                 return false;
             }
-            var gridPolicy = gridPolicies.Any();
-            if (!gridPolicy)
+            var Component = gridPolicies.Any();
+            if (!Component)
             {
                 return true;
             }

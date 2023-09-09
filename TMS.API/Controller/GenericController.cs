@@ -455,7 +455,7 @@ namespace TMS.API.Controllers
         {
             entities.ForEach(entity =>
             {
-                var id = entity.GetPropValue(nameof(GridPolicy.Id)) as int?;
+                var id = entity.GetPropValue(nameof(Feature.Id)) as int?;
                 if (id != null && id <= 0)
                 {
                     ctx.Set<T>().Add(entity);

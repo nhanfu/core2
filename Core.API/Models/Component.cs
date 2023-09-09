@@ -9,6 +9,7 @@ namespace Core.Models
         {
             EntityRef = new HashSet<EntityRef>();
         }
+
         public int Id { get; set; }
         public string FieldName { get; set; }
         public int? Order { get; set; }
@@ -68,16 +69,8 @@ namespace Core.Models
         public int? MonthCount { get; set; }
         public bool? IsDoubleLine { get; set; }
         public string Query { get; set; }
-        public string RefName { get; set; }
-        public string Headers { get; set; }
-        public string FormatExSmall { get; set; }
-        public string FormatSmall { get; set; }
-        public string FormatMedium { get; set; }
-        public string FormatLarge { get; set; }
-        public string FormatExLarge { get; set; }
-        public string ShowExp { get; set; }
-        public int? ParentId { get; set; }
         public bool IsRealtime { get; set; }
+        public string RefName { get; set; }
         public bool TopEmpty { get; set; }
         public bool IsCollapsible { get; set; }
         public string Template { get; set; }
@@ -96,10 +89,10 @@ namespace Core.Models
         public string Migration { get; set; }
         public string ListClass { get; set; }
         public string ExcelFieldName { get; set; }
-        public bool? LiteGrid { get; set; }
-        public bool? ShowDatetimeField { get; set; }
-        public bool? ShowNull { get; set; }
-        public bool? AddDate { get; set; }
+        public bool LiteGrid { get; set; }
+        public bool ShowDatetimeField { get; set; }
+        public bool ShowNull { get; set; }
+        public bool AddDate { get; set; }
         public bool FilterEq { get; set; }
         public int? HeaderHeight { get; set; }
         public int? BodyItemHeight { get; set; }
@@ -126,6 +119,10 @@ namespace Core.Models
         public string DatabaseName { get; set; }
         public string Summary { get; set; }
         public int? SummaryColSpan { get; set; }
+        public bool BasicSearch { get; set; }
+        public bool IsExport { get; set; }
+        public int? OrderExport { get; set; }
+        public string ShowExp { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

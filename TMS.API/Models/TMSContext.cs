@@ -66,8 +66,6 @@ namespace TMS.API.Models
 
             modelBuilder.Entity<Component>(entity =>
             {
-                entity.Property(e => e.AddDate).HasDefaultValueSql("((0))");
-
                 entity.Property(e => e.CascadeField)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -85,6 +83,8 @@ namespace TMS.API.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.DatabaseName).HasMaxLength(1000);
+
                 entity.Property(e => e.DateTimeField)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -96,6 +96,8 @@ namespace TMS.API.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.DescValue).IsUnicode(false);
+
+                entity.Property(e => e.Description).HasMaxLength(1000);
 
                 entity.Property(e => e.DisabledExp).HasMaxLength(2000);
 
@@ -109,7 +111,11 @@ namespace TMS.API.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.FilterTemplate).HasMaxLength(1000);
+
                 entity.Property(e => e.FormatData).HasMaxLength(1500);
+
+                entity.Property(e => e.FormatExcell).HasMaxLength(1000);
 
                 entity.Property(e => e.FormatSumaryField).HasMaxLength(250);
 
@@ -122,6 +128,10 @@ namespace TMS.API.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.GroupFormat).HasMaxLength(1500);
+
+                entity.Property(e => e.GroupName).HasMaxLength(1000);
+
+                entity.Property(e => e.GroupReferenceName).HasMaxLength(250);
 
                 entity.Property(e => e.HotKey)
                     .HasMaxLength(50)
@@ -137,9 +147,19 @@ namespace TMS.API.Models
 
                 entity.Property(e => e.IsDoubleLine).HasDefaultValueSql("((0))");
 
+                entity.Property(e => e.JoinTable).HasMaxLength(1000);
+
                 entity.Property(e => e.Label).HasMaxLength(50);
 
                 entity.Property(e => e.ListClass).HasMaxLength(250);
+
+                entity.Property(e => e.MaxWidth)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MinWidth)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.OrderBySumary).HasMaxLength(250);
 
@@ -153,19 +173,23 @@ namespace TMS.API.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.ShortDesc).HasMaxLength(1000);
+
+                entity.Property(e => e.ShowExp).HasMaxLength(1000);
+
                 entity.Property(e => e.Style)
                     .HasMaxLength(200)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Summary).HasMaxLength(1000);
 
                 entity.Property(e => e.System)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.UpperCase).HasDefaultValueSql("((0))");
+                entity.Property(e => e.TextAlign).HasMaxLength(1000);
 
                 entity.Property(e => e.Validation).HasMaxLength(1000);
-
-                entity.Property(e => e.VirtualScroll).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.Width)
                     .HasMaxLength(20)
@@ -174,7 +198,6 @@ namespace TMS.API.Models
                 entity.HasOne(d => d.ComponentGroup)
                     .WithMany(p => p.Component)
                     .HasForeignKey(d => d.ComponentGroupId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Component_ComponentGroup");
 
                 entity.HasOne(d => d.Reference)
@@ -428,11 +451,15 @@ namespace TMS.API.Models
 
                 entity.Property(e => e.GroupName).HasMaxLength(50);
 
+                entity.Property(e => e.GroupReferenceName).HasMaxLength(250);
+
                 entity.Property(e => e.Icon)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.IsSumary).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.JoinTable).HasMaxLength(1000);
 
                 entity.Property(e => e.ListClass).HasMaxLength(250);
 
@@ -479,22 +506,6 @@ namespace TMS.API.Models
                 entity.Property(e => e.Width)
                     .HasMaxLength(20)
                     .IsUnicode(false);
-
-                entity.HasOne(d => d.Entity)
-                    .WithMany(p => p.GridPolicyEntity)
-                    .HasForeignKey(d => d.EntityId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_GridPolicy_Entity");
-
-                entity.HasOne(d => d.Feature)
-                    .WithMany(p => p.GridPolicy)
-                    .HasForeignKey(d => d.FeatureId)
-                    .HasConstraintName("FK_GridPolicy_Feature");
-
-                entity.HasOne(d => d.Reference)
-                    .WithMany(p => p.GridPolicyReference)
-                    .HasForeignKey(d => d.ReferenceId)
-                    .HasConstraintName("FK_GridPolicy_RefEntity");
             });
 
             modelBuilder.Entity<Intro>(entity =>

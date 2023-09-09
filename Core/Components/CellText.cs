@@ -139,8 +139,8 @@ namespace Core.Components
                 return;
             }
             var isFn = Utils.IsFunction(GuiInfo.Query, out var fn);
-            var datasource = isFn ? fn.Call(this, Entity, this).ToString() : Utils.FormatEntity(GuiInfo.Query, Entity);
-            var data = await new Client(nameof(User), typeof(User).Namespace).PostAsync<object[]>(datasource, "ReportQuery");
+            var DataSourceFilter = isFn ? fn.Call(this, Entity, this).ToString() : Utils.FormatEntity(GuiInfo.Query, Entity);
+            var data = await new Client(nameof(User), typeof(User).Namespace).PostAsync<object[]>(DataSourceFilter, "ReportQuery");
             if (data.Nothing())
             {
                 return;

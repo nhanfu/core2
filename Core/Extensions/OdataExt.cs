@@ -10,22 +10,22 @@ namespace Core.Extensions
         public const string OrderByKeyword = "$orderby=";
         private const string QuestionMark = "?";
 
-        public static string RemoveClause(string dataSource, string clauseType = FilterKeyword, bool removeKeyword = false)
+        public static string RemoveClause(string DataSourceFilter, string clauseType = FilterKeyword, bool removeKeyword = false)
         {
-            if (dataSource.IsNullOrWhiteSpace())
+            if (DataSourceFilter.IsNullOrWhiteSpace())
             {
                 return string.Empty;
             }
 
-            var noClauseQuery = dataSource;
-            var clauseIndex = dataSource.LastIndexOf(clauseType);
+            var noClauseQuery = DataSourceFilter;
+            var clauseIndex = DataSourceFilter.LastIndexOf(clauseType);
 
             if (clauseIndex >= 0)
             {
-                var fromFilter = dataSource.Substring(clauseIndex);
+                var fromFilter = DataSourceFilter.Substring(clauseIndex);
                 var endClauseIndex = fromFilter.IndexOf("&");
                 endClauseIndex = endClauseIndex == -1 ? fromFilter.Length : endClauseIndex;
-                noClauseQuery = dataSource.Substring(0, clauseIndex) +
+                noClauseQuery = DataSourceFilter.Substring(0, clauseIndex) +
                     fromFilter.Substring(endClauseIndex, fromFilter.Length);
             }
             var endChar = noClauseQuery[noClauseQuery.Length - 1];
@@ -36,12 +36,12 @@ namespace Core.Extensions
             return removeKeyword ? noClauseQuery.Replace(clauseType, "") : noClauseQuery;
         }
 
-        public static string GetClausePart(string dataSource, string clauseKeyword = FilterKeyword)
+        public static string GetClausePart(string DataSourceFilter, string clauseKeyword = FilterKeyword)
         {
-            var clauseIndex = dataSource.LastIndexOf(clauseKeyword);
+            var clauseIndex = DataSourceFilter.LastIndexOf(clauseKeyword);
             if (clauseIndex >= 0)
             {
-                var clause = dataSource.Substring(clauseIndex);
+                var clause = DataSourceFilter.Substring(clauseIndex);
                 var endClauseIndex = clause.IndexOf("&");
                 endClauseIndex = endClauseIndex == -1 ? clause.Length : endClauseIndex;
                 return clause.Substring(clauseKeyword.Length, endClauseIndex - clauseKeyword.Length).Trim();
@@ -62,41 +62,41 @@ namespace Core.Extensions
             return string.Empty;
         }
 
-        public static string AppendClause(string datasource, string clauseValue, string clauseKeyword = FilterKeyword)
+        public static string AppendClause(string DataSourceFilter, string clauseValue, string clauseKeyword = FilterKeyword)
         {
             if (clauseValue.IsNullOrWhiteSpace())
             {
-                return datasource;
+                return DataSourceFilter;
             }
 
-            if (datasource.IsNullOrWhiteSpace())
+            if (DataSourceFilter.IsNullOrWhiteSpace())
             {
-                datasource = string.Empty;
+                DataSourceFilter = string.Empty;
             }
 
-            if (!datasource.Contains(QuestionMark))
+            if (!DataSourceFilter.Contains(QuestionMark))
             {
-                datasource += QuestionMark;
+                DataSourceFilter += QuestionMark;
             }
 
-            var originalFilter = GetClausePart(datasource, clauseKeyword);
+            var originalFilter = GetClausePart(DataSourceFilter, clauseKeyword);
             int index;
             if (originalFilter.IsNullOrEmpty())
             {
-                datasource += datasource.IndexOf("?") < 0 ? clauseKeyword : "&"  + clauseKeyword;
-                index = datasource.Length;
+                DataSourceFilter += DataSourceFilter.IndexOf("?") < 0 ? clauseKeyword : "&"  + clauseKeyword;
+                index = DataSourceFilter.Length;
             }
             else
             {
-                index = datasource.IndexOf(originalFilter) + originalFilter.Length;
+                index = DataSourceFilter.IndexOf(originalFilter) + originalFilter.Length;
             }
-            var finalStatement = datasource.Substring(0, index) + clauseValue + datasource.Substring(index);
+            var finalStatement = DataSourceFilter.Substring(0, index) + clauseValue + DataSourceFilter.Substring(index);
             return finalStatement;
         }
 
-        public static string ApplyClause(string dataSource, string clauseValue, string clauseKeyword = FilterKeyword)
+        public static string ApplyClause(string DataSourceFilter, string clauseValue, string clauseKeyword = FilterKeyword)
         {
-            var statement = RemoveClause(dataSource, clauseKeyword, true);
+            var statement = RemoveClause(DataSourceFilter, clauseKeyword, true);
             return AppendClause(statement, clauseValue, clauseKeyword);
         }
     }

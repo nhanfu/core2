@@ -1731,7 +1731,7 @@ namespace Core.Components.Forms
             }
         }
 
-        public void CreateFeaturePolicyHeader(GridPolicy arg) => CreateFeaturePolicy(arg, arg.FeatureId, arg.Id);
+        public void CreateFeaturePolicyHeader(Component arg) => CreateFeaturePolicy(arg, arg.FeatureId, arg.Id);
 
         public void CreateFeaturePolicySection(ComponentGroup arg) => CreateFeaturePolicy(arg, arg.FeatureId);
         public async Task CreateFeaturePolicyComponent(Component arg)
@@ -1746,7 +1746,7 @@ namespace Core.Components.Forms
             var originalModel = arg is SecurityVM security ? security : null;
             var entityId = arg is Component ? Utils.ComponentId
                         : arg is ComponentGroup ? Utils.ComponentGroupId
-                        : Utils.GridPolicyId;
+                        : Utils.ComponentId;
             var detail = new SecurityEditorBL
             {
                 Entity = originalModel ?? new SecurityVM

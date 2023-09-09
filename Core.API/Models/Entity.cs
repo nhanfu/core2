@@ -9,8 +9,8 @@ namespace Core.Models
         {
             Component = new HashSet<Component>();
             Feature = new HashSet<Feature>();
-            GridPolicyEntity = new HashSet<GridPolicy>();
-            GridPolicyReference = new HashSet<GridPolicy>();
+            ComponentEntity = new HashSet<Component>();
+            ComponentReference = new HashSet<Component>();
             TaskNotification = new HashSet<TaskNotification>();
         }
 
@@ -29,8 +29,8 @@ namespace Core.Models
 
         public virtual ICollection<Component> Component { get; set; }
         public virtual ICollection<Feature> Feature { get; set; }
-        public virtual ICollection<GridPolicy> GridPolicyEntity { get; set; }
-        public virtual ICollection<GridPolicy> GridPolicyReference { get; set; }
+        public virtual ICollection<Component> ComponentEntity { get; set; }
+        public virtual ICollection<Component> ComponentReference { get; set; }
         public virtual ICollection<TaskNotification> TaskNotification { get; set; }
     }
 }

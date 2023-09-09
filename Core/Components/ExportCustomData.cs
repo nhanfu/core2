@@ -23,8 +23,8 @@ namespace Core.Components
         public HTMLElement _tbody;
         public HTMLUListElement _ul1;
         public UserSetting _settings;
-        private List<GridPolicy> _headers;
-        public ExportCustomData(ListView parent) : base(nameof(GridPolicy))
+        private List<Component> _headers;
+        public ExportCustomData(ListView parent) : base(nameof(Component))
         {
             Name = "Export CustomData";
             Title = "Xuất excel tùy chọn";
@@ -237,7 +237,7 @@ namespace Core.Components
                 $"?$filter=UserId eq {Client.Token.UserId} and Name eq 'Export-{ParentListView.GuiInfo.Id}'");
             if (userSetting != null)
             {
-                var userSettings = JsonConvert.DeserializeObject<List<GridPolicy>>(userSetting.Value).ToDictionary(x => x.Id);
+                var userSettings = JsonConvert.DeserializeObject<List<Component>>(userSetting.Value).ToDictionary(x => x.Id);
                 _headers.ForEach(x =>
                 {
                     var current = userSettings.GetValueOrDefault(x.Id);
@@ -353,7 +353,7 @@ namespace Core.Components
             var path = await new Client(ParentListView.GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}" +
                 $"&sql={ParentListView.Sql}" +
                 $"&join={ParentListView.GuiInfo.JoinTable}" +
-                $"&showNull={ParentListView.GuiInfo.ShowNull ?? false}" +
+                $"&showNull={ParentListView.GuiInfo.ShowNull}" +
                 $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(ParentListView.Wheres.Any() ? " and " : "")} {pre}")}" +
                 $"&custom=true&featureId={Parent.EditForm.Feature.Id}&orderby={finalFilter}");
             Client.Download($"/excel/Download/{path}");

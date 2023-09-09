@@ -3,11 +3,11 @@ using Core.Models;
 
 namespace Core.Fw.Setting
 {
-    class GridPolicyDetailBL : PopupEditor
+    class ComponentDetailBL : PopupEditor
     {
-        public GridPolicyDetailBL() : base(nameof(GridPolicy))
+        public ComponentDetailBL() : base(nameof(Component))
         {
-            Entity = new GridPolicy();
+            Entity = new Component();
             Name = "GridDetail";
             Title = "Grid Detail";
         }

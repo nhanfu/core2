@@ -587,21 +587,21 @@ namespace Core.Components.Extensions
             }
         }
 
-        public static void SetDataSourceSearchEntry(this EditableComponent component, string name, string datasource)
+        public static void SetDataSourceSearchEntry(this EditableComponent component, string name, string DataSourceFilter)
         {
             var search = component.FirstOrDefault(x => x.Name == name && x is SearchEntry) as SearchEntry;
             if (search != null)
             {
-                search.GuiInfo.DataSourceFilter = datasource;
+                search.GuiInfo.DataSourceFilter = DataSourceFilter;
             }
         }
 
-        public static void SetDataSourceGridView(this EditableComponent component, string name, string datasource)
+        public static void SetDataSourceGridView(this EditableComponent component, string name, string DataSourceFilter)
         {
             var search = component.FirstOrDefault(x => x.Name == name && x is GridView) as GridView;
             if (search != null)
             {
-                search.DataSourceFilter = datasource;
+                search.DataSourceFilter = DataSourceFilter;
             }
         }
 

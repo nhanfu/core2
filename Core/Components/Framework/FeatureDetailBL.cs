@@ -92,9 +92,9 @@ namespace Core.Components.Framework
                         {
                             x[nameof(ComponentGroup.ParentId)] = null;
                         }
-                        if (x.HasOwnProperty(nameof(GridPolicy.ComponentId)))
+                        if (x.HasOwnProperty(nameof(Component.ComponentId)))
                         {
-                            x[nameof(GridPolicy.ComponentId)] = null;
+                            x[nameof(Component.ComponentId)] = null;
                         }
                     });
                     newSections.Add(newSection);
@@ -122,12 +122,12 @@ namespace Core.Components.Framework
         {
             var featureTask = new Client(nameof(Models.Feature), typeof(User).Namespace).GetAsync<Feature>(FeatureEntity.Id);
             var sectionTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>($"?$expad=Component&$filter=Active eq true and FeatureId eq {FeatureEntity.Id}");
-            var headerTask = new Client(nameof(GridPolicy), typeof(User).Namespace).GetRawList<GridPolicy>($"?$filter=Active eq true and FeatureId eq {FeatureEntity.Id}");
+            var headerTask = new Client(nameof(Component), typeof(User).Namespace).GetRawList<Component>($"?$filter=Active eq true and FeatureId eq {FeatureEntity.Id}");
             await Task.WhenAll(featureTask, sectionTask, headerTask);
             var feature = featureTask.Result;
             BuildTree(sectionTask.Result);
             feature.ComponentGroup = sectionTask.Result;
-            feature.GridPolicy = headerTask.Result;
+            feature.Component = headerTask.Result;
             feature.ClearReferences();
             var res = await base.LoadEntity();
             return res;
@@ -160,7 +160,7 @@ namespace Core.Components.Framework
 
         public void EditGridColumn(object arg)
         {
-            var header = arg as GridPolicy;
+            var header = arg as Component;
             var editor = new HeaderEditor() { Entity = header, ParentElement = TabEditor.Element };
             var tab = Tabs.FirstOrDefault(x => x.Show);
             tab?.AddChild(editor);

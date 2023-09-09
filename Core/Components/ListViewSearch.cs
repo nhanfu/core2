@@ -54,7 +54,7 @@ namespace Core.Components
             }
             set => parentGridView = value;
         }
-        public GridPolicy[] BasicSearch;
+        public Component[] BasicSearch;
         private ListView parentListView;
         private GridView parentGridView;
 
@@ -67,7 +67,7 @@ namespace Core.Components
             Entity = new ListViewSearchVM();
         }
 
-        private void ParentListView_HeaderLoaded(List<GridPolicy> basicSearchHeader)
+        private void ParentListView_HeaderLoaded(List<Component> basicSearchHeader)
         {
             BasicSearch = basicSearchHeader.Where(x => x.BasicSearch).OrderByDescending(x => x.Order).ToArray();
             if (BasicSearch.Nothing())
@@ -77,7 +77,7 @@ namespace Core.Components
             Html.Take(Element);
             var components = BasicSearch.Select(header =>
             {
-                var com = header.MapToComponent();
+                var com = header;
                 var componentType = com.ComponentType.TryParse<ComponentTypeTypeEnum>();
                 com.ShowLabel = false;
                 com.PlainText = header.ShortDesc;
@@ -213,9 +213,9 @@ namespace Core.Components
                     FormatData = "{ShortDesc}",
                     DataSourceFilter = $"?$filter=Active eq true and ComponentType eq '{nameof(Datepicker)}' and FeatureId eq {EditForm.Feature.Id}",
                     ShowLabel = false,
-                    ReferenceId = Utils.GetEntity(nameof(GridPolicy)).Id,
-                    RefName = nameof(GridPolicy),
-                    Reference = new Entity { Name = nameof(GridPolicy) },
+                    ReferenceId = Utils.GetEntity(nameof(Component)).Id,
+                    RefName = nameof(Component),
+                    Reference = new Entity { Name = nameof(Component) },
                 })
                 {
                     ParentElement = Element
@@ -505,7 +505,7 @@ namespace Core.Components
                 var path = await new Client(GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}" +
                     $"&sql={ParentListView.Sql}" +
                     $"&join={ParentListView.GuiInfo.JoinTable}" +
-                    $"&showNull={GuiInfo.ShowNull ?? false}" +
+                    $"&showNull={GuiInfo.ShowNull}" +
                     $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")}" +
                     $"&custom=false&featureId={EditForm.Feature.Id}&orderby={finalFilter}");
                 Client.Download($"/excel/Download/{path}");
@@ -564,7 +564,7 @@ namespace Core.Components
                 var path = await new Client(GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}" +
                     $"&sql={ParentListView.Sql}" +
                     $"&join={ParentListView.GuiInfo.JoinTable}" +
-                    $"&showNull={GuiInfo.ShowNull ?? false}" +
+                    $"&showNull={GuiInfo.ShowNull}" +
                     $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")} {$" and [{ParentListView.GuiInfo.RefName}].Id in ({selectedIds.Combine()})"}" +
                     $"&custom=false&featureId={EditForm.Feature.Id}&orderby={finalFilter}");
                 Client.Download($"/excel/Download/{path}");
@@ -591,7 +591,7 @@ namespace Core.Components
                 .Where(x => x.ComponentType != nameof(Button))
                 .Select(x =>
                 {
-                    var header = new GridPolicy();
+                    var header = new Component();
                     header.CopyPropFrom(x);
                     header.Editable = false;
                     if (x.ComponentType == nameof(Checkbox))

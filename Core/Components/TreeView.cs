@@ -46,7 +46,7 @@ namespace Core.Components
             Spinner.Hide();
         }
 
-        protected void RenderContent(IEnumerable<GridPolicy> headers, EditableComponent node, bool first, List<object> rowDatas)
+        protected void RenderContent(IEnumerable<Component> headers, EditableComponent node, bool first, List<object> rowDatas)
         {
             if (rowDatas.Nothing())
             {
@@ -60,7 +60,7 @@ namespace Core.Components
             });
         }
 
-        private async Task RenderRow(IEnumerable<GridPolicy> headers, EditableComponent node, object row, HTMLElement ul)
+        private async Task RenderRow(IEnumerable<Component> headers, EditableComponent node, object row, HTMLElement ul)
         {
             var data = await new Client(GuiInfo.RefName).GetList<object>($"?$filter=ParentId eq {row.GetPropValue(IdField)}");
             var datas = data.Value;
@@ -76,7 +76,7 @@ namespace Core.Components
             var label = Html.Context;
             headers.ForEach(header =>
             {
-                var com = header.MapToComponent();
+                var com = header;
                 Html.Take(label).P.Render();
                 rowSection.RenderTableCell(row, com);
                 Html.Take(label).EndOf(MVVM.ElementType.p);

@@ -75,12 +75,12 @@ namespace Core.Components
             {
                 return;
             }
-            var gridPolicy = BasicHeader.Where(x => x.FieldName != IdField && x.ComponentType == nameof(Number) && x.IsSumary == true).ToList();
-            if (gridPolicy.Nothing())
+            var Component = BasicHeader.Where(x => x.FieldName != IdField && x.ComponentType == nameof(Number) && x.IsSumary == true).ToList();
+            if (Component.Nothing())
             {
                 return;
             }
-            var sum = gridPolicy.Select(x => $"FORMAT(SUM(isnull([{GuiInfo.RefName}].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
+            var sum = Component.Select(x => $"FORMAT(SUM(isnull([{GuiInfo.RefName}].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
             var filter = Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
             var filter1 = Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
             var wh = new List<string>();
@@ -107,7 +107,7 @@ namespace Core.Components
                     $"&refname=" +
                     $"&formatsumary={GuiInfo.FormatSumaryField}" +
                     $"&dateTimeField={GuiInfo.DateTimeField}" +
-                    $"&showNull={GuiInfo.ShowNull ?? false}" +
+                    $"&showNull={GuiInfo.ShowNull}" +
                     $"&sql={Sql}" +
                     $"&orderby={GuiInfo.OrderBySumary}" +
                     $"&where={stringWh} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")}",
@@ -1117,17 +1117,17 @@ namespace Core.Components
             td.Closest(ElementType.td.ToString()).AddClass("cell-selected");
         }
 
-        public void FilterSumary(Component gridPolicy, string value, string valueText)
+        public void FilterSumary(Component Component, string value, string valueText)
         {
-            var dateTime = CellSelected.FirstOrDefault(x => gridPolicy.ComponentType == nameof(Datepicker) && x.FieldName == gridPolicy.FieldName && x.Operator == (int)OperatorEnum.In);
+            var dateTime = CellSelected.FirstOrDefault(x => Component.ComponentType == nameof(Datepicker) && x.FieldName == Component.FieldName && x.Operator == (int)OperatorEnum.In);
             if (dateTime is null)
             {
-                if (!CellSelected.Any(x => x.FieldName == gridPolicy.FieldName && x.Value == value && x.Operator == (int)OperatorEnum.In))
+                if (!CellSelected.Any(x => x.FieldName == Component.FieldName && x.Value == value && x.Operator == (int)OperatorEnum.In))
                 {
-                    var header = Header.FirstOrDefault(x => x.FieldName == gridPolicy.FieldName);
+                    var header = Header.FirstOrDefault(x => x.FieldName == Component.FieldName);
                     CellSelected.Add(new CellSelected
                     {
-                        FieldName = gridPolicy.FieldName,
+                        FieldName = Component.FieldName,
                         FieldText = header.ShortDesc,
                         ComponentType = header.ComponentType,
                         Value = value,
@@ -1728,8 +1728,8 @@ namespace Core.Components
                     wh.Add($"({filter1})");
                 }
                 var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
-                var gridPolicy = BasicHeader.Where(x => x.ComponentType == nameof(Number) && x.FieldName != header.FieldName).ToList();
-                var sum = gridPolicy.Select(x => $"FORMAT(SUM(isnull([{GuiInfo.RefName}].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
+                var Component = BasicHeader.Where(x => x.ComponentType == nameof(Number) && x.FieldName != header.FieldName).ToList();
+                var sum = Component.Select(x => $"FORMAT(SUM(isnull([{GuiInfo.RefName}].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
                 var pre = GuiInfo.PreQuery;
                 if (pre != null && Utils.IsFunction(pre, out Function fn))
                 {
@@ -1773,7 +1773,7 @@ namespace Core.Components
                     .TRow.Render();
                 Html.Instance.Th.DataAttr("sort-type", datasorttypeHeader).Event(EventType.Click, (e) => SortTable(e, 0)).Style("max-width: 100%;").IText(header.ShortDesc).End.Render();
                 Html.Instance.Th.DataAttr("sort-type", "number").Event(EventType.Click, (e) => SortTable(e, 1)).Style("max-width: 100%;").IText("Tổng dữ liệu").End.Render();
-                gridPolicy.ForEach((item, index) =>
+                Component.ForEach((item, index) =>
                 {
                     var datasorttype = string.Empty;
                     if (item.ComponentType == "Dropdown")
@@ -1842,7 +1842,7 @@ namespace Core.Components
                     Html.Instance.TRow.Event(EventType.DblClick, () => FilterSumary(header, value, valueText)).Event(EventType.Click, (e) => FocusCell(e, header)).Render();
                     Html.Instance.TData.Style("max-width: 100%;").DataAttr("value", actValue).ClassName(header.ComponentType == nameof(Number) ? "text-right" : "text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
                     Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item["TotalRecord"].ToString()).End.Render();
-                    foreach (var itemDetail in gridPolicy)
+                    foreach (var itemDetail in Component)
                     {
                         Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item[itemDetail.FieldName].ToString()).End.Render();
                     }
@@ -1852,7 +1852,7 @@ namespace Core.Components
                 Html.Instance.TFooter.TRow.ClassName("summary").Render();
                 Html.Instance.TData.Style("max-width: 100%;").IText("Tổng cộng").End.Render();
                 Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IText(ttCount.ToString("N0")).End.Render();
-                foreach (var item in gridPolicy)
+                foreach (var item in Component)
                 {
                     var de = sumarys.Select(x => x[item.FieldName].ToString().Replace(",", "")).ToList();
                     var ttCount1 = de.Where(x => !x.IsNullOrWhiteSpace()).Sum(x => decimal.Parse(x));
@@ -1986,20 +1986,20 @@ namespace Core.Components
             return Activator.CreateInstance(type);
         }
 
-        protected override List<Component> FilterColumns(List<Component> gridPolicy)
+        protected override List<Component> FilterColumns(List<Component> Component)
         {
-            var specificComponent = gridPolicy.Any(x => x.ComponentId == GuiInfo.Id);
+            var specificComponent = Component.Any(x => x.ComponentId == GuiInfo.Id);
             if (specificComponent)
             {
-                gridPolicy = gridPolicy.Where(x => x.ComponentId == GuiInfo.Id).ToList();
+                Component = Component.Where(x => x.ComponentId == GuiInfo.Id).ToList();
             }
             else
             {
-                gridPolicy = gridPolicy.Where(x => x.ComponentId == null).ToList();
+                Component = Component.Where(x => x.ComponentId == null).ToList();
             }
 
-            var permission = EditForm.GetGridPolicies(gridPolicy.Select(x => x.Id).ToArray(), Utils.GridPolicyId);
-            var headers = gridPolicy.Where(x => !x.Hidden)
+            var permission = EditForm.GetGridPolicies(Component.Select(x => x.Id).ToArray(), Utils.ComponentId);
+            var headers = Component.Where(x => !x.Hidden)
                 .Where(header => !header.IsPrivate || permission.Where(x => x.RecordId == header.Id).HasElementAndAll(policy => policy.CanRead))
                 .Select(CalcTextAlign).OrderByDescending(x => x.Frozen).ThenByDescending(header => header.ComponentType == "Button")
                 .ThenBy(x => x.Order).ToList();
@@ -2699,10 +2699,10 @@ namespace Core.Components
             Window.ClearTimeout(_imeout);
             _imeout = Window.SetTimeout(async () =>
             {
-                var headerDB = await new Client(nameof(GridPolicy)).GetAsync<Component>(header.Id);
+                var headerDB = await new Client(nameof(Component)).GetAsync<Component>(header.Id);
                 var html = e.Target as HTMLElement;
                 headerDB.ShortDesc = html.TextContent.Trim();
-                await new Client(nameof(GridPolicy)).UpdateAsync<GridPolicy>(headerDB);
+                await new Client(nameof(Component)).UpdateAsync<Component>(headerDB);
             }, 1000);
         }
 
@@ -2717,7 +2717,7 @@ namespace Core.Components
             var total = ds.Length > 1 ? ds[1].ToDynamic()[0].total : ds[0].Length;
             if (ds.Length > 3)
             {
-                var customHeaders = ds[2].Select(x => x.CastProp<GridPolicy>()).ToList();
+                var customHeaders = ds[2].Select(x => x.CastProp<Component>()).ToList();
                 FilterColumns(customHeaders);
                 RenderTableHeader(Header);
             }
@@ -2740,7 +2740,7 @@ namespace Core.Components
             return rows;
         }
 
-        private void MoveLeft(GridPolicy header, Event e)
+        private void MoveLeft(Component header, Event e)
         {
             var current = e.Target as HTMLElement;
             var th = current.ParentElement;
@@ -2770,7 +2770,7 @@ namespace Core.Components
             UpdateHeader();
         }
 
-        private void MoveRight(GridPolicy header, Event e)
+        private void MoveRight(Component header, Event e)
         {
             var current = e.Target as HTMLElement;
             var th = current.ParentElement;
@@ -2838,14 +2838,13 @@ namespace Core.Components
         private Dictionary<string, bool> GetSortedFields()
         {
             Dictionary<string, bool> fieldSorts = new Dictionary<string, bool> { };
-            var dataSource = DataSourceFilter;
-            if (dataSource.IsNullOrWhiteSpace())
+            if (DataSourceFilter.IsNullOrWhiteSpace())
             {
                 return fieldSorts;
             }
 
-            dataSource = dataSource.Replace(new RegExp(@"\s+"), " ");
-            var orderClause = OdataExt.GetClausePart(dataSource, OdataExt.OrderByKeyword);
+            DataSourceFilter = DataSourceFilter.Replace(new RegExp(@"\s+"), " ");
+            var orderClause = OdataExt.GetClausePart(DataSourceFilter, OdataExt.OrderByKeyword);
             if (orderClause.IsNullOrWhiteSpace())
             {
                 return fieldSorts;
@@ -2951,7 +2950,7 @@ namespace Core.Components
 
         private void HideWidth(object arg)
         {
-            var entity = arg["header"] as GridPolicy;
+            var entity = arg["header"] as Component;
             var e = arg["events"] as Event;
             /*@
              e.target.firstChild.remove();
@@ -2964,7 +2963,7 @@ namespace Core.Components
 
         private void HideColumn(object arg)
         {
-            var entity = arg["header"] as GridPolicy;
+            var entity = arg["header"] as Component;
             var e = arg["events"] as Event;
             /*@
              var $table = $(e.target).closest('table');
@@ -3041,7 +3040,7 @@ namespace Core.Components
 
         private void ShowWidth(object arg)
         {
-            var entity = arg["header"] as GridPolicy;
+            var entity = arg["header"] as Component;
             var e = arg["events"] as Event;
             /*@
              if (!e.target.firstChild.length) {
@@ -3056,7 +3055,7 @@ namespace Core.Components
 
         private void FrozenColumn(object arg)
         {
-            var entity = arg["header"] as GridPolicy;
+            var entity = arg["header"] as Component;
             BasicHeader.FirstOrDefault(x => x.Id == entity.Id).Frozen = !entity.Frozen;
             Task.Run(async () =>
             {
@@ -3067,7 +3066,7 @@ namespace Core.Components
 
         public void CloneHeader(object arg)
         {
-            var entity = arg as GridPolicy;
+            var entity = arg as Component;
             var confirm = new ConfirmDialog
             {
                 Content = "Bạn có chắc chắn muốn clone cột này không?",
@@ -3076,9 +3075,9 @@ namespace Core.Components
             confirm.YesConfirmed += async () =>
             {
                 var ids = new List<int> { entity.Id };
-                var client = new Client(nameof(GridPolicy));
+                var client = new Client(nameof(Component));
                 entity.Id = 0;
-                var success = await client.CreateAsync<GridPolicy>(entity);
+                var success = await client.CreateAsync<Component>(entity);
                 if (success != null)
                 {
                     Header.Add(success);
@@ -3095,7 +3094,7 @@ namespace Core.Components
 
         public void RemoveHeader(object arg)
         {
-            var entity = arg as GridPolicy;
+            var entity = arg as Component;
             var confirm = new ConfirmDialog
             {
                 Content = "Bạn có chắc chắn muốn xóa cột này không?",
@@ -3104,7 +3103,7 @@ namespace Core.Components
             confirm.YesConfirmed += async () =>
             {
                 var ids = new List<int> { entity.Id };
-                var success = await new Client(nameof(GridPolicy)).HardDeleteAsync(ids);
+                var success = await new Client(nameof(Component)).HardDeleteAsync(ids);
                 if (success)
                 {
                     Header.Remove(entity);

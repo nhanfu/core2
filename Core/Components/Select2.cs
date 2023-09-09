@@ -67,13 +67,13 @@ namespace Core.Components
                 _value = entityVal as int?;
             }
             RenderInputAndEvents();
-            if (!TabEditor.DataSearchEntry.Any(x => x.Key == GuiInfo.DataSourceFilter))
+            if (!TabEditor.DataSearchEntry.Any(x => x.Key == GuiInfo.DataSourceFilter + GuiInfo.RefName))
             {
                 LoadData();
             }
             else
             {
-                RowData = TabEditor.DataSearchEntry.GetValueOrDefault(GuiInfo.DataSourceFilter);
+                RowData = TabEditor.DataSearchEntry.GetValueOrDefault(GuiInfo.DataSourceFilter + GuiInfo.RefName);
                 RenderOption();
             }
             FindMatchText();
@@ -86,12 +86,12 @@ namespace Core.Components
             Task.Run(async () =>
             {
                 await Client.LoadScript("https://lib.softek.com.vn/js/select2.min.js");
-                if (!TabEditor.DataSearchEntry.Any(x => x.Key == GuiInfo.DataSourceFilter))
+                if (!TabEditor.DataSearchEntry.Any(x => x.Key == GuiInfo.DataSourceFilter + GuiInfo.RefName))
                 {
                     var rsData = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(GuiInfo.DataSourceFilter);
                     RowData = rsData.Value;
                     RenderOption();
-                    TabEditor.DataSearchEntry.Add(GuiInfo.DataSourceFilter, rsData.Value);
+                    TabEditor.DataSearchEntry.Add(GuiInfo.DataSourceFilter + GuiInfo.RefName, rsData.Value);
                 }
             });
         }

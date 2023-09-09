@@ -197,8 +197,8 @@ namespace Core.Components
                 {
                     return false;
                 }
-                var gridPolicy = gridPolicies.Any();
-                if (!gridPolicy)
+                var Component = gridPolicies.Any();
+                if (!Component)
                 {
                     return true;
                 }
@@ -212,7 +212,7 @@ namespace Core.Components
             {
                 return;
             }
-            var gridPolicies = EditForm.GetGridPolicies(header.Id, Utils.GridPolicyId);
+            var gridPolicies = EditForm.GetGridPolicies(header.Id, Utils.ComponentId);
             var canWrite = CanDo(gridPolicies, x => x.CanWrite);
             var component = ((header.Editable || NotCellText.Contains(header.ComponentType)) && ListViewSection.ListView.CanWrite && canWrite)
                 ? ComponentFactory.GetComponent(header, EditForm)

@@ -285,7 +285,7 @@ namespace TMS.API.Controllers
         [HttpPost("api/[Controller]/RequestApprove")]
         public virtual async Task<ActionResult<bool>> RequestApprove([FromBody] T entity)
         {
-            var id = entity.GetPropValue(nameof(GridPolicy.Id)) as int?;
+            var id = entity.GetPropValue(nameof(Component.Id)) as int?;
             var (statusField, value) = entity.GetComplexProp("StatusId");
             if (statusField)
             {
@@ -568,9 +568,9 @@ namespace TMS.API.Controllers
             entity.SetPropValue("Level", path.IsNullOrWhiteSpace() ? 0 : path.Split(@"\").Where(x => !x.IsNullOrWhiteSpace()).Count());
         }
 
-        private void OrderHeaderGroup(List<GridPolicy> headers)
+        private void OrderHeaderGroup(List<Component> headers)
         {
-            GridPolicy tmp;
+            Component tmp;
             for (int i = 0; i < headers.Count - 1; i++)
             {
                 for (int j = i + 2; j < headers.Count; j++)
@@ -632,12 +632,12 @@ namespace TMS.API.Controllers
         {
             var component = await db.Component.FindAsync(componentId);
             var userSetting = await db.UserSetting.FirstOrDefaultAsync(x => x.Name == $"{(custom ? "Export" : "ListView")}-" + componentId && x.UserId == UserId);
-            var gridPolicySys = new List<GridPolicy>();
+            var gridPolicySys = new List<Component>();
             if (userSetting != null)
             {
-                gridPolicySys = JsonConvert.DeserializeObject<List<GridPolicy>>(userSetting.Value);
+                gridPolicySys = JsonConvert.DeserializeObject<List<Component>>(userSetting.Value);
             }
-            var gridPolicy = await db.GridPolicy.Where(x => x.EntityId == component.ReferenceId && x.FeatureId == featureId && x.Active && !x.Hidden).ToListAsync();
+            var gridPolicy = await db.Component.Where(x => x.EntityId == component.ReferenceId && x.FeatureId == featureId && x.Active && !x.Hidden).ToListAsync();
             var specificComponent = gridPolicy.Any(x => x.ComponentId == component.Id);
             if (specificComponent)
             {
@@ -649,7 +649,7 @@ namespace TMS.API.Controllers
             }
             if (gridPolicySys != null)
             {
-                var gridPolicys = new List<GridPolicy>();
+                var gridPolicys = new List<Component>();
                 var userSettings = gridPolicySys.ToDictionary(x => x.Id);
                 gridPolicy.ForEach(x =>
                 {
@@ -670,7 +670,7 @@ namespace TMS.API.Controllers
             {
                 if (x.ExcelFieldName.IsNullOrWhiteSpace())
                 {
-                    var format = x.FormatCell.Split("}")[0].Replace("{", "");
+                    var format = x.FormatData.Split("}")[0].Replace("{", "");
                     var objField = x.FieldName.Substring(0, x.FieldName.Length - 2);
                     return $"[{objField}].[{format}] as [{objField}]";
                 }

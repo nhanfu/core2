@@ -1,17 +1,16 @@
 ﻿using Bridge.Html5;
-using Core.Models;
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
 using Core.Enums;
 using Core.Extensions;
+using Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
-using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace Core.Components
 {
@@ -21,17 +20,17 @@ namespace Core.Components
         private GridView _orderByGrid;
         private SearchEntry _activeState;
         private readonly Type _entityType;
-        private List<GridPolicy> _headers;
+        private List<Component> _headers;
 
         public ListView ParentListView;
         public string ModelNameSpace { get; }
         private AdvSearchVM AdvSearchEntity => Entity as AdvSearchVM;
         public int _orderById = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(OrderBy)).Id;
         public int _fieldConditionId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(FieldCondition)).Id;
-        public int _gridPolicyId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(GridPolicy)).Id;
+        public int _ComponentId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(Component)).Id;
         public int _entityId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(Entity)).Id;
 
-        public AdvancedSearch(ListView parent) : base(nameof(GridPolicy))
+        public AdvancedSearch(ListView parent) : base(nameof(Component))
         {
             Name = "AdvancedSearch";
             Title = "Tìm kiếm nâng cao";
@@ -125,15 +124,15 @@ namespace Core.Components
                 Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
             });
             _activeState.GuiInfo.LocalData = IEnumerableExtensions.ToEntity<ActiveStateEnum>();
-            _activeState.GuiInfo.LocalHeader = new List<GridPolicy>
+            _activeState.GuiInfo.LocalHeader = new List<Component>
             {
-                new GridPolicy
+                new Component
                 {
                     FieldName = nameof(Core.Models.Entity.Name),
                     ShortDesc = "Trạng thái",
                     Active = true,
                 },
-                new GridPolicy
+                new Component
                 {
                     FieldName = nameof(Core.Models.Entity.Description),
                     ShortDesc = "Miêu tả",
@@ -159,18 +158,18 @@ namespace Core.Components
             {
                 _filterGrid.GetSelectedRows().ForEach(_filterGrid.RowData.Remove);
             };
-            _filterGrid.GuiInfo.LocalHeader = new List<GridPolicy>
+            _filterGrid.GuiInfo.LocalHeader = new List<Component>
             {
-                new GridPolicy
+                new Component
                 {
                     Id = 1,
                     EntityId = _fieldConditionId,
                     FieldName = nameof(FieldCondition.FieldId),
                     Events = "{'change': 'FieldId_Changed'}",
                     ShortDesc = "Tên cột",
-                    ReferenceId = _gridPolicyId,
-                    RefName = nameof(GridPolicy),
-                    FormatCell = "{ShortDesc}",
+                    ReferenceId = _ComponentId,
+                    RefName = nameof(Component),
+                    FormatData = "{ShortDesc}",
                     Active = true,
                     Editable = true,
                     ComponentType = "Dropdown",
@@ -179,11 +178,11 @@ namespace Core.Components
                     LocalRender = true,
                     LocalData = _headers.Where(x => x.FieldName != IdField)
                         .Cast<object>().ToList(),
-                    LocalHeader = new List<GridPolicy>
+                    LocalHeader = new List<Component>
                     {
-                        new GridPolicy
+                        new Component
                         {
-                            EntityId = _gridPolicyId,
+                            EntityId = _ComponentId,
                             FieldName = "ShortDesc",
                             ShortDesc = "Tên cột",
                             Active = true,
@@ -191,7 +190,7 @@ namespace Core.Components
                     },
                     Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                 },
-                new GridPolicy
+                new Component
                 {
                     Id = 2,
                     EntityId = _fieldConditionId,
@@ -200,22 +199,22 @@ namespace Core.Components
                     ReferenceId = _entityId,
                     RefName = nameof(Entity),
                     ComponentType = "Dropdown",
-                    FormatCell = "{Description}",
+                    FormatData = "{Description}",
                     Active = true,
                     Editable = true,
                     MinWidth = "150px",
                     LocalRender = true,
                     LocalData = IEnumerableExtensions.ToEntity<AdvSearchOperation>(),
-                    LocalHeader = new List<GridPolicy>
+                    LocalHeader = new List<Component>
                     {
-                        new GridPolicy
+                        new Component
                         {
                             EntityId = _entityId,
                             FieldName = nameof(Core.Models.Entity.Name),
                             ShortDesc = "Toán tử",
                             Active = true,
                         },
-                        new GridPolicy
+                        new Component
                         {
                             EntityId = _entityId,
                             FieldName = nameof(Core.Models.Entity.Description),
@@ -225,7 +224,7 @@ namespace Core.Components
                     },
                     Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                 },
-                new GridPolicy
+                new Component
                 {
                     Id = 3,
                     EntityId = _fieldConditionId,
@@ -239,7 +238,7 @@ namespace Core.Components
                     MinWidth = "450px",
                     Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
                 },
-                new GridPolicy
+                new Component
                 {
                     Id = 2,
                     EntityId = _fieldConditionId,
@@ -248,22 +247,22 @@ namespace Core.Components
                     ReferenceId = _entityId,
                     RefName = nameof(Entity),
                     ComponentType = "Dropdown",
-                    FormatCell = "{Description}",
+                    FormatData = "{Description}",
                     Active = true,
                     Editable = true,
                     DefaultVal = "0",
                     LocalRender = true,
                     LocalData = IEnumerableExtensions.ToEntity<LogicOperation>(),
-                    LocalHeader = new List<GridPolicy>
+                    LocalHeader = new List<Component>
                     {
-                        new GridPolicy
+                        new Component
                         {
                             EntityId = _entityId,
                             FieldName = nameof(Core.Models.Entity.Name),
                             ShortDesc = "Kết hợp",
                             Active = true,
                         },
-                        new GridPolicy
+                        new Component
                         {
                             EntityId = _entityId,
                             FieldName = nameof(Core.Models.Entity.Description),
@@ -288,7 +287,7 @@ namespace Core.Components
             });
         }
 
-        private EnumerableInstance<GridPolicy> HeaderForAdvSearch()
+        private EnumerableInstance<Component> HeaderForAdvSearch()
         {
             return ParentListView.Header
                 .Where(x => x.Id > 0 && !x.ShortDesc.IsNullOrWhiteSpace() && x.Active && !x.Hidden);
@@ -311,18 +310,18 @@ namespace Core.Components
             {
                 _orderByGrid.GetSelectedRows().ForEach(_orderByGrid.RowData.Remove);
             };
-            _orderByGrid.GuiInfo.LocalHeader = new List<GridPolicy>
+            _orderByGrid.GuiInfo.LocalHeader = new List<Component>
             {
-                new GridPolicy
+                new Component
                 {
                     Id = 1,
                     EntityId = _fieldConditionId,
                     FieldName = nameof(FieldCondition.FieldId),
                     Events = "{'change': 'FieldId_Changed'}",
                     ShortDesc = "Tên cột",
-                    ReferenceId = _gridPolicyId,
-                    RefName = nameof(GridPolicy),
-                    FormatCell = "{ShortDesc}",
+                    ReferenceId = _ComponentId,
+                    RefName = nameof(Component),
+                    FormatData = "{ShortDesc}",
                     Active = true,
                     Editable = true,
                     ComponentType = "Dropdown",
@@ -331,18 +330,18 @@ namespace Core.Components
                     LocalData = _headers
                         .Cast<object>().ToList(),
                     LocalRender = true,
-                    LocalHeader = new List<GridPolicy>
+                    LocalHeader = new List<Component>
                     {
-                        new GridPolicy
+                        new Component
                         {
-                            EntityId = _gridPolicyId,
+                            EntityId = _ComponentId,
                             FieldName = "ShortDesc",
                             ShortDesc = "Tên cột",
                             Active = true,
                         }
                     },
                 },
-                new GridPolicy
+                new Component
                 {
                     Id = 2,
                     EntityId = _orderById,
@@ -351,15 +350,15 @@ namespace Core.Components
                     ReferenceId = _entityId,
                     RefName = nameof(Entity),
                     ComponentType = "Dropdown",
-                    FormatCell = "{Description}",
+                    FormatData = "{Description}",
                     Active = true,
                     Editable = true,
                     MinWidth = "100px",
                     MaxWidth = "120px",
                     LocalData = IEnumerableExtensions.ToEntity<OrderbyOption>(),
-                    LocalHeader = new List<GridPolicy>
+                    LocalHeader = new List<Component>
                     {
-                        new GridPolicy
+                        new Component
                         {
                             EntityId = _entityId,
                             FieldName = nameof(Core.Models.Entity.Name),
@@ -526,7 +525,7 @@ namespace Core.Components
             return condition.LogicOperatorId == LogicOperation.And ? " and " : " or ";
         }
 
-        private async Task FieldId_Changed(FieldCondition condition, GridPolicy field)
+        private async Task FieldId_Changed(FieldCondition condition, Component field)
         {
             if (condition is null || field is null)
             {
@@ -545,35 +544,34 @@ namespace Core.Components
             var parentCellElement = cell.ParentElement;
             var parentCell = cell.Parent;
             cell.Dispose();
-            var comInfo = field.MapToComponent();
-            comInfo.FieldName = nameof(FieldCondition.Value);
+            field.FieldName = nameof(FieldCondition.Value);
             EditableComponent component = null;
             var searchByIdList = new string[] { nameof(ComponentTypeTypeEnum.Dropdown), nameof(ComponentTypeTypeEnum.SearchEntry), nameof(ComponentTypeTypeEnum.MultipleSearchEntry) };
             var isSearchId = searchByIdList.Contains(field.ComponentType)
                 || fieldType.IsInt32() && (field.FieldName?.EndsWith(IdField) == true || field.FieldName == nameof(Component.InsertedBy) || field.FieldName == nameof(Component.UpdatedBy));
             if (fieldType.IsDate())
             {
-                component = SetSearchDateTime(compareCell, comInfo);
+                component = SetSearchDateTime(compareCell, field);
                 condition.Value = DateTime.Now.ToString();
             }
             else if (isSearchId)
             {
-                component = await SetSearchId(field, compareCell, comInfo, component);
+                component = await SetSearchId(field, compareCell, field, component);
                 condition.Value = string.Empty;
             }
             else if (fieldType.IsBool())
             {
-                component = SetSearchBool(compareCell, comInfo);
+                component = SetSearchBool(compareCell, field);
                 condition.Value = ((int)ActiveStateEnum.All).ToString();
             }
             else if (fieldType.IsNumber())
             {
-                component = SetSearchDecimal(compareCell, comInfo);
+                component = SetSearchDecimal(compareCell, field);
                 condition.Value = 0.ToString();
             }
             else
             {
-                component = SetSearchString(compareCell, comInfo);
+                component = SetSearchString(compareCell, field);
             }
             condition.LogicOperatorId = condition.LogicOperatorId ?? LogicOperation.And;
             _filterGrid.FirstOrDefault(x => x.GuiInfo != null && x.Entity == condition
@@ -635,15 +633,15 @@ namespace Core.Components
             comInfo.ComponentType = nameof(SearchEntry);
             comInfo.LocalRender = true;
             comInfo.LocalData = IEnumerableExtensions.ToEntity<ActiveStateEnum>();
-            comInfo.LocalHeader = new List<GridPolicy>
+            comInfo.LocalHeader = new List<Component>
                 {
-                    new GridPolicy
+                    new Component
                     {
                         FieldName = nameof(Core.Models.Entity.Name),
                         ShortDesc = "Trạng thái",
                         Active = true,
                     },
-                    new GridPolicy
+                    new Component
                     {
                         FieldName = nameof(Core.Models.Entity.Description),
                         ShortDesc = "Miêu tả",
@@ -655,14 +653,14 @@ namespace Core.Components
             return component;
         }
 
-        private async Task<EditableComponent> SetSearchId(GridPolicy field, SearchEntry compareCell, Component comInfo, EditableComponent component)
+        private async Task<EditableComponent> SetSearchId(Component field, SearchEntry compareCell, Component comInfo, EditableComponent component)
         {
             comInfo.ComponentType = nameof(MultipleSearchEntry);
             var refId = field.ReferenceId ?? ParentListView.GuiInfo.ReferenceId ?? 0;
             comInfo.ReferenceId = refId;
             comInfo.Reference = Utils.GetEntity(refId);
-            comInfo.DataSourceFilter = field.DataSource;
-            comInfo.LocalHeader = await new Client(nameof(GridPolicy), typeof(User).Namespace).GetRawList<GridPolicy>(
+            comInfo.DataSourceFilter = field.DataSourceFilter;
+            comInfo.LocalHeader = await new Client(nameof(Component), typeof(User).Namespace).GetRawList<Component>(
                 $"?$filter=Active eq true and FeatureId eq null and EntityId eq {field.ReferenceId ?? field.EntityId}");
             compareCell.GuiInfo.LocalData = OperatorFactory(ComponentTypeTypeEnum.SearchEntry).Cast<object>().ToList();
             component = new MultipleSearchEntry(comInfo);

@@ -14,7 +14,7 @@ namespace TMS.API.Models
         public string FieldName { get; set; }
         public int? Order { get; set; }
         public string ComponentType { get; set; }
-        public int ComponentGroupId { get; set; }
+        public int? ComponentGroupId { get; set; }
         public string DataSourceFilter { get; set; }
         public int? ReferenceId { get; set; }
         public string FormatData { get; set; }
@@ -84,15 +84,15 @@ namespace TMS.API.Models
         public bool ShowHotKey { get; set; }
         public int? DefaultAddStart { get; set; }
         public int? DefaultAddEnd { get; set; }
-        public bool? UpperCase { get; set; }
-        public bool? VirtualScroll { get; set; }
+        public bool UpperCase { get; set; }
+        public bool VirtualScroll { get; set; }
         public string Migration { get; set; }
         public string ListClass { get; set; }
         public string ExcelFieldName { get; set; }
-        public bool? LiteGrid { get; set; }
-        public bool? ShowDatetimeField { get; set; }
-        public bool? ShowNull { get; set; }
-        public bool? AddDate { get; set; }
+        public bool LiteGrid { get; set; }
+        public bool ShowDatetimeField { get; set; }
+        public bool ShowNull { get; set; }
+        public bool AddDate { get; set; }
         public bool FilterEq { get; set; }
         public int? HeaderHeight { get; set; }
         public int? BodyItemHeight { get; set; }
@@ -104,6 +104,30 @@ namespace TMS.API.Models
         public int? GroupReferenceId { get; set; }
         public string GroupReferenceName { get; set; }
         public string JoinTable { get; set; }
+        public string GroupName { get; set; }
+        public string ShortDesc { get; set; }
+        public string Description { get; set; }
+        public int? FeatureId { get; set; }
+        public int? EntityId { get; set; }
+        public int? ComponentId { get; set; }
+        public string TextAlign { get; set; }
+        public bool HasFilter { get; set; }
+        public bool Frozen { get; set; }
+        public string FilterTemplate { get; set; }
+        public bool Editable { get; set; }
+        public string FormatExcell { get; set; }
+        public string DatabaseName { get; set; }
+        public string Summary { get; set; }
+        public int? SummaryColSpan { get; set; }
+        public bool BasicSearch { get; set; }
+        public bool IsExport { get; set; }
+        public int? OrderExport { get; set; }
+        public string ShowExp { get; set; }
+        public string MinWidth { get; set; }
+        public string MaxWidth { get; set; }
+        public bool AdvancedSearch { get; set; }
+        public bool AutoFit { get; set; }
+        public bool DisplayNone { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

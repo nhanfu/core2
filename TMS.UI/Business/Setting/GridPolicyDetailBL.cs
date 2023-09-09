@@ -5,9 +5,9 @@ namespace TMS.UI.Business.Setting
 {
     class GridPolicyDetailBL : PopupEditor
     {
-        public GridPolicyDetailBL() : base(nameof(GridPolicy))
+        public GridPolicyDetailBL() : base(nameof(Component))
         {
-            Entity = new GridPolicy();
+            Entity = new Component();
             Name = "GridDetail";
             Title = "Grid Detail";
         }

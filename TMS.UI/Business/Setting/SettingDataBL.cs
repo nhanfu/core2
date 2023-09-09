@@ -28,7 +28,7 @@ namespace TMS.UI.Business.Setting
                 });
         }
 
-        public async Task EditGridPolicy(GridPolicy gridPolicy)
+        public async Task EditGridPolicy(Component gridPolicy)
         {
             await this.OpenPopup(
                 featureName: "GridDetail",
@@ -37,7 +37,7 @@ namespace TMS.UI.Business.Setting
                     var type = Type.GetType("TMS.UI.Business.Setting.GridPolicyDetailBL");
                     var instance = Activator.CreateInstance(type) as PopupEditor;
                     instance.Title = gridPolicy is null ? "Thêm cot du lieu moi" : "Update cot du lieu";
-                    instance.Entity = gridPolicy ?? new GridPolicy();
+                    instance.Entity = gridPolicy ?? new Component();
                     return instance;
                 });
         }
