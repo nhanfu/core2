@@ -123,7 +123,7 @@ namespace Core.Components
             return listItem;
         }
 
-        public override ListViewItem RenderRowData(List<GridPolicy> headers, object row, Section listViewSection, int? index, bool emptyRow = false)
+        public override ListViewItem RenderRowData(List<Component> headers, object row, Section listViewSection, int? index, bool emptyRow = false)
         {
             if (!(row is GroupRowData groupRow))
             {

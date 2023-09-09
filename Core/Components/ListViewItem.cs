@@ -153,7 +153,7 @@ namespace Core.Components
                 .Event(EventType.MouseLeave, MouseLeave);
         }
 
-        internal void RenderRowData(List<GridPolicy> headers, object row, int? index = null, bool emptyRow = false)
+        internal void RenderRowData(List<Component> headers, object row, int? index = null, bool emptyRow = false)
         {
             if (index.HasValue)
             {
@@ -174,7 +174,7 @@ namespace Core.Components
             {
                 headers.Where(x => !x.Hidden).ForEach(header =>
                 {
-                    RenderTableCell(row, ListView.HeaderComponentMap[header.GetHashCode()], Element);
+                    RenderTableCell(row, header, Element);
                 });
             }
             var id = row[IdField].As<int?>();

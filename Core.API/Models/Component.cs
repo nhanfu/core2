@@ -111,6 +111,21 @@ namespace Core.Models
         public int? GroupReferenceId { get; set; }
         public string GroupReferenceName { get; set; }
         public string JoinTable { get; set; }
+        public string GroupName { get; set; }
+        public string ShortDesc { get; set; }
+        public string Description { get; set; }
+        public int? FeatureId { get; set; }
+        public int? EntityId { get; set; }
+        public int? ComponentId { get; set; }
+        public string TextAlign { get; set; }
+        public bool HasFilter { get; set; }
+        public bool Frozen { get; set; }
+        public string FilterTemplate { get; set; }
+        public bool Editable { get; set; }
+        public string FormatExcell { get; set; }
+        public string DatabaseName { get; set; }
+        public string Summary { get; set; }
+        public int? SummaryColSpan { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

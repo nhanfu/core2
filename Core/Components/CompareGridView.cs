@@ -13,9 +13,9 @@ namespace Core.Components
 
         public CompareGridView(Component ui) : base(ui)
         {
-            GuiInfo.LocalHeader = new List<GridPolicy>
+            GuiInfo.LocalHeader = new List<Component>
             {
-                new GridPolicy
+                new Component
                 {
                     FieldName = nameof(History.InsertedBy),
                     ComponentType = "Label",
@@ -27,10 +27,10 @@ namespace Core.Components
                         Name = nameof(User),
                     },
                     RefName = nameof(User),
-                    FormatCell = "{" + nameof(User.FullName) + "}",
+                    FormatData = "{" + nameof(User.FullName) + "}",
                     Active = true,
                 },
-                new GridPolicy
+                new Component
                 {
                     FieldName = nameof(History.InsertedDate),
                     ComponentType = "Label",
@@ -38,9 +38,9 @@ namespace Core.Components
                     Description = "Ngày thao tác",
                     Active = true,
                     TextAlign = "left",
-                    FormatCell = "{0:dd/MM/yyyy HH:mm zz}"
+                    FormatData = "{0:dd/MM/yyyy HH:mm zz}"
                 },
-                new GridPolicy
+                new Component
                 {
                     FieldName = nameof(History.ReasonOfChange),
                     ComponentType = "Label",
@@ -49,7 +49,7 @@ namespace Core.Components
                     HasFilter = true,
                     Active = true,
                 },
-                new GridPolicy
+                new Component
                 {
                     FieldName = nameof(History.TextHistory),
                     ComponentType = "Label",
@@ -62,7 +62,7 @@ namespace Core.Components
             };
         }
 
-        protected override List<GridPolicy> FilterColumns(List<GridPolicy> gridPolicy)
+        protected override List<Component> FilterColumns(List<Component> gridPolicy)
         {
             base.FilterColumns(gridPolicy);
             gridPolicy.ForEach(x => x.Frozen = false);

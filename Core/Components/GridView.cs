@@ -21,7 +21,7 @@ namespace Core.Components
     public class SortedField
     {
         public string Field { get; set; }
-        public GridPolicy Com { get; set; }
+        public Component Com { get; set; }
         public bool Desc { get; set; }
     }
     public class GridView : ListView
@@ -40,7 +40,7 @@ namespace Core.Components
         public int _renderPrepareCacheAwaiter;
         public HTMLElement DataTable { get; set; }
         private UserSetting _settings { get; set; }
-        public static GridPolicy ToolbarColumn = new GridPolicy
+        public static Component ToolbarColumn = new Component
         {
             StatusBar = true,
             ShortDesc = string.Empty,
@@ -275,7 +275,7 @@ namespace Core.Components
             Header.Insert(newIndex, item);
         }
 
-        protected void ClickHeader(Event e, GridPolicy header)
+        protected void ClickHeader(Event e, Component header)
         {
             var index = LastNumClick;
             var table = DataTable;
@@ -313,7 +313,7 @@ namespace Core.Components
                 */
         }
 
-        protected void FocusOutHeader(Event e, GridPolicy header)
+        protected void FocusOutHeader(Event e, Component header)
         {
             var index = LastNumClick;
             var table = DataTable;
@@ -332,7 +332,7 @@ namespace Core.Components
             }
         }
 
-        protected void ThHotKeyHandler(Event e, GridPolicy header)
+        protected void ThHotKeyHandler(Event e, Component header)
         {
             if (GuiInfo.Focus)
             {
@@ -556,7 +556,7 @@ namespace Core.Components
                     }
                     else
                     {
-                        var format = header.FormatCell.Split("}")[0].Replace("{", "");
+                        var format = header.FormatData.Split("}")[0].Replace("{", "");
                         return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$top=1000&$filter={filterString}({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.RefName);
                     }
                 }
@@ -590,7 +590,7 @@ namespace Core.Components
                 }
                 else
                 {
-                    if ((hl.ComponentType == "Dropdown" || hl.ComponentType == nameof(SearchEntry) || hl.FieldName.Contains(".")) && !hl.FormatCell.IsNullOrWhiteSpace())
+                    if ((hl.ComponentType == "Dropdown" || hl.ComponentType == nameof(SearchEntry) || hl.FieldName.Contains(".")) && !hl.FormatData.IsNullOrWhiteSpace())
                     {
                         if (isNUll)
                         {
@@ -1117,7 +1117,7 @@ namespace Core.Components
             td.Closest(ElementType.td.ToString()).AddClass("cell-selected");
         }
 
-        public void FilterSumary(GridPolicy gridPolicy, string value, string valueText)
+        public void FilterSumary(Component gridPolicy, string value, string valueText)
         {
             var dateTime = CellSelected.FirstOrDefault(x => gridPolicy.ComponentType == nameof(Datepicker) && x.FieldName == gridPolicy.FieldName && x.Operator == (int)OperatorEnum.In);
             if (dateTime is null)
@@ -1231,7 +1231,7 @@ namespace Core.Components
                                 {
                                     Field = com.GuiInfo.FieldName,
                                     Desc = true,
-                                    Com = com.GuiInfo.CastProp<GridPolicy>(),
+                                    Com = com.GuiInfo.CastProp<Component>(),
                                 }
                             };
                             th.Element.AddClass("desc");
@@ -1266,7 +1266,7 @@ namespace Core.Components
                                 SortedField.Add(new SortedField
                                 {
                                     Field = com.GuiInfo.FieldName,
-                                    Com = com.GuiInfo.CastProp<GridPolicy>(),
+                                    Com = com.GuiInfo.CastProp<Component>(),
                                     Desc = true
                                 });
                             }
@@ -1692,7 +1692,7 @@ namespace Core.Components
             ActionKeyHandler(e, LastComponentFocus, LastListViewItem, com, com.Element.Closest(ElementType.td.ToString()), keyCode);
         }
 
-        public void ViewSumary(object ev, GridPolicy header)
+        public void ViewSumary(object ev, Component header)
         {
             if (_waitingLoad)
             {
@@ -1814,7 +1814,7 @@ namespace Core.Components
                         }
                         else
                         {
-                            dataHeader = ob[header.FormatCell.Split("}")[0].Replace("{", "")].ToString();
+                            dataHeader = ob[header.FormatData.Split("}")[0].Replace("{", "")].ToString();
                             value = ob["Id"].ToString();
                             valueText = dataHeader;
                         }
@@ -1839,7 +1839,7 @@ namespace Core.Components
                         value = item[header.FieldName].ToString();
                         valueText = item[header.FieldName].ToString();
                     }
-                    Html.Instance.TRow.Event(EventType.DblClick, () => FilterSumary(header, value, valueText)).Event(EventType.Click, (e) => FocusCell(e, this.HeaderComponentMap[header.GetHashCode()])).Render();
+                    Html.Instance.TRow.Event(EventType.DblClick, () => FilterSumary(header, value, valueText)).Event(EventType.Click, (e) => FocusCell(e, header)).Render();
                     Html.Instance.TData.Style("max-width: 100%;").DataAttr("value", actValue).ClassName(header.ComponentType == nameof(Number) ? "text-right" : "text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
                     Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item["TotalRecord"].ToString()).End.Render();
                     foreach (var itemDetail in gridPolicy)
@@ -1986,7 +1986,7 @@ namespace Core.Components
             return Activator.CreateInstance(type);
         }
 
-        protected override List<GridPolicy> FilterColumns(List<GridPolicy> gridPolicy)
+        protected override List<Component> FilterColumns(List<Component> gridPolicy)
         {
             var specificComponent = gridPolicy.Any(x => x.ComponentId == GuiInfo.Id);
             if (specificComponent)
@@ -2007,7 +2007,6 @@ namespace Core.Components
             Header.Clear();
             Header.Add(ToolbarColumn);
             Header.AddRange(headers);
-            HeaderComponentMap = Header.DistinctBy(x => x.GetHashCode()).ToDictionary(x => x.GetHashCode(), x => x.MapToComponent());
             return headers;
         }
 
@@ -2199,7 +2198,7 @@ namespace Core.Components
             RenderIndex();
         }
 
-        public override ListViewItem RenderRowData(List<GridPolicy> headers, object row, Section section, int? index = null, bool emptyRow = false)
+        public override ListViewItem RenderRowData(List<Component> headers, object row, Section section, int? index = null, bool emptyRow = false)
         {
             var tbody = section.Element;
             Html.Take(tbody);
@@ -2233,7 +2232,7 @@ namespace Core.Components
             {
                 headers.ForEach(header =>
                 {
-                    rowSection.RenderTableCell(row, HeaderComponentMap[header.GetHashCode()]);
+                    rowSection.RenderTableCell(row, header);
                 });
             }
             if (emptyRow)
@@ -2358,7 +2357,7 @@ namespace Core.Components
             });
         }
 
-        private void RenderSummaryRow(GridPolicy sum, List<GridPolicy> headers, HTMLTableSectionElement footer, int count)
+        private void RenderSummaryRow(Component sum, List<Component> headers, HTMLTableSectionElement footer, int count)
         {
             var tr = CreateSummaryTableRow(sum, footer, count);
             if (tr is null)
@@ -2397,7 +2396,7 @@ namespace Core.Components
             }
         }
 
-        private static void SetSummaryHeaderText(GridPolicy sum, HTMLTableRowElement tr)
+        private static void SetSummaryHeaderText(Component sum, HTMLTableRowElement tr)
         {
             if (sum.Summary.IsNullOrWhiteSpace())
             {
@@ -2410,7 +2409,7 @@ namespace Core.Components
             cell.AddClass("summary-header");
         }
 
-        private HTMLTableRowElement CreateSummaryTableRow(GridPolicy sum, HTMLTableSectionElement footer, int count)
+        private HTMLTableRowElement CreateSummaryTableRow(Component sum, HTMLTableSectionElement footer, int count)
         {
             var summaryText = sum.Summary;
             if (footer is null)
@@ -2440,11 +2439,11 @@ namespace Core.Components
             return result;
         }
 
-        private void CalcSumCol(GridPolicy header, List<GridPolicy> headers, HTMLTableRowElement tr, int colSpan)
+        private void CalcSumCol(Component header, List<Component> headers, HTMLTableRowElement tr, int colSpan)
         {
             var index = headers.IndexOf(header);
             var cellVal = tr.Cells[index - colSpan + 1];
-            var format = header.FormatCell.IsNullOrWhiteSpace() ? "{0:n0}" : header.FormatCell;
+            var format = header.FormatData.IsNullOrWhiteSpace() ? "{0:n0}" : header.FormatData;
             var isNumber = RowData.Data.Any(x => x.GetType().GetProperty(header.FieldName).PropertyType.IsNumber());
             var sum = RowData.Data.Sum(x =>
             {
@@ -2592,7 +2591,7 @@ namespace Core.Components
             rowSection.ListViewSection = MainSection;
         }
 
-        protected virtual void RenderTableHeader(List<GridPolicy> headers)
+        protected virtual void RenderTableHeader(List<Component> headers)
         {
             if (headers.Nothing())
             {
@@ -2628,7 +2627,7 @@ namespace Core.Components
                     .Event(EventType.ContextMenu, HeaderContextMenu, header)
                     .Event(EventType.FocusOut, (e) => FocusOutHeader(e, header))
                     .Event(EventType.KeyDown, (e) => ThHotKeyHandler(e, header));
-                HeaderSection.AddChild(new Section(Html.Context) { GuiInfo = header.MapToComponent() });
+                HeaderSection.AddChild(new Section(Html.Context) { GuiInfo = header });
                 if (anyGroup && string.IsNullOrEmpty(header.GroupName))
                 {
                     Html.Instance.RowSpan(2);
@@ -2683,7 +2682,7 @@ namespace Core.Components
                             .TextAlign(header.TextAlignEnum)
                             .Event(EventType.ContextMenu, HeaderContextMenu, header)
                             .InnerHTML(header.ShortDesc);
-                        HeaderSection.AddChild(new Section(Html.Context.ParentElement) { GuiInfo = header.MapToComponent() });
+                        HeaderSection.AddChild(new Section(Html.Context.ParentElement) { GuiInfo = header });
                     }
                 });
             }
@@ -2695,12 +2694,12 @@ namespace Core.Components
         }
         private int _imeout;
 
-        private void ChangeHeader(Event e, GridPolicy header)
+        private void ChangeHeader(Event e, Component header)
         {
             Window.ClearTimeout(_imeout);
             _imeout = Window.SetTimeout(async () =>
             {
-                var headerDB = await new Client(nameof(GridPolicy)).GetAsync<GridPolicy>(header.Id);
+                var headerDB = await new Client(nameof(GridPolicy)).GetAsync<Component>(header.Id);
                 var html = e.Target as HTMLElement;
                 headerDB.ShortDesc = html.TextContent.Trim();
                 await new Client(nameof(GridPolicy)).UpdateAsync<GridPolicy>(headerDB);
@@ -2802,7 +2801,7 @@ namespace Core.Components
         }
 
 
-        protected virtual void ChangeFieldOrder(GridPolicy header, Event e)
+        protected virtual void ChangeFieldOrder(Component header, Event e)
         {
             if (GuiInfo.CanCache || header.ShortDesc.IsNullOrWhiteSpace())
             {
@@ -2905,7 +2904,7 @@ namespace Core.Components
             }
         }
 
-        private void HeaderContextMenu(Event e, GridPolicy header)
+        private void HeaderContextMenu(Event e, Component header)
         {
             e.PreventDefault();
             e.StopPropagation();

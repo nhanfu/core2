@@ -136,9 +136,6 @@
     <Compile Include="..\Core.API\Models\FeaturePolicy.cs">
       <Link>Models\FeaturePolicy.cs</Link>
     </Compile>
-    <Compile Include="..\Core.API\Models\GridPolicy.cs">
-      <Link>Models\GridPolicy.cs</Link>
-    </Compile>
     <Compile Include="..\Core.API\Models\History.cs">
       <Link>Models\History.cs</Link>
     </Compile>

@@ -136,7 +136,7 @@ namespace Core.Components.Extensions
             await InvokeEventAsync(com, events, eventTypeName, parameters);
         }
 
-        public static string MapToFilterOperator(this GridPolicy gp, string searchTerm)
+        public static string MapToFilterOperator(this Component gp, string searchTerm)
         {
             if (searchTerm.IsNullOrWhiteSpace() || !gp.HasFilter || gp.FieldName.IsNullOrEmpty())
             {
@@ -185,7 +185,7 @@ namespace Core.Components.Extensions
             return gp.FilterTemplate.HasAnyChar() ? string.Format(gp.FilterTemplate, searchTerm) : (gp.FilterEq ? $"startswith({fieldName}, '{searchTerm}')" : $"contains({fieldName}, '{searchTerm}')");
         }
 
-        public static string FilterById(string searchTerm, IEnumerable<GridPolicy> headers)
+        public static string FilterById(string searchTerm, IEnumerable<Component> headers)
         {
             if (searchTerm.IsNullOrWhiteSpace())
             {
@@ -201,7 +201,7 @@ namespace Core.Components.Extensions
 
             var idHeader = headers.FirstOrDefault(header =>
             {
-                var format = header.FormatCell.IsNullOrEmpty() ? header.FormatRow : header.FormatCell;
+                var format = header.FormatData.IsNullOrEmpty() ? header.FormatEntity : header.FormatData;
                 if (format.IsNullOrEmpty())
                 {
                     return false;

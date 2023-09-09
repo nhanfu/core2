@@ -433,28 +433,8 @@ namespace Core.Extensions
 #endif
 
 #if !NETCOREAPP
-        public static Component MapToComponent(this GridPolicy header)
-        {
-            var res = new Component();
-            res.CopyPropFrom(header);
-            res.Label = header.ShortDesc;
-            res.FormatData = header.FormatCell;
-            res.FormatEntity = header.FormatRow;
-            res.DataSourceFilter = header.DataSource;
-            res.LocalHeader = header.LocalHeader;
-            res.LocalData = header.LocalData;
-            if (!header.Query.IsNullOrEmpty())
-            {
-                var headers = TryParseHeader(header);
-                if (headers.HasElement())
-                {
-                    res.LocalData = headers;
-                }
-            }
-            return res;
-        }
 
-        private static List<object> TryParseHeader(GridPolicy header)
+        private static List<object> TryParseHeader(Component header)
         {
             try
             {

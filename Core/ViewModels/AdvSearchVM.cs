@@ -41,7 +41,7 @@ namespace Core.Models
     {
         public int Id { get; set; }
         public int FieldId { get; set; }
-        public GridPolicy Field { get; set; }
+        public Component Field { get; set; }
         public AdvSearchOperation? CompareOperatorId { get; set; }
         public string Value { get; set; }
         public LogicOperation? LogicOperatorId { get; set; }
@@ -54,7 +54,7 @@ namespace Core.Models
     {
         public int Id { get; set; }
         public int FieldId { get; set; }
-        public GridPolicy Field { get; set; }
+        public Component Field { get; set; }
         public OrderbyOption? OrderbyOptionId { get; set; }
     }
 

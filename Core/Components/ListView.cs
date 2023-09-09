@@ -49,11 +49,10 @@ namespace Core.Components
         public ListViewSearch ListViewSearch { get; set; }
         public Paginator Paginator { get; set; }
         public List<SortedField> SortedField { get; set; }
-        public List<GridPolicy> Header { get; set; }
-        public List<GridPolicy> BasicHeader { get; set; } = new List<GridPolicy>();
-        public List<GridPolicy> RefBasicHeader { get; set; } = new List<GridPolicy>();
-        public List<GridPolicy> BasicHeaderSearch { get; set; }
-        public Dictionary<int, Component> HeaderComponentMap { get; set; }
+        public List<Component> Header { get; set; }
+        public List<Component> BasicHeader { get; set; } = new List<Component>();
+        public List<Component> RefBasicHeader { get; set; } = new List<Component>();
+        public List<Component> BasicHeaderSearch { get; set; }
         public ObservableList<object> RowData { get; set; }
         public List<object> FormattedRowData { get; set; }
         internal bool VirtualScroll { get; set; }
@@ -113,7 +112,7 @@ namespace Core.Components
         public int? EntityFocusId { get; set; }
         public bool ShouldSetEntity { get; set; } = true;
 
-        public event Action<List<GridPolicy>> HeaderLoaded;
+        public event Action<List<Component>> HeaderLoaded;
 
         public ListView(Component ui, HTMLElement ele = null) : base(ui)
         {
@@ -121,7 +120,7 @@ namespace Core.Components
             GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
             Id = ui.Id.ToString();
             Name = ui.FieldName;
-            Header = new List<GridPolicy>();
+            Header = new List<Component>();
             RowData = new ObservableList<object>();
             RefData = new Dictionary<string, List<object>>();
             AdvSearchVM = new AdvSearchVM
@@ -181,9 +180,9 @@ namespace Core.Components
             ele.InnerHTML = null;
         }
 
-        protected static void OrderHeaderGroup(List<GridPolicy> headers)
+        protected static void OrderHeaderGroup(List<Component> headers)
         {
-            GridPolicy tmp;
+            Component tmp;
             for (int i = 0; i < headers.Count - 1; i++)
             {
                 for (int j = i + 2; j < headers.Count; j++)
@@ -335,7 +334,6 @@ namespace Core.Components
             if (GuiInfo.LocalData.HasElement() && GuiInfo.LocalHeader.HasElement())
             {
                 Header = GuiInfo.LocalHeader;
-                HeaderComponentMap = Header.DistinctBy(x => x.GetHashCode()).ToDictionary(x => x.GetHashCode(), x => x.MapToComponent());
                 if (GuiInfo.LocalRender)
                 {
                     Rerender();
@@ -428,7 +426,7 @@ namespace Core.Components
             });
         }
 
-        protected virtual List<GridPolicy> FilterColumns(List<GridPolicy> gridPolicy)
+        protected virtual List<Component> FilterColumns(List<Component> gridPolicy)
         {
             var specificComponent = gridPolicy.Any(x => x.ComponentId == GuiInfo.Id);
             if (specificComponent)
@@ -447,11 +445,10 @@ namespace Core.Components
             OrderHeaderGroup(headers);
             Header.Clear();
             Header.AddRange(headers);
-            HeaderComponentMap = Header.DistinctBy(x => x.GetHashCode()).ToDictionary(x => x.GetHashCode(), x => x.MapToComponent());
             return headers;
         }
 
-        protected GridPolicy CalcTextAlign(GridPolicy header)
+        protected Component CalcTextAlign(Component header)
         {
             if (header.TextAlign.HasAnyChar())
             {
@@ -491,7 +488,7 @@ namespace Core.Components
             }
         }
 
-        public virtual ListViewItem RenderRowData(List<GridPolicy> headers, object row, Section section, int? index = null, bool emptyRow = false)
+        public virtual ListViewItem RenderRowData(List<Component> headers, object row, Section section, int? index = null, bool emptyRow = false)
         {
             var rowSection = new ListViewItem(ElementType.div)
             {
@@ -621,9 +618,9 @@ namespace Core.Components
             }
         }
 
-        protected virtual async Task<List<GridPolicy>> LoadGridPolicy()
+        protected virtual async Task<List<Component>> LoadGridPolicy()
         {
-            List<GridPolicy> sysSetting = null;
+            List<Component> sysSetting = null;
             UserSetting userSetting = null;
             if (GuiInfo.LocalHeader.Nothing())
             {
@@ -631,7 +628,7 @@ namespace Core.Components
                 {
                     FeatureId = EditForm?.Feature != null ? EditForm.Feature.Id.ToString() : GuiInfo.ComponentGroup.FeatureId.ToString();
                 }
-                sysSetting = await new Client(nameof(GridPolicy), config: EditForm.Config).GetRawList<GridPolicy>(
+                sysSetting = await new Client(nameof(Component), config: EditForm.Config).GetRawList<Component>(
                     $"?$filter=Active eq true and EntityId eq {GuiInfo.ReferenceId} and FeatureId eq {FeatureId}");
 
                 userSetting = await new Client(nameof(UserSetting), config: EditForm.Config).FirstOrDefaultAsync<UserSetting>(
@@ -639,7 +636,7 @@ namespace Core.Components
             }
             else
             {
-                sysSetting = new List<GridPolicy>(GuiInfo.LocalHeader);
+                sysSetting = new List<Component>(GuiInfo.LocalHeader);
             }
             var dataSource = default(string);
             if (GuiInfo.Precision.HasValue && !GuiInfo.DateTimeField.IsNullOrWhiteSpace())
@@ -654,38 +651,38 @@ namespace Core.Components
             else
             {
                 var column = userSetting.Value;
-                return MergeGridPolicy(sysSetting, JsonConvert.DeserializeObject<List<GridPolicy>>(column));
+                return MergeGridPolicy(sysSetting, JsonConvert.DeserializeObject<List<Component>>(column));
             }
         }
 
-        public async Task<List<GridPolicy>> LoadRefGridPolicy()
+        public async Task<List<Component>> LoadRefGridPolicy()
         {
-            var sysSetting = await new Client(nameof(GridPolicy), config: EditForm.Config).GetRawList<GridPolicy>(
+            var sysSetting = await new Client(nameof(Component), config: EditForm.Config).GetRawList<Component>(
                 $"?$filter=Active eq true and EntityId eq {GuiInfo.GroupReferenceId} and FeatureId eq {FeatureId}");
             return sysSetting;
         }
 
-        protected virtual List<GridPolicy> MergeGridPolicy(List<GridPolicy> sysSetting, List<GridPolicy> userSetting)
+        protected virtual List<Component> MergeGridPolicy(List<Component> sysSetting, List<Component> userSetting)
         {
             if (userSetting.Nothing() || GuiInfo.Focus)
             {
                 return sysSetting;
             }
-            var gridPolicys = new List<GridPolicy>();
+            var gridPolicys = new List<Component>();
             var userSettings = userSetting.ToDictionary(x => x.Id);
             sysSetting.ForEach(x =>
             {
                 var current = userSettings.GetValueOrDefault(x.Id);
                 if (current != null)
                 {
-                    if (current.FieldName == nameof(GridPolicy.InsertedBy) || current.FieldName == nameof(GridPolicy.InsertedDate))
+                    if (current.FieldName == nameof(Component.InsertedBy) || current.FieldName == nameof(Component.InsertedDate))
                     {
                         x.Width = "100px";
                         x.MaxWidth = "100px";
                         x.MinWidth = "100px";
                         x.Order = 998;
                     }
-                    else if (current.FieldName == nameof(GridPolicy.Id))
+                    else if (current.FieldName == nameof(Component.Id))
                     {
                         x.Width = "75px";
                         x.MaxWidth = "75px";
@@ -831,7 +828,7 @@ namespace Core.Components
             SyncMasterData(rows, headers);
         }
 
-        protected void SetRemoteSource(List<object> remoteData, string typeName, GridPolicy header)
+        protected void SetRemoteSource(List<object> remoteData, string typeName, Component header)
         {
             var localSource = RefData.GetValueOrDefault(typeName);
             if (localSource is null)
@@ -850,7 +847,7 @@ namespace Core.Components
             }
         }
 
-        protected void SyncMasterData(IEnumerable<object> rows = null, List<GridPolicy> headers = null)
+        protected void SyncMasterData(IEnumerable<object> rows = null, List<Component> headers = null)
         {
             rows = rows ?? RowData.Data;
             headers = headers ?? Header;
@@ -894,7 +891,7 @@ namespace Core.Components
             }
         }
 
-        private GridPolicy FormatDataSourceByEntity(GridPolicy currentHeader, IEnumerable<GridPolicy> allHeaders, IEnumerable<object> entities)
+        private Component FormatDataSourceByEntity(Component currentHeader, IEnumerable<Component> allHeaders, IEnumerable<object> entities)
         {
             var entityIds = allHeaders
                 .Where(x => x.RefName == currentHeader.RefName)
@@ -908,7 +905,7 @@ namespace Core.Components
             return currentHeader;
         }
 
-        private EnumerableInstance<int?> GetEntityIds(GridPolicy header, IEnumerable<object> entities)
+        private EnumerableInstance<int?> GetEntityIds(Component header, IEnumerable<object> entities)
         {
             if (entities.Nothing())
             {
@@ -1488,9 +1485,9 @@ namespace Core.Components
                 Reference = new Entity { Name = nameof(Models.History), Namespace = typeof(Component).Namespace + "." },
                 DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and EntityId eq {GuiInfo.ReferenceId} and RecordId eq {currentItem[IdField]}",
             });
-            _filterGrid.GuiInfo.LocalHeader = new List<GridPolicy>
+            _filterGrid.GuiInfo.LocalHeader = new List<Component>
             {
-                     new GridPolicy
+                     new Component
                     {
                         Id = 1,
                         EntityId = Utils.GetEntity(nameof(Models.History)).Id,
@@ -1498,26 +1495,26 @@ namespace Core.Components
                         ShortDesc = "Người thay đổi",
                         ReferenceId=Utils.GetEntity(nameof(Models.User)).Id,
                         RefName=nameof(Models.User),
-                        FormatCell="{FullName}",
+                        FormatData="{FullName}",
                         Active = true,
                         ComponentType = "Dropdown",
                         MaxWidth = "100px",
                         MinWidth = "100px",
                     },
-                     new GridPolicy
+                     new Component
                     {
                         Id = 2,
                         EntityId = Utils.GetEntity(nameof(Models.History)).Id,
                         FieldName = nameof(Models.History.InsertedDate),
                         ShortDesc = "Ngày thay đổi",
                         Active = true,
-                        FormatCell="{0: dd/MM/yyyy HH:mm}",
+                        FormatData = "{0: dd/MM/yyyy HH:mm}",
                         ComponentType = "Datepicker",
                         TextAlign="left",
                         MaxWidth = "150px",
                         MinWidth = "150px",
                     },
-                    new GridPolicy
+                    new Component
                     {
                         Id = 4,
                         EntityId = Utils.GetEntity(nameof(Models.History)).Id,
