@@ -672,31 +672,14 @@ namespace Core.Components
             var userSettings = userSetting.ToDictionary(x => x.Id);
             sysSetting.ForEach(x =>
             {
-                var current = userSettings.GetValueOrDefault(x.Id);
+                var current = userSettings.GetValueOrDefault(x.ActId ?? x.Id);
                 if (current != null)
                 {
-                    if (current.FieldName == nameof(Component.InsertedBy) || current.FieldName == nameof(Component.InsertedDate))
-                    {
-                        x.Width = "100px";
-                        x.MaxWidth = "100px";
-                        x.MinWidth = "100px";
-                        x.Order = 998;
-                    }
-                    else if (current.FieldName == nameof(Component.Id))
-                    {
-                        x.Width = "75px";
-                        x.MaxWidth = "75px";
-                        x.MinWidth = "75px";
-                        x.Order = 999;
-                    }
-                    else
-                    {
-                        x.Width = current.Width;
-                        x.MaxWidth = current.MaxWidth;
-                        x.MinWidth = current.MinWidth;
-                        x.Order = current.Order;
-                        x.Frozen = current.Frozen;
-                    }
+                    x.Width = current.Width;
+                    x.MaxWidth = current.MaxWidth;
+                    x.MinWidth = current.MinWidth;
+                    x.Order = current.Order;
+                    x.Frozen = current.Frozen;
                 }
             });
             return sysSetting;

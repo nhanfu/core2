@@ -123,6 +123,7 @@ namespace Core.Models
         public bool IsExport { get; set; }
         public int? OrderExport { get; set; }
         public string ShowExp { get; set; }
+        public int? ActId { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }
