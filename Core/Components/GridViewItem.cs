@@ -53,7 +53,7 @@ namespace Core.Components
             }
             ListViewSection.ListView.LastElementFocus = td;
             ListViewSection.ListView.LastComponentFocus = header;
-            ListViewSection.ListView.EntityFocusId = Entity[IdField].As<int>();
+            ListViewSection.ListView.EntityFocusId = Entity[IdField].ToString();
         }
     }
 }

@@ -102,14 +102,14 @@ namespace TMS.API.Controllers
                 return;
             }
             var currentPolicy = await db.FeaturePolicy
-                .Where(x => x.Active && x.CanRead && x.FeatureId == feature.Id && x.RoleId != null && x.RecordId == 0).ToListAsync();
+                .Where(x => x.Active && x.CanRead && x.FeatureId == feature.Id && x.RoleId != null && (x.RecordId == null || x.RecordId == "0")).ToListAsync();
             db.RemoveRange(currentPolicy);
             var parentPolicy = await db.FeaturePolicy.AsNoTracking()
-                .Where(x => x.Active && x.CanRead && x.FeatureId == feature.ParentId && x.RoleId != null && x.RecordId == 0).ToListAsync();
+                .Where(x => x.Active && x.CanRead && x.FeatureId == feature.ParentId && x.RoleId != null && (x.RecordId == null || x.RecordId == "0")).ToListAsync();
             parentPolicy
                 .ForEach(policy =>
                 {
-                    policy.Id = 0;
+                    policy.Id = null;
                     policy.FeatureId = feature.Id;
                     _userSvc.SetAuditInfo(policy);
                     db.FeaturePolicy.Add(policy);
@@ -128,7 +128,7 @@ namespace TMS.API.Controllers
             return minRoleLevel;
         }
 
-        public override async Task<ActionResult<bool>> DeactivateAsync([FromBody] List<int> ids)
+        public override async Task<ActionResult<bool>> DeactivateAsync([FromBody] List<string> ids)
         {
             var hasSystemRole = await HasSystemRole();
             if (!hasSystemRole)
@@ -138,14 +138,14 @@ namespace TMS.API.Controllers
             return await base.DeactivateAsync(ids);
         }
 
-        public override async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<int> ids)
+        public override async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<string> ids)
         {
             var hasSystemRole = await HasSystemRole();
             if (!hasSystemRole)
             {
                 throw new UnauthorizedAccessException("You dont have system role to delete this feature");
             }
-            var policies = db.FeaturePolicy.Where(x => x.FeatureId != null && ids.Contains(x.FeatureId.Value));
+            var policies = db.FeaturePolicy.Where(x => x.FeatureId != null && ids.Contains(x.FeatureId));
             db.FeaturePolicy.RemoveRange(policies);
             return await base.HardDeleteAsync(ids);
         }

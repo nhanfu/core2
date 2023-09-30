@@ -44,12 +44,12 @@ namespace Core.Components.Forms
         private string _icon;
         protected HTMLElement TitleElement;
         protected HTMLElement IconElement;
-        public int CurrentUserId { get; private set; }
-        public int? RegionId { get; set; }
+        public string CurrentUserId { get; private set; }
+        public string RegionId { get; set; }
         public string AllRoleIds { get; private set; }
         public string CenterIds { get; private set; }
         public string RoleIds { get; private set; }
-        public int? CostCenterId { get; private set; }
+        public string CostCenterId { get; private set; }
         public string RoleNames { get; private set; }
 
         public bool ShouldUpdateParentForm { get; set; }
@@ -355,7 +355,7 @@ namespace Core.Components.Forms
         private ListView[] GetDeleteGrid()
         {
             return ListViews
-                .Where(x => x.GuiInfo.Id > 0)
+                .Where(x => x.GuiInfo.Id.HasAnyChar())
                 .Where(x => x.DeleteTempIds.Any())
                 .ToArray();
         }
@@ -422,7 +422,7 @@ namespace Core.Components.Forms
             var history = new History
             {
                 EntityId = Utils.GetEntity(Client.EntityName).Id,
-                RecordId = int.Parse(Entity[IdField].ToString()),
+                RecordId = Entity?[IdField]?.ToString(),
                 ReasonOfChange = ReasonOfChange ?? "Cập nhật thông tin",
                 TextHistory = changedLog,
             };
@@ -525,12 +525,12 @@ namespace Core.Components.Forms
                     continue;
                 }
 
-                if (!componentGroupMap.ContainsKey(item.ParentId.Value))
+                if (!componentGroupMap.ContainsKey(item.ParentId))
                 {
                     Console.WriteLine($"The parent key {item.ParentId} of {item.Name} doesn't exist");
                     continue;
                 }
-                parent = componentGroupMap[item.ParentId.Value];
+                parent = componentGroupMap[item.ParentId];
                 if (parent.InverseParent == null)
                 {
                     parent.InverseParent = new List<ComponentGroup>();
@@ -628,8 +628,8 @@ namespace Core.Components.Forms
                     $"/Public/?$filter=Active eq true and Id eq {feature.LayoutId} and {nameof(feature.Template)} ne null");
             Entity.CopyPropFrom(entityTask.Result);
             SetFeatureProperties(feature);
-            CurrentUserId = token?.UserId ?? 0;
-            RegionId = token?.RegionId ?? 0;
+            CurrentUserId = token?.UserId;
+            RegionId = token?.RegionId;
             AllRoleIds = token?.AllRoleIds != null ? string.Join(",", token.AllRoleIds) : string.Empty;
             CenterIds = token?.CenterIds != null ? string.Join(",", token.CenterIds) : string.Empty;
             RoleIds = token?.RoleIds != null ? string.Join(",", token.RoleIds) : string.Empty;
@@ -851,7 +851,7 @@ namespace Core.Components.Forms
 
         private void LockUpdate()
         {
-            var generalRule = Feature.FeaturePolicy.Where(x => x.RecordId == 0).ToArray();
+            var generalRule = Feature.FeaturePolicy.Where(x => x.RecordId.IsNullOrEmpty()).ToArray();
             if (!Feature.IsPublic &&
                 (generalRule.All(x => !x.CanWrite)
                 || !Utils.IsOwner(Entity) && generalRule.All(x => !x.CanWriteAll)))
@@ -869,20 +869,6 @@ namespace Core.Components.Forms
             if (insertedDate is null || insertedDate == DateTime.MinValue)
             {
                 return;
-            }
-
-            var lockUpdatePolicy = Feature.FeaturePolicy
-                .Where(x => x.EntityId == null && x.RoleId.HasValue && x.LockUpdateAfterCreated.HasValue)
-                .Where(x => Client.Token.RoleIds.Contains(x.RoleId.Value));
-            var lockUpdate = 0;
-            if (lockUpdatePolicy.HasElement())
-            {
-                lockUpdate = lockUpdatePolicy.Max(x => x.LockUpdateAfterCreated.Value);
-            }
-            if (lockUpdate > 0 && DateTimeExt.GetBusinessDays(insertedDate.Value) > lockUpdate || hardLock.HasValue && hardLock.Value)
-            {
-                IsLock = true;
-                LockUpdateButCancel();
             }
         }
 
@@ -1063,37 +1049,37 @@ namespace Core.Components.Forms
             AddChild(confirmDialog);
         }
 
-        public FeaturePolicy[] GetElementPolicies(int[] recordIds, int entityId = Utils.ComponentGroupId) // Default of component group
+        public FeaturePolicy[] GetElementPolicies(string[] recordIds, string entityId = Utils.ComponentGroupId) // Default of component group
         {
             var hasHidden = Feature.FeaturePolicy
-                    .Where(x => x.RoleId.HasValue && Client.Token.AllRoleIds.Contains(x.RoleId.Value) || (x.UserId.HasValue && Client.Token.UserId == x.UserId))
+                    .Where(x => x.RoleId.HasAnyChar() && Client.Token.AllRoleIds.Contains(x.RoleId) || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
                     .Where(x => x.EntityId == entityId && recordIds.Contains(x.RecordId))
                     .ToArray();
             return hasHidden;
         }
 
-        public FeaturePolicy[] GetGridPolicies(int[] recordIds, int entityId = Utils.ComponentGroupId) // Default of component group
+        public FeaturePolicy[] GetGridPolicies(string[] recordIds, string entityId = Utils.ComponentGroupId) // Default of component group
         {
             var hasHidden = Feature.FeaturePolicy
-                    .Where(x => x.RoleId.HasValue && Client.Token.AllRoleIds.Contains(x.RoleId.Value) || (x.UserId.HasValue && Client.Token.UserId == x.UserId))
+                    .Where(x => x.RoleId.HasAnyChar() && Client.Token.AllRoleIds.Contains(x.RoleId) || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
                     .Where(x => x.EntityId == entityId && recordIds.Contains(x.RecordId))
                     .ToArray();
             return hasHidden;
         }
 
-        public FeaturePolicy[] GetElementPolicies(int recordId, int entityId = Utils.ComponentId) // Default of component
+        public FeaturePolicy[] GetElementPolicies(string recordId, string entityId = Utils.ComponentId) // Default of component
         {
             var hasHidden = Feature.FeaturePolicy
-                    .Where(x => x.RoleId.HasValue && Client.Token.AllRoleIds.Contains(x.RoleId.Value) || (x.UserId.HasValue && Client.Token.UserId == x.UserId))
+                    .Where(x => x.RoleId.HasAnyChar() && Client.Token.AllRoleIds.Contains(x.RoleId) || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
                     .Where(x => x.EntityId == entityId && recordId == x.RecordId)
                     .ToArray();
             return hasHidden;
         }
 
-        public FeaturePolicy[] GetGridPolicies(int recordId, int entityId = Utils.ComponentId) // Default of component
+        public FeaturePolicy[] GetGridPolicies(string recordId, string entityId = Utils.ComponentId) // Default of component
         {
             var hasHidden = Feature.FeaturePolicy
-                    .Where(x => (x.RoleId.HasValue && Client.Token.AllRoleIds.Contains(x.RoleId.Value)) || (x.UserId.HasValue && Client.Token.UserId == x.UserId))
+                    .Where(x => (x.RoleId.HasAnyChar() && Client.Token.AllRoleIds.Contains(x.RoleId)) || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
                     .Where(x => x.EntityId == entityId && recordId == x.RecordId)
                     .ToArray();
             return hasHidden;
@@ -1130,7 +1116,7 @@ namespace Core.Components.Forms
             _componentCoppy.ComponentGroupId = componentGroup.Id;
             Task.Run(async () =>
             {
-                _componentCoppy.Id = 0;
+                _componentCoppy.Id = 0 .ToString();
                 var client = await new Client(nameof(Component)).CreateAsync(_componentCoppy);
                 _componentCoppy = null;
                 Toast.Success("Sao chép thành công!");
@@ -1333,7 +1319,7 @@ namespace Core.Components.Forms
             {
                 group.InverseParent = null;
                 group.Component = null;
-                group.Id = 0;
+                group.Id = 0 .ToString();
                 await new Client(nameof(ComponentGroup)).CreateAsync(group);
                 Toast.Success("Clone thành công");
             });
@@ -1614,7 +1600,7 @@ namespace Core.Components.Forms
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                var success = await Client.HardDeleteAsync(new List<int>() { int.Parse(Entity[IdField].ToString()) });
+                var success = await Client.HardDeleteAsync(new List<string>() { Entity[IdField].ToString() });
                 if (success)
                 {
                     ParentForm.UpdateView(true);
@@ -1740,7 +1726,7 @@ namespace Core.Components.Forms
             CreateFeaturePolicy(arg, section.FeatureId);
         }
 
-        public void CreateFeaturePolicy(object arg, int? featureId = null, int? recordId = null)
+        public void CreateFeaturePolicy(object arg, string featureId = null, string recordId = null)
         {
             var isSecurityVM = arg is SecurityVM;
             var originalModel = arg is SecurityVM security ? security : null;
@@ -1753,7 +1739,7 @@ namespace Core.Components.Forms
                 {
                     FeatureId = featureId,
                     EntityId = entityId,
-                    RecordIds = new int[] { recordId ?? arg[IdField].As<int?>() ?? 0 }
+                    RecordIds = new string[] { recordId ?? arg[IdField]?.ToString() }
                 },
             };
             detail.DOMContentLoaded += () =>

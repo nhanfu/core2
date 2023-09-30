@@ -34,7 +34,7 @@ namespace TMS.API.Controllers
             {
                 res.Add(new Entity
                 {
-                    Id = (int)item,
+                    Id = ((int)item).ToString(),
                     Name = item.ToString(),
                     Description = ReflectionExt.GetEnumDescription(item as Enum),
                     Active = true
@@ -55,7 +55,7 @@ namespace TMS.API.Controllers
         /// <returns></returns>
         public override Task<ActionResult<Entity>> UpdateAsync([FromBody] Entity entity, string reasonOfChange = "")
         {
-            if (entity.Id == 0)
+            if (entity.Id == 0 .ToString() || entity.Id == null)
             {
                 _userSvc.SetAuditInfo(entity);
             }

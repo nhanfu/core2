@@ -19,7 +19,7 @@ namespace TMS.API.Controllers
             var query =
                 from role in db.Role
                 from policy in db.FeaturePolicy
-                    .Where(x => x.RecordId == role.Id && x.EntityId == _entitySvc.GetEntity(nameof(Role)).Id && (x.UserId == UserId || AllRoleIds.Contains(x.RoleId.Value)))
+                    .Where(x => x.RecordId == role.Id && x.EntityId == _entitySvc.GetEntity(nameof(Role)).Id && (x.UserId == UserId || AllRoleIds.Contains(x.RoleId)))
                     .DefaultIfEmpty()
                 where AllRoleIds.Contains(role.Id) || policy != null || role.InsertedBy == UserId
                 select role;
@@ -60,11 +60,11 @@ namespace TMS.API.Controllers
                 .DistinctBy(x => x.Id).ToDictionary(x => x.Id);
             roleMap.Values.ForEach(x =>
             {
-                if (x.ParentRoleId is null || !roleMap.ContainsKey(x.ParentRoleId.Value))
+                if (x.ParentRoleId is null || !roleMap.ContainsKey(x.ParentRoleId))
                 {
                     return;
                 }
-                var parent = roleMap[x.ParentRoleId.Value];
+                var parent = roleMap[x.ParentRoleId];
                 x.ParentRole = parent;
                 if (parent.InverseParentRole is null)
                 {

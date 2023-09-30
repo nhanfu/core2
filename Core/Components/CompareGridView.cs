@@ -21,7 +21,7 @@ namespace Core.Components
                     ComponentType = "Label",
                     ShortDesc = "Người thao tác",
                     Description = "Người thao tác",
-                    ReferenceId = Utils.GetEntity(nameof(User))?.Id ?? 0,
+                    ReferenceId = Utils.GetEntity(nameof(User))?.Id,
                     Reference = new Entity
                     {
                         Name = nameof(User),

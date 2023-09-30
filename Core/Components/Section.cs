@@ -195,7 +195,7 @@ namespace Core.Components
 
         public static Section RenderSection(EditableComponent parent, ComponentGroup groupInfo)
         {
-            var uiPolicy = parent.EditForm.GetElementPolicies(new int[] { groupInfo.Id }, Utils.ComponentGroupId);
+            var uiPolicy = parent.EditForm.GetElementPolicies(new string[] { groupInfo.Id }, Utils.ComponentGroupId);
             var readPermission = !groupInfo.IsPrivate || uiPolicy.HasElementAndAll(x => x.CanRead);
             var writePermission = !groupInfo.IsPrivate || uiPolicy.HasElementAndAll(x => x.CanWrite);
             if (!readPermission)
@@ -359,7 +359,7 @@ namespace Core.Components
                 }
 
                 html.EndOf(ElementType.td);
-                if (ui.Offset.HasValue && ui.Offset > 0)
+                if (ui.Offset != null && ui.Offset > 0)
                 {
                     html.TData.ColSpan(ui.Offset.Value).End.Render();
                     column += ui.Offset.Value;

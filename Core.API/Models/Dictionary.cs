@@ -5,14 +5,14 @@ namespace Core.Models
 {
     public partial class Dictionary
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string LangCode { get; set; }
         public string Key { get; set; }
         public string Value { get; set; }
         public bool Active { get; set; }
-        public int InsertedBy { get; set; }
-        public DateTime InsertedDate { get; set; }
-        public int? UpdatedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        public string InsertedBy { get; set; }
+        public DateTimeOffset InsertedDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public DateTimeOffset? UpdatedDate { get; set; }
     }
 }

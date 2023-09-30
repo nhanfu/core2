@@ -5,15 +5,15 @@ namespace TMS.API.Models
 {
     public partial class FileUpload
     {
-        public int Id { get; set; }
-        public int SectionId { get; set; }
-        public int RecordId { get; set; }
+        public string Id { get; set; }
+        public string SectionId { get; set; }
+        public string RecordId { get; set; }
         public string FileName { get; set; }
         public string FilePath { get; set; }
-        public int InsertedBy { get; set; }
-        public DateTime InsertedDate { get; set; }
-        public int? UpdatedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        public string InsertedBy { get; set; }
+        public DateTimeOffset InsertedDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public DateTimeOffset? UpdatedDate { get; set; }
         public string FieldName { get; set; }
         public string EntityName { get; set; }
         public string FileHost { get; set; }

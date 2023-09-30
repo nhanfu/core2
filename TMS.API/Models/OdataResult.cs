@@ -6,7 +6,7 @@ namespace TMS.API.Models
     public class Odata
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
-        public int? count { get; set; }
+        public long? count { get; set; }
     }
 
     public class OdataResult<T>
@@ -30,8 +30,8 @@ namespace TMS.API.Models
 
     public class WebSocketResponse<T>
     {
-        public int EntityId { get; set; }
-        public int TypeId { get; set; }
+        public string EntityId { get; set; }
+        public string TypeId { get; set; }
         public T Data { get; set; }
         public List<T> DataList { get; set; }
     }

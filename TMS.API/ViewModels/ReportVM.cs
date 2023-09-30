@@ -18,8 +18,8 @@ namespace TMS.API.ViewModels
         public bool User { get; set; }
         public bool Return { get; set; }
         public bool Maintenance { get; set; }
-        public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
+        public DateTimeOffset? FromDate { get; set; }
+        public DateTimeOffset? ToDate { get; set; }
     }
 
     public class ChatGptVM
@@ -40,7 +40,7 @@ namespace TMS.API.ViewModels
     {
         public Message message { get; set; }
         public string finish_reason { get; set; }
-        public int index { get; set; }
+        public string index { get; set; }
     }
 
     public class Message
@@ -53,7 +53,7 @@ namespace TMS.API.ViewModels
     {
         public string id { get; set; }
         public string @object { get; set; }
-        public int created { get; set; }
+        public string created { get; set; }
         public string model { get; set; }
         public Usage usage { get; set; }
         public List<Choice> choices { get; set; }
@@ -61,26 +61,26 @@ namespace TMS.API.ViewModels
 
     public class Usage
     {
-        public int prompt_tokens { get; set; }
-        public int completion_tokens { get; set; }
-        public int total_tokens { get; set; }
+        public string prompt_tokens { get; set; }
+        public string completion_tokens { get; set; }
+        public string total_tokens { get; set; }
     }
 
     public class TranGroupVM
     {
-        public int? Month { get; set; }
-        public int? Year { get; set; }
-        public int? RouteId { get; set; }
-        public int? BrandShipId { get; set; }
-        public int? ExportListId { get; set; }
-        public int? ShipId { get; set; }
-        public int? LineId { get; set; }
-        public int? SocId { get; set; }
+        public string Month { get; set; }
+        public string Year { get; set; }
+        public string RouteId { get; set; }
+        public string BrandShipId { get; set; }
+        public string ExportListId { get; set; }
+        public string ShipId { get; set; }
+        public string LineId { get; set; }
+        public string SocId { get; set; }
         public string Trip { get; set; }
-        public DateTime? StartShip { get; set; }
-        public int? ContainerTypeId { get; set; }
-        public int? PolicyId { get; set; }
-        public int? Count { get; set; }
+        public DateTimeOffset? StartShip { get; set; }
+        public string ContainerTypeId { get; set; }
+        public string PolicyId { get; set; }
+        public string Count { get; set; }
         public decimal ShipUnitPrice { get; set; }
         public decimal ShipPrice { get; set; }
         public decimal ShipPolicyPrice { get; set; }

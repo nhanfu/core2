@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace TMS.API.Models
 {
@@ -16,6 +13,12 @@ namespace TMS.API.Models
         {
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.UseSqlServer("Server=171.244.136.172,12154;Initial Catalog=corev2;uid=sa;pwd=CCLX-hX#Gsd7Fr$@WPv5fFf67;MultipleActiveResultSets=True;TrustServerCertificate=true");
+        }
+
         public virtual DbSet<ApprovalConfig> ApprovalConfig { get; set; }
         public virtual DbSet<Approvement> Approvement { get; set; }
         public virtual DbSet<Chat> Chat { get; set; }
@@ -28,7 +31,6 @@ namespace TMS.API.Models
         public virtual DbSet<Feature> Feature { get; set; }
         public virtual DbSet<FeaturePolicy> FeaturePolicy { get; set; }
         public virtual DbSet<FileUpload> FileUpload { get; set; }
-        public virtual DbSet<GridPolicy> GridPolicy { get; set; }
         public virtual DbSet<Intro> Intro { get; set; }
         public virtual DbSet<MasterData> MasterData { get; set; }
         public virtual DbSet<RequestLog> RequestLog { get; set; }
@@ -40,7 +42,6 @@ namespace TMS.API.Models
         public virtual DbSet<UserRole> UserRole { get; set; }
         public virtual DbSet<UserSetting> UserSetting { get; set; }
         public virtual DbSet<Vendor> Vendor { get; set; }
-        public virtual DbSet<Webhook> Webhook { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -399,115 +400,6 @@ namespace TMS.API.Models
                 entity.Property(e => e.FilePath).HasMaxLength(3000);
             });
 
-            modelBuilder.Entity<GridPolicy>(entity =>
-            {
-                entity.Property(e => e.CascadeField)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ChildStyle)
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ClassName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ComponentType)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DataSource)
-                    .HasMaxLength(1000)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DatabaseName).HasMaxLength(250);
-
-                entity.Property(e => e.DefaultVal).HasMaxLength(500);
-
-                entity.Property(e => e.Description).HasMaxLength(100);
-
-                entity.Property(e => e.DisabledExp).HasMaxLength(2000);
-
-                entity.Property(e => e.Events)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ExcelFieldName).HasMaxLength(1000);
-
-                entity.Property(e => e.FieldName).HasMaxLength(100);
-
-                entity.Property(e => e.FilterTemplate)
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FormatCell).HasMaxLength(250);
-
-                entity.Property(e => e.FormatExcell).HasMaxLength(200);
-
-                entity.Property(e => e.GroupBy)
-                    .HasMaxLength(1000)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GroupName).HasMaxLength(50);
-
-                entity.Property(e => e.GroupReferenceName).HasMaxLength(250);
-
-                entity.Property(e => e.Icon)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.IsSumary).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.JoinTable).HasMaxLength(1000);
-
-                entity.Property(e => e.ListClass).HasMaxLength(250);
-
-                entity.Property(e => e.MaxWidth)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.MinWidth)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PlainText).HasMaxLength(250);
-
-                entity.Property(e => e.RefClass)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RefName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShortDesc).HasMaxLength(50);
-
-                entity.Property(e => e.Style)
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Summary).HasMaxLength(50);
-
-                entity.Property(e => e.System)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TextAlign)
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UpperCase).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Validation).HasMaxLength(1000);
-
-                entity.Property(e => e.VirtualScroll).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Width)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-            });
-
             modelBuilder.Entity<Intro>(entity =>
             {
                 entity.Property(e => e.FieldName).HasMaxLength(250);
@@ -730,53 +622,6 @@ namespace TMS.API.Models
                 entity.Property(e => e.StaffName).HasMaxLength(250);
 
                 entity.Property(e => e.TaxCode).HasMaxLength(250);
-            });
-
-            modelBuilder.Entity<Webhook>(entity =>
-            {
-                entity.Property(e => e.AccessTokenField)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ApiKey)
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ApiKeyHeader)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LoginUrl)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Method)
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PasswordKey)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SubName).HasMaxLength(100);
-
-                entity.Property(e => e.SubPassword)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SubUrl).IsUnicode(false);
-
-                entity.Property(e => e.SubUsername)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TokenPrefix)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UsernameKey)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
             });
 
             OnModelCreatingPartial(modelBuilder);

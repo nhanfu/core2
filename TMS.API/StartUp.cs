@@ -15,8 +15,6 @@ using Polly.Extensions.Http;
 using System.IO.Compression;
 using System.Security.Claims;
 using System.Text;
-using TMS.API.BgService;
-using TMS.API.Controllers;
 using TMS.API.Extensions;
 using TMS.API.Models;
 using TMS.API.Services;

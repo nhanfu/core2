@@ -87,7 +87,7 @@ namespace TMS.API.Controllers
                         BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<MasterData>
                         {
                             EntityId = _entitySvc.GetEntity(typeof(MasterData).Name).Id,
-                            TypeId = 1,
+                            TypeId = 1 .ToString(),
                             Data = entity
                         }, UserId));
                         return entity;
@@ -173,9 +173,12 @@ namespace TMS.API.Controllers
 
         public async Task CheckDuplicatesSettingsTrainSchedule(MasterData masterData)
         {
-            if (masterData.Name != null && masterData.Name != "" && (masterData.ParentId == 25219 || masterData.ParentId == 25220 || masterData.ParentId == 25221 || masterData.ParentId == 25222))
+            if (masterData.Name != null && masterData.Name != "" && (masterData.ParentId == "25219" || masterData.ParentId == "25220" 
+                || masterData.ParentId == "25221" || masterData.ParentId == "25222"))
             {
-                var masterDataDB = await db.MasterData.Where(x => (x.ParentId == 25219 || x.ParentId == 25220 || x.ParentId == 25221 || x.ParentId == 25222) && x.Name.Trim().ToLower() == masterData.Name.Trim().ToLower()).FirstOrDefaultAsync();
+                var masterDataDB = await db.MasterData.Where(x => (x.ParentId == "25219" || x.ParentId == "25220" || x.ParentId == "25221" 
+                    || x.ParentId == "25222") && x.Name.Trim().ToLower() == masterData.Name.Trim().ToLower())
+                .FirstOrDefaultAsync();
                 if (masterDataDB != null)
                 {
                     throw new ApiException("Đã tồn tại trong hệ thống") { StatusCode = HttpStatusCode.BadRequest };

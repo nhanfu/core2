@@ -12,8 +12,8 @@ namespace Core.Components
 {
     public class RecordDetail : Number
     {
-        private int? EntityEnum => Entity?[nameof(Feature.EntityId)]?.As<int>();
-        private Type EntityTye => Utils.GetEntity(EntityEnum ?? 0)?.GetEntityType();
+        private string EntityEnum => Entity?[nameof(Feature.EntityId)]?.ToString();
+        private Type EntityTye => Utils.GetEntityById(EntityEnum)?.GetEntityType();
 
         public RecordDetail(Component ui) : base(ui)
         {
@@ -48,7 +48,7 @@ namespace Core.Components
                 return;
             }
 
-            var feature = ComponentExt.LoadEditorFeatureByNameByEntity((int)EntityEnum.Value);
+            var feature = ComponentExt.LoadEditorFeatureByNameByEntity(EntityEnum);
             var entity = new Client(EntityTye.Name).GetRawAsync((int)Value);
             await Task.WhenAll(feature, entity);
             if (feature.Result is null || entity.Result is null)

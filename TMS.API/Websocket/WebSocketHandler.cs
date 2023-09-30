@@ -24,7 +24,7 @@ namespace TMS.API.Websocket
 
     public class FCMData
     {
-        public int Badge { get; set; }
+        public string Badge { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
         public string EntityId { get; set; }
@@ -33,7 +33,7 @@ namespace TMS.API.Websocket
 
     public class FCMNotification
     {
-        public int Badge { get; set; }
+        public string Badge { get; set; }
         public string Sound { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
@@ -113,9 +113,9 @@ namespace TMS.API.Websocket
             }
         }
 
-        public async Task SendMessageToAllOtherMe(string message, int UserId)
+        public async Task SendMessageToAllOtherMe(string message, string userId)
         {
-            var users = WebSocketConnectionManager.GetAll().Where(x => !x.Key.StartsWith($"{UserId}/"));
+            var users = WebSocketConnectionManager.GetAll().Where(x => !x.Key.StartsWith($"{userId}/"));
             foreach (var pair in users)
             {
                 if (pair.Value.State == WebSocketState.Open)
@@ -137,10 +137,10 @@ namespace TMS.API.Websocket
             return NotifyUserGroup(message, userGroup, fcm);
         }
 
-        public Task SendMessageToUsersAsync(List<int> userIds, string message, string fcm = null)
+        public Task SendMessageToUsersAsync(List<string> userIds, string message, string fcm = null)
         {
             var userGroup = WebSocketConnectionManager.GetAll()
-                .Where(x => userIds.Contains(x.Key.Split("/").FirstOrDefault().TryParseInt() ?? 0));
+                .Where(x => userIds.Contains(x.Key.Split("/").FirstOrDefault()));
             return NotifyUserGroup(message, userGroup, fcm);
         }
 
@@ -156,9 +156,9 @@ namespace TMS.API.Websocket
             await SendMessageAsync(pair.Value, message);
         }
 
-        public Task SendMessageToUsersAsync(int userId, string message, string fcm = null)
+        public Task SendMessageToUsersAsync(string userId, string message, string fcm = null)
         {
-            return SendMessageToUsersAsync(new List<int> { userId }, message, fcm);
+            return SendMessageToUsersAsync(new List<string> { userId }, message, fcm);
         }
 
         private async Task NotifyUserGroup(string message, IEnumerable<KeyValuePair<string, WebSocket>> userGroup, string fcm = null)

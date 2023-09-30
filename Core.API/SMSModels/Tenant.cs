@@ -5,7 +5,7 @@ namespace Core.SMSModels
 {
     public partial class Tenant
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string ConnDebug { get; set; }
@@ -13,11 +13,11 @@ namespace Core.SMSModels
         public string Username { get; set; }
         public string Password { get; set; }
         public string ClientID { get; set; }
-        public int? System { get; set; }
+        public string System { get; set; }
         public bool? Active { get; set; }
-        public int? InsertedBy { get; set; }
+        public string InsertedBy { get; set; }
         public DateTimeOffset? InsertedDate { get; set; }
-        public int? UpdatedBy { get; set; }
+        public string UpdatedBy { get; set; }
         public DateTimeOffset? UpdatedDate { get; set; }
         public string SystemName { get; set; }
         public string FtpUrl { get; set; }

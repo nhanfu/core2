@@ -10,22 +10,22 @@ namespace TMS.API.Models
             EntityRef = new HashSet<EntityRef>();
         }
 
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string FieldName { get; set; }
-        public int? Order { get; set; }
+        public string Order { get; set; }
         public string ComponentType { get; set; }
-        public int? ComponentGroupId { get; set; }
+        public string ComponentGroupId { get; set; }
         public string DataSourceFilter { get; set; }
-        public int? ReferenceId { get; set; }
+        public string ReferenceId { get; set; }
         public string FormatData { get; set; }
         public string FormatEntity { get; set; }
         public string PlainText { get; set; }
-        public int? Column { get; set; }
-        public int? Offset { get; set; }
-        public int? Row { get; set; }
+        public string Column { get; set; }
+        public string Offset { get; set; }
+        public string Row { get; set; }
         public bool CanSearch { get; set; }
         public bool CanCache { get; set; }
-        public int? Precision { get; set; }
+        public string Precision { get; set; }
         public string GroupBy { get; set; }
         public string GroupFormat { get; set; }
         public string Label { get; set; }
@@ -46,19 +46,19 @@ namespace TMS.API.Models
         public string PopulateField { get; set; }
         public string CascadeField { get; set; }
         public string GroupEvent { get; set; }
-        public int? XsCol { get; set; }
-        public int? SmCol { get; set; }
-        public int? LgCol { get; set; }
-        public int? XlCol { get; set; }
-        public int? XxlCol { get; set; }
+        public string XsCol { get; set; }
+        public string SmCol { get; set; }
+        public string LgCol { get; set; }
+        public string XlCol { get; set; }
+        public string XxlCol { get; set; }
         public string DefaultVal { get; set; }
         public string DateTimeField { get; set; }
         public bool Active { get; set; }
-        public DateTime InsertedDate { get; set; }
-        public int InsertedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-        public int? UpdatedBy { get; set; }
-        public int? RoleId { get; set; }
+        public DateTimeOffset InsertedDate { get; set; }
+        public string InsertedBy { get; set; }
+        public DateTimeOffset? UpdatedDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public string RoleId { get; set; }
         public bool IgnoreSync { get; set; }
         public bool CanAdd { get; set; }
         public bool ShowAudit { get; set; }
@@ -66,7 +66,7 @@ namespace TMS.API.Models
         public string IdField { get; set; }
         public string DescFieldName { get; set; }
         public string DescValue { get; set; }
-        public int? MonthCount { get; set; }
+        public string MonthCount { get; set; }
         public bool? IsDoubleLine { get; set; }
         public string Query { get; set; }
         public bool IsRealtime { get; set; }
@@ -82,8 +82,8 @@ namespace TMS.API.Models
         public string FormatSumaryField { get; set; }
         public string OrderBySumary { get; set; }
         public bool ShowHotKey { get; set; }
-        public int? DefaultAddStart { get; set; }
-        public int? DefaultAddEnd { get; set; }
+        public string DefaultAddStart { get; set; }
+        public string DefaultAddEnd { get; set; }
         public bool UpperCase { get; set; }
         public bool VirtualScroll { get; set; }
         public string Migration { get; set; }
@@ -94,22 +94,22 @@ namespace TMS.API.Models
         public bool ShowNull { get; set; }
         public bool AddDate { get; set; }
         public bool FilterEq { get; set; }
-        public int? HeaderHeight { get; set; }
-        public int? BodyItemHeight { get; set; }
-        public int? FooterHeight { get; set; }
-        public int? ScrollHeight { get; set; }
+        public string HeaderHeight { get; set; }
+        public string BodyItemHeight { get; set; }
+        public string FooterHeight { get; set; }
+        public string ScrollHeight { get; set; }
         public string ScriptValidation { get; set; }
         public bool FilterLocal { get; set; }
         public bool HideGrid { get; set; }
-        public int? GroupReferenceId { get; set; }
+        public string GroupReferenceId { get; set; }
         public string GroupReferenceName { get; set; }
         public string JoinTable { get; set; }
         public string GroupName { get; set; }
         public string ShortDesc { get; set; }
         public string Description { get; set; }
-        public int? FeatureId { get; set; }
-        public int? EntityId { get; set; }
-        public int? ComponentId { get; set; }
+        public string FeatureId { get; set; }
+        public string EntityId { get; set; }
+        public string ComponentId { get; set; }
         public string TextAlign { get; set; }
         public bool HasFilter { get; set; }
         public bool Frozen { get; set; }
@@ -118,10 +118,10 @@ namespace TMS.API.Models
         public string FormatExcell { get; set; }
         public string DatabaseName { get; set; }
         public string Summary { get; set; }
-        public int? SummaryColSpan { get; set; }
+        public string SummaryColSpan { get; set; }
         public bool BasicSearch { get; set; }
         public bool IsExport { get; set; }
-        public int? OrderExport { get; set; }
+        public string OrderExport { get; set; }
         public string ShowExp { get; set; }
         public string MinWidth { get; set; }
         public string MaxWidth { get; set; }

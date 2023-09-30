@@ -4,4 +4,1122 @@
  * @copyright : Copyright (c) 2008-2019, Object.NET, Inc. (http://www.object.net/). All rights reserved.
  * @license   : See license.txt and https://github.com/bridgedotnet/Bridge.NET/blob/master/LICENSE.
  */
-Bridge.assembly("Newtonsoft.Json", (function ($asm, globals) { "use strict"; Bridge.define("Newtonsoft.Json.DefaultValueHandling", { $kind: "enum", statics: { fields: { Include: 0, Ignore: 1, Populate: 2, IgnoreAndPopulate: 3 } }, $flags: !0 }), Bridge.define("Newtonsoft.Json.Formatting", { $kind: "enum", statics: { fields: { None: 0, Indented: 1 } } }), Bridge.define("Newtonsoft.Json.JsonConstructorAttribute", { inherits: [System.Attribute] }), Bridge.define("Newtonsoft.Json.JsonException", { inherits: [System.Exception], ctors: { ctor: function () { this.$initialize(), System.Exception.ctor.call(this) }, $ctor1: function (e) { this.$initialize(), System.Exception.ctor.call(this, e) }, $ctor2: function (e, t) { this.$initialize(), System.Exception.ctor.call(this, e, t) } } }), Bridge.define("Newtonsoft.Json.JsonIgnoreAttribute", { inherits: [System.Attribute] }), Bridge.define("Newtonsoft.Json.JsonPropertyAttribute", { inherits: [System.Attribute], fields: { _nullValueHandling: null, _defaultValueHandling: null, _objectCreationHandling: null, _typeNameHandling: null, _required: null, _order: null }, props: { NullValueHandling: { get: function () { var e; return null != (e = this._nullValueHandling) ? e : 0 }, set: function (e) { this._nullValueHandling = e } }, DefaultValueHandling: { get: function () { var e; return null != (e = this._defaultValueHandling) ? e : 0 }, set: function (e) { this._defaultValueHandling = e } }, ObjectCreationHandling: { get: function () { var e; return null != (e = this._objectCreationHandling) ? e : 0 }, set: function (e) { this._objectCreationHandling = e } }, TypeNameHandling: { get: function () { var e; return null != (e = this._typeNameHandling) ? e : 0 }, set: function (e) { this._typeNameHandling = e } }, Required: { get: function () { var e; return null != (e = this._required) ? e : Newtonsoft.Json.Required.Default }, set: function (e) { this._required = e } }, Order: { get: function () { var e; return null != (e = this._order) ? e : Bridge.getDefaultValue(System.Int32) }, set: function (e) { this._order = e } }, PropertyName: null }, ctors: { ctor: function () { this.$initialize(), System.Attribute.ctor.call(this) }, $ctor1: function (e) { this.$initialize(), System.Attribute.ctor.call(this), this.PropertyName = e } } }), Bridge.define("Newtonsoft.Json.JsonSerializerSettings", { statics: { fields: { DefaultNullValueHandling: 0, DefaultTypeNameHandling: 0 }, ctors: { init: function () { this.DefaultNullValueHandling = Newtonsoft.Json.NullValueHandling.Include, this.DefaultTypeNameHandling = Newtonsoft.Json.TypeNameHandling.None } } }, fields: { _defaultValueHandling: null, _typeNameHandling: null, _nullValueHandling: null, _objectCreationHandling: null }, props: { NullValueHandling: { get: function () { var e; return null != (e = this._nullValueHandling) ? e : Newtonsoft.Json.JsonSerializerSettings.DefaultNullValueHandling }, set: function (e) { this._nullValueHandling = e } }, ObjectCreationHandling: { get: function () { var e; return null != (e = this._objectCreationHandling) ? e : 0 }, set: function (e) { this._objectCreationHandling = e } }, DefaultValueHandling: { get: function () { var e; return null != (e = this._defaultValueHandling) ? e : 0 }, set: function (e) { this._defaultValueHandling = e } }, TypeNameHandling: { get: function () { var e; return null != (e = this._typeNameHandling) ? e : Newtonsoft.Json.JsonSerializerSettings.DefaultTypeNameHandling }, set: function (e) { this._typeNameHandling = e } }, ContractResolver: null, SerializationBinder: null } }), Bridge.define("Newtonsoft.Json.NullValueHandling", { $kind: "enum", statics: { fields: { Include: 0, Ignore: 1 } } }), Bridge.define("Newtonsoft.Json.ObjectCreationHandling", { $kind: "enum", statics: { fields: { Auto: 0, Reuse: 1, Replace: 2 } } }), Bridge.define("Newtonsoft.Json.Required", { $kind: "enum", statics: { fields: { Default: 0, AllowNull: 1, Always: 2, DisallowNull: 3 } } }), Bridge.define("Newtonsoft.Json.Serialization.IContractResolver", { $kind: "interface" }), Bridge.define("Newtonsoft.Json.Serialization.ISerializationBinder", { $kind: "interface" }), Bridge.define("Newtonsoft.Json.TypeNameHandling", { $kind: "enum", statics: { fields: { None: 0, Objects: 1, Arrays: 2, All: 3, Auto: 4 } }, $flags: !0 }), Bridge.define("Newtonsoft.Json.Utils.AssemblyVersion", { statics: { fields: { version: null, compiler: null }, ctors: { init: function () { this.version = "1.17.0", this.compiler = "17.10.0" } } } }), Bridge.define("Newtonsoft.Json.JsonSerializationException", { inherits: [Newtonsoft.Json.JsonException], ctors: { ctor: function () { this.$initialize(), Newtonsoft.Json.JsonException.ctor.call(this) }, $ctor1: function (e) { this.$initialize(), Newtonsoft.Json.JsonException.$ctor1.call(this, e) }, $ctor2: function (e, t) { this.$initialize(), Newtonsoft.Json.JsonException.$ctor2.call(this, e, t) } } }), Bridge.define("Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver", { inherits: [Newtonsoft.Json.Serialization.IContractResolver] }), Bridge.define("Newtonsoft.Json.JsonConvert", { statics: { methods: { stringify: function (e, t, n) { return t === Newtonsoft.Json.Formatting.Indented ? JSON.stringify(e, null, "  ") : JSON.stringify(e) }, parse: function (value) { try { return JSON.parse(value) } catch (e) { if (e instanceof SyntaxError) try { return eval("(" + value + ")") } catch (e) { throw new Newtonsoft.Json.JsonException(e.message) } throw new Newtonsoft.Json.JsonException(e.message) } }, getEnumerableElementType: function (e) { var t; if (System.String.startsWith(e.$$name, "System.Collections.Generic.IEnumerable")) t = e; else for (var n = Bridge.Reflection.getInterfaces(e), o = 0; o < n.length; o++)if (System.String.startsWith(n[o].$$name, "System.Collections.Generic.IEnumerable")) { t = n[o]; break } return t ? Bridge.Reflection.getGenericArguments(t)[0] : null }, validateReflectable: function (e) { do { var t = e === System.Object || e === Object || e.$literal || "anonymous" === e.$kind, n = !Bridge.getMetadata(e); if (!t && n) throw Bridge.$jsonGuard && delete Bridge.$jsonGuard, new System.InvalidOperationException(Bridge.getTypeName(e) + " is not reflectable and cannot be serialized."); e = t ? null : Bridge.Reflection.getBaseType(e) } while (!t && null != e) }, defaultGuard: function () { Bridge.$jsonGuard && Bridge.$jsonGuard.pop() }, getValue: function (e, t) { for (var n in t = t.toLowerCase(), e) if (n.toLowerCase() == t) return e[n] }, getCacheByType: function (e) { for (var t = 0; t < Newtonsoft.Json.$cache.length; t++) { var n = Newtonsoft.Json.$cache[t]; if (n.type === e) return n } var o = { type: e }; return Newtonsoft.Json.$cache.push(o), o }, getMembers: function (e, t) { var n = Newtonsoft.Json.JsonConvert.getCacheByType(e); if (n[t]) return n[t]; var o = Bridge.Reflection.getMembers(e, t, 52), r = !1; return o = o.map((function (e) { var t = System.Attribute.getCustomAttributes(e, Newtonsoft.Json.JsonPropertyAttribute), n = System.Attribute.getCustomAttributes(e, System.ComponentModel.DefaultValueAttribute); return { member: e, attr: t && t.length > 0 ? t[0] : null, defaultValue: n && n.length > 0 ? n[0].Value : Bridge.getDefaultValue(e.rt) } })).filter((function (e) { return !r && e.attr && e.attr.Order && (r = !0), (e.attr || 2 === e.member.a) && 0 === System.Attribute.getCustomAttributes(e.member, Newtonsoft.Json.JsonIgnoreAttribute).length })), r && o.sort((function (e, t) { return (e.attr && e.attr.Order || 0) - (t.attr && t.attr.Order || 0) })), n[t] = o, o }, preRawProcess: function (e, t, n, o) { var r = e.attr, i = r && null != r._defaultValueHandling ? r._defaultValueHandling : o.DefaultValueHandling, s = r && r.Required; if (void 0 !== n || i !== Newtonsoft.Json.DefaultValueHandling.Populate && i !== Newtonsoft.Json.DefaultValueHandling.IgnoreAndPopulate || (n = e.defaultValue), (s === Newtonsoft.Json.Required.AllowNull || s === Newtonsoft.Json.Required.Always) && void 0 === n) throw new Newtonsoft.Json.JsonSerializationException("Required property '" + e.member.n + "' not found in JSON."); if (s === Newtonsoft.Json.Required.Always && null === n) throw new Newtonsoft.Json.JsonSerializationException("Required property '" + e.member.n + "' expects a value but got null."); if (s === Newtonsoft.Json.Required.DisallowNull && null === n) throw new Newtonsoft.Json.JsonSerializationException("Property '" + e.member.n + "' expects a value but got null."); return { value: n } }, preProcess: function (e, t, n, o) { var r = e.attr, i = r && null != r._defaultValueHandling ? r._defaultValueHandling : o.DefaultValueHandling, s = r && null != r._nullValueHandling ? r._nullValueHandling : o.NullValueHandling; if (null == n && s === Newtonsoft.Json.NullValueHandling.Ignore) return !1; var l = Bridge.unbox(n, !0), a = e.defaultValue; return !(null != l && (null != a || null == l && null == a) && Bridge.equals(l, a) && (i === Newtonsoft.Json.DefaultValueHandling.Ignore || i === Newtonsoft.Json.DefaultValueHandling.IgnoreAndPopulate)) && { value: n } }, PopulateObject: function (e, t, n, o) { n = n || {}; var r, i = Bridge.getType(t); if (r = "string" == typeof e ? Newtonsoft.Json.JsonConvert.parse(e) : e, i.$nullable && (i = i.$nullableType), null != r && "object" == typeof r) if (Bridge.isArray(null, i)) { if (void 0 === r.length) return; for (var s = 0; s < r.length; s++)t.push(Newtonsoft.Json.JsonConvert.DeserializeObject(r[s], i.$elementType, n, !0)) } else if (Bridge.Reflection.isAssignableFrom(System.Collections.IDictionary, i)) { var l, a = System.Collections.Generic.Dictionary$2.getTypeParameters(i), u = a[0] || System.Object, f = a[1] || System.Object; if (Bridge.is(r, System.Collections.IDictionary)) { l = System.Linq.Enumerable.from(r.getKeys()).ToArray(); for (s = 0; s < l.length; s++) { var m = l[s]; t.setItem(Newtonsoft.Json.JsonConvert.DeserializeObject(m, u, n, !0), Newtonsoft.Json.JsonConvert.DeserializeObject(r.get(m), f, n, !0), !1) } } else for (var g in r) r.hasOwnProperty(g) && t.setItem(Newtonsoft.Json.JsonConvert.DeserializeObject(g, u, n, !0), Newtonsoft.Json.JsonConvert.DeserializeObject(r[g], f, n, !0), !1) } else if (Bridge.Reflection.isAssignableFrom(System.Collections.IList, i) || Bridge.Reflection.isAssignableFrom(System.Collections.ICollection, i)) { var y = System.Collections.Generic.List$1.getElementType(i) || System.Object; Bridge.isArray(r) || (r = r.ToArray ? r.ToArray() : Bridge.Collections.EnumerableHelpers.ToArray(y, r)); for (s = 0; s < r.length; s++)t.add(Newtonsoft.Json.JsonConvert.DeserializeObject(r[s], y, n, !0)) } else { var d, c, S, J, v = n && Bridge.is(n.ContractResolver, Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver), p = Newtonsoft.Json.JsonConvert.getMembers(i, 4), N = Newtonsoft.Json.JsonConvert.getMembers(i, 16); for (s = 0; s < p.length; s++) { if (c = (d = p[s]).member, void 0 === (e = r[J = d.attr && d.attr.PropertyName || (v ? c.n.charAt(0).toLowerCase() + c.n.substr(1) : c.n)]) && (e = Newtonsoft.Json.JsonConvert.getValue(r, J)), void 0 === (B = (o || r)[J]) && (B = Newtonsoft.Json.JsonConvert.getValue(o || r, J)), void 0 !== (B = (h = Newtonsoft.Json.JsonConvert.preRawProcess(d, o || r, B, n)).value)) { var w = null === e || !1 === e || !0 === e || "number" == typeof e || "string" == typeof e, b = Bridge.unbox(Bridge.Reflection.fieldAccess(c, t)), C = Newtonsoft.Json.JsonConvert.DeserializeObject(e, c.rt, n, !0); !1 !== (h = Newtonsoft.Json.JsonConvert.preProcess(d, t, b, n)) && (b = h.value, w || null == b ? Bridge.Reflection.fieldAccess(c, t, C) : Newtonsoft.Json.JsonConvert.PopulateObject(C, b, n, e)) } } for (s = 0; s < N.length; s++) { var B; if (S = (d = N[s]).member, void 0 === (e = r[J = d.attr && d.attr.PropertyName || (v ? S.n.charAt(0).toLowerCase() + S.n.substr(1) : S.n)]) && (e = Newtonsoft.Json.JsonConvert.getValue(r, J)), void 0 === (B = (o || r)[J]) && (B = Newtonsoft.Json.JsonConvert.getValue(o || r, J)), void 0 !== (B = (h = Newtonsoft.Json.JsonConvert.preRawProcess(d, o || r, B, n)).value)) { var h; w = null === e || !1 === e || !0 === e || "number" == typeof e || "string" == typeof e, b = Bridge.unbox(Bridge.Reflection.midel(S.g, t)()); C = Newtonsoft.Json.JsonConvert.DeserializeObject(e, S.rt, n, !0), !1 !== (h = Newtonsoft.Json.JsonConvert.preProcess(d, t, b, n)) && (b = h.value, w || null == b ? S.s ? Bridge.Reflection.midel(S.s, t)(C) : "anonymous" === type.$kind && (t[S.n] = C) : Newtonsoft.Json.JsonConvert.PopulateObject(C, b, n, e)) } } } }, BindToName: function (e, t) { if (e && e.SerializationBinder && e.SerializationBinder.Newtonsoft$Json$Serialization$ISerializationBinder$BindToName) { var n = {}, o = {}; return e.SerializationBinder.Newtonsoft$Json$Serialization$ISerializationBinder$BindToName(t, n, o), o.v + (n.v ? ", " + n.v : "") } return Bridge.Reflection.getTypeQName(t) }, BindToType: function (e, t, n) { if (e && e.SerializationBinder && e.SerializationBinder.Newtonsoft$Json$Serialization$ISerializationBinder$BindToType) { var o = Newtonsoft.Json.JsonConvert.SplitFullyQualifiedTypeName(t); o = e.SerializationBinder.Newtonsoft$Json$Serialization$ISerializationBinder$BindToType(o.assemblyName, o.typeName) } else o = Bridge.Reflection.getType(t); if (!o) throw new Newtonsoft.Json.JsonSerializationException("Type specified in JSON '" + t + "' was not resolved."); if (n && !Bridge.Reflection.isAssignableFrom(n, o)) throw new Newtonsoft.Json.JsonSerializationException("Type specified in JSON '" + Bridge.Reflection.getTypeQName(o) + "' is not compatible with '" + Bridge.Reflection.getTypeQName(n) + "'."); return o }, SplitFullyQualifiedTypeName: function (e) { var t, n, o = Newtonsoft.Json.JsonConvert.GetAssemblyDelimiterIndex(e); return null != o ? (t = Newtonsoft.Json.JsonConvert.Trim(e, 0, System.Nullable.getValueOrDefault(o, 0)), n = Newtonsoft.Json.JsonConvert.Trim(e, System.Nullable.getValueOrDefault(o, 0) + 1 | 0, (e.length - System.Nullable.getValueOrDefault(o, 0) | 0) - 1 | 0)) : (t = e, n = null), { typeName: t, assemblyName: n } }, GetAssemblyDelimiterIndex: function (e) { for (var t = 0, n = 0; n < e.length; n = n + 1 | 0) { switch (e.charCodeAt(n)) { case 91: t = t + 1 | 0; break; case 93: t = t - 1 | 0; break; case 44: if (0 === t) return n } } return null }, Trim: function (e, t, n) { var o = (t + n | 0) - 1 | 0; if (o >= e.length) throw new System.ArgumentOutOfRangeException.$ctor1("length"); for (; t < o && System.Char.isWhiteSpace(String.fromCharCode(e.charCodeAt(t))); t = t + 1 | 0); for (; o >= t && System.Char.isWhiteSpace(String.fromCharCode(e.charCodeAt(o))); o = o - 1 | 0); return e.substr(t, 1 + (o - t | 0) | 0) }, SerializeObject: function (e, t, n, o, r, i) { if (Bridge.is(t, Newtonsoft.Json.JsonSerializerSettings) && (n = t, t = 0), null == e) { if (n && n.NullValueHandling === Newtonsoft.Json.NullValueHandling.Ignore) return; return o ? null : Newtonsoft.Json.JsonConvert.stringify(null, t, n) } var s = Bridge.getType(e); if (r && s && ("interface" === r.$kind || Bridge.Reflection.isAssignableFrom(r, s)) && (r = null), r && r.$nullable && (r = r.$nullableType), r && r === System.Char) return String.fromCharCode(e); var l = r || s; if ("function" == typeof e) { var a = Bridge.getTypeName(e); return o ? a : Newtonsoft.Json.JsonConvert.stringify(a, t, n) } if ("object" == typeof e) { var u, f, m = Newtonsoft.Json.JsonConvert.defaultGuard; if (Bridge.$jsonGuard || (Bridge.$jsonGuard = [], m = function () { delete Bridge.$jsonGuard }), Bridge.$jsonGuard.indexOf(e) > -1) return; l === System.Globalization.CultureInfo || l === System.Guid || l === System.Uri || l === System.Int64 || l === System.UInt64 || l === System.Decimal || l === System.DateTime || l === System.DateTimeOffset || l === System.Char || Bridge.Reflection.isEnum(l) ? m() : Bridge.$jsonGuard.push(e); var g = !1; if (e && e.$boxed && (e = Bridge.unbox(e, !0), g = !0), l === System.Globalization.CultureInfo) return o ? e.name : Newtonsoft.Json.JsonConvert.stringify(e.name, t, n); if (l === System.Guid) return o ? Bridge.toString(e) : Newtonsoft.Json.JsonConvert.stringify(Bridge.toString(e), t, n); if (l === System.Uri) return o ? e.getAbsoluteUri() : Newtonsoft.Json.JsonConvert.stringify(e.getAbsoluteUri(), t, n); if (l === System.Int64 || l === System.UInt64 || l === System.Decimal) return o ? e.toJSON() : e.toString(); if (l === System.DateTime) { var y = "string" == typeof e ? e : System.DateTime.format(e, "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFFK"); return o ? y : Newtonsoft.Json.JsonConvert.stringify(y, t, n) } if (l === System.TimeSpan) { y = Bridge.toString(e); return o ? y : Newtonsoft.Json.JsonConvert.stringify(y, t, n) } if (l === System.DateTimeOffset) { y = e.ToString$1("yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFFK"); return o ? y : Newtonsoft.Json.JsonConvert.stringify(y, t, n) } if (Bridge.isArray(null, l)) { if (l.$elementType === System.Byte) { m(); var d = System.Convert.toBase64String(e); return o ? d : Newtonsoft.Json.JsonConvert.stringify(d, t, n) } for (u = [], f = 0; f < e.length; f++)u.push(Newtonsoft.Json.JsonConvert.SerializeObject(e[f], t, n, !0, l.$elementType)); if (e = u, n && n._typeNameHandling) (2 == (h = n._typeNameHandling) || 3 == h || 4 == h && r && r !== s) && (e = { $type: Newtonsoft.Json.JsonConvert.BindToName(n, l), $values: u }) } else { if (Bridge.Reflection.isEnum(l)) return i ? System.Enum.getName(l, e) : o ? e : Newtonsoft.Json.JsonConvert.stringify(e, t, n); if (l === System.Char) return o ? String.fromCharCode(e) : Newtonsoft.Json.JsonConvert.stringify(String.fromCharCode(e), t, n); if (Bridge.Reflection.isAssignableFrom(System.Collections.IDictionary, l)) { var c = System.Collections.Generic.Dictionary$2.getTypeParameters(l), S = c[0], J = c[1], v = {}, p = Bridge.getEnumerator(e); if (n && n._typeNameHandling) (1 == (h = n._typeNameHandling) || 3 == h || 4 == h && r && r !== s) && (v.$type = Newtonsoft.Json.JsonConvert.BindToName(n, l)); for (; p.moveNext();) { var N = p.Current, w = Newtonsoft.Json.JsonConvert.SerializeObject(N.key, t, n, !0, S, !0); "object" == typeof w && (w = Bridge.toString(N.key)), v[w] = Newtonsoft.Json.JsonConvert.SerializeObject(N.value, t, n, !0, J) } e = v } else if (Bridge.Reflection.isAssignableFrom(System.Collections.IEnumerable, l)) { var b = Newtonsoft.Json.JsonConvert.getEnumerableElementType(l), C = Bridge.getEnumerator(e, b); for (u = []; C.moveNext();) { var B = C.Current; u.push(Newtonsoft.Json.JsonConvert.SerializeObject(B, t, n, !0, b)) } if (e = u, n && n._typeNameHandling) (2 == (h = n._typeNameHandling) || 3 == h || 4 == h && r && r !== s) && (e = { $type: Newtonsoft.Json.JsonConvert.BindToName(n, l), $values: u }) } else if (!g) { var h, T = {}, $ = !Bridge.getMetadata(l); if (Newtonsoft.Json.JsonConvert.validateReflectable(l), n && n._typeNameHandling) (1 == (h = n._typeNameHandling) || 3 == h || 4 == h && r && r !== s) && (T.$type = Newtonsoft.Json.JsonConvert.BindToName(n, l)); if ($) if (e.toJSON) T = e.toJSON(); else for (var D in e) e.hasOwnProperty(D) && (T[D] = Newtonsoft.Json.JsonConvert.SerializeObject(e[D], t, n, !0)); else { var H = Newtonsoft.Json.JsonConvert.getMembers(l, 4), I = n && Bridge.is(n.ContractResolver, Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver), O = Bridge.Reflection.getMembers(l, 8, 54); if (O.length > 0) for (var A = 0; A < O.length; A++)System.Attribute.isDefined(O[A], System.Runtime.Serialization.OnSerializingAttribute, !1) && Bridge.Reflection.midel(O[A], e)(null); for (f = 0; f < H.length; f++) { var R = (V = H[f]).member, j = V.attr && V.attr.PropertyName || (I ? R.n.charAt(0).toLowerCase() + R.n.substr(1) : R.n), z = Bridge.Reflection.fieldAccess(R, e); if (!1 !== (x = Newtonsoft.Json.JsonConvert.preProcess(V, e, z, n || {}))) V.attr && (P = V.attr._typeNameHandling), null != P && (G = (n = n || {})._typeNameHandling, n._typeNameHandling = P), T[j] = Newtonsoft.Json.JsonConvert.SerializeObject(x.value, t, n, !0, R.rt), null != P && (n._typeNameHandling = G) } var _ = Newtonsoft.Json.JsonConvert.getMembers(l, 16); for (f = 0; f < _.length; f++) { var V, E = (V = _[f]).member; if (E.g) { var x, P, G, F = V.attr && V.attr.PropertyName || (I ? E.n.charAt(0).toLowerCase() + E.n.substr(1) : E.n); z = Bridge.Reflection.midel(E.g, e)(); if (!1 !== (x = Newtonsoft.Json.JsonConvert.preProcess(V, e, z, n || {}))) V.attr && (P = V.attr._typeNameHandling), null != P && (G = (n = n || {})._typeNameHandling, n._typeNameHandling = P), T[F] = Newtonsoft.Json.JsonConvert.SerializeObject(x.value, t, n, !0, E.rt), null != P && (n._typeNameHandling = G) } } if (O.length > 0) for (A = 0; A < O.length; A++)if (System.Attribute.isDefined(O[A], System.Runtime.Serialization.OnSerializedAttribute, !1)) { Bridge.Reflection.midel(O[A], e)(null); break } } e = T } } m() } else if (Bridge.Reflection.isEnum(l)) return i ? System.Enum.getName(l, e) : o ? e : Newtonsoft.Json.JsonConvert.stringify(e, t, n); return o ? e : Newtonsoft.Json.JsonConvert.stringify(e, t, n) }, getInstanceBuilder: function (e, t, n) { var o = Bridge.isArray(t), r = o && Bridge.Reflection.isAssignableFrom(System.Collections.IEnumerable, e), i = !1; if (r || "object" == typeof t && !o) { var s = Bridge.Reflection.getMembers(e, 1, 54), l = [], a = !1, u = null; if (e === System.Version) s = [Bridge.Reflection.getMembers(e, 1, 284, null, [System.Int32, System.Int32, System.Int32, System.Int32])], u = s[0]; else if (s.length > 0) { s = s.filter((function (e) { return !e.isSynthetic })); for (var f = 0; f < s.length; f++) { var m = s[f], g = System.Attribute.getCustomAttributes(m, Newtonsoft.Json.JsonConstructorAttribute).length > 0; if (0 === (m.pi || []).length && (a = !0), g) { if (null != u) throw new Newtonsoft.Json.JsonException("Multiple constructors with the JsonConstructorAttribute."); u = m } 2 === m.a && l.push(m) } } if (!a && !u && "struct" === e.$kind) { var y = !0; if (l.length > 0) { y = !1; for (var d = (u = l[0]).pi || [], c = Newtonsoft.Json.JsonConvert.getMembers(e, 4), S = Newtonsoft.Json.JsonConvert.getMembers(e, 16), J = 0; J < d.length; J++) { for (var v = d[J], p = v.sn || v.n, N = 0; N < S.length; N++) { var w = (b = S[J]).member; if (p === (C = b.attr && b.attr.PropertyName || w.n) || p.toLowerCase() === C.toLowerCase() && b.s) { y = !0; break } } if (!y) for (N = 0; N < c.length; N++) { var b, C, B = (b = c[J]).member; if (p === (C = b.attr && b.attr.PropertyName || B.n) || p.toLowerCase() === C.toLowerCase() && !b.ro) { y = !0; break } } if (y) break } } y && (u = { td: e }) } if (!a && s.length > 0) { if (1 !== l.length && null == u) throw new Newtonsoft.Json.JsonSerializationException("Unable to find a constructor to use for type " + Bridge.getTypeName(e) + ". A class should either have a default constructor or one constructor with arguments."); null == u && (u = l[0]); d = u.pi || []; return r ? function (t) { var o = []; if (Bridge.Reflection.isAssignableFrom(System.Collections.IEnumerable, d[0].pt)) { var r, s = [], l = Bridge.Reflection.getGenericArguments(d[0].pt)[0] || Bridge.Reflection.getGenericArguments(e)[0] || System.Object; if (n && n._typeNameHandling && t.length > 0 && t[0]) { var a = !0, f = t[0].$type; if (f) for (var m = 1; m < t.length; m++) { var g = t[m] ? t[m].$type : null; if (!g || g !== f) { a = !1; break } } else a = !1; r = a ? Newtonsoft.Json.JsonConvert.getInstanceBuilder(l, t[0], n) : null } else r = null; for (m = 0; m < t.length; m++) { var y, c, S = t[m], J = r && !r.default; J && (y = r(S), s[m] = y.value, c = y.names), s[m] = Newtonsoft.Json.JsonConvert.DeserializeObject(S, l, n, !0, J ? s[m] : void 0, c) } o.push(s), i = !0 } var v = Bridge.Reflection.invokeCI(u, o); return i ? { $list: !0, names: [], value: v } : { names: [], value: v } } : function (e) { for (var t = [], o = [], r = Object.getOwnPropertyNames(e), i = 0; i < d.length; i++) { for (var s = d[i], l = s.sn || s.n, a = null, f = 0; f < r.length; f++)if (l === r[f]) { a = r[f]; break } if (!a) { l = l.toLowerCase(); for (f = 0; f < r.length; f++)if (l === r[f].toLowerCase()) { a = r[f]; break } } (l = a) ? (t[i] = Newtonsoft.Json.JsonConvert.DeserializeObject(e[l], s.pt, n, !0), o.push(l)) : t[i] = Bridge.getDefaultValue(s.pt) } return { names: o, value: Bridge.Reflection.invokeCI(u, t) } } } } var h = function () { return { names: [], value: Bridge.createInstance(e), default: !0 } }; return h.default = !0, h }, createInstance: function (e, t, n) { return this.getInstanceBuilder(e, t, n)(t) }, needReuse: function (e, t, n, o) { return !(e !== Newtonsoft.Json.ObjectCreationHandling.Reuse && (e !== Newtonsoft.Json.ObjectCreationHandling.Auto || null == t) || !o || "struct" === n.$kind || "enum" === n.$kind || n === System.String || n === System.Boolean || n === System.Int64 || n === System.UInt64 || n === System.Int32 || n === System.UInt32 || n === System.Int16 || n === System.UInt16 || n === System.Byte || n === System.SByte || n === System.Single || n === System.Double || n === System.Decimal) }, tryToGetCastOperator: function (e, t) { if (null === e) return null; var n; if ("boolean" == typeof e || "string" == typeof e) n = [Bridge.getType(e)]; else { if ("number" != typeof e) return null; n = [System.Double, System.Int64] } for (var o = 0; o < n.length; o++) { var r = n[o], i = Bridge.Reflection.getMembers(t, 8, 284, "op_Explicit", [r]); if (i) return function (e) { return Bridge.Reflection.midel(i, null)(e) }; var s = Bridge.Reflection.getMembers(t, 8, 284, "op_Implicit", [r]); if (s) return function (e) { return Bridge.Reflection.midel(s, null)(e) } } return null }, DeserializeObject: function (e, t, n, o, r, i) { if (n = n || {}, "interface" === t.$kind) if (System.Collections.IDictionary === t) t = System.Collections.Generic.Dictionary$2(System.Object, System.Object); else if (Bridge.Reflection.isGenericType(t) && Bridge.Reflection.isAssignableFrom(System.Collections.Generic.IDictionary$2, Bridge.Reflection.getGenericTypeDefinition(t))) { var s = System.Collections.Generic.Dictionary$2.getTypeParameters(t); t = System.Collections.Generic.Dictionary$2(s[0] || System.Object, s[1] || System.Object) } else t === System.Collections.IList || t === System.Collections.ICollection ? t = System.Collections.Generic.List$1(System.Object) : Bridge.Reflection.isGenericType(t) && (Bridge.Reflection.isAssignableFrom(System.Collections.Generic.IList$1, Bridge.Reflection.getGenericTypeDefinition(t)) || Bridge.Reflection.isAssignableFrom(System.Collections.Generic.ICollection$1, Bridge.Reflection.getGenericTypeDefinition(t))) && (t = System.Collections.Generic.List$1(System.Collections.Generic.List$1.getElementType(t) || System.Object)); if (!o && "string" == typeof e) { var l = Newtonsoft.Json.JsonConvert.parse(e); ("object" == typeof l || Bridge.isArray(l) || t === System.Array.type(System.Byte, 1) || t === Function || t == System.Type || t === System.Guid || t === System.Globalization.CultureInfo || t === System.Uri || t === System.DateTime || t === System.DateTimeOffset || t === System.Char || Bridge.Reflection.isEnum(t)) && (e = l) } var a = t === Object || t === System.Object, u = Bridge.isObject(e); a && u && e && e.$type && (t = Newtonsoft.Json.JsonConvert.BindToType(n, e.$type, t), a = !1); if (a && u || t.$literal && !Bridge.getMetadata(t)) return Bridge.merge(a ? {} : r || Bridge.createInstance(t), e); var f = Bridge.getDefaultValue(t); if (t.$nullable && (t = t.$nullableType), null === e) return f; if (!1 === e) return t !== System.Boolean && (t === System.String ? "false" : (v = Newtonsoft.Json.JsonConvert.tryToGetCastOperator(e, t)) ? v(e) : a ? Bridge.box(e, System.Boolean, System.Boolean.toString) : f); if (!0 === e) { if (t === System.Boolean) return !0; if (t === System.Int64) return System.Int64(1); if (t === System.UInt64) return System.UInt64(1); if (t === System.Decimal) return System.Decimal(1); if (t === String.String) return "true"; if (t === System.DateTime) return System.DateTime.create$2(1, 0); if (t === System.DateTimeOffset) return System.DateTimeOffset.MinValue.$clone(); if (Bridge.Reflection.isEnum(t)) return Bridge.unbox(System.Enum.parse(t, 1)); if ("number" == typeof f) return f + 1; if (v = Newtonsoft.Json.JsonConvert.tryToGetCastOperator(e, t)) return v(e); if (a) return Bridge.box(e, System.Boolean, System.Boolean.toString); throw new System.ArgumentException(System.String.format("Could not cast or convert from {0} to {1}", Bridge.getTypeName(e), Bridge.getTypeName(t))) } if ("number" == typeof e) { if (t.$number && !t.$is(e) && !(t === System.Decimal && t.tryParse(e, null, {}) || System.Int64.is64BitType(t) && t.tryParse(e.toString(), {}))) throw new Newtonsoft.Json.JsonException(System.String.format("Input string '{0}' is not a valid {1}", e, Bridge.getTypeName(t))); if (t === System.Boolean) return 0 !== e; if (Bridge.Reflection.isEnum(t)) return Bridge.unbox(System.Enum.parse(t, e)); if (t === System.SByte) return 0 | e; if (t === System.Byte) return e >>> 0; if (t === System.Int16) return 0 | e; if (t === System.UInt16) return e >>> 0; if (t === System.Int32) return 0 | e; if (t === System.UInt32) return e >>> 0; if (t === System.Int64) return System.Int64(e); if (t === System.UInt64) return System.UInt64(e); if (t === System.Single) return e; if (t === System.Double) return e; if (t === System.Decimal) return System.Decimal(e); if (t === System.Char) return 0 | e; if (t === System.String) return e.toString(); if (t === System.DateTime) return System.DateTime.create$2(0 | e, 0); if (t === System.TimeSpan) return System.TimeSpan.fromTicks(e); if (t === System.DateTimeOffset) return new System.DateTimeOffset.$ctor5(System.Int64(0 | e), (new System.DateTimeOffset.ctor).Offset); if (v = Newtonsoft.Json.JsonConvert.tryToGetCastOperator(e, t)) return v(e); if (a) return Bridge.box(e, Bridge.getType(e)); throw new System.ArgumentException(System.String.format("Could not cast or convert from {0} to {1}", Bridge.getTypeName(e), Bridge.getTypeName(t))) } if ("string" == typeof e) { var m = t === System.Decimal, g = m || System.Int64.is64BitType(t); if (g && (m ? !t.tryParse(e, null, {}) : !t.tryParse(e, {}))) throw new Newtonsoft.Json.JsonException(System.String.format("Input string '{0}' is not a valid {1}", e, Bridge.getTypeName(t))); var y = t == System.Double || t == System.Single; if (!g && t.$number && (y ? !t.tryParse(e, null, {}) : !t.tryParse(e, {}))) throw new Newtonsoft.Json.JsonException(System.String.format("Could not convert {0} to {1}: {2}", Bridge.getTypeName(e), Bridge.getTypeName(t), e)); if (t === Function || t == System.Type) return Bridge.Reflection.getType(e); if (t === System.Globalization.CultureInfo) return new System.Globalization.CultureInfo(e); if (t === System.Uri) return new System.Uri(e); if (t === System.Guid) return System.Guid.Parse(e); if (t === System.Boolean) { var d = { v: !1 }; return !(System.String.isNullOrWhiteSpace(e) || !System.Boolean.tryParse(e, d)) && d.v } if (t === System.SByte) return 0 | e; if (t === System.Byte) return e >>> 0; if (t === System.Int16) return 0 | e; if (t === System.UInt16) return e >>> 0; if (t === System.Int32) return 0 | e; if (t === System.UInt32) return e >>> 0; if (t === System.Int64) return System.Int64(e); if (t === System.UInt64) return System.UInt64(e); if (t === System.Single) return parseFloat(e); if (t === System.Double) return parseFloat(e); if (t !== System.Decimal) { if (t === System.Char) return 0 === e.length ? 0 : e.charCodeAt(0); if (t === System.String) return o ? e : JSON.parse(e); if (t === System.TimeSpan) return System.TimeSpan.parse('"' == e[0] ? JSON.parse(e) : e); if (t === System.DateTime) { var c = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFF" + ((S = System.String.endsWith(e, "Z")) ? "'Z'" : "K"); return J = null != (J = System.DateTime.parseExact(e, c, null, !0, !0)) ? J : System.DateTime.parse(e, void 0, !0), S && 1 !== J.kind && (J = System.DateTime.specifyKind(J, 1)), J } if (t === System.DateTimeOffset) { var S, J; c = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFF" + ((S = System.String.endsWith(e, "Z")) ? "'Z'" : "K"); return J = null != (J = System.DateTime.parseExact(e, c, null, !0, !0)) ? J : System.DateTime.parse(e, void 0, !0), S && 1 !== J.kind && (J = System.DateTime.specifyKind(J, 1)), new System.DateTimeOffset.$ctor1(J) } if (Bridge.Reflection.isEnum(t)) return Bridge.unbox(System.Enum.parse(t, e)); if (t === System.Array.type(System.Byte, 1)) return System.Convert.fromBase64String(e); var v; if (v = Newtonsoft.Json.JsonConvert.tryToGetCastOperator(e, t)) return v(e); if (a) return e; throw new System.ArgumentException(System.String.format("Could not cast or convert from {0} to {1}", Bridge.getTypeName(e), Bridge.getTypeName(t))) } try { return System.Decimal(e) } catch (e) { return System.Decimal(0) } } else if ("object" == typeof e) { if (null !== f && "struct" !== t.$kind) return f; if (Bridge.isArray(null, t)) { if (null != (H = e.$type) && (t = Newtonsoft.Json.JsonConvert.BindToType(n, H, t), e = e.$values), void 0 === e.length) return []; var p = new Array; System.Array.type(t.$elementType, t.$rank || 1, p); for (var N = 0; N < e.length; N++)p[N] = Newtonsoft.Json.JsonConvert.DeserializeObject(e[N], t.$elementType, n, !0); return p } if (Bridge.Reflection.isAssignableFrom(System.Collections.IList, t)) { null != (H = e.$type) && (t = Newtonsoft.Json.JsonConvert.BindToType(n, H, t), e = e.$values); var w = System.Collections.Generic.List$1.getElementType(t) || System.Object, b = r ? { value: r } : Newtonsoft.Json.JsonConvert.createInstance(t, e, n); if (b && b.$list) return b.value; if (b = b.value, void 0 === e.length) return b; for (N = 0; N < e.length; N++)b.add(Newtonsoft.Json.JsonConvert.DeserializeObject(e[N], w, n, !0)); return b } if (Bridge.Reflection.isAssignableFrom(System.Collections.IDictionary, t)) { var C = System.Collections.Generic.Dictionary$2.getTypeParameters(t), B = C[0] || System.Object, h = C[1] || System.Object, T = !1; null != (H = e.$type) && (t = Newtonsoft.Json.JsonConvert.BindToType(n, H, t), T = !0); var $ = r ? { value: r } : Newtonsoft.Json.JsonConvert.createInstance(t, e, n); if ($ && $.$list) return $.value; for (var D in O = $.names || [], $ = $.value, e) !e.hasOwnProperty(D) || T && "$type" === D || O.indexOf(D) < 0 && $.add(Newtonsoft.Json.JsonConvert.DeserializeObject(D, B, n, !0), Newtonsoft.Json.JsonConvert.DeserializeObject(e[D], h, n, !0)); return $ } var H; if (null != (H = e.$type) && (t = Newtonsoft.Json.JsonConvert.BindToType(n, H, t)), !Bridge.getMetadata(t)) return Bridge.merge(a ? {} : r || Bridge.createInstance(t), e); var I, O, A = r ? { value: r, names: i, default: !0 } : Newtonsoft.Json.JsonConvert.createInstance(t, e, n); O = A.names || [], I = A.default, A = A.value; var R = Bridge.Reflection.getMembers(t, 8, 54); if (R.length > 0) for (var j = 0; j < R.length; j++)System.Attribute.isDefined(R[j], System.Runtime.Serialization.OnDeserializingAttribute, !1) && Bridge.Reflection.midel(R[j], A)(null); var z, _, V, E, x, P, G = n && Bridge.is(n.ContractResolver, Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver), F = Newtonsoft.Json.JsonConvert.getMembers(t, 4); for (N = 0; N < F.length; N++) { if (V = (_ = F[N]).member, x = _.attr && _.attr.PropertyName || (G ? V.n.charAt(0).toLowerCase() + V.n.substr(1) : V.n), !(O.indexOf(x) > -1)) if (void 0 === (z = e[x]) && (z = Newtonsoft.Json.JsonConvert.getValue(e, x)), void 0 !== (z = (q = Newtonsoft.Json.JsonConvert.preRawProcess(_, e, z, n)).value)) { var k = Bridge.Reflection.fieldAccess(V, A), M = Newtonsoft.Json.ObjectCreationHandling.Auto; P = void 0, _.attr && null != _.attr._objectCreationHandling ? M = _.attr._objectCreationHandling : null != n._objectCreationHandling && (M = n._objectCreationHandling), Newtonsoft.Json.JsonConvert.needReuse(M, k, V.rt, I) && (P = Bridge.unbox(k, !0)), _.attr && (K = _.attr._typeNameHandling), null != K && (W = n._typeNameHandling, n._typeNameHandling = K); var L = Newtonsoft.Json.JsonConvert.DeserializeObject(z, V.rt, n, !0, P); null != K && (n._typeNameHandling = W), !1 !== (q = Newtonsoft.Json.JsonConvert.preProcess(_, A, L, n)) && void 0 === P && Bridge.Reflection.fieldAccess(V, A, q.value) } } var U = Newtonsoft.Json.JsonConvert.getMembers(t, 16); for (N = 0; N < U.length; N++) { var q; if (E = (_ = U[N]).member, x = _.attr && _.attr.PropertyName || (G ? E.n.charAt(0).toLowerCase() + E.n.substr(1) : E.n), !(O.indexOf(x) > -1)) if (void 0 === (z = e[x]) && (z = Newtonsoft.Json.JsonConvert.getValue(e, x)), void 0 !== (z = (q = Newtonsoft.Json.JsonConvert.preRawProcess(_, e, z, n)).value)) { if (P = void 0, E.g) { k = Bridge.Reflection.midel(E.g, A)(), M = Newtonsoft.Json.ObjectCreationHandling.Auto; _.attr && null != _.attr._objectCreationHandling ? M = _.attr._objectCreationHandling : null != n._objectCreationHandling && (M = n._objectCreationHandling), Newtonsoft.Json.JsonConvert.needReuse(M, k, E.rt, I) && (P = Bridge.unbox(k, !0)) } var K, W; _.attr && (K = _.attr._typeNameHandling), null != K && (W = n._typeNameHandling, n._typeNameHandling = K); L = Newtonsoft.Json.JsonConvert.DeserializeObject(z, E.rt, n, !0, P); null != K && (n._typeNameHandling = W), !1 !== (q = Newtonsoft.Json.JsonConvert.preProcess(_, A, L, n)) && void 0 === P && (E.s ? Bridge.Reflection.midel(E.s, A)(q.value) : "anonymous" === t.$kind && (A[E.n] = q.value)) } } if (R.length > 0) for (j = 0; j < R.length; j++)System.Attribute.isDefined(R[j], System.Runtime.Serialization.OnDeserializedAttribute, !1) && Bridge.Reflection.midel(R[j], A)(null); return A } } } } }), Newtonsoft.Json.$cache = [] }));
+Bridge.assembly("Newtonsoft.Json", (function ($asm, globals) {
+    "use strict";
+    Bridge.define("Newtonsoft.Json.DefaultValueHandling", {
+        $kind: "enum",
+        statics: {
+            fields: {
+                Include: 0,
+                Ignore: 1,
+                Populate: 2,
+                IgnoreAndPopulate: 3
+            }
+        },
+        $flags: !0
+    }),
+        Bridge.define("Newtonsoft.Json.Formatting", {
+            $kind: "enum",
+            statics: {
+                fields: {
+                    None: 0,
+                    Indented: 1
+                }
+            }
+        }),
+        Bridge.define("Newtonsoft.Json.JsonConstructorAttribute", {
+            inherits: [System.Attribute]
+        }),
+        Bridge.define("Newtonsoft.Json.JsonException", {
+            inherits: [System.Exception],
+            ctors: {
+                ctor: function () {
+                    this.$initialize(),
+                        System.Exception.ctor.call(this)
+                },
+                $ctor1: function (e) {
+                    this.$initialize(),
+                        System.Exception.ctor.call(this, e)
+                },
+                $ctor2: function (e, t) {
+                    this.$initialize(),
+                        System.Exception.ctor.call(this, e, t)
+                }
+            }
+        }),
+        Bridge.define("Newtonsoft.Json.JsonIgnoreAttribute", {
+            inherits: [System.Attribute]
+        }),
+        Bridge.define("Newtonsoft.Json.JsonPropertyAttribute", {
+            inherits: [System.Attribute],
+            fields: {
+                _nullValueHandling: null,
+                _defaultValueHandling: null,
+                _objectCreationHandling: null,
+                _typeNameHandling: null,
+                _required: null,
+                _order: null
+            },
+            props: {
+                NullValueHandling: {
+                    get: function () {
+                        var e;
+                        return null != (e = this._nullValueHandling) ? e : 0
+                    },
+                    set: function (e) {
+                        this._nullValueHandling = e
+                    }
+                },
+                DefaultValueHandling: {
+                    get: function () {
+                        var e;
+                        return null != (e = this._defaultValueHandling) ? e : 0
+                    },
+                    set: function (e) {
+                        this._defaultValueHandling = e
+                    }
+                },
+                ObjectCreationHandling: {
+                    get: function () {
+                        var e;
+                        return null != (e = this._objectCreationHandling) ? e : 0
+                    },
+                    set: function (e) {
+                        this._objectCreationHandling = e
+                    }
+                },
+                TypeNameHandling: {
+                    get: function () {
+                        var e;
+                        return null != (e = this._typeNameHandling) ? e : 0
+                    },
+                    set: function (e) {
+                        this._typeNameHandling = e
+                    }
+                },
+                Required: {
+                    get: function () {
+                        var e;
+                        return null != (e = this._required) ? e : Newtonsoft.Json.Required.Default
+                    },
+                    set: function (e) {
+                        this._required = e
+                    }
+                },
+                Order: {
+                    get: function () {
+                        var e;
+                        return null != (e = this._order) ? e : Bridge.getDefaultValue(System.Int32)
+                    },
+                    set: function (e) {
+                        this._order = e
+                    }
+                },
+                PropertyName: null
+            },
+            ctors: {
+                ctor: function () {
+                    this.$initialize(),
+                        System.Attribute.ctor.call(this)
+                },
+                $ctor1: function (e) {
+                    this.$initialize(),
+                        System.Attribute.ctor.call(this),
+                        this.PropertyName = e
+                }
+            }
+        }),
+        Bridge.define("Newtonsoft.Json.JsonSerializerSettings", {
+            statics: {
+                fields: {
+                    DefaultNullValueHandling: 0,
+                    DefaultTypeNameHandling: 0
+                },
+                ctors: {
+                    init: function () {
+                        this.DefaultNullValueHandling = Newtonsoft.Json.NullValueHandling.Include,
+                            this.DefaultTypeNameHandling = Newtonsoft.Json.TypeNameHandling.None
+                    }
+                }
+            },
+            fields: {
+                _defaultValueHandling: null,
+                _typeNameHandling: null,
+                _nullValueHandling: null,
+                _objectCreationHandling: null
+            },
+            props: {
+                NullValueHandling: {
+                    get: function () {
+                        var e;
+                        return null != (e = this._nullValueHandling) ? e : Newtonsoft.Json.JsonSerializerSettings.DefaultNullValueHandling
+                    },
+                    set: function (e) {
+                        this._nullValueHandling = e
+                    }
+                },
+                ObjectCreationHandling: {
+                    get: function () {
+                        var e;
+                        return null != (e = this._objectCreationHandling) ? e : 0
+                    },
+                    set: function (e) {
+                        this._objectCreationHandling = e
+                    }
+                },
+                DefaultValueHandling: {
+                    get: function () {
+                        var e;
+                        return null != (e = this._defaultValueHandling) ? e : 0
+                    },
+                    set: function (e) {
+                        this._defaultValueHandling = e
+                    }
+                },
+                TypeNameHandling: {
+                    get: function () {
+                        var e;
+                        return null != (e = this._typeNameHandling) ? e : Newtonsoft.Json.JsonSerializerSettings.DefaultTypeNameHandling
+                    },
+                    set: function (e) {
+                        this._typeNameHandling = e
+                    }
+                },
+                ContractResolver: null,
+                SerializationBinder: null
+            }
+        }),
+        Bridge.define("Newtonsoft.Json.NullValueHandling", {
+            $kind: "enum",
+            statics: {
+                fields: {
+                    Include: 0,
+                    Ignore: 1
+                }
+            }
+        }),
+        Bridge.define("Newtonsoft.Json.ObjectCreationHandling", {
+            $kind: "enum",
+            statics: {
+                fields: {
+                    Auto: 0,
+                    Reuse: 1,
+                    Replace: 2
+                }
+            }
+        }),
+        Bridge.define("Newtonsoft.Json.Required", {
+            $kind: "enum",
+            statics: {
+                fields: {
+                    Default: 0,
+                    AllowNull: 1,
+                    Always: 2,
+                    DisallowNull: 3
+                }
+            }
+        }),
+        Bridge.define("Newtonsoft.Json.Serialization.IContractResolver", {
+            $kind: "interface"
+        }),
+        Bridge.define("Newtonsoft.Json.Serialization.ISerializationBinder", {
+            $kind: "interface"
+        }),
+        Bridge.define("Newtonsoft.Json.TypeNameHandling", {
+            $kind: "enum",
+            statics: {
+                fields: {
+                    None: 0,
+                    Objects: 1,
+                    Arrays: 2,
+                    All: 3,
+                    Auto: 4
+                }
+            },
+            $flags: !0
+        }),
+        Bridge.define("Newtonsoft.Json.Utils.AssemblyVersion", {
+            statics: {
+                fields: {
+                    version: null,
+                    compiler: null
+                },
+                ctors: {
+                    init: function () {
+                        this.version = "1.17.0",
+                            this.compiler = "17.10.0"
+                    }
+                }
+            }
+        }),
+        Bridge.define("Newtonsoft.Json.JsonSerializationException", {
+            inherits: [Newtonsoft.Json.JsonException],
+            ctors: {
+                ctor: function () {
+                    this.$initialize(),
+                        Newtonsoft.Json.JsonException.ctor.call(this)
+                },
+                $ctor1: function (e) {
+                    this.$initialize(),
+                        Newtonsoft.Json.JsonException.$ctor1.call(this, e)
+                },
+                $ctor2: function (e, t) {
+                    this.$initialize(),
+                        Newtonsoft.Json.JsonException.$ctor2.call(this, e, t)
+                }
+            }
+        }),
+        Bridge.define("Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver", {
+            inherits: [Newtonsoft.Json.Serialization.IContractResolver]
+        }),
+        Bridge.define("Newtonsoft.Json.JsonConvert", {
+            statics: {
+                methods: {
+                    stringify: function (e, t, n) {
+                        return t === Newtonsoft.Json.Formatting.Indented ? JSON.stringify(e, null, "  ") : JSON.stringify(e)
+                    },
+                    parse: function (value) {
+                        try {
+                            return JSON.parse(value)
+                        } catch (e) {
+                            if (e instanceof SyntaxError)
+                                try {
+                                    return eval("(" + value + ")")
+                                } catch (e) {
+                                    throw new Newtonsoft.Json.JsonException(e.message)
+                                }
+                            throw new Newtonsoft.Json.JsonException(e.message)
+                        }
+                    },
+                    getEnumerableElementType: function (e) {
+                        var t;
+                        if (System.String.startsWith(e.$$name, "System.Collections.Generic.IEnumerable"))
+                            t = e;
+                        else
+                            for (var n = Bridge.Reflection.getInterfaces(e), o = 0; o < n.length; o++)
+                                if (System.String.startsWith(n[o].$$name, "System.Collections.Generic.IEnumerable")) {
+                                    t = n[o];
+                                    break
+                                }
+                        return t ? Bridge.Reflection.getGenericArguments(t)[0] : null
+                    },
+                    validateReflectable: function (e) {
+                        do {
+                            var t = e === System.Object || e === Object || e.$literal || "anonymous" === e.$kind
+                                , n = !Bridge.getMetadata(e);
+                            if (!t && n)
+                                throw Bridge.$jsonGuard && delete Bridge.$jsonGuard,
+                                new System.InvalidOperationException(Bridge.getTypeName(e) + " is not reflectable and cannot be serialized.");
+                            e = t ? null : Bridge.Reflection.getBaseType(e)
+                        } while (!t && null != e)
+                    },
+                    defaultGuard: function () {
+                        Bridge.$jsonGuard && Bridge.$jsonGuard.pop()
+                    },
+                    getValue: function (e, t) {
+                        for (var n in t = t.toLowerCase(),
+                            e)
+                            if (n.toLowerCase() == t)
+                                return e[n]
+                    },
+                    getCacheByType: function (e) {
+                        for (var t = 0; t < Newtonsoft.Json.$cache.length; t++) {
+                            var n = Newtonsoft.Json.$cache[t];
+                            if (n.type === e)
+                                return n
+                        }
+                        var o = {
+                            type: e
+                        };
+                        return Newtonsoft.Json.$cache.push(o),
+                            o
+                    },
+                    getMembers: function (e, t) {
+                        var n = Newtonsoft.Json.JsonConvert.getCacheByType(e);
+                        if (n[t])
+                            return n[t];
+                        var o = Bridge.Reflection.getMembers(e, t, 52)
+                            , r = !1;
+                        return o = o.map((function (e) {
+                            var t = System.Attribute.getCustomAttributes(e, Newtonsoft.Json.JsonPropertyAttribute)
+                                , n = System.Attribute.getCustomAttributes(e, System.ComponentModel.DefaultValueAttribute);
+                            return {
+                                member: e,
+                                attr: t && t.length > 0 ? t[0] : null,
+                                defaultValue: n && n.length > 0 ? n[0].Value : Bridge.getDefaultValue(e.rt)
+                            }
+                        }
+                        )).filter((function (e) {
+                            return !r && e.attr && e.attr.Order && (r = !0),
+                                (e.attr || 2 === e.member.a) && 0 === System.Attribute.getCustomAttributes(e.member, Newtonsoft.Json.JsonIgnoreAttribute).length
+                        }
+                        )),
+                            r && o.sort((function (e, t) {
+                                return (e.attr && e.attr.Order || 0) - (t.attr && t.attr.Order || 0)
+                            }
+                            )),
+                            n[t] = o,
+                            o
+                    },
+                    preRawProcess: function (e, t, n, o) {
+                        var r = e.attr
+                            , i = r && null != r._defaultValueHandling ? r._defaultValueHandling : o.DefaultValueHandling
+                            , s = r && r.Required;
+                        if (void 0 !== n || i !== Newtonsoft.Json.DefaultValueHandling.Populate && i !== Newtonsoft.Json.DefaultValueHandling.IgnoreAndPopulate || (n = e.defaultValue),
+                            (s === Newtonsoft.Json.Required.AllowNull || s === Newtonsoft.Json.Required.Always) && void 0 === n)
+                            throw new Newtonsoft.Json.JsonSerializationException("Required property '" + e.member.n + "' not found in JSON.");
+                        if (s === Newtonsoft.Json.Required.Always && null === n)
+                            throw new Newtonsoft.Json.JsonSerializationException("Required property '" + e.member.n + "' expects a value but got null.");
+                        if (s === Newtonsoft.Json.Required.DisallowNull && null === n)
+                            throw new Newtonsoft.Json.JsonSerializationException("Property '" + e.member.n + "' expects a value but got null.");
+                        return {
+                            value: n
+                        }
+                    },
+                    preProcess: function (e, t, n, o) {
+                        var r = e.attr
+                            , i = r && null != r._defaultValueHandling ? r._defaultValueHandling : o.DefaultValueHandling
+                            , s = r && null != r._nullValueHandling ? r._nullValueHandling : o.NullValueHandling;
+                        if (null == n && s === Newtonsoft.Json.NullValueHandling.Ignore)
+                            return !1;
+                        var l = Bridge.unbox(n, !0)
+                            , a = e.defaultValue;
+                        return !(null != l && (null != a || null == l && null == a) && Bridge.equals(l, a) && (i === Newtonsoft.Json.DefaultValueHandling.Ignore || i === Newtonsoft.Json.DefaultValueHandling.IgnoreAndPopulate)) && {
+                            value: n
+                        }
+                    },
+                    PopulateObject: function (e, t, n, o) {
+                        n = n || {};
+                        var r, i = Bridge.getType(t);
+                        if (r = "string" == typeof e ? Newtonsoft.Json.JsonConvert.parse(e) : e,
+                            i.$nullable && (i = i.$nullableType),
+                            null != r && "object" == typeof r)
+                            if (Bridge.isArray(null, i)) {
+                                if (void 0 === r.length)
+                                    return;
+                                for (var s = 0; s < r.length; s++)
+                                    t.push(Newtonsoft.Json.JsonConvert.DeserializeObject(r[s], i.$elementType, n, !0))
+                            } else if (Bridge.Reflection.isAssignableFrom(System.Collections.IDictionary, i)) {
+                                var l, a = System.Collections.Generic.Dictionary$2.getTypeParameters(i), u = a[0] || System.Object, f = a[1] || System.Object;
+                                if (Bridge.is(r, System.Collections.IDictionary)) {
+                                    l = System.Linq.Enumerable.from(r.getKeys()).ToArray();
+                                    for (s = 0; s < l.length; s++) {
+                                        var m = l[s];
+                                        t.setItem(Newtonsoft.Json.JsonConvert.DeserializeObject(m, u, n, !0), Newtonsoft.Json.JsonConvert.DeserializeObject(r.get(m), f, n, !0), !1)
+                                    }
+                                } else
+                                    for (var g in r)
+                                        r.hasOwnProperty(g) && t.setItem(Newtonsoft.Json.JsonConvert.DeserializeObject(g, u, n, !0), Newtonsoft.Json.JsonConvert.DeserializeObject(r[g], f, n, !0), !1)
+                            } else if (Bridge.Reflection.isAssignableFrom(System.Collections.IList, i) || Bridge.Reflection.isAssignableFrom(System.Collections.ICollection, i)) {
+                                var y = System.Collections.Generic.List$1.getElementType(i) || System.Object;
+                                Bridge.isArray(r) || (r = r.ToArray ? r.ToArray() : Bridge.Collections.EnumerableHelpers.ToArray(y, r));
+                                for (s = 0; s < r.length; s++)
+                                    t.add(Newtonsoft.Json.JsonConvert.DeserializeObject(r[s], y, n, !0))
+                            } else {
+                                var d, c, S, J, v = n && Bridge.is(n.ContractResolver, Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver), p = Newtonsoft.Json.JsonConvert.getMembers(i, 4), N = Newtonsoft.Json.JsonConvert.getMembers(i, 16);
+                                for (s = 0; s < p.length; s++) {
+                                    if (c = (d = p[s]).member,
+                                        void 0 === (e = r[J = d.attr && d.attr.PropertyName || (v ? c.n.charAt(0).toLowerCase() + c.n.substr(1) : c.n)]) && (e = Newtonsoft.Json.JsonConvert.getValue(r, J)),
+                                        void 0 === (B = (o || r)[J]) && (B = Newtonsoft.Json.JsonConvert.getValue(o || r, J)),
+                                        void 0 !== (B = (h = Newtonsoft.Json.JsonConvert.preRawProcess(d, o || r, B, n)).value)) {
+                                        var w = null === e || !1 === e || !0 === e || "number" == typeof e || "string" == typeof e
+                                            , b = Bridge.unbox(Bridge.Reflection.fieldAccess(c, t))
+                                            , C = Newtonsoft.Json.JsonConvert.DeserializeObject(e, c.rt, n, !0);
+                                        !1 !== (h = Newtonsoft.Json.JsonConvert.preProcess(d, t, b, n)) && (b = h.value,
+                                            w || null == b ? Bridge.Reflection.fieldAccess(c, t, C) : Newtonsoft.Json.JsonConvert.PopulateObject(C, b, n, e))
+                                    }
+                                }
+                                for (s = 0; s < N.length; s++) {
+                                    var B;
+                                    if (S = (d = N[s]).member,
+                                        void 0 === (e = r[J = d.attr && d.attr.PropertyName || (v ? S.n.charAt(0).toLowerCase() + S.n.substr(1) : S.n)]) && (e = Newtonsoft.Json.JsonConvert.getValue(r, J)),
+                                        void 0 === (B = (o || r)[J]) && (B = Newtonsoft.Json.JsonConvert.getValue(o || r, J)),
+                                        void 0 !== (B = (h = Newtonsoft.Json.JsonConvert.preRawProcess(d, o || r, B, n)).value)) {
+                                        var h;
+                                        w = null === e || !1 === e || !0 === e || "number" == typeof e || "string" == typeof e,
+                                            b = Bridge.unbox(Bridge.Reflection.midel(S.g, t)());
+                                        C = Newtonsoft.Json.JsonConvert.DeserializeObject(e, S.rt, n, !0),
+                                            !1 !== (h = Newtonsoft.Json.JsonConvert.preProcess(d, t, b, n)) && (b = h.value,
+                                                w || null == b ? S.s ? Bridge.Reflection.midel(S.s, t)(C) : "anonymous" === type.$kind && (t[S.n] = C) : Newtonsoft.Json.JsonConvert.PopulateObject(C, b, n, e))
+                                    }
+                                }
+                            }
+                    },
+                    BindToName: function (e, t) {
+                        if (e && e.SerializationBinder && e.SerializationBinder.Newtonsoft$Json$Serialization$ISerializationBinder$BindToName) {
+                            var n = {}
+                                , o = {};
+                            return e.SerializationBinder.Newtonsoft$Json$Serialization$ISerializationBinder$BindToName(t, n, o),
+                                o.v + (n.v ? ", " + n.v : "")
+                        }
+                        return Bridge.Reflection.getTypeQName(t)
+                    },
+                    BindToType: function (e, t, n) {
+                        if (e && e.SerializationBinder && e.SerializationBinder.Newtonsoft$Json$Serialization$ISerializationBinder$BindToType) {
+                            var o = Newtonsoft.Json.JsonConvert.SplitFullyQualifiedTypeName(t);
+                            o = e.SerializationBinder.Newtonsoft$Json$Serialization$ISerializationBinder$BindToType(o.assemblyName, o.typeName)
+                        } else
+                            o = Bridge.Reflection.getType(t);
+                        if (!o)
+                            throw new Newtonsoft.Json.JsonSerializationException("Type specified in JSON '" + t + "' was not resolved.");
+                        if (n && !Bridge.Reflection.isAssignableFrom(n, o))
+                            throw new Newtonsoft.Json.JsonSerializationException("Type specified in JSON '" + Bridge.Reflection.getTypeQName(o) + "' is not compatible with '" + Bridge.Reflection.getTypeQName(n) + "'.");
+                        return o
+                    },
+                    SplitFullyQualifiedTypeName: function (e) {
+                        var t, n, o = Newtonsoft.Json.JsonConvert.GetAssemblyDelimiterIndex(e);
+                        return null != o ? (t = Newtonsoft.Json.JsonConvert.Trim(e, 0, System.Nullable.getValueOrDefault(o, 0)),
+                            n = Newtonsoft.Json.JsonConvert.Trim(e, System.Nullable.getValueOrDefault(o, 0) + 1 | 0, (e.length - System.Nullable.getValueOrDefault(o, 0) | 0) - 1 | 0)) : (t = e,
+                                n = null),
+                        {
+                            typeName: t,
+                            assemblyName: n
+                        }
+                    },
+                    GetAssemblyDelimiterIndex: function (e) {
+                        for (var t = 0, n = 0; n < e.length; n = n + 1 | 0) {
+                            switch (e.charCodeAt(n)) {
+                                case 91:
+                                    t = t + 1 | 0;
+                                    break;
+                                case 93:
+                                    t = t - 1 | 0;
+                                    break;
+                                case 44:
+                                    if (0 === t)
+                                        return n
+                            }
+                        }
+                        return null
+                    },
+                    Trim: function (e, t, n) {
+                        var o = (t + n | 0) - 1 | 0;
+                        if (o >= e.length)
+                            throw new System.ArgumentOutOfRangeException.$ctor1("length");
+                        for (; t < o && System.Char.isWhiteSpace(String.fromCharCode(e.charCodeAt(t))); t = t + 1 | 0)
+                            ;
+                        for (; o >= t && System.Char.isWhiteSpace(String.fromCharCode(e.charCodeAt(o))); o = o - 1 | 0)
+                            ;
+                        return e.substr(t, 1 + (o - t | 0) | 0)
+                    },
+                    SerializeObject: function (e, t, n, o, r, i) {
+                        if (Bridge.is(t, Newtonsoft.Json.JsonSerializerSettings) && (n = t,
+                            t = 0),
+                            null == e) {
+                            if (n && n.NullValueHandling === Newtonsoft.Json.NullValueHandling.Ignore)
+                                return;
+                            return o ? null : Newtonsoft.Json.JsonConvert.stringify(null, t, n)
+                        }
+                        var s = Bridge.getType(e);
+                        if (r && s && ("interface" === r.$kind || Bridge.Reflection.isAssignableFrom(r, s)) && (r = null),
+                            r && r.$nullable && (r = r.$nullableType),
+                            r && r === System.Char)
+                            return String.fromCharCode(e);
+                        var l = r || s;
+                        if ("function" == typeof e) {
+                            var a = Bridge.getTypeName(e);
+                            return o ? a : Newtonsoft.Json.JsonConvert.stringify(a, t, n)
+                        }
+                        if ("object" == typeof e) {
+                            var u, f, m = Newtonsoft.Json.JsonConvert.defaultGuard;
+                            if (Bridge.$jsonGuard || (Bridge.$jsonGuard = [],
+                                m = function () {
+                                    delete Bridge.$jsonGuard
+                                }
+                            ),
+                                Bridge.$jsonGuard.indexOf(e) > -1)
+                                return;
+                            l === System.Globalization.CultureInfo || l === System.Guid || l === System.Uri || l === System.Int64 || l === System.UInt64 || l === System.Decimal || l === System.DateTime || l === System.DateTimeOffset || l === System.Char || Bridge.Reflection.isEnum(l) ? m() : Bridge.$jsonGuard.push(e);
+                            var g = !1;
+                            if (e && e.$boxed && (e = Bridge.unbox(e, !0),
+                                g = !0),
+                                l === System.Globalization.CultureInfo)
+                                return o ? e.name : Newtonsoft.Json.JsonConvert.stringify(e.name, t, n);
+                            if (l === System.Guid)
+                                return o ? Bridge.toString(e) : Newtonsoft.Json.JsonConvert.stringify(Bridge.toString(e), t, n);
+                            if (l === System.Uri)
+                                return o ? e.getAbsoluteUri() : Newtonsoft.Json.JsonConvert.stringify(e.getAbsoluteUri(), t, n);
+                            if (l === System.Int64 || l === System.UInt64 || l === System.Decimal)
+                                return o ? e.toJSON() : e.toString();
+                            if (l === System.DateTime) {
+                                var y = "string" == typeof e ? e : System.DateTime.format(e, "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFFK");
+                                return o ? y : Newtonsoft.Json.JsonConvert.stringify(y, t, n)
+                            }
+                            if (l === System.TimeSpan) {
+                                y = Bridge.toString(e);
+                                return o ? y : Newtonsoft.Json.JsonConvert.stringify(y, t, n)
+                            }
+                            if (l === System.DateTimeOffset) {
+                                y = e.ToString$1("yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFFK");
+                                return o ? y : Newtonsoft.Json.JsonConvert.stringify(y, t, n)
+                            }
+                            if (Bridge.isArray(null, l)) {
+                                if (l.$elementType === System.Byte) {
+                                    m();
+                                    var d = System.Convert.toBase64String(e);
+                                    return o ? d : Newtonsoft.Json.JsonConvert.stringify(d, t, n)
+                                }
+                                for (u = [],
+                                    f = 0; f < e.length; f++)
+                                    u.push(Newtonsoft.Json.JsonConvert.SerializeObject(e[f], t, n, !0, l.$elementType));
+                                if (e = u,
+                                    n && n._typeNameHandling)
+                                    (2 == (h = n._typeNameHandling) || 3 == h || 4 == h && r && r !== s) && (e = {
+                                        $type: Newtonsoft.Json.JsonConvert.BindToName(n, l),
+                                        $values: u
+                                    })
+                            } else {
+                                if (Bridge.Reflection.isEnum(l))
+                                    return i ? System.Enum.getName(l, e) : o ? e : Newtonsoft.Json.JsonConvert.stringify(e, t, n);
+                                if (l === System.Char)
+                                    return o ? String.fromCharCode(e) : Newtonsoft.Json.JsonConvert.stringify(String.fromCharCode(e), t, n);
+                                if (Bridge.Reflection.isAssignableFrom(System.Collections.IDictionary, l)) {
+                                    var c = System.Collections.Generic.Dictionary$2.getTypeParameters(l)
+                                        , S = c[0]
+                                        , J = c[1]
+                                        , v = {}
+                                        , p = Bridge.getEnumerator(e);
+                                    if (n && n._typeNameHandling)
+                                        (1 == (h = n._typeNameHandling) || 3 == h || 4 == h && r && r !== s) && (v.$type = Newtonsoft.Json.JsonConvert.BindToName(n, l));
+                                    for (; p.moveNext();) {
+                                        var N = p.Current
+                                            , w = Newtonsoft.Json.JsonConvert.SerializeObject(N.key, t, n, !0, S, !0);
+                                        "object" == typeof w && (w = Bridge.toString(N.key)),
+                                            v[w] = Newtonsoft.Json.JsonConvert.SerializeObject(N.value, t, n, !0, J)
+                                    }
+                                    e = v
+                                } else if (Bridge.Reflection.isAssignableFrom(System.Collections.IEnumerable, l)) {
+                                    var b = Newtonsoft.Json.JsonConvert.getEnumerableElementType(l)
+                                        , C = Bridge.getEnumerator(e, b);
+                                    for (u = []; C.moveNext();) {
+                                        var B = C.Current;
+                                        u.push(Newtonsoft.Json.JsonConvert.SerializeObject(B, t, n, !0, b))
+                                    }
+                                    if (e = u,
+                                        n && n._typeNameHandling)
+                                        (2 == (h = n._typeNameHandling) || 3 == h || 4 == h && r && r !== s) && (e = {
+                                            $type: Newtonsoft.Json.JsonConvert.BindToName(n, l),
+                                            $values: u
+                                        })
+                                } else if (!g) {
+                                    var h, T = {}, $ = !Bridge.getMetadata(l);
+                                    if (Newtonsoft.Json.JsonConvert.validateReflectable(l),
+                                        n && n._typeNameHandling)
+                                        (1 == (h = n._typeNameHandling) || 3 == h || 4 == h && r && r !== s) && (T.$type = Newtonsoft.Json.JsonConvert.BindToName(n, l));
+                                    if ($)
+                                        if (e.toJSON)
+                                            T = e.toJSON();
+                                        else
+                                            for (var D in e)
+                                                e.hasOwnProperty(D) && (T[D] = Newtonsoft.Json.JsonConvert.SerializeObject(e[D], t, n, !0));
+                                    else {
+                                        var H = Newtonsoft.Json.JsonConvert.getMembers(l, 4)
+                                            , I = n && Bridge.is(n.ContractResolver, Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver)
+                                            , O = Bridge.Reflection.getMembers(l, 8, 54);
+                                        if (O.length > 0)
+                                            for (var A = 0; A < O.length; A++)
+                                                System.Attribute.isDefined(O[A], System.Runtime.Serialization.OnSerializingAttribute, !1) && Bridge.Reflection.midel(O[A], e)(null);
+                                        for (f = 0; f < H.length; f++) {
+                                            var R = (V = H[f]).member
+                                                , j = V.attr && V.attr.PropertyName || (I ? R.n.charAt(0).toLowerCase() + R.n.substr(1) : R.n)
+                                                , z = Bridge.Reflection.fieldAccess(R, e);
+                                            if (!1 !== (x = Newtonsoft.Json.JsonConvert.preProcess(V, e, z, n || {})))
+                                                V.attr && (P = V.attr._typeNameHandling),
+                                                    null != P && (G = (n = n || {})._typeNameHandling,
+                                                        n._typeNameHandling = P),
+                                                    T[j] = Newtonsoft.Json.JsonConvert.SerializeObject(x.value, t, n, !0, R.rt),
+                                                    null != P && (n._typeNameHandling = G)
+                                        }
+                                        var _ = Newtonsoft.Json.JsonConvert.getMembers(l, 16);
+                                        for (f = 0; f < _.length; f++) {
+                                            var V, E = (V = _[f]).member;
+                                            if (E.g) {
+                                                var x, P, G, F = V.attr && V.attr.PropertyName || (I ? E.n.charAt(0).toLowerCase() + E.n.substr(1) : E.n);
+                                                z = Bridge.Reflection.midel(E.g, e)();
+                                                if (!1 !== (x = Newtonsoft.Json.JsonConvert.preProcess(V, e, z, n || {})))
+                                                    V.attr && (P = V.attr._typeNameHandling),
+                                                        null != P && (G = (n = n || {})._typeNameHandling,
+                                                            n._typeNameHandling = P),
+                                                        T[F] = Newtonsoft.Json.JsonConvert.SerializeObject(x.value, t, n, !0, E.rt),
+                                                        null != P && (n._typeNameHandling = G)
+                                            }
+                                        }
+                                        if (O.length > 0)
+                                            for (A = 0; A < O.length; A++)
+                                                if (System.Attribute.isDefined(O[A], System.Runtime.Serialization.OnSerializedAttribute, !1)) {
+                                                    Bridge.Reflection.midel(O[A], e)(null);
+                                                    break
+                                                }
+                                    }
+                                    e = T
+                                }
+                            }
+                            m()
+                        } else if (Bridge.Reflection.isEnum(l))
+                            return i ? System.Enum.getName(l, e) : o ? e : Newtonsoft.Json.JsonConvert.stringify(e, t, n);
+                        return o ? e : Newtonsoft.Json.JsonConvert.stringify(e, t, n)
+                    },
+                    getInstanceBuilder: function (e, t, n) {
+                        var o = Bridge.isArray(t)
+                            , r = o && Bridge.Reflection.isAssignableFrom(System.Collections.IEnumerable, e)
+                            , i = !1;
+                        if (r || "object" == typeof t && !o) {
+                            var s = Bridge.Reflection.getMembers(e, 1, 54)
+                                , l = []
+                                , a = !1
+                                , u = null;
+                            if (e === System.Version)
+                                s = [Bridge.Reflection.getMembers(e, 1, 284, null, [System.Int32, System.Int32, System.Int32, System.Int32])],
+                                    u = s[0];
+                            else if (s.length > 0) {
+                                s = s.filter((function (e) {
+                                    return !e.isSynthetic
+                                }
+                                ));
+                                for (var f = 0; f < s.length; f++) {
+                                    var m = s[f]
+                                        , g = System.Attribute.getCustomAttributes(m, Newtonsoft.Json.JsonConstructorAttribute).length > 0;
+                                    if (0 === (m.pi || []).length && (a = !0),
+                                        g) {
+                                        if (null != u)
+                                            throw new Newtonsoft.Json.JsonException("Multiple constructors with the JsonConstructorAttribute.");
+                                        u = m
+                                    }
+                                    2 === m.a && l.push(m)
+                                }
+                            }
+                            if (!a && !u && "struct" === e.$kind) {
+                                var y = !0;
+                                if (l.length > 0) {
+                                    y = !1;
+                                    for (var d = (u = l[0]).pi || [], c = Newtonsoft.Json.JsonConvert.getMembers(e, 4), S = Newtonsoft.Json.JsonConvert.getMembers(e, 16), J = 0; J < d.length; J++) {
+                                        for (var v = d[J], p = v.sn || v.n, N = 0; N < S.length; N++) {
+                                            var w = (b = S[J]).member;
+                                            if (p === (C = b.attr && b.attr.PropertyName || w.n) || p.toLowerCase() === C.toLowerCase() && b.s) {
+                                                y = !0;
+                                                break
+                                            }
+                                        }
+                                        if (!y)
+                                            for (N = 0; N < c.length; N++) {
+                                                var b, C, B = (b = c[J]).member;
+                                                if (p === (C = b.attr && b.attr.PropertyName || B.n) || p.toLowerCase() === C.toLowerCase() && !b.ro) {
+                                                    y = !0;
+                                                    break
+                                                }
+                                            }
+                                        if (y)
+                                            break
+                                    }
+                                }
+                                y && (u = {
+                                    td: e
+                                })
+                            }
+                            if (!a && s.length > 0) {
+                                if (1 !== l.length && null == u)
+                                    throw new Newtonsoft.Json.JsonSerializationException("Unable to find a constructor to use for type " + Bridge.getTypeName(e) + ". A class should either have a default constructor or one constructor with arguments.");
+                                null == u && (u = l[0]);
+                                d = u.pi || [];
+                                return r ? function (t) {
+                                    var o = [];
+                                    if (Bridge.Reflection.isAssignableFrom(System.Collections.IEnumerable, d[0].pt)) {
+                                        var r, s = [], l = Bridge.Reflection.getGenericArguments(d[0].pt)[0] || Bridge.Reflection.getGenericArguments(e)[0] || System.Object;
+                                        if (n && n._typeNameHandling && t.length > 0 && t[0]) {
+                                            var a = !0
+                                                , f = t[0].$type;
+                                            if (f)
+                                                for (var m = 1; m < t.length; m++) {
+                                                    var g = t[m] ? t[m].$type : null;
+                                                    if (!g || g !== f) {
+                                                        a = !1;
+                                                        break
+                                                    }
+                                                }
+                                            else
+                                                a = !1;
+                                            r = a ? Newtonsoft.Json.JsonConvert.getInstanceBuilder(l, t[0], n) : null
+                                        } else
+                                            r = null;
+                                        for (m = 0; m < t.length; m++) {
+                                            var y, c, S = t[m], J = r && !r.default;
+                                            J && (y = r(S),
+                                                s[m] = y.value,
+                                                c = y.names),
+                                                s[m] = Newtonsoft.Json.JsonConvert.DeserializeObject(S, l, n, !0, J ? s[m] : void 0, c)
+                                        }
+                                        o.push(s),
+                                            i = !0
+                                    }
+                                    var v = Bridge.Reflection.invokeCI(u, o);
+                                    return i ? {
+                                        $list: !0,
+                                        names: [],
+                                        value: v
+                                    } : {
+                                        names: [],
+                                        value: v
+                                    }
+                                }
+                                    : function (e) {
+                                        for (var t = [], o = [], r = Object.getOwnPropertyNames(e), i = 0; i < d.length; i++) {
+                                            for (var s = d[i], l = s.sn || s.n, a = null, f = 0; f < r.length; f++)
+                                                if (l === r[f]) {
+                                                    a = r[f];
+                                                    break
+                                                }
+                                            if (!a) {
+                                                l = l.toLowerCase();
+                                                for (f = 0; f < r.length; f++)
+                                                    if (l === r[f].toLowerCase()) {
+                                                        a = r[f];
+                                                        break
+                                                    }
+                                            }
+                                            (l = a) ? (t[i] = Newtonsoft.Json.JsonConvert.DeserializeObject(e[l], s.pt, n, !0),
+                                                o.push(l)) : t[i] = Bridge.getDefaultValue(s.pt)
+                                        }
+                                        return {
+                                            names: o,
+                                            value: Bridge.Reflection.invokeCI(u, t)
+                                        }
+                                    }
+                            }
+                        }
+                        var h = function () {
+                            return {
+                                names: [],
+                                value: Bridge.createInstance(e),
+                                default: !0
+                            }
+                        };
+                        return h.default = !0,
+                            h
+                    },
+                    createInstance: function (e, t, n) {
+                        return this.getInstanceBuilder(e, t, n)(t)
+                    },
+                    needReuse: function (e, t, n, o) {
+                        return !(e !== Newtonsoft.Json.ObjectCreationHandling.Reuse && (e !== Newtonsoft.Json.ObjectCreationHandling.Auto || null == t) || !o || "struct" === n.$kind || "enum" === n.$kind || n === System.String || n === System.Boolean || n === System.Int64 || n === System.UInt64 || n === System.Int32 || n === System.UInt32 || n === System.Int16 || n === System.UInt16 || n === System.Byte || n === System.SByte || n === System.Single || n === System.Double || n === System.Decimal)
+                    },
+                    tryToGetCastOperator: function (e, t) {
+                        if (null === e)
+                            return null;
+                        var n;
+                        if ("boolean" == typeof e || "string" == typeof e)
+                            n = [Bridge.getType(e)];
+                        else {
+                            if ("number" != typeof e)
+                                return null;
+                            n = [System.Double, System.Int64]
+                        }
+                        for (var o = 0; o < n.length; o++) {
+                            var r = n[o]
+                                , i = Bridge.Reflection.getMembers(t, 8, 284, "op_Explicit", [r]);
+                            if (i)
+                                return function (e) {
+                                    return Bridge.Reflection.midel(i, null)(e)
+                                }
+                                    ;
+                            var s = Bridge.Reflection.getMembers(t, 8, 284, "op_Implicit", [r]);
+                            if (s)
+                                return function (e) {
+                                    return Bridge.Reflection.midel(s, null)(e)
+                                }
+                        }
+                        return null
+                    },
+                    DeserializeObject: function (e, t, n, o, r, i) {
+                        if (n = n || {},
+                            "interface" === t.$kind)
+                            if (System.Collections.IDictionary === t)
+                                t = System.Collections.Generic.Dictionary$2(System.Object, System.Object);
+                            else if (Bridge.Reflection.isGenericType(t) && Bridge.Reflection.isAssignableFrom(System.Collections.Generic.IDictionary$2, Bridge.Reflection.getGenericTypeDefinition(t))) {
+                                var s = System.Collections.Generic.Dictionary$2.getTypeParameters(t);
+                                t = System.Collections.Generic.Dictionary$2(s[0] || System.Object, s[1] || System.Object)
+                            } else
+                                t === System.Collections.IList || t === System.Collections.ICollection ? t = System.Collections.Generic.List$1(System.Object) : Bridge.Reflection.isGenericType(t) && (Bridge.Reflection.isAssignableFrom(System.Collections.Generic.IList$1, Bridge.Reflection.getGenericTypeDefinition(t)) || Bridge.Reflection.isAssignableFrom(System.Collections.Generic.ICollection$1, Bridge.Reflection.getGenericTypeDefinition(t))) && (t = System.Collections.Generic.List$1(System.Collections.Generic.List$1.getElementType(t) || System.Object));
+                        if (!o && "string" == typeof e) {
+                            var l = Newtonsoft.Json.JsonConvert.parse(e);
+                            ("object" == typeof l || Bridge.isArray(l) || t === System.Array.type(System.Byte, 1) || t === Function || t == System.Type || t === System.Guid || t === System.Globalization.CultureInfo || t === System.Uri || t === System.DateTime || t === System.DateTimeOffset || t === System.Char || Bridge.Reflection.isEnum(t)) && (e = l)
+                        }
+                        var a = t === Object || t === System.Object
+                            , u = Bridge.isObject(e);
+                        a && u && e && e.$type && (t = Newtonsoft.Json.JsonConvert.BindToType(n, e.$type, t),
+                            a = !1);
+                        if (a && u || t.$literal && !Bridge.getMetadata(t))
+                            return Bridge.merge(a ? {} : r || Bridge.createInstance(t), e);
+                        var f = Bridge.getDefaultValue(t);
+                        if (t.$nullable && (t = t.$nullableType),
+                            null === e)
+                            return f;
+                        if (!1 === e)
+                            return t !== System.Boolean && (t === System.String ? "false" : (v = Newtonsoft.Json.JsonConvert.tryToGetCastOperator(e, t)) ? v(e) : a ? Bridge.box(e, System.Boolean, System.Boolean.toString) : f);
+                        if (!0 === e) {
+                            if (t === System.Boolean)
+                                return !0;
+                            if (t === System.Int64)
+                                return System.Int64(1);
+                            if (t === System.UInt64)
+                                return System.UInt64(1);
+                            if (t === System.Decimal)
+                                return System.Decimal(1);
+                            if (t === String.String)
+                                return "true";
+                            if (t === System.DateTime)
+                                return System.DateTime.create$2(1, 0);
+                            if (t === System.DateTimeOffset)
+                                return System.DateTimeOffset.MinValue.$clone();
+                            if (Bridge.Reflection.isEnum(t))
+                                return Bridge.unbox(System.Enum.parse(t, 1));
+                            if ("number" == typeof f)
+                                return f + 1;
+                            if (v = Newtonsoft.Json.JsonConvert.tryToGetCastOperator(e, t))
+                                return v(e);
+                            if (a)
+                                return Bridge.box(e, System.Boolean, System.Boolean.toString);
+                            throw new System.ArgumentException(System.String.format("Could not cast or convert from {0} to {1}", Bridge.getTypeName(e), Bridge.getTypeName(t)))
+                        }
+                        if ("number" == typeof e) {
+                            if (t.$number && !t.$is(e) && !(t === System.Decimal && t.tryParse(e, null, {}) || System.Int64.is64BitType(t) && t.tryParse(e.toString(), {})))
+                                throw new Newtonsoft.Json.JsonException(System.String.format("Input string '{0}' is not a valid {1}", e, Bridge.getTypeName(t)));
+                            if (t === System.Boolean)
+                                return 0 !== e;
+                            if (Bridge.Reflection.isEnum(t))
+                                return Bridge.unbox(System.Enum.parse(t, e));
+                            if (t === System.SByte)
+                                return 0 | e;
+                            if (t === System.Byte)
+                                return e >>> 0;
+                            if (t === System.Int16)
+                                return 0 | e;
+                            if (t === System.UInt16)
+                                return e >>> 0;
+                            if (t === System.Int32)
+                                return 0 | e;
+                            if (t === System.UInt32)
+                                return e >>> 0;
+                            if (t === System.Int64)
+                                return System.Int64(e);
+                            if (t === System.UInt64)
+                                return System.UInt64(e);
+                            if (t === System.Single)
+                                return e;
+                            if (t === System.Double)
+                                return e;
+                            if (t === System.Decimal)
+                                return System.Decimal(e);
+                            if (t === System.Char)
+                                return 0 | e;
+                            if (t === System.String)
+                                return e.toString();
+                            if (t === System.DateTime)
+                                return System.DateTime.create$2(0 | e, 0);
+                            if (t === System.TimeSpan)
+                                return System.TimeSpan.fromTicks(e);
+                            if (t === System.DateTimeOffset)
+                                return new System.DateTimeOffset.$ctor5(System.Int64(0 | e), (new System.DateTimeOffset.ctor).Offset);
+                            if (v = Newtonsoft.Json.JsonConvert.tryToGetCastOperator(e, t))
+                                return v(e);
+                            if (a)
+                                return Bridge.box(e, Bridge.getType(e));
+                            throw new System.ArgumentException(System.String.format("Could not cast or convert from {0} to {1}", Bridge.getTypeName(e), Bridge.getTypeName(t)))
+                        }
+                        if ("string" == typeof e) {
+                            var m = t === System.Decimal
+                                , g = m || System.Int64.is64BitType(t);
+                            if (g && (m ? !t.tryParse(e, null, {}) : !t.tryParse(e, {})))
+                                throw new Newtonsoft.Json.JsonException(System.String.format("Input string '{0}' is not a valid {1}", e, Bridge.getTypeName(t)));
+                            var y = t == System.Double || t == System.Single;
+                            if (!g && t.$number && (y ? !t.tryParse(e, null, {}) : !t.tryParse(e, {})))
+                                throw new Newtonsoft.Json.JsonException(System.String.format("Could not convert {0} to {1}: {2}", Bridge.getTypeName(e), Bridge.getTypeName(t), e));
+                            if (t === Function || t == System.Type)
+                                return Bridge.Reflection.getType(e);
+                            if (t === System.Globalization.CultureInfo)
+                                return new System.Globalization.CultureInfo(e);
+                            if (t === System.Uri)
+                                return new System.Uri(e);
+                            if (t === System.Guid)
+                                return System.Guid.Parse(e);
+                            if (t === System.Boolean) {
+                                var d = {
+                                    v: !1
+                                };
+                                return !(System.String.isNullOrWhiteSpace(e) || !System.Boolean.tryParse(e, d)) && d.v
+                            }
+                            if (t === System.SByte)
+                                return 0 | e;
+                            if (t === System.Byte)
+                                return e >>> 0;
+                            if (t === System.Int16)
+                                return 0 | e;
+                            if (t === System.UInt16)
+                                return e >>> 0;
+                            if (t === System.Int32)
+                                return 0 | e;
+                            if (t === System.UInt32)
+                                return e >>> 0;
+                            if (t === System.Int64)
+                                return System.Int64(e);
+                            if (t === System.UInt64)
+                                return System.UInt64(e);
+                            if (t === System.Single)
+                                return parseFloat(e);
+                            if (t === System.Double)
+                                return parseFloat(e);
+                            if (t !== System.Decimal) {
+                                if (t === System.Char)
+                                    return 0 === e.length ? 0 : e.charCodeAt(0);
+                                if (t === System.String)
+                                    return o ? e : JSON.parse(e);
+                                if (t === System.TimeSpan)
+                                    return System.TimeSpan.parse('"' == e[0] ? JSON.parse(e) : e);
+                                if (t === System.DateTime) {
+                                    var c = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFF" + ((S = System.String.endsWith(e, "Z")) ? "'Z'" : "K");
+                                    return J = null != (J = System.DateTime.parseExact(e, c, null, !0, !0)) ? J : System.DateTime.parse(e, void 0, !0),
+                                        S && 1 !== J.kind && (J = System.DateTime.specifyKind(J, 1)),
+                                        J
+                                }
+                                if (t === System.DateTimeOffset) {
+                                    var S, J;
+                                    c = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFF" + ((S = System.String.endsWith(e, "Z")) ? "'Z'" : "K");
+                                    return J = null != (J = System.DateTime.parseExact(e, c, null, !0, !0)) ? J : System.DateTime.parse(e, void 0, !0),
+                                        S && 1 !== J.kind && (J = System.DateTime.specifyKind(J, 1)),
+                                        new System.DateTimeOffset.$ctor1(J)
+                                }
+                                if (Bridge.Reflection.isEnum(t))
+                                    return Bridge.unbox(System.Enum.parse(t, e));
+                                if (t === System.Array.type(System.Byte, 1))
+                                    return System.Convert.fromBase64String(e);
+                                var v;
+                                if (v = Newtonsoft.Json.JsonConvert.tryToGetCastOperator(e, t))
+                                    return v(e);
+                                if (a)
+                                    return e;
+                                throw new System.ArgumentException(System.String.format("Could not cast or convert from {0} to {1}", Bridge.getTypeName(e), Bridge.getTypeName(t)))
+                            }
+                            try {
+                                return System.Decimal(e)
+                            } catch (e) {
+                                return System.Decimal(0)
+                            }
+                        } else if ("object" == typeof e) {
+                            if (null !== f && "struct" !== t.$kind)
+                                return f;
+                            if (Bridge.isArray(null, t)) {
+                                if (null != (H = e.$type) && (t = Newtonsoft.Json.JsonConvert.BindToType(n, H, t),
+                                    e = e.$values),
+                                    void 0 === e.length)
+                                    return [];
+                                var p = new Array;
+                                System.Array.type(t.$elementType, t.$rank || 1, p);
+                                for (var N = 0; N < e.length; N++)
+                                    p[N] = Newtonsoft.Json.JsonConvert.DeserializeObject(e[N], t.$elementType, n, !0);
+                                return p
+                            }
+                            if (Bridge.Reflection.isAssignableFrom(System.Collections.IList, t)) {
+                                null != (H = e.$type) && (t = Newtonsoft.Json.JsonConvert.BindToType(n, H, t),
+                                    e = e.$values);
+                                var w = System.Collections.Generic.List$1.getElementType(t) || System.Object
+                                    , b = r ? {
+                                        value: r
+                                    } : Newtonsoft.Json.JsonConvert.createInstance(t, e, n);
+                                if (b && b.$list)
+                                    return b.value;
+                                if (b = b.value,
+                                    void 0 === e.length)
+                                    return b;
+                                for (N = 0; N < e.length; N++)
+                                    b.add(Newtonsoft.Json.JsonConvert.DeserializeObject(e[N], w, n, !0));
+                                return b
+                            }
+                            if (Bridge.Reflection.isAssignableFrom(System.Collections.IDictionary, t)) {
+                                var C = System.Collections.Generic.Dictionary$2.getTypeParameters(t)
+                                    , B = C[0] || System.Object
+                                    , h = C[1] || System.Object
+                                    , T = !1;
+                                null != (H = e.$type) && (t = Newtonsoft.Json.JsonConvert.BindToType(n, H, t),
+                                    T = !0);
+                                var $ = r ? {
+                                    value: r
+                                } : Newtonsoft.Json.JsonConvert.createInstance(t, e, n);
+                                if ($ && $.$list)
+                                    return $.value;
+                                for (var D in O = $.names || [],
+                                    $ = $.value,
+                                    e)
+                                    !e.hasOwnProperty(D) || T && "$type" === D || O.indexOf(D) < 0 && $.add(Newtonsoft.Json.JsonConvert.DeserializeObject(D, B, n, !0), Newtonsoft.Json.JsonConvert.DeserializeObject(e[D], h, n, !0));
+                                return $
+                            }
+                            var H;
+                            if (null != (H = e.$type) && (t = Newtonsoft.Json.JsonConvert.BindToType(n, H, t)),
+                                !Bridge.getMetadata(t))
+                                return Bridge.merge(a ? {} : r || Bridge.createInstance(t), e);
+                            var I, O, A = r ? {
+                                value: r,
+                                names: i,
+                                default: !0
+                            } : Newtonsoft.Json.JsonConvert.createInstance(t, e, n);
+                            O = A.names || [],
+                                I = A.default,
+                                A = A.value;
+                            var R = Bridge.Reflection.getMembers(t, 8, 54);
+                            if (R.length > 0)
+                                for (var j = 0; j < R.length; j++)
+                                    System.Attribute.isDefined(R[j], System.Runtime.Serialization.OnDeserializingAttribute, !1) && Bridge.Reflection.midel(R[j], A)(null);
+                            var z, _, V, E, x, P, G = n && Bridge.is(n.ContractResolver, Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver), F = Newtonsoft.Json.JsonConvert.getMembers(t, 4);
+                            for (N = 0; N < F.length; N++) {
+                                if (V = (_ = F[N]).member,
+                                    x = _.attr && _.attr.PropertyName || (G ? V.n.charAt(0).toLowerCase() + V.n.substr(1) : V.n),
+                                    !(O.indexOf(x) > -1))
+                                    if (void 0 === (z = e[x]) && (z = Newtonsoft.Json.JsonConvert.getValue(e, x)),
+                                        void 0 !== (z = (q = Newtonsoft.Json.JsonConvert.preRawProcess(_, e, z, n)).value)) {
+                                        var k = Bridge.Reflection.fieldAccess(V, A)
+                                            , M = Newtonsoft.Json.ObjectCreationHandling.Auto;
+                                        P = void 0,
+                                            _.attr && null != _.attr._objectCreationHandling ? M = _.attr._objectCreationHandling : null != n._objectCreationHandling && (M = n._objectCreationHandling),
+                                            Newtonsoft.Json.JsonConvert.needReuse(M, k, V.rt, I) && (P = Bridge.unbox(k, !0)),
+                                            _.attr && (K = _.attr._typeNameHandling),
+                                            null != K && (W = n._typeNameHandling,
+                                                n._typeNameHandling = K);
+                                        var L = Newtonsoft.Json.JsonConvert.DeserializeObject(z, V.rt, n, !0, P);
+                                        null != K && (n._typeNameHandling = W),
+                                            !1 !== (q = Newtonsoft.Json.JsonConvert.preProcess(_, A, L, n)) && void 0 === P && Bridge.Reflection.fieldAccess(V, A, q.value)
+                                    }
+                            }
+                            var U = Newtonsoft.Json.JsonConvert.getMembers(t, 16);
+                            for (N = 0; N < U.length; N++) {
+                                var q;
+                                if (E = (_ = U[N]).member,
+                                    x = _.attr && _.attr.PropertyName || (G ? E.n.charAt(0).toLowerCase() + E.n.substr(1) : E.n),
+                                    !(O.indexOf(x) > -1))
+                                    if (void 0 === (z = e[x]) && (z = Newtonsoft.Json.JsonConvert.getValue(e, x)),
+                                        void 0 !== (z = (q = Newtonsoft.Json.JsonConvert.preRawProcess(_, e, z, n)).value)) {
+                                        if (P = void 0,
+                                            E.g) {
+                                            k = Bridge.Reflection.midel(E.g, A)(),
+                                                M = Newtonsoft.Json.ObjectCreationHandling.Auto;
+                                            _.attr && null != _.attr._objectCreationHandling ? M = _.attr._objectCreationHandling : null != n._objectCreationHandling && (M = n._objectCreationHandling),
+                                                Newtonsoft.Json.JsonConvert.needReuse(M, k, E.rt, I) && (P = Bridge.unbox(k, !0))
+                                        }
+                                        var K, W;
+                                        _.attr && (K = _.attr._typeNameHandling),
+                                            null != K && (W = n._typeNameHandling,
+                                                n._typeNameHandling = K);
+                                        L = Newtonsoft.Json.JsonConvert.DeserializeObject(z, E.rt, n, !0, P);
+                                        null != K && (n._typeNameHandling = W),
+                                            !1 !== (q = Newtonsoft.Json.JsonConvert.preProcess(_, A, L, n)) && void 0 === P && (E.s ? Bridge.Reflection.midel(E.s, A)(q.value) : "anonymous" === t.$kind && (A[E.n] = q.value))
+                                    }
+                            }
+                            if (R.length > 0)
+                                for (j = 0; j < R.length; j++)
+                                    System.Attribute.isDefined(R[j], System.Runtime.Serialization.OnDeserializedAttribute, !1) && Bridge.Reflection.midel(R[j], A)(null);
+                            return A
+                        }
+                    }
+                }
+            }
+        }),
+        Newtonsoft.Json.$cache = []
+}
+));

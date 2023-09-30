@@ -169,9 +169,6 @@
     <Compile Include="..\Core.API\Models\Vendor.cs">
       <Link>Models\Vendor.cs</Link>
     </Compile>
-    <Compile Include="..\Core.API\Models\Webhook.cs">
-      <Link>Models\Webhook.cs</Link>
-    </Compile>
     <Compile Include="Clients\LocalStorage.cs" />
     <Compile Include="Components\ExportCustomData.cs" />
     <Compile Include="Components\ButtonPdf.cs" />

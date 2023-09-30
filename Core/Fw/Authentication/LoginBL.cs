@@ -196,7 +196,7 @@ namespace Core.Fw.Authentication
 
         public void InitAppIfEmpty()
         {
-            Client.SystemRole = Client.Token.RoleIds.Contains((int)RoleEnum.System);
+            Client.SystemRole = Client.Token.RoleIds.Contains(((int)RoleEnum.System).ToString());
             LayoutForm?.UpdateView();
             if (_initApp || Portal)
             {

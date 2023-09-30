@@ -14,7 +14,6 @@ namespace Core.ViewModels
         public Component Component { get; set; }
         public ComponentGroup ComponentGroup { get; set; }
         public Models.Feature Feature { get; set; }
-        public GridPolicy GridPolicy { get; set; }
         public bool SyncChildren { get; set; }
         public List<int> VendorId { get; set; }
     }

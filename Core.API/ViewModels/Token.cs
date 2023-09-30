@@ -8,8 +8,8 @@ namespace Core.ViewModels
     public partial class Token
     {
 
-        public int UserId { get; set; }
-        public int? CostCenterId { get; set; }
+        public string UserId { get; set; }
+        public string CostCenterId { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
@@ -19,22 +19,22 @@ namespace Core.ViewModels
         public string Avatar { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-        public DateTime AccessTokenExp { get; set; }
-        public DateTime RefreshTokenExp { get; set; }
+        public DateTimeOffset AccessTokenExp { get; set; }
+        public DateTimeOffset RefreshTokenExp { get; set; }
         public string HashPassword { get; set; }
         public string Recovery { get; set; }
         public string SysName { get; set; } = "TMS";
         public string TenantCode { get; set; }
         public Vendor Vendor { get; set; }
-        public List<int> RoleIds { get; set; }
+        public List<string> RoleIds { get; set; }
         public List<string> RoleNames { get; set; }
-        public List<int> AllRoleIds { get; set; }
-        public List<int> CenterIds { get; set; }
+        public List<string> AllRoleIds { get; set; }
+        public List<string> CenterIds { get; set; }
         public string Ssn { get; set; }
         public string PhoneNumber { get; set; }
-        public int? TeamId { get; set; }
+        public string TeamId { get; set; }
         public string PartnerId { get; set; }
-        public int? RegionId { get; set; }
+        public string RegionId { get; set; }
         public object Additional { get; set; }
     }
 

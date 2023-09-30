@@ -24,7 +24,6 @@ namespace FTP.TMS
         public const string Space = " ";
         public const int ComponentId = 20;
         public const int ComponentGroupId = 30;
-        public const int GridPolicyId = 2077;
         public const int HistoryId = 4199;
         public const string InsertedBy = "InsertedBy";
         public const string OwnerId = "OwnerId";

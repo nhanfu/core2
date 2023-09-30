@@ -513,7 +513,7 @@ namespace Core.Components
             }
             if (GuiInfo.LocalHeader is null)
             {
-                GuiInfo.LocalHeader = new List<Component>(_gv.Header.Where(x => x.Id > 0));
+                GuiInfo.LocalHeader = new List<Component>(_gv.Header.Where(x => x.Id != null));
             }
         }
 

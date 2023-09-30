@@ -68,7 +68,7 @@ namespace Core.Components
                 {
                     Element.RemoveClass(FocusedClass);
                 }
-                var id = Entity[IdField].As<int>();
+                var id = Entity[IdField].As<string>();
                 if (value)
                 {
                     ListViewSection.ListView.FocusId = id;
@@ -221,7 +221,7 @@ namespace Core.Components
             {
                 cellText.RefData = ListView.RefData;
             }
-            if (header.ReferenceId.HasValue)
+            if (header.ReferenceId.HasAnyChar())
             {
                 var source = header.LocalData ?? (ListView.RefData.Nothing() ? null : ListView.RefData.GetValueOrDefault(header.RefName));
                 header.LocalData = source;

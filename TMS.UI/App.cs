@@ -144,9 +144,9 @@ namespace TMS.UI
             Task.Run(async () => await LoadUserSetting(token?.UserId));
         }
 
-        private static async Task LoadUserSetting(int? userId)
+        private static async Task LoadUserSetting(string userId)
         {
-            if (userId is null || userId == 0)
+            if (userId != null)
             {
                 return;
             }

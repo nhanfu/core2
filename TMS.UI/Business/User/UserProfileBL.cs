@@ -43,7 +43,7 @@ namespace TMS.UI.Business.User
                     var instance = Activator.CreateInstance(type) as PopupEditor;
                     instance.Entity = new UserProfileVM()
                     {
-                        Id = UserEntity.Id
+                        //Id = UserEntity.Id
                     };
                     instance.Title = "Change Password";
                     return instance;

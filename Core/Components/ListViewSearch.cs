@@ -18,9 +18,9 @@ namespace Core.Components
         public string SearchTerm { get; set; }
         public string FullTextSearch { get; set; }
         public string ScanTerm { get; set; }
-        public DateTime? StartDate { get; set; }
-        public int? DateTimeField { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTimeOffset? StartDate { get; set; }
+        public string DateTimeField { get; set; }
+        public DateTimeOffset? EndDate { get; set; }
     }
 
     public class ListViewSearch : EditableComponent
@@ -83,10 +83,11 @@ namespace Core.Components
                 com.PlainText = header.ShortDesc;
                 com.Visibility = true;
                 com.Column = 1;
+                var compareOpId = (AdvSearchOperation)Components.AdvancedSearch.OperatorFactory(componentType ?? ComponentTypeTypeEnum.Textbox).FirstOrDefault().Id.TryParseInt();
                 ParentListView.AdvSearchVM.Conditions.Add(new FieldCondition
                 {
                     FieldId = com.Id,
-                    CompareOperatorId = (AdvSearchOperation)Components.AdvancedSearch.OperatorFactory(componentType ?? ComponentTypeTypeEnum.Textbox).FirstOrDefault().Id,
+                    CompareOperatorId = compareOpId,
                     LogicOperatorId = LogicOperation.And,
                     Field = header,
                 });

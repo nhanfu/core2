@@ -40,7 +40,7 @@ namespace TMS.API.Controllers
         }
 
         [HttpGet("api/User/GetSaleUser")]
-        public async Task<OdataResult<User>> GetSaleUser(ODataQueryOptions<User> options, int? vendorId)
+        public async Task<OdataResult<User>> GetSaleUser(ODataQueryOptions<User> options, string vendorId)
         {
             if (vendorId is null)
             {
@@ -63,7 +63,7 @@ namespace TMS.API.Controllers
                 join policyLeft in db.FeaturePolicy on user.Id equals policyLeft.RecordId into policyLeftJoin
                 from policy in policyLeftJoin.DefaultIfEmpty()
                 where user.InsertedBy == UserId || policy != null && policy.CanRead && policy.EntityId == customerEnum
-                        && (policy.UserId == UserId || AllRoleIds.Contains(policy.RoleId.Value))
+                        && (policy.UserId == UserId || AllRoleIds.Contains(policy.RoleId))
                 select user;
 
             return ApplyQuery(options, query);
@@ -71,7 +71,7 @@ namespace TMS.API.Controllers
 
         private async Task<bool> CanUpdateUser(User user)
         {
-            return user.InsertedBy != UserId && !AllRoleIds.Contains(user.CreatedRoleId.Value) && !await HasSystemRole();
+            return user.InsertedBy != UserId && !AllRoleIds.Contains(user.CreatedRoleId) && !await HasSystemRole();
         }
 
         [HttpGet("api/User/UserRole/{roleName}")]
@@ -103,7 +103,7 @@ namespace TMS.API.Controllers
         private async Task EnsureEditUserPermission()
         {
             var canWriteUser = await db.FeaturePolicy
-                .AnyAsync(x => x.Feature.Name == "User Detail" && AllRoleIds.Contains(x.RoleId.Value) && x.CanWrite);
+                .AnyAsync(x => x.Feature.Name == "User Detail" && AllRoleIds.Contains(x.RoleId) && x.CanWrite);
             if (!canWriteUser)
             {
                 throw new UnauthorizedAccessException("No permission to update");
@@ -247,7 +247,7 @@ namespace TMS.API.Controllers
         }
 
         [HttpGet("api/User/ReSendUser/{userId}")]
-        public async Task<string> ReSendUser(int userId)
+        public async Task<string> ReSendUser(string userId)
         {
             var user = await db.User.FirstOrDefaultAsync(x => x.Id == userId);
             if (await CanUpdateUser(user))

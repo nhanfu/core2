@@ -1,4 +1,4 @@
-﻿    using Core.Enums;
+﻿using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
@@ -13,7 +13,7 @@ namespace TMS.API.Controllers
 {
     public class FeaturePolicyController : TMSController<FeaturePolicy>
     {
-        public FeaturePolicyController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public FeaturePolicyController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 
@@ -21,8 +21,8 @@ namespace TMS.API.Controllers
         public override Task<OdataResult<FeaturePolicy>> Get(ODataQueryOptions<FeaturePolicy> options)
         {
             var query = db.FeaturePolicy.Where(x => x.Active)
-                .Where(x => x.InsertedBy == UserId || x.Feature.InsertedBy == UserId 
-                    || x.UserId == UserId || AllRoleIds.Contains(x.RoleId.Value));
+                .Where(x => x.InsertedBy == UserId || x.Feature.InsertedBy == UserId
+                    || x.UserId == UserId || AllRoleIds.Contains(x.RoleId));
             return ApplyQuery(options, query);
         }
 
@@ -33,7 +33,9 @@ namespace TMS.API.Controllers
 
         public async override Task<ActionResult<FeaturePolicy>> CreateAsync([FromBody] FeaturePolicy entity)
         {
-            var check = await db.FeaturePolicy.FirstOrDefaultAsync(x => x.UserId == entity.UserId && x.UserId != 0 && x.RecordId == entity.RecordId && x.RecordId != 0 && x.EntityId == entity.EntityId && x.EntityId != null);
+            var check = await db.FeaturePolicy.FirstOrDefaultAsync(
+                x => x.UserId == entity.UserId && x.UserId == null && x.RecordId == entity.RecordId
+                    && x.RecordId == null && x.EntityId == entity.EntityId && x.EntityId != null);
             if (check != null)
             {
                 return entity;
@@ -42,12 +44,12 @@ namespace TMS.API.Controllers
         }
 
         [HttpPost("api/[Controller]/Ownership")]
-        public async Task<List<int>> Ownership([FromBody] OwnershipRequest request)
+        public async Task<List<string>> Ownership([FromBody] OwnershipRequest request)
         {
             return await db.FeaturePolicy
                 .Where(x => x.EntityId == request.EntityType.Id
                     && x.CanShare && request.RecordIds.Contains(x.RecordId)
-                    && (x.UserId == UserId || AllRoleIds.Contains(x.RoleId.Value)))
+                    && (x.UserId == UserId || AllRoleIds.Contains(x.RoleId)))
                 .Select(x => x.RecordId)
                 .ToListAsync();
         }
@@ -55,9 +57,8 @@ namespace TMS.API.Controllers
         [HttpPost("api/[Controller]/SharePermission")]
         public async Task<ActionResult<bool>> SharePermission([FromBody] SecurityVM securityVM)
         {
-            var policies = securityVM.RecordIds.Where(x => x > 0).Select(x => new FeaturePolicy
+            var policies = securityVM.RecordIds.Where(x => x != null).Select(x => new FeaturePolicy
             {
-                Id = 0,
                 FeatureId = securityVM.FeatureId,
                 EntityId = securityVM.EntityId,
                 UserId = securityVM.UserId,
@@ -85,7 +86,7 @@ namespace TMS.API.Controllers
             var entityId = entities.First().EntityId;
             foreach (var policy in entities)
             {
-                if (policy.Id <= 0)
+                if (policy.Id == null)
                 {
                     var exist = await db.FeaturePolicy.FirstOrDefaultAsync(old => old.EntityId == entityId && old.RecordId == policy.RecordId
                         && ((policy.UserId != null && old.UserId == policy.UserId) || (policy.RoleId != null && old.RoleId == policy.RoleId)));

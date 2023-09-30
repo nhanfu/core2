@@ -39,7 +39,7 @@ namespace Core.Components
         public Component LastComponentFocus;
         public int LastHeaderId;
         public int _delay = 0;
-        public List<int> DeleteTempIds;
+        public List<string> DeleteTempIds;
         public AdvSearchVM AdvSearchVM { get; set; }
         public bool Editable { get; set; }
         public ListViewItem LastListViewItem { get; set; }
@@ -57,10 +57,10 @@ namespace Core.Components
         public List<object> FormattedRowData { get; set; }
         internal bool VirtualScroll { get; set; }
         public string Sql { get; set; }
-        public int StartRow { get; set; }
-        public int EndRow { get; set; }
-        public int StartCol { get; set; }
-        public int EndCol { get; set; }
+        public string StartRow { get; set; }
+        public string EndRow { get; set; }
+        public string StartCol { get; set; }
+        public string EndCol { get; set; }
         public List<object> CacheData { get; set; } = new List<object>();
         public string FormattedDataSource
         {
@@ -108,15 +108,15 @@ namespace Core.Components
         public List<CellSelected> CellSelected = new List<CellSelected>();
         public List<Where> Wheres = new List<Where>();
         public HashSet<int> SelectedIds { get; set; } = new HashSet<int>();
-        public int? FocusId { get; set; }
-        public int? EntityFocusId { get; set; }
+        public string FocusId { get; set; }
+        public string EntityFocusId { get; set; }
         public bool ShouldSetEntity { get; set; } = true;
 
         public event Action<List<Component>> HeaderLoaded;
 
         public ListView(Component ui, HTMLElement ele = null) : base(ui)
         {
-            DeleteTempIds = new List<int>();
+            DeleteTempIds = new List<string>();
             GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
             Id = ui.Id.ToString();
             Name = ui.FieldName;
@@ -148,7 +148,7 @@ namespace Core.Components
             _scrollTable = GuiInfo.ScrollHeight ?? 10;
             if (GuiInfo.IsRealtime)
             {
-                EditForm.NotificationClient?.AddListener(GuiInfo.ReferenceId.Value, (int)TypeEntityAction.UpdateEntity, RealtimeUpdateListViewItem);
+                EditForm.NotificationClient?.AddListener(GuiInfo.ReferenceId, ((int)TypeEntityAction.UpdateEntity).ToString(), RealtimeUpdateListViewItem);
             }
         }
 
@@ -561,7 +561,7 @@ namespace Core.Components
         {
             if (args.Action == ObservableAction.Remove)
             {
-                RemoveRowById(args.Item[IdField].As<int>());
+                RemoveRowById(args.Item[IdField].As<string>());
                 return;
             }
             Window.ClearTimeout(_rowDataChangeAwaiter);
@@ -711,7 +711,7 @@ namespace Core.Components
             {
                 return;
             }
-            if (rowData.EntityId > 0)
+            if (rowData.EntityId.HasAnyChar())
             {
                 await rowData.PatchUpdate();
             }
@@ -834,7 +834,7 @@ namespace Core.Components
         {
             rows = rows ?? RowData.Data;
             headers = headers ?? Header;
-            foreach (var header in headers.Where(x => x.ReferenceId.HasValue))
+            foreach (var header in headers.Where(x => x.ReferenceId.HasAnyChar()))
             {
                 if (header.FieldName.IsNullOrWhiteSpace() || header.FieldName.Length <= 2)
                 {
@@ -850,7 +850,7 @@ namespace Core.Components
                 foreach (var row in rows)
                 {
                     var objField = header.FieldName.Substr(0, header.FieldName.Length - 2);
-                    var propType = Utils.GetEntity(header.ReferenceId.Value)?.Name;
+                    var propType = Utils.GetEntity(header.ReferenceId)?.Name;
                     if (propType is null)
                     {
                         continue;
@@ -978,7 +978,7 @@ namespace Core.Components
         {
             var entity = GuiInfo.RefName;
             var selected = GetSelectedRows();
-            var ids = selected.Select(x => (int)x[IdField]).ToList();
+            var ids = selected.Select(x => (string)x[IdField]).ToList();
             var client = new Client(entity);
             var success = await client.DeactivateAsync(ids);
             if (success)
@@ -998,7 +998,7 @@ namespace Core.Components
         public virtual async Task<IEnumerable<object>> HardDeleteConfirmed(List<object> deleted)
         {
             var entity = GuiInfo.RefName;
-            var ids = deleted.Select(x => (int)x[IdField]).Where(x => x > 0).ToList();
+            var ids = deleted.Select(x => x[IdField].ToString()).Where(x => x != null).ToList();
             var deletes = deleted.Where(x => (int)x[IdField] > 0).ToList();
             var removeRow = deleted.Where(x => (int)x[IdField] <= 0).ToList();
             if (removeRow.Any())
@@ -1049,7 +1049,7 @@ namespace Core.Components
 
         public virtual void RemoveRange(IEnumerable<object> deleted)
         {
-            deleted.ForEach(x => RemoveRowById(x[IdField].As<int>()));
+            deleted.ForEach(x => RemoveRowById(x[IdField].As<string>()));
         }
 
         public List<object> GetFocusedRows()
@@ -1333,9 +1333,9 @@ namespace Core.Components
             return listItem;
         }
 
-        public virtual void RemoveRowById(int id)
+        public virtual void RemoveRowById(string id)
         {
-            var row = RowData.Data.FirstOrDefault(x => x[IdField].As<int>() == id);
+            var row = RowData.Data.FirstOrDefault(x => x[IdField]?.ToString() == id);
             if (row != null)
             {
                 RowData.Data.Remove(row);
@@ -1472,7 +1472,7 @@ namespace Core.Components
             {
                      new Component
                     {
-                        Id = 1,
+                        Id = 1 .ToString(),
                         EntityId = Utils.GetEntity(nameof(Models.History)).Id,
                         FieldName = nameof(Models.History.InsertedBy),
                         ShortDesc = "Người thay đổi",
@@ -1486,7 +1486,7 @@ namespace Core.Components
                     },
                      new Component
                     {
-                        Id = 2,
+                        Id = 2 .ToString(),
                         EntityId = Utils.GetEntity(nameof(Models.History)).Id,
                         FieldName = nameof(Models.History.InsertedDate),
                         ShortDesc = "Ngày thay đổi",
@@ -1499,7 +1499,7 @@ namespace Core.Components
                     },
                     new Component
                     {
-                        Id = 4,
+                        Id = 4 .ToString(),
                         EntityId = Utils.GetEntity(nameof(Models.History)).Id,
                         FieldName = nameof(Models.History.TextHistory),
                         ShortDesc = "Dữ liệu thay đổi",
@@ -1516,10 +1516,10 @@ namespace Core.Components
         private void SecurityRows(object arg)
         {
             var selectedRowIds = GetSelectedRows().Where(x => x[IsOwner].As<bool?>() == true)
-                .Select(x => (int)x[IdField]).ToArray();
+                .Select(x => x[IdField]?.ToString()).ToArray();
             var security = new SecurityBL
             {
-                Entity = new SecurityVM { RecordIds = selectedRowIds, EntityId = GuiInfo.ReferenceId ?? 0 },
+                Entity = new SecurityVM { RecordIds = selectedRowIds, EntityId = GuiInfo.ReferenceId },
                 ParentElement = TabEditor.Element
             };
             TabEditor.AddChild(security);
@@ -1694,10 +1694,6 @@ namespace Core.Components
 
         private void RenderEditMenu(List<object> selectedRows, IEnumerable<FeaturePolicy> gridPolicies)
         {
-            var lockDeleteDate = gridPolicies.Any() ? gridPolicies.Max(x => x.LockDeleteAfterCreated)
-                : EditForm.Feature.FeaturePolicy.Any() ? EditForm.Feature.FeaturePolicy.Max(x => x.LockDeleteAfterCreated) : 0;
-            var shouldLockDelete = lockDeleteDate > 0 && selectedRows.Any(x =>
-                DateTimeExt.GetBusinessDays(x[nameof(ComponentGroup.InsertedDate)].As<DateTime>()) > lockDeleteDate);
             ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
             {
                 Icon = "fal fa-history",
@@ -1716,7 +1712,7 @@ namespace Core.Components
             }
             var isOwner = selectedRows.All(x => Utils.IsOwner(x, true));
             var canDelete = CanDo(gridPolicies, x => x.CanDelete && isOwner || x.CanDeleteAll);
-            if (canDelete && !shouldLockDelete)
+            if (canDelete)
             {
                 ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
                 {
@@ -1731,18 +1727,18 @@ namespace Core.Components
         {
             var noPolicyRows = selectedRows.Where(x =>
             {
-                var hasPolicy = RecordPolicy.Any(f => f.EntityId == GuiInfo.ReferenceId && f.RecordId == x[IdField].As<int>());
+                var hasPolicy = RecordPolicy.Any(f => f.EntityId == GuiInfo.ReferenceId && f.RecordId == x[IdField]?.ToString());
                 var loaded = x[PermissionLoaded].As<bool?>();
                 return !(hasPolicy || loaded == true);
             });
-            var noPolicyRowIds = noPolicyRows.Select(x => x[IdField].As<int>()).ToArray();
-            var rowPolicy = await ComponentExt.LoadRecordPolicy(noPolicyRowIds, GuiInfo.ReferenceId ?? 0);
+            var noPolicyRowIds = noPolicyRows.Select(x => x[IdField].As<string>()).ToArray();
+            var rowPolicy = await ComponentExt.LoadRecordPolicy(noPolicyRowIds, GuiInfo.ReferenceId);
             rowPolicy.ForEach(RecordPolicy.Add);
             noPolicyRows.ForEach(x => x[PermissionLoaded] = true);
             var ownedRecords = selectedRows.Where(x =>
             {
                 var isOwner = Utils.IsOwner(x);
-                x[IsOwner] = isOwner || rowPolicy.Any(policy => policy.CanShare && x[IdField].As<int>() == policy.RecordId);
+                x[IsOwner] = isOwner || rowPolicy.Any(policy => policy.CanShare && x[IdField].As<string>() == policy.RecordId);
                 return isOwner;
             }).Select(x => x[IdField].As<int>()).ToList();
             var canShare = CanDo(gridPolicies, x => x.CanShare) && ownedRecords.Any();
@@ -1918,7 +1914,7 @@ namespace Core.Components
 
         public override void Dispose()
         {
-            EditForm.NotificationClient?.RemoveListener(RealtimeUpdateListViewItem, (int)TypeEntityAction.UpdateEntity, GuiInfo.ReferenceId.Value);
+            EditForm.NotificationClient?.RemoveListener(RealtimeUpdateListViewItem, ((int)TypeEntityAction.UpdateEntity).ToString(), GuiInfo.ReferenceId);
             base.Dispose();
         }
     }

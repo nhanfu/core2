@@ -5,15 +5,15 @@ namespace Core.SMSModels
 {
     public partial class Migration
     {
-        public int Id { get; set; }
-        public int? SystemId { get; set; }
-        public int? VersionId { get; set; }
+        public string Id { get; set; }
+        public string SystemId { get; set; }
+        public string VersionId { get; set; }
         public string Up { get; set; }
         public string Down { get; set; }
         public bool? Active { get; set; }
-        public int? InsertedBy { get; set; }
+        public string InsertedBy { get; set; }
         public DateTimeOffset? InsertedDate { get; set; }
-        public int? UpdatedBy { get; set; }
+        public string UpdatedBy { get; set; }
         public DateTimeOffset? UpdatedDate { get; set; }
     }
 }

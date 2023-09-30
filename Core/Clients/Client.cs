@@ -29,7 +29,7 @@ namespace Core.Clients
             return x is HTMLMetaElement meta && meta.Name == "prefix";
         })?.Content;
         public string EntityName { get; set; }
-        private static Dictionary<int, Entity> entities;
+        private static Dictionary<string, Entity> entities;
         private static Token token;
         public static int GuidLength = 36;
         public static string Tenant => Document.Head.Children.Where(x => x is HTMLMetaElement).Cast<HTMLMetaElement>().FirstOrDefault(x =>
@@ -71,7 +71,7 @@ namespace Core.Clients
             }
         }
 
-        public static Dictionary<int, Entity> Entities
+        public static Dictionary<string, Entity> Entities
         {
             get
             {
@@ -79,7 +79,7 @@ namespace Core.Clients
                 {
                     return entities;
                 }
-                return LocalStorage.GetItem<Dictionary<int, Entity>>("Entities");
+                return LocalStorage.GetItem<Dictionary<string, Entity>>("Entities");
             }
 
             set
@@ -404,8 +404,16 @@ namespace Core.Clients
             }
             else
             {
-                var parsed = JsonConvert.DeserializeObject<T>(xhr.ResponseText);
-                tcs.TrySetResult(parsed);
+                try
+                {
+                    var parsed = JsonConvert.DeserializeObject<T>(xhr.ResponseText);
+                    tcs.TrySetResult(parsed);
+                }
+                catch
+                {
+                    object jsonT = JSON.Parse(xhr.ResponseText);
+                    tcs.TrySetResult(jsonT.As<T>());
+                }
             }
         }
 
@@ -690,7 +698,7 @@ namespace Core.Clients
                 Url = "Email"
             });
         }
-        public Task<bool> CloneFeatureAsync(int id)
+        public Task<bool> CloneFeatureAsync(string id)
         {
             return SubmitAsync<bool>(new XHRWrapper
             {
@@ -699,7 +707,7 @@ namespace Core.Clients
                 Method = HttpMethod.POST
             });
         }
-        public Task<bool> DeactivateAsync(List<int> ids)
+        public Task<bool> DeactivateAsync(List<string> ids)
         {
             return SubmitAsync<bool>(new XHRWrapper
             {
@@ -748,9 +756,9 @@ namespace Core.Clients
             return res;
         }
 
-        public Task<bool> HardDeleteAsync(int id) => HardDeleteAsync(new List<int> { id });
+        public Task<bool> HardDeleteAsync(string id) => HardDeleteAsync(new List<string> { id });
 
-        public Task<bool> HardDeleteAsync(List<int> ids)
+        public Task<bool> HardDeleteAsync(List<string> ids)
         {
             return SubmitAsync<bool>(new XHRWrapper
             {

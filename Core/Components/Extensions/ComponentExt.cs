@@ -366,7 +366,7 @@ namespace Core.Components.Extensions
             return feature;
         }
 
-        public static async Task<Feature> LoadEditorFeatureByNameByEntity(int entity)
+        public static async Task<Feature> LoadEditorFeatureByNameByEntity(string entity)
         {
             var exists = FeatureMap.Values.FirstOrDefault(x => x.EntityId == entity && x.Name.IndexOf("editor", StringComparison.OrdinalIgnoreCase) >= 0);
             if (exists != null)
@@ -389,9 +389,9 @@ namespace Core.Components.Extensions
             return feature;
         }
 
-        public static async Task<List<FeaturePolicy>> LoadRecordPolicy(int[] ids, int entity)
+        public static async Task<List<FeaturePolicy>> LoadRecordPolicy(string[] ids, string entity)
         {
-            if (ids.Nothing() || ids.All(x => x <= 0))
+            if (ids.Nothing() || ids.All(x => x == 0 .ToString() || x == null))
             {
                 return new List<FeaturePolicy>();
             }

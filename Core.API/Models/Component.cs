@@ -10,13 +10,13 @@ namespace Core.Models
             EntityRef = new HashSet<EntityRef>();
         }
 
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string FieldName { get; set; }
-        public int? Order { get; set; }
+        public int Order { get; set; }
         public string ComponentType { get; set; }
-        public int ComponentGroupId { get; set; }
+        public string ComponentGroupId { get; set; }
         public string DataSourceFilter { get; set; }
-        public int? ReferenceId { get; set; }
+        public string ReferenceId { get; set; }
         public string FormatData { get; set; }
         public string FormatEntity { get; set; }
         public string PlainText { get; set; }
@@ -46,19 +46,19 @@ namespace Core.Models
         public string PopulateField { get; set; }
         public string CascadeField { get; set; }
         public string GroupEvent { get; set; }
-        public int? XsCol { get; set; }
-        public int? SmCol { get; set; }
-        public int? LgCol { get; set; }
-        public int? XlCol { get; set; }
-        public int? XxlCol { get; set; }
+        public string XsCol { get; set; }
+        public string SmCol { get; set; }
+        public string LgCol { get; set; }
+        public string XlCol { get; set; }
+        public string XxlCol { get; set; }
         public string DefaultVal { get; set; }
         public string DateTimeField { get; set; }
         public bool Active { get; set; }
-        public DateTime InsertedDate { get; set; }
-        public int InsertedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-        public int? UpdatedBy { get; set; }
-        public int? RoleId { get; set; }
+        public DateTimeOffset InsertedDate { get; set; }
+        public string InsertedBy { get; set; }
+        public DateTimeOffset? UpdatedDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public string RoleId { get; set; }
         public bool IgnoreSync { get; set; }
         public bool CanAdd { get; set; }
         public bool ShowAudit { get; set; }
@@ -66,7 +66,7 @@ namespace Core.Models
         public string IdField { get; set; }
         public string DescFieldName { get; set; }
         public string DescValue { get; set; }
-        public int? MonthCount { get; set; }
+        public string MonthCount { get; set; }
         public bool? IsDoubleLine { get; set; }
         public string Query { get; set; }
         public bool IsRealtime { get; set; }
@@ -101,15 +101,15 @@ namespace Core.Models
         public string ScriptValidation { get; set; }
         public bool FilterLocal { get; set; }
         public bool HideGrid { get; set; }
-        public int? GroupReferenceId { get; set; }
+        public string GroupReferenceId { get; set; }
         public string GroupReferenceName { get; set; }
         public string JoinTable { get; set; }
         public string GroupName { get; set; }
         public string ShortDesc { get; set; }
         public string Description { get; set; }
-        public int? FeatureId { get; set; }
-        public int? EntityId { get; set; }
-        public int? ComponentId { get; set; }
+        public string FeatureId { get; set; }
+        public string EntityId { get; set; }
+        public string ComponentId { get; set; }
         public string TextAlign { get; set; }
         public bool HasFilter { get; set; }
         public bool Frozen { get; set; }
@@ -121,9 +121,9 @@ namespace Core.Models
         public int? SummaryColSpan { get; set; }
         public bool BasicSearch { get; set; }
         public bool IsExport { get; set; }
-        public int? OrderExport { get; set; }
+        public string OrderExport { get; set; }
         public string ShowExp { get; set; }
-        public int? ActId { get; set; }
+        public string ActId { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

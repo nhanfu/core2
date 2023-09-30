@@ -46,7 +46,7 @@ namespace Core.Components
                     FieldName = nameof(FileUpload.InsertedBy),
                     Active = true,
                     RefName = nameof(User),
-                    ReferenceId = Utils.GetEntity(nameof(User))?.Id ?? 0,
+                    ReferenceId = Utils.GetEntity(nameof(User))?.Id,
                     FormatData = "{" + nameof(User.FullName) + "}",
                     ComponentType = "Label",
                     ShortDesc = "Created by",
@@ -65,7 +65,7 @@ namespace Core.Components
                     FieldName = nameof(FileUpload.UpdatedBy),
                     Active = true,
                     RefName = nameof(User),
-                    ReferenceId = Utils.GetEntity(nameof(User))?.Id ?? 0,
+                    ReferenceId = Utils.GetEntity(nameof(User))?.Id,
                     FormatData = "{" + nameof(User.FullName) + "}",
                     ComponentType = "Label",
                     ShortDesc = "Updated by",
@@ -131,7 +131,7 @@ namespace Core.Components
             await RowChangeHandlerGrid(rowData, rowSection, observableArgs);
             rowSection.UpdateView(true);
             SetEntityPath();
-            if (GuiInfo.IsRealtime && EntityId > 0)
+            if (GuiInfo.IsRealtime && EntityId != null)
             {
                 await RealtimeUpdateAsync(rowSection, observableArgs);
             }

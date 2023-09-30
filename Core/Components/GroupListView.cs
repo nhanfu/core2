@@ -29,7 +29,7 @@ namespace Core.Components
         {
             if (args.Action == ObservableAction.Remove)
             {
-                RemoveRowById(args.Item[IdField].As<int>());
+                RemoveRowById(args.Item[IdField].ToString());
                 return;
             }
             Window.ClearTimeout(_rowDataChangeAwaiter);
@@ -203,16 +203,16 @@ namespace Core.Components
             }
         }
 
-        public override void RemoveRowById(int id)
+        public override void RemoveRowById(string id)
         {
-            var index = RowData.Data.IndexOf(x => x[IdField].As<int>() == id);
+            var index = RowData.Data.IndexOf(x => x[IdField].ToString() == id);
             if (index < 0)
             {
                 return;
             }
 
             RowData.Data.RemoveAt(index);
-            this.FilterChildren(x => x is ListViewItem && x.Entity[IdField].As<int>() == id)
+            this.FilterChildren(x => x is ListViewItem && x.Entity[IdField].ToString() == id)
                 .Cast<ListViewItem>().ToList().ForEach(x =>
                 {
                     if (x.GroupSection != null && x.GroupSection.Entity is GroupRowData)
@@ -235,7 +235,7 @@ namespace Core.Components
 
         public override void RemoveRange(IEnumerable<object> data)
         {
-            data.ForEach(x => RemoveRowById(x[IdField].As<int>()));
+            data.ForEach(x => RemoveRowById(x[IdField].ToString()));
         }
 
         public override async Task AddOrUpdateRow(object rowData, bool singleAdd = true, bool force = false, params string[] fields)

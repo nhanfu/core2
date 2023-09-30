@@ -49,7 +49,7 @@ namespace TMS.UI.Business.User
                 {
                     var type = Type.GetType("TMS.UI.Business.User.UserDetailBL");
                     var instance = Activator.CreateInstance(type) as PopupEditor;
-                    instance.Title = user.Id <= 0 ? "Add user" : "Edit user";
+                    //instance.Title = user.Id <= 0 ? "Add user" : "Edit user";
                     instance.Entity = user;
                     return instance;
                 });

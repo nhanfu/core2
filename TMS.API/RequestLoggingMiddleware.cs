@@ -38,10 +38,10 @@ namespace TMS.API
                         Active = true,
                     };
                     await _next(context);
-                    logEntry.StatusCode = context.Response.StatusCode;
+                    logEntry.StatusCode = context.Response.StatusCode.ToString();
                     logEntry.UpdatedDate = DateTime.Now;
                     logEntry.RequestBody = requestBody;
-                    var userId = jwtToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value?.TryParseInt() ?? 0;
+                    var userId = jwtToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                     logEntry.InsertedBy = userId;
                     _context.RequestLog.Add(logEntry);
                     await _context.SaveChangesAsync();

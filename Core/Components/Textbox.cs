@@ -313,7 +313,7 @@ namespace Core.Components
             {
                 filter += $"{fieldName} eq '{_text.EncodeSpecialChar()}'";
             }
-            var entity = Utils.GetEntity(EditForm.Feature.EntityId ?? 0)?.Name;
+            var entity = Utils.GetEntity(EditForm.Feature.EntityId)?.Name;
             var exists = await new Client(entity).GetAsync<bool>($"/Exists/?$select={IdField},{fieldName}&$filter={filter}");
             if (!exists)
             {

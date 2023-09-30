@@ -10,8 +10,8 @@ namespace Core.Clients
 {
     public class EntityAction
     {
-        public int EntityId { get; set; }
-        public int TypeId { get; set; }
+        public string EntityId { get; set; }
+        public string TypeId { get; set; }
         public Action<object> Action { get; set; }
     }
 
@@ -66,7 +66,7 @@ namespace Core.Clients
             _socket.Send(message);
         }
 
-        public void AddListener(int entityId, int typeId, Action<object> entityAction)
+        public void AddListener(string entityId, string typeId, Action<object> entityAction)
         {
             var lastUpdate = EntityAction.FirstOrDefault(x => x.EntityId == entityId && x.Action == entityAction && x.TypeId == typeId);
             if (lastUpdate is null)
@@ -75,17 +75,7 @@ namespace Core.Clients
             }
         }
 
-        public void AddListener(string entityName, int typeId, Action<object> entityAction)
-        {
-            var entity = Client.Entities.Values.FirstOrDefault(x => x.Name == entityName);
-            var lastUpdate = EntityAction.FirstOrDefault(x => x.EntityId == entity.Id && x.Action == entityAction && x.TypeId == typeId);
-            if (lastUpdate is null)
-            {
-                EntityAction.Add(new EntityAction { EntityId = entity.Id, Action = entityAction, TypeId = typeId });
-            }
-        }
-
-        public void RemoveListener(Action<object> action, int entityId, int typeId)
+        public void RemoveListener(Action<object> action, string entityId, string typeId)
         {
             EntityAction.RemoveAll(x => x.Action == action && x.EntityId == entityId && x.TypeId == typeId);
         }

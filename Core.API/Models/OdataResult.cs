@@ -29,7 +29,7 @@ namespace Core.Models
 
     public class WebSocketResponse<T>
     {
-        public int EntityId { get; set; }
+        public string EntityId { get; set; }
         public T Data { get; set; }
         public List<T> DataList { get; set; }
     }

@@ -2127,10 +2127,10 @@ namespace Core.Components
             if (EntityFocusId != null && LastComponentFocus != null)
             {
                 var element = MainSection.Children.Flattern(x => x.Children)
-                    .FirstOrDefault(x => x.Entity[IdField].As<int>() == EntityFocusId && x.GuiInfo.Id == LastComponentFocus.Id);
+                    .FirstOrDefault(x => x.Entity[IdField].ToString() == EntityFocusId && x.GuiInfo.Id == LastComponentFocus.Id);
                 if (element != null)
                 {
-                    var lastListView = AllListViewItem.FirstOrDefault(x => x.Entity[IdField].As<int>() == EntityFocusId);
+                    var lastListView = AllListViewItem.FirstOrDefault(x => x.Entity[IdField].ToString() == EntityFocusId);
                     lastListView.Focused = true;
                     element.ParentElement.AddClass("cell-selected");
                     LastListViewItem = lastListView;
@@ -2249,7 +2249,7 @@ namespace Core.Components
             {
                 rowSection.SetDisabled(false, "btnEdit");
             }
-            var owed = row["InsertedBy"].As<int?>() == Client.Token.UserId;
+            var owed = row["InsertedBy"].ToString() == Client.Token.UserId;
             if (isApproved)
             {
                 rowSection.Disabled = true;
@@ -3074,9 +3074,9 @@ namespace Core.Components
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                var ids = new List<int> { entity.Id };
+                var ids = new List<string> { entity.Id };
                 var client = new Client(nameof(Component));
-                entity.Id = 0;
+                entity.Id = 0 .ToString();
                 var success = await client.CreateAsync<Component>(entity);
                 if (success != null)
                 {
@@ -3102,7 +3102,7 @@ namespace Core.Components
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                var ids = new List<int> { entity.Id };
+                var ids = new List<string> { entity.Id };
                 var success = await new Client(nameof(Component)).HardDeleteAsync(ids);
                 if (success)
                 {
@@ -3122,7 +3122,7 @@ namespace Core.Components
             await base.AddOrUpdateRows(rows);
         }
 
-        public override void RemoveRowById(int id)
+        public override void RemoveRowById(string id)
         {
             base.RemoveRowById(id);
             RenderIndex();

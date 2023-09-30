@@ -331,12 +331,12 @@ namespace TMS.API.ViewModels
     public class CheckTransportationVM
     {
         public string No { get; set; }
-        public DateTime? ClosingDate { get; set; }
+        public DateTimeOffset? ClosingDate { get; set; }
         public string Boss { get; set; }
         public string ContainerNo { get; set; }
         public string SealNo { get; set; }
-        public int? Cont20 { get; set; }
-        public int? Cont40 { get; set; }
+        public string Cont20 { get; set; }
+        public string Cont40 { get; set; }
         public string Received { get; set; }
         public string PickupEmpty { get; set; }
         public string PortLoading { get; set; }
@@ -358,13 +358,13 @@ namespace TMS.API.ViewModels
     {
         public string No { get; set; }
         public string Vendor { get; set; }
-        public int? Id { get; set; }
-        public DateTime? ClosingDate { get; set; }
+        public string Id { get; set; }
+        public DateTimeOffset? ClosingDate { get; set; }
         public string Boss { get; set; }
         public string ContainerNo { get; set; }
         public string SealNo { get; set; }
-        public int? Cont20 { get; set; }
-        public int? Cont40 { get; set; }
+        public string Cont20 { get; set; }
+        public string Cont40 { get; set; }
         public string Received { get; set; }
         public string PickupEmpty { get; set; }
         public string PortLoading { get; set; }

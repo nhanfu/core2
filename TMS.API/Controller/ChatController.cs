@@ -19,7 +19,7 @@ namespace TMS.API.Controllers
         {
 
             var rs = await base.CreateAsync(entity);
-            if (entity.ToId == 552)
+            if (entity.ToId == 552 .ToString())
             {
                 var rs1 = await GetChatGPTResponse(entity);
                 db.Add(rs1);
@@ -27,9 +27,9 @@ namespace TMS.API.Controllers
                 await db.SaveChangesAsync();
                 var chat = new WebSocketResponse<Chat>
                 {
-                    EntityId = _entitySvc.GetEntity(nameof(Chat))?.Id ?? 0,
+                    EntityId = _entitySvc.GetEntity(nameof(Chat))?.Id.ToString(),
                     Data = rs1,
-                    TypeId = 1,
+                    TypeId = 1.ToString(),
                 };
                 await _taskService.SendChatToUser(chat);
                 return rs;
@@ -38,9 +38,9 @@ namespace TMS.API.Controllers
             {
                 var chat = new WebSocketResponse<Chat>
                 {
-                    EntityId = _entitySvc.GetEntity(nameof(Chat))?.Id ?? 0,
+                    EntityId = _entitySvc.GetEntity(nameof(Chat))?.Id.ToString(),
                     Data = rs.Value,
-                    TypeId = 1,
+                    TypeId = 1.ToString(),
                 };
                 await _taskService.SendChatToUser(chat);
                 return rs;
@@ -94,7 +94,7 @@ namespace TMS.API.Controllers
                     ToId = entity.FromId,
                     Context = text,
                     ConvertationId = entity.ConvertationId,
-                    IsSeft = true,
+                    IsSelf = true,
                 };
             }
         }

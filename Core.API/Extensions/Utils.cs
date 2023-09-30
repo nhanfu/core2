@@ -15,7 +15,7 @@ namespace Core.Extensions
 {
     public static partial class Utils
     {
-        public const int SystemId = 1;
+        public const string SystemId = "1";
         public const string TenantField = "t";
         public const string Pixel = "px";
         public const string FeatureField = "f";
@@ -23,7 +23,7 @@ namespace Core.Extensions
         public const string Amp = "&";
         public const string ApplicationJson = "application/json";
         public const string Authorization = "Authorization";
-        public const int SelfVendorId = 65;
+        public const string SelfVendorId = "65";
         public const string AutoSaveReason = "Tự động cập nhật";
         public const string IdField = "Id";
         public const string NewLine = "\r\n";
@@ -32,10 +32,9 @@ namespace Core.Extensions
         public const string Comma = ",";
         public const string Semicolon = ";";
         public const string Space = " ";
-        public const int ComponentId = 20;
-        public const int ComponentGroupId = 30;
-        public const int GridPolicyId = 2077;
-        public const int HistoryId = 4199;
+        public const string ComponentId = "20";
+        public const string ComponentGroupId = "30";
+        public const string HistoryId = "4199";
         public const string InsertedBy = "InsertedBy";
         public const string OwnerId = "OwnerId";
 
@@ -118,14 +117,14 @@ namespace Core.Extensions
             {
                 return defaultOwnership;
             }
-            var ownerId = entity[OwnerId].As<int?>();
-            var createdId = entity[InsertedBy].As<int?>();
+            var ownerId = entity[OwnerId]?.ToString();
+            var createdId = entity[InsertedBy]?.ToString();
             var isOwner = Client.SystemRole || ownerId is null && createdId == Client.Token.UserId || ownerId == Client.Token.UserId;
             return isOwner;
         }
 
-        public static Entity GetEntity(int id) => Clients.Client.Entities.GetValueOrDefault(id);
-        public static Entity GetEntity(string name) => Clients.Client.Entities.Values.FirstOrDefault(x => x.Name == name);
+        public static Entity GetEntityById(string id) => Client.Entities.GetValueOrDefault(id);
+        public static Entity GetEntity(string name) => Client.Entities.Values.FirstOrDefault(x => x.Name == name);
 
         public static bool IsNullable<T>(Type entityType, string fieldName, object obj) where T : struct
         {
@@ -326,7 +325,7 @@ namespace Core.Extensions
         {
             var dt = DateTime.Now;
             var isDate = cellData != null && header.ComponentType == nameof(Datepicker) && DateTime.TryParse(cellData.ToString(), out dt);
-            var isRef = header.LocalData.HasElement() || header.ReferenceId.HasValue || header.Reference != null && header.Reference.Name.HasAnyChar();
+            var isRef = header.LocalData.HasElement() || header.ReferenceId.HasAnyChar() || header.Reference != null && header.Reference.Name.HasAnyChar();
             if (emptyRow)
             {
                 return string.Empty;

@@ -32,19 +32,19 @@ namespace TMS.API.Controllers
         /// <summary>
         /// Current UserId
         /// </summary>
-        protected int UserId { get; private set; }
+        protected string UserId { get; private set; }
         /// <summary>
         /// All roles of the current user including inherited roles
         /// </summary>
-        public List<int> AllRoleIds { get; private set; }
+        public List<string> AllRoleIds { get; private set; }
         /// <summary>
         /// All roles assign (not including inherited roles)
         /// </summary>
-        public List<int> RoleIds { get; private set; }
+        public List<string> RoleIds { get; private set; }
         /// <summary>
         /// The vendor of the current user
         /// </summary>
-        public int VendorId { get; private set; }
+        public string VendorId { get; private set; }
 
         protected readonly IHttpContextAccessor _httpContext;
         protected readonly UserService _userSvc;
@@ -275,7 +275,7 @@ namespace TMS.API.Controllers
                         BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<T>
                         {
                             EntityId = _entitySvc.GetEntity(typeof(T).Name).Id,
-                            TypeId = 1,
+                            TypeId = 1 .ToString(),
                             Data = entity
                         }, UserId));
                         return entity;
@@ -470,13 +470,13 @@ namespace TMS.API.Controllers
         }
 
         [HttpDelete("api/[Controller]/{id}", Order = 1)]
-        public virtual async Task<ActionResult<bool>> HardDeleteAsync([FromRoute] int id)
+        public virtual async Task<ActionResult<bool>> HardDeleteAsync([FromRoute] string id)
         {
-            return await HardDeleteAsync(new List<int> { id });
+            return await HardDeleteAsync(new List<string> { id });
         }
 
         [HttpDelete("api/[Controller]/Delete", Order = 1)]
-        public virtual async Task<ActionResult<bool>> DeactivateAsync([FromBody] List<int> ids)
+        public virtual async Task<ActionResult<bool>> DeactivateAsync([FromBody] List<string> ids)
         {
             var updateCommand = string.Format("Update [{0}] set Active = 0 where Id in ({1})", typeof(T).Name, string.Join(",", ids));
             await ctx.Database.ExecuteSqlRawAsync(updateCommand);
@@ -484,13 +484,13 @@ namespace TMS.API.Controllers
         }
 
         [HttpDelete("api/[Controller]/HardDelete", Order = 1)]
-        public virtual async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<int> ids)
+        public virtual async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<string> ids)
         {
             if (ids.Nothing())
             {
                 return false;
             }
-            ids = ids.Where(x => x > 0).ToList();
+            ids = ids.Where(x => x.IsNullOrEmpty()).ToList();
             if (ids.Nothing())
             {
                 return false;

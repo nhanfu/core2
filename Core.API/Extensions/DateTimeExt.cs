@@ -6,7 +6,12 @@ namespace Core.Extensions
     {
         public static string ToISOFormat(this DateTime date)
         {
-            return date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            return date.ToString("yyyy-MM-ddTHH:mm:ssz");
+        }
+
+        public static string ToISOFormat(this DateTimeOffset date)
+        {
+            return date.ToString("yyyy-MM-ddTHH:mm:ssz");
         }
 
         public static string DateConverter(this string str)
@@ -39,7 +44,7 @@ namespace Core.Extensions
             return (days, hour, leftMinute);
         }
 
-        public static string DateString(this DateTime yourDate, DateTime? compareDate = null)
+        public static string DateString(this DateTimeOffset yourDate, DateTime? compareDate = null)
         {
             if (compareDate == null)
             {

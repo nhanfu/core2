@@ -136,7 +136,7 @@ namespace Core.Extensions
                 }
                 res.Add(new Entity
                 {
-                    Id = (int)value,
+                    Id = ((int)value).ToString(),
                     Name = val.ToString(),
                     Description = desc,
                     Active = true

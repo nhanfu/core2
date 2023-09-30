@@ -25,10 +25,10 @@ namespace Core.Components
         public ListView ParentListView;
         public string ModelNameSpace { get; }
         private AdvSearchVM AdvSearchEntity => Entity as AdvSearchVM;
-        public int _orderById = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(OrderBy)).Id;
-        public int _fieldConditionId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(FieldCondition)).Id;
-        public int _ComponentId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(Component)).Id;
-        public int _entityId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(Entity)).Id;
+        public string _orderById = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(OrderBy)).Id;
+        public string _fieldConditionId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(FieldCondition)).Id;
+        public string _ComponentId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(Component)).Id;
+        public string _entityId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(Entity)).Id;
 
         public AdvancedSearch(ListView parent) : base(nameof(Component))
         {
@@ -43,7 +43,7 @@ namespace Core.Components
         public void LocalRender()
         {
             _headers = ParentListView.Header
-                .Where(x => x.Id > 0 && !x.ShortDesc.IsNullOrWhiteSpace() && x.Active && !x.Hidden).ToList();
+                .Where(x => x.Id.TryParseInt() > 0 && !x.ShortDesc.IsNullOrWhiteSpace() && x.Active && !x.Hidden).ToList();
             Feature.FeaturePolicy.Add(new FeaturePolicy
             {
                 CanRead = true,
@@ -118,7 +118,7 @@ namespace Core.Components
                 FormatData = "{Description}",
                 ShowLabel = true,
                 LocalRender = true,
-                ReferenceId = _entityId,
+                ReferenceId = _entityId.ToString(),
                 RefName = nameof(Entity),
                 Reference = new Entity { Name = nameof(Entity) },
                 Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
@@ -146,7 +146,7 @@ namespace Core.Components
             {
                 FieldName = nameof(AdvSearchVM.Conditions),
                 Column = 4,
-                ReferenceId = _fieldConditionId,
+                ReferenceId = _fieldConditionId.ToString(),
                 RefName = nameof(FieldCondition),
                 Reference = new Entity { Name = nameof(FieldCondition), Namespace = typeof(Component).Namespace + "." },
                 LocalRender = true,
@@ -162,7 +162,7 @@ namespace Core.Components
             {
                 new Component
                 {
-                    Id = 1,
+                    Id = 1 .ToString(),
                     EntityId = _fieldConditionId,
                     FieldName = nameof(FieldCondition.FieldId),
                     Events = "{'change': 'FieldId_Changed'}",
@@ -192,7 +192,7 @@ namespace Core.Components
                 },
                 new Component
                 {
-                    Id = 2,
+                    Id = 2 .ToString(),
                     EntityId = _fieldConditionId,
                     FieldName = nameof(FieldCondition.CompareOperatorId),
                     ShortDesc = "Toán tử",
@@ -226,7 +226,7 @@ namespace Core.Components
                 },
                 new Component
                 {
-                    Id = 3,
+                    Id = 3 .ToString(),
                     EntityId = _fieldConditionId,
                     FieldName = nameof(FieldCondition.Value),
                     ShortDesc = "Giá trị",
@@ -240,7 +240,7 @@ namespace Core.Components
                 },
                 new Component
                 {
-                    Id = 2,
+                    Id = 2 .ToString(),
                     EntityId = _fieldConditionId,
                     FieldName = nameof(FieldCondition.LogicOperatorId),
                     ShortDesc = "Kết hợp",
@@ -290,7 +290,7 @@ namespace Core.Components
         private EnumerableInstance<Component> HeaderForAdvSearch()
         {
             return ParentListView.Header
-                .Where(x => x.Id > 0 && !x.ShortDesc.IsNullOrWhiteSpace() && x.Active && !x.Hidden);
+                .Where(x => x.Id.TryParseInt() > 0 && !x.ShortDesc.IsNullOrWhiteSpace() && x.Active && !x.Hidden);
         }
 
         private void AddOrderByGrid(Section section)
@@ -314,7 +314,7 @@ namespace Core.Components
             {
                 new Component
                 {
-                    Id = 1,
+                    Id = 1 .ToString(),
                     EntityId = _fieldConditionId,
                     FieldName = nameof(FieldCondition.FieldId),
                     Events = "{'change': 'FieldId_Changed'}",
@@ -343,7 +343,7 @@ namespace Core.Components
                 },
                 new Component
                 {
-                    Id = 2,
+                    Id = 2 .ToString(),
                     EntityId = _orderById,
                     FieldName = nameof(OrderBy.OrderbyOptionId),
                     ShortDesc = "Thứ tự",
@@ -576,7 +576,7 @@ namespace Core.Components
             condition.LogicOperatorId = condition.LogicOperatorId ?? LogicOperation.And;
             _filterGrid.FirstOrDefault(x => x.GuiInfo != null && x.Entity == condition
                 && x.GuiInfo.FieldName == nameof(FieldCondition.LogicOperatorId))?.UpdateView();
-            condition.CompareOperatorId = (AdvSearchOperation?)compareCell.GuiInfo.LocalData.Cast<Entity>().FirstOrDefault()?.Id;
+            condition.CompareOperatorId = (AdvSearchOperation?)compareCell.GuiInfo.LocalData.Cast<Entity>().FirstOrDefault()?.Id?.TryParseInt();
             compareCell.Value = (int?)condition.CompareOperatorId;
             compareCell.UpdateView();
             component.Entity = condition;
@@ -602,17 +602,17 @@ namespace Core.Components
             switch (componentType)
             {
                 case ComponentTypeTypeEnum.Textbox:
-                    return entities.Where(x => (x.Id >= (int)AdvSearchOperation.Contains && x.Id < (int)AdvSearchOperation.In)
-                        || x.Id == (int)AdvSearchOperation.Equal || x.Id == (int)AdvSearchOperation.NotEqual)
-                        .OrderByDescending(x => x.Id == (int)AdvSearchOperation.Contains);
+                    return entities.Where(x => (x.Id.TryParseInt() >= (int)AdvSearchOperation.Contains && x.Id.TryParseInt() < (int)AdvSearchOperation.In)
+                        || x.Id.TryParseInt() == (int)AdvSearchOperation.Equal || x.Id.TryParseInt() == (int)AdvSearchOperation.NotEqual)
+                        .OrderByDescending(x => x.Id.TryParseInt() == (int)AdvSearchOperation.Contains);
                 case ComponentTypeTypeEnum.Datepicker:
-                    return entities.Where(x => x.Id < (int)AdvSearchOperation.Contains);
+                    return entities.Where(x => x.Id.TryParseInt() < (int)AdvSearchOperation.Contains);
                 case ComponentTypeTypeEnum.Number:
-                    return entities.Where(x => x.Id < (int)AdvSearchOperation.Contains);
+                    return entities.Where(x => x.Id.TryParseInt() < (int)AdvSearchOperation.Contains);
                 case ComponentTypeTypeEnum.Checkbox:
-                    return entities.Where(x => x.Id == (int)AdvSearchOperation.Equal);
+                    return entities.Where(x => x.Id.TryParseInt() == (int)AdvSearchOperation.Equal);
                 case ComponentTypeTypeEnum.SearchEntry:
-                    return entities.Where(x => x.Id == (int)AdvSearchOperation.In || x.Id == (int)AdvSearchOperation.NotIn);
+                    return entities.Where(x => x.Id.TryParseInt() == (int)AdvSearchOperation.In || x.Id.TryParseInt() == (int)AdvSearchOperation.NotIn);
             }
             return null;
         }
@@ -656,7 +656,7 @@ namespace Core.Components
         private async Task<EditableComponent> SetSearchId(Component field, SearchEntry compareCell, Component comInfo, EditableComponent component)
         {
             comInfo.ComponentType = nameof(MultipleSearchEntry);
-            var refId = field.ReferenceId ?? ParentListView.GuiInfo.ReferenceId ?? 0;
+            var refId = field.ReferenceId ?? ParentListView.GuiInfo.ReferenceId;
             comInfo.ReferenceId = refId;
             comInfo.Reference = Utils.GetEntity(refId);
             comInfo.DataSourceFilter = field.DataSourceFilter;
@@ -677,7 +677,7 @@ namespace Core.Components
             component = new Datepicker(comInfo);
             compareCell.GuiInfo.LocalData =
                 IEnumerableExtensions.ToEntity<AdvSearchOperation>()
-                .Cast<Entity>().Where(x => x.Id < (int)AdvSearchOperation.Contains)
+                .Cast<Entity>().Where(x => int.Parse(x.Id) < (int)AdvSearchOperation.Contains)
                 .Cast<object>().ToList();
             return component;
         }

@@ -13,15 +13,15 @@ namespace Core.Models
             VendorBranch = new HashSet<VendorBranch>();
         }
 
-        public int Id { get; set; }
-        public int? VendorTypeId { get; set; }
+        public string Id { get; set; }
+        public string VendorTypeId { get; set; }
         public string Description { get; set; }
         public string Avatar { get; set; }
-        public int? CustomerGroupId { get; set; }
-        public int SaleId { get; set; }
-        public int? UserId { get; set; }
-        public int? CustomerStateId { get; set; }
-        public DateTime? LastContactDate { get; set; }
+        public string CustomerGroupId { get; set; }
+        public string SaleId { get; set; }
+        public string UserId { get; set; }
+        public string CustomerStateId { get; set; }
+        public DateTimeOffset? LastContactDate { get; set; }
         public bool IsSelf { get; set; }
         public bool IsInternal { get; set; }
         public string PhoneNumber { get; set; }
@@ -43,27 +43,27 @@ namespace Core.Models
         public string CompanyLocalAddress { get; set; }
         public string CompanyInterAddress { get; set; }
         public bool Active { get; set; }
-        public DateTime InsertedDate { get; set; }
-        public int InsertedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-        public int? UpdatedBy { get; set; }
-        public int? RoleId { get; set; }
+        public DateTimeOffset InsertedDate { get; set; }
+        public string InsertedBy { get; set; }
+        public DateTimeOffset? UpdatedDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public string RoleId { get; set; }
         public bool IsTenant { get; set; }
-        public int? ParentId { get; set; }
-        public int? TenantId { get; set; }
+        public string ParentId { get; set; }
+        public string TenantId { get; set; }
         public string ConStr { get; set; }
-        public int? NationalityId { get; set; }
-        public int? SeqKey { get; set; }
+        public string NationalityId { get; set; }
+        public string SeqKey { get; set; }
         public bool DebtCountFinished { get; set; }
-        public int? DebtDate { get; set; }
-        public int? DebtDateTypeId { get; set; }
-        public int? DebtExportDate { get; set; }
-        public int? OwnerId { get; set; }
-        public int? CollectOnBehalfDay { get; set; }
+        public string DebtDate { get; set; }
+        public string DebtDateTypeId { get; set; }
+        public string DebtExportDate { get; set; }
+        public string OwnerId { get; set; }
+        public string CollectOnBehalfDay { get; set; }
         public string GlobalId { get; set; }
         public string PartnerId { get; set; }
-        public int? StateId { get; set; }
-        public DateTime? LastOrderState { get; set; }
+        public string StateId { get; set; }
+        public DateTimeOffset? LastOrderState { get; set; }
         public bool IsSeft { get; set; }
 
         public virtual Vendor Parent { get; set; }

@@ -100,7 +100,7 @@ namespace Core.Components.Forms
 
         public override void Render()
         {
-            var policies = EditForm.GetElementPolicies(new int[] { ComponentGroup.Id }, Utils.ComponentGroupId);
+            var policies = EditForm.GetElementPolicies(new string[] { ComponentGroup.Id }, Utils.ComponentGroupId);
             var readPermission = !ComponentGroup.IsPrivate || policies.HasElementAndAll(x => x.CanRead);
             if (!readPermission)
             {
@@ -159,13 +159,13 @@ namespace Core.Components.Forms
             {
                 return;
             }
-            EditForm.NotificationClient?.AddListener(gridView.ReferenceId.Value, (int)TypeEntityAction.UpdateCountBadge, RealtimeUpdateBadge);
-            EditForm.NotificationClient?.AddListener(gridView.ReferenceId.Value, (int)TypeEntityAction.MessageCountBadge, RealtimeUpdateBadge);
+            EditForm.NotificationClient?.AddListener(gridView.ReferenceId, ((int)TypeEntityAction.UpdateCountBadge).ToString(), RealtimeUpdateBadge);
+            EditForm.NotificationClient?.AddListener(gridView.ReferenceId, ((int)TypeEntityAction.MessageCountBadge).ToString(), RealtimeUpdateBadge);
             try
             {
                 var query = ListView.GetFormattedDataSource(this, gridView.DataSourceFilter);
                 var badgeMonth = ComponentGroup.BadgeMonth;
-                if (badgeMonth == 0)
+                if (badgeMonth == null)
                 {
                     return;
                 }

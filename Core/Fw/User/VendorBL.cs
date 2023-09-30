@@ -29,7 +29,7 @@ namespace Core.Fw.User
 
         public async Task CreateVendor()
         {
-            await InitVendorForm(new Vendor() { VendorTypeId = (int)VendorTypeEnum.Vendor });
+            await InitVendorForm(new Vendor() { VendorTypeId = ((int)VendorTypeEnum.Vendor).ToString() });
         }
 
         private async Task InitVendorForm(Vendor vendor)

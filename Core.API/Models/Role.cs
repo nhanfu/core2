@@ -13,20 +13,20 @@ namespace Core.Models
             UserRole = new HashSet<UserRole>();
         }
 
-        public int Id { get; set; }
-        public int? VendorId { get; set; }
+        public string Id { get; set; }
+        public string VendorId { get; set; }
         public string RoleName { get; set; }
         public string Description { get; set; }
-        public int? ParentRoleId { get; set; }
-        public int? CostCenterId { get; set; }
-        public int Level { get; set; }
+        public string ParentRoleId { get; set; }
+        public string CostCenterId { get; set; }
+        public string Level { get; set; }
         public string Path { get; set; }
         public bool Active { get; set; }
-        public DateTime InsertedDate { get; set; }
-        public int InsertedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-        public int? UpdatedBy { get; set; }
-        public int? AccRoleId { get; set; }
+        public DateTimeOffset InsertedDate { get; set; }
+        public string InsertedBy { get; set; }
+        public DateTimeOffset? UpdatedDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public string AccRoleId { get; set; }
 
         public virtual Role ParentRole { get; set; }
         public virtual ICollection<FeaturePolicy> FeaturePolicy { get; set; }

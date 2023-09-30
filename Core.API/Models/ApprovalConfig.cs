@@ -5,24 +5,24 @@ namespace Core.Models
 {
     public partial class ApprovalConfig
     {
-        public int Id { get; set; }
-        public int Level { get; set; }
+        public string Id { get; set; }
+        public string Level { get; set; }
         public string Description { get; set; }
-        public int? UserId { get; set; }
-        public int? RoleId { get; set; }
+        public string UserId { get; set; }
+        public string RoleId { get; set; }
         public string DataSourceFilter { get; set; }
-        public int EntityId { get; set; }
-        public int? WorkflowId { get; set; }
+        public string EntityId { get; set; }
+        public string WorkflowId { get; set; }
         public decimal MinAmount { get; set; }
         public decimal? MaxAmount { get; set; }
         public bool Active { get; set; }
-        public DateTime InsertedDate { get; set; }
-        public int InsertedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-        public int? UpdatedBy { get; set; }
-        public int? RoleLevel { get; set; }
+        public DateTimeOffset InsertedDate { get; set; }
+        public string InsertedBy { get; set; }
+        public DateTimeOffset? UpdatedDate { get; set; }
+        public string UpdatedBy { get; set; }
+        public string RoleLevel { get; set; }
         public bool IsSameCostCenter { get; set; }
         public bool IsSupervisor { get; set; }
-        public int? CostCenterId { get; set; }
+        public string CostCenterId { get; set; }
     }
 }

@@ -1,14 +1,8 @@
-﻿using Core.Enums;
-using Core.Extensions;
+﻿using Core.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.SqlServer.Management.Sdk.Differencing;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.WebSockets;
-using System.Threading.Tasks;
 using TMS.API.Models;
 using TMS.API.Websocket;
 
@@ -32,11 +26,11 @@ namespace TMS.API.Services
         public async Task NotifyAsync(IEnumerable<TaskNotification> entities)
         {
             await entities
-                .Where(x => x.AssignedId.HasValue)
+                .Where(x => x.AssignedId.HasAnyChar())
                 .Select(x => new WebSocketResponse<TaskNotification>
                 {
-                    EntityId = _entitySvc.GetEntity(nameof(TaskNotification))?.Id ?? 0,
-                    TypeId = 3,
+                    EntityId = _entitySvc.GetEntity(nameof(TaskNotification))?.Id,
+                    TypeId = 3.ToString(),
                     Data = x
                 })
             .ForEachAsync(SendMessageToUser);
@@ -45,11 +39,11 @@ namespace TMS.API.Services
         public async Task NotifyAndCountBadgeAsync(IEnumerable<TaskNotification> entities)
         {
             await entities
-                .Where(x => x.AssignedId.HasValue)
+                .Where(x => x.AssignedId.HasAnyChar())
                 .Select(x => new WebSocketResponse<TaskNotification>
                 {
-                    EntityId = x.EntityId.Value,
-                    TypeId = 4,
+                    EntityId = x.EntityId,
+                    TypeId = 4.ToString(),
                     Data = x
                 })
             .ForEachAsync(SendMessageToUser);
@@ -57,7 +51,7 @@ namespace TMS.API.Services
 
         public async Task SendChatToUser(WebSocketResponse<Chat> task)
         {
-            await _fcmSvc.SendMessageToUsersAsync(new List<int>() { task.Data.ToId.Value }, JsonConvert.SerializeObject(task, new JsonSerializerSettings
+            await _fcmSvc.SendMessageToUsersAsync(new List<string>() { task.Data.ToId }, JsonConvert.SerializeObject(task, new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             }), null);
@@ -65,7 +59,7 @@ namespace TMS.API.Services
 
         public async Task ChatGptSendToUser(WebSocketResponse<Chat> task)
         {
-            await _fcmSvc.SendMessageToUsersAsync(new List<int>() { task.Data.FromId.Value }, JsonConvert.SerializeObject(task, new JsonSerializerSettings
+            await _fcmSvc.SendMessageToUsersAsync(new List<string>() { task.Data.FromId }, JsonConvert.SerializeObject(task, new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             }), null);
@@ -89,7 +83,7 @@ namespace TMS.API.Services
                     ClickAction = "com.softek.tms.push.background.MESSAGING_EVENT"
                 }
             };
-            await _fcmSvc.SendMessageToUsersAsync(new List<int>() { task.Data.AssignedId.Value }, JsonConvert.SerializeObject(task, new JsonSerializerSettings
+            await _fcmSvc.SendMessageToUsersAsync(new List<string>() { task.Data.AssignedId }, JsonConvert.SerializeObject(task, new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             }), fcm.ToJson());
@@ -104,8 +98,8 @@ namespace TMS.API.Services
         {
             var entity = new WebSocketResponse<TaskNotification>
             {
-                EntityId = _entitySvc.GetEntity(nameof(User))?.Id ?? 0,
-                TypeId = 3,
+                EntityId = _entitySvc.GetEntity(nameof(User))?.Id,
+                TypeId = 3.ToString(),
                 Data = task
             };
             await _fcmSvc.SendMessageToSocketAsync(socket, entity.ToJson());
@@ -119,12 +113,12 @@ namespace TMS.API.Services
             }));
         }
 
-        public async Task SendMessageAllUserOtherMe(object task, int UserId)
+        public async Task SendMessageAllUserOtherMe(object task, string userId)
         {
             await _fcmSvc.SendMessageToAllOtherMe(JsonConvert.SerializeObject(task, new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            }), UserId);
+            }), userId);
         }
     }
 }

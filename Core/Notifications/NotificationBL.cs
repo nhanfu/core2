@@ -33,7 +33,7 @@ namespace Core.Notifications
         {
             Notifications = new ObservableList<TaskNotification>();
             _countNtf = new Observable<string>();
-            EditForm.NotificationClient?.AddListener(nameof(TaskNotification), (int)TypeEntityAction.Message, ProcessIncomMessage);
+            EditForm.NotificationClient?.AddListener(nameof(TaskNotification), ((int)TypeEntityAction.Message).ToString(), ProcessIncomMessage);
         }
 
         public void ProcessIncomMessage(object obj)
@@ -53,11 +53,11 @@ namespace Core.Notifications
             if (existTask == null)
             {
                 Notifications.Add(task, 0);
-                ToggleBageCount(Notifications.Data.Count(x => x.StatusId == (int)TaskStateEnum.UnreadStatus));
+                ToggleBageCount(Notifications.Data.Count(x => x.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString()));
                 PopupNotification(task);
             }
             SetBadgeNumber();
-            var entity = Utils.GetEntity(task.EntityId ?? 0);
+            var entity = Utils.GetEntityById(task.EntityId);
             task.Entity = new Entity { Name = entity.Name };
             /*@
             if (typeof(Notification) !== 'undefined' && Notification.permission === "granted") {
@@ -75,7 +75,7 @@ namespace Core.Notifications
 
         private int SetBadgeNumber()
         {
-            var unreadCount = Notifications.Data.Count(x => x.StatusId == (int)TaskStateEnum.UnreadStatus);
+            var unreadCount = Notifications.Data.Count(x => x.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString());
             _countNtf.Data = unreadCount > 9 ? "9+" : unreadCount.ToString();
             var badge = unreadCount > 9 ? 9 : unreadCount;
             /*@
@@ -210,7 +210,7 @@ namespace Core.Notifications
             html.Span.ClassName("fas fa-bell");
             html.Span.ClassName("badge bg-orange fg-white").Id("span-count").Text(_countNtf);
             _countBadge = Html.Context;
-            ToggleBageCount(Notifications.Data.Count(x => x.StatusId == (int)TaskStateEnum.UnreadStatus));
+            ToggleBageCount(Notifications.Data.Count(x => x.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString()));
             html.EndOf(ElementType.a);
             html.Div.ClassName("pos-relative fix-pos-relative hide shadow").TabIndex(-1);
             _task = Html.Context;
@@ -228,7 +228,7 @@ namespace Core.Notifications
                             return;
                         }
 
-                        var className = task.StatusId == (int)TaskStateEnum.UnreadStatus ? "task-unread" : "task-read";
+                        var className = task.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString() ? "task-unread" : "task-read";
                         html.Li.ClassName("task " + className);
                         var li = Html.Context;
                         html.Div.ClassName("a-items").Event(EventType.Click, async () =>
@@ -257,7 +257,7 @@ namespace Core.Notifications
 
         private void PopupNotification(TaskNotification task)
         {
-            if (task.StatusId != (int)TaskStateEnum.UnreadStatus)
+            if (task.StatusId != ((int)TaskStateEnum.UnreadStatus).ToString())
             {
                 return;
             }
@@ -265,7 +265,7 @@ namespace Core.Notifications
             if (task.EntityId == Utils.GetEntity("CoordinationDetail")?.Id
                 && (Client.CheckHasRole(RoleEnum.Driver_Cont) || Client.CheckHasRole(RoleEnum.Driver_Truck)))
             {
-                task.StatusId = (int)TaskStateEnum.Read;
+                task.StatusId = ((int)TaskStateEnum.Read).ToString();
                 var count = DateTime.Now - task.Deadline;
                 var (days, hour, minute) = count.ToDayHourMinute();
                 var dayStr = days > 0 ? (days + " ngày") : string.Empty;
@@ -304,7 +304,7 @@ namespace Core.Notifications
             e.PreventDefault();
             Client client = new Client(nameof(TaskNotification));
             var res = await client.PostAsync<bool>(null, "MarkAllAsRead");
-            ToggleBageCount(Notifications.Data.Count(x => x.StatusId == (int)TaskStateEnum.UnreadStatus));
+            ToggleBageCount(Notifications.Data.Count(x => x.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString()));
             _task.QuerySelectorAll(".task-unread").ForEach(task =>
             {
                 task.ReplaceClass("task-unread", "task-read");
@@ -329,7 +329,7 @@ namespace Core.Notifications
 
         private async Task MarkAsRead(TaskNotification task)
         {
-            task.StatusId = (int)TaskStateEnum.Read;
+            task.StatusId = ((int)TaskStateEnum.Read).ToString();
             await new Client(nameof(TaskNotification)).UpdateAsync<TaskNotification>(task);
             SetBadgeNumber();
         }

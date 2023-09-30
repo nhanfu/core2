@@ -6,6 +6,6 @@ namespace Core.ViewModels
     public class OwnershipRequest
     {
         public Entity EntityType { get; set; }
-        public int[] RecordIds { get; set; }
+        public string[] RecordIds { get; set; }
     }
 }

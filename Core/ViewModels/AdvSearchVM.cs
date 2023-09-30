@@ -39,29 +39,29 @@ namespace Core.Models
 
     public class FieldCondition
     {
-        public int Id { get; set; }
-        public int FieldId { get; set; }
+        public string Id { get; set; }
+        public string FieldId { get; set; }
         public Component Field { get; set; }
         public AdvSearchOperation? CompareOperatorId { get; set; }
         public string Value { get; set; }
         public LogicOperation? LogicOperatorId { get; set; }
         public Entity LogicOperator { get; set; }
-        public int Level { get; set; }
+        public string Level { get; set; }
         public bool Group { get; set; }
     }
 
     public class OrderBy
     {
-        public int Id { get; set; }
-        public int FieldId { get; set; }
+        public string Id { get; set; }
+        public string FieldId { get; set; }
         public Component Field { get; set; }
         public OrderbyOption? OrderbyOptionId { get; set; }
     }
 
     public class SocketResponse
     {
-        public int EntityId { get; set; }
-        public int TypeId { get; set; } = 1;
+        public string EntityId { get; set; }
+        public string TypeId { get; set; } = 1 .ToString();
         public object Data { get; set; }
     }
 }

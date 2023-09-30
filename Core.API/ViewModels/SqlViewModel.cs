@@ -18,7 +18,7 @@ namespace Core.ViewModels
 
     public class SqlViewModel
     {
-        public int CmdId { get; set; }
+        public string CmdId { get; set; }
         public string CmdType { get; set; }
         public string Modules { get; set; }
         public SqlTypeEnum QueryType { get; set; }

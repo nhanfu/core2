@@ -12,12 +12,7 @@ namespace TMS.UI.Business.Shop
             Name = "Vendor Editor";
             DOMContentLoaded += () =>
             {
-                Entity["TypeId"] = 7551;
-                if (vendorEntity.Id > 0)
-                {
-                    this.SetDisabled(true, "CustomerTypeId");
-                    this.SetDisabled(true, "IsBought");
-                }
+                
             };
         }
     }

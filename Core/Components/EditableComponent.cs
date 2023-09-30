@@ -38,7 +38,7 @@ namespace Core.Components
         public event Action Disposed;
         public Action DOMContentLoaded { get; set; }
         public Type EntityType { get; set; }
-        public int EntityId => Entity == null ? 0 : Entity[IdField].As<int>();
+        public string EntityId => Entity?[IdField]?.ToString();
         public object Entity { get; set; }
         private bool _show = true;
         public bool IsSingleton { get; set; }
@@ -92,7 +92,7 @@ namespace Core.Components
                             var nextElement = listViewItem.Children.FirstOrDefault(x => x.GuiInfo.Editable);
                             if (nextElement is null)
                             {
-                                nextElement = listViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id > 0);
+                                nextElement = listViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id.HasAnyChar());
                             }
                             FocusElement(nextElement);
                             return;

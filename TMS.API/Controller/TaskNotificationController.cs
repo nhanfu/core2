@@ -34,7 +34,7 @@ namespace TMS.API.Controllers
                     RecordId = entity.RecordId,
                     Attachment = entity.Attachment,
                     AssignedId = user.Id,
-                    StatusId = (int)TaskStateEnum.UnreadStatus,
+                    StatusId = ((int)TaskStateEnum.UnreadStatus).ToString(),
                     RemindBefore = 540,
                     Deadline = entity.Deadline,
                     Active = true,
@@ -100,7 +100,7 @@ namespace TMS.API.Controllers
                 var split = x.Key.Split("/");
                 return new User
                 {
-                    Id = int.Parse(split[0]),
+                    Id = split[0],
                     Recover = split[3],
                     Email = x.Key
                 };
@@ -125,7 +125,7 @@ namespace TMS.API.Controllers
                 EntityId = _entitySvc.GetEntity(nameof(User)).Id,
                 RecordId = null,
                 Attachment = "fal fa-paper-plane",
-                StatusId = (int)TaskStateEnum.UnreadStatus,
+                StatusId = ((int)TaskStateEnum.UnreadStatus).ToString(),
                 RemindBefore = 540,
                 Deadline = DateTime.Now,
             };
@@ -158,11 +158,11 @@ namespace TMS.API.Controllers
 
         public override async Task<List<TaskNotification>> BulkUpdateAsync([FromBody] List<TaskNotification> entities, string reasonOfChange)
         {
-            entities = entities.Where(x => x.Id <= 0).ToList();
-            var roleIds = entities.Where(x => x.AssignedId is null && x.RoleId.HasValue).Select(x => x.RoleId);
+            entities = entities.Where(x => x.Id == null).ToList();
+            var roleIds = entities.Where(x => x.AssignedId is null && x.RoleId != null).Select(x => x.RoleId);
             var userRoles = await db.UserRole.Where(x => roleIds.Contains(x.RoleId)).ToListAsync();
             var assignedTasks = entities
-                .Where(x => x.AssignedId is null && x.RoleId.HasValue)
+                .Where(x => x.AssignedId is null && x.RoleId != null)
                 .Select(task => new
                 {
                     Task = task,
@@ -178,7 +178,7 @@ namespace TMS.API.Controllers
                         return newTask;
                     });
                 }).ToList();
-            var allAssignedTasks = assignedTasks.Union(entities.Where(x => x.AssignedId.HasValue)).ToList();
+            var allAssignedTasks = assignedTasks.Union(entities.Where(x => x.AssignedId != null)).ToList();
             var updatedTasks = await base.BulkUpdateAsync(allAssignedTasks, reasonOfChange);
             await _taskService.NotifyAsync(updatedTasks);
             return updatedTasks;

@@ -50,33 +50,6 @@ namespace TMS.UI.Business.Shop
                 });
         }
 
-        public async Task SetSale(Vendor vendor)
-        {
-            gridView = this.FindActiveComponent<GridView>().FirstOrDefault();
-            vendor.TypeId = (int)VendorTypeEnum.Boss;
-            vendor.UserId = Client.Token.UserId;
-            var fullName = Client.Token.FullName;
-            if (fullName is null || !vendor.Code.IsNullOrEmpty())
-            {
-                return;
-            }
-            var name = string.Join("", fullName.Split(' ').Select(x => x[0].ToString().ToUpper()));
-            var lastVendor = new Client(nameof(Vendor)).FirstOrDefaultAsync<Vendor>($"?$filter=UserId eq {vendor.UserId} and TypeId eq {(int)VendorTypeEnum.Boss}&$orderby=Id desc&$take=1"); ;
-            var count = new Client(nameof(Vendor)).GetList<Vendor>($"?$filter=UserId eq {vendor.UserId} and TypeId eq {(int)VendorTypeEnum.Boss}&$count=true");
-            await Task.WhenAll(lastVendor, count);
-            index = index ?? count.Result.Odata.Count;
-            index = index + 1;
-            if (lastVendor.Result != null && lastVendor.Result.Code.Contains(name))
-            {
-                var index1 = int.Parse(lastVendor.Result.Code.Replace(name, ""));
-                if (index <= index1)
-                {
-                    index = index + index1 - index + 1;
-                }
-            }
-            vendor.Code = vendor.Code is null || vendor.Code == "" ? name + index : vendor.Code;
-        }
-
         public async Task AddVendor()
         {
             await this.OpenPopup(
@@ -88,7 +61,7 @@ namespace TMS.UI.Business.Shop
                     instance.Title = "Thêm mới chủ hàng";
                     instance.Entity = new Vendor()
                     {
-                        TypeId = (int)VendorTypeEnum.Boss
+                        TypeId = ((int)VendorTypeEnum.Boss).ToString()
                     };
                     return instance;
                 });

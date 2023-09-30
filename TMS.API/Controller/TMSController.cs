@@ -3,28 +3,19 @@ using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Drawing;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Dynamic.Core;
-using System.Text;
 using System.Text.RegularExpressions;
 using TMS.API.Models;
 using ApprovalStatusEnum = Core.Enums.ApprovalStatusEnum;
-using AuthVerEnum = Core.Enums.AuthVerEnum;
-using EntityActionEnum = Core.Enums.EntityActionEnum;
 using FileIO = System.IO.File;
-using HttpMethod = Core.Enums.HttpMethod;
 using ResponseApproveEnum = Core.Enums.ResponseApproveEnum;
-using SystemHttpMethod = System.Net.Http.HttpMethod;
 
 namespace TMS.API.Controllers
 {
@@ -45,38 +36,6 @@ namespace TMS.API.Controllers
             _logger = (ILogger<TMSController<T>>)httpContextAccessor.HttpContext.RequestServices.GetService(typeof(ILogger<TMSController<T>>));
             _config = _httpContext.HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration;
             _address = _config["ServiceAddress"];
-        }
-
-        [HttpPost("api/[Controller]", Order = 0)]
-        public async Task<ActionResult<T>> CreateAndWebhookAsync([FromBody] T entity)
-        {
-            var res = await CreateAsync(entity);
-            WebhookActionWrapper(EntityActionEnum.Create, entity);
-            return res;
-        }
-
-        [HttpPut("api/[Controller]", Order = 0)]
-        public async Task<ActionResult<T>> UpdateAndWebhookAsync([FromBody] T entity, string reasonOfChange = "")
-        {
-            var res = await UpdateAsync(entity, reasonOfChange);
-            WebhookActionWrapper(EntityActionEnum.Update, entity);
-            return res;
-        }
-
-        [HttpPost("api/[Controller]/Delete", Order = 0)]
-        public async Task<ActionResult<bool>> DeactivateAndWebhookAsync([FromRoute] int id)
-        {
-            var res = await DeactivateAsync(new List<int> { id });
-            WebhookActionWrapper(EntityActionEnum.Deactivate, id);
-            return res;
-        }
-
-        [HttpPost("api/[Controller]/HardDelete", Order = 0)]
-        public async Task<ActionResult<bool>> HardDeleteAndWebhookAsync([FromBody] List<int> ids)
-        {
-            var res = await HardDeleteAsync(ids);
-            WebhookActionWrapper(EntityActionEnum.Delete, ids);
-            return res;
         }
 
         [HttpPost("api/[Controller]/Cmd")]
@@ -140,124 +99,6 @@ namespace TMS.API.Controllers
 
         }
 
-        public void WebhookActionWrapper<K>(EntityActionEnum action, K entity)
-        {
-            var serviceProvider = _httpContext.HttpContext.RequestServices.GetService(typeof(IServiceProvider)) as IServiceProvider;
-            var configuration = _httpContext.HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration;
-            var connStr = configuration.GetConnectionString("Default");
-            var db = _config.GetConnectionString("Default");
-            var thead = new Thread(() =>
-            {
-            });
-            thead.Start();
-        }
-
-        private async Task WebhookAction<K>(TMSContext db, EntityActionEnum action, K entity)
-        {
-            var entityId = _entitySvc.GetEntity(typeof(K).Name).Id;
-            var actions = await db.Webhook
-                .Where(x => x.Active && x.EntityId == entityId)
-                .Where(x => x.EventTypeId == (int)action)
-                .ToListAsync();
-            if (actions.Nothing())
-            {
-                return;
-            }
-            var tokenLoaded = await Task.WhenAll(actions.Select(action => CreateRequest(action, entity)));
-            if (tokenLoaded.Any(x => x == true))
-            {
-                await db.SaveChangesAsync();
-            }
-        }
-
-        private async Task<bool> CreateRequest<K>(Webhook action, K entity)
-        {
-            entity.ClearReferences();
-            JwtSecurityToken jwtSecurity = null;
-            bool shouldLoadToken = false;
-            var actionMethod = Enum.Parse<HttpMethod>(action.Method.ToUpper());
-            var method = actionMethod switch
-            {
-                HttpMethod.POST => SystemHttpMethod.Post,
-                HttpMethod.PUT => SystemHttpMethod.Put,
-                HttpMethod.DELETE => SystemHttpMethod.Delete,
-                HttpMethod.GET => throw new NotImplementedException(),
-                _ => throw new NotImplementedException(),
-            };
-            var uri = action.SubUrl;
-            var request = new HttpRequestMessage
-            {
-                RequestUri = new Uri(uri),
-                Method = method,
-                Content = new StringContent(JsonConvert.SerializeObject(entity), Encoding.UTF8, Utils.ApplicationJson),
-            };
-            if (action.AuthVersionId == (int)AuthVerEnum.ApiKey)
-            {
-                request.Headers.Add(action.ApiKeyHeader, action.ApiKey);
-            }
-            else if (action.AuthVersionId == (int)AuthVerEnum.Simple)
-            {
-                request.Headers.Add(action.UsernameKey, action.SubUsername);
-                request.Headers.Add(action.PasswordKey, action.SubPassword);
-            }
-            else if (action.AuthVersionId == (int)AuthVerEnum.OAuth2)
-            {
-                if (action.SavedToken.HasAnyChar())
-                {
-                    jwtSecurity = TryReadSavedToken(action, jwtSecurity);
-                }
-                if (jwtSecurity is not null && jwtSecurity.ValidTo > DateTime.Now.AddMinutes(1))
-                {
-                    request.Headers.Add(action.ApiKeyHeader, action.TokenPrefix + action.SavedToken);
-                }
-                else
-                {
-                    var token = await GetNewToken(action);
-                    if (token.IsNullOrEmpty())
-                    {
-                        return false;
-                    }
-                    action.SavedToken = token;
-                    shouldLoadToken = true;
-                    request.Headers.Add(action.ApiKeyHeader, action.TokenPrefix + token);
-                }
-                request.RequestUri = new Uri($"{action.SubUrl}/?{action.ApiKeyHeader}={action.ApiKey}&EntityName={typeof(T).Name}");
-            }
-            var res = await _client.SendAsync(request);
-            return shouldLoadToken;
-        }
-
-        private async Task<string> GetNewToken(Webhook action)
-        {
-            try
-            {
-                var json = $"{{\"{action.UsernameKey}\": \"{action.SubUsername}\", \"{action.PasswordKey}\": \"{action.SubPassword}\", \"{action.ApiKeyHeader}\": \"{action.ApiKey}\"}}";
-                var tokenRequest = await _client.PostAsync(action.LoginUrl, new StringContent(json, Encoding.UTF8, Utils.ApplicationJson));
-                var tokenStr = await tokenRequest.Content.ReadAsStringAsync();
-                JObject tokenJson = JObject.Parse(tokenStr);
-                var token = action.AccessTokenField.HasAnyChar() ? tokenJson.SelectToken(action.AccessTokenField)?.ToString() : tokenStr;
-                return token;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private static JwtSecurityToken TryReadSavedToken(Webhook action, JwtSecurityToken jwtSecurity)
-        {
-            try
-            {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                jwtSecurity = tokenHandler.ReadJwtToken(action.SavedToken);
-            }
-            catch
-            {
-            }
-
-            return jwtSecurity;
-        }
-
         [HttpPost("api/listener/[Controller]")]
         public virtual Task<ActionResult<T>> CreateListenerAsync([FromBody] T entity)
         {
@@ -271,7 +112,7 @@ namespace TMS.API.Controllers
         }
 
         [HttpDelete("api/listener/[Controller]/{id}")]
-        public virtual Task<ActionResult<bool>> HardDeleteListenerAsync([FromRoute] int id)
+        public virtual Task<ActionResult<bool>> HardDeleteListenerAsync([FromRoute] string id)
         {
             return HardDeleteAsync(id);
         }
@@ -349,7 +190,7 @@ namespace TMS.API.Controllers
         public virtual async Task<ActionResult<bool>> Approve([FromBody] T entity, string reasonOfChange = "")
         {
             entity.ClearReferences();
-            var id = (int)entity.GetPropValue(IdField);
+            var id = entity.GetPropValue(IdField).ToString();
             var approvalConfig = await GetApprovalConfig(entity);
             if (approvalConfig.Nothing())
             {
@@ -376,7 +217,7 @@ namespace TMS.API.Controllers
                 currentLevel++;
             }
             var currentConfig = approvalConfig.FirstOrDefault(x => x.Level == currentLevel);
-            var hasRoleLevel = currentConfig.IsSupervisor || currentConfig.RoleId.HasValue && AllRoleIds.Contains(currentConfig.RoleId.Value);
+            var hasRoleLevel = currentConfig.IsSupervisor || currentConfig.RoleId.HasAnyChar() && AllRoleIds.Contains(currentConfig.RoleId);
             if (!hasRoleLevel)
             {
                 throw new ApiException(ResponseApproveEnum.NonRole.GetEnumDescription());
@@ -418,8 +259,8 @@ namespace TMS.API.Controllers
         public virtual async Task<bool> Reject([FromBody] T entity, string reasonOfChange)
         {
             entity.ClearReferences();
-            var id = (int)entity.GetPropValue(nameof(Role.Id));
-            var insertedBy = (int)entity.GetPropValue(nameof(Role.InsertedBy));
+            var id = entity.GetPropValue(nameof(Role.Id)).ToString();
+            var insertedBy = entity.GetPropValue(nameof(Role.InsertedBy)).ToString();
             var type = typeof(T);
             var entityType = _entitySvc.GetEntity(typeof(T).Name);
             entity.SetPropValue("StatusId", (int)ApprovalStatusEnum.Rejected);
@@ -432,7 +273,7 @@ namespace TMS.API.Controllers
                 EntityId = entityType.Id,
                 Attachment = "fas fa-cart-plus",
                 AssignedId = insertedBy,
-                StatusId = (int)TaskStateEnum.UnreadStatus,
+                StatusId = ((int)TaskStateEnum.UnreadStatus).ToString(),
                 RemindBefore = 540,
                 Deadline = DateTime.Now,
             };
@@ -450,7 +291,7 @@ namespace TMS.API.Controllers
             {
                 throw new ApiException("Quy trình duyệt chưa được cấu hình");
             }
-            var id = (int)entity.GetPropValue(IdField);
+            var id = entity.GetPropValue(IdField).ToString();
             if (matchApprovalConfig is null)
             {
                 return;
@@ -468,7 +309,7 @@ namespace TMS.API.Controllers
         protected virtual void SetApproved(T entity, ApprovalConfig currentConfig)
         {
             var _entityEnum = _entitySvc.GetEntity(typeof(T).Name);
-            var id = (int)entity.GetPropValue(IdField);
+            var id = entity.GetPropValue(IdField).ToString();
             var currentLevel = currentConfig.Level;
             var approval = new Approvement
             {
@@ -478,7 +319,7 @@ namespace TMS.API.Controllers
                 EntityId = _entityEnum.Id,
                 RecordId = id,
                 LevelName = currentConfig.Description,
-                StatusId = (int)ApprovalStatusEnum.Approved,
+                StatusId = ((int)ApprovalStatusEnum.Approved).ToString(),
                 UserApproveId = UserId,
                 ApprovedBy = UserId,
                 ApprovedDate = DateTime.Now,
@@ -624,7 +465,7 @@ namespace TMS.API.Controllers
             , [FromQuery] string sql
             , [FromQuery] string where
             , [FromQuery] bool custom
-            , [FromQuery] int featureId
+            , [FromQuery] string featureId
             , [FromQuery] string order
             , [FromQuery] bool showNull
             , [FromQuery] string orderby

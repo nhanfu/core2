@@ -44,9 +44,9 @@ namespace TMS.UI.Business
             var dic = _feature.Where(f => f.IsMenu).ToDictionary(f => f.Id);
             foreach (var menu in dic.Values)
             {
-                if (menu.ParentId != null && dic.ContainsKey(menu.ParentId.Value))
+                if (menu.ParentId != null && dic.ContainsKey(menu.ParentId))
                 {
-                    var parent = dic[menu.ParentId.Value];
+                    var parent = dic[menu.ParentId];
                     if (parent.InverseParent is null)
                     {
                         parent.InverseParent = new List<Feature>();
@@ -60,7 +60,7 @@ namespace TMS.UI.Business
             _feature = _feature.Where(f => f.ParentId == null && f.IsMenu).ToList();
         }
 
-        public void ReloadMenu(int? focusedParentFeatureId)
+        public void ReloadMenu(string focusedParentFeatureId)
         {
             Task.Run(async () =>
             {
@@ -91,8 +91,7 @@ namespace TMS.UI.Business
                 await Task.WhenAll(featureTask, startAppTask);
                 var feature = featureTask.Result;
                 var startApps = startAppTask.Result.Select(x => x.Value)
-                    .Where(x => !x.IsNullOrWhiteSpace()).Select(x => x.Split(",")).SelectMany(x => x)
-                    .Select(x => x.TryParseInt()).Where(x => x.HasValue);
+                    .Where(x => !x.IsNullOrWhiteSpace()).Select(x => x.Split(",")).SelectMany(x => x).Where(x => x.HasAnyChar());
                 _feature = feature;
                 BuildFeatureTree();
                 Html.Take("#menu");
@@ -338,7 +337,7 @@ namespace TMS.UI.Business
             confirmDialog.YesConfirmed += async () =>
             {
                 var client = new Client(nameof(Feature));
-                await client.DeactivateAsync(new List<int> { feature.Id });
+                await client.DeactivateAsync(new List<string> { feature.Id });
             };
             AddChild(confirmDialog);
         }
@@ -356,7 +355,7 @@ namespace TMS.UI.Business
             await OpenFeature(feature);
         }
 
-        private HTMLElement FindMenuItemByID(int id)
+        private HTMLElement FindMenuItemByID(string id)
         {
             var activeLi = Document.QuerySelectorAll(".card-sidebar-mobile .nav-link");
             foreach (HTMLElement active in activeLi)

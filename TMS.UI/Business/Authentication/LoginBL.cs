@@ -178,7 +178,7 @@ namespace TMS.UI.Business.Authentication
 
         public void InitAppIfEmpty()
         {
-            Client.SystemRole = Client.Token.RoleIds.Contains((int)RoleEnum.System) || Client.Token.RoleIds.Contains(51);
+            Client.SystemRole = Client.Token.RoleIds.Contains(((int)RoleEnum.System).ToString());
             if (_initApp)
             {
                 return;
@@ -197,7 +197,7 @@ namespace TMS.UI.Business.Authentication
             }
             if (TaskList is null)
             {
-                TaskList = NotificationBL.Instance;
+                //TaskList = NotificationBL.Instance;
                 TaskList.Render();
                 TaskList.DOMContentLoaded += () =>
                 {
