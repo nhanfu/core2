@@ -52,15 +52,9 @@ namespace TMS.UI
                           if (result.isConfirmed) {
                             Core.Clients.LocalStorage.SetItem(System.String, "Version", versionCurrent.Description);
                             window.location.reload(true);
-                          } else if (
+                          } else {
                             Core.Clients.LocalStorage.SetItem(System.String, "Version", versionCurrent.Description);
                             window.location.reload(true);
-                          ) {
-                            swalWithBootstrapButtons.fire(
-                              'Cancelled',
-                              'Your imaginary file is safe :)',
-                              'error'
-                            )
                           }
                         })
                      */
