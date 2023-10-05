@@ -24,28 +24,26 @@ namespace TMS.API
             var requestBody = await ReadRequestBodyAsync(request);
             if (!requestBody.IsNullOrWhiteSpace() && (request.Method == HttpMethods.Put || request.Method == HttpMethods.Delete || request.Method == HttpMethods.Patch))
             {
-                using (var scope = _serviceScopeFactory.CreateScope())
+                using var scope = _serviceScopeFactory.CreateScope();
+                var _context = scope.ServiceProvider.GetRequiredService<LOGContext>();
+                string token = request.Headers.Authorization.FirstOrDefault().Replace("Bearer ", "");
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var jwtToken = tokenHandler.ReadJwtToken(token);
+                var logEntry = new RequestLog
                 {
-                    var _context = scope.ServiceProvider.GetRequiredService<LOGContext>();
-                    string token = request.Headers.Authorization.FirstOrDefault().Replace("Bearer ", "");
-                    var tokenHandler = new JwtSecurityTokenHandler();
-                    var jwtToken = tokenHandler.ReadJwtToken(token);
-                    var logEntry = new RequestLog
-                    {
-                        HttpMethod = request.Method,
-                        Path = request.Path,
-                        InsertedDate = DateTime.Now,
-                        Active = true,
-                    };
-                    await _next(context);
-                    logEntry.StatusCode = context.Response.StatusCode.ToString();
-                    logEntry.UpdatedDate = DateTime.Now;
-                    logEntry.RequestBody = requestBody;
-                    var userId = jwtToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-                    logEntry.InsertedBy = userId;
-                    _context.RequestLog.Add(logEntry);
-                    await _context.SaveChangesAsync();
-                }
+                    HttpMethod = request.Method,
+                    Path = request.Path,
+                    InsertedDate = DateTime.Now,
+                    Active = true,
+                };
+                await _next(context);
+                logEntry.StatusCode = context.Response.StatusCode;
+                logEntry.UpdatedDate = DateTime.Now;
+                logEntry.RequestBody = requestBody;
+                var userId = jwtToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                logEntry.InsertedBy = userId;
+                _context.RequestLog.Add(logEntry);
+                await _context.SaveChangesAsync();
             }
             else
             {

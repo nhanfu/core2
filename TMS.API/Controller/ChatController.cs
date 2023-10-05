@@ -94,7 +94,7 @@ namespace TMS.API.Controllers
                     ToId = entity.FromId,
                     Context = text,
                     ConvertationId = entity.ConvertationId,
-                    IsSelf = true,
+                    IsSeft = true,
                 };
             }
         }

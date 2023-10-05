@@ -193,6 +193,7 @@ namespace TMS.API.Services
                 ExpiredDate = res.RefreshTokenExp,
                 SignInDate = DateTime.Now,
             };
+            SetAuditInfo(userLogin);
             db.Add(userLogin);
             await db.SaveChangesAsync();
             return res;
