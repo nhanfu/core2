@@ -27,8 +27,8 @@ namespace TMS.UI.Notifications
         private HTMLElement _countBadge;
         public static ObservableList<TaskNotification> Notifications { get; private set; }
         public static ObservableList<User> UserActive { get; set; }
-        private static ObservableList<Convertation> Convertations { get; set; }
-        private static Observable<Convertation> Convertation { get; set; }
+        private static ObservableList<Conversation> Conversations { get; set; }
+        private static Observable<Conversation> Conversation { get; set; }
         private static ObservableList<Chat> Chats { get; set; }
         private Token CurrentUser { get; set; }
 
@@ -36,8 +36,8 @@ namespace TMS.UI.Notifications
         {
             Notifications = new ObservableList<TaskNotification>();
             UserActive = new ObservableList<User>();
-            Convertations = new ObservableList<Convertation>();
-            Convertation = new Observable<Convertation>();
+            Conversations = new ObservableList<Conversation>();
+            Conversation = new Observable<Conversation>();
             Chats = new ObservableList<Chat>();
             _countNtf = new Observable<string>();
             _countUser = new Observable<string>();
@@ -58,32 +58,32 @@ namespace TMS.UI.Notifications
                 center.RemoveClass("d-none");
             }
             var chat = arg as Chat;
-            if (Convertation.Data != null && chat.ConvertationId == Convertation.Data.Id)
+            if (Conversation.Data != null && chat.ConversationId == Conversation.Data.Id)
             {
-                Convertation.Data.LastContext = chat.Context;
-                Convertation.Data.UpdatedDate = chat.InsertedDate;
+                Conversation.Data.LastContext = chat.Context;
+                Conversation.Data.UpdatedDate = chat.InsertedDate;
                 RenderActionChat(chat);
             }
             else
             {
                 Task.Run(async () =>
                 {
-                    var con = await new Client(nameof(Convertation)).FirstOrDefaultAsync<Convertation>($"?$filter=Id eq {chat.ConvertationId}");
-                    var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConvertationId eq {chat.ConvertationId}&$orderby=UpdatedDate desc");
-                    var check = Convertations.Data.FirstOrDefault(x => x.Id == con.Id);
+                    var con = await new Client(nameof(Conversation)).FirstOrDefaultAsync<Conversation>($"?$filter=Id eq '{chat.ConversationId}'");
+                    var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConversationId eq '{chat.ConversationId}'&$orderby=UpdatedDate desc");
+                    var check = Conversations.Data.FirstOrDefault(x => x.Id == con.Id);
                     if (check != null)
                     {
-                        Convertations.Data.FirstOrDefault(x => x.Id == con.Id).CopyPropFrom(con);
+                        Conversations.Data.FirstOrDefault(x => x.Id == con.Id).CopyPropFrom(con);
                     }
                     else
                     {
-                        Convertations.Data.Add(con);
+                        Conversations.Data.Add(con);
                     }
                     if (chats.Count > 0)
                     {
                         Chats.Data = chats;
                     }
-                    Convertation.Data = con;
+                    Conversation.Data = con;
                     RenderChat();
                     RenderChats();
                     RenderUserChat();
@@ -251,9 +251,9 @@ namespace TMS.UI.Notifications
             Html.Take("#user-active").Clear();
             var notifications = new Client(nameof(TaskNotification)).GetRawList<TaskNotification>($"?$expand=Entity&$orderby=InsertedDate desc&$top=50");
             var userActive = new Client(nameof(TaskNotification)).PostAsync<List<User>>(null, $"GetUserActive");
-            var convertations = new Client(nameof(Convertation)).GetRawList<Convertation>($"?$filter=FromId eq {Client.Token.UserId} or ToId eq {Client.Token.UserId}");
-            await Task.WhenAll(notifications, userActive, convertations);
-            Convertations.Data = convertations.Result;
+            var conversations = new Client(nameof(Conversation)).GetRawList<Conversation>($"?$filter=FromId eq '{Client.Token.UserId}' or ToId eq '{Client.Token.UserId}'");
+            await Task.WhenAll(notifications, userActive, conversations);
+            Conversations.Data = conversations.Result;
             Notifications.Data = notifications.Result;
             UserActive.Data = userActive.Result;
             SetBadgeNumber();
@@ -268,9 +268,9 @@ namespace TMS.UI.Notifications
 
         private void RenderChat()
         {
-            if (Convertation.Data != null)
+            if (Conversation.Data != null)
             {
-                Html.Take("#FullNameChat").InnerHTML(Convertation.Data.ToName);
+                Html.Take("#FullNameChat").InnerHTML(Conversation.Data.ToName);
             };
         }
 
@@ -391,7 +391,7 @@ namespace TMS.UI.Notifications
 
         private async Task ViewProfile(Event e)
         {
-            var user = await new Client(nameof(User)).FirstOrDefaultAsync<User>($"?$filter=Active eq true and Id eq {CurrentUser.UserId}");
+            var user = await new Client(nameof(User)).FirstOrDefaultAsync<User>($"?$filter=Active eq true and Id eq '{CurrentUser.UserId}'");
             await this.OpenPopup(featureName: "UserProfile",
                 factory: () =>
                 {
@@ -476,13 +476,13 @@ namespace TMS.UI.Notifications
                 .Div.ClassName("name").Text(task.FullName).End
                 .Div.ClassName("message").Text(task.Recover).End.End.Render();
             });
-            Html.Take("#chats").ForEach(Convertations.Data.OrderByDescending(x => x.UpdatedDate).ToList(), (task, index) =>
+            Html.Take("#chats").ForEach(Conversations.Data.OrderByDescending(x => x.UpdatedDate).ToList(), (task, index) =>
             {
                 if (task is null)
                 {
                     return;
                 }
-                Html.Instance.Div.ClassName("contact").AsyncEvent(EventType.Click, (e) => ChatByConvertation(e, task))
+                Html.Instance.Div.ClassName("contact").AsyncEvent(EventType.Click, (e) => ChatByConversation(e, task))
                 .Div.ClassName("pic rogers").End
                 .Div.ClassName("badge").End
                 .Div.ClassName("name").Text(task.FromId == Client.Token.UserId ? task.ToName : task.FromName).End
@@ -502,14 +502,14 @@ namespace TMS.UI.Notifications
                     return;
                 }
                 var chat = new Chat();
-                if (Convertation.Data.ToId == Client.Token.UserId)
+                if (Conversation.Data.ToId == Client.Token.UserId)
                 {
                     chat = new Chat()
                     {
                         Context = val.Value,
-                        ConvertationId = Convertation.Data.Id,
-                        FromId = Convertation.Data.ToId,
-                        ToId = Convertation.Data.FromId,
+                        ConversationId = Conversation.Data.Id,
+                        FromId = Conversation.Data.ToId,
+                        ToId = Conversation.Data.FromId,
                         IsSeft = true,
                     };
                 }
@@ -518,9 +518,9 @@ namespace TMS.UI.Notifications
                     chat = new Chat()
                     {
                         Context = val.Value,
-                        ConvertationId = Convertation.Data.Id,
-                        FromId = Convertation.Data.FromId,
-                        ToId = Convertation.Data.ToId,
+                        ConversationId = Conversation.Data.Id,
+                        FromId = Conversation.Data.FromId,
+                        ToId = Conversation.Data.ToId,
                         IsSeft = true,
                     };
                 }
@@ -536,33 +536,33 @@ namespace TMS.UI.Notifications
 
         private async Task ChatByUser(Event e, User user)
         {
-            var con = await new Client(nameof(Convertation)).FirstOrDefaultAsync<Convertation>($"?$filter=(ToId eq {user.Id} and FromId eq {Client.Token.UserId}) or (FromId eq {user.Id} and ToId eq {Client.Token.UserId})");
+            var con = await new Client(nameof(Conversation)).FirstOrDefaultAsync<Conversation>($"?$filter=(ToId eq '{user.Id}' and FromId eq '{Client.Token.UserId}') or (FromId eq {user.Id} and ToId eq {Client.Token.UserId})");
             if (con is null)
             {
-                con = new Convertation()
+                con = new Conversation()
                 {
                     FromId = Client.Token.UserId,
                     ToId = user.Id,
                     FromName = Client.Token.FullName,
                     ToName = user.FullName,
                 };
-                con = await new Client(nameof(Convertation)).CreateAsync<Convertation>(con);
+                con = await new Client(nameof(Conversation)).CreateAsync<Conversation>(con);
             }
             else
             {
-                var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConvertationId eq {con.Id}");
+                var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConversationId eq '{con.Id}'");
                 Chats.Data = chats;
             }
-            Convertation.Data = con;
+            Conversation.Data = con;
             RenderChat();
             RenderChats();
         }
 
-        private async Task ChatByConvertation(Event e, Convertation convertation)
+        private async Task ChatByConversation(Event e, Conversation conversation)
         {
-            var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConvertationId eq {convertation.Id}");
+            var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConversationId eq '{conversation.Id}'");
             Chats.Data = chats;
-            Convertation.Data = convertation;
+            Conversation.Data = conversation;
             RenderChat();
             RenderChats();
         }

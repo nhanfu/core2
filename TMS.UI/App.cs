@@ -144,7 +144,7 @@ namespace TMS.UI
             {
                 return;
             }
-            var rsUserSetting = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>($"?t={LoginBL.Instance.LoginEntity.CompanyName}&$filter=Active eq true and UserId eq {userId} and Name eq 'ShowTabText'");
+            var rsUserSetting = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>($"?t={LoginBL.Instance.LoginEntity.CompanyName}&$filter=Active eq true and UserId eq '{userId}' and Name eq 'ShowTabText'");
             if (rsUserSetting is null)
             {
                 TabEditor.ShowTabText = true;

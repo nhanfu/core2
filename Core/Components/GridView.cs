@@ -569,7 +569,7 @@ namespace Core.Components
                     }
                     else
                     {
-                        return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$filter=Id eq " + x.Value.EncodeSpecialChar(), entityName: header.RefName);
+                        return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$filter=Id eq '{x.Value.EncodeSpecialChar()}'", entityName: header.RefName);
                     }
                 }
             }).ToList();
@@ -2239,22 +2239,6 @@ namespace Core.Components
             {
                 Children.ForEach(x => x.AlwaysLogHistory = true);
             }
-            var isApproved = row["StatusId"].As<int?>() == (int)ApprovalStatusEnum.Approved || row["StatusId"].As<int?>() == (int)ReceiptStatusEnum.Finished;
-            if (isApproved)
-            {
-                rowSection.Disabled = true;
-                rowSection.SetDisabled(false, "btnEdit");
-            }
-            if (Disabled)
-            {
-                rowSection.SetDisabled(false, "btnEdit");
-            }
-            var owed = row["InsertedBy"].ToString() == Client.Token.UserId;
-            if (isApproved)
-            {
-                rowSection.Disabled = true;
-                rowSection.SetDisabled(false, "btnEdit");
-            }
             if (Disabled)
             {
                 rowSection.SetDisabled(false, "btnEdit");
@@ -2978,7 +2962,7 @@ namespace Core.Components
         private async Task UpdateUserSetting()
         {
             _settings = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>(
-                $"?$filter=UserId eq {Client.Token.UserId} and Name eq 'ListView-{GuiInfo.Id}'");
+                $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'ListView-{GuiInfo.Id}'");
             var headerElement = HeaderSection.Children.Where(x => x.GuiInfo != null).ToList().ToDictionary(x => x.GuiInfo.Id);
             BasicHeader.ForEach(x =>
             {
@@ -3013,7 +2997,7 @@ namespace Core.Components
         private async Task UpdateUserSettingColumn()
         {
             _settings = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>(
-                $"?$filter=UserId eq {Client.Token.UserId} and Name eq 'ListView-{GuiInfo.Id}'");
+                $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'ListView-{GuiInfo.Id}'");
             BasicHeader.ForEach(x =>
             {
                 x.Active = false;

@@ -89,7 +89,7 @@ namespace TMS.UI.Business.Setting
 
         public async Task EditMasterDataParent(MasterData parent)
         {
-            var masterData = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Id eq {parent.ParentId}");
+            var masterData = await new Client(nameof(MasterData)).FirstOrDefaultAsync<MasterData>($"?$filter=Id eq '{parent.ParentId}'");
             await this.OpenPopup(
                 featureName: "MasterData Detail",
                 factory: () =>

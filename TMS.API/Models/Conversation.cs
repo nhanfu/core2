@@ -3,17 +3,19 @@ using System.Collections.Generic;
 
 namespace TMS.API.Models
 {
-    public partial class Chat
+    public partial class Conversation
     {
         public string Id { get; set; }
 
-        public string ConversationId { get; set; }
+        public string FromName { get; set; }
 
-        public string Context { get; set; }
+        public string ToName { get; set; }
 
-        public bool IsSeft { get; set; }
+        public string FromId { get; set; }
 
-        public bool IsSeen { get; set; }
+        public string ToId { get; set; }
+
+        public string LastContext { get; set; }
 
         public bool Active { get; set; }
 
@@ -24,9 +26,5 @@ namespace TMS.API.Models
         public DateTimeOffset? UpdatedDate { get; set; }
 
         public string UpdatedBy { get; set; }
-
-        public string FromId { get; set; }
-
-        public string ToId { get; set; }
     }
 }

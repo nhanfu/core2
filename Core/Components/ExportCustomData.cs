@@ -298,7 +298,7 @@ namespace Core.Components
         {
             Toast.Success("Đang xuất excel");
             var userSetting = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>(
-                $"?$filter=UserId eq {Client.Token.UserId} and Name eq 'Export-{ParentListView.GuiInfo.Id}'");
+                $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'Export-{ParentListView.GuiInfo.Id}'");
             if (userSetting is null)
             {
                 userSetting = new UserSetting()

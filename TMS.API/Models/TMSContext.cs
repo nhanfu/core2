@@ -21,7 +21,7 @@ public partial class TMSContext : DbContext
 
     public virtual DbSet<ComponentGroup> ComponentGroup { get; set; }
 
-    public virtual DbSet<Convertation> Convertation { get; set; }
+    public virtual DbSet<Conversation> Conversation { get; set; }
 
     public virtual DbSet<Dictionary> Dictionary { get; set; }
 
@@ -134,7 +134,7 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.Id)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.ConvertationId)
+            entity.Property(e => e.ConversationId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.FromId)
@@ -337,7 +337,7 @@ public partial class TMSContext : DbContext
                 .HasConstraintName("FK_ComponentGroup_ComponentGroup");
         });
 
-        modelBuilder.Entity<Convertation>(entity =>
+        modelBuilder.Entity<Conversation>(entity =>
         {
             entity.Property(e => e.Id)
                 .HasMaxLength(50)

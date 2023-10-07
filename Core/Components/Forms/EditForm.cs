@@ -625,7 +625,7 @@ namespace Core.Components.Forms
             var layout = feature.LayoutId is null || InnerEntry != null
                 ? null
                 : await new Client(nameof(Models.Feature), typeof(User).Namespace, Config).FirstOrDefaultAsync<Feature>(
-                    $"/Public/?$filter=Active eq true and Id eq {feature.LayoutId} and {nameof(feature.Template)} ne null");
+                    $"/Public/?$filter=Active eq true and Id eq '{feature.LayoutId}' and {nameof(feature.Template)} ne null");
             Entity.CopyPropFrom(entityTask.Result);
             SetFeatureProperties(feature);
             CurrentUserId = token?.UserId;
@@ -655,9 +655,8 @@ namespace Core.Components.Forms
             {
                 evt.PreventDefault();
                 await Client.LoadScript("https://unpkg.com/intro.js/intro.js");
-                var intro = await new Client(nameof(Intro)).GetRawList<Intro>($"?$filter=FeatureId eq {Feature.Id}&$orderby=Order asc");
+                var intro = await new Client(nameof(Intro)).GetRawList<Intro>($"?$filter=FeatureId eq '{Feature.Id}'&$orderby=Order asc");
                 var script = @"(x) => {
-                                debugger;
                                 introJs().setOptions({
                                   steps: [
                                   {

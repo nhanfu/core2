@@ -629,10 +629,10 @@ namespace Core.Components
                     FeatureId = EditForm?.Feature != null ? EditForm.Feature.Id.ToString() : GuiInfo.ComponentGroup.FeatureId.ToString();
                 }
                 sysSetting = await new Client(nameof(Component), config: EditForm.Config).GetRawList<Component>(
-                    $"?$filter=Active eq true and EntityId eq {GuiInfo.ReferenceId} and FeatureId eq {FeatureId}");
+                    $"?$filter=Active eq true and EntityId eq '{GuiInfo.ReferenceId}' and FeatureId eq '{FeatureId}'");
 
                 userSetting = await new Client(nameof(UserSetting), config: EditForm.Config).FirstOrDefaultAsync<UserSetting>(
-                $"?$filter=UserId eq {Client.Token.UserId} and Name eq 'ListView-{GuiInfo.Id}'");
+                $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'ListView-{GuiInfo.Id}'");
             }
             else
             {
@@ -658,7 +658,7 @@ namespace Core.Components
         public async Task<List<Component>> LoadRefComponent()
         {
             var sysSetting = await new Client(nameof(Component), config: EditForm.Config).GetRawList<Component>(
-                $"?$filter=Active eq true and EntityId eq {GuiInfo.GroupReferenceId} and FeatureId eq {FeatureId}");
+                $"?$filter=Active eq true and EntityId eq '{GuiInfo.GroupReferenceId}' and FeatureId eq '{FeatureId}'");
             return sysSetting;
         }
 
@@ -1588,7 +1588,7 @@ namespace Core.Components
 
         public async Task RenderViewMenu()
         {
-            var targetRef = await new Client(nameof(EntityRef)).GetRawList<EntityRef>($"?$filter=ComId eq {GuiInfo.Id}");
+            var targetRef = await new Client(nameof(EntityRef)).GetRawList<EntityRef>($"?$filter=ComId eq '{GuiInfo.Id}'");
             if (targetRef.Nothing())
             {
                 return;

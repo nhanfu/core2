@@ -110,7 +110,7 @@ namespace TMS.UI.Business
                         {
                             return;
                         }
-                        var entity = (await new Client(currentFeature.Entity.Name).GetRawList<object>($"?$filter=Id eq {id}", entityName: currentFeature.Entity.Name)).FirstOrDefault();
+                        var entity = (await new Client(currentFeature.Entity.Name).GetRawList<object>($"?$filter=Id eq '{id}'", entityName: currentFeature.Entity.Name)).FirstOrDefault();
                         if (entity is null)
                         {
                             entity = new object();

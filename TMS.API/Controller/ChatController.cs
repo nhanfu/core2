@@ -93,7 +93,7 @@ namespace TMS.API.Controllers
                     FromId = entity.ToId,
                     ToId = entity.FromId,
                     Context = text,
-                    ConvertationId = entity.ConvertationId,
+                    ConversationId = entity.ConversationId,
                     IsSeft = true,
                 };
             }

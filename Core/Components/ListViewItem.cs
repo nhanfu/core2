@@ -228,10 +228,10 @@ namespace Core.Components
             }
             if (component is SearchEntry searchEntry && !(component is MultipleSearchEntry))
             {
-                var matched = header.LocalData?.FirstOrDefault(x => (int)x[IdField] == (int?)rowData?.GetComplexPropValue(header.FieldName));
+                var matched = header.LocalData?.FirstOrDefault(x => (string)x[IdField] == (string)rowData?.GetComplexPropValue(header.FieldName));
                 searchEntry.Matched = matched;
             }
-            component.Id = header.Id.ToString();
+            component.Id = header.Id;
             component.Name = header.FieldName;
             component.Entity = rowData;
             component.ParentElement = cellWrapper ?? Html.Context;

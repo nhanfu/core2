@@ -661,7 +661,7 @@ namespace Core.Components
             comInfo.Reference = Utils.GetEntity(refId);
             comInfo.DataSourceFilter = field.DataSourceFilter;
             comInfo.LocalHeader = await new Client(nameof(Component), typeof(User).Namespace).GetRawList<Component>(
-                $"?$filter=Active eq true and FeatureId eq null and EntityId eq {field.ReferenceId ?? field.EntityId}");
+                $"?$filter=Active eq true and FeatureId eq null and EntityId eq '{field.ReferenceId ?? field.EntityId}'");
             compareCell.GuiInfo.LocalData = OperatorFactory(ComponentTypeTypeEnum.SearchEntry).Cast<object>().ToList();
             component = new MultipleSearchEntry(comInfo);
             component.EntityType = typeof(FieldCondition);

@@ -331,10 +331,10 @@ namespace Core.Components.Extensions
             var prefix = publicForm ? "/Public/" : string.Empty;
             var policyOdata = publicForm ? Task.FromResult(new List<FeaturePolicy>())
                 : new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
-                $"?$filter=Active eq true and FeatureId eq {feature1.Id}");
+                $"?$filter=Active eq true and FeatureId eq '{feature1.Id}'");
             var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>(
                 $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name,Namespace))" +
-                $"&$filter=Active eq true and FeatureId eq {feature1.Id}", addTenant: true);
+                $"&$filter=Active eq true and FeatureId eq '{feature1.Id}'", addTenant: true);
             await Task.WhenAll(policyOdata, componentGroupTask);
             feature1.FeaturePolicy = policyOdata.Result;
             feature1.ComponentGroup = componentGroupTask.Result;
@@ -374,12 +374,12 @@ namespace Core.Components.Extensions
                 return exists;
             }
             var featureTask = new Client(nameof(Feature), typeof(User).Namespace).FirstOrDefaultAsync<Feature>(
-                $"?$expand=Entity($select=Name)&$filter=Active eq true and EntityId eq {entity}  ");
+                $"?$expand=Entity($select=Name)&$filter=Active eq true and EntityId eq '{entity}'  ");
             var policyTask = new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
-                $"?$filter=Active eq true and Feature/EntityId eq {entity}");
+                $"?$filter=Active eq true and Feature/EntityId eq '{entity}'");
             var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>(
                 $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name,Namespace))" +
-                $"&$filter=Active eq true and Feature/EntityId eq {entity} ");
+                $"&$filter=Active eq true and Feature/EntityId eq '{entity}' ");
             await Task.WhenAll(featureTask, policyTask, componentGroupTask);
             var feature = featureTask.Result;
             feature.FeaturePolicy = policyTask.Result;
@@ -396,7 +396,7 @@ namespace Core.Components.Extensions
                 return new List<FeaturePolicy>();
             }
             return await new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
-                $"?$filter=Active eq true and EntityId eq {entity} and RecordId in ({ids.Combine(",")})");
+                $"?$filter=Active eq true and EntityId eq '{entity}' and RecordId in ({ids.Select(x => $"'{x}'").Combine(",")})");
         }
 
         private static void ExecuteFeatureScript(Feature feature)

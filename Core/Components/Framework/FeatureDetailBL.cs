@@ -121,8 +121,8 @@ namespace Core.Components.Framework
         protected override async Task<object> LoadEntity()
         {
             var featureTask = new Client(nameof(Models.Feature), typeof(User).Namespace).GetAsync<Feature>(FeatureEntity.Id);
-            var sectionTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>($"?$expad=Component&$filter=Active eq true and FeatureId eq {FeatureEntity.Id}");
-            var headerTask = new Client(nameof(Component), typeof(User).Namespace).GetRawList<Component>($"?$filter=Active eq true and FeatureId eq {FeatureEntity.Id}");
+            var sectionTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>($"?$expad=Component&$filter=Active eq true and FeatureId eq '{FeatureEntity.Id}'");
+            var headerTask = new Client(nameof(Component), typeof(User).Namespace).GetRawList<Component>($"?$filter=Active eq true and FeatureId eq '{FeatureEntity.Id}'");
             await Task.WhenAll(featureTask, sectionTask, headerTask);
             var feature = featureTask.Result;
             BuildTree(sectionTask.Result);

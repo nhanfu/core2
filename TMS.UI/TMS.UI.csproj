@@ -76,8 +76,8 @@
     <Compile Include="..\TMS.API\Models\ComponentGroup.cs">
       <Link>Models\ComponentGroup.cs</Link>
     </Compile>
-    <Compile Include="..\TMS.API\Models\Convertation.cs">
-      <Link>Models\Convertation.cs</Link>
+    <Compile Include="..\TMS.API\Models\Conversation.cs">
+      <Link>Models\Conversation.cs</Link>
     </Compile>
     <Compile Include="..\tms.api\models\Entity.cs">
       <Link>Models\Entity.cs</Link>
