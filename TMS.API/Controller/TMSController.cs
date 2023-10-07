@@ -12,6 +12,8 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq.Dynamic.Core;
 using System.Text.RegularExpressions;
+using Tenray.Topaz;
+using Tenray.Topaz.API;
 using TMS.API.Models;
 using ApprovalStatusEnum = Core.Enums.ApprovalStatusEnum;
 using FileIO = System.IO.File;
@@ -45,12 +47,8 @@ namespace TMS.API.Controllers
             {
                 return BadRequest("Cmd arg is null");
             }
-            var sv = await db.Services.FirstOrDefaultAsync(x => x.ComId == sqlCmd.CmdId && x.CmdType == sqlCmd.CmdType);
-            if (sv is null)
-            {
-                throw new ApiException($"Service {sqlCmd.CmdType} not found");
-            }
-
+            var sv = await db.Services.FirstOrDefaultAsync(x => x.ComId == sqlCmd.CmdId && x.CmdType == sqlCmd.CmdType)
+                ?? throw new ApiException($"Service {sqlCmd.CmdType} not found");
             try
             {
                 var client = new HttpClient();
@@ -814,6 +812,39 @@ namespace TMS.API.Controllers
                     transaction.Rollback();
                 }
             }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("api/[Controller]/svc")]
+        [HttpPost("api/[Controller]/svc")]
+        public async Task ExecuteJs(string svId, string path, string param)
+        {
+            Models.Services sv = null;
+            if (svId.HasAnyChar())
+            {
+                sv = await db.Services.FindAsync(svId);
+            }
+            else if (path.HasAnyChar())
+            {
+                var subPaths = path.Split("/");
+                if (subPaths.Length < 3) return;
+                var vendor = subPaths[0];
+                var env = subPaths[1];
+                var sub = subPaths[2];
+                sv = await db.Services.FirstAsync(x => x.VendorName == vendor && x.Env == env && x.Path == sub);
+            }
+            var engine = new TopazEngine();
+            engine.SetValue("JSON", new JSONObject());
+            engine.AddType<HttpClient>("HttpClient");
+            engine.AddNamespace("System");
+            engine.SetValue("param", param);
+            engine.SetValue("Response", Response);
+
+            await engine.ExecuteScriptAsync(sv.Content);
+            var res = engine.GetValue("result");
+            var contentType = (string)engine.GetValue("contentType");
+            Response.ContentType = sv.ResHeaders ?? contentType ?? "text/html";
+            await Response.WriteAsync((string)res);
         }
     }
 }

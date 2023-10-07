@@ -9,15 +9,21 @@ public partial class Services
 
     public string ComId { get; set; }
 
-    public bool IsServer { get; set; }
-
-    public bool IsBg { get; set; }
+    public string Address { get; set; }
 
     public string CmdType { get; set; }
 
     public string Content { get; set; }
 
-    public string History { get; set; }
+    public string Env { get; set; }
+
+    public string Path { get; set; }
+
+    public string VendorId { get; set; }
+
+    public string VendorName { get; set; }
+
+    public string ResHeaders { get; set; }
 
     public bool Active { get; set; }
 
@@ -28,12 +34,4 @@ public partial class Services
     public DateTimeOffset? UpdatedDate { get; set; }
 
     public string UpdatedBy { get; set; }
-
-    public bool IsPersit { get; set; }
-
-    public string Environment { get; set; }
-
-    public string Address { get; set; }
-
-    public string Path { get; set; }
 }

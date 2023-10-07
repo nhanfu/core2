@@ -1,20 +1,18 @@
 ﻿using Bridge.Html5;
-using Core.ViewModels;
 using Core.Clients;
 using Core.Components;
 using Core.Components.Extensions;
 using Core.Components.Forms;
 using Core.Enums;
 using Core.Extensions;
+using Core.Models;
 using Core.MVVM;
+using Core.ViewModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Models;
-using Core.Fw.Authentication;
 using ElementType = Core.MVVM.ElementType;
 using Notification = Retyped.dom.Notification;
-using System.Collections.Generic;
 
 namespace Core.Notifications
 {

@@ -687,19 +687,21 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.CmdType)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.ComId)
-                .HasMaxLength(50)
-                .IsUnicode(false);
             entity.Property(e => e.Content).IsRequired();
-            entity.Property(e => e.Environment)
+            entity.Property(e => e.Env)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.InsertedBy)
                 .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Path).HasMaxLength(3000);
             entity.Property(e => e.UpdatedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.VendorId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.VendorName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });

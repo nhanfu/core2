@@ -197,7 +197,7 @@ namespace TMS.UI.Business.Authentication
             }
             if (TaskList is null)
             {
-                //TaskList = NotificationBL.Instance;
+                TaskList = NotificationBL.Instance;
                 TaskList.Render();
                 TaskList.DOMContentLoaded += () =>
                 {
