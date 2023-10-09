@@ -1684,7 +1684,7 @@ namespace Core.Components
             {
                 return;
             }
-            var com = LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
+            var com = LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus?.Id);
             if (com is null)
             {
                 return;
@@ -2683,7 +2683,7 @@ namespace Core.Components
             Window.ClearTimeout(_imeout);
             _imeout = Window.SetTimeout(async () =>
             {
-                var headerDB = await new Client(nameof(Component)).GetAsync<Component>(header.Id);
+                var headerDB = await new Client(nameof(Component)).GetByIdAsync<Component>(header.Id);
                 var html = e.Target as HTMLElement;
                 headerDB.ShortDesc = html.TextContent.Trim();
                 await new Client(nameof(Component)).UpdateAsync<Component>(headerDB);
@@ -2880,8 +2880,8 @@ namespace Core.Components
                     {
                         var data = CalcDatasourse(Paginator.Options.Total, 0, "false");
                         var selectedOdataIds = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>($"{data}&$select=Id", true);
-                        var selectedIds = selectedOdataIds.Value.Select(x => x[IdField]).Cast<int>().ToList();
-                        SelectedIds = selectedIds.As<HashSet<int>>();
+                        var selectedIds = selectedOdataIds.Value.Select(x => x[IdField].ToString()).ToList();
+                        SelectedIds = selectedIds.Distinct().As<HashSet<string>>();
                     }
                 });
             }

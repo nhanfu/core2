@@ -107,7 +107,7 @@ namespace Core.Components
         public bool IgnoreConfirmHardDelete { get; set; }
         public List<CellSelected> CellSelected = new List<CellSelected>();
         public List<Where> Wheres = new List<Where>();
-        public HashSet<int> SelectedIds { get; set; } = new HashSet<int>();
+        public HashSet<string> SelectedIds { get; set; } = new HashSet<string>();
         public string FocusId { get; set; }
         public string EntityFocusId { get; set; }
         public bool ShouldSetEntity { get; set; } = true;
@@ -1135,7 +1135,7 @@ namespace Core.Components
                 }
                 var index = skip + rowIndex;
                 previous.InnerHTML = index.ToString();
-                row.Selected = SelectedIds.Contains(row.Entity[IdField].As<int>());
+                row.Selected = SelectedIds.Contains(row.Entity[IdField]);
                 row.RowNo = index.Value;
             });
         }

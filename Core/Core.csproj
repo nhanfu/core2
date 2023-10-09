@@ -179,7 +179,6 @@
     <Compile Include="Components\BarCode.cs" />
     <Compile Include="Components\FileUploadGrid.cs" />
     <Compile Include="Components\LangSelect.cs" />
-    <Compile Include="Components\RecordDetail.cs" />
     <Compile Include="Enums\HttpStatusCode.cs" />
     <Compile Include="Enums\TextAlign.cs" />
     <Compile Include="Clients\BadGatewayQueue.cs" />

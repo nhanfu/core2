@@ -7,6 +7,7 @@ using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OfficeOpenXml;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
@@ -27,79 +28,82 @@ namespace TMS.API.Controllers
         public override async Task<ActionResult<MasterData>> PatchAsync([FromQuery] ODataQueryOptions<MasterData> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
-            var idInt = id.TryParseInt() ?? 0;
-            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+            using SqlConnection connection = new(_config.GetConnectionString("Default"));
+            connection.Open();
+            var transaction = connection.BeginTransaction();
+            try
             {
-                connection.Open();
-                SqlTransaction transaction = connection.BeginTransaction();
-                try
+                using SqlCommand command = new();
+                command.Transaction = transaction;
+                command.Connection = connection;
+                var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                if (disableTrigger)
                 {
-                    using (SqlCommand command = new SqlCommand())
-                    {
-                        command.Transaction = transaction;
-                        command.Connection = connection;
-                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
-                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
-                        if (disableTrigger)
-                        {
-                            command.CommandText += $" DISABLE TRIGGER ALL ON [{typeof(MasterData).Name}];";
-                        }
-                        else
-                        {
-                            command.CommandText += $" ENABLE TRIGGER ALL ON [{typeof(MasterData).Name}];";
-                        }
-                        command.CommandText += $" UPDATE [{typeof(MasterData).Name}] SET {update.Combine()} WHERE Id = {idInt};";
-                        if (disableTrigger)
-                        {
-                            command.CommandText += $" ENABLE TRIGGER ALL ON [{typeof(MasterData).Name}];";
-                        }
-                        foreach (var item in updates)
-                        {
-                            command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
-                        }
-                        command.ExecuteNonQuery();
-                        transaction.Commit();
-                        var entity = await ctx.Set<MasterData>().FindAsync(idInt);
-                        if (!disableTrigger)
-                        {
-                            await ctx.Entry(entity).ReloadAsync();
-                        }
-
-                        if (entity.ParentId != null)
-                        {
-                            var parentEntity = await db.MasterData.FirstOrDefaultAsync(x => x.Id == entity.ParentId);
-                            var pathParent = parentEntity.Path;
-                            entity.Path = @$"\{pathParent}\{entity.ParentId}\".Replace("/", @"\").Replace(@"\\", @"\");
-                        }
-                        else
-                        {
-                            entity.Path = null;
-                        }
-                        SetLevel(entity);
-                        if (entity.InverseParent.Any())
-                        {
-                            entity.InverseParent.ForEach(x =>
-                            {
-                                x.Path = @$"\{entity.Path}\{x.ParentId}\".Replace("/", @"\").Replace(@"\\", @"\");
-                            });
-                        }
-                        await db.SaveChangesAsync();
-                        BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<MasterData>
-                        {
-                            EntityId = _entitySvc.GetEntity(typeof(MasterData).Name).Id,
-                            TypeId = 1 .ToString(),
-                            Data = entity
-                        }, UserId));
-                        return entity;
-                    }
+                    command.CommandText += $" DISABLE TRIGGER ALL ON [{typeof(MasterData).Name}];";
                 }
-                catch (Exception ex)
+                else
                 {
-                    transaction.Rollback();
-                    var entity = await ctx.Set<MasterData>().FindAsync(idInt);
-                    return StatusCode(409, entity);
+                    command.CommandText += $" ENABLE TRIGGER ALL ON [{typeof(MasterData).Name}];";
                 }
+                command.CommandText += $" UPDATE [{typeof(MasterData).Name}] SET {update.Combine()} WHERE Id = '{id}';";
+                if (disableTrigger)
+                {
+                    command.CommandText += $" ENABLE TRIGGER ALL ON [{typeof(MasterData).Name}];";
+                }
+                foreach (var item in updates)
+                {
+                    command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                }
+                await command.ExecuteNonQueryAsync();
+                await transaction.CommitAsync();
             }
+            catch
+            {
+                await transaction.RollbackAsync();
+                var lastEntity = await ctx.Set<MasterData>().FindAsync(id);
+                return StatusCode((int)HttpStatusCode.Conflict, lastEntity);
+            }
+            var entity = await BuildMasterTree(disableTrigger, id);
+            return Ok(entity);
+        }
+
+        private async Task<MasterData> BuildMasterTree(bool disableTrigger, string id)
+        {
+            var entity = await ctx.Set<MasterData>().FindAsync(id);
+            if (!disableTrigger)
+            {
+                await ctx.Entry(entity).ReloadAsync();
+            }
+            var copiedMasterData = JsonConvert.DeserializeObject<MasterData>(JsonConvert.SerializeObject(entity));
+            if (entity.ParentId != null)
+            {
+                var parentEntity = await db.MasterData.FirstOrDefaultAsync(x => x.Id == entity.ParentId);
+                var pathParent = parentEntity.Path;
+                entity.Path = @$"\{pathParent}\{entity.ParentId}\".Replace("/", @"\").Replace(@"\\", @"\");
+            }
+            else
+            {
+                entity.Path = null;
+            }
+            SetLevel(entity);
+            if (entity.InverseParent.Any())
+            {
+                entity.InverseParent.ForEach(x =>
+                {
+                    x.Path = @$"\{entity.Path}\{x.ParentId}\".Replace("/", @"\").Replace(@"\\", @"\");
+                });
+            }
+            await db.SaveChangesAsync();
+            BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<MasterData>
+            {
+                EntityId = _entitySvc.GetEntity(typeof(MasterData).Name).Id,
+                TypeId = 1.ToString(),
+                Data = copiedMasterData
+            }, UserId));
+            entity.InverseParent = null;
+            entity.Parent = null;
+            return entity;
         }
 
         [AllowAnonymous]

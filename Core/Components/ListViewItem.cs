@@ -39,7 +39,7 @@ namespace Core.Components
             {
                 _selected = value;
                 SetSelected(value);
-                var id = Entity[IdField].As<int>();
+                var id = Entity[IdField]?.ToString();
                 if (value)
                 {
                     if (!ListViewSection.ListView.SelectedIds.Contains(id))
@@ -362,8 +362,7 @@ namespace Core.Components
             }
             catch
             {
-                Toast.Warning("Dữ liệu của bạn chưa được lưu vui lòng nhập lại!");
-                rs = (await new Client(GuiInfo.Reference.Name).GetList<object>($"?$filter=Id eq {Entity[IdField]}")).Value.FirstOrDefault();
+                rs = (await new Client(GuiInfo.Reference.Name).GetList<object>($"?$filter=Id eq '{Entity[IdField]}'")).Value.FirstOrDefault();
                 Entity.CopyPropFrom(rs);
                 UpdateView();
                 return;
@@ -473,7 +472,7 @@ namespace Core.Components
                         Task.Run(async () =>
                         {
                             var selectedOdataIds = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>($"{data}&$select=Id", true);
-                            var selectedIds = selectedOdataIds.Value.Select(x => x[IdField]).Cast<int>().ToList();
+                            var selectedIds = selectedOdataIds.Value.Select(x => x[IdField]?.ToString()).ToList();
                             if (Selected)
                             {
                                 selectedIds.Except(ListViewSection.ListView.SelectedIds).ForEach(ListViewSection.ListView.SelectedIds.Add);
@@ -540,11 +539,11 @@ namespace Core.Components
             var items = ListViewSection.ListView.AllListViewItem.Where(x => x.RowNo >= start && x.RowNo <= currentIndex).ToList();
             if (!ListViewSection.ListView.VirtualScroll)
             {
-                ListViewSection.ListView.SelectedIds = items.Select(x => x.Entity[IdField].As<int>()).As<HashSet<int>>();
+                ListViewSection.ListView.SelectedIds = new HashSet<string>(items.Select(x => x.Entity[IdField]?.ToString()));
             }
             foreach (var item in items)
             {
-                var id = int.Parse(item.Entity[IdField].ToString());
+                var id = item.Entity[IdField].ToString();
                 if (ListViewSection.ListView.SelectedIds.Contains(id))
                 {
                     item.Selected = Selected;

@@ -511,7 +511,7 @@ namespace Core.Components.Extensions
             }
             else if (match is SearchEntry search && (value is null || value.GetType().IsInt32()))
             {
-                search.Value = (int?)value;
+                search.Value = value?.ToString();
             }
             else if (match is Number number && (value is null || value.GetType().IsNumber()))
             {

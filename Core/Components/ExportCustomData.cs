@@ -234,7 +234,7 @@ namespace Core.Components
         {
             _headers = ParentListView.BasicHeader.Where(x => x.ComponentType != nameof(Button) && !x.ShortDesc.IsNullOrWhiteSpace()).ToList();
             var userSetting = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>(
-                $"?$filter=UserId eq {Client.Token.UserId} and Name eq 'Export-{ParentListView.GuiInfo.Id}'");
+                $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'Export-{ParentListView.GuiInfo.Id}'");
             if (userSetting != null)
             {
                 var userSettings = JsonConvert.DeserializeObject<List<Component>>(userSetting.Value).ToDictionary(x => x.Id);
@@ -350,7 +350,7 @@ namespace Core.Components
             {
                 pre = fn.Call(this, this, EditForm).ToString();
             }
-            var path = await new Client(ParentListView.GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}" +
+            var path = await new Client(ParentListView.GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId='{ParentListView.GuiInfo.Id}'" +
                 $"&sql={ParentListView.Sql}" +
                 $"&join={ParentListView.GuiInfo.JoinTable}" +
                 $"&showNull={ParentListView.GuiInfo.ShowNull}" +

@@ -258,7 +258,7 @@ namespace Core.Clients
                     var tenantQuery = "t=" + (tenant ?? "wr1");
                     url += url.Contains(Utils.QuestionMark) ? "&" + tenantQuery : (Utils.QuestionMark + tenantQuery);
                 }
-                options.FinalUrl = Window.EncodeURI(System.IO.Path.Combine(CustomPrefix ?? Prefix, EntityName, url));
+                options.FinalUrl = Window.EncodeURI(PathIO.Combine(CustomPrefix ?? Prefix, EntityName, url));
             }
             xhr.Open(options.Method.ToString(), options.FinalUrl, true);
             options.Headers.ForEach(x => xhr.SetRequestHeader(x.Key, x.Value));
@@ -341,13 +341,12 @@ namespace Core.Clients
             {
                 UnAuthorizedEventHandler?.Invoke(options);
             }
-            else if (xhr.Status == 0 || xhr.Status >= (int)HttpStatusCode.BadGateway || xhr.Status == (int)HttpStatusCode.GatewayTimeout || xhr.Status == (int)HttpStatusCode.ServiceUnavailable)
+            else if (xhr.Status >= (int)HttpStatusCode.BadGateway || xhr.Status == (int)HttpStatusCode.GatewayTimeout || xhr.Status == (int)HttpStatusCode.ServiceUnavailable)
             {
-                Window.ClearTimeout(_errorMessageAwaiter);
-                _errorMessageAwaiter = Window.SetTimeout(() =>
+                if (options.ShowError)
                 {
                     Toast.Warning("Lỗi kết nối tới máy chủ, vui lòng chờ trong giây lát...");
-                }, 100);
+                }
                 if (!options.Retry)
                 {
                     BadGatewayRequest.Enqueue(options);
@@ -524,13 +523,13 @@ namespace Core.Clients
             });
         }
 
-        public async Task<List<T>> GetRawListById<T>(List<int> listId, string tenant = string.Empty, string action = string.Empty, bool clearCache = false) where T : class
+        public async Task<List<T>> GetRawListById<T>(List<string> listId, string tenant = string.Empty, string action = string.Empty, bool clearCache = false) where T : class
         {
             if (listId.Nothing())
             {
                 return new List<T>();
             }
-            listId = listId.Distinct().ToList();
+            var listIdStr = listId.Distinct().Select(x => $"'{x}'").Combine(",");
             var refType = Type.GetType(NameSpace + EntityName);
             var httpGetList = GetType().GetMethods()
                 .FirstOrDefault(x => x.Name == nameof(GetRawList) && x.IsGenericMethodDefinition);
@@ -538,27 +537,27 @@ namespace Core.Clients
             {
                 return new List<T>();
             }
-            var filter = $"{action}/?{(tenant != string.Empty ? $"t={tenant}&" : string.Empty)}$filter=Id in ({string.Join(",", listId)})";
+            var filter = $"{action}/?{(tenant != string.Empty ? $"t={tenant}&" : string.Empty)}$filter=Id in ({listIdStr})";
             return await httpGetList.MakeGenericMethod(refType).Invoke(this, filter, clearCache).As<Task<List<T>>>();
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0034:Simplify 'default' expression", Justification = "<Pending>")]
-        public async Task<T> GetAsync<T>(int? id)
+        public async Task<T> GetByIdAsync<T>(string id)
         {
-            if (id is null || id <= 0)
+            if (id.IsNullOrEmpty())
             {
                 return default(T);
             }
             EntityName = typeof(T).Name;
             var odata = await SubmitAsync<OdataResult<T>>(new XHRWrapper
             {
-                Url = $"/Public/?ids={id}",
+                Url = $"/Public/?ids='{id}'",
                 Method = HttpMethod.GET
             });
             return odata.Value.FirstOrDefault();
         }
 
-        public Task<object> GetRawAsync(int id)
+        public Task<object> GetRawAsync(string id)
         {
             var refType = Type.GetType(NameSpace + EntityName);
             var get = GetType().GetMethods()
@@ -665,7 +664,7 @@ namespace Core.Clients
             return SubmitAsync<T>(new XHRWrapper
             {
                 Value = value,
-                Url = subUrl + $"?$filter=Id eq {id.Value}{ig}",
+                Url = subUrl + $"?$filter=Id eq '{id.Value}'{ig}",
                 Headers = new Dictionary<string, string> { { "Content-type", "application/json" } },
                 Method = HttpMethod.PATCH,
                 AllowAnonymous = annonymous,

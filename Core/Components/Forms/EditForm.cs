@@ -233,7 +233,7 @@ namespace Core.Components.Forms
                 catch
                 {
                     Toast.Warning("Dữ liệu của bạn chưa được lưu vui lòng nhập lại!");
-                    rs = (await Client.GetList<object>($"?$filter=Id eq {Entity[IdField]}")).Value.FirstOrDefault();
+                    rs = (await Client.GetList<object>($"?$filter=Id eq '{Entity[IdField]}'")).Value.FirstOrDefault();
                     Entity.CopyPropFrom(rs);
                     UpdateView();
                     return false;
@@ -1721,7 +1721,7 @@ namespace Core.Components.Forms
         public void CreateFeaturePolicySection(ComponentGroup arg) => CreateFeaturePolicy(arg, arg.FeatureId);
         public async Task CreateFeaturePolicyComponent(Component arg)
         {
-            var section = await new Client(nameof(ComponentGroup), typeof(User).Namespace).GetAsync<ComponentGroup>(arg.ComponentGroupId);
+            var section = await new Client(nameof(ComponentGroup), typeof(User).Namespace).GetByIdAsync<ComponentGroup>(arg.ComponentGroupId);
             CreateFeaturePolicy(arg, section.FeatureId);
         }
 

@@ -20,9 +20,9 @@ namespace Core.Components
         public string IdFieldName { get; private set; }
 
         private const string SEntryClass = "search-entry";
-        private int? _value;
+        private string _value;
 
-        public int? Value
+        public string Value
         {
             get => _value;
             set
@@ -85,11 +85,7 @@ namespace Core.Components
             var entityVal = Entity.GetComplexPropValue(IdFieldName);
             if (entityVal is string str_value)
             {
-                _value = str_value.TryParseInt();
-            }
-            else
-            {
-                _value = entityVal as int?;
+                _value = str_value;
             }
             RenderInputAndEvents();
             RenderIcons();
@@ -308,7 +304,7 @@ namespace Core.Components
             {
                 return;
             }
-            var entity = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetRawAsync(Value.Value);
+            var entity = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetRawAsync(Value);
             var instance = Activator.CreateInstance(type) as TabEditor;
             instance.Id = feature.Name;
             instance.Entity = entity;
@@ -370,22 +366,17 @@ namespace Core.Components
 
         private void SaveAndApply(object entity)
         {
-            var currentItem = Parent as ListViewItem;
             var oldValue = Value;
-            Value = entity[IdField].As<int>();
             Dirty = true;
             Matched = entity;
-            if (currentItem is null)
+            if (!(Parent is ListViewItem currentItem))
             {
-                Value = entity[IdField].As<int>();
+                Value = entity[IdField]?.ToString();
                 Dirty = true;
                 if (UserInput != null)
                 {
                     CascadeAndPopulate();
-                    if (UserInput != null)
-                    {
-                        UserInput.Invoke(new ObservableArgs { NewData = _value, OldData = oldValue, EvType = EventType.Change });
-                    }
+                    UserInput.Invoke(new ObservableArgs { NewData = _value, OldData = oldValue, EvType = EventType.Change });
                 }
                 return;
             }
@@ -396,10 +387,7 @@ namespace Core.Components
                 {
                     await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, currentItem.Entity, Matched);
                 });
-                if (UserInput != null)
-                {
-                    UserInput.Invoke(new ObservableArgs { NewData = _value, OldData = oldValue, EvType = EventType.Change });
-                }
+                UserInput.Invoke(new ObservableArgs { NewData = _value, OldData = oldValue, EvType = EventType.Change });
             }
         }
 
@@ -647,7 +635,7 @@ namespace Core.Components
                 query = FormattedDataSource + "&$top=1";
                 list = await new Client(GuiInfo.RefName).GetList<object>(query);
             }
-            else if (Value.HasValue)
+            else if (Value.HasAnyChar())
             {
                 var formatted = FormattedDataSource;
                 if (formatted.StartsWith("/"))
@@ -671,7 +659,7 @@ namespace Core.Components
                 return;
             }
 
-            Matched = list.Value.FirstOrDefault(x => (int)x[IdField] == _value);
+            Matched = list.Value.FirstOrDefault(x => x[IdField]?.ToString() == _value);
             SetMatchedValue();
         }
 
@@ -680,12 +668,12 @@ namespace Core.Components
             var isLocalMatched = _gv != null && RowData.Data.HasElement() || GuiInfo.LocalData != null;
             if (isLocalMatched)
             {
-                Matched = GuiInfo.LocalData.HasElement() ? GuiInfo.LocalData.FirstOrDefault(x => (int)x[IdField] == _value)
-                    : RowData.Data.FirstOrDefault(x => (int)x[IdField] == Value.Value);
+                Matched = GuiInfo.LocalData.HasElement() ? GuiInfo.LocalData.FirstOrDefault(x => x[IdField]?.ToString() == _value)
+                    : RowData.Data.FirstOrDefault(x => x[IdField]?.ToString() == Value);
             }
             if (isLocalMatched
-                || Matched != null && (int?)Matched[IdField] == Value
-                || Matched is null && (Value is null || Value == 0))
+                || Matched != null && Matched[IdField]?.ToString() == Value
+                || Matched is null && Value.IsNullOrEmpty())
             {
                 SetMatchedValue();
                 return true;
@@ -773,7 +761,7 @@ namespace Core.Components
             var oldMatch = Matched;
             Matched = rowData;
             var oldValue = _value;
-            _value = (int)rowData[IdField];
+            _value = rowData[IdField]?.ToString();
             if (Entity != null && GuiInfo.FieldName.HasAnyChar())
             {
                 Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
@@ -800,20 +788,9 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            int? updatedValue = null;
+            string updatedValue = null;
             var fieldVal = Entity?.GetComplexPropValue(GuiInfo.FieldName);
-            if (fieldVal != null)
-            {
-                if (fieldVal.GetType().IsNumber())
-                {
-                    updatedValue = Convert.ToInt32(fieldVal);
-                }
-            }
-            else
-            {
-                updatedValue = null;
-            }
-            _value = updatedValue;
+            _value = updatedValue = fieldVal?.ToString();
             if (updatedValue is null)
             {
                 Matched = null;
@@ -834,8 +811,8 @@ namespace Core.Components
             }
             ValidationResult.Clear();
             ValidateRequired(_value);
-            Validate(ValidationRule.Equal, _value, (long? value, long? ruleValue) => value == ruleValue);
-            Validate(ValidationRule.NotEqual, _value, (long? value, long? ruleValue) => value != ruleValue);
+            Validate(ValidationRule.Equal, _value, (string value, string ruleValue) => value == ruleValue);
+            Validate(ValidationRule.NotEqual, _value, (string value, string ruleValue) => value != ruleValue);
             return IsValid;
         }
 

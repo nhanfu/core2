@@ -21,8 +21,14 @@ namespace TMS.API
         public async Task Invoke(HttpContext context)
         {
             var request = context.Request;
+            var sideEffectMethods = request.Method == HttpMethods.Put || request.Method == HttpMethods.Delete || request.Method == HttpMethods.Patch;
+            if (!sideEffectMethods)
+            {
+                await _next(context);
+                return;
+            }
             var requestBody = await ReadRequestBodyAsync(request);
-            if (!requestBody.IsNullOrWhiteSpace() && (request.Method == HttpMethods.Put || request.Method == HttpMethods.Delete || request.Method == HttpMethods.Patch))
+            if (!requestBody.IsNullOrWhiteSpace())
             {
                 using var scope = _serviceScopeFactory.CreateScope();
                 var _context = scope.ServiceProvider.GetRequiredService<LOGContext>();
@@ -31,14 +37,15 @@ namespace TMS.API
                 var jwtToken = tokenHandler.ReadJwtToken(token);
                 var logEntry = new RequestLog
                 {
+                    Id = Guid.NewGuid().ToString(),
                     HttpMethod = request.Method,
                     Path = request.Path,
-                    InsertedDate = DateTime.Now,
+                    InsertedDate = DateTimeOffset.Now,
                     Active = true,
                 };
                 await _next(context);
                 logEntry.StatusCode = context.Response.StatusCode;
-                logEntry.UpdatedDate = DateTime.Now;
+                logEntry.UpdatedDate = DateTimeOffset.Now;
                 logEntry.RequestBody = requestBody;
                 var userId = jwtToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 logEntry.InsertedBy = userId;
@@ -51,16 +58,14 @@ namespace TMS.API
             }
         }
 
-        private async Task<string> ReadRequestBodyAsync(HttpRequest request)
+        private static async Task<string> ReadRequestBodyAsync(HttpRequest request)
         {
             request.EnableBuffering();
 
-            using (var reader = new StreamReader(request.Body, leaveOpen: true))
-            {
-                var requestBody = await reader.ReadToEndAsync();
-                request.Body.Position = 0;
-                return requestBody;
-            }
+            using StreamReader reader = new(request.Body, leaveOpen: true);
+            var requestBody = await reader.ReadToEndAsync();
+            request.Body.Position = 0;
+            return requestBody;
         }
     }
 }

@@ -56,7 +56,7 @@ namespace Core.Components
                     {
                         selectedData = parentGridView.RowData.Data;
                     }
-                    var selectedRow = selectedData.Where(x => parentGridView.SelectedIds.Contains(int.Parse(x["Id"].ToString()))).ToList();
+                    var selectedRow = selectedData.Where(x => parentGridView.SelectedIds.Contains((x["Id"].ToString()))).ToList();
                     foreach (var item in selectedRow)
                     {
                         await Task.Delay(200);
@@ -128,7 +128,7 @@ namespace Core.Components
                     {
                         selectedData = parentGridView.RowData.Data;
                     }
-                    var selectedRow = selectedData.Where(x => parentGridView.SelectedIds.Contains(int.Parse(x["Id"].ToString()))).ToList();
+                    var selectedRow = selectedData.Where(x => parentGridView.SelectedIds.Contains((x["Id"].ToString()))).ToList();
                     foreach (var item in selectedRow)
                     {
                         await Task.Delay(200);

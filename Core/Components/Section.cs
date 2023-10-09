@@ -379,7 +379,7 @@ namespace Core.Components
             Window.ClearTimeout(_imeout);
             _imeout = Window.SetTimeout(async () =>
             {
-                var comDB = await new Client(nameof(Component)).GetAsync<Component>(com.Id);
+                var comDB = await new Client(nameof(Component)).GetByIdAsync<Component>(com.Id);
                 var html = e.Target as HTMLElement;
                 comDB.Label = html.TextContent.Trim();
                 await new Client(nameof(Component)).UpdateAsync<Component>(comDB);
@@ -392,7 +392,7 @@ namespace Core.Components
             Window.ClearTimeout(_imeout1);
             _imeout1 = Window.SetTimeout(async () =>
             {
-                var comDB = await new Client(nameof(ComponentGroup)).GetAsync<ComponentGroup>(com.Id);
+                var comDB = await new Client(nameof(ComponentGroup)).GetByIdAsync<ComponentGroup>(com.Id);
                 var html = e.Target as HTMLElement;
                 comDB.Label = html.TextContent.Trim();
                 await new Client(nameof(ComponentGroup)).UpdateAsync<ComponentGroup>(comDB);

@@ -235,58 +235,53 @@ namespace TMS.API.Controllers
         public virtual async Task<ActionResult<T>> PatchAsync([FromQuery] ODataQueryOptions<T> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
-            var idInt = id.TryParseInt() ?? 0;
-            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+            using SqlConnection connection = new(_config.GetConnectionString("Default"));
+            connection.Open();
+            SqlTransaction transaction = connection.BeginTransaction();
+            try
             {
-                connection.Open();
-                SqlTransaction transaction = connection.BeginTransaction();
-                try
+                using SqlCommand command = new();
+                command.Transaction = transaction;
+                command.Connection = connection;
+                var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
+                var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                if (disableTrigger)
                 {
-                    using (SqlCommand command = new SqlCommand())
-                    {
-                        command.Transaction = transaction;
-                        command.Connection = connection;
-                        var updates = patch.Changes.Where(x => x.Field != IdField).ToList();
-                        var update = updates.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
-                        if (disableTrigger)
-                        {
-                            command.CommandText += $" DISABLE TRIGGER ALL ON [{typeof(T).Name}];";
-                        }
-                        else
-                        {
-                            command.CommandText += $" ENABLE TRIGGER ALL ON [{typeof(T).Name}];";
-                        }
-                        command.CommandText += $" UPDATE [{typeof(T).Name}] SET {update.Combine()} WHERE Id = {idInt};";
-                        if (disableTrigger)
-                        {
-                            command.CommandText += $" ENABLE TRIGGER ALL ON [{typeof(T).Name}];";
-                        }
-                        foreach (var item in updates)
-                        {
-                            command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
-                        }
-                        command.ExecuteNonQuery();
-                        transaction.Commit();
-                        var entity = await ctx.Set<T>().FindAsync(idInt);
-                        if (!disableTrigger)
-                        {
-                            await ctx.Entry(entity).ReloadAsync();
-                        }
-                        BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<T>
-                        {
-                            EntityId = _entitySvc.GetEntity(typeof(T).Name).Id,
-                            TypeId = 1 .ToString(),
-                            Data = entity
-                        }, UserId));
-                        return entity;
-                    }
+                    command.CommandText += $" DISABLE TRIGGER ALL ON [{typeof(T).Name}];";
                 }
-                catch (Exception ex)
+                else
                 {
-                    transaction.Rollback();
-                    var entity = await ctx.Set<T>().FindAsync(idInt);
-                    return StatusCode(409, entity);
+                    command.CommandText += $" ENABLE TRIGGER ALL ON [{typeof(T).Name}];";
                 }
+                command.CommandText += $" UPDATE [{typeof(T).Name}] SET {update.Combine()} WHERE Id = '{id}';";
+                if (disableTrigger)
+                {
+                    command.CommandText += $" ENABLE TRIGGER ALL ON [{typeof(T).Name}];";
+                }
+                foreach (var item in updates)
+                {
+                    command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                }
+                await command.ExecuteNonQueryAsync();
+                await transaction.CommitAsync();
+                var entity = await ctx.Set<T>().FindAsync(id);
+                if (!disableTrigger)
+                {
+                    await ctx.Entry(entity).ReloadAsync();
+                }
+                BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<T>
+                {
+                    EntityId = _entitySvc.GetEntity(typeof(T).Name).Id,
+                    TypeId = 1.ToString(),
+                    Data = entity
+                }, UserId));
+                return entity;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                var entity = await ctx.Set<T>().FindAsync(id);
+                return StatusCode(409, entity);
             }
         }
 

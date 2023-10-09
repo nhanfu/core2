@@ -577,7 +577,7 @@ namespace Core.Components
             _filterGrid.FirstOrDefault(x => x.GuiInfo != null && x.Entity == condition
                 && x.GuiInfo.FieldName == nameof(FieldCondition.LogicOperatorId))?.UpdateView();
             condition.CompareOperatorId = (AdvSearchOperation?)compareCell.GuiInfo.LocalData.Cast<Entity>().FirstOrDefault()?.Id?.TryParseInt();
-            compareCell.Value = (int?)condition.CompareOperatorId;
+            compareCell.Value = ((int?)condition.CompareOperatorId)?.ToString();
             compareCell.UpdateView();
             component.Entity = condition;
             component.SetValue(nameof(condition.Value), condition.Value);
@@ -665,7 +665,7 @@ namespace Core.Components
             compareCell.GuiInfo.LocalData = OperatorFactory(ComponentTypeTypeEnum.SearchEntry).Cast<object>().ToList();
             component = new MultipleSearchEntry(comInfo);
             component.EntityType = typeof(FieldCondition);
-            compareCell.Value = (int)AdvSearchOperation.In;
+            compareCell.Value = ((int)AdvSearchOperation.In).ToString();
             return component;
         }
 
