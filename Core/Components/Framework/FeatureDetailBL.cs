@@ -136,14 +136,15 @@ namespace Core.Components.Framework
         private async Task<bool> SaveFeatureInternal(Feature feature)
         {
             feature.ClearReferences();
-            var comGroup = feature.ComponentGroup.ForEach(cg =>
+            var comGroup = feature.ComponentGroup.Where(x => x != null).Select(cg =>
             {
                 cg.Component = null;
                 cg.InverseParent = null;
                 cg.Parent = null;
                 cg.Feature = null;
                 cg.FeatureId = feature.Id;
-            });
+                return cg;
+            }).ToList();
             var components = feature.Component.ForEach(cg =>
             {
                 cg.ComponentGroup = null;

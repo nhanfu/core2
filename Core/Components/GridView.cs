@@ -227,7 +227,7 @@ namespace Core.Components
             }
             else
             {
-                if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.AddDate != null && (bool)GuiInfo.AddDate)
+                if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.AddDate)
                 {
                     ListViewSearch.EntityVM.StartDate = DateTime.Now.AddMonths(-2);
                 }

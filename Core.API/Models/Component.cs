@@ -11,7 +11,7 @@ namespace Core.Models
 
         public string Id { get; set; }
         public string FieldName { get; set; }
-        public int Order { get; set; }
+        public int? Order { get; set; }
         public string ComponentType { get; set; }
         public string ComponentGroupId { get; set; }
         public string DataSourceFilter { get; set; }

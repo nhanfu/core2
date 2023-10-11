@@ -624,12 +624,14 @@ namespace Core.Components
             UserSetting userSetting = null;
             if (GuiInfo.LocalHeader.Nothing())
             {
+                var featureId = FeatureId;
                 if (FeatureId != "null")
                 {
-                    FeatureId = EditForm?.Feature != null ? EditForm.Feature.Id.ToString() : GuiInfo.ComponentGroup.FeatureId.ToString();
+                    FeatureId = EditForm?.Feature?.Id ?? GuiInfo.ComponentGroup.FeatureId;
+                    featureId = $"'{FeatureId}'";
                 }
                 sysSetting = await new Client(nameof(Component), config: EditForm.Config).GetRawList<Component>(
-                    $"?$filter=Active eq true and EntityId eq '{GuiInfo.ReferenceId}' and FeatureId eq '{FeatureId}'");
+                    $"?$filter=Active eq true and EntityId eq '{GuiInfo.ReferenceId}' and FeatureId eq {featureId}");
 
                 userSetting = await new Client(nameof(UserSetting), config: EditForm.Config).FirstOrDefaultAsync<UserSetting>(
                 $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'ListView-{GuiInfo.Id}'");

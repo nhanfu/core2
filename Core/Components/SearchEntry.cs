@@ -436,14 +436,7 @@ namespace Core.Components
                     _gv.ParentElement = _rootResult;
                     _gv.Entity = Entity;
                     _gv.ListViewSearch.EntityVM.SearchTerm = term;
-                    if (this is MultipleSearchEntry)
-                    {
-                        _gv.RowData.Data = new List<object>();
-                    }
-                    else
-                    {
-                        _gv.ClearRowData();
-                    }
+                    _gv.RowData.Data = new List<object>();
                     await _gv.ActionFilter();
                     GridResultDomLoaded();
                     _isRendering = false;

@@ -15,7 +15,7 @@ namespace Core.Models
         public string ValueText { get; set; }
         public string OldValueText { get; set; }
         public bool Active { get; set; }
-        public DateTimeOffset InsertedDate { get; set; }
+        public DateTimeOffset InsertedDate { get; set; } = DateTimeOffset.Now;
         public string InsertedBy { get; set; }
         public DateTimeOffset? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
