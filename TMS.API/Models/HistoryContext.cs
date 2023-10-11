@@ -13,7 +13,7 @@ namespace TMS.API.Models
         {
         }
 
-        public virtual DbSet<History> ECOMMERCE_History { get; set; }
+        public virtual DbSet<History> Core_History { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

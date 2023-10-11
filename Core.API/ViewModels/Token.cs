@@ -19,8 +19,8 @@ namespace Core.ViewModels
         public string Avatar { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-        public DateTimeOffset AccessTokenExp { get; set; }
-        public DateTimeOffset RefreshTokenExp { get; set; }
+        public DateTime AccessTokenExp { get; set; }
+        public DateTime RefreshTokenExp { get; set; }
         public string HashPassword { get; set; }
         public string Recovery { get; set; }
         public string SysName { get; set; } = "TMS";

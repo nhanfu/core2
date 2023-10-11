@@ -7,7 +7,6 @@ namespace Core.Models
     {
         public Component()
         {
-            EntityRef = new HashSet<EntityRef>();
         }
 
         public string Id { get; set; }
@@ -127,6 +126,5 @@ namespace Core.Models
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }
-        public virtual ICollection<EntityRef> EntityRef { get; set; }
     }
 }

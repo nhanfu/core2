@@ -5,7 +5,7 @@ namespace Core.Models
 {
     public partial class History
     {
-        public long Id { get; set; }
+        public string Id { get; set; }
         public string TanentCode { get; set; }
         public string EntityId { get; set; }
         public string RecordId { get; set; }

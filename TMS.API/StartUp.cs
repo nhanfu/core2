@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.Edm;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Polly;
 using Polly.Extensions.Http;
 using System.IO.Compression;
@@ -65,8 +66,12 @@ namespace TMS.API
             {
                 options.SerializerSettings.ContractResolver = new IgnoreNullOrEmptyEnumResolver();
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                options.SerializerSettings.NullValueHandling = NullValueHandling.Include;
-                options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Local;
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+
+                options.SerializerSettings.Converters.Add(new DateParser());
+                options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                options.SerializerSettings.DateParseHandling = DateParseHandling.DateTimeOffset;
+                options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
             });
             services.AddDbContext<HistoryContext>((serviceProvider, options) =>
             {

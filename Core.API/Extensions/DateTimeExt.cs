@@ -4,14 +4,16 @@ namespace Core.Extensions
 {
     public static class DateTimeExt
     {
+        public const string DateFormat = "yyyy-MM-ddTHH:mm:ss.FFFFFFFzzz";
+
         public static string ToISOFormat(this DateTime date)
         {
-            return date.ToString("yyyy-MM-ddTHH:mm:ssz");
+            return date.ToString(DateFormat);
         }
 
         public static string ToISOFormat(this DateTimeOffset date)
         {
-            return date.ToString("yyyy-MM-ddTHH:mm:ssz");
+            return date.ToString(DateFormat);
         }
 
         public static string DateConverter(this string str)

@@ -3,11 +3,26 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections;
-using System.Linq;
 using System.Reflection;
 
 namespace Core.Extensions
 {
+    public class DateParser : IsoDateTimeConverter
+    {
+        public override object ReadJson(JsonReader reader, Type type, object existingValue, JsonSerializer serializer)
+        {
+            var isNull = type == typeof(DateTimeOffset?);
+            if (type == typeof(DateTimeOffset) || isNull)
+            {
+                string dateText = reader.Value?.ToString();
+                if (DateTimeOffset.TryParse(dateText, out var res))
+                    return res;
+                else return isNull ? null : DateTimeOffset.MinValue;
+            }
+            return base.ReadJson(reader, type, existingValue, serializer);
+        }
+    }
+    
     public class IgnoreNullOrEmptyEnumResolver : DefaultContractResolver
     {
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
@@ -27,19 +42,11 @@ namespace Core.Extensions
                         value = prop.GetValue(instance);
                         if (value is null)
                         {
-                            return true;
-                        }
-
-                        if (value is IQueryable queryable)
-                        {
-                            return true;
+                            return false;
                         }
                         else if (value is IEnumerable enumerable)
                         {
-                            if (!enumerable.GetEnumerator().MoveNext())
-                            {
-                                return false;
-                            }
+                            return enumerable.GetEnumerator().MoveNext();
                         }
                         return true;
                     case MemberTypes.Field:

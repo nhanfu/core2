@@ -87,15 +87,15 @@ namespace TMS.API.Services
                 {
                     obj.SetPropValue(IdField, Guid.NewGuid().ToString());
                     obj.SetPropValue(nameof(User.InsertedBy), userId ?? UserId);
-                    obj.SetPropValue(nameof(User.InsertedDate), DateTime.Now);
+                    obj.SetPropValue(nameof(User.InsertedDate), DateTimeOffset.Now);
                     obj.SetPropValue(nameof(User.UpdatedBy), userId ?? UserId);
-                    obj.SetPropValue(nameof(User.UpdatedDate), DateTime.Now);
+                    obj.SetPropValue(nameof(User.UpdatedDate), DateTimeOffset.Now);
                     obj.SetPropValue(nameof(User.Active), true);
                 }
                 else
                 {
                     obj.SetPropValue(nameof(User.UpdatedBy), userId ?? UserId);
-                    obj.SetPropValue(nameof(User.UpdatedDate), DateTime.Now);
+                    obj.SetPropValue(nameof(User.UpdatedDate), DateTimeOffset.Now);
                 }
             });
         }
@@ -252,7 +252,7 @@ namespace TMS.API.Services
                 Ssn = user.Ssn,
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                 AccessTokenExp = exp,
-                RefreshTokenExp = DateTimeOffset.Now.AddYears(1),
+                RefreshTokenExp = DateTime.Now.AddYears(1),
                 RefreshToken = refreshToken,
                 RoleIds = roles.Select(x => x.RoleId).ToList(),
                 AllRoleIds = allRoleIds,

@@ -15,7 +15,7 @@ namespace TMS.API.Controllers
 
         public override Task<OdataResult<History>> Get(ODataQueryOptions<History> options)
         {
-            var query = db.ECOMMERCE_History.AsQueryable();
+            var query = db.Core_History.AsQueryable();
             return ApplyQuery(options, query);
         }
 

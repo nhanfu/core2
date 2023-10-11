@@ -4616,7 +4616,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         statics: {
             methods: {
                 ToISOFormat: function (date) {
-                    return System.DateTime.format(date, "yyyy-MM-ddTHH:mm:ssZ");
+                    return System.DateTime.format(date, "yyyy-MM-ddTHH:mm:ssz");
                 },
                 DateConverter: function (str) {
                     var datestr = "";

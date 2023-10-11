@@ -43,16 +43,6 @@ namespace TMS.API.Models
 
         public int? Order { get; set; }
 
-        public bool Active { get; set; }
-
-        public DateTime InsertedDate { get; set; }
-
-        public string InsertedBy { get; set; }
-
-        public DateTime? UpdatedDate { get; set; }
-
-        public string UpdatedBy { get; set; }
-
         public bool Disabled { get; set; }
 
         public int? XsCol { get; set; }
@@ -94,6 +84,16 @@ namespace TMS.API.Models
         public bool IsDropDown { get; set; }
 
         public bool DefaultCollapsed { get; set; }
+
+        public bool Active { get; set; }
+
+        public DateTimeOffset InsertedDate { get; set; }
+
+        public string InsertedBy { get; set; }
+
+        public DateTimeOffset? UpdatedDate { get; set; }
+
+        public string UpdatedBy { get; set; }
 
         public virtual ICollection<Component> Component { get; set; } = new List<Component>();
 

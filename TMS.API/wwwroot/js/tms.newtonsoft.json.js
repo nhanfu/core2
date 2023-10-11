@@ -550,7 +550,7 @@ Bridge.assembly("Newtonsoft.Json", (function ($asm, globals) {
                                 return o ? y : Newtonsoft.Json.JsonConvert.stringify(y, t, n)
                             }
                             if (l === System.DateTimeOffset) {
-                                y = e.ToString$1("yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFFK");
+                                y = System.String.format("{0:yyyy-MM-ddTHH:mm:ss.FFFFFFFzzz}", e);
                                 return o ? y : Newtonsoft.Json.JsonConvert.stringify(y, t, n)
                             }
                             if (Bridge.isArray(null, l)) {
