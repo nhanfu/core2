@@ -43,21 +43,21 @@ namespace Core.Components
             {
                 return;
             }
-            ICollection<int> list = null;
+            ICollection<string> list = null;
             if (_isStringSource)
             {
-                list = (source as string).Split(",").Select(x => x.TryParseInt() ?? 0).Where(x => x != 0).ToList();
+                list = (source as string).Split(",").Where(x => x.HasAnyChar()).ToList();
             }
             else
             {
-                list = source.As<ICollection<int>>();
+                list = source.As<ICollection<string>>();
             }
             list.Except(_listValues).ToArray().ForEach(_listValues.Add);
         }
 
-        private readonly List<int> _listValues = new List<int>();
+        private readonly List<string> _listValues = new List<string>();
 
-        public List<int> ListValues
+        public List<string> ListValues
         {
             get => _listValues;
             set
@@ -99,7 +99,7 @@ namespace Core.Components
             var value = ListValues;
             if (value is null)
             {
-                ListValues = new List<int>();
+                ListValues = new List<string>();
                 _toggleButton.SetAttribute("title", "Chọn tất cả");
             }
             else
@@ -110,7 +110,7 @@ namespace Core.Components
             FindMatchText();
         }
 
-        private void SetEntityValue(ICollection<int> value)
+        private void SetEntityValue(ICollection<string> value)
         {
             if (_isStringSource)
             {
@@ -132,7 +132,7 @@ namespace Core.Components
             }
             var values = ListValues;
             ClearTagIfNotExists();
-            if (MatchedItems.HasElement() && values.Except(MatchedItems.Select(x => x[IdField].As<int>())).Nothing())
+            if (MatchedItems.HasElement() && values.Except(MatchedItems.Select(x => x[IdField].As<string>())).Nothing())
             {
                 SetMatchedValue();
                 return;
@@ -166,7 +166,7 @@ namespace Core.Components
             if (isLocalMatched)
             {
                 var rows = GuiInfo.LocalData.Nothing() ? RowData.Data : GuiInfo.LocalData;
-                MatchedItems = rows.Where(x => _listValues.Contains((int)x[IdField])).ToList();
+                MatchedItems = rows.Where(x => _listValues.Contains(x[IdField]?.ToString())).ToList();
             }
             if (MatchedItems.HasElement() && MatchedItems.Count == _listValues.Count)
             {
@@ -182,21 +182,21 @@ namespace Core.Components
             ClearTagIfNotExists();
             for (var i = 0; i < ListValues.Count; i++)
             {
-                var item = MatchedItems.FirstOrDefault(x => x[IdField].As<int>() == ListValues[i]);
+                var item = MatchedItems.FirstOrDefault(x => x[IdField]?.ToString() == ListValues[i]);
                 RenderTag(item);
             }
         }
 
         private void ClearTagIfNotExists()
         {
-            var tags = ParentElement.QuerySelectorAll("div > span");
-            foreach (HTMLElement tag in tags)
+            var tags = 
+                from HTMLElement tag in ParentElement.QuerySelectorAll("div > span")
+                let id = tag.Dataset["id"]
+                where id != null && !ListValues.Contains(id)
+                select tag;
+            foreach (var tag in tags)
             {
-                var id = tag.Dataset["id"];
-                if (id != null && !ListValues.Contains(id.TryParseInt() ?? 0))
-                {
-                    tag.Remove();
-                }
+                tag.Remove();
             }
         }
 
@@ -219,7 +219,7 @@ namespace Core.Components
             {
                 var oldList = ListValues.ToList();
                 MatchedItems.Remove(item);
-                var id = item[IdField].As<int>();
+                var id = item[IdField]?.ToString();
                 while (ListValues.Contains(id))
                 {
                     ListValues.Remove(id);
@@ -244,10 +244,10 @@ namespace Core.Components
                 return;
             }
 
-            var id = rowData[IdField].As<int>();
+            var id = rowData[IdField]?.ToString();
             if (ListValues is null)
             {
-                ListValues = new List<int>();
+                ListValues = new List<string>();
             }
             if (!ListValues.Contains(id))
             {
@@ -257,7 +257,7 @@ namespace Core.Components
             else
             {
                 ListValues.Remove(id);
-                var exist = MatchedItems.FirstOrDefault(x => x[IdField].As<int>() == id);
+                var exist = MatchedItems.FirstOrDefault(x => x[IdField]?.ToString() == id);
                 MatchedItems.Remove(exist);
             }
             ListValues = ListValues;

@@ -886,15 +886,15 @@ namespace Core.Components
                 return null;
             }
 
-            currentHeader.DataSourceOptimized = entityIds.Where(x => x.HasValue).Select(x => x.Value).OrderBy(x => x).Combine();
+            currentHeader.DataSourceOptimized = entityIds.Where(x => x.HasAnyChar()).OrderBy(x => x).Combine();
             return currentHeader;
         }
 
-        private EnumerableInstance<int?> GetEntityIds(Component header, IEnumerable<object> entities)
+        private EnumerableInstance<string> GetEntityIds(Component header, IEnumerable<object> entities)
         {
             if (entities.Nothing())
             {
-                return Enumerable.Empty<int?>();
+                return Enumerable.Empty<string>();
             }
 
             return entities.Select(x =>
@@ -905,8 +905,8 @@ namespace Core.Components
                     return null;
                 }
 
-                return id.TryParseInt();
-            }).Where(id => id != null && id.Value > 0);
+                return id;
+            }).Where(id => id != null);
         }
 
         public void DeactivateSelected(object ev = null)

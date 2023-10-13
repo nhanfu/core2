@@ -112,7 +112,6 @@ namespace Core.Components
                     $"&orderby={GuiInfo.OrderBySumary}" +
                     $"&where={stringWh} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")}",
                     Method = HttpMethod.POST,
-                    AllowNestedObject = true,
                     ErrorHandler = (x) => { }
                 });
             var sumarys = dataSet[0][0];
@@ -1964,7 +1963,7 @@ namespace Core.Components
                 var entity = JsonConvert.DeserializeObject<object>(json);
                 emptyRowData.CopyPropFromAct(entity);
             }
-            emptyRowData[IdField] = -Math.Abs(emptyRowData.GetHashCode()); // Not to add this row into the submitted list
+            emptyRowData[IdField] = null; // Not to add this row into the submitted list
             var rowSection = RenderRowData(Header, emptyRowData, EmptyRowSection, null, true);
             if (!GuiInfo.TopEmpty)
             {
@@ -2470,7 +2469,6 @@ namespace Core.Components
                 if (GuiInfo.IsRealtime)
                 {
                     var entity = rowData;
-                    entity.ClearReferences();
                     rs = await new Client(GuiInfo.Reference.Name).CreateAsync<object>(entity);
                     rowSection.Entity.CopyPropFrom(rs);
                     if (GuiInfo.ComponentType == nameof(VirtualGrid))
@@ -3060,7 +3058,7 @@ namespace Core.Components
             {
                 var ids = new List<string> { entity.Id };
                 var client = new Client(nameof(Component));
-                entity.Id = 0 .ToString();
+                entity.Id = null;
                 var success = await client.CreateAsync<Component>(entity);
                 if (success != null)
                 {

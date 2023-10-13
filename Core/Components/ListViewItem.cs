@@ -285,7 +285,6 @@ namespace Core.Components
             }
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, Entity, this);
             var entity = Entity;
-            entity.ClearReferences();
             var rs = await new Client(GuiInfo.Reference.Name).CreateAsync<object>(entity);
             Entity.CopyPropFrom(rs);
             if (GuiInfo.ComponentType == nameof(VirtualGrid))

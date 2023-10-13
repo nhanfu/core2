@@ -28,7 +28,7 @@ namespace TMS.API.Websocket
             return _sockets.FirstOrDefault(p => p.Value == socket).Key;
         }
 
-        public void AddSocket(WebSocket socket, int userId, List<int> roleIds, string ip)
+        public void AddSocket(WebSocket socket, string userId, List<string> roleIds, string ip)
         {
             _sockets.TryAdd($"{userId}/{string.Join(",", roleIds)}/{Guid.NewGuid()}/{ip}", socket);
         }

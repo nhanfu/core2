@@ -17,7 +17,6 @@ namespace TMS.UI.Business.User
         public override async Task<bool> Save(object entity)
         {
             var vm = Entity as UserProfileVM;
-            vm.ClearReferences();
             var saved = await Client.UpdateAsync<bool>(vm, "UpdateProfile");
             if (saved)
             {

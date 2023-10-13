@@ -57,7 +57,7 @@ namespace TMS.API.Websocket
             _logger.LogDebug(FCM_SENDER_ID);
         }
 
-        public virtual Task OnConnected(WebSocket socket, int userId, List<int> roleIds, string ip)
+        public virtual Task OnConnected(WebSocket socket, string userId, List<string> roleIds, string ip)
         {
             WebSocketConnectionManager.AddSocket(socket, userId, roleIds, ip);
             return Task.CompletedTask;
@@ -130,10 +130,10 @@ namespace TMS.API.Websocket
             return WebSocketConnectionManager.GetAll();
         }
 
-        public Task SendMessageToUserAsync(int userId, string message, string fcm = null)
+        public Task SendMessageToUserAsync(string userId, string message, string fcm = null)
         {
             var userGroup = WebSocketConnectionManager.GetAll()
-                .Where(x => userId == x.Key.Split("/").FirstOrDefault().TryParseInt());
+                .Where(x => userId == x.Key.Split("/").FirstOrDefault());
             return NotifyUserGroup(message, userGroup, fcm);
         }
 
@@ -177,9 +177,9 @@ namespace TMS.API.Websocket
             await Task.WhenAll(realtimeTasks);
         }
 
-        public async Task RealtimeMessageToRoleAsync(int roleId, string message, string fcm = null)
+        public async Task RealtimeMessageToRoleAsync(string roleId, string message, string fcm = null)
         {
-            if (roleId == 0 || message.IsNullOrWhiteSpace())
+            if (roleId.IsNullOrEmpty() || message.IsNullOrWhiteSpace())
             {
                 return;
             }
@@ -193,7 +193,7 @@ namespace TMS.API.Websocket
                         return false;
                     }
 
-                    var roleIds = keys[1].Split(",").Select(x => x.TryParseInt()).ToList();
+                    var roleIds = keys[1].Split(",").ToList();
                     return roleIds.Contains(roleId);
                 });
             await NotifyUserGroup(message, userGroup, fcm);

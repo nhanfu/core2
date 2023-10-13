@@ -350,7 +350,6 @@ namespace TMS.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            entity.ClearReferences();
             SetAuditInfo(entity);
             ctx.Set<T>().Add(entity);
             await ctx.SaveChangesAsync();
@@ -365,7 +364,6 @@ namespace TMS.API.Controllers
             {
                 return base.BadRequest(ModelState);
             }
-            entity.ClearReferences();
             SetAuditInfo(entity);
             ctx.Set<T>().Update(entity);
             await ctx.SaveChangesAsync();

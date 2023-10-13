@@ -223,16 +223,13 @@ namespace TMS.API.Controllers
             var str_maxLoginFailed = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "10");
             var maxLoginFailed = str_maxLoginFailed.Description.TryParseInt() ?? 5;
             var user = await db.User.FirstOrDefaultAsync(x => x.UserName == login.UserName);
-            if (user.LoginFailedCount >= maxLoginFailed)
+            var span = DateTimeOffset.Now - (user.UpdatedDate ?? DateTimeOffset.Now);
+            if (user.LoginFailedCount >= maxLoginFailed && span.TotalMinutes < 5)
             {
-                throw new ApiException($"The account {login.UserName} has been locked! Please contact your administrator to unlock.");
+                throw new ApiException($"The account {login.UserName} has been locked for a while! Please contact your administrator to unlock.");
             }
             // Send mail
-            var emailTemplate = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "");
-            if (emailTemplate is null)
-            {
-                throw new InvalidOperationException("Cannot find recovery email template!");
-            }
+            var emailTemplate = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "") ?? throw new InvalidOperationException("Cannot find recovery email template!");
             var oneClickLink = _userSvc.GenerateRandomToken();
             user.Recover = oneClickLink;
             await db.SaveChangesAsync();

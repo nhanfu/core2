@@ -83,7 +83,7 @@ namespace TMS.API.Services
             {
                 string id = obj.GetPropValue(IdField)?.ToString();
                 
-                if (id is null || id == 0 .ToString())
+                if (id is null)
                 {
                     obj.SetPropValue(IdField, Guid.NewGuid().ToString());
                     obj.SetPropValue(nameof(User.InsertedBy), userId ?? UserId);

@@ -187,7 +187,6 @@ namespace TMS.API.Controllers
         [HttpPost("api/[Controller]/Approve/")]
         public virtual async Task<ActionResult<bool>> Approve([FromBody] T entity, string reasonOfChange = "")
         {
-            entity.ClearReferences();
             var id = entity.GetPropValue(IdField).ToString();
             var approvalConfig = await GetApprovalConfig(entity);
             if (approvalConfig.Nothing())
@@ -232,7 +231,6 @@ namespace TMS.API.Controllers
             }
             db.Set<T>().Update(entity);
             await db.SaveChangesAsync();
-            entity.ClearReferences();
             return true;
         }
 
@@ -256,7 +254,6 @@ namespace TMS.API.Controllers
         [HttpPost("api/[Controller]/Reject/")]
         public virtual async Task<bool> Reject([FromBody] T entity, string reasonOfChange)
         {
-            entity.ClearReferences();
             var id = entity.GetPropValue(nameof(Role.Id)).ToString();
             var insertedBy = entity.GetPropValue(nameof(Role.InsertedBy)).ToString();
             var type = typeof(T);

@@ -182,7 +182,6 @@ namespace Core.Components.Forms
             }
 
             BeforeSaved?.Invoke();
-            Entity.ClearReferences();
             await AddOrUpdate(entity);
             Dirty = false;
             res = true;
@@ -289,7 +288,6 @@ namespace Core.Components.Forms
                 return false;
             }
             BeforeSaved?.Invoke();
-            Entity.ClearReferences();
             var data = await AddOrUpdate(entity);
             res = data != null;
             AfterSaved?.Invoke(res);
@@ -364,7 +362,8 @@ namespace Core.Components.Forms
         {
             var showMessage = entity != null;
             var changedLog = BuildTextHistory().ToString();
-            var updating = Entity[IdField].As<int>() > 0;
+            var id = Entity[IdField].As<string>();
+            var updating = id != null;
             var updated = await AddOrUpdateEntity(entity, updating);
             if (updated is null)
             {
@@ -1115,7 +1114,7 @@ namespace Core.Components.Forms
             _componentCoppy.ComponentGroupId = componentGroup.Id;
             Task.Run(async () =>
             {
-                _componentCoppy.Id = 0 .ToString();
+                _componentCoppy.Id = null;
                 var client = await new Client(nameof(Component)).CreateAsync(_componentCoppy);
                 _componentCoppy = null;
                 Toast.Success("Sao chép thành công!");
@@ -1318,7 +1317,7 @@ namespace Core.Components.Forms
             {
                 group.InverseParent = null;
                 group.Component = null;
-                group.Id = 0 .ToString();
+                group.Id = null;
                 await new Client(nameof(ComponentGroup)).CreateAsync(group);
                 Toast.Success("Clone thành công");
             });
@@ -1559,7 +1558,6 @@ namespace Core.Components.Forms
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                Entity.ClearReferences();
                 Entity.SetPropValue(ExpiredDate, DateTime.Now);
                 UpdateView(componentNames: ExpiredDate);
                 await AddOrUpdate(true);
@@ -1580,7 +1578,6 @@ namespace Core.Components.Forms
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                Entity.ClearReferences();
                 if (Entity[IdField].As<int>() <= 0)
                 {
                     await Save();
@@ -1679,7 +1676,6 @@ namespace Core.Components.Forms
             confirm.Render();
             confirm.YesConfirmed += async () =>
             {
-                Entity.ClearReferences();
                 var res = await Client.CreateAsync<object>(Entity, "Reject?reasonOfChange=" + confirm.Textbox?.Text);
                 ProcessEnumMessage(res);
             };

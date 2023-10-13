@@ -173,64 +173,6 @@ namespace Core.Extensions
             }
         }
 
-        public static void ClearReferences(this object obj, bool clearInnerEnum = false, HashSet<object> visited = null)
-        {
-            if (visited is null)
-            {
-                visited = new HashSet<object>();
-            }
-            if (obj is null || visited.Contains(obj) || obj.GetType().IsSimple())
-            {
-                return;
-            }
-            visited.Add(obj);
-
-            if (obj is IEnumerable list)
-            {
-                foreach (var item in list)
-                {
-                    item.ClearReferences(clearInnerEnum, visited);
-                }
-            }
-            else
-            {
-                ClearRefInternal(obj, clearInnerEnum, visited);
-            }
-        }
-
-        private static void ClearRefInternal(object obj, bool clearInnerEnum, HashSet<object> visited)
-        {
-            var props = obj.GetType().GetProperties().Where(x => x.CanWrite && x.CanWrite);
-            foreach (var prop in props)
-            {
-                var refProp = prop.Name.SubStrIndex(0, prop.Name.Length - 2);
-                var enumerable = prop.GetValue(obj) as IEnumerable;
-                if (!prop.PropertyType.IsSimple() && enumerable is null)
-                {
-                    prop.SetValue(obj, null);
-                }
-#if !NETCOREAPP
-                else if (prop.PropertyType.IsSimple() && obj[refProp] != null && !obj[refProp].GetType().IsSimple())
-                {
-                    obj[refProp] = null;
-                }
-#endif
-
-                if (prop.PropertyType != typeof(string) && enumerable != null)
-                {
-                    if (clearInnerEnum)
-                    {
-                        prop.SetValue(obj, null);
-                        continue;
-                    }
-                    foreach (var item in enumerable)
-                    {
-                        item.ClearReferences(clearInnerEnum, visited);
-                    }
-                }
-            }
-        }
-
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0019:Use pattern matching", Justification = "<Pending>")]
         public static string GetEnumDescription(this Enum value, Type enumType = null)
         {
@@ -333,7 +275,6 @@ namespace Core.Extensions
                         obj.SetPropValue(FreightStateId, 1);
                     }
                 });
-                res.ClearReferences();
                 return res;
             }).ToList();
             return copiedRows;

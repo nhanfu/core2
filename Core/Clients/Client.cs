@@ -215,10 +215,6 @@ namespace Core.Clients
             }
             if (isNotFormData)
             {
-                if (!options.AllowNestedObject)
-                {
-                    options?.Value?.ClearReferences();
-                }
                 xhr.Send(options.JsonData);
             }
             else
@@ -289,10 +285,6 @@ namespace Core.Clients
             }
             if (isNotFormData)
             {
-                if (!options.AllowNestedObject)
-                {
-                    options?.Value?.ClearReferences();
-                }
                 xhr.Send(options.JsonData);
             }
             else
@@ -514,6 +506,7 @@ namespace Core.Clients
             return SubmitAsync<OdataResult<object>>(new XHRWrapper
             {
                 Value = listId,
+                IsRaw = true,
                 Method = HttpMethod.POST,
                 Url = action,
                 Headers = new Dictionary<string, string>
@@ -602,7 +595,6 @@ namespace Core.Clients
                 Url = subUrl,
                 Method = HttpMethod.POST,
                 AllowAnonymous = annonymous,
-                AllowNestedObject = allowNested
             });
         }
 
@@ -614,7 +606,6 @@ namespace Core.Clients
                 Url = subUrl,
                 Method = HttpMethod.PUT,
                 AllowAnonymous = annonymous,
-                AllowNestedObject = allowNested
             });
         }
 
@@ -654,7 +645,6 @@ namespace Core.Clients
                 Url = subUrl,
                 Method = HttpMethod.PUT,
                 AllowAnonymous = annonymous,
-                AllowNestedObject = allowNested
             });
         }
 
@@ -668,7 +658,6 @@ namespace Core.Clients
                 Headers = new Dictionary<string, string> { { "Content-type", "application/json" } },
                 Method = HttpMethod.PATCH,
                 AllowAnonymous = annonymous,
-                AllowNestedObject = allowNested
             });
         }
 
@@ -711,7 +700,6 @@ namespace Core.Clients
             {
                 Url = "Delete",
                 Value = ids.Combine(),
-                AllowNestedObject = true,
                 Method = HttpMethod.DELETE
             });
         }
@@ -762,7 +750,6 @@ namespace Core.Clients
             {
                 Url = "HardDelete",
                 Value = ids,
-                AllowNestedObject = true,
                 Method = HttpMethod.DELETE
             });
         }

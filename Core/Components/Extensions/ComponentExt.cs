@@ -215,7 +215,7 @@ namespace Core.Components.Extensions
                 var strId = Regex.Match(searchTerm, @"\d+").Value;
                 if (strId.HasAnyChar())
                 {
-                    searchQuery = $"{idHeader.FieldName.Replace(".", "/")} eq {strId.TryParseInt() ?? 0}";
+                    searchQuery = $"{idHeader.FieldName.Replace(".", "/")} eq '{strId}'";
                 }
             }
             return searchQuery;
@@ -391,7 +391,7 @@ namespace Core.Components.Extensions
 
         public static async Task<List<FeaturePolicy>> LoadRecordPolicy(string[] ids, string entity)
         {
-            if (ids.Nothing() || ids.All(x => x == 0 .ToString() || x == null))
+            if (ids.Nothing() || ids.All(x => x == null))
             {
                 return new List<FeaturePolicy>();
             }

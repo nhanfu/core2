@@ -18,9 +18,9 @@ namespace Core.Components
         public string IdFieldName { get; private set; }
 
         private const string SEntryClass = "search-entry";
-        private int? _value;
+        private string _value;
 
-        public int? Value
+        public string Value
         {
             get => _value;
             set
@@ -57,14 +57,14 @@ namespace Core.Components
         public override void Render()
         {
             SetDefaultVal();
-            var entityVal = Entity.GetComplexPropValue(IdFieldName);
+            var entityVal = Entity.GetComplexPropValue(IdFieldName)?.ToString();
             if (entityVal is string str_value)
             {
-                _value = str_value.TryParseInt();
+                _value = str_value;
             }
             else
             {
-                _value = entityVal as int?;
+                _value = entityVal;
             }
             RenderInputAndEvents();
             if (!TabEditor.DataSearchEntry.Any(x => x.Key == GuiInfo.DataSourceFilter + GuiInfo.RefName))
@@ -126,7 +126,7 @@ namespace Core.Components
             _select.Add(new HTMLOptionElement() { Text = "--Chọn dữ diệu--", Selected = false, Value = null });
             RowData.ForEach(x =>
             {
-                _select.Add(new HTMLOptionElement() { Text = Utils.FormatEntity(GuiInfo.FormatData, x).DecodeSpecialChar(), Selected = Value == (int)x[IdField] ? true : false, Value = x[IdField].ToString(), Title = Utils.FormatEntity(GuiInfo.FormatEntity, x).DecodeSpecialChar() });
+                _select.Add(new HTMLOptionElement() { Text = Utils.FormatEntity(GuiInfo.FormatData, x).DecodeSpecialChar(), Selected = Value == x[IdField]?.ToString(), Value = x[IdField].ToString(), Title = Utils.FormatEntity(GuiInfo.FormatEntity, x).DecodeSpecialChar() });
             });
             var eq = GuiInfo.FilterEq;
             var seft = this;
@@ -152,10 +152,10 @@ namespace Core.Components
                 return selectedOption.title;
               }
             }).on('select2:select', function (e) {
-              var id = parseInt(e.params.data.id);
+              var id = e.params.data.id;
               var math = System.Linq.Enumerable.from(seft.RowData, System.Object).firstOrDefault(function (x) {
-                                            return System.Nullable.getValue(Bridge.cast(Bridge.unbox(x[Core.Components.EditableComponent.IdField], System.Int32), System.Int32)) === id;
-                                        }, null);
+                  return x[Core.Components.EditableComponent.IdField] === id;
+              }, null);
               seft.EntrySelected(math);
             });
              */
@@ -183,7 +183,7 @@ namespace Core.Components
 
         public virtual void SetMatchedValue()
         {
-            _select.Value = _value is null ? null : _value.ToString();
+            _select.Value = _value?.ToString();
             UpdateValue();
         }
 
@@ -197,6 +197,9 @@ namespace Core.Components
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0031:Use null propagation", Justification = "<Pending>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1005:Delegate invocation can be simplified.", Justification = "<Pending>")]
         private void EntrySelected(object rowData)
         {
             Window.ClearTimeout(_waitForDispose);
@@ -209,7 +212,7 @@ namespace Core.Components
             var oldMatch = Matched;
             Matched = rowData;
             var oldValue = _value;
-            _value = (int)rowData[IdField];
+            _value = rowData[IdField]?.ToString();
             if (Entity != null && GuiInfo.FieldName.HasAnyChar())
             {
                 Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
@@ -231,21 +234,8 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            int? updatedValue = null;
-            var fieldVal = Entity?.GetComplexPropValue(GuiInfo.FieldName);
-            if (fieldVal != null)
-            {
-                if (fieldVal.GetType().IsNumber())
-                {
-                    updatedValue = Convert.ToInt32(fieldVal);
-                }
-            }
-            else
-            {
-                updatedValue = null;
-            }
-            _value = updatedValue;
-            if (updatedValue is null)
+            _value = Entity?.GetComplexPropValue(GuiInfo.FieldName)?.ToString();
+            if (_value is null)
             {
                 Matched = null;
                 _select.Value = null;
@@ -273,8 +263,8 @@ namespace Core.Components
             }
             ValidationResult.Clear();
             ValidateRequired(_value);
-            Validate(ValidationRule.Equal, _value, (long? value, long? ruleValue) => value == ruleValue);
-            Validate(ValidationRule.NotEqual, _value, (long? value, long? ruleValue) => value != ruleValue);
+            Validate(ValidationRule.Equal, _value, (string value, string ruleValue) => value == ruleValue);
+            Validate(ValidationRule.NotEqual, _value, (string value, string ruleValue) => value != ruleValue);
             return IsValid;
         }
 

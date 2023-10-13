@@ -43,7 +43,7 @@ namespace Core.Components
         public void LocalRender()
         {
             _headers = ParentListView.Header
-                .Where(x => x.Id.TryParseInt() > 0 && !x.ShortDesc.IsNullOrWhiteSpace() && x.Active && !x.Hidden).ToList();
+                .Where(x => x.Id != null && !x.ShortDesc.IsNullOrWhiteSpace() && x.Active && !x.Hidden).ToList();
             Feature.FeaturePolicy.Add(new FeaturePolicy
             {
                 CanRead = true,
@@ -290,7 +290,7 @@ namespace Core.Components
         private EnumerableInstance<Component> HeaderForAdvSearch()
         {
             return ParentListView.Header
-                .Where(x => x.Id.TryParseInt() > 0 && !x.ShortDesc.IsNullOrWhiteSpace() && x.Active && !x.Hidden);
+                .Where(x => x.Id != null && !x.ShortDesc.IsNullOrWhiteSpace() && x.Active && !x.Hidden);
         }
 
         private void AddOrderByGrid(Section section)
@@ -478,14 +478,6 @@ namespace Core.Components
                         var dateTime = DateTime.ParseExact(value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture).ToISOFormat();
                         value = $"cast({dateTime},Edm.DateTimeOffset)";
                     }
-                }
-            }
-            else if (fieldType.IsInt32() && condition.Field.FieldName.EndsWith(IdField))
-            {
-                if (value != null)
-                {
-                    var list = value.Split(",").Select(x => x.TryParseInt()).Where(x => x != null).Cast<int>();
-                    value = string.Join(",", list);
                 }
             }
             else if (fieldType.IsNumber())

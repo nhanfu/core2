@@ -28,7 +28,6 @@ namespace Core.Components
 
         private async Task SyncDialog_YesConfirmed()
         {
-            _syncConfig.Component.ClearReferences();
             var ok = await new Client(nameof(Component), typeof(User).Namespace).PostAsync<bool>(_syncConfig, "SyncTenant", allowNested: true);
             if (ok)
             {

@@ -32,9 +32,8 @@ namespace TMS.API.Websocket
             var token = context.Request.Query["access_token"].ToString();
             var configuration = context.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration;
             var principal = UserUtils.GetPrincipalFromAccessToken(token, configuration);
-            var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value?.TryParseInt() ?? 0;
-            var roleIds = principal.Claims.Where(x => x.Type == ClaimTypes.Role)
-                .Select(x => x.Value?.TryParseInt() ?? 0).ToList();
+            var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            var roleIds = principal.Claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).ToList();
             await WebSocketHandler.OnConnected(socket, userId, roleIds, context.Connection.RemoteIpAddress.ToString());
             await Receive(socket, async (result, buffer) =>
             {

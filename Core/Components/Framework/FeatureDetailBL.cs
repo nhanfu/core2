@@ -77,7 +77,6 @@ namespace Core.Components.Framework
                 {
                     var newSection = new ComponentGroup();
                     newSection.CopyPropFrom(section.Value);
-                    newSection.ClearReferences();
                     ReflectionExt.ProcessObjectRecursive(newSection, x =>
                     {
                         if (x.HasOwnProperty(IdField))
@@ -128,14 +127,12 @@ namespace Core.Components.Framework
             BuildTree(sectionTask.Result);
             feature.ComponentGroup = sectionTask.Result;
             feature.Component = headerTask.Result;
-            feature.ClearReferences();
             var res = await base.LoadEntity();
             return res;
         }
 
         private async Task<bool> SaveFeatureInternal(Feature feature)
         {
-            feature.ClearReferences();
             var comGroup = feature.ComponentGroup.Where(x => x != null).Select(cg =>
             {
                 cg.Component = null;

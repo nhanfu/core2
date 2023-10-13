@@ -28,7 +28,6 @@ namespace Core.Components.Framework
         public override async Task<bool> Save(object entity)
         {
             var component = Entity.As<Component>();
-            component.ClearReferences();
             var rs = await base.Save(entity);
             return rs;
         }

@@ -55,7 +55,7 @@ namespace TMS.API.Controllers
         /// <returns></returns>
         public override Task<ActionResult<Entity>> UpdateAsync([FromBody] Entity entity, string reasonOfChange = "")
         {
-            if (entity.Id == 0 .ToString() || entity.Id == null)
+            if (entity.Id == null)
             {
                 _userSvc.SetAuditInfo(entity);
             }

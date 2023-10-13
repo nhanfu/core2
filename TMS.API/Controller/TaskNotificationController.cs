@@ -143,7 +143,6 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<TaskNotification>> UpdateAsync([FromBody] TaskNotification entity, string reasonOfChange = "")
         {
-            entity.ClearReferences();
             SetAuditInfo(entity);
             db.Set<TaskNotification>().Update(entity);
             await db.SaveChangesAsync();

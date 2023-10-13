@@ -34,7 +34,6 @@ namespace Core.Components.Framework
                 return false;
             }
 
-            ComGroupEntity.ClearReferences();
             ComGroupEntity.Component.ForEach(x =>
             {
                 x.Reference = null;

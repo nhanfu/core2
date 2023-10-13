@@ -353,7 +353,6 @@ namespace Core.Components
                     {
                         return;
                     }
-                    instance.Entity.ClearReferences();
                     var rs = await instance.AddOrUpdate(instance.Entity);
                     if (rs != null)
                     {

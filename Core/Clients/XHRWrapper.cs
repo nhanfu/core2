@@ -1,5 +1,6 @@
 ﻿using Bridge.Html5;
 using Core.Enums;
+using Core.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,6 @@ namespace Core.Clients
         public bool ShowError { get; set; }
         public bool AllowAnonymous { get; set; }
         public bool AddTenant { get; set; }
-        public bool AllowNestedObject { get; set; }
         public HttpMethod Method { get; set; } = HttpMethod.GET;
         public string Url { get; set; }
         public string NameSpace { get; internal set; }
@@ -36,43 +36,23 @@ namespace Core.Clients
                 {
                     return val;
                 }
-                string res = null;
-
-                try
-                {
-                    res = JsonConvert.SerializeObject(Value);
-                }
-                catch (Exception)
-                {
-                    try
-                    {
-                        res = JsonConvert.SerializeObject(Value);
-                    }
-                    catch (Exception)
-                    {
-                        UnboxValue(Value);
-                        res = res ?? JSON.Stringify(Value);
-                    }
-                }
-                return res;
+                
+                return JsonConvert.SerializeObject(UnboxValue(Value));
             }
         }
 
-        private void UnboxValue(object val)
+        private object UnboxValue(object val)
         {
-            /*@
-            for (var i in val) {
-                if (val[i] === null) continue;
-                if (val[i].v !== undefined) {
-                    val[i] = val[i].v;
-                } else if (val[i]._items !== undefined) {
-                    val[i] = val[i]._items;
-                }
-                if (val[i] instanceof Array) {
-                    for (var j in val[i]) this.UnboxValue(val[i][j]);
+            if (val == null) return null;
+            var res = new object();
+            foreach (var prop in val.GetType().GetProperties())
+            {
+                if (prop.PropertyType.IsSimple()) 
+                {
+                    res[prop.Name] = val[prop.Name];
                 }
             }
-            */
+            return res;
         }
 
         public FormData FormData { get; set; }
