@@ -695,7 +695,7 @@ namespace Core.Components
             {
                 OriginalText = _input.Value;
                 DOMContentLoaded?.Invoke();
-                OldValue = _value.ToString();
+                OldValue = _value?.ToString();
             }
         }
 

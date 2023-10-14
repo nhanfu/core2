@@ -544,8 +544,14 @@ namespace Core.Clients
             EntityName = typeof(T).Name;
             var odata = await SubmitAsync<OdataResult<T>>(new XHRWrapper
             {
-                Url = $"/Public/?ids='{id}'",
-                Method = HttpMethod.GET
+                Value = id,
+                IsRaw = true,
+                Method = HttpMethod.POST,
+                Url = "ById",
+                Headers = new Dictionary<string, string>
+                {
+                    { "content-type", "application/json" }
+                }
             });
             return odata.Value.FirstOrDefault();
         }
@@ -749,9 +755,14 @@ namespace Core.Clients
             return SubmitAsync<bool>(new XHRWrapper
             {
                 Url = "HardDelete",
-                Value = ids,
-                Method = HttpMethod.DELETE
-            });
+                Value = JsonConvert.SerializeObject(ids),
+                Method = HttpMethod.DELETE,
+                IsRaw = true,
+                Headers = new Dictionary<string, string>
+                {
+                    { "content-type", "application/json" }
+                }
+        });
         }
 
         public static Task<bool> LoadScript(string src)

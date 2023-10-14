@@ -3121,8 +3121,8 @@ namespace Core.Components
             var res = await base.HardDeleteConfirmed(deleted);
             if (GuiInfo.ComponentType == nameof(VirtualGrid) && res != null)
             {
-                var ids = res.Select(x => int.Parse(x[IdField].ToString())).ToList();
-                CacheData.RemoveAll(x => ids.Contains(int.Parse(x[IdField].ToString())));
+                var ids = res.Select(x => x[IdField]?.ToString()).ToList();
+                CacheData.RemoveAll(x => ids.Contains(x[IdField]?.ToString()));
             }
             RenderIndex();
             if (GuiInfo.IsSumary)

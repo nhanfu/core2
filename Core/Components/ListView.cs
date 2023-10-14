@@ -886,7 +886,8 @@ namespace Core.Components
                 return null;
             }
 
-            currentHeader.DataSourceOptimized = entityIds.Where(x => x.HasAnyChar()).OrderBy(x => x).Combine();
+            currentHeader.DataSourceOptimized = entityIds.Where(x => x.HasAnyChar())
+                .OrderBy(x => x).Select(x => $"'{x}'").Combine();
             return currentHeader;
         }
 
@@ -1000,9 +1001,9 @@ namespace Core.Components
         public virtual async Task<IEnumerable<object>> HardDeleteConfirmed(List<object> deleted)
         {
             var entity = GuiInfo.RefName;
-            var ids = deleted.Select(x => x[IdField].ToString()).Where(x => x != null).ToList();
-            var deletes = deleted.Where(x => (int)x[IdField] > 0).ToList();
-            var removeRow = deleted.Where(x => (int)x[IdField] <= 0).ToList();
+            var ids = deleted.Select(x => x[IdField]?.ToString()).Where(x => x != null).ToList();
+            var deletes = deleted.Where(x => x[IdField] != null).ToList();
+            var removeRow = deleted.Where(x => x[IdField] == null).ToList();
             if (removeRow.Any())
             {
                 RemoveRange(removeRow);
@@ -1014,7 +1015,7 @@ namespace Core.Components
             }
             if (EditForm.Feature.DeleteTemp)
             {
-                var deleteIds = deleted.Where(x => (int)x[IdField] > 0).ToList();
+                var deleteIds = deleted.Where(x => x[IdField] != null).ToList();
                 if (deleteIds.Any())
                 {
                     RemoveRange(deleteIds);

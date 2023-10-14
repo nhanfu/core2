@@ -152,7 +152,8 @@ namespace TMS.API.Controllers
 
         private static string GetByIds(string ids, string FieldName = null, string DatabaseName = null)
         {
-            var query = $"select {FieldName ?? "*"} from {(DatabaseName.IsNullOrWhiteSpace() ? "" : $"{DatabaseName}.dbo.")}[{typeof(T).Name}] where Id in ({ids})";
+            var idSql = ids.Split(",").Select(x => $"'{x}'").Combine();
+            var query = $"select {FieldName ?? "*"} from {(DatabaseName.IsNullOrWhiteSpace() ? "" : $"{DatabaseName}.dbo.")}[{typeof(T).Name}] where Id in ({idSql})";
             return query;
         }
 
@@ -483,14 +484,15 @@ namespace TMS.API.Controllers
             {
                 return false;
             }
-            ids = ids.Where(x => x.IsNullOrEmpty()).ToList();
+            ids = ids.Where(x => x.HasAnyChar()).ToList();
             if (ids.Nothing())
             {
                 return false;
             }
             try
             {
-                var deleteCommand = $"delete from [{typeof(T).Name}] where Id in ({string.Join(",", ids)})";
+                var idSql = ids.Select(x => $"'{x}'").Combine();
+                var deleteCommand = $"delete from [{typeof(T).Name}] where Id in ({idSql})";
                 await ctx.Database.ExecuteSqlRawAsync(deleteCommand);
                 return true;
             }
