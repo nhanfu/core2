@@ -9,6 +9,7 @@ namespace Core.Clients
 {
     public class XHRWrapper
     {
+        public bool AllowNested { get; set; } = true;
         public bool NoQueue { get; set; }
         public bool Retry { get; set; }
         public bool ShowError { get; set; }
@@ -37,7 +38,7 @@ namespace Core.Clients
                     return val;
                 }
                 
-                return JsonConvert.SerializeObject(UnboxValue(Value));
+                return JsonConvert.SerializeObject(AllowNested ? Value : UnboxValue(Value));
             }
         }
 

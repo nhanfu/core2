@@ -1462,15 +1462,15 @@ namespace Core.Components
                 .EndOf(".popup-title")
                 .Div.ClassName("popup-body scroll-content");
             var body = Html.Context;
-            var _filterGrid = new GridView(new Component
-            {
-                FieldName = nameof(AdvSearchVM.Conditions),
-                Column = 4,
-                ReferenceId = Utils.GetEntity(nameof(Models.History)).Id,
-                RefName = nameof(Models.History),
-                Reference = new Entity { Name = nameof(Models.History), Namespace = typeof(Component).Namespace + "." },
-                DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and EntityId eq {GuiInfo.ReferenceId} and RecordId eq {currentItem[IdField]}",
-            });
+            var com = new Component();
+            com.Id = Guid.NewGuid().ToString();
+            com.FieldName = nameof(AdvSearchVM.Conditions);
+            com.Column = 4;
+            com.ReferenceId = Utils.GetEntity(nameof(Models.History)).Id;
+            com.RefName = nameof(Models.History);
+            com.Reference = new Entity { Name = nameof(Models.History), Namespace = typeof(Component).Namespace + "." };
+            com.DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and EntityId eq '{GuiInfo.ReferenceId}' and RecordId eq '{currentItem[IdField]}'";
+            var _filterGrid = new GridView(com);
             _filterGrid.GuiInfo.LocalHeader = new List<Component>
             {
                      new Component
@@ -1856,7 +1856,6 @@ namespace Core.Components
         private async Task InternalUpdateRows(bool updateView, List<object> updatedRows)
         {
             UpdatedRows.CopyPropFrom(updatedRows);
-            UpdatedRows.ForEach(x => x.SetComplexPropValue(nameof(User.InsertedDate), Convert.ToDateTime(x.GetComplexPropValue(nameof(User.InsertedDate)))));
             if (updateView)
             {
                 await LoadMasterData(updatedRows);
