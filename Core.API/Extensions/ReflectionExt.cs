@@ -222,7 +222,7 @@ namespace Core.Extensions
             }
             else if (type.IsClass)
             {
-                object toret = new object();
+                object toret;
                 if (modelName != null)
                 {
                     toret = Activator.CreateInstance(Type.GetType(path + modelName));
@@ -255,24 +255,13 @@ namespace Core.Extensions
             var copiedRows = selectedRows.Select(x =>
             {
                 var res = (T)DeepCopy(x, path);
-                res.SetPropValue(IdField, -Math.Abs(res.GetHashCode()));
+                res.SetPropValue(IdField, null);
                 ProcessObjectRecursive(res, obj =>
                 {
-                    var id = obj.GetPropValue(IdField) as int?;
-                    if (id.HasValue && id.Value > 0)
+                    var id = obj.GetPropValue(IdField) as string;
+                    if (id.HasAnyChar())
                     {
-                        obj.SetPropValue(IdField, 0);
-                    }
-
-                    var status = obj.GetPropValue(StatusIdField) as int?;
-                    if (status.HasValue)
-                    {
-                        obj.SetPropValue(StatusIdField, (int)ApprovalStatusEnum.New);
-                    }
-                    var freightState = obj.GetPropValue(FreightStateId) as int?;
-                    if (status.HasValue)
-                    {
-                        obj.SetPropValue(FreightStateId, 1);
+                        obj.SetPropValue(IdField, null);
                     }
                 });
                 return res;

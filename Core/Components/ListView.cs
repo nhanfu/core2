@@ -1835,18 +1835,20 @@ namespace Core.Components
                 return null;
             }
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchCreate, Entity, null, this);
-            var updatedRows = new List<object>();
+            var updateTasks = new List<Task<dynamic>>();
             foreach (var item in UpdatedRows)
             {
-                if (int.Parse(item[IdField].ToString()) > 0)
+                if (item[IdField]?.ToString() != null)
                 {
-                    updatedRows.Add(await new Client(GuiInfo.Reference.Name).UpdateAsync(item));
+                    updateTasks.Add(new Client(GuiInfo.Reference.Name).UpdateAsync(item));
                 }
                 else
                 {
-                    updatedRows.Add(await new Client(GuiInfo.Reference.Name).CreateAsync(item));
+                    updateTasks.Add(new Client(GuiInfo.Reference.Name).CreateAsync(item));
                 }
             }
+            await Task.WhenAll(updateTasks);
+            var updatedRows = updateTasks.Select(x => x.Result).ToList();
             await InternalUpdateRows(updateView, updatedRows);
             return updatedRows;
         }

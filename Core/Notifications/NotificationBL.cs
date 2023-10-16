@@ -52,7 +52,6 @@ namespace Core.Notifications
             {
                 Notifications.Add(task, 0);
                 ToggleBageCount(Notifications.Data.Count(x => x.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString()));
-                PopupNotification(task);
             }
             SetBadgeNumber();
             var entity = Utils.GetEntityById(task.EntityId);
@@ -245,40 +244,11 @@ namespace Core.Notifications
                     .AsyncEvent(EventType.Click, SeeMore).End
                     .Span.Text("Đọc tất cả")
                     .AsyncEvent(EventType.Click, MarkAllAsRead);
-            Notifications.Data.ForEach(PopupNotification);
         }
 
         private void ToggleBageCount(int count)
         {
             _countBadge.Style.Display = count == 0 ? Display.None : Display.InlineBlock;
-        }
-
-        private void PopupNotification(TaskNotification task)
-        {
-            if (task.StatusId != ((int)TaskStateEnum.UnreadStatus).ToString())
-            {
-                return;
-            }
-
-            if (task.EntityId == Utils.GetEntity("CoordinationDetail")?.Id
-                && (Client.CheckHasRole(RoleEnum.Driver_Cont) || Client.CheckHasRole(RoleEnum.Driver_Truck)))
-            {
-                task.StatusId = ((int)TaskStateEnum.Read).ToString();
-                var count = DateTime.Now - task.Deadline;
-                var (days, hour, minute) = count.ToDayHourMinute();
-                var dayStr = days > 0 ? (days + " ngày") : string.Empty;
-                var confirm = new ConfirmDialog()
-                {
-                    Title = $"<b>Thông báo</b> - <span class=\"text-small\">{dayStr} {hour}h {minute} phút trước</span>",
-                    Content = $"{task.Title}<br />{task.Description}",
-                    IgnoreNoButton = true,
-                    YesText = "Đồng ý",
-                    CancelText = "Đóng"
-                };
-                confirm.YesConfirmed += async () => await OpenNotification(task);
-                confirm.Canceled += async () => await MarkAsRead(task);
-                confirm.Render();
-            }
         }
 
         private void ToggleNotification()

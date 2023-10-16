@@ -382,7 +382,7 @@ namespace Core.Components.Forms
             {
                 return;
             }
-            var id = Entity[IdField].As<int>();
+            var id = Entity[IdField] as string;
             dirtyGrid.ForEach(x =>
             {
                 x.UpdatedRows.ForEach(row => row.SetPropValue(x.GuiInfo.IdField, id));
