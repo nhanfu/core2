@@ -235,7 +235,7 @@ namespace Core.Components
 
         public override void RemoveRange(IEnumerable<object> data)
         {
-            data.ForEach(x => RemoveRowById(x[IdField].ToString()));
+            data.SelectForeach(x => RemoveRowById(x[IdField].ToString()));
         }
 
         public override async Task AddOrUpdateRow(object rowData, bool singleAdd = true, bool force = false, params string[] fields)

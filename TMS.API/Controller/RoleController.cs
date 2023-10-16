@@ -58,7 +58,7 @@ namespace TMS.API.Controllers
             }
             var roleMap = children.Union(children.Select(x => x.ParentRole).Where(x => x != null))
                 .DistinctBy(x => x.Id).ToDictionary(x => x.Id);
-            roleMap.Values.ForEach(x =>
+            roleMap.Values.SelectForeach(x =>
             {
                 if (x.ParentRoleId is null || !roleMap.ContainsKey(x.ParentRoleId))
                 {
@@ -84,7 +84,7 @@ namespace TMS.API.Controllers
             {
                 return;
             }
-            directChildren.ForEach(child =>
+            directChildren.SelectForeach(child =>
             {
                 if (child.ParentRoleId is not null)
                 {
@@ -117,7 +117,7 @@ namespace TMS.API.Controllers
             var rs = await base.CreateAsync(entity);
             if (entity.InverseParentRole.Any())
             {
-                entity.InverseParentRole.ForEach(x =>
+                entity.InverseParentRole.SelectForeach(x =>
                 {
                     x.Path = @$"\{entity.Path}\{x.Id}\".Replace(@"\\", @"\");
                 });

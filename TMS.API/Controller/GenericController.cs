@@ -290,7 +290,7 @@ namespace TMS.API.Controllers
         public async Task<bool> EmailAttached([FromBody] EmailVM email, [FromServices] IWebHostEnvironment host)
         {
             var paths = await GeneratePdf(email, host, absolute: true);
-            paths.ForEach(email.ServerAttachements.Add);
+            paths.SelectForeach(email.ServerAttachements.Add);
             await SendMail(email, ctx as TMSContext, host.WebRootPath);
             return true;
         }

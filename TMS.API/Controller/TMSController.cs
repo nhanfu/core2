@@ -362,7 +362,7 @@ namespace TMS.API.Controllers
         private Dictionary<int, T> BuildTreeNode(List<T> allNode)
         {
             var nodeMap = allNode.Where(x => x != null).DistinctBy(x => (int)x.GetPropValue(IdField)).ToDictionary(x => (int)x.GetPropValue(IdField));
-            nodeMap.Values.ForEach(x =>
+            nodeMap.Values.SelectForeach(x =>
             {
                 var parentId = (int?)x.GetPropValue(ParentIdField);
                 var id = (int)x.GetPropValue(IdField);
@@ -383,7 +383,7 @@ namespace TMS.API.Controllers
             {
                 return;
             }
-            directChildren.ForEach(child =>
+            directChildren.SelectForeach(child =>
             {
                 var id = (int)child.GetPropValue(IdField);
                 var parentId = child.GetPropValue(ParentIdField) as int?;

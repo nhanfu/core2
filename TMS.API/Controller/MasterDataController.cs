@@ -89,7 +89,7 @@ namespace TMS.API.Controllers
             SetLevel(entity);
             if (entity.InverseParent.Any())
             {
-                entity.InverseParent.ForEach(x =>
+                entity.InverseParent.SelectForeach(x =>
                 {
                     x.Path = @$"\{entity.Path}\{x.ParentId}\".Replace("/", @"\").Replace(@"\\", @"\");
                 });
@@ -166,7 +166,7 @@ namespace TMS.API.Controllers
             SetLevel(entity);
             if (entity.InverseParent.Any())
             {
-                entity.InverseParent.ForEach(x =>
+                entity.InverseParent.SelectForeach(x =>
                 {
                     x.Path = @$"\{entity.Path}\{x.ParentId}\".Replace("/", @"\").Replace(@"\\", @"\");
                 });

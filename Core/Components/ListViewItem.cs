@@ -105,7 +105,7 @@ namespace Core.Components
                 {
                     Element.RemoveClass(EmptyRowClass);
                 }
-                FilterChildren<EditableComponent>().ForEach(x => x.EmptyRow = value);
+                FilterChildren<EditableComponent>().SelectForeach(x => x.EmptyRow = value);
                 AlwaysValid = value;
             }
         }
@@ -139,7 +139,7 @@ namespace Core.Components
                 .AsyncEvent(EventType.DblClick, RowDblClick)
                 .Event(EventType.FocusIn, () =>
                 {
-                    ListView.AllListViewItem.ForEach(x =>
+                    ListView.AllListViewItem.SelectForeach(x =>
                     {
                         if (x.Focused)
                         {

@@ -583,7 +583,7 @@ namespace Core.Components
             else
             {
                 ClearDirtyInternal();
-                FilterChildren<EditableComponent>(x => x._dirty).ForEach(x => x.ClearDirtyInternal());
+                FilterChildren<EditableComponent>(x => x._dirty).SelectForeach(x => x.ClearDirtyInternal());
             }
         }
 
@@ -620,7 +620,7 @@ namespace Core.Components
             }
 
             FilterChildren<EditableComponent>(child => child.GuiInfo != null && componentNames.Contains(child.Name))
-                .ForEach(x =>
+                .SelectForeach(x =>
                 {
                     if (dirty)
                     {
@@ -773,7 +773,7 @@ namespace Core.Components
             cascadeFields.ForEach(field =>
             {
                 root.FilterChildren(x => x.Name == field)
-                 .ForEach(x =>
+                 .SelectForeach(x =>
                  {
                      if (x is SearchEntry com && com != null)
                      {
@@ -902,7 +902,7 @@ namespace Core.Components
             {
                 var isEditing = Entity[IdField].As<int>() <= 0;
                 root.FilterChildren<EditableComponent>(x => x.Name == field)
-                    .ForEach(target =>
+                    .SelectForeach(target =>
                     {
                         var value = entity.GetComplexPropValue(field);
                         var oldVal = Entity.GetComplexPropValue(field);

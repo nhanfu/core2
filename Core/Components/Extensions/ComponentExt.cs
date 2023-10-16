@@ -487,7 +487,7 @@ namespace Core.Components.Extensions
                 }
 
                 var res = child.FindActiveComponent<T>();
-                res.ForEach(x => result.Add(x));
+                res.SelectForeach(x => result.Add(x));
             }
             return result.Distinct();
         }
@@ -674,7 +674,7 @@ namespace Core.Components.Extensions
                 return;
             }
 
-            component.FilterChildren(x => fieldNames.Contains(x.Name)).ForEach(x => x.Show = show);
+            component.FilterChildren(x => fieldNames.Contains(x.Name)).SelectForeach(x => x.Show = show);
         }
 
         public static void SetDisabled(this EditableComponent component, bool disabled, params string[] fieldNames)
@@ -684,7 +684,7 @@ namespace Core.Components.Extensions
                 return;
             }
 
-            component.FilterChildren<EditableComponent>(x => fieldNames.Contains(x.Name)).ForEach(x => x.Disabled = disabled);
+            component.FilterChildren<EditableComponent>(x => fieldNames.Contains(x.Name)).SelectForeach(x => x.Disabled = disabled);
         }
 
         public static void AlterPosition(this HTMLElement element, HTMLElement parentEle)
@@ -837,7 +837,7 @@ namespace Core.Components.Extensions
 
             if (showMessage)
             {
-                invalidFields.ForEach(x => { x.Disabled = false; });
+                invalidFields.SelectForeach(x => { x.Disabled = false; });
                 invalidFields.FirstOrDefault().Focus();
                 var message = string.Join("<br />", invalidFields.SelectMany(x => x.ValidationResult.Values));
                 Toast.Warning(message);

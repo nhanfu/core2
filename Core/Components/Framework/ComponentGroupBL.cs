@@ -34,7 +34,7 @@ namespace Core.Components.Framework
                 return false;
             }
 
-            ComGroupEntity.Component.ForEach(x =>
+            ComGroupEntity.Component.SelectForeach(x =>
             {
                 x.Reference = null;
                 x.ComponentGroup = null;

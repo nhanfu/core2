@@ -521,7 +521,7 @@ namespace Core.Components
                 return;
             }
 
-            FormattedRowData.ForEach((rowData, index) =>
+            FormattedRowData.SelectForEach((rowData, index) =>
             {
                 var rowSection = RenderRowData(Header, rowData, MainSection);
             });
@@ -734,7 +734,7 @@ namespace Core.Components
                 RowAction(x => x.Entity == rowSection.Entity, x =>
                 {
                     x.EmptyRow = false;
-                    x.FilterChildren(child => true).ForEach(child =>
+                    x.FilterChildren(child => true).SelectForeach(child =>
                     {
                         child.EmptyRow = false;
                         child.UpdateView(force: true);
@@ -1052,7 +1052,7 @@ namespace Core.Components
 
         public virtual void RemoveRange(IEnumerable<object> deleted)
         {
-            deleted.ForEach(x => RemoveRowById(x[IdField].As<string>()));
+            deleted.SelectForeach(x => RemoveRowById(x[IdField].As<string>()));
         }
 
         public List<object> GetFocusedRows()
@@ -1271,7 +1271,7 @@ namespace Core.Components
                 index = 0;
             }
             var indextemp = index;
-            rows.ForEach(row =>
+            rows.SelectForeach(row =>
             {
                 if (RowData.Data is IList)
                 {
@@ -1307,7 +1307,7 @@ namespace Core.Components
                 index = 0;
             }
             var indextemp = index;
-            rows.ForEach(row =>
+            rows.SelectForeach(row =>
             {
                 if (RowData.Data is IList)
                 {

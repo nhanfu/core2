@@ -19,7 +19,7 @@ namespace Core.Extensions
             return sources.FirstOrDefault(x => x.GetType().GetGenericArguments()[0] == type);
         }
 
-        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T> action)
+        public static IEnumerable<T> SelectForeach<T>(this IEnumerable<T> source, Action<T> action)
         {
             if (source.Nothing() || action is null)
             {
@@ -33,7 +33,7 @@ namespace Core.Extensions
             return source;
         }
 
-        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
+        public static IEnumerable<T> SelectForEach<T>(this IEnumerable<T> source, Action<T, int> action)
         {
             if (source.Nothing() || action is null)
             {

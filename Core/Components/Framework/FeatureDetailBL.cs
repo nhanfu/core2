@@ -142,7 +142,7 @@ namespace Core.Components.Framework
                 cg.FeatureId = feature.Id;
                 return cg;
             }).ToList();
-            var components = feature.Component.ForEach(cg =>
+            var components = feature.Component.SelectForeach(cg =>
             {
                 cg.ComponentGroup = null;
             });

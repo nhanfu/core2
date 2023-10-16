@@ -186,7 +186,7 @@ namespace Core.Clients
                 options.FinalUrl = Window.EncodeURI(System.IO.Path.Combine(options.Prefix ?? Prefix, options.EntityName, url));
             }
             xhr.Open(options.Method.ToString(), options.FinalUrl, true);
-            options.Headers.ForEach(x => xhr.SetRequestHeader(x.Key, x.Value));
+            options.Headers.SelectForeach(x => xhr.SetRequestHeader(x.Key, x.Value));
             if (!options.AllowAnonymous)
             {
                 xhr.SetRequestHeader(Utils.Authorization, "Bearer " + Token?.AccessToken);
@@ -257,7 +257,7 @@ namespace Core.Clients
                 options.FinalUrl = Window.EncodeURI(PathIO.Combine(CustomPrefix ?? Prefix, EntityName, url));
             }
             xhr.Open(options.Method.ToString(), options.FinalUrl, true);
-            options.Headers.ForEach(x => xhr.SetRequestHeader(x.Key, x.Value));
+            options.Headers.SelectForeach(x => xhr.SetRequestHeader(x.Key, x.Value));
             if (!options.AllowAnonymous)
             {
                 xhr.SetRequestHeader(Utils.Authorization, "Bearer " + Token?.AccessToken);
@@ -659,7 +659,8 @@ namespace Core.Clients
             var id = value.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
             return SubmitAsync<T>(new XHRWrapper
             {
-                Value = value,
+                Value = JsonConvert.SerializeObject(value),
+                IsRaw = true,
                 Url = subUrl + $"?$filter=Id eq '{id.Value}'{ig}",
                 Headers = new Dictionary<string, string> { { "Content-type", "application/json" } },
                 Method = HttpMethod.PATCH,

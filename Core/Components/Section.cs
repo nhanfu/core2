@@ -235,7 +235,7 @@ namespace Core.Components
             Html.Instance.Display(!groupInfo.Hidden).Style(groupInfo.Style ?? string.Empty).Width(width);
             var section = new Section(Html.Context)
             {
-                Id = groupInfo.Name + groupInfo.Id.ToString(),
+                Id = groupInfo.Name + groupInfo.Id?.ToString(),
                 Name = groupInfo.Name,
                 ComponentGroup = groupInfo,
             };

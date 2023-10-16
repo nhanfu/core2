@@ -96,7 +96,7 @@ namespace Core.Components
                 return;
             }
             MainSection.Show = false;
-            FormattedRowData.ForEach((row, index) =>
+            FormattedRowData.SelectForEach((row, index) =>
             {
                 Html.Take(MainSection.Element);
                 RenderRowData(Header, row, MainSection, null);
@@ -288,7 +288,7 @@ namespace Core.Components
 
         public override void RemoveRange(IEnumerable<object> data)
         {
-            data.ForEach(x => RemoveRowById(x[IdField].ToString()));
+            data.SelectForeach(x => RemoveRowById(x[IdField].ToString()));
         }
 
         public override async Task<List<ListViewItem>> AddRows(IEnumerable<object> rowsData, int index = 0)

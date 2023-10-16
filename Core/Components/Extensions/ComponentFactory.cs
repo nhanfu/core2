@@ -111,7 +111,7 @@ namespace Core.Components.Extensions
             var section = new Section(MVVM.ElementType.div);
             section.DOMContentLoaded += () =>
             {
-                fields.ForEach((field, index) =>
+                fields.SelectForEach((field, index) =>
                 {
                     var startIndex = index == 0 ? 0 : gui.ComponentType.IndexOf(nonChar[index - 1]);
                     var endIndex = index == fields.Length - 1 ? gui.ComponentType.Length - 1 : gui.ComponentType.IndexOf(nonChar[index]) - 1;

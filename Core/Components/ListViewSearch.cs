@@ -613,13 +613,13 @@ namespace Core.Components
             copyListView.Element.Style.Display = Display.None;
             copyListView.DOMContentLoaded += () =>
             {
-                copyListView.Element.QuerySelector("table").QuerySelectorAll("td").ForEach(x =>
+                copyListView.Element.QuerySelector("table").QuerySelectorAll("td").SelectForeach(x =>
                 {
                     /*@
                      x.style="border:1px solid;white-space: nowrap;font-family: 'times new roman', times, serif;";
                      */
                 });
-                copyListView.Element.QuerySelector("table").QuerySelectorAll("th").ForEach(x =>
+                copyListView.Element.QuerySelector("table").QuerySelectorAll("th").SelectForeach(x =>
                 {
                     /*@
                      x.style="border:1px solid;white-space: nowrap;font-family: 'times new roman', times, serif;";

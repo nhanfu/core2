@@ -80,7 +80,7 @@ namespace Core.Components
             }
             CacheData.Clear();
             CacheData.AddRange(data.Value);
-            CacheData.ForEach((x, index) => x[RowNo] = start + index + 1);
+            CacheData.SelectForEach((x, index) => x[RowNo] = start + index + 1);
             await LoadMasterData(data.Value, spinner: false);
             _waitingLoad = false;
         }
@@ -178,7 +178,7 @@ namespace Core.Components
             }
             FormattedRowData = rows;
             await LoadMasterData(FormattedRowData, spinner: false);
-            rows.ForEach((x, index) => x[RowNo] = skip + index + 1);
+            rows.SelectForEach((x, index) => x[RowNo] = skip + index + 1);
             if (rows.Count < Paginator.Options.Total)
             {
                 Window.ClearTimeout(_renderPrepareCacheAwaiter);

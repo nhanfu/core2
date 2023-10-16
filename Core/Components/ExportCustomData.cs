@@ -287,7 +287,7 @@ namespace Core.Components
         private void OrderBy()
         {
             var j = 1;
-            _tbody.Children.ForEach(y =>
+            _tbody.Children.SelectForeach(y =>
             {
                 _headers.FirstOrDefault(x => x.Id == y.GetAttribute("data-id")).OrderExport = j.ToString();
                 j++;

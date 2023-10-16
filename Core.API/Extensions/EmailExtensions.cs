@@ -22,7 +22,7 @@ namespace Core.Extensions
             };
             if (email.Attachements.HasElement())
             {
-                email.Attachements.Select(x => Path.Combine(webRoot, x)).ForEach(email.ServerAttachements.Add);
+                email.Attachements.Select(x => Path.Combine(webRoot, x)).SelectForeach(email.ServerAttachements.Add);
             }
             var attachments = email.ServerAttachements.Select(x => new MimePart(MimeTypes.GetMimeType(x))
             {
@@ -35,7 +35,7 @@ namespace Core.Extensions
             {
                 textPart
             };
-            attachments.ForEach(attached=> body.Add(attached));
+            attachments.SelectForeach(attached=> body.Add(attached));
             message.Body = body;
             try
             {

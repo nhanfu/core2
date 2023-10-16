@@ -303,7 +303,7 @@ namespace Core.Notifications
             Client client = new Client(nameof(TaskNotification));
             var res = await client.PostAsync<bool>(null, "MarkAllAsRead");
             ToggleBageCount(Notifications.Data.Count(x => x.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString()));
-            _task.QuerySelectorAll(".task-unread").ForEach(task =>
+            _task.QuerySelectorAll(".task-unread").SelectForeach(task =>
             {
                 task.ReplaceClass("task-unread", "task-read");
             });

@@ -476,7 +476,12 @@ namespace TMS.UI.Notifications
                 .Div.ClassName("name").Text(task.FullName).End
                 .Div.ClassName("message").Text(task.Recover).End.End.Render();
             });
-            Html.Take("#chats").ForEach(Conversations.Data.OrderByDescending(x => x.UpdatedDate).ToList(), (task, index) =>
+            Conversations.Data.ForEach(x =>
+            {
+                if (x.UpdatedDate is null) x.UpdatedDate = x.InsertedDate;
+            });
+            var chat = Conversations.Data.OrderByDescending(x => x.UpdatedDate ?? DateTimeOffset.MinValue).ToList();
+            Html.Take("#chats").ForEach(chat, (task, index) =>
             {
                 if (task is null)
                 {
@@ -536,7 +541,8 @@ namespace TMS.UI.Notifications
 
         private async Task ChatByUser(Event e, User user)
         {
-            var con = await new Client(nameof(Conversation)).FirstOrDefaultAsync<Conversation>($"?$filter=(ToId eq '{user.Id}' and FromId eq '{Client.Token.UserId}') or (FromId eq {user.Id} and ToId eq {Client.Token.UserId})");
+            var con = await new Client(nameof(Conversation)).FirstOrDefaultAsync<Conversation>(
+                $"?$filter=(ToId eq '{user.Id}' and FromId eq '{Client.Token.UserId}') or (FromId eq '{user.Id}' and ToId eq '{Client.Token.UserId}')");
             if (con is null)
             {
                 con = new Conversation()
@@ -633,7 +639,7 @@ namespace TMS.UI.Notifications
             Client client = new Client(nameof(TaskNotification));
             var res = await client.PostAsync<bool>(client, "MarkAllAsRead");
             ToggleBageCount(Notifications.Data.Count);
-            _task.QuerySelectorAll(".text-danger").ForEach(task =>
+            _task.QuerySelectorAll(".text-danger").SelectForeach(task =>
             {
                 task.ReplaceClass("text-danger", "text-muted");
             });

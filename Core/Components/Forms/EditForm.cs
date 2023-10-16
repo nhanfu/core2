@@ -762,7 +762,7 @@ namespace Core.Components.Forms
             }
             var newCom = factory?.Invoke(ele, component, parent, isLayout, entity) ?? BindingData(ele, component, parent, isLayout, entity);
             parent = newCom is Section ? newCom : parent;
-            ele.Children.ForEach(child => BindingTemplate(child, parent, isLayout, entity, factory, visited));
+            ele.Children.SelectForeach(child => BindingTemplate(child, parent, isLayout, entity, factory, visited));
         }
 
         private static CellText RenderCellText(HTMLElement ele, object entity, bool isLayout)
@@ -838,12 +838,12 @@ namespace Core.Components.Forms
             {
                 return null;
             }
-            var id = Entity[IdField].As<int?>();
-            if (id is null || id <= 0)
+            var id = Entity[IdField]?.ToString();
+            if (id.IsNullOrWhiteSpace())
             {
                 return null;
             }
-            var entity = (await Client.LoadById($"{id.Value}")).Value.FirstOrDefault() ?? Entity;
+            var entity = (await Client.LoadById(id)).Value.FirstOrDefault() ?? Entity;
             return entity;
         }
 

@@ -1043,7 +1043,7 @@ namespace Core.Components
         {
             var th = e.Target as HTMLElement;
             var tr = th.Closest("tr");
-            tr.Children.ForEach(td =>
+            tr.Children.SelectForeach(td =>
             {
                 td.RemoveClass("desc");
                 td.RemoveClass("asc");
@@ -1772,7 +1772,7 @@ namespace Core.Components
                     .TRow.Render();
                 Html.Instance.Th.DataAttr("sort-type", datasorttypeHeader).Event(EventType.Click, (e) => SortTable(e, 0)).Style("max-width: 100%;").IText(header.ShortDesc).End.Render();
                 Html.Instance.Th.DataAttr("sort-type", "number").Event(EventType.Click, (e) => SortTable(e, 1)).Style("max-width: 100%;").IText("Tổng dữ liệu").End.Render();
-                Component.ForEach((item, index) =>
+                Component.SelectForEach((item, index) =>
                 {
                     var datasorttype = string.Empty;
                     if (item.ComponentType == "Dropdown")
@@ -2168,10 +2168,10 @@ namespace Core.Components
         {
             var updatedData = FormattedRowData.ToArray();
             var dataSections = AllListViewItem.Take(updatedData.Length).ToArray();
-            dataSections.ForEach((child, index) =>
+            dataSections.SelectForEach((child, index) =>
             {
                 child.Entity = updatedData[index];
-                child.Children.Flattern(x => x.Children).ForEach(x =>
+                child.Children.Flattern(x => x.Children).SelectForeach(x =>
                 {
                     x.Entity = updatedData[index];
                 });
@@ -2418,7 +2418,7 @@ namespace Core.Components
             }
             var result = MainSection.FirstChild.Element.CloneNode(true) as HTMLTableRowElement;
             footer.AppendChild(result);
-            result.Children.ForEach(x => x.InnerHTML = null);
+            result.Children.SelectForeach(x => x.InnerHTML = null);
             return result;
         }
 
@@ -2583,7 +2583,7 @@ namespace Core.Components
             {
                 AddSections();
             }
-            headers.ForEach((x, index) => x.PostOrder = index);
+            headers.SelectForEach((x, index) => x.PostOrder = index);
             HeaderSection.DisposeChildren();
             bool anyGroup = headers.Any(x => !string.IsNullOrEmpty(x.GroupName));
             Html.Take(HeaderSection.Element).Clear().TRow.ForEach(headers, (header, index) =>

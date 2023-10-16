@@ -158,13 +158,13 @@ namespace Core.Components.Forms
                         return;
                     }
 
-                    _selectedItem.ParentElement.Children.ForEach(x => x.RemoveClass(_active));
+                    _selectedItem.ParentElement.Children.SelectForeach(x => x.RemoveClass(_active));
                     _selectedItem = _selectedItem.ParentElement;
                     break;
                 case (int)KeyCodeEnum.UpArrow:
                     e.PreventDefault();
                     e.StopPropagation();
-                    children.ForEach(x => x.RemoveClass(_active));
+                    children.SelectForeach(x => x.RemoveClass(_active));
                     _selectedIndex = _selectedIndex > 0 ? _selectedIndex - 1 : children.Length - 1;
                     SetSelectedItem(children.ElementAt(_selectedIndex));
                     break;
@@ -175,13 +175,13 @@ namespace Core.Components.Forms
                         return;
                     }
 
-                    ul.Children.ForEach(x => x.RemoveClass(_active));
+                    ul.Children.SelectForeach(x => x.RemoveClass(_active));
                     SetSelectedItem(ul.FirstElementChild);
                     break;
                 case (int)KeyCodeEnum.DownArrow:
                     e.PreventDefault();
                     e.StopPropagation();
-                    children.ForEach(x => x.RemoveClass(_active));
+                    children.SelectForeach(x => x.RemoveClass(_active));
                     _selectedIndex = _selectedIndex < children.Length - 1 ? _selectedIndex + 1 : 0;
                     SetSelectedItem(children.ElementAt(_selectedIndex));
                     break;
