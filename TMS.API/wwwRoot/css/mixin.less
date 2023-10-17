@@ -11,7 +11,7 @@
 @info: #30abe6;
 @infoDark: #1891cb;
 @bgTab: #4a9dc5;
-@bgButtonBar: #1e8d22;
+@bgButtonBar: #e8eff2;
 @grayLight: #e5e5e5;
 @grayNormal: #cecece;
 @grayDark: #bfbfbf;
@@ -21,41 +21,38 @@
 @tabBg: #f7fbff;
 @theadColor: #444;
 @theadFilter: #737373;
-@tableHover: #4958b366;
+@tableHover: #66ff663b;
 @edit-icon: #3a5c6d;
 @ctxMenuBorder: #d2d2d2;
-@radius: 3px;
+@radius: 2px;
 @lightRadius: 3px;
 @warmBgColor: #fbfbfb;
 @containerBgColor: #f2f2f2;
 @mainTabBgColor: #fffffe;
 @sideBarBgColor: #d7d7d7;
-@taskBarHeight: 48px;
+@taskBarHeight: 52px;
 @disabled: #6e6e6e;
 @scrollRail: #b8b8b8;
 @orange: #fa6800;
 @buttonBarGrayLight: #f5f6f7;
-@selectedRow: #66ff663b;
+@selectedRow: #e2dcea;
 @greenLogoOrigin: #61b755;
-@greenLogo: #366EB9;
-@greenlogoLight: #27388f;
-@bgtheme-1: #27388f;
-@bgtheme-2: #3E4042;
-@bgpanel: #242526;
-@bgtheme-2-1: #18191A;
+@greenLogo: #2b938c;
+@greenlogoLight: #3dac6e;
 @inputBorderColor: #d9d9d9;
 @activeTab: #f8f8f8;
 @devider: #747272;
-@appbar: #ececf2;
+@appbar: #fff;
 @require: #fffdc4;
-@popupTitleHeight: 50px;
+@popupTitleHeight: 40px;
 @iPhoneTopPadding: 34px;
 @iPhoneBottompPadding: 10px;
 @ribbon: #f8fafb;
 @panelBorder: #d5dadc;
 @groupBorder: 2px solid #ddd;
 @sidebarWidth: 44px;
-@buttonHeight: 2.4rem;
+@buttonHeight: 3rem;
+@greenDefault: #2b938c;
 
 .hide {
     display: none;
@@ -158,7 +155,7 @@
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
         border-bottom: 0;
-        top: -0.8rem !important;
+        top: -1.6rem !important;
         padding: 0.3rem 0.8rem !important;
         border: 1px solid @panelBorder;
         left: 50% !important;
@@ -235,6 +232,12 @@
     left: @left;
     bottom: @bottom;
     right: @right;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .width10px {
@@ -377,6 +380,7 @@ div[disabled]:not([enable]) input[readonly] {
 .overflowYOverlay {
     overflow-x: hidden;
     overflow-y: auto;
+    overflow-y: overlay;
 }
 
 .overflowOverlayHover {
@@ -398,8 +402,8 @@ div[disabled]:not([enable]) input[readonly] {
 
 .bolder {
     color: @greenLogo;
-    font-weight: 700;
-    font-size: 0.9rem;
+    font-weight: 500;
+    font-size: 1rem;
 }
 
 .overlay(@bgColor) {

@@ -176,13 +176,6 @@ li.task {
     background: transparent;
 }
 
-.img-circle {
-    border-radius: 50%;
-    margin: auto 10px auto auto;
-    width: 40px;
-    height: 40px;
-}
-
 .user-header {
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
@@ -201,19 +194,23 @@ li.task {
     padding-right: 1rem;
     font-size: 14px;
     list-style: none;
+    display: inline-flex;
+    width: 100%;
+    justify-content: space-between;
 }
 
-    .user-footer span {
-        cursor: pointer;
-    }
+.user-footer span {
+    cursor: pointer;
+}
 
-.user-header .img-circle {
-    z-index: 5;
-    height: 90px;
-    width: 90px;
-    border: 3px solid;
-    border-color: transparent;
-    border-color: rgba(255,255,255,0.2);
+.user-footer .lang-select {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+}
+
+.lang-select li {
+    cursor: pointer;
 }
 
 li.user-header {
@@ -235,4 +232,30 @@ li.user-header {
 
 .pull-right {
     float: right;
+}
+
+.customerDetailDebtBL td, .customerDetailDebtBL th,
+.cordinationResult td, .cordinationResult th,
+.vendorDebtReportBL td, .vendorDebtDetailBL th {
+    border: 1px solid rgb(40, 148, 141);
+    padding: 8px;
+}
+
+.customerDetailDebtBL .stickyHeader > thead,
+.cordinationResult .stickyHeader > thead,
+.vendorDebtReportBL .stickyHeader > thead {
+    position: -webkit-sticky;
+    position: sticky;
+    top: -20px;
+    background: #eee;
+    z-index: 1
+}
+
+.btnReqApprove {
+    position: relative;
+    left 5%;
+    width: 90%;
+    margin-top: 10px;
+    position: relative;
+    left: 5%;
 }
