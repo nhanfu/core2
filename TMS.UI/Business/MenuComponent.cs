@@ -1,11 +1,11 @@
 ﻿using Bridge.Html5;
+using Core.Models;
 using Core.Clients;
 using Core.Components;
 using Core.Components.Extensions;
 using Core.Components.Forms;
 using Core.Components.Framework;
 using Core.Extensions;
-using Core.Models;
 using Core.MVVM;
 using System;
 using System.Collections.Generic;
@@ -20,11 +20,11 @@ namespace TMS.UI.Business
         public IEnumerable<Feature> _feature;
         private const string ActiveClass = "active";
         public const string ASIDE_WIDTH = "44px";
-        private static HTMLElement _main;
         private static MenuComponent _instance;
         private bool _hasRender;
         private MenuComponent() : base(null)
         {
+
         }
         public static MenuComponent Instance
         {
@@ -64,14 +64,18 @@ namespace TMS.UI.Business
         {
             Task.Run(async () =>
             {
-                var featureTask = new Client(nameof(Feature)).GetRawList<Feature>(
+                var featureTask = new Client(nameof(Feature), typeof(Feature).Namespace).GetRawList<Feature>(
                     "?$expand=Entity($select=Name)&$filter=Active eq true and IsMenu eq true&$orderby=Order");
                 var feature = await featureTask;
                 _feature = feature;
                 BuildFeatureTree();
-                Html.Take(".nav-sidebar").Clear();
+                Html.Take(".sidebar-items").Clear();
                 RenderMenuItems(_feature);
                 DOMContentLoaded?.Invoke();
+                if (focusedParentFeatureId != null)
+                {
+                    FocusFeature(focusedParentFeatureId);
+                }
             });
         }
         public override void Render()
@@ -90,47 +94,20 @@ namespace TMS.UI.Business
                 var startAppTask = new Client(nameof(UserSetting)).GetRawList<UserSetting>("?$filter=Name eq 'StartApp'");
                 await Task.WhenAll(featureTask, startAppTask);
                 var feature = featureTask.Result;
-                var startApps = startAppTask.Result.Select(x => x.Value)
-                    .Where(x => !x.IsNullOrWhiteSpace()).Select(x => x.Split(",")).SelectMany(x => x).Where(x => x.HasAnyChar());
+                var startApps = startAppTask.Result.Combine(x => x.Value).Split(",").Select(x => x).Distinct();
                 _feature = feature;
                 BuildFeatureTree();
                 Html.Take("#menu");
-                RenderMenuItems(_feature);
-                RenderMenuMobileItems(_feature, true);
-                await feature.Where(x => startApps.Contains(x.Id) || x.StartUp).ForEachAsync(OpenFeature);
+                RenderKeyMenuItems(_feature);
                 var featureParam = Window.Location.PathName.Replace("/", "").Replace("-", " ");
                 if (!featureParam.IsNullOrWhiteSpace())
                 {
                     var currentFeature = feature.FirstOrDefault(x => x.Name == featureParam);
-                    var id = Utils.GetUrlParam("Id");
-                    if (currentFeature is null)
-                    {
-                        currentFeature = await new Client(nameof(Feature)).FirstOrDefaultAsync<Feature>($"?$expand=Entity&$filter=Name eq '{featureParam}'");
-                        if (currentFeature is null)
-                        {
-                            return;
-                        }
-                        var entity = (await new Client(currentFeature.Entity.Name).GetRawList<object>($"?$filter=Id eq '{id}'", entityName: currentFeature.Entity.Name)).FirstOrDefault();
-                        if (entity is null)
-                        {
-                            entity = new object();
-                        }
-                        await this.OpenTab(
-                            id: currentFeature.Name + id,
-                            featureName: currentFeature.Name,
-                            factory: () =>
-                            {
-                                var type = Type.GetType(currentFeature.ViewClass);
-                                var instance = Activator.CreateInstance(type) as TabEditor;
-                                instance.Title = currentFeature.Label;
-                                instance.Entity = entity;
-                                return instance;
-                            });
-                    }
-                    else
-                    {
-                        await OpenFeature(currentFeature);
-                    }
+                    await OpenFeature(currentFeature);
+                }
+                else
+                {
+                    await feature.Where(x => startApps.Contains(x.Id) || x.StartUp).ForEachAsync(OpenFeature);
                 }
                 DOMContentLoaded?.Invoke();
             });
@@ -178,91 +155,102 @@ namespace TMS.UI.Business
             Toast.Small("Bấm quay lại 2 lần để thoát", 1000);
         }
 
-        private void RenderMenuItems(IEnumerable<Feature> menuItems)
+        private void HideAll(HTMLElement current = null)
         {
-            var html = Html.Instance.Ul.Id("menuHorizontal").ClassName("navbar-nav navbar-nav-highlight flex-wrap d-none d-xl-flex");
-            html.ForEach(menuItems, (item, index) =>
+            if (current is null)
             {
-                var check = item.InverseParent != null && item.InverseParent.Count > 0;
-                Html.Instance.Li.ClassName("nav-item dropdown").DataAttr("feature", item.Id.ToString())
-                .A.Href(check ? "javascript:void(0);" : ("?f=" + item.Name.Replace(" ", "-") + "&Id=" + item.Id)).ClassName("navbar-nav-link" + (check ? " dropdown-toggle" : ""))
-                .DataAttr("toggle", "dropdown").Attr("aria-expanded", "false")
-                .AsyncEvent(EventType.Click, MenuItemClick, item)
-                .Event(EventType.ContextMenu, FeatureContextMenu, item)
-                .Title(item.Label).Render();
-                Html.Instance.Span.IText(item.Label).Style("margin-left: 19px;margin-top: 4px;").EndOf(ElementType.a).Render();
-                if (check)
-                {
-                    RenderSubMenu(item.InverseParent.ToList());
-                }
-                Html.Instance.EndOf(ElementType.li);
-            });
+                current = Document.Body;
+            }
+            var activea = current.QuerySelectorAll("a.active");
+            var activeLi = current.QuerySelectorAll("li.menu-open");
+            foreach (var item in activea)
+            {
+                item.RemoveClass(ActiveClass);
+            }
+            foreach (var item in activeLi)
+            {
+                item.RemoveClass("menu-open");
+            }
         }
 
-        private void RenderMenuMobileItems(IEnumerable<Feature> menuItems, bool nest = false)
+        private void AlterMainSectionWidth()
         {
-            Html.Take(".card-sidebar-mobile");
-            var html = Html.Instance.Ul.ClassName("nav nav-sidebar").DataAttr("nav-type", nest ? "accordion" : "");
-            html.ForEach(menuItems, (item, index) =>
+            Element.TabIndex = -1;
+            Element.Focus();
+            Element.AddEventListener(EventType.FocusOut, () =>
             {
-                var check = item.InverseParent != null && item.InverseParent.Count > 0;
-                Html.Instance.Li.ClassName("nav-item" + (check ? " nav-item-submenu" : "")).DataAttr("feature", item.Id.ToString())
-                .A.Href("javascript:void(0);").ClassName("nav-link")
-                .AsyncEvent(EventType.Click, MenuItemClick, item)
-                .Event(EventType.ContextMenu, FeatureContextMenu, item)
-                .Title(item.Label).Render();
-                Html.Instance.Span.IText(item.Label).Style("margin-left: 19px;margin-top: 4px;").EndOf(ElementType.a).Render();
-                if (check)
-                {
-                    RenderSubMobileMenu(item.InverseParent.ToList());
-                }
-                Html.Instance.EndOf(ElementType.li);
+                Show = IsSmallUp;
             });
+            Show = IsSmallUp;
         }
 
-        private void RenderSubMobileMenu(IEnumerable<Feature> menuItems)
+        private void HideAside()
         {
-            Html.Instance.Ul.ClassName("nav nav-group-sub");
-            Html.Instance.ForEach(menuItems, (item, index) =>
-            {
-                var check = item.InverseParent != null && item.InverseParent.Count > 0;
-                Html.Instance.Li.ClassName("nav-item").A.Href("javascript:void(0);").ClassName("nav-link")
-                .AsyncEvent(EventType.Click, MenuItemClick, item)
-                .Event(EventType.ContextMenu, FeatureContextMenu, item)
-                .I.ClassName(item.Icon ?? "").End
-                .Title(item.Label).Span.IText(item.Label).End.End.Render();
-                if (check)
-                {
-                    RenderSubMenu(item.InverseParent.ToList());
-                }
-            });
+            Element.Style.Left = $"-{ASIDE_WIDTH}";
         }
 
-        private void RenderSubMenu(IEnumerable<Feature> menuItems)
+        private void RenderKeyMenuItems(IEnumerable<Feature> menuItems, bool nested = false)
         {
-            Html.Instance.Div.ClassName("dropdown-menu");
-            Html.Instance.ForEach(menuItems, (item, index) =>
+            Html.Instance.Ul.ClassName("nav nav-pills nav-sidebar flex-column").DataAttr("widget", "treeview").Attr("role", "menu").DataAttr("accordion", "false").ForEach(menuItems, (item, index) =>
             {
-                var check = item.InverseParent != null && item.InverseParent.Count > 0;
-                if (check)
+                if (item.IsGroup)
                 {
-                    Html.Instance.Div.ClassName("dropdown-submenu")
-                    .A.Href("javascript:void(0);").ClassName("dropdown-item" + (check ? " dropdown-toggle" : ""));
+                    Html.Instance.Li.ClassName("nav-header").Title(item.Label).End.Render();
                 }
                 else
                 {
-                    Html.Instance.A.Href("javascript:void(0);").ClassName("dropdown-item" + (check ? " dropdown-toggle" : ""));
-                }
-                Html.Instance.AsyncEvent(EventType.Click, MenuItemClick, item)
-                .Event(EventType.ContextMenu, FeatureContextMenu, item)
-                .I.ClassName(item.Icon ?? "").End
-                .Title(item.Label).Span.IText(item.Label).End.Render();
-                if (check)
-                {
-                    Html.Instance.End.Render();
-                    RenderSubMenu(item.InverseParent.ToList());
+                    var check = item.InverseParent != null && item.InverseParent.Count > 0;
+                    Html.Instance.Li.ClassName("nav-item")
+                    .A.ClassName("nav-link")
+                    .AsyncEvent(EventType.Click, MenuItemClick, item)
+                    .Event(EventType.ContextMenu, FeatureContextMenu, item)
+                    .Icon(item.Icon).ClassName("nav-icon").End.P.IText(item.Label);
+                    if (check)
+                    {
+                        Html.Instance.I.ClassName("right fas fa-angle-left").End.Render();
+                    }
+                    Html.Instance.EndOf(ElementType.a).Render();
+                    if (check)
+                    {
+                        RenderMenuItems(item.InverseParent.ToList(), nested: true);
+                    }
                 }
             });
+        }
+
+        private void RenderMenuItems(IEnumerable<Feature> menuItems, bool nested = false)
+        {
+            Html.Instance.Ul.ClassName("nav nav-treeview").ForEach(menuItems, (item, index) =>
+            {
+                var check = item.InverseParent != null && item.InverseParent.Count > 0;
+                Html.Instance.Li.ClassName("nav-item")
+                .A.ClassName("nav-link")
+                .AsyncEvent(EventType.Click, MenuItemClick, item)
+                .Event(EventType.ContextMenu, FeatureContextMenu, item)
+                .I.ClassName("fal fa-circle nav-icon").End.P.IText(item.Label);
+                if (check)
+                {
+                    Html.Instance.I.ClassName("right fas fa-angle-left").End.Render();
+                }
+                Html.Instance.EndOf(ElementType.a).Render();
+                if (check)
+                {
+                    RenderMenuItems(item.InverseParent.ToList(), nested: true);
+                }
+            });
+        }
+
+        private HTMLElement FindMenuItemByID(string id)
+        {
+            var activeLi = Document.QuerySelectorAll(".sidebar-items li");
+            foreach (HTMLElement active in activeLi)
+            {
+                if (active.GetAttribute("data-feature").Equals(id))
+                {
+                    return active;
+                }
+            }
+            return null;
         }
 
         private HTMLElement _btnBack;
@@ -283,28 +271,28 @@ namespace TMS.UI.Business
                 ctxMenu.MenuItems = new List<ContextMenuItem>
                 {
                     new ContextMenuItem { Icon = "fa fa-plus", Text = "New feature", Click = EditFeature, Parameter = new Feature() },
-                    new ContextMenuItem { Icon = "fa fa-ban", Text = "Deactivate this feature", Click = Deactivate, Parameter = feature },
+                    new ContextMenuItem { Icon = "mif-unlink", Text = "Deactivate this feature", Click = Deactivate, Parameter = feature },
                     new ContextMenuItem { Icon = "fa fa-clone", Text = "Clone this feature", Click = CloneFeature, Parameter = feature },
                     new ContextMenuItem { Icon = "fa fa-list", Text = "Manage features", Click = FeatureManagement },
                     new ContextMenuItem { Icon = "fa fa-wrench", Text = "Properties", Click = EditFeature, Parameter = feature },
                 };
             };
-            AddChild(ctxMenu);
+            ctxMenu.Render();
         }
 
         private void EditFeature(object ev)
         {
             var feature = ev as Feature;
-            var id = feature.Name + "Prop" + feature.Id;
-            this.OpenTab(id, () => new FeatureDetailBL
+            var editor = new FeatureBL()
             {
-                Id = id,
                 Entity = feature,
-                Title = $"Feature {feature.Name ?? feature.Label ?? feature.Description}"
-            });
+                ParentElement = Document.Body,
+                OpenFrom = this.FindClosest<EditForm>(),
+            };
+            AddChild(editor);
         }
 
-        public void CloneFeature(object ev)
+        private void CloneFeature(object ev)
         {
             var feature = ev as Feature;
             var confirmDialog = new ConfirmDialog
@@ -313,7 +301,7 @@ namespace TMS.UI.Business
             };
             confirmDialog.YesConfirmed += async () =>
             {
-                var client = new Client(nameof(Feature));
+                var client = new Client(nameof(Feature), typeof(Feature).Namespace);
                 await client.CloneFeatureAsync(feature.Id);
                 ReloadMenu(feature.ParentId);
             };
@@ -334,6 +322,7 @@ namespace TMS.UI.Business
         {
             var feature = ev as Feature;
             var confirmDialog = new ConfirmDialog();
+            confirmDialog.Content = "Bạn có muốn deactivate feature này?";
             confirmDialog.YesConfirmed += async () =>
             {
                 var client = new Client(nameof(Feature));
@@ -344,58 +333,83 @@ namespace TMS.UI.Business
 
         private async Task MenuItemClick(Feature feature, Event e)
         {
-            e.PreventDefault();
-            if (feature.InverseParent.Nothing())
+            var a = e.Target as HTMLElement;
+            if (!(a is HTMLAnchorElement))
             {
-                /*@
-                 $('body').removeClass('sidebar-mobile-main');
-                 */
+                a = a.Closest("a") as HTMLAnchorElement;
             }
-            FocusFeature(feature);
+            var li = a.Closest(ElementType.li.ToString());
+            if (li.HasClass("menu-open"))
+            {
+                li.RemoveClass("menu-open");
+                return;
+            }
+            HideAll(a.Closest("ul"));
+            a.Focus();
+            if (a.HasClass(ActiveClass))
+            {
+                a.RemoveClass(ActiveClass);
+            }
+            else
+            {
+                a.AddClass(ActiveClass);
+            }
+            if (li.HasClass("menu-open"))
+            {
+                li.RemoveClass("menu-open");
+            }
+            else
+            {
+                li.AddClass("menu-open");
+            }
             await OpenFeature(feature);
         }
 
-        private HTMLElement FindMenuItemByID(string id)
+        private static void AlterPositionSubMenu(float top, HTMLElement li)
         {
-            var activeLi = Document.QuerySelectorAll(".card-sidebar-mobile .nav-link");
-            foreach (HTMLElement active in activeLi)
+            if (li is null)
             {
-                if (active.ParentElement.GetAttribute("data-feature").Equals(id.ToString()))
+                return;
+            }
+            var ul = li.QuerySelector(ElementType.ul.ToString()) as HTMLElement;
+            if (ul is null)
+            {
+                return;
+            }
+            ul.Style.Top = (top - 20) + Utils.Pixel;
+            ul.Style.Bottom = null;
+            ul.Style.Transform = null;
+            var outOfVp = ul.OutOfViewport();
+            if (outOfVp.Bottom)
+            {
+                ul.Style.Top = null;
+                ul.Style.Bottom = (Document.Body.ClientHeight - top) + Utils.Pixel;
+                outOfVp = ul.OutOfViewport();
+                if (outOfVp.Top)
                 {
-                    return active;
+                    ul.Style.Top = "50%";
+                    ul.Style.Bottom = null;
+                    ul.Style.Transform = TranslateY50;
                 }
             }
-            return null;
         }
 
-        private void FocusFeature(Feature feature)
+        private void FocusFeature(string parentFeatureID)
         {
-            var li = FindMenuItemByID(feature.Id);
+            var li = FindMenuItemByID(parentFeatureID);
             if (li != null)
             {
-                var activeLi = Document.QuerySelectorAll(".card-sidebar-mobile .active").Union(Document.QuerySelectorAll(".card-sidebar-mobile .nav-item-open"));
+                var activeLi = Document.QuerySelectorAll(".sidebar-items li.active");
                 foreach (HTMLElement active in activeLi)
                 {
                     if (active.Contains(li))
                     {
                         continue;
                     }
-                    active.RemoveClass(ActiveClass);
-                    active.RemoveClass("nav-item-open");
-                    if (li.HasClass("child-link"))
-                    {
-                        active.ParentElement.RemoveClass("nav-item-open");
-                    }
-                    else
-                    {
-                        active.ParentElement.ParentElement.ParentElement.RemoveClass("nav-item-open");
-                    }
-                }
-                if (li.HasClass("child-link"))
-                {
-                    li.ParentElement.ParentElement.ParentElement.AddClass("nav-item-open");
+                    active.RemoveClass("active");
                 }
                 li.AddClass(ActiveClass);
+                li.ParentElement.AddClass(ActiveClass);
             }
         }
 
@@ -406,7 +420,7 @@ namespace TMS.UI.Business
                 return;
             }
 
-            feature = await ComponentExt.LoadFeatureComponent(feature);
+            feature = await ComponentExt.LoadFeatureByName(feature.Name);
             Type type;
             if (feature.ViewClass != null)
             {
@@ -420,7 +434,6 @@ namespace TMS.UI.Business
             var exists = TabEditor.Tabs.FirstOrDefault(x => x.Id == id);
             if (exists != null)
             {
-                exists.UpdateView();
                 exists.Focus();
             }
             else
@@ -438,9 +451,14 @@ namespace TMS.UI.Business
             }
         }
 
+        protected override void RemoveDOM()
+        {
+            Html.Take(".sidebar-wrapper").Clear();
+        }
+
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            // not to do anything here
+            // Not to do anything here
         }
     }
 }

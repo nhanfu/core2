@@ -1,4 +1,5 @@
-﻿using Bridge.Html5;
+﻿using Bridge;
+using Bridge.Html5;
 using Core.Clients;
 using Core.Components;
 using Core.Components.Extensions;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
+using TMS.API.ViewModels;
 using ElementType = Core.MVVM.ElementType;
 using Notification = Retyped.dom.Notification;
 
@@ -27,80 +29,17 @@ namespace TMS.UI.Notifications
         private HTMLElement _countBadge;
         public static ObservableList<TaskNotification> Notifications { get; private set; }
         public static ObservableList<User> UserActive { get; set; }
-        private static ObservableList<Conversation> Conversations { get; set; }
-        private static Observable<Conversation> Conversation { get; set; }
-        private static ObservableList<Chat> Chats { get; set; }
         private Token CurrentUser { get; set; }
 
-        private NotificationBL() : base(null)
+        protected NotificationBL() : base(null)
         {
             Notifications = new ObservableList<TaskNotification>();
             UserActive = new ObservableList<User>();
-            Conversations = new ObservableList<Conversation>();
-            Conversation = new Observable<Conversation>();
-            Chats = new ObservableList<Chat>();
             _countNtf = new Observable<string>();
             _countUser = new Observable<string>();
             EditForm.NotificationClient?.AddListener(nameof(TaskNotification), ((int)TypeEntityAction.UpdateEntity).ToString(), ProcessIncomMessage);
-            EditForm.NotificationClient?.AddListener(nameof(Chat), ((int)TypeEntityAction.UpdateEntity).ToString(), GetChat);
             EditForm.NotificationClient?.AddListener(nameof(TaskNotification), ((int)TypeEntityAction.MessageCountBadge).ToString(), ProcessIncomMessage);
-        }
 
-        private void GetChat(object arg)
-        {
-            if (arg is null)
-            {
-                return;
-            }
-            var center = Document.QuerySelector(".center");
-            if (center.HasClass("d-none"))
-            {
-                center.RemoveClass("d-none");
-            }
-            var chat = arg as Chat;
-            if (Conversation.Data != null && chat.ConversationId == Conversation.Data.Id)
-            {
-                Conversation.Data.LastContext = chat.Context;
-                Conversation.Data.UpdatedDate = chat.InsertedDate;
-                RenderActionChat(chat);
-            }
-            else
-            {
-                Task.Run(async () =>
-                {
-                    var con = await new Client(nameof(Conversation)).FirstOrDefaultAsync<Conversation>($"?$filter=Id eq '{chat.ConversationId}'");
-                    var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConversationId eq '{chat.ConversationId}'&$orderby=UpdatedDate desc");
-                    var check = Conversations.Data.FirstOrDefault(x => x.Id == con.Id);
-                    if (check != null)
-                    {
-                        Conversations.Data.FirstOrDefault(x => x.Id == con.Id).CopyPropFrom(con);
-                    }
-                    else
-                    {
-                        Conversations.Data.Add(con);
-                    }
-                    if (chats.Count > 0)
-                    {
-                        Chats.Data = chats;
-                    }
-                    Conversation.Data = con;
-                    RenderChat();
-                    RenderChats();
-                    RenderUserChat();
-                });
-            }
-        }
-
-        private void Kick(object arg)
-        {
-            Task.Run(async () =>
-            {
-                var client = new Client(nameof(User));
-                await client.CreateAsync<bool>(Client.Token, "SignOut");
-                Client.Token = null;
-                LocalStorage.RemoveItem("UserInfo");
-                Window.Location.Reload(true);
-            });
         }
 
         public void ProcessIncomMessage(object obj)
@@ -125,18 +64,18 @@ namespace TMS.UI.Notifications
             }
             SetBadgeNumber();
             var entity = Utils.GetEntityById(task.EntityId);
-            task.Entity = new Entity { Id = entity.Id, Name = entity.Name };
+            task.Entity = new Entity { Name = entity.Name };
             /*@
             if (typeof(Notification) !== 'undefined' && Notification.permission === "granted") {
                 this.ShowNativeNtf(task);
             } else if (typeof(Notification) !== 'undefined' && Notification.permission !== "denied") {
                 Notification.requestPermission().then((permission) => {
                     if (permission !== 'granted') {
+                        this.ShowToast(task);
                     }
                     else this.ShowNativeNtf(task);
                 });
-            }
-            this.ShowToast(task);
+            } else this.ShowToast(task);
             */
         }
 
@@ -144,13 +83,14 @@ namespace TMS.UI.Notifications
         {
             var unreadCount = Notifications.Data.Count(x => x.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString());
             _countNtf.Data = unreadCount > 9 ? "9+" : unreadCount.ToString();
-            _countUser.Data = UserActive.Data.Count.ToString();
             var badge = unreadCount > 9 ? 9 : unreadCount;
             /*@
             if (typeof(cordova) !== 'undefined' &&
                 typeof(cordova.plugins) !== 'undefined' &&
                 typeof(cordova.plugins.notification) !== 'undefined') {
-                cordova.plugins.notification.badge.set(badge);
+                cordova.plugins.notification.badge.requestPermission(function (granted) {
+                    cordova.plugins.notification.badge.set(unreadCount);
+                });
             }
             */
             return badge;
@@ -223,7 +163,7 @@ namespace TMS.UI.Notifications
                 }
                 else
                 {
-                    Toast.Success($"Thông báo hệ thống <br /> {task.Title} - {task.Description}");
+                    Toast.Success($"Thông báo từ hệ thống <br /> {task.Title} - {task.Description}");
                 }
             });
         }
@@ -251,125 +191,30 @@ namespace TMS.UI.Notifications
             Html.Take("#user-active").Clear();
             var notifications = new Client(nameof(TaskNotification)).GetRawList<TaskNotification>($"?$expand=Entity&$orderby=InsertedDate desc&$top=50");
             var userActive = new Client(nameof(TaskNotification)).PostAsync<List<User>>(null, $"GetUserActive");
-            var conversations = new Client(nameof(Conversation)).GetRawList<Conversation>($"?$filter=FromId eq '{Client.Token.UserId}' or ToId eq '{Client.Token.UserId}'");
-            await Task.WhenAll(notifications, userActive, conversations);
-            Conversations.Data = conversations.Result;
+            await Task.WhenAll(notifications, userActive);
             Notifications.Data = notifications.Result;
             UserActive.Data = userActive.Result;
             SetBadgeNumber();
             CurrentUser = Client.Token;
             CurrentUser.Avatar = (CurrentUser.Avatar.Contains("://") ? "" : Client.Origin) + (CurrentUser.Avatar.IsNullOrWhiteSpace() ? "./image/chinese.jfif" : CurrentUser.Avatar);
             RenderNotification();
-            RenderUserActive();
-            RenderUserChat();
-            RenderChat();
             RenderProfile(".profile-info1");
-        }
-
-        private void RenderChat()
-        {
-            if (Conversation.Data != null)
-            {
-                Html.Take("#FullNameChat").InnerHTML(Conversation.Data.ToName);
-            };
-        }
-
-        private void RenderChats()
-        {
-            Html.Take("#chat").Clear();
-            if (Chats.Data != null)
-            {
-                Html.Take("#chat").ForEach(Chats.Data, (task, index) =>
-                {
-                    if (task.FromId == Client.Token.UserId)
-                    {
-                        Html.Instance.Div.ClassName("message parker").InnerHTML(task.Context).End.Render();
-                    }
-                    else
-                    {
-                        Html.Instance.Div.ClassName("message stark").InnerHTML(task.Context).End.Render();
-                    }
-                });
-                var chat = Document.GetElementById("chat");
-                chat.ScrollTop = chat.ScrollHeight - chat.ClientHeight;
-            };
-        }
-
-        private void RenderActionChat(Chat chat)
-        {
-            if (chat.FromId == Client.Token.UserId)
-            {
-                Html.Take("#chat").Div.ClassName("message parker").InnerHTML(chat.Context).End.Render();
-            }
-            else
-            {
-                Html.Take("#chat").Div.ClassName("message stark").InnerHTML(chat.Context).End.Render();
-            }
-            var c = Document.GetElementById("chat");
-            c.ScrollTop = c.ScrollHeight - c.ClientHeight;
         }
 
         public void RenderProfile(string classname)
         {
-            var has = Document.QuerySelector("body").HasClass("theme-1");
             var isSave = Window.LocalStorage.GetItem("isSave");
             Html.Take(classname).Clear();
             var html = Html.Take(classname);
-            html.A.ClassName("navbar-nav-link d-flex align-items-center dropdown-toggle").DataAttr("toggle", "dropdown").Span.ClassName("text-truncate").Text(CurrentUser.FullName).EndOf(ElementType.a)
+            html.A.ClassName("navbar-nav-link d-flex align-items-center dropdown-toggle").DataAttr("toggle", "dropdown").Span.ClassName("text-truncate").Text(CurrentUser.TenantCode + ": " + CurrentUser.FullName).EndOf(ElementType.a)
                 .Div.ClassName("dropdown-menu dropdown-menu-right notClose mt-0 border-0").Style("border-top-left-radius: 0;border-top-right-radius: 0")
-                    .A.ClassName("dropdown-item").AsyncEvent(EventType.Click, ViewProfile).I.ClassName("far fa-user").End.Text("Account (" + CurrentUser.UserName + ")").EndOf(ElementType.a);
-            html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
-            if (has)
-            {
-                html.A.ClassName("dropdown-item ui-mode").Event(EventType.Click, DarkMode).I.ClassName("fal fa-moon").End.Text("Dark mode").EndOf(ElementType.a);
-            }
-            else
-            {
-                html.A.ClassName("dropdown-item ui-mode").Event(EventType.Click, LightMode).I.ClassName("fal fa-adjust").End.Text("Light mode").EndOf(ElementType.a);
-            }
-            if (isSave is null)
-            {
-                html.A.ClassName("dropdown-item ui-mode").Event(EventType.Click, RemoveSetting).I.ClassName("fal fa-trash").End.Text("Đang lưu cài đặt").EndOf(ElementType.a);
-            }
-            else
-            {
-                html.A.ClassName("dropdown-item ui-mode").Event(EventType.Click, SaveSetting).I.ClassName("fal fa-save").End.Text("Đang không lưu cài đặt").EndOf(ElementType.a);
-            }
+                    .A.ClassName("dropdown-item").AsyncEvent(EventType.Click, ViewProfile).I.ClassName("far fa-user").End.Text("Account (" + CurrentUser.TenantCode + ": " + CurrentUser.FullName + ")").EndOf(ElementType.a);
             html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
             var langSelect = new LangSelect(new Core.Models.Component(), html.GetContext());
             langSelect.Render();
             html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
             html.A.AsyncEvent(EventType.Click, SignOut).ClassName("dropdown-item").I.ClassName("far fa-power-off").End.Text("Logout").EndOf(ElementType.a);
-
             Html.Take(".btn-logout").AsyncEvent(EventType.Click, SignOut);
-        }
-
-        private void LightMode()
-        {
-            Document.QuerySelector("body").ReplaceClass("theme-2", "theme-1");
-            RenderProfile(".profile-info1");
-            LocalStorage.SetItem("theme", "theme-1");
-            App.InitTheme();
-        }
-
-        private void DarkMode()
-        {
-            Document.QuerySelector("body").ReplaceClass("theme-1", "theme-2");
-            RenderProfile(".profile-info1");
-            LocalStorage.SetItem("theme", "theme-2");
-            App.InitTheme();
-        }
-
-        private void RemoveSetting()
-        {
-            Window.LocalStorage.SetItem("isSave", true);
-            RenderProfile(".profile-info1");
-        }
-
-        private void SaveSetting()
-        {
-            Window.LocalStorage.RemoveItem("isSave");
-            RenderProfile(".profile-info1");
         }
 
         private void ShowProfile()
@@ -383,24 +228,25 @@ namespace TMS.UI.Notifications
             e.PreventDefault();
             var client = new Client(nameof(User));
             await client.CreateAsync<bool>(Client.Token, "SignOut");
-            Toast.Success("Logout success!");
+            Client.SignOutEventHandler?.Invoke();
             Client.Token = null;
-            LocalStorage.RemoveItem("UserInfo");
+            EditForm.NotificationClient?.Close();
+            await Task.Delay(1000);
             Window.Location.Reload();
         }
 
         private async Task ViewProfile(Event e)
         {
-            var user = await new Client(nameof(User)).FirstOrDefaultAsync<User>($"?$filter=Active eq true and Id eq '{CurrentUser.UserId}'");
-            await this.OpenPopup(featureName: "UserProfile",
+            e.PreventDefault();
+            await this.OpenTab(id: "User" + Client.Token.UserId,
+                featureName: "UserProfile",
                 factory: () =>
                 {
-                    var type = Type.GetType("TMS.UI.Business.User.UserProfileBL");
-                    var instance = Activator.CreateInstance(type) as PopupEditor;
-                    instance.Title = "User Profile";
-                    instance.Entity = user;
+                    var type = Type.GetType("Core.Fw.User.UserProfileBL");
+                    var instance = Activator.CreateInstance(type) as TabEditor;
                     return instance;
                 });
+            Dispose();
         }
 
         private void RenderNotification()
@@ -423,7 +269,7 @@ namespace TMS.UI.Notifications
                 var className = task.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString() ? "text-danger" : "text-muted";
                 html.A.ClassName("dropdown-item").Div.ClassName("media").Event(EventType.Click, async (e) =>
                 {
-                    await OpenNotification(task, e);
+                    await OpenNotification(task);
                 })
                 .Div.ClassName("media-body").H3.ClassName("dropdown-item-title").Text(task.Title).Span.ClassName("float-right text-sm " + className).I.ClassName("fas fa-star").End.End.End
                 .P.ClassName("text-sm").Text(task.Description).End
@@ -434,176 +280,6 @@ namespace TMS.UI.Notifications
             Notifications.Data.ForEach(PopupNotification);
         }
 
-        private void RenderUserActive()
-        {
-            var html = Html.Take("#user-active").A.ClassName("navbar-nav-link").DataAttr("toggle", "dropdown").I.ClassName("fal fa-users fa-lg").EndOf(ElementType.i);
-            if (_countUser.Data != string.Empty)
-            {
-                html.Span.ClassName("badge badge-pill bg-warning-400 ml-auto ml-md-0").Text(_countUser);
-                _countBadge = Html.Context;
-            };
-            html.EndOf(ElementType.a);
-            html.Div.Style("border-top-left-radius: 0;border-top-right-radius: 0").ClassName("dropdown-menu dropdown-menu-right dropdown-content wmin-md-300 mt-0").Style("border-top-left-radius: 0;border-top-right-radius: 0");
-            html.ForEach(UserActive, (task, index) =>
-            {
-                if (task is null)
-                {
-                    return;
-                }
-                html.A.ClassName("dropdown-item").Event(EventType.ContextMenu, UserActiveEdit, task).Div.ClassName("media")
-                .Div.ClassName("media-body").H3.ClassName("dropdown-item-title").Text(task.FullName).Span.ClassName("float-right text-sm text-sucssess").I.ClassName("fas fa-star").End.End.End
-                .P.ClassName("text-sm").Text("").End
-                .P.ClassName("text-sm text-muted")
-                    .I.ClassName("fal fa-tablet mr-1").End.Text(task.Recover).EndOf(ElementType.a);
-            });
-        }
-
-        private void RenderUserChat()
-        {
-            if (UserActive.Data is null)
-            {
-                return;
-            }
-            Html.Take("#contacts").ForEach(UserActive.Data.DistinctBy(x => x.Id).ToList(), (task, index) =>
-            {
-                if (task is null)
-                {
-                    return;
-                }
-                Html.Instance.Div.ClassName("contact").AsyncEvent(EventType.Click, (e) => ChatByUser(e, task))
-                .Div.ClassName("pic rogers").End
-                .Div.ClassName("badge").End
-                .Div.ClassName("name").Text(task.FullName).End
-                .Div.ClassName("message").Text(task.Recover).End.End.Render();
-            });
-            Conversations.Data.ForEach(x =>
-            {
-                if (x.UpdatedDate is null) x.UpdatedDate = x.InsertedDate;
-            });
-            var chat = Conversations.Data.OrderByDescending(x => x.UpdatedDate ?? DateTimeOffset.MinValue).ToList();
-            Html.Take("#chats").ForEach(chat, (task, index) =>
-            {
-                if (task is null)
-                {
-                    return;
-                }
-                Html.Instance.Div.ClassName("contact").AsyncEvent(EventType.Click, (e) => ChatByConversation(e, task))
-                .Div.ClassName("pic rogers").End
-                .Div.ClassName("badge").End
-                .Div.ClassName("name").Text(task.FromId == Client.Token.UserId ? task.ToName : task.FromName).End
-                .Div.ClassName("message").Text(task.LastContext).End.End.Render();
-            });
-            Html.Take("#input-chat").AsyncEvent(EventType.KeyDown, AddChat);
-        }
-
-        private async Task AddChat(Event e)
-        {
-            var keyCode = e.KeyCode();
-            if (keyCode == (int)KeyCodeEnum.Enter)
-            {
-                var val = e.Target as HTMLInputElement;
-                if (val.Value.IsNullOrWhiteSpace())
-                {
-                    return;
-                }
-                var chat = new Chat();
-                if (Conversation.Data.ToId == Client.Token.UserId)
-                {
-                    chat = new Chat()
-                    {
-                        Context = val.Value,
-                        ConversationId = Conversation.Data.Id,
-                        FromId = Conversation.Data.ToId,
-                        ToId = Conversation.Data.FromId,
-                        IsSeft = true,
-                    };
-                }
-                else
-                {
-                    chat = new Chat()
-                    {
-                        Context = val.Value,
-                        ConversationId = Conversation.Data.Id,
-                        FromId = Conversation.Data.FromId,
-                        ToId = Conversation.Data.ToId,
-                        IsSeft = true,
-                    };
-                }
-                val.Value = string.Empty;
-                Chats.Data.Add(chat);
-                RenderActionChat(chat);
-                var loader = Document.GetElementsByClassName("lds-ellipsis").FirstOrDefault();
-                loader.Style.Display = "block";
-                await new Client(nameof(Chat)).CreateAsync<Chat>(chat);
-                loader.Style.Display = "none";
-            }
-        }
-
-        private async Task ChatByUser(Event e, User user)
-        {
-            var con = await new Client(nameof(Conversation)).FirstOrDefaultAsync<Conversation>(
-                $"?$filter=(ToId eq '{user.Id}' and FromId eq '{Client.Token.UserId}') or (FromId eq '{user.Id}' and ToId eq '{Client.Token.UserId}')");
-            if (con is null)
-            {
-                con = new Conversation()
-                {
-                    FromId = Client.Token.UserId,
-                    ToId = user.Id,
-                    FromName = Client.Token.FullName,
-                    ToName = user.FullName,
-                };
-                con = await new Client(nameof(Conversation)).CreateAsync<Conversation>(con);
-            }
-            else
-            {
-                var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConversationId eq '{con.Id}'");
-                Chats.Data = chats;
-            }
-            Conversation.Data = con;
-            RenderChat();
-            RenderChats();
-        }
-
-        private async Task ChatByConversation(Event e, Conversation conversation)
-        {
-            var chats = await new Client(nameof(Chat)).GetRawList<Chat>($"?$filter=ConversationId eq '{conversation.Id}'");
-            Chats.Data = chats;
-            Conversation.Data = conversation;
-            RenderChat();
-            RenderChats();
-        }
-
-        private void UserActiveEdit(Event e, User user)
-        {
-            if (!Client.SystemRole)
-            {
-                return;
-            }
-            var menuItems = new List<ContextMenuItem>()
-            {
-                new ContextMenuItem { Icon = "far fa-sign-out mt-2", Text = "Đăng xuất", Click = LogOut, Parameter = user },
-                new ContextMenuItem { Icon = "fa fa-undo mt-2", Text = "Reload", Click = LogOut, Parameter = user },
-                new ContextMenuItem { Icon = "far fa-envelope mt-2", Text = "Nhắn tin", Click = LogOut, Parameter = user },
-                new ContextMenuItem { Icon = "far fa-bell mt-2", Text = "Thông báo cập nhật", Click = LogOut, Parameter = user },
-            };
-            e.PreventDefault();
-            e.StopPropagation();
-            var ctxMenu = ContextMenu.Instance;
-            ctxMenu.Top = e.Top();
-            ctxMenu.Left = e.Left();
-            ctxMenu.MenuItems = menuItems;
-            ctxMenu.Render();
-        }
-
-        private void LogOut(object e)
-        {
-            var task = e as User;
-            Task.Run(async () =>
-            {
-                await new Client(nameof(TaskNotification)).PostAsync<bool>(task.Email, "KickOut");
-            });
-        }
-
         private void ToggleBageCount(int count)
         {
             _countBadge.Style.Display = count == 0 ? Display.None : Display.InlineBlock;
@@ -611,7 +287,7 @@ namespace TMS.UI.Notifications
 
         private void PopupNotification(TaskNotification task)
         {
-            if (task.StatusId !=((int)TaskStateEnum.UnreadStatus).ToString())
+            if (task.StatusId != ((int)TaskStateEnum.UnreadStatus).ToString())
             {
                 return;
             }
@@ -637,23 +313,18 @@ namespace TMS.UI.Notifications
         {
             e.PreventDefault();
             Client client = new Client(nameof(TaskNotification));
-            var res = await client.PostAsync<bool>(client, "MarkAllAsRead");
-            ToggleBageCount(Notifications.Data.Count);
-            _task.QuerySelectorAll(".text-danger").SelectForeach(task =>
+            var res = await client.PostAsync<bool>(null, "MarkAllAsRead");
+            ToggleBageCount(Notifications.Data.Count(x => x.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString()));
+            foreach (var task in _task.QuerySelectorAll(".task-unread"))
             {
-                task.ReplaceClass("text-danger", "text-muted");
-            });
+                task.ReplaceClass("task-unread", "task-read");
+            }
         }
 
-        public async Task OpenNotification(TaskNotification notification, Event e)
+        public async Task OpenNotification(TaskNotification notification)
         {
             await MarkAsRead(notification);
-            var element = (e.Target as HTMLElement).Closest("a");
-            var span = element.QuerySelector(".text-danger");
-            if (span != null)
-            {
-                element.QuerySelector(".text-danger").ReplaceClass("text-danger", "text-muted");
-            }
+            await OpenTaskFeature(notification, this);
         }
 
         protected override void RemoveDOM()
@@ -671,6 +342,10 @@ namespace TMS.UI.Notifications
         public override void Dispose()
         {
             _task.AddClass("hide");
+        }
+
+        public async Task OpenTaskFeature(TaskNotification notification, EditableComponent baseComponent)
+        {
         }
     }
 }

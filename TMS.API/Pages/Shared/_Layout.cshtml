@@ -3,137 +3,81 @@
 <head>
     <base href="/" />
     <meta charset="utf-8" />
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="tenant" content="donga" />
+    <meta name="tenant" content="wr1">
+    <meta name="startup" content="admin">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Đông Á</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/logo.jpg" />
-    <link asp-append-version="true" href="~/css/new.min.css" rel="stylesheet" />
-    <link asp-append-version="true" href="~/css/main.min.css" rel="stylesheet" />
-    <link asp-append-version="true" href="~/css/jquery.dataTables.min.css" rel="stylesheet" />
-    <link asp-append-version="true" href="https://unpkg.com/intro.js/introjs.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/chat.css" asp-append-version="true" />
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="/logo.jpg">
+    <title>TMS - Truck Management System</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
+    <link href="css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/theme/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="/theme/adminlte.min.css?v=3.2.0">
+    <link href="css/adminite.css" rel="stylesheet" />
+    <link href="css/main.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/zoom-image.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/chat.css" asp-append-version="true" />
 </head>
-<body class="layout-horizontal theme-1 bg-light">
-    <div class="navbar navbar-expand-md navbar-dark border-top-0 pl-2 pr-0 mode" id="header">
-        <div class="container-fluid">
-            <div class="d-flex d-xl-none col-3 col-md-1 pl-0">
-                <button class="navbar-toggler sidebar-mobile-main-toggle ml-0 d-flex" type="button">
-                    <i class="far fa-bars"></i>
-                </button>
-            </div>
-            <div id="menu">
-                <div class="sidebar sidebar-dark sidebar-main sidebar-expand-xl d-xl-none">
-                    <div class="sidebar-content">
-                        <div class="card card-sidebar-mobile">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+    <div class="wrapper">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav" id="tabs">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown" id="user-active">
+                </li>
+                <li class="nav-item dropdown" id="notification-list">
+                </li>
+                <li class="nav-item dropdown profile-info1" id="profile-info1">
+                </li>
+            </ul>
+        </nav>
+        <aside class="main-sidebar main-sidebar-custom sidebar-light-info elevation-4">
+            <a href="/" class="brand-link">
+                <img src="/image/logo.png" alt="TMS"
+                     class="brand-image" style="opacity: .8">
+                <span class="brand-text font-weight-light">TMS</span>
+            </a>
+            <div class="sidebar">
+                <div class="form-inline">
+                    <div class="input-group" data-widget="sidebar-search">
+                        <input class="form-control form-control-sidebar" type="search" placeholder="Search"
+                               aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-sidebar">
+                                <i class="fas fa-search fa-fw"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
+                <nav class="mt-2" id="menu">
+                </nav>
             </div>
-            <div class="d-flex d-md-none align-items-center col-7 justify-content-end pr-0">
-                <div class="dropdown dropdown-user">
-                    <a href="#" class="navbar-nav-link pr-md-0" data-toggle="dropdown" aria-expanded="false"><span class="fas fa-user-circle"></span></a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a href="/profile/index" class="dropdown-item"><i class="far fa-user"></i>Admin</a><a href="#" class="dropdown-item"><i class="far fa-bell"></i>Thông báo</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-danger btn-logout"><i class="far fa-power-off"></i> Đăng xuất</a>
-                    </div>
-                </div>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar-mobile">
-                <ul class="navbar-nav ml-md-auto ml-xl-auto d-none d-md-flex">
-                    <li class="nav-item dropdown d-flex align-items-center" id="user-active">
-                    </li>
-                    <li class="nav-item dropdown d-flex align-items-center" id="notification-list">
-                    </li>
-                    <li class="nav-item dropdown dropdown-user  profile-info1">
-                    </li>
-                </ul>
-            </div>
+        </aside>
+        <div class="content-wrapper" id="tab-content" style="position: relative;">
+            @RenderBody()
         </div>
+        <aside class="control-sidebar control-sidebar-dark">
+        </aside>
     </div>
-    <div class="page-content" id="main" autocomplete="off">
-        <div class="content-wrapper">
-            <div class="container-fluid">
-                <div class="page-header">
-                    <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline border-top-0" style="font-size:0.8rem" id="breadcrumb-menu-mode">
-                        <div class="d-flex">
-                            <div class="card-header p-0 ">
-                                <ul class="nav nav-tabs nav-tabs-highlight mb-0 navTabTopFilter" id="tabs"></ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="content" id="tab-content">
-                    @RenderBody()
-                </div>
-            </div>
-        </div>
-        <div class="center d-none">
-            <div class="contacts">
-                <i class="fas fa-bars fa-2x"></i>
-                <h2>
-                    Chat
-                </h2>
-                <div id="chats">
-                </div>
-                <hr />
-                <div id="contacts">
-                </div>
-            </div>
-            <div class="chat">
-                <div class="contact bar">
-                    <div class="close-chat">
-                        <i class="fal fa-times"></i>
-                    </div>
-                    <div class="pic stark"></div>
-                    <div class="name" id="FullNameChat">
-                        Nhóm chung
-                    </div>
-                    <div class="seen">
-                        Đang hoạt động
-                    </div>
-                </div>
-                <div class="messages" id="chat">
-                </div>
-                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-                <div class="input">
-                    <i class="fas fa-camera"></i><i class="far fa-laugh-beam"></i>
-                    <input placeholder="Type your message here!" type="text" id="input-chat" />
-                    <i class="fas fa-microphone"></i>
-                </div>
-            </div>
-        </div>
-        <div class="arcontactus-message-button">
-            <i class="fal fa-rocketchat"></i>
-        </div>
-    </div>
-    <script asp-append-version="true" src="~/js/jquery-3.5.1.min.js"></script>
-    <script asp-append-version="true" src="~/js/bootstrap.bundle.min.js"></script>
-    <script asp-append-version="true" src="~/js/pnotify.min.js"></script>
-    <script asp-append-version="true" src="~/js/theme1.js"></script>
-    <script asp-append-version="true" src="~/js/sweetalert2.js"></script>
-    <script asp-append-version="true" src="~/js/tms.bridge.min.js"></script>
-    <script asp-append-version="true" src="~/js/bridge.meta.min.js"></script>
-    <script asp-append-version="true" src="~/js/tms.newtonsoft.json.js"></script>
-    <script asp-append-version="true" src="~/js/Core.js"></script>
-    <script asp-append-version="true" src="~/js/Core.meta.min.js"></script>
-    <script asp-append-version="true" src="~/js/fix.js"></script>
-    <script asp-append-version="true" src="~/js/TMS.UI.js"></script>
-    <script asp-append-version="true" src="~/js/TMS.UI.meta.js"></script>
+    <script asp-append-version="true" src="js/jquery-3.5.1.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="/js/adminlte.min.js?v=3.2.0"></script>
+    <script src="/js/pnotify.min.js"></script>
+    <script asp-append-version="true" src="js/canvasjs.min.js"></script>
+    <script asp-append-version="true" src="js/bridge.js"></script>
+    <script asp-append-version="true" src="js/tms.newtonsoft.json.js"></script>
+    <script asp-append-version="true" src="js/sweetalert2.js"></script>
+    <script asp-append-version="true" src="/js/Core.js"></script>
+    <script asp-append-version="true" src="/js/Core.meta.min.js"></script>
+    <script asp-append-version="true" src="js/fix.js"></script>
+    <script asp-append-version="true" src="js/TMS.UI.js"></script>
+    <script asp-append-version="true" src="js/TMS.UI.meta.min.js"></script>
+    <script asp-append-version="true" src="js/fix_page_index.js"></script>
+    <script asp-append-version="true" src="js/zoom-image.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    <script>
-        $(".close-chat").on("click", () => {
-            $(".center").addClass("d-none");
-        });
-        $(".arcontactus-message-button").on("click", () => {
-            $(".center").removeClass("d-none");
-        });
-    </script>
 </body>
 </html>
