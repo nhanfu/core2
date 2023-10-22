@@ -812,9 +812,8 @@ namespace TMS.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("api/[Controller]/svc")]
         [HttpPost("api/[Controller]/svc")]
-        public async Task ExecuteJs(string svId, string path, string param)
+        public async Task ExecuteJs(string svId, string path, [FromBody] string param)
         {
             Models.Services sv = null;
             if (svId.HasAnyChar())

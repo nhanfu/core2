@@ -9,7 +9,7 @@ namespace Core.Clients
 {
     public class XHRWrapper
     {
-        public bool AllowNested { get; set; } = true;
+        public bool AllowNested { get; set; }
         public bool NoQueue { get; set; }
         public bool Retry { get; set; }
         public bool ShowError { get; set; }

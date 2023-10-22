@@ -48,10 +48,16 @@ namespace Core.Components
         {
             AddElement();
             var isFn = Utils.IsFunction(GuiInfo.Query, out var fn);
-            var DataSourceFilter = isFn ? fn.Call(this, Entity, this).ToString() : Utils.FormatEntity(GuiInfo.Query, Entity);
+            var dataSourceFilter = isFn ? fn.Call(this, Entity, this).ToString() : Utils.FormatEntity(GuiInfo.Query, Entity);
             if (Data is null)
             {
-                Data = await new Client(nameof(User)).PostAsync<object[]>(DataSourceFilter, "ReportQuery");
+                Data = await new Client(nameof(User)).SubmitAsync<object[]>(new XHRWrapper
+                {
+                    Url = "ReportDataSet",
+                    IsRaw = true,
+                    Value = dataSourceFilter,
+                    Method = Enums.HttpMethod.POST
+                });
             }
             var type = GuiInfo.ClassName ?? "pie";
             var text = GuiInfo.PlainText;

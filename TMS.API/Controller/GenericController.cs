@@ -16,6 +16,7 @@ using System.Reflection;
 using TMS.API.Models;
 using TMS.API.Services;
 using FileIO = System.IO.File;
+using Utils = Core.Extensions.Utils;
 
 namespace TMS.API.Controllers
 {
@@ -681,18 +682,16 @@ namespace TMS.API.Controllers
             };
             con.Open();
             var tables = new List<List<Dictionary<string, object>>>();
-            using (var reader = await sqlCmd.ExecuteReaderAsync())
+            using var reader = await sqlCmd.ExecuteReaderAsync();
+            do
             {
-                do
+                var table = new List<Dictionary<string, object>>();
+                while (await reader.ReadAsync())
                 {
-                    var table = new List<Dictionary<string, object>>();
-                    while (await reader.ReadAsync())
-                    {
-                        table.Add(Read(reader));
-                    }
-                    tables.Add(table);
-                } while (reader.NextResult());
-            }
+                    table.Add(Read(reader));
+                }
+                tables.Add(table);
+            } while (await reader.NextResultAsync());
 #if DEBUG
             tables.Add(new List<Dictionary<string, object>>());
             tables.Last().Add(new Dictionary<string, object>
@@ -744,7 +743,7 @@ namespace TMS.API.Controllers
             group = group.Contains(".") ? $"{group}" : $"[{tablename}].{group}";
             if (sql.IsNullOrWhiteSpace())
             {
-                reportQuery = $@"select {group} as '{group.Replace($"[{tablename}].","")}',{formatsumary} as TotalRecord,{sum}
+                reportQuery = $@"select {group} as '{group.Replace($"[{tablename}].", "")}',{formatsumary} as TotalRecord,{sum}
                                  from [{tablename}]
                                  {join}
                                  where [{tablename}].Active = 1 {(where.IsNullOrWhiteSpace() ? $"" : $"and {where}")}
