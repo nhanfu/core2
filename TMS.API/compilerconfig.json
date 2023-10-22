@@ -14,5 +14,13 @@
   {
     "outputFile": "wwwRoot/css/main.css",
     "inputFile": "wwwRoot/css/main.less"
+  },
+  {
+    "outputFile": "wwwroot/css/adminite.css",
+    "inputFile": "wwwroot/css/main.less"
+  },
+  {
+    "outputFile": "wwwroot/css/adminite.css",
+    "inputFile": "wwwroot/css/adminite.less"
   }
 ]
