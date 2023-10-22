@@ -11,10 +11,6 @@ public partial class TMSContext : DbContext
     {
     }
 
-    public virtual DbSet<ApprovalConfig> ApprovalConfig { get; set; }
-
-    public virtual DbSet<Approvement> Approvement { get; set; }
-
     public virtual DbSet<Chat> Chat { get; set; }
 
     public virtual DbSet<Component> Component { get; set; }
@@ -59,76 +55,6 @@ public partial class TMSContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ApprovalConfig>(entity =>
-        {
-            entity.Property(e => e.Id)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.CostCenterId)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.DataSource).HasMaxLength(200);
-            entity.Property(e => e.Description).HasMaxLength(50);
-            entity.Property(e => e.EntityId)
-                .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.InsertedBy)
-                .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.MaxAmount).HasColumnType("decimal(20, 5)");
-            entity.Property(e => e.MinAmount).HasColumnType("decimal(20, 5)");
-            entity.Property(e => e.RoleId)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.UserId)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.WorkflowId)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-        });
-
-        modelBuilder.Entity<Approvement>(entity =>
-        {
-            entity.Property(e => e.Id)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Amount).HasColumnType("decimal(20, 5)");
-            entity.Property(e => e.ApprovedBy)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.EntityId)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.InsertedBy)
-                .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.LevelName).HasMaxLength(50);
-            entity.Property(e => e.ReasonOfChange).HasMaxLength(200);
-            entity.Property(e => e.RecordId)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.RejectBy)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.StatusId)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.UserApproveId)
-                .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
-        });
-
         modelBuilder.Entity<Chat>(entity =>
         {
             entity.Property(e => e.Id)

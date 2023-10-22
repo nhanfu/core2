@@ -49,23 +49,8 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\TMS.API\Enums\ApprovalStatusEnum.cs">
-      <Link>Enums\ApprovalStatusEnum.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Enums\FreightStateEnum.cs">
-      <Link>Enums\FreightStateEnum.cs</Link>
-    </Compile>
     <Compile Include="..\TMS.API\Enums\MasterDataType.cs">
       <Link>Enums\MasterDataType.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\Enums\TruckEnum.cs">
-      <Link>Enums\TruckEnum.cs</Link>
-    </Compile>
-    <Compile Include="..\tms.api\models\ApprovalConfig.cs">
-      <Link>Models\ApprovalConfig.cs</Link>
-    </Compile>
-    <Compile Include="..\tms.api\models\Approvement.cs">
-      <Link>Models\Approvement.cs</Link>
     </Compile>
     <Compile Include="..\TMS.API\Models\Chat.cs">
       <Link>Models\Chat.cs</Link>
@@ -145,7 +130,6 @@
     <Compile Include="Business\Setting\MasterDataBL.cs" />
     <Compile Include="Business\Setting\MasterDataDetailsBL.cs" />
     <Compile Include="Business\Setting\RoleDetailBL.cs" />
-    <Compile Include="Business\User\ApprovalConfigBL.cs" />
     <Compile Include="Business\User\ChangePasswordBL.cs" />
     <Compile Include="Business\User\UserBL.cs" />
     <Compile Include="Business\User\UserDetailBL.cs" />
