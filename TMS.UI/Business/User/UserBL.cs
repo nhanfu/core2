@@ -1,5 +1,6 @@
 ﻿using Bridge.Html5;
 using Core.Components;
+using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
 using System;
@@ -17,19 +18,19 @@ namespace TMS.UI.Business.User
             Title = Name;
         }
 
-        public async Task EditUser(API.Models.User user)
+        public void EditUser(API.Models.User user)
         {
-            await InitUserForm(user);
+            InitUserForm(user);
         }
 
-        public async Task CreateUser()
+        public void CreateUser()
         {
-            await InitUserForm(new API.Models.User());
+            InitUserForm(new API.Models.User());
         }
 
-        public async Task CreateTaskNotification()
+        public void CreateTaskNotification()
         {
-            await this.OpenPopup(
+            var a = this.OpenPopup(
                 featureName: "Create TaskNotification",
                 factory: () =>
                 {
@@ -39,11 +40,15 @@ namespace TMS.UI.Business.User
                     instance.Entity = new TaskNotification();
                     return instance;
                 });
+            var promise = ClientExt.ToPromise(a);
+            /*@
+            promise.then(x => console.log('ok'));
+             */
         }
 
-        private async Task InitUserForm(API.Models.User user)
+        private void InitUserForm(API.Models.User user)
         {
-            await this.OpenPopup(
+            var a = this.OpenPopup(
                 featureName: "User Detail",
                 factory: () =>
                 {
@@ -53,6 +58,10 @@ namespace TMS.UI.Business.User
                     instance.Entity = user;
                     return instance;
                 });
+            var promise = ClientExt.ToPromise(a);
+            /*@
+            promise.then(x => console.log('ok'));
+             */
         }
     }
 }
