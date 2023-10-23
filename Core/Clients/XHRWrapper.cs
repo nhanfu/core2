@@ -12,7 +12,7 @@ namespace Core.Clients
         public bool AllowNested { get; set; }
         public bool NoQueue { get; set; }
         public bool Retry { get; set; }
-        public bool ShowError { get; set; }
+        public bool ShowError { get; set; } = true;
         public bool AllowAnonymous { get; set; }
         public bool AddTenant { get; set; }
         public HttpMethod Method { get; set; } = HttpMethod.GET;

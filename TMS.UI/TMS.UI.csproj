@@ -131,7 +131,6 @@
     <Compile Include="Business\Setting\MasterDataDetailsBL.cs" />
     <Compile Include="Business\Setting\RoleDetailBL.cs" />
     <Compile Include="Business\User\ChangePasswordBL.cs" />
-    <Compile Include="Business\User\UserBL.cs" />
     <Compile Include="Business\User\UserDetailBL.cs" />
     <Compile Include="Business\User\UserProfileBL.cs" />
     <Compile Include="Business\User\TaskNotificationDetailBL.cs" />

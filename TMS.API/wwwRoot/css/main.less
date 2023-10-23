@@ -137,7 +137,7 @@ input[name="StatusId"] {
     }
 }
 
-input:not([type="checkbox"]) {
+input:not([type="checkbox"]), textarea {
     transition: all 0.1s;
     border: 1px solid @inputBorderColor;
     border-radius: @lightRadius;
@@ -165,6 +165,7 @@ input:not([type="checkbox"]) {
 }
 
 textarea {
+    height: auto;
     border-radius: @radius;
     resize: vertical;
 
@@ -1780,6 +1781,7 @@ tr .uploader img {
 
 .properties {
     position: fixed;
+    top: 5rem;
     right: 0;
     height: calc(100vh - 6rem);
 }
@@ -1879,6 +1881,8 @@ tr .uploader img {
 }
 
 .datetime-picker {
+    position: relative;
+
     input {
         padding-right: 2rem;
     }

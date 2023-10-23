@@ -319,9 +319,9 @@ namespace Core.Clients
             }
             if (xhr.Status >= (int)HttpStatusCode.BadRequest && xhr.Status < (int)HttpStatusCode.InternalServerError)
             {
-                if ((bool)!(exp?.Message.IsNullOrWhiteSpace()))
+                if (exp != null && !exp.Message.IsNullOrWhiteSpace() && options.ShowError)
                 {
-                    Toast.Warning(exp?.Message);
+                    Toast.Warning(exp.Message);
                 }
                 Console.WriteLine(exp);
             }
