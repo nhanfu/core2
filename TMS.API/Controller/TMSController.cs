@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
@@ -15,9 +14,7 @@ using System.Text.RegularExpressions;
 using Tenray.Topaz;
 using Tenray.Topaz.API;
 using TMS.API.Models;
-using ApprovalStatusEnum = Core.Enums.ApprovalStatusEnum;
 using FileIO = System.IO.File;
-using ResponseApproveEnum = Core.Enums.ResponseApproveEnum;
 
 namespace TMS.API.Controllers
 {
@@ -618,7 +615,7 @@ namespace TMS.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("api/[Controller]/svc")]
-        public async Task ExecuteJs(string svId, string path, [FromBody] string param)
+        public async Task ExecuteJs([FromQuery] string svId, [FromQuery] string path, [FromBody] string param)
         {
             Models.Services sv = null;
             if (svId.HasAnyChar())
@@ -627,7 +624,7 @@ namespace TMS.API.Controllers
             }
             else if (path.HasAnyChar())
             {
-                var subPaths = path.Split("/");
+                var subPaths = path.Split("_");
                 if (subPaths.Length < 3) return;
                 var vendor = subPaths[0];
                 var env = subPaths[1];

@@ -228,8 +228,6 @@
     <Compile Include="Components\Framework\FeatureBL.cs" />
     <Compile Include="Components\Framework\FeatureDetailBL.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Notifications\NotificationBL.cs" />
-    <Compile Include="Notifications\TaskNotificationListBL.cs" />
     <Compile Include="PortalBL.cs" />
     <Compile Include="ViewModels\AdvSearchVM.cs" />
     <Compile Include="Enums\CustomEventType.cs" />

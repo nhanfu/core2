@@ -640,7 +640,6 @@ namespace Core.Components.Forms
             RenderTabOrSection(groupTree);
             ResizeHandler();
             LockUpdate();
-            ToggleApprovalBtn();
             Html.Take(Element).TabIndex(-1).Trigger(EventType.Focus).Event(EventType.FocusIn, async () => await this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusIn, Entity))
                 .Event(EventType.KeyDown, async (e) => await KeyDownIntro(e))
                 .Event(EventType.FocusOut, async () => await this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusOut, Entity));
@@ -855,18 +854,6 @@ namespace Core.Components.Forms
                 || !Utils.IsOwner(Entity) && generalRule.All(x => !x.CanWriteAll)))
             {
                 LockUpdateButCancel();
-                return;
-            }
-            if (Entity is null)
-            {
-                return;
-            }
-
-            var insertedDate = Entity[nameof(Component.InsertedDate)].As<DateTime?>();
-            var hardLock = Entity["Lock"].As<bool?>();
-            if (insertedDate is null || insertedDate == DateTime.MinValue)
-            {
-                return;
             }
         }
 
@@ -1564,29 +1551,6 @@ namespace Core.Components.Forms
             };
         }
 
-        public virtual async Task RequestApprove()
-        {
-            var isValid = await IsFormValid();
-            if (!isValid)
-            {
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = "Bạn có chắc chắn gửi yêu cầu phê duyệt?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                if (Entity[IdField].As<int>() <= 0)
-                {
-                    await Save();
-                }
-                var res = await RequestApprove(Entity);
-                ProcessEnumMessage(res);
-            };
-        }
-
         public virtual void Delete()
         {
             var confirm = new ConfirmDialog
@@ -1608,108 +1572,6 @@ namespace Core.Components.Forms
                     Toast.Warning("Xóa không thành công");
                 }
             };
-        }
-
-        protected async Task<bool> RequestApprove(object entity)
-        {
-            entity.SetPropValue(StatusIdField, (int)ApprovalStatusEnum.Approving);
-            var res = await Client.PostAsync<bool>(entity, "RequestApprove");
-            return res;
-        }
-
-        protected virtual void ProcessEnumMessage(object res, bool showMessage = true)
-        {
-            if (res is null)
-            {
-                return;
-            }
-            if (showMessage)
-            {
-                Toast.Success(ResponseApproveEnum.Success.GetEnumDescription());
-            }
-            if (!(res is bool))
-            {
-                Entity.CopyPropFrom(res);
-            }
-            ParentForm?.UpdateView(true);
-            Dispose();
-        }
-
-        public virtual async Task Approve()
-        {
-            var isValid = await IsFormValid();
-            if (!isValid)
-            {
-                return;
-            }
-            var confirm = new ConfirmDialog
-            {
-                Content = "Bạn có chắc chắn muốn duyệt?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                await ApproveConfirmed();
-            };
-        }
-
-        protected virtual async Task ApproveConfirmed()
-        {
-            await Approve(Entity);
-        }
-
-        protected async Task Approve(object entity)
-        {
-            var res = await Client.CreateAsync<bool>(entity, "Approve");
-            ProcessEnumMessage(res);
-        }
-
-        public virtual void Reject()
-        {
-            var confirm = new ConfirmDialog
-            {
-                NeedAnswer = true,
-                ComType = nameof(Textbox),
-                Content = $"Bạn có chắc chắn muốn trả về?<br />" +
-                    "Hãy nhập lý do trả về",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                var res = await Client.CreateAsync<object>(Entity, "Reject?reasonOfChange=" + confirm.Textbox?.Text);
-                ProcessEnumMessage(res);
-            };
-        }
-
-        protected virtual void ToggleApprovalBtn(object entity = null)
-        {
-            entity = entity ?? Entity;
-            if (entity is null)
-            {
-                return;
-            }
-            var statusId = entity[StatusIdField].As<int>();
-            this.SetShow(false, BtnSend, BtnApprove, BtnReject, BtnExpired);
-            if (statusId == (int)ApprovalStatusEnum.Approved && !Feature.IsPublic)
-            {
-                LockUpdateButCancel();
-                this.SetShow(false, BtnSave, BtnSend, BtnApprove, BtnReject);
-                var expiredDate = entity[ExpiredDate].As<DateTime?>();
-                if (expiredDate is null)
-                {
-                    this.SetShow(true, BtnExpired);
-                    this.SetDisabled(false, BtnExpired);
-                }
-            }
-            else if (statusId == (int)ApprovalStatusEnum.Approving && !Feature.IsPublic)
-            {
-                this.SetShow(true, BtnApprove, BtnReject);
-                this.SetShow(false, BtnSend);
-            }
-            else
-            {
-                this.SetShow(true, BtnSend);
-            }
         }
 
         public void CreateFeaturePolicyHeader(Component arg) => CreateFeaturePolicy(arg, arg.FeatureId, arg.Id);
