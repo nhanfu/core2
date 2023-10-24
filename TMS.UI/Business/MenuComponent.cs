@@ -419,36 +419,33 @@ namespace TMS.UI.Business
             {
                 return;
             }
-
-            feature = await ComponentExt.LoadFeatureByName(feature.Name);
-            Type type;
-            if (feature.ViewClass != null)
-            {
-                type = Type.GetType(feature.ViewClass);
-            }
-            else
-            {
-                type = typeof(TabEditor);
-            }
             var id = feature.Name + feature.Id;
             var exists = TabEditor.Tabs.FirstOrDefault(x => x.Id == id);
             if (exists != null)
             {
                 exists.Focus();
+                return;
+            }
+            feature = await ComponentExt.LoadFeatureByName(feature.Name);
+            Type type;
+            EditForm instance = null;
+            if (feature.ViewClass != null)
+            {
+                type = Type.GetType(feature.ViewClass);
+                /*@
+                instance = eval(`new ${feature.ViewClass}()`);
+                 */
             }
             else
             {
-                var instance = Activator.CreateInstance(type) as EditForm;
-                instance.Name = feature.Name;
-                instance.Id = id;
-                instance.Icon = feature.Icon;
-                instance.Feature = feature;
-                instance.Render();
+                instance = Activator.CreateInstance(typeof(TabEditor)) as EditForm;
             }
-            if (!IsSmallUp)
-            {
-                Instance.Show = false;
-            }
+            
+            instance.Name = feature.Name;
+            instance.Id = id;
+            instance.Icon = feature.Icon;
+            instance.Feature = feature;
+            instance.Render();
         }
 
         protected override void RemoveDOM()

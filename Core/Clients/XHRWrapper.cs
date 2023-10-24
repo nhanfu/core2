@@ -46,13 +46,14 @@ namespace Core.Clients
         {
             if (val == null) return null;
             var res = new object();
-            foreach (var prop in val.GetType().GetProperties())
-            {
-                if (prop.PropertyType.IsSimple()) 
-                {
-                    res[prop.Name] = val[prop.Name];
+            /*@
+            Object.keys(val).forEach(key => {
+                if (key == null || key[0] === '$') return;
+                if (Core.Extension.ReflectionExt.IsSimple(Bridge.getType(val[key]))) {
+                    res[key] = val[key];
                 }
-            }
+            });
+             */
             return res;
         }
 

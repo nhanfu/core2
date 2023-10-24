@@ -3189,6 +3189,7 @@ namespace Core.Components
                 - (HeaderSection.Element?.ClientHeight ?? 0)
                 - Paginator.Element.ClientHeight
                 - _theadTable;
+            Header = Header.Where(x => x != null).ToList();
             if (!Header.All(x => x.Summary.IsNullOrEmpty()))
             {
                 mainSectionHeight -= _tfooterTable;

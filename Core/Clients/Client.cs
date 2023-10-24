@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Retyped.dom.Literals.Types;
 using PathIO = System.IO.Path;
 
 namespace Core.Clients
@@ -897,12 +898,9 @@ namespace Core.Clients
             }
             return thumbText;
         }
-    }
 
-    public static class ClientExt
-    {
-        public static IPromise ToPromise<T>(Task<T> task) {
-
+        public static IPromise ToPromise<T>(Task<T> task)
+        {
             if (task == null) return null;
             /*@
             return new Promise((resolve, reject) => {
@@ -953,6 +951,15 @@ namespace Core.Clients
             });
             */
             return null;
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
+        public static void ExecTask<T>(Task<T> task, Action<T> handler = null)
+        {
+            var promise = ToPromise(task);
+            /*@
+            promise.then(handler);
+             */
         }
     }
 }

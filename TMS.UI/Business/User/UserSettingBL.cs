@@ -1,8 +1,5 @@
-﻿using Core.Clients;
-using Core.Components;
-using Core.Components.Extensions;
+﻿using Core.Components.Extensions;
 using Core.Components.Forms;
-using System.Threading.Tasks;
 using TMS.API.Models;
 
 namespace TMS.UI.Business.User
@@ -19,15 +16,8 @@ namespace TMS.UI.Business.User
                 {
                     return;
                 }
-                this.SetDataSourceGridView(nameof(UserSetting), $"?$filter=Active eq true and UserId eq {Vendor.Id}");
+                this.SetDataSourceGridView(nameof(UserSetting), $"?$filter=Active eq true and UserId eq '{Vendor.Id}'");
             };
-        }
-
-        public async Task Surcharge_AfterRowCreated(UserSetting user)
-        {
-            user.UserId = Client.Token.UserId;
-            var surchargeGrid = this.FindComponentByName<GridView>(nameof(UserSetting));
-            await surchargeGrid.AddOrUpdateRow(user);
         }
     }
 }

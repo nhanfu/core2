@@ -18,7 +18,7 @@ namespace Core.Components
 {
     public class ListViewItem : Section
     {
-        private static List<string> NotCellText = new List<string> { "Button", "Image", "Checkbox" };
+        private static List<string> NotCellText;
         public const string EmptyRowClass = "empty-row";
         public const string SelectedClass = "__selected__";
         public const string FocusedClass = "focus";
@@ -114,6 +114,7 @@ namespace Core.Components
         {
             StopChildrenHistory = true;
             DOMContentLoaded += RowItemReady;
+            NotCellText = new List<string> { "Button", "Image", "Checkbox" };
         }
 
         private void RowItemReady()

@@ -1,11 +1,7 @@
-﻿using Bridge.Html5;
-using Core.Components;
-using Core.Clients;
+﻿using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 using TMS.API.Models;
 
 namespace TMS.UI.Business.User
@@ -40,10 +36,7 @@ namespace TMS.UI.Business.User
                     instance.Entity = new TaskNotification();
                     return instance;
                 });
-            var promise = ClientExt.ToPromise(a);
-            /*@
-            promise.then(x => console.log('ok'));
-             */
+            Client.ExecTask(a);
         }
 
         private void InitUserForm(API.Models.User user)
@@ -58,10 +51,7 @@ namespace TMS.UI.Business.User
                     instance.Entity = user;
                     return instance;
                 });
-            var promise = ClientExt.ToPromise(a);
-            /*@
-            promise.then(x => console.log('ok'));
-             */
+            Client.ExecTask(a);
         }
     }
 }

@@ -214,7 +214,6 @@ namespace TMS.UI.Notifications
             langSelect.Render();
             html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
             html.A.AsyncEvent(EventType.Click, SignOut).ClassName("dropdown-item").I.ClassName("far fa-power-off").End.Text("Logout").EndOf(ElementType.a);
-            Html.Take(".btn-logout").AsyncEvent(EventType.Click, SignOut);
         }
 
         private void ShowProfile()

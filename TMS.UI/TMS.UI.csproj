@@ -115,7 +115,6 @@
     <Compile Include="..\TMS.API\ViewModels\ReportVM.cs">
       <Link>ViewModels\ReportVM.cs</Link>
     </Compile>
-    <Compile Include="Business\Settings\ApiException.cs" />
     <Compile Include="Business\Setting\GridPolicyDetailBL.cs" />
     <Compile Include="Business\Setting\SettingDataBL.cs" />
     <Compile Include="Business\Shop\VendorEditorBL.cs" />
@@ -181,10 +180,7 @@
       <HintPath>..\packages\Retyped.googlemaps.3.30.6733\lib\net40\Retyped.googlemaps.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Business\Accountant\" />
-    <Folder Include="Business\Manage\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{a1e39d33-d84c-4595-b7ac-6ef005935b80}</Project>
