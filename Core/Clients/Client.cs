@@ -403,7 +403,7 @@ namespace Core.Clients
                 catch
                 {
                     object jsonT = JSON.Parse(xhr.ResponseText);
-                    tcs.TrySetResult(jsonT.As<T>());
+                    tcs.TrySetResult(Convert.ChangeType(jsonT, typeof(T)).As<T>());
                 }
             }
         }

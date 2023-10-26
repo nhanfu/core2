@@ -1,4 +1,5 @@
-﻿using Bridge.Html5;
+﻿using Bridge;
+using Bridge.Html5;
 using Core.Clients;
 using Core.Components.Forms;
 using Core.Enums;
@@ -411,12 +412,10 @@ namespace Core.Components.Extensions
             {
                 return;
             }
-
             var script = Document.CreateElement(Bridge.Html5.ElementType.Script.ToString()) as HTMLScriptElement;
             script.TextContent = feature.Script;
-            script.Type = "text/javascript";
+            script.Type = "module";
             Document.Head.AppendChild(script);
-            script.Remove();
         }
 
         public static async Task<EditableComponent> AddChild(this EditableComponent com, string id, string featureName, string className)

@@ -47,12 +47,12 @@ namespace Core.Clients
             if (val == null) return null;
             var res = new object();
             /*@
-            Object.keys(val).forEach(key => {
-                if (key == null || key[0] === '$') return;
-                if (Core.Extension.ReflectionExt.IsSimple(Bridge.getType(val[key]))) {
+            for (let key in val) {
+                if (key == null || key[0] === '$') continue;
+                if (val[key] !== null && Core.Extensions.ReflectionExt.IsSimple(Bridge.getType(val[key]))) {
                     res[key] = val[key];
                 }
-            });
+            }
              */
             return res;
         }
