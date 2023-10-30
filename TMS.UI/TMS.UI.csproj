@@ -115,21 +115,13 @@
     <Compile Include="..\TMS.API\ViewModels\ReportVM.cs">
       <Link>ViewModels\ReportVM.cs</Link>
     </Compile>
-    <Compile Include="Business\Setting\GridPolicyDetailBL.cs" />
-    <Compile Include="Business\Setting\SettingDataBL.cs" />
     <Compile Include="Business\Shop\VendorEditorBL.cs" />
     <Compile Include="Business\Shop\VendorBL.cs" />
     <Compile Include="Business\User\RegistrationBL.cs" />
     <Compile Include="Business\Authentication\LoginBL.cs" />
-    <Compile Include="Business\Authentication\PolicyEditorBL.cs" />
     <Compile Include="Business\MenuComponent.cs" />
     <Compile Include="App.cs" />
-    <Compile Include="Business\Authentication\PolicyManagementBL.cs" />
-    <Compile Include="Business\Setting\EntityDetailBL.cs" />
-    <Compile Include="Business\Setting\MasterDataDetailsBL.cs" />
-    <Compile Include="Business\Setting\RoleDetailBL.cs" />
     <Compile Include="Business\User\ChangePasswordBL.cs" />
-    <Compile Include="Business\User\UserBL.cs" />
     <Compile Include="Business\User\UserDetailBL.cs" />
     <Compile Include="Business\User\UserProfileBL.cs" />
     <Compile Include="Business\User\TaskNotificationDetailBL.cs" />

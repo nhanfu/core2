@@ -1,5 +1,7 @@
-﻿using Core.Models;
+﻿using Core.Extensions;
+using Core.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Core.ViewModels
 {
@@ -7,7 +9,7 @@ namespace Core.ViewModels
     {
         public bool AllPermission { get; set; }
         public string[] RecordIds { get; set; }
-        public string StrRecordIds => string.Join(",", RecordIds);
+        public string StrRecordIds => RecordIds.Select(x => $"\"{x}\"").Combine();
         public List<FeaturePolicy> FeaturePolicy { get; set; }
     }
 }

@@ -217,8 +217,8 @@ namespace TMS.UI.Business.Authentication
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
         public static void InitFCM(bool signout = false)
         {
-            System.Console.WriteLine("Init fcm");
-            var tanentCode = "HIEPTHUONG";
+            Console.WriteLine("Init fcm");
+            var tanentCode = Client.Token.TenantCode;
             var strUserId = $"U{Client.Token.UserId:0000000}";
             /*@
             if (typeof(PushNotification) === 'undefined') return;

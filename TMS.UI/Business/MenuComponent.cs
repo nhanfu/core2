@@ -103,11 +103,11 @@ namespace TMS.UI.Business
                 if (!featureParam.IsNullOrWhiteSpace())
                 {
                     var currentFeature = feature.FirstOrDefault(x => x.Name == featureParam);
-                    await OpenFeature(currentFeature);
+                    OpenFeature(currentFeature);
                 }
                 else
                 {
-                    await feature.Where(x => startApps.Contains(x.Id) || x.StartUp).ForEachAsync(OpenFeature);
+                    feature.Where(x => startApps.Contains(x.Id) || x.StartUp).ForEach(OpenFeature);
                 }
                 DOMContentLoaded?.Invoke();
             });
@@ -362,7 +362,7 @@ namespace TMS.UI.Business
             {
                 li.AddClass("menu-open");
             }
-            await OpenFeature(feature);
+            OpenFeature(feature);
         }
 
         private static void AlterPositionSubMenu(float top, HTMLElement li)
@@ -413,9 +413,9 @@ namespace TMS.UI.Business
             }
         }
 
-        public static async Task OpenFeature(Feature feature)
+        public static void OpenFeature(Feature feature)
         {
-            if (feature is null || feature.ViewClass is null && feature.Entity is null)
+            if (feature is null || feature.ViewClass.IsNullOrWhiteSpace() && feature.EntityId.IsNullOrWhiteSpace())
             {
                 return;
             }
@@ -426,31 +426,34 @@ namespace TMS.UI.Business
                 exists.Focus();
                 return;
             }
-            feature = await ComponentExt.LoadFeatureByName(feature.Name);
-            Type type;
-            EditForm instance = null;
-            if (feature.ViewClass != null)
+            var featureTask = ComponentExt.LoadFeatureByName(feature.Name);
+            Client.ExecTask(featureTask, (f) =>
             {
-                type = Type.GetType(feature.ViewClass);
-                instance = Activator.CreateInstance(type) as EditForm;
-            }
-            else
-            {
-                instance = new TabEditor(feature.EntityName);
-                if (!feature.Script.IsNullOrWhiteSpace())
+                Type type;
+                EditForm instance = null;
+                if (f.ViewClass != null)
                 {
-                    var obj = Window.Eval<object>(feature.Script);
-                    /*@
-                    for (let prop in obj) instance[prop] = obj[prop];
-                    */
+                    type = Type.GetType(f.ViewClass);
+                    instance = Activator.CreateInstance(type) as EditForm;
                 }
-            }
-            
-            instance.Name = feature.Name;
-            instance.Id = id;
-            instance.Icon = feature.Icon;
-            instance.Feature = feature;
-            instance.Render();
+                else
+                {
+                    instance = new TabEditor(f.EntityName);
+                    if (!f.Script.IsNullOrWhiteSpace())
+                    {
+                        var obj = Window.Eval<object>(f.Script);
+                        /*@
+                        for (let prop in obj) instance[prop] = obj[prop];
+                        */
+                    }
+                }
+
+                instance.Name = f.Name;
+                instance.Id = id;
+                instance.Icon = f.Icon;
+                instance.Feature = f;
+                instance.Render();
+            });
         }
 
         protected override void RemoveDOM()
