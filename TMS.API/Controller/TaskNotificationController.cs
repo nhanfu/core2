@@ -39,7 +39,7 @@ namespace TMS.API.Controllers
                     Deadline = entity.Deadline,
                     Active = true,
                     InsertedBy = UserId,
-                    InsertedDate = DateTime.Now
+                    InsertedDate = DateTimeOffset.Now
                 });
                 db.AddRange(tasks);
                 await db.SaveChangesAsync();
@@ -127,7 +127,7 @@ namespace TMS.API.Controllers
                 Attachment = "fal fa-paper-plane",
                 StatusId = ((int)TaskStateEnum.UnreadStatus).ToString(),
                 RemindBefore = 540,
-                Deadline = DateTime.Now,
+                Deadline = DateTimeOffset.Now,
             };
             SetAuditInfo(task);
             await _taskService.SendMessageSocket(token, task);

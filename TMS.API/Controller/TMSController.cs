@@ -581,7 +581,7 @@ namespace TMS.API.Controllers
                 worksheet.Cell(last, k).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                 k++;
             }
-            var url = $"{component.RefName}{DateTime.Now:ddMMyyyyhhmm}.xlsx";
+            var url = $"{component.RefName}{DateTimeOffset.Now:ddMMyyyyhhmm}.xlsx";
             worksheet.Columns().AdjustToContents();
             workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
             return url;

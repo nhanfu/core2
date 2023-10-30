@@ -1,6 +1,7 @@
 ﻿using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
+using Core.SMSModels;
 using Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -100,6 +101,13 @@ namespace TMS.API.Services
             });
         }
 
+        public string GetRemoteIpAddress(HttpContext context)
+        {
+            return context.Request.Headers.ContainsKey("X-Forwarded-For")
+                ? context.Request.Headers["X-Forwarded-For"].ToString().Split(',')[0].Trim()
+                : context.Connection.RemoteIpAddress.ToString();
+        }
+
         public async Task<Token> SignInAsync(LoginVM login, bool skipHash = false)
         {
             if (login.CompanyName.HasAnyChar())
@@ -131,7 +139,7 @@ namespace TMS.API.Services
             }
             else
             {
-                matchedUser.LastLogin = DateTime.Now;
+                matchedUser.LastLogin = DateTimeOffset.Now;
                 matchedUser.LoginFailedCount = 0;
             }
             if (!skipHash)
@@ -142,19 +150,19 @@ namespace TMS.API.Services
             {
                 throw new ApiException($"Wrong username or password. Please try again!") { StatusCode = HttpStatusCode.BadRequest };
             }
-            return await GetUserToken(matchedUser, null, login.AutoSignIn);
+            return await GetUserToken(matchedUser, login.CompanyName, null, login.AutoSignIn);
         }
 
         private async Task<User> GetUserByLogin(LoginVM login)
         {
             var matchedUser =
                 from user in db.User.Include(user => user.Vendor).Include(user => user.UserRole).ThenInclude(userRole => userRole.Role)
-                where user.UserName == login.UserName && user.Active
+                where user.UserName == login.UserName && user.Active && user.Vendor.Code == login.CompanyName
                 select user;
             return await matchedUser.FirstOrDefaultAsync();
         }
 
-        protected virtual async Task<Token> GetUserToken(User user, string refreshToken = null, bool autoSigin = false)
+        protected virtual async Task<Token> GetUserToken(User user, string tanent, string refreshToken = null, bool autoSigin = false)
         {
             if (user is null)
             {
@@ -162,6 +170,8 @@ namespace TMS.API.Services
             }
             var roleIds = user.UserRole.Select(x => x.RoleId).Distinct().ToList();
             var allRoles = await GetDecendantPath<Role>(roleIds, true);
+            var signinDate = DateTimeOffset.Now;
+            var jit = Guid.NewGuid().ToString();
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.GroupSid, user.VendorId.ToString()),
@@ -171,28 +181,29 @@ namespace TMS.API.Services
                 new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Birthdate, user.DoB.ToString()),
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.FullName?? string.Empty),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, signinDate.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, jit),
+                new Claim(ClaimTypes.PrimaryGroupSid, tanent),
             };
             claims.AddRange(allRoles.Select(x => new Claim(ClaimTypes.Role, x.ToString())));
             claims.AddRange(roleIds.Select(x => new Claim(ClaimTypes.Actor, x.ToString())));
             var newLogin = refreshToken is null;
             refreshToken ??= GenerateRandomToken();
             var (token, exp) = AccessToken(claims);
-            var res = JsonToken(user, user.UserRole.ToList(), allRoles.ToList(), refreshToken, token, exp);
+            var res = JsonToken(user, user.UserRole.ToList(), tanent, allRoles.ToList(), refreshToken, token, exp, signinDate);
             if (!newLogin || !autoSigin)
             {
                 return res;
             }
             var userLogin = new UserLogin
             {
+                Id = jit,
                 UserId = user.Id,
-                IpAddress = Context.HttpContext.Connection.RemoteIpAddress.ToString(),
+                IpAddress = GetRemoteIpAddress(Context.HttpContext),
                 RefreshToken = refreshToken,
                 ExpiredDate = res.RefreshTokenExp,
-                SignInDate = DateTime.Now,
+                SignInDate = signinDate,
             };
-            SetAuditInfo(userLogin);
             db.Add(userLogin);
             await db.SaveChangesAsync();
             return res;
@@ -219,21 +230,23 @@ namespace TMS.API.Services
             return result;
         }
 
-        private (JwtSecurityToken, DateTime) AccessToken(IEnumerable<Claim> claims)
+        private (JwtSecurityToken, DateTimeOffset) AccessToken(IEnumerable<Claim> claims)
         {
-            var exp = DateTime.Now.AddDays(1);
+            var exp = DateTimeOffset.Now.AddDays(1);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
                 _configuration["Tokens:Issuer"],
                 _configuration["Tokens:Issuer"],
                 claims,
-                expires: exp,
+                expires: exp.DateTime,
                 signingCredentials: creds);
             return (token, exp);
         }
 
-        private Token JsonToken(User user, List<UserRole> roles, List<string> allRoleIds, string refreshToken, JwtSecurityToken token, DateTime exp)
+        private Token JsonToken(User user, 
+            List<UserRole> roles, string tanent, List<string> allRoleIds, string refreshToken, 
+            JwtSecurityToken token, DateTimeOffset exp, DateTimeOffset signinDate)
         {
             var vendor = new Core.Models.Vendor();
             vendor.CopyPropFrom(user.Vendor);
@@ -251,17 +264,19 @@ namespace TMS.API.Services
                 Ssn = user.Ssn,
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                 AccessTokenExp = exp,
-                RefreshTokenExp = DateTime.Now.AddYears(1),
+                RefreshTokenExp = DateTimeOffset.Now.AddYears(1),
                 RefreshToken = refreshToken,
                 RoleIds = roles.Select(x => x.RoleId).ToList(),
                 AllRoleIds = allRoleIds,
                 RoleNames = roles.Select(x => x.Role.RoleName).ToList(),
                 Vendor = vendor,
+                TenantCode = tanent,
                 SysName = _configuration["SysName"],
+                SigninDate = signinDate
             };
         }
 
-        public async Task<Token> RefreshAsync(RefreshVM token, string t)
+        public async Task<Token> RefreshAsync(RefreshVM token, string tanent)
         {
             var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _configuration);
             var issuedAt = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Iat)?.Value.TryParseDateTime();
@@ -270,12 +285,12 @@ namespace TMS.API.Services
             {
                 throw new InvalidOperationException($"{nameof(userIdClaim)} is null");
             }
-            var ipAddress = Context.HttpContext.Connection.RemoteIpAddress.ToString();
+            var ipAddress = GetRemoteIpAddress(Context.HttpContext);
             var userLogin = await db.UserLogin
                 .OrderByDescending(x => x.SignInDate)
                 .FirstOrDefaultAsync(x => x.UserId == userIdClaim.Value
                     && x.RefreshToken == token.RefreshToken
-                    && x.ExpiredDate > DateTime.Now);
+                    && x.ExpiredDate > DateTimeOffset.Now);
 
             if (userLogin == null)
             {
@@ -285,7 +300,7 @@ namespace TMS.API.Services
             var updatedUser = await db.User.Include(user => user.Vendor)
                 .Include(x => x.UserRole).ThenInclude(x => x.Role)
                 .FirstOrDefaultAsync(x => x.Id == userIdClaim.Value);
-            return await GetUserToken(updatedUser, token.RefreshToken);
+            return await GetUserToken(updatedUser, tanent, token.RefreshToken);
         }
 
         public async Task<Role> GetRole(string roleName, RoleSelection? selection = RoleSelection.TopFirst)

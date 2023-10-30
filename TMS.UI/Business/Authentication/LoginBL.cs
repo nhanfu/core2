@@ -98,10 +98,12 @@ namespace TMS.UI.Business.Authentication
                 Html.Instance.Div.ClassName("modal-container")
                             .Div.ClassName("modal-left")
                                 .H1.ClassName("modal-title").Text("XIN CHÀO").End
-                                .P.ClassName("modal-desc").Text("ĐÔNG Á").End
+                                .Div.ClassName("input-block")
+                                    .Label.ClassName("input-label").Text("Công ty").End
+                                    .Input.Event(EventType.Input, (e) => LoginEntity.CompanyName = e.Target.Cast<HTMLInputElement>().Value)
+                                    .Attr("name", "CompanyName").Value(LoginEntity.CompanyName).Type("text").End.End
                                  .Div.ClassName("input-block")
                                     .Label.ClassName("input-label").Text("Tên tài khoản").End
-                                    .Input.Attr("name", "CompanyName").Type("hidden").Value("wr1").End
                                     .Input.Event(EventType.Input, (e) => LoginEntity.UserName = e.Target.Cast<HTMLInputElement>().Value).Attr("name", "UserName").Value(LoginEntity.UserName).Type("text").End.End
                                 .Div.ClassName("input-block")
                                     .Label.ClassName("input-label").Text("Mật khẩu").End

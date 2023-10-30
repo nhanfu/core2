@@ -1,6 +1,7 @@
 ﻿using Core.Extensions;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TMS.API.Models;
 
 namespace TMS.API.Controllers
@@ -15,13 +16,13 @@ namespace TMS.API.Controllers
 
         public override Task<OdataResult<History>> Get(ODataQueryOptions<History> options)
         {
-            var query = db.Core_History.AsQueryable();
+            var query = db.Core_History.Where(x => x.TenantCode == _userSvc.TenantCode).AsNoTracking();
             return ApplyQuery(options, query);
         }
 
         public override Task<ActionResult<History>> CreateAsync([FromBody] History entity)
         {
-            entity.TanentCode = _userSvc.VendorId.ToString();
+            entity.TenantCode = _userSvc.TenantCode.ToString();
             return base.CreateAsync(entity);
         }
     }

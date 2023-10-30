@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TMS.API.Models;
 using TMS.API.Services;
@@ -14,7 +15,6 @@ namespace TMS.API.Controllers
 {
     public class UserController : TMSController<User>
     {
-        private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
         private readonly UserService _userSerivce;
 
@@ -23,7 +23,6 @@ namespace TMS.API.Controllers
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _userSerivce = userSerivce;
-            _serviceProvider = serviceProvider;
         }
 
         [AllowAnonymous]
@@ -163,7 +162,7 @@ namespace TMS.API.Controllers
                 var email = new EmailVM
                 {
                     Body = Utils.FormatEntity(accountCreatedEmailTemplate.Description, user),
-                    Subject = "[TMS] Tài khoản của bạn vừa được khởi tạo",
+                    Subject = $"[{_config["SysName"]}] Tài khoản của bạn vừa được khởi tạo",
                     ToAddresses = new List<string> { user.Email }
                 };
                 await SendMail(email, db);
@@ -192,16 +191,11 @@ namespace TMS.API.Controllers
                 throw new ApiException("Token is required");
             }
             var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _configuration);
-            var userIdClaim = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-            var ipAddress = _httpContext.HttpContext.Connection.RemoteIpAddress.ToString();
-            var userLogin = await db.UserLogin
-                .OrderByDescending(x => x.SignInDate)
-                .FirstOrDefaultAsync(x => x.UserId.ToString() == userIdClaim.Value && x.IpAddress == ipAddress);
-            if (userLogin is null)
-            {
-                return true;
-            }
-            userLogin.ExpiredDate = null;
+            var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
+            var ipAddress = _userSvc.GetRemoteIpAddress(_httpContext.HttpContext);
+            var userLogin = await db.UserLogin.FindAsync(sessionId) ?? throw new ApiException("Login session not found");
+            userLogin.ExpiredDate = DateTimeOffset.Now;
+            await db.SaveChangesAsync();
             return true;
         }
 

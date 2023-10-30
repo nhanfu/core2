@@ -19,8 +19,8 @@ namespace Core.ViewModels
         public string Avatar { get; set; }
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-        public DateTime AccessTokenExp { get; set; }
-        public DateTime RefreshTokenExp { get; set; }
+        public DateTimeOffset AccessTokenExp { get; set; }
+        public DateTimeOffset RefreshTokenExp { get; set; }
         public string HashPassword { get; set; }
         public string Recovery { get; set; }
         public string SysName { get; set; } = "TMS";
@@ -36,6 +36,7 @@ namespace Core.ViewModels
         public string PartnerId { get; set; }
         public string RegionId { get; set; }
         public object Additional { get; set; }
+        public DateTimeOffset SigninDate { get; set; }
     }
 
     [Serializable]

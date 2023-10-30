@@ -6,7 +6,7 @@ namespace TMS.API.Models
     public partial class History
     {
         public string Id { get; set; }
-        public string TanentCode { get; set; }
+        public string TenantCode { get; set; }
         public string EntityId { get; set; }
         public string RecordId { get; set; }
         public string ReasonOfChange { get; set; }
