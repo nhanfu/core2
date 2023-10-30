@@ -5,7 +5,6 @@ namespace Core.ViewModels
     public class LoginVM
     {
         [Display(Description = "Công ty")]
-        [Required(ErrorMessage = "{0} không thể để trống")]
         public string CompanyName { get; set; }
         [Display(Description = "Tên đăng nhập")]
         [Required(ErrorMessage = "{0} không thể để trống")]

@@ -2006,7 +2006,8 @@ namespace Core.Components
             Header.Clear();
             Header.Add(ToolbarColumn);
             Header.AddRange(headers);
-            return headers;
+            Header = Header.Where(x => x != null).ToList();
+            return Header;
         }
 
         public override async Task ApplyFilter(bool searching = true)

@@ -56,11 +56,11 @@
         },
 
         geti: function (scope, name1, name2) {
-            if (scope[name1] !== undefined) {
+            if (scope != null && scope[name1] !== undefined) {
                 return name1;
             }
 
-            if (name2 && scope[name2] != undefined) {
+            if (scope != null && name2 && scope[name2] != undefined) {
                 return name2;
             }
 
@@ -1599,7 +1599,7 @@
                 return a === b;
             } else if (Bridge.isDate(a)) {
                 if (a.kind !== undefined && a.ticks !== undefined) {
-                    return System.DateTime.getTicks(a).equals(System.DateTime.getTicks(b));
+                    return b != null ? System.DateTime.getTicks(a).equals(System.DateTime.getTicks(b)) : null;
                 }
 
                 return a.valueOf() === b.valueOf();
@@ -21646,7 +21646,12 @@ if (typeof window !== 'undefined' && window.performance && window.performance.no
                 }
             },
             add: function (item) {
-                if (this._size === this._items.length) {
+                if (this._items == null) {
+                    this._items = System.Array.init(0, function () {
+                        return Bridge.getDefaultValue(T);
+                    }, T);
+                }
+                if (this._size === this._items?.length) {
                     this.EnsureCapacity(((this._size + 1) | 0));
                 }
                 this._items[System.Array.index(Bridge.identity(this._size, ((this._size = (this._size + 1) | 0))), this._items)] = item;

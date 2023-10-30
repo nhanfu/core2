@@ -42,7 +42,7 @@ namespace Core.Extensions
                         value = prop.GetValue(instance);
                         if (value is null)
                         {
-                            return false;
+                            return true;
                         }
                         else if (value is IEnumerable enumerable)
                         {

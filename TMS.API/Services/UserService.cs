@@ -142,7 +142,7 @@ namespace TMS.API.Services
             {
                 throw new ApiException($"Wrong username or password. Please try again!") { StatusCode = HttpStatusCode.BadRequest };
             }
-            return await GetUserToken(matchedUser, login.CompanyName, null, login.AutoSignIn);
+            return await GetUserToken(matchedUser, null, login.AutoSignIn);
         }
 
         private async Task<User> GetUserByLogin(LoginVM login)
@@ -154,7 +154,7 @@ namespace TMS.API.Services
             return await matchedUser.FirstOrDefaultAsync();
         }
 
-        protected virtual async Task<Token> GetUserToken(User user, string tanent, string refreshToken = null, bool autoSigin = false)
+        protected virtual async Task<Token> GetUserToken(User user, string refreshToken = null, bool autoSigin = false)
         {
             if (user is null)
             {
@@ -173,14 +173,13 @@ namespace TMS.API.Services
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.FullName?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.PrimaryGroupSid, tanent),
             };
             claims.AddRange(allRoles.Select(x => new Claim(ClaimTypes.Role, x.ToString())));
             claims.AddRange(roleIds.Select(x => new Claim(ClaimTypes.Actor, x.ToString())));
             var newLogin = refreshToken is null;
             refreshToken ??= GenerateRandomToken();
             var (token, exp) = AccessToken(claims);
-            var res = JsonToken(user, user.UserRole.ToList(), tanent, allRoles.ToList(), refreshToken, token, exp);
+            var res = JsonToken(user, user.UserRole.ToList(), allRoles.ToList(), refreshToken, token, exp);
             if (!newLogin || !autoSigin)
             {
                 return res;
@@ -234,7 +233,7 @@ namespace TMS.API.Services
             return (token, exp);
         }
 
-        private Token JsonToken(User user, List<UserRole> roles, string tanent, List<string> allRoleIds, string refreshToken, JwtSecurityToken token, DateTime exp)
+        private Token JsonToken(User user, List<UserRole> roles, List<string> allRoleIds, string refreshToken, JwtSecurityToken token, DateTime exp)
         {
             var vendor = new Core.Models.Vendor();
             vendor.CopyPropFrom(user.Vendor);
@@ -258,7 +257,6 @@ namespace TMS.API.Services
                 AllRoleIds = allRoleIds,
                 RoleNames = roles.Select(x => x.Role.RoleName).ToList(),
                 Vendor = vendor,
-                TenantCode = tanent,
                 SysName = _configuration["SysName"],
             };
         }
@@ -287,7 +285,7 @@ namespace TMS.API.Services
             var updatedUser = await db.User.Include(user => user.Vendor)
                 .Include(x => x.UserRole).ThenInclude(x => x.Role)
                 .FirstOrDefaultAsync(x => x.Id == userIdClaim.Value);
-            return await GetUserToken(updatedUser, t, token.RefreshToken);
+            return await GetUserToken(updatedUser, token.RefreshToken);
         }
 
         public async Task<Role> GetRole(string roleName, RoleSelection? selection = RoleSelection.TopFirst)

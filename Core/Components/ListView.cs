@@ -445,7 +445,8 @@ namespace Core.Components
             OrderHeaderGroup(headers);
             Header.Clear();
             Header.AddRange(headers);
-            return headers;
+            Header = Header.Where(x => x != null).ToList();
+            return Header;
         }
 
         protected Component CalcTextAlign(Component header)
@@ -784,6 +785,7 @@ namespace Core.Components
             {
                 return;
             }
+            headers = headers.Where(x => x != null).ToList();
 
             rows = rows ?? RowData.Data;
             var refHeaders = headers.Where(x => x.RefName.HasAnyChar()).ToList();

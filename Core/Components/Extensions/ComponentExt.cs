@@ -1,5 +1,4 @@
-﻿using Bridge;
-using Bridge.Html5;
+﻿using Bridge.Html5;
 using Core.Clients;
 using Core.Components.Forms;
 using Core.Enums;
@@ -317,31 +316,7 @@ namespace Core.Components.Extensions
             feature.FeaturePolicy = policyOdata.Result;
             feature.ComponentGroup = componentGroupTask.Result;
             FeatureMap.TryAdd(featureName, feature);
-            ExecuteFeatureScript(feature);
             return feature;
-        }
-
-        public static async Task<Feature> LoadFeatureComponent(Feature feature1, bool publicForm = false)
-        {
-#if RELEASE
-            if (FeatureMap.ContainsKey(featureName))
-            {
-                return FeatureMap[featureName];
-            }
-#endif
-            var prefix = publicForm ? "/Public/" : string.Empty;
-            var policyOdata = publicForm ? Task.FromResult(new List<FeaturePolicy>())
-                : new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
-                $"?$filter=Active eq true and FeatureId eq '{feature1.Id}'");
-            var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>(
-                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name,Namespace))" +
-                $"&$filter=Active eq true and FeatureId eq '{feature1.Id}'", addTenant: true);
-            await Task.WhenAll(policyOdata, componentGroupTask);
-            feature1.FeaturePolicy = policyOdata.Result;
-            feature1.ComponentGroup = componentGroupTask.Result;
-            FeatureMap.TryAdd(feature1.Name, feature1);
-            ExecuteFeatureScript(feature1);
-            return feature1;
         }
 
         public static async Task<Feature> LoadFeatureByNameOrViewClass(string nameOrViewClass)
@@ -363,30 +338,6 @@ namespace Core.Components.Extensions
             feature.FeaturePolicy = policyTask.Result;
             feature.ComponentGroup = componentGroupTask.Result;
             FeatureMap.TryAdd(feature.Name, feature);
-            ExecuteFeatureScript(feature);
-            return feature;
-        }
-
-        public static async Task<Feature> LoadEditorFeatureByNameByEntity(string entity)
-        {
-            var exists = FeatureMap.Values.FirstOrDefault(x => x.EntityId == entity && x.Name.IndexOf("editor", StringComparison.OrdinalIgnoreCase) >= 0);
-            if (exists != null)
-            {
-                return exists;
-            }
-            var featureTask = new Client(nameof(Feature), typeof(User).Namespace).FirstOrDefaultAsync<Feature>(
-                $"?$expand=Entity($select=Name)&$filter=Active eq true and EntityId eq '{entity}'  ");
-            var policyTask = new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
-                $"?$filter=Active eq true and Feature/EntityId eq '{entity}'");
-            var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>(
-                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name,Namespace))" +
-                $"&$filter=Active eq true and Feature/EntityId eq '{entity}' ");
-            await Task.WhenAll(featureTask, policyTask, componentGroupTask);
-            var feature = featureTask.Result;
-            feature.FeaturePolicy = policyTask.Result;
-            feature.ComponentGroup = componentGroupTask.Result;
-            FeatureMap.TryAdd(feature.Name, feature);
-            ExecuteFeatureScript(feature);
             return feature;
         }
 
@@ -398,34 +349,6 @@ namespace Core.Components.Extensions
             }
             return await new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
                 $"?$filter=Active eq true and EntityId eq '{entity}' and RecordId in ({ids.Select(x => $"'{x}'").Combine(",")})");
-        }
-
-        private static void ExecuteFeatureScript(Feature feature)
-        {
-            if (feature.ViewClass.IsNullOrWhiteSpace())
-            {
-                return;
-            }
-
-            var type = Type.GetType(feature.ViewClass);
-            if (type != null)
-            {
-                return;
-            }
-            var script = Document.CreateElement(Bridge.Html5.ElementType.Script.ToString()) as HTMLScriptElement;
-            script.TextContent = feature.Script;
-            script.Type = "module";
-            Document.Head.AppendChild(script);
-        }
-
-        public static async Task<EditableComponent> AddChild(this EditableComponent com, string id, string featureName, string className)
-        {
-            await LoadFeatureByName(featureName);
-            var type = Type.GetType(className);
-            var instance = Activator.CreateInstance(type) as EditableComponent;
-            instance.Id = id;
-            com.AddChild(instance);
-            return instance;
         }
 
         public static EditableComponent FirstOrDefault(this EditableComponent component, Func<EditableComponent, bool> predicate, Func<EditableComponent, bool> ignorePredicate = null)

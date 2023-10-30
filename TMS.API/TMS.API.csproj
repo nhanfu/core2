@@ -91,10 +91,6 @@
     <None Include="wwwroot\js\select2.min.js" />
     <None Include="wwwroot\js\sweetalert2.js" />
     <None Include="wwwroot\js\theme1.js" />
-    <None Include="wwwroot\js\tms.bridge.js" />
-    <None Include="wwwroot\js\tms.bridge.meta.js" />
-    <None Include="wwwroot\js\tms.bridge.meta.min.js" />
-    <None Include="wwwroot\js\tms.bridge.min.js" />
     <None Include="wwwroot\js\tms.newtonsoft.json.js" />
     <None Include="wwwroot\js\TMS.UI.js" />
     <None Include="wwwroot\js\TMS.UI.meta.js" />

@@ -641,7 +641,7 @@ namespace Core.Components
             {
                 DateTimeField = ParentListView.Header.FirstOrDefault(x => x.Id == EntityVM.DateTimeField).FieldName;
             }
-            var headers = ParentListView.Header;
+            var headers = ParentListView.Header.Where(x => x != null).ToList();
             var searchTerm = EntityVM.SearchTerm?.Trim().EncodeSpecialChar() ?? string.Empty;
             var finalFilter = ComponentExt.FilterById(searchTerm, headers);
             if (finalFilter.IsNullOrEmpty())
