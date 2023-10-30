@@ -203,6 +203,8 @@ namespace TMS.API.Models
 
         public string EntityId { get; set; }
 
+        public string EntityName { get; set; }
+
         public string ComponentId { get; set; }
 
         public string TextAlign { get; set; }

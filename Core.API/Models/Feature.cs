@@ -31,6 +31,7 @@ namespace Core.Models
         public bool StartUp { get; set; }
         public string ViewClass { get; set; }
         public string EntityId { get; set; }
+        public string EntityName { get; set; }
         public string Description { get; set; }
         public bool Active { get; set; }
         public DateTimeOffset InsertedDate { get; set; }

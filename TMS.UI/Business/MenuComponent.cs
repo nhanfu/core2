@@ -432,13 +432,18 @@ namespace TMS.UI.Business
             if (feature.ViewClass != null)
             {
                 type = Type.GetType(feature.ViewClass);
-                /*@
-                instance = eval(`new ${feature.ViewClass}()`);
-                 */
+                instance = Activator.CreateInstance(type) as EditForm;
             }
             else
             {
-                instance = Activator.CreateInstance(typeof(TabEditor)) as EditForm;
+                instance = new TabEditor(feature.EntityName);
+                if (!feature.Script.IsNullOrWhiteSpace())
+                {
+                    var obj = Window.Eval<object>(feature.Script);
+                    /*@
+                    for (let prop in obj) instance[prop] = obj[prop];
+                    */
+                }
             }
             
             instance.Name = feature.Name;

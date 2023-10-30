@@ -126,7 +126,6 @@
     <Compile Include="App.cs" />
     <Compile Include="Business\Authentication\PolicyManagementBL.cs" />
     <Compile Include="Business\Setting\EntityDetailBL.cs" />
-    <Compile Include="Business\Setting\MasterDataBL.cs" />
     <Compile Include="Business\Setting\MasterDataDetailsBL.cs" />
     <Compile Include="Business\Setting\RoleDetailBL.cs" />
     <Compile Include="Business\User\ChangePasswordBL.cs" />

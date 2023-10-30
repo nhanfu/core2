@@ -428,6 +428,9 @@ public partial class TMSContext : DbContext
             entity.Property(e => e.ViewClass)
                 .HasMaxLength(150)
                 .IsUnicode(false);
+            entity.Property(e => e.EntityName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
 
             entity.HasOne(d => d.Entity).WithMany(p => p.Feature)
                 .HasForeignKey(d => d.EntityId)

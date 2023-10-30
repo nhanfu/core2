@@ -41,6 +41,8 @@ namespace TMS.API.Models
 
         public string EntityId { get; set; }
 
+        public string EntityName { get; set; }
+
         public string Description { get; set; }
 
         public bool Active { get; set; }

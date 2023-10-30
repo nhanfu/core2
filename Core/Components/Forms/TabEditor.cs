@@ -28,7 +28,7 @@ namespace Core.Components.Forms
         public static bool ShowTabText { get; set; }
         private List<Button> _hotKeyComponents;
 
-        public TabEditor(string entity) : base(entity)
+        public TabEditor(string entity = null) : base(entity)
         {
             PopulateDirty = false;
             ShouldLoadEntity = true;
