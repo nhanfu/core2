@@ -205,7 +205,7 @@ namespace Core.Components
             };
             endDate.UserInput = null;
             AddChild(endDate);
-            if (ParentListView.GuiInfo.ShowDatetimeField != null && (bool)ParentListView.GuiInfo.ShowDatetimeField)
+            if (ParentListView.GuiInfo.ShowDatetimeField)
             {
                 var dateType = new SearchEntry(new Component
                 {
@@ -242,7 +242,7 @@ namespace Core.Components
                     .Title("Phóng to")
                     .Event(EventType.Click, FullScreen).End
                     .Render();
-            if (GuiInfo.ShowHotKey)
+            if (GuiInfo.ShowHotKey && ParentGridView != null)
             {
                 Html.Take(Element).Div.ClassName("hotkey-block")
                 .Button("F1", className: "btn btn-light btn-sm").Event(EventType.Click, ParentGridView.ToggleAll)

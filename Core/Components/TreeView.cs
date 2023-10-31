@@ -62,7 +62,7 @@ namespace Core.Components
 
         private async Task RenderRow(IEnumerable<Component> headers, EditableComponent node, object row, HTMLElement ul)
         {
-            var data = await new Client(GuiInfo.RefName).GetList<object>($"?$filter=ParentId eq {row.GetPropValue(IdField)}");
+            var data = await new Client(GuiInfo.RefName).GetList<object>($"?$filter=ParentId eq '{row.GetPropValue(IdField)}'");
             var datas = data.Value;
             var count = datas.Count;
             Html.Take(ul);

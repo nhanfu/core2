@@ -21,10 +21,7 @@ namespace Core.Extensions
         {
             var type = instance.GetType();
             var prop = type.GetProperty(propertyName);
-            if (prop != null)
-            {
-                prop.SetValue(instance, value, null);
-            }
+            prop?.SetValue(instance, value, null);
         }
 
         public static void SetReadonlyPropValue(this object instance, string propertyName, object value)

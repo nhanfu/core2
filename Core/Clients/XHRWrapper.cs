@@ -49,7 +49,8 @@ namespace Core.Clients
             /*@
             for (let key in val) {
                 if (key == null || key[0] === '$') continue;
-                if (val[key] !== null && Core.Extensions.ReflectionExt.IsSimple(Bridge.getType(val[key]))) {
+                if (val[key] !== null && val[key] !== undefined
+                    && Core.Extensions.ReflectionExt.IsSimple(Bridge.getType(val[key]))) {
                     res[key] = val[key];
                 }
             }

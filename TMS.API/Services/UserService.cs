@@ -87,6 +87,7 @@ namespace TMS.API.Services
                 if (id is null)
                 {
                     obj.SetPropValue(IdField, Guid.NewGuid().ToString());
+                    obj.SetPropValue(nameof(User.TenantCode), TenantCode);
                     obj.SetPropValue(nameof(User.InsertedBy), userId ?? UserId);
                     obj.SetPropValue(nameof(User.InsertedDate), DateTimeOffset.Now);
                     obj.SetPropValue(nameof(User.UpdatedBy), userId ?? UserId);
@@ -97,6 +98,7 @@ namespace TMS.API.Services
                 {
                     obj.SetPropValue(nameof(User.UpdatedBy), userId ?? UserId);
                     obj.SetPropValue(nameof(User.UpdatedDate), DateTimeOffset.Now);
+                    obj.SetPropValue(nameof(User.TenantCode), TenantCode);
                 }
             });
         }
@@ -162,7 +164,7 @@ namespace TMS.API.Services
             return await matchedUser.FirstOrDefaultAsync();
         }
 
-        protected virtual async Task<Token> GetUserToken(User user, string tanent, string refreshToken = null, bool autoSigin = false)
+        protected virtual async Task<Token> GetUserToken(User user, string tenant, string refreshToken = null, bool autoSigin = false)
         {
             if (user is null)
             {
@@ -183,14 +185,14 @@ namespace TMS.API.Services
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.FullName?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Iat, signinDate.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, jit),
-                new Claim(ClaimTypes.PrimaryGroupSid, tanent),
+                new Claim(ClaimTypes.PrimaryGroupSid, tenant),
             };
             claims.AddRange(allRoles.Select(x => new Claim(ClaimTypes.Role, x.ToString())));
             claims.AddRange(roleIds.Select(x => new Claim(ClaimTypes.Actor, x.ToString())));
             var newLogin = refreshToken is null;
             refreshToken ??= GenerateRandomToken();
             var (token, exp) = AccessToken(claims);
-            var res = JsonToken(user, user.UserRole.ToList(), tanent, allRoles.ToList(), refreshToken, token, exp, signinDate);
+            var res = JsonToken(user, user.UserRole.ToList(), tenant, allRoles.ToList(), refreshToken, token, exp, signinDate);
             if (!newLogin || !autoSigin)
             {
                 return res;
@@ -198,6 +200,7 @@ namespace TMS.API.Services
             var userLogin = new UserLogin
             {
                 Id = jit,
+                TenantCode = tenant,
                 UserId = user.Id,
                 IpAddress = GetRemoteIpAddress(Context.HttpContext),
                 RefreshToken = refreshToken,

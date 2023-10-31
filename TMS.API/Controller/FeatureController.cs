@@ -11,10 +11,8 @@ namespace TMS.API.Controllers
 {
     public class FeatureController : TMSController<Feature>
     {
-        public IConfiguration _IConfiguration;
-        public FeatureController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor, IConfiguration iConfiguration) : base(context, entityService, httpContextAccessor)
+        public FeatureController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
-            _IConfiguration = iConfiguration;
         }
 
         [AllowAnonymous]
@@ -54,27 +52,17 @@ namespace TMS.API.Controllers
         {
             var res = await base.UpdateAsync(entity, reasonOfChange);
             await InheritParentPolicy(entity);
-            var connectionString = _IConfiguration.GetConnectionString("Default");
-            // Create a SqlConnection using the connection string
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            var connectionString = _config.GetConnectionString("Default");
+            using SqlConnection connection = new(connectionString);
+            connection.Open();
+            SqlCommand command = new("SELECT name FROM sys.databases where name like N'tms_%'", connection);
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
             {
-                // Open the connection
-                connection.Open();
-
-                // Get the database names
-                SqlCommand command = new SqlCommand("SELECT name FROM sys.databases where name like N'tms_%'", connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                // Iterate over the result set and print the database names
-                while (reader.Read())
-                {
-                    string databaseName = reader["name"].ToString();
-                    Console.WriteLine(databaseName);
-                }
-
-                // Close the reader and the connection
-                reader.Close();
+                string databaseName = reader["name"].ToString();
+                Console.WriteLine(databaseName);
             }
+            reader.Close();
             return res;
         }
 

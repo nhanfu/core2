@@ -444,6 +444,7 @@ namespace TMS.UI.Business
                         var obj = Window.Eval<object>(f.Script);
                         /*@
                         for (let prop in obj) instance[prop] = obj[prop];
+                        if (instance.Init != null) instance.Init();
                         */
                     }
                 }
