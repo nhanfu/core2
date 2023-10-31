@@ -115,10 +115,7 @@
     <Compile Include="Business\Authentication\LoginBL.cs" />
     <Compile Include="Business\MenuComponent.cs" />
     <Compile Include="App.cs" />
-    <Compile Include="Business\User\ChangePasswordBL.cs" />
-    <Compile Include="Business\User\UserDetailBL.cs" />
     <Compile Include="Business\User\TaskNotificationDetailBL.cs" />
-    <Compile Include="Business\User\UserSettingBL.cs" />
     <Compile Include="Notifications\NotificationBL.cs" />
     <Compile Include="Notifications\TaskNotificationListBL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

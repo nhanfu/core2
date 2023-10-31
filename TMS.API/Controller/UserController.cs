@@ -112,10 +112,6 @@ namespace TMS.API.Controllers
         [HttpPut("api/[Controller]/UpdateProfile")]
         public async Task<ActionResult<bool>> UpdateProfileAsync([FromBody] UserProfileVM profile)
         {
-            if (UserId != profile.Id)
-            {
-                throw new UnauthorizedAccessException("No permission to update");
-            }
             var user = await db.User.FindAsync(UserId);
             if (profile.OldPassword.HasAnyChar())
             {
