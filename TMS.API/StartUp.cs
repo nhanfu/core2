@@ -1,4 +1,3 @@
-using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
 using Hangfire;
@@ -10,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.Edm;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Polly;
 using Polly.Extensions.Http;
 using System.IO.Compression;
@@ -200,16 +198,14 @@ namespace TMS.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseHttpStatusCodeExceptionMiddleware();
             }
             else
             {
-                app.UseHttpStatusCodeExceptionMiddleware();
                 app.UseHsts();
             }
             app.UseHangfireDashboard();
             app.UseHangfireServer();
-            app.UseMiddleware<RequestLoggingMiddleware>();
+            app.UseMiddleware<HttpStatusCodeExceptionMiddleware>();
             app.UseHttpsRedirection();
             var options = new DefaultFilesOptions();
             app.UseResponseCompression();
