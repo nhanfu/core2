@@ -7,6 +7,8 @@ public partial class UserLogin
 {
     public string Id { get; set; }
 
+    public string TenantCode { get; set; }
+
     public string UserId { get; set; }
 
     public string IpAddress { get; set; }

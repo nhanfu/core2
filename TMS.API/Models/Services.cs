@@ -7,6 +7,8 @@ public partial class Services
 {
     public string Id { get; set; }
 
+    public string TenantCode { get; set; }
+
     public string ComId { get; set; }
 
     public string Address { get; set; }

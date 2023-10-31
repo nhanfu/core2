@@ -6,6 +6,7 @@ namespace TMS.API.Models
     public partial class Chat
     {
         public string Id { get; set; }
+        public string TenantCode { get; set; }
 
         public string ConversationId { get; set; }
 

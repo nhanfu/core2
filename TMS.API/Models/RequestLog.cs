@@ -7,6 +7,8 @@ public partial class RequestLog
 {
     public string Id { get; set; }
 
+    public string TenantCode { get; set; }
+
     public string RequestBody { get; set; }
 
     public string HttpMethod { get; set; }

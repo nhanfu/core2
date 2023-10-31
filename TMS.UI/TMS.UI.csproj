@@ -88,9 +88,6 @@
     <Compile Include="..\tms.api\models\OdataResult.cs">
       <Link>Models\OdataResult.cs</Link>
     </Compile>
-    <Compile Include="..\TMS.API\Models\PartialModel.cs">
-      <Link>Models\PartialModel.cs</Link>
-    </Compile>
     <Compile Include="..\TMS.API\Models\Role.cs">
       <Link>Models\Role.cs</Link>
     </Compile>
@@ -108,9 +105,6 @@
     </Compile>
     <Compile Include="..\tms.api\models\Vendor.cs">
       <Link>Models\Vendor.cs</Link>
-    </Compile>
-    <Compile Include="..\TMS.API\ViewModels\ImportExcelVM.cs">
-      <Link>Models\ImportExcelVM.cs</Link>
     </Compile>
     <Compile Include="..\TMS.API\ViewModels\ReportVM.cs">
       <Link>ViewModels\ReportVM.cs</Link>

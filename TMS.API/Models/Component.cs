@@ -6,6 +6,8 @@ namespace TMS.API.Models
     public partial class Component
     {
         public string Id { get; set; }
+        
+        public string TenantCode { get; set; }
 
         public string FieldName { get; set; }
 

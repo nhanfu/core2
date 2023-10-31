@@ -7,6 +7,8 @@ namespace TMS.API.Models
     {
         public string Id { get; set; }
 
+        public string TenantCode { get; set; }
+
         public string ComId { get; set; }
 
         public string HeaderId { get; set; }
