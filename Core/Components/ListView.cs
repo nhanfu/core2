@@ -26,7 +26,7 @@ namespace Core.Components
         internal int _scrollTable = 10;
         private const string PermissionLoaded = "PermissionLoaded";
         private const string IsOwner = "IsOwner";
-        private const string CmdUrl = "Cmd";
+        protected const string CmdUrl = "SqlReader";
         protected static List<object> _copiedRows;
         public Action<object> RowClick;
         public Action<object> DblClick;
@@ -220,11 +220,11 @@ namespace Core.Components
             if (_preQueryFn != null)
             {
                 var submitEntity = _preQueryFn.Call(null, this);
-                return await CustomQuery(new SqlViewModel
+                return await CustomQuery(new
                 {
-                    CmdId = GuiInfo.Id,
                     CmdType = "Query",
                     Entity = JSON.Stringify(submitEntity),
+                    Component = GuiInfo
                 });
             }
 
@@ -278,7 +278,7 @@ namespace Core.Components
 
         protected virtual async Task<List<object>> CustomQuery(object submitEntity)
         {
-            var ds = await new Client(nameof(User)).PostAsync<object[][]>(submitEntity, CmdUrl);
+            var ds = await new Client(nameof(Component)).PostAsync<object[][]>(submitEntity, CmdUrl);
             if (ds.Nothing())
             {
                 SetRowData(null);
@@ -290,35 +290,6 @@ namespace Core.Components
             SetRowData(rows);
             UpdatePagination(total, rows.Count);
             return rows;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0019:Use pattern matching", Justification = "<Pending>")]
-        public virtual async Task<bool> LoadCache(string DataSourceFilter, bool cache, int pageSize)
-        {
-            if (Entity is null)
-            {
-                return false;
-            }
-
-            var rows = Entity?.GetComplexPropValue(GuiInfo.FieldName) as IEnumerable;
-            if (rows is null)
-            {
-                return false;
-            }
-
-            var enumerator = rows.GetEnumerator();
-            if (!enumerator.MoveNext())
-            {
-                return false;
-            }
-
-            var addNew = enumerator.Current[IdField].As<int>() == 0;
-            if (cache || addNew)
-            {
-                RowData["_data"] = rows;
-                return true;
-            }
-            return false;
         }
 
         public override void Render()

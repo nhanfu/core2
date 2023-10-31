@@ -244,6 +244,8 @@ namespace TMS.API.Models
         public bool AutoFit { get; set; }
 
         public bool DisplayNone { get; set; }
+        
+        public string Signed { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
 

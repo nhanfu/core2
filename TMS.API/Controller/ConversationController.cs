@@ -9,5 +9,10 @@ namespace TMS.API.Controllers
         {
 
         }
+
+        protected override IQueryable<Conversation> GetQuery()
+        {
+            return db.Conversation.Where(x => x.TenantCode == _userSvc.TenantCode);
+        }
     }
 }

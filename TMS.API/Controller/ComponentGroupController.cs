@@ -1,6 +1,8 @@
 ﻿using Core.Extensions;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TMS.API.Models;
 
 namespace TMS.API.Controllers
@@ -14,7 +16,20 @@ namespace TMS.API.Controllers
         [AllowAnonymous]
         public override Task<OdataResult<ComponentGroup>> Get(ODataQueryOptions<ComponentGroup> options)
         {
-            return ApplyQuery(options, db.ComponentGroup);
+            var query = db.ComponentGroup
+                .Where(x => _userSvc.TenantCode != null && x.TenantCode == _userSvc.TenantCode
+                || _userSvc.TenantCode == null && !x.IsPrivate);
+            return ApplyQuery(options, query);
+        }
+
+        public override async Task<ActionResult<ComponentGroup>> CreateAsync([FromBody] ComponentGroup entity)
+        {
+            var feature = await db.Feature.FirstOrDefaultAsync(x => x.Id == entity.FeatureId);
+            if (feature != null && feature.IsPublic)
+            {
+                entity.IsPrivate = false;
+            }
+            return await base.CreateAsync(entity);
         }
     }
 }

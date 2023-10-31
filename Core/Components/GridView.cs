@@ -2691,7 +2691,7 @@ namespace Core.Components
 
         protected override async Task<List<object>> CustomQuery(object submitEntity)
         {
-            var ds = await new Client(nameof(User)).PostAsync<object[][]>(submitEntity, "Cmd");
+            var ds = await new Client(nameof(User)).PostAsync<object[][]>(submitEntity, CmdUrl);
             if (ds.Nothing())
             {
                 SetRowData(null);

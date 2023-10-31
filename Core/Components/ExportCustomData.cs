@@ -289,7 +289,7 @@ namespace Core.Components
             var j = 1;
             _tbody.Children.SelectForeach(y =>
             {
-                _headers.FirstOrDefault(x => x.Id == y.GetAttribute("data-id")).OrderExport = j.ToString();
+                _headers.FirstOrDefault(x => x.Id == y.GetAttribute("data-id")).OrderExport = j;
                 j++;
             });
         }

@@ -12,10 +12,15 @@ namespace TMS.API.Controllers
 
         }
 
+        protected override IQueryable<Dictionary> GetQuery()
+        {
+            return db.Dictionary.Where(x => x.TenantCode == _userSvc.TenantCode);
+        }
+
         [AllowAnonymous]
         public override Task<OdataResult<Dictionary>> Get(ODataQueryOptions<Dictionary> options)
         {
-            return base.Get(options);
+            return ApplyQuery(options, GetQuery());
         }
     }
 }

@@ -87,6 +87,8 @@ namespace TMS.API.Models
 
         public bool CustomNextCell { get; set; }
 
+        public string Signed { get; set; }
+
         public virtual ICollection<ComponentGroup> ComponentGroup { get; set; } = new List<ComponentGroup>();
 
         public virtual Entity Entity { get; set; }

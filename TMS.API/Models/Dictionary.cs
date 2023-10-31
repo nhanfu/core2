@@ -22,4 +22,6 @@ public partial class Dictionary
     public string UpdatedBy { get; set; }
 
     public DateTimeOffset? UpdatedDate { get; set; }
+
+    public string TenantCode { get; set; }
 }

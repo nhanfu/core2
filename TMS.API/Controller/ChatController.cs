@@ -1,4 +1,5 @@
 ﻿using Core.Extensions;
+using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
@@ -13,6 +14,11 @@ namespace TMS.API.Controllers
         public ChatController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
+        }
+
+        protected override IQueryable<Chat> GetQuery()
+        {
+            return db.Chat.Where(x => x.TenantCode == _userSvc.TenantCode);
         }
 
         public override async Task<ActionResult<Chat>> CreateAsync([FromBody] Chat entity)
@@ -47,7 +53,7 @@ namespace TMS.API.Controllers
             }
         }
 
-        private async Task<Chat> GetChatGPTResponse(Chat entity)
+        private static async Task<Chat> GetChatGPTResponse(Chat entity)
         {
             var languageRules = new[]
             {

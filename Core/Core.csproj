@@ -94,9 +94,6 @@
     <Compile Include="..\Core.API\ViewModels\SecurityVM.cs">
       <Link>ViewModels\SecurityVM.cs</Link>
     </Compile>
-    <Compile Include="..\Core.API\ViewModels\SqlViewModel.cs">
-      <Link>ViewModels\SqlViewModel.cs</Link>
-    </Compile>
     <Compile Include="..\Core.API\ViewModels\Token.cs">
       <Link>ViewModels\Token.cs</Link>
     </Compile>

@@ -3,8 +3,10 @@ using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Data.SqlClient;
 using System.Linq.Dynamic.Core;
+using System.Security.Claims;
 using TMS.API.Models;
 
 namespace TMS.API.Controllers
@@ -18,7 +20,10 @@ namespace TMS.API.Controllers
         [AllowAnonymous]
         public override Task<OdataResult<Feature>> Get(ODataQueryOptions<Feature> options)
         {
-            return base.Get(options);
+            var query = db.Feature
+                .Where(x => _userSvc.TenantCode != null && x.TenantCode == _userSvc.TenantCode
+                || _userSvc.TenantCode == null && x.IsPublic);
+            return ApplyQuery(options, query);
         }
 
         [AllowAnonymous]
@@ -29,6 +34,9 @@ namespace TMS.API.Controllers
 
         public override async Task<ActionResult<Feature>> CreateAsync([FromBody] Feature entity)
         {
+            SetAuditInfo(entity);
+            var text = JsonConvert.SerializeObject(entity);
+            entity.Signed = _userSvc.GetHash(UserUtils.sHA256, text);
             var res = await base.CreateAsync(entity);
             var minRoleLevel = await GetTopRole();
             await AddDefaultPolicy(entity, minRoleLevel);

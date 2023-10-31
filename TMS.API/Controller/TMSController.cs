@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using Tenray.Topaz;
 using Tenray.Topaz.API;
 using TMS.API.Models;
+using TMS.API.ViewModels;
 using FileIO = System.IO.File;
 
 namespace TMS.API.Controllers
@@ -585,32 +586,6 @@ namespace TMS.API.Controllers
             worksheet.Columns().AdjustToContents();
             workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
             return url;
-        }
-
-        public async Task ExecSql(string sql, string disableTrigger, string enableTrigger)
-        {
-            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
-            {
-                connection.Open();
-                SqlTransaction transaction = connection.BeginTransaction();
-                try
-                {
-                    using (SqlCommand command = new SqlCommand())
-                    {
-                        command.Transaction = transaction;
-                        command.Connection = connection;
-                        command.CommandText += disableTrigger;
-                        command.CommandText += sql;
-                        command.CommandText += enableTrigger;
-                        await command.ExecuteNonQueryAsync();
-                        transaction.Commit();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                }
-            }
         }
 
         [AllowAnonymous]

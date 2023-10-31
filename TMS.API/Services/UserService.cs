@@ -233,9 +233,9 @@ namespace TMS.API.Services
             return result;
         }
 
-        private (JwtSecurityToken, DateTimeOffset) AccessToken(IEnumerable<Claim> claims)
+        public (JwtSecurityToken, DateTimeOffset) AccessToken(IEnumerable<Claim> claims, DateTimeOffset? expire = null)
         {
-            var exp = DateTimeOffset.Now.AddDays(1);
+            var exp = expire ?? DateTimeOffset.Now.AddDays(1);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(

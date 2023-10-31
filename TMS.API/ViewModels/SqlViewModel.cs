@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Core.Models;
+using System.Collections.Generic;
 
-namespace Core.ViewModels
+namespace TMS.API.ViewModels
 {
     public enum SqlTypeEnum
     {
@@ -23,6 +24,7 @@ namespace Core.ViewModels
         public string Modules { get; set; }
         public SqlTypeEnum QueryType { get; set; }
         public string Entity { get; set; }
+        public Models.Component Component { get; set; }
     }
 
     public class SqlResult

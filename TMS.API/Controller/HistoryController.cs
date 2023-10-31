@@ -16,7 +16,7 @@ namespace TMS.API.Controllers
 
         public override Task<OdataResult<History>> Get(ODataQueryOptions<History> options)
         {
-            var query = db.Core_History.Where(x => x.TenantCode == _userSvc.TenantCode).AsNoTracking();
+            var query = db.History.Where(x => x.TenantCode == _userSvc.TenantCode);
             return ApplyQuery(options, query);
         }
 
