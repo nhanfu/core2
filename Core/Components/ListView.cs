@@ -150,6 +150,7 @@ namespace Core.Components
             {
                 EditForm.NotificationClient?.AddListener(GuiInfo.ReferenceId, ((int)TypeEntityAction.UpdateEntity).ToString(), RealtimeUpdateListViewItem);
             }
+            Utils.IsFunction(GuiInfo.PreQuery, out _preQueryFn);
         }
 
         internal void RealtimeUpdateListViewItem(object updatedData)
@@ -220,12 +221,11 @@ namespace Core.Components
             if (_preQueryFn != null)
             {
                 var submitEntity = _preQueryFn.Call(null, this);
-                return await CustomQuery(new
+                return await CustomQuery(JSON.Stringify(new
                 {
-                    CmdType = "Query",
                     Entity = JSON.Stringify(submitEntity),
-                    Component = GuiInfo
-                });
+                    Component = XHRWrapper.UnboxValue(GuiInfo)
+                }));
             }
 
             DataSourceFilter = DataSourceFilter.IsNullOrEmpty() ? CalcFilterQuery(true) : DataSourceFilter;
@@ -276,9 +276,15 @@ namespace Core.Components
             return result.Value;
         }
 
-        protected virtual async Task<List<object>> CustomQuery(object submitEntity)
+        protected virtual async Task<List<object>> CustomQuery(string submitEntity)
         {
-            var ds = await new Client(nameof(Component)).PostAsync<object[][]>(submitEntity, CmdUrl);
+            var ds = await new Client(nameof(Component)).SubmitAsync<object[][]>(new XHRWrapper
+            {
+                Value = submitEntity,
+                Url = CmdUrl,
+                IsRawString = true,
+                Method = HttpMethod.POST
+            });
             if (ds.Nothing())
             {
                 SetRowData(null);

@@ -507,7 +507,7 @@ namespace Core.Clients
             return SubmitAsync<OdataResult<object>>(new XHRWrapper
             {
                 Value = listId,
-                IsRaw = true,
+                IsRawString = true,
                 Method = HttpMethod.POST,
                 Url = action,
                 Headers = new Dictionary<string, string>
@@ -546,7 +546,7 @@ namespace Core.Clients
             var odata = await SubmitAsync<OdataResult<T>>(new XHRWrapper
             {
                 Value = id,
-                IsRaw = true,
+                IsRawString = true,
                 Method = HttpMethod.POST,
                 Url = "ById",
                 Headers = new Dictionary<string, string>
@@ -661,7 +661,7 @@ namespace Core.Clients
             return SubmitAsync<T>(new XHRWrapper
             {
                 Value = JsonConvert.SerializeObject(value),
-                IsRaw = true,
+                IsRawString = true,
                 Url = subUrl + $"?$filter=Id eq '{id.Value}'{ig}",
                 Headers = new Dictionary<string, string> { { "Content-type", "application/json" } },
                 Method = HttpMethod.PATCH,
@@ -759,7 +759,7 @@ namespace Core.Clients
                 Url = "HardDelete",
                 Value = JsonConvert.SerializeObject(ids),
                 Method = HttpMethod.DELETE,
-                IsRaw = true,
+                IsRawString = true,
                 Headers = new Dictionary<string, string>
                 {
                     { "content-type", "application/json" }

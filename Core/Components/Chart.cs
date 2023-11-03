@@ -54,7 +54,7 @@ namespace Core.Components
                 Data = await new Client(nameof(User)).SubmitAsync<object[]>(new XHRWrapper
                 {
                     Url = "ReportDataSet",
-                    IsRaw = true,
+                    IsRawString = true,
                     Value = dataSourceFilter,
                     Method = Enums.HttpMethod.POST
                 });

@@ -23,7 +23,7 @@ namespace Core.Clients
         public string FinalUrl { get; internal set; }
         public string ResponseMimeType { get; set; }
         public object Value { get; set; }
-        public bool IsRaw { get; set; }
+        public bool IsRawString { get; set; }
         
         public string JsonData
         {
@@ -33,7 +33,7 @@ namespace Core.Clients
                 {
                     return null;
                 }
-                if (IsRaw && Value is string val)
+                if (IsRawString && Value is string val)
                 {
                     return val;
                 }
@@ -42,7 +42,7 @@ namespace Core.Clients
             }
         }
 
-        private object UnboxValue(object val)
+        public static object UnboxValue(object val)
         {
             if (val == null) return null;
             var res = new object();

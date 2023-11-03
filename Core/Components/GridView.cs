@@ -2689,9 +2689,15 @@ namespace Core.Components
             }, 1000);
         }
 
-        protected override async Task<List<object>> CustomQuery(object submitEntity)
+        protected override async Task<List<object>> CustomQuery(string submitEntity)
         {
-            var ds = await new Client(nameof(User)).PostAsync<object[][]>(submitEntity, CmdUrl);
+            var ds = await new Client(nameof(Component)).SubmitAsync<object[][]>(new XHRWrapper
+            {
+                Value = submitEntity,
+                Url = CmdUrl,
+                IsRawString = true,
+                Method = HttpMethod.POST
+            });
             if (ds.Nothing())
             {
                 SetRowData(null);
