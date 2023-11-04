@@ -222,7 +222,7 @@ namespace Core.Components.Forms
             }
             BeforeSaved?.Invoke();
             var rs = Entity;
-            var updating = Entity[IdField].As<int>() > 0;
+            var updating = Entity[IdField] != null;
             if (updating)
             {
                 try

@@ -113,6 +113,8 @@ namespace TMS.API.Models
 
         public string CountId { get; set; }
 
+        public string ConnStr { get; set; }
+
         public virtual ICollection<User> User { get; set; } = new List<User>();
     }
 }

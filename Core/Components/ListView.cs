@@ -218,13 +218,13 @@ namespace Core.Components
                 SetRowData(GuiInfo.LocalData);
                 return GuiInfo.LocalData;
             }
-            if (_preQueryFn != null)
+            if (GuiInfo.Query.HasAnyChar())
             {
-                var submitEntity = _preQueryFn.Call(null, this);
+                var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
                 return await CustomQuery(JSON.Stringify(new
                 {
-                    Entity = JSON.Stringify(submitEntity),
-                    Component = XHRWrapper.UnboxValue(GuiInfo)
+                    Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
+                    Component = XHRWrapper.UnboxValue(new { GuiInfo.Query, GuiInfo.Signed })
                 }));
             }
 

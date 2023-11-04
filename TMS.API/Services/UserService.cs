@@ -1,7 +1,6 @@
 ﻿using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
-using Core.SMSModels;
 using Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +8,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Tenray.Topaz;
+using Tenray.Topaz.API;
 using TMS.API.Models;
 using HttpStatusCode = Core.Enums.HttpStatusCode;
 
@@ -16,7 +17,7 @@ namespace TMS.API.Services
 {
     public class UserService
     {
-        private const int MAX_LOGIN = 10;
+        private const int MAX_LOGIN = 5;
         public readonly IHttpContextAccessor Context;
         private readonly TMSContext db;
         private readonly IConfiguration _configuration;
@@ -78,6 +79,8 @@ namespace TMS.API.Services
         }
 
         public const string IdField = "Id";
+        private const string PassPhrase = "d7a9220a-6949-44c8-a702-789587e536cb";
+
         public void SetAuditInfo<K>(K entity, string userId = null) where K : class
         {
             ReflectionExt.ProcessObjectRecursive(entity, (obj) =>
@@ -116,18 +119,13 @@ namespace TMS.API.Services
             {
                 login.CompanyName = login.CompanyName.Trim();
             }
-            var matchedUser = await GetUserByLogin(login);
-            if (matchedUser is null)
-            {
-                throw new ApiException($"Sai mật khẩu hoặc tên đăng nhập.<br /> Vui lòng đăng nhập lại!") { StatusCode = HttpStatusCode.BadRequest };
-            }
-            if (matchedUser.LoginFailedCount >= MAX_LOGIN)
+            var matchedUser = await GetUserByLogin(login) ?? throw new ApiException($"Sai mật khẩu hoặc tên đăng nhập.<br /> Vui lòng đăng nhập lại!") { StatusCode = HttpStatusCode.BadRequest };
+            if (matchedUser.LoginFailedCount >= MAX_LOGIN && matchedUser.LastFailedLogin < DateTimeOffset.Now.AddMinutes(5))
             {
                 throw new ApiException($"Tài khoản {login.UserName} đã bị khóa trong 5 phút!") { StatusCode = HttpStatusCode.Conflict };
             }
             var hashedPassword = GetHash(UserUtils.sHA256, login.Password + matchedUser.Salt);
             var matchPassword = skipHash ? matchedUser.Password == login.Password : matchedUser.Password == hashedPassword;
-            matchPassword = true;
             if (!matchPassword)
             {
                 if (!login.RecoveryToken.IsNullOrWhiteSpace() && login.RecoveryToken == matchedUser.Recover)
@@ -331,6 +329,47 @@ namespace TMS.API.Services
                 where user.Active && userRole.Active && role.Id == userRole.RoleId
                 select user;
             return await userQuery.FirstOrDefaultAsync();
+        }
+
+        public async Task<string> EncryptQuery(string query)
+        {
+            if (query.IsNullOrEmpty()) return null;
+            var hash = GetHash(UserUtils.sHA256, query);
+            var tenant = await db.Vendor.FirstOrDefaultAsync(x => x.Code == TenantCode);
+            var connStr = tenant.ConnStr ?? _configuration.GetConnectionString("Default");
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Hash, hash),
+                new Claim(ClaimTypes.System, connStr, PassPhrase),
+            };
+            var accessToken = AccessToken(claims, DateTimeOffset.Now.AddYears(1)).Item1;
+            return new JwtSecurityTokenHandler().WriteToken(accessToken);
+        }
+
+        public string DecryptQuery(string query, string signed)
+        {
+            var token = UserUtils.GetPrincipalFromAccessToken(signed, _configuration);
+            var hash = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Hash)?.Value;
+            var originalHash = GetHash(UserUtils.sHA256, query);
+            if (hash != originalHash)
+            {
+                throw new ApiException("Permission denied!") { StatusCode = HttpStatusCode.Unauthorized };
+            }
+            var connStr = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.System)?.Value;
+            return connStr;
+        }
+
+        public async Task<string> ExecJs(string entityParam, string query)
+        {
+            var engine = new TopazEngine();
+            engine.SetValue("JSON", new JSONObject());
+            engine.AddType<HttpClient>("HttpClient");
+            engine.AddNamespace("System");
+            engine.SetValue("args", entityParam);
+
+            await engine.ExecuteScriptAsync(query);
+            var res = engine.GetValue("result") as string;
+            return res;
         }
     }
 }

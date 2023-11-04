@@ -670,9 +670,8 @@ namespace TMS.API.Controllers
             return Ok(true);
         }
 
-        [HttpPost("/api/[Controller]/ReportDataSet")]
         public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReportDataSet(
-            [FromBody] string reportQuery, [FromQuery] string sys = "Fast", string connStr = null)
+            [FromBody] string reportQuery, string connStr = null)
         {
             var connectionStr = connStr ?? _config.GetConnectionString("Default");
             using var con = new SqlConnection(connectionStr);

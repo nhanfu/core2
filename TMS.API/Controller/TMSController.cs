@@ -38,63 +38,6 @@ namespace TMS.API.Controllers
             _address = _config["ServiceAddress"];
         }
 
-        [HttpPost("api/[Controller]/Cmd")]
-        public virtual async Task<object> ExecuteSqlCmd([FromBody] SqlViewModel sqlCmd)
-        {
-            if (sqlCmd is null)
-            {
-                return BadRequest("Cmd arg is null");
-            }
-            var sv = await db.Services.FirstOrDefaultAsync(x => x.ComId == sqlCmd.CmdId && x.CmdType == sqlCmd.CmdType)
-                ?? throw new ApiException($"Service {sqlCmd.CmdType} not found");
-            try
-            {
-                var client = new HttpClient();
-                var res = await client.PostAsJsonAsync(sv.Address ?? _address, new { path = sv.Path ?? "./" + sv.CmdType + ".js", entity = sqlCmd.Entity });
-                var result = await res.Content.ReadAsStringAsync();
-                var sqlQuery = JsonConvert.DeserializeObject<SqlQueryResult>(result);
-                if (sqlQuery != null && sqlQuery.Query.HasAnyChar())
-                {
-                    var dataSet = await ReportDataSet(sqlQuery.Query, sqlQuery.System);
-                    return dataSet;
-                }
-                return sqlQuery.Message;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Node service ran into error at {0} {1} {2}", DateTimeOffset.Now, ex.Message, ex.StackTrace);
-                throw;
-            }
-        }
-
-        public static Task<string> RunNodeFunction(string process, string args, string fileName, bool shouldGen = false)
-        {
-            var tcs = new TaskCompletionSource<string>();
-            Task.Run(async () =>
-            {
-                if (shouldGen)
-                {
-                    EnsureDirectoryExist(fileName);
-                    await FileIO.WriteAllTextAsync(fileName, args);
-                }
-                var p = new Process();
-                p.StartInfo.FileName = process;
-                p.StartInfo.Arguments = string.Concat(fileName, " ", args);
-                p.StartInfo.CreateNoWindow = true;
-                p.StartInfo.RedirectStandardError = true;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.RedirectStandardInput = false;
-                p.OutputDataReceived += (a, b) => tcs.TrySetResult(b.Data);
-                p.ErrorDataReceived += (object a, DataReceivedEventArgs b) => tcs.TrySetException(new Exception(b.Data));
-                p.Start();
-                p.BeginErrorReadLine();
-                p.BeginOutputReadLine();
-                await p.WaitForExitAsync();
-            });
-            return tcs.Task;
-
-        }
-
         [HttpPost("api/listener/[Controller]")]
         public virtual Task<ActionResult<T>> CreateListenerAsync([FromBody] T entity)
         {
