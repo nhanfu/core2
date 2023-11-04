@@ -5,6 +5,12 @@ namespace Core.Extensions
     public static class DateTimeExt
     {
         public const string DateFormat = "yyyy-MM-ddTHH:mm:ss.FFFFFFFzzz";
+        public const string SimpleDateFormat = "yyyy/MM/dd";
+
+        public static string ToSimpleFormat(this DateTime date)
+        {
+            return date.ToString(SimpleDateFormat);
+        }
 
         public static string ToISOFormat(this DateTime date)
         {

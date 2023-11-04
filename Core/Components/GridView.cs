@@ -510,11 +510,6 @@ namespace Core.Components
 
         public override async Task ActionFilter()
         {
-            if (GuiInfo.FilterLocal)
-            {
-                ApplyLocal();
-                return;
-            }
             if (CellSelected.Nothing())
             {
                 var dataSourceFilter = GuiInfo.DataSourceFilter;
@@ -2694,7 +2689,7 @@ namespace Core.Components
             var ds = await new Client(nameof(Component)).SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = submitEntity,
-                Url = CmdUrl,
+                Url = Utils.SqlReader,
                 IsRawString = true,
                 Method = HttpMethod.POST
             });

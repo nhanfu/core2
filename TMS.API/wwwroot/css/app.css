@@ -104,7 +104,7 @@
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   border-bottom: 0;
-  top: -0.8rem !important;
+  top: -1.6rem !important;
   padding: 0.3rem 0.8rem !important;
   border: 1px solid #d5dadc;
   left: 50% !important;
@@ -163,6 +163,11 @@
 }
 .width5px {
   width: 5px;
+}
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
 }
 .width10px {
   width: 10px;
@@ -240,7 +245,7 @@ div[disabled]:not([enable]) input[readonly] {
   border-radius: 18px / 2;
   background-color: white;
   transition: background-color 0.15s ease-in;
-  border: 1px solid #27388f;
+  border: 1px solid #3dac6e;
 }
 .toggle-control .control:after {
   content: "";
@@ -252,7 +257,7 @@ div[disabled]:not([enable]) input[readonly] {
   border-radius: 18px / 2;
   background: white;
   transition: left 0.15s ease-in;
-  border: 1px solid #27388f;
+  border: 1px solid #3dac6e;
 }
 .toggle-control input[disabled] ~ .control {
   border-color: #bad0bb;
@@ -271,6 +276,7 @@ div[disabled]:not([enable]) input[readonly] {
 .overflowYOverlay {
   overflow-x: hidden;
   overflow-y: auto;
+  overflow-y: overlay;
 }
 .overflowOverlayHover {
   overflow: hidden;
@@ -287,9 +293,9 @@ div[disabled]:not([enable]) input[readonly] {
   overflow-y: overlay;
 }
 .bolder {
-  color: #366EB9;
-  font-weight: 700;
-  font-size: 0.9rem;
+  color: #2b938c;
+  font-weight: 500;
+  font-size: 1rem;
 }
 b {
   font-weight: 500;

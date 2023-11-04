@@ -26,7 +26,6 @@ namespace Core.Components
         internal int _scrollTable = 10;
         private const string PermissionLoaded = "PermissionLoaded";
         private const string IsOwner = "IsOwner";
-        protected const string CmdUrl = "SqlReader";
         protected static List<object> _copiedRows;
         public Action<object> RowClick;
         public Action<object> DblClick;
@@ -218,13 +217,24 @@ namespace Core.Components
                 SetRowData(GuiInfo.LocalData);
                 return GuiInfo.LocalData;
             }
+            if (Paginator != null)
+            {
+                Paginator.Options.PageSize = Paginator.Options.PageSize == 0 ? (GuiInfo.Row ?? 12) : Paginator.Options.PageSize;
+            }
+            pageSize = pageSize ?? Paginator?.Options?.PageSize ?? GuiInfo.Row ?? 12;
+            skip = skip ?? Paginator?.Options?.PageIndex * pageSize ?? 0;
+
             if (GuiInfo.Query.HasAnyChar())
             {
                 var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
                 return await CustomQuery(JSON.Stringify(new
                 {
                     Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
-                    Component = XHRWrapper.UnboxValue(new { GuiInfo.Query, GuiInfo.Signed })
+                    Component = XHRWrapper.UnboxValue(new { GuiInfo.Query, GuiInfo.Signed }),
+                    Paging = $"offset {skip} rows\nfetch next {pageSize} rows only",
+                    OrderBy = "ds.Id asc\n",
+                    Where = CalcFilterQuery(true),
+                    Count = true,
                 }));
             }
 
@@ -233,13 +243,6 @@ namespace Core.Components
             {
                 DataSourceFilter = "?$filter=true";
             }
-
-            if (Paginator != null)
-            {
-                Paginator.Options.PageSize = Paginator.Options.PageSize == 0 ? (GuiInfo.Row ?? 12) : Paginator.Options.PageSize;
-            }
-            pageSize = pageSize ?? Paginator?.Options?.PageSize ?? GuiInfo.Row ?? 12;
-            skip = skip ?? Paginator?.Options?.PageIndex * pageSize ?? 0;
             if (!DataSourceFilter.Contains("?"))
             {
                 DataSourceFilter += "?";
@@ -281,7 +284,7 @@ namespace Core.Components
             var ds = await new Client(nameof(Component)).SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = submitEntity,
-                Url = CmdUrl,
+                Url = Utils.SqlReader,
                 IsRawString = true,
                 Method = HttpMethod.POST
             });
@@ -353,8 +356,9 @@ namespace Core.Components
             await ReloadData(calcFilter, cache: false);
         }
 
-        public virtual async Task ActionFilter()
+        public virtual Task ActionFilter()
         {
+            return ReloadData();
         }
 
         public virtual string CalcFilterQuery(bool searching)
@@ -676,7 +680,7 @@ namespace Core.Components
             options.CurrentPageCount = currentPageCount;
             options.PageNumber = options.PageIndex + 1;
             options.StartIndex = options.PageIndex * options.PageSize + 1;
-            options.EndIndex = options.StartIndex + options.CurrentPageCount;
+            options.EndIndex = options.StartIndex + options.CurrentPageCount - 1;
             Paginator.UpdateView();
         }
 

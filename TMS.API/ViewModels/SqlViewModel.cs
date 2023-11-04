@@ -25,22 +25,19 @@ namespace TMS.API.ViewModels
         public SqlTypeEnum QueryType { get; set; }
         public string Entity { get; set; }
         public Models.Component Component { get; set; }
-    }
-
-    public class SqlResult
-    {
-        public object DataSet { get; set; }
-        public SqlStatusEnum Status { get; set; }
-        public string Message { get; set; }
+        public string Select { get; set; } = "*";
+        public string Where { get; set; }
+        public string GroupBy { get; set; }
+        public string Having { get; set; }
+        public string OrderBy { get; set; }
+        public string Paging { get; set; }
+        public bool Count { get; set; }
     }
 
     public class SqlQueryResult
     {
         public string Query { get; set; }
-        public string Result { get; set; }
-        public SqlTypeEnum SqlType { get; set; }
-        public string Message { get; set; }
-        public string System { get; set; }
+        public string XQuery { get; set; }
         public string ConnectionStr { get; set; }
     }
 }

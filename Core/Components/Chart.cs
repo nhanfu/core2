@@ -1,4 +1,5 @@
-﻿using Core.Clients;
+﻿using Bridge.Html5;
+using Core.Clients;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
@@ -51,11 +52,18 @@ namespace Core.Components
             var dataSourceFilter = isFn ? fn.Call(this, Entity, this).ToString() : Utils.FormatEntity(GuiInfo.Query, Entity);
             if (Data is null)
             {
-                Data = await new Client(nameof(User)).SubmitAsync<object[]>(new XHRWrapper
+                var isPreQueryFn = Utils.IsFunction(GuiInfo.PreQuery, out var _preQuery);
+                var submitEntity = isPreQueryFn ? _preQuery.Call(null, this) : null;
+                var entity = JSON.Stringify(new
                 {
-                    Url = "ReportDataSet",
+                    Entity = isPreQueryFn ? JSON.Stringify(submitEntity) : null,
+                    Component = XHRWrapper.UnboxValue(new { GuiInfo.Query, GuiInfo.Signed }),
+                });
+                Data = await new Client(nameof(Component)).SubmitAsync<object[]>(new XHRWrapper
+                {
+                    Url = Utils.SqlReader,
                     IsRawString = true,
-                    Value = dataSourceFilter,
+                    Value = entity,
                     Method = Enums.HttpMethod.POST
                 });
             }

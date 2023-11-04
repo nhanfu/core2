@@ -145,19 +145,14 @@ namespace Core.Components.Extensions
 
             searchTerm = searchTerm.Trim();
             var fieldName = gp.FieldName.Replace(".", "/");
-            if (gp.FieldName == "Id" ||
-                gp.FieldName.Substring(gp.FieldName.Length - 2) == "Id" &&
-                gp.FilterTemplate.IsNullOrEmpty())
-            {
-                return string.Empty;
-            }
 
             if (gp.ComponentType == "Datepicker")
             {
-                var parsedDate = DateTime.TryParseExact(searchTerm, "dd/MM/yyyy", CultureInfo.InvariantCulture, out var date);
+                var parsedDate = DateTimeOffset.TryParse(searchTerm, out var date);
                 if (parsedDate)
                 {
-                    return $"{fieldName} eq cast({date.ToISOFormat()},Edm.DateTimeOffset)";
+                    var dateStr = date.ToString("yyyy/MM/dd");
+                    return $"cast(ds.{fieldName} as date) = cast({dateStr} as date)";
                 }
 
                 return string.Empty;
@@ -170,55 +165,19 @@ namespace Core.Components.Extensions
                     return string.Empty;
                 }
 
-                return $"{fieldName} eq {val}";
+                return $"ds.{fieldName} = {val}";
             }
             else if (gp.ComponentType == "Number")
             {
-                var parsedNumber = int.TryParse(searchTerm, out int searchNumber);
+                var parsedNumber = decimal.TryParse(searchTerm, out var searchNumber);
                 if (!parsedNumber)
                 {
                     return string.Empty;
                 }
 
-                return gp.FilterTemplate.HasAnyChar() ? string.Format(gp.FilterTemplate, searchNumber) : $"{fieldName} eq {searchNumber}";
+                return $"ds.{fieldName} = {searchNumber}";
             }
-            return gp.FilterTemplate.HasAnyChar() ? string.Format(gp.FilterTemplate, searchTerm) : (gp.FilterEq ? $"startswith({fieldName}, '{searchTerm}')" : $"contains({fieldName}, '{searchTerm}')");
-        }
-
-        public static string FilterById(string searchTerm, IEnumerable<Component> headers)
-        {
-            if (searchTerm.IsNullOrWhiteSpace())
-            {
-                return string.Empty;
-            }
-
-            var searchQuery = string.Empty;
-            var searchTermPattern = searchTerm.Replace(new RegExp(@"\d+"), string.Empty);
-            if (searchTermPattern.IsNullOrWhiteSpace())
-            {
-                return string.Empty;
-            }
-
-            var idHeader = headers.FirstOrDefault(header =>
-            {
-                var format = header.FormatData.IsNullOrEmpty() ? header.FormatEntity : header.FormatData;
-                if (format.IsNullOrEmpty())
-                {
-                    return false;
-                }
-
-                var fieldPattern = format.Replace(new RegExp(@"\{[\s\S]*?\}"), string.Empty);
-                return fieldPattern.ToLowerCase() == searchTermPattern.ToLowerCase();
-            });
-            if (idHeader != null)
-            {
-                var strId = Regex.Match(searchTerm, @"\d+").Value;
-                if (strId.HasAnyChar())
-                {
-                    searchQuery = $"{idHeader.FieldName.Replace(".", "/")} eq '{strId}'";
-                }
-            }
-            return searchQuery;
+            return gp.FilterTemplate.HasAnyChar() ? string.Format(gp.FilterTemplate, searchTerm) : $"charindex('{searchTerm}', ds.{fieldName}) >= 1";
         }
 
         public static TabEditor OpenTab(this EditableComponent com, string id, Func<TabEditor> factory)

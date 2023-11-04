@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Clients;
 
 namespace Core.Components
 {
@@ -99,7 +100,8 @@ namespace Core.Components
 
         private void ReloadListView()
         {
-            Task.Run(() =>(Parent as ListView).ActionFilter());
+            var task = (Parent as ListView).ActionFilter();
+            Client.ExecTaskNoResult(task);
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)

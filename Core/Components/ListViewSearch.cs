@@ -467,7 +467,7 @@ namespace Core.Components
             Task.Run(async () =>
             {
                 Toast.Success("Đang xuất excel");
-                var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"[{ParentListView.GuiInfo.RefName}].{orderby.Field.FieldName} {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
+                var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"ds.{orderby.Field.FieldName} {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
                 var finalFilter = string.Empty;
                 if (orderbyList.HasElement())
                 {
@@ -479,11 +479,11 @@ namespace Core.Components
                     if (finalFilter.Contains(","))
                     {
                         var k = finalFilter.Split(",").ToList();
-                        finalFilter = k.Select(x => $"[{ParentListView.GuiInfo.RefName}].{x}").Combine();
+                        finalFilter = k.Select(x => $"ds.{x}").Combine();
                     }
                     else
                     {
-                        finalFilter = $"[{ParentListView.GuiInfo.RefName}].{finalFilter}";
+                        finalFilter = $"ds.{finalFilter}";
                     }
                 }
                 var filter = ParentListView.Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
@@ -526,7 +526,7 @@ namespace Core.Components
             Task.Run(async () =>
             {
                 Toast.Success("Đang xuất excel");
-                var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"[{ParentListView.GuiInfo.RefName}].{orderby.Field.FieldName} {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
+                var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"ds.{orderby.Field.FieldName} {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
                 var finalFilter = string.Empty;
                 if (orderbyList.HasElement())
                 {
@@ -538,11 +538,11 @@ namespace Core.Components
                     if (finalFilter.Contains(","))
                     {
                         var k = finalFilter.Split(",").ToList();
-                        finalFilter = k.Select(x => $"[{ParentListView.GuiInfo.RefName}].{x}").Combine();
+                        finalFilter = k.Select(x => $"ds.{x}").Combine();
                     }
                     else
                     {
-                        finalFilter = $"[{ParentListView.GuiInfo.RefName}].{finalFilter}";
+                        finalFilter = $"ds.{finalFilter}";
                     }
                 }
                 var filter = ParentListView.Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
@@ -566,7 +566,7 @@ namespace Core.Components
                     $"&sql={ParentListView.Sql}" +
                     $"&join={ParentListView.GuiInfo.JoinTable}" +
                     $"&showNull={GuiInfo.ShowNull}" +
-                    $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")} {$" and [{ParentListView.GuiInfo.RefName}].Id in ({selectedIds.Combine()})"}" +
+                    $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")} {$" and ds.Id in ({selectedIds.Combine()})"}" +
                     $"&custom=false&featureId={EditForm.Feature.Id}&orderby={finalFilter}");
                 Client.Download($"/excel/Download/{path}");
                 Toast.Success("Xuất file thành công");
@@ -643,10 +643,9 @@ namespace Core.Components
             }
             var headers = ParentListView.Header.Where(x => x != null).ToList();
             var searchTerm = EntityVM.SearchTerm?.Trim().EncodeSpecialChar() ?? string.Empty;
-            var finalFilter = ComponentExt.FilterById(searchTerm, headers);
+            var finalFilter = string.Empty;
             if (finalFilter.IsNullOrEmpty())
             {
-                headers.ForEach(x => x.FilterEq = GuiInfo.FilterEq);
                 var operators = headers.Select(x => x.MapToFilterOperator(searchTerm)).Where(x => x.HasAnyChar());
                 finalFilter = string.Join(" or ", operators);
             }
@@ -658,26 +657,26 @@ namespace Core.Components
                 {
                     finalFilter += " and ";
                 }
-                var oldStartDate = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] >="));
+                var oldStartDate = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"ds.[{DateTimeField}] >="));
                 if (oldStartDate is null)
                 {
                     ParentListView.Wheres.Add(new Where()
                     {
-                        FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] >= '{EntityVM.StartDate.Value.ToString("yyyy-MM-dd")}'",
+                        FieldName = $"ds.[{DateTimeField}] >= '{EntityVM.StartDate.Value:yyyy-MM-dd}'",
                         Group = false
                     });
                 }
                 else
                 {
-                    oldStartDate.FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] >= '{EntityVM.StartDate.Value.ToString("yyyy-MM-dd")}'";
+                    oldStartDate.FieldName = $"ds.[{DateTimeField}] >= '{EntityVM.StartDate.Value:yyyy-MM-dd}'";
                 }
                 EntityVM.StartDate = EntityVM.StartDate.Value.Date;
-                finalFilter += $"cast({DateTimeField},Edm.DateTimeOffset) ge cast({EntityVM.StartDate.Value.ToISOFormat()},Edm.DateTimeOffset)";
-                LocalStorage.SetItem("FromDate" + ParentListView.GuiInfo.Id, EntityVM.StartDate.Value.ToString("MM/dd/yyyy"));
+                finalFilter += $"cast(ds.{DateTimeField},date) >= cast({EntityVM.StartDate:yyyy/MM/dd},date)";
+                LocalStorage.SetItem("FromDate" + ParentListView.GuiInfo.Id, EntityVM.StartDate.Value.ToString("yyyy/MM/dd"));
             }
             else if (EntityVM.StartDate is null)
             {
-                var check = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] >="));
+                var check = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"ds.[{DateTimeField}] >="));
                 if (ParentListView.Wheres.Any() && check != null)
                 {
                     ParentListView.Wheres.Remove(check);
@@ -691,25 +690,25 @@ namespace Core.Components
                     finalFilter += " and ";
                 }
                 var endDate = EntityVM.EndDate.Value.Date.AddDays(1);
-                var oldEndDate = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <"));
+                var oldEndDate = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"ds.[{DateTimeField}] <"));
                 if (oldEndDate is null)
                 {
                     ParentListView.Wheres.Add(new Where()
                     {
-                        FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] < '{endDate.ToString("yyyy-MM-dd")}'",
+                        FieldName = $"ds.[{DateTimeField}] < '{endDate:yyyy-MM-dd}'",
                         Group = false
                     });
                 }
                 else
                 {
-                    oldEndDate.FieldName = $"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] < '{endDate.ToString("yyyy-MM-dd")}'";
+                    oldEndDate.FieldName = $"ds.[{DateTimeField}] < '{endDate:yyyy-MM-dd}'";
                 }
-                finalFilter += $"cast({DateTimeField},Edm.DateTimeOffset) lt cast({endDate.ToISOFormat()},Edm.DateTimeOffset)";
+                finalFilter += $"cast(ds.{DateTimeField},date) < cast(ds.{endDate.ToSimpleFormat()},date)";
                 LocalStorage.SetItem("ToDate" + ParentListView.GuiInfo.Id, EntityVM.EndDate.Value.ToString("MM/dd/yyyy"));
             }
             else if (EntityVM.EndDate is null)
             {
-                var check1 = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"[{ParentListView.GuiInfo.RefName}].[{DateTimeField}] <"));
+                var check1 = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"ds.[{DateTimeField}] <"));
                 if (ParentListView.Wheres.Any() && check1 != null)
                 {
                     ParentListView.Wheres.Remove(check1);
@@ -718,26 +717,8 @@ namespace Core.Components
             }
             if ((EntityVM.EndDate != null || EntityVM.StartDate != null) && ParentListView.GuiInfo.ShowNull)
             {
-                finalFilter += $" or {DateTimeField} eq null";
+                finalFilter += $" or ds.{DateTimeField} = null";
             }
-            if (finalFilter.IsNullOrWhiteSpace())
-            {
-                return ApplyOrder(prefix);
-            }
-            var filterPart = OdataExt.GetClausePart(prefix, OdataExt.FilterKeyword);
-            finalFilter = OdataExt.AppendClause(prefix, filterPart.IsNullOrWhiteSpace() ? finalFilter : $" and ({finalFilter})");
-            finalFilter = ApplyOrder(finalFilter);
-            return finalFilter;
-        }
-
-        private string ApplyOrder(string finalFilter)
-        {
-            var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"{orderby.Field.FieldName} {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
-            if (orderbyList.HasElement())
-            {
-                finalFilter = OdataExt.ApplyClause(finalFilter, orderbyList.Combine(), OdataExt.OrderByKeyword);
-            }
-
             return finalFilter;
         }
 

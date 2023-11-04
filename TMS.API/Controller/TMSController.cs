@@ -1,21 +1,17 @@
 ﻿using ClosedXML.Excel;
 using Core.Exceptions;
 using Core.Extensions;
-using Core.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Linq.Dynamic.Core;
 using System.Text.RegularExpressions;
 using Tenray.Topaz;
 using Tenray.Topaz.API;
 using TMS.API.Models;
-using TMS.API.ViewModels;
-using FileIO = System.IO.File;
 
 namespace TMS.API.Controllers
 {
@@ -531,7 +527,6 @@ namespace TMS.API.Controllers
             return url;
         }
 
-        [AllowAnonymous]
         [HttpPost("api/[Controller]/svc")]
         public async Task ExecuteJs([FromQuery] string svId, [FromQuery] string path, [FromBody] string param)
         {

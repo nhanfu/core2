@@ -953,10 +953,73 @@ namespace Core.Clients
             return null;
         }
 
+        public static IPromise ToPromiseNoResult(Task task)
+        {
+            if (task == null) return null;
+            /*@
+            return new Promise((resolve, reject) => {
+            var $step = 0,
+                $task1, 
+                $taskResult1, 
+                $jumpFromFinally, 
+                $returnValue, 
+                t, 
+                $async_e, 
+                $asyncBody = Bridge.fn.bind(this, function () {
+                    try {
+                        for (;;) {
+                            $step = System.Array.min([0,1], $step);
+                            switch ($step) {
+                                case 0: {
+                                    if (task == null) {
+                                        resolve(null);
+                                        return;
+                                    }
+                                    $task1 = task;
+                                    $step = 1;
+                                    if ($task1.isCompleted()) {
+                                        continue;
+                                    }
+                                    $task1.continue($asyncBody);
+                                    return;
+                                }
+                                case 1: {
+                                    $taskResult1 = $task1.getAwaitedResult();
+                                    t = $taskResult1;
+                                    resolve(t);
+                                    return;
+                                }
+                                default: {
+                                    resolve(null);
+                                    return;
+                                }
+                            }
+                        }
+                    } catch($async_e1) {
+                        $async_e = System.Exception.create($async_e1);
+                        reject($async_e);
+                    }
+                }, arguments);
+
+            $asyncBody();
+            });
+            */
+            return null;
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
         public static void ExecTask<T>(Task<T> task, Action<T> handler = null)
         {
             var promise = ToPromise(task);
+            /*@
+            promise.then(handler);
+             */
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
+        public static void ExecTaskNoResult(Task task, Action handler = null)
+        {
+            var promise = ToPromiseNoResult(task);
             /*@
             promise.then(handler);
              */

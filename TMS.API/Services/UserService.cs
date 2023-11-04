@@ -4,6 +4,8 @@ using Core.Extensions;
 using Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -11,6 +13,7 @@ using System.Text;
 using Tenray.Topaz;
 using Tenray.Topaz.API;
 using TMS.API.Models;
+using TMS.API.ViewModels;
 using HttpStatusCode = Core.Enums.HttpStatusCode;
 
 namespace TMS.API.Services
@@ -359,8 +362,9 @@ namespace TMS.API.Services
             return connStr;
         }
 
-        public async Task<string> ExecJs(string entityParam, string query)
+        public async Task<SqlQueryResult> ExecJs(string entityParam, string query)
         {
+            SqlQueryResult result = new();
             var engine = new TopazEngine();
             engine.SetValue("JSON", new JSONObject());
             engine.AddType<HttpClient>("HttpClient");
@@ -369,7 +373,26 @@ namespace TMS.API.Services
 
             await engine.ExecuteScriptAsync(query);
             var res = engine.GetValue("result") as string;
-            return res;
+            try
+            {
+                result = JsonConvert.DeserializeObject<SqlQueryResult>(res);
+            }
+            catch (Exception)
+            {
+                result.Query = res;
+            }
+            var anyComment = ValidateSql(result.Query);
+            if (anyComment) throw new ApiException("Comment is NOT allowed");
+            return result;
+        }
+
+        public bool ValidateSql(string sql)
+        {
+            TSql110Parser parser = new(true);
+            var fragments = parser.Parse(new StringReader(sql), out var errors);
+
+            return fragments.ScriptTokenStream
+                .Any(x => x.TokenType == TSqlTokenType.MultilineComment || x.TokenType == TSqlTokenType.SingleLineComment);
         }
     }
 }
