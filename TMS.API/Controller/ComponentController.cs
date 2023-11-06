@@ -66,16 +66,20 @@ namespace TMS.API.Controllers
             var groupBy = model.GroupBy.HasAnyChar() ? $"group by {model.GroupBy}" : string.Empty;
             var having = model.Having.HasAnyChar() ? $"having {model.Having}" : string.Empty;
             var orderBy = model.OrderBy.HasAnyChar() ? $"order by {model.OrderBy}" : string.Empty;
-
+            var countQuery = model.Count ?
+                $@"select count(*) from (
+                {jsRes.Query}) as ds 
+                {where}
+                {groupBy}
+                {having};" : string.Empty;
             var finalQuery = @$"{select}
-                from (
-                    {jsRes.Query}
-                ) as ds
+                from ({jsRes.Query}) as ds
                 {where}
                 {groupBy}
                 {having}
                 {orderBy}
                 {model.Paging};
+                {countQuery}
                 {jsRes.XQuery}";
             return await ReportDataSet(finalQuery, connStr);
         }

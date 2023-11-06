@@ -129,6 +129,8 @@ namespace Core.Models
 
         public string Query { get; set; }
 
+        public string LocalQuery { get; set; }
+
         public bool IsRealtime { get; set; }
 
         public string RefName { get; set; }

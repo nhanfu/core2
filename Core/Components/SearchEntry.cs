@@ -71,11 +71,11 @@ namespace Core.Components
 
         private void DeserializeLocalData(Component ui)
         {
-            if (ui.Query.IsNullOrEmpty())
+            if (ui.LocalQuery.IsNullOrWhiteSpace())
             {
                 return;
             }
-            GuiInfo.LocalData = JsonConvert.DeserializeObject<List<object>>(ui.Query);
+            GuiInfo.LocalData = JsonConvert.DeserializeObject<List<object>>(ui.LocalQuery);
             GuiInfo.LocalRender = true;
         }
 

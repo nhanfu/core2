@@ -177,7 +177,7 @@ namespace Core.Components.Extensions
 
                 return $"ds.{fieldName} = {searchNumber}";
             }
-            return gp.FilterTemplate.HasAnyChar() ? string.Format(gp.FilterTemplate, searchTerm) : $"charindex('{searchTerm}', ds.{fieldName}) >= 1";
+            return gp.FilterTemplate.HasAnyChar() ? string.Format(gp.FilterTemplate, searchTerm) : $"charindex(N'{searchTerm}', ds.{fieldName}) >= 1";
         }
 
         public static TabEditor OpenTab(this EditableComponent com, string id, Func<TabEditor> factory)
