@@ -42,6 +42,7 @@ namespace TMS.API
             {
                 options.AutomaticAuthentication = false;
             });
+            services.AddDistributedMemoryCache();
             services.AddLogging(config =>
             {
                 config.ClearProviders();

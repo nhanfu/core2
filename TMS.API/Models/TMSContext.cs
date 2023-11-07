@@ -53,6 +53,8 @@ public partial class TMSContext : DbContext
 
     public virtual DbSet<Vendor> Vendor { get; set; }
 
+    public virtual DbSet<TenantConfig> TenantConfig { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Chat>(entity =>

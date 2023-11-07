@@ -23,15 +23,18 @@ namespace TMS.API.Controllers
             return ApplyQuery(options, query);
         }
 
-        public override async Task<ActionResult<Component>> CreateAsync([FromBody] Component entity)
+        [HttpPost("api/[Controller]", Order = 0)]
+        public async Task<ActionResult<Component>> CreateAsync([FromBody] Component entity, [FromQuery] string env = "test")
         {
-            entity.Signed = await _userSvc.EncryptQuery(entity.Query);
+            entity.Signed = await _userSvc.EncryptQuery(entity.Query, env);
             return await base.CreateAsync(entity);
         }
 
-        public override async Task<ActionResult<Component>> UpdateAsync([FromBody] Component entity, string reasonOfChange = "")
+        [HttpPut("api/[Controller]", Order = 0)]
+        public async Task<ActionResult<Component>> UpdateAsync([FromBody] Component entity
+            , [FromQuery]string reasonOfChange = "", [FromQuery] string env = "test")
         {
-            entity.Signed = await _userSvc.EncryptQuery(entity.Query);
+            entity.Signed = await _userSvc.EncryptQuery(entity.Query, env);
             return await base.UpdateAsync(entity, reasonOfChange);
         }
 
@@ -41,10 +44,10 @@ namespace TMS.API.Controllers
 
         [HttpPost("api/[Controller]/SqlReader")]
         public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> SqlReader(
-            [FromBody] SqlViewModel model)
+            [FromBody] SqlViewModel model, [FromQuery] string env = "test")
         {
             var entity = model.Component;
-            var connStr = _userSvc.DecryptQuery(entity.Query, entity.Signed);
+            var connStr = await _userSvc.DecryptQuery(entity.Query, entity.Signed, env);
             
             var anyInvalid = _fobiddenTerm.Any(term =>
             {

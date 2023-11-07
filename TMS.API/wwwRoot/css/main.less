@@ -146,6 +146,7 @@ input:not([type="checkbox"]), textarea {
     padding-left: 5px;
     padding-right: 5px;
     color: #1d1d1d;
+    background-color: white;
     font-size: 0.9rem;
     width: 100%;
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Roboto", "Ubuntu", "Helvetica Neue", sans-serif;
@@ -227,7 +228,7 @@ button {
 
 .tab-content {
     height: 100%;
-    background-color: #fff;
+    background-color: #fdfdfe;
 
     > div {
         .transparent;
@@ -618,8 +619,9 @@ ul.tabs-list {
     .header {
         .absolute(-1.6rem);
         padding: 0 5px;
-        background-color: @white;
+        background-color: transparent;
         .header(0.9rem, 400);
+        top: -1.2rem !important;
     }
 }
 
@@ -1791,7 +1793,7 @@ tr .uploader img {
     border-radius: 0;
     border-bottom: 1px solid @grayLight;
     padding: 0 4rem;
-    background-color: @bgButtonBar;
+    background-color: @bgButtonBar !important;
     width: 100%;
     height: @buttonHeight;
     display: flex;

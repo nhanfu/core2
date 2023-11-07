@@ -3,6 +3,7 @@ using Core.Exceptions;
 using Core.Extensions;
 using Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Newtonsoft.Json;
@@ -24,6 +25,8 @@ namespace TMS.API.Services
         public readonly IHttpContextAccessor Context;
         private readonly TMSContext db;
         private readonly IConfiguration _configuration;
+        private readonly IDistributedCache _cache;
+
         public string UserId { get; set; }
         public string BranchId { get; set; }
         public List<string> CenterIds { get; set; }
@@ -35,9 +38,10 @@ namespace TMS.API.Services
         public List<string> AllRoleIds { get; set; }
         public List<string> RoleIds { get; set; }
 
-        public UserService(IHttpContextAccessor httpContextAccessor, TMSContext db, IConfiguration configuration)
+        public UserService(IHttpContextAccessor httpContextAccessor, TMSContext db, IConfiguration configuration, IDistributedCache cache)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _cache = cache;
             this.db = db ?? throw new ArgumentNullException(nameof(db));
             Context = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             if (Context?.HttpContext is null)
@@ -334,22 +338,22 @@ namespace TMS.API.Services
             return await userQuery.FirstOrDefaultAsync();
         }
 
-        public async Task<string> EncryptQuery(string query)
+        public async Task<string> EncryptQuery(string query, string env)
         {
             if (query.IsNullOrEmpty()) return null;
             var hash = GetHash(UserUtils.sHA256, query);
-            var tenant = await db.Vendor.FirstOrDefaultAsync(x => x.Code == TenantCode);
-            var connStr = tenant.ConnStr ?? _configuration.GetConnectionString("Default");
+            var tenant = await db.TenantConfig.FirstOrDefaultAsync(x => x.TenantCode == TenantCode && x.Env == env)
+                ?? throw new ApiException("Tenant config not found");
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Hash, hash),
-                new Claim(ClaimTypes.System, connStr, PassPhrase),
+                new Claim(ClaimTypes.System, tenant.ConnKey, PassPhrase),
             };
-            var accessToken = AccessToken(claims, DateTimeOffset.Now.AddYears(1)).Item1;
+            var accessToken = AccessToken(claims, DateTimeOffset.Now.AddDays(1)).Item1;
             return new JwtSecurityTokenHandler().WriteToken(accessToken);
         }
 
-        public string DecryptQuery(string query, string signed)
+        public async Task<string> DecryptQuery(string query, string signed, string env)
         {
             var token = UserUtils.GetPrincipalFromAccessToken(signed, _configuration);
             var hash = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Hash)?.Value;
@@ -358,8 +362,17 @@ namespace TMS.API.Services
             {
                 throw new ApiException("Permission denied!") { StatusCode = HttpStatusCode.Unauthorized };
             }
-            var connStr = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.System)?.Value;
-            return connStr;
+            var connKey = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.System)?.Value;
+            var conStr = await _cache.GetStringAsync($"{TenantCode}_{connKey}_{env}");
+            if (conStr != null) return conStr;
+            var tenant = await db.TenantConfig
+                .FirstOrDefaultAsync(x => x.TenantCode == TenantCode && x.ConnKey == connKey && x.Env == env)
+                ?? throw new ApiException("Tenant config not found");
+            await _cache.SetStringAsync($"{TenantCode}_{connKey}_{env}", tenant.ConnStr, new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+            });
+            return tenant.ConnStr;
         }
 
         public async Task<SqlQueryResult> ExecJs(string entityParam, string query)
