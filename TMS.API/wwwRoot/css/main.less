@@ -180,6 +180,10 @@ button {
     border-radius: @lightRadius;
 }
 
+.content-wrapper {
+    background-color: @bgButtonBar;
+}
+
 #container {
     height: calc(100% - @taskBarHeight);
     display: flex;
@@ -202,7 +206,7 @@ button {
         height: 100%;
         display: flex;
         flex-flow: column;
-        background-color: @panelBg;
+        background-color: @bgButtonBar;
         .overflowOverlay;
 
         h1, h2 {
