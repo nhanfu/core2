@@ -249,6 +249,10 @@ namespace TMS.API.Models
         
         public string Signed { get; set; }
 
+        public string RefField { get; set; }
+        
+        public string OrderBy { get; set; }
+
         public virtual ComponentGroup ComponentGroup { get; set; }
 
         public virtual ICollection<EntityRef> EntityRef { get; set; } = new List<EntityRef>();

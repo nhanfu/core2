@@ -226,16 +226,7 @@ namespace Core.Components
 
             if (GuiInfo.Query.HasAnyChar())
             {
-                var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
-                return await CustomQuery(JSON.Stringify(new
-                {
-                    Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
-                    Component = XHRWrapper.UnboxValue(new { GuiInfo.Query, GuiInfo.Signed }),
-                    Paging = $"offset {skip} rows\nfetch next {pageSize} rows only",
-                    OrderBy = "ds.Id asc\n",
-                    Where = CalcFilterQuery(true),
-                    Count = true,
-                }));
+                return await SqlReader(skip, pageSize);
             }
 
             DataSourceFilter = DataSourceFilter.IsNullOrEmpty() ? CalcFilterQuery(true) : DataSourceFilter;
@@ -277,6 +268,21 @@ namespace Core.Components
             }
             Spinner.Hide();
             return result.Value;
+        }
+
+        public async Task<List<object>> SqlReader(int? skip, int? pageSize)
+        {
+            var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
+            var data = new SqlWrapper
+            {
+                Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
+                Component = new SignedCom{ Query = GuiInfo.Query, Signed = GuiInfo.Signed },
+                Paging = $"offset {skip} rows\nfetch next {pageSize} rows only",
+                OrderBy = GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy,
+                Where = CalcFilterQuery(true),
+                Count = true,
+            };
+            return await CustomQuery(JSON.Stringify(data));
         }
 
         protected virtual async Task<List<object>> CustomQuery(string submitEntity)

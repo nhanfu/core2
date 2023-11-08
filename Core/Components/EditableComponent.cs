@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Text;
 using Newtonsoft.Json;
 using Core.Enums;
+using Core.ViewModels;
 
 namespace Core.Components
 {

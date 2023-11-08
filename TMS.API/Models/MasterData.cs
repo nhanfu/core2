@@ -53,6 +53,8 @@ namespace TMS.API.Models
 
         public string DescriptionEnglish { get; set; }
 
+        public string ParentText { get; set; }
+
         public virtual ICollection<MasterData> InverseParent { get; set; } = new List<MasterData>();
 
         public virtual MasterData Parent { get; set; }

@@ -253,6 +253,10 @@ namespace Core.Models
 
         public string Signed { get; set; }
 
+        public string RefField { get; set; }
+
+        public string OrderBy { get; set; }
+
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }
     }

@@ -6,6 +6,7 @@ using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,6 @@ namespace Core.Components
 {
     public class SearchEntry : EditableComponent
     {
-        public string IdFieldName { get; private set; }
-
         private const string SEntryClass = "search-entry";
         private string _value;
 
@@ -66,7 +65,6 @@ namespace Core.Components
             GuiInfo.Row = GuiInfo.Row ?? 20;
             RowData = new ObservableList<object>();
             Element = ele;
-            IdFieldName = GuiInfo.FieldName;
         }
 
         private void DeserializeLocalData(Component ui)
@@ -82,7 +80,7 @@ namespace Core.Components
         public override void Render()
         {
             SetDefaultVal();
-            var entityVal = Entity.GetComplexPropValue(IdFieldName);
+            var entityVal = Entity.GetComplexPropValue(GuiInfo.FieldName);
             if (entityVal is string str_value)
             {
                 _value = str_value;
@@ -113,7 +111,7 @@ namespace Core.Components
                 }
             }
             _input.AutoComplete = AutoComplete.Off;
-            Html.Take(_input).PlaceHolder(GuiInfo.PlainText).Attr("name", IdFieldName)
+            Html.Take(_input).PlaceHolder(GuiInfo.PlainText).Attr("name", GuiInfo.FieldName)
                 .Event(EventType.ContextMenu, () => _contextMenu = true)
                 .Event(EventType.Focus, FocusIn)
                 .Event(EventType.Blur, DiposeGvWrapper)
@@ -620,25 +618,10 @@ namespace Core.Components
                 return;
             }
 
-            string query;
-            OdataResult<object> list = null;
-            if (GuiInfo.DefaultVal?.Trim() == 0.ToString() && Value is null && Entity[IdField].As<int>() <= 0)
+            object matched = null;
+            if (GuiInfo.DefaultVal?.Trim() == 0.ToString() && Value is null && Entity[IdField] is null)
             {
-                query = FormattedDataSource + "&$top=1";
-                list = await new Client(GuiInfo.RefName).GetList<object>(query);
-            }
-            else if (Value.HasAnyChar())
-            {
-                var formatted = FormattedDataSource;
-                if (formatted.StartsWith("/"))
-                {
-                    formatted = OdataExt.ApplyClause(formatted, $"Id in ({Value})");
-                    list = await new Client(GuiInfo.RefName).GetList<object>(formatted + "&$top=1");
-                }
-                else
-                {
-                    list = await new Client(GuiInfo.RefName).LoadById(Value.ToString());
-                }
+                matched = await SqlReader(0, 1);
             }
             else if (Value is null)
             {
@@ -646,13 +629,31 @@ namespace Core.Components
                 _input.Value = null;
                 return;
             }
-            if (list is null || list.Value is null)
-            {
-                return;
-            }
-
-            Matched = list.Value.FirstOrDefault(x => x[IdField]?.ToString() == _value);
+            Matched = matched;
             SetMatchedValue();
+        }
+
+        public async Task<object> SqlReader(int? skip, int? pageSize)
+        {
+            var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var _preQueryFn);
+            var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
+            var data = JSON.Stringify(new SqlWrapper
+            {
+                Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
+                Component = new SignedCom { Query = GuiInfo.Query, Signed = GuiInfo.Signed },
+                Paging = $"offset {skip} rows\nfetch next {pageSize} rows only",
+                OrderBy = GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy,
+                Where = $"charindex(N'{Value}', {IdField}) >= 1",
+            });
+            var res = await new Client(nameof(Component)).SubmitAsync<object[][]>(new XHRWrapper
+            {
+                Value = data,
+                Url = Utils.SqlReader,
+                IsRawString = true,
+                Method = HttpMethod.POST
+            });
+
+            return res.Length >= 1 ? res[0].Length >= 1 ? res[0][0] : null : null;
         }
 
         protected virtual bool ProcessLocalMatch()
@@ -681,7 +682,9 @@ namespace Core.Components
 
         public virtual void SetMatchedValue()
         {
-            _input.Value = EmptyRow ? string.Empty : GetMatchedText(Matched);
+            OriginalText = Entity[GuiInfo.RefField] as string;
+            _input.Value = EmptyRow ? string.Empty : Matched != null ? GetMatchedText(Matched) : Entity[GuiInfo.RefField] as string;
+            Entity[GuiInfo.RefField] = _input.Value;
             if (GuiInfo.AutoFit)
             {
                 this.SetAutoWidth(_input.Value, _input.GetComputedStyle().Font, 48);
@@ -699,28 +702,28 @@ namespace Core.Components
             }
         }
 
+        public PatchUpdateDetail[] PatchUpdateDetail()
+        {
+            return new PatchUpdateDetail[]
+            {
+                new PatchUpdateDetail()
+                {
+                    Field = GuiInfo.FieldName, Value = _value, OldVal = OldValue
+                },
+                new PatchUpdateDetail()
+                {
+                    Field = GuiInfo.RefField, Value = _input.Value, OldVal = OriginalText
+                },
+            };
+        }
+
         protected string GetMatchedText(object matched)
         {
             if (matched is null)
             {
                 return string.Empty;
             }
-            string res;
-            if (GuiInfo.FormatEntity.HasNonSpaceChar())
-            {
-                if (Utils.IsFunction(GuiInfo.FormatEntity, out var fn))
-                {
-                    res = fn.Call(this, matched, Entity, Element).ToString();
-                }
-                else
-                {
-                    res = Utils.FormatEntity(GuiInfo.FormatEntity, null, matched, Utils.EmptyFormat, Utils.EmptyFormat);
-                }
-            }
-            else
-            {
-                res = matched != null ? Utils.FormatEntity(GuiInfo.FormatData, null, matched, Utils.EmptyFormat, Utils.EmptyFormat) : string.Empty;
-            }
+            var res = matched[GuiInfo.FormatData]?.ToString();
             return res.DecodeSpecialChar();
         }
 
@@ -780,16 +783,16 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            string updatedValue = null;
-            var fieldVal = Entity?.GetComplexPropValue(GuiInfo.FieldName);
-            _value = updatedValue = fieldVal?.ToString();
-            if (updatedValue is null)
+            _value = Entity?.GetComplexPropValue(GuiInfo.FieldName) as string;
+            if (_value is null)
             {
                 Matched = null;
                 _input.Value = null;
                 UpdateValue();
                 return;
             }
+            var txt = Entity[GuiInfo.RefField] as string;
+            _input.Value = txt;
             Task.Run(async () => await FindMatchTextAsync(force));
         }
 

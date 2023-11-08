@@ -192,16 +192,21 @@ namespace Core.Components.Forms
         public PatchUpdate GetPathEntity()
         {
             var details = FilterChildren(child => child is EditableComponent editable && !(child.Parent is ListViewItem) && editable.Dirty && child.GuiInfo != null && child.GuiInfo.ComponentType != nameof(GridView) && child.GuiInfo.ComponentType != nameof(VirtualGrid))
-                .Select(child =>
+                .SelectMany(child =>
                 {
+                    if (child[nameof(PatchUpdateDetail)] is Func<PatchUpdateDetail[]> fn)
+                    {
+                        return fn.Call(child) as PatchUpdateDetail[];
+                    }
                     var value = child.Entity.GetComplexPropValue(child.GuiInfo.FieldName);
                     var propType = child.Entity.GetType().GetComplexPropType(child.GuiInfo.FieldName, child.Entity);
-                    return new PatchUpdateDetail
+                    var patch = new PatchUpdateDetail
                     {
                         Field = child.GuiInfo.FieldName,
                         OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
                         Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
                     };
+                    return new PatchUpdateDetail[] { patch };
                 }).ToList();
             details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = EntityId.ToString() });
             return new PatchUpdate { Changes = details };
