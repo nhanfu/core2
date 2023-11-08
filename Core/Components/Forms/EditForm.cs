@@ -308,7 +308,7 @@ namespace Core.Components.Forms
             return res;
         }
 
-        public virtual async Task AddNew(object entity = null)
+        public virtual void AddNew(object entity = null)
         {
             Dirty = true;
             Entity.SetPropValue(IdField, 0);
@@ -323,16 +323,18 @@ namespace Core.Components.Forms
                     row.SetPropValue(IdField, 0);
                 });
             });
-            var rs = await Save(null);
-            if (rs)
+            Client.ExecTask(Save(null), rs =>
             {
-                Toast.Success("Tạo mới thành công");
-                await ParentForm.FindActiveComponent<GridView>().FirstOrDefault().ActionFilter();
-            }
-            else
-            {
-                Toast.Warning("Tạo mới lỗi");
-            }
+                if (rs)
+                {
+                    Toast.Success("Tạo mới thành công");
+                    ParentForm.FindActiveComponent<GridView>().FirstOrDefault().ActionFilter();
+                }
+                else
+                {
+                    Toast.Warning("Tạo mới lỗi");
+                }
+            });
         }
 
         private void UpdateViewForm()

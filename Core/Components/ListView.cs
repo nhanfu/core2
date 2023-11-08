@@ -228,17 +228,22 @@ namespace Core.Components
         public async Task<List<object>> SqlReader(int? skip, int? pageSize)
         {
             var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
-            var orderBy = AdvSearchVM.OrderBy.Any() ? AdvSearchVM.OrderBy.Combine(x => {
+            var orderBy = AdvSearchVM.OrderBy.Any() ? AdvSearchVM.OrderBy.Combine(x =>
+            {
                 var sortDirection = x.OrderbyOptionId == OrderbyOption.ASC ? "asc" : "desc";
                 return $"ds.{x.Field.FieldName} {sortDirection}";
             }) : null;
+            var basicCondition = CalcFilterQuery(true);
+            var fnBtnCondition = Wheres.Combine(x => $"({x.FieldName})", " and ");
+            var finalCondition = basicCondition.IsNullOrWhiteSpace() ? fnBtnCondition
+                    : $"({basicCondition}) and {fnBtnCondition}";
             var data = new SqlWrapper
             {
                 Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
-                Component = new SignedCom{ Query = GuiInfo.Query, Signed = GuiInfo.Signed },
+                Component = new SignedCom { Query = GuiInfo.Query, Signed = GuiInfo.Signed },
                 Paging = $"offset {skip} rows\nfetch next {pageSize} rows only",
                 OrderBy = orderBy ?? (GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy),
-                Where = Wheres.Combine(x => $"({x.FieldName})", " and "),
+                Where = finalCondition,
                 Count = true,
             };
             return await CustomQuery(JSON.Stringify(data));
@@ -320,25 +325,15 @@ namespace Core.Components
             await ReloadData();
         }
 
-        public virtual Task ActionFilter()
+        public virtual void ActionFilter()
         {
             ClearRowData();
-            return ReloadData();
+            Client.ExecTaskNoResult(ReloadData());
         }
 
         public virtual string CalcFilterQuery(bool searching)
         {
-            string advFilter = FormattedDataSource;
-            if (AdvSearchVM.Conditions.HasElement())
-            {
-                var advSearch = new AdvancedSearch(this)
-                {
-                    Parent = this,
-                    Entity = AdvSearchVM
-                };
-                advFilter = advSearch.CalcAdvSearchQuery();
-            }
-            return ListViewSearch.CalcFilterQuery(advFilter);
+            return ListViewSearch.CalcFilterQuery(null);
         }
 
         public virtual async Task LoadAllData()
@@ -1496,7 +1491,7 @@ namespace Core.Components
             var menuItems = targetRef.Select(x => new ContextMenuItem
             {
                 Text = x.MenuText,
-                Click = async (arg) => await OpenFeature(x),
+                Click = (arg) => OpenFeature(x),
             }).ToList();
             ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
             {
@@ -1509,13 +1504,19 @@ namespace Core.Components
         protected Function _preQueryFn;
         internal string FeatureId;
 
-        private async Task OpenFeature(EntityRef e)
+        private void OpenFeature(EntityRef e)
         {
             var instance = TabEditor.Tabs.Where(x => x.Name == e.ViewClass).FirstOrDefault();
-            if (instance is null)
+            if (instance != null)
             {
-                _hasLoadRef = false;
-                var currentFeature = await ComponentExt.LoadFeatureByName(e.ViewClass);
+                instance.Focus();
+                Filter(instance, e);
+                _hasLoadRef = true;
+                return;
+            }
+            _hasLoadRef = false;
+            Client.ExecTask(ComponentExt.LoadFeatureByName(e.ViewClass), currentFeature =>
+            {
                 var id = currentFeature.Name + currentFeature.Id;
                 Type type;
                 if (currentFeature.ViewClass != null)
@@ -1535,26 +1536,20 @@ namespace Core.Components
                 instance.DOMContentLoaded += () =>
                 {
                     var gridView1 = instance.FilterChildren<GridView>().FirstOrDefault(x => x.GuiInfo.Id == e.TargetComId);
-                    gridView1.DOMContentLoaded += async () =>
+                    gridView1.DOMContentLoaded += () =>
                     {
                         if (_hasLoadRef)
                         {
                             return;
                         }
-                        await Filter(instance, e);
+                        Filter(instance, e);
                         _hasLoadRef = true;
                     };
                 };
-            }
-            else
-            {
-                instance.Focus();
-                await Filter(instance, e);
-                _hasLoadRef = true;
-            }
+            });
         }
 
-        private async Task Filter(TabEditor fe, EntityRef e)
+        private void Filter(TabEditor fe, EntityRef e)
         {
             var gridView1 = fe.FilterChildren<GridView>().FirstOrDefault(x => x.GuiInfo.Id == e.TargetComId);
             if (gridView1 is null)
@@ -1565,26 +1560,28 @@ namespace Core.Components
             gridView1.AdvSearchVM.Conditions.Clear();
             gridView1.ListViewSearch.EntityVM.StartDate = null;
             gridView1.ListViewSearch.EntityVM.EndDate = null;
-            var selecteds = await GetRealTimeSelectedRows();
-            var com = gridView1.BasicHeader.FirstOrDefault(x => x.FieldName == e.TargetFieldName);
-            var cellSelecteds = selecteds.Select(selected =>
+            Client.ExecTask(GetRealTimeSelectedRows(), selecteds =>
             {
-                return new CellSelected()
+                var com = gridView1.BasicHeader.FirstOrDefault(x => x.FieldName == e.TargetFieldName);
+                var cellSelecteds = selecteds.Select(selected =>
                 {
-                    FieldName = e.TargetFieldName,
-                    FieldText = com.ShortDesc,
-                    ComponentType = com.ComponentType,
-                    Value = selected.GetPropValue(e.FieldName).ToString(),
-                    ValueText = selected.GetPropValue(e.FieldName).ToString(),
-                    Operator = (int)OperatorEnum.In,
-                    OperatorText = "Chứa",
-                    Logic = LogicOperation.Or,
-                    IsSearch = true,
-                    Group = true
-                };
+                    return new CellSelected()
+                    {
+                        FieldName = e.TargetFieldName,
+                        FieldText = com.ShortDesc,
+                        ComponentType = com.ComponentType,
+                        Value = selected.GetPropValue(e.FieldName).ToString(),
+                        ValueText = selected.GetPropValue(e.FieldName).ToString(),
+                        Operator = (int)OperatorEnum.In,
+                        OperatorText = "Chứa",
+                        Logic = LogicOperation.Or,
+                        IsSearch = true,
+                        Group = true
+                    };
+                });
+                gridView1.CellSelected.AddRange(cellSelecteds);
+                gridView1.ActionFilter();
             });
-            gridView1.CellSelected.AddRange(cellSelecteds);
-            await gridView1.ActionFilter();
         }
 
         public virtual void RenderCopyPasteMenu(bool canWrite)

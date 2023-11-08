@@ -427,17 +427,14 @@ namespace Core.Components
             _isRendering = true;
             if (_gv != null)
             {
-                Task.Run(async () =>
-                {
-                    RenderRootResult();
-                    _gv.ParentElement = _rootResult;
-                    _gv.Entity = Entity;
-                    _gv.ListViewSearch.EntityVM.SearchTerm = term;
-                    _gv.RowData.Data = new List<object>();
-                    await _gv.ActionFilter();
-                    GridResultDomLoaded();
-                    _isRendering = false;
-                });
+                RenderRootResult();
+                _gv.ParentElement = _rootResult;
+                _gv.Entity = Entity;
+                _gv.ListViewSearch.EntityVM.SearchTerm = term;
+                _gv.RowData.Data = new List<object>();
+                _gv.ActionFilter();
+                GridResultDomLoaded();
+                _isRendering = false;
                 return;
             }
             if (GuiInfo.GroupBy.IsNullOrWhiteSpace())

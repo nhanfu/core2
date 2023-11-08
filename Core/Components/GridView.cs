@@ -478,7 +478,7 @@ namespace Core.Components
                 }
                 _summarys.Add(new HTMLElement());
                 confirmDialog.Textbox.Text = null;
-                Client.ExecTaskNoResult(ActionFilter());
+                ActionFilter();
             };
             confirmDialog.Entity = new { ReasonOfChange = string.Empty };
             confirmDialog.Render();
@@ -508,7 +508,7 @@ namespace Core.Components
             }
         }
 
-        public override async Task ActionFilter()
+        public override void ActionFilter()
         {
             if (CellSelected.Nothing())
             {
@@ -518,7 +518,32 @@ namespace Core.Components
             Spinner.AppendTo(DataTable);
             var dropdowns = CellSelected.Where(x => (!x.Value.IsNullOrWhiteSpace() || !x.ValueText.IsNullOrWhiteSpace()) && (x.ComponentType == "Dropdown" || x.ComponentType == nameof(SearchEntry) || x.FieldName.Contains("."))).ToList();
             var groups = CellSelected.Where(x => x.FieldName.Contains(".")).ToList();
-            var data = dropdowns.Select(x =>
+            Client.ExecTask(FilterDropdownIds(dropdowns), data =>
+            {
+                var index = 0;
+                var lisToast = new List<string>();
+                CellSelected.ForEach(cell =>
+                {
+                    index = BuildCondition(cell, data, index, lisToast);
+                });
+                Spinner.Hide();
+                if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.CanSearch)
+                {
+                    HeaderSection.Element.Focus();
+                }
+                if (GuiInfo.ComponentType == "Dropdown")
+                {
+                    var search = Parent as SearchEntry;
+                    search?._input.Focus();
+                }
+                Toast.Success(lisToast.Combine("</br>"));
+                Client.ExecTaskNoResult(ApplyFilter(true));
+            });
+        }
+
+        private async Task<dynamic[][]> FilterDropdownIds(List<CellSelected> dropdowns)
+        {
+            var dataTask = dropdowns.Select(x =>
             {
                 var filterString = "contains";
                 if (x.Operator == (int)OperatorEnum.Lr)
@@ -545,35 +570,78 @@ namespace Core.Components
                 }
                 else
                 {
-                    if (x.FieldName.Contains("."))
+                    return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$filter=Id eq '{x.Value.EncodeSpecialChar()}'", entityName: header.RefName);
+                }
+            }).ToArray();
+            await Task.WhenAll(dataTask);
+            var data = dataTask.Select(x => x.Result?.ToArray()).ToArray();
+            return data;
+        }
+
+        private int BuildCondition(CellSelected cell, dynamic[][] data, int index, List<string> lisToast)
+        {
+            var where = string.Empty;
+            var hl = Header.FirstOrDefault(y => y.FieldName == cell.FieldName);
+            string ids = null;
+            var isNUll = cell.Value.IsNullOrWhiteSpace();
+            AdvSearchOperation advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotIn : AdvSearchOperation.In;
+            if (hl.FieldName == IdField)
+            {
+                where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} not in ({cell.Value})" : $"[ds].{cell.FieldName} in ({cell.Value})";
+                lisToast.Add(cell.FieldText + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+            }
+            else
+            {
+                if ((hl.ComponentType == "Dropdown" || hl.ComponentType == nameof(SearchEntry) || hl.FieldName.Contains(".")) && !hl.FormatData.IsNullOrWhiteSpace())
+                {
+                    if (isNUll)
                     {
-                        var format = header.FieldName.Split(".").LastOrDefault();
-                        return new Client(header.GroupReferenceName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$top=1000&$filter={filterString}({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.GroupReferenceName);
+                        advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                        where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} is not null" : $"[ds].{cell.FieldName} is null";
                     }
                     else
                     {
-                        return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$filter=Id eq '{x.Value.EncodeSpecialChar()}'", entityName: header.RefName);
+                        var rsdynamic = data[index];
+                        if (rsdynamic.Any())
+                        {
+                            ids = rsdynamic.Select(x => x.Id).Combine();
+                            where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} not in ({ids})" : $"[ds].{cell.FieldName} in ({ids})";
+                        }
+                        else
+                        {
+                            where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} != {cell.Value}" : $"[ds].{cell.FieldName} = {cell.Value}";
+                        }
+                        index++;
                     }
+                    lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
-            }).ToList();
-            await Task.WhenAll(data);
-            var index = 0;
-            var lisToast = new List<string>();
-            CellSelected.ForEach(cell =>
-            {
-                var where = string.Empty;
-                var hl = Header.FirstOrDefault(y => y.FieldName == cell.FieldName);
-                string ids = null;
-                var isNUll = cell.Value.IsNullOrWhiteSpace();
-                AdvSearchOperation advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotIn : AdvSearchOperation.In;
-                if (hl.FieldName == IdField)
+                else if (hl.ComponentType == "Input" || hl.ComponentType == nameof(Textbox) || hl.ComponentType == "Textarea")
                 {
-                    where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} not in ({cell.Value})" : $"[ds].{cell.FieldName} in ({cell.Value})";
-                    lisToast.Add(cell.FieldText + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+                    if (isNUll)
+                    {
+                        advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                        where = cell.Operator == (int)OperatorEnum.NotIn ? $"([ds].{cell.FieldName} is not null and [ds].{cell.FieldName} != '')" : $"([ds].{cell.FieldName} is null or [ds].{cell.FieldName} = '')";
+                    }
+                    else
+                    {
+                        advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotLike : AdvSearchOperation.Like;
+                        where = cell.Operator == (int)OperatorEnum.NotIn ? $"(CHARINDEX(N'{cell.Value}', [ds].{cell.FieldName}) = 0 or [ds].{cell.FieldName} is null)" : $"CHARINDEX(N'{cell.Value}', [ds].{cell.FieldName}) > 0";
+                        if (cell.Operator == (int)OperatorEnum.Lr)
+                        {
+                            advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotStartWith : AdvSearchOperation.StartWith;
+                            where = cell.Operator == (int)OperatorEnum.NotIn ? $" [ds].{cell.FieldName} not like N'{cell.Value}%' or [ds].{cell.FieldName} is null)" : $" [ds].{cell.FieldName} like N'{cell.Value}%'";
+                        }
+                        if (cell.Operator == (int)OperatorEnum.Rl)
+                        {
+                            advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEndWidth : AdvSearchOperation.EndWidth;
+                            where = cell.Operator == (int)OperatorEnum.NotIn ? $" [ds].{cell.FieldName} not like N'%{cell.Value}' or [ds].{cell.FieldName} is null)" : $" [ds].{cell.FieldName} like N'%{cell.Value}'";
+                        }
+                    }
+                    lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
-                else
+                else if (hl.ComponentType == nameof(Number) || (hl.ComponentType == "Label" && hl.FieldName.Contains("Id")))
                 {
-                    if ((hl.ComponentType == "Dropdown" || hl.ComponentType == nameof(SearchEntry) || hl.FieldName.Contains(".")) && !hl.FormatData.IsNullOrWhiteSpace())
+                    if (cell.Operator == (int)OperatorEnum.NotIn || cell.Operator == (int)OperatorEnum.In)
                     {
                         if (isNUll)
                         {
@@ -582,223 +650,163 @@ namespace Core.Components
                         }
                         else
                         {
-                            var rsdynamic = data[index].Result;
-                            if (rsdynamic.Any())
-                            {
-                                ids = rsdynamic.Select(x => x.Id).Combine();
-                                where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} not in ({ids})" : $"[ds].{cell.FieldName} in ({ids})";
-                            }
-                            else
-                            {
-                                where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} != {cell.Value}" : $"[ds].{cell.FieldName} = {cell.Value}";
-                            }
-                            index++;
+                            advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal;
+                            where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} != {cell.Value.Replace(",", "")}" : $"[ds].{cell.FieldName} = {cell.Value.Replace(",", "")}";
                         }
-                        lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                     }
-                    else if (hl.ComponentType == "Input" || hl.ComponentType == nameof(Textbox) || hl.ComponentType == "Textarea")
+                    else
+                    {
+                        if (cell.Operator == (int)OperatorEnum.Gt || cell.Operator == (int)OperatorEnum.Lt)
+                        {
+                            where = cell.Operator == (int)OperatorEnum.Gt ? $"[ds].{cell.FieldName} > {cell.Value}" : $"[ds].{cell.FieldName} < {cell.Value}";
+                            advo = cell.Operator == (int)OperatorEnum.Gt ? AdvSearchOperation.GreaterThan : AdvSearchOperation.LessThan;
+                        }
+                        else if (cell.Operator == (int)OperatorEnum.Ge || cell.Operator == (int)OperatorEnum.Le)
+                        {
+                            where = cell.Operator == (int)OperatorEnum.Ge ? $"[ds].{cell.FieldName} >= {cell.Value}" : $"[ds].{cell.FieldName} <= {cell.Value}";
+                            advo = cell.Operator == (int)OperatorEnum.Ge ? AdvSearchOperation.GreaterThanOrEqual : AdvSearchOperation.LessThanOrEqual;
+                        }
+                    }
+                    lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+                }
+                else if (hl.ComponentType == nameof(Checkbox))
+                {
+                    if (isNUll)
+                    {
+                        advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                        where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} is not null" : $"[ds].{cell.FieldName} is null";
+                    }
+                    else
+                    {
+                        where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} != {(cell.Value == "true" ? "1" : "0")}" : $"[ds].{cell.FieldName} = {(cell.Value == "true" ? "1" : "0")}";
+                    }
+                    lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+                }
+                else if (hl.ComponentType == nameof(Datepicker))
+                {
+                    cell.Value = cell.Value.DecodeSpecialChar();
+                    cell.ValueText = cell.Value.DecodeSpecialChar();
+                    if (cell.Operator == (int)OperatorEnum.NotIn || cell.Operator == (int)OperatorEnum.In)
                     {
                         if (isNUll)
                         {
-                            advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
-                            where = cell.Operator == (int)OperatorEnum.NotIn ? $"([ds].{cell.FieldName} is not null and [ds].{cell.FieldName} != '')" : $"([ds].{cell.FieldName} is null or [ds].{cell.FieldName} = '')";
-                        }
-                        else
-                        {
-                            advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotLike : AdvSearchOperation.Like;
-                            where = cell.Operator == (int)OperatorEnum.NotIn ? $"(CHARINDEX(N'{cell.Value}', [ds].{cell.FieldName}) = 0 or [ds].{cell.FieldName} is null)" : $"CHARINDEX(N'{cell.Value}', [ds].{cell.FieldName}) > 0";
-                            if (cell.Operator == (int)OperatorEnum.Lr)
-                            {
-                                advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotStartWith : AdvSearchOperation.StartWith;
-                                where = cell.Operator == (int)OperatorEnum.NotIn ? $" [ds].{cell.FieldName} not like N'{cell.Value}%' or [ds].{cell.FieldName} is null)" : $" [ds].{cell.FieldName} like N'{cell.Value}%'";
-                            }
-                            if (cell.Operator == (int)OperatorEnum.Rl)
-                            {
-                                advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEndWidth : AdvSearchOperation.EndWidth;
-                                where = cell.Operator == (int)OperatorEnum.NotIn ? $" [ds].{cell.FieldName} not like N'%{cell.Value}' or [ds].{cell.FieldName} is null)" : $" [ds].{cell.FieldName} like N'%{cell.Value}'";
-                            }
-                        }
-                        lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
-                    }
-                    else if (hl.ComponentType == nameof(Number) || (hl.ComponentType == "Label" && hl.FieldName.Contains("Id")))
-                    {
-                        if (cell.Operator == (int)OperatorEnum.NotIn || cell.Operator == (int)OperatorEnum.In)
-                        {
-                            if (isNUll)
-                            {
-                                advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
-                                where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} is not null" : $"[ds].{cell.FieldName} is null";
-                            }
-                            else
-                            {
-                                advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal;
-                                where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} != {cell.Value.Replace(",", "")}" : $"[ds].{cell.FieldName} = {cell.Value.Replace(",", "")}";
-                            }
-                        }
-                        else
-                        {
-                            if (cell.Operator == (int)OperatorEnum.Gt || cell.Operator == (int)OperatorEnum.Lt)
-                            {
-                                where = cell.Operator == (int)OperatorEnum.Gt ? $"[ds].{cell.FieldName} > {cell.Value}" : $"[ds].{cell.FieldName} < {cell.Value}";
-                                advo = cell.Operator == (int)OperatorEnum.Gt ? AdvSearchOperation.GreaterThan : AdvSearchOperation.LessThan;
-                            }
-                            else if (cell.Operator == (int)OperatorEnum.Ge || cell.Operator == (int)OperatorEnum.Le)
-                            {
-                                where = cell.Operator == (int)OperatorEnum.Ge ? $"[ds].{cell.FieldName} >= {cell.Value}" : $"[ds].{cell.FieldName} <= {cell.Value}";
-                                advo = cell.Operator == (int)OperatorEnum.Ge ? AdvSearchOperation.GreaterThanOrEqual : AdvSearchOperation.LessThanOrEqual;
-                            }
-                        }
-                        lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
-                    }
-                    else if (hl.ComponentType == nameof(Checkbox))
-                    {
-                        if (isNUll)
-                        {
-                            advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
                             where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} is not null" : $"[ds].{cell.FieldName} is null";
+                            advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
                         }
                         else
                         {
-                            where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} != {(cell.Value == "true" ? "1" : "0")}" : $"[ds].{cell.FieldName} = {(cell.Value == "true" ? "1" : "0")}";
-                        }
-                        lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
-                    }
-                    else if (hl.ComponentType == nameof(Datepicker))
-                    {
-                        cell.Value = cell.Value.DecodeSpecialChar();
-                        cell.ValueText = cell.Value.DecodeSpecialChar();
-                        if (cell.Operator == (int)OperatorEnum.NotIn || cell.Operator == (int)OperatorEnum.In)
-                        {
-                            if (isNUll)
+                            try
                             {
-                                where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} is not null" : $"[ds].{cell.FieldName} is null";
-                                advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
-                            }
-                            else
-                            {
-                                try
+                                var va = DateTime.ParseExact(cell.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                if (cell.Operator == (int)OperatorEnum.NotIn || cell.Operator == (int)OperatorEnum.In)
                                 {
-                                    var va = DateTime.ParseExact(cell.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                                    if (cell.Operator == (int)OperatorEnum.NotIn || cell.Operator == (int)OperatorEnum.In)
-                                    {
-                                        where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} != '{va:yyyy-MM-dd}'" : $"[ds].{cell.FieldName} = '{va:yyyy-MM-dd}'";
-                                        advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualDatime : AdvSearchOperation.EqualDatime;
-                                    }
-                                }
-                                catch
-                                {
-                                    var va = DateTime.ParseExact(cell.Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                                     where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} != '{va:yyyy-MM-dd}'" : $"[ds].{cell.FieldName} = '{va:yyyy-MM-dd}'";
                                     advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualDatime : AdvSearchOperation.EqualDatime;
                                 }
                             }
-                        }
-                        else
-                        {
-                            if (!isNUll)
+                            catch
                             {
-                                DateTime va;
-                                try
-                                {
-                                    va = DateTime.ParseExact(cell.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                                }
-                                catch
-                                {
-                                    va = DateTime.ParseExact(cell.Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                                }
-                                if (cell.Operator == (int)OperatorEnum.Gt || cell.Operator == (int)OperatorEnum.Lt)
-                                {
-                                    where = cell.Operator == (int)OperatorEnum.Gt ? $"[ds].{cell.FieldName} > '{va:yyyy-MM-dd HH:mm}'" : $"[ds].{cell.FieldName} < '{va:yyyy-MM-dd HH:mm}'";
-                                    advo = cell.Operator == (int)OperatorEnum.Gt ? AdvSearchOperation.GreaterThanDatime : AdvSearchOperation.LessThanDatime;
-                                }
-                                else if (cell.Operator == (int)OperatorEnum.Ge || cell.Operator == (int)OperatorEnum.Le)
-                                {
-                                    where = cell.Operator == (int)OperatorEnum.Ge ? $"[ds].{cell.FieldName} >= '{va:yyyy-MM-dd HH:mm}'" : $"[ds].{cell.FieldName} <= '{va:yyyy-MM-dd HH:mm}'";
-                                    advo = cell.Operator == (int)OperatorEnum.Ge ? AdvSearchOperation.GreaterEqualDatime : AdvSearchOperation.LessEqualDatime;
-                                }
+                                var va = DateTime.ParseExact(cell.Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                                where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} != '{va:yyyy-MM-dd}'" : $"[ds].{cell.FieldName} = '{va:yyyy-MM-dd}'";
+                                advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualDatime : AdvSearchOperation.EqualDatime;
                             }
                         }
-                        lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                     }
-                }
-                var value = ids ?? cell.Value;
-                if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName
-                && x.CompareOperatorId == advo
-                && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In || x.CompareOperatorId == AdvSearchOperation.EqualDatime)) && !cell.Shift && !cell.Group)
-                {
-                    AdvSearchVM.Conditions.FirstOrDefault(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo).Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value;
-                    Wheres.FirstOrDefault(x => x.FieldName.Contains($"[ds].{cell.FieldName}")).FieldName = where;
-                }
-                else
-                {
-                    if (!AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo && x.Value == cell.Value))
+                    else
                     {
-                        if (cell.ComponentType == "Input" && cell.Value.IsNullOrWhiteSpace())
+                        if (!isNUll)
                         {
-                            AdvSearchVM.Conditions.Add(new FieldCondition
+                            DateTime va;
+                            try
                             {
-                                Field = hl,
-                                CompareOperatorId = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull,
-                                LogicOperatorId = cell.Operator == (int)OperatorEnum.NotIn ? LogicOperation.And : LogicOperation.Or,
-                                Value = null,
-                                Group = true
-                            });
-                            AdvSearchVM.Conditions.Add(new FieldCondition
-                            {
-                                Field = hl,
-                                CompareOperatorId = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal,
-                                LogicOperatorId = cell.Operator == (int)OperatorEnum.NotIn ? LogicOperation.And : LogicOperation.Or,
-                                Value = string.Empty,
-                                Group = true
-                            });
-                        }
-                        else
-                        {
-                            if (hl.FieldName.Contains("."))
-                            {
-                                var format = hl.FieldName.Split(".").FirstOrDefault() + "Id";
-                                hl.FieldName = format;
-                                AdvSearchVM.Conditions.Add(new FieldCondition
-                                {
-                                    Field = hl,
-                                    CompareOperatorId = advo,
-                                    LogicOperatorId = cell.Logic ?? LogicOperation.And,
-                                    Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value,
-                                    Group = cell.Group
-                                });
+                                va = DateTime.ParseExact(cell.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                             }
-                            else
+                            catch
                             {
-                                AdvSearchVM.Conditions.Add(new FieldCondition
-                                {
-                                    Field = hl,
-                                    CompareOperatorId = advo,
-                                    LogicOperatorId = cell.Logic ?? LogicOperation.And,
-                                    Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value,
-                                    Group = cell.Group
-                                });
+                                va = DateTime.ParseExact(cell.Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                            }
+                            if (cell.Operator == (int)OperatorEnum.Gt || cell.Operator == (int)OperatorEnum.Lt)
+                            {
+                                where = cell.Operator == (int)OperatorEnum.Gt ? $"[ds].{cell.FieldName} > '{va:yyyy-MM-dd HH:mm}'" : $"[ds].{cell.FieldName} < '{va:yyyy-MM-dd HH:mm}'";
+                                advo = cell.Operator == (int)OperatorEnum.Gt ? AdvSearchOperation.GreaterThanDatime : AdvSearchOperation.LessThanDatime;
+                            }
+                            else if (cell.Operator == (int)OperatorEnum.Ge || cell.Operator == (int)OperatorEnum.Le)
+                            {
+                                where = cell.Operator == (int)OperatorEnum.Ge ? $"[ds].{cell.FieldName} >= '{va:yyyy-MM-dd HH:mm}'" : $"[ds].{cell.FieldName} <= '{va:yyyy-MM-dd HH:mm}'";
+                                advo = cell.Operator == (int)OperatorEnum.Ge ? AdvSearchOperation.GreaterEqualDatime : AdvSearchOperation.LessEqualDatime;
                             }
                         }
-                        Wheres.Add(new Where()
+                    }
+                    lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+                }
+            }
+            var value = ids ?? cell.Value;
+            if (AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName
+            && x.CompareOperatorId == advo
+            && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In || x.CompareOperatorId == AdvSearchOperation.EqualDatime)) && !cell.Shift && !cell.Group)
+            {
+                AdvSearchVM.Conditions.FirstOrDefault(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo).Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value;
+                Wheres.FirstOrDefault(x => x.FieldName.Contains($"[ds].{cell.FieldName}")).FieldName = where;
+            }
+            else
+            {
+                if (!AdvSearchVM.Conditions.Any(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo && x.Value == cell.Value))
+                {
+                    if (cell.ComponentType == "Input" && cell.Value.IsNullOrWhiteSpace())
+                    {
+                        AdvSearchVM.Conditions.Add(new FieldCondition
                         {
-                            FieldName = where,
-                            Group = cell.Group
+                            Field = hl,
+                            CompareOperatorId = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull,
+                            LogicOperatorId = cell.Operator == (int)OperatorEnum.NotIn ? LogicOperation.And : LogicOperation.Or,
+                            Value = null,
+                            Group = true
+                        });
+                        AdvSearchVM.Conditions.Add(new FieldCondition
+                        {
+                            Field = hl,
+                            CompareOperatorId = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal,
+                            LogicOperatorId = cell.Operator == (int)OperatorEnum.NotIn ? LogicOperation.And : LogicOperation.Or,
+                            Value = string.Empty,
+                            Group = true
                         });
                     }
+                    else
+                    {
+                        if (hl.FieldName.Contains("."))
+                        {
+                            var format = hl.FieldName.Split(".").FirstOrDefault() + "Id";
+                            hl.FieldName = format;
+                            AdvSearchVM.Conditions.Add(new FieldCondition
+                            {
+                                Field = hl,
+                                CompareOperatorId = advo,
+                                LogicOperatorId = cell.Logic ?? LogicOperation.And,
+                                Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value,
+                                Group = cell.Group
+                            });
+                        }
+                        else
+                        {
+                            AdvSearchVM.Conditions.Add(new FieldCondition
+                            {
+                                Field = hl,
+                                CompareOperatorId = advo,
+                                LogicOperatorId = cell.Logic ?? LogicOperation.And,
+                                Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value,
+                                Group = cell.Group
+                            });
+                        }
+                    }
+                    Wheres.Add(new Where()
+                    {
+                        FieldName = where,
+                        Group = cell.Group
+                    });
                 }
-            });
-            await ApplyFilter(true);
-            Spinner.Hide();
-            if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.CanSearch)
-            {
-                HeaderSection.Element.Focus();
             }
-            if (GuiInfo.ComponentType == "Dropdown")
-            {
-                var search = Parent as SearchEntry;
-                search?._input.Focus();
-            }
-            Toast.Success(lisToast.Combine("</br>"));
+
+            return index;
         }
 
         private async Task NoCellSelected()
@@ -917,7 +925,7 @@ namespace Core.Components
                 });
                 _summarys.Add(new HTMLElement());
             }
-            Client.ExecTaskNoResult(ActionFilter());
+            ActionFilter();
         }
 
         public virtual void DisposeSumary()
@@ -1123,10 +1131,7 @@ namespace Core.Components
                 dateTime.ValueText = valueText;
             }
             HiddenSumary();
-            Task.Run(async () =>
-            {
-                await ActionFilter();
-            });
+            ActionFilter();
         }
 
         internal void HotKeyHandler(Event e, Component header, ListViewItem focusedRow)
@@ -1538,21 +1543,15 @@ namespace Core.Components
                             if (lastElement.InnerHTML == string.Empty)
                             {
                                 CellSelected.RemoveAt(CellSelected.Count - 1);
-                                Task.Run(async () =>
-                                {
-                                    await ActionFilter();
-                                    _summarys.RemoveAt(_summarys.Count - 1);
-                                });
+                                ActionFilter();
+                                _summarys.RemoveAt(_summarys.Count - 1);
                             }
                             else
                             {
                                 if (lastElement.Style.Display.ToString() == "none")
                                 {
                                     CellSelected.RemoveAt(CellSelected.Count - 1);
-                                    Task.Run(async () =>
-                                    {
-                                        await ActionFilter();
-                                    });
+                                    ActionFilter();
                                     lastElement.Show();
                                 }
                                 else
@@ -1578,11 +1577,8 @@ namespace Core.Components
 
                                 AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
                             }
-                            Task.Run(async () =>
-                            {
-                                await ActionFilter();
+                                ActionFilter();
                                 _summarys.RemoveAt(_summarys.Count - 1);
-                            });
                         }
                         else
                         {
@@ -1605,10 +1601,7 @@ namespace Core.Components
 
                                     AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
                                 }
-                                Task.Run(async () =>
-                                {
-                                    await ActionFilter();
-                                });
+                                ActionFilter();
                                 lastElement.Show();
                             }
                             else

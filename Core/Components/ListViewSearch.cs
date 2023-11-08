@@ -376,30 +376,27 @@ namespace Core.Components
                 Toast.Warning("Vui lòng chọn dòng cần lọc");
                 return;
             }
-            Task.Run(async () =>
+            if (ParentListView.CellSelected.Any(x => x.FieldName == IdField))
             {
-                if (ParentListView.CellSelected.Any(x => x.FieldName == IdField))
+                ParentListView.CellSelected.FirstOrDefault(x => x.FieldName == IdField).Value = selectedIds.Combine();
+                ParentListView.CellSelected.FirstOrDefault(x => x.FieldName == IdField).ValueText = selectedIds.Combine();
+            }
+            else
+            {
+                ParentListView.CellSelected.Add(new CellSelected()
                 {
-                    ParentListView.CellSelected.FirstOrDefault(x => x.FieldName == IdField).Value = selectedIds.Combine();
-                    ParentListView.CellSelected.FirstOrDefault(x => x.FieldName == IdField).ValueText = selectedIds.Combine();
-                }
-                else
-                {
-                    ParentListView.CellSelected.Add(new CellSelected()
-                    {
-                        FieldName = IdField,
-                        FieldText = "Mã",
-                        ComponentType = "Input",
-                        Value = selectedIds.Combine(),
-                        ValueText = selectedIds.Combine(),
-                        Operator = (int)OperatorEnum.In,
-                        OperatorText = "Chứa",
-                        Logic = LogicOperation.And,
-                    });
-                    ParentGridView._summarys.Add(new HTMLElement());
-                }
-                await ParentListView.ActionFilter();
-            });
+                    FieldName = IdField,
+                    FieldText = "Mã",
+                    ComponentType = "Input",
+                    Value = selectedIds.Combine(),
+                    ValueText = selectedIds.Combine(),
+                    Operator = (int)OperatorEnum.In,
+                    OperatorText = "Chứa",
+                    Logic = LogicOperation.And,
+                });
+                ParentGridView._summarys.Add(new HTMLElement());
+            }
+            ParentListView.ActionFilter();
         }
 
         private void LiteGridView(object arg)
