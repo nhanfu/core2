@@ -608,7 +608,6 @@ namespace Core.Components
             copyGui.LocalData = localData.Value;
             copyGui.LocalHeader = copyHeaders;
             var copyListView = new GridView(copyGui) { ParentElement = ParentListView.ParentElement };
-            await copyListView.LoadMasterData(copyGui.LocalData);
             ParentListView.Parent.AddChild(copyListView);
             copyListView.Element.Style.Display = Display.None;
             copyListView.DOMContentLoaded += () =>

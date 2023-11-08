@@ -159,7 +159,6 @@ namespace Core.Components
                 var listViewItem = MainSection.FilterChildren<ListViewItem>(x => x.Entity[IdField] == updatedData[IdField]).FirstOrDefault();
                 if (listViewItem != null)
                 {
-                    await LoadMasterData(new object[] { updatedData });
                     if (GuiInfo.ComponentType == nameof(VirtualGrid))
                     {
                         CacheData.FirstOrDefault(x => x[IdField] == updatedData[IdField]).CopyPropFrom(updatedData);
@@ -256,7 +255,6 @@ namespace Core.Components
             }
             Sql = result.Sql;
             UpdatePagination(result.Odata.Count ?? result.Value.Count, result.Value.Count);
-            await LoadMasterData(result.Value);
             SetRowData(result.Value);
             if (result.Odata.Count > 0 && result.Value.Nothing())
             {
@@ -301,7 +299,6 @@ namespace Core.Components
             }
             var total = ds.Length > 1 ? ds[1].ToDynamic()[0].total : ds[0].Length;
             var rows = new List<object>(ds[0]);
-            await LoadMasterData(rows);
             SetRowData(rows);
             UpdatePagination(total, rows.Count);
             return rows;
@@ -765,43 +762,6 @@ namespace Core.Components
             });
         }
 
-        public async Task LoadMasterData(IEnumerable<object> rows = null, bool spinner = true)
-        {
-            var headers = GuiInfo.LocalHeader.Nothing() ? Header : GuiInfo.LocalHeader;
-            if (headers.Nothing())
-            {
-                return;
-            }
-            headers = headers.Where(x => x != null).ToList();
-
-            rows = rows ?? RowData.Data;
-            var refHeaders = headers.Where(x => x.RefName.HasAnyChar()).ToList();
-            SyncMasterData(rows, headers);
-            var DataSourceFilter = refHeaders
-                .DistinctBy(x => x.ReferenceId)
-                .Select(x => FormatDataSourceByEntity(x, headers, rows))
-                .Where(x => x != null).ToList();
-            if (DataSourceFilter.Nothing())
-            {
-                return;
-            }
-
-            var dataTask = DataSourceFilter
-                .Where(x => !x.DataSourceOptimized.IsNullOrWhiteSpace())
-                .DistinctBy(x => x.ReferenceId + "/" + x.DataSourceOptimized)
-                .Select(x => new
-                {
-                    Header = x,
-                    Data = new Client(x.RefName).LoadById(x.DataSourceOptimized, action: $"ById?FieldName={x.FormatExcell}&DatabaseName={x.DatabaseName}")
-                }).ToArray();
-            await Task.WhenAll(dataTask.Select(x => x.Data).ToArray());
-            foreach (var remoteSource in dataTask)
-            {
-                SetRemoteSource(remoteSource.Data.Result.Value, remoteSource.Header.RefName, remoteSource.Header);
-            }
-            SyncMasterData(rows, headers);
-        }
-
         protected void SetRemoteSource(List<object> remoteData, string typeName, Component header)
         {
             var localSource = RefData.GetValueOrDefault(typeName);
@@ -1193,10 +1153,6 @@ namespace Core.Components
                 await AddRow(rowData, RowData.Data.Count - 1, singleAdd);
                 return;
             }
-            if (singleAdd)
-            {
-                await LoadMasterData(new List<object> { rowData }, false);
-            }
             if (existRowData.EmptyRow)
             {
                 RowData.Data.Add(rowData);
@@ -1222,7 +1178,6 @@ namespace Core.Components
         public virtual async Task AddOrUpdateRows(IEnumerable<object> rows)
         {
             RowData.Data.AddRange(rows);
-            await LoadMasterData(rows);
             await rows.ForEachAsync(async row => await AddOrUpdateRow(row, false));
             FinalAddOrUpdate();
         }
@@ -1239,7 +1194,6 @@ namespace Core.Components
             if (singleAdd)
             {
                 RowData.Data.Add(rowData);
-                await LoadMasterData(new List<object> { rowData }, false);
             }
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
             var row = RenderRowData(Header, rowData, MainSection, index);
@@ -1272,10 +1226,6 @@ namespace Core.Components
                 }
                 indextemp++;
             });
-            if (!GuiInfo.IsRealtime)
-            {
-                await LoadMasterData(rows);
-            }
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
             var listItem = new List<ListViewItem>();
             indextemp = index;
@@ -1308,10 +1258,6 @@ namespace Core.Components
                 }
                 indextemp++;
             });
-            if (!GuiInfo.IsRealtime)
-            {
-                await LoadMasterData(rows);
-            }
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
             var listItem = new List<ListViewItem>();
             indextemp = index;
@@ -1838,16 +1784,15 @@ namespace Core.Components
             }
             await Task.WhenAll(updateTasks);
             var updatedRows = updateTasks.Select(x => x.Result).ToList();
-            await InternalUpdateRows(updateView, updatedRows);
+            InternalUpdateRows(updateView, updatedRows);
             return updatedRows;
         }
 
-        private async Task InternalUpdateRows(bool updateView, List<object> updatedRows)
+        private void InternalUpdateRows(bool updateView, List<object> updatedRows)
         {
             UpdatedRows.CopyPropFrom(updatedRows);
             if (updateView)
             {
-                await LoadMasterData(updatedRows);
                 RowAction(row => row.Dirty && !row.EmptyRow, row =>
                 {
                     row.UpdateView();

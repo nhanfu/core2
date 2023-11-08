@@ -292,7 +292,6 @@ namespace Core.Components
             {
                 ListViewSection.ListView.CacheData.Add(rs);
             }
-            await ListViewSection.ListView.LoadMasterData(new object[] { rs });
             UpdateView(true);
             Element.RemoveClass("new-row");
             if (rs != null)
@@ -372,7 +371,6 @@ namespace Core.Components
                 ListViewSection.ListView.CacheData.FirstOrDefault(x => x[IdField] == rs[IdField]).CopyPropFrom(rs);
             }
             Entity.CopyPropFrom(rs);
-            await ListViewSection.ListView.LoadMasterData(new object[] { rs });
             EmptyRow = false;
             var arr = FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.GuiInfo.FieldName).ToArray();
             UpdateView(true, arr);

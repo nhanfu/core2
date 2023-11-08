@@ -66,10 +66,6 @@ namespace Core.Components
         {
             DisposeNoRecord();
             var keys = GuiInfo.GroupBy.Split(",");
-            if (singleAdd)
-            {
-                await LoadMasterData(new List<object> { item });
-            }
             item[_groupKey] = string.Join(" ", keys.Select(key => item.GetComplexPropValue(key)?.ToString()));
             var groupKey = item[_groupKey];
             var existGroup = AllListViewItem
@@ -97,10 +93,6 @@ namespace Core.Components
 
         public override async Task<List<ListViewItem>> AddRows(IEnumerable<object> rowsData, int index = 0)
         {
-            if (!GuiInfo.IsRealtime)
-            {
-                await LoadMasterData(rowsData);
-            }
             var listItem = new List<ListViewItem>();
             await rowsData.ForEachAsync(async x =>
             {
@@ -111,10 +103,6 @@ namespace Core.Components
 
         public override async Task<List<ListViewItem>> AddRowsNo(IEnumerable<object> rowsData, int index = 0)
         {
-            if (!GuiInfo.IsRealtime)
-            {
-                await LoadMasterData(rowsData);
-            }
             var listItem = new List<ListViewItem>();
             await rowsData.ForEachAsync(async x =>
             {
@@ -248,10 +236,6 @@ namespace Core.Components
                 await AddRow(rowData, 0, singleAdd);
                 return;
             }
-            if (singleAdd)
-            {
-                await LoadMasterData(new List<object> { rowData }, false);
-            }
             if (existRowData.EmptyRow)
             {
                 existRowData.Entity = null;
@@ -275,7 +259,6 @@ namespace Core.Components
 
         public override async Task AddOrUpdateRows(IEnumerable<object> rows)
         {
-            await LoadMasterData(rows);
             await rows.ForEachAsync(async row => await AddOrUpdateRow(row, false));
             AddNewEmptyRow();
         }

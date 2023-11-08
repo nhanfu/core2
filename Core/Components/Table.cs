@@ -96,7 +96,6 @@ namespace Core.Components
                 }
             }
             */
-            await LoadMasterData(Data);
             foreach (var data in Data)
             {
                 Html.Take(_bodyEle).TRow.Render();

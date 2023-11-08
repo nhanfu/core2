@@ -2096,10 +2096,7 @@ namespace Core.Components
             }
             if (MainSection.Children.HasElement())
             {
-                Task.Run(async () =>
-                {
-                    await UpdateExistRowsWrapper(loadMasterData: true, dirty: false, 0, viewPort);
-                });
+                UpdateExistRowsWrapper(dirty: false, 0, viewPort);
                 return;
             }
             MainSection.Show = false;
@@ -2144,16 +2141,12 @@ namespace Core.Components
         }
 
         private bool _hasFirstLoad = false;
-        protected async Task UpdateExistRowsWrapper(bool loadMasterData, bool? dirty, int skip, int viewPort)
+        protected void UpdateExistRowsWrapper(bool? dirty, int skip, int viewPort)
         {
             if (!_hasFirstLoad)
             {
                 _hasFirstLoad = true;
                 return;
-            }
-            if (loadMasterData)
-            {
-                await LoadMasterData(FormattedRowData);
             }
             UpdateExistRows(dirty);
             RenderIndex();
@@ -2482,7 +2475,6 @@ namespace Core.Components
                 {
                     Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
                 }
-                await LoadMasterData(new object[] { rs });
                 rowSection.UpdateView(true);
                 MoveEmptyRow(rowSection);
                 EmptyRowSection.Children.Clear();
@@ -2706,19 +2698,6 @@ namespace Core.Components
                 RenderTableHeader(Header);
             }
             var rows = new List<object>(ds[0]);
-            if (ds.Length > 4)
-            {
-                var master = ds[3].Cast<dynamic>().GroupBy(x => x.RefName);
-                foreach (var remoteData in master)
-                {
-                    SetRemoteSource(remoteData.ToList(), remoteData.Key, Header.FirstOrDefault(x => x.RefName == remoteData.Key));
-                }
-                SyncMasterData(ds[3], Header);
-            }
-            else
-            {
-                await LoadMasterData(rows);
-            }
             SetRowData(rows);
             UpdatePagination(total, rows.Count);
             return rows;
