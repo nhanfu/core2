@@ -222,50 +222,7 @@ namespace Core.Components
             }
             pageSize = pageSize ?? Paginator?.Options?.PageSize ?? GuiInfo.Row ?? 12;
             skip = skip ?? Paginator?.Options?.PageIndex * pageSize ?? 0;
-
-            if (GuiInfo.Query.HasAnyChar())
-            {
-                return await SqlReader(skip, pageSize);
-            }
-
-            dataSourceFilter = dataSourceFilter.IsNullOrEmpty() ? CalcFilterQuery(true) : dataSourceFilter;
-            if (dataSourceFilter.IsNullOrWhiteSpace())
-            {
-                dataSourceFilter = "?$filter=true";
-            }
-            if (!dataSourceFilter.Contains("?"))
-            {
-                dataSourceFilter += "?";
-            }
-
-            var pagingQuery = dataSourceFilter + $"&$skip={skip}&$top={pageSize}&$count=true";
-            OdataResult<object> result;
-            var val = (Entity?.GetComplexPropValue(GuiInfo.FieldName) as IEnumerable<object>)?.ToList();
-            if (GuiInfo.CanCache && val != null && val.Any() && !search)
-            {
-                result = new OdataResult<object>
-                {
-                    Value = val,
-                    Odata = new Odata { Count = val.Count }
-                };
-            }
-            else
-            {
-                result = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(pageSize > 0 ? pagingQuery : dataSourceFilter, true);
-            }
-            Sql = result.Sql;
-            UpdatePagination(result.Odata.Count ?? result.Value.Count, result.Value.Count);
-            SetRowData(result.Value);
-            if (result.Odata.Count > 0 && result.Value.Nothing())
-            {
-                if (Paginator != null)
-                {
-                    Paginator.Options.PageIndex = 0;
-                }
-                await ReloadData(dataSourceFilter, cache: cache);
-            }
-            Spinner.Hide();
-            return result.Value;
+            return await SqlReader(skip, pageSize);
         }
 
         public async Task<List<object>> SqlReader(int? skip, int? pageSize)
@@ -281,7 +238,7 @@ namespace Core.Components
                 Component = new SignedCom{ Query = GuiInfo.Query, Signed = GuiInfo.Signed },
                 Paging = $"offset {skip} rows\nfetch next {pageSize} rows only",
                 OrderBy = orderBy ?? (GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy),
-                Where = CalcFilterQuery(true),
+                Where = Wheres.Combine(x => $"({x.FieldName})", " and "),
                 Count = true,
             };
             return await CustomQuery(JSON.Stringify(data));
@@ -303,6 +260,7 @@ namespace Core.Components
             }
             var total = ds.Length > 1 ? ds[1].ToDynamic()[0].total : ds[0].Length;
             var rows = new List<object>(ds[0]);
+            Spinner.Hide();
             SetRowData(rows);
             UpdatePagination(total, rows.Count);
             return rows;
@@ -358,13 +316,13 @@ namespace Core.Components
 
         public virtual async Task ApplyFilter(bool searching = true)
         {
-            var calcFilter = CalcFilterQuery(searching);
             ClearRowData();
-            await ReloadData(calcFilter, cache: false);
+            await ReloadData();
         }
 
         public virtual Task ActionFilter()
         {
+            ClearRowData();
             return ReloadData();
         }
 
