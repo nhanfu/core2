@@ -42,8 +42,8 @@ namespace TMS.API.Controllers
                 new Regex(@"update\s"), new Regex(@"select\s"), new Regex(@"from\s"),new Regex(@"where\s"),
                 new Regex(@"group by\s"), new Regex(@"having\s"), new Regex(@"order by\s") };
 
-        [HttpPost("api/[Controller]/SqlReader")]
-        public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> SqlReader(
+        [HttpPost("api/[Controller]/Reader")]
+        public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> Reader(
             [FromBody] SqlViewModel model, [FromQuery] string env = "test")
         {
             var entity = model.Component;
@@ -70,7 +70,7 @@ namespace TMS.API.Controllers
             var having = model.Having.HasAnyChar() ? $"having {model.Having}" : string.Empty;
             var orderBy = model.OrderBy.HasAnyChar() ? $"order by {model.OrderBy}" : string.Empty;
             var countQuery = model.Count ?
-                $@"select count(*) from (
+                $@"select count(*) as total from (
                 {jsRes.Query}) as ds 
                 {where}
                 {groupBy}

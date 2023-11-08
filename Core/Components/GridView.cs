@@ -1208,128 +1208,13 @@ namespace Core.Components
             switch (keyCode)
             {
                 case KeyCodeEnum.F11:
-                    Task.Run(async () =>
-                    {
-                        if (com.GuiInfo.ComponentType == "Label" || com.GuiInfo.ComponentType == "Button")
-                        {
-                            return;
-                        }
-                        var th = HeaderSection.Children.FirstOrDefault(x => x.GuiInfo.Id == com.GuiInfo.Id);
-                        th.Element.RemoveClass("desc");
-                        th.Element.RemoveClass("asc");
-                        if (SortedField is null)
-                        {
-                            SortedField = new List<SortedField>()
-                            {
-                                new SortedField
-                                {
-                                    Field = com.GuiInfo.FieldName,
-                                    Desc = true,
-                                    Com = com.GuiInfo.CastProp<Component>(),
-                                }
-                            };
-                            th.Element.AddClass("desc");
-                        }
-                        else
-                        {
-                            var check = SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName);
-                            if (check != null)
-                            {
-                                if ((!check.Desc) == false)
-                                {
-                                    SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName).Desc = !check.Desc;
-                                    th.Element.AddClass(!check.Desc ? "asc" : "desc");
-                                }
-                                else
-                                {
-                                    SortedField.Remove(SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName));
-                                }
-                            }
-                            else
-                            {
-                                if (!e.ShiftKey())
-                                {
-                                    HeaderSection.Children.ForEach(x =>
-                                    {
-                                        x.Element.RemoveClass("desc");
-                                        x.Element.RemoveClass("asc");
-                                    });
-                                    SortedField.Clear();
-                                }
-                                th.Element.AddClass("desc");
-                                SortedField.Add(new SortedField
-                                {
-                                    Field = com.GuiInfo.FieldName,
-                                    Com = com.GuiInfo.CastProp<Component>(),
-                                    Desc = true
-                                });
-                            }
-                        }
-                        AdvSearchVM.OrderBy.Clear();
-                        AdvSearchVM.OrderBy.AddRange(SortedField.Select(x => new OrderBy
-                        {
-                            Field = x.Com,
-                            FieldId = x.Com.Id,
-                            OrderbyOptionId = x.Desc ? OrderbyOption.DESC : OrderbyOption.ASC
-                        }).ToList());
-                        LocalStorage.SetItem("OrderBy" + GuiInfo.Id, AdvSearchVM.OrderBy);
-                        await ActionFilter();
-                    });
+                    ProcessSort(e, com);
                     break;
                 case KeyCodeEnum.F4:
-                    if (focusedRow is null)
-                    {
-                        return;
-                    }
-                    var menu = ContextMenu.Instance;
-                    menu.PElement = MainSection.Element;
-                    menu.Top = el.GetBoundingClientRect().Top;
-                    menu.Left = el.GetBoundingClientRect().Left;
-                    menu.MenuItems = new List<ContextMenuItem>
-                    {
-                        new ContextMenuItem { Icon = "fal fa-angle-double-right", Text = "Chứa", Click = FilterInSelected,
-                                Parameter = new HotKeyModel { Operator = (int)OperatorEnum.In, OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey()  } },
-                        new ContextMenuItem { Icon = "fal fa-not-equal", Text = "Không chứa", Click = FilterInSelected,
-                                Parameter = new HotKeyModel { Operator=(int)OperatorEnum.NotIn,OperatorText= "Không chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
-                        new ContextMenuItem { Icon = "fal fa-hourglass-start", Text = "Trái phải", Click = FilterInSelected,
-                                Parameter = new HotKeyModel { Operator = (int)OperatorEnum.Lr, OperatorText = "Trái phải", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey()  } },
-                        new ContextMenuItem { Icon = "fal fa-hourglass-end", Text = "Phải trái", Click = FilterInSelected,
-                                Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Rl,OperatorText= "Phải trái", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }}
-                    };
-                    if (com.GuiInfo.ComponentType == nameof(Number) || com.GuiInfo.ComponentType == nameof(Datepicker))
-                    {
-                        menu.MenuItems.AddRange(new List<ContextMenuItem>
-                        {
-                            new ContextMenuItem { Icon = "fal fa-greater-than", Text = "Lớn hơn", Click = FilterInSelected,
-                                    Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Gt, OperatorText= "Lớn hơn", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
-                            new ContextMenuItem { Icon = "fal fa-less-than", Text = "Nhỏ hơn", Click = FilterInSelected,
-                                    Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Lt, OperatorText= "Nhỏ hơn", Value = value, FieldName = fieldName, ValueText=text, Shift = e.ShiftKey() }},
-                            new ContextMenuItem { Icon = "fal fa-greater-than-equal", Text = "Lớn hơn bằng", Click = FilterInSelected,
-                                    Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Ge, OperatorText= "Lớn hơn bằng", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
-                            new ContextMenuItem { Icon = "fal fa-less-than-equal", Text = "Nhỏ hơn bằng", Click = FilterInSelected,
-                                    Parameter = new  { Operator= (int)OperatorEnum.Le, OperatorText= "Nhỏ hơn bằng", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
-                        });
-                    }
-                    menu.Render();
+                    ProcessFilterDetail(e, com, el, fieldName, text, value);
                     break;
                 case KeyCodeEnum.F8:
-                    if (Disabled)
-                    {
-                        return;
-                    }
-                    var selectedRows = GetSelectedRows().ToList();
-                    if (selectedRows.Nothing())
-                    {
-                        Toast.Warning("Vui lòng chọn dòng cần xóa");
-                        return;
-                    }
-                    var gridPolicies = EditForm.GetElementPolicies(GuiInfo.Id, Utils.ComponentId);
-                    var isOwner = selectedRows.All(x => Utils.IsOwner(x, false));
-                    var canDelete = CanDo(gridPolicies, x => x.CanDelete && isOwner || x.CanDeleteAll);
-                    if (canDelete)
-                    {
-                        HardDeleteSelected();
-                    }
+                    ProcessHardDelete();
                     break;
                 case KeyCodeEnum.F9:
                     FilterSelected(new HotKeyModel { Operator = 1, OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text, ActValue = true });
@@ -1524,9 +1409,132 @@ namespace Core.Components
             }
         }
 
+        private void ProcessHardDelete()
+        {
+            if (Disabled)
+            {
+                return;
+            }
+            var selectedRows = GetSelectedRows().ToList();
+            if (selectedRows.Nothing())
+            {
+                Toast.Warning("Vui lòng chọn dòng cần xóa");
+                return;
+            }
+            var gridPolicies = EditForm.GetElementPolicies(GuiInfo.Id, Utils.ComponentId);
+            var isOwner = selectedRows.All(x => Utils.IsOwner(x, false));
+            var canDelete = CanDo(gridPolicies, x => x.CanDelete && isOwner || x.CanDeleteAll);
+            if (canDelete)
+            {
+                HardDeleteSelected();
+            }
+        }
+
+        private void ProcessFilterDetail(Event e, EditableComponent com, HTMLElement el, string fieldName, string text, string value)
+        {
+            var menu = ContextMenu.Instance;
+            menu.PElement = MainSection.Element;
+            menu.Top = el.GetBoundingClientRect().Top;
+            menu.Left = el.GetBoundingClientRect().Left;
+            menu.MenuItems = new List<ContextMenuItem>
+            {
+                new ContextMenuItem { Icon = "fal fa-angle-double-right", Text = "Chứa", Click = FilterInSelected,
+                        Parameter = new HotKeyModel { Operator = (int)OperatorEnum.In, OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey()  } },
+                new ContextMenuItem { Icon = "fal fa-not-equal", Text = "Không chứa", Click = FilterInSelected,
+                        Parameter = new HotKeyModel { Operator=(int)OperatorEnum.NotIn,OperatorText= "Không chứa", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
+                new ContextMenuItem { Icon = "fal fa-hourglass-start", Text = "Trái phải", Click = FilterInSelected,
+                        Parameter = new HotKeyModel { Operator = (int)OperatorEnum.Lr, OperatorText = "Trái phải", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey()  } },
+                new ContextMenuItem { Icon = "fal fa-hourglass-end", Text = "Phải trái", Click = FilterInSelected,
+                        Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Rl,OperatorText= "Phải trái", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }}
+            };
+            if (com.GuiInfo.ComponentType == nameof(Number) || com.GuiInfo.ComponentType == nameof(Datepicker))
+            {
+                menu.MenuItems.AddRange(new List<ContextMenuItem>
+                {
+                    new ContextMenuItem { Icon = "fal fa-greater-than", Text = "Lớn hơn", Click = FilterInSelected,
+                            Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Gt, OperatorText= "Lớn hơn", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
+                    new ContextMenuItem { Icon = "fal fa-less-than", Text = "Nhỏ hơn", Click = FilterInSelected,
+                            Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Lt, OperatorText= "Nhỏ hơn", Value = value, FieldName = fieldName, ValueText=text, Shift = e.ShiftKey() }},
+                    new ContextMenuItem { Icon = "fal fa-greater-than-equal", Text = "Lớn hơn bằng", Click = FilterInSelected,
+                            Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Ge, OperatorText= "Lớn hơn bằng", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
+                    new ContextMenuItem { Icon = "fal fa-less-than-equal", Text = "Nhỏ hơn bằng", Click = FilterInSelected,
+                            Parameter = new  { Operator= (int)OperatorEnum.Le, OperatorText= "Nhỏ hơn bằng", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }},
+                });
+            }
+            menu.Render();
+        }
+
+        private void ProcessSort(Event e, EditableComponent com)
+        {
+            if (com.GuiInfo.ComponentType == "Button")
+            {
+                return;
+            }
+            var th = HeaderSection.Children.FirstOrDefault(x => x.GuiInfo.Id == com.GuiInfo.Id);
+            th.Element.RemoveClass("desc");
+            th.Element.RemoveClass("asc");
+            if (SortedField is null)
+            {
+                SortedField = new List<SortedField>()
+                {
+                    new SortedField
+                    {
+                        Field = com.GuiInfo.FieldName,
+                        Desc = true,
+                        Com = com.GuiInfo.CastProp<Component>(),
+                    }
+                };
+                th.Element.AddClass("desc");
+            }
+            else
+            {
+                var existSort = SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName);
+                if (existSort != null)
+                {
+                    if ((!existSort.Desc) == false)
+                    {
+                        SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName).Desc = !existSort.Desc;
+                        th.Element.AddClass(!existSort.Desc ? "asc" : "desc");
+                    }
+                    else
+                    {
+                        SortedField.Remove(SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName));
+                    }
+                }
+                else
+                {
+                    if (!e.ShiftKey())
+                    {
+                        HeaderSection.Children.ForEach(x =>
+                        {
+                            x.Element.RemoveClass("desc");
+                            x.Element.RemoveClass("asc");
+                        });
+                        SortedField.Clear();
+                    }
+                    th.Element.AddClass("desc");
+                    SortedField.Add(new SortedField
+                    {
+                        Field = com.GuiInfo.FieldName,
+                        Com = com.GuiInfo.CastProp<Component>(),
+                        Desc = true
+                    });
+                }
+            }
+            AdvSearchVM.OrderBy.Clear();
+            AdvSearchVM.OrderBy.AddRange(SortedField.Select(x => new OrderBy
+            {
+                Field = x.Com,
+                FieldId = x.Com.Id,
+                OrderbyOptionId = x.Desc ? OrderbyOption.DESC : OrderbyOption.ASC
+            }).ToList());
+            LocalStorage.SetItem("OrderBy" + GuiInfo.Id, AdvSearchVM.OrderBy);
+            Client.ExecTaskNoResult(ReloadData());
+        }
+
         internal virtual async Task RenderViewPort(bool count = true, bool firstLoad = false)
         {
-            // not to do anything
+                // not to do anything
         }
 
         public void HotKeyF6Handler(Event e, KeyCodeEnum? keyCode)

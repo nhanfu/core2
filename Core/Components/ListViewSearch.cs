@@ -229,7 +229,7 @@ namespace Core.Components
                     .Event(EventType.Click, async () =>
                     {
                         ParentListView.ClearSelected();
-                        await ParentListView.ActionFilter();
+                        await ParentListView.ReloadData();
                     }).End
                 .Button(className: "button secondary small btn-toolbar right", icon: "fa fa-cog")
                     .Title("Nâng cao")
@@ -293,7 +293,7 @@ namespace Core.Components
                         var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
                         ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(Core.MVVM.ElementType.td.ToString()), KeyCodeEnum.F11);
                     })
-                    .Attr("title", "Sắp xếp thứ tự tăng dần, giảm dần").End.Render();
+                    .Attr("title", "Sắp xếp thứ tự tăng dần, giảm dần. (Shift+F11 để sort nhiều cấp)").End.Render();
             }
         }
 

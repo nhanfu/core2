@@ -209,7 +209,7 @@ namespace Core.Components
             return source;
         }
 
-        public virtual async Task<List<object>> ReloadData(string DataSourceFilter = null, bool cache = false, int? skip = null, int? pageSize = null, bool search = false)
+        public virtual async Task<List<object>> ReloadData(string dataSourceFilter = null, bool cache = false, int? skip = null, int? pageSize = null, bool search = false)
         {
             if (GuiInfo.LocalRender && GuiInfo.LocalData != null)
             {
@@ -228,17 +228,17 @@ namespace Core.Components
                 return await SqlReader(skip, pageSize);
             }
 
-            DataSourceFilter = DataSourceFilter.IsNullOrEmpty() ? CalcFilterQuery(true) : DataSourceFilter;
-            if (DataSourceFilter.IsNullOrWhiteSpace())
+            dataSourceFilter = dataSourceFilter.IsNullOrEmpty() ? CalcFilterQuery(true) : dataSourceFilter;
+            if (dataSourceFilter.IsNullOrWhiteSpace())
             {
-                DataSourceFilter = "?$filter=true";
+                dataSourceFilter = "?$filter=true";
             }
-            if (!DataSourceFilter.Contains("?"))
+            if (!dataSourceFilter.Contains("?"))
             {
-                DataSourceFilter += "?";
+                dataSourceFilter += "?";
             }
 
-            var pagingQuery = DataSourceFilter + $"&$skip={skip}&$top={pageSize}&$count=true";
+            var pagingQuery = dataSourceFilter + $"&$skip={skip}&$top={pageSize}&$count=true";
             OdataResult<object> result;
             var val = (Entity?.GetComplexPropValue(GuiInfo.FieldName) as IEnumerable<object>)?.ToList();
             if (GuiInfo.CanCache && val != null && val.Any() && !search)
@@ -251,7 +251,7 @@ namespace Core.Components
             }
             else
             {
-                result = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(pageSize > 0 ? pagingQuery : DataSourceFilter, true);
+                result = await new Client(GuiInfo.RefName, GuiInfo.Reference != null ? GuiInfo.Reference.Namespace : null).GetList<object>(pageSize > 0 ? pagingQuery : dataSourceFilter, true);
             }
             Sql = result.Sql;
             UpdatePagination(result.Odata.Count ?? result.Value.Count, result.Value.Count);
@@ -262,7 +262,7 @@ namespace Core.Components
                 {
                     Paginator.Options.PageIndex = 0;
                 }
-                await ReloadData(DataSourceFilter, cache: cache);
+                await ReloadData(dataSourceFilter, cache: cache);
             }
             Spinner.Hide();
             return result.Value;
@@ -271,12 +271,16 @@ namespace Core.Components
         public async Task<List<object>> SqlReader(int? skip, int? pageSize)
         {
             var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
+            var orderBy = AdvSearchVM.OrderBy.Any() ? AdvSearchVM.OrderBy.Combine(x => {
+                var sortDirection = x.OrderbyOptionId == OrderbyOption.ASC ? "asc" : "desc";
+                return $"ds.{x.Field.FieldName} {sortDirection}";
+            }) : null;
             var data = new SqlWrapper
             {
                 Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
                 Component = new SignedCom{ Query = GuiInfo.Query, Signed = GuiInfo.Signed },
                 Paging = $"offset {skip} rows\nfetch next {pageSize} rows only",
-                OrderBy = GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy,
+                OrderBy = orderBy ?? (GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy),
                 Where = CalcFilterQuery(true),
                 Count = true,
             };

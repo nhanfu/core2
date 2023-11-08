@@ -96,6 +96,7 @@ namespace Core.Components
                 return;
             }
             MainSection.Show = false;
+            MainSection.DisposeChildren();
             FormattedRowData.SelectForEach((row, index) =>
             {
                 Html.Take(MainSection.Element);
