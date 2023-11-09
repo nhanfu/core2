@@ -228,8 +228,9 @@ namespace Core.Components
             }) : null;
             var basicCondition = CalcFilterQuery(true);
             var fnBtnCondition = Wheres.Combine(x => $"({x.FieldName})", " and ");
+            fnBtnCondition = fnBtnCondition.IsNullOrWhiteSpace() ? null : $" and {fnBtnCondition}";
             var finalCondition = basicCondition.IsNullOrWhiteSpace() ? fnBtnCondition
-                    : $"({basicCondition}) and {fnBtnCondition}";
+                    : $"({basicCondition}){fnBtnCondition}";
             var data = new SqlWrapper
             {
                 Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,

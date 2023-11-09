@@ -2826,17 +2826,14 @@ namespace Core.Components
                     x.Selected = true;
                 });
             }
-            if (VirtualScroll)
+            if (VirtualScroll && !anySelected)
             {
-                Task.Run(async () =>
+                var data = CalcDatasourse(Paginator.Options.Total, 0, "false");
+                var task = new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>($"{data}&$select=Id", true);
+                Client.ExecTask(task, selectedOdataIds =>
                 {
-                    if (!anySelected)
-                    {
-                        var data = CalcDatasourse(Paginator.Options.Total, 0, "false");
-                        var selectedOdataIds = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>($"{data}&$select=Id", true);
-                        var selectedIds = selectedOdataIds.Value.Select(x => x[IdField].ToString()).ToList();
-                        SelectedIds = selectedIds.Distinct().As<HashSet<string>>();
-                    }
+                    var selectedIds = selectedOdataIds.Value.Select(x => x[IdField].ToString()).ToList();
+                    SelectedIds = selectedIds.Distinct().As<HashSet<string>>();
                 });
             }
         }
