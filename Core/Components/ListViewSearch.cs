@@ -464,7 +464,7 @@ namespace Core.Components
             Task.Run(async () =>
             {
                 Toast.Success("Đang xuất excel");
-                var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"ds.{orderby.Field.FieldName} {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
+                var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"ds.{orderby.FieldName} {orderby.OrderbyDirectionId.ToString().ToLowerCase()}");
                 var finalFilter = string.Empty;
                 if (orderbyList.HasElement())
                 {
@@ -523,7 +523,7 @@ namespace Core.Components
             Task.Run(async () =>
             {
                 Toast.Success("Đang xuất excel");
-                var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"ds.{orderby.Field.FieldName} {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
+                var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"ds.{orderby.FieldName} {orderby.OrderbyDirectionId.ToString().ToLowerCase()}");
                 var finalFilter = string.Empty;
                 if (orderbyList.HasElement())
                 {

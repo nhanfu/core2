@@ -53,9 +53,9 @@ namespace Core.Models
     public class OrderBy
     {
         public string Id { get; set; }
-        public string FieldId { get; set; }
-        public Component Field { get; set; }
-        public OrderbyOption? OrderbyOptionId { get; set; }
+        public string ComId { get; set; }
+        public string FieldName { get; set; }
+        public OrderbyDirection? OrderbyDirectionId { get; set; }
     }
 
     public class SocketResponse

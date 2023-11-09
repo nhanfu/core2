@@ -95,7 +95,7 @@ namespace Core.Enums
         Or = 1,
     }
 
-    public enum OrderbyOption
+    public enum OrderbyDirection
     {
         [Description("Tăng dần")]
         ASC = 1,

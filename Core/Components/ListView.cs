@@ -47,7 +47,6 @@ namespace Core.Components
         public HTMLElement LastElementFocus { get; set; }
         public ListViewSearch ListViewSearch { get; set; }
         public Paginator Paginator { get; set; }
-        public List<SortedField> SortedField { get; set; }
         public List<Component> Header { get; set; }
         public List<Component> BasicHeader { get; set; } = new List<Component>();
         public List<Component> RefBasicHeader { get; set; } = new List<Component>();
@@ -127,12 +126,6 @@ namespace Core.Components
                 ActiveState = ActiveStateEnum.Yes,
                 OrderBy = LocalStorage.GetItem<List<OrderBy>>("OrderBy" + GuiInfo.Id) ?? new List<OrderBy>()
             };
-            SortedField = AdvSearchVM.OrderBy.Select(x => new SortedField()
-            {
-                Field = x.Field.FieldName,
-                Desc = x.OrderbyOptionId == OrderbyOption.DESC ? true : false,
-                Com = x.Field,
-            }).ToList();
             DataSourceFilter = ui.DataSourceFilter;
             StopChildrenHistory = true;
             _hasLoadRef = false;
@@ -230,8 +223,8 @@ namespace Core.Components
             var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
             var orderBy = AdvSearchVM.OrderBy.Any() ? AdvSearchVM.OrderBy.Combine(x =>
             {
-                var sortDirection = x.OrderbyOptionId == OrderbyOption.ASC ? "asc" : "desc";
-                return $"ds.{x.Field.FieldName} {sortDirection}";
+                var sortDirection = x.OrderbyDirectionId == OrderbyDirection.ASC ? "asc" : "desc";
+                return $"ds.{x.FieldName} {sortDirection}";
             }) : null;
             var basicCondition = CalcFilterQuery(true);
             var fnBtnCondition = Wheres.Combine(x => $"({x.FieldName})", " and ");

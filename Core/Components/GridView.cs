@@ -18,12 +18,6 @@ using TextAlign = Core.Enums.TextAlign;
 
 namespace Core.Components
 {
-    public class SortedField
-    {
-        public string Field { get; set; }
-        public Component Com { get; set; }
-        public bool Desc { get; set; }
-    }
     public class GridView : ListView
     {
         public ListViewSection EmptyRowSection { get; set; }
@@ -1463,63 +1457,59 @@ namespace Core.Components
             var th = HeaderSection.Children.FirstOrDefault(x => x.GuiInfo.Id == com.GuiInfo.Id);
             th.Element.RemoveClass("desc");
             th.Element.RemoveClass("asc");
-            if (SortedField is null)
+            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.GuiInfo.RefField : com.GuiInfo.FieldName;
+            var sort = new OrderBy
             {
-                SortedField = new List<SortedField>()
-                {
-                    new SortedField
-                    {
-                        Field = com.GuiInfo.FieldName,
-                        Desc = true,
-                        Com = com.GuiInfo.CastProp<Component>(),
-                    }
-                };
+                FieldName = fieldName,
+                OrderbyDirectionId = OrderbyDirection.ASC,
+                ComId = com.GuiInfo.Id,
+            };
+            if (AdvSearchVM.OrderBy.Nothing())
+            {
+                AdvSearchVM.OrderBy = new List<OrderBy>() { sort };
                 th.Element.AddClass("desc");
             }
             else
             {
-                var existSort = SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName);
+                var existSort = AdvSearchVM.OrderBy.FirstOrDefault(x => x.FieldName == fieldName);
                 if (existSort != null)
                 {
-                    if ((!existSort.Desc) == false)
-                    {
-                        SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName).Desc = !existSort.Desc;
-                        th.Element.AddClass(!existSort.Desc ? "asc" : "desc");
-                    }
-                    else
-                    {
-                        SortedField.Remove(SortedField.FirstOrDefault(x => x.Field == com.GuiInfo.FieldName));
-                    }
+                    AlterExistSort(th, existSort);
                 }
                 else
                 {
-                    if (!e.ShiftKey())
-                    {
-                        HeaderSection.Children.ForEach(x =>
-                        {
-                            x.Element.RemoveClass("desc");
-                            x.Element.RemoveClass("asc");
-                        });
-                        SortedField.Clear();
-                    }
+                    var shiftKey = e.ShiftKey();
+                    RemoveOtherSorts(shiftKey);
                     th.Element.AddClass("desc");
-                    SortedField.Add(new SortedField
-                    {
-                        Field = com.GuiInfo.FieldName,
-                        Com = com.GuiInfo.CastProp<Component>(),
-                        Desc = true
-                    });
+                    AdvSearchVM.OrderBy.Add(sort);
                 }
             }
-            AdvSearchVM.OrderBy.Clear();
-            AdvSearchVM.OrderBy.AddRange(SortedField.Select(x => new OrderBy
-            {
-                Field = x.Com,
-                FieldId = x.Com.Id,
-                OrderbyOptionId = x.Desc ? OrderbyOption.DESC : OrderbyOption.ASC
-            }).ToList());
             LocalStorage.SetItem("OrderBy" + GuiInfo.Id, AdvSearchVM.OrderBy);
             Client.ExecTaskNoResult(ReloadData());
+        }
+
+        private void AlterExistSort(EditableComponent th, OrderBy existSort)
+        {
+            if (existSort.OrderbyDirectionId == OrderbyDirection.ASC)
+            {
+                existSort.OrderbyDirectionId = OrderbyDirection.DESC;
+                th.Element.ReplaceClass("asc", "desc");
+            }
+            else
+            {
+                AdvSearchVM.OrderBy.Remove(existSort);
+            }
+        }
+
+        private void RemoveOtherSorts(bool shiftKey)
+        {
+            if (shiftKey) return;
+            HeaderSection.Children.ForEach(x =>
+            {
+                x.Element.RemoveClass("desc");
+                x.Element.RemoveClass("asc");
+            });
+            AdvSearchVM.OrderBy.Clear();
         }
 
         internal virtual async Task RenderViewPort(bool count = true, bool firstLoad = false)
@@ -1577,8 +1567,8 @@ namespace Core.Components
 
                                 AdvSearchVM.Conditions.RemoveAt(AdvSearchVM.Conditions.Count - 1);
                             }
-                                ActionFilter();
-                                _summarys.RemoveAt(_summarys.Count - 1);
+                            ActionFilter();
+                            _summarys.RemoveAt(_summarys.Count - 1);
                         }
                         else
                         {
@@ -2595,10 +2585,10 @@ namespace Core.Components
                 {
                     Html.Instance.Icon("fa fa-edit").Event(EventType.Click, ToggleAll).End.Render();
                 }
-                var orderBy = AdvSearchVM.OrderBy.FirstOrDefault(x => x.FieldId == header.Id);
+                var orderBy = AdvSearchVM.OrderBy.FirstOrDefault(x => x.ComId == header.Id);
                 if (orderBy != null)
                 {
-                    Html.Instance.ClassName(orderBy.OrderbyOptionId == OrderbyOption.ASC ? "asc" : "desc").Render();
+                    Html.Instance.ClassName(orderBy.OrderbyDirectionId == OrderbyDirection.ASC ? "asc" : "desc").Render();
                 }
                 if (!header.Icon.IsNullOrWhiteSpace())
                 {

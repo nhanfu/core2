@@ -69,17 +69,17 @@ namespace Core.Components
 
                 var result = new OrderBy
                 {
-                    FieldId = field.Id,
-                    Field = field
+                    ComId = field.Id,
+                    FieldName = field.FieldName
                 };
                 if (orderField.Length == 1)
                 {
-                    result.OrderbyOptionId = OrderbyOption.ASC;
+                    result.OrderbyDirectionId = OrderbyDirection.ASC;
                 }
                 else
                 {
-                    var parsed = Enum.TryParse(orderField[1].ToString().ToUpper(), out OrderbyOption orderbyOption);
-                    result.OrderbyOptionId = parsed ? orderbyOption : OrderbyOption.ASC;
+                    var parsed = Enum.TryParse(orderField[1].ToString().ToUpper(), out OrderbyDirection orderbyOption);
+                    result.OrderbyDirectionId = parsed ? orderbyOption : OrderbyDirection.ASC;
                 }
                 return result;
             }).Where(x => x != null).ToList();
@@ -345,7 +345,7 @@ namespace Core.Components
                 {
                     Id = 2 .ToString(),
                     EntityId = _orderById,
-                    FieldName = nameof(OrderBy.OrderbyOptionId),
+                    FieldName = nameof(OrderBy.OrderbyDirectionId),
                     ShortDesc = "Thứ tự",
                     ReferenceId = _entityId,
                     RefName = nameof(Entity),
@@ -355,7 +355,7 @@ namespace Core.Components
                     Editable = true,
                     MinWidth = "100px",
                     MaxWidth = "120px",
-                    LocalData = IEnumerableExtensions.ToEntity<OrderbyOption>(),
+                    LocalData = IEnumerableExtensions.ToEntity<OrderbyDirection>(),
                     LocalHeader = new List<Component>
                     {
                         new Component
@@ -445,7 +445,7 @@ namespace Core.Components
             {
                 query = OdataExt.ApplyClause(query, qr);
             }
-            var orderbyList = AdvSearchEntity.OrderBy.Select(orderby => $"{orderby.Field.FieldName} {orderby.OrderbyOptionId.ToString().ToLowerCase()}");
+            var orderbyList = AdvSearchEntity.OrderBy.Select(orderby => $"{orderby.FieldName} {orderby.OrderbyDirectionId.ToString().ToLowerCase()}");
             var orderByPart = string.Join(",", orderbyList);
             if (!orderByPart.IsNullOrWhiteSpace())
             {
