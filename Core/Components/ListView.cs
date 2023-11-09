@@ -228,16 +228,15 @@ namespace Core.Components
             }) : null;
             var basicCondition = CalcFilterQuery(true);
             var fnBtnCondition = Wheres.Combine(x => $"({x.FieldName})", " and ");
-            fnBtnCondition = fnBtnCondition.IsNullOrWhiteSpace() ? null : $" and {fnBtnCondition}";
-            var finalCondition = basicCondition.IsNullOrWhiteSpace() ? fnBtnCondition
-                    : $"({basicCondition}){fnBtnCondition}";
+            var finalCon = new string[] { basicCondition, fnBtnCondition }
+                .Where(x => !x.IsNullOrWhiteSpace()).Combine(" and ");
             var data = new SqlWrapper
             {
                 Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
                 Component = new SignedCom { Query = GuiInfo.Query, Signed = GuiInfo.Signed },
                 Paging = $"offset {skip} rows\nfetch next {pageSize} rows only",
                 OrderBy = orderBy ?? (GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy),
-                Where = finalCondition,
+                Where = finalCon,
                 Count = true,
             };
             return await CustomQuery(JSON.Stringify(data));

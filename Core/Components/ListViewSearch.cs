@@ -18,9 +18,9 @@ namespace Core.Components
         public string SearchTerm { get; set; }
         public string FullTextSearch { get; set; }
         public string ScanTerm { get; set; }
-        public DateTimeOffset? StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
         public string DateTimeField { get; set; }
-        public DateTimeOffset? EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 
     public class ListViewSearch : EditableComponent
@@ -649,10 +649,6 @@ namespace Core.Components
             var parentGrid = basicsAddDate != null && basicsAddDate.Any() && ParentGridView.AdvSearchVM.Conditions.Any(x => basicsAddDate.Contains(x.FieldId) && !x.Value.IsNullOrWhiteSpace());
             if (!parentGrid && EntityVM.StartDate != null)
             {
-                if (finalFilter.HasAnyChar())
-                {
-                    finalFilter += " and ";
-                }
                 var oldStartDate = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"ds.[{DateTimeField}] >="));
                 if (oldStartDate is null)
                 {
@@ -667,7 +663,6 @@ namespace Core.Components
                     oldStartDate.FieldName = $"ds.[{DateTimeField}] >= '{EntityVM.StartDate.Value:yyyy-MM-dd}'";
                 }
                 EntityVM.StartDate = EntityVM.StartDate.Value.Date;
-                finalFilter += $"cast(ds.{DateTimeField},date) >= cast({EntityVM.StartDate:yyyy/MM/dd},date)";
                 LocalStorage.SetItem("FromDate" + ParentListView.GuiInfo.Id, EntityVM.StartDate.Value.ToString("yyyy/MM/dd"));
             }
             else if (EntityVM.StartDate is null)
@@ -699,7 +694,6 @@ namespace Core.Components
                 {
                     oldEndDate.FieldName = $"ds.[{DateTimeField}] < '{endDate:yyyy-MM-dd}'";
                 }
-                finalFilter += $"cast(ds.{DateTimeField},date) < cast(ds.{endDate.ToSimpleFormat()},date)";
                 LocalStorage.SetItem("ToDate" + ParentListView.GuiInfo.Id, EntityVM.EndDate.Value.ToString("MM/dd/yyyy"));
             }
             else if (EntityVM.EndDate is null)

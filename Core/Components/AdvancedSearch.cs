@@ -544,7 +544,7 @@ namespace Core.Components
             if (fieldType.IsDate())
             {
                 component = SetSearchDateTime(compareCell, field);
-                condition.Value = DateTime.Now.ToString();
+                condition.Value = DateTimeOffset.Now.ToString();
             }
             else if (isSearchId)
             {

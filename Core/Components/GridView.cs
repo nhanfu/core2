@@ -691,7 +691,7 @@ namespace Core.Components
                         {
                             try
                             {
-                                var va = DateTime.ParseExact(cell.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                var va = DateTimeOffset.ParseExact(cell.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                                 if (cell.Operator == (int)OperatorEnum.NotIn || cell.Operator == (int)OperatorEnum.In)
                                 {
                                     where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} != '{va:yyyy-MM-dd}'" : $"[ds].{cell.FieldName} = '{va:yyyy-MM-dd}'";
@@ -700,7 +700,7 @@ namespace Core.Components
                             }
                             catch
                             {
-                                var va = DateTime.ParseExact(cell.Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                                var va = DateTimeOffset.ParseExact(cell.Value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                                 where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} != '{va:yyyy-MM-dd}'" : $"[ds].{cell.FieldName} = '{va:yyyy-MM-dd}'";
                                 advo = cell.Operator == (int)OperatorEnum.NotIn ? AdvSearchOperation.NotEqualDatime : AdvSearchOperation.EqualDatime;
                             }
@@ -945,7 +945,7 @@ namespace Core.Components
         {
             var input = e.Target as HTMLInputElement;
             var table = Document.GetElementById(_summaryId) as HTMLTableElement;
-            var url = await new Client(nameof(FileUpload)) { CustomPrefix = "https://cdn-tms.softek.com.vn/api" }.PostAsync<string>(table.OuterHTML, $"ExportExcelFromHtml?fileName=Summary{DateTime.Now:ddMMyyyyHHmm}", allowNested: true);
+            var url = await new Client(nameof(FileUpload)) { CustomPrefix = "https://cdn-tms.softek.com.vn/api" }.PostAsync<string>(table.OuterHTML, $"ExportExcelFromHtml?fileName=Summary{DateTimeOffset.Now:ddMMyyyyHHmm}", allowNested: true);
             Client.Download(url);
         }
 
@@ -1799,8 +1799,8 @@ namespace Core.Components
                     }
                     else if (header.ComponentType == nameof(Number))
                     {
-                        var datetime = (item[header.FieldName] is null || item[header.FieldName].ToString() == "") ? default(decimal) : decimal.Parse(item[header.FieldName].ToString());
-                        dataHeader = datetime == default(decimal) ? "" : datetime.ToString("N0");
+                        var numVal = (item[header.FieldName] is null || item[header.FieldName].ToString() == "") ? 0 : decimal.Parse(item[header.FieldName].ToString());
+                        dataHeader = numVal == 0 ? "" : numVal.ToString("N0");
                         value = item[header.FieldName].ToString();
                         valueText = dataHeader;
                     }
@@ -2673,6 +2673,7 @@ namespace Core.Components
                 RenderTableHeader(Header);
             }
             var rows = new List<object>(ds[0]);
+            ClearRowData();
             SetRowData(rows);
             UpdatePagination(total, rows.Count);
             return rows;

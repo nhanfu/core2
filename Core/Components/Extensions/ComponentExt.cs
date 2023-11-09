@@ -152,7 +152,7 @@ namespace Core.Components.Extensions
                 if (parsedDate)
                 {
                     var dateStr = date.ToString("yyyy/MM/dd");
-                    return $"cast(ds.{fieldName} as date) = cast({dateStr} as date)";
+                    return $"cast(ds.{fieldName} as date) = cast('{dateStr}' as date)";
                 }
 
                 return string.Empty;
