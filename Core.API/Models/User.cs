@@ -5,12 +5,6 @@ namespace Core.Models
 {
     public partial class User
     {
-        public User()
-        {
-            InverseSupervisor = new HashSet<User>();
-            UserRole = new HashSet<UserRole>();
-        }
-
         public string Id { get; set; }
         public string VendorId { get; set; }
         public string FirstName { get; set; }
@@ -55,10 +49,5 @@ namespace Core.Models
         public string TeamId { get; set; }
         public string ContactId { get; set; }
         public string StateId { get; set; }
-
-        public virtual User Supervisor { get; set; }
-        public virtual Vendor Vendor { get; set; }
-        public virtual ICollection<User> InverseSupervisor { get; set; }
-        public virtual ICollection<UserRole> UserRole { get; set; }
     }
 }

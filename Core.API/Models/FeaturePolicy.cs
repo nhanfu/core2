@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Core.Models
 {
@@ -26,8 +25,5 @@ namespace Core.Models
         public bool CanShare { get; set; }
         public string Desc { get; set; }
         public bool CanWriteAll { get; set; }
-
-        public virtual Feature Feature { get; set; }
-        public virtual Role Role { get; set; }
     }
 }

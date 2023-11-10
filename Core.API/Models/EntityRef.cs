@@ -20,7 +20,5 @@ namespace Core.Models
         public string ViewClass { get; set; }
         public string FieldName { get; set; }
         public string FeatureId { get; set; }
-
-        public virtual Component Com { get; set; }
     }
 }

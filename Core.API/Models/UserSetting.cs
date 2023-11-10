@@ -17,12 +17,5 @@ namespace Core.Models
         public string InsertedBy { get; set; }
         public DateTimeOffset? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
-
-        public virtual Role Role { get; set; }
-
-        internal object ToDictionary(Func<object, object> p)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -660,7 +660,11 @@ namespace Core.Components.Forms
             {
                 evt.PreventDefault();
                 await Client.LoadScript("https://unpkg.com/intro.js/intro.js");
-                var intro = await new Client(nameof(Intro)).GetRawList<Intro>($"?$filter=FeatureId eq '{Feature.Id}'&$orderby=Order asc");
+                var intro = await new Client().SubmitAsync<dynamic[]>(new XHRWrapper
+                {
+                    Url = $"/Intro/?$filter=FeatureId eq '{Feature.Id}'&$orderby=Order asc",
+                    Method = HttpMethod.GET
+                });
                 var script = @"(x) => {
                                 introJs().setOptions({
                                   steps: [

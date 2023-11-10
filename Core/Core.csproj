@@ -61,9 +61,6 @@
     <Compile Include="..\Core.API\Models\Images.cs">
       <Link>Models\Images.cs</Link>
     </Compile>
-    <Compile Include="..\Core.API\Models\Intro.cs">
-      <Link>Models\Intro.cs</Link>
-    </Compile>
     <Compile Include="..\Core.API\Models\VendorBranch.cs">
       <Link>Models\VendorBranch.cs</Link>
     </Compile>
@@ -130,29 +127,14 @@
     <Compile Include="..\Core.API\Models\History.cs">
       <Link>Models\History.cs</Link>
     </Compile>
-    <Compile Include="..\Core.API\Models\MasterData.cs">
-      <Link>Models\MasterData.cs</Link>
-    </Compile>
     <Compile Include="..\Core.API\Models\OdataResult.cs">
       <Link>Models\OdataResult.cs</Link>
-    </Compile>
-    <Compile Include="..\Core.API\Models\Role.cs">
-      <Link>Models\Role.cs</Link>
     </Compile>
     <Compile Include="..\Core.API\Models\TaskNotification.cs">
       <Link>Models\TaskNotification.cs</Link>
     </Compile>
     <Compile Include="..\Core.API\Models\User.cs">
       <Link>Models\User.cs</Link>
-    </Compile>
-    <Compile Include="..\Core.API\Models\UserLogin.cs">
-      <Link>Models\UserLogin.cs</Link>
-    </Compile>
-    <Compile Include="..\Core.API\Models\UserRole.cs">
-      <Link>Models\UserRole.cs</Link>
-    </Compile>
-    <Compile Include="..\Core.API\Models\UserSeq.cs">
-      <Link>Models\UserSeq.cs</Link>
     </Compile>
     <Compile Include="..\Core.API\Models\UserSetting.cs">
       <Link>Models\UserSetting.cs</Link>

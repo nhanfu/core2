@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Core.Models
 {
@@ -25,8 +24,5 @@ namespace Core.Models
         public DateTimeOffset? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
         public string Badge { get; set; }
-
-        public virtual Entity Entity { get; set; }
-        public virtual Role Role { get; set; }
     }
 }

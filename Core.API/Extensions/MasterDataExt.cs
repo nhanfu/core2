@@ -1,20 +1,9 @@
-﻿using Core.Extensions;
-using System;
-using Core.Models;
+﻿using System;
 
 namespace Core.Extensions
 {
     public static class MasterDataExt
     {
-        public static decimal TryGetDecimal(this MasterData masterData)
-        {
-            if (masterData is null)
-            {
-                return 0;
-            }
-            return masterData.Description.TryParseDecimal() ?? 0;
-        }
-
         public static double GetDistanceFromLatLonInKm(double lat1, double lon1, double lat2, double lon2)
         {
             var R = 6371;

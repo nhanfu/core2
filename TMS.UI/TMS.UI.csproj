@@ -82,9 +82,6 @@
     <Compile Include="..\TMS.API\Models\History.cs">
       <Link>Models\History.cs</Link>
     </Compile>
-    <Compile Include="..\tms.api\models\MasterData.cs">
-      <Link>Models\MasterData.cs</Link>
-    </Compile>
     <Compile Include="..\tms.api\models\OdataResult.cs">
       <Link>Models\OdataResult.cs</Link>
     </Compile>

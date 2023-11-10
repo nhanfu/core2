@@ -7,7 +7,7 @@ public partial class Intro
 {
     public int Id { get; set; }
 
-    public int? FeatureId { get; set; }
+    public string FeatureId { get; set; }
 
     public string FieldName { get; set; }
 
@@ -19,9 +19,9 @@ public partial class Intro
 
     public DateTimeOffset InsertedDate { get; set; }
 
-    public int InsertedBy { get; set; }
+    public string InsertedBy { get; set; }
 
     public DateTimeOffset? UpdatedDate { get; set; }
 
-    public int? UpdatedBy { get; set; }
+    public string UpdatedBy { get; set; }
 }

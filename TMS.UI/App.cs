@@ -3,8 +3,6 @@ using Core.Clients;
 using Core.Components;
 using Core.Components.Forms;
 using Core.ViewModels;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.API.Models;
@@ -102,22 +100,17 @@ namespace TMS.UI
                 return;
             }
             _initApp = true;
-            Task.Run(async () => await LoadUserSetting(token));
+            LoadUserSetting(token);
         }
 
-        private static async Task LoadUserSetting(Token token)
+        private static void LoadUserSetting(Token token)
         {
             if (token is null)
             {
                 return;
             }
             var rsUserSetting = new Client(nameof(UserSetting)).GetAsync<OdataResult<UserSetting>>($"?$filter=Active eq true and UserId eq {token.UserId}");
-            var rstimeTrackGPS = new Client(nameof(MasterData)).GetAsync<OdataResult<MasterData>>($"?$filter=Active eq true and Name eq 'TimeTrackGPS'");
-            var rsTimeUpdateStatus = new Client(nameof(MasterData)).GetAsync<OdataResult<MasterData>>($"?$filter=Active eq true and Name eq 'TimeUpdateStatus'");
-            await Task.WhenAll(rsUserSetting, rstimeTrackGPS);
             var rs = rsUserSetting.Result.Value.FirstOrDefault();
-            var timeTrackGPS = int.Parse(rstimeTrackGPS.Result.Value.FirstOrDefault().Description);
-            var timeUpdateStatus = int.Parse(rstimeTrackGPS.Result.Value.FirstOrDefault().Description);
             if (rs is null)
             {
                 TabEditor.ShowTabText = false;
