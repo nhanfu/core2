@@ -6,6 +6,14 @@
 
 namespace Core.Enums
 {
+    public enum HttpMethod
+    {
+        GET,
+        POST,
+        PUT,
+        PATCH,
+        DELETE
+    }
 
     //
     // Redirect Status code numbers that need to be defined.

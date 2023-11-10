@@ -1,23 +1,20 @@
-﻿using Bridge;
-using Bridge.Html5;
+﻿using Bridge.Html5;
 using Core.Clients;
-using Core.Components;
 using Core.Components.Extensions;
 using Core.Components.Forms;
 using Core.Enums;
 using Core.Extensions;
+using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TMS.API.Models;
-using TMS.API.ViewModels;
 using ElementType = Core.MVVM.ElementType;
 using Notification = Retyped.dom.Notification;
 
-namespace TMS.UI.Notifications
+namespace Core.Components.Framework
 {
     public class NotificationBL : EditableComponent
     {

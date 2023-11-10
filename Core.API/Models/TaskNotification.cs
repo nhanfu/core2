@@ -24,5 +24,6 @@ namespace Core.Models
         public DateTimeOffset? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
         public string Badge { get; set; }
+        public Entity Entity { get; set; }
     }
 }

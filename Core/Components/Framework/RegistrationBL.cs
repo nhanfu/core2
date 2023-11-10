@@ -1,8 +1,9 @@
 ﻿using Core.Components.Forms;
+using Core.Models;
 using Core.ViewModels;
 using System.Threading.Tasks;
 
-namespace TMS.UI.Business.User
+namespace Core.Components.Framework
 {
     public class RegistrationBL : PopupEditor
     {

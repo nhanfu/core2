@@ -1,16 +1,15 @@
 ﻿using Bridge.Html5;
 using Core.Clients;
-using Core.Components;
 using Core.Components.Forms;
 using Core.Enums;
 using Core.Extensions;
+using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
 using System;
 using System.Threading.Tasks;
-using TMS.UI.Notifications;
 
-namespace TMS.UI.Business.Authentication
+namespace Core.Components.Framework
 {
     public class LoginBL : PopupEditor
     {

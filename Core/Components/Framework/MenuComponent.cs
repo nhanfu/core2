@@ -1,11 +1,9 @@
 ﻿using Bridge.Html5;
-using Core.Models;
 using Core.Clients;
-using Core.Components;
 using Core.Components.Extensions;
 using Core.Components.Forms;
-using Core.Components.Framework;
 using Core.Extensions;
+using Core.Models;
 using Core.MVVM;
 using System;
 using System.Collections.Generic;
@@ -13,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 
-namespace TMS.UI.Business
+namespace Core.Components.Framework
 {
     public partial class MenuComponent : EditableComponent
     {

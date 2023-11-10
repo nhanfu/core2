@@ -2,63 +2,34 @@
 using Core.Clients;
 using Core.Components;
 using Core.Components.Forms;
+using Core.Components.Framework;
+using Core.Models;
 using Core.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;
-using TMS.API.Models;
-using TMS.UI.Business.Authentication;
 
-namespace TMS.UI
+namespace Core
 {
     public static class App
     {
         private static bool _initApp;
-        private static int _countDownUpdator;
-        private static int _countAutoUpdateStaus;
         public static async Task Main()
         {
             if (LangSelect.Culture == null)
             {
                 LangSelect.Culture = "vi";
             }
-
-            var versionCurrent = await new Client(nameof(Entity)).FirstOrDefaultAsync<Entity>("?$top=1&$filter=Name eq 'Version'");
-            if (versionCurrent != null)
+            var reload = await ShouldReloadNewVersion();
+            if (reload)
             {
-                var version = LocalStorage.GetItem<string>("Version");
-                if (version is null)
-                {
-                    LocalStorage.SetItem("Version", "1");
-                    version = "1";
-                }
-                if (version != versionCurrent.Description)
-                {
-                    /*@
-                     const swalWithBootstrapButtons = Swal.mixin({
-                          customClass: {
-                            confirmButton: 'btn btn-success',
-                            cancelButton: 'btn btn-danger'
-                          },
-                          buttonsStyling: false
-                        })
-                        swalWithBootstrapButtons.fire({
-                          title: 'Cập nhật !',
-                          text: "Phiên bản của bạn chưa mới nhất!",
-                          icon: 'error',
-                          showCancelButton: true,
-                          confirmButtonText: 'Yes, Cập nhật!',
-                          cancelButtonText: 'No, Không!',
-                          reverseButtons: true
-                        }).then((result) => {
-                          Core.Clients.LocalStorage.SetItem(System.String, "Version", versionCurrent.Description);
-                          window.location.reload(true);
-                        })
-                     */
-                    return;
-                }
+                return;
             }
-
             await TryInitData();
+            InitApp();
+        }
+
+        private static void InitApp()
+        {
             Client.ModelNamespace = typeof(User).Namespace + ".";
             _ = Spinner.Instance;
             LoginBL.Instance.Render();
@@ -78,6 +49,50 @@ namespace TMS.UI
                 Document.DocumentElement.ClassName = className;
             }
             LoginBL.Instance.TokenRefreshedHandler += LoadSettingWrapper;
+        }
+
+        private static async Task<bool> ShouldReloadNewVersion()
+        {
+            var versionCurrent = await new Client().SubmitAsync<dynamic>(new XHRWrapper
+            {
+                Url = "/Entity/?$top=1&$filter=Name eq 'Version'"
+            });
+            if (versionCurrent == null || versionCurrent.data == null || versionCurrent.data.length == null)
+            {
+                return false;
+            }
+            var version = LocalStorage.GetItem<string>("Version");
+            if (version is null)
+            {
+                LocalStorage.SetItem("Version", "1");
+                version = "1";
+            }
+            if (version == versionCurrent.value[0].Description)
+            {
+                return false;
+            }
+            /*@
+             const swalWithBootstrapButtons = Swal.mixin({
+                  customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                  },
+                  buttonsStyling: false
+                })
+                swalWithBootstrapButtons.fire({
+                  title: 'Cập nhật !',
+                  text: "Phiên bản của bạn chưa mới nhất!",
+                  icon: 'error',
+                  showCancelButton: true,
+                  confirmButtonText: 'Yes, Cập nhật!',
+                  cancelButtonText: 'No, Không!',
+                  reverseButtons: true
+                }).then((result) => {
+                  Core.Clients.LocalStorage.SetItem(System.String, "Version", versionCurrent.Description);
+                  window.location.reload(true);
+                })
+             */
+            return true;
         }
 
         private static async Task TryInitData()

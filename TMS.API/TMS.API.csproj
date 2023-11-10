@@ -90,10 +90,6 @@
 		<None Include="wwwroot\js\sweetalert2.js" />
 		<None Include="wwwroot\js\theme1.js" />
 		<None Include="wwwroot\js\tms.newtonsoft.json.js" />
-		<None Include="wwwroot\js\TMS.UI.js" />
-		<None Include="wwwroot\js\TMS.UI.meta.js" />
-		<None Include="wwwroot\js\TMS.UI.meta.min.js" />
-		<None Include="wwwroot\js\TMS.UI.min.js" />
 		<None Include="wwwroot\webfonts\Transportation020220230851.xlsx" />
 	</ItemGroup>
 

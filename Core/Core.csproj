@@ -37,6 +37,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\Core.API\Enums\HttpStatusCode.cs">
+      <Link>Enums\HttpStatusCode.cs</Link>
+    </Compile>
     <Compile Include="..\Core.API\Extensions\DateTimeExt.cs">
       <Link>Extensions\DateTimeExt.cs</Link>
     </Compile>
@@ -100,9 +103,6 @@
     <Compile Include="..\Core.API\ViewModels\VendorVM.cs">
       <Link>ViewModels\VendorVM.cs</Link>
     </Compile>
-    <Compile Include="..\Core.API\Enums\ApprovalStatusEnum.cs">
-      <Link>Enums\ApprovalStatusEnum.cs</Link>
-    </Compile>
     <Compile Include="..\Core.API\Enums\MasterDataType.cs">
       <Link>Enums\MasterDataType.cs</Link>
     </Compile>
@@ -142,9 +142,14 @@
     <Compile Include="..\Core.API\Models\Vendor.cs">
       <Link>Models\Vendor.cs</Link>
     </Compile>
+    <Compile Include="App.cs" />
     <Compile Include="Clients\LocalStorage.cs" />
     <Compile Include="Components\ExportCustomData.cs" />
     <Compile Include="Components\ButtonPdf.cs" />
+    <Compile Include="Components\Framework\LoginBL.cs" />
+    <Compile Include="Components\Framework\MenuComponent.cs" />
+    <Compile Include="Components\Framework\NotificationBL.cs" />
+    <Compile Include="Components\Framework\RegistrationBL.cs" />
     <Compile Include="Components\SecurityBL.cs" />
     <Compile Include="Components\Select2.cs" />
     <Compile Include="Components\VirtualGrid.cs" />
@@ -153,7 +158,6 @@
     <Compile Include="Components\BarCode.cs" />
     <Compile Include="Components\FileUploadGrid.cs" />
     <Compile Include="Components\LangSelect.cs" />
-    <Compile Include="Enums\HttpStatusCode.cs" />
     <Compile Include="Enums\TextAlign.cs" />
     <Compile Include="Clients\BadGatewayQueue.cs" />
     <Compile Include="Clients\HttpException.cs" />
@@ -207,7 +211,6 @@
     <Compile Include="Components\Framework\FeatureBL.cs" />
     <Compile Include="Components\Framework\FeatureDetailBL.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="PortalBL.cs" />
     <Compile Include="ViewModels\AdvSearchVM.cs" />
     <Compile Include="Enums\CustomEventType.cs" />
     <Compile Include="Enums\KeyCodeEnum.cs" />
@@ -225,7 +228,7 @@
     <Compile Include="MVVM\ObservableList.cs" />
     <Compile Include="MVVM\SelectListItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Renderer.cs" />
+    <Compile Include="Components\Renderer.cs" />
     <Compile Include="ViewModels\HotKeyModel.cs" />
     <Compile Include="ViewModels\SqlWrapper.cs" />
   </ItemGroup>
