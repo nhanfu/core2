@@ -1,0 +1,25 @@
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Core.Models
+{
+    public partial class HistoryContext : DbContext
+    {
+        public HistoryContext()
+        {
+        }
+
+        public HistoryContext(DbContextOptions<HistoryContext> options)
+            : base(options)
+        {
+        }
+
+        public virtual DbSet<History> History { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            OnModelCreatingPartial(modelBuilder);
+        }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    }
+}

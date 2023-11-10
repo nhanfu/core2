@@ -1,5 +1,4 @@
-﻿using Bridge.Html5;
-using Core.Extensions;
+﻿using Core.Extensions;
 using System.Linq;
 
 namespace System.IO
