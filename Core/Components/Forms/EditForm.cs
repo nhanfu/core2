@@ -66,7 +66,7 @@ namespace Core.Components.Forms
 
         public bool IsLock { get; private set; }
 
-        public HashSet<ListView> ListViews { get; set; }
+        public HashSet<ListView> ListViews { get; set; } = new HashSet<ListView>();
 
         public Vendor UserVendor => Client.Token?.Vendor;
         public bool ShouldLoadEntity { get; set; }

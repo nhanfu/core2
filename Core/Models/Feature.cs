@@ -53,6 +53,8 @@ namespace Core.Models
         public string Gallery { get; set; }
         public bool DeleteTemp { get; set; }
         public bool CustomNextCell { get; set; }
+        public bool Signed { get; set; }
+        public bool IsPortal { get; set; }
 
         public virtual Entity Entity { get; set; }
         public virtual Feature Parent { get; set; }

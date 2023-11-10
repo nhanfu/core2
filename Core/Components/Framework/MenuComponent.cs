@@ -413,7 +413,7 @@ namespace Core.Components.Framework
 
         public static void OpenFeature(Feature feature)
         {
-            if (feature is null || feature.ViewClass.IsNullOrWhiteSpace() && feature.EntityId.IsNullOrWhiteSpace())
+            if (feature is null)
             {
                 return;
             }
@@ -427,24 +427,15 @@ namespace Core.Components.Framework
             var featureTask = ComponentExt.LoadFeatureByName(feature.Name);
             Client.ExecTask(featureTask, (f) =>
             {
-                Type type;
                 EditForm instance = null;
-                if (f.ViewClass != null)
+                instance = new TabEditor(f.EntityName);
+                if (!f.Script.IsNullOrWhiteSpace())
                 {
-                    type = Type.GetType(f.ViewClass);
-                    instance = Activator.CreateInstance(type) as EditForm;
-                }
-                else
-                {
-                    instance = new TabEditor(f.EntityName);
-                    if (!f.Script.IsNullOrWhiteSpace())
-                    {
-                        var obj = Window.Eval<object>(f.Script);
-                        /*@
-                        for (let prop in obj) instance[prop] = obj[prop];
-                        if (instance.Init != null) instance.Init();
-                        */
-                    }
+                    var obj = Window.Eval<object>(f.Script);
+                    /*@
+                    for (let prop in obj) instance[prop] = obj[prop];
+                    if (instance.Init != null) instance.Init();
+                    */
                 }
 
                 instance.Name = f.Name;

@@ -361,23 +361,17 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/TMS.API/wwwroot/js/Core.js
-/TMS.API/TMS.API.csproj
-/TMS.API/wwwroot/js/Core.meta.js
-/TMS.API/wwwroot/js/Core.min.js
-/TMS.API/wwwroot/js/Core.meta.min.js
-/TMS.API/wwwroot/js/TMS.UI.meta.min.js
-/TMS.API/wwwroot/js/TMS.UI.min.js
-/TMS.API/wwwroot/js/TMS.UI.meta.js
-/TMS.API/wwwroot/js/TMS.UI.js
-/TMS.API/wwwroot/js/newtonsoft.json.js
-/TMS.API/wwwroot/js/newtonsoft.json.min.js
-/TMS.API/wwwroot/js/bridge.js
-/TMS.API/wwwroot/js/bridge.meta.js
-/TMS.API/wwwroot/js/bridge.meta.min.js
-/TMS.API/wwwroot/js/bridge.min.js
-/TMS.API/wwwroot/js/js.rar
-/TMS.API/wwwroot/js/Core.js
-/TMS.API/wwwroot/js/Core.min.js
-/TMS.API/wwwroot/css/main.min.css
-/TMS.API/wwwroot/css/main.css
+/CoreAPI/wwwroot/js/Core.js
+/CoreAPI/wwwroot/js/Core.meta.js
+/CoreAPI/wwwroot/js/Core.min.js
+/CoreAPI/wwwroot/js/Core.meta.min.js
+/CoreAPI/wwwroot/js/newtonsoft.json.js
+/CoreAPI/wwwroot/js/newtonsoft.json.min.js
+/CoreAPI/wwwroot/js/bridge.js
+/CoreAPI/wwwroot/js/bridge.meta.js
+/CoreAPI/wwwroot/js/bridge.meta.min.js
+/CoreAPI/wwwroot/js/bridge.min.js
+/CoreAPI/wwwroot/js/Core.js
+/CoreAPI/wwwroot/js/Core.min.js
+/CoreAPI/wwwroot/css/main.min.css
+/CoreAPI/wwwroot/css/main.css

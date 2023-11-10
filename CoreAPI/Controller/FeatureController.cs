@@ -45,14 +45,38 @@ namespace Core.Controllers
         }
 
         [HttpPost("api/[Controller]/Clone")]
-        public async Task<ActionResult<bool>> CloneFeatureAsync([FromBody] int? id)
+        public async Task<ActionResult<bool>> CloneFeatureAsync([FromBody] string id)
         {
             if (id == null)
             {
                 return false;
             }
-            var updateCommand = string.Format("EXECUTE dbo.[CloneFeature] @target= {0}", id);
-            await ctx.Database.ExecuteSqlRawAsync(updateCommand);
+            var feature = await db.Feature.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            var policies = await db.FeaturePolicy.AsNoTracking().Where(x => x.FeatureId == id).ToArrayAsync();
+            var groups = await db.ComponentGroup.AsNoTracking().Where(x => x.FeatureId == id).ToArrayAsync();
+            var components = await db.Component.AsNoTracking().Where(x => groups.Select(g => g.Id).Contains(x.ComponentGroupId)).ToArrayAsync();
+            feature.Id = Id.NewGuid().ToString();
+            policies.SelectForeach(x =>
+            {
+                x.Id = Id.NewGuid().ToString();
+                x.FeatureId = feature.Id;
+            });
+            feature.FeaturePolicy = policies;
+            groups.SelectForeach(group =>
+            {
+                var com = components.Where(c => c.ComponentGroupId == group.Id).ToList();
+                group.Id = Id.NewGuid().ToString();
+                com.ForEach(c =>
+                {
+                    c.Id = Id.NewGuid().ToString();
+                    c.ComponentGroupId = group.Id;
+                });
+            });
+            feature.ComponentGroup = groups;
+            db.Add(feature);
+            db.AddRange(groups);
+            db.AddRange(components);
+            await db.SaveChangesAsync();
             return true;
         }
 
@@ -141,9 +165,16 @@ namespace Core.Controllers
             {
                 throw new UnauthorizedAccessException("You dont have system role to delete this feature");
             }
-            var policies = db.FeaturePolicy.Where(x => x.FeatureId != null && ids.Contains(x.FeatureId));
+            var features = await db.Feature.Where(x => ids.Contains(x.Id)).ToListAsync();
+            var policies = await db.FeaturePolicy.Where(x => ids.Contains(x.FeatureId)).ToListAsync();
+            var groups = await db.ComponentGroup.Where(x => ids.Contains(x.FeatureId)).ToListAsync();
+            var components = await db.Component.Where(x => groups.Select(g => g.Id).Contains(x.ComponentGroupId)).ToArrayAsync();
             db.FeaturePolicy.RemoveRange(policies);
-            return await base.HardDeleteAsync(ids);
+            db.ComponentGroup.RemoveRange(groups);
+            db.Component.RemoveRange(components);
+            db.Feature.RemoveRange(features);
+            await db.SaveChangesAsync();
+            return true;
         }
     }
 }

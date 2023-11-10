@@ -88,6 +88,8 @@ namespace Core.Models
         public bool CustomNextCell { get; set; }
 
         public string Signed { get; set; }
+        
+        public bool IsPortal { get; set; }
 
         public virtual ICollection<ComponentGroup> ComponentGroup { get; set; } = new List<ComponentGroup>();
 

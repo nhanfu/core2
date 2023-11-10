@@ -698,6 +698,7 @@ namespace Core.Clients
             {
                 Url = "Clone",
                 Value = id,
+                IsRawString = true,
                 Method = HttpMethod.POST
             });
         }
