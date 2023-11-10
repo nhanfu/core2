@@ -5,8 +5,6 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMS.API", "TMS.API\TMS.API.csproj", "{14D8DCAD-BA0D-4BCB-906A-D6571CC49A47}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CoreFW", "CoreFW", "{6C817A96-B32B-4100-84DD-C20ED0EF93A6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.API", "Core.API\Core.API.csproj", "{271814AD-6887-4424-991B-A270268D6857}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{A1E39D33-D84C-4595-B7AC-6EF005935B80}"
@@ -56,10 +54,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{271814AD-6887-4424-991B-A270268D6857} = {6C817A96-B32B-4100-84DD-C20ED0EF93A6}
-		{A1E39D33-D84C-4595-B7AC-6EF005935B80} = {6C817A96-B32B-4100-84DD-C20ED0EF93A6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {448168F4-06EB-4766-A574-632E6B80D900}
