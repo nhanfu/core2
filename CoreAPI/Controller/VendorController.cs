@@ -9,7 +9,7 @@ namespace Core.Controllers
 {
     public class VendorController : TMSController<Vendor>
     {
-        public VendorController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public VendorController(CoreContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

@@ -1,20 +1,120 @@
 ﻿using Core.Extensions;
+using Core.Models;
+using HtmlAgilityPack;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
 using System.Linq.Dynamic.Core;
-using System.Security.Claims;
-using Core.Models;
+using System.Net;
+using System.Text;
 
 namespace Core.Controllers
 {
     public class FeatureController : TMSController<Feature>
     {
-        public FeatureController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        private const string ContentType = "Content-Type";
+        private const string NotFoundFile = "wwwRoot/404.html";
+        private const string href = "href";
+        private const string src = "src";
+        private const string wwwRoot = "wwwRoot";
+        private readonly IDistributedCache _cached;
+        public FeatureController(CoreContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor, IDistributedCache cached)
+            : base(context, entityService, httpContextAccessor)
         {
+            _cached = cached;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("/{system?}/{tenant?}/{area?}/{env?}/{feature?}")]
+        public async Task Index([FromRoute] string system = "core", [FromRoute] string tenant = "system",
+            [FromRoute] string area = "admin", [FromRoute] string env = "test")
+        {
+            if (_userSvc.TenantCode != null && _userSvc.TenantCode != tenant)
+            {
+                throw new UnauthorizedAccessException($"Page not found for the tanent {tenant} due to the current user was signed in with the tenant {_userSvc.TenantCode}.");
+            }
+            var path = Request.Path;
+            var ext = Path.GetExtension(Request.Path);
+            if (ext.HasAnyChar())
+            {
+                await WriteDefaultFile(Path.Combine(wwwRoot, Request.Path), Utils.GetMimeType(ext));
+            }
+            var htmlMimeType = Utils.GetMimeType("html");
+            var key = $"{system}_{tenant}_{env}_{area}";
+            var cache = await _cached.GetStringAsync(key);
+            if (cache != null)
+            {
+                var pageCached = JsonConvert.DeserializeObject<TenantPage>(cache);
+                await WriteTemplateAsync(Response, pageCached, env, tenant);
+                return;
+            }
+
+            var tenantEnv = await db.TenantEnv.FirstOrDefaultAsync(x =>
+                x.System == system && x.TenantCode == tenant && x.Env == env);
+            if (tenantEnv is null)
+            {
+                await WriteDefaultFile(NotFoundFile, htmlMimeType, HttpStatusCode.NotFound);
+                return;
+            }
+            var page = await db.TenantPage.AsNoTracking().FirstOrDefaultAsync(x =>
+                x.TenantEnvId == tenantEnv.Id && x.Area == area);
+            await _cached.SetStringAsync(key, JsonConvert.SerializeObject(page));
+            await WriteTemplateAsync(Response, page, env, tenant);
+        }
+
+        private async Task WriteTemplateAsync(HttpResponse reponse, TenantPage page, string env, string tenant)
+        {
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(page.Template);
+
+            var links = htmlDoc.DocumentNode.SelectNodes("//link | //script")
+                .SelectForEach((HtmlNode x, int i) =>
+                {
+                    ShouldAddVersion(x, href);
+                    ShouldAddVersion(x, src);
+                });
+            var signed = await _userSvc.EncryptQuery(page.Query, env, tenant);
+            var meta = new HtmlNode(HtmlNodeType.Element, htmlDoc, 1)
+            {
+                Name = "meta"
+            };
+            meta.SetAttributeValue("name", "token");
+            meta.SetAttributeValue("content", signed);
+            htmlDoc.DocumentNode.SelectSingleNode("//head")?.AppendChild(meta);
+            reponse.Headers.Add(ContentType, Utils.GetMimeType("html"));
+            reponse.StatusCode = (int)HttpStatusCode.OK;
+            await reponse.WriteAsync(htmlDoc.DocumentNode.OuterHtml);
+        }
+
+        private static void ShouldAddVersion(HtmlNode x, string attr)
+        {
+            var shouldAdd = x.Attributes.Contains(attr)
+                && x.Attributes[attr].Value.IndexOf("?v=") < 0;
+            if (shouldAdd)
+            {
+                x.Attributes[attr].Value += "?v=" + Guid.NewGuid().ToString();
+            }
+        }
+
+        private async Task WriteDefaultFile(string file, string contentType, HttpStatusCode code = HttpStatusCode.OK)
+        {
+            var exist = System.IO.File.Exists(file);
+            if (!exist) file = NotFoundFile;
+            var html = await System.IO.File.ReadAllTextAsync(file, encoding: Encoding.UTF8);
+            await _cached.SetStringAsync(file, html);
+            if (!Response.Headers.ContainsKey(ContentType))
+            {
+                Response.Headers.Add(ContentType, contentType);
+            }
+            if (!Response.HasStarted)
+            {
+                Response.StatusCode = (int)code;
+            }
+            await Response.WriteAsync(html);
         }
 
         [AllowAnonymous]

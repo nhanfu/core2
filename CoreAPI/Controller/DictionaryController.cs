@@ -7,7 +7,7 @@ namespace Core.Controllers
 {
     public class DictionaryController : TMSController<Dictionary>
     {
-        public DictionaryController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public DictionaryController(CoreContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
         }

@@ -18,7 +18,7 @@ namespace Core.Controllers
     [Authorize]
     public class TMSController<T> : GenericController<T> where T : class
     {
-        protected readonly TMSContext db;
+        protected readonly CoreContext db;
         protected readonly ILogger<TMSController<T>> _logger;
         protected HttpClient _client;
         protected string PathField = "Path";
@@ -26,7 +26,7 @@ namespace Core.Controllers
         protected string ChildrenField = "InverseParent";
         private string _address;
 
-        public TMSController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public TMSController(CoreContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
             db = context;
             _logger = (ILogger<TMSController<T>>)httpContextAccessor.HttpContext.RequestServices.GetService(typeof(ILogger<TMSController<T>>));

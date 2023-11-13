@@ -9,7 +9,7 @@ namespace Core.Controllers
 {
     public class RoleController : TMSController<Role>
     {
-        public RoleController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public RoleController(CoreContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

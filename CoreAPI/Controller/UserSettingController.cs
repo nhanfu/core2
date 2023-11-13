@@ -7,7 +7,7 @@ namespace Core.Controllers
 {
     public class UserSettingController : TMSController<UserSetting>
     {
-        public UserSettingController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public UserSettingController(CoreContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
         }

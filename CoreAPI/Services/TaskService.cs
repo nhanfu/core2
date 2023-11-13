@@ -10,12 +10,12 @@ namespace Core.Services
 {
     public class TaskService
     {
-        private readonly TMSContext db;
+        private readonly CoreContext db;
         private readonly UserService _userService;
         private readonly RealtimeService _fcmSvc;
         protected readonly EntityService _entitySvc;
 
-        public TaskService(UserService userService, TMSContext db, RealtimeService notificationService, EntityService entityService)
+        public TaskService(UserService userService, CoreContext db, RealtimeService notificationService, EntityService entityService)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.db = db ?? throw new ArgumentNullException(nameof(db));

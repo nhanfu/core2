@@ -13,7 +13,7 @@ namespace Core.Controllers
 {
     public class FeaturePolicyController : TMSController<FeaturePolicy>
     {
-        public FeaturePolicyController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public FeaturePolicyController(CoreContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

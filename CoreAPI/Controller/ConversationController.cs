@@ -5,7 +5,7 @@ namespace Core.Controllers
 {
     public class ConversationController : TMSController<Conversation>
     {
-        public ConversationController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public ConversationController(CoreContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
         }

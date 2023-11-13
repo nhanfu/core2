@@ -7,7 +7,7 @@ using System.Text;
 using Core.Exceptions;
 using Core.Models;
 
-namespace Core
+namespace CoreAPI.Middlewares
 {
     public class HttpStatusCodeExceptionMiddleware
     {
@@ -94,7 +94,7 @@ namespace Core
             {
                 using var scope = _serviceScopeFactory.CreateScope();
                 var _context = scope.ServiceProvider.GetRequiredService<LOGContext>();
-                string token = request.Headers.Authorization.FirstOrDefault().Replace("Bearer ", "");
+                var token = request.Headers.Authorization.FirstOrDefault().Replace("Bearer ", "");
                 if (token == null)
                 {
                     await _next(context);

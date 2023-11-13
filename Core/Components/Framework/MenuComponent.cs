@@ -97,7 +97,7 @@ namespace Core.Components.Framework
                 BuildFeatureTree();
                 Html.Take("#menu");
                 RenderKeyMenuItems(_feature);
-                var featureParam = Window.Location.PathName.Replace("/", "").Replace("-", " ");
+                var featureParam = Window.Location.PathName.SubStrIndex(Window.Location.PathName.LastIndexOf("/") + 1);
                 if (!featureParam.IsNullOrWhiteSpace())
                 {
                     var currentFeature = feature.FirstOrDefault(x => x.Name == featureParam);

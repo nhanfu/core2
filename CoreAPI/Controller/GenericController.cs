@@ -292,7 +292,7 @@ namespace Core.Controllers
         {
             var paths = await GeneratePdf(email, host, absolute: true);
             paths.SelectForeach(email.ServerAttachements.Add);
-            await SendMail(email, ctx as TMSContext, host.WebRootPath);
+            await SendMail(email, ctx as CoreContext, host.WebRootPath);
             return true;
         }
 
@@ -319,7 +319,7 @@ namespace Core.Controllers
             return absolute ? paths : paths.Select(path => path.Replace(host.WebRootPath, string.Empty));
         }
 
-        public static async Task SendMail(EmailVM email, TMSContext db, string webRoot = null)
+        public static async Task SendMail(EmailVM email, CoreContext db, string webRoot = null)
         {
             var config = await db.MasterData.Where(x => x.Parent.Name == nameof(ConfigEmailVM)).ToListAsync();
             var fromName = config.FirstOrDefault(x => x.Name == "FromName")?.Description;

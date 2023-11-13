@@ -96,16 +96,14 @@ namespace Core.Components.Forms
 
         private void FullScreen()
         {
-            var elem = Element;
-            /*@
-             if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
-                  } else if (elem.webkitRequestFullscreen) { 
-                            elem.webkitRequestFullscreen();
-                        } else if (elem.msRequestFullscreen) {
-                    elem.msRequestFullscreen();
-                  }
-             */
+            var elem = Element as dynamic;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { 
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
         }
 
         public void RenderPopup()
@@ -357,10 +355,13 @@ namespace Core.Components.Forms
             }
             if (Feature != null && Feature.Name != null && !Popup && !ChildForm)
             {
-                Window.History.ReplaceState(null, LangSelect.Get(TabTitle), Window.Location.Origin + "/" + Feature.Name.Replace(" ", "-") + $"{(Feature.IsMenu ? "" : $"?Id={int.Parse(Entity[IdField].ToString())}")}");
+                var ns = (Document.Instance as dynamic).head.children.baseUri;
+                var newPath = System.IO.Path.Combine(ns?.content ?? Window.Location.Origin,
+                    Feature.Name.Replace(" ", "-") + $"{(Entity?[IdField] == null ? "" : $"?Id={Entity[IdField]}")}");
+                Window.History.PushState(null, LangSelect.Get(TabTitle), newPath);
             }
             Document.Title = LangSelect.Get(TabTitle);
-            this.FindActiveComponent<EditableComponent>().FirstOrDefault()?.Focus();
+            this.FindActiveComponent<EditableComponent>(x => x?.GuiInfo?.Focus == true).FirstOrDefault()?.Focus();
         }
 
         public override bool Show

@@ -17,6 +17,7 @@ using System.Text;
 using Core.Models;
 using Core.Services;
 using Core.Websocket;
+using CoreAPI.Middlewares;
 
 namespace Core
 {
@@ -85,7 +86,7 @@ namespace Core
                 options.EnableSensitiveDataLogging();
 #endif
             });
-            services.AddDbContext<TMSContext>((serviceProvider, options) =>
+            services.AddDbContext<CoreContext>((serviceProvider, options) =>
             {
                 string connectionStr = GetConnectionString(serviceProvider, _configuration, "Default");
                 options.UseSqlServer(connectionStr, x => x.EnableRetryOnFailure());
@@ -146,7 +147,7 @@ namespace Core
             return connectionStr;
         }
 
-        public static TMSContext GetTMSContext(string conStr, bool subVendor = false)
+        public static CoreContext GetTMSContext(string conStr, bool subVendor = false)
         {
             if (conStr.IsNullOrWhiteSpace())
             {
@@ -158,8 +159,8 @@ namespace Core
                 var connStr = JsonConvert.DeserializeObject<List<VendorConnStrVM>>(conStr);
                 vendorConnStr = connStr.FirstOrDefault(x => x.Name == "TMS").ConStr;
             }
-            var builder = new DbContextOptionsBuilder<TMSContext>().UseSqlServer(vendorConnStr).Options;
-            var context = new TMSContext(builder);
+            var builder = new DbContextOptionsBuilder<CoreContext>().UseSqlServer(vendorConnStr).Options;
+            var context = new CoreContext(builder);
             return context;
         }
 
@@ -183,7 +184,7 @@ namespace Core
         }
 
         [Obsolete]
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TMSContext tms, EntityService entity, IConfiguration configuration, ConnectionManager connectionManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, CoreContext tms, EntityService entity, IConfiguration configuration, ConnectionManager connectionManager)
         {
             if (entity.Entities.Nothing())
             {
@@ -203,20 +204,16 @@ namespace Core
             {
                 app.UseHsts();
             }
+            app.UseStaticFiles();
             app.UseHangfireDashboard();
             app.UseHangfireServer();
             app.UseMiddleware<HttpStatusCodeExceptionMiddleware>();
             app.UseHttpsRedirection();
-            var options = new DefaultFilesOptions();
             app.UseResponseCompression();
             app.UseWebSockets();
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
             app.MapWebSocketManager("/task", serviceProvider.GetService<RealtimeService>());
-            options.DefaultFileNames.Clear();
-            options.DefaultFileNames.Add("index.html");
-            app.UseDefaultFiles(options);
-            app.UseStaticFiles();
             app.UseAuthentication();
             var model = GetEdmModel(app.ApplicationServices);
             app.UseMvc(builder =>

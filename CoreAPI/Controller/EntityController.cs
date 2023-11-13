@@ -9,7 +9,7 @@ namespace Core.Controllers
 {
     public class EntityController : TMSController<Entity>
     {
-        public EntityController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public EntityController(CoreContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

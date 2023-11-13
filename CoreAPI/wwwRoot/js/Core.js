@@ -1681,7 +1681,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             CloneFeatureAsync: function (id) {
                 var $t;
-                return this.SubmitAsync(System.Boolean, ($t = new Core.Clients.XHRWrapper(), $t.Url = "Clone", $t.Value = id, $t.Method = Core.Enums.HttpMethod.POST, $t));
+                return this.SubmitAsync(System.Boolean, ($t = new Core.Clients.XHRWrapper(), $t.Url = "Clone", $t.Value = id, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
             },
             DeactivateAsync: function (ids) {
                 var $t;
@@ -9244,6 +9244,8 @@ Bridge.assembly("Core", function ($asm, globals) {
             Gallery: null,
             DeleteTemp: false,
             CustomNextCell: false,
+            Signed: false,
+            IsPortal: false,
             Entity: null,
             Parent: null,
             ComponentGroup: null,
@@ -11698,6 +11700,9 @@ Bridge.assembly("Core", function ($asm, globals) {
             }
         },
         ctors: {
+            init: function () {
+                this.ListViews = new (System.Collections.Generic.HashSet$1(Core.Components.ListView)).ctor();
+            },
             ctor: function (entity) {
                 this.$initialize();
                 Core.Components.EditableComponent.ctor.call(this, null);
@@ -21042,7 +21047,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }
                 },
                 OpenFeature: function (feature) {
-                    if (feature == null || Core.Extensions.StringExt.IsNullOrWhiteSpace(feature.ViewClass) && Core.Extensions.StringExt.IsNullOrWhiteSpace(feature.EntityId)) {
+                    if (feature == null) {
                         return;
                     }
                     var id = (feature.Name || "") + (feature.Id || "");
@@ -21055,18 +21060,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }
                     var featureTask = Core.Components.Extensions.ComponentExt.LoadFeatureByName(feature.Name);
                     Core.Clients.Client.ExecTask(Core.Models.Feature, featureTask, function (f) {
-                        var type;
                         var instance = null;
-                        if (f.ViewClass != null) {
-                            type = Bridge.Reflection.getType(f.ViewClass);
-                            instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.EditForm);
-                        } else {
-                            instance = new Core.Components.Forms.TabEditor(f.EntityName);
-                            if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(f.Script)) {
-                                var obj = eval(f.Script);
-                                for (let prop in obj) instance[prop] = obj[prop];
-                                if (instance.Init != null) instance.Init();
-                            }
+                        instance = new Core.Components.Forms.TabEditor(f.EntityName);
+                        if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(f.Script)) {
+                            var obj = eval(f.Script);
+                            for (let prop in obj) instance[prop] = obj[prop];
+                            if (instance.Init != null) instance.Init();
                         }
 
                         instance.Name = f.Name;
@@ -21229,7 +21228,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             this.BuildFeatureTree();
                                             Core.MVVM.Html.Take$1("#menu");
                                             this.RenderKeyMenuItems(this._feature);
-                                            featureParam = System.String.replaceAll(System.String.replaceAll(window.location.pathname, "/", ""), "-", " ");
+                                            featureParam = Core.Extensions.StringExt.SubStrIndex(window.location.pathname, ((window.location.pathname.lastIndexOf("/") + 1) | 0));
                                             if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(featureParam)) {
                                                 currentFeature = System.Linq.Enumerable.from(feature, Core.Models.Feature).firstOrDefault(function (x) {
                                                     return Bridge.referenceEquals(x.Name, featureParam);
@@ -29501,12 +29500,12 @@ Bridge.assembly("Core", function ($asm, globals) {
             FullScreen: function () {
                 var elem = this.Element;
                 if (elem.requestFullscreen) {
-                        elem.requestFullscreen();
-                        } else if (elem.webkitRequestFullscreen) { 
-                                elem.webkitRequestFullscreen();
-                            } else if (elem.msRequestFullscreen) {
-                        elem.msRequestFullscreen();
-                        }
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
             },
             RenderPopup: function () {
                 var $t, $t1;
@@ -29698,7 +29697,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return false;
             },
             Focus: function () {
-                var $t;
+                var $t, $t1;
                 if (!this.Popup && !this.ChildForm) {
                     Core.Components.Forms.TabEditor.Tabs.ForEach(function (x) {
                         x.Show = false;
@@ -29709,10 +29708,15 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.Show = true;
                 }
                 if (this.Feature != null && this.Feature.Name != null && !this.Popup && !this.ChildForm) {
-                    window.history.replaceState(null, Core.Components.LangSelect.Get(this.TabTitle), (window.location.origin || "") + "/" + (System.String.replaceAll(this.Feature.Name, " ", "-") || "") + (System.String.format("{0}", [(this.Feature.IsMenu ? "" : System.String.format("?Id={0}", [Bridge.box(System.Int32.parse(Bridge.toString(this.Entity[Core.Components.EditableComponent.IdField])), System.Int32)]))]) || ""));
+                    var ns = (document).head.children.baseUri;
+                    var newPath = System.IO.Path.Combine([(ns != null ? ns.content : null) || window.location.origin, (System.String.replaceAll(this.Feature.Name, " ", "-") || "") + (System.String.format("{0}", [((($t = this.Entity) != null ? $t[Core.Components.EditableComponent.IdField] : null) == null ? "" : System.String.format("?Id={0}", [this.Entity[Core.Components.EditableComponent.IdField]]))]) || "")]);
+                    window.history.pushState(null, Core.Components.LangSelect.Get(this.TabTitle), newPath);
                 }
                 document.title = Core.Components.LangSelect.Get(this.TabTitle);
-                ($t = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.EditableComponent, this), Core.Components.EditableComponent).firstOrDefault(null, null)) != null ? $t.Focus() : null;
+                ($t1 = System.Linq.Enumerable.from(Core.Components.Extensions.ComponentExt.FindActiveComponent(Core.Components.EditableComponent, this, function (x) {
+                        var $t2;
+                        return System.Nullable.eq((x != null && ($t2 = x.GuiInfo) != null ? $t2.Focus : null), true);
+                    }), Core.Components.EditableComponent).firstOrDefault(null, null)) != null ? $t1.Focus() : null;
             },
             Close: function (e) {
                 var $t, $t1;

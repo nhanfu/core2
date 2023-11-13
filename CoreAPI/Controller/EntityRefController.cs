@@ -5,7 +5,7 @@ namespace Core.Controllers
 {
     public class EntityRefController : TMSController<EntityRef>
     {
-        public EntityRefController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public EntityRefController(CoreContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
         }

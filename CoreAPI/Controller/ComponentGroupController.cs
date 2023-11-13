@@ -9,7 +9,7 @@ namespace Core.Controllers
 {
     public class ComponentGroupController : TMSController<ComponentGroup>
     {
-        public ComponentGroupController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public ComponentGroupController(CoreContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

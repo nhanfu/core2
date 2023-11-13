@@ -3,9 +3,11 @@ using System.Collections.Generic;
 
 namespace Core.Models
 {
-    public partial class TenantConfig
+    public partial class TenantEnv
     {
         public string Id { get; set; }
+
+        public string System { get; set; }
 
         public string TenantCode { get; set; }
 

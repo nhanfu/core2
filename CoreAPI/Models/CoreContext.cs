@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Models;
 
-public partial class TMSContext : DbContext
+public partial class CoreContext : DbContext
 {
-    public TMSContext(DbContextOptions<TMSContext> options)
+    public CoreContext(DbContextOptions<CoreContext> options)
         : base(options)
     {
     }
@@ -53,7 +53,9 @@ public partial class TMSContext : DbContext
 
     public virtual DbSet<Vendor> Vendor { get; set; }
 
-    public virtual DbSet<TenantConfig> TenantConfig { get; set; }
+    public virtual DbSet<TenantEnv> TenantEnv { get; set; }
+
+    public virtual DbSet<TenantPage> TenantPage { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

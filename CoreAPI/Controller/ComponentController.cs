@@ -10,7 +10,7 @@ namespace Core.Controllers
 {
     public class ComponentController : TMSController<Component>
     {
-        public ComponentController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public ComponentController(CoreContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

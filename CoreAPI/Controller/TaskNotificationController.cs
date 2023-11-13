@@ -15,7 +15,7 @@ namespace Core.Controllers
     public class TaskNotificationController : TMSController<TaskNotification>
     {
         public TaskNotificationController(
-            TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+            CoreContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
 

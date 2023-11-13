@@ -23,7 +23,7 @@ namespace Core.Services
     {
         private const int MAX_LOGIN = 5;
         public readonly IHttpContextAccessor Context;
-        private readonly TMSContext db;
+        private readonly CoreContext db;
         private readonly IConfiguration _configuration;
         private readonly IDistributedCache _cache;
 
@@ -38,7 +38,7 @@ namespace Core.Services
         public List<string> AllRoleIds { get; set; }
         public List<string> RoleIds { get; set; }
 
-        public UserService(IHttpContextAccessor httpContextAccessor, TMSContext db, IConfiguration configuration, IDistributedCache cache)
+        public UserService(IHttpContextAccessor httpContextAccessor, CoreContext db, IConfiguration configuration, IDistributedCache cache)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _cache = cache;
@@ -338,11 +338,15 @@ namespace Core.Services
             return await userQuery.FirstOrDefaultAsync();
         }
 
-        public async Task<string> EncryptQuery(string query, string env)
+        public async Task<string> EncryptQuery(string query, string env, string tenantCode = "")
         {
             if (query.IsNullOrEmpty()) return null;
+            if (tenantCode == string.Empty && TenantCode.HasAnyChar())
+            {
+                tenantCode = TenantCode;
+            }
             var hash = GetHash(UserUtils.sHA256, query);
-            var tenant = await db.TenantConfig.FirstOrDefaultAsync(x => x.TenantCode == TenantCode && x.Env == env)
+            var tenant = await db.TenantEnv.FirstOrDefaultAsync(x => x.TenantCode == tenantCode && x.Env == env)
                 ?? throw new ApiException("Tenant config not found");
             var claims = new List<Claim>
             {
@@ -365,7 +369,7 @@ namespace Core.Services
             var connKey = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.System)?.Value;
             var conStr = await _cache.GetStringAsync($"{TenantCode}_{connKey}_{env}");
             if (conStr != null) return conStr;
-            var tenant = await db.TenantConfig
+            var tenant = await db.TenantEnv
                 .FirstOrDefaultAsync(x => x.TenantCode == TenantCode && x.ConnKey == connKey && x.Env == env)
                 ?? throw new ApiException("Tenant config not found");
             await _cache.SetStringAsync($"{TenantCode}_{connKey}_{env}", tenant.ConnStr, new DistributedCacheEntryOptions

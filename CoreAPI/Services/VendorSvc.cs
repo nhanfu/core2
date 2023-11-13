@@ -7,11 +7,11 @@ namespace Core.Services
 {
     public class VendorSvc
     {
-        private readonly TMSContext db;
+        private readonly CoreContext db;
         private readonly UserService _userSvc;
         protected readonly EntityService _entitySvc;
 
-        public VendorSvc(UserService userService, TMSContext db, EntityService entityService)
+        public VendorSvc(UserService userService, CoreContext db, EntityService entityService)
         {
             _userSvc = userService ?? throw new ArgumentNullException(nameof(userService));
             _entitySvc = entityService;

@@ -16,7 +16,7 @@ namespace Core.Controllers
 {
     public class MasterDataController : TMSController<MasterData>
     {
-        public MasterDataController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor)
+        public MasterDataController(CoreContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor)
             : base(context, entityService, httpContextAccessor)
         {
         }

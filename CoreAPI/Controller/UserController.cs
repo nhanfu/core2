@@ -18,7 +18,7 @@ namespace Core.Controllers
         private readonly IConfiguration _configuration;
         private readonly UserService _userSerivce;
 
-        public UserController(TMSContext context, IConfiguration configuration,
+        public UserController(CoreContext context, IConfiguration configuration,
             IHttpContextAccessor httpContextAccessor, EntityService entityService, UserService userSerivce, IServiceProvider serviceProvider) : base(context, entityService, httpContextAccessor)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));

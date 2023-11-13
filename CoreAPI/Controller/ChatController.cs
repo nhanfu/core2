@@ -11,7 +11,7 @@ namespace Core.Controllers
     public class ChatController : TMSController<Chat>
     {
 
-        public ChatController(TMSContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public ChatController(CoreContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
         }

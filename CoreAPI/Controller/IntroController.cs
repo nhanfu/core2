@@ -5,7 +5,7 @@ namespace Core.Controllers
 {
     public class IntroController : TMSController<Intro>
     {
-        public IntroController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public IntroController(CoreContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
 
         }

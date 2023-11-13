@@ -5,7 +5,7 @@ namespace Core.Controllers
 {
     public class UserRoleController : TMSController<UserRole>
     {
-        public UserRoleController(TMSContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
+        public UserRoleController(CoreContext context,EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
         }
     }
