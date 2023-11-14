@@ -7,7 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Utilities;
+using System.Buffers;
 using System.Data.SqlClient;
+using System.IO.Compression;
 using System.Linq.Dynamic.Core;
 using System.Net;
 using System.Text;
@@ -20,7 +24,6 @@ namespace Core.Controllers
         private const string NotFoundFile = "wwwRoot/404.html";
         private const string href = "href";
         private const string src = "src";
-        private const string wwwRoot = "wwwRoot";
         private readonly IDistributedCache _cached;
         public FeatureController(CoreContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor, IDistributedCache cached)
             : base(context, entityService, httpContextAccessor)
@@ -37,14 +40,15 @@ namespace Core.Controllers
             {
                 throw new UnauthorizedAccessException($"Page not found for the tanent {tenant} due to the current user was signed in with the tenant {_userSvc.TenantCode}.");
             }
-            var path = Request.Path;
             var ext = Path.GetExtension(Request.Path);
-            if (ext.HasAnyChar())
+            if (!ext.IsNullOrWhiteSpace())
             {
-                await WriteDefaultFile(Path.Combine(wwwRoot, Request.Path), Utils.GetMimeType(ext));
+                await Response.WriteAsync("File not found");
+                return;
             }
             var htmlMimeType = Utils.GetMimeType("html");
             var key = $"{system}_{tenant}_{env}_{area}";
+#if RELEASE
             var cache = await _cached.GetStringAsync(key);
             if (cache != null)
             {
@@ -52,6 +56,7 @@ namespace Core.Controllers
                 await WriteTemplateAsync(Response, pageCached, env, tenant);
                 return;
             }
+#endif
 
             var tenantEnv = await db.TenantEnv.FirstOrDefaultAsync(x =>
                 x.System == system && x.TenantCode == tenant && x.Env == env);
@@ -84,6 +89,7 @@ namespace Core.Controllers
             };
             meta.SetAttributeValue("name", "token");
             meta.SetAttributeValue("content", signed);
+            meta.SetAttributeValue("data-query", page.Query);
             htmlDoc.DocumentNode.SelectSingleNode("//head")?.AppendChild(meta);
             reponse.Headers.Add(ContentType, Utils.GetMimeType("html"));
             reponse.StatusCode = (int)HttpStatusCode.OK;
@@ -100,20 +106,19 @@ namespace Core.Controllers
             }
         }
 
-        private async Task WriteDefaultFile(string file, string contentType, HttpStatusCode code = HttpStatusCode.OK)
+        private async Task WriteDefaultFile(string file, string contentType
+            , HttpStatusCode code = HttpStatusCode.OK)
         {
-            var exist = System.IO.File.Exists(file);
-            if (!exist) file = NotFoundFile;
-            var html = await System.IO.File.ReadAllTextAsync(file, encoding: Encoding.UTF8);
-            await _cached.SetStringAsync(file, html);
-            if (!Response.Headers.ContainsKey(ContentType))
-            {
-                Response.Headers.Add(ContentType, contentType);
-            }
             if (!Response.HasStarted)
             {
+                if (!Response.Headers.ContainsKey(ContentType))
+                {
+                    Response.Headers.Add(ContentType, contentType);
+                    Response.Headers.Add("Content-Encoding", "gzip");
+                }
                 Response.StatusCode = (int)code;
             }
+            var html = await System.IO.File.ReadAllTextAsync(file, encoding: Encoding.UTF8);
             await Response.WriteAsync(html);
         }
 

@@ -59,7 +59,7 @@ namespace Core.Components
                     Entity = isPreQueryFn ? JSON.Stringify(submitEntity) : null,
                     Component = XHRWrapper.UnboxValue(new { GuiInfo.Query, GuiInfo.Signed }),
                 });
-                Data = await new Client(nameof(Component)).SubmitAsync<object[]>(new XHRWrapper
+                Data = await Client.Instance.SubmitAsync<object[]>(new XHRWrapper
                 {
                     Url = Utils.SqlReader,
                     IsRawString = true,

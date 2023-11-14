@@ -34,7 +34,7 @@ namespace Core.Extensions
         public const string HistoryId = "4199";
         public const string InsertedBy = "InsertedBy";
         public const string OwnerId = "OwnerId";
-        public const string SqlReader = "Reader";
+        public const string SqlReader = "/component/Reader";
 
         public const string GOOGLE_MAP = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCr_2PaKJplCyvwN4q78lBkX3UBpfZ_HsY";
         public const string GOOGLE_MAP_PLACES = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=places";
@@ -71,6 +71,13 @@ namespace Core.Extensions
                 }
             }
             return res.ToString();
+        }
+
+        public static void AddDebugger()
+        {
+            /*@
+            debugger;
+            */
         }
 
         public static object EncodeProperties(this object value)

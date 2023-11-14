@@ -20,6 +20,7 @@ namespace Core.ViewModels
 
     public class SignedCom
     {
+        public string CmdId { get; set; }
         public string Query { get; set; }
         public string Signed { get; set; }
     }

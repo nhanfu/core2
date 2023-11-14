@@ -307,7 +307,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                 BadGatewayRequest: null,
                 _errorMessageAwaiter: 0,
                 UnAuthorizedEventHandler: null,
-                SignOutEventHandler: null
+                SignOutEventHandler: null,
+                _instance: null
             },
             props: {
                 EpsilonNow: {
@@ -388,7 +389,15 @@ Bridge.assembly("Core", function ($asm, globals) {
                         Core.Clients.LocalStorage.SetItem(System.Collections.Generic.Dictionary$2(System.String,Core.Models.Entity), "Entities", value);
                     }
                 },
-                SystemRole: false
+                SystemRole: false,
+                Instance: {
+                    get: function () {
+                        if (Core.Clients.Client._instance == null) {
+                            Core.Clients.Client._instance = new Core.Clients.Client.ctor();
+                        }
+                        return Core.Clients.Client._instance;
+                    }
+                }
             },
             ctors: {
                 init: function () {
@@ -7169,7 +7178,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.HistoryId = "4199";
                     this.InsertedBy = "InsertedBy";
                     this.OwnerId = "OwnerId";
-                    this.SqlReader = "Reader";
+                    this.SqlReader = "/component/Reader";
                     this.GOOGLE_MAP = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCr_2PaKJplCyvwN4q78lBkX3UBpfZ_HsY";
                     this.GOOGLE_MAP_PLACES = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=places";
                     this.GOOGLE_MAP_GEOMETRY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=geometry";
@@ -7215,6 +7224,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                         }
                     }
                     return res.toString();
+                },
+                AddDebugger: function () {
+                    debugger;
                 },
                 EncodeProperties: function (value) {
                     var $t, $t1;
@@ -10892,6 +10904,7 @@ Bridge.assembly("Core", function ($asm, globals) {
 
     Bridge.define("Core.ViewModels.SignedCom", {
         props: {
+            CmdId: null,
             Query: null,
             Signed: null
         }
@@ -15410,7 +15423,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         isPreQueryFn = Core.Extensions.Utils.IsFunction(this.GuiInfo.PreQuery, _preQuery);
                                         submitEntity = isPreQueryFn ? _preQuery.v.call(null, this) : null;
                                         entity = JSON.stringify(new $asm.$AnonymousType$2(isPreQueryFn ? JSON.stringify(Bridge.unbox(submitEntity)) : null, Core.Clients.XHRWrapper.UnboxValue(new $asm.$AnonymousType$3(this.GuiInfo.Query, this.GuiInfo.Signed))));
-                                        $task1 = new Core.Clients.Client.$ctor1("Component").SubmitAsync(System.Array.type(System.Object), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Value = entity, $t.Method = Core.Enums.HttpMethod.POST, $t));
+                                        $task1 = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Object), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Value = entity, $t.Method = Core.Enums.HttpMethod.POST, $t));
                                         $step = 2;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -16275,7 +16288,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
-                                        $task1 = new Core.Clients.Client.$ctor1("Component").SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = submitEntity, $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
+                                        $task1 = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = submitEntity, $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -21178,88 +21191,51 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }));
             },
             Render: function () {
-                var $t;
+                var $t, $t1;
                 if (this._hasRender) {
                     return;
                 }
 
                 this._hasRender = true;
-                System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        featureTask, 
-                        roles, 
-                        startAppTask, 
-                        feature, 
-                        startApps, 
-                        featureParam, 
-                        currentFeature, 
-                        $t, 
-                        $async_e, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            featureTask = new Core.Clients.Client.$ctor1("Feature").GetRawList(Core.Models.Feature, "?$expand=Entity($select=Name)&$filter=Active eq true and IsMenu eq true&$orderby=Order");
-                                            roles = Bridge.toArray(Core.Clients.Client.Token.RoleIds).join("\\");
-                                            startAppTask = new Core.Clients.Client.$ctor1("UserSetting").GetRawList(Core.Models.UserSetting, "?$filter=Name eq 'StartApp'");
-                                            $task1 = System.Threading.Tasks.Task.whenAll(featureTask, startAppTask);
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $task1.getAwaitedResult();
-                                            feature = featureTask.getResult();
-                                            startApps = System.Linq.Enumerable.from(Core.Extensions.IEnumerableExtensions.Combine$1(Core.Models.UserSetting, System.String, startAppTask.getResult(), function (x) {
-                                                return x.Value;
-                                            }).split(","), System.String).select(function (x) {
-                                                return x;
-                                            }).distinct();
-                                            this._feature = feature;
-                                            this.BuildFeatureTree();
-                                            Core.MVVM.Html.Take$1("#menu");
-                                            this.RenderKeyMenuItems(this._feature);
-                                            featureParam = Core.Extensions.StringExt.SubStrIndex(window.location.pathname, ((window.location.pathname.lastIndexOf("/") + 1) | 0));
-                                            if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(featureParam)) {
-                                                currentFeature = System.Linq.Enumerable.from(feature, Core.Models.Feature).firstOrDefault(function (x) {
-                                                    return Bridge.referenceEquals(x.Name, featureParam);
-                                                }, null);
-                                                Core.Components.Framework.MenuComponent.OpenFeature(currentFeature);
-                                            } else {
-                                                System.Linq.Enumerable.from(feature, Core.Models.Feature).where(function (x) {
-                                                    return startApps.contains(x.Id) || x.StartUp;
-                                                }).forEach(Core.Components.Framework.MenuComponent.OpenFeature);
-                                            }
-                                            !Bridge.staticEquals(($t = this.DOMContentLoaded), null) ? $t() : null;
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                    return $tcs.task;
+                var doc = document;
+                var meta = doc.head.children.token;
+                var submitEntity = ($t = new Core.ViewModels.SqlWrapper(), $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Signed = meta.content, $t1.Query = meta.dataset.query, $t1), $t.OrderBy = "ds.[Order] asc", $t);
+                var featureTask = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = JSON.stringify(submitEntity), $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
+                var roles = Bridge.toArray(Core.Clients.Client.Token.RoleIds).join("\\");
+                var startAppTask = new Core.Clients.Client.$ctor1("UserSetting").GetRawList(Core.Models.UserSetting, "?$filter=Name eq 'StartApp'");
+                Core.Clients.Client.ExecTaskNoResult(System.Threading.Tasks.Task.whenAll(featureTask, startAppTask), Bridge.fn.bind(this, function () {
+                    var $t2;
+                    var features = System.Linq.Enumerable.from(($t2 = featureTask.getResult())[System.Array.index(0, $t2)], System.Object).select(function (x) {
+                            return Core.Extensions.BridgeExt.CastProp(Core.Models.Feature, x);
+                        }).ToArray(Core.Models.Feature);
+                    this.GetFeatureCb(features, startAppTask.getResult());
                 }));
+            },
+            GetFeatureCb: function (feature, startApp) {
+                var $t, $t1;
+                var startApps = System.Linq.Enumerable.from(Core.Extensions.IEnumerableExtensions.Combine$1(Core.Models.UserSetting, System.String, startApp, function (x) {
+                        return x.Value;
+                    }).split(","), System.String).select(function (x) {
+                        return x;
+                    }).distinct();
+                this._feature = feature;
+                this.BuildFeatureTree();
+                Core.MVVM.Html.Take$1("#menu");
+                this.RenderKeyMenuItems(this._feature);
+                var featureParam = Core.Extensions.StringExt.SubStrIndex(window.location.pathname, ((window.location.pathname.lastIndexOf("/") + 1) | 0));
+                if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(featureParam)) {
+                    var currentFeature = System.Linq.Enumerable.from(feature, Core.Models.Feature).firstOrDefault(function (x) {
+                            return Bridge.referenceEquals(x.Name, featureParam);
+                        }, null);
+                    Core.Components.Framework.MenuComponent.OpenFeature(currentFeature);
+                } else {
+                    System.Linq.Enumerable.from(feature, Core.Models.Feature).where(function (x) {
+                            return startApps.contains(x.Id) || x.StartUp;
+                        }).forEach(Core.Components.Framework.MenuComponent.OpenFeature);
+                }
+                !Bridge.staticEquals(($t = this.DOMContentLoaded), null) ? $t() : null;
                 this._btnBack = document.getElementById("btnBack");
-                this._btnToggle = ($t = HTMLElement, System.Linq.Enumerable.from(document.getElementsByClassName("sidebar-toggle"), $t).ToArray($t));
+                this._btnToggle = ($t1 = HTMLElement, System.Linq.Enumerable.from(document.getElementsByClassName("sidebar-toggle"), $t1).ToArray($t1));
                 if (this._btnBack == null) {
                     return;
                 }
@@ -26316,7 +26292,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         isFn = Core.Extensions.Utils.IsFunction(this.GuiInfo.PreQuery, _preQueryFn);
                                         submitEntity = _preQueryFn.v != null ? _preQueryFn.v.call(null, this) : null;
                                         data = JSON.stringify(($t = new Core.ViewModels.SqlWrapper(), $t.Entity = submitEntity != null ? JSON.stringify(Bridge.unbox(submitEntity)) : null, $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Query = this.GuiInfo.Query, $t1.Signed = this.GuiInfo.Signed, $t1), $t.Paging = System.String.format("offset {0} rows\nfetch next {1} rows only", Bridge.box(skip, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(pageSize, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)), $t.OrderBy = Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.OrderBy) ? "ds.Id asc\n" : this.GuiInfo.OrderBy, $t.Where = System.String.format("charindex(N'{0}', {1}) >= 1", this.Value, Core.Components.EditableComponent.IdField), $t));
-                                        $task1 = new Core.Clients.Client.$ctor1("Component").SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = data, $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
+                                        $task1 = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = data, $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -33624,7 +33600,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
-                                        $task1 = new Core.Clients.Client.$ctor1("Component").SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = submitEntity, $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
+                                        $task1 = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = submitEntity, $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;

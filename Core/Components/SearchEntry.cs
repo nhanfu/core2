@@ -642,7 +642,7 @@ namespace Core.Components
                 OrderBy = GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy,
                 Where = $"charindex(N'{Value}', {IdField}) >= 1",
             });
-            var res = await new Client(nameof(Component)).SubmitAsync<object[][]>(new XHRWrapper
+            var res = await Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = data,
                 Url = Utils.SqlReader,

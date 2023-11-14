@@ -2,9 +2,12 @@
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
+using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,6 +79,7 @@ namespace Core.Components.Framework
                 }
             });
         }
+
         public override void Render()
         {
             if (_hasRender)
@@ -84,31 +88,47 @@ namespace Core.Components.Framework
             }
 
             _hasRender = true;
-            Task.Run(async () =>
+            var doc = Document.Instance as dynamic;
+            var meta = doc.head.children.token;
+            var submitEntity = new SqlWrapper
             {
-                var featureTask = new Client(nameof(Feature)).GetRawList<Feature>(
-                    "?$expand=Entity($select=Name)&$filter=Active eq true and IsMenu eq true&$orderby=Order");
-                var roles = string.Join("\\", Client.Token.RoleIds);
-                var startAppTask = new Client(nameof(UserSetting)).GetRawList<UserSetting>("?$filter=Name eq 'StartApp'");
-                await Task.WhenAll(featureTask, startAppTask);
-                var feature = featureTask.Result;
-                var startApps = startAppTask.Result.Combine(x => x.Value).Split(",").Select(x => x).Distinct();
-                _feature = feature;
-                BuildFeatureTree();
-                Html.Take("#menu");
-                RenderKeyMenuItems(_feature);
-                var featureParam = Window.Location.PathName.SubStrIndex(Window.Location.PathName.LastIndexOf("/") + 1);
-                if (!featureParam.IsNullOrWhiteSpace())
-                {
-                    var currentFeature = feature.FirstOrDefault(x => x.Name == featureParam);
-                    OpenFeature(currentFeature);
-                }
-                else
-                {
-                    feature.Where(x => startApps.Contains(x.Id) || x.StartUp).ForEach(OpenFeature);
-                }
-                DOMContentLoaded?.Invoke();
+                Component = new SignedCom { Signed = meta.content, Query = meta.dataset.query },
+                OrderBy = "ds.[Order] asc"
+            };
+            var featureTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+            {
+                Value = JSON.Stringify(submitEntity),
+                Url = Utils.SqlReader,
+                IsRawString = true,
+                Method = HttpMethod.POST
             });
+            var roles = string.Join("\\", Client.Token.RoleIds);
+            var startAppTask = new Client(nameof(UserSetting)).GetRawList<UserSetting>("?$filter=Name eq 'StartApp'");
+            Client.ExecTaskNoResult(Task.WhenAll(featureTask, startAppTask), () =>
+            {
+                var features = featureTask.Result[0].Select(x => x.CastProp<Feature>()).ToArray();
+                GetFeatureCb(features, startAppTask.Result);
+            });
+        }
+
+        private void GetFeatureCb(Feature[] feature, List<UserSetting> startApp)
+        {
+            var startApps = startApp.Combine(x => x.Value).Split(",").Select(x => x).Distinct();
+            _feature = feature;
+            BuildFeatureTree();
+            Html.Take("#menu");
+            RenderKeyMenuItems(_feature);
+            var featureParam = Window.Location.PathName.SubStrIndex(Window.Location.PathName.LastIndexOf("/") + 1);
+            if (!featureParam.IsNullOrWhiteSpace())
+            {
+                var currentFeature = feature.FirstOrDefault(x => x.Name == featureParam);
+                OpenFeature(currentFeature);
+            }
+            else
+            {
+                feature.Where(x => startApps.Contains(x.Id) || x.StartUp).ForEach(OpenFeature);
+            }
+            DOMContentLoaded?.Invoke();
             _btnBack = Document.GetElementById("btnBack");
             _btnToggle = Document.GetElementsByClassName("sidebar-toggle").ToArray();
             if (_btnBack is null)

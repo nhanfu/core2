@@ -244,7 +244,7 @@ namespace Core.Components
 
         protected virtual async Task<List<object>> CustomQuery(string submitEntity)
         {
-            var ds = await new Client(nameof(Component)).SubmitAsync<object[][]>(new XHRWrapper
+            var ds = await Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = submitEntity,
                 Url = Utils.SqlReader,

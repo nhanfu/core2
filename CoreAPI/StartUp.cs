@@ -204,12 +204,12 @@ namespace Core
             {
                 app.UseHsts();
             }
+            app.UseResponseCompression();
             app.UseStaticFiles();
             app.UseHangfireDashboard();
             app.UseHangfireServer();
             app.UseMiddleware<HttpStatusCodeExceptionMiddleware>();
             app.UseHttpsRedirection();
-            app.UseResponseCompression();
             app.UseWebSockets();
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
