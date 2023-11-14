@@ -26,7 +26,7 @@ namespace Core.Controllers
         [HttpPost("api/[Controller]", Order = 0)]
         public async Task<ActionResult<Component>> CreateAsync([FromBody] Component entity, [FromQuery] string env = "test")
         {
-            entity.Signed = await _userSvc.EncryptQuery(entity.Query, env);
+            entity.Signed = await _userSvc.EncryptQuery(entity.Query, env, _userSvc.System, _userSvc.TenantCode);
             return await base.CreateAsync(entity);
         }
 
@@ -34,7 +34,7 @@ namespace Core.Controllers
         public async Task<ActionResult<Component>> UpdateAsync([FromBody] Component entity
             , [FromQuery]string reasonOfChange = "", [FromQuery] string env = "test")
         {
-            entity.Signed = await _userSvc.EncryptQuery(entity.Query, env);
+            entity.Signed = await _userSvc.EncryptQuery(entity.Query, env, _userSvc.System, _userSvc.TenantCode);
             return await base.UpdateAsync(entity, reasonOfChange);
         }
 
@@ -47,7 +47,7 @@ namespace Core.Controllers
             [FromBody] SqlViewModel model, [FromQuery] string env = "test")
         {
             var entity = model.Component;
-            var connStr = await _userSvc.DecryptQuery(entity.Query, entity.Signed, env);
+            var (connStr, query) = await _userSvc.DecryptQuery(entity.Signed, env, entity.Query);
             
             var anyInvalid = _fobiddenTerm.Any(term =>
             {
@@ -63,7 +63,7 @@ namespace Core.Controllers
             {
                 throw new ArgumentException("Parameters must NOT contains sql keywords");
             }
-            var jsRes = await _userSvc.ExecJs(model.Entity, entity.Query);
+            var jsRes = await _userSvc.ExecJs(model.Entity, entity.Query ?? query);
             var select = model.Select.HasAnyChar() ? $"select {model.Select}" : string.Empty;
             var where = model.Where.HasAnyChar() ? $"where {model.Where}" : string.Empty;
             var groupBy = model.GroupBy.HasAnyChar() ? $"group by {model.GroupBy}" : string.Empty;

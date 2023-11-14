@@ -1,4 +1,5 @@
-﻿using Bridge.Html5;
+﻿using Bridge;
+using Bridge.Html5;
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
@@ -92,10 +93,10 @@ namespace Core.Components.Framework
             var meta = doc.head.children.token;
             var submitEntity = new SqlWrapper
             {
-                Component = new SignedCom { Signed = meta.content, Query = meta.dataset.query },
-                OrderBy = "ds.[Order] asc"
+                Component = new SignedCom { Signed = meta.content },
+                OrderBy = "ds.[Order] asc",
             };
-            var featureTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+            var startup = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = JSON.Stringify(submitEntity),
                 Url = Utils.SqlReader,
@@ -103,15 +104,15 @@ namespace Core.Components.Framework
                 Method = HttpMethod.POST
             });
             var roles = string.Join("\\", Client.Token.RoleIds);
-            var startAppTask = new Client(nameof(UserSetting)).GetRawList<UserSetting>("?$filter=Name eq 'StartApp'");
-            Client.ExecTaskNoResult(Task.WhenAll(featureTask, startAppTask), () =>
+            Client.ExecTask(startup, (res) =>
             {
-                var features = featureTask.Result[0].Select(x => x.CastProp<Feature>()).ToArray();
-                GetFeatureCb(features, startAppTask.Result);
+                var features = res[0].Select(x => x.CastProp<Feature>()).ToArray();
+                var startApps = res[1].Select(x => x.CastProp<UserSetting>()).ToArray();
+                GetFeatureCb(features, startApps);
             });
         }
 
-        private void GetFeatureCb(Feature[] feature, List<UserSetting> startApp)
+        private void GetFeatureCb(Feature[] feature, UserSetting[] startApp)
         {
             var startApps = startApp.Combine(x => x.Value).Split(",").Select(x => x).Distinct();
             _feature = feature;

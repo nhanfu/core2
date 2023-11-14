@@ -68,10 +68,10 @@ namespace Core.Controllers
             var page = await db.TenantPage.AsNoTracking().FirstOrDefaultAsync(x =>
                 x.TenantEnvId == tenantEnv.Id && x.Area == area);
             await _cached.SetStringAsync(key, JsonConvert.SerializeObject(page));
-            await WriteTemplateAsync(Response, page, env, tenant);
+            await WriteTemplateAsync(Response, page, env, system, tenant);
         }
 
-        private async Task WriteTemplateAsync(HttpResponse reponse, TenantPage page, string env, string tenant)
+        private async Task WriteTemplateAsync(HttpResponse reponse, TenantPage page, string env, string system, string tenant)
         {
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(page.Template);
@@ -82,14 +82,13 @@ namespace Core.Controllers
                     ShouldAddVersion(x, href);
                     ShouldAddVersion(x, src);
                 });
-            var signed = await _userSvc.EncryptQuery(page.Query, env, tenant);
+            var signed = await _userSvc.EncryptQuery(page.Query, env, system, tenant, true);
             var meta = new HtmlNode(HtmlNodeType.Element, htmlDoc, 1)
             {
                 Name = "meta"
             };
             meta.SetAttributeValue("name", "token");
             meta.SetAttributeValue("content", signed);
-            meta.SetAttributeValue("data-query", page.Query);
             htmlDoc.DocumentNode.SelectSingleNode("//head")?.AppendChild(meta);
             reponse.Headers.Add(ContentType, Utils.GetMimeType("html"));
             reponse.StatusCode = (int)HttpStatusCode.OK;

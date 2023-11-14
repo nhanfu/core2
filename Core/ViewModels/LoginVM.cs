@@ -12,7 +12,7 @@ namespace Core.ViewModels
         [Display(Description = "Mật khẩu")]
         [Required(ErrorMessage = "{0} không thể để trống")]
         public string Password { get; set; }
-        public string ClientId { get; set; }
+        public string System { get; set; }
         public bool AutoSignIn { get; set; }
         public string RecoveryToken { get; set; }
     }

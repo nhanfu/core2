@@ -35,6 +35,7 @@ namespace Core.Services
         public bool IsInternalSale { get; set; }
         public string VendorId { get; set; }
         public string TenantCode { get; set; }
+        public string System { get; set; }
         public List<string> AllRoleIds { get; set; }
         public List<string> RoleIds { get; set; }
 
@@ -59,6 +60,7 @@ namespace Core.Services
             RoleIds = claims.Where(x => x.Type == ClaimTypes.Actor).Select(x => x.Value).Where(x => x != null).ToList();
             VendorId = claims.FirstOrDefault(x => x.Type == ClaimTypes.GroupSid)?.Value;
             TenantCode = claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimaryGroupSid)?.Value.ToUpper();
+            System = claims.FirstOrDefault(x => x.Type == ClaimTypes.System)?.Value.ToUpper();
         }
 
         public string GenerateRandomToken(int? maxLength = 32)
@@ -158,7 +160,8 @@ namespace Core.Services
             {
                 throw new ApiException($"Wrong username or password. Please try again!") { StatusCode = HttpStatusCode.BadRequest };
             }
-            return await GetUserToken(matchedUser, login.CompanyName, null, login.AutoSignIn);
+            return await GetUserToken(matchedUser,
+                system: login.System, tenant: login.CompanyName, null, login.AutoSignIn);
         }
 
         private async Task<User> GetUserByLogin(LoginVM login)
@@ -170,7 +173,7 @@ namespace Core.Services
             return await matchedUser.FirstOrDefaultAsync();
         }
 
-        protected virtual async Task<Token> GetUserToken(User user, string tenant, string refreshToken = null, bool autoSigin = false)
+        protected virtual async Task<Token> GetUserToken(User user, string system, string tenant, string refreshToken = null, bool autoSigin = false)
         {
             if (user is null)
             {
@@ -192,6 +195,7 @@ namespace Core.Services
                 new Claim(JwtRegisteredClaimNames.Iat, signinDate.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, jit),
                 new Claim(ClaimTypes.PrimaryGroupSid, tenant),
+                new Claim(ClaimTypes.System, system),
             };
             claims.AddRange(allRoles.Select(x => new Claim(ClaimTypes.Role, x.ToString())));
             claims.AddRange(roleIds.Select(x => new Claim(ClaimTypes.Actor, x.ToString())));
@@ -285,19 +289,21 @@ namespace Core.Services
             };
         }
 
-        public async Task<Token> RefreshAsync(RefreshVM token, string tanent)
+        public async Task<Token> RefreshAsync(RefreshVM token)
         {
             var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _configuration);
             var issuedAt = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Iat)?.Value.TryParseDateTime();
-            var userIdClaim = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-            if (userIdClaim is null)
+            var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            var tenant = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimaryGroupSid)?.Value;
+            var system = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.System)?.Value;
+            if (userId is null)
             {
-                throw new InvalidOperationException($"{nameof(userIdClaim)} is null");
+                throw new InvalidOperationException($"{nameof(userId)} is null");
             }
             var ipAddress = GetRemoteIpAddress(Context.HttpContext);
             var userLogin = await db.UserLogin
                 .OrderByDescending(x => x.SignInDate)
-                .FirstOrDefaultAsync(x => x.UserId == userIdClaim.Value
+                .FirstOrDefaultAsync(x => x.UserId == userId
                     && x.RefreshToken == token.RefreshToken
                     && x.ExpiredDate > DateTimeOffset.Now);
 
@@ -308,8 +314,8 @@ namespace Core.Services
             }
             var updatedUser = await db.User.Include(user => user.Vendor)
                 .Include(x => x.UserRole).ThenInclude(x => x.Role)
-                .FirstOrDefaultAsync(x => x.Id == userIdClaim.Value);
-            return await GetUserToken(updatedUser, tanent, token.RefreshToken);
+                .FirstOrDefaultAsync(x => x.Id == userId);
+            return await GetUserToken(updatedUser, system, tenant, token.RefreshToken);
         }
 
         public async Task<Role> GetRole(string roleName, RoleSelection? selection = RoleSelection.TopFirst)
@@ -338,45 +344,50 @@ namespace Core.Services
             return await userQuery.FirstOrDefaultAsync();
         }
 
-        public async Task<string> EncryptQuery(string query, string env, string tenantCode = "")
+        public async Task<string> EncryptQuery(string query, string env, string system, string tenantCode, bool encryptQuery = false)
         {
             if (query.IsNullOrEmpty()) return null;
-            if (tenantCode == string.Empty && TenantCode.HasAnyChar())
-            {
-                tenantCode = TenantCode;
-            }
             var hash = GetHash(UserUtils.sHA256, query);
-            var tenant = await db.TenantEnv.FirstOrDefaultAsync(x => x.TenantCode == tenantCode && x.Env == env)
+            var tenant = await db.TenantEnv
+                .FirstOrDefaultAsync(x => x.System == system && x.TenantCode == tenantCode && x.Env == env)
                 ?? throw new ApiException("Tenant config not found");
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Hash, hash),
                 new Claim(ClaimTypes.System, tenant.ConnKey, PassPhrase),
             };
+            if (encryptQuery)
+            {
+                claims.Add(new Claim("Query", query));
+            }
             var accessToken = AccessToken(claims, DateTimeOffset.Now.AddDays(1)).Item1;
             return new JwtSecurityTokenHandler().WriteToken(accessToken);
         }
 
-        public async Task<string> DecryptQuery(string query, string signed, string env)
+        public async Task<(string, string)> DecryptQuery(string signed, string env, string plainQuery = null)
         {
             var token = UserUtils.GetPrincipalFromAccessToken(signed, _configuration);
             var hash = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Hash)?.Value;
-            var originalHash = GetHash(UserUtils.sHA256, query);
-            if (hash != originalHash)
+            var query = token.Claims.FirstOrDefault(x => x.Type == "Query")?.Value ?? plainQuery;
+            if (plainQuery.HasAnyChar())
             {
-                throw new ApiException("Permission denied!") { StatusCode = HttpStatusCode.Unauthorized };
+                var originalHash = GetHash(UserUtils.sHA256, query);
+                if (hash != originalHash)
+                {
+                    throw new ApiException("Permission denied!") { StatusCode = HttpStatusCode.Unauthorized };
+                }
             }
             var connKey = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.System)?.Value;
             var conStr = await _cache.GetStringAsync($"{TenantCode}_{connKey}_{env}");
-            if (conStr != null) return conStr;
+            if (conStr != null) return (conStr, query);
             var tenant = await db.TenantEnv
-                .FirstOrDefaultAsync(x => x.TenantCode == TenantCode && x.ConnKey == connKey && x.Env == env)
+                .FirstOrDefaultAsync(x => x.System == System && x.TenantCode == TenantCode && x.ConnKey == connKey && x.Env == env)
                 ?? throw new ApiException("Tenant config not found");
             await _cache.SetStringAsync($"{TenantCode}_{connKey}_{env}", tenant.ConnStr, new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
             });
-            return tenant.ConnStr;
+            return (tenant.ConnStr, query);
         }
 
         public async Task<SqlQueryResult> ExecJs(string entityParam, string query)

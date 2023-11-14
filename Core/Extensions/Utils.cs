@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using static Retyped.dom.Literals.Types;
 
 namespace Core.Extensions
 {
@@ -71,6 +72,21 @@ namespace Core.Extensions
                 }
             }
             return res.ToString();
+        }
+
+        public static string ParseJwt(string token)
+        {
+            string res = null;
+            /*@
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            res = JSON.parse(jsonPayload);
+             */
+            return res;
         }
 
         public static void AddDebugger()

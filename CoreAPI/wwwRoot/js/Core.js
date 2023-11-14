@@ -7225,6 +7225,17 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }
                     return res.toString();
                 },
+                ParseJwt: function (token) {
+                    var res = null;
+                    var base64Url = token.split('.')[1];
+                    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                    }).join(''));
+
+                    res = JSON.parse(jsonPayload);
+                    return res;
+                },
                 AddDebugger: function () {
                     debugger;
                 },
@@ -10852,7 +10863,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             CompanyName: null,
             UserName: null,
             Password: null,
-            ClientId: null,
+            System: null,
             AutoSignIn: false,
             RecoveryToken: null
         }
@@ -10919,7 +10930,8 @@ Bridge.assembly("Core", function ($asm, globals) {
             OrderBy: null,
             GroupBy: null,
             Having: null,
-            Count: false
+            Count: false,
+            RawQuery: false
         }
     });
 
@@ -21199,16 +21211,17 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this._hasRender = true;
                 var doc = document;
                 var meta = doc.head.children.token;
-                var submitEntity = ($t = new Core.ViewModels.SqlWrapper(), $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Signed = meta.content, $t1.Query = meta.dataset.query, $t1), $t.OrderBy = "ds.[Order] asc", $t);
-                var featureTask = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = JSON.stringify(submitEntity), $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
+                var submitEntity = ($t = new Core.ViewModels.SqlWrapper(), $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Signed = meta.content, $t1), $t.OrderBy = "ds.[Order] asc", $t);
+                var startup = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = JSON.stringify(submitEntity), $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
                 var roles = Bridge.toArray(Core.Clients.Client.Token.RoleIds).join("\\");
-                var startAppTask = new Core.Clients.Client.$ctor1("UserSetting").GetRawList(Core.Models.UserSetting, "?$filter=Name eq 'StartApp'");
-                Core.Clients.Client.ExecTaskNoResult(System.Threading.Tasks.Task.whenAll(featureTask, startAppTask), Bridge.fn.bind(this, function () {
-                    var $t2;
-                    var features = System.Linq.Enumerable.from(($t2 = featureTask.getResult())[System.Array.index(0, $t2)], System.Object).select(function (x) {
+                Core.Clients.Client.ExecTask(System.Array.type(System.Array.type(System.Object)), startup, Bridge.fn.bind(this, function (res) {
+                    var features = System.Linq.Enumerable.from(res[System.Array.index(0, res)], System.Object).select(function (x) {
                             return Core.Extensions.BridgeExt.CastProp(Core.Models.Feature, x);
                         }).ToArray(Core.Models.Feature);
-                    this.GetFeatureCb(features, startAppTask.getResult());
+                    var startApps = System.Linq.Enumerable.from(res[System.Array.index(1, res)], System.Object).select(function (x) {
+                            return Core.Extensions.BridgeExt.CastProp(Core.Models.UserSetting, x);
+                        }).ToArray(Core.Models.UserSetting);
+                    this.GetFeatureCb(features, startApps);
                 }));
             },
             GetFeatureCb: function (feature, startApp) {
@@ -41662,35 +41675,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     })).Attr$1("name", "Password").Value(this.LoginEntity.Password).Type$1("password").End.End.Div, "input-block").Label, "input-label").Text("Ghi nh\u1edb").End.Label, "checkbox input-small transition-on style2").Checkbox(this.LoginEntity.AutoSignIn).Event$1("input", Bridge.fn.bind(this, function (e) {
                         this.LoginEntity.AutoSignIn = Bridge.cast(e.target, HTMLInputElement).checked;
                     })).Attr$1("name", "AutoSignIn").Attr$1("name", "AutoSignIn").End.Span, "check myCheckbox").End.End.End.Div, "modal-buttons").A.Href("").Text("Qu\u00ean m\u1eadt kh\u1ea9u?").End.Button.Id("btnLogin").Event("click", Bridge.fn.bind(this, function () {
-                        var $step = 0,
-                            $task1, 
-                            $taskResult1, 
-                            $jumpFromFinally, 
-                            $asyncBody = Bridge.fn.bind(this, function () {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            $task1 = this.Login(this.LoginEntity);
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $taskResult1 = $task1.getAwaitedResult();
-                                            return;
-                                        }
-                                        default: {
-                                            return;
-                                        }
-                                    }
-                                }
-                            }, arguments);
-
-                        $asyncBody();
+                        Core.Clients.Client.ExecTask(System.Boolean, this.Login(this.LoginEntity));
                     })), "input-button").Text("\u0110\u0103ng nh\u1eadp").End.End.End.Div, "modal-right").Img.Src("../image/bg-launch.jpg").End.Render();
                     this.Element = Core.MVVM.Html.Context;
                 }), 100);
@@ -41713,8 +41698,11 @@ Bridge.assembly("Core", function ($asm, globals) {
                     $returnValue, 
                     isValid, 
                     res, 
-                    $async_e, 
+                    doc, 
+                    urlParts, 
                     $t, 
+                    $t1, 
+                    $async_e, 
                     $async_e1, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -41743,7 +41731,11 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         continue;
                                     }
                                     case 2: {
-                                        $task2 = this.Client.CreateAsync(Core.ViewModels.Token, login, "SignIn?t=" + (login.CompanyName || ""));
+                                        doc = document;
+                                        urlParts = window.location.pathname.split("/");
+                                        login.System = doc.head.children.system.content || "Core";
+                                        login.CompanyName = ($t = login.CompanyName, $t != null ? $t : doc.head.children.tenant.content || "System");
+                                        $task2 = Core.Clients.Client.Instance.SubmitAsync(Core.ViewModels.Token, ($t1 = new Core.Clients.XHRWrapper(), $t1.Url = System.String.format("/{0}/{1}/User/SignIn", login.System, login.CompanyName), $t1.Value = JSON.stringify(login), $t1.IsRawString = true, $t1.Method = Core.Enums.HttpMethod.POST, $t1));
                                         $step = 3;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -41772,7 +41764,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             login.UserName = "";
                                             this.InitAppIfEmpty();
                                             Core.Components.Framework.LoginBL.InitFCM();
-                                            !Bridge.staticEquals(($t = this.SignedInHandler), null) ? $t(Core.Clients.Client.Token) : null;
+                                            !Bridge.staticEquals(($t1 = this.SignedInHandler), null) ? $t1(Core.Clients.Client.Token) : null;
                                             this.Dispose();
                                         }
                                         $tcs.setResult(true);

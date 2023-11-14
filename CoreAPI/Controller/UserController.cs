@@ -169,13 +169,15 @@ namespace Core.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("api/[Controller]/SignIn")]
-        public async Task<ActionResult<Token>> SignInAsync([FromBody] LoginVM login)
+        [HttpPost("api/{system}/{tenant}/[Controller]/SignIn")]
+        public async Task<ActionResult<Token>> SignInAsync([FromBody] LoginVM login, [FromRoute] string system, [FromRoute] string tenant)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            login.System ??= system;
+            login.CompanyName ??= tenant;
             return await _userSerivce.SignInAsync(login);
         }
 
@@ -197,13 +199,13 @@ namespace Core.Controllers
 
         [AllowAnonymous]
         [HttpPost("api/[Controller]/Refresh")]
-        public async Task<Token> RefreshAsync([FromBody] RefreshVM token, string t)
+        public async Task<Token> RefreshAsync([FromBody] RefreshVM token)
         {
             if (token is null)
             {
                 throw new ApiException("Token is required");
             }
-            return await _userSerivce.RefreshAsync(token, t);
+            return await _userSerivce.RefreshAsync(token);
         }
 
         [AllowAnonymous]

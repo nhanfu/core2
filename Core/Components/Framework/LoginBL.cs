@@ -114,7 +114,7 @@ namespace Core.Components.Framework
                                     .Span.ClassName("check myCheckbox").End.End.End
                                 .Div.ClassName("modal-buttons")
                                     .A.Href("").Text("Quên mật khẩu?").End
-                                    .Button.Id("btnLogin").Event(EventType.Click, async () => await Login(LoginEntity)).ClassName("input-button").Text("Đăng nhập").End.End.End
+                                    .Button.Id("btnLogin").Event(EventType.Click, () => Client.ExecTask(Login(LoginEntity))).ClassName("input-button").Text("Đăng nhập").End.End.End
                             .Div.ClassName("modal-right")
                                 .Img.Src("../image/bg-launch.jpg").End.Render();
                 Element = Html.Context;
@@ -142,7 +142,17 @@ namespace Core.Components.Framework
             Token res = null;
             try
             {
-                res = await Client.CreateAsync<Token>(login, "SignIn?t=" + login.CompanyName);
+                var doc = Document.Instance as dynamic;
+                var urlParts = Window.Location.PathName.Split("/");
+                login.System = doc.head.children.system.content ?? "Core";
+                login.CompanyName = login.CompanyName ?? doc.head.children.tenant.content ?? "System";
+                res = await Client.Instance.SubmitAsync<Token>(new XHRWrapper
+                {
+                    Url = $"/{login.System}/{login.CompanyName}/User/SignIn",
+                    Value = JSON.Stringify(login),
+                    IsRawString = true,
+                    Method = HttpMethod.POST
+                });
             }
             catch
             {
