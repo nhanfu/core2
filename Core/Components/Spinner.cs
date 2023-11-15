@@ -14,32 +14,27 @@ namespace Core.Components
         {
         }
 
-        public static Spinner Instance
+        public static void Init()
         {
-            get
+            if (_instance != null)
             {
-                if (_instance != null)
-                {
-                    return _instance;
-                }
-
-                _instance = new Spinner();
-                var existing = Document.GetElementById("spinner");
-                if (existing is null)
-                {
-                    Html.Take(Document.Body).Div.ClassName("backdrop").Style("background: transparent !important;").End.Span.ClassName("spinner");
-                    _span = Html.Context;
-                }
-                else
-                {
-                    _span = existing;
-                }
-                _backdrop = _span.PreviousElementSibling;
-                _span.Style.Display = Display.None.ToString();
-                _backdrop.Style.Display = Display.None.ToString();
-
-                return _instance;
+                return;
             }
+
+            _instance = new Spinner();
+            var existing = Document.GetElementById("spinner");
+            if (existing is null)
+            {
+                Html.Take(Document.Body).Div.ClassName("backdrop").Style("background: transparent !important;").End.Span.ClassName("spinner");
+                _span = Html.Context;
+            }
+            else
+            {
+                _span = existing;
+            }
+            _backdrop = _span.PreviousElementSibling;
+            _span.Style.Display = Display.None.ToString();
+            _backdrop.Style.Display = Display.None.ToString();
         }
 
         public static void AppendTo(HTMLElement node, bool lockScreen = true, bool autoHide = true, int timeout = 7000)

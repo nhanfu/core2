@@ -893,12 +893,6 @@ namespace Core.Clients
             Document.Body.RemoveChild(a);
         }
 
-        public static async Task LoadEntities()
-        {
-            var entities = await new Client(nameof(Entity), typeof(Entity).Namespace).GetRawList<Entity>(addTenant: true);
-            Entities = entities.ToDictionary(x => x.Id);
-        }
-
         internal static string RemoveGuid(string path)
         {
             string thumbText = path;

@@ -8,77 +8,22 @@ Bridge.assembly("Core", function ($asm, globals) {
 
     Bridge.define("Core.App", {
         main: function Main () {
-            var $step = 0,
-                $task1, 
-                $taskResult1, 
-                $task2, 
-                $jumpFromFinally, 
-                $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                $returnValue, 
-                reload, 
-                $async_e, 
-                $asyncBody = Bridge.fn.bind(this, function () {
-                    try {
-                        for (;;) {
-                            $step = System.Array.min([0,1,2], $step);
-                            switch ($step) {
-                                case 0: {
-                                    if (Core.Components.LangSelect.Culture == null) {
-                                        Core.Components.LangSelect.Culture = "vi";
-                                    }
-                                    $task1 = Core.App.ShouldReloadNewVersion();
-                                    $step = 1;
-                                    if ($task1.isCompleted()) {
-                                        continue;
-                                    }
-                                    $task1.continue($asyncBody);
-                                    return;
-                                }
-                                case 1: {
-                                    $taskResult1 = $task1.getAwaitedResult();
-                                    reload = $taskResult1;
-                                    if (reload) {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    $task2 = Core.App.TryInitData();
-                                    $step = 2;
-                                    if ($task2.isCompleted()) {
-                                        continue;
-                                    }
-                                    $task2.continue($asyncBody);
-                                    return;
-                                }
-                                case 2: {
-                                    $task2.getAwaitedResult();
-                                    Core.App.InitApp();
-                                    $tcs.setResult(null);
-                                    return;
-                                }
-                                default: {
-                                    $tcs.setResult(null);
-                                    return;
-                                }
-                            }
-                        }
-                    } catch($async_e1) {
-                        $async_e = System.Exception.create($async_e1);
-                        $tcs.setException($async_e);
-                    }
-                }, arguments);
-
-            $asyncBody();
-            return $tcs.task;
+            if (Core.Components.LangSelect.Culture == null) {
+                Core.Components.LangSelect.Culture = "vi";
+            }
+            Core.Clients.Client.ExecTaskNoResult(Core.Components.LangSelect.Translate(), function () {
+                Core.App.InitApp();
+            });
         },
         statics: {
-            fields: {
-                _initApp: false
-            },
             methods: {
                 InitApp: function () {
                     Core.Clients.Client.ModelNamespace = (Bridge.Reflection.getTypeNamespace(Core.Models.User) || "") + ".";
-                    Bridge._ = Core.Components.Spinner.Instance;
+                    Core.Components.Spinner.Init();
                     Core.Components.Framework.LoginBL.Instance.Render();
+                    Core.App.AlterDeviceScreen();
+                },
+                AlterDeviceScreen: function () {
                     var iPhone = new RegExp("(iPod|iPhone)").test(window.navigator.userAgent) && new RegExp("AppleWebKit").test(window.navigator.userAgent);
                     if (iPhone) {
                         var className = "iphone ";
@@ -88,170 +33,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                             className = (className || "") + "landscape";
                         }
                         document.documentElement.className = className;
-                    }
-                    Core.Components.Framework.LoginBL.Instance.TokenRefreshedHandler = Bridge.fn.combine(Core.Components.Framework.LoginBL.Instance.TokenRefreshedHandler, Core.App.LoadSettingWrapper);
-                },
-                ShouldReloadNewVersion: function () {
-                    var $step = 0,
-                        $task1, 
-                        $taskResult1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        versionCurrent, 
-                        $t, 
-                        version, 
-                        $async_e, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            $task1 = new Core.Clients.Client.ctor().SubmitAsync(System.Object, ($t = new Core.Clients.XHRWrapper(), $t.Url = "/Entity/?$top=1&$filter=Name eq 'Version'", $t));
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $taskResult1 = $task1.getAwaitedResult();
-                                            versionCurrent = $taskResult1;
-                                            if (versionCurrent == null || versionCurrent.data == null || versionCurrent.data.length == null) {
-                                                $tcs.setResult(false);
-                                                return;
-                                            }
-                                            version = Core.Clients.LocalStorage.GetItem(System.String, "Version");
-                                            if (version == null) {
-                                                Core.Clients.LocalStorage.SetItem(System.String, "Version", "1");
-                                                version = "1";
-                                            }
-                                            if (Bridge.referenceEquals(version, versionCurrent.value[0].Description)) {
-                                                $tcs.setResult(false);
-                                                return;
-                                            }
-                                            const swalWithBootstrapButtons = Swal.mixin({
-                                                    customClass: {
-                                                    confirmButton: 'btn btn-success',
-                                                    cancelButton: 'btn btn-danger'
-                                                    },
-                                                    buttonsStyling: false
-                                                })
-                                                swalWithBootstrapButtons.fire({
-                                                    title: 'Cập nhật !',
-                                                    text: "Phiên bản của bạn chưa mới nhất!",
-                                                    icon: 'error',
-                                                    showCancelButton: true,
-                                                    confirmButtonText: 'Yes, Cập nhật!',
-                                                    cancelButtonText: 'No, Không!',
-                                                    reverseButtons: true
-                                                }).then((result) => {
-                                                    Core.Clients.LocalStorage.SetItem(System.String, "Version", versionCurrent.Description);
-                                                    window.location.reload(true);
-                                                })
-                                            $tcs.setResult(true);
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                    return $tcs.task;
-                },
-                TryInitData: function () {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        tranTask, 
-                        entityTask, 
-                        $async_e, 
-                        $async_e1, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1,2,3,4], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            tranTask = Core.Components.LangSelect.Translate();
-                                            entityTask = Core.Clients.Client.LoadEntities();
-                                            $step = 1;
-                                            continue;
-                                        }
-                                        case 1: {
-                                            $task1 = System.Threading.Tasks.Task.whenAll(tranTask, entityTask);
-                                            $step = 2;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 2: {
-                                            $task1.getAwaitedResult();
-                                            $step = 4;
-                                            continue;
-                                        }
-                                        case 3: {
-                                            $async_e = null;
-                                            $step = 4;
-                                            continue;
-                                        }
-                                        case 4: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                if ( $step >= 1 && $step <= 2 ) {
-                                    $step = 3;
-                                    $asyncBody();
-                                    return;
-                                }
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                    return $tcs.task;
-                },
-                LoadSettingWrapper: function (token) {
-                    if (Core.App._initApp) {
-                        return;
-                    }
-                    Core.App._initApp = true;
-                    Core.App.LoadUserSetting(token);
-                },
-                LoadUserSetting: function (token) {
-                    if (token == null) {
-                        return;
-                    }
-                    var rsUserSetting = new Core.Clients.Client.$ctor1("UserSetting").GetAsync(Core.Models.OdataResult$1(Core.Models.UserSetting), System.String.format("?$filter=Active eq true and UserId eq {0}", [token.UserId]));
-                    var rs = System.Linq.Enumerable.from(rsUserSetting.getResult().Value, Core.Models.UserSetting).firstOrDefault(null, null);
-                    if (rs == null) {
-                        Core.Components.Forms.TabEditor.ShowTabText = false;
-                    } else {
-                        var outbool = { };
-                        System.Boolean.tryParse(rs.Value, outbool);
-                        Core.Components.Forms.TabEditor.ShowTabText = outbool.v;
                     }
                 },
                 IsMobile: function () {
@@ -755,54 +536,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                },
-                LoadEntities: function () {
-                    var $step = 0,
-                        $task1, 
-                        $taskResult1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        entities, 
-                        $t, 
-                        $async_e, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            $task1 = new Core.Clients.Client.$ctor1("Entity", Bridge.Reflection.getTypeNamespace(Core.Models.Entity)).GetRawList(Core.Models.Entity, void 0, false, true, false, void 0);
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $taskResult1 = $task1.getAwaitedResult();
-                                            entities = $taskResult1;
-                                            Core.Clients.Client.Entities = ($t = Core.Models.Entity, System.Linq.Enumerable.from(entities, $t).toDictionary(function (x) {
-                                                return x.Id;
-                                            }, null, System.String, $t));
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                    return $tcs.task;
                 },
                 RemoveGuid: function (path) {
                     var thumbText = path;
@@ -4772,30 +4505,24 @@ Bridge.assembly("Core", function ($asm, globals) {
                 _backdrop: null,
                 _hiddenAwaiter: 0
             },
-            props: {
-                Instance: {
-                    get: function () {
-                        if (Core.Components.Spinner._instance != null) {
-                            return Core.Components.Spinner._instance;
-                        }
-
-                        Core.Components.Spinner._instance = new Core.Components.Spinner();
-                        var existing = document.getElementById("spinner");
-                        if (existing == null) {
-                            Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(document.body).Div, "backdrop").Style$1("background: transparent !important;").End.Span, "spinner");
-                            Core.Components.Spinner._span = Core.MVVM.Html.Context;
-                        } else {
-                            Core.Components.Spinner._span = existing;
-                        }
-                        Core.Components.Spinner._backdrop = Core.Components.Spinner._span.previousElementSibling;
-                        Core.Components.Spinner._span.style.display = System.Enum.toString(System.String, "none");
-                        Core.Components.Spinner._backdrop.style.display = System.Enum.toString(System.String, "none");
-
-                        return Core.Components.Spinner._instance;
-                    }
-                }
-            },
             methods: {
+                Init: function () {
+                    if (Core.Components.Spinner._instance != null) {
+                        return;
+                    }
+
+                    Core.Components.Spinner._instance = new Core.Components.Spinner();
+                    var existing = document.getElementById("spinner");
+                    if (existing == null) {
+                        Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(document.body).Div, "backdrop").Style$1("background: transparent !important;").End.Span, "spinner");
+                        Core.Components.Spinner._span = Core.MVVM.Html.Context;
+                    } else {
+                        Core.Components.Spinner._span = existing;
+                    }
+                    Core.Components.Spinner._backdrop = Core.Components.Spinner._span.previousElementSibling;
+                    Core.Components.Spinner._span.style.display = System.Enum.toString(System.String, "none");
+                    Core.Components.Spinner._backdrop.style.display = System.Enum.toString(System.String, "none");
+                },
                 AppendTo: function (node, lockScreen, autoHide, timeout) {
                     if (lockScreen === void 0) { lockScreen = true; }
                     if (autoHide === void 0) { autoHide = true; }

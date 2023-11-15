@@ -108,12 +108,14 @@ namespace Core.Components.Framework
             {
                 var features = res[0].Select(x => x.CastProp<Feature>()).ToArray();
                 var startApps = res[1].Select(x => x.CastProp<UserSetting>()).ToArray();
-                GetFeatureCb(features, startApps);
+                var entities = res[1].Select(x => x.CastProp<Entity>()).ToArray();
+                GetFeatureCb(features, startApps, entities);
             });
         }
 
-        private void GetFeatureCb(Feature[] feature, UserSetting[] startApp)
+        private void GetFeatureCb(Feature[] feature, UserSetting[] startApp, Entity[] entities)
         {
+            Client.Entities = entities.ToDictionary(x => x.Id);
             var startApps = startApp.Combine(x => x.Value).Split(",").Select(x => x).Distinct();
             _feature = feature;
             BuildFeatureTree();
