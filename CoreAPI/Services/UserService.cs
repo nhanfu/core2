@@ -14,7 +14,6 @@ using Tenray.Topaz;
 using Tenray.Topaz.API;
 using Core.Exceptions;
 using Core.Models;
-using Core.ViewModels;
 using HttpStatusCode = Core.Enums.HttpStatusCode;
 
 namespace Core.Services
@@ -31,8 +30,6 @@ namespace Core.Services
         public string BranchId { get; set; }
         public List<string> CenterIds { get; set; }
         public bool IsSelfTenant { get; set; }
-        public bool IsInternalCoor { get; set; }
-        public bool IsInternalSale { get; set; }
         public string VendorId { get; set; }
         public string TenantCode { get; set; }
         public string System { get; set; }
@@ -397,6 +394,12 @@ namespace Core.Services
             engine.SetValue("JSON", new JSONObject());
             engine.AddType<HttpClient>("HttpClient");
             engine.AddNamespace("System");
+            var claims = Context.HttpContext.User?.Claims;
+            if (claims != null)
+            {
+                var map = new { UserId, RoleIds, AllRoleIds, TenantCode, System, IsSelfTenant, CenterIds, BranchId, VendorId };
+                engine.SetValue("claims", JsonConvert.SerializeObject(map));
+            }
             engine.SetValue("args", entityParam);
 
             await engine.ExecuteScriptAsync(query);
