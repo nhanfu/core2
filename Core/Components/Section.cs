@@ -253,9 +253,8 @@ namespace Core.Components
             ToggleDisabled(ComponentGroup?.DisabledExp);
         }
 
-        public void ComponentProperties(object arg, Component component)
+        public void ComponentProperties(object component)
         {
-            component.ComponentGroup = null;
             var editor = new ComponentBL()
             {
                 Entity = component,
@@ -300,7 +299,7 @@ namespace Core.Components
                     {
                         Html.Instance.Attr("contenteditable", "true");
                         Html.Instance.Event(EventType.Input, (e) => ChangeLabel(e, ui));
-                        Html.Instance.Event(EventType.DblClick, (e) => ComponentProperties(e, ui));
+                        Html.Instance.Event(EventType.DblClick, (e) => ComponentProperties(ui));
                     }
                     html.EndOf(ElementType.td).TData.Visibility(ui.Visibility).ColSpan(colSpan - 1).Render();
                 }

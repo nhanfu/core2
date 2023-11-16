@@ -15,5 +15,6 @@ namespace Core.ViewModels
         public string System { get; set; }
         public bool AutoSignIn { get; set; }
         public string RecoveryToken { get; set; }
+        public string Env { get; set; }
     }
 }

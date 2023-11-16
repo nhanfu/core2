@@ -108,7 +108,7 @@ namespace Core.Components.Framework
             {
                 var features = res[0].Select(x => x.CastProp<Feature>()).ToArray();
                 var startApps = res[1].Select(x => x.CastProp<UserSetting>()).ToArray();
-                var entities = res[1].Select(x => x.CastProp<Entity>()).ToArray();
+                var entities = res[2].Select(x => x.CastProp<Entity>()).ToArray();
                 GetFeatureCb(features, startApps, entities);
             });
         }

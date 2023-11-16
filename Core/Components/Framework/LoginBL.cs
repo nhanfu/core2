@@ -146,6 +146,7 @@ namespace Core.Components.Framework
                 var urlParts = Window.Location.PathName.Split("/");
                 login.System = doc.head.children.system.content ?? "Core";
                 login.CompanyName = login.CompanyName ?? doc.head.children.tenant.content ?? "System";
+                login.Env = doc.head.children.system.env ?? "test";
                 res = await Client.Instance.SubmitAsync<Token>(new XHRWrapper
                 {
                     Url = $"/{login.System}/{login.CompanyName}/User/SignIn",

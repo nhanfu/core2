@@ -8,6 +8,10 @@ namespace Core.ViewModels
 {
     public class SqlWrapper
     {
+        public string SvcId { get; set; }
+        public string ComId { get; set; }
+        public string Action { get; set; }
+
         public string Entity { get; set; }
         public SignedCom Component { get; set; }
         public string Paging { get; set; }

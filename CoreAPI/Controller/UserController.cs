@@ -10,6 +10,9 @@ using Core.Exceptions;
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
+using Tenray.Topaz;
+using Tenray.Topaz.API;
+using DocumentFormat.OpenXml.Vml.Office;
 
 namespace Core.Controllers
 {
@@ -249,6 +252,29 @@ namespace Core.Controllers
             SetAuditInfo(user);
             await db.SaveChangesAsync();
             return randomPassword;
+        }
+
+        [HttpPost("api/[Controller]/svc")]
+        public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ExecuteJs([FromBody] SqlViewModel vm)
+        {
+            var svQuery = db.Services.Where(x =>
+                    x.System == _userSerivce.System && x.TenantCode == _userSerivce.TenantCode
+                    && (x.ComId == vm.ComId && x.Action == vm.Action || vm.SvcId != null && x.Id == vm.SvcId));
+            var sv = await svQuery.FirstOrDefaultAsync();
+
+            if (sv == null)
+            {
+                return null;
+            }
+            var isValidRole = sv.IsPublicInTenant ||
+                (from svRole in sv.RoleIds.Split(',')
+                 join usrRole in _userSerivce.RoleIds on svRole equals usrRole
+                 select svRole).Any();
+            if (!isValidRole) throw new UnauthorizedAccessException("The service is not accessible by your roles");
+
+            var jsRes = await _userSvc.ExecJs(vm.Entity, sv.Content);
+            var conStr = await _userSerivce.GetConnStrFromKey(sv.ConnKey);
+            return await ReportDataSet(jsRes.Query, conStr);
         }
     }
 }

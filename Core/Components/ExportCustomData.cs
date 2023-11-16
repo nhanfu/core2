@@ -1,18 +1,18 @@
 ﻿using Bridge.Html5;
-using Core.Models;
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
 using Core.Enums;
 using Core.Extensions;
+using Core.Models;
+using Core.MVVM;
+using Core.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
-using System.Globalization;
-using Core.MVVM;
-using Newtonsoft.Json;
 
 namespace Core.Components
 {
@@ -24,13 +24,14 @@ namespace Core.Components
         public HTMLUListElement _ul1;
         public UserSetting _settings;
         private List<Component> _headers;
+
         public ExportCustomData(ListView parent) : base(nameof(Component))
         {
             Name = "Export CustomData";
             Title = "Xuất excel tùy chọn";
-            DOMContentLoaded += async () =>
+            DOMContentLoaded += () =>
             {
-                await LocalRender();
+                LocalRender();
                 Move();
             };
         }
@@ -230,14 +231,30 @@ namespace Core.Components
              */
         }
 
-        private async Task LocalRender()
+        private void LocalRender()
         {
             _headers = ParentListView.BasicHeader.Where(x => x.ComponentType != nameof(Button) && !x.ShortDesc.IsNullOrWhiteSpace()).ToList();
-            var userSetting = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>(
-                $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'Export-{ParentListView.GuiInfo.Id}'");
+            var task = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+            {
+                Url = Utils.UserSvc,
+                Value = new SqlWrapper
+                {
+                    ComId = "GridView",
+                    Action = "GetUserSettingByListViewId",
+                    Entity = JSON.Stringify(new { GridId = ParentListView.GuiInfo.Id })
+                },
+                Method = HttpMethod.POST
+            });
+            Client.ExecTask(task, UserSettingLoaded);
+        }
+
+        private void UserSettingLoaded(object[][] res)
+        {
+            var userSetting = res[0].Length > 0 ? res[0][0] : null as dynamic;
             if (userSetting != null)
             {
-                var userSettings = JsonConvert.DeserializeObject<List<Component>>(userSetting.Value).ToDictionary(x => x.Id);
+                var userSettingList = JsonConvert.DeserializeObject<List<Component>>(userSetting.Value as string);
+                var userSettings = userSettingList.ToDictionary(x => x.Id);
                 _headers.ForEach(x =>
                 {
                     var current = userSettings.GetValueOrDefault(x.Id);
@@ -253,7 +270,7 @@ namespace Core.Components
             Html.Take(content.Element).Table.ClassName("table").Id("exTable")
                 .Thead
                     .TRow.TData.Text("STT").End
-                    .TData.Checkbox(false).Event(EventType.Input, (e) => TongleAll(e)).End.End
+                    .TData.Checkbox(false).Event(EventType.Input, (e) => ToggleAll(e)).End.End
                     .TData.Text("Tên cột").EndOf(ElementType.thead);
             Html.Instance.TBody.Render();
             _tbody = Html.Context;
@@ -268,7 +285,7 @@ namespace Core.Components
             }
         }
 
-        private void TongleAll(Event e)
+        private void ToggleAll(Event e)
         {
             Html.Take(_tbody).Clear();
             _headers.ForEach(x => x.IsExport = e.Target.Cast<HTMLInputElement>().Checked);

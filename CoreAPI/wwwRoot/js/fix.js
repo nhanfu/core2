@@ -60,6 +60,9 @@
     System.DateTime.gt = function (a, b) {
         return a.getTime() > b.getTime();
     };
+    Date.prototype.ToString$1 = function (format) {
+        return System.String.format(`{0:${format}}`, this);
+    };
 })();
 
 function zoom() {

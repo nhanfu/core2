@@ -1087,11 +1087,9 @@ namespace Core.Components.Forms
 
         public void ComponentProperties(object arg)
         {
-            var component = arg.CastProp<Component>();
-            component.ComponentGroup = null;
             var editor = new ComponentBL()
             {
-                Entity = component,
+                Entity = arg,
                 ParentElement = Element,
                 OpenFrom = this.FindClosest<EditForm>(),
             };

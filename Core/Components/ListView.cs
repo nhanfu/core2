@@ -26,7 +26,7 @@ namespace Core.Components
         internal int _scrollTable = 10;
         private const string PermissionLoaded = "PermissionLoaded";
         private const string IsOwner = "IsOwner";
-        protected static List<object> _copiedRows;
+        protected static IEnumerable<object> _copiedRows;
         public Action<object> RowClick;
         public Action<object> DblClick;
         protected bool _isFocusCell;
@@ -983,12 +983,17 @@ namespace Core.Components
 
         public void PasteSelected(object ev)
         {
+            var clipBoard = (Window.Instance as dynamic).navigator.clipboard.readText() as string;
+            if (!clipBoard.IsNullOrWhiteSpace() && _copiedRows.Nothing())
+            {
+                _copiedRows = JSON.Parse(clipBoard) as object[];
+            }
             if (_copiedRows.Nothing())
             {
                 return;
             }
 
-            Task.Run((async () =>
+            Task.Run(async () =>
             {
                 Toast.Success("Đang Sao chép liệu !");
                 await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.BeforePasted, _originRows, _copiedRows);
@@ -1011,7 +1016,7 @@ namespace Core.Components
                 {
                     Toast.Success("Sao chép dữ liệu thành công !");
                 }
-            }));
+            });
         }
 
         protected virtual void RenderIndex(int? skip = null)
@@ -1045,7 +1050,7 @@ namespace Core.Components
         public virtual void DuplicateSelected(Event ev, bool addRow = false)
         {
             var originalRows = GetSelectedRows();
-            var copiedRows = ReflectionExt.CopyRowWithoutId(originalRows).ToList();
+            var copiedRows = ReflectionExt.CopyRowWithoutId(originalRows);
             if (copiedRows.Nothing() || !CanWrite)
             {
                 return;
@@ -1323,6 +1328,7 @@ namespace Core.Components
         {
             _originRows = GetSelectedRows();
             _copiedRows = ReflectionExt.CopyRowWithoutId(_originRows);
+            (Window.Instance as dynamic).navigator.clipboard.writeText(JSON.Stringify(_copiedRows));
             Task.Run(async () =>
             {
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCopied, _originRows, _copiedRows);

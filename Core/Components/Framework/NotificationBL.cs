@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
-using Notification = Retyped.dom.Notification;
 
 namespace Core.Components.Framework
 {
@@ -100,7 +99,6 @@ namespace Core.Components.Framework
                 return;
             }
 
-            Notification nativeNtf = null;
             /*@
             var nativeNtf = new Notification(task.Title,
             {
@@ -110,11 +108,11 @@ namespace Core.Components.Framework
                 badge: "./favicon.ico"
             });
             nativeNtf.addEventListener('click', () => this.OpenNotification(task));
-            */
-            Window.SetTimeout(() =>
+            setTimeout(() =>
             {
                 nativeNtf.close();
             }, 7000);
+            */
         }
 
         private void ShowToast(TaskNotification task)

@@ -408,18 +408,16 @@ namespace Core.Components
 
         private void ExportCustomData(object arg)
         {
-            Task.Run(async () =>
+            var task = TabEditor.OpenPopup("Export CustomData", () =>
             {
-                await TabEditor.OpenPopup("Export CustomData", () =>
+                var editor = new ExportCustomData(ParentListView)
                 {
-                    var editor = new ExportCustomData(ParentListView)
-                    {
-                        ParentListView = Parent as ListView,
-                        ParentElement = TabEditor.Element
-                    };
-                    return editor;
-                });
+                    ParentListView = Parent as ListView,
+                    ParentElement = TabEditor.Element
+                };
+                return editor;
             });
+            Client.ExecTaskNoResult(task);
         }
 
         private void ShowHidden(Event e)

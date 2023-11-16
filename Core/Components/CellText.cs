@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TextAlign = Core.Enums.TextAlign;
 using Core.Enums;
+using Core.ViewModels;
 
 namespace Core.Components
 {
@@ -33,9 +34,9 @@ namespace Core.Components
             {
                 RenderNewEle(cellText, cellData, isBool);
             }
-            if (GuiInfo.Query.HasAnyChar())
+            if (!GuiInfo.Query.IsNullOrWhiteSpace())
             {
-                Task.Run(RenderCellTextAsync);
+                RenderCellText();
                 return;
             }
             else
@@ -132,23 +133,35 @@ namespace Core.Components
             return cellText;
         }
 
-        private async Task RenderCellTextAsync()
+        private void RenderCellText()
         {
             if (GuiInfo.Query.IsNullOrEmpty())
             {
                 return;
             }
-            var isFn = Utils.IsFunction(GuiInfo.Query, out var fn);
-            var DataSourceFilter = isFn ? fn.Call(this, Entity, this).ToString() : Utils.FormatEntity(GuiInfo.Query, Entity);
-            var data = await new Client(nameof(User), typeof(User).Namespace).PostAsync<object[]>(DataSourceFilter, "ReportQuery");
-            if (data.Nothing())
+            var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var fn);
+            var entity = isFn ? fn.Call(this, this).ToString() : string.Empty;
+            var submit = new SqlWrapper
             {
-                return;
-            }
-            var isFormatFn = Utils.IsFunction(GuiInfo.FormatEntity, out var formatter);
-            var text = isFormatFn ? formatter.Apply(this, new object[] { data }).ToString() : Utils.FormatEntity(GuiInfo.FormatEntity, data[0]);
+                Entity = JSON.Stringify(entity),
+                Component = new SignedCom { Query = GuiInfo.Query, Signed = GuiInfo.Signed }
+            };
+            var dataTask = Client.Instance.SubmitAsync<object[]>(new XHRWrapper
+            {
+                Url = Utils.SqlReader,
+                Value = JSON.Stringify(submit),
+            });
+            Client.ExecTask(dataTask, data =>
+            {
+                if (data.Nothing())
+                {
+                    return;
+                }
+                var isFormatFn = Utils.IsFunction(GuiInfo.FormatEntity, out var formatter);
+                var text = isFormatFn ? formatter.Apply(this, new object[] { data }).ToString() : Utils.FormatEntity(GuiInfo.FormatEntity, data[0]);
 
-            UpdateEle(text, null, false);
+                UpdateEle(text, null, false);
+            });
         }
 
         private Task LabelClickHandler(Event e)

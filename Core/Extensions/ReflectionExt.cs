@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Clients;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -249,23 +250,14 @@ namespace Core.Extensions
         public const string IdField = "Id";
         public const string StatusIdField = "StatusId";
         public const string FreightStateId = "FreightStateId";
-        public static List<T> CopyRowWithoutId<T>(List<T> selectedRows, string path = null)
+        public static IEnumerable<object> CopyRowWithoutId(List<object> selectedRows, string path = null)
         {
-            var copiedRows = selectedRows.Select(x =>
+            return selectedRows.Select(x =>
             {
-                var res = (T)DeepCopy(x, path);
-                res.SetPropValue(IdField, null);
-                ProcessObjectRecursive(res, obj =>
-                {
-                    var id = obj.GetPropValue(IdField) as string;
-                    if (id.HasAnyChar())
-                    {
-                        obj.SetPropValue(IdField, null);
-                    }
-                });
+                var res = XHRWrapper.UnboxValue(x);
+                res[IdField] = null;
                 return res;
-            }).ToList();
-            return copiedRows;
+            });
         }
 
         public static void ProcessObjectRecursive(object obj, Action<object> action, HashSet<object> visited = null)

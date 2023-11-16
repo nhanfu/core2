@@ -29,8 +29,8 @@ namespace Core.Services
         public string UserId { get; set; }
         public string BranchId { get; set; }
         public List<string> CenterIds { get; set; }
-        public bool IsSelfTenant { get; set; }
         public string VendorId { get; set; }
+        public string Env { get; set; }
         public string TenantCode { get; set; }
         public string System { get; set; }
         public List<string> AllRoleIds { get; set; }
@@ -49,7 +49,6 @@ namespace Core.Services
                 return;
             }
             var claims = Context.HttpContext.User.Claims;
-            IsSelfTenant = claims.FirstOrDefault(x => x.Type == nameof(IsSelfTenant))?.Value?.TryParseBool() ?? false;
             BranchId = claims.FirstOrDefault(x => x.Type == nameof(BranchId))?.Value;
             UserId = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
             AllRoleIds = claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).Where(x => x != null).ToList();
@@ -58,6 +57,7 @@ namespace Core.Services
             VendorId = claims.FirstOrDefault(x => x.Type == ClaimTypes.GroupSid)?.Value;
             TenantCode = claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimaryGroupSid)?.Value.ToUpper();
             System = claims.FirstOrDefault(x => x.Type == ClaimTypes.System)?.Value.ToUpper();
+            Env = claims.FirstOrDefault(x => x.Type == "Env")?.Value.ToUpper();
         }
 
         public string GenerateRandomToken(int? maxLength = 32)
@@ -158,7 +158,7 @@ namespace Core.Services
                 throw new ApiException($"Wrong username or password. Please try again!") { StatusCode = HttpStatusCode.BadRequest };
             }
             return await GetUserToken(matchedUser,
-                system: login.System, tenant: login.CompanyName, null, login.AutoSignIn);
+                system: login.System, tenant: login.CompanyName, env: login.Env, null, login.AutoSignIn);
         }
 
         private async Task<User> GetUserByLogin(LoginVM login)
@@ -170,7 +170,7 @@ namespace Core.Services
             return await matchedUser.FirstOrDefaultAsync();
         }
 
-        protected virtual async Task<Token> GetUserToken(User user, string system, string tenant, string refreshToken = null, bool autoSigin = false)
+        protected virtual async Task<Token> GetUserToken(User user, string system, string tenant, string env, string refreshToken = null, bool autoSigin = false)
         {
             if (user is null)
             {
@@ -193,6 +193,7 @@ namespace Core.Services
                 new Claim(JwtRegisteredClaimNames.Jti, jit),
                 new Claim(ClaimTypes.PrimaryGroupSid, tenant),
                 new Claim(ClaimTypes.System, system),
+                new Claim("Env", env),
             };
             claims.AddRange(allRoles.Select(x => new Claim(ClaimTypes.Role, x.ToString())));
             claims.AddRange(roleIds.Select(x => new Claim(ClaimTypes.Actor, x.ToString())));
@@ -375,16 +376,23 @@ namespace Core.Services
                 }
             }
             var connKey = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.System)?.Value;
-            var conStr = await _cache.GetStringAsync($"{TenantCode}_{connKey}_{env}");
-            if (conStr != null) return (conStr, query);
-            var tenant = await db.TenantEnv
-                .FirstOrDefaultAsync(x => x.System == System && x.TenantCode == TenantCode && x.ConnKey == connKey && x.Env == env)
+            var connString = await GetConnStrFromKey(connKey);
+            return (connString, query);
+        }
+
+        public async Task<string> GetConnStrFromKey(string connKey)
+        {
+            var key = $"{System}_{TenantCode}_{connKey}_{Env}"; ;
+            var conStr = await _cache.GetStringAsync($"{TenantCode}_{key}_{Env}");
+            if (conStr != null) return conStr;
+            var tenantEnv = await db.TenantEnv
+                .FirstOrDefaultAsync(x => x.System == System && x.TenantCode == TenantCode && x.ConnKey == connKey && x.Env == Env)
                 ?? throw new ApiException("Tenant config not found");
-            await _cache.SetStringAsync($"{TenantCode}_{connKey}_{env}", tenant.ConnStr, new DistributedCacheEntryOptions
+            await _cache.SetStringAsync(key, tenantEnv.ConnStr, new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
             });
-            return (tenant.ConnStr, query);
+            return tenantEnv.ConnStr;
         }
 
         public async Task<SqlQueryResult> ExecJs(string entityParam, string query)
@@ -397,7 +405,7 @@ namespace Core.Services
             var claims = Context.HttpContext.User?.Claims;
             if (claims != null)
             {
-                var map = new { UserId, RoleIds, AllRoleIds, TenantCode, System, IsSelfTenant, CenterIds, BranchId, VendorId };
+                var map = new { UserId, RoleIds, AllRoleIds, TenantCode, System, Env, CenterIds, BranchId, VendorId };
                 engine.SetValue("claims", JsonConvert.SerializeObject(map));
             }
             engine.SetValue("args", entityParam);

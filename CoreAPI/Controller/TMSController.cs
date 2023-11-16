@@ -12,6 +12,7 @@ using Tenray.Topaz;
 using Tenray.Topaz.API;
 using Core.Exceptions;
 using Core.Models;
+using Core.ViewModels;
 
 namespace Core.Controllers
 {
@@ -525,37 +526,6 @@ namespace Core.Controllers
             worksheet.Columns().AdjustToContents();
             workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
             return url;
-        }
-
-        [HttpPost("api/[Controller]/svc")]
-        public async Task ExecuteJs([FromQuery] string svId, [FromQuery] string path, [FromBody] string param)
-        {
-            Models.Services sv = null;
-            if (svId.HasAnyChar())
-            {
-                sv = await db.Services.FindAsync(svId);
-            }
-            else if (path.HasAnyChar())
-            {
-                var subPaths = path.Split("_");
-                if (subPaths.Length < 3) return;
-                var vendor = subPaths[0];
-                var env = subPaths[1];
-                var sub = subPaths[2];
-                sv = await db.Services.FirstAsync(x => x.VendorName == vendor && x.Env == env && x.Path == sub);
-            }
-            var engine = new TopazEngine();
-            engine.SetValue("JSON", new JSONObject());
-            engine.AddType<HttpClient>("HttpClient");
-            engine.AddNamespace("System");
-            engine.SetValue("param", param);
-            engine.SetValue("Response", Response);
-
-            await engine.ExecuteScriptAsync(sv.Content);
-            var res = engine.GetValue("result");
-            var contentType = (string)engine.GetValue("contentType");
-            Response.ContentType = sv.ResHeaders ?? contentType ?? "text/html";
-            await Response.WriteAsync((string)res);
         }
     }
 }
