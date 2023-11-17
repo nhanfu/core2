@@ -1,19 +1,19 @@
 ﻿using Core.Enums;
 using Core.Extensions;
-using DocumentFormat.OpenXml.Office2021.DocumentTasks;
+using Core.Models;
+using Core.ViewModels;
 using Microsoft.AspNet.OData.Query;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
-using Core.Models;
-using Core.ViewModels;
 
 namespace Core.Controllers
 {
     public class TaskNotificationController : TMSController<TaskNotification>
     {
+        private const string QueueName = "task";
+
         public TaskNotificationController(
             CoreContext context, EntityService entityService, IHttpContextAccessor httpContextAccessor) : base(context, entityService, httpContextAccessor)
         {
@@ -43,7 +43,7 @@ namespace Core.Controllers
                 });
                 db.AddRange(tasks);
                 await db.SaveChangesAsync();
-                await _taskService.NotifyAsync(tasks);
+                await _taskService.NotifyAsync(tasks, QueueName);
             }
             return Ok(true);
         }
@@ -57,15 +57,14 @@ namespace Core.Controllers
             return response;
         }
 
-        private async Task<string> GetChatGPTResponse(string apiKey, string endpoint, string input)
+        private static async Task<string> GetChatGPTResponse(string apiKey, string endpoint, string input)
         {
-            using (var httpClient = new HttpClient())
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+            var requestData = new ChatGptVM
             {
-                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-                var requestData = new ChatGptVM
-                {
-                    model = "gpt-3.5-turbo",
-                    messages = new List<ChatGptMessVM>()
+                model = "gpt-3.5-turbo",
+                messages = new List<ChatGptMessVM>()
                     {
                         new ChatGptMessVM
                         {
@@ -74,12 +73,11 @@ namespace Core.Controllers
                             name = "1212121",
                         }
                     }
-                };
-                var jsonRequestData = JsonConvert.SerializeObject(requestData);
-                var response = await httpClient.PostAsync(endpoint, new StringContent(jsonRequestData, Encoding.UTF8, "application/json"));
-                var jsonResponseData = await response.Content.ReadAsStringAsync();
-                return jsonResponseData;
-            }
+            };
+            var jsonRequestData = JsonConvert.SerializeObject(requestData);
+            var response = await httpClient.PostAsync(endpoint, new StringContent(jsonRequestData, Encoding.UTF8, "application/json"));
+            var jsonResponseData = await response.Content.ReadAsStringAsync();
+            return jsonResponseData;
         }
 
         [HttpPost("api/[Controller]/MarkAllAsRead")]
@@ -130,14 +128,14 @@ namespace Core.Controllers
                 Deadline = DateTimeOffset.Now,
             };
             SetAuditInfo(task);
-            await _taskService.SendMessageSocket(token, task);
+            await _taskService.SendMessageSocket(token, task, task.Title);
             return Ok(task);
         }
 
         public override async Task<ActionResult<TaskNotification>> CreateAsync([FromBody] TaskNotification entity)
         {
             var res = await base.CreateAsync(entity);
-            await _taskService.NotifyAsync(new List<TaskNotification> { entity });
+            await _taskService.NotifyAsync(new List<TaskNotification> { entity }, QueueName);
             return res;
         }
 
@@ -179,7 +177,7 @@ namespace Core.Controllers
                 }).ToList();
             var allAssignedTasks = assignedTasks.Union(entities.Where(x => x.AssignedId != null)).ToList();
             var updatedTasks = await base.BulkUpdateAsync(allAssignedTasks, reasonOfChange);
-            await _taskService.NotifyAsync(updatedTasks);
+            await _taskService.NotifyAsync(updatedTasks, QueueName);
             return updatedTasks;
         }
     }

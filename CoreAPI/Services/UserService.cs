@@ -1,19 +1,23 @@
 ﻿using Core.Enums;
+using Core.Exceptions;
 using Core.Extensions;
+using Core.Models;
 using Core.ViewModels;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Newtonsoft.Json;
+using System.Data;
+using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using Tenray.Topaz;
 using Tenray.Topaz.API;
-using Core.Exceptions;
-using Core.Models;
 using HttpStatusCode = Core.Enums.HttpStatusCode;
 
 namespace Core.Services
@@ -35,6 +39,12 @@ namespace Core.Services
         public string System { get; set; }
         public List<string> AllRoleIds { get; set; }
         public List<string> RoleIds { get; set; }
+
+        static readonly Regex[] _fobiddenTerm = new Regex[] { new Regex(@"delete\s"), new Regex(@"create\s"), new Regex(@"insert\s"),
+                new Regex(@"update\s"), new Regex(@"select\s"), new Regex(@"from\s"),new Regex(@"where\s"),
+                new Regex(@"group by\s"), new Regex(@"having\s"), new Regex(@"order by\s") };
+        static readonly string[] _systemFields = new string[] { IdField, nameof(TenantCode), nameof(User.Active), nameof(User.InsertedBy), nameof(User.InsertedDate) }
+            .Select(x => x.ToLower()).ToArray();
 
         public UserService(IHttpContextAccessor httpContextAccessor, CoreContext db, IConfiguration configuration, IDistributedCache cache)
         {
@@ -342,17 +352,22 @@ namespace Core.Services
             return await userQuery.FirstOrDefaultAsync();
         }
 
-        public async Task<string> EncryptQuery(string query, string env, string system, string tenantCode, bool encryptQuery = false)
+        public async Task<string> EncryptQuery(string query, string env, string system, string tenantCode, bool encryptQuery = false, string connKey = null)
         {
             if (query.IsNullOrEmpty()) return null;
             var hash = GetHash(UserUtils.sHA256, query);
-            var tenant = await db.TenantEnv
-                .FirstOrDefaultAsync(x => x.System == system && x.TenantCode == tenantCode && x.Env == env)
-                ?? throw new ApiException("Tenant config not found");
+            if (connKey is null)
+            {
+                var tenantConnKey = await db.TenantEnv
+                    .Where(x => x.System == system && x.TenantCode == tenantCode && x.Env == env)
+                    .Select(x => x.ConnKey).FirstOrDefaultAsync()
+                    ?? throw new ApiException("Tenant config not found");
+                connKey = tenantConnKey;
+            }
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Hash, hash),
-                new Claim(ClaimTypes.System, tenant.ConnKey, PassPhrase),
+                new Claim(ClaimTypes.System, connKey, PassPhrase),
             };
             if (encryptQuery)
             {
@@ -362,7 +377,7 @@ namespace Core.Services
             return new JwtSecurityTokenHandler().WriteToken(accessToken);
         }
 
-        public async Task<(string, string)> DecryptQuery(string signed, string env, string plainQuery = null)
+        public async Task<(string, string)> DecryptQuery(string signed, string plainQuery = null)
         {
             var token = UserUtils.GetPrincipalFromAccessToken(signed, _configuration);
             var hash = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Hash)?.Value;
@@ -382,8 +397,8 @@ namespace Core.Services
 
         public async Task<string> GetConnStrFromKey(string connKey)
         {
-            var key = $"{System}_{TenantCode}_{connKey}_{Env}"; ;
-            var conStr = await _cache.GetStringAsync($"{TenantCode}_{key}_{Env}");
+            var key = $"{System}_{TenantCode}_{connKey}_{Env}";
+            var conStr = await _cache.GetStringAsync(key);
             if (conStr != null) return conStr;
             var tenantEnv = await db.TenantEnv
                 .FirstOrDefaultAsync(x => x.System == System && x.TenantCode == TenantCode && x.ConnKey == connKey && x.Env == Env)
@@ -420,18 +435,210 @@ namespace Core.Services
             {
                 result.Query = res;
             }
-            var anyComment = ValidateSql(result.Query);
+            var anyComment = HasSqlComment(result.Query);
             if (anyComment) throw new ApiException("Comment is NOT allowed");
             return result;
         }
 
-        public bool ValidateSql(string sql)
+        public bool HasSqlComment(string sql)
         {
             TSql110Parser parser = new(true);
             var fragments = parser.Parse(new StringReader(sql), out var errors);
 
             return fragments.ScriptTokenStream
                 .Any(x => x.TokenType == TSqlTokenType.MultilineComment || x.TokenType == TSqlTokenType.SingleLineComment);
+        }
+
+        public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSet(string reportQuery, string connStr, bool ignoreQuery = false)
+        {
+            var connectionStr = connStr;
+            using var con = new SqlConnection(connectionStr);
+            var sqlCmd = new SqlCommand(reportQuery, con)
+            {
+                CommandType = CommandType.Text
+            };
+            con.Open();
+            var tables = new List<List<Dictionary<string, object>>>();
+            using var reader = await sqlCmd.ExecuteReaderAsync();
+            do
+            {
+                var table = new List<Dictionary<string, object>>();
+                while (await reader.ReadAsync())
+                {
+                    table.Add(Read(reader));
+                }
+                tables.Add(table);
+            } while (await reader.NextResultAsync());
+#if DEBUG
+            if (!ignoreQuery)
+            {
+                var query = new List<Dictionary<string, object>>
+                {
+                    new Dictionary<string, object>
+                    {
+                        { "query",  reportQuery }
+                    }
+                };
+                tables.Add(query);
+            }
+#endif
+            return tables;
+        }
+
+        protected static Dictionary<string, object> Read(IDataRecord reader)
+        {
+            var row = new Dictionary<string, object>();
+            for (var i = 0; i < reader.FieldCount; i++)
+            {
+                var val = reader[i];
+                row[reader.GetName(i)] = val == DBNull.Value ? null : val;
+            }
+            return row;
+        }
+
+        public static string RemoveWhiteSpace(string val) => val.Replace(" ", "");
+
+        public async Task<bool> PatchAsync(PatchUpdate patch)
+        {
+            if (patch == null || patch.Table.IsNullOrWhiteSpace() || patch.Changes.Nothing())
+            {
+                throw new ApiException("Table name and change details can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
+            }
+            patch.Table = RemoveWhiteSpace(patch.Table);
+            patch.Changes.ForEach(x =>
+            {
+                if (x.Field.IsNullOrWhiteSpace()) throw new ApiException($"Field name can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
+                x.Field = RemoveWhiteSpace(x.Field);
+            });
+            var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
+            using SqlConnection connection = new(await GetConnStrFromKey(patch.ConnKey));
+            connection.Open();
+            using SqlTransaction transaction = connection.BeginTransaction();
+            try
+            {
+                using SqlCommand command = new();
+                command.Transaction = transaction;
+                command.Connection = connection;
+                
+                var valueFields = patch.Changes.Where(x => !_systemFields.Contains(x.Field.ToLower())).ToList();
+                var update = valueFields.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+                var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
+                if (id is not null)
+                {
+                    command.CommandText = @$"udpate [{patch.Table}] set {update.Combine()}, 
+                            TenantCode = {TenantCode}, UpdatedBy = '{UserId}', UpdatedDate = '{now}' where Id = '{id}';";
+                }
+                else
+                {
+                    id = Id.NewGuid();
+                    var fields = valueFields.Combine(x => $"[{x.Field}]");
+                    var fieldParams = valueFields.Combine(x => $"@{x.Field}");
+                    command.CommandText = @$"insert into [{patch.Table}] ([Id], [TenantCode], [Active], [InsertedBy], [InsertedDate], {fields}) 
+                        values ('{id}', '{TenantCode}', 1, '{UserId}', '{now}', {fieldParams});";
+                }
+                foreach (var item in valueFields)
+                {
+                    command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
+                }
+                var anyComment = HasSqlComment(command.CommandText);
+                if (anyComment) throw new ApiException("Comment is NOT allowed");
+                await command.ExecuteNonQueryAsync();
+                await transaction.CommitAsync();
+                if (!patch.QueueName.IsNullOrWhiteSpace())
+                {
+                    var mqEvent = new MQEvent
+                    {
+                        Id = Id.NewGuid(),
+                        QueueName = patch.QueueName,
+                        Message = patch
+                    };
+                    BackgroundJob.Enqueue<TaskService>(x => x.SendMessageToSubscribers(mqEvent, mqEvent.QueueName));
+                }
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+        }
+
+        internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> Reader(SqlViewModel model)
+        {
+            var entity = model.Component;
+            var (connStr, query) = await DecryptQuery(entity.Signed, entity.Query);
+
+            var anyInvalid = _fobiddenTerm.Any(term =>
+            {
+                return model.Select != null && term.IsMatch(model.Select.ToLower())
+                || model.Entity != null && term.IsMatch(model.Entity.ToLower())
+                || model.Where != null && term.IsMatch(model.Where.ToLower())
+                || model.GroupBy != null && term.IsMatch(model.GroupBy.ToLower())
+                || model.Having != null && term.IsMatch(model.Having.ToLower())
+                || model.OrderBy != null && term.IsMatch(model.OrderBy.ToLower())
+                || model.Paging != null && term.IsMatch(model.Paging.ToLower());
+            });
+            if (anyInvalid)
+            {
+                throw new ArgumentException("Parameters must NOT contains sql keywords");
+            }
+            var jsRes = await ExecJs(model.Entity, entity.Query ?? query);
+            var select = model.Select.HasAnyChar() ? $"select {model.Select}" : string.Empty;
+            var where = model.Where.HasAnyChar() ? $"where {model.Where}" : string.Empty;
+            var groupBy = model.GroupBy.HasAnyChar() ? $"group by {model.GroupBy}" : string.Empty;
+            var having = model.Having.HasAnyChar() ? $"having {model.Having}" : string.Empty;
+            var orderBy = model.OrderBy.HasAnyChar() ? $"order by {model.OrderBy}" : string.Empty;
+            var countQuery = model.Count ?
+                $@"select count(*) as total from (
+                {jsRes.Query}) as ds 
+                {where}
+                {groupBy}
+                {having};" : string.Empty;
+            var finalQuery = @$"{select}
+                from ({jsRes.Query}) as ds
+                {where}
+                {groupBy}
+                {having}
+                {orderBy}
+                {model.Paging};
+                {countQuery}
+                {jsRes.XQuery}";
+            return await ReadDataSet(finalQuery, connStr);
+        }
+
+        internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ExecUserSvc(SqlViewModel vm)
+        {
+            if (vm is null || vm.SvcId.IsNullOrWhiteSpace() && (vm.Action.IsNullOrWhiteSpace() || vm.ComId.IsNullOrWhiteSpace()))
+            {
+                throw new ApiException("Service can NOT be identified due to lack of Id or action") { StatusCode = Enums.HttpStatusCode.BadRequest };
+            }
+            Models.Services sv;
+            if (vm.SvcId is not null)
+            {
+                var cacheSv = await _cache.GetStringAsync(vm.SvcId);
+                if (cacheSv != null)
+                {
+                    sv = JsonConvert.DeserializeObject<Models.Services>(cacheSv);
+                }
+            }
+            sv = await db.Services.Where(x =>
+                    x.System == System && x.TenantCode == TenantCode
+                    && (x.ComId == vm.ComId && x.Action == vm.Action || vm.SvcId != null && x.Id == vm.SvcId))
+                .FirstOrDefaultAsync();
+
+            if (sv == null)
+            {
+                return null;
+            }
+            var isValidRole = sv.IsPublicInTenant ||
+                (from svRole in sv.RoleIds.Split(',')
+                 join usrRole in RoleIds on svRole equals usrRole
+                 select svRole).Any();
+            if (!isValidRole) throw new UnauthorizedAccessException("The service is not accessible by your roles");
+
+            var jsRes = await ExecJs(vm.Entity, sv.Content);
+            var conStr = await GetConnStrFromKey(sv.ConnKey);
+            return await ReadDataSet(jsRes.Query, conStr);
         }
     }
 }

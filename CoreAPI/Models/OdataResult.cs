@@ -28,11 +28,12 @@ namespace Core.Models
         }
     }
 
-    public class WebSocketResponse<T>
+    public class MQEvent
     {
-        public string EntityId { get; set; }
-        public string TypeId { get; set; }
-        public T Data { get; set; }
-        public List<T> DataList { get; set; }
+        public string QueueName { get; set; }
+        public string Id { get; set; }
+        public string PrevId { get; set; }
+        public DateTimeOffset Time { get; set; } = DateTimeOffset.Now;
+        public dynamic Message { get; set; }
     }
 }

@@ -233,7 +233,7 @@ namespace Core.Controllers
             return result;
         }
 
-        [HttpPatch("api/[Controller]")]
+        [HttpPatch("api/[Controller]", Order = 1)]
         public virtual async Task<ActionResult<T>> PatchAsync([FromQuery] ODataQueryOptions<T> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
         {
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
@@ -271,12 +271,6 @@ namespace Core.Controllers
                 {
                     await ctx.Entry(entity).ReloadAsync();
                 }
-                BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<T>
-                {
-                    EntityId = _entitySvc.GetEntity(typeof(T).Name).Id,
-                    TypeId = 1.ToString(),
-                    Data = entity
-                }, UserId));
                 return entity;
             }
             catch
@@ -668,55 +662,6 @@ namespace Core.Controllers
                 FileIO.Delete(absolutePath);
             }
             return Ok(true);
-        }
-
-        public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReportDataSet(
-            [FromBody] string reportQuery, string connStr = null)
-        {
-            var connectionStr = connStr ?? _config.GetConnectionString("Default");
-            using var con = new SqlConnection(connectionStr);
-            var sqlCmd = new SqlCommand(reportQuery, con)
-            {
-                CommandType = CommandType.Text
-            };
-            con.Open();
-            var tables = new List<List<Dictionary<string, object>>>();
-            using var reader = await sqlCmd.ExecuteReaderAsync();
-            do
-            {
-                var table = new List<Dictionary<string, object>>();
-                while (await reader.ReadAsync())
-                {
-                    table.Add(Read(reader));
-                }
-                tables.Add(table);
-            } while (await reader.NextResultAsync());
-#if DEBUG
-            tables.Add(new List<Dictionary<string, object>>());
-            tables.Last().Add(new Dictionary<string, object>
-            {
-                { "query",  reportQuery }
-            });
-#endif
-            return tables;
-        }
-
-        protected async Task ExeNonQuery(
-            [FromServices] IServiceProvider serviceProvider, [FromServices] IConfiguration config,
-            [FromBody] string reportQuery, [FromQuery] string sys)
-        {
-            if (sys.IsNullOrEmpty())
-            {
-                sys = "Fast";
-            }
-            var connectionStr = _config.GetConnectionString("Default");
-            using var con = new SqlConnection(connectionStr);
-            var sqlCmd = new SqlCommand(reportQuery, con)
-            {
-                CommandType = CommandType.Text
-            };
-            await con.OpenAsync();
-            await sqlCmd.ExecuteNonQueryAsync();
         }
 
         protected static Dictionary<string, object> Read(IDataRecord reader)

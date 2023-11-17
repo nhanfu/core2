@@ -33,9 +33,7 @@ namespace Core.Components.Framework
             UserActive = new ObservableList<User>();
             _countNtf = new Observable<string>();
             _countUser = new Observable<string>();
-            EditForm.NotificationClient?.AddListener(nameof(TaskNotification), ((int)TypeEntityAction.UpdateEntity).ToString(), ProcessIncomMessage);
-            EditForm.NotificationClient?.AddListener(nameof(TaskNotification), ((int)TypeEntityAction.MessageCountBadge).ToString(), ProcessIncomMessage);
-
+            Window.AddEventListener("task", ProcessIncomMessage);
         }
 
         public void ProcessIncomMessage(object obj)

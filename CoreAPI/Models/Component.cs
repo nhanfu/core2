@@ -253,6 +253,11 @@ namespace Core.Models
         
         public string OrderBy { get; set; }
 
+        public string QueueName { get; set; }
+        
+        public string ConnKey { get; set; }
+
+
         public virtual ComponentGroup ComponentGroup { get; set; }
 
         public virtual ICollection<EntityRef> EntityRef { get; set; } = new List<EntityRef>();

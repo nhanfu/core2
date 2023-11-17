@@ -6,6 +6,10 @@ namespace Core.ViewModels
 {
     public class PatchUpdate
     {
+        public string QueueName { get; set; }
+        public string Table { get; set; }
+        public string ConnKey { get; set; }
+        public string Checksum { get; set; }
         public List<PatchUpdateDetail> Changes { get; set; }
 
         public void ApplyTo<T>(T obj)

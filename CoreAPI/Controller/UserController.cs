@@ -1,31 +1,27 @@
-﻿using Core.Extensions;
+﻿using Core.Exceptions;
+using Core.Extensions;
+using Core.Models;
+using Core.Services;
 using Core.ViewModels;
+using Hangfire;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
-using Core.Exceptions;
-using Core.Models;
-using Core.Services;
-using Core.ViewModels;
-using Tenray.Topaz;
-using Tenray.Topaz.API;
-using DocumentFormat.OpenXml.Vml.Office;
 
 namespace Core.Controllers
 {
     public class UserController : TMSController<User>
     {
         private readonly IConfiguration _configuration;
-        private readonly UserService _userSerivce;
 
         public UserController(CoreContext context, IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor, EntityService entityService, UserService userSerivce, IServiceProvider serviceProvider) : base(context, entityService, httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, EntityService entityService) : base(context, entityService, httpContextAccessor)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _userSerivce = userSerivce;
         }
 
         [AllowAnonymous]
@@ -118,7 +114,7 @@ namespace Core.Controllers
             var user = await db.User.FindAsync(UserId);
             if (profile.OldPassword.HasAnyChar())
             {
-                var hashPassword = _userSvc.GetHash(UserUtils.sHA256, profile.OldPassword + user.Salt);
+                var hashPassword = base._userSvc.GetHash(UserUtils.sHA256, profile.OldPassword + user.Salt);
                 if (hashPassword != user.Password)
                 {
                     throw new InvalidOperationException("The old password is not matched!");
@@ -127,8 +123,8 @@ namespace Core.Controllers
                 {
                     throw new InvalidOperationException("The password is not matched confirmed password!");
                 }
-                profile.Salt = _userSvc.GenerateRandomToken();
-                profile.Password = _userSvc.GetHash(UserUtils.sHA256, profile.NewPassword + profile.Salt);
+                profile.Salt = base._userSvc.GenerateRandomToken();
+                profile.Password = base._userSvc.GetHash(UserUtils.sHA256, profile.NewPassword + profile.Salt);
             }
             user.Salt = profile.Salt;
             user.Password = profile.Password;
@@ -150,9 +146,9 @@ namespace Core.Controllers
             user.UserRole = user.UserRole.Where(x => AllRoleIds.Contains(x.RoleId)).ToList();
             var roles = await db.Role.Where(x => AllRoleIds.Contains(x.Id)).Select(x => new { x.Id, x.Level }).ToListAsync();
             user.CreatedRoleId = roles.FirstOrDefault(x => x.Level == roles.Min(r => r.Level))?.Id;
-            user.Salt = _userSvc.GenerateRandomToken();
+            user.Salt = base._userSvc.GenerateRandomToken();
             var randomPassword = "123";
-            user.Password = _userSvc.GetHash(UserUtils.sHA256, randomPassword + user.Salt);
+            user.Password = base._userSvc.GetHash(UserUtils.sHA256, randomPassword + user.Salt);
             var res = await base.CreateAsync(user);
             user.Password = randomPassword;
             var accountCreatedEmailTemplate = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "AccountCreated");
@@ -181,7 +177,7 @@ namespace Core.Controllers
             }
             login.System ??= system;
             login.CompanyName ??= tenant;
-            return await _userSerivce.SignInAsync(login);
+            return await _userSvc.SignInAsync(login);
         }
 
         [HttpPost("api/[Controller]/SignOut")]
@@ -193,7 +189,7 @@ namespace Core.Controllers
             }
             var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _configuration);
             var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
-            var ipAddress = _userSvc.GetRemoteIpAddress(_httpContext.HttpContext);
+            var ipAddress = base._userSvc.GetRemoteIpAddress(_httpContext.HttpContext);
             var userLogin = await db.UserLogin.FindAsync(sessionId) ?? throw new ApiException("Login session not found");
             userLogin.ExpiredDate = DateTimeOffset.Now;
             await db.SaveChangesAsync();
@@ -208,7 +204,7 @@ namespace Core.Controllers
             {
                 throw new ApiException("Token is required");
             }
-            return await _userSerivce.RefreshAsync(token);
+            return await _userSvc.RefreshAsync(token);
         }
 
         [AllowAnonymous]
@@ -225,7 +221,7 @@ namespace Core.Controllers
             }
             // Send mail
             var emailTemplate = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "") ?? throw new InvalidOperationException("Cannot find recovery email template!");
-            var oneClickLink = _userSvc.GenerateRandomToken();
+            var oneClickLink = base._userSvc.GenerateRandomToken();
             user.Recover = oneClickLink;
             await db.SaveChangesAsync();
             var email = new EmailVM
@@ -246,35 +242,24 @@ namespace Core.Controllers
             {
                 throw new ApiException("Bạn không có quyền đổi mật khẩu của người dùng");
             }
-            user.Salt = _userSvc.GenerateRandomToken();
-            var randomPassword = _userSvc.GenerateRandomToken(10);
-            user.Password = _userSvc.GetHash(UserUtils.sHA256, randomPassword + user.Salt);
+            user.Salt = base._userSvc.GenerateRandomToken();
+            var randomPassword = base._userSvc.GenerateRandomToken(10);
+            user.Password = base._userSvc.GetHash(UserUtils.sHA256, randomPassword + user.Salt);
             SetAuditInfo(user);
             await db.SaveChangesAsync();
             return randomPassword;
         }
 
         [HttpPost("api/[Controller]/svc")]
-        public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ExecuteJs([FromBody] SqlViewModel vm)
+        public Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ExecUserSvc([FromBody] SqlViewModel vm)
         {
-            var svQuery = db.Services.Where(x =>
-                    x.System == _userSerivce.System && x.TenantCode == _userSerivce.TenantCode
-                    && (x.ComId == vm.ComId && x.Action == vm.Action || vm.SvcId != null && x.Id == vm.SvcId));
-            var sv = await svQuery.FirstOrDefaultAsync();
+            return _userSvc.ExecUserSvc(vm);
+        }
 
-            if (sv == null)
-            {
-                return null;
-            }
-            var isValidRole = sv.IsPublicInTenant ||
-                (from svRole in sv.RoleIds.Split(',')
-                 join usrRole in _userSerivce.RoleIds on svRole equals usrRole
-                 select svRole).Any();
-            if (!isValidRole) throw new UnauthorizedAccessException("The service is not accessible by your roles");
-
-            var jsRes = await _userSvc.ExecJs(vm.Entity, sv.Content);
-            var conStr = await _userSerivce.GetConnStrFromKey(sv.ConnKey);
-            return await ReportDataSet(jsRes.Query, conStr);
+        [HttpPatch("api/v2/[Controller]", Order = 0)]
+        public Task<bool> PatchAsync([FromBody] PatchUpdate patch)
+        {
+            return _userSvc.PatchAsync(patch);
         }
     }
 }

@@ -91,12 +91,6 @@ namespace Core.Controllers
                 });
             }
             await db.SaveChangesAsync();
-            BackgroundJob.Enqueue<TaskService>(x => x.SendMessageAllUserOtherMe(new WebSocketResponse<MasterData>
-            {
-                EntityId = _entitySvc.GetEntity(typeof(MasterData).Name).Id,
-                TypeId = 1.ToString(),
-                Data = copiedMasterData
-            }, UserId));
             entity.InverseParent = null;
             entity.Parent = null;
             return entity;

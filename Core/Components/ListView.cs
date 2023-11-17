@@ -138,30 +138,20 @@ namespace Core.Components
             _theadTable = GuiInfo.HeaderHeight ?? 40;
             _tfooterTable = GuiInfo.FooterHeight ?? 35;
             _scrollTable = GuiInfo.ScrollHeight ?? 10;
-            if (GuiInfo.IsRealtime)
-            {
-                EditForm.NotificationClient?.AddListener(GuiInfo.ReferenceId, ((int)TypeEntityAction.UpdateEntity).ToString(), RealtimeUpdateListViewItem);
-            }
+            Window.AddEventListener(GuiInfo.QueueName, RealtimeUpdateListViewItem);
             Utils.IsFunction(GuiInfo.PreQuery, out _preQueryFn);
         }
 
-        internal void RealtimeUpdateListViewItem(object updatedData)
+        internal void RealtimeUpdateListViewItem(dynamic mqEvent)
         {
-            Task.Run(async () =>
-            {
-                var listViewItem = MainSection.FilterChildren<ListViewItem>(x => x.Entity[IdField] == updatedData[IdField]).FirstOrDefault();
-                if (listViewItem != null)
-                {
-                    if (GuiInfo.ComponentType == nameof(VirtualGrid))
-                    {
-                        CacheData.FirstOrDefault(x => x[IdField] == updatedData[IdField]).CopyPropFrom(updatedData);
-                    }
-                    listViewItem.Entity.CopyPropFrom(updatedData);
-                    var arr = listViewItem.FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.GuiInfo.FieldName).ToArray();
-                    listViewItem.UpdateView(false, arr);
-                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem);
-                }
-            });
+            object updatedData = mqEvent.detail.Message;
+            var listViewItem = MainSection.FilterChildren<ListViewItem>(x => x.Entity[IdField] == updatedData[IdField]).FirstOrDefault();
+            if (listViewItem is null) return;
+            CacheData.FirstOrDefault(x => x[IdField] == updatedData[IdField]).CopyPropFrom(updatedData);
+            listViewItem.Entity.CopyPropFrom(updatedData);
+            var arr = listViewItem.FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.GuiInfo.FieldName).ToArray();
+            listViewItem.UpdateView(false, arr);
+            Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem));
         }
 
         public void Resolve(Component com, HTMLElement ele = null)
@@ -1810,7 +1800,7 @@ namespace Core.Components
 
         public override void Dispose()
         {
-            EditForm.NotificationClient?.RemoveListener(RealtimeUpdateListViewItem, ((int)TypeEntityAction.UpdateEntity).ToString(), GuiInfo.ReferenceId);
+            Window.RemoveEventListener("", RealtimeUpdateListViewItem);
             base.Dispose();
         }
     }

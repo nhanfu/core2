@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace Core.Models
@@ -256,6 +257,20 @@ namespace Core.Models
         public string RefField { get; set; }
 
         public string OrderBy { get; set; }
+
+        public TextAlign? TextAlignEnum { get; set; }
+        public bool IsPivot { get; set; }
+        public int PostOrder { get; set; }
+        public List<object> LocalData { get; set; }
+        public List<Component> LocalHeader { get; set; }
+        public bool StatusBar { get; set; }
+        public bool SimpleText { get; set; }
+        public string DataSourceOptimized { get; set; }
+        public bool LocalRender { get; set; }
+        public bool IgnoreConfirmHardDelete { get; set; }
+        public string ActId { get; set; }
+        public string QueueName { get; set; }
+        public string ConnKey { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

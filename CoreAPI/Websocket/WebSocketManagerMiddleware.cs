@@ -13,9 +13,9 @@ namespace Core.Websocket
     public class WebSocketManagerMiddleware
     {
         private readonly RequestDelegate _next;
-        private WebSocketHandler WebSocketHandler { get; set; }
+        private WebSocketService WebSocketHandler { get; set; }
 
-        public WebSocketManagerMiddleware(RequestDelegate next, WebSocketHandler webSocketHandler)
+        public WebSocketManagerMiddleware(RequestDelegate next, WebSocketService webSocketHandler)
         {
             _next = next;
             WebSocketHandler = webSocketHandler;

@@ -24,6 +24,7 @@ namespace Core.Components
         public HTMLUListElement _ul1;
         public UserSetting _settings;
         private List<Component> _headers;
+        private dynamic _userSetting;
 
         public ExportCustomData(ListView parent) : base(nameof(Component))
         {
@@ -234,7 +235,13 @@ namespace Core.Components
         private void LocalRender()
         {
             _headers = ParentListView.BasicHeader.Where(x => x.ComponentType != nameof(Button) && !x.ShortDesc.IsNullOrWhiteSpace()).ToList();
-            var task = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+            var getUsrSettingTask = GetUserSetting();
+            Client.ExecTask(getUsrSettingTask, UserSettingLoaded);
+        }
+
+        private Task<object[][]> GetUserSetting()
+        {
+            return Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
                 Url = Utils.UserSvc,
                 Value = new SqlWrapper
@@ -245,15 +252,14 @@ namespace Core.Components
                 },
                 Method = HttpMethod.POST
             });
-            Client.ExecTask(task, UserSettingLoaded);
         }
 
         private void UserSettingLoaded(object[][] res)
         {
-            var userSetting = res[0].Length > 0 ? res[0][0] : null as dynamic;
-            if (userSetting != null)
+            _userSetting = res[0].Length > 0 ? res[0][0] : null as dynamic;
+            if (_userSetting != null)
             {
-                var userSettingList = JsonConvert.DeserializeObject<List<Component>>(userSetting.Value as string);
+                var userSettingList = JsonConvert.DeserializeObject<List<dynamic>>(_userSetting.Value as string);
                 var userSettings = userSettingList.ToDictionary(x => x.Id);
                 _headers.ForEach(x =>
                 {
@@ -314,22 +320,21 @@ namespace Core.Components
         public async Task ExportData()
         {
             Toast.Success("Đang xuất excel");
-            var userSetting = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>(
-                $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'Export-{ParentListView.GuiInfo.Id}'");
-            if (userSetting is null)
+            var usrSettingTask = GetUserSetting();
+            if (_userSetting is null)
             {
-                userSetting = new UserSetting()
+                _userSetting = new UserSetting()
                 {
                     Name = $"Export-{ParentListView.GuiInfo.Id}",
                     UserId = Client.Token.UserId,
                     Value = JsonConvert.SerializeObject(_headers)
                 };
-                await new Client(nameof(UserSetting)).CreateAsync<UserSetting>(userSetting);
+                await Client.Instance.SubmitAsync<dynamic>(CreatePatch(null));
             }
             else
             {
-                userSetting.Value = JsonConvert.SerializeObject(_headers);
-                await new Client(nameof(UserSetting)).UpdateAsync<UserSetting>(userSetting);
+                _userSetting.Value = JsonConvert.SerializeObject(_headers);
+                await Client.Instance.SubmitAsync<dynamic>(CreatePatch(_userSetting.Id));
             }
             var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"[{ParentListView.GuiInfo.RefName}].{orderby.FieldName} {orderby.OrderbyDirectionId.ToString().ToLowerCase()}");
             var finalFilter = string.Empty;
@@ -375,6 +380,31 @@ namespace Core.Components
                 $"&custom=true&featureId={Parent.EditForm.Feature.Id}&orderby={finalFilter}");
             Client.Download($"/excel/Download/{path}");
             Toast.Success("Xuất file thành công");
+        }
+
+        private XHRWrapper CreatePatch(string id)
+        {
+            var patch = new PatchUpdate
+            {
+                Changes = new List<PatchUpdateDetail> {
+                    new PatchUpdateDetail { Field = nameof(UserSetting.Name), Value = $"Export-{ParentListView.GuiInfo.Id}" },
+                    new PatchUpdateDetail { Field = nameof(UserSetting.UserId), Value = Client.Token.UserId },
+                    new PatchUpdateDetail { Field = nameof(UserSetting.Value), Value = JsonConvert.SerializeObject(_headers) },
+                },
+                Table = nameof(UserSetting),
+                ConnKey = ParentListView.GuiInfo.ConnKey ?? "default"
+            };
+            if (id != null)
+            {
+                patch.Changes.Add(new PatchUpdateDetail { Field = IdField, Value = id });
+            }
+            return new XHRWrapper
+            {
+                Url = "/v2/user",
+                Value = JsonConvert.SerializeObject(patch),
+                IsRawString = true,
+                Method = HttpMethod.PATCH
+            };
         }
     }
 }

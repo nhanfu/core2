@@ -5,6 +5,7 @@ namespace Core.Models
     public partial class UserSetting
     {
         public string Id { get; set; }
+        public string TenantCode { get; set; }
         public string RoleId { get; set; }
         public string UserId { get; set; }
         public string Name { get; set; }

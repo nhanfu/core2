@@ -66,6 +66,7 @@ namespace Core.Components.Forms
         {
             ComponentGroup = group;
             Name = group.Name;
+            Window.Instance.AddEventListener("Count" + Name, RealtimeUpdateBadge);
         }
 
         public virtual string Badge
@@ -139,12 +140,10 @@ namespace Core.Components.Forms
             Task.Run(CountBadge);
         }
 
-        internal void RealtimeUpdateBadge(object updatedData)
+        internal void RealtimeUpdateBadge(dynamic updatedData)
         {
-            Task.Run(async () =>
-            {
-                await CountBadge();
-            });
+            DisplayBadge = true;
+            Badge = updatedData;
         }
 
         internal async Task CountBadge()
@@ -159,8 +158,6 @@ namespace Core.Components.Forms
             {
                 return;
             }
-            EditForm.NotificationClient?.AddListener(gridView.ReferenceId, ((int)TypeEntityAction.UpdateCountBadge).ToString(), RealtimeUpdateBadge);
-            EditForm.NotificationClient?.AddListener(gridView.ReferenceId, ((int)TypeEntityAction.MessageCountBadge).ToString(), RealtimeUpdateBadge);
             try
             {
                 var query = ListView.GetFormattedDataSource(this, gridView.DataSourceFilter);

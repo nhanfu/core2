@@ -12,113 +12,85 @@ namespace Core.Services
     {
         private readonly CoreContext db;
         private readonly UserService _userService;
-        private readonly RealtimeService _fcmSvc;
-        protected readonly EntityService _entitySvc;
+        private readonly WebSocketService _socket;
+        private JsonSerializerSettings _jsonSetting;
 
-        public TaskService(UserService userService, CoreContext db, RealtimeService notificationService, EntityService entityService)
+        public TaskService(UserService userService, CoreContext db, WebSocketService _socket)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.db = db ?? throw new ArgumentNullException(nameof(db));
-            _fcmSvc = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
-            _entitySvc = entityService;
+            this._socket = _socket ?? throw new ArgumentNullException(nameof(_socket));
+            _jsonSetting = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            };
         }
 
-        public async Task NotifyAsync(IEnumerable<TaskNotification> entities)
+        public async Task NotifyAsync(IEnumerable<TaskNotification> entities, string queueName)
         {
             await entities
                 .Where(x => x.AssignedId.HasAnyChar())
-                .Select(x => new WebSocketResponse<TaskNotification>
+                .Select(x => new MQEvent
                 {
-                    EntityId = _entitySvc.GetEntity(nameof(TaskNotification))?.Id,
-                    TypeId = 3.ToString(),
-                    Data = x
+                    QueueName = queueName,
+                    Id = Id.NewGuid(),
+                    Message = x
                 })
             .ForEachAsync(SendMessageToUser);
         }
 
-        public async Task NotifyAndCountBadgeAsync(IEnumerable<TaskNotification> entities)
+        public async Task SendChatToUser(MQEvent task)
         {
-            await entities
-                .Where(x => x.AssignedId.HasAnyChar())
-                .Select(x => new WebSocketResponse<TaskNotification>
-                {
-                    EntityId = x.EntityId,
-                    TypeId = 4.ToString(),
-                    Data = x
-                })
-            .ForEachAsync(SendMessageToUser);
+            await _socket.SendMessageToUsersAsync(new List<string>() { task.Message.ToId }, JsonConvert.SerializeObject(task, _jsonSetting), null);
         }
 
-        public async Task SendChatToUser(WebSocketResponse<Chat> task)
+        public async Task ChatGptSendToUser(MQEvent task)
         {
-            await _fcmSvc.SendMessageToUsersAsync(new List<string>() { task.Data.ToId }, JsonConvert.SerializeObject(task, new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            }), null);
+            await _socket.SendMessageToUsersAsync(new List<string>() { task.Message.FromId }, JsonConvert.SerializeObject(task, _jsonSetting), null);
         }
 
-        public async Task ChatGptSendToUser(WebSocketResponse<Chat> task)
+        private async Task SendMessageToUser(MQEvent task)
         {
-            await _fcmSvc.SendMessageToUsersAsync(new List<string>() { task.Data.FromId }, JsonConvert.SerializeObject(task, new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            }), null);
-        }
-
-        private async Task SendMessageToUser(WebSocketResponse<TaskNotification> task)
-        {
+            var system = _userService.System;
             var tenantCode = _userService.TenantCode;
+            var env = _userService.Env;
             var fcm = new FCMWrapper
             {
-                To = $"/topics/{tenantCode}U{task.Data.AssignedId:0000000}",
+                To = $"/topics/{system}/{tenantCode}/{env}/U{task.Message.AssignedId:0000000}",
                 Data = new FCMData
                 {
-                    Title = task.Data.Title,
-                    Body = task.Data.Description,
+                    Title = task.Message.Title,
+                    Body = task.Message.Description,
                 },
                 Notification = new FCMNotification
                 {
-                    Title = task.Data.Title,
-                    Body = task.Data.Description,
+                    Title = task.Message.Title,
+                    Body = task.Message.Description,
                     ClickAction = "com.softek.tms.push.background.MESSAGING_EVENT"
                 }
             };
-            await _fcmSvc.SendMessageToUsersAsync(new List<string>() { task.Data.AssignedId }, JsonConvert.SerializeObject(task, new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            }), fcm.ToJson());
+            await _socket.SendMessageToUsersAsync(new List<string>() { task.Message.AssignedId }, JsonConvert.SerializeObject(task, _jsonSetting), fcm.ToJson());
         }
 
         public ConcurrentDictionary<string, WebSocket> GetAll()
         {
-            return _fcmSvc.GetAll();
+            return _socket.GetAll();
         }
 
-        public async Task SendMessageSocket(string socket, TaskNotification task)
+        public async Task SendMessageSocket(string socket, TaskNotification task, string queueName)
         {
-            var entity = new WebSocketResponse<TaskNotification>
+            var entity = new MQEvent
             {
-                EntityId = _entitySvc.GetEntity(nameof(User))?.Id,
-                TypeId = 3.ToString(),
-                Data = task
+                QueueName = queueName,
+                Id = Id.NewGuid(),
+                Message = task
             };
-            await _fcmSvc.SendMessageToSocketAsync(socket, entity.ToJson());
+            await _socket.SendMessageToSocketAsync(socket, entity.ToJson());
         }
 
-        public async Task SendMessageAllUser(object task)
+        public async Task SendMessageToSubscribers(object task, string queueName)
         {
-            await _fcmSvc.SendMessageToAll(JsonConvert.SerializeObject(task, new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            }));
-        }
-
-        public async Task SendMessageAllUserOtherMe(object task, string userId)
-        {
-            await _fcmSvc.SendMessageToAllOtherMe(JsonConvert.SerializeObject(task, new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            }), userId);
+            await _socket.SendMessageToSubscribers(JsonConvert.SerializeObject(task, _jsonSetting), queueName);
         }
     }
 }

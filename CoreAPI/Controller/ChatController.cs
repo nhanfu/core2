@@ -23,7 +23,6 @@ namespace Core.Controllers
 
         public override async Task<ActionResult<Chat>> CreateAsync([FromBody] Chat entity)
         {
-
             var rs = await base.CreateAsync(entity);
             if (entity.ToId == 552 .ToString())
             {
@@ -31,22 +30,22 @@ namespace Core.Controllers
                 db.Add(rs1);
                 SetAuditInfo(rs1);
                 await db.SaveChangesAsync();
-                var chat = new WebSocketResponse<Chat>
+                var chat = new MQEvent
                 {
-                    EntityId = _entitySvc.GetEntity(nameof(Chat))?.Id.ToString(),
-                    Data = rs1,
-                    TypeId = 1.ToString(),
+                    QueueName = entity.QueueName,
+                    Message = rs1,
+                    Id = 1.ToString(),
                 };
                 await _taskService.SendChatToUser(chat);
                 return rs;
             }
             else
             {
-                var chat = new WebSocketResponse<Chat>
+                var chat = new MQEvent
                 {
-                    EntityId = _entitySvc.GetEntity(nameof(Chat))?.Id.ToString(),
-                    Data = rs.Value,
-                    TypeId = 1.ToString(),
+                    QueueName = entity.QueueName,
+                    Message = rs.Value,
+                    Id = 1.ToString(),
                 };
                 await _taskService.SendChatToUser(chat);
                 return rs;

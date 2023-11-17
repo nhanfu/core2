@@ -58,10 +58,11 @@ namespace Core.Models
         public OrderbyDirection? OrderbyDirectionId { get; set; }
     }
 
-    public class SocketResponse
+    public class MQData
     {
-        public string EntityId { get; set; }
-        public string TypeId { get; set; } = 1 .ToString();
-        public object Data { get; set; }
+        public string Id { get; set; }
+        public string PrevId { get; set; }
+        public string QueueName { get; set; }
+        public dynamic Message { get; set; }
     }
 }

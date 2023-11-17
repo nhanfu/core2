@@ -121,7 +121,7 @@ namespace Core
             services.AddHttpContextAccessor();
 
             // the instance created for each request
-            services.AddScoped<RealtimeService>();
+            services.AddScoped<WebSocketService>();
             services.AddScoped<TaskService>();
             services.AddScoped<UserService>();
             services.AddScoped<VendorSvc>();
@@ -213,7 +213,7 @@ namespace Core
             app.UseWebSockets();
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
-            app.MapWebSocketManager("/task", serviceProvider.GetService<RealtimeService>());
+            app.Map("/task", app => app.UseMiddleware<WebSocketManagerMiddleware>(serviceProvider.GetService<WebSocketService>()));
             app.UseAuthentication();
             var model = GetEdmModel(app.ApplicationServices);
             app.UseMvc(builder =>

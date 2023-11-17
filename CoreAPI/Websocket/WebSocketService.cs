@@ -1,16 +1,6 @@
-﻿using Core.Extensions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Core.Websocket
 {
@@ -40,32 +30,28 @@ namespace Core.Websocket
         public string ClickAction { get; set; }
     }
 
-    public abstract class WebSocketHandler
+    public class WebSocketService
     {
-        protected ConnectionManager WebSocketConnectionManager { get; set; }
+        protected ConnectionManager ConnectionManager { get; set; }
         private readonly string FCM_API_KEY;
         private readonly string FCM_SENDER_ID;
-        private ILogger<WebSocketHandler> _logger;
 
-        public WebSocketHandler(ConnectionManager webSocketConnectionManager, IConfiguration configuration, ILogger<WebSocketHandler> logger)
+        public WebSocketService(ConnectionManager connectionManager, IConfiguration configuration)
         {
-            WebSocketConnectionManager = webSocketConnectionManager;
-            _logger = logger;
+            ConnectionManager = connectionManager;
             FCM_API_KEY = configuration["FCM_API_KEY"];
             FCM_SENDER_ID = configuration["FCM_SENDER_ID"];
-            _logger.LogDebug(FCM_API_KEY);
-            _logger.LogDebug(FCM_SENDER_ID);
         }
 
         public virtual Task OnConnected(WebSocket socket, string userId, List<string> roleIds, string ip)
         {
-            WebSocketConnectionManager.AddSocket(socket, userId, roleIds, ip);
+            ConnectionManager.AddSocket(socket, userId, roleIds, ip);
             return Task.CompletedTask;
         }
 
         public virtual async Task OnDisconnected(WebSocket socket)
         {
-            await WebSocketConnectionManager.RemoveSocket(WebSocketConnectionManager.GetId(socket));
+            await ConnectionManager.RemoveSocket(ConnectionManager.GetId(socket));
         }
 
         public async Task SendMessageAsync(WebSocket socket, string message)
@@ -103,7 +89,7 @@ namespace Core.Websocket
 
         public async Task SendMessageToAll(string message)
         {
-            var users = WebSocketConnectionManager.GetAll();
+            var users = ConnectionManager.GetAll();
             foreach (var pair in users)
             {
                 if (pair.Value.State == WebSocketState.Open)
@@ -113,9 +99,9 @@ namespace Core.Websocket
             }
         }
 
-        public async Task SendMessageToAllOtherMe(string message, string userId)
+        public async Task SendMessageToSubscribers(string message, string queueName)
         {
-            var users = WebSocketConnectionManager.GetAll().Where(x => !x.Key.StartsWith($"{userId}/"));
+            var users = ConnectionManager.GetAll().Where(x => !x.Key.Contains(queueName));
             foreach (var pair in users)
             {
                 if (pair.Value.State == WebSocketState.Open)
@@ -127,26 +113,19 @@ namespace Core.Websocket
 
         public ConcurrentDictionary<string, WebSocket> GetAll()
         {
-            return WebSocketConnectionManager.GetAll();
-        }
-
-        public Task SendMessageToUserAsync(string userId, string message, string fcm = null)
-        {
-            var userGroup = WebSocketConnectionManager.GetAll()
-                .Where(x => userId == x.Key.Split("/").FirstOrDefault());
-            return NotifyUserGroup(message, userGroup, fcm);
+            return ConnectionManager.GetAll();
         }
 
         public Task SendMessageToUsersAsync(List<string> userIds, string message, string fcm = null)
         {
-            var userGroup = WebSocketConnectionManager.GetAll()
+            var userGroup = ConnectionManager.GetAll()
                 .Where(x => userIds.Contains(x.Key.Split("/").FirstOrDefault()));
             return NotifyUserGroup(message, userGroup, fcm);
         }
 
         public async Task SendMessageToSocketAsync(string token, string message, string fcm = null)
         {
-            var pair = WebSocketConnectionManager.GetAll()
+            var pair = ConnectionManager.GetAll()
                 .FirstOrDefault(x => x.Key == token);
             var fcmTask = SendFCMNotfication(fcm);
             if (pair.Value.State != WebSocketState.Open)
@@ -154,11 +133,6 @@ namespace Core.Websocket
                 return;
             }
             await SendMessageAsync(pair.Value, message);
-        }
-
-        public Task SendMessageToUsersAsync(string userId, string message, string fcm = null)
-        {
-            return SendMessageToUsersAsync(new List<string> { userId }, message, fcm);
         }
 
         private async Task NotifyUserGroup(string message, IEnumerable<KeyValuePair<string, WebSocket>> userGroup, string fcm = null)
@@ -177,28 +151,10 @@ namespace Core.Websocket
             await Task.WhenAll(realtimeTasks);
         }
 
-        public async Task RealtimeMessageToRoleAsync(string roleId, string message, string fcm = null)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
+        public Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
         {
-            if (roleId.IsNullOrEmpty() || message.IsNullOrWhiteSpace())
-            {
-                return;
-            }
-
-            var userGroup = WebSocketConnectionManager.GetAll()
-                .Where(x =>
-                {
-                    var keys = x.Key.Split("/");
-                    if (keys.Length < 2)
-                    {
-                        return false;
-                    }
-
-                    var roleIds = keys[1].Split(",").ToList();
-                    return roleIds.Contains(roleId);
-                });
-            await NotifyUserGroup(message, userGroup, fcm);
+            return Task.CompletedTask;
         }
-
-        public abstract Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer);
     }
 }

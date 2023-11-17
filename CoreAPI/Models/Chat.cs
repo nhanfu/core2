@@ -6,6 +6,7 @@ namespace Core.Models
     public partial class Chat
     {
         public string Id { get; set; }
+
         public string TenantCode { get; set; }
 
         public string ConversationId { get; set; }
@@ -27,7 +28,9 @@ namespace Core.Models
         public string UpdatedBy { get; set; }
 
         public string FromId { get; set; }
-
+        
         public string ToId { get; set; }
+
+        public string QueueName { get; set; }
     }
 }
