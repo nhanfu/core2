@@ -1,5 +1,4 @@
-﻿using Bridge;
-using Bridge.Html5;
+﻿using Bridge.Html5;
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
@@ -8,7 +7,6 @@ using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,7 +89,7 @@ namespace Core.Components.Framework
             _hasRender = true;
             var doc = Document.Instance as dynamic;
             var meta = doc.head.children.token;
-            var submitEntity = new SqlWrapper
+            var submitEntity = new SqlViewModel
             {
                 Component = new SignedCom { Signed = meta.content },
                 OrderBy = "ds.[Order] asc",

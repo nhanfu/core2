@@ -210,6 +210,12 @@ namespace Core.Components
 
         public async Task<List<object>> SqlReader(int? skip, int? pageSize)
         {
+            var sql = GetSql(skip, pageSize);
+            return await CustomQuery(JSON.Stringify(sql));
+        }
+
+        public SqlViewModel GetSql(int? skip = null, int? pageSize = null)
+        {
             var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
             var orderBy = AdvSearchVM.OrderBy.Any() ? AdvSearchVM.OrderBy.Combine(x =>
             {
@@ -220,16 +226,19 @@ namespace Core.Components
             var fnBtnCondition = Wheres.Combine(x => $"({x.FieldName})", " and ");
             var finalCon = new string[] { basicCondition, fnBtnCondition }
                 .Where(x => !x.IsNullOrWhiteSpace()).Combine(" and ");
-            var data = new SqlWrapper
+            var data = new SqlViewModel
             {
+                ComId = GuiInfo.Id,
                 Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
-                Component = new SignedCom { Query = GuiInfo.Query, Signed = GuiInfo.Signed },
-                Paging = $"offset {skip} rows\nfetch next {pageSize} rows only",
                 OrderBy = orderBy ?? (GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy),
                 Where = finalCon,
                 Count = true,
             };
-            return await CustomQuery(JSON.Stringify(data));
+            if (skip.HasValue && pageSize.HasValue)
+            {
+                data.Paging = $"offset {skip} rows\nfetch next {pageSize} rows only";
+            }
+            return data;
         }
 
         protected virtual async Task<List<object>> CustomQuery(string submitEntity)

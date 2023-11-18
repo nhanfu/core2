@@ -41,7 +41,7 @@ namespace Core.Controllers
         public Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> Reader(
             [FromBody] SqlViewModel model)
         {
-            return _userSvc.Reader(model);
+            return _userSvc.ReadDataSet(model);
         }
     }
 }

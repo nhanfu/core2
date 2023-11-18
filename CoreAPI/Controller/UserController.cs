@@ -24,66 +24,6 @@ namespace Core.Controllers
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        [AllowAnonymous]
-        [HttpGet("api/User/GetDriver")]
-        public Task<OdataResult<User>> GetDriver(ODataQueryOptions<User> options)
-        {
-            var query =
-                from u in db.User
-                join ur in db.UserRole on u.Id equals ur.UserId
-                join r in db.Role on ur.RoleId equals r.Id
-                where r.RoleName.Contains("driver")
-                select u;
-            return ApplyQuery(options, query.Distinct());
-        }
-
-        [HttpGet("api/User/GetSaleUser")]
-        public async Task<OdataResult<User>> GetSaleUser(ODataQueryOptions<User> options, string vendorId)
-        {
-            if (vendorId is null)
-            {
-                return new OdataResult<User>();
-            }
-            var query =
-                from user in db.User
-                from shared in db.FeaturePolicy.Where(x => x.EntityId == _entitySvc.GetEntity(nameof(Vendor)).Id
-                    && x.RecordId == vendorId && x.UserId == user.Id)
-                select user;
-            return await ApplyQuery(options, query);
-        }
-
-        [HttpGet("api/User/Limited")]
-        public Task<OdataResult<User>> GetLimitedUser(ODataQueryOptions<User> options)
-        {
-            var customerEnum = _entitySvc.GetEntity(nameof(Vendor)).Id;
-            var query =
-                from user in db.User
-                join policyLeft in db.FeaturePolicy on user.Id equals policyLeft.RecordId into policyLeftJoin
-                from policy in policyLeftJoin.DefaultIfEmpty()
-                where user.InsertedBy == UserId || policy != null && policy.CanRead && policy.EntityId == customerEnum
-                        && (policy.UserId == UserId || AllRoleIds.Contains(policy.RoleId))
-                select user;
-
-            return ApplyQuery(options, query);
-        }
-
-        private async Task<bool> CanUpdateUser(User user)
-        {
-            return user.InsertedBy != UserId && !AllRoleIds.Contains(user.CreatedRoleId) && !await HasSystemRole();
-        }
-
-        [HttpGet("api/User/UserRole/{roleName}")]
-        public Task<OdataResult<User>> GetUserByRole(string roleName, ODataQueryOptions<User> options)
-        {
-            var query =
-                from user in db.User
-                join userRole in db.UserRole on user.Id equals userRole.UserId
-                join role in db.Role on userRole.RoleId equals role.Id
-                where role.RoleName == roleName
-                select user;
-
-            return ApplyQuery(options, query);
-        }
 
         public override async Task<ActionResult<User>> UpdateAsync([FromBody] User user, string reasonOfChange = "")
         {
@@ -238,10 +178,6 @@ namespace Core.Controllers
         public async Task<string> ReSendUser(string userId)
         {
             var user = await db.User.FirstOrDefaultAsync(x => x.Id == userId);
-            if (await CanUpdateUser(user))
-            {
-                throw new ApiException("Bạn không có quyền đổi mật khẩu của người dùng");
-            }
             user.Salt = base._userSvc.GenerateRandomToken();
             var randomPassword = base._userSvc.GenerateRandomToken(10);
             user.Password = base._userSvc.GetHash(UserUtils.sHA256, randomPassword + user.Salt);
@@ -256,10 +192,16 @@ namespace Core.Controllers
             return _userSvc.ExecUserSvc(vm);
         }
 
+        [HttpPost("api/[Controller]/excel")]
+        public Task<string> ExportExcel([FromBody] SqlViewModel vm)
+        {
+            return _userSvc.ExportExcel(vm);
+        }
+
         [HttpPatch("api/v2/[Controller]", Order = 0)]
         public Task<bool> PatchAsync([FromBody] PatchUpdate patch)
         {
-            return _userSvc.PatchAsync(patch);
+            return _userSvc.Patch(patch);
         }
     }
 }

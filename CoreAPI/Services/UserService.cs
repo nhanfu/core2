@@ -1,4 +1,5 @@
-﻿using Core.Enums;
+﻿using ClosedXML.Excel;
+using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.Models;
@@ -12,6 +13,8 @@ using Newtonsoft.Json;
 using System.Data;
 using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -377,7 +380,7 @@ namespace Core.Services
             return new JwtSecurityTokenHandler().WriteToken(accessToken);
         }
 
-        public async Task<(string, string)> DecryptQuery(string signed, string plainQuery = null)
+        public async Task<(string Conn, string Query)> DecryptQuery(string signed, string plainQuery = null)
         {
             var token = UserUtils.GetPrincipalFromAccessToken(signed, _configuration);
             var hash = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Hash)?.Value;
@@ -403,10 +406,7 @@ namespace Core.Services
             var tenantEnv = await db.TenantEnv
                 .FirstOrDefaultAsync(x => x.System == System && x.TenantCode == TenantCode && x.ConnKey == connKey && x.Env == Env)
                 ?? throw new ApiException("Tenant config not found");
-            await _cache.SetStringAsync(key, tenantEnv.ConnStr, new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-            });
+            await _cache.SetStringAsync(key, tenantEnv.ConnStr, Utils.CacheTTL);
             return tenantEnv.ConnStr;
         }
 
@@ -449,7 +449,7 @@ namespace Core.Services
                 .Any(x => x.TokenType == TSqlTokenType.MultilineComment || x.TokenType == TSqlTokenType.SingleLineComment);
         }
 
-        public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSet(string reportQuery, string connStr, bool ignoreQuery = false)
+        public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSet(string reportQuery, string connStr, bool exportQuery = true)
         {
             var connectionStr = connStr;
             using var con = new SqlConnection(connectionStr);
@@ -470,7 +470,7 @@ namespace Core.Services
                 tables.Add(table);
             } while (await reader.NextResultAsync());
 #if DEBUG
-            if (!ignoreQuery)
+            if (exportQuery)
             {
                 var query = new List<Dictionary<string, object>>
                 {
@@ -498,20 +498,40 @@ namespace Core.Services
 
         public static string RemoveWhiteSpace(string val) => val.Replace(" ", "");
 
-        public async Task<bool> PatchAsync(PatchUpdate patch)
+        public async Task<bool> Patch(PatchUpdate vm)
         {
-            if (patch == null || patch.Table.IsNullOrWhiteSpace() || patch.Changes.Nothing())
+            if (vm == null || vm.Table.IsNullOrWhiteSpace() || vm.Changes.Nothing())
             {
                 throw new ApiException("Table name and change details can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
             }
-            patch.Table = RemoveWhiteSpace(patch.Table);
-            patch.Changes.ForEach(x =>
+            vm.Table = RemoveWhiteSpace(vm.Table);
+            vm.Changes.ForEach(x =>
             {
                 if (x.Field.IsNullOrWhiteSpace()) throw new ApiException($"Field name can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
                 x.Field = RemoveWhiteSpace(x.Field);
             });
-            var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
-            using SqlConnection connection = new(await GetConnStrFromKey(patch.ConnKey));
+            bool writePerm;
+            var id = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
+            var com = await GetComponent(vm.ComId);
+            var allRights = await GetComPermission(vm.ComId);
+            var connStr = await GetConnStrFromKey(vm.ConnKey);
+            if (id is null)
+            {
+                writePerm = allRights.Any(x => x.CanWrite || x.CanWriteAll);
+            } 
+            else
+            {
+                var origin = @$"select t.* from {vm.Table} as t where t.Id = '{id}'";
+                var ds = await ReadDataSet(origin, connStr);
+                var originRow = ds.Count() > 1 ? ds.ElementAt(0).FirstOrDefault() : null as Dictionary<string, object>;
+                var ownerUserIds = originRow.GetValueOrDefault("OwnerUserIds") as string ?? string.Empty;
+                var ownerRoleIds = from ownerRole in (originRow.GetValueOrDefault("OwnerRoleIds") as string ?? string.Empty).Split(",")
+                                   join currRole in RoleIds on ownerRole equals currRole
+                                   select ownerRole;
+                writePerm = allRights.Any(x => x.CanWrite && (ownerUserIds.Contains(UserId) || ownerRoleIds.Any()) || x.CanWriteAll);
+            }
+            if (!writePerm) throw new ApiException("Access denied") { StatusCode = HttpStatusCode.Unauthorized };
+            using SqlConnection connection = new(connStr);
             connection.Open();
             using SqlTransaction transaction = connection.BeginTransaction();
             try
@@ -519,21 +539,21 @@ namespace Core.Services
                 using SqlCommand command = new();
                 command.Transaction = transaction;
                 command.Connection = connection;
-                
-                var valueFields = patch.Changes.Where(x => !_systemFields.Contains(x.Field.ToLower())).ToList();
+
+                var valueFields = vm.Changes.Where(x => !_systemFields.Contains(x.Field.ToLower())).ToList();
                 var update = valueFields.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
                 var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
                 if (id is not null)
                 {
-                    command.CommandText = @$"udpate [{patch.Table}] set {update.Combine()}, 
-                            TenantCode = {TenantCode}, UpdatedBy = '{UserId}', UpdatedDate = '{now}' where Id = '{id}';";
+                    command.CommandText = @$"update [{vm.Table}] set {update.Combine()}, 
+                            TenantCode = '{TenantCode}', UpdatedBy = '{UserId}', UpdatedDate = '{now}' where Id = '{id}';";
                 }
                 else
                 {
                     id = Id.NewGuid();
                     var fields = valueFields.Combine(x => $"[{x.Field}]");
                     var fieldParams = valueFields.Combine(x => $"@{x.Field}");
-                    command.CommandText = @$"insert into [{patch.Table}] ([Id], [TenantCode], [Active], [InsertedBy], [InsertedDate], {fields}) 
+                    command.CommandText = @$"insert into [{vm.Table}] ([Id], [TenantCode], [Active], [InsertedBy], [InsertedDate], {fields}) 
                         values ('{id}', '{TenantCode}', 1, '{UserId}', '{now}', {fieldParams});";
                 }
                 foreach (var item in valueFields)
@@ -544,13 +564,13 @@ namespace Core.Services
                 if (anyComment) throw new ApiException("Comment is NOT allowed");
                 await command.ExecuteNonQueryAsync();
                 await transaction.CommitAsync();
-                if (!patch.QueueName.IsNullOrWhiteSpace())
+                if (!vm.QueueName.IsNullOrWhiteSpace())
                 {
                     var mqEvent = new MQEvent
                     {
                         Id = Id.NewGuid(),
-                        QueueName = patch.QueueName,
-                        Message = patch
+                        QueueName = vm.QueueName,
+                        Message = vm
                     };
                     BackgroundJob.Enqueue<TaskService>(x => x.SendMessageToSubscribers(mqEvent, mqEvent.QueueName));
                 }
@@ -563,32 +583,37 @@ namespace Core.Services
             }
         }
 
-        internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> Reader(SqlViewModel model)
+        internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSet(SqlViewModel vm)
         {
-            var entity = model.Component;
-            var (connStr, query) = await DecryptQuery(entity.Signed, entity.Query);
-
+            var com = await GetComponent(vm.ComId);
+            string decryptedConnStr = null;
+            string decryptedQuery = null;
+            if (com is null) {
+                var (connStr, query) = await DecryptQuery(vm.Component.Signed);
+                decryptedConnStr = connStr;
+                decryptedQuery = query;
+            }
             var anyInvalid = _fobiddenTerm.Any(term =>
             {
-                return model.Select != null && term.IsMatch(model.Select.ToLower())
-                || model.Entity != null && term.IsMatch(model.Entity.ToLower())
-                || model.Where != null && term.IsMatch(model.Where.ToLower())
-                || model.GroupBy != null && term.IsMatch(model.GroupBy.ToLower())
-                || model.Having != null && term.IsMatch(model.Having.ToLower())
-                || model.OrderBy != null && term.IsMatch(model.OrderBy.ToLower())
-                || model.Paging != null && term.IsMatch(model.Paging.ToLower());
+                return vm.Select != null && term.IsMatch(vm.Select.ToLower())
+                || vm.Entity != null && term.IsMatch(vm.Entity.ToLower())
+                || vm.Where != null && term.IsMatch(vm.Where.ToLower())
+                || vm.GroupBy != null && term.IsMatch(vm.GroupBy.ToLower())
+                || vm.Having != null && term.IsMatch(vm.Having.ToLower())
+                || vm.OrderBy != null && term.IsMatch(vm.OrderBy.ToLower())
+                || vm.Paging != null && term.IsMatch(vm.Paging.ToLower());
             });
             if (anyInvalid)
             {
                 throw new ArgumentException("Parameters must NOT contains sql keywords");
             }
-            var jsRes = await ExecJs(model.Entity, entity.Query ?? query);
-            var select = model.Select.HasAnyChar() ? $"select {model.Select}" : string.Empty;
-            var where = model.Where.HasAnyChar() ? $"where {model.Where}" : string.Empty;
-            var groupBy = model.GroupBy.HasAnyChar() ? $"group by {model.GroupBy}" : string.Empty;
-            var having = model.Having.HasAnyChar() ? $"having {model.Having}" : string.Empty;
-            var orderBy = model.OrderBy.HasAnyChar() ? $"order by {model.OrderBy}" : string.Empty;
-            var countQuery = model.Count ?
+            var jsRes = await ExecJs(vm.Entity, decryptedQuery ?? com.Query);
+            var select = vm.Select.HasAnyChar() ? $"select {vm.Select}" : string.Empty;
+            var where = vm.Where.HasAnyChar() ? $"where {vm.Where}" : string.Empty;
+            var groupBy = vm.GroupBy.HasAnyChar() ? $"group by {vm.GroupBy}" : string.Empty;
+            var having = vm.Having.HasAnyChar() ? $"having {vm.Having}" : string.Empty;
+            var orderBy = vm.OrderBy.HasAnyChar() ? $"order by {vm.OrderBy}" : string.Empty;
+            var countQuery = vm.Count ?
                 $@"select count(*) as total from (
                 {jsRes.Query}) as ds 
                 {where}
@@ -600,13 +625,77 @@ namespace Core.Services
                 {groupBy}
                 {having}
                 {orderBy}
-                {model.Paging};
+                {vm.Paging};
                 {countQuery}
                 {jsRes.XQuery}";
-            return await ReadDataSet(finalQuery, connStr);
+            return await ReadDataSet(finalQuery, decryptedConnStr ?? await GetConnStrFromKey(com.ConnKey));
+        }
+
+        private async Task<Component> GetComponent(string comId)
+        {
+            Component com = null;
+            var comKey = "com_" + comId;
+            var cached = _cache.GetString(comKey);
+            if (cached != null)
+            {
+                try {
+                    com = JsonConvert.DeserializeObject<Component>(cached);
+                }
+                catch {
+
+                }
+            }
+            if (com is null)
+            {
+                com = await db.Component
+                    .Where(x => x.Annonymous || !x.IsPrivate || x.TenantCode == TenantCode && x.System == System)
+                    .Where(x => x.Id == comId)
+                    .FirstOrDefaultAsync();
+                if (com is null) return null;
+                await _cache.SetStringAsync(comKey, JsonConvert.SerializeObject(com), Utils.CacheTTL);
+            }
+            var readPermission = await GetComPermission(comId, x => x.CanRead);
+            var hasPerm = com.Annonymous || !com.IsPrivate && UserId != null || readPermission.Any();
+            if (!hasPerm)
+            {
+                throw new ApiException("Access denied") { StatusCode = HttpStatusCode.Unauthorized };
+            }
+
+            return com;
+        }
+
+        private async Task<FeaturePolicy[]> GetComPermission(string comId, Expression<Func<FeaturePolicy, bool>> pre = null)
+        {
+            var prop = ((pre?.Body as MemberExpression)?.Member as PropertyInfo)?.Name ?? "AllRights";
+            var key = comId + "_" + prop;
+            var permissionByComCache = await _cache.GetStringAsync(key);
+            FeaturePolicy[] permissions;
+            if (!permissionByComCache.IsNullOrWhiteSpace())
+            {
+                permissions = JsonConvert.DeserializeObject<FeaturePolicy[]>(permissionByComCache);
+            }
+            else
+            {
+                var query = db.FeaturePolicy as IQueryable<FeaturePolicy>;
+                if (pre != null) query = query.Where(pre);
+                permissions = await query
+                    .Where(x => x.EntityId == "Component" && x.RecordId == comId && RoleIds.Contains(x.RoleId))
+                    .ToArrayAsync();
+                await _cache.SetStringAsync(key, JsonConvert.SerializeObject(permissions), Utils.CacheTTL);
+            }
+
+            return permissions;
         }
 
         internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ExecUserSvc(SqlViewModel vm)
+        {
+            var sv = await GetService(vm);
+            var jsRes = await ExecJs(vm.Entity, sv.Content);
+            var conStr = await GetConnStrFromKey(sv.ConnKey);
+            return await ReadDataSet(jsRes.Query, conStr);
+        }
+
+        private async Task<Models.Services> GetService(SqlViewModel vm)
         {
             if (vm is null || vm.SvcId.IsNullOrWhiteSpace() && (vm.Action.IsNullOrWhiteSpace() || vm.ComId.IsNullOrWhiteSpace()))
             {
@@ -635,10 +724,236 @@ namespace Core.Services
                  join usrRole in RoleIds on svRole equals usrRole
                  select svRole).Any();
             if (!isValidRole) throw new UnauthorizedAccessException("The service is not accessible by your roles");
+            return sv;
+        }
 
-            var jsRes = await ExecJs(vm.Entity, sv.Content);
-            var conStr = await GetConnStrFromKey(sv.ConnKey);
-            return await ReadDataSet(jsRes.Query, conStr);
+        internal async Task<string> ExportExcel(SqlViewModel vm)
+        {
+            var dataSets = await ReadDataSet(vm);
+            var table = dataSets.ElementAt(0);
+            var headers = JsonConvert.DeserializeObject<List<Component>>(JsonConvert.SerializeObject(dataSets.ElementAt(1)));
+            headers = headers.Where(x => vm.FieldName.Contains(x.FieldName)).ToList();
+            return ExportExcel(vm.ComId, headers, table);
+        }
+
+        public string ConvertHtmlToPlainText(string htmlContent)
+        {
+            // Remove HTML tags using regular expression
+            string plainText = Regex.Replace(htmlContent, @"<[^>]+>|&nbsp;", "").Trim();
+
+            // Decode HTML entities using regular expression
+            plainText = Regex.Replace(plainText, @"&(amp|quot|gt|lt|nbsp);", m => DecodeEntity(m.Groups[1].Value));
+
+            return plainText;
+        }
+
+        public string DecodeEntity(string entity)
+        {
+            switch (entity)
+            {
+                case "amp":
+                    return "&";
+                case "quot":
+                    return "\"";
+                case "gt":
+                    return ">";
+                case "lt":
+                    return "<";
+                case "nbsp":
+                    return " ";
+                default:
+                    return entity;
+            }
+        }
+
+        private string ExportExcel(string refName, List<Component> headers, IEnumerable<Dictionary<string, object>> dataSet)
+        {
+            XLWorkbook workbook;
+            bool anyGroup = headers.Any(x => !string.IsNullOrEmpty(x.GroupName));
+            workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Data");
+            worksheet.Cell("A1").Value = refName;
+            worksheet.Cell("A1").Style.Font.Bold = true;
+            worksheet.Cell("A1").Style.Font.FontSize = 14;
+            worksheet.Cell("A1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            worksheet.Cell("A1").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            worksheet.Range(1, 1, headers.Count() + 1, headers.Count + 1).Row(1).Merge();
+            worksheet.Style.Font.SetFontName("Times New Roman");
+            var i = 2;
+            worksheet.Cell(2, 1).SetValue("STT");
+            worksheet.Cell(2, 1).Style.Font.Bold = true;
+            worksheet.Cell(2, 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(2, 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(2, 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(2, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            if (anyGroup)
+            {
+                worksheet.Range(2, 1, 3, 1).Merge();
+            }
+            foreach (var header in headers)
+            {
+                if (anyGroup && !string.IsNullOrEmpty(header.GroupName))
+                {
+                    var colspan = headers.Count(x => x.GroupName == header.GroupName);
+                    if (header != headers.FirstOrDefault(x => x.GroupName == header.GroupName))
+                    {
+                        i++;
+                        continue;
+                    }
+                    worksheet.Cell(2, i).SetValue(ConvertHtmlToPlainText(header.GroupName));
+                    worksheet.Range(2, i, 2, i + colspan - 1).Merge();
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Font.Bold = true;
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Range(2, i, 2, i + colspan - 1).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    i++;
+                    continue;
+                }
+                worksheet.Cell(2, i).SetValue(ConvertHtmlToPlainText(header.ShortDesc));
+                worksheet.Cell(2, i).Style.Font.Bold = true;
+                worksheet.Cell(2, i).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(2, i).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(2, i).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(2, i).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(2, i).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Cell(2, i).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                if (anyGroup && string.IsNullOrEmpty(header.GroupName))
+                {
+                    worksheet.Range(2, i, 3, i).Merge();
+                    worksheet.Cell(3, i).Style.Font.Bold = true;
+                    worksheet.Cell(3, i).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(3, i).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(3, i).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(3, i).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(3, i).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(3, i).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                }
+                i++;
+            }
+            var h = 2;
+            if (anyGroup)
+            {
+                foreach (var item in headers)
+                {
+                    if (anyGroup && !string.IsNullOrEmpty(item.GroupName))
+                    {
+                        worksheet.Cell(3, h).SetValue(ConvertHtmlToPlainText(item.ShortDesc));
+                        worksheet.Cell(3, h).Style.Font.Bold = true;
+                        worksheet.Cell(3, h).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(3, h).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(3, h).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(3, h).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(3, h).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        worksheet.Cell(3, h).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    }
+                    h++;
+                }
+            }
+            var x = 3;
+            if (anyGroup)
+            {
+                x++;
+            }
+            var j = 1;
+            foreach (var item in dataSet)
+            {
+                var y = 2;
+                worksheet.Cell(x, 1).SetValue(j);
+                worksheet.Cell(x, 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(x, 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(x, 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(x, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                foreach (var itemDetail in headers)
+                {
+                    var vl = item.GetValueOrDefault(itemDetail.FieldName);
+                    switch (itemDetail.ComponentType)
+                    {
+                        case "Input":
+                            var vl1 = vl is null ? null : vl.ToString().DecodeSpecialChar();
+                            worksheet.Cell(x, y).SetValue(vl1);
+                            break;
+                        case "Textarea":
+                            var vl2 = vl is null ? null : vl.ToString().DecodeSpecialChar();
+                            worksheet.Cell(x, y).SetValue(vl2);
+                            break;
+                        case "Label":
+                            var vl3 = vl is null ? null : vl.ToString().DecodeSpecialChar();
+                            worksheet.Cell(x, y).SetValue(vl3);
+                            break;
+                        case "Datepicker":
+                            worksheet.Cell(x, y).SetValue((DateTime?)vl);
+                            break;
+                        case "Number":
+                            if (vl is int)
+                            {
+                                worksheet.Cell(x, y).SetValue(vl is null ? default(int) : (int)vl);
+                            }
+                            else
+                            {
+                                worksheet.Cell(x, y).SetValue(vl is null ? default(decimal) : (decimal)vl);
+                                worksheet.Cell(x, y).Style.NumberFormat.Format = "#,##";
+                            }
+                            break;
+                        case "SearchEntry":
+                            var objField = itemDetail.FieldName.Substring(0, itemDetail.FieldName.Length - 2);
+                            vl = item.GetValueOrDefault(objField);
+                            var vl4 = vl is null ? null : vl.ToString().DecodeSpecialChar();
+                            worksheet.Cell(x, y).SetValue(vl4);
+                            break;
+                        case "Checkbox":
+                            worksheet.Cell(x, y).SetValue(vl.ToString() == "False" ? default(int) : 1);
+                            break;
+                        default:
+                            break;
+                    }
+                    worksheet.Cell(x, y).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(x, y).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(x, y).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    worksheet.Cell(x, y).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    y++;
+                }
+                j++;
+                x++;
+            }
+            var k = 2;
+            var last = dataSet.Count() + 3;
+            worksheet.Cell(last, 1).Value = "Total";
+            worksheet.Cell(last, 1).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(last, 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(last, 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            worksheet.Cell(last, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            foreach (var item in headers)
+            {
+                if (item.ComponentType == "Number")
+                {
+                    var value = dataSet.Select(x => x[item.FieldName]).Where(x => x != null).Sum(x =>
+                    {
+                        if (x is int)
+                        {
+                            return x is null ? default(int) : (int)x;
+                        }
+                        else
+                        {
+                            return x is null ? default(decimal) : (decimal)x;
+                        }
+                    });
+                    worksheet.Cell(last, k).SetValue(value);
+                    worksheet.Cell(last, k).Style.Font.Bold = true;
+                    worksheet.Cell(last, k).Style.NumberFormat.Format = "#,##";
+                }
+                worksheet.Cell(last, k).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(last, k).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(last, k).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                worksheet.Cell(last, k).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                k++;
+            }
+            var url = $"{refName}{DateTimeOffset.Now:ddMMyyyyhhmm}.xlsx";
+            worksheet.Columns().AdjustToContents();
+            workbook.SaveAs($"wwwroot\\excel\\Download\\{url}");
+            return url;
         }
     }
 }

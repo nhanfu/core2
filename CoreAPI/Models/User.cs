@@ -76,6 +76,10 @@ namespace Core.Models
 
         public string StateId { get; set; }
 
+        public string OwnerUserIds { get; set; }
+
+        public string OwnerRoleIds { get; set; }
+
         public virtual ICollection<UserRole> UserRole { get; set; } = new List<UserRole>();
 
         public virtual Vendor Vendor { get; set; }

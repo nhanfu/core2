@@ -672,7 +672,7 @@ namespace Core.Clients
             {
                 Value = JsonConvert.SerializeObject(value),
                 IsRawString = true,
-                Url = subUrl + $"?$filter=Id eq '{id.Value}'{ig}",
+                Url = subUrl,
                 Headers = new Dictionary<string, string> { { "Content-type", "application/json" } },
                 Method = HttpMethod.PATCH,
                 AllowAnonymous = annonymous,

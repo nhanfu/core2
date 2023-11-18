@@ -634,7 +634,7 @@ namespace Core.Components
         {
             var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var _preQueryFn);
             var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
-            var data = JSON.Stringify(new SqlWrapper
+            var data = JSON.Stringify(new SqlViewModel
             {
                 Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
                 Component = new SignedCom { Query = GuiInfo.Query, Signed = GuiInfo.Signed },

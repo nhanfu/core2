@@ -9,6 +9,7 @@ using Core.MVVM;
 using Core.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -332,48 +333,36 @@ namespace Core.Components
             {
                 return;
             }
-            var pathModel = GetPathEntity();
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, pathModel, this);
-            if (pathModel.Changes.FirstOrDefault(x => x.Field == IdField).Value.IsNullOrWhiteSpace() && !noEvent)
+            var patchModel = GetPatchEntity();
+            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, patchModel, this);
+            if (patchModel.Changes.FirstOrDefault(x => x.Field == IdField).Value.IsNullOrWhiteSpace() && !noEvent)
             {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this);
                 return;
             }
-            if (pathModel is null && !noEvent)
+            if (patchModel is null && !noEvent)
             {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this);
                 return;
             }
-            lastpathModel = pathModel;
-            var ignoreSync = "false";
-            if (pathModel.Changes.Count == 2)
-            {
-                var header = ListViewSection.ListView.BasicHeader.FirstOrDefault(x => x.FieldName == pathModel.Changes.FirstOrDefault().Field && x.Editable);
-                if (header != null && header.IgnoreSync)
-                {
-                    ignoreSync = "true";
-                }
-            }
-            var rs = Entity;
+            lastpathModel = patchModel;
             try
             {
-                rs = await new Client(GuiInfo.Reference.Name).PatchAsync<object>(pathModel, ig: $"&disableTrigger={ignoreSync}");
+                await Client.Instance.SubmitAsync<object>(new XHRWrapper
+                {
+                    Url = "/v2/user",
+                    Value = JSON.Stringify(patchModel),
+                    IsRawString = true,
+                    Method = HttpMethod.PATCH
+                });
             }
             catch
             {
-                rs = (await new Client(GuiInfo.Reference.Name).GetList<object>($"?$filter=Id eq '{Entity[IdField]}'")).Value.FirstOrDefault();
-                Entity.CopyPropFrom(rs);
-                UpdateView();
+                Toast.Warning("Update row was not succeded");
                 return;
             }
-            if (GuiInfo.ComponentType == nameof(VirtualGrid))
-            {
-                ListViewSection.ListView.CacheData.FirstOrDefault(x => x[IdField] == rs[IdField]).CopyPropFrom(rs);
-            }
-            Entity.CopyPropFrom(rs);
             EmptyRow = false;
             var arr = FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.GuiInfo.FieldName).ToArray();
-            UpdateView(true, arr);
             var changing = BuildTextHistory().ToString();
             if (!changing.IsNullOrWhiteSpace())
             {
@@ -386,13 +375,10 @@ namespace Core.Components
                 });
             }
             Dirty = false;
-            if (rs != null && !noEvent)
-            {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, pathModel, this);
-            }
+            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this);
         }
 
-        public PatchUpdate GetPathEntity()
+        public PatchUpdate GetPatchEntity()
         {
             var details = Children
                 .Where(child => child is EditableComponent editable && editable.Dirty)
@@ -412,8 +398,23 @@ namespace Core.Components
                     };
                     return new PatchUpdateDetail[] { patch };
                 }).ToList();
-            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = EntityId.ToString() });
-            return new PatchUpdate { Changes = details };
+            details.Add(new PatchUpdateDetail
+            {
+                Field = Utils.IdField,
+                Value = EntityId?.ToString() ?? System.Id.NewGuid()
+            });
+            if (!ListView.GuiInfo.IdField.IsNullOrWhiteSpace())
+            {
+                var parentId = ListView.Entity[ListView.GuiInfo.IdField]?.ToString();
+                details.Add(new PatchUpdateDetail { Field = ListView.GuiInfo.IdField, Value = parentId, OldVal = parentId });
+            }
+            return new PatchUpdate
+            {
+                Changes = details,
+                ComId = ListView.GuiInfo.Id,
+                Table = ListView.GuiInfo.RefName,
+                ConnKey = ListView.GuiInfo.ConnKey ?? Utils.DefaultConnKey,
+            };
         }
 
         private async Task RowDblClick(Event e)

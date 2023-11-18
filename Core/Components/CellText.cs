@@ -141,7 +141,7 @@ namespace Core.Components
             }
             var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var fn);
             var entity = isFn ? fn.Call(this, this).ToString() : string.Empty;
-            var submit = new SqlWrapper
+            var submit = new SqlViewModel
             {
                 Entity = JSON.Stringify(entity),
                 Component = new SignedCom { Query = GuiInfo.Query, Signed = GuiInfo.Signed }

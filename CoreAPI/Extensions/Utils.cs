@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using System.Reflection;
 using System.Text;
 
 namespace Core.Extensions
@@ -65,6 +66,15 @@ namespace Core.Extensions
             }
             return res.ToString();
         }
+
+        public static DistributedCacheEntryOptions CacheTTL = new()
+        {
+            #if DEBUG
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30)
+            #else 
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            #endif
+        };
 
         public static object EncodeProperties(this object value)
         {

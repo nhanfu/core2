@@ -244,7 +244,7 @@ namespace Core.Components
             return Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
                 Url = Utils.UserSvc,
-                Value = new SqlWrapper
+                Value = new SqlViewModel
                 {
                     ComId = "GridView",
                     Action = "GetUserSettingByListViewId",
@@ -259,8 +259,8 @@ namespace Core.Components
             _userSetting = res[0].Length > 0 ? res[0][0] : null as dynamic;
             if (_userSetting != null)
             {
-                var userSettingList = JsonConvert.DeserializeObject<List<dynamic>>(_userSetting.Value as string);
-                var userSettings = userSettingList.ToDictionary(x => x.Id);
+                _headers = JsonConvert.DeserializeObject<List<Component>>(_userSetting.Value as string);
+                var userSettings = _headers.ToDictionary(x => x.Id);
                 _headers.ForEach(x =>
                 {
                     var current = userSettings.GetValueOrDefault(x.Id);
@@ -320,7 +320,6 @@ namespace Core.Components
         public async Task ExportData()
         {
             Toast.Success("Đang xuất excel");
-            var usrSettingTask = GetUserSetting();
             if (_userSetting is null)
             {
                 _userSetting = new UserSetting()
@@ -336,48 +335,17 @@ namespace Core.Components
                 _userSetting.Value = JsonConvert.SerializeObject(_headers);
                 await Client.Instance.SubmitAsync<dynamic>(CreatePatch(_userSetting.Id));
             }
-            var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"[{ParentListView.GuiInfo.RefName}].{orderby.FieldName} {orderby.OrderbyDirectionId.ToString().ToLowerCase()}");
-            var finalFilter = string.Empty;
-            if (orderbyList.HasElement())
+            var sql = ParentListView.GetSql();
+            sql.Count = false;
+            sql.FieldName = _headers.Where(x => x.IsExport).Select(x => x.FieldName).ToList();
+            var path = await Client.Instance.SubmitAsync<string>(new XHRWrapper
             {
-                finalFilter = orderbyList.Combine();
-            }
-            if (finalFilter.IsNullOrWhiteSpace())
-            {
-                finalFilter = OdataExt.GetClausePart(ParentListView.FormattedDataSource, OdataExt.OrderByKeyword);
-                if (finalFilter.Contains(","))
-                {
-                    var k = finalFilter.Split(",").ToList();
-                    finalFilter = k.Select(x => $"[{ParentListView.GuiInfo.RefName}].{x}").Combine();
-                }
-                else
-                {
-                    finalFilter = $"[{ParentListView.GuiInfo.RefName}].{finalFilter}";
-                }
-            }
-            var filter = ParentListView.Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
-            var filter1 = ParentListView.Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
-            var wh = new List<string>();
-            if (!filter.IsNullOrWhiteSpace())
-            {
-                wh.Add($"({filter})");
-            }
-            if (!filter1.IsNullOrWhiteSpace())
-            {
-                wh.Add($"({filter1})");
-            }
-            var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
-            var pre = ParentListView.GuiInfo.PreQuery;
-            if (pre != null && Utils.IsFunction(pre, out Function fn))
-            {
-                pre = fn.Call(this, this, EditForm).ToString();
-            }
-            var path = await new Client(ParentListView.GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId='{ParentListView.GuiInfo.Id}'" +
-                $"&sql={ParentListView.Sql}" +
-                $"&join={ParentListView.GuiInfo.JoinTable}" +
-                $"&showNull={ParentListView.GuiInfo.ShowNull}" +
-                $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(ParentListView.Wheres.Any() ? " and " : "")} {pre}")}" +
-                $"&custom=true&featureId={Parent.EditForm.Feature.Id}&orderby={finalFilter}");
+                Value = JSON.Stringify(sql),
+                Url = Utils.ExportExcel,
+                IsRawString = true,
+                Method = HttpMethod.POST
+            });
+            
             Client.Download($"/excel/Download/{path}");
             Toast.Success("Xuất file thành công");
         }
@@ -391,8 +359,9 @@ namespace Core.Components
                     new PatchUpdateDetail { Field = nameof(UserSetting.UserId), Value = Client.Token.UserId },
                     new PatchUpdateDetail { Field = nameof(UserSetting.Value), Value = JsonConvert.SerializeObject(_headers) },
                 },
+                ComId = ParentListView.GuiInfo.Id,
                 Table = nameof(UserSetting),
-                ConnKey = ParentListView.GuiInfo.ConnKey ?? "default"
+                ConnKey = ParentListView.GuiInfo.ConnKey ?? Utils.DefaultConnKey
             };
             if (id != null)
             {
@@ -401,7 +370,7 @@ namespace Core.Components
             return new XHRWrapper
             {
                 Url = "/v2/user",
-                Value = JsonConvert.SerializeObject(patch),
+                Value = JSON.Stringify(patch),
                 IsRawString = true,
                 Method = HttpMethod.PATCH
             };

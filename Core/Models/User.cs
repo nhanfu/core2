@@ -49,5 +49,7 @@ namespace Core.Models
         public string TeamId { get; set; }
         public string ContactId { get; set; }
         public string StateId { get; set; }
+        public string OwnerUserIds { get; set; }
+        public string OwnerRoleIds { get; set; }
     }
 }

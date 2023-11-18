@@ -2425,7 +2425,7 @@ namespace Core.Components
         internal override async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
         {
             await Task.Delay(50);
-            var com = new List<string>() { nameof(SearchEntry), "Dropdown", nameof(Select2) };
+            var com = new List<string>() { nameof(SearchEntry), nameof(Select2) };
             if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData, this);
@@ -2433,12 +2433,7 @@ namespace Core.Components
                 if (GuiInfo.IsRealtime)
                 {
                     var entity = rowData;
-                    rs = await new Client(GuiInfo.Reference.Name).CreateAsync<object>(entity);
-                    rowSection.Entity.CopyPropFrom(rs);
-                    if (GuiInfo.ComponentType == nameof(VirtualGrid))
-                    {
-                        CacheData.Add(rs);
-                    }
+                    await rowSection.PatchUpdate();
                     Dirty = false;
                 }
                 else

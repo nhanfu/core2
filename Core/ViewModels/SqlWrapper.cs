@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Core.ViewModels
 {
-    public class SqlWrapper
+    public class SqlViewModel
     {
         public string SvcId { get; set; }
         public string ComId { get; set; }
@@ -21,6 +17,7 @@ namespace Core.ViewModels
         public string Having { get; set; }
         public bool Count { get; set; }
         public bool RawQuery { get; set; }
+        public List<string> FieldName { get; set; }
     }
 
     public class SignedCom

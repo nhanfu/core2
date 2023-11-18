@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Models
 {
@@ -257,6 +258,7 @@ namespace Core.Models
         
         public string ConnKey { get; set; }
 
+        public bool Annonymous { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
 

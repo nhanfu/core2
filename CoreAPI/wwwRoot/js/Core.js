@@ -1332,7 +1332,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var id = System.Linq.Enumerable.from(value.Changes, Core.ViewModels.PatchUpdateDetail).firstOrDefault(function (x) {
                         return Bridge.referenceEquals(x.Field, Core.Extensions.Utils.IdField);
                     }, null);
-                return this.SubmitAsync(T, ($t = new Core.Clients.XHRWrapper(), $t.Value = Newtonsoft.Json.JsonConvert.SerializeObject(value), $t.IsRawString = true, $t.Url = (subUrl || "") + (System.String.format("?$filter=Id eq '{0}'{1}", id.Value, ig) || ""), $t.Headers = function (_o1) {
+                return this.SubmitAsync(T, ($t = new Core.Clients.XHRWrapper(), $t.Value = Newtonsoft.Json.JsonConvert.SerializeObject(value), $t.IsRawString = true, $t.Url = subUrl, $t.Headers = function (_o1) {
                         _o1.add("Content-type", "application/json");
                         return _o1;
                     }(new (System.Collections.Generic.Dictionary$2(System.String,System.String)).ctor()), $t.Method = Core.Enums.HttpMethod.PATCH, $t.AllowAnonymous = annonymous, $t));
@@ -6829,6 +6829,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                 OwnerId: null,
                 SqlReader: null,
                 UserSvc: null,
+                ExportExcel: null,
+                DefaultConnKey: null,
                 GOOGLE_MAP: null,
                 GOOGLE_MAP_PLACES: null,
                 GOOGLE_MAP_GEOMETRY: null,
@@ -6866,6 +6868,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.OwnerId = "OwnerId";
                     this.SqlReader = "/component/Reader";
                     this.UserSvc = "/user/svc";
+                    this.ExportExcel = "/user/excel";
+                    this.DefaultConnKey = "default";
                     this.GOOGLE_MAP = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCr_2PaKJplCyvwN4q78lBkX3UBpfZ_HsY";
                     this.GOOGLE_MAP_PLACES = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=places";
                     this.GOOGLE_MAP_GEOMETRY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=geometry";
@@ -9186,7 +9190,9 @@ Bridge.assembly("Core", function ($asm, globals) {
             CostCenterId: null,
             TeamId: null,
             ContactId: null,
-            StateId: null
+            StateId: null,
+            OwnerUserIds: null,
+            OwnerRoleIds: null
         },
         ctors: {
             init: function () {
@@ -10565,9 +10571,9 @@ Bridge.assembly("Core", function ($asm, globals) {
 
     Bridge.define("Core.ViewModels.PatchUpdate", {
         props: {
+            ComId: null,
             Table: null,
             ConnKey: null,
-            Checksum: null,
             Changes: null
         }
     });
@@ -10611,7 +10617,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Core.ViewModels.SqlWrapper", {
+    Bridge.define("Core.ViewModels.SqlViewModel", {
         props: {
             SvcId: null,
             ComId: null,
@@ -10624,7 +10630,8 @@ Bridge.assembly("Core", function ($asm, globals) {
             GroupBy: null,
             Having: null,
             Count: false,
-            RawQuery: false
+            RawQuery: false,
+            FieldName: null
         }
     });
 
@@ -14878,7 +14885,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var fn = { };
                 var isFn = Core.Extensions.Utils.IsFunction(this.GuiInfo.PreQuery, fn);
                 var entity = isFn ? Bridge.toString(fn.v.call(this, this)) : "";
-                var submit = ($t = new Core.ViewModels.SqlWrapper(), $t.Entity = JSON.stringify(entity), $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Query = this.GuiInfo.Query, $t1.Signed = this.GuiInfo.Signed, $t1), $t);
+                var submit = ($t = new Core.ViewModels.SqlViewModel(), $t.Entity = JSON.stringify(entity), $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Query = this.GuiInfo.Query, $t1.Signed = this.GuiInfo.Signed, $t1), $t);
                 var dataTask = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Object), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.SqlReader, $t.Value = JSON.stringify(submit), $t));
                 Core.Clients.Client.ExecTask(System.Array.type(System.Object), dataTask, Bridge.fn.bind(this, function (data) {
                     if (Core.Extensions.IEnumerableExtensions.Nothing(System.Object, data)) {
@@ -15814,14 +15821,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    submitEntity, 
-                    orderBy, 
-                    basicCondition, 
-                    fnBtnCondition, 
-                    finalCon, 
-                    data, 
-                    $t, 
-                    $t1, 
+                    sql, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -15829,24 +15829,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
-                                        submitEntity = this._preQueryFn != null ? this._preQueryFn.call(null, this) : null;
-                                        orderBy = System.Linq.Enumerable.from(this.AdvSearchVM.OrderBy, Core.Models.OrderBy).any() ? Core.Extensions.IEnumerableExtensions.Combine$1(Core.Models.OrderBy, System.String, this.AdvSearchVM.OrderBy, function (x) {
-                                            var sortDirection = System.Nullable.eq(x.OrderbyDirectionId, Core.Enums.OrderbyDirection.ASC) ? "asc" : "desc";
-                                            return System.String.format("ds.{0} {1}", x.FieldName, sortDirection);
-
-
-
-
-                                        }) : null;
-                                        basicCondition = this.CalcFilterQuery(true);
-                                        fnBtnCondition = Core.Extensions.IEnumerableExtensions.Combine$1(Core.Models.Where, System.String, this.Wheres, function (x) {
-                                            return System.String.format("({0})", [x.FieldName]);
-                                        }, " and ");
-                                        finalCon = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(System.Array.init([basicCondition, fnBtnCondition], System.String), System.String).where(function (x) {
-                                            return !Core.Extensions.StringExt.IsNullOrWhiteSpace(x);
-                                        }), " and ");
-                                        data = ($t = new Core.ViewModels.SqlWrapper(), $t.Entity = submitEntity != null ? JSON.stringify(Bridge.unbox(submitEntity)) : null, $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Query = this.GuiInfo.Query, $t1.Signed = this.GuiInfo.Signed, $t1), $t.Paging = System.String.format("offset {0} rows\nfetch next {1} rows only", Bridge.box(skip, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(pageSize, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)), $t.OrderBy = ($t1 = orderBy, $t1 != null ? $t1 : (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.OrderBy) ? "ds.Id asc\n" : this.GuiInfo.OrderBy)), $t.Where = finalCon, $t.Count = true, $t);
-                                        $task1 = this.CustomQuery(JSON.stringify(data));
+                                        sql = this.GetSql(skip, pageSize);
+                                        $task1 = this.CustomQuery(JSON.stringify(sql));
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -15873,6 +15857,32 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                 $asyncBody();
                 return $tcs.task;
+            },
+            GetSql: function (skip, pageSize) {
+                var $t, $t1;
+                if (skip === void 0) { skip = null; }
+                if (pageSize === void 0) { pageSize = null; }
+                var submitEntity = this._preQueryFn != null ? this._preQueryFn.call(null, this) : null;
+                var orderBy = System.Linq.Enumerable.from(this.AdvSearchVM.OrderBy, Core.Models.OrderBy).any() ? Core.Extensions.IEnumerableExtensions.Combine$1(Core.Models.OrderBy, System.String, this.AdvSearchVM.OrderBy, function (x) {
+                    var sortDirection = System.Nullable.eq(x.OrderbyDirectionId, Core.Enums.OrderbyDirection.ASC) ? "asc" : "desc";
+                    return System.String.format("ds.{0} {1}", x.FieldName, sortDirection);
+
+
+
+
+                }) : null;
+                var basicCondition = this.CalcFilterQuery(true);
+                var fnBtnCondition = Core.Extensions.IEnumerableExtensions.Combine$1(Core.Models.Where, System.String, this.Wheres, function (x) {
+                    return System.String.format("({0})", [x.FieldName]);
+                }, " and ");
+                var finalCon = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(System.Array.init([basicCondition, fnBtnCondition], System.String), System.String).where(function (x) {
+                        return !Core.Extensions.StringExt.IsNullOrWhiteSpace(x);
+                    }), " and ");
+                var data = ($t = new Core.ViewModels.SqlViewModel(), $t.ComId = this.GuiInfo.Id, $t.Entity = submitEntity != null ? JSON.stringify(Bridge.unbox(submitEntity)) : null, $t.OrderBy = ($t1 = orderBy, $t1 != null ? $t1 : (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.OrderBy) ? "ds.Id asc\n" : this.GuiInfo.OrderBy)), $t.Where = finalCon, $t.Count = true, $t);
+                if (System.Nullable.hasValue(skip) && System.Nullable.hasValue(pageSize)) {
+                    data.Paging = System.String.format("offset {0} rows\nfetch next {1} rows only", Bridge.box(skip, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(pageSize, System.Int32, System.Nullable.toString, System.Nullable.getHashCode));
+                }
+                return data;
             },
             CustomQuery: function (submitEntity) {
                 var $step = 0,
@@ -20806,7 +20816,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this._hasRender = true;
                 var doc = document;
                 var meta = doc.head.children.token;
-                var submitEntity = ($t = new Core.ViewModels.SqlWrapper(), $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Signed = meta.content, $t1), $t.OrderBy = "ds.[Order] asc", $t);
+                var submitEntity = ($t = new Core.ViewModels.SqlViewModel(), $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Signed = meta.content, $t1), $t.OrderBy = "ds.[Order] asc", $t);
                 var startup = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = JSON.stringify(submitEntity), $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
                 var roles = Bridge.toArray(Core.Clients.Client.Token.RoleIds).join("\\");
                 Core.Clients.Client.ExecTask(System.Array.type(System.Array.type(System.Object)), startup, Bridge.fn.bind(this, function (res) {
@@ -25863,7 +25873,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         _preQueryFn = { };
                                         isFn = Core.Extensions.Utils.IsFunction(this.GuiInfo.PreQuery, _preQueryFn);
                                         submitEntity = _preQueryFn.v != null ? _preQueryFn.v.call(null, this) : null;
-                                        data = JSON.stringify(($t = new Core.ViewModels.SqlWrapper(), $t.Entity = submitEntity != null ? JSON.stringify(Bridge.unbox(submitEntity)) : null, $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Query = this.GuiInfo.Query, $t1.Signed = this.GuiInfo.Signed, $t1), $t.Paging = System.String.format("offset {0} rows\nfetch next {1} rows only", Bridge.box(skip, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(pageSize, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)), $t.OrderBy = Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.OrderBy) ? "ds.Id asc\n" : this.GuiInfo.OrderBy, $t.Where = System.String.format("charindex(N'{0}', {1}) >= 1", this.Value, Core.Components.EditableComponent.IdField), $t));
+                                        data = JSON.stringify(($t = new Core.ViewModels.SqlViewModel(), $t.Entity = submitEntity != null ? JSON.stringify(Bridge.unbox(submitEntity)) : null, $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Query = this.GuiInfo.Query, $t1.Signed = this.GuiInfo.Signed, $t1), $t.Paging = System.String.format("offset {0} rows\nfetch next {1} rows only", Bridge.box(skip, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(pageSize, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)), $t.OrderBy = Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.OrderBy) ? "ds.Id asc\n" : this.GuiInfo.OrderBy, $t.Where = System.String.format("charindex(N'{0}', {1}) >= 1", this.Value, Core.Components.EditableComponent.IdField), $t));
                                         $task1 = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = data, $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
                                         $step = 1;
                                         if ($task1.isCompleted()) {
@@ -32780,7 +32790,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                     $task1, 
                     $task2, 
                     $task3, 
-                    $taskResult3, 
                     $task4, 
                     $task5, 
                     $task6, 
@@ -32815,7 +32824,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         $task1.getAwaitedResult();
                                         com = function (_o1) {
                                             _o1.add("SearchEntry");
-                                            _o1.add("Dropdown");
                                             _o1.add("Select2");
                                             return _o1;
                                         }(new (System.Collections.Generic.List$1(System.String)).ctor());
@@ -32847,7 +32855,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     }
                                     case 4: {
                                         entity = rowData;
-                                        $task3 = new Core.Clients.Client.$ctor1(this.GuiInfo.Reference.Name).CreateAsync(System.Object, entity);
+                                        $task3 = rowSection.PatchUpdate();
                                         $step = 5;
                                         if ($task3.isCompleted()) {
                                             continue;
@@ -32856,12 +32864,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         return;
                                     }
                                     case 5: {
-                                        $taskResult3 = $task3.getAwaitedResult();
-                                        rs = $taskResult3;
-                                        Core.Extensions.ReflectionExt.CopyPropFrom$1(rowSection.Entity, rs);
-                                        if (Bridge.referenceEquals(this.GuiInfo.ComponentType, "VirtualGrid")) {
-                                            this.CacheData.add(rs);
-                                        }
+                                        $task3.getAwaitedResult();
                                         this.Dirty = false;
                                         $step = 7;
                                         continue;
@@ -35552,24 +35555,19 @@ Bridge.assembly("Core", function ($asm, globals) {
                     $task5, 
                     $taskResult5, 
                     $task6, 
-                    $taskResult6, 
-                    $task7, 
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    pathModel, 
-                    ignoreSync, 
-                    header, 
-                    rs, 
+                    patchModel, 
+                    $t, 
                     $async_e, 
                     arr, 
                     changing, 
-                    $t, 
                     $async_e1, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
                             for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18], $step);
+                                $step = System.Array.min([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], $step);
                                 switch ($step) {
                                     case 0: {
                                         if (noEvent === void 0) { noEvent = false; }
@@ -35577,8 +35575,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             $tcs.setResult(null);
                                             return;
                                         }
-                                        pathModel = this.GetPathEntity();
-                                        $task1 = Core.Components.Extensions.ComponentExt.DispatchCustomEventAsync(this, this.GuiInfo.Events, Core.Enums.CustomEventType.BeforePatchUpdate, [this.Entity, pathModel, this]);
+                                        patchModel = this.GetPatchEntity();
+                                        $task1 = Core.Components.Extensions.ComponentExt.DispatchCustomEventAsync(this, this.GuiInfo.Events, Core.Enums.CustomEventType.BeforePatchUpdate, [this.Entity, patchModel, this]);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -35588,7 +35586,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     }
                                     case 1: {
                                         $task1.getAwaitedResult();
-                                        if (Core.Extensions.StringExt.IsNullOrWhiteSpace(System.Linq.Enumerable.from(pathModel.Changes, Core.ViewModels.PatchUpdateDetail).firstOrDefault(function (x) {
+                                        if (Core.Extensions.StringExt.IsNullOrWhiteSpace(System.Linq.Enumerable.from(patchModel.Changes, Core.ViewModels.PatchUpdateDetail).firstOrDefault(function (x) {
                                             return Bridge.referenceEquals(x.Field, Core.Components.EditableComponent.IdField);
                                         }, null).Value) && !noEvent) {
                                             $step = 2;
@@ -35598,7 +35596,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         continue;
                                     }
                                     case 2: {
-                                        $task2 = Core.Components.Extensions.ComponentExt.DispatchCustomEventAsync(this, this.GuiInfo.Events, Core.Enums.CustomEventType.AfterPatchUpdate, [this.Entity, pathModel, this]);
+                                        $task2 = Core.Components.Extensions.ComponentExt.DispatchCustomEventAsync(this, this.GuiInfo.Events, Core.Enums.CustomEventType.AfterPatchUpdate, [this.Entity, patchModel, this]);
                                         $step = 3;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -35612,7 +35610,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         return;
                                     }
                                     case 4: {
-                                        if (pathModel == null && !noEvent) {
+                                        if (patchModel == null && !noEvent) {
                                             $step = 5;
                                             continue;
                                         } 
@@ -35620,7 +35618,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         continue;
                                     }
                                     case 5: {
-                                        $task3 = Core.Components.Extensions.ComponentExt.DispatchCustomEventAsync(this, this.GuiInfo.Events, Core.Enums.CustomEventType.AfterPatchUpdate, [this.Entity, pathModel, this]);
+                                        $task3 = Core.Components.Extensions.ComponentExt.DispatchCustomEventAsync(this, this.GuiInfo.Events, Core.Enums.CustomEventType.AfterPatchUpdate, [this.Entity, patchModel, this]);
                                         $step = 6;
                                         if ($task3.isCompleted()) {
                                             continue;
@@ -35634,22 +35632,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         return;
                                     }
                                     case 7: {
-                                        this.lastpathModel = pathModel;
-                                        ignoreSync = "false";
-                                        if (pathModel.Changes.Count === 2) {
-                                            header = System.Linq.Enumerable.from(this.ListViewSection.ListView.BasicHeader, Core.Models.Component).firstOrDefault(function (x) {
-                                                return Bridge.referenceEquals(x.FieldName, System.Linq.Enumerable.from(pathModel.Changes, Core.ViewModels.PatchUpdateDetail).firstOrDefault(null, null).Field) && x.Editable;
-                                            }, null);
-                                            if (header != null && header.IgnoreSync) {
-                                                ignoreSync = "true";
-                                            }
-                                        }
-                                        rs = this.Entity;
+                                        this.lastpathModel = patchModel;
                                         $step = 8;
                                         continue;
                                     }
                                     case 8: {
-                                        $task4 = new Core.Clients.Client.$ctor1(this.GuiInfo.Reference.Name).PatchAsync(System.Object, pathModel, "", System.String.format("&disableTrigger={0}", [ignoreSync]), false, false);
+                                        $task4 = Core.Clients.Client.Instance.SubmitAsync(System.Object, ($t = new Core.Clients.XHRWrapper(), $t.Url = "/v2/user", $t.Value = JSON.stringify(patchModel), $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.PATCH, $t));
                                         $step = 9;
                                         if ($task4.isCompleted()) {
                                             continue;
@@ -35659,90 +35647,58 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     }
                                     case 9: {
                                         $taskResult4 = $task4.getAwaitedResult();
-                                        rs = $taskResult4;
-                                        $step = 12;
+                                        $step = 11;
                                         continue;
                                     }
                                     case 10: {
-                                        $task5 = new Core.Clients.Client.$ctor1(this.GuiInfo.Reference.Name).GetList(System.Object, System.String.format("?$filter=Id eq '{0}'", [this.Entity[Core.Components.EditableComponent.IdField]]));
-                                        $step = 11;
-                                        if ($task5.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task5.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 11: {
-                                        $taskResult5 = $task5.getAwaitedResult();
-                                        rs = System.Linq.Enumerable.from(($taskResult5).Value, System.Object).firstOrDefault(null, null);
-                                        Core.Extensions.ReflectionExt.CopyPropFrom$1(this.Entity, rs);
-                                        this.UpdateView();
+                                        Core.Extensions.Toast.Warning("Update row was not succeded");
                                         $tcs.setResult(null);
                                         return;
                                         $async_e = null;
-                                        $step = 12;
+                                        $step = 11;
                                         continue;
                                     }
-                                    case 12: {
-                                        if (Bridge.referenceEquals(this.GuiInfo.ComponentType, "VirtualGrid")) {
-                                            Core.Extensions.ReflectionExt.CopyPropFrom$1(System.Linq.Enumerable.from(this.ListViewSection.ListView.CacheData, System.Object).firstOrDefault(function (x) {
-                                                return Bridge.referenceEquals(x[Core.Components.EditableComponent.IdField], rs[Core.Components.EditableComponent.IdField]);
-                                            }, null), rs);
-                                        }
-                                        Core.Extensions.ReflectionExt.CopyPropFrom$1(this.Entity, rs);
+                                    case 11: {
                                         this.EmptyRow = false;
                                         arr = System.Linq.Enumerable.from(this.FilterChildren(Core.Components.EditableComponent, function (x) {
                                             return !x.Dirty || Core.Extensions.StringExt.IsNullOrWhiteSpace(x.GetValueText());
                                         }), Core.Components.EditableComponent).select(function (x) {
                                             return x.GuiInfo.FieldName;
                                         }).ToArray(System.String);
-                                        this.UpdateView$1(true, arr);
                                         changing = this.BuildTextHistory().toString();
                                         if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(changing)) {
-                                            $step = 13;
+                                            $step = 12;
                                             continue;
                                         } 
-                                        $step = 15;
+                                        $step = 14;
                                         continue;
                                     }
+                                    case 12: {
+                                        $task5 = new Core.Clients.Client.$ctor1("History").CreateAsync(Core.Models.History, ($t = new Core.Models.History(), $t.ReasonOfChange = "Auto update", $t.TextHistory = Bridge.toString(changing), $t.RecordId = this.EntityId, $t.EntityId = Core.Extensions.Utils.GetEntity(this.GuiInfo.RefName).Id, $t));
+                                        $step = 13;
+                                        if ($task5.isCompleted()) {
+                                            continue;
+                                        }
+                                        $task5.continue($asyncBody);
+                                        return;
+                                    }
                                     case 13: {
-                                        $task6 = new Core.Clients.Client.$ctor1("History").CreateAsync(Core.Models.History, ($t = new Core.Models.History(), $t.ReasonOfChange = "Auto update", $t.TextHistory = Bridge.toString(changing), $t.RecordId = this.EntityId, $t.EntityId = Core.Extensions.Utils.GetEntity(this.GuiInfo.RefName).Id, $t));
+                                        $taskResult5 = $task5.getAwaitedResult();
                                         $step = 14;
+                                        continue;
+                                    }
+                                    case 14: {
+                                        this.Dirty = false;
+                                        $task6 = Core.Components.Extensions.ComponentExt.DispatchCustomEventAsync(this, this.GuiInfo.Events, Core.Enums.CustomEventType.AfterPatchUpdate, [this.Entity, patchModel, this]);
+                                        $step = 15;
                                         if ($task6.isCompleted()) {
                                             continue;
                                         }
                                         $task6.continue($asyncBody);
                                         return;
                                     }
-                                    case 14: {
-                                        $taskResult6 = $task6.getAwaitedResult();
-                                        $step = 15;
-                                        continue;
-                                    }
                                     case 15: {
-                                        this.Dirty = false;
-                                        if (rs != null && !noEvent) {
-                                            $step = 16;
-                                            continue;
-                                        } 
-                                        $step = 18;
-                                        continue;
-                                    }
-                                    case 16: {
-                                        $task7 = Core.Components.Extensions.ComponentExt.DispatchCustomEventAsync(this, this.GuiInfo.Events, Core.Enums.CustomEventType.AfterPatchUpdate, [this.Entity, pathModel, this]);
-                                        $step = 17;
-                                        if ($task7.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task7.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 17: {
-                                        $task7.getAwaitedResult();
-                                        $step = 18;
-                                        continue;
-                                    }
-                                    case 18: {
+                                        $task6.getAwaitedResult();
                                         $tcs.setResult(null);
                                         return;
                                     }
@@ -35766,8 +35722,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            GetPathEntity: function () {
-                var $t;
+            GetPatchEntity: function () {
+                var $t, $t1, $t2, $t3, $t4;
                 var details = System.Linq.Enumerable.from(this.Children, Core.Components.EditableComponent).where(function (child) {
                         var editable;
                         return ((editable = child)) != null && editable.Dirty;
@@ -35782,8 +35738,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                     var patch = ($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = child.GuiInfo.FieldName, $t.OldVal = (child.OldValue != null && Core.Extensions.ReflectionExt.IsDate(propType)) ? Core.Extensions.DateTimeExt.DateConverter(Bridge.toString(child.OldValue)) : ($t1 = child.OldValue) != null ? Bridge.toString($t1) : null, $t.Value = (value != null && Core.Extensions.ReflectionExt.IsDate(propType)) ? Core.Extensions.DateTimeExt.DateConverter(Bridge.toString(value)) : !this.EditForm.Feature.IgnoreEncode ? value != null ? Core.Extensions.Utils.EncodeSpecialChar(Bridge.toString(value).trim()) : null : value != null ? Bridge.toString(value).trim() : null, $t);
                     return System.Array.init([patch], Core.ViewModels.PatchUpdateDetail);
                 })).toList(Core.ViewModels.PatchUpdateDetail);
-                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Bridge.toString(this.EntityId), $t));
-                return ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = details, $t);
+                details.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = ($t1 = (($t2 = this.EntityId) != null ? Bridge.toString($t2) : null), $t1 != null ? $t1 : System.Id.op_Implicit$7(System.Id.NewGuid())), $t));
+                if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(this.ListView.GuiInfo.IdField)) {
+                    var parentId = ($t = this.ListView.Entity[this.ListView.GuiInfo.IdField]) != null ? Bridge.toString($t) : null;
+                    details.add(($t3 = new Core.ViewModels.PatchUpdateDetail(), $t3.Field = this.ListView.GuiInfo.IdField, $t3.Value = parentId, $t3.OldVal = parentId, $t3));
+                }
+                return ($t3 = new Core.ViewModels.PatchUpdate(), $t3.Changes = details, $t3.ComId = this.ListView.GuiInfo.Id, $t3.Table = this.ListView.GuiInfo.RefName, $t3.ConnKey = ($t4 = this.ListView.GuiInfo.ConnKey, $t4 != null ? $t4 : Core.Extensions.Utils.DefaultConnKey), $t3);
             },
             RowDblClick: function (e) {
                 var $step = 0,
@@ -40458,18 +40418,18 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             GetUserSetting: function () {
                 var $t, $t1;
-                return Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.UserSvc, $t.Value = ($t1 = new Core.ViewModels.SqlWrapper(), $t1.ComId = "GridView", $t1.Action = "GetUserSettingByListViewId", $t1.Entity = JSON.stringify(new $asm.$AnonymousType$13(this.ParentListView.GuiInfo.Id)), $t1), $t.Method = Core.Enums.HttpMethod.POST, $t));
+                return Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.UserSvc, $t.Value = ($t1 = new Core.ViewModels.SqlViewModel(), $t1.ComId = "GridView", $t1.Action = "GetUserSettingByListViewId", $t1.Entity = JSON.stringify(new $asm.$AnonymousType$13(this.ParentListView.GuiInfo.Id)), $t1), $t.Method = Core.Enums.HttpMethod.POST, $t));
             },
             UserSettingLoaded: function (res) {
                 var $t, $t1, $t2;
                 this._userSetting = res[System.Array.index(0, res)].length > 0 ? ($t = res[System.Array.index(0, res)])[System.Array.index(0, $t)] : null;
                 if (this._userSetting != null) {
-                    var userSettingList = Newtonsoft.Json.JsonConvert.DeserializeObject(Bridge.as(this._userSetting.Value, System.String), System.Collections.Generic.List$1(System.Object));
-                    var userSettings = ($t1 = System.Object, System.Linq.Enumerable.from(userSettingList, $t1).toDictionary(function (x) {
+                    this._headers = Newtonsoft.Json.JsonConvert.DeserializeObject(Bridge.as(this._userSetting.Value, System.String), System.Collections.Generic.List$1(Core.Models.Component));
+                    var userSettings = ($t1 = Core.Models.Component, System.Linq.Enumerable.from(this._headers, $t1).toDictionary(function (x) {
                             return x.Id;
-                        }, null, System.Object, $t1));
+                        }, null, System.String, $t1));
                     this._headers.ForEach(function (x) {
-                        var current = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.Object, System.Object, userSettings, x.Id);
+                        var current = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.String, Core.Models.Component, userSettings, x.Id);
                         if (current != null) {
                             x.IsExport = current.IsExport;
                             x.OrderExport = current.OrderExport;
@@ -40548,17 +40508,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    usrSettingTask, 
                     $t, 
-                    orderbyList, 
-                    finalFilter, 
-                    k, 
-                    filter, 
-                    filter1, 
-                    wh, 
-                    stringWh, 
-                    pre, 
-                    fn, 
+                    sql, 
                     path, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
@@ -40568,7 +40519,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 switch ($step) {
                                     case 0: {
                                         Core.Extensions.Toast.Success("\u0110ang xu\u1ea5t excel");
-                                        usrSettingTask = this.GetUserSetting();
                                         if (this._userSetting == null) {
                                             $step = 1;
                                             continue;
@@ -40608,48 +40558,14 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         continue;
                                     }
                                     case 5: {
-                                        orderbyList = System.Linq.Enumerable.from(this.ParentListView.AdvSearchVM.OrderBy, Core.Models.OrderBy).select(Bridge.fn.bind(this, function (orderby) {
-                                            return System.String.format("[{0}].{1} {2}", this.ParentListView.GuiInfo.RefName, orderby.FieldName, System.Nullable.toString(orderby.OrderbyDirectionId, System.Enum.toStringFn(Core.Enums.OrderbyDirection)).toLowerCase());
-                                        }));
-                                        finalFilter = "";
-                                        if (Core.Extensions.IEnumerableExtensions.HasElement(System.String, orderbyList)) {
-                                            finalFilter = Core.Extensions.IEnumerableExtensions.Combine(System.String, orderbyList);
-                                        }
-                                        if (Core.Extensions.StringExt.IsNullOrWhiteSpace(finalFilter)) {
-                                            finalFilter = Core.Extensions.OdataExt.GetClausePart(this.ParentListView.FormattedDataSource, Core.Extensions.OdataExt.OrderByKeyword);
-                                            if (System.String.contains(finalFilter,",")) {
-                                                k = ($t = System.String, System.Linq.Enumerable.from(finalFilter.split(","), $t).toList($t));
-                                                finalFilter = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(k, System.String).select(Bridge.fn.bind(this, function (x) {
-                                                    return System.String.format("[{0}].{1}", this.ParentListView.GuiInfo.RefName, x);
-                                                })));
-                                            } else {
-                                                finalFilter = System.String.format("[{0}].{1}", this.ParentListView.GuiInfo.RefName, finalFilter);
-                                            }
-                                        }
-                                        filter = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).where(function (x) {
-                                            return !x.Group;
+                                        sql = this.ParentListView.GetSql();
+                                        sql.Count = false;
+                                        sql.FieldName = System.Linq.Enumerable.from(this._headers, Core.Models.Component).where(function (x) {
+                                            return x.IsExport;
                                         }).select(function (x) {
                                             return x.FieldName;
-                                        }), " and ");
-                                        filter1 = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).where(function (x) {
-                                            return x.Group;
-                                        }).select(function (x) {
-                                            return x.FieldName;
-                                        }), " or ");
-                                        wh = new (System.Collections.Generic.List$1(System.String)).ctor();
-                                        if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter)) {
-                                            wh.add(System.String.format("({0})", [filter]));
-                                        }
-                                        if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter1)) {
-                                            wh.add(System.String.format("({0})", [filter1]));
-                                        }
-                                        stringWh = System.Linq.Enumerable.from(wh, System.String).any() ? System.String.format("({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.String, wh, " and ")]) : "";
-                                        pre = this.ParentListView.GuiInfo.PreQuery;
-                                        fn = { };
-                                        if (pre != null && Core.Extensions.Utils.IsFunction(pre, fn)) {
-                                            pre = Bridge.toString(fn.v.call(this, this, this.EditForm));
-                                        }
-                                        $task3 = new Core.Clients.Client.$ctor1(this.ParentListView.GuiInfo.RefName).GetAsync(System.String, (System.String.format("/ExportExcel?componentId='{0}'", [this.ParentListView.GuiInfo.Id]) || "") + (System.String.format("&sql={0}", [this.ParentListView.Sql]) || "") + (System.String.format("&join={0}", [this.ParentListView.GuiInfo.JoinTable]) || "") + (System.String.format("&showNull={0}", [Bridge.box(this.ParentListView.GuiInfo.ShowNull, System.Boolean, System.Boolean.toString)]) || "") + (System.String.format("&where={0} {1}", stringWh, (Core.Extensions.StringExt.IsNullOrWhiteSpace(pre) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).any() ? " and " : ""), pre))) || "") + (System.String.format("&custom=true&featureId={0}&orderby={1}", this.Parent.EditForm.Feature.Id, finalFilter) || ""));
+                                        }).toList(System.String);
+                                        $task3 = Core.Clients.Client.Instance.SubmitAsync(System.String, ($t = new Core.Clients.XHRWrapper(), $t.Value = JSON.stringify(sql), $t.Url = Core.Extensions.Utils.ExportExcel, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
                                         $step = 6;
                                         if ($task3.isCompleted()) {
                                             continue;
@@ -40660,6 +40576,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     case 6: {
                                         $taskResult3 = $task3.getAwaitedResult();
                                         path = $taskResult3;
+
                                         Core.Clients.Client.Download(System.String.format("/excel/Download/{0}", [path]));
                                         Core.Extensions.Toast.Success("Xu\u1ea5t file th\u00e0nh c\u00f4ng");
                                         $tcs.setResult(null);
@@ -40688,11 +40605,11 @@ Bridge.assembly("Core", function ($asm, globals) {
                         _o1.add(($t1 = new Core.ViewModels.PatchUpdateDetail(), $t1.Field = "UserId", $t1.Value = Core.Clients.Client.Token.UserId, $t1));
                         _o1.add(($t1 = new Core.ViewModels.PatchUpdateDetail(), $t1.Field = "Value", $t1.Value = Newtonsoft.Json.JsonConvert.SerializeObject(this._headers), $t1));
                         return _o1;
-                    })(new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor()), $t.Table = "UserSetting", $t.ConnKey = ($t1 = this.ParentListView.GuiInfo.ConnKey, $t1 != null ? $t1 : "default"), $t);
+                    })(new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor()), $t.ComId = this.ParentListView.GuiInfo.Id, $t.Table = "UserSetting", $t.ConnKey = ($t1 = this.ParentListView.GuiInfo.ConnKey, $t1 != null ? $t1 : Core.Extensions.Utils.DefaultConnKey), $t);
                 if (id != null) {
                     patch.Changes.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Components.EditableComponent.IdField, $t.Value = id, $t));
                 }
-                return ($t = new Core.Clients.XHRWrapper(), $t.Url = "/v2/user", $t.Value = Newtonsoft.Json.JsonConvert.SerializeObject(patch), $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.PATCH, $t);
+                return ($t = new Core.Clients.XHRWrapper(), $t.Url = "/v2/user", $t.Value = JSON.stringify(patch), $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.PATCH, $t);
             }
         }
     });
