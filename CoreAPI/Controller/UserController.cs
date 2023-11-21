@@ -1,15 +1,11 @@
 ﻿using Core.Exceptions;
 using Core.Extensions;
 using Core.Models;
-using Core.Services;
 using Core.ViewModels;
-using Hangfire;
-using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
-using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Core.Controllers

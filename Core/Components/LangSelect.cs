@@ -3,7 +3,6 @@ using Core.Clients;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;

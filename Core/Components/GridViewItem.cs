@@ -1,9 +1,7 @@
 ﻿using Bridge.Html5;
-using Core.Components.Extensions;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
-using System;
 using ElementType = Core.MVVM.ElementType;
 
 namespace Core.Components

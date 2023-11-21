@@ -516,7 +516,7 @@ namespace Core.Services
             }
             else
             {
-                var origin = @$"select t.* from {vm.Table} as t where t.Id = '{id}'";
+                var origin = @$"select t.* from [{vm.Table}] as t where t.Id = '{id}'";
                 var ds = await ReadDataSet(origin, connStr);
                 var originRow = ds.Count() > 1 ? ds.ElementAt(0).FirstOrDefault() : null as Dictionary<string, object>;
                 var ownerUserIds = originRow.GetValueOrDefault("OwnerUserIds") as string ?? string.Empty;

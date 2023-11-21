@@ -5,12 +5,11 @@ using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Core.Components.Extensions
@@ -253,29 +252,49 @@ namespace Core.Components.Extensions
             return tcs.Task;
         }
 
-        public static async Task<Feature> LoadFeatureByName(string featureName, bool publicForm = false, bool config = false)
+        public static Task<Feature> LoadFeatureByName(string featureName, bool publicForm = false, bool config = false)
         {
+            var tcs = new TaskCompletionSource<Feature>();
 #if RELEASE
             if (FeatureMap.ContainsKey(featureName))
             {
-                return FeatureMap[featureName];
+                tcs.SetResult(FeatureMap[featureName]);
+                return tcs.Task;
             }
 #endif
-            var prefix = publicForm ? "/Public/" : string.Empty;
-            var featureOdata = new Client(nameof(Feature), typeof(User).Namespace, config).FirstOrDefaultAsync<Feature>(
-                $"{prefix}?$filter=Active eq true and Name eq '{featureName}'", addTenant: true);
-            var policyOdata = publicForm ? Task.FromResult(new List<FeaturePolicy>())
-                : new Client(nameof(FeaturePolicy), typeof(User).Namespace, config).GetRawList<FeaturePolicy>(
-                $"?$filter=Active eq true and Feature/Name eq '{featureName}'");
-            var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace, config).GetRawList<ComponentGroup>(
-                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name,Namespace))" +
-                $"&$filter=Active eq true and Feature/Name eq '{featureName}'", addTenant: true);
-            await Task.WhenAll(featureOdata, policyOdata, componentGroupTask);
-            var feature = featureOdata.Result;
-            feature.FeaturePolicy = policyOdata.Result;
-            feature.ComponentGroup = componentGroupTask.Result;
-            FeatureMap.TryAdd(featureName, feature);
-            return feature;
+            var featureTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper {
+                Value = JSON.Stringify(new SqlViewModel {
+                    ComId = "Feature",
+                    Action = "GetByName",
+                    Entity = JSON.Stringify(new { Name = featureName })
+                }),
+                Url = Utils.UserSvc,
+                IsRawString = true,
+                Method = HttpMethod.POST
+            });
+            Client.ExecTask(featureTask, ds => {
+                if (ds.Nothing() || ds[0].Nothing()) {
+                    tcs.TrySetResult(null);
+                }
+                var feature = ds[0][0].CastProp<Feature>();
+                var policies = ds[1].Select(x => x.CastProp<FeaturePolicy>()).ToArray();
+                var groups = ds[2].Select(x => x.CastProp<ComponentGroup>()).ToArray();
+                var components = ds[3].Select(x => x.CastProp<Component>()).ToArray();
+                if (policies.Nothing() || groups.Nothing() || components.Nothing()) {
+                    tcs.TrySetResult(null);
+                    return;
+                }
+                var groupMap = groups.DistinctBy(x => x.Id).ToDictionary(x => x.Id);
+                components.ForEach(com => {
+                    var g = groupMap.GetValueOrDefault(com.ComponentGroupId);
+                    if (!g.Component.Contains(com)) g.Component.Add(com);
+                });
+                feature.ComponentGroup = groups;
+                feature.FeaturePolicy = policies;
+                tcs.TrySetResult(feature);
+            });
+            
+            return tcs.Task;
         }
 
         public static async Task<Feature> LoadFeatureByNameOrViewClass(string nameOrViewClass)

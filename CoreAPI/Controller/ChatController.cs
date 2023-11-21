@@ -1,5 +1,4 @@
 ﻿using Core.Extensions;
-using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;

@@ -1,7 +1,6 @@
 ﻿using Core.Enums;
 using Core.Extensions;
 using Core.ViewModels;
-using Hangfire;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

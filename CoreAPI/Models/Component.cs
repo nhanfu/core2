@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Core.Models
+﻿namespace Core.Models
 {
     public partial class Component
     {

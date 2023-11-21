@@ -1,7 +1,6 @@
 ﻿using Core.Enums;
 using Core.Extensions;
 using Core.ViewModels;
-using Hangfire;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +9,6 @@ using Newtonsoft.Json;
 using System.Data.SqlClient;
 using Core.Exceptions;
 using Core.Models;
-using Core.Services;
 
 namespace Core.Controllers
 {

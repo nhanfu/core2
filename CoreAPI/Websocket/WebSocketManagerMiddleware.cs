@@ -1,11 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Linq;
-using System.Net.WebSockets;
+﻿using System.Net.WebSockets;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 using Core.Extensions;
 
 namespace Core.Websocket

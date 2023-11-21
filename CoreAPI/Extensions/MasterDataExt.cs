@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Extensions
+﻿namespace Core.Extensions
 {
     public static class MasterDataExt
     {

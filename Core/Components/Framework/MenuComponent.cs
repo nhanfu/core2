@@ -448,6 +448,7 @@ namespace Core.Components.Framework
             var featureTask = ComponentExt.LoadFeatureByName(feature.Name);
             Client.ExecTask(featureTask, (f) =>
             {
+                if (f is null) return;
                 EditForm instance = null;
                 instance = new TabEditor(f.EntityName);
                 if (!f.Script.IsNullOrWhiteSpace())

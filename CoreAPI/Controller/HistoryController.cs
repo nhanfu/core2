@@ -1,7 +1,6 @@
 ﻿using Core.Extensions;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Core.Models;
 
 namespace Core.Controllers

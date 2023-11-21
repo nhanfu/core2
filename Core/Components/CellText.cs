@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TextAlign = Core.Enums.TextAlign;
-using Core.Enums;
 using Core.ViewModels;
 
 namespace Core.Components
@@ -149,7 +148,9 @@ namespace Core.Components
             var dataTask = Client.Instance.SubmitAsync<object[]>(new XHRWrapper
             {
                 Url = Utils.ComQuery,
+                IsRawString = true,
                 Value = JSON.Stringify(submit),
+                Method = Enums.HttpMethod.POST
             });
             Client.ExecTask(dataTask, data =>
             {

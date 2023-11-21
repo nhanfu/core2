@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Core.ViewModels
+﻿namespace Core.ViewModels
 {
     public class ConfigEmailVM
     {

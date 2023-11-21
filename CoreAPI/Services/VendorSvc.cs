@@ -1,6 +1,4 @@
 ﻿using Core.Extensions;
-using System;
-using System.Linq;
 using Core.Models;
 
 namespace Core.Services

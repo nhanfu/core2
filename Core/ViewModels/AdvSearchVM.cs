@@ -1,5 +1,4 @@
-﻿using Core.Models;
-using Core.Enums;
+﻿using Core.Enums;
 using System.Collections.Generic;
 
 namespace Core.Models

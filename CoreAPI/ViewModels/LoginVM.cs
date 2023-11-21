@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Core.ViewModels
+﻿namespace Core.ViewModels
 {
     public class LoginVM
     {

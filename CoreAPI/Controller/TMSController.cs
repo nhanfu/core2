@@ -1,18 +1,10 @@
-﻿using ClosedXML.Excel;
-using Core.Extensions;
+﻿using Core.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq.Dynamic.Core;
-using System.Text.RegularExpressions;
-using Tenray.Topaz;
-using Tenray.Topaz.API;
-using Core.Exceptions;
 using Core.Models;
-using Core.ViewModels;
 
 namespace Core.Controllers
 {

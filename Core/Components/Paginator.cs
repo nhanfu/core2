@@ -1,12 +1,9 @@
 ﻿using Bridge.Html5;
 using Core.Models;
-using Core.Extensions;
 using Core.MVVM;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
-using Core.Clients;
 
 namespace Core.Components
 {

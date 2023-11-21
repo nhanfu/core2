@@ -8,8 +8,6 @@ using Core.MVVM;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Bridge;
-using System.Text.RegularExpressions;
 using System.Linq;
 
 namespace Core.Components

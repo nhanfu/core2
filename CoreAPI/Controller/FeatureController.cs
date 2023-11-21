@@ -1,6 +1,5 @@
 ﻿using Core.Extensions;
 using Core.Models;
-using DocumentFormat.OpenXml.Vml.Office;
 using HtmlAgilityPack;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Authorization;
@@ -8,11 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Utilities;
-using System.Buffers;
 using System.Data.SqlClient;
-using System.IO.Compression;
 using System.Linq.Dynamic.Core;
 using System.Net;
 using System.Text;
@@ -33,8 +28,8 @@ namespace Core.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("/{system?}/{tenant?}/{area?}/{env?}/{feature?}")]
-        public async Task Index([FromRoute] string system = "core", [FromRoute] string tenant = "system",
+        [HttpGet("/{tenant?}/{area?}/{env?}/{feature?}")]
+        public async Task Index([FromRoute] string tenant = "system",
             [FromRoute] string area = "admin", [FromRoute] string env = "test")
         {
             if (_userSvc.TenantCode != null && _userSvc.TenantCode != tenant)
@@ -48,7 +43,7 @@ namespace Core.Controllers
                 return;
             }
             var htmlMimeType = Utils.GetMimeType("html");
-            var key = $"{system}_{tenant}_{env}_{area}";
+            var key = $"{tenant}_{env}_{area}";
 #if RELEASE
             var cache = await _cached.GetStringAsync(key);
             if (cache != null)
@@ -68,10 +63,10 @@ namespace Core.Controllers
             var page = await db.TenantPage.AsNoTracking().FirstOrDefaultAsync(x =>
                 x.TenantEnvId == tenantEnv.Id && x.Area == area);
             await _cached.SetStringAsync(key, JsonConvert.SerializeObject(page));
-            await WriteTemplateAsync(Response, page, env, system, tenant);
+            await WriteTemplateAsync(Response, page, env: env, tenant: tenant);
         }
 
-        private async Task WriteTemplateAsync(HttpResponse reponse, TenantPage page, string env, string system, string tenant)
+        private async Task WriteTemplateAsync(HttpResponse reponse, TenantPage page, string env, string tenant)
         {
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(page.Template);

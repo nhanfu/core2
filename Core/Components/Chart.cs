@@ -3,6 +3,7 @@ using Core.Clients;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
@@ -54,10 +55,10 @@ namespace Core.Components
             {
                 var isPreQueryFn = Utils.IsFunction(GuiInfo.PreQuery, out var _preQuery);
                 var submitEntity = isPreQueryFn ? _preQuery.Call(null, this) : null;
-                var entity = JSON.Stringify(new
+                var entity = JSON.Stringify(new SqlViewModel
                 {
                     Entity = isPreQueryFn ? JSON.Stringify(submitEntity) : null,
-                    Component = XHRWrapper.UnboxValue(new { GuiInfo.Query, GuiInfo.Signed }),
+                    ComId = GuiInfo.Id,
                 });
                 Data = await Client.Instance.SubmitAsync<object[]>(new XHRWrapper
                 {

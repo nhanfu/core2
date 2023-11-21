@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.ViewModels
+﻿namespace Core.ViewModels
 {
     public class FileUpload
     {

@@ -1923,7 +1923,7 @@ namespace Core.Components
             {
                 return;
             }
-            var emptyRowData = entityR ?? EmptyRowData();
+            var emptyRowData = entityR ?? new object();
             if (!GuiInfo.DefaultVal.IsNullOrWhiteSpace())
             {
                 var json = string.Empty;
@@ -1948,12 +1948,6 @@ namespace Core.Components
             {
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterEmptyRowCreated, emptyRow);
             });
-        }
-
-        private object EmptyRowData()
-        {
-            var type = Type.GetType((GuiInfo.Reference.Namespace ?? Client.ModelNamespace) + GuiInfo.RefName) ?? typeof(object);
-            return Activator.CreateInstance(type);
         }
 
         protected override List<Component> FilterColumns(List<Component> Component)

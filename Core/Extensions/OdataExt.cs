@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Core.Extensions
+﻿namespace Core.Extensions
 {
     public static class OdataExt
     {

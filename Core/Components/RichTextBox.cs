@@ -4,7 +4,6 @@ using Core.Clients;
 using Core.Extensions;
 using Core.MVVM;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Core.Components
