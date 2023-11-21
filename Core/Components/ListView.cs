@@ -246,7 +246,7 @@ namespace Core.Components
             var ds = await Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = submitEntity,
-                Url = Utils.SqlReader,
+                Url = Utils.ComQuery,
                 IsRawString = true,
                 Method = HttpMethod.POST
             });
@@ -608,7 +608,7 @@ namespace Core.Components
             var userSettings = userSetting.ToDictionary(x => x.Id);
             sysSetting.ForEach(x =>
             {
-                var current = userSettings.GetValueOrDefault(x.ActId ?? x.Id);
+                var current = userSettings.GetValueOrDefault(x.Id);
                 if (current != null)
                 {
                     x.Width = current.Width;

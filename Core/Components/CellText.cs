@@ -144,11 +144,11 @@ namespace Core.Components
             var submit = new SqlViewModel
             {
                 Entity = JSON.Stringify(entity),
-                Component = new SignedCom { Query = GuiInfo.Query, Signed = GuiInfo.Signed }
+                ComId = GuiInfo.Id
             };
             var dataTask = Client.Instance.SubmitAsync<object[]>(new XHRWrapper
             {
-                Url = Utils.SqlReader,
+                Url = Utils.ComQuery,
                 Value = JSON.Stringify(submit),
             });
             Client.ExecTask(dataTask, data =>

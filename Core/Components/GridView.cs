@@ -2651,7 +2651,7 @@ namespace Core.Components
             var ds = await Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = submitEntity,
-                Url = Utils.SqlReader,
+                Url = Utils.ComQuery,
                 IsRawString = true,
                 Method = HttpMethod.POST
             });

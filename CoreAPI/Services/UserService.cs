@@ -39,7 +39,6 @@ namespace Core.Services
         public string VendorId { get; set; }
         public string Env { get; set; }
         public string TenantCode { get; set; }
-        public string System { get; set; }
         public List<string> AllRoleIds { get; set; }
         public List<string> RoleIds { get; set; }
 
@@ -69,8 +68,7 @@ namespace Core.Services
             RoleIds = claims.Where(x => x.Type == ClaimTypes.Actor).Select(x => x.Value).Where(x => x != null).ToList();
             VendorId = claims.FirstOrDefault(x => x.Type == ClaimTypes.GroupSid)?.Value;
             TenantCode = claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimaryGroupSid)?.Value.ToUpper();
-            System = claims.FirstOrDefault(x => x.Type == ClaimTypes.System)?.Value.ToUpper();
-            Env = claims.FirstOrDefault(x => x.Type == "Env")?.Value.ToUpper();
+            Env = claims.FirstOrDefault(x => x.Type == ClaimTypes.Spn)?.Value.ToUpper();
         }
 
         public string GenerateRandomToken(int? maxLength = 32)
@@ -170,8 +168,7 @@ namespace Core.Services
             {
                 throw new ApiException($"Wrong username or password. Please try again!") { StatusCode = HttpStatusCode.BadRequest };
             }
-            return await GetUserToken(matchedUser,
-                system: login.System, tenant: login.CompanyName, env: login.Env, null, login.AutoSignIn);
+            return await GetUserToken(matchedUser, tenant: login.CompanyName, env: login.Env, null, login.AutoSignIn);
         }
 
         private async Task<User> GetUserByLogin(LoginVM login)
@@ -183,7 +180,7 @@ namespace Core.Services
             return await matchedUser.FirstOrDefaultAsync();
         }
 
-        protected virtual async Task<Token> GetUserToken(User user, string system, string tenant, string env, string refreshToken = null, bool autoSigin = false)
+        protected virtual async Task<Token> GetUserToken(User user, string tenant, string env, string refreshToken = null, bool autoSigin = false)
         {
             if (user is null)
             {
@@ -205,8 +202,7 @@ namespace Core.Services
                 new Claim(JwtRegisteredClaimNames.Iat, signinDate.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, jit),
                 new Claim(ClaimTypes.PrimaryGroupSid, tenant),
-                new Claim(ClaimTypes.System, system),
-                new Claim("Env", env),
+                new Claim(ClaimTypes.Spn, env),
             };
             claims.AddRange(allRoles.Select(x => new Claim(ClaimTypes.Role, x.ToString())));
             claims.AddRange(roleIds.Select(x => new Claim(ClaimTypes.Actor, x.ToString())));
@@ -306,7 +302,7 @@ namespace Core.Services
             var issuedAt = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Iat)?.Value.TryParseDateTime();
             var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
             var tenant = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimaryGroupSid)?.Value;
-            var system = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.System)?.Value;
+            var env = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Spn)?.Value;
             if (userId is null)
             {
                 throw new InvalidOperationException($"{nameof(userId)} is null");
@@ -326,7 +322,7 @@ namespace Core.Services
             var updatedUser = await db.User.Include(user => user.Vendor)
                 .Include(x => x.UserRole).ThenInclude(x => x.Role)
                 .FirstOrDefaultAsync(x => x.Id == userId);
-            return await GetUserToken(updatedUser, system, tenant, token.RefreshToken);
+            return await GetUserToken(user: updatedUser, tenant: tenant, env: env, refreshToken: token.RefreshToken);
         }
 
         public async Task<Role> GetRole(string roleName, RoleSelection? selection = RoleSelection.TopFirst)
@@ -362,7 +358,7 @@ namespace Core.Services
             if (connKey is null)
             {
                 var tenantConnKey = await db.TenantEnv
-                    .Where(x => x.System == system && x.TenantCode == tenantCode && x.Env == env)
+                    .Where(x => x.TenantCode == tenantCode && x.Env == env)
                     .Select(x => x.ConnKey).FirstOrDefaultAsync()
                     ?? throw new ApiException("Tenant config not found");
                 connKey = tenantConnKey;
@@ -400,12 +396,12 @@ namespace Core.Services
 
         public async Task<string> GetConnStrFromKey(string connKey)
         {
-            var key = $"{System}_{TenantCode}_{connKey}_{Env}";
+            var key = $"{TenantCode}_{connKey}_{Env}";
             var conStr = await _cache.GetStringAsync(key);
             if (conStr != null) return conStr;
-            var tenantEnv = await db.TenantEnv
-                .FirstOrDefaultAsync(x => x.System == System && x.TenantCode == TenantCode && x.ConnKey == connKey && x.Env == Env)
-                ?? throw new ApiException("Tenant config not found");
+            var tenantEnvTask = db.TenantEnv
+                .Where(x => x.TenantCode == TenantCode && x.ConnKey == connKey && x.Env == Env);
+            var tenantEnv = await tenantEnvTask.FirstOrDefaultAsync();
             await _cache.SetStringAsync(key, tenantEnv.ConnStr, Utils.CacheTTL);
             return tenantEnv.ConnStr;
         }
@@ -420,7 +416,7 @@ namespace Core.Services
             var claims = Context.HttpContext.User?.Claims;
             if (claims != null)
             {
-                var map = new { UserId, RoleIds, AllRoleIds, TenantCode, System, Env, CenterIds, BranchId, VendorId };
+                var map = new { UserId, RoleIds, AllRoleIds, TenantCode, Env, CenterIds, BranchId, VendorId };
                 engine.SetValue("claims", JsonConvert.SerializeObject(map));
             }
             engine.SetValue("args", entityParam);
@@ -435,8 +431,6 @@ namespace Core.Services
             {
                 result.Query = res;
             }
-            var anyComment = HasSqlComment(result.Query);
-            if (anyComment) throw new ApiException("Comment is NOT allowed");
             return result;
         }
 
@@ -449,11 +443,13 @@ namespace Core.Services
                 .Any(x => x.TokenType == TSqlTokenType.MultilineComment || x.TokenType == TSqlTokenType.SingleLineComment);
         }
 
-        public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSet(string reportQuery, string connStr, bool exportQuery = true)
+        public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSet(string query, string connStr, bool exportQuery = true)
         {
+            var anyComment = HasSqlComment(query);
+            if (anyComment) throw new ApiException("Comment is NOT allowed");
             var connectionStr = connStr;
             using var con = new SqlConnection(connectionStr);
-            var sqlCmd = new SqlCommand(reportQuery, con)
+            var sqlCmd = new SqlCommand(query, con)
             {
                 CommandType = CommandType.Text
             };
@@ -472,14 +468,13 @@ namespace Core.Services
 #if DEBUG
             if (exportQuery)
             {
-                var query = new List<Dictionary<string, object>>
+                tables.Add(new List<Dictionary<string, object>>
                 {
                     new Dictionary<string, object>
                     {
-                        { "query",  reportQuery }
+                        { "query",  query }
                     }
-                };
-                tables.Add(query);
+                });
             }
 #endif
             return tables;
@@ -518,7 +513,7 @@ namespace Core.Services
             if (id is null)
             {
                 writePerm = allRights.Any(x => x.CanWrite || x.CanWriteAll);
-            } 
+            }
             else
             {
                 var origin = @$"select t.* from {vm.Table} as t where t.Id = '{id}'";
@@ -583,12 +578,13 @@ namespace Core.Services
             }
         }
 
-        internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSet(SqlViewModel vm)
+        internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSetWrapper(SqlViewModel vm)
         {
             var com = await GetComponent(vm.ComId);
             string decryptedConnStr = null;
             string decryptedQuery = null;
-            if (com is null) {
+            if (com is null)
+            {
                 var (connStr, query) = await DecryptQuery(vm.Component.Signed);
                 decryptedConnStr = connStr;
                 decryptedQuery = query;
@@ -608,6 +604,11 @@ namespace Core.Services
                 throw new ArgumentException("Parameters must NOT contains sql keywords");
             }
             var jsRes = await ExecJs(vm.Entity, decryptedQuery ?? com.Query);
+            return await GetResultFromQuery(vm, decryptedConnStr ?? await GetConnStrFromKey(com.ConnKey), jsRes);
+        }
+
+        private async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> GetResultFromQuery(SqlViewModel vm, string decryptedConnStr, SqlQueryResult jsRes)
+        {
             var select = vm.Select.HasAnyChar() ? $"select {vm.Select}" : string.Empty;
             var where = vm.Where.HasAnyChar() ? $"where {vm.Where}" : string.Empty;
             var groupBy = vm.GroupBy.HasAnyChar() ? $"group by {vm.GroupBy}" : string.Empty;
@@ -628,7 +629,7 @@ namespace Core.Services
                 {vm.Paging};
                 {countQuery}
                 {jsRes.XQuery}";
-            return await ReadDataSet(finalQuery, decryptedConnStr ?? await GetConnStrFromKey(com.ConnKey));
+            return await ReadDataSet(finalQuery, decryptedConnStr);
         }
 
         private async Task<Component> GetComponent(string comId)
@@ -638,17 +639,19 @@ namespace Core.Services
             var cached = _cache.GetString(comKey);
             if (cached != null)
             {
-                try {
+                try
+                {
                     com = JsonConvert.DeserializeObject<Component>(cached);
                 }
-                catch {
+                catch
+                {
 
                 }
             }
             if (com is null)
             {
                 com = await db.Component
-                    .Where(x => x.Annonymous || !x.IsPrivate || x.TenantCode == TenantCode && x.System == System)
+                    .Where(x => x.Annonymous || !x.IsPrivate || x.TenantCode == TenantCode)
                     .Where(x => x.Id == comId)
                     .FirstOrDefaultAsync();
                 if (com is null) return null;
@@ -692,7 +695,7 @@ namespace Core.Services
             var sv = await GetService(vm);
             var jsRes = await ExecJs(vm.Entity, sv.Content);
             var conStr = await GetConnStrFromKey(sv.ConnKey);
-            return await ReadDataSet(jsRes.Query, conStr);
+            return await GetResultFromQuery(vm, conStr, jsRes);
         }
 
         private async Task<Models.Services> GetService(SqlViewModel vm)
@@ -710,10 +713,17 @@ namespace Core.Services
                     sv = JsonConvert.DeserializeObject<Models.Services>(cacheSv);
                 }
             }
-            sv = await db.Services.Where(x =>
-                    x.System == System && x.TenantCode == TenantCode
-                    && (x.ComId == vm.ComId && x.Action == vm.Action || vm.SvcId != null && x.Id == vm.SvcId))
-                .FirstOrDefaultAsync();
+
+            var query = @$"select * from Services 
+                where (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') and TenantCode = '{TenantCode}'";
+            var ds = await ReadDataSet(query, _configuration.GetConnectionString("default"));
+            if (ds.Nothing()) return null;
+            sv = new Models.Services();
+            var svKeyMap = ds.ElementAt(0)?.ElementAt(0);
+            svKeyMap.Keys.SelectForEach((x, i) =>
+            {
+                sv.SetPropValue(x, svKeyMap[x]);
+            });
 
             if (sv == null)
             {
@@ -729,7 +739,7 @@ namespace Core.Services
 
         internal async Task<string> ExportExcel(SqlViewModel vm)
         {
-            var dataSets = await ReadDataSet(vm);
+            var dataSets = await ReadDataSetWrapper(vm);
             var table = dataSets.ElementAt(0);
             var headers = JsonConvert.DeserializeObject<List<Component>>(JsonConvert.SerializeObject(dataSets.ElementAt(1)));
             headers = headers.Where(x => vm.FieldName.Contains(x.FieldName)).ToList();

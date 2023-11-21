@@ -88,16 +88,16 @@ namespace Core.Components.Framework
 
             _hasRender = true;
             var doc = Document.Instance as dynamic;
-            var meta = doc.head.children.token;
+            var meta = doc.head.children.startupSvc;
             var submitEntity = new SqlViewModel
             {
-                Component = new SignedCom { Signed = meta.content },
+                SvcId = meta.content,
                 OrderBy = "ds.[Order] asc",
             };
             var startup = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = JSON.Stringify(submitEntity),
-                Url = Utils.SqlReader,
+                Url = Utils.UserSvc,
                 IsRawString = true,
                 Method = HttpMethod.POST
             });

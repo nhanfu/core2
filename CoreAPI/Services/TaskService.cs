@@ -51,12 +51,11 @@ namespace Core.Services
 
         private async Task SendMessageToUser(MQEvent task)
         {
-            var system = _userService.System;
             var tenantCode = _userService.TenantCode;
             var env = _userService.Env;
             var fcm = new FCMWrapper
             {
-                To = $"/topics/{system}/{tenantCode}/{env}/U{task.Message.AssignedId:0000000}",
+                To = $"/topics/{tenantCode}/{env}/U{task.Message.AssignedId:0000000}",
                 Data = new FCMData
                 {
                     Title = task.Message.Title,

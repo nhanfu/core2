@@ -34,7 +34,7 @@ namespace Core.Extensions
         public const string HistoryId = "4199";
         public const string InsertedBy = "InsertedBy";
         public const string OwnerId = "OwnerId";
-        public const string SqlReader = "/component/Reader";
+        public const string ComQuery = "/component/Reader";
         public const string UserSvc = "/user/svc";
         public const string ExportExcel = "/user/excel";
         public const string DefaultConnKey = "default";

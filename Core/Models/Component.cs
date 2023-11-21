@@ -142,8 +142,6 @@ namespace Core.Models
 
         public string Template { get; set; }
 
-        public string System { get; set; }
-
         public string PreQuery { get; set; }
 
         public string DisabledExp { get; set; }

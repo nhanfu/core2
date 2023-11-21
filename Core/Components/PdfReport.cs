@@ -273,7 +273,7 @@ namespace Core.Components
             }
             if (Data is null)
             {
-                dataSet = Data = await new Client(nameof(User)).PostAsync<object[][]>(DataSourceFilter, $"ReportDataSet?sys={GuiInfo.System ?? GuiInfo.IdField}");
+                dataSet = Data = await new Client(nameof(User)).PostAsync<object[][]>(DataSourceFilter, $"ReportDataSet?sys={GuiInfo.IdField}");
                 if (dataSet.Nothing() || dataSet.All(x => x.Nothing()))
                 {
                     return null;

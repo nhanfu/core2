@@ -59,8 +59,7 @@ namespace Core.Controllers
             }
 #endif
 
-            var tenantEnv = await db.TenantEnv.FirstOrDefaultAsync(x =>
-                x.System == system && x.TenantCode == tenant && x.Env == env);
+            var tenantEnv = await db.TenantEnv.FirstOrDefaultAsync(x => x.TenantCode == tenant && x.Env == env);
             if (tenantEnv is null)
             {
                 await WriteDefaultFile(NotFoundFile, htmlMimeType, HttpStatusCode.NotFound);
@@ -83,13 +82,12 @@ namespace Core.Controllers
                     ShouldAddVersion(x, href);
                     ShouldAddVersion(x, src);
                 });
-            var signed = await _userSvc.EncryptQuery(page.Query, env, system, tenant, true);
             var meta = new HtmlNode(HtmlNodeType.Element, htmlDoc, 1)
             {
                 Name = "meta"
             };
-            meta.SetAttributeValue("name", "token");
-            meta.SetAttributeValue("content", signed);
+            meta.SetAttributeValue("name", "startupSvc");
+            meta.SetAttributeValue("content", page.SvcId);
             htmlDoc.DocumentNode.SelectSingleNode("//head")?.AppendChild(meta);
             reponse.Headers.Add(ContentType, Utils.GetMimeType("html"));
             reponse.StatusCode = (int)HttpStatusCode.OK;

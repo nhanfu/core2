@@ -61,7 +61,7 @@ namespace Core.Components
                 });
                 Data = await Client.Instance.SubmitAsync<object[]>(new XHRWrapper
                 {
-                    Url = Utils.SqlReader,
+                    Url = Utils.ComQuery,
                     IsRawString = true,
                     Value = entity,
                     Method = Enums.HttpMethod.POST

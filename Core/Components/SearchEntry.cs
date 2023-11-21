@@ -633,19 +633,19 @@ namespace Core.Components
         public async Task<object> SqlReader(int? skip, int? pageSize)
         {
             var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var _preQueryFn);
-            var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
+            var submitEntity = isFn ? _preQueryFn.Call(null, this) : null;
             var data = JSON.Stringify(new SqlViewModel
             {
                 Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
-                Component = new SignedCom { Query = GuiInfo.Query, Signed = GuiInfo.Signed },
                 Paging = $"offset {skip} rows\nfetch next {pageSize} rows only",
                 OrderBy = GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy,
                 Where = $"charindex(N'{Value}', {IdField}) >= 1",
+                ComId = GuiInfo.Id
             });
             var res = await Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = data,
-                Url = Utils.SqlReader,
+                Url = Utils.ComQuery,
                 IsRawString = true,
                 Method = HttpMethod.POST
             });

@@ -93,7 +93,7 @@ namespace Core.Models
         public string DefaultVal { get; set; }
 
         public string DateTimeField { get; set; }
-
+        
         public bool Active { get; set; }
 
         public DateTimeOffset InsertedDate { get; set; }
@@ -137,8 +137,6 @@ namespace Core.Models
         public bool IsCollapsible { get; set; }
 
         public string Template { get; set; }
-
-        public string System { get; set; }
 
         public string PreQuery { get; set; }
 

@@ -13,8 +13,6 @@ namespace Core.Models
         
         public string  Template { get; set; }
 
-        public string  Query { get; set; }
-
         public bool Active { get; set; }
 
         public DateTimeOffset InsertedDate { get; set; }
@@ -24,5 +22,7 @@ namespace Core.Models
         public DateTimeOffset? UpdatedDate { get; set; }
 
         public string UpdatedBy { get; set; }
+        
+        public string SvcId { get; set; }
     }
 }

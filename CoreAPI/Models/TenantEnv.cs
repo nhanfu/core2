@@ -7,8 +7,6 @@ namespace Core.Models
     {
         public string Id { get; set; }
 
-        public string System { get; set; }
-
         public string TenantCode { get; set; }
 
         public string  Env { get; set; }

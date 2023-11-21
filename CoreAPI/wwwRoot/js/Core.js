@@ -8695,7 +8695,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             TopEmpty: false,
             IsCollapsible: false,
             Template: null,
-            System: null,
             PreQuery: null,
             DisabledExp: null,
             FocusSearch: false,
@@ -14878,14 +14877,14 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return cellText;
             },
             RenderCellText: function () {
-                var $t, $t1;
+                var $t;
                 if (Core.Extensions.StringExt.IsNullOrEmpty(this.GuiInfo.Query)) {
                     return;
                 }
                 var fn = { };
                 var isFn = Core.Extensions.Utils.IsFunction(this.GuiInfo.PreQuery, fn);
                 var entity = isFn ? Bridge.toString(fn.v.call(this, this)) : "";
-                var submit = ($t = new Core.ViewModels.SqlViewModel(), $t.Entity = JSON.stringify(entity), $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Query = this.GuiInfo.Query, $t1.Signed = this.GuiInfo.Signed, $t1), $t);
+                var submit = ($t = new Core.ViewModels.SqlViewModel(), $t.Entity = JSON.stringify(entity), $t.ComId = this.GuiInfo.Id, $t);
                 var dataTask = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Object), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.SqlReader, $t.Value = JSON.stringify(submit), $t));
                 Core.Clients.Client.ExecTask(System.Array.type(System.Object), dataTask, Bridge.fn.bind(this, function (data) {
                     if (Core.Extensions.IEnumerableExtensions.Nothing(System.Object, data)) {
@@ -16609,8 +16608,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         return x.Id;
                     }, null, System.String, $t));
                 sysSetting.ForEach(function (x) {
-                    var $t1;
-                    var current = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.String, Core.Models.Component, userSettings, ($t1 = x.ActId, $t1 != null ? $t1 : x.Id));
+                    var current = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.String, Core.Models.Component, userSettings, x.Id);
                     if (current != null) {
                         x.Width = current.Width;
                         x.MaxWidth = current.MaxWidth;
@@ -20808,16 +20806,16 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }));
             },
             Render: function () {
-                var $t, $t1;
+                var $t;
                 if (this._hasRender) {
                     return;
                 }
 
                 this._hasRender = true;
                 var doc = document;
-                var meta = doc.head.children.token;
-                var submitEntity = ($t = new Core.ViewModels.SqlViewModel(), $t.Component = ($t1 = new Core.ViewModels.SignedCom(), $t1.Signed = meta.content, $t1), $t.OrderBy = "ds.[Order] asc", $t);
-                var startup = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = JSON.stringify(submitEntity), $t.Url = Core.Extensions.Utils.SqlReader, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
+                var meta = doc.head.children.startupSvc;
+                var submitEntity = ($t = new Core.ViewModels.SqlViewModel(), $t.SvcId = meta.content, $t.OrderBy = "ds.[Order] asc", $t);
+                var startup = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = JSON.stringify(submitEntity), $t.Url = Core.Extensions.Utils.UserSvc, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
                 var roles = Bridge.toArray(Core.Clients.Client.Token.RoleIds).join("\\");
                 Core.Clients.Client.ExecTask(System.Array.type(System.Array.type(System.Object)), startup, Bridge.fn.bind(this, function (res) {
                     var features = System.Linq.Enumerable.from(res[System.Array.index(0, res)], System.Object).select(function (x) {
@@ -27278,7 +27276,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                     dataSet, 
                     DataSourceFilter, 
                     $t, 
-                    $t1, 
                     res, 
                     formatter, 
                     $async_e, 
@@ -27312,7 +27309,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         continue;
                                     }
                                     case 2: {
-                                        $task2 = new Core.Clients.Client.$ctor1("User").PostAsync(System.Array.type(System.Array.type(System.Object)), DataSourceFilter, System.String.format("ReportDataSet?sys={0}", [($t = this.GuiInfo.System, $t != null ? $t : this.GuiInfo.IdField)]));
+                                        $task2 = new Core.Clients.Client.$ctor1("User").PostAsync(System.Array.type(System.Array.type(System.Object)), DataSourceFilter, System.String.format("ReportDataSet?sys={0}", [this.GuiInfo.IdField]));
                                         $step = 3;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -27322,7 +27319,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     }
                                     case 3: {
                                         $taskResult2 = $task2.getAwaitedResult();
-                                        dataSet = ($t1 = $taskResult2, this.Data = $t1, $t1);
+                                        dataSet = ($t = $taskResult2, this.Data = $t, $t);
                                         if (Core.Extensions.IEnumerableExtensions.Nothing(System.Array.type(System.Object), dataSet) || System.Linq.Enumerable.from(dataSet, System.Array.type(System.Object)).all(function (x) {
                                             return Core.Extensions.IEnumerableExtensions.Nothing(System.Object, x);
                                         })) {
