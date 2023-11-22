@@ -44,8 +44,6 @@ namespace Core.Clients
             return x is HTMLMetaElement meta && meta.Name == "config";
         })?.Content;
         public static BadGatewayQueue BadGatewayRequest = new BadGatewayQueue();
-        private static int _errorMessageAwaiter;
-
         public static Action<XHRWrapper> UnAuthorizedEventHandler;
         public static Action SignOutEventHandler;
 

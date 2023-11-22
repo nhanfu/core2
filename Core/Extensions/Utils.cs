@@ -35,6 +35,7 @@ namespace Core.Extensions
         public const string InsertedBy = "InsertedBy";
         public const string OwnerId = "OwnerId";
         public const string ComQuery = "/component/Reader";
+        public const string PatchSvc = "/v2/user";
         public const string UserSvc = "/user/svc";
         public const string ExportExcel = "/user/excel";
         public const string DefaultConnKey = "default";
@@ -445,6 +446,20 @@ namespace Core.Extensions
                 return false;
             }
             return obj != null;
+        }
+
+        public static void ForEachProp(this object obj, Action<string, object> action) {
+            if (obj is null || action is null) return;
+            /*@
+            Object.keys(obj).forEach(x => action(x, obj[x]));
+            */
+        }
+
+        public static void ForEachProp(this object obj, Action<string> action) {
+            if (obj is null || action is null) return;
+            /*@
+            Object.keys(obj).forEach(x => action(key));
+            */
         }
 
         public static DateTime LastDayOfMonth(DateTime? time = null)

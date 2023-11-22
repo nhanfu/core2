@@ -221,7 +221,7 @@ namespace Core.Components.Framework
                     var check = item.InverseParent != null && item.InverseParent.Count > 0;
                     Html.Instance.Li.ClassName("nav-item")
                     .A.ClassName("nav-link")
-                    .AsyncEvent(EventType.Click, MenuItemClick, item)
+                    .Event(EventType.Click, MenuItemClick, item)
                     .Event(EventType.ContextMenu, FeatureContextMenu, item)
                     .Icon(item.Icon).ClassName("nav-icon").End.P.IText(item.Label);
                     if (check)
@@ -244,7 +244,7 @@ namespace Core.Components.Framework
                 var check = item.InverseParent != null && item.InverseParent.Count > 0;
                 Html.Instance.Li.ClassName("nav-item")
                 .A.ClassName("nav-link")
-                .AsyncEvent(EventType.Click, MenuItemClick, item)
+                .Event(EventType.Click, MenuItemClick, item)
                 .Event(EventType.ContextMenu, FeatureContextMenu, item)
                 .I.ClassName("fal fa-circle nav-icon").End.P.IText(item.Label);
                 if (check)
@@ -350,7 +350,7 @@ namespace Core.Components.Framework
             AddChild(confirmDialog);
         }
 
-        private async Task MenuItemClick(Feature feature, Event e)
+        private void MenuItemClick(Feature feature, Event e)
         {
             var a = e.Target as HTMLElement;
             if (!(a is HTMLAnchorElement))

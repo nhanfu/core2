@@ -80,14 +80,14 @@ namespace Core.Components
             _waitingLoad = false;
         }
 
-        internal override async Task RenderViewPort(bool count = true, bool firstLoad = false)
+        internal override async Task<bool> RenderViewPort(bool count = true, bool firstLoad = false)
         {
             _renderingViewPort = true;
             viewPortCount = GetViewPortItem();
             var scrollTop = DataTable.ParentElement.ScrollTop;
             if (scrollTop == _lastScrollTop)
             {
-                return;
+                return true;
             }
             var skip = GetRowCountByHeight(scrollTop);
             if (viewPortCount <= 0)
@@ -128,6 +128,7 @@ namespace Core.Components
             _renderingViewPort = false;
             RenderIndex();
             DomLoaded();
+            return true;
         }
 
         private IEnumerable<object> ReadCache(int skip, int viewPortCount)
@@ -182,7 +183,7 @@ namespace Core.Components
             return rows;
         }
 
-        public override async Task<List<object>> ReloadData(string DataSourceFilter = null, bool cache = false, int? skip = null, int? pageSize = null, bool search = false)
+        public override async Task<List<object>> ReloadData(string DataSourceFilter = null, bool cache = false, int? skip = null, int? pageSize = null)
         {
             DisposeNoRecord();
             VirtualScroll = GuiInfo.GroupBy.Nothing() && GuiInfo.VirtualScroll && Element.Style.Display.ToString() != Display.None.ToString();

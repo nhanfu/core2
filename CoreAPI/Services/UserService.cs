@@ -506,26 +506,34 @@ namespace Core.Services
                 x.Field = RemoveWhiteSpace(x.Field);
             });
             bool writePerm;
-            var id = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
+            var idField = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
+            var oldId = idField?.OldVal;
             var com = await GetComponent(vm.ComId);
             var allRights = await GetComPermission(vm.ComId);
             var connStr = await GetConnStrFromKey(vm.ConnKey);
-            if (id is null)
+            if (oldId is null)
             {
                 writePerm = allRights.Any(x => x.CanWrite || x.CanWriteAll);
             }
             else
             {
-                var origin = @$"select t.* from [{vm.Table}] as t where t.Id = '{id}'";
+                var origin = @$"select t.* from [{vm.Table}] as t where t.Id = '{oldId}'";
                 var ds = await ReadDataSet(origin, connStr);
-                var originRow = ds.Count() > 1 ? ds.ElementAt(0).FirstOrDefault() : null as Dictionary<string, object>;
-                var ownerUserIds = originRow.GetValueOrDefault("OwnerUserIds") as string ?? string.Empty;
-                var ownerRoleIds = from ownerRole in (originRow.GetValueOrDefault("OwnerRoleIds") as string ?? string.Empty).Split(",")
-                                   join currRole in RoleIds on ownerRole equals currRole
-                                   select ownerRole;
-                writePerm = allRights.Any(x => x.CanWrite && (ownerUserIds.Contains(UserId) || ownerRoleIds.Any()) || x.CanWriteAll);
+                var originRow = ds.Count() > 1 ? ds.ElementAt(0).FirstOrDefault() : null;
+                if (originRow is null)
+                {
+                    writePerm = allRights.Any(x => x.CanWrite || x.CanWriteAll);
+                }
+                else
+                {
+                    var ownerUserIds = originRow.GetValueOrDefault("OwnerUserIds") as string ?? string.Empty;
+                    var ownerRoleIds = from ownerRole in (originRow.GetValueOrDefault("OwnerRoleIds") as string ?? string.Empty).Split(",")
+                                       join currRole in RoleIds on ownerRole equals currRole
+                                       select ownerRole;
+                    writePerm = allRights.Any(x => x.CanWrite && (ownerUserIds.Contains(UserId) || ownerRoleIds.Any()) || x.CanWriteAll);
+                }
             }
-            if (!writePerm) throw new ApiException("Access denied") { StatusCode = HttpStatusCode.Unauthorized };
+            if (!writePerm) throw new ApiException("Access denied!") { StatusCode = HttpStatusCode.Unauthorized };
             using SqlConnection connection = new(connStr);
             connection.Open();
             using SqlTransaction transaction = connection.BeginTransaction();
@@ -538,18 +546,17 @@ namespace Core.Services
                 var valueFields = vm.Changes.Where(x => !_systemFields.Contains(x.Field.ToLower())).ToList();
                 var update = valueFields.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
                 var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
-                if (id is not null)
+                if (oldId is not null)
                 {
                     command.CommandText = @$"update [{vm.Table}] set {update.Combine()}, 
-                            TenantCode = '{TenantCode}', UpdatedBy = '{UserId}', UpdatedDate = '{now}' where Id = '{id}';";
+                            TenantCode = '{TenantCode}', UpdatedBy = '{UserId}', UpdatedDate = '{now}' where Id = '{oldId}';";
                 }
                 else
                 {
-                    id = Id.NewGuid();
                     var fields = valueFields.Combine(x => $"[{x.Field}]");
                     var fieldParams = valueFields.Combine(x => $"@{x.Field}");
                     command.CommandText = @$"insert into [{vm.Table}] ([Id], [TenantCode], [Active], [InsertedBy], [InsertedDate], {fields}) 
-                        values ('{id}', '{TenantCode}', 1, '{UserId}', '{now}', {fieldParams});";
+                        values ('{idField.Value}', '{TenantCode}', 1, '{UserId}', '{now}', {fieldParams});";
                 }
                 foreach (var item in valueFields)
                 {
@@ -574,7 +581,7 @@ namespace Core.Services
             catch
             {
                 await transaction.RollbackAsync();
-                return false;
+                throw;
             }
         }
 
@@ -614,6 +621,7 @@ namespace Core.Services
             var groupBy = vm.GroupBy.HasAnyChar() ? $"group by {vm.GroupBy}" : string.Empty;
             var having = vm.Having.HasAnyChar() ? $"having {vm.Having}" : string.Empty;
             var orderBy = vm.OrderBy.HasAnyChar() ? $"order by {vm.OrderBy}" : string.Empty;
+            var xQuery = vm.SkipXQuery ? string.Empty : jsRes.XQuery;
             var countQuery = vm.Count ?
                 $@"select count(*) as total from (
                 {jsRes.Query}) as ds 
@@ -628,7 +636,7 @@ namespace Core.Services
                 {orderBy}
                 {vm.Paging};
                 {countQuery}
-                {jsRes.XQuery}";
+                {xQuery}";
             return await ReadDataSet(finalQuery, decryptedConnStr);
         }
 
@@ -694,7 +702,7 @@ namespace Core.Services
         {
             var sv = await GetService(vm);
             var jsRes = await ExecJs(vm.Entity, sv.Content);
-            var conStr = TenantCode is null && vm.AnnonymousTenant is not null 
+            var conStr = TenantCode is null && vm.AnnonymousTenant is not null
                 ? sv.ConnKey : await GetConnStrFromKey(sv.ConnKey);
             return await GetResultFromQuery(vm, conStr, jsRes);
         }
@@ -730,7 +738,8 @@ namespace Core.Services
             {
                 return null;
             }
-            if (TenantCode is null && !sv.Annonymous) {
+            if (TenantCode is null && !sv.Annonymous)
+            {
                 throw new UnauthorizedAccessException("The service is required login");
             }
             var isValidRole = sv.IsPublicInTenant ||

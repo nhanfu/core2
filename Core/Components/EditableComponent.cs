@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Text;
 using Newtonsoft.Json;
 using Core.Enums;
+using Core.ViewModels;
 
 namespace Core.Components
 {
@@ -38,7 +39,14 @@ namespace Core.Components
         public event Action Disposed;
         public Action DOMContentLoaded { get; set; }
         public Type EntityType { get; set; }
-        public string EntityId => Entity?[IdField]?.ToString();
+        public string EntityId
+        {
+            get => Entity?[IdField]?.ToString();
+            set
+            {
+                if (Entity != null) Entity[IdField] = value;
+            }
+        }
         public object Entity { get; set; }
         private bool _show = true;
         public bool IsSingleton { get; set; }
@@ -650,11 +658,12 @@ namespace Core.Components
             return string.Empty;
         }
 
-        public virtual async Task<bool> ValidateAsync()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        public virtual Task<bool> ValidateAsync()
         {
+            var tcs = new TaskCompletionSource<bool>();
             ValidationResult.Clear();
-            return true;
+            tcs.TrySetResult(true);
+            return tcs.Task;
         }
 
         protected void SetRequired()
@@ -920,6 +929,28 @@ namespace Core.Components
         public virtual string GetValueTextAct()
         {
             return Element.TextContent;
+        }
+
+        protected void AddIdToPatch(List<PatchUpdateDetail> details)
+        {
+            if (EntityId is null)
+            {
+                EntityId = System.Id.NewGuid();
+                details.Add(new PatchUpdateDetail
+                {
+                    Field = Utils.IdField,
+                    Value = EntityId
+                });
+            }
+            else
+            {
+                details.Add(new PatchUpdateDetail
+                {
+                    Field = Utils.IdField,
+                    Value = EntityId,
+                    OldVal = EntityId
+                });
+            }
         }
     }
 }

@@ -182,7 +182,7 @@ namespace Core.Components
             Dirty = (!id.HasValue || id <= 0) && !emptyRow;
         }
 
-        private int awaitUpdate = 0;
+        public List<PatchUpdateDetail> PatchModel = new List<PatchUpdateDetail>();
 
         private bool CanDo(IEnumerable<FeaturePolicy> gridPolicies, Func<FeaturePolicy, bool> permissionPredicate)
         {
@@ -256,7 +256,7 @@ namespace Core.Components
                             return;
                         }
                         await ListView.RowChangeHandler(component.Entity, this, arg, component);
-                        await ListView.RealtimeUpdateAsync(this, arg);
+                        ListView.RealtimeUpdate(this, arg);
                     }
                 }
                 else
@@ -268,41 +268,10 @@ namespace Core.Components
                         {
                             return;
                         }
-                        await ListView.RealtimeUpdateAsync(this, arg);
+                        ListView.RealtimeUpdate(this, arg);
                     }
                 }
             };
-        }
-
-        public async Task CreateUpdate()
-        {
-            if (!Dirty)
-            {
-                return;
-            }
-            if (GuiInfo.IsRealtime)
-            {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, Entity);
-            }
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, Entity, this);
-            var entity = Entity;
-            var rs = await new Client(GuiInfo.Reference.Name).CreateAsync<object>(entity);
-            Entity.CopyPropFrom(rs);
-            if (GuiInfo.ComponentType == nameof(VirtualGrid))
-            {
-                ListViewSection.ListView.CacheData.Add(rs);
-            }
-            UpdateView(true);
-            Element.RemoveClass("new-row");
-            if (rs != null)
-            {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, this);
-            }
-            if (GuiInfo.IsRealtime)
-            {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, Entity);
-            }
-            EmptyRow = false;
         }
 
         public bool CompareEx(object obj, object another)
@@ -326,7 +295,7 @@ namespace Core.Components
             return result;
         }
 
-        public async Task PatchUpdate(bool noEvent = false)
+        public async Task PatchUpdateOrCreate()
         {
             if (!Dirty)
             {
@@ -334,22 +303,13 @@ namespace Core.Components
             }
             var patchModel = GetPatchEntity();
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, patchModel, this);
-            if (patchModel.Changes.FirstOrDefault(x => x.Field == IdField).Value.IsNullOrWhiteSpace() && !noEvent)
-            {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this);
-                return;
-            }
-            if (patchModel is null && !noEvent)
-            {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this);
-                return;
-            }
             lastpathModel = patchModel;
+            var success = false;
             try
             {
-                await Client.Instance.SubmitAsync<object>(new XHRWrapper
+                success = await Client.Instance.SubmitAsync<bool>(new XHRWrapper
                 {
-                    Url = "/v2/user",
+                    Url = Utils.PatchSvc,
                     Value = JSON.Stringify(patchModel),
                     IsRawString = true,
                     Method = HttpMethod.PATCH
@@ -358,10 +318,29 @@ namespace Core.Components
             catch
             {
                 Toast.Warning("Update row was not succeded");
-                return;
             }
+            if (!success)
+            {
+                var idField = PatchModel.FirstOrDefault(x => x.Field == IdField);
+                if (idField != null && idField.OldVal is null)
+                {
+                    EntityId = null;
+                    PatchModel.Remove(idField);
+                }
+            }
+            else
+            {
+                await PatchSuccess(patchModel);
+            }
+            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this);
+        }
+
+        private async Task PatchSuccess(PatchUpdate patchModel)
+        {
+            Dirty = false;
             EmptyRow = false;
-            var arr = FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.GuiInfo.FieldName).ToArray();
+            var arr = FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace())
+                .Select(x => x.GuiInfo.FieldName).ToArray();
             var changing = BuildTextHistory().ToString();
             if (!changing.IsNullOrWhiteSpace())
             {
@@ -373,13 +352,12 @@ namespace Core.Components
                     EntityId = Utils.GetEntity(GuiInfo.RefName).Id
                 });
             }
-            Dirty = false;
             await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this);
         }
 
         public PatchUpdate GetPatchEntity()
         {
-            var details = Children
+            var dirtyPatch = Children
                 .Where(child => child is EditableComponent editable && editable.Dirty)
                 .SelectMany(child =>
                 {
@@ -397,19 +375,11 @@ namespace Core.Components
                     };
                     return new PatchUpdateDetail[] { patch };
                 }).ToList();
-            details.Add(new PatchUpdateDetail
-            {
-                Field = Utils.IdField,
-                Value = EntityId?.ToString() ?? System.Id.NewGuid()
-            });
-            if (!ListView.GuiInfo.IdField.IsNullOrWhiteSpace())
-            {
-                var parentId = ListView.Entity[ListView.GuiInfo.IdField]?.ToString();
-                details.Add(new PatchUpdateDetail { Field = ListView.GuiInfo.IdField, Value = parentId, OldVal = parentId });
-            }
+            AddIdToPatch(dirtyPatch);
+            PatchModel.AddRange(dirtyPatch);
             return new PatchUpdate
             {
-                Changes = details,
+                Changes = dirtyPatch,
                 ComId = ListView.GuiInfo.Id,
                 Table = ListView.GuiInfo.RefName,
                 ConnKey = ListView.GuiInfo.ConnKey ?? Utils.DefaultConnKey,

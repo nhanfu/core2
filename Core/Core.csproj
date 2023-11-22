@@ -156,7 +156,7 @@
     <Compile Include="ViewModels\PatchUpdate.cs" />
     <Compile Include="ViewModels\RegistrationVM.cs" />
     <Compile Include="ViewModels\SecurityVM.cs" />
-    <Compile Include="ViewModels\SqlWrapper.cs" />
+    <Compile Include="ViewModels\SqlViewModel.cs" />
     <Compile Include="ViewModels\Token.cs" />
     <Compile Include="ViewModels\UserDetailVM.cs" />
   </ItemGroup>

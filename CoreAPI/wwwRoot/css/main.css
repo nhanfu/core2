@@ -1,4 +1,4 @@
-﻿@font-face {
+@font-face {
   font-family: 'Font Awesome 5 Brands';
   font-style: normal;
   font-weight: normal;
@@ -1429,7 +1429,7 @@ form span.icon {
 .floating.grid-wrapper .table-header > table tr th:first-child {
   display: none;
 }
-.floating.grid-wrapper .SearchEntry-toolbar {
+.floating.grid-wrapper .dropdown-toolbar {
   display: none;
   flex-flow: column;
   position: absolute;
@@ -1437,7 +1437,7 @@ form span.icon {
   font-size: 1.5rem;
   background: transparent;
 }
-.floating.grid-wrapper .SearchEntry-toolbar button {
+.floating.grid-wrapper .dropdown-toolbar button {
   cursor: pointer;
   color: #61b755;
   transition: all linear 0.2s;
@@ -1450,10 +1450,10 @@ form span.icon {
   background-color: white;
   grid-gap: 1rem;
 }
-.floating.grid-wrapper .SearchEntry-toolbar button:hover {
+.floating.grid-wrapper .dropdown-toolbar button:hover {
   background-color: white;
 }
-.floating.grid-wrapper.multiple .SearchEntry-toolbar {
+.floating.grid-wrapper.multiple .dropdown-toolbar {
   display: flex;
 }
 .tabs-content {
@@ -2957,9 +2957,6 @@ div > [class*="cell"]:last-child {
 .draggable {
   cursor: move;
   user-select: none;
-}
-button.btn.btn-secondary.btn-sm {
-  display: none;
 }
 .searching-block {
   max-width: fit-content !important;

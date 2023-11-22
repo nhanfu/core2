@@ -8,7 +8,6 @@ namespace Core.Components.Forms
 {
     public class ConfirmDialog : EditForm
     {
-        private bool _cancel;
         private HTMLElement _yesBtn;
         public HTMLElement PElement;
         public Textbox Textbox { get; private set; }
@@ -143,7 +142,6 @@ namespace Core.Components.Forms
                     .MarginRem(Direction.left, 1)
                     .Event(EventType.Click, () =>
                     {
-                        _cancel = true;
                         Dispose();
                     });
             }

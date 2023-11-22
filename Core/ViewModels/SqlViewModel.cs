@@ -17,6 +17,7 @@ namespace Core.ViewModels
         public bool Count { get; set; }
         public bool RawQuery { get; set; }
         public List<string> FieldName { get; set; }
+        public bool SkipXQuery { get; set; }
     }
 
     public class SignedCom

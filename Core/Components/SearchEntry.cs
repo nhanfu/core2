@@ -640,7 +640,8 @@ namespace Core.Components
                 Paging = $"offset {skip} rows\nfetch next {pageSize} rows only",
                 OrderBy = GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy,
                 Where = $"charindex(N'{Value}', {IdField}) >= 1",
-                ComId = GuiInfo.Id
+                ComId = GuiInfo.Id,
+                SkipXQuery = _gv?.Header?.HasElement() ?? false
             });
             var res = await Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
@@ -679,9 +680,9 @@ namespace Core.Components
 
         public virtual void SetMatchedValue()
         {
-            OriginalText = Entity[GuiInfo.RefField] as string;
-            _input.Value = EmptyRow ? string.Empty : Matched != null ? GetMatchedText(Matched) : Entity[GuiInfo.RefField] as string;
-            Entity[GuiInfo.RefField] = _input.Value;
+            OriginalText = Entity[GuiInfo.TextField] as string;
+            _input.Value = EmptyRow ? string.Empty : Matched != null ? GetMatchedText(Matched) : Entity[GuiInfo.TextField] as string;
+            Entity[GuiInfo.TextField] = _input.Value;
             if (GuiInfo.AutoFit)
             {
                 this.SetAutoWidth(_input.Value, _input.GetComputedStyle().Font, 48);
@@ -701,17 +702,25 @@ namespace Core.Components
 
         public PatchUpdateDetail[] PatchUpdateDetail()
         {
-            return new PatchUpdateDetail[]
+            var res = new List<PatchUpdateDetail>
             {
-                new PatchUpdateDetail()
+                new PatchUpdateDetail
                 {
-                    Field = GuiInfo.FieldName, Value = _value, OldVal = OldValue
-                },
-                new PatchUpdateDetail()
-                {
-                    Field = GuiInfo.RefField, Value = _input.Value, OldVal = OriginalText
-                },
+                    Field = GuiInfo.FieldName,
+                    Value = _value,
+                    OldVal = OldValue
+                }
             };
+            if (GuiInfo.ShouldSaveText)
+            {
+                res.Add(new PatchUpdateDetail
+                {
+                    Field = GuiInfo.TextField,
+                    Value = _input.Value,
+                    OldVal = OriginalText
+                });
+            }
+            return res.ToArray();
         }
 
         protected string GetMatchedText(object matched)
@@ -788,7 +797,7 @@ namespace Core.Components
                 UpdateValue();
                 return;
             }
-            var txt = Entity[GuiInfo.RefField] as string;
+            var txt = Entity[GuiInfo.TextField] as string;
             _input.Value = txt;
             Task.Run(async () => await FindMatchTextAsync(force));
         }

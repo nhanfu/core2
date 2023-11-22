@@ -130,7 +130,7 @@ namespace Core.Components
             SetEntityPath();
             if (GuiInfo.IsRealtime && EntityId != null)
             {
-                await RealtimeUpdateAsync(rowSection, observableArgs);
+                RealtimeUpdate(rowSection, observableArgs);
             }
             Dirty = true;
         }

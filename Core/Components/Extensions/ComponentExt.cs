@@ -143,7 +143,7 @@ namespace Core.Components.Extensions
             }
 
             searchTerm = searchTerm.Trim();
-            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.RefField : com.FieldName;
+            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.TextField : com.FieldName;
 
             if (com.ComponentType == "Datepicker")
             {

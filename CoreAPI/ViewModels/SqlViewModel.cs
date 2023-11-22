@@ -2,20 +2,11 @@
 
 namespace Core.ViewModels
 {
-    public enum SqlTypeEnum
-    {
-        Query,
-        Update,
-        Mixed,
-        Json
-    }
-
     public class SqlViewModel
     {
         public string SvcId { get; set; }
         public string ComId { get; set; }
         public string Action { get; set; }
-        public SqlTypeEnum QueryType { get; set; }
         public string Entity { get; set; }
         public Component Component { get; set; }
         public string AnnonymousTenant { get; set; }
@@ -27,6 +18,7 @@ namespace Core.ViewModels
         public string Paging { get; set; }
         public bool Count { get; set; }
         public List<string> FieldName { get; set; }
+        public bool SkipXQuery { get; set; }
     }
 
     public class SqlQueryResult

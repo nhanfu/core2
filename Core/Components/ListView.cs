@@ -49,7 +49,6 @@ namespace Core.Components
         public Paginator Paginator { get; set; }
         public List<Component> Header { get; set; }
         public List<Component> BasicHeader { get; set; } = new List<Component>();
-        public List<Component> RefBasicHeader { get; set; } = new List<Component>();
         public List<Component> BasicHeaderSearch { get; set; }
         public ObservableList<object> RowData { get; set; }
         public List<object> FormattedRowData { get; set; }
@@ -192,7 +191,8 @@ namespace Core.Components
             return source;
         }
 
-        public virtual async Task<List<object>> ReloadData(string dataSourceFilter = null, bool cache = false, int? skip = null, int? pageSize = null, bool search = false)
+        public virtual async Task<List<object>> ReloadData(string dataSourceFilter = null, 
+            bool cacheHeader = false, int? skip = null, int? pageSize = null)
         {
             if (GuiInfo.LocalRender && GuiInfo.LocalData != null)
             {
@@ -205,16 +205,16 @@ namespace Core.Components
             }
             pageSize = pageSize ?? Paginator?.Options?.PageSize ?? GuiInfo.Row ?? 12;
             skip = skip ?? Paginator?.Options?.PageIndex * pageSize ?? 0;
-            return await SqlReader(skip, pageSize);
+            return await SqlReader(skip, pageSize, cacheHeader);
         }
 
-        public async Task<List<object>> SqlReader(int? skip, int? pageSize)
+        public async Task<List<object>> SqlReader(int? skip, int? pageSize, bool cacheHeader = false)
         {
-            var sql = GetSql(skip, pageSize);
+            var sql = GetSql(skip, pageSize, cacheHeader);
             return await CustomQuery(JSON.Stringify(sql));
         }
 
-        public SqlViewModel GetSql(int? skip = null, int? pageSize = null)
+        public SqlViewModel GetSql(int? skip = null, int? pageSize = null, bool cacheHeader = false)
         {
             var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
             var orderBy = AdvSearchVM.OrderBy.Any() ? AdvSearchVM.OrderBy.Combine(x =>
@@ -233,6 +233,7 @@ namespace Core.Components
                 OrderBy = orderBy ?? (GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy),
                 Where = finalCon,
                 Count = true,
+                SkipXQuery = cacheHeader,
             };
             if (skip.HasValue && pageSize.HasValue)
             {
@@ -330,18 +331,14 @@ namespace Core.Components
 
         public virtual async Task LoadAllData()
         {
+            await ReloadData(cacheHeader: GuiInfo.CanCache);
             await LoadHeader();
-            await ReloadData(cache: GuiInfo.CanCache);
         }
 
         public async Task LoadHeader()
         {
-            var columns = await LoadComponent();
-            if (GuiInfo.GroupReferenceId != null && GuiInfo.GroupReferenceId != GuiInfo.ReferenceId)
-            {
-                var columnsRef = await LoadRefComponent();
-                RefBasicHeader = columns.OrderBy(x => x.Order).ToList();
-            }
+            if (_hasLoadUserSetting) return;
+            var columns = await LoadCustomHeaders();
             columns = FilterColumns(columns);
             BasicHeader = columns.OrderBy(x => x.Order).ToList();
             BasicHeaderSearch = columns.Where(x => x.ComponentType == "Dropdown").ToList();
@@ -552,33 +549,31 @@ namespace Core.Components
             }
         }
 
-        protected virtual async Task<List<Component>> LoadComponent()
+        protected virtual async Task<List<Component>> LoadCustomHeaders()
         {
             List<Component> sysSetting = null;
             UserSetting userSetting = null;
             if (GuiInfo.LocalHeader.Nothing())
             {
-                var featureId = FeatureId;
-                if (FeatureId != "null")
+                var vm = new SqlViewModel
                 {
-                    FeatureId = EditForm?.Feature?.Id ?? GuiInfo.ComponentGroup.FeatureId;
-                    featureId = $"'{FeatureId}'";
-                }
-                sysSetting = await new Client(nameof(Component), config: EditForm.Config).GetRawList<Component>(
-                    $"?$filter=Active eq true and EntityId eq '{GuiInfo.ReferenceId}' and FeatureId eq {featureId}");
-
-                userSetting = await new Client(nameof(UserSetting), config: EditForm.Config).FirstOrDefaultAsync<UserSetting>(
-                $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'ListView-{GuiInfo.Id}'");
+                    ComId = "UserSetting",
+                    Action = "GridColumn",
+                    Entity = JSON.Stringify(new { ComId = GuiInfo.Id })
+                };
+                var userSettingTask = await Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+                {
+                    Url = Utils.UserSvc,
+                    Value = JSON.Stringify(vm),
+                    Method = HttpMethod.POST,
+                    IsRawString = true
+                });
+                userSetting = userSettingTask?.ElementAt(0)?.ElementAt(0)?.CastProp<UserSetting>();
+                _hasLoadUserSetting = true;
             }
             else
             {
                 sysSetting = new List<Component>(GuiInfo.LocalHeader);
-            }
-            var DataSourceFilter = default(string);
-            if (GuiInfo.Precision.HasValue && !GuiInfo.DateTimeField.IsNullOrWhiteSpace())
-            {
-                var calcFilter = CalcFilterQuery(true);
-                DataSourceFilter = ListViewSearch.CalcFilterQuery(calcFilter);
             }
             if (userSetting is null)
             {
@@ -589,13 +584,6 @@ namespace Core.Components
                 var column = userSetting.Value;
                 return MergeComponent(sysSetting, JsonConvert.DeserializeObject<List<Component>>(column));
             }
-        }
-
-        public async Task<List<Component>> LoadRefComponent()
-        {
-            var sysSetting = await new Client(nameof(Component), config: EditForm.Config).GetRawList<Component>(
-                $"?$filter=Active eq true and EntityId eq '{GuiInfo.GroupReferenceId}' and FeatureId eq '{FeatureId}'");
-            return sysSetting;
         }
 
         protected virtual List<Component> MergeComponent(List<Component> sysSetting, List<Component> userSetting)
@@ -636,7 +624,7 @@ namespace Core.Components
             Paginator.UpdateView();
         }
 
-        public async Task RealtimeUpdateAsync(ListViewItem rowData, ObservableArgs arg)
+        public void RealtimeUpdate(ListViewItem rowData, ObservableArgs arg)
         {
             if (EmptyRow)
             {
@@ -647,14 +635,7 @@ namespace Core.Components
             {
                 return;
             }
-            if (rowData.EntityId.HasAnyChar())
-            {
-                await rowData.PatchUpdate();
-            }
-            else
-            {
-                await rowData.CreateUpdate();
-            }
+            Client.ExecTaskNoResult(rowData.PatchUpdateOrCreate());
         }
 
         internal virtual async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
@@ -679,7 +660,7 @@ namespace Core.Components
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, rowData);
         }
 
-        public virtual void AddNewEmptyRow(object entityR = null)
+        public virtual void AddNewEmptyRow()
         {
             // not to add empty row into list view
         }
@@ -1005,7 +986,7 @@ namespace Core.Components
                 {
                     foreach (var item in list)
                     {
-                        await item.CreateUpdate();
+                        await item.PatchUpdateOrCreate();
                     }
                     Toast.Success("Sao chép dữ liệu thành công !");
                     base.Dirty = false;
@@ -1081,7 +1062,7 @@ namespace Core.Components
                 {
                     foreach (var item in list)
                     {
-                        await item.CreateUpdate();
+                        await item.PatchUpdateOrCreate();
                     }
                     Toast.Success("Sao chép dữ liệu thành công !");
                     base.Dirty = false;
@@ -1501,6 +1482,7 @@ namespace Core.Components
         public bool _hasLoadRef { get; set; }
         protected Function _preQueryFn;
         internal string FeatureId;
+        protected bool _hasLoadUserSetting;
 
         private void OpenFeature(EntityRef e)
         {

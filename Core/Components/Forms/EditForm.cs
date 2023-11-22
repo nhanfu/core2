@@ -206,7 +206,7 @@ namespace Core.Components.Forms
                     };
                     return new PatchUpdateDetail[] { patch };
                 }).ToList();
-            details.Add(new PatchUpdateDetail { Field = Utils.IdField, Value = EntityId.ToString() });
+            AddIdToPatch(details);
             return new PatchUpdate { Changes = details };
         }
 

@@ -252,7 +252,7 @@ namespace Core.Models
 
         public string Signed { get; set; }
 
-        public string RefField { get; set; }
+        public string TextField { get; set; }
 
         public string OrderBy { get; set; }
 
@@ -269,6 +269,7 @@ namespace Core.Models
         public string ActId { get; set; }
         public string QueueName { get; set; }
         public string ConnKey { get; set; }
+        public bool ShouldSaveText { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

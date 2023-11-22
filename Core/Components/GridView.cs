@@ -8,6 +8,7 @@ using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
 using Newtonsoft.Json;
+using Retyped.Primitive;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -1383,7 +1384,7 @@ namespace Core.Components
                             await currentItemD.ListViewSection.ListView.DispatchEventToHandlerAsync(upItemD.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItemD.Entity);
                             if (GuiInfo.IsRealtime)
                             {
-                                await currentItemD.PatchUpdate();
+                                await currentItemD.PatchUpdateOrCreate();
                             }
                         });
                     }
@@ -1457,7 +1458,7 @@ namespace Core.Components
             var th = HeaderSection.Children.FirstOrDefault(x => x.GuiInfo.Id == com.GuiInfo.Id);
             th.Element.RemoveClass("desc");
             th.Element.RemoveClass("asc");
-            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.GuiInfo.RefField : com.GuiInfo.FieldName;
+            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.GuiInfo.TextField : com.GuiInfo.FieldName;
             var sort = new OrderBy
             {
                 FieldName = fieldName,
@@ -1512,9 +1513,9 @@ namespace Core.Components
             AdvSearchVM.OrderBy.Clear();
         }
 
-        internal virtual async Task RenderViewPort(bool count = true, bool firstLoad = false)
+        internal virtual Task<bool> RenderViewPort(bool count = true, bool firstLoad = false)
         {
-            // not to do anything
+            return Task.FromResult(true);
         }
 
         public void HotKeyF6Handler(Event e, KeyCodeEnum? keyCode)
@@ -1895,14 +1896,7 @@ namespace Core.Components
                         await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
                         if (GuiInfo.IsRealtime)
                         {
-                            if (int.Parse(upItem.Entity[IdField].ToString()) > 0)
-                            {
-                                await upItem.PatchUpdate();
-                            }
-                            else
-                            {
-                                await upItem.CreateUpdate();
-                            }
+                            await upItem.PatchUpdateOrCreate();
                         }
                     });
                 }
@@ -1917,25 +1911,28 @@ namespace Core.Components
             return rowSection;
         }
 
-        public override void AddNewEmptyRow(object entityR = null)
+        public override void AddNewEmptyRow()
         {
             if (Disabled || !Editable || EmptyRowSection?.Children.HasElement() == true)
             {
                 return;
             }
-            var emptyRowData = entityR ?? new object();
-            if (!GuiInfo.DefaultVal.IsNullOrWhiteSpace())
+            var emptyRowData = new object();
+            if (!GuiInfo.DefaultVal.IsNullOrWhiteSpace() && Utils.IsFunction(GuiInfo.DefaultVal, out var fn))
             {
-                var json = string.Empty;
-                if (Utils.IsFunction(GuiInfo.DefaultVal, out var fn))
+                var dfObj = fn.Call(this, this);
+                dfObj.ForEachProp(x =>
                 {
-                    json = fn.Call(this, emptyRowData, Entity).ToString();
-                }
-                var entity = JsonConvert.DeserializeObject<object>(json);
-                emptyRowData.CopyPropFromAct(entity);
+                    emptyRowData[x] = dfObj[x];
+                });
             }
-            emptyRowData[IdField] = null; // Not to add this row into the submitted list
+            emptyRowData[IdField] = null;
             var rowSection = RenderRowData(Header, emptyRowData, EmptyRowSection, null, true);
+            emptyRowData.ForEachProp((field, value) => {
+                rowSection.PatchModel.Add(new PatchUpdateDetail {
+                    Field = field, Value = value?.ToString()
+                });
+            });
             if (!GuiInfo.TopEmpty)
             {
                 DataTable.InsertBefore(MainSection.Element, EmptyRowSection.Element);
@@ -1979,7 +1976,7 @@ namespace Core.Components
         {
             _sum = false;
             DataTable.ParentElement.ScrollTop = 0;
-            await ReloadData(string.Empty, cache: false, search: searching);
+            await ReloadData(string.Empty, cacheHeader: true);
         }
 
         private void ColumnResizeHandler()
@@ -2286,7 +2283,7 @@ namespace Core.Components
                 {
                     foreach (var item in list)
                     {
-                        await item.CreateUpdate();
+                        await item.PatchUpdateOrCreate();
                     }
                     Toast.Success("Sao chép dữ liệu thành công !");
                     base.Dirty = false;
@@ -2427,7 +2424,7 @@ namespace Core.Components
                 if (GuiInfo.IsRealtime)
                 {
                     var entity = rowData;
-                    await rowSection.PatchUpdate();
+                    await rowSection.PatchUpdateOrCreate();
                     Dirty = false;
                 }
                 else
