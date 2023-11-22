@@ -7,9 +7,8 @@ namespace Core.ViewModels
         public string SvcId { get; set; }
         public string ComId { get; set; }
         public string Action { get; set; }
-
         public string Entity { get; set; }
-        public SignedCom Component { get; set; }
+        public string AnnonymousTenant { get; set; }
         public string Paging { get; set; }
         public string Where { get; set; }
         public string OrderBy { get; set; }

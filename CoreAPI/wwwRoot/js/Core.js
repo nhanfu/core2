@@ -11,7 +11,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             if (Core.Components.LangSelect.Culture == null) {
                 Core.Components.LangSelect.Culture = "vi";
             }
-            Core.Clients.Client.ExecTaskNoResult(Core.Components.LangSelect.Translate(), function () {
+            Core.Clients.Client.ExecTask(System.Boolean, Core.Components.LangSelect.Translate(), function (x) {
                 Core.App.InitApp();
             });
         },
@@ -6854,6 +6854,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 GOOGLE_MAP_GEOMETRY: null,
                 GOOGLE_MAP_WEEKLY: null,
                 GOOGLE_MAP_GEO_REQUEST: null,
+                Doc: null,
                 SpecialChar: null,
                 ReverseSpecialChar: null,
                 NullFormatHandler: null,
@@ -6893,6 +6894,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.GOOGLE_MAP_GEOMETRY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=geometry";
                     this.GOOGLE_MAP_WEEKLY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=&v=weekly";
                     this.GOOGLE_MAP_GEO_REQUEST = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc";
+                    this.Doc = document;
                     this.SpecialChar = function (_o1) {
                             _o1.add(43, "%2B");
                             _o1.add(47, "%2F");
@@ -10621,7 +10623,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             ComId: null,
             Action: null,
             Entity: null,
-            Component: null,
+            AnnonymousTenant: null,
             Paging: null,
             Where: null,
             OrderBy: null,
@@ -23387,7 +23389,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             methods: {
                 SetCultureAndTranslate: function (code) {
                     Core.Components.LangSelect.Culture = code;
-                    System.Threading.Tasks.Task.run(Core.Components.LangSelect.Translate);
+                    Core.Components.LangSelect.Translate();
                 },
                 Get: function (key) {
                     if (Core.Extensions.StringExt.IsNullOrEmpty(key)) {
@@ -23406,86 +23408,60 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }
                     return dictionary != null && dictionary.containsKey(key) ? dictionary.getItem(key) : key;
                 },
-                Translate: function () {
-                    var $step = 0,
-                        $task1, 
-                        $taskResult1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        dictionaryItems, 
-                        map, 
-                        $async_e, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            $task1 = new Core.Clients.Client.$ctor1("Dictionary").GetRawList(Core.Models.Dictionary, System.String.format("/?t={0}&$filter=LangCode eq '{1}'", Core.Clients.Client.Tenant, Core.Components.LangSelect.Culture), false, true, true, void 0);
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $taskResult1 = $task1.getAwaitedResult();
-                                            dictionaryItems = $taskResult1;
-                                            map = System.Linq.Enumerable.from(dictionaryItems, Core.Models.Dictionary).toDictionary(function (x) {
-                                                return x.Key;
-                                            }, function (x) {
-                                                return x.Value;
-                                            }, System.String, System.String);
-                                            if (Core.Components.LangSelect._dictionaries.containsKey(Core.Components.LangSelect.Culture)) {
-                                                Core.Components.LangSelect._dictionaries.remove(Core.Components.LangSelect.Culture);
-                                                Core.Components.LangSelect._dictionaries.add(Core.Components.LangSelect.Culture, map);
-                                            }
-                                            Core.Clients.LocalStorage.SetItem(System.Collections.Generic.Dictionary$2(System.String,System.String), Core.Components.LangSelect.Culture, map);
-                                            Core.Extensions.IEnumerableExtensions.SelectForeach(Node, Core.Components.LangSelect.Travel(document), function (x) {
-                                                var $t;
-                                                var props = ($t = x[Core.Components.LangSelect.LangProp]) != null ? Bridge.toString($t) : null;
-                                                if (props == null) {
-                                                    return;
-                                                }
-                                                props.split(",").forEach(function (propName) {
-                                                    var $t1;
-                                                    var template = ($t1 = x[(Core.Components.LangSelect.LangKey || "") + (propName || "")]) != null ? Bridge.toString($t1) : null;
-                                                    var parameters = Bridge.as(x[(Core.Components.LangSelect.LangParam || "") + (propName || "")], System.Array.type(System.Object));
+                Translate: function (annonymous) {
+                    var $t;
+                    if (annonymous === void 0) { annonymous = true; }
+                    var tenant = Core.Extensions.Utils.Doc.head.children.tenant.content;
+                    var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                    var vm = ($t = new Core.ViewModels.SqlViewModel(), $t.ComId = "Dictionary", $t.Action = "GetAll", $t.AnnonymousTenant = tenant, $t);
+                    var dictionaryTask = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = JSON.stringify(vm), $t.IsRawString = true, $t.Url = Core.Extensions.Utils.UserSvc, $t.Method = Core.Enums.HttpMethod.POST, $t.AllowAnonymous = annonymous, $t));
+                    Core.Clients.Client.ExecTask(System.Array.type(System.Array.type(System.Object)), dictionaryTask, function (items) {
+                        Core.Components.LangSelect.DictionaryLoaded(System.Linq.Enumerable.from(items[System.Array.index(0, items)], System.Object).select(function (x) {
+                                return Core.Extensions.BridgeExt.CastProp(Core.Models.Dictionary, x);
+                            }).ToArray(Core.Models.Dictionary));
+                        tcs.trySetResult(true);
+                    });
+                    return tcs.task;
+                },
+                DictionaryLoaded: function (dictionaryItems) {
+                    var map = System.Linq.Enumerable.from(Core.Extensions.BridgeExt.DistinctBy(Core.Models.Dictionary, System.String, dictionaryItems, function (x) {
+                            return x.Key;
+                        }), Core.Models.Dictionary).toDictionary(function (x) {
+                            return x.Key;
+                        }, function (x) {
+                            return x.Value;
+                        }, System.String, System.String);
+                    if (Core.Components.LangSelect._dictionaries.containsKey(Core.Components.LangSelect.Culture)) {
+                        Core.Components.LangSelect._dictionaries.remove(Core.Components.LangSelect.Culture);
+                        Core.Components.LangSelect._dictionaries.add(Core.Components.LangSelect.Culture, map);
+                    }
+                    Core.Clients.LocalStorage.SetItem(System.Collections.Generic.Dictionary$2(System.String,System.String), Core.Components.LangSelect.Culture, map);
+                    Core.Extensions.IEnumerableExtensions.SelectForeach(Node, Core.Components.LangSelect.Travel(document), function (x) {
+                        var $t;
+                        var props = ($t = x[Core.Components.LangSelect.LangProp]) != null ? Bridge.toString($t) : null;
+                        if (props == null) {
+                            return;
+                        }
+                        props.split(",").forEach(function (propName) {
+                                var $t1;
+                                var template = ($t1 = x[(Core.Components.LangSelect.LangKey || "") + (propName || "")]) != null ? Bridge.toString($t1) : null;
+                                var parameters = Bridge.as(x[(Core.Components.LangSelect.LangParam || "") + (propName || "")], System.Array.type(System.Object));
 
-                                                    var translated = map.containsKey(template) ? map.getItem(template) : template;
-                                                    translated = Core.Extensions.IEnumerableExtensions.HasElement(System.Object, parameters) ? System.String.format.apply(System.String, [translated].concat(parameters)) : translated;
-                                                    var text;
-                                                    if (((text = Bridge.as(x, Text))) != null && Bridge.referenceEquals(propName, "TextContent")) {
-                                                        text.textContent = translated;
-                                                        return;
-                                                    }
-                                                    var ele = Bridge.as(x, HTMLElement);
-                                                    if (Bridge.referenceEquals(propName, "ClassName")) {
-                                                        ele.className = System.String.replaceAll(ele.className, template, translated);
-                                                    } else {
-                                                        ele.setAttribute(propName, translated);
-                                                    }
-                                                });
-                                            });
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
+                                var translated = map.containsKey(template) ? map.getItem(template) : template;
+                                translated = Core.Extensions.IEnumerableExtensions.HasElement(System.Object, parameters) ? System.String.format.apply(System.String, [translated].concat(parameters)) : translated;
+                                var text;
+                                if (((text = Bridge.as(x, Text))) != null && Bridge.referenceEquals(propName, "TextContent")) {
+                                    text.textContent = translated;
+                                    return;
                                 }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                    return $tcs.task;
+                                var ele = Bridge.as(x, HTMLElement);
+                                if (Bridge.referenceEquals(propName, "ClassName")) {
+                                    ele.className = System.String.replaceAll(ele.className, template, translated);
+                                } else {
+                                    ele.setAttribute(propName, translated);
+                                }
+                            });
+                    });
                 },
                 Travel: function (node) {
                     return new (Bridge.GeneratorEnumerable$1(Node))(Bridge.fn.bind(this, function (node) {

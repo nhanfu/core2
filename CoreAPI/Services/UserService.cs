@@ -694,7 +694,8 @@ namespace Core.Services
         {
             var sv = await GetService(vm);
             var jsRes = await ExecJs(vm.Entity, sv.Content);
-            var conStr = await GetConnStrFromKey(sv.ConnKey);
+            var conStr = TenantCode is null && vm.AnnonymousTenant is not null 
+                ? sv.ConnKey : await GetConnStrFromKey(sv.ConnKey);
             return await GetResultFromQuery(vm, conStr, jsRes);
         }
 
@@ -714,8 +715,8 @@ namespace Core.Services
                 }
             }
 
-            var query = @$"select * from Services 
-                where (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') and TenantCode = '{TenantCode}'";
+            var query = @$"select * from Services
+                where (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
             var ds = await ReadDataSet(query, _configuration.GetConnectionString("default"));
             if (ds.Nothing()) return null;
             sv = new Models.Services();
@@ -728,6 +729,9 @@ namespace Core.Services
             if (sv == null)
             {
                 return null;
+            }
+            if (TenantCode is null && !sv.Annonymous) {
+                throw new UnauthorizedAccessException("The service is required login");
             }
             var isValidRole = sv.IsPublicInTenant ||
                 (from svRole in sv.RoleIds.Split(',')

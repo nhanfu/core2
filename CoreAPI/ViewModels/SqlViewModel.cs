@@ -18,7 +18,7 @@ namespace Core.ViewModels
         public SqlTypeEnum QueryType { get; set; }
         public string Entity { get; set; }
         public Component Component { get; set; }
-        public AnnonymousInfo Tenant { get; set; }
+        public string AnnonymousTenant { get; set; }
         public string Select { get; set; } = "*";
         public string Where { get; set; }
         public string GroupBy { get; set; }
@@ -33,11 +33,5 @@ namespace Core.ViewModels
     {
         public string Query { get; set; }
         public string XQuery { get; set; }
-    }
-
-    public class AnnonymousInfo
-    {
-        public string System { get; set; }
-        public string TenantCode { get; set; }
     }
 }

@@ -38,7 +38,7 @@ namespace Core.Extensions
         public const string UserSvc = "/user/svc";
         public const string ExportExcel = "/user/excel";
         public const string DefaultConnKey = "default";
-
+        public static dynamic Doc = Document.Instance;
 
         public const string GOOGLE_MAP = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCr_2PaKJplCyvwN4q78lBkX3UBpfZ_HsY";
         public const string GOOGLE_MAP_PLACES = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=places";

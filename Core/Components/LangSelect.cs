@@ -3,6 +3,7 @@ using Core.Clients;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace Core.Components
                 {
                     return;
                 }
-                culture = value?.Replace("\"","");
+                culture = value?.Replace("\"", "");
                 LocalStorage.SetItem(nameof(Culture), value?.Replace("\"", ""));
             }
         }
@@ -94,7 +95,7 @@ namespace Core.Components
         private static void SetCultureAndTranslate(string code)
         {
             Culture = code;
-            Task.Run(Translate);
+            Translate();
         }
 
         public static string Get(string key)
@@ -120,11 +121,35 @@ namespace Core.Components
             return dictionary != null && dictionary.ContainsKey(key) ? dictionary[key] : key;
         }
 
-        public static async Task Translate()
+        public static Task<bool> Translate(bool annonymous = true)
         {
-            var dictionaryItems = await new Client(nameof(Dictionary))
-                .GetRawList<Dictionary>($"/?t={Client.Tenant}&$filter=LangCode eq '{Culture}'", addTenant: true, annonymous: true);
-            var map = dictionaryItems.ToDictionary(x => x.Key, x => x.Value);
+            var tenant = Utils.Doc.head.children.tenant.content;
+            var tcs = new TaskCompletionSource<bool>();
+            var vm = new SqlViewModel
+            {
+                ComId = "Dictionary",
+                Action = "GetAll",
+                AnnonymousTenant = tenant
+            };
+            var dictionaryTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+            {
+                Value = JSON.Stringify(vm),
+                IsRawString = true,
+                Url = Utils.UserSvc,
+                Method = Enums.HttpMethod.POST,
+                AllowAnonymous = annonymous
+            });
+            Client.ExecTask(dictionaryTask, items =>
+            {
+                DictionaryLoaded(items[0].Select(x => x.CastProp<Dictionary>()).ToArray());
+                tcs.TrySetResult(true);
+            });
+            return tcs.Task;
+        }
+
+        private static void DictionaryLoaded(Dictionary[] dictionaryItems)
+        {
+            var map = dictionaryItems.DistinctBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
             if (_dictionaries.ContainsKey(Culture))
             {
                 _dictionaries.Remove(Culture);

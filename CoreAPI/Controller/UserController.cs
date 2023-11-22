@@ -182,6 +182,7 @@ namespace Core.Controllers
             return randomPassword;
         }
 
+        [AllowAnonymous]
         [HttpPost("api/[Controller]/svc")]
         public Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ExecUserSvc([FromBody] SqlViewModel vm)
         {

@@ -14,7 +14,7 @@ namespace Core
             {
                 LangSelect.Culture = "vi";
             }
-            Client.ExecTaskNoResult(LangSelect.Translate(), () =>
+            Client.ExecTask(LangSelect.Translate(), (x) =>
             {
                 InitApp();
             });

@@ -22,7 +22,7 @@ public partial class Services
 
     public bool IsPublicInTenant { get; set; }
 
-    public bool Anonymous { get; set; }
+    public bool Annonymous { get; set; }
 
     public bool Active { get; set; }
 
