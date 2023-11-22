@@ -78,7 +78,6 @@
     <Compile Include="Components\GridView.cs" />
     <Compile Include="Components\GroupGridView.cs" />
     <Compile Include="Components\GroupListView.cs" />
-    <Compile Include="Components\HeaderEditor.cs" />
     <Compile Include="Components\ImageUploader.cs" />
     <Compile Include="Components\Link.cs" />
     <Compile Include="Components\ListView.cs" />
@@ -160,7 +159,6 @@
     <Compile Include="ViewModels\SqlWrapper.cs" />
     <Compile Include="ViewModels\Token.cs" />
     <Compile Include="ViewModels\UserDetailVM.cs" />
-    <Compile Include="ViewModels\VendorVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />

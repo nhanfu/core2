@@ -1079,12 +1079,6 @@ namespace Core.Components.Forms
             return hasHidden;
         }
 
-        public void HeaderProperties(object arg)
-        {
-            var editor = new HeaderEditor() { Entity = arg, ParentElement = Element };
-            AddChild(editor);
-        }
-
         public void ComponentProperties(object arg)
         {
             var editor = new ComponentBL()

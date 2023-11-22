@@ -27,7 +27,7 @@ namespace Core.Components.Framework
         public void EditGridColumn(object arg)
         {
             var header = arg as Component;
-            var editor = new HeaderEditor() { Entity = header, ParentElement = TabEditor.Element };
+            var editor = new ComponentBL() { Entity = header, ParentElement = base.TabEditor.Element };
             var tab = Tabs.FirstOrDefault(x => x.Show);
             tab?.AddChild(editor);
         }

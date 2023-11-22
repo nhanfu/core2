@@ -10635,16 +10635,6 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Core.ViewModels.SyncConfigVM", {
-        props: {
-            Component: null,
-            ComponentGroup: null,
-            Feature: null,
-            SyncChildren: false,
-            VendorId: null
-        }
-    });
-
     Bridge.define("Core.ViewModels.Token", {
         props: {
             UserId: null,
@@ -10684,13 +10674,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.SigninDate = new System.DateTimeOffset();
                 this.SysName = "TMS";
             }
-        }
-    });
-
-    Bridge.define("Core.ViewModels.VendorConnStrVM", {
-        props: {
-            Name: null,
-            ConStr: null
         }
     });
 
@@ -13237,11 +13220,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                     return Bridge.referenceEquals(x.EntityId, entityId) && Bridge.referenceEquals(recordId, x.RecordId);
                 }).ToArray(Core.Models.FeaturePolicy);
                 return hasHidden;
-            },
-            HeaderProperties: function (arg) {
-                var $t;
-                var editor = ($t = new Core.Components.HeaderEditor(), $t.Entity = arg, $t.ParentElement = this.Element, $t);
-                this.AddChild(editor);
             },
             ComponentProperties: function (arg) {
                 var $t;
@@ -33288,7 +33266,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (Core.Clients.Client.SystemRole) {
                     menu.MenuItems.AddRange(Bridge.fn.bind(this, function (_o2) {
                             var $t;
-                            _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-wrench", $t.Text = "T\u00f9y ch\u1ecdn c\u1ed9t d\u1eef li\u1ec7u", $t.Click = Bridge.fn.cacheBind(editForm, editForm.HeaderProperties), $t.Parameter = header, $t));
+                            _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-wrench", $t.Text = "T\u00f9y ch\u1ecdn c\u1ed9t d\u1eef li\u1ec7u", $t.Click = Bridge.fn.cacheBind(editForm, editForm.ComponentProperties), $t.Parameter = header, $t));
                             _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-clone", $t.Text = "Clone c\u1ed9t", $t.Click = Bridge.fn.cacheBind(this, this.CloneHeader), $t.Parameter = header, $t));
                             _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-trash-alt", $t.Text = "X\u00f3a c\u1ed9t", $t.Click = Bridge.fn.cacheBind(this, this.RemoveHeader), $t.Parameter = header, $t));
                             _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-cog", $t.Text = "T\u00f9y ch\u1ecdn b\u1ea3ng d\u1eef li\u1ec7u", $t.Click = Bridge.fn.cacheBind(editForm, editForm.ComponentProperties), $t.Parameter = this.GuiInfo, $t));
@@ -40567,61 +40545,12 @@ Bridge.assembly("Core", function ($asm, globals) {
         methods: {
             AlterPosition: function () {
                 Core.Extensions.HtmlElementExtension.AddClass(this.Element.parentElement, "properties");
-            },
-            Save: function (entity) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    component, 
-                    rs, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        component = Bridge.unbox(this.Entity);
-                                        $task1 = Core.Components.Forms.PopupEditor.prototype.Save.call(this, entity);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        rs = $taskResult1;
-                                        $tcs.setResult(rs);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
             }
         }
     });
 
     Bridge.define("Core.Components.Framework.ComponentGroupBL", {
         inherits: [Core.Components.Forms.PopupEditor],
-        fields: {
-            _syncConfig: null
-        },
         props: {
             ComGroupEntity: {
                 get: function () {
@@ -40755,7 +40684,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             EditGridColumn: function (arg) {
                 var $t;
                 var header = Bridge.as(arg, Core.Models.Component);
-                var editor = ($t = new Core.Components.HeaderEditor(), $t.Entity = header, $t.ParentElement = this.TabEditor.Element, $t);
+                var editor = ($t = new Core.Components.Framework.ComponentBL(), $t.Entity = header, $t.ParentElement = Bridge.ensureBaseProperty(this, "TabEditor").$Core$Components$EditableComponent$TabEditor.Element, $t);
                 var tab = System.Linq.Enumerable.from(Core.Components.Forms.TabEditor.Tabs, Core.Components.Forms.TabEditor).firstOrDefault(function (x) {
                         return x.Show;
                     }, null);
@@ -41281,78 +41210,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             Dispose: function () {
                 this._confirm != null ? this._confirm.Dispose() : null;
                 Core.Components.Forms.PopupEditor.prototype.Dispose.call(this);
-            }
-        }
-    });
-
-    Bridge.define("Core.Components.HeaderEditor", {
-        inherits: [Core.Components.Forms.PopupEditor],
-        fields: {
-            _syncConfig: null
-        },
-        ctors: {
-            ctor: function () {
-                this.$initialize();
-                Core.Components.Forms.PopupEditor.ctor.call(this, "Component");
-                this.Name = "ComponentEditor";
-                this.Title = "Properties";
-                this.Icon = "fa fa-wrench";
-                this.DOMContentLoaded = Bridge.fn.combine(this.DOMContentLoaded, Bridge.fn.cacheBind(this, this.AlterPosition));
-                this.PopulateDirty = false;
-                this.Config = true;
-                this.ShouldLoadEntity = true;
-            }
-        },
-        methods: {
-            AlterPosition: function () {
-                Core.Extensions.HtmlElementExtension.AddClass(this.Element.parentElement, "properties");
-            },
-            SyncDialog_YesConfirmed: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    ok, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = new Core.Clients.Client.$ctor1("Component", Bridge.Reflection.getTypeNamespace(Core.Models.User)).PostAsync(System.Boolean, this._syncConfig, "SyncTenant", false, true);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        ok = $taskResult1;
-                                        if (ok) {
-                                            Core.Extensions.Toast.Success("C\u1eadp nh\u1eadt c\u1ea5u h\u00ecnh th\u00e0nh c\u00f4ng");
-                                        }
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
             }
         }
     });

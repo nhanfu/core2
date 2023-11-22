@@ -8,8 +8,6 @@ namespace Core.Components.Framework
 {
     public class ComponentGroupBL : PopupEditor
     {
-        private SyncConfigVM _syncConfig;
-
         private ComponentGroup ComGroupEntity => Entity as ComponentGroup;
         public ComponentGroupBL() : base(nameof(ComponentGroup))
         {

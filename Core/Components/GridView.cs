@@ -2848,7 +2848,7 @@ namespace Core.Components
             {
                 menu.MenuItems.AddRange(new List<ContextMenuItem>
                 {
-                    new ContextMenuItem { Icon = "fal fa-wrench", Text = "Tùy chọn cột dữ liệu", Click = editForm.HeaderProperties, Parameter = header },
+                    new ContextMenuItem { Icon = "fal fa-wrench", Text = "Tùy chọn cột dữ liệu", Click = editForm.ComponentProperties, Parameter = header },
                     new ContextMenuItem { Icon = "fal fa-clone", Text = "Clone cột", Click = CloneHeader, Parameter = header },
                     new ContextMenuItem { Icon = "fal fa-trash-alt", Text = "Xóa cột", Click = RemoveHeader, Parameter = header },
                     new ContextMenuItem { Icon = "fal fa-cog", Text = "Tùy chọn bảng dữ liệu", Click = editForm.ComponentProperties, Parameter = GuiInfo },
