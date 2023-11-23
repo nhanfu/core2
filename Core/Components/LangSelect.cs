@@ -141,7 +141,7 @@ namespace Core.Components
             });
             Client.ExecTask(dictionaryTask, items =>
             {
-                DictionaryLoaded(items[0].Select(x => x.CastProp<Dictionary>()).ToArray());
+                DictionaryLoaded(items[0].Select(x => x.As<Dictionary>()).ToArray());
                 tcs.TrySetResult(true);
             });
             return tcs.Task;

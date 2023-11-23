@@ -565,7 +565,7 @@ namespace Core.Components
                     Method = HttpMethod.POST,
                     IsRawString = true
                 });
-                userSetting = userSettingTask?.ElementAt(0)?.ElementAt(0)?.CastProp<UserSetting>();
+                userSetting = userSettingTask?.ElementAt(0)?.ElementAt(0)?.As<UserSetting>();
                 _hasLoadUserSetting = true;
             }
             else

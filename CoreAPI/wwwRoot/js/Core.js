@@ -3526,9 +3526,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                             }, null, System.String, $t3));
                         components.forEach(function (com) {
                                 var g = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.String, Core.Models.ComponentGroup, groupMap, com.ComponentGroupId);
-                                if (!System.Array.contains(g.Component, com, Core.Models.Component)) {
-                                    System.Array.add(g.Component, com, Core.Models.Component);
-                                }
+                                System.Array.add(g.Component, com, Core.Models.Component);
                             });
                         feature.ComponentGroup = groups;
                         feature.FeaturePolicy = policies;
@@ -16380,7 +16378,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     case 2: {
                                         $taskResult1 = $task1.getAwaitedResult();
                                         userSettingTask = $taskResult1;
-                                        userSetting = userSettingTask != null && ($t = System.Linq.Enumerable.from(userSettingTask, System.Array.type(System.Object)).elementAt(0)) != null && ($t1 = System.Linq.Enumerable.from($t, System.Object).elementAt(0)) != null ? Core.Extensions.BridgeExt.CastProp(Core.Models.UserSetting, $t1) : null;
+                                        userSetting = userSettingTask != null && ($t = System.Linq.Enumerable.from(userSettingTask, System.Array.type(System.Object)).elementAt(0)) != null && ($t1 = System.Linq.Enumerable.from($t, System.Object).elementAt(0)) != null ? Bridge.unbox($t1) : null;
                                         this._hasLoadUserSetting = true;
                                         $step = 4;
                                         continue;
@@ -23232,7 +23230,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     var dictionaryTask = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = JSON.stringify(vm), $t.IsRawString = true, $t.Url = Core.Extensions.Utils.UserSvc, $t.Method = Core.Enums.HttpMethod.POST, $t.AllowAnonymous = annonymous, $t));
                     Core.Clients.Client.ExecTask(System.Array.type(System.Array.type(System.Object)), dictionaryTask, function (items) {
                         Core.Components.LangSelect.DictionaryLoaded(System.Linq.Enumerable.from(items[System.Array.index(0, items)], System.Object).select(function (x) {
-                                return Core.Extensions.BridgeExt.CastProp(Core.Models.Dictionary, x);
+                                return Bridge.unbox(x);
                             }).ToArray(Core.Models.Dictionary));
                         tcs.trySetResult(true);
                     });
@@ -32872,7 +32870,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         total = ds.length > 1 ? ds[System.Array.index(1, ds)][0].total : ds[System.Array.index(0, ds)].length;
                                         if (ds.length > 3) {
                                             customHeaders = System.Linq.Enumerable.from(ds[System.Array.index(2, ds)], System.Object).select(function (x) {
-                                                return Core.Extensions.BridgeExt.CastProp(Core.Models.Component, x);
+                                                return Bridge.unbox(x);
                                             }).toList(Core.Models.Component);
                                             this.FilterColumns(customHeaders);
                                             this.RenderTableHeader(this.Header);

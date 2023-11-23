@@ -2654,7 +2654,7 @@ namespace Core.Components
             var total = ds.Length > 1 ? ds[1].ToDynamic()[0].total : ds[0].Length;
             if (ds.Length > 3)
             {
-                var customHeaders = ds[2].Select(x => x.CastProp<Component>()).ToList();
+                var customHeaders = ds[2].Select(x => x.As<Component>()).ToList();
                 FilterColumns(customHeaders);
                 RenderTableHeader(Header);
             }

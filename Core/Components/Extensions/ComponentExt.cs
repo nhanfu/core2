@@ -287,7 +287,7 @@ namespace Core.Components.Extensions
                 var groupMap = groups.DistinctBy(x => x.Id).ToDictionary(x => x.Id);
                 components.ForEach(com => {
                     var g = groupMap.GetValueOrDefault(com.ComponentGroupId);
-                    if (!g.Component.Contains(com)) g.Component.Add(com);
+                    g.Component.Add(com);
                 });
                 feature.ComponentGroup = groups;
                 feature.FeaturePolicy = policies;
