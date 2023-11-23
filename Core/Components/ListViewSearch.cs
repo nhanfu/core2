@@ -643,7 +643,7 @@ namespace Core.Components
                 var operators = headers.Select(x => x.MapToFilterOperator(searchTerm)).Where(x => x.HasAnyChar());
                 finalFilter = string.Join(" or ", operators);
             }
-            var basicsAddDate = ParentListView.BasicHeader?.Where(x => x.AddDate)?.Select(x => x.Id)?.ToArray();
+            var basicsAddDate = ParentListView.Header?.Where(x => x.AddDate)?.Select(x => x.Id)?.ToArray();
             var parentGrid = basicsAddDate != null && basicsAddDate.Any() && ParentGridView.AdvSearchVM.Conditions.Any(x => basicsAddDate.Contains(x.FieldId) && !x.Value.IsNullOrWhiteSpace());
             if (!parentGrid && EntityVM.StartDate != null)
             {

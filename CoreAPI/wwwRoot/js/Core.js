@@ -15530,8 +15530,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             ListViewSearch: null,
             Paginator: null,
             Header: null,
-            BasicHeader: null,
-            BasicHeaderSearch: null,
             RowData: null,
             FormattedRowData: null,
             VirtualScroll: false,
@@ -15588,7 +15586,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.CellSelected = new (System.Collections.Generic.List$1(Core.Models.CellSelected)).ctor();
                 this.Wheres = new (System.Collections.Generic.List$1(Core.Models.Where)).ctor();
                 this.RecordPolicy = new (System.Collections.Generic.List$1(Core.Models.FeaturePolicy)).ctor();
-                this.BasicHeader = new (System.Collections.Generic.List$1(Core.Models.Component)).ctor();
                 this.CacheData = new (System.Collections.Generic.List$1(System.Object)).ctor();
                 this.SelectedIndex = -1;
                 this.SelectedIds = new (System.Collections.Generic.HashSet$1(System.String)).ctor();
@@ -16069,11 +16066,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         $taskResult1 = $task1.getAwaitedResult();
                                         columns = $taskResult1;
                                         columns = this.FilterColumns(columns);
-                                        this.BasicHeader = System.Linq.Enumerable.from(columns, Core.Models.Component).orderBy(function (x) {
+                                        this.Header = System.Linq.Enumerable.from(columns, Core.Models.Component).orderBy(function (x) {
                                             return x.Order;
-                                        }).toList(Core.Models.Component);
-                                        this.BasicHeaderSearch = System.Linq.Enumerable.from(columns, Core.Models.Component).where(function (x) {
-                                            return Bridge.referenceEquals(x.ComponentType, "Dropdown");
                                         }).toList(Core.Models.Component);
                                         this.ResetOrder();
                                         !Bridge.staticEquals(this.HeaderLoaded, null) ? this.HeaderLoaded(columns) : null;
@@ -16097,7 +16091,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             ResetOrder: function () {
                 var order = 0;
-                this.BasicHeader.ForEach(function (x) {
+                this.Header.ForEach(function (x) {
                     x.Order = order;
                     order = (order + 1) | 0;
                 });
@@ -18449,7 +18443,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 gridView1.ListViewSearch.EntityVM.StartDate = null;
                 gridView1.ListViewSearch.EntityVM.EndDate = null;
                 Core.Clients.Client.ExecTask(System.Collections.Generic.List$1(System.Object), this.GetRealTimeSelectedRows(), function (selecteds) {
-                    var com = System.Linq.Enumerable.from(gridView1.BasicHeader, Core.Models.Component).firstOrDefault(function (x) {
+                    var com = System.Linq.Enumerable.from(gridView1.Header, Core.Models.Component).firstOrDefault(function (x) {
                             return Bridge.referenceEquals(x.FieldName, e.TargetFieldName);
                         }, null);
                     var cellSelecteds = System.Linq.Enumerable.from(selecteds, System.Object).select(function (selected) {
@@ -24446,7 +24440,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     });
                     finalFilter = Bridge.toArray(operators).join(" or ");
                 }
-                var basicsAddDate = ($t2 = this.ParentListView.BasicHeader) != null && ($t3 = System.Linq.Enumerable.from($t2, Core.Models.Component).where(function (x) {
+                var basicsAddDate = ($t2 = this.ParentListView.Header) != null && ($t3 = System.Linq.Enumerable.from($t2, Core.Models.Component).where(function (x) {
                             return x.AddDate;
                         })) != null && ($t4 = $t3.select(function (x) {
                         return x.Id;
@@ -29690,11 +29684,11 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
-                                        if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.Component, this.BasicHeader)) {
+                                        if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.Component, this.Header)) {
                                             $tcs.setResult(null);
                                             return;
                                         }
-                                        Component = System.Linq.Enumerable.from(this.BasicHeader, Core.Models.Component).where(function (x) {
+                                        Component = System.Linq.Enumerable.from(this.Header, Core.Models.Component).where(function (x) {
                                             return !Bridge.referenceEquals(x.FieldName, Core.Components.EditableComponent.IdField) && Bridge.referenceEquals(x.ComponentType, "Number") && x.IsSumary === true;
                                         }).toList(Core.Models.Component);
                                         if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.Component, Component)) {
@@ -29877,9 +29871,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.RenderPaginator();
             },
             SwapList: function (oldIndex, newIndex) {
-                var item = this.BasicHeader.getItem(oldIndex);
-                this.BasicHeader.removeAt(oldIndex);
-                this.BasicHeader.insert(newIndex, item);
+                var item = this.Header.getItem(oldIndex);
+                this.Header.removeAt(oldIndex);
+                this.Header.insert(newIndex, item);
             },
             SwapHeader: function (oldIndex, newIndex) {
                 var item = this.Header.getItem(oldIndex);
@@ -31472,7 +31466,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                 wh.add(System.String.format("({0})", [filter1]));
                                             }
                                             stringWh = System.Linq.Enumerable.from(wh, System.String).any() ? System.String.format("({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.String, wh, " and ")]) : "";
-                                            Component = System.Linq.Enumerable.from(this.BasicHeader, Core.Models.Component).where(function (x) {
+                                            Component = System.Linq.Enumerable.from(this.Header, Core.Models.Component).where(function (x) {
                                                 return Bridge.referenceEquals(x.ComponentType, "Number") && !Bridge.referenceEquals(x.FieldName, header.FieldName);
                                             }).toList(Core.Models.Component);
                                             sum = System.Linq.Enumerable.from(Component, Core.Models.Component).select(function (x) {
@@ -33254,7 +33248,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         }).toList(Core.Components.EditableComponent), $t).toDictionary(function (x) {
                                             return x.GuiInfo.Id;
                                         }, null, System.String, $t));
-                                        this.BasicHeader.ForEach(function (x) {
+                                        this.Header.ForEach(function (x) {
                                             var match = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.String, Core.Components.EditableComponent, headerElement, x.Id);
                                             if (match != null) {
                                                 x.Width = match.Element.offsetWidth + "px";
@@ -33262,7 +33256,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                 x.MinWidth = match.Element.offsetWidth + "px";
                                             }
                                         });
-                                        column = this.BasicHeader;
+                                        column = this.Header;
                                         value = Newtonsoft.Json.JsonConvert.SerializeObject(column);
                                         if (this._settings == null) {
                                             $step = 2;
@@ -33356,10 +33350,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     case 1: {
                                         $taskResult1 = $task1.getAwaitedResult();
                                         this._settings = $taskResult1;
-                                        this.BasicHeader.ForEach(function (x) {
+                                        this.Header.ForEach(function (x) {
                                             x.Active = false;
                                         });
-                                        column = this.BasicHeader;
+                                        column = this.Header;
                                         value = Newtonsoft.Json.JsonConvert.SerializeObject(column);
                                         if (this._settings == null) {
                                             $step = 2;
@@ -33474,7 +33468,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             FrozenColumn: function (arg) {
                 var entity = Bridge.as(arg.header, Core.Models.Component);
-                System.Linq.Enumerable.from(this.BasicHeader, Core.Models.Component).firstOrDefault(function (x) {
+                System.Linq.Enumerable.from(this.Header, Core.Models.Component).firstOrDefault(function (x) {
                         return Bridge.referenceEquals(x.Id, entity.Id);
                     }, null).Frozen = !entity.Frozen;
                 System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
@@ -35033,35 +35027,6 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                     $asyncBody();
                 }));
-            },
-            CompareEx: function (obj, another) {
-                var $t;
-                var fileNames = System.Linq.Enumerable.from(this.ListViewSection.ListView.BasicHeaderSearch, Core.Models.Component).select(function (x) {
-                        return x.FieldName;
-                    }).toList(System.String);
-                var result = false;
-                $t = Bridge.getEnumerator(System.Linq.Enumerable.from(Bridge.Reflection.getMembers(Bridge.getType(obj), 16, 28), System.Reflection.PropertyInfo).where(function (x) {
-                        return fileNames.contains(x.n);
-                    }).toList(System.Reflection.PropertyInfo));
-                try {
-                    while ($t.moveNext()) {
-                        var property = $t.Current;
-                        var objValue = Bridge.Reflection.midel(property.g, Bridge.unbox(obj))();
-                        var anotherValue = Bridge.Reflection.midel(property.g, Bridge.unbox(another))();
-                        if (objValue == null && anotherValue == null) {
-                            continue;
-                        }
-                        if ((objValue != null && anotherValue == null) || (objValue == null && anotherValue != null) || (objValue != null && anotherValue != null && !Bridge.referenceEquals(Bridge.toString(objValue), Bridge.toString(anotherValue)))) {
-                            result = true;
-                            break;
-                        }
-                    }
-                } finally {
-                    if (Bridge.is($t, System.IDisposable)) {
-                        $t.System$IDisposable$Dispose();
-                    }
-                }
-                return result;
             },
             PatchUpdateOrCreate: function () {
                 var $step = 0,
@@ -39724,10 +39689,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         inherits: [Core.Components.Forms.PopupEditor],
         fields: {
             ParentListView: null,
-            _ul: null,
             _tbody: null,
-            _ul1: null,
-            _settings: null,
             _headers: null,
             _userSetting: null
         },
@@ -39936,7 +39898,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 });
             },
             LocalRender: function () {
-                this._headers = System.Linq.Enumerable.from(this.ParentListView.BasicHeader, Core.Models.Component).where(function (x) {
+                this._headers = System.Linq.Enumerable.from(this.ParentListView.Header, Core.Models.Component).where(function (x) {
                         return !Bridge.referenceEquals(x.ComponentType, "Button") && !Core.Extensions.StringExt.IsNullOrWhiteSpace(x.ShortDesc);
                     }).toList(Core.Models.Component);
                 var getUsrSettingTask = this.GetUserSetting();
@@ -39950,12 +39912,11 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var $t, $t1, $t2;
                 this._userSetting = res[System.Array.index(0, res)].length > 0 ? ($t = res[System.Array.index(0, res)])[System.Array.index(0, $t)] : null;
                 if (this._userSetting != null) {
-                    this._headers = Newtonsoft.Json.JsonConvert.DeserializeObject(Bridge.as(this._userSetting.Value, System.String), System.Collections.Generic.List$1(Core.Models.Component));
-                    var userSettings = ($t1 = Core.Models.Component, System.Linq.Enumerable.from(this._headers, $t1).toDictionary(function (x) {
+                    var usrHeaders = ($t1 = Core.Models.Component, System.Linq.Enumerable.from(Newtonsoft.Json.JsonConvert.DeserializeObject(Bridge.as(this._userSetting.Value, System.String), System.Collections.Generic.List$1(Core.Models.Component)), $t1).toDictionary(function (x) {
                             return x.Id;
                         }, null, System.String, $t1));
                     this._headers.ForEach(function (x) {
-                        var current = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.String, Core.Models.Component, userSettings, x.Id);
+                        var current = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.String, Core.Models.Component, usrHeaders, x.Id);
                         if (current != null) {
                             x.IsExport = current.IsExport;
                             x.OrderExport = current.OrderExport;
@@ -40055,7 +40016,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     }
                                     case 1: {
                                         this._userSetting = ($t = new Core.Models.UserSetting(), $t.Name = System.String.format("Export-{0}", [this.ParentListView.GuiInfo.Id]), $t.UserId = Core.Clients.Client.Token.UserId, $t.Value = Newtonsoft.Json.JsonConvert.SerializeObject(this._headers), $t);
-                                        $task1 = Core.Clients.Client.Instance.SubmitAsync(System.Object, this.CreatePatch(null));
+                                        $task1 = Core.Clients.Client.Instance.SubmitAsync(System.Object, this.CreatePatch(System.Id.op_Implicit$7(System.Id.NewGuid())));
                                         $step = 2;
                                         if ($task1.isCompleted()) {
                                             continue;

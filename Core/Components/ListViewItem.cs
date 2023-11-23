@@ -274,27 +274,6 @@ namespace Core.Components
             };
         }
 
-        public bool CompareEx(object obj, object another)
-        {
-            var fileNames = ListViewSection.ListView.BasicHeaderSearch.Select(x => x.FieldName).ToList();
-            var result = false;
-            foreach (var property in obj.GetType().GetProperties().Where(x => fileNames.Contains(x.Name)).ToList())
-            {
-                var objValue = property.GetValue(obj);
-                var anotherValue = property.GetValue(another);
-                if (objValue == null && anotherValue == null)
-                {
-                    continue;
-                }
-                if ((objValue != null && anotherValue == null) || (objValue == null && anotherValue != null) || (objValue != null && anotherValue != null && objValue.ToString() != anotherValue.ToString()))
-                {
-                    result = true;
-                    break;
-                }
-            }
-            return result;
-        }
-
         public async Task PatchUpdateOrCreate()
         {
             if (!Dirty)

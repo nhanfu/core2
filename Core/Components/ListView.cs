@@ -48,8 +48,6 @@ namespace Core.Components
         public ListViewSearch ListViewSearch { get; set; }
         public Paginator Paginator { get; set; }
         public List<Component> Header { get; set; }
-        public List<Component> BasicHeader { get; set; } = new List<Component>();
-        public List<Component> BasicHeaderSearch { get; set; }
         public ObservableList<object> RowData { get; set; }
         public List<object> FormattedRowData { get; set; }
         internal bool VirtualScroll { get; set; }
@@ -340,8 +338,7 @@ namespace Core.Components
             if (_hasLoadUserSetting) return;
             var columns = await LoadCustomHeaders();
             columns = FilterColumns(columns);
-            BasicHeader = columns.OrderBy(x => x.Order).ToList();
-            BasicHeaderSearch = columns.Where(x => x.ComponentType == "Dropdown").ToList();
+            Header = columns.OrderBy(x => x.Order).ToList();
             ResetOrder();
             HeaderLoaded?.Invoke(columns);
         }
@@ -349,7 +346,7 @@ namespace Core.Components
         public void ResetOrder()
         {
             int order = 0;
-            BasicHeader.ForEach(x =>
+            Header.ForEach(x =>
             {
                 x.Order = order;
                 order++;
@@ -452,10 +449,10 @@ namespace Core.Components
                 return;
             }
 
-            FormattedRowData.SelectForEach((rowData, index) =>
+            FormattedRowData.SelectForEach((Action<object, int>)((rowData, index) =>
             {
-                var rowSection = RenderRowData(Header, rowData, MainSection);
-            });
+                var rowSection = RenderRowData((List<Component>)this.Header, rowData, MainSection);
+            }));
         }
 
         protected virtual void Rerender()
@@ -1540,9 +1537,9 @@ namespace Core.Components
             gridView1.AdvSearchVM.Conditions.Clear();
             gridView1.ListViewSearch.EntityVM.StartDate = null;
             gridView1.ListViewSearch.EntityVM.EndDate = null;
-            Client.ExecTask(GetRealTimeSelectedRows(), selecteds =>
+            Client.ExecTask(GetRealTimeSelectedRows(), (Action<List<object>>)(selecteds =>
             {
-                var com = gridView1.BasicHeader.FirstOrDefault(x => x.FieldName == e.TargetFieldName);
+                var com = Enumerable.FirstOrDefault<Component>(gridView1.Header, (Func<Component, bool>)(x => x.FieldName == e.TargetFieldName));
                 var cellSelecteds = selecteds.Select(selected =>
                 {
                     return new CellSelected()
@@ -1561,7 +1558,7 @@ namespace Core.Components
                 });
                 gridView1.CellSelected.AddRange(cellSelecteds);
                 gridView1.ActionFilter();
-            });
+            }));
         }
 
         public virtual void RenderCopyPasteMenu(bool canWrite)

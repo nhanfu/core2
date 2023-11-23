@@ -66,11 +66,11 @@ namespace Core.Components
 
         private async Task AddSubTotal()
         {
-            if (BasicHeader.Nothing())
+            if (Header.Nothing())
             {
                 return;
             }
-            var Component = BasicHeader.Where(x => x.FieldName != IdField && x.ComponentType == nameof(Number) && x.IsSumary == true).ToList();
+            var Component = Header.Where(x => x.FieldName != IdField && x.ComponentType == nameof(Number) && x.IsSumary == true).ToList();
             if (Component.Nothing())
             {
                 return;
@@ -257,9 +257,9 @@ namespace Core.Components
 
         public void SwapList(int oldIndex, int newIndex)
         {
-            var item = BasicHeader[oldIndex];
-            BasicHeader.RemoveAt(oldIndex);
-            BasicHeader.Insert(newIndex, item);
+            var item = Header[oldIndex];
+            Header.RemoveAt(oldIndex);
+            Header.Insert(newIndex, item);
         }
 
         public void SwapHeader(int oldIndex, int newIndex)
@@ -538,7 +538,7 @@ namespace Core.Components
 
         private async Task<dynamic[][]> FilterDropdownIds(List<CellSelected> dropdowns)
         {
-            var dataTask = dropdowns.Select(x =>
+            var dataTask = dropdowns.Select((Func<CellSelected, Task<List<dynamic>>>)(x =>
             {
                 var filterString = "contains";
                 if (x.Operator == (int)OperatorEnum.Lr)
@@ -549,7 +549,7 @@ namespace Core.Components
                 {
                     filterString = "endswith";
                 }
-                var header = Header.FirstOrDefault(y => y.FieldName == x.FieldName);
+                var header = Enumerable.FirstOrDefault<Component>(base.Header, (Func<Component, bool>)(y => y.FieldName == x.FieldName));
                 if (!x.IsSearch)
                 {
                     if (x.FieldName.Contains("."))
@@ -567,7 +567,7 @@ namespace Core.Components
                 {
                     return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$filter=Id eq '{x.Value.EncodeSpecialChar()}'", entityName: header.RefName);
                 }
-            }).ToArray();
+            })).ToArray();
             await Task.WhenAll(dataTask);
             var data = dataTask.Select(x => x.Result?.ToArray()).ToArray();
             return data;
@@ -1699,7 +1699,7 @@ namespace Core.Components
                     wh.Add($"({filter1})");
                 }
                 var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
-                var Component = BasicHeader.Where(x => x.ComponentType == nameof(Number) && x.FieldName != header.FieldName).ToList();
+                var Component = Header.Where(x => x.ComponentType == nameof(Number) && x.FieldName != header.FieldName).ToList();
                 var sum = Component.Select(x => $"FORMAT(SUM(isnull([ds].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
                 var pre = GuiInfo.PreQuery;
                 if (pre != null && Utils.IsFunction(pre, out Function fn))
@@ -2066,11 +2066,11 @@ namespace Core.Components
                 return;
             }
             MainSection.Show = false;
-            FormattedRowData.ToList().ForEach((rowData) =>
+            FormattedRowData.ToList().ForEach((Action<object>)((rowData) =>
             {
                 Html.Take(MainSection.Element);
-                RenderRowData(Header, rowData, MainSection);
-            });
+                RenderRowData((List<Component>)base.Header, rowData, MainSection);
+            }));
             MainSection.Show = true;
             RenderIndex();
             DomLoaded();
@@ -2135,11 +2135,11 @@ namespace Core.Components
             var shouldAddRow = AllListViewItem.Count() <= updatedData.Length;
             if (shouldAddRow)
             {
-                updatedData.Skip(dataSections.Length).ForEach(newRow =>
+                updatedData.Skip(dataSections.Length).ForEach((Action<object>)(newRow =>
                 {
-                    var rs = RenderRowData(Header, newRow, MainSection);
+                    var rs = RenderRowData((List<Component>)base.Header, newRow, MainSection);
                     StickyColumn(rs);
-                });
+                }));
             }
             else
             {
@@ -2228,11 +2228,11 @@ namespace Core.Components
             var sums = Header.Where(x => !x.Summary.IsNullOrWhiteSpace());
             MainSection.Element.As<HTMLTableElement>().Children.Where(x => x.HasClass(SummaryClass)).ToArray().ForEach(x => x.Remove());
             var count = sums.DistinctBy(x => x.Summary).Count();
-            sums.ForEach(header =>
+            sums.ForEach((Action<Component>)(header =>
             {
                 AddNewEmptyRow();
-                RenderSummaryRow(header, Header, FooterSection.Element as HTMLTableSectionElement, count);
-            });
+                RenderSummaryRow(header, (List<Component>)base.Header, FooterSection.Element as HTMLTableSectionElement, count);
+            }));
         }
 
         public override void DuplicateSelected(Event ev, bool addRow = false)
@@ -2902,7 +2902,7 @@ namespace Core.Components
             _settings = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>(
                 $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'ListView-{GuiInfo.Id}'");
             var headerElement = HeaderSection.Children.Where(x => x.GuiInfo != null).ToList().ToDictionary(x => x.GuiInfo.Id);
-            BasicHeader.ForEach(x =>
+            Header.ForEach(x =>
             {
                 var match = headerElement.GetValueOrDefault(x.Id);
                 if (match != null)
@@ -2912,7 +2912,7 @@ namespace Core.Components
                     x.MinWidth = match.Element.OffsetWidth + "px";
                 }
             });
-            var column = BasicHeader;
+            var column = Header;
             var value = JsonConvert.SerializeObject(column);
             if (_settings is null)
             {
@@ -2936,11 +2936,11 @@ namespace Core.Components
         {
             _settings = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>(
                 $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'ListView-{GuiInfo.Id}'");
-            BasicHeader.ForEach(x =>
+            Header.ForEach(x =>
             {
                 x.Active = false;
             });
-            var column = BasicHeader;
+            var column = Header;
             var value = JsonConvert.SerializeObject(column);
             if (_settings is null)
             {
@@ -2978,7 +2978,7 @@ namespace Core.Components
         private void FrozenColumn(object arg)
         {
             var entity = arg["header"] as Component;
-            BasicHeader.FirstOrDefault(x => x.Id == entity.Id).Frozen = !entity.Frozen;
+            Header.FirstOrDefault(x => x.Id == entity.Id).Frozen = !entity.Frozen;
             Task.Run(async () =>
             {
                 await UpdateUserSetting();

@@ -19,10 +19,7 @@ namespace Core.Components
     internal class ExportCustomData : PopupEditor
     {
         public ListView ParentListView;
-        public HTMLUListElement _ul;
         public HTMLElement _tbody;
-        public HTMLUListElement _ul1;
-        public UserSetting _settings;
         private List<Component> _headers;
         private dynamic _userSetting;
 
@@ -234,7 +231,7 @@ namespace Core.Components
 
         private void LocalRender()
         {
-            _headers = ParentListView.BasicHeader.Where(x => x.ComponentType != nameof(Button) && !x.ShortDesc.IsNullOrWhiteSpace()).ToList();
+            _headers = ParentListView.Header.Where(x => x.ComponentType != nameof(Button) && !x.ShortDesc.IsNullOrWhiteSpace()).ToList();
             var getUsrSettingTask = GetUserSetting();
             Client.ExecTask(getUsrSettingTask, UserSettingLoaded);
         }
@@ -259,11 +256,11 @@ namespace Core.Components
             _userSetting = res[0].Length > 0 ? res[0][0] : null as dynamic;
             if (_userSetting != null)
             {
-                _headers = JsonConvert.DeserializeObject<List<Component>>(_userSetting.Value as string);
-                var userSettings = _headers.ToDictionary(x => x.Id);
+                var usrHeaders = JsonConvert.DeserializeObject<List<Component>>(_userSetting.Value as string)
+                    .ToDictionary(x => x.Id);
                 _headers.ForEach(x =>
                 {
-                    var current = userSettings.GetValueOrDefault(x.Id);
+                    var current = usrHeaders.GetValueOrDefault(x.Id);
                     if (current != null)
                     {
                         x.IsExport = current.IsExport;
@@ -328,7 +325,7 @@ namespace Core.Components
                     UserId = Client.Token.UserId,
                     Value = JsonConvert.SerializeObject(_headers)
                 };
-                await Client.Instance.SubmitAsync<dynamic>(CreatePatch(null));
+                await Client.Instance.SubmitAsync<dynamic>(CreatePatch(System.Id.NewGuid()));
             }
             else
             {
