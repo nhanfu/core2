@@ -25,6 +25,13 @@ namespace Core.Components
         public const int ExLargeScreen = 1452;
         public string idGuid;
         public string Id { get; set; }
+        public string FieldName
+        {
+            get => GuiInfo?.FieldName; set
+            {
+                if (GuiInfo != null) GuiInfo.FieldName = value;
+            }
+        }
         public string ComponentType { get; set; }
         public string Name { get; set; }
         public EditableComponent Parent { get; set; }
@@ -191,7 +198,7 @@ namespace Core.Components
             if (!_show)
             {
                 Element.Style.Display = "none";
-                if (GuiInfo != null && GuiInfo.ShowLabel && Parent is Section && GuiInfo.FieldName != null)
+                if (GuiInfo != null && GuiInfo.ShowLabel && Parent is Section && FieldName != null)
                 {
                     Element.ParentElement.Style.Display = "none";
                     Element.ParentElement.PreviousElementSibling.Style.Display = "none";
@@ -200,7 +207,7 @@ namespace Core.Components
             else
             {
                 Element.Style.Display = "";
-                if (GuiInfo != null && GuiInfo.ShowLabel && Parent is Section && GuiInfo.FieldName != null)
+                if (GuiInfo != null && GuiInfo.ShowLabel && Parent is Section && FieldName != null)
                 {
                     Element.ParentElement.Style.Display = "";
                     Element.ParentElement.PreviousElementSibling.Style.Display = "";
@@ -480,8 +487,8 @@ namespace Core.Components
             {
                 return;
             }
-            var old = Entity[GuiInfo.FieldName];
-            var type = Entity.GetType().GetProperty(GuiInfo.FieldName);
+            var old = Entity[FieldName];
+            var type = Entity.GetType().GetProperty(FieldName);
             if (type is null)
             {
                 TrySetDFValue();
@@ -500,7 +507,7 @@ namespace Core.Components
             try
             {
                 var obj = Window.Eval<object>(GuiInfo.DefaultVal);
-                Entity[GuiInfo.FieldName] = obj is Function ? (obj as Function).Call(this, this) : obj;
+                Entity[FieldName] = obj is Function ? (obj as Function).Call(this, this) : obj;
             }
             catch
             {
@@ -616,7 +623,7 @@ namespace Core.Components
         internal void SetOldTextAndVal()
         {
             OriginalText = GetValueText();
-            OldValue = Entity.GetPropValue(GuiInfo?.FieldName)?.ToString();
+            OldValue = Entity.GetPropValue(FieldName)?.ToString();
         }
 
         public virtual void UpdateDirty(bool dirty, params string[] componentNames)

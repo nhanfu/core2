@@ -110,10 +110,10 @@ namespace Core.Components
                     ErrorHandler = (x) => { }
                 });
             var sumarys = dataSet[0][0];
-            var headers = HeaderSection.Children.Where(x => x.GuiInfo.FieldName != IdField && x.GuiInfo.ComponentType == nameof(Number) && x.GuiInfo.IsSumary == true).ToList();
+            var headers = HeaderSection.Children.Where(x => x.FieldName != IdField && x.GuiInfo.ComponentType == nameof(Number) && x.GuiInfo.IsSumary == true).ToList();
             headers.ForEach(x =>
             {
-                x.Element.Children[1].InnerHTML = "(" + sumarys[x.GuiInfo.FieldName] + ")";
+                x.Element.Children[1].InnerHTML = "(" + sumarys[x.FieldName] + ")";
             });
         }
 
@@ -1085,7 +1085,7 @@ namespace Core.Components
             table.SetAttribute("data-sort-order", sortOrder == "asc" ? "desc" : "asc");
         }
 
-        public void FocusCell(Event e, Component header)
+        public virtual void FocusCell(Event e, Component header)
         {
             var td = e.Target as HTMLElement;
 
@@ -1157,7 +1157,7 @@ namespace Core.Components
                 {
                     return;
                 }
-                fieldName = com.GuiInfo.FieldName;
+                fieldName = com.FieldName;
                 switch (com.GuiInfo.ComponentType)
                 {
                     case "Dropdown":
@@ -1319,7 +1319,7 @@ namespace Core.Components
                         if (upItemHome != null)
                         {
                             upItemHome.Focused = true;
-                            var upComponent = upItemHome.FirstOrDefault(x => x.GuiInfo.FieldName == fieldName);
+                            var upComponent = upItemHome.FirstOrDefault(x => x.FieldName == fieldName);
                             var tdup = upComponent.Element.Closest(ElementType.td.ToString());
                             upItemHome.Focus();
                             tdup.Focus();
@@ -1341,7 +1341,7 @@ namespace Core.Components
                         if (upItemEnd != null)
                         {
                             upItemEnd.Focused = true;
-                            var upComponent = upItemEnd.FirstOrDefault(x => x.GuiInfo.FieldName == fieldName);
+                            var upComponent = upItemEnd.FirstOrDefault(x => x.FieldName == fieldName);
                             var tdup = upComponent.Element.Closest(ElementType.td.ToString());
                             upItemEnd.Focus();
                             tdup.Focus();
@@ -1363,8 +1363,8 @@ namespace Core.Components
                             return;
                         }
                         var upItemD = AllListViewItem.FirstOrDefault(x => x.RowNo == (currentItemD.RowNo - 1));
-                        currentItemD.Entity.SetComplexPropValue(fieldName, upItemD.Entity.GetPropValue(com.GuiInfo.FieldName));
-                        var updated = currentItemD.FilterChildren(x => x.GuiInfo.FieldName == com.GuiInfo.FieldName).FirstOrDefault();
+                        currentItemD.Entity.SetComplexPropValue(fieldName, upItemD.Entity.GetPropValue(com.FieldName));
+                        var updated = currentItemD.FilterChildren(x => x.FieldName == com.FieldName).FirstOrDefault();
                         updated.Dirty = true;
                         Task.Run(async () =>
                         {
@@ -1458,7 +1458,7 @@ namespace Core.Components
             var th = HeaderSection.Children.FirstOrDefault(x => x.GuiInfo.Id == com.GuiInfo.Id);
             th.Element.RemoveClass("desc");
             th.Element.RemoveClass("asc");
-            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.GuiInfo.TextField : com.GuiInfo.FieldName;
+            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.GuiInfo.TextField : com.FieldName;
             var sort = new OrderBy
             {
                 FieldName = fieldName,
@@ -1872,7 +1872,7 @@ namespace Core.Components
                 if (e.ShiftKey())
                 {
                     upItem.Entity.SetComplexPropValue(fieldName, com.GetValue());
-                    var updated = upItem.FilterChildren(x => x.GuiInfo.FieldName == nextcom.GuiInfo.FieldName).FirstOrDefault();
+                    var updated = upItem.FilterChildren(x => x.FieldName == nextcom.FieldName).FirstOrDefault();
                     if (updated.Disabled || !updated.GuiInfo.Editable)
                     {
                         return;
@@ -2330,7 +2330,7 @@ namespace Core.Components
             RenderContent();
             if (Entity != null && ShouldSetEntity)
             {
-                Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
+                Entity.SetComplexPropValue(FieldName, RowData.Data);
             }
         }
 
@@ -2434,7 +2434,7 @@ namespace Core.Components
                 }
                 if (GuiInfo.ComponentType != nameof(VirtualGrid))
                 {
-                    Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
+                    Entity.SetComplexPropValue(FieldName, RowData.Data);
                 }
                 rowSection.UpdateView(true);
                 MoveEmptyRow(rowSection);
@@ -2465,14 +2465,14 @@ namespace Core.Components
                 }
                 LastListViewItem = rowSection;
                 var headers = Header.Where(y => y.Editable).ToList();
-                var currentComponent = headers.FirstOrDefault(y => y.FieldName == component?.GuiInfo.FieldName);
+                var currentComponent = headers.FirstOrDefault(y => y.FieldName == component?.FieldName);
                 if (com.Contains(currentComponent.ComponentType) && rowData[currentComponent.FieldName] != null)
                 {
                     var index = headers.IndexOf(currentComponent);
                     if (headers.Count > index + 1)
                     {
                         var nextGrid = headers[index + 1];
-                        var nextComponent = rowSection.Children.Where(y => y?.GuiInfo.FieldName == nextGrid.FieldName).FirstOrDefault();
+                        var nextComponent = rowSection.Children.Where(y => y?.FieldName == nextGrid.FieldName).FirstOrDefault();
                         ClearSelected();
                         rowSection.Selected = true;
                         rowSection.Focus();
@@ -3100,17 +3100,17 @@ namespace Core.Components
                 rowSection.EmptyRow = false;
                 MoveEmptyRow(rowSection);
                 var headers = Header.Where(y => y.Editable).ToList();
-                var currentComponent = headers.FirstOrDefault(y => y.FieldName == component?.GuiInfo.FieldName);
+                var currentComponent = headers.FirstOrDefault(y => y.FieldName == component.FieldName);
                 var index = headers.IndexOf(currentComponent);
                 if (headers.Count > index + 1)
                 {
                     var nextGrid = headers[index + 1];
-                    var nextComponent = rowSection.Children.Where(y => y?.GuiInfo.FieldName == nextGrid.FieldName).FirstOrDefault();
+                    var nextComponent = rowSection.Children.Where(y => y.FieldName == nextGrid.FieldName).FirstOrDefault();
                     nextComponent.Focus();
                 }
                 EmptyRowSection.Children.Clear();
                 AddNewEmptyRow();
-                Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
+                Entity.SetComplexPropValue(FieldName, RowData.Data);
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
             AddSummaries();

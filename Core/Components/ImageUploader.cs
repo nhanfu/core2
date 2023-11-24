@@ -25,7 +25,7 @@ namespace Core.Components
                 _path = value;
                 if (Entity != null)
                 {
-                    Entity.SetComplexPropValue(GuiInfo.FieldName, _path);
+                    Entity.SetComplexPropValue(FieldName, _path);
                 }
 
                 if (_path.IsNullOrWhiteSpace())
@@ -52,10 +52,7 @@ namespace Core.Components
         private HTMLInputElement _input;
         private static HTMLElement _preview;
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "<Pending>")]
-        private static dynamic _webcam;
-        public static HTMLElement Camera { get; set; }
         private bool _disabledDelete;
-        private HTMLElement _placeHolder;
         private HTMLDivElement _gallerys;
 
         public event Action FileUploaded;
@@ -72,7 +69,7 @@ namespace Core.Components
 
         public override void Render()
         {
-            _path = Entity?.GetPropValue(GuiInfo.FieldName)?.ToString();
+            _path = Entity?.GetPropValue(FieldName)?.ToString();
             var paths = _path?.Split(PathSeparator).ToList();
             RenderUploadForm();
             Path = _path;
@@ -350,7 +347,7 @@ namespace Core.Components
                 Dirty = true;
                 if (UserInput != null)
                 {
-                    UserInput.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = GuiInfo.FieldName, EvType = EventType.Change });
+                    UserInput.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName, EvType = EventType.Change });
                 }
                 await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
             });
@@ -374,7 +371,7 @@ namespace Core.Components
             _input.Value = string.Empty;
             if (UserInput != null)
             {
-                UserInput.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = GuiInfo.FieldName, EvType = EventType.Change });
+                UserInput.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName, EvType = EventType.Change });
             }
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
         }
@@ -416,7 +413,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            Path = Entity.GetPropValue(GuiInfo.FieldName)?.ToString();
+            Path = Entity.GetPropValue(FieldName)?.ToString();
             base.UpdateView(force, dirty, componentNames);
         }
 
@@ -434,7 +431,7 @@ namespace Core.Components
                         EntityName = Entity.GetType().Name,
                         RecordId = EntityId,
                         SectionId = GuiInfo.ComponentGroupId,
-                        FieldName = GuiInfo.FieldName,
+                        FieldName = FieldName,
                         FileName = file.Name,
                         FilePath = path,
                     };

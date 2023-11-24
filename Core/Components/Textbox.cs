@@ -27,17 +27,17 @@ namespace Core.Components
                 _value = value;
                 if (_value != null && _value is string str_val && ((EditForm.Feature != null && !EditForm.Feature.IgnoreEncode) || EditForm.Feature is null))
                 {
-                    Entity?.SetComplexPropValue(GuiInfo.FieldName, str_val.DecodeSpecialChar().EncodeSpecialChar());
+                    Entity?.SetComplexPropValue(FieldName, str_val.DecodeSpecialChar().EncodeSpecialChar());
                 }
                 if (Entity != null)
                 {
-                    Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+                    Entity.SetComplexPropValue(FieldName, _value);
                 }
 
                 var text = (EditForm.Feature != null && EditForm.Feature.IgnoreEncode) ? _value?.ToString() : _value?.ToString().DecodeSpecialChar();
                 if (GuiInfo.FormatData.HasAnyChar())
                 {
-                    text = Utils.FormatEntity(GuiInfo.FormatData, Entity?.GetPropValue(GuiInfo.FieldName));
+                    text = Utils.FormatEntity(GuiInfo.FormatData, Entity?.GetPropValue(FieldName));
                 }
 
                 if (GuiInfo.FormatEntity.HasAnyChar())
@@ -130,7 +130,7 @@ namespace Core.Components
                                 upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
                             }
                         }
-                        var updated = upItem.FilterChildren<Textbox>(x => x.GuiInfo.FieldName == GuiInfo.FieldName).FirstOrDefault();
+                        var updated = upItem.FilterChildren<Textbox>(x => x.FieldName == FieldName).FirstOrDefault();
                         updated.Dirty = true;
                         updated.Value = item;
                         updated.UpdateView();
@@ -153,10 +153,10 @@ namespace Core.Components
         public override void Render()
         {
             SetDefaultVal();
-            var val = Entity?.GetPropValue(GuiInfo.FieldName);
+            var val = Entity?.GetPropValue(FieldName);
             if (val != null && val is string str_val && EditForm != null && EditForm.Feature != null && !EditForm.Feature.IgnoreEncode)
             {
-                Entity?.SetComplexPropValue(GuiInfo.FieldName, str_val.DecodeSpecialChar().EncodeSpecialChar());
+                Entity?.SetComplexPropValue(FieldName, str_val.DecodeSpecialChar().EncodeSpecialChar());
             }
             var text = val?.ToString();
             if (GuiInfo.FormatData.HasAnyChar())
@@ -203,7 +203,7 @@ namespace Core.Components
                     Input.Value = _text;
                 }
                 Input.AutoComplete = AutoComplete.Off;
-                Input.Name = GuiInfo.DataSourceFilter ?? GuiInfo.FieldName;
+                Input.Name = GuiInfo.DataSourceFilter ?? FieldName;
                 Input.OnInput += (e) => PopulateUIChange(EventType.Input);
                 Input.OnChange += (e) => PopulateUIChange(EventType.Change);
                 Input.AddEventListener(EventType.KeyDown, async (e) => await KeyDownNumber(e));
@@ -243,7 +243,7 @@ namespace Core.Components
             _value = (EditForm != null && EditForm.Feature != null && EditForm.Feature.IgnoreEncode) ? _text : _text.EncodeSpecialChar();
             if (Entity != null)
             {
-                Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+                Entity.SetComplexPropValue(FieldName, _value);
             }
             Dirty = true;
             if (UserInput != null)
@@ -259,7 +259,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            Value = Entity?.GetPropValue(GuiInfo.FieldName);
+            Value = Entity?.GetPropValue(FieldName);
             if (!Dirty)
             {
                 OriginalText = _text;
@@ -295,7 +295,7 @@ namespace Core.Components
             {
                 return;
             }
-            var fieldName = GuiInfo.FieldName;
+            var fieldName = FieldName;
             var entityId = Entity[IdField].As<int?>();
             var filter = rule.Condition ?? $"Active eq true and ";
             if (entityId > 0)

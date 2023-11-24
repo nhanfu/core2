@@ -146,7 +146,7 @@ namespace Core.Components
             if (listViewItem is null) return;
             CacheData.FirstOrDefault(x => x[IdField] == updatedData[IdField]).CopyPropFrom(updatedData);
             listViewItem.Entity.CopyPropFrom(updatedData);
-            var arr = listViewItem.FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.GuiInfo.FieldName).ToArray();
+            var arr = listViewItem.FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.FieldName).ToArray();
             listViewItem.UpdateView(false, arr);
             Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem));
         }
@@ -266,7 +266,7 @@ namespace Core.Components
             var feature = EditForm.Feature;
             var gridPolicies = EditForm.GetElementPolicies(GuiInfo.Id, Utils.ComponentId);
             CanWrite = CanDo(gridPolicies, x => x.CanWrite);
-            Html.Take(ParentElement).DataAttr("name", GuiInfo.FieldName);
+            Html.Take(ParentElement).DataAttr("name", FieldName);
             AddSections();
             SetRowDataIfExists();
             RowData.ListChanged += RowDataChanged;
@@ -533,13 +533,13 @@ namespace Core.Components
             });
             if (Entity != null && ShouldSetEntity)
             {
-                Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
+                Entity.SetComplexPropValue(FieldName, RowData.Data);
             }
         }
 
         protected void SetRowDataIfExists()
         {
-            if (Entity != null && Utils.GetPropValue(Entity, GuiInfo.FieldName) is IEnumerable value && value.GetEnumerator().MoveNext())
+            if (Entity != null && Utils.GetPropValue(Entity, FieldName) is IEnumerable value && value.GetEnumerator().MoveNext())
             {
                 RowData["_data"] = value;
             }
@@ -641,7 +641,7 @@ namespace Core.Components
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
                 RowData.Data.Add(rowData);
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
-                Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
+                Entity.SetComplexPropValue(FieldName, RowData.Data);
                 RowAction(x => x.Entity == rowSection.Entity, x =>
                 {
                     x.EmptyRow = false;
@@ -1113,23 +1113,25 @@ namespace Core.Components
             FinalAddOrUpdate();
         }
 
-        public virtual async Task<ListViewItem> AddRow(object rowData, int index = 0, bool singleAdd = true)
+        public virtual Task<ListViewItem> AddRow(object rowData, int index = 0, bool singleAdd = true)
         {
+            var tcs = new TaskCompletionSource<ListViewItem>();
             DisposeNoRecord();
-            var exists = MainSection.FirstOrDefault(x => x.Entity == rowData) as ListViewItem;
-            if (exists != null)
-            {
-                return exists;
-            }
+            // if (MainSection.FirstOrDefault(x => x.Entity == rowData) is ListViewItem exists)
+            // {
+            //     return exists;
+            // }
 
             if (singleAdd)
             {
                 RowData.Data.Add(rowData);
             }
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
-            var row = RenderRowData(Header, rowData, MainSection, index);
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
-            return row;
+            Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData), () => {
+                var row = RenderRowData(Header, rowData, MainSection, index);
+                tcs.TrySetResult(row);
+                Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData));
+            });
+            return tcs.Task;
         }
 
         public void DisposeNoRecord()
@@ -1232,7 +1234,7 @@ namespace Core.Components
         {
             RowAction(
                 row => row.Entity == rowData,
-                row => row.Children.Where(x => fieldName.Nothing() || fieldName.Contains(x.GuiInfo.FieldName)).ForEach(x => x.UpdateView(force))
+                row => row.Children.Where(x => fieldName.Nothing() || fieldName.Contains(x.FieldName)).ForEach(x => x.UpdateView(force))
             );
         }
 
@@ -1247,7 +1249,7 @@ namespace Core.Components
             }
             if (ShouldSetEntity)
             {
-                Entity?.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
+                Entity?.SetComplexPropValue(FieldName, RowData.Data);
             }
         }
 

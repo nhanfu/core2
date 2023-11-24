@@ -33,7 +33,8 @@ namespace Core.Extensions
         public const string ComponentGroupId = "30";
         public const string HistoryId = "4199";
         public const string InsertedBy = "InsertedBy";
-        public const string OwnerId = "OwnerId";
+        public const string OwnerUserIds = "OwnerUserIds";
+        public const string OwnerRoleIds = "OwnerRoleIds";
         public const string ComQuery = "/component/Reader";
         public const string PatchSvc = "/v2/user";
         public const string UserSvc = "/user/svc";
@@ -46,7 +47,6 @@ namespace Core.Extensions
         public const string GOOGLE_MAP_GEOMETRY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=geometry";
         public const string GOOGLE_MAP_WEEKLY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=&v=weekly";
         public const string GOOGLE_MAP_GEO_REQUEST = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc";
-        private const char PropSeparator = '.';
         public static Dictionary<char, string> SpecialChar = new Dictionary<char, string>()
         {
             { '+', "%2B" },
@@ -138,13 +138,19 @@ namespace Core.Extensions
 
         public static bool IsOwner(object entity, bool defaultOwnership = true)
         {
-            if (entity is null || entity[IdField].As<int>() <= 0)
+            if (entity is null || entity[IdField] != null)
             {
                 return defaultOwnership;
             }
-            var ownerId = entity[OwnerId]?.ToString();
-            var createdId = entity[InsertedBy]?.ToString();
-            var isOwner = Client.SystemRole || ownerId is null && createdId == Client.Token.UserId || ownerId == Client.Token.UserId;
+            var ownerUserIds = entity.GetPropValue(OwnerUserIds)?.ToString();
+            var isOwnerUser = ownerUserIds.HasNonSpaceChar() && ownerUserIds.Split(Comma).Contains(Client.Token.UserId);
+            var ownerRoleIds = entity.GetPropValue(OwnerRoleIds)?.ToString();
+            var isOwnerRole = ownerRoleIds.HasNonSpaceChar() &&
+                (from entityRole in ownerRoleIds.Split(Comma)
+                 join tokenRole in Client.Token.RoleIds on entityRole equals tokenRole
+                 select entityRole).Any();
+            var createdId = entity.GetPropValue(InsertedBy)?.ToString();
+            var isOwner = ownerUserIds is null && createdId == Client.Token.UserId || isOwnerRole || isOwnerUser;
             return isOwner;
         }
 
@@ -187,8 +193,8 @@ namespace Core.Extensions
             {
                 return null;
             }
-            if (propName.IndexOf(PropSeparator) < 0) return obj[propName];
-            var hierarchy = propName.Split(PropSeparator);
+            if (propName.IndexOf(Dot) < 0) return obj[propName];
+            var hierarchy = propName.Split(Dot);
             var res = obj;
             foreach (var key in hierarchy)
             {
@@ -323,23 +329,6 @@ namespace Core.Extensions
             objList.Add(field == "0" ? source : value);
         }
 
-        public static string GenerateRandomToken(int? maxLength = 32)
-        {
-            var builder = new StringBuilder();
-            var random = new Random();
-            char ch;
-            for (int i = 0; i < maxLength; i++)
-            {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-                builder.Append(ch);
-            }
-            return builder.ToString();
-        }
-
-        public static bool CheckDataPath(this string path, int parentId) => path.Contains(@"\" + parentId + @"\");
-        public static int UniqueNegativeId(object data) => -Math.Abs(data.GetHashCode());
-
-#if !NETCOREAPP
         public static string GetCellText(Component header, object cellData, object row, Dictionary<string, List<object>> refData, bool server, bool emptyRow = false)
         {
             return GetCellTextInternal(header, cellData, row, refData, server, emptyRow).DecodeSpecialChar();
@@ -394,7 +383,7 @@ namespace Core.Extensions
                         return string.Empty;
                     }
                 }
-                catch (Exception e)
+                catch
                 {
                     Console.WriteLine($"Format of {header.FieldName} is null");
                     return string.Empty;
@@ -409,7 +398,6 @@ namespace Core.Extensions
                 return cellData.ToString();
             }
         }
-#endif
 
         public static bool CompareIdField(object entity, object cellData)
         {
@@ -449,14 +437,16 @@ namespace Core.Extensions
             return obj != null;
         }
 
-        public static void ForEachProp(this object obj, Action<string, object> action) {
+        public static void ForEachProp(this object obj, Action<string, object> action)
+        {
             if (obj is null || action is null) return;
             /*@
             Object.keys(obj).forEach(x => action(x, obj[x]));
             */
         }
 
-        public static void ForEachProp(this object obj, Action<string> action) {
+        public static void ForEachProp(this object obj, Action<string> action)
+        {
             if (obj is null || action is null) return;
             /*@
             Object.keys(obj).forEach(x => action(key));

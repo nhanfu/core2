@@ -30,7 +30,7 @@ namespace Core.Components
                     Dirty = true;
                 }
                 _value = value;
-                Entity?.SetComplexPropValue(GuiInfo.FieldName, value);
+                Entity?.SetComplexPropValue(FieldName, value);
 
                 _value = value;
                 FindMatchTextAsync();
@@ -51,7 +51,7 @@ namespace Core.Components
             idGuid = "js-example-templating" + Guid.NewGuid().ToString();
             RowData = new List<object>();
             Element = ele;
-            IdFieldName = GuiInfo.FieldName;
+            IdFieldName = FieldName;
         }
 
         public override void Render()
@@ -213,10 +213,10 @@ namespace Core.Components
             Matched = rowData;
             var oldValue = _value;
             _value = rowData[IdField]?.ToString();
-            if (Entity != null && GuiInfo.FieldName.HasAnyChar())
+            if (Entity != null && FieldName.HasAnyChar())
             {
-                Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
-                Entity.SetComplexPropValue(GuiInfo.FieldName.Substr(0, GuiInfo.FieldName.Length - 2), rowData);
+                Entity.SetComplexPropValue(FieldName, _value);
+                Entity.SetComplexPropValue(FieldName.Substr(0, FieldName.Length - 2), rowData);
             }
             Dirty = true;
             Matched = rowData;
@@ -234,7 +234,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            _value = Entity?.GetPropValue(GuiInfo.FieldName)?.ToString();
+            _value = Entity?.GetPropValue(FieldName)?.ToString();
             if (_value is null)
             {
                 Matched = null;

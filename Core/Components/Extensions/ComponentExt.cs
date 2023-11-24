@@ -399,7 +399,7 @@ namespace Core.Components.Extensions
 
         public static void SetValue(this EditableComponent component, string name, object value)
         {
-            var match = component.FirstOrDefault(x => x.GuiInfo?.FieldName == name);
+            var match = component.FirstOrDefault(x => x.FieldName == name);
             if (match is null)
             {
                 return;

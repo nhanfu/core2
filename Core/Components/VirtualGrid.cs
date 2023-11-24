@@ -17,7 +17,6 @@ namespace Core.Components
         private int _renderViewPortAwaiter;
         internal bool _renderingViewPort;
         internal List<object> LastData;
-        internal bool _f6;
         internal int viewPortCount;
         internal int _skip;
         internal static int cacheAhead = 5;
@@ -118,7 +117,7 @@ namespace Core.Components
             MainSection.Element.AppendChild(existBottomEle);
             RowData.Data.Clear();
             rows.ForEach(RowData.Data.Add);
-            Entity?.SetComplexPropValue(GuiInfo.FieldName, rows);
+            Entity?.SetComplexPropValue(FieldName, rows);
             RowAction(x => x.Focused = false);
             if (IsSmallUp)
             {
@@ -254,7 +253,7 @@ namespace Core.Components
             base.DisposeSumary();
         }
 
-        private void FocusCell(Event e, Component header)
+        public override void FocusCell(Event e, Component header)
         {
             var td = e.Target as HTMLElement;
 

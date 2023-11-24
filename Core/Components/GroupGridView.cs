@@ -123,8 +123,9 @@ namespace Core.Components
             }
         }
 
-        public override async Task<ListViewItem> AddRow(object item, int fromIndex = 0, bool singleAdd = true)
+        public override Task<ListViewItem> AddRow(object item, int fromIndex = 0, bool singleAdd = true)
         {
+            var tcs = new TaskCompletionSource<ListViewItem>();
             DisposeNoRecord();
             var keys = GuiInfo.GroupBy.Split(",");
             item[_groupKey] = string.Join(" ", keys.Select(key => item.GetPropValue(key)?.ToString()));
@@ -145,7 +146,8 @@ namespace Core.Components
                 row = RenderRowData(Header, item, MainSection, index + existGroup.Children.Count + 1);
             }
             Dirty = true;
-            return row;
+            tcs.TrySetResult(row);
+            return tcs.Task;
         }
 
         public override ListViewItem RenderRowData(List<Component> headers, object row, Section section, int? index, bool emptyRow = false)
@@ -392,7 +394,7 @@ namespace Core.Components
 
             if (Entity != null && ShouldSetEntity)
             {
-                Entity.SetComplexPropValue(GuiInfo.FieldName, RowData.Data);
+                Entity.SetComplexPropValue(FieldName, RowData.Data);
             }
         }
     }

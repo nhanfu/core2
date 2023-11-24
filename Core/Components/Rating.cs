@@ -28,7 +28,7 @@ namespace Core.Components
                     _value = _value.Value;
                     SetSelected(value);
                 }
-                Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+                Entity.SetComplexPropValue(FieldName, _value);
                 Dirty = true;
             }
         }
@@ -53,7 +53,7 @@ namespace Core.Components
         {
             Html.Take(ParentElement).Div.ClassName("rate");
             Element = Html.Context;
-            var radioGroup = GuiInfo.FieldName + GuiInfo.Id + GetHashCode();
+            var radioGroup = FieldName + GuiInfo.Id + GetHashCode();
             for (var item = GuiInfo.Precision; item >= 1; item--)
             {
                 var radioId = $"{radioGroup}_{item}";
@@ -63,7 +63,7 @@ namespace Core.Components
                 Html.Take(Element).Label.Attr("for", radioId).Text($"{item} stars");
             }
             Html.Take(Element).End.Render();
-            _value = Utils.GetPropValue(Entity, GuiInfo.FieldName).As<int?>();
+            _value = Utils.GetPropValue(Entity, FieldName).As<int?>();
             SetSelected(_value);
             DOMContentLoaded?.Invoke();
         }
@@ -83,7 +83,7 @@ namespace Core.Components
             var check = InputList.FirstOrDefault(x => x.Checked);
             var oldVal = Value;
             Value = int.Parse(check.Value);
-            Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+            Entity.SetComplexPropValue(FieldName, _value);
             if (UserInput != null)
             {
                 UserInput.Invoke(new ObservableArgs { NewData = Value, OldData = oldVal });
@@ -96,7 +96,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            Value = Utils.GetPropValue(Entity, GuiInfo.FieldName).As<int?>();
+            Value = Utils.GetPropValue(Entity, FieldName).As<int?>();
         }
 
         public override bool Disabled

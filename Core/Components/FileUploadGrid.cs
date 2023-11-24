@@ -84,7 +84,7 @@ namespace Core.Components
         public override void Render()
         {
             RowData._data = new List<object>();
-            GuiInfo.DataSourceFilter = $"?$filter=EntityName eq '{GuiInfo.IdField}' and RecordId eq {Entity[IdField]} and FieldName eq '{GuiInfo.FieldName}' and SectionId eq {GuiInfo.ComponentGroupId} and RecordId ne 0";
+            GuiInfo.DataSourceFilter = $"?$filter=EntityName eq '{GuiInfo.IdField}' and RecordId eq {Entity[IdField]} and FieldName eq '{FieldName}' and SectionId eq {GuiInfo.ComponentGroupId} and RecordId ne 0";
             DataSourceFilter = GuiInfo.DataSourceFilter;
             base.Render();
             Paginator.Show = false;
@@ -123,7 +123,7 @@ namespace Core.Components
             rowData[nameof(FileUpload.EntityName)] = GuiInfo.IdField;
             rowData[nameof(FileUpload.RecordId)] = EntityId;
             rowData[nameof(FileUpload.SectionId)] = GuiInfo.ComponentGroupId;
-            rowData[nameof(FileUpload.FieldName)] = GuiInfo.FieldName;
+            rowData[nameof(FileUpload.FieldName)] = FieldName;
             rowData[nameof(FileUpload.FileName)] = ImageUploader.RemoveGuid(rowData[nameof(FileUpload.FilePath)] as string);
             await RowChangeHandlerGrid(rowData, rowSection, observableArgs);
             rowSection.UpdateView(true);
@@ -143,7 +143,7 @@ namespace Core.Components
 
         private void SetEntityPath()
         {
-            Entity[GuiInfo.FieldName] = AllListViewItem.Combine(x => x.Entity[nameof(FileUpload.FilePath)] as string, ImageUploader.PathSeparator);
+            Entity[FieldName] = AllListViewItem.Combine(x => x.Entity[nameof(FileUpload.FilePath)] as string, ImageUploader.PathSeparator);
         }
 
         protected override void SetRowData(List<object> listData)
@@ -164,7 +164,7 @@ namespace Core.Components
 
         private List<object> MergePaths(List<object> listData)
         {
-            var pathCombined = Entity[GuiInfo.FieldName] as string;
+            var pathCombined = Entity[FieldName] as string;
             if (pathCombined.IsNullOrWhiteSpace())
             {
                 return listData;
@@ -179,7 +179,7 @@ namespace Core.Components
                     EntityName = GuiInfo.IdField,
                     RecordId = EntityId,
                     SectionId = GuiInfo.ComponentGroupId,
-                    FieldName = GuiInfo.FieldName,
+                    FieldName = FieldName,
                     FileName = ImageUploader.RemoveGuid(x),
                     FilePath = x,
                     Id = metaData?.Id ?? 0,

@@ -62,8 +62,9 @@ namespace Core.Components
             }));
         }
 
-        public override async Task<ListViewItem> AddRow(object item, int fromIndex = 0, bool singleAdd = true)
+        public override Task<ListViewItem> AddRow(object item, int fromIndex = 0, bool singleAdd = true)
         {
+            var tcs = new TaskCompletionSource<ListViewItem>();
             DisposeNoRecord();
             var keys = GuiInfo.GroupBy.Split(",");
             item[_groupKey] = string.Join(" ", keys.Select(key => item.GetPropValue(key)?.ToString()));
@@ -88,7 +89,8 @@ namespace Core.Components
                 FinalAddOrUpdate();
             }
             Dirty = true;
-            return rowSection;
+            tcs.TrySetResult(rowSection);
+            return tcs.Task;
         }
 
         public override async Task<List<ListViewItem>> AddRows(IEnumerable<object> rowsData, int index = 0)

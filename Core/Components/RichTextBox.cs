@@ -5,6 +5,7 @@ using Core.Extensions;
 using Core.MVVM;
 using System;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Core.Components
 {
@@ -43,10 +44,10 @@ namespace Core.Components
                     setup: function(editor) {
                         self.editor = editor;
                         editor.on('init', function() {
-                            editor.setContent(self.Entity[self.GuiInfo.FieldName] || '');
+                            editor.setContent(self.Entity[self.FieldName] || '');
                         });
                         editor.on('input', function(e) {
-                            self.Entity[self.GuiInfo.FieldName] = editor.getContent();
+                            self.Entity[self.FieldName] = editor.getContent();
                             self.Dirty = true;
                         });
                     }
@@ -70,7 +71,7 @@ namespace Core.Components
                     /*@
                     content = this.editor.setContent(text);
                     */
-                    Entity.SetComplexPropValue(GuiInfo.FieldName, content);
+                    Entity.SetComplexPropValue(FieldName, content);
                 }
             };
             reader.ReadAsDataURL(file);
@@ -79,7 +80,7 @@ namespace Core.Components
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            var text = Utils.GetPropValue(Entity, GuiInfo.FieldName);
+            var text = Utils.GetPropValue(Entity, FieldName);
             /*@
             this.editor.setContent(text || '');
             */

@@ -15,7 +15,6 @@ namespace Core.Components
     {
         private const string MultipleClass = "multiple";
         private bool _isStringSource;
-        private string FieldName => GuiInfo.FieldName;
         private HTMLButtonElement _toggleButton;
 
         public MultipleSearchEntry(Component ui) : base(ui)

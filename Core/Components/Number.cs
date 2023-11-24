@@ -54,7 +54,7 @@ namespace Core.Components
                 {
                     Dirty = true;
                 }
-                Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+                Entity.SetComplexPropValue(FieldName, _value);
                 PopulateFields();
                 if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace())
                 {
@@ -76,11 +76,11 @@ namespace Core.Components
             SetDefaultVal();
             if (Entity != null)
             {
-                var fieldVal = Utils.GetPropValue(Entity, GuiInfo.FieldName);
+                var fieldVal = Utils.GetPropValue(Entity, FieldName);
                 _isString = fieldVal is string;
                 _nullable = IsNullable<int>() || IsNullable<long>() || IsNullable<decimal>();
                 _value = GetDecimalValue();
-                Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+                Entity.SetComplexPropValue(FieldName, _value);
             }
             if (_input is null)
             {
@@ -143,7 +143,7 @@ namespace Core.Components
                                 upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
                             }
                         }
-                        var updated = upItem.FilterChildren<Number>(x => x.GuiInfo.FieldName == GuiInfo.FieldName).FirstOrDefault();
+                        var updated = upItem.FilterChildren<Number>(x => x.FieldName == FieldName).FirstOrDefault();
                         updated.Dirty = true;
                         updated.Value = item.Replace(",", "").Replace(".", "").IsNullOrWhiteSpace() ? default(decimal) : decimal.Parse(item.Replace(",", "").Replace(".", ""));
                         updated.UpdateView();
@@ -163,7 +163,7 @@ namespace Core.Components
             }
         }
 
-        private bool IsNullable<T>() where T : struct => Utils.IsNullable<T>(Entity.GetType(), GuiInfo.FieldName, Entity);
+        private bool IsNullable<T>() where T : struct => Utils.IsNullable<T>(Entity.GetType(), FieldName, Entity);
 
         private void ChangeSetValue()
         {
@@ -243,7 +243,7 @@ namespace Core.Components
                 return null;
             }
 
-            var value = Utils.GetPropValue(Entity, GuiInfo.FieldName);
+            var value = Utils.GetPropValue(Entity, FieldName);
             if (value is null)
             {
                 return null;

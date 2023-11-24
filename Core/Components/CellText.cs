@@ -26,7 +26,7 @@ namespace Core.Components
         public override void Render()
         {
             SetDefaultVal();
-            var cellData = Utils.GetPropValue(Entity, GuiInfo.FieldName);
+            var cellData = Utils.GetPropValue(Entity, FieldName);
             var isBool = cellData != null && cellData.GetType().IsBool();
             string cellText = string.Empty;
             if (Element is null)
@@ -78,7 +78,7 @@ namespace Core.Components
                 else
                 {
                     Html.Instance.Padding(Direction.bottom, 0)
-                        .SmallCheckbox((bool)Utils.GetPropValue(Entity, GuiInfo.FieldName));
+                        .SmallCheckbox((bool)Utils.GetPropValue(Entity, FieldName));
                     Html.Context.PreviousElementSibling.As<HTMLInputElement>().Disabled = true;
                 }
 
@@ -106,7 +106,7 @@ namespace Core.Components
             string cellText = null;
             if (GuiInfo.IsPivot)
             {
-                var fields = GuiInfo.FieldName.Split(".");
+                var fields = FieldName.Split(".");
                 if (fields.Length < 3)
                 {
                     return cellText;

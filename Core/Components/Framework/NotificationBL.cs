@@ -20,7 +20,6 @@ namespace Core.Components.Framework
         private static NotificationBL _instance;
         private static Observable<string> _countNtf;
         private static Observable<string> _countUser;
-        private HTMLElement _profile;
         private HTMLElement _task;
         private HTMLElement _countBadge;
         public static ObservableList<TaskNotification> Notifications { get; private set; }
@@ -113,54 +112,6 @@ namespace Core.Components.Framework
             */
         }
 
-        private void ShowToast(TaskNotification task)
-        {
-            Task.Run(async () =>
-            {
-                if (task.EntityId == Utils.GetEntity(nameof(Entity)).Id)
-                {
-                    /*@
-                     Swal.fire({
-                          icon: 'error',
-                          title: 'Hệ thống sẽ cập nhật sau 1 phút',
-                          text: 'Bạn có thể xử lý công việc còn lại trong 1 phút kể từ lúc này',
-                          footer: '<a href="#">Vui lòng không ctrl+f5 cảm ơn!</a>'
-                        })
-                     */
-                    await Task.Delay(1000 * 60);
-                    /*@
-                     let timerInterval
-                        Swal.fire({
-                          title: 'Hệ thống đang cập nhật vui lòng chờ trong giây lát!',
-                          html: 'Chúng tôi sẽ khởi động lại sau <b></b> giây.',
-                          timer: 1000*60*3,
-                          allowOutsideClick: false,
-                          timerProgressBar: true,
-                          didOpen: () => {
-                            Swal.showLoading()
-                            const b = Swal.getHtmlContainer().querySelector('b')
-                            timerInterval = setInterval(() => {
-                              b.textContent = (Swal.getTimerLeft()/1000).toFixed(0)
-                            }, 1000)
-                          },
-                          willClose: () => {
-                            clearInterval(timerInterval)
-                          }
-                        }).then((result) => {
-                             if (result.dismiss === Swal.DismissReason.timer)
-                             {
-                                window.location.reload(true);
-                             }
-                       })
-                    */
-                }
-                else
-                {
-                    Toast.Success($"Thông báo từ hệ thống <br /> {task.Title} - {task.Description}");
-                }
-            });
-        }
-
         public static NotificationBL Instance
         {
             get
@@ -207,12 +158,6 @@ namespace Core.Components.Framework
             langSelect.Render();
             html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
             html.A.AsyncEvent(EventType.Click, SignOut).ClassName("dropdown-item").I.ClassName("far fa-power-off").End.Text("Logout").EndOf(ElementType.a);
-        }
-
-        private void ShowProfile()
-        {
-            _profile.Style.Display = Display.Block;
-            _profile.Focus();
         }
 
         private async Task SignOut(Event e)
@@ -301,7 +246,7 @@ namespace Core.Components.Framework
             Notifications.Data = taskList;
         }
 
-        private async Task MarkAllAsRead(Event e)
+        public async Task MarkAllAsRead(Event e)
         {
             e.PreventDefault();
             Client client = new Client(nameof(TaskNotification));
@@ -316,7 +261,6 @@ namespace Core.Components.Framework
         public async Task OpenNotification(TaskNotification notification)
         {
             await MarkAsRead(notification);
-            await OpenTaskFeature(notification, this);
         }
 
         protected override void RemoveDOM()
@@ -334,10 +278,6 @@ namespace Core.Components.Framework
         public override void Dispose()
         {
             _task.AddClass("hide");
-        }
-
-        public async Task OpenTaskFeature(TaskNotification notification, EditableComponent baseComponent)
-        {
         }
     }
 }

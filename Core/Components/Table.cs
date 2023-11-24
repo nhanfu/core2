@@ -52,7 +52,7 @@ namespace Core.Components
 
         public void ExportExcel(object arg)
         {
-            ExcelExt.ExportTableToExcel(null, GuiInfo.FieldName, Element.ParentElement);
+            ExcelExt.ExportTableToExcel(null, FieldName, Element.ParentElement);
         }
 
         public void ExportPdf(object arg)

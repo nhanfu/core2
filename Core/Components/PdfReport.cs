@@ -66,7 +66,7 @@ namespace Core.Components
                             ConfirmDialog.RenderConfirm("Excel data not found in the report");
                             return;
                         }
-                        ExcelExt.ExportTableToExcel(null, GuiInfo.Label ?? GuiInfo.FieldName, table);
+                        ExcelExt.ExportTableToExcel(null, GuiInfo.Label ?? FieldName, table);
                     }).End.Render();
                 if (Client.SystemRole)
                 {

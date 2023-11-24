@@ -27,8 +27,8 @@ namespace Core.Extensions
         public const string ComponentGroupId = "30";
         public const string HistoryId = "4199";
         public const string InsertedBy = "InsertedBy";
-        public const string OwnerId = "OwnerId";
-        public const string SqlReader = "Reader";
+        public const string OwnerUserIds = "OwnerUserIds";
+        public const string OwnerRoleIds = "OwnerRoleIds";
 
         public const string GOOGLE_MAP = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCr_2PaKJplCyvwN4q78lBkX3UBpfZ_HsY";
         public const string GOOGLE_MAP_PLACES = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=places";
@@ -65,6 +65,24 @@ namespace Core.Extensions
                 }
             }
             return res.ToString();
+        }
+
+        public static bool IsOwner(object entity, string userId, IEnumerable<string> roleIds)
+        {
+            if (entity is null || entity.GetPropValue(IdField) != null)
+            {
+                return false;
+            }
+            var ownerUserIds = entity.GetPropValue(OwnerUserIds)?.ToString();
+            var isOwnerUser = ownerUserIds.HasNonSpaceChar() && ownerUserIds.Split(Comma).Contains(userId);
+            var ownerRoleIds = entity.GetPropValue(OwnerRoleIds)?.ToString();
+            var isOwnerRole = ownerRoleIds.HasNonSpaceChar() &&
+                (from entityRole in ownerRoleIds.Split(Comma)
+                 join tokenRole in roleIds on entityRole equals tokenRole
+                 select entityRole).Any();
+            var createdId = entity.GetPropValue(InsertedBy)?.ToString();
+            var isOwner = ownerUserIds.IsNullOrWhiteSpace() && createdId == userId || isOwnerRole || isOwnerUser;
+            return isOwner;
         }
 
         public static DistributedCacheEntryOptions CacheTTL = new()

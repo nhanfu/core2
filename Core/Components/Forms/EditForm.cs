@@ -196,11 +196,11 @@ namespace Core.Components.Forms
                     {
                         return fn.Call(child) as PatchUpdateDetail[];
                     }
-                    var value = Utils.GetPropValue(child.Entity, child.GuiInfo.FieldName);
-                    var propType = child.Entity.GetType().GetComplexPropType(child.GuiInfo.FieldName, child.Entity);
+                    var value = Utils.GetPropValue(child.Entity, child.FieldName);
+                    var propType = child.Entity.GetType().GetComplexPropType(child.FieldName, child.Entity);
                     var patch = new PatchUpdateDetail
                     {
-                        Field = child.GuiInfo.FieldName,
+                        Field = child.FieldName,
                         OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
                         Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
                     };
@@ -252,7 +252,7 @@ namespace Core.Components.Forms
             {
                 await DeleteGridView();
             }
-            var arr = FilterChildren<EditableComponent>(x => (!x.Dirty || x.GetValueText().IsNullOrWhiteSpace()) && x.GuiInfo != null).Select(x => x.GuiInfo.FieldName).ToArray();
+            var arr = FilterChildren<EditableComponent>(x => (!x.Dirty || x.GetValueText().IsNullOrWhiteSpace()) && x.GuiInfo != null).Select(x => x.FieldName).ToArray();
             UpdateView(true, arr);
             var changing = BuildTextHistory().ToString();
             if (!changing.IsNullOrWhiteSpace())

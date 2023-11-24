@@ -36,8 +36,8 @@ namespace Core.Components
             Html.Take(_input).Event(EventType.Input, UserChange);
             SetDisableUI(!GuiInfo.Editable);
             SetDefaultVal();
-            Value = (bool?)Utils.GetPropValue(Entity, GuiInfo.FieldName);
-            Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+            Value = (bool?)Utils.GetPropValue(Entity, FieldName);
+            Entity.SetComplexPropValue(FieldName, _value);
             Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
             DOMContentLoaded?.Invoke();
         }
@@ -64,7 +64,7 @@ namespace Core.Components
             _value = check;
             if (Entity != null)
             {
-                Entity.SetComplexPropValue(GuiInfo.FieldName, check);
+                Entity.SetComplexPropValue(FieldName, check);
             }
             Dirty = true;
             if (UserInput != null)
@@ -78,7 +78,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            var val = (bool?)Entity?.GetPropValue(GuiInfo.FieldName);
+            var val = (bool?)Entity?.GetPropValue(FieldName);
             Value = val;
             if (!Dirty)
             {

@@ -526,11 +526,8 @@ namespace Core.Services
                 }
                 else
                 {
-                    var ownerUserIds = originRow.GetValueOrDefault("OwnerUserIds") as string ?? string.Empty;
-                    var ownerRoleIds = from ownerRole in (originRow.GetValueOrDefault("OwnerRoleIds") as string ?? string.Empty).Split(",")
-                                       join currRole in RoleIds on ownerRole equals currRole
-                                       select ownerRole;
-                    writePerm = allRights.Any(x => x.CanWrite && (ownerUserIds.Contains(UserId) || ownerRoleIds.Any()) || x.CanWriteAll);
+                    var isOwner = Utils.IsOwner(originRow, UserId, RoleIds);
+                    writePerm = allRights.Any(x => x.CanWrite && isOwner || x.CanWriteAll);
                 }
             }
             if (!writePerm) throw new ApiException("Access denied!") { StatusCode = HttpStatusCode.Unauthorized };

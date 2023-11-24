@@ -54,7 +54,7 @@ namespace Core.Components
                 {
                     Input.Value = null;
                 }
-                Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+                Entity.SetComplexPropValue(FieldName, _value);
                 Dirty = true;
             }
         }
@@ -78,15 +78,15 @@ namespace Core.Components
         public override void Render()
         {
             SetDefaultVal();
-            var fieldValue = Utils.GetPropValue(Entity, GuiInfo.FieldName);
-            Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+            var fieldValue = Utils.GetPropValue(Entity, FieldName);
+            Entity.SetComplexPropValue(FieldName, _value);
             DateTime parsedVal = DateTime.MinValue;
             var parsed = fieldValue is string strVal && strVal.HasAnyChar() && DateTime.TryParse(strVal, out parsedVal);
             _value = parsed ? parsedVal
                 : fieldValue is null ? null
                 : (fieldValue.GetType().IsDate() ? (DateTime?)fieldValue : null);
             _nullable = IsNullable<DateTimeOffset>() || IsNullable<DateTime>();
-            Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
+            Entity.SetComplexPropValue(FieldName, _value);
             var str = _value.HasValue && _value != DateTime.MinValue ? _value.Value.ToString(InitFormat) : string.Empty;
             OriginalText = str;
             OldValue = _value != DateTime.MinValue ? _value?.ToString().DateConverter() : string.Empty;
@@ -129,7 +129,7 @@ namespace Core.Components
                 .Event(EventType.Change, () => ParseDate())
                 .PlaceHolder(GuiInfo.PlainText);
             Input.AutoComplete = AutoComplete.Off;
-            Input.Name = GuiInfo.FieldName;
+            Input.Name = FieldName;
             Input.ParentElement.AddEventListener(EventType.FocusOut, CloseCalendar);
             Input.AddEventListener(EventType.KeyDown, async (e) => await KeyDownDateTime(e));
             Html.Instance.End.Div.ClassName("btn-group").Button.TabIndex(-1).Span.ClassName("icon mif-calendar")
@@ -205,7 +205,7 @@ namespace Core.Components
                                 upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
                             }
                         }
-                        var updated = upItem.FilterChildren<Datepicker>(x => x.GuiInfo.FieldName == GuiInfo.FieldName && x.GuiInfo.Editable).FirstOrDefault();
+                        var updated = upItem.FilterChildren<Datepicker>(x => x.FieldName == FieldName && x.GuiInfo.Editable).FirstOrDefault();
                         updated.Dirty = true;
                         var (parsed, datetime, format) = TryParseDateTime(item);
                         updated.Value = datetime;
@@ -226,7 +226,7 @@ namespace Core.Components
             }
         }
 
-        private bool IsNullable<T>() where T : struct => Entity == null || Utils.IsNullable<T>(Entity.GetType(), GuiInfo.FieldName, Entity);
+        private bool IsNullable<T>() where T : struct => Entity == null || Utils.IsNullable<T>(Entity.GetType(), FieldName, Entity);
 
         private void ParseDate()
         {
@@ -542,7 +542,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? setDirty = null, params string[] componentNames)
         {
-            var value = Entity?.GetPropValue(GuiInfo.FieldName);
+            var value = Entity?.GetPropValue(FieldName);
             if (value is string strVal)
             {
                 var parsed = DateTime.TryParse(strVal, out DateTime dateVal);
@@ -553,7 +553,7 @@ namespace Core.Components
             }
             else
             {
-                Value = (DateTime?)Entity?.GetPropValue(GuiInfo.FieldName);
+                Value = (DateTime?)Entity?.GetPropValue(FieldName);
             }
         }
 

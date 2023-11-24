@@ -24,7 +24,7 @@ namespace Core.Components
                 _path = value;
                 if (Entity != null)
                 {
-                    Entity.SetComplexPropValue(GuiInfo.FieldName, _path);
+                    Entity.SetComplexPropValue(FieldName, _path);
                 }
 
                 if (_path is null)
@@ -68,7 +68,7 @@ namespace Core.Components
 
         public override void Render()
         {
-            _path = Entity?.GetPropValue(GuiInfo.FieldName)?.ToString();
+            _path = Entity?.GetPropValue(FieldName)?.ToString();
             var paths = _path?.Split(pathSeparator).ToList();
             RenderUploadForm();
             Path = _path;
@@ -359,7 +359,7 @@ namespace Core.Components
                 await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
                 if (UserInput != null)
                 {
-                    UserInput.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = GuiInfo.FieldName });
+                    UserInput.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName });
                 }
                 Dirty = true;
             });
@@ -379,7 +379,7 @@ namespace Core.Components
             _input.Value = string.Empty;
             if (UserInput != null)
             {
-                UserInput.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = GuiInfo.FieldName });
+                UserInput.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName });
             }
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
         }
@@ -421,7 +421,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            Path = Entity.GetPropValue(GuiInfo.FieldName)?.ToString();
+            Path = Entity.GetPropValue(FieldName)?.ToString();
             base.UpdateView();
         }
 
@@ -507,7 +507,7 @@ namespace Core.Components
             {
                 Html.Take("#previewContainer").Div.ClassName("item col-md-1 col-sm-3")
                  .Div.ClassName("thumbnail")
-                     .Div.Img.Event(EventType.Click, async () => await ChooseImage(img)).Src(img.Url).ClassName("list-group-image").End.Input.Type("checkbox").Event(EventType.Change, async () => await DeleteImage(img)).End.End.End.End.Render();
+                     .Div.Img.Event(EventType.Click, async () => await ChooseImage(img)).Src(img.Url).ClassName("list-group-image").End.Input.Type("checkbox").End.End.End.End.Render();
             });
         }
 
@@ -525,14 +525,9 @@ namespace Core.Components
             Dirty = true;
             if (UserInput != null)
             {
-                UserInput.Invoke(new ObservableArgs { NewData = _path, FieldName = GuiInfo.FieldName, EvType = EventType.Change });
+                UserInput.Invoke(new ObservableArgs { NewData = _path, FieldName = FieldName, EvType = EventType.Change });
             }
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
-        }
-
-        private async Task DeleteImage(Images img)
-        {
-
         }
 
         private void OpenNativeFileDialog(Event e)

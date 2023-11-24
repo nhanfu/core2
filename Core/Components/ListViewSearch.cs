@@ -617,7 +617,7 @@ namespace Core.Components
                      x.style="border:1px solid;white-space: nowrap;font-family: 'times new roman', times, serif;";
                      */
                 });
-                ExcelExt.ExportTableToExcel(null, GuiInfo.FieldName ?? "Export", copyListView.Element.QuerySelector("table") as HTMLElement);
+                ExcelExt.ExportTableToExcel(null, FieldName ?? "Export", copyListView.Element.QuerySelector("table") as HTMLElement);
                 copyListView.Dispose();
             };
         }

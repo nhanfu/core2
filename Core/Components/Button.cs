@@ -84,7 +84,7 @@ namespace Core.Components
             {
                 return _textEle.TextContent;
             }
-            return Entity[GuiInfo.FieldName]?.ToString();
+            return Entity[FieldName]?.ToString();
         }
 
         public override StringBuilder BuildTextHistory(StringBuilder builder = null, HashSet<object> visited = null)

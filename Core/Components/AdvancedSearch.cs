@@ -414,21 +414,9 @@ namespace Core.Components
             {
                 value = $"{value}";
             }
-            else if (condition.Field.ComponentType == nameof(Checkbox))
-            {
-                var tryParsed = Enum.TryParse<ActiveStateEnum>(value, out var state);
-                if (tryParsed && state == ActiveStateEnum.Yes)
-                {
-                    value = "true";
-                }
-                else if (state == ActiveStateEnum.No)
-                {
-                    value = "false";
-                }
-            }
             else
             {
-                value = $"'{value.EncodeSpecialChar()}'";
+                value = $"{value.EncodeSpecialChar()}";
             }
 
             var funcId = (AdvSearchOperation)condition.CompareOperatorId.ToString().TryParseInt();
@@ -455,9 +443,9 @@ namespace Core.Components
                 return;
             }
             condition.Field = field;
-            var cell = _filterGrid.FirstOrDefault(x => x.GuiInfo != null && x.Entity == condition && x.GuiInfo.FieldName == nameof(FieldCondition.Value));
-            var compareCell = _filterGrid.FirstOrDefault(x => x.GuiInfo != null && x.Entity == condition
-                && x.GuiInfo.FieldName == nameof(FieldCondition.CompareOperatorId)) as SearchEntry;
+            var cell = _filterGrid.FirstOrDefault(x => x.Entity == condition && x.FieldName == nameof(FieldCondition.Value));
+            var compareCell = _filterGrid.FirstOrDefault(x => x.Entity == condition
+                && x.FieldName == nameof(FieldCondition.CompareOperatorId)) as SearchEntry;
             if (cell is null)
             {
                 return;
@@ -492,10 +480,10 @@ namespace Core.Components
             {
                 component = SetSearchString(compareCell, field);
             }
-            component.GuiInfo.FieldName = nameof(FieldCondition.Value);
+            component.FieldName = nameof(FieldCondition.Value);
             condition.LogicOperatorId = condition.LogicOperatorId ?? LogicOperation.And;
             _filterGrid.FirstOrDefault(x => x.GuiInfo != null && x.Entity == condition
-                && x.GuiInfo.FieldName == nameof(FieldCondition.LogicOperatorId))?.UpdateView();
+                && x.FieldName == nameof(FieldCondition.LogicOperatorId))?.UpdateView();
             condition.CompareOperatorId = (AdvSearchOperation?)compareCell.GuiInfo.LocalData.Cast<Entity>().FirstOrDefault()?.Id?.TryParseInt();
             compareCell.Value = ((int?)condition.CompareOperatorId)?.ToString();
             compareCell.UpdateView();

@@ -319,7 +319,7 @@ namespace Core.Components
             Dirty = false;
             EmptyRow = false;
             var arr = FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace())
-                .Select(x => x.GuiInfo.FieldName).ToArray();
+                .Select(x => x.FieldName).ToArray();
             var changing = BuildTextHistory().ToString();
             if (!changing.IsNullOrWhiteSpace())
             {
@@ -344,11 +344,11 @@ namespace Core.Components
                     {
                         return fn.Call(child) as PatchUpdateDetail[];
                     }
-                    var value = Utils.GetPropValue(child.Entity, child.GuiInfo.FieldName);
-                    var propType = child.Entity.GetType().GetComplexPropType(child.GuiInfo.FieldName, child.Entity);
+                    var value = Utils.GetPropValue(child.Entity, child.FieldName);
+                    var propType = child.Entity.GetType().GetComplexPropType(child.FieldName, child.Entity);
                     var patch = new PatchUpdateDetail
                     {
-                        Field = child.GuiInfo.FieldName,
+                        Field = child.FieldName,
                         OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
                         Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
                     };

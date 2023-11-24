@@ -32,7 +32,7 @@ namespace Core.Components
                     Dirty = true;
                 }
                 _value = value;
-                Entity?.SetComplexPropValue(GuiInfo.FieldName, value);
+                Entity?.SetComplexPropValue(FieldName, value);
                 FindMatchText();
             }
         }
@@ -75,7 +75,7 @@ namespace Core.Components
         public override void Render()
         {
             SetDefaultVal();
-            var entityVal = Utils.GetPropValue(Entity, GuiInfo.FieldName);
+            var entityVal = Utils.GetPropValue(Entity, FieldName);
             if (entityVal is string str_value)
             {
                 _value = str_value;
@@ -106,7 +106,7 @@ namespace Core.Components
                 }
             }
             _input.AutoComplete = AutoComplete.Off;
-            Html.Take(_input).PlaceHolder(GuiInfo.PlainText).Attr("name", GuiInfo.FieldName)
+            Html.Take(_input).PlaceHolder(GuiInfo.PlainText).Attr("name", FieldName)
                 .Event(EventType.ContextMenu, () => _contextMenu = true)
                 .Event(EventType.Focus, FocusIn)
                 .Event(EventType.Blur, DiposeGvWrapper)
@@ -547,7 +547,7 @@ namespace Core.Components
             _input.Value = string.Empty;
             if (oldMatch != Matched)
             {
-                Entity?.SetComplexPropValue(GuiInfo.FieldName, null);
+                Entity?.SetComplexPropValue(FieldName, null);
                 Dirty = true;
                 CascadeAndPopulate();
                 Task.Run(async () =>
@@ -621,7 +621,7 @@ namespace Core.Components
             {
                 new PatchUpdateDetail
                 {
-                    Field = GuiInfo.FieldName,
+                    Field = FieldName,
                     Value = _value,
                     OldVal = OldValue
                 }
@@ -678,10 +678,10 @@ namespace Core.Components
             Matched = rowData;
             var oldValue = _value;
             _value = rowData[IdField]?.ToString();
-            if (Entity != null && GuiInfo.FieldName.HasAnyChar())
+            if (Entity != null && FieldName.HasAnyChar())
             {
-                Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
-                Entity.SetComplexPropValue(GuiInfo.FieldName.Substr(0, GuiInfo.FieldName.Length - 2), rowData);
+                Entity.SetComplexPropValue(FieldName, _value);
+                Entity.SetComplexPropValue(FieldName.Substr(0, FieldName.Length - 2), rowData);
             }
             Dirty = true;
             Matched = rowData;
@@ -704,7 +704,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            _value = Entity?.GetPropValue(GuiInfo.FieldName) as string;
+            _value = Entity?.GetPropValue(FieldName) as string;
             if (_value is null)
             {
                 Matched = null;

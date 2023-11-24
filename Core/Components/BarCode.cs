@@ -22,7 +22,7 @@ namespace Core.Components
         {
             Html.Take(ParentElement).Clear().Div.Style($"width:{GuiInfo.Width}px;margin:auto").Id("barcode" + GuiInfo.Id);
             Element = Html.Context;
-            Value = Entity.GetPropValue(GuiInfo.FieldName)?.ToString();
+            Value = Entity.GetPropValue(FieldName)?.ToString();
             Task.Run(async () =>
             {
                 await Client.LoadScript("/js/qrcode.min.js");
@@ -40,7 +40,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            var value = Entity.GetPropValue(GuiInfo.FieldName)?.ToString();
+            var value = Entity.GetPropValue(FieldName)?.ToString();
             if (value == Value)
             {
                 return;
