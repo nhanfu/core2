@@ -78,7 +78,7 @@ namespace Core.Components
         public override void Render()
         {
             SetDefaultVal();
-            var fieldValue = Entity.GetComplexPropValue(GuiInfo.FieldName);
+            var fieldValue = Utils.GetPropValue(Entity, GuiInfo.FieldName);
             Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
             DateTime parsedVal = DateTime.MinValue;
             var parsed = fieldValue is string strVal && strVal.HasAnyChar() && DateTime.TryParse(strVal, out parsedVal);
@@ -542,7 +542,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? setDirty = null, params string[] componentNames)
         {
-            var value = Entity?.GetComplexPropValue(GuiInfo.FieldName);
+            var value = Entity?.GetPropValue(GuiInfo.FieldName);
             if (value is string strVal)
             {
                 var parsed = DateTime.TryParse(strVal, out DateTime dateVal);
@@ -553,7 +553,7 @@ namespace Core.Components
             }
             else
             {
-                Value = (DateTime?)Entity?.GetComplexPropValue(GuiInfo.FieldName);
+                Value = (DateTime?)Entity?.GetPropValue(GuiInfo.FieldName);
             }
         }
 

@@ -76,7 +76,7 @@ namespace Core.Components
             SetDefaultVal();
             if (Entity != null)
             {
-                var fieldVal = Entity.GetComplexPropValue(GuiInfo.FieldName);
+                var fieldVal = Utils.GetPropValue(Entity, GuiInfo.FieldName);
                 _isString = fieldVal is string;
                 _nullable = IsNullable<int>() || IsNullable<long>() || IsNullable<decimal>();
                 _value = GetDecimalValue();
@@ -99,20 +99,10 @@ namespace Core.Components
             _input.AddEventListener(EventType.Change, ChangeSetValue);
             _input.AutoComplete = AutoComplete.Off;
             Value = _value; // set again to render in correct format
-            if (GuiInfo.AutoFit)
+            if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace() && Utils.IsFunction(GuiInfo.ChildStyle, out var fn))
             {
-                this.SetAutoWidth(_input.Value, _input.GetComputedStyle().Font);
+                Window.SetTimeout(() => fn.Call(this, Entity, _input).ToString(), 100);
             }
-            Window.SetTimeout(() =>
-            {
-                if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace())
-                {
-                    if (Utils.IsFunction(GuiInfo.ChildStyle, out var fn))
-                    {
-                        fn.Call(this, Entity, _input).ToString();
-                    }
-                }
-            }, 100);
             Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
             DOMContentLoaded?.Invoke();
         }
@@ -253,7 +243,7 @@ namespace Core.Components
                 return null;
             }
 
-            var value = Entity.GetComplexPropValue(GuiInfo.FieldName);
+            var value = Utils.GetPropValue(Entity, GuiInfo.FieldName);
             if (value is null)
             {
                 return null;

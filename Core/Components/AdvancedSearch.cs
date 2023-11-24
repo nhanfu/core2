@@ -1,4 +1,5 @@
-﻿using Bridge.Html5;
+﻿using System.Text.RegularExpressions;
+using Bridge.Html5;
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
@@ -18,8 +19,6 @@ namespace Core.Components
     {
         private GridView _filterGrid;
         private GridView _orderByGrid;
-        private SearchEntry _activeState;
-        private readonly Type _entityType;
         private List<Component> _headers;
 
         public ListView ParentListView;
@@ -29,6 +28,7 @@ namespace Core.Components
         public string _fieldConditionId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(FieldCondition)).Id;
         public string _ComponentId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(Component)).Id;
         public string _entityId = Client.Entities.Values.FirstOrDefault(x => x.Name == nameof(Entity)).Id;
+        private readonly string[] _searchByIdList = new string[] { nameof(ComponentTypeTypeEnum.SearchEntry), nameof(ComponentTypeTypeEnum.MultipleSearchEntry) };
 
         public AdvancedSearch(ListView parent) : base(nameof(Component))
         {
@@ -36,8 +36,11 @@ namespace Core.Components
             Title = "Tìm kiếm nâng cao";
             Icon = "fa fa-search-plus";
             ParentListView = parent;
-            _entityType = Type.GetType((ParentListView.GuiInfo.Reference?.Namespace ?? Client.ModelNamespace) + ParentListView.GuiInfo.RefName);
-            DOMContentLoaded += LocalRender;
+        }
+
+        protected override void LoadFeatureAndRender(Action callback = null)
+        {
+            base.LoadFeatureAndRender(LocalRender);
         }
 
         public void LocalRender()
@@ -110,40 +113,9 @@ namespace Core.Components
 
         private void AddFilters(Section section)
         {
-            _activeState = new SearchEntry(new Component
-            {
-                FieldName = nameof(AdvSearchVM.ActiveState),
-                Column = 4,
-                Label = "Trạng thái",
-                FormatData = "{Description}",
-                ShowLabel = true,
-                LocalRender = true,
-                ReferenceId = _entityId.ToString(),
-                RefName = nameof(Entity),
-                Reference = new Entity { Name = nameof(Entity) },
-                Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]",
-            });
-            _activeState.GuiInfo.LocalData = IEnumerableExtensions.ToEntity<ActiveStateEnum>();
-            _activeState.GuiInfo.LocalHeader = new List<Component>
-            {
-                new Component
-                {
-                    FieldName = nameof(Core.Models.Entity.Name),
-                    ShortDesc = "Trạng thái",
-                    Active = true,
-                },
-                new Component
-                {
-                    FieldName = nameof(Core.Models.Entity.Description),
-                    ShortDesc = "Miêu tả",
-                    Active = true,
-                }
-            };
-            _activeState.ParentElement = section.Element;
-            section.AddChild(_activeState);
-
             _filterGrid = new GridView(new Component
             {
+                Id = System.Id.NewGuid(),
                 FieldName = nameof(AdvSearchVM.Conditions),
                 Column = 4,
                 ReferenceId = _fieldConditionId.ToString(),
@@ -169,15 +141,14 @@ namespace Core.Components
                     ShortDesc = "Tên cột",
                     ReferenceId = _ComponentId,
                     RefName = nameof(Component),
-                    FormatData = "{ShortDesc}",
+                    FormatData = "ShortDesc",
                     Active = true,
                     Editable = true,
-                    ComponentType = "Dropdown",
+                    ComponentType = "SearchEntry",
                     MinWidth = "100px",
                     MaxWidth = "200px",
                     LocalRender = true,
-                    LocalData = _headers.Where(x => x.FieldName != IdField)
-                        .Cast<object>().ToList(),
+                    LocalData = _headers.Cast<object>().ToList(),
                     LocalHeader = new List<Component>
                     {
                         new Component
@@ -198,8 +169,8 @@ namespace Core.Components
                     ShortDesc = "Toán tử",
                     ReferenceId = _entityId,
                     RefName = nameof(Entity),
-                    ComponentType = "Dropdown",
-                    FormatData = "{Description}",
+                    ComponentType = "SearchEntry",
+                    FormatData = "Description",
                     Active = true,
                     Editable = true,
                     MinWidth = "150px",
@@ -210,14 +181,14 @@ namespace Core.Components
                         new Component
                         {
                             EntityId = _entityId,
-                            FieldName = nameof(Core.Models.Entity.Name),
+                            FieldName = nameof(Models.Entity.Name),
                             ShortDesc = "Toán tử",
                             Active = true,
                         },
                         new Component
                         {
                             EntityId = _entityId,
-                            FieldName = nameof(Core.Models.Entity.Description),
+                            FieldName = nameof(Models.Entity.Description),
                             ShortDesc = "Ký hiệu",
                             Active = true,
                         }
@@ -246,8 +217,8 @@ namespace Core.Components
                     ShortDesc = "Kết hợp",
                     ReferenceId = _entityId,
                     RefName = nameof(Entity),
-                    ComponentType = "Dropdown",
-                    FormatData = "{Description}",
+                    ComponentType = "SearchEntry",
+                    FormatData = "Description",
                     Active = true,
                     Editable = true,
                     DefaultVal = "0",
@@ -258,14 +229,14 @@ namespace Core.Components
                         new Component
                         {
                             EntityId = _entityId,
-                            FieldName = nameof(Core.Models.Entity.Name),
+                            FieldName = nameof(Models.Entity.Name),
                             ShortDesc = "Kết hợp",
                             Active = true,
                         },
                         new Component
                         {
                             EntityId = _entityId,
-                            FieldName = nameof(Core.Models.Entity.Description),
+                            FieldName = nameof(Models.Entity.Description),
                             ShortDesc = "Miêu tả",
                             Active = true,
                         },
@@ -283,7 +254,7 @@ namespace Core.Components
             _filterGrid.MainSection.Children.ForEach(x =>
             {
                 var condition = x.Entity.As<FieldCondition>();
-                _ = FieldId_Changed(condition, condition.Field);
+                FieldId_Changed(condition, condition.Field);
             });
         }
 
@@ -321,10 +292,10 @@ namespace Core.Components
                     ShortDesc = "Tên cột",
                     ReferenceId = _ComponentId,
                     RefName = nameof(Component),
-                    FormatData = "{ShortDesc}",
+                    FormatData = "ShortDesc",
                     Active = true,
                     Editable = true,
-                    ComponentType = "Dropdown",
+                    ComponentType = "SearchEntry",
                     MinWidth = "100px",
                     MaxWidth = "200px",
                     LocalData = _headers
@@ -349,8 +320,8 @@ namespace Core.Components
                     ShortDesc = "Thứ tự",
                     ReferenceId = _entityId,
                     RefName = nameof(Entity),
-                    ComponentType = "Dropdown",
-                    FormatData = "{Description}",
+                    ComponentType = "SearchEntry",
+                    FormatData = "Description",
                     Active = true,
                     Editable = true,
                     MinWidth = "100px",
@@ -361,7 +332,7 @@ namespace Core.Components
                         new Component
                         {
                             EntityId = _entityId,
-                            FieldName = nameof(Core.Models.Entity.Name),
+                            FieldName = nameof(Models.Entity.Name),
                             ShortDesc = "Thứ tự",
                             Active = true,
                         },
@@ -406,53 +377,16 @@ namespace Core.Components
             {
                 return;
             }
-            var query = CalcAdvSearchQuery();
-            await ParentListView.ReloadData(query);
+            CalcAdvSearchQuery();
+            await ParentListView.ReloadData(cacheHeader: true, skip: 0);
         }
 
-        public string CalcAdvSearchQuery()
+        public void CalcAdvSearchQuery()
         {
-            var query = ParentListView.FormattedDataSource;
-            query = query.Replace(new RegExp(@"(Active eq true (and|or)?)|( (and|or)?Active eq true^)"), "");
-            if (AdvSearchEntity.ActiveState == ActiveStateEnum.Yes && !query.Contains("Active eq false"))
+            ParentListView.Wheres = AdvSearchEntity.Conditions.Select((x, index) => new Where
             {
-                query = OdataExt.AppendClause(query, " and Active eq true");
-            }
-            else if (AdvSearchEntity.ActiveState == ActiveStateEnum.No && !query.Contains("Active eq true"))
-            {
-                query = OdataExt.AppendClause(query, " and Active eq false");
-            }
-            var originFilter = OdataExt.GetClausePart(query);
-            var conditions = AdvSearchEntity.Conditions.Select((x, index) => new
-            {
-                Term = GetSearchValue(x),
-                Operator = GetLogicOp(x) ?? " and ",
-                Group = x.Group
-            }).Where(x => x.Term.HasAnyChar()).ToList();
-
-            var filterPart = conditions.Where(x => !x.Group).Select((x, index) => index < conditions.Count - 1 ? x.Term + x.Operator : x.Term).Combine(string.Empty);
-            var filterPartGroup = conditions.Where(x => x.Group).Select((x, index) => index < conditions.Count - 1 ? x.Term + x.Operator : x.Term).Combine(string.Empty);
-            var qr = $"({originFilter})";
-            if (!filterPart.IsNullOrWhiteSpace())
-            {
-                qr += $" and ({filterPart})".Replace("and )", ")").Replace("or )", ")");
-            }
-            if (!filterPartGroup.IsNullOrWhiteSpace())
-            {
-                qr += $" and ({filterPartGroup})".Replace("and )", ")").Replace("or )", ")");
-            }
-            if (!filterPart.IsNullOrWhiteSpace() || !filterPartGroup.IsNullOrWhiteSpace())
-            {
-                query = OdataExt.ApplyClause(query, qr);
-            }
-            var orderbyList = AdvSearchEntity.OrderBy.Select(orderby => $"{orderby.FieldName} {orderby.OrderbyDirectionId.ToString().ToLowerCase()}");
-            var orderByPart = string.Join(",", orderbyList);
-            if (!orderByPart.IsNullOrWhiteSpace())
-            {
-                query = OdataExt.ApplyClause(query, string.Join(",", orderbyList), OdataExt.OrderByKeyword);
-            }
-
-            return query;
+                FieldName = GetSearchValue(x),
+            }).Where(x => x.FieldName.HasAnyChar()).ToList();
         }
 
         private string GetSearchValue(FieldCondition condition)
@@ -463,28 +397,24 @@ namespace Core.Components
             {
                 return null;
             }
-            var fieldType = _entityType.GetProperty(condition.Field.FieldName).PropertyType;
-            if (fieldType.IsDate())
+            if (condition.Field.ComponentType == nameof(Datepicker) && !value.IsNullOrWhiteSpace())
             {
-                if (!value.IsNullOrWhiteSpace())
+                try
                 {
-                    try
-                    {
-                        var dateTime = DateTime.ParseExact(value, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToISOFormat();
-                        value = $"cast({dateTime},Edm.DateTimeOffset)";
-                    }
-                    catch
-                    {
-                        var dateTime = DateTime.ParseExact(value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture).ToISOFormat();
-                        value = $"cast({dateTime},Edm.DateTimeOffset)";
-                    }
+                    var dateTime = DateTime.ParseExact(value, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToISOFormat();
+                    value = $"cast({dateTime},Edm.DateTimeOffset)";
+                }
+                catch
+                {
+                    var dateTime = DateTime.ParseExact(value, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture).ToISOFormat();
+                    value = $"cast({dateTime},Edm.DateTimeOffset)";
                 }
             }
-            else if (fieldType.IsNumber())
+            else if (condition.Field.ComponentType == nameof(Number))
             {
                 value = $"{value}";
             }
-            else if (fieldType.IsBool())
+            else if (condition.Field.ComponentType == nameof(Checkbox))
             {
                 var tryParsed = Enum.TryParse<ActiveStateEnum>(value, out var state);
                 if (tryParsed && state == ActiveStateEnum.Yes)
@@ -501,7 +431,8 @@ namespace Core.Components
                 value = $"'{value.EncodeSpecialChar()}'";
             }
 
-            var func = AdvOptionExt.OperationToOdata[condition.CompareOperatorId.Value];
+            var funcId = (AdvSearchOperation)condition.CompareOperatorId.ToString().TryParseInt();
+            var func = AdvOptionExt.OperationToSql.GetValueOrDefault(funcId);
             var formattedFunc = ignoreSearch ? string.Empty : string.Format(func, condition.Field?.FieldName, value);
 
             return formattedFunc;
@@ -517,14 +448,13 @@ namespace Core.Components
             return condition.LogicOperatorId == LogicOperation.And ? " and " : " or ";
         }
 
-        private async Task FieldId_Changed(FieldCondition condition, Component field)
+        private void FieldId_Changed(FieldCondition condition, Component field)
         {
             if (condition is null || field is null)
             {
                 return;
             }
             condition.Field = field;
-            var fieldType = _entityType.GetProperty(field.FieldName).PropertyType;
             var cell = _filterGrid.FirstOrDefault(x => x.GuiInfo != null && x.Entity == condition && x.GuiInfo.FieldName == nameof(FieldCondition.Value));
             var compareCell = _filterGrid.FirstOrDefault(x => x.GuiInfo != null && x.Entity == condition
                 && x.GuiInfo.FieldName == nameof(FieldCondition.CompareOperatorId)) as SearchEntry;
@@ -536,27 +466,24 @@ namespace Core.Components
             var parentCellElement = cell.ParentElement;
             var parentCell = cell.Parent;
             cell.Dispose();
-            field.FieldName = nameof(FieldCondition.Value);
             EditableComponent component = null;
-            var searchByIdList = new string[] { nameof(ComponentTypeTypeEnum.Dropdown), nameof(ComponentTypeTypeEnum.SearchEntry), nameof(ComponentTypeTypeEnum.MultipleSearchEntry) };
-            var isSearchId = searchByIdList.Contains(field.ComponentType)
-                || fieldType.IsInt32() && (field.FieldName?.EndsWith(IdField) == true || field.FieldName == nameof(Component.InsertedBy) || field.FieldName == nameof(Component.UpdatedBy));
-            if (fieldType.IsDate())
+            var isSearchId = _searchByIdList.Contains(field.ComponentType);
+            if (field.ComponentType == nameof(Datepicker))
             {
                 component = SetSearchDateTime(compareCell, field);
                 condition.Value = DateTimeOffset.Now.ToString();
             }
-            else if (isSearchId)
+            else if (field.ComponentType == nameof(SearchEntry) || field.ComponentType == nameof(MultipleSearchEntry))
             {
-                component = await SetSearchId(field, compareCell, field, component);
+                component = SetSearchId(compareCell, field);
                 condition.Value = string.Empty;
             }
-            else if (fieldType.IsBool())
+            else if (field.ComponentType == nameof(Checkbox))
             {
                 component = SetSearchBool(compareCell, field);
                 condition.Value = ((int)ActiveStateEnum.All).ToString();
             }
-            else if (fieldType.IsNumber())
+            else if (field.ComponentType == nameof(Number))
             {
                 component = SetSearchDecimal(compareCell, field);
                 condition.Value = 0.ToString();
@@ -565,6 +492,7 @@ namespace Core.Components
             {
                 component = SetSearchString(compareCell, field);
             }
+            component.GuiInfo.FieldName = nameof(FieldCondition.Value);
             condition.LogicOperatorId = condition.LogicOperatorId ?? LogicOperation.And;
             _filterGrid.FirstOrDefault(x => x.GuiInfo != null && x.Entity == condition
                 && x.GuiInfo.FieldName == nameof(FieldCondition.LogicOperatorId))?.UpdateView();
@@ -582,7 +510,10 @@ namespace Core.Components
         private static EditableComponent SetSearchString(SearchEntry compareCell, Component comInfo)
         {
             EditableComponent component;
-            comInfo.ComponentType = nameof(Textbox);
+            var com = new Component();
+            com.CopyPropFrom(comInfo);
+            com.ComponentType = nameof(Textbox);
+            com.FieldName = nameof(FieldCondition.Value);
             component = new Textbox(comInfo);
             compareCell.GuiInfo.LocalData = OperatorFactory(ComponentTypeTypeEnum.Textbox).Cast<object>().ToList();
             return component;
@@ -618,55 +549,60 @@ namespace Core.Components
             return component;
         }
 
-        private static EditableComponent SetSearchBool(SearchEntry compareCell, Component comInfo)
+        private static EditableComponent SetSearchBool(SearchEntry compareCell, Component com)
         {
+            var comInfo = new Component();
+            comInfo.CopyPropFrom(com);
             EditableComponent component;
-            comInfo.FormatData = "{" + nameof(Core.Models.Entity.Description) + "}";
-            comInfo.ComponentType = nameof(SearchEntry);
+            comInfo.FormatData = nameof(Models.Entity.Description);
+            comInfo.ComponentType = nameof(MultipleSearchEntry);
             comInfo.LocalRender = true;
             comInfo.LocalData = IEnumerableExtensions.ToEntity<ActiveStateEnum>();
-            comInfo.LocalHeader = new List<Component>
+            comInfo.LocalHeader = GetBooleanSearchHeader();
+            component = new MultipleSearchEntry(comInfo);
+            compareCell.GuiInfo.LocalData = OperatorFactory(ComponentTypeTypeEnum.SearchEntry).Cast<object>().ToList();
+            return component;
+        }
+
+        private static List<Component> GetBooleanSearchHeader()
+        {
+            return new List<Component>
                 {
                     new Component
                     {
-                        FieldName = nameof(Core.Models.Entity.Name),
+                        FieldName = nameof(Models.Entity.Name),
                         ShortDesc = "Trạng thái",
                         Active = true,
                     },
                     new Component
                     {
-                        FieldName = nameof(Core.Models.Entity.Description),
+                        FieldName = nameof(Models.Entity.Description),
                         ShortDesc = "Miêu tả",
                         Active = true,
                     }
                 };
-            component = new SearchEntry(comInfo);
-            compareCell.GuiInfo.LocalData = OperatorFactory(ComponentTypeTypeEnum.Checkbox).Cast<object>().ToList();
-            return component;
         }
 
-        private async Task<EditableComponent> SetSearchId(Component field, SearchEntry compareCell, Component comInfo, EditableComponent component)
+        private EditableComponent SetSearchId(SearchEntry compareCell, Component field)
         {
-            comInfo.ComponentType = nameof(MultipleSearchEntry);
-            var refId = field.ReferenceId ?? ParentListView.GuiInfo.ReferenceId;
-            comInfo.ReferenceId = refId;
-            comInfo.Reference = Utils.GetEntity(refId);
-            comInfo.DataSourceFilter = field.DataSourceFilter;
-            comInfo.LocalHeader = await new Client(nameof(Component), typeof(User).Namespace).GetRawList<Component>(
-                $"?$filter=Active eq true and FeatureId eq null and EntityId eq '{field.ReferenceId ?? field.EntityId}'");
             compareCell.GuiInfo.LocalData = OperatorFactory(ComponentTypeTypeEnum.SearchEntry).Cast<object>().ToList();
-            component = new MultipleSearchEntry(comInfo);
-            component.EntityType = typeof(FieldCondition);
             compareCell.Value = ((int)AdvSearchOperation.In).ToString();
+
+            var comInfo = new Component();
+            comInfo.CopyPropFrom(field);
+            comInfo.ComponentType = nameof(MultipleSearchEntry);
+            var component = new MultipleSearchEntry(comInfo);
             return component;
         }
 
         private static EditableComponent SetSearchDateTime(SearchEntry compareCell, Component comInfo)
         {
             EditableComponent component;
-            comInfo.ComponentType = nameof(Datepicker);
-            comInfo.Precision = 7; // add time picker
-            component = new Datepicker(comInfo);
+            var com = new Component();
+            com.CopyPropFrom(comInfo);
+            com.ComponentType = nameof(Datepicker);
+            com.Precision = 7; // add time picker
+            component = new Datepicker(com);
             compareCell.GuiInfo.LocalData =
                 IEnumerableExtensions.ToEntity<AdvSearchOperation>()
                 .Cast<Entity>().Where(x => int.Parse(x.Id) < (int)AdvSearchOperation.Contains)

@@ -46,6 +46,7 @@ namespace Core.Extensions
         public const string GOOGLE_MAP_GEOMETRY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=geometry";
         public const string GOOGLE_MAP_WEEKLY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=&v=weekly";
         public const string GOOGLE_MAP_GEO_REQUEST = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc";
+        private const char PropSeparator = '.';
         public static Dictionary<char, string> SpecialChar = new Dictionary<char, string>()
         {
             { '+', "%2B" },
@@ -180,14 +181,14 @@ namespace Core.Extensions
             return res.ToString();
         }
 
-        public static object GetComplexPropValue(this object obj, string propName)
+        public static object GetPropValue(this object obj, string propName)
         {
             if (obj == null || string.IsNullOrWhiteSpace(propName))
             {
                 return null;
             }
-
-            var hierarchy = propName.Split('.');
+            if (propName.IndexOf(PropSeparator) < 0) return obj[propName];
+            var hierarchy = propName.Split(PropSeparator);
             var res = obj;
             foreach (var key in hierarchy)
             {

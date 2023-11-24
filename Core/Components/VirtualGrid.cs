@@ -41,9 +41,8 @@ namespace Core.Components
         {
             _sum = false;
             CacheData.Clear();
-            var calcFilter = CalcFilterQuery(searching);
             DataTable.ParentElement.ScrollTop = 0;
-            await ReloadData(calcFilter, cache: false);
+            await ReloadData(cacheHeader: false);
         }
 
         private async Task PrepareCache(int skip = 0)
@@ -183,7 +182,7 @@ namespace Core.Components
             return rows;
         }
 
-        public override async Task<List<object>> ReloadData(string DataSourceFilter = null, bool cache = false, int? skip = null, int? pageSize = null)
+        public override async Task<List<object>> ReloadData(bool cacheHeader = false, int? skip = null, int? pageSize = null)
         {
             DisposeNoRecord();
             VirtualScroll = GuiInfo.GroupBy.Nothing() && GuiInfo.VirtualScroll && Element.Style.Display.ToString() != Display.None.ToString();

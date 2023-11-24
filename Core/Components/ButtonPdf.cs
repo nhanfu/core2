@@ -18,7 +18,12 @@ namespace Core.Components
         {
         }
 
-        public override async Task DispatchClickAsync()
+        public override void DispatchClick()
+        {
+            Task.Run(DispatchClickAsync);
+        }
+
+        private async Task DispatchClickAsync()
         {
             await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity, GuiInfo);
             Html.Take(Document.Body).Div.ClassName("backdrop")
@@ -36,8 +41,8 @@ namespace Core.Components
                 Html.Instance.Div.ClassName("menuBar")
                 .Div.ClassName("printBtn")
                     .Button.ClassName("btn btn-success mr-1 fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(_preview.QuerySelector(".print-group") as HTMLElement, printPreview: true, component: GuiInfo)).End
-                    .Button.ClassName("btn btn-success mr-1").Text("a4").Event(EventType.Click, async () => await GeneratePdf("a4")).End
-                    .Button.ClassName("btn btn-success mr-1").Text("a5").Event(EventType.Click, async () => await GeneratePdf("a5")).End
+                    .Button.ClassName("btn btn-success mr-1").Text("a4").Event(EventType.Click, () => GeneratePdf("a4")).End
+                    .Button.ClassName("btn btn-success mr-1").Text("a5").Event(EventType.Click, () => GeneratePdf("a5")).End
                     .Render();
                 Html.Instance.EndOf(".menuBar").Div.ClassName("print-group");
             }
@@ -147,9 +152,14 @@ namespace Core.Components
             }
         }
 
-        public async Task GeneratePdf(string format)
+        public void GeneratePdf(string format)
         {
-            await Client.LoadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
+            var task = Client.LoadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
+            Client.ExecTaskNoResult(task, PdfLibLoaded);
+        }
+
+        private void PdfLibLoaded()
+        {
             var element = (_preview.QuerySelector(".print-group")) as HTMLElement;
             var printEl = element;
             var first = printEl.QuerySelectorAll(".printable").FirstOrDefault() as HTMLElement;
@@ -179,8 +189,6 @@ namespace Core.Components
             });
 
              */
-
-
         }
 
         private void ClosePreview()

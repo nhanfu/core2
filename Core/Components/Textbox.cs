@@ -37,7 +37,7 @@ namespace Core.Components
                 var text = (EditForm.Feature != null && EditForm.Feature.IgnoreEncode) ? _value?.ToString() : _value?.ToString().DecodeSpecialChar();
                 if (GuiInfo.FormatData.HasAnyChar())
                 {
-                    text = Utils.FormatEntity(GuiInfo.FormatData, Entity?.GetComplexPropValue(GuiInfo.FieldName));
+                    text = Utils.FormatEntity(GuiInfo.FormatData, Entity?.GetPropValue(GuiInfo.FieldName));
                 }
 
                 if (GuiInfo.FormatEntity.HasAnyChar())
@@ -153,7 +153,7 @@ namespace Core.Components
         public override void Render()
         {
             SetDefaultVal();
-            var val = Entity?.GetComplexPropValue(GuiInfo.FieldName);
+            var val = Entity?.GetPropValue(GuiInfo.FieldName);
             if (val != null && val is string str_val && EditForm != null && EditForm.Feature != null && !EditForm.Feature.IgnoreEncode)
             {
                 Entity?.SetComplexPropValue(GuiInfo.FieldName, str_val.DecodeSpecialChar().EncodeSpecialChar());
@@ -206,12 +206,7 @@ namespace Core.Components
                 Input.Name = GuiInfo.DataSourceFilter ?? GuiInfo.FieldName;
                 Input.OnInput += (e) => PopulateUIChange(EventType.Input);
                 Input.OnChange += (e) => PopulateUIChange(EventType.Change);
-                if (GuiInfo.AutoFit)
-                {
-                    this.SetAutoWidth(Input.Value, Input.GetComputedStyle().Font);
-                }
                 Input.AddEventListener(EventType.KeyDown, async (e) => await KeyDownNumber(e));
-
             }
             if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace())
             {
@@ -264,7 +259,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            Value = Entity?.GetComplexPropValue(GuiInfo.FieldName);
+            Value = Entity?.GetPropValue(GuiInfo.FieldName);
             if (!Dirty)
             {
                 OriginalText = _text;

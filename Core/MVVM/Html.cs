@@ -1,4 +1,5 @@
 using Bridge.Html5;
+using Core.Clients;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -649,36 +650,18 @@ namespace Core.MVVM
 
         public Html AsyncEvent<T>(EventType type, Func<T, Task> action, T model)
         {
-            Context.AddEventListener(type, async (Event e) =>
+            Context.AddEventListener(type, (Event e) =>
             {
-                await action(model);
-            });
-            return this;
-        }
-
-        public Html AsyncEvent<T>(EventType type, Func<T, Event, Task> action, T model)
-        {
-            Context.AddEventListener(type, async (Event e) =>
-            {
-                await action(model, e);
-            });
-            return this;
-        }
-
-        public Html AsyncEvent(EventType type, Func<Task> action)
-        {
-            Context.AddEventListener(type, async (Event e) =>
-            {
-                await action();
+                Client.ExecTaskNoResult(action(model));
             });
             return this;
         }
 
         public Html AsyncEvent(EventType type, Func<Event, Task> action)
         {
-            Context.AddEventListener(type, async (Event e) =>
+            Context.AddEventListener(type, (Event e) =>
             {
-                await action(e);
+                Client.ExecTaskNoResult(action(e));
             });
             return this;
         }

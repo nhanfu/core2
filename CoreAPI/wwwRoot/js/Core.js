@@ -648,15 +648,17 @@ Bridge.assembly("Core", function ($asm, globals) {
                     });
                     return null;
                 },
-                ExecTask: function (T, task, handler) {
+                ExecTask: function (T, task, handler, errorHandler) {
                     if (handler === void 0) { handler = null; }
+                    if (errorHandler === void 0) { errorHandler = null; }
                     var promise = Core.Clients.Client.ToPromise(T, task);
-                    promise.then(handler);
+                    promise.then(handler).catch(errorHandler);
                 },
-                ExecTaskNoResult: function (task, handler) {
+                ExecTaskNoResult: function (task, handler, errorHandler) {
                     if (handler === void 0) { handler = null; }
+                    if (errorHandler === void 0) { errorHandler = null; }
                     var promise = Core.Clients.Client.ToPromiseNoResult(task);
-                    promise.then(handler);
+                    promise.then(handler).catch(errorHandler);
                 }
             }
         },
@@ -1832,7 +1834,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             ParentElement: null,
             Element: null,
             DOMContentLoaded: null,
-            EntityType: null,
             EntityId: {
                 get: function () {
                     var $t;
@@ -2536,7 +2537,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             SetOldTextAndVal: function () {
                 var $t, $t1;
                 this.OriginalText = this.GetValueText();
-                this.OldValue = ($t = Core.Extensions.Utils.GetComplexPropValue(this.Entity, ($t1 = this.GuiInfo) != null ? $t1.FieldName : null)) != null ? Bridge.toString($t) : null;
+                this.OldValue = ($t = Core.Extensions.Utils.GetPropValue(this.Entity, ($t1 = this.GuiInfo) != null ? $t1.FieldName : null)) != null ? Bridge.toString($t) : null;
             },
             GetValueText: function () {
                 if (this.Element == null) {
@@ -2869,8 +2870,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                     Core.Extensions.IEnumerableExtensions.SelectForeach(Core.Components.EditableComponent, root.FilterChildren(Core.Components.EditableComponent, function (x) {
                         return Bridge.referenceEquals(x.Name, field);
                     }), Bridge.fn.bind(this, function (target) {
-                        var value = Core.Extensions.Utils.GetComplexPropValue(entity, field);
-                        var oldVal = Core.Extensions.Utils.GetComplexPropValue(this.Entity, field);
+                        var value = Core.Extensions.Utils.GetPropValue(entity, field);
+                        var oldVal = Core.Extensions.Utils.GetPropValue(this.Entity, field);
                         var targetType = Core.Extensions.BridgeExt.GetComplexPropType(Bridge.getType(this.Entity), field);
                         if (Bridge.referenceEquals(value, oldVal) || targetType == null || !Bridge.referenceEquals(Bridge.createInstance(targetType), oldVal)) {
                             return;
@@ -3508,13 +3509,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                         var feature = Core.Extensions.BridgeExt.CastProp(Core.Models.Feature, ($t2 = ds[System.Array.index(0, ds)])[System.Array.index(0, $t2)]);
                         var policies = System.Linq.Enumerable.from(ds[System.Array.index(1, ds)], System.Object).select(function (x) {
                                 return Core.Extensions.BridgeExt.CastProp(Core.Models.FeaturePolicy, x);
-                            }).ToArray(Core.Models.FeaturePolicy);
+                            }).toList(Core.Models.FeaturePolicy);
                         var groups = System.Linq.Enumerable.from(ds[System.Array.index(2, ds)], System.Object).select(function (x) {
                                 return Core.Extensions.BridgeExt.CastProp(Core.Models.ComponentGroup, x);
-                            }).ToArray(Core.Models.ComponentGroup);
+                            }).toList(Core.Models.ComponentGroup);
                         var components = System.Linq.Enumerable.from(ds[System.Array.index(3, ds)], System.Object).select(function (x) {
                                 return Core.Extensions.BridgeExt.CastProp(Core.Models.Component, x);
-                            }).ToArray(Core.Models.Component);
+                            }).toList(Core.Models.Component);
                         if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.FeaturePolicy, policies) || Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.ComponentGroup, groups) || Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.Component, components)) {
                             tcs.trySetResult(null);
                             return;
@@ -3524,10 +3525,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                             }), $t3).toDictionary(function (x) {
                                 return x.Id;
                             }, null, System.String, $t3));
-                        components.forEach(function (com) {
-                                var g = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.String, Core.Models.ComponentGroup, groupMap, com.ComponentGroupId);
-                                System.Array.add(g.Component, com, Core.Models.Component);
-                            });
+                        components.ForEach(function (com) {
+                            var g = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.String, Core.Models.ComponentGroup, groupMap, com.ComponentGroupId);
+                            System.Array.add(g.Component, com, Core.Models.Component);
+                        });
                         feature.ComponentGroup = groups;
                         feature.FeaturePolicy = policies;
                         tcs.trySetResult(feature);
@@ -3800,11 +3801,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                         }
                     }
                     return null;
-                },
-                SetAutoWidth: function (component, text, font, padding) {
-                    if (padding === void 0) { padding = 8; }
-                    component.ParentElement.style.minWidth = Core.Extensions.BridgeExt.TextWidth(text, font).add(System.Decimal(8)) + "px";
-                    component.ParentElement.style.maxWidth = Core.Extensions.BridgeExt.TextWidth(text, font).add(System.Decimal(8)) + "px";
                 },
                 SetDisabled: function (component, disabled) {
                     var editable;
@@ -4537,9 +4533,9 @@ Bridge.assembly("Core", function ($asm, globals) {
         $kind: "enum",
         statics: {
             fields: {
-                All: 1,
-                Yes: 2,
-                No: 3
+                All: 2,
+                Yes: 1,
+                No: 0
             }
         }
     });
@@ -5270,35 +5266,35 @@ Bridge.assembly("Core", function ($asm, globals) {
     Bridge.define("Core.Extensions.AdvOptionExt", {
         statics: {
             fields: {
-                OperationToOdata: null
+                OperationToSql: null
             },
             ctors: {
                 init: function () {
-                    this.OperationToOdata = function (_o1) {
-                            _o1.add(Core.Enums.AdvSearchOperation.Equal, "{0} eq {1}");
-                            _o1.add(Core.Enums.AdvSearchOperation.NotEqual, "{0} ne {1}");
-                            _o1.add(Core.Enums.AdvSearchOperation.GreaterThan, "{0} gt {1}");
-                            _o1.add(Core.Enums.AdvSearchOperation.GreaterThanOrEqual, "{0} ge {1}");
-                            _o1.add(Core.Enums.AdvSearchOperation.LessThan, "{0} lt {1}");
-                            _o1.add(Core.Enums.AdvSearchOperation.LessThanOrEqual, "{0} le {1}");
-                            _o1.add(Core.Enums.AdvSearchOperation.Contains, "contains({0}, {1})");
-                            _o1.add(Core.Enums.AdvSearchOperation.NotContains, "contains({0}, {1}) eq false");
-                            _o1.add(Core.Enums.AdvSearchOperation.StartWith, "startswith({0}, {1})");
-                            _o1.add(Core.Enums.AdvSearchOperation.NotStartWith, "indexof({0}, {1}) ne 0");
-                            _o1.add(Core.Enums.AdvSearchOperation.EndWidth, "endswith({0}, {1})");
-                            _o1.add(Core.Enums.AdvSearchOperation.NotEndWidth, "endswith({0}, {1}) eq false");
+                    this.OperationToSql = function (_o1) {
+                            _o1.add(Core.Enums.AdvSearchOperation.Equal, "{0} = N'{1}'");
+                            _o1.add(Core.Enums.AdvSearchOperation.NotEqual, "{0} != N'{1}'");
+                            _o1.add(Core.Enums.AdvSearchOperation.GreaterThan, "{0} > N'{1}'");
+                            _o1.add(Core.Enums.AdvSearchOperation.GreaterThanOrEqual, "{0} >= N'{1}'");
+                            _o1.add(Core.Enums.AdvSearchOperation.LessThan, "{0} < N'{1}'");
+                            _o1.add(Core.Enums.AdvSearchOperation.LessThanOrEqual, "{0} <= N'{1}'");
+                            _o1.add(Core.Enums.AdvSearchOperation.Contains, "charindex({0}, N'{1}')");
+                            _o1.add(Core.Enums.AdvSearchOperation.NotContains, "contains({0}, N'{1}') eq false");
+                            _o1.add(Core.Enums.AdvSearchOperation.StartWith, "charindex({0}, N'{1}') = 1");
+                            _o1.add(Core.Enums.AdvSearchOperation.NotStartWith, "charindex({0}, N'{1}') > 1");
+                            _o1.add(Core.Enums.AdvSearchOperation.EndWidth, "{0} like N'%{1}')");
+                            _o1.add(Core.Enums.AdvSearchOperation.NotEndWidth, "{0} not like N'%{1}'");
                             _o1.add(Core.Enums.AdvSearchOperation.In, "{0} in ({1})");
-                            _o1.add(Core.Enums.AdvSearchOperation.Like, "contains({0},{1})");
-                            _o1.add(Core.Enums.AdvSearchOperation.NotLike, "contains({0},{1}) eq false");
-                            _o1.add(Core.Enums.AdvSearchOperation.NotIn, "{0} in ({1}) eq false");
-                            _o1.add(Core.Enums.AdvSearchOperation.EqualDatime, "cast({0},Edm.DateTimeOffset) eq {1}");
-                            _o1.add(Core.Enums.AdvSearchOperation.NotEqualDatime, "cast({0},Edm.DateTimeOffset) ne {1}");
-                            _o1.add(Core.Enums.AdvSearchOperation.EqualNull, "{0} eq null");
-                            _o1.add(Core.Enums.AdvSearchOperation.NotEqualNull, "{0} ne null");
-                            _o1.add(Core.Enums.AdvSearchOperation.GreaterThanDatime, "cast({0},Edm.DateTimeOffset) gt {1}");
-                            _o1.add(Core.Enums.AdvSearchOperation.GreaterEqualDatime, "cast({0},Edm.DateTimeOffset) ge {1}");
-                            _o1.add(Core.Enums.AdvSearchOperation.LessThanDatime, "cast({0},Edm.DateTimeOffset) lt {1}");
-                            _o1.add(Core.Enums.AdvSearchOperation.LessEqualDatime, "cast({0},Edm.DateTimeOffset) le {1}");
+                            _o1.add(Core.Enums.AdvSearchOperation.Like, "{0} like N'%{1}%')");
+                            _o1.add(Core.Enums.AdvSearchOperation.NotLike, "{0} not like N'{1}')");
+                            _o1.add(Core.Enums.AdvSearchOperation.NotIn, "{0} not in ({1})");
+                            _o1.add(Core.Enums.AdvSearchOperation.EqualDatime, "cast(date, {0}) = N'{1}'");
+                            _o1.add(Core.Enums.AdvSearchOperation.NotEqualDatime, "cast(date, {0}) != N'{1}'");
+                            _o1.add(Core.Enums.AdvSearchOperation.EqualNull, "{0} is null");
+                            _o1.add(Core.Enums.AdvSearchOperation.NotEqualNull, "{0} is not null");
+                            _o1.add(Core.Enums.AdvSearchOperation.GreaterThanDatime, "cast(date, {0}) > N'{1}'");
+                            _o1.add(Core.Enums.AdvSearchOperation.GreaterEqualDatime, "cast(date, {0}) >= N'{1}'");
+                            _o1.add(Core.Enums.AdvSearchOperation.LessThanDatime, "cast(date, {0}) < N'{1}'");
+                            _o1.add(Core.Enums.AdvSearchOperation.LessEqualDatime, "cast(date, {0}) <= N'{1}'");
                             return _o1;
                         }(new (System.Collections.Generic.Dictionary$2(Core.Enums.AdvSearchOperation,System.String)).ctor());
                 }
@@ -5330,7 +5326,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         }
 
                         var key = hierarchy[System.Array.index(i, hierarchy)];
-                        leaf = Core.Extensions.BridgeExt.GetPropValue(leaf, key);
+                        leaf = Core.Extensions.Utils.GetPropValue(leaf, key);
                     }
                     if (leaf == null) {
                         return;
@@ -5361,9 +5357,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                         Core.Extensions.ReflectionExt.CopyPropFrom$1(res, obj);
                         return res;
                     }
-                },
-                GetPropValue: function (obj, propName) {
-                    return obj == null ? null : obj[propName];
                 },
                 SetPropValue: function (instance, propertyName, value) {
                     var type = Bridge.getType(instance);
@@ -5476,7 +5469,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 GetObjType: function (propName, obj) {
                     var $t;
                     if (obj.hasOwnProperty(propName)) {
-                        var value = Core.Extensions.BridgeExt.GetPropValue(obj, propName);
+                        var value = Core.Extensions.Utils.GetPropValue(obj, propName);
                         return value != null ? Bridge.getType(value) : null;
                     } else if (Bridge.Reflection.getMembers(Bridge.getType(obj), 16, 284, propName) != null) {
                         return ($t = Bridge.Reflection.getMembers(Bridge.getType(obj), 16, 284, propName)) != null ? $t.rt : null;
@@ -6475,7 +6468,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     try {
                         while ($t.moveNext()) {
                             var targetProp = $t.Current;
-                            var value = Core.Extensions.BridgeExt.GetPropValue(source, targetProp.n);
+                            var value = Core.Extensions.Utils.GetPropValue(source, targetProp.n);
                             if (Core.Extensions.ReflectionExt.IsDecimal(targetProp.rt) && value != null && !Core.Extensions.ReflectionExt.IsDecimal(Bridge.getType(value))) {
                                 Core.Extensions.BridgeExt.SetPropValue(target, targetProp.n, System.Convert.toDecimal(value));
                             } else if (Core.Extensions.ReflectionExt.IsDate(targetProp.rt) && value != null && !Core.Extensions.ReflectionExt.IsDate(Bridge.getType(value))) {
@@ -6483,7 +6476,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                             } else if (Core.Extensions.ReflectionExt.IsSimple(targetProp.rt)) {
                                 Core.Extensions.BridgeExt.SetPropValue(target, targetProp.n, value);
                             } else {
-                                Core.Extensions.ReflectionExt.CopyPropFromAct(Core.Extensions.BridgeExt.GetPropValue(target, targetProp.n), value);
+                                Core.Extensions.ReflectionExt.CopyPropFromAct(Core.Extensions.Utils.GetPropValue(target, targetProp.n), value);
                             }
                         }
                     } finally {
@@ -6532,7 +6525,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 continue;
                             }
 
-                            var value = Core.Extensions.BridgeExt.GetPropValue(source, targetProp.n);
+                            var value = Core.Extensions.Utils.GetPropValue(source, targetProp.n);
                             if (Core.Extensions.ReflectionExt.IsDecimal(targetProp.rt) && value != null && !Core.Extensions.ReflectionExt.IsDecimal(Bridge.getType(value))) {
                                 Core.Extensions.BridgeExt.SetPropValue(target, targetProp.n, System.Convert.toDecimal(value));
                             } else if (Core.Extensions.ReflectionExt.IsDate(targetProp.rt) && value != null && !Core.Extensions.ReflectionExt.IsDate(Bridge.getType(value))) {
@@ -6540,7 +6533,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                             } else if (Core.Extensions.ReflectionExt.IsSimple(targetProp.rt)) {
                                 Core.Extensions.BridgeExt.SetPropValue(target, targetProp.n, value);
                             } else {
-                                Core.Extensions.ReflectionExt.CopyPropFromInternal(Core.Extensions.BridgeExt.GetPropValue(target, targetProp.n), value, visited, ((currentLevel + 1) | 0), maxLevel, ignoreFields);
+                                Core.Extensions.ReflectionExt.CopyPropFromInternal(Core.Extensions.Utils.GetPropValue(target, targetProp.n), value, visited, ((currentLevel + 1) | 0), maxLevel, ignoreFields);
                             }
                         }
                     } finally {
@@ -6571,7 +6564,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }
 
                     var type = Bridge.getType(obj);
-                    var modelName = Core.Extensions.BridgeExt.GetPropValue(obj, "ModelName");
+                    var modelName = Core.Extensions.Utils.GetPropValue(obj, "ModelName");
                     if (modelName != null) {
                         type = Bridge.Reflection.getType(System.String.concat(path, modelName));
                     }
@@ -6841,6 +6834,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 GOOGLE_MAP_GEOMETRY: null,
                 GOOGLE_MAP_WEEKLY: null,
                 GOOGLE_MAP_GEO_REQUEST: null,
+                PropSeparator: 0,
                 Doc: null,
                 SpecialChar: null,
                 ReverseSpecialChar: null,
@@ -6882,6 +6876,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.GOOGLE_MAP_GEOMETRY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=geometry";
                     this.GOOGLE_MAP_WEEKLY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=&v=weekly";
                     this.GOOGLE_MAP_GEO_REQUEST = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc";
+                    this.PropSeparator = 46;
                     this.Doc = document;
                     this.SpecialChar = function (_o1) {
                             _o1.add(43, "%2B");
@@ -7024,13 +7019,15 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }
                     return res.toString();
                 },
-                GetComplexPropValue: function (obj, propName) {
+                GetPropValue: function (obj, propName) {
                     var $t;
                     if (obj == null || System.String.isNullOrWhiteSpace(propName)) {
                         return null;
                     }
-
-                    var hierarchy = System.String.split(propName, [46].map(function (i) {{ return String.fromCharCode(i); }}));
+                    if (System.String.indexOf(propName, String.fromCharCode(Core.Extensions.Utils.PropSeparator)) < 0) {
+                        return obj[propName];
+                    }
+                    var hierarchy = System.String.split(propName, [Core.Extensions.Utils.PropSeparator].map(function (i) {{ return String.fromCharCode(i); }}));
                     var res = obj;
                     $t = Bridge.getEnumerator(hierarchy);
                     try {
@@ -7040,7 +7037,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 return null;
                             }
 
-                            res = Core.Extensions.BridgeExt.GetPropValue(res, key);
+                            res = Core.Extensions.Utils.GetPropValue(res, key);
                         }
                     } finally {
                         if (Bridge.is($t, System.IDisposable)) {
@@ -7211,7 +7208,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }
                 },
                 CompareIdField: function (entity, cellData) {
-                    var idVal = Core.Extensions.BridgeExt.GetPropValue(entity, Core.Extensions.Utils.IdField);
+                    var idVal = Core.Extensions.Utils.GetPropValue(entity, Core.Extensions.Utils.IdField);
                     var idLong;
                     var idInt;
                     return System.Nullable.liftne("ne", ((idLong = Bridge.is(idVal, System.Int64) ? System.Nullable.getValue(Bridge.cast(Bridge.unbox(idVal, System.Int64), System.Int64)) : null)), System.Int64.lift(null)) && idLong.equals(System.Nullable.getValue(Bridge.cast(Bridge.unbox(cellData, System.Int64), System.Int64))) || ((idInt = Bridge.is(idVal, System.Int32) ? System.Nullable.getValue(Bridge.cast(Bridge.unbox(idVal, System.Int32), System.Int32)) : null)) != null && idInt === System.Nullable.getValue(Bridge.cast(Bridge.unbox(cellData, System.Int32), System.Int32));
@@ -8538,7 +8535,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             if (filter === void 0) { filter = null; }
                                             id = "Id";
                                             if (filter == null) {
-                                                filter = System.String.format("Active eq true and {0} eq '{1}' and Id ne {2}", fieldName, Core.Extensions.BridgeExt.GetPropValue(entity, fieldName), Bridge.box(Bridge.unbox(entity.Id), System.Int32));
+                                                filter = System.String.format("Active eq true and {0} eq '{1}' and Id ne {2}", fieldName, Core.Extensions.Utils.GetPropValue(entity, fieldName), Bridge.box(Bridge.unbox(entity.Id), System.Int32));
                                             }
                                             $task1 = new Core.Clients.Client.$ctor1(Bridge.Reflection.getTypeName(T)).GetAsync(Core.Models.OdataResult$1(T), System.String.format("?$select={0},{1}&$filter={2}", id, fieldName, filter));
                                             $step = 1;
@@ -8986,7 +8983,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             Parent: null,
             ComponentGroup: null,
             FeaturePolicy: null,
-            Component: null,
             InverseParent: null
         },
         ctors: {
@@ -8997,7 +8993,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.$initialize();
                 this.ComponentGroup = new (System.Collections.Generic.HashSet$1(Core.Models.ComponentGroup)).ctor();
                 this.FeaturePolicy = new (System.Collections.Generic.HashSet$1(Core.Models.FeaturePolicy)).ctor();
-                this.Component = new (System.Collections.Generic.HashSet$1(Core.Models.Component)).ctor();
                 this.InverseParent = new (System.Collections.Generic.HashSet$1(Core.Models.Feature)).ctor();
             }
         }
@@ -9955,136 +9950,16 @@ Bridge.assembly("Core", function ($asm, globals) {
                 });
                 return this;
             },
-            AsyncEvent$2: function (T, type, action, model) {
-                Core.MVVM.Html.Context.addEventListener(type, Bridge.fn.bind(this, function (e) {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = action(model);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $task1.getAwaitedResult();
-                                        return;
-                                    }
-                                    default: {
-                                        return;
-                                    }
-                                }
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                }));
-                return this;
-            },
-            AsyncEvent$3: function (T, type, action, model) {
-                Core.MVVM.Html.Context.addEventListener(type, Bridge.fn.bind(this, function (e) {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = action(model, e);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $task1.getAwaitedResult();
-                                        return;
-                                    }
-                                    default: {
-                                        return;
-                                    }
-                                }
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                }));
+            AsyncEvent$1: function (T, type, action, model) {
+                Core.MVVM.Html.Context.addEventListener(type, function (e) {
+                    Core.Clients.Client.ExecTaskNoResult(action(model));
+                });
                 return this;
             },
             AsyncEvent: function (type, action) {
-                Core.MVVM.Html.Context.addEventListener(type, Bridge.fn.bind(this, function (e) {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = action();
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $task1.getAwaitedResult();
-                                        return;
-                                    }
-                                    default: {
-                                        return;
-                                    }
-                                }
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                }));
-                return this;
-            },
-            AsyncEvent$1: function (type, action) {
-                Core.MVVM.Html.Context.addEventListener(type, Bridge.fn.bind(this, function (e) {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = action(e);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $task1.getAwaitedResult();
-                                        return;
-                                    }
-                                    default: {
-                                        return;
-                                    }
-                                }
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                }));
+                Core.MVVM.Html.Context.addEventListener(type, function (e) {
+                    Core.Clients.Client.ExecTaskNoResult(action(e));
+                });
                 return this;
             },
             Trigger: function (type) {
@@ -11400,6 +11275,15 @@ Bridge.assembly("Core", function ($asm, globals) {
             ParentForm: null,
             ReasonOfChange: null,
             Config: false,
+            /**
+             * This property is used in component's expressions
+             *
+             * @instance
+             * @public
+             * @memberof Core.Components.Forms.EditForm
+             * @function Token
+             * @type Core.ViewModels.Token
+             */
             Token: {
                 get: function () {
                     return Core.Clients.Client.Token;
@@ -11590,7 +11474,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         if (!Bridge.staticEquals(((fn = child.PatchUpdateDetail)), null)) {
                             return Bridge.as(fn.call(child), System.Array.type(Core.ViewModels.PatchUpdateDetail));
                         }
-                        var value = Core.Extensions.Utils.GetComplexPropValue(child.Entity, child.GuiInfo.FieldName);
+                        var value = Core.Extensions.Utils.GetPropValue(child.Entity, child.GuiInfo.FieldName);
                         var propType = Core.Extensions.BridgeExt.GetComplexPropType(Bridge.getType(child.Entity), child.GuiInfo.FieldName, child.Entity);
                         var patch = ($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = child.GuiInfo.FieldName, $t.OldVal = (child.OldValue != null && Core.Extensions.ReflectionExt.IsDate(propType)) ? Core.Extensions.DateTimeExt.DateConverter(Bridge.toString(child.OldValue)) : ($t1 = child.OldValue) != null ? Bridge.toString($t1) : null, $t.Value = (value != null && Core.Extensions.ReflectionExt.IsDate(propType)) ? Core.Extensions.DateTimeExt.DateConverter(Bridge.toString(value)) : !this.EditForm.Feature.IgnoreEncode ? value != null ? Core.Extensions.Utils.EncodeSpecialChar(Bridge.toString(value).trim()) : null : value != null ? Bridge.toString(value).trim() : null, $t);
                         return System.Array.init([patch], Core.ViewModels.PatchUpdateDetail);
@@ -12534,212 +12418,60 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (Core.Components.Forms.EditForm.Portal) {
                     this.ParentForm = this.ParentForm || Core.Components.Forms.EditForm.LastForm;
                 }
-                System.Threading.Tasks.Task.run(Bridge.fn.cacheBind(this, this.RenderAsync));
+                this.LoadFeatureAndRender();
                 Core.Components.Forms.EditForm.LastForm = this;
             },
-            RenderAsync: function () {
-                var $step = 0,
-                    $task1, 
-                    $task2, 
-                    $task3, 
-                    $taskResult3, 
-                    $task4, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    token, 
-                    featureTask, 
-                    entityTask, 
-                    feature, 
-                    layout, 
-                    $taskResult1, 
-                    groupTree, 
-                    $t, 
-                    $t1, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,6], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        token = Core.Clients.Client.Token;
-                                        featureTask = this.Feature != null ? System.Threading.Tasks.Task.fromResult(this.Feature, Core.Models.Feature) : Core.Components.Extensions.ComponentExt.LoadFeatureByName(this.Name, this.Public, this.Config);
-                                        entityTask = this.LoadEntity();
-                                        $task2 = System.Threading.Tasks.Task.whenAll(featureTask, entityTask);
-                                        $step = 1;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $task2.getAwaitedResult();
-                                        feature = featureTask.getResult();
-                                        if (feature.LayoutId == null || this.InnerEntry != null) {
-                                            $step = 2;
-                                            continue;
-                                        }  else {
-                                            $step = 3;
-                                            continue;
-                                        }
-                                    }
-                                    case 2: {
-                                        $taskResult1 = null;
-                                        $step = 5;
-                                        continue;
-                                    }
-                                    case 3: {
-                                        $task3 = new Core.Clients.Client.$ctor1("Feature", Bridge.Reflection.getTypeNamespace(Core.Models.User), this.Config).FirstOrDefaultAsync(Core.Models.Feature, System.String.format("/Public/?$filter=Active eq true and Id eq '{0}' and {1} ne null", feature.LayoutId, "Template"));
-                                        $step = 4;
-                                        if ($task3.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task3.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 4: {
-                                        $taskResult3 = $task3.getAwaitedResult();
-                                        $taskResult1 = $taskResult3;
-                                        $step = 5;
-                                        continue;
-                                    }
-                                    case 5: {
-                                        layout = $taskResult1;
-                                        Core.Extensions.ReflectionExt.CopyPropFrom$1(this.Entity, entityTask.getResult());
-                                        this.SetFeatureProperties(feature);
-                                        this.CurrentUserId = token != null ? token.UserId : null;
-                                        this.RegionId = token != null ? token.RegionId : null;
-                                        this.AllRoleIds = (token != null ? token.AllRoleIds : null) != null ? Bridge.toArray(token.AllRoleIds).join(",") : "";
-                                        this.CenterIds = (token != null ? token.CenterIds : null) != null ? Bridge.toArray(token.CenterIds).join(",") : "";
-                                        this.RoleIds = (token != null ? token.RoleIds : null) != null ? Bridge.toArray(token.RoleIds).join(",") : "";
-                                        this.CostCenterId = token != null ? token.CostCenterId : null;
-                                        this.RoleNames = (token != null ? token.RoleNames : null) != null ? Bridge.toArray(token.RoleNames).join(",") : "";
-                                        groupTree = this.BuildTree(System.Linq.Enumerable.from(($t = Core.Models.ComponentGroup, System.Linq.Enumerable.from(feature.ComponentGroup, $t).toList($t)), Core.Models.ComponentGroup).orderBy(function (x) {
-                                            return x.Order;
-                                        }).toList(Core.Models.ComponentGroup));
-                                        this.Element = this.RenderTemplate(layout, feature);
-                                        this.SetFeatureStyleSheet(feature.StyleSheet);
-                                        this.RenderTabOrSection(groupTree);
-                                        this.ResizeHandler();
-                                        this.LockUpdate();
-                                        Core.Components.Renderer.TabIndex(Core.MVVM.Html.Take(this.Element), -1).Trigger("focus").Event("focusin", Bridge.fn.bind(this, function () {
-                                            var $step = 0,
-                                                $task1, 
-                                                $jumpFromFinally, 
-                                                $asyncBody = Bridge.fn.bind(this, function () {
-                                                    for (;;) {
-                                                        $step = System.Array.min([0,1], $step);
-                                                        switch ($step) {
-                                                            case 0: {
-                                                                $task1 = Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.Feature.Events, "focusin", [this.Entity]);
-                                                                $step = 1;
-                                                                if ($task1.isCompleted()) {
-                                                                    continue;
-                                                                }
-                                                                $task1.continue($asyncBody);
-                                                                return;
-                                                            }
-                                                            case 1: {
-                                                                $task1.getAwaitedResult();
-                                                                return;
-                                                            }
-                                                            default: {
-                                                                return;
-                                                            }
-                                                        }
-                                                    }
-                                                }, arguments);
-
-                                            $asyncBody();
-                                        })).Event$1("keydown", Bridge.fn.bind(this, function (e) {
-                                            var $step = 0,
-                                                $task1, 
-                                                $jumpFromFinally, 
-                                                $asyncBody = Bridge.fn.bind(this, function () {
-                                                    for (;;) {
-                                                        $step = System.Array.min([0,1], $step);
-                                                        switch ($step) {
-                                                            case 0: {
-                                                                $task1 = this.KeyDownIntro(e);
-                                                                $step = 1;
-                                                                if ($task1.isCompleted()) {
-                                                                    continue;
-                                                                }
-                                                                $task1.continue($asyncBody);
-                                                                return;
-                                                            }
-                                                            case 1: {
-                                                                $task1.getAwaitedResult();
-                                                                return;
-                                                            }
-                                                            default: {
-                                                                return;
-                                                            }
-                                                        }
-                                                    }
-                                                }, arguments);
-
-                                            $asyncBody();
-                                        })).Event("focusout", Bridge.fn.bind(this, function () {
-                                            var $step = 0,
-                                                $task1, 
-                                                $jumpFromFinally, 
-                                                $asyncBody = Bridge.fn.bind(this, function () {
-                                                    for (;;) {
-                                                        $step = System.Array.min([0,1], $step);
-                                                        switch ($step) {
-                                                            case 0: {
-                                                                $task1 = Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.Feature.Events, "focusout", [this.Entity]);
-                                                                $step = 1;
-                                                                if ($task1.isCompleted()) {
-                                                                    continue;
-                                                                }
-                                                                $task1.continue($asyncBody);
-                                                                return;
-                                                            }
-                                                            case 1: {
-                                                                $task1.getAwaitedResult();
-                                                                return;
-                                                            }
-                                                            default: {
-                                                                return;
-                                                            }
-                                                        }
-                                                    }
-                                                }, arguments);
-
-                                            $asyncBody();
-                                        }));
-                                        !Bridge.staticEquals(($t1 = this.DOMContentLoaded), null) ? $t1() : null;
-                                        $task4 = Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.Feature.Events, "DOMContentLoaded", [this.Entity]);
-                                        $step = 6;
-                                        if ($task4.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task4.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 6: {
-                                        $task4.getAwaitedResult();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+            LoadFeatureAndRender: function (callback) {
+                if (callback === void 0) { callback = null; }
+                var featureTask = this.Feature != null ? System.Threading.Tasks.Task.fromResult(this.Feature, Core.Models.Feature) : Core.Components.Extensions.ComponentExt.LoadFeatureByName(this.Name, this.Public, this.Config);
+                var entityTask = this.LoadEntity();
+                Core.Clients.Client.ExecTaskNoResult(System.Threading.Tasks.Task.whenAll(featureTask, entityTask), Bridge.fn.bind(this, function () {
+                    this.FeatureLoaded(featureTask.getResult(), entityTask.getResult(), callback);
+                }));
+            },
+            FeatureLoaded: function (feature, entity, loadedCallback) {
+                if (loadedCallback === void 0) { loadedCallback = null; }
+                if (feature.LayoutId == null || this.InnerEntry != null) {
+                    this.LayoutLoaded(feature, entity, void 0, loadedCallback);
+                    return;
+                }
+                var layoutTask = new Core.Clients.Client.$ctor1("Feature", Bridge.Reflection.getTypeNamespace(Core.Models.User), this.Config).FirstOrDefaultAsync(Core.Models.Feature, System.String.format("/Public/?$filter=Active eq true and Id eq '{0}' and {1} ne null", feature.LayoutId, "Template"));
+                Core.Clients.Client.ExecTask(Core.Models.Feature, layoutTask, Bridge.fn.bind(this, function (layout) {
+                    this.LayoutLoaded(feature, entity, layout, loadedCallback);
+                }));
+            },
+            LayoutLoaded: function (feature, entity, layout, loadedCallback) {
+                var $t, $t1;
+                if (layout === void 0) { layout = null; }
+                if (loadedCallback === void 0) { loadedCallback = null; }
+                var token = Core.Clients.Client.Token;
+                Core.Extensions.ReflectionExt.CopyPropFrom$1(this.Entity, entity);
+                this.SetFeatureProperties(feature);
+                this.CurrentUserId = token != null ? token.UserId : null;
+                this.RegionId = token != null ? token.RegionId : null;
+                this.AllRoleIds = (token != null ? token.AllRoleIds : null) != null ? Bridge.toArray(token.AllRoleIds).join(",") : "";
+                this.CenterIds = (token != null ? token.CenterIds : null) != null ? Bridge.toArray(token.CenterIds).join(",") : "";
+                this.RoleIds = (token != null ? token.RoleIds : null) != null ? Bridge.toArray(token.RoleIds).join(",") : "";
+                this.CostCenterId = token != null ? token.CostCenterId : null;
+                this.RoleNames = (token != null ? token.RoleNames : null) != null ? Bridge.toArray(token.RoleNames).join(",") : "";
+                var groupTree = this.BuildTree(System.Linq.Enumerable.from(($t = Core.Models.ComponentGroup, System.Linq.Enumerable.from(feature.ComponentGroup, $t).toList($t)), Core.Models.ComponentGroup).orderBy(function (x) {
+                        return x.Order;
+                    }).toList(Core.Models.ComponentGroup));
+                this.Element = this.RenderTemplate(layout, feature);
+                this.SetFeatureStyleSheet(feature.StyleSheet);
+                this.RenderTabOrSection(groupTree);
+                this.ResizeHandler();
+                this.LockUpdate();
+                Core.Components.Renderer.TabIndex(Core.MVVM.Html.Take(this.Element), -1).Trigger("focus").Event("focusin", Bridge.fn.bind(this, function () {
+                    Core.Clients.Client.ExecTaskNoResult(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.Feature.Events, "focusin", [this.Entity]));
+                })).Event$1("keydown", Bridge.fn.bind(this, function (e) {
+                    Core.Clients.Client.ExecTaskNoResult(this.KeyDownIntro(e));
+                })).Event("focusout", Bridge.fn.bind(this, function () {
+                    Core.Clients.Client.ExecTaskNoResult(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.Feature.Events, "focusout", [this.Entity]));
+                }));
+                !Bridge.staticEquals(($t1 = this.DOMContentLoaded), null) ? $t1() : null;
+                !Bridge.staticEquals(loadedCallback, null) ? loadedCallback() : null;
+                Core.Clients.Client.ExecTaskNoResult(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.Feature.Events, "DOMContentLoaded", [this.Entity]));
             },
             KeyDownIntro: function (evt) {
                 var $step = 0,
@@ -14527,7 +14259,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var $t;
                 Core.MVVM.Html.Take(this.ParentElement).Clear().Div.Style$1(System.String.format("width:{0}px;margin:auto", [this.GuiInfo.Width])).Id("barcode" + (this.GuiInfo.Id || ""));
                 this.Element = Core.MVVM.Html.Context;
-                this.Value = ($t = Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName)) != null ? Bridge.toString($t) : null;
+                this.Value = ($t = Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName)) != null ? Bridge.toString($t) : null;
                 System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
                     var $step = 0,
                         $task1, 
@@ -14583,7 +14315,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (force === void 0) { force = false; }
                 if (dirty === void 0) { dirty = null; }
                 if (componentNames === void 0) { componentNames = []; }
-                var value = ($t = Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName)) != null ? Bridge.toString($t) : null;
+                var value = ($t = Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName)) != null ? Bridge.toString($t) : null;
                 if (Bridge.referenceEquals(value, this.Value)) {
                     return;
                 }
@@ -14634,7 +14366,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 } else {
                     this.Element = this.ButtonEle;
                 }
-                Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.Element), this.GuiInfo.ClassName).AsyncEvent("click", Bridge.fn.cacheBind(this, this.DispatchClickAsync)).Style$1(this.GuiInfo.Style);
+                Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.Element), this.GuiInfo.ClassName).Event("click", Bridge.fn.cacheBind(this, this.DispatchClick)).Style$1(this.GuiInfo.Style);
                 if (!System.String.isNullOrEmpty(this.GuiInfo.Icon)) {
                     Core.Components.Renderer.Icon(html, this.GuiInfo.Icon).End.Text(" ").Render();
                 }
@@ -14643,83 +14375,18 @@ Bridge.assembly("Core", function ($asm, globals) {
                 ($t2 = Core.Extensions.HtmlElementExtension.Closest(this.Element, "td")) != null ? $t2.addEventListener("keydown", Bridge.fn.cacheBind(this, this.ListViewItemTab)) : null;
                 !Bridge.staticEquals(($t3 = this.DOMContentLoaded), null) ? $t3() : null;
             },
-            DispatchClickAsync: function () {
-                var $step = 0,
-                    $task1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $async_e, 
-                    $async_e1, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3,4], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (this.Disabled || Core.Extensions.HtmlElementExtension.Hidden(this.Element)) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        this.Disabled = true;
-                                        $step = 1;
-                                        continue;
-                                    }
-                                    case 1: {
-                                        Core.Components.Spinner.AppendTo(this.Element);
-                                        $task1 = Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "click", [this.Entity, this]);
-                                        $step = 2;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $task1.getAwaitedResult();
-                                        $step = 3;
-                                        continue;
-                                    }
-                                    case 3: {
-                                        Core.Components.Spinner.Hide();
-                                        this.Disabled = false;
-
-                                        if ($jumpFromFinally > -1) {
-                                            $step = $jumpFromFinally;
-                                            $jumpFromFinally = null;
-                                        } else if ($async_e) {
-                                            $tcs.setException($async_e);
-                                            return;
-                                        } else if (Bridge.isDefined($returnValue)) {
-                                            $tcs.setResult($returnValue);
-                                            return;
-                                        }
-                                        $step = 4;
-                                        continue;
-                                    }
-                                    case 4: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            if ($step >= 1 && $step <= 2) {
-                                $step = 3;
-                                $asyncBody();
-                                return;
-                            }
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+            DispatchClick: function () {
+                if (this.Disabled || Core.Extensions.HtmlElementExtension.Hidden(this.Element)) {
+                    return;
+                }
+                this.Disabled = true;
+                try {
+                    Core.Components.Spinner.AppendTo(this.Element);
+                    Core.Clients.Client.ExecTaskNoResult(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "click", [this.Entity, this]));
+                } finally {
+                    Core.Components.Spinner.Hide();
+                    this.Disabled = false;
+                }
             },
             GetValueText: function () {
                 var $t;
@@ -14779,7 +14446,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             Render: function () {
                 var $t;
                 this.SetDefaultVal();
-                var cellData = Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName);
+                var cellData = Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName);
                 var isBool = cellData != null && Core.Extensions.ReflectionExt.IsBool(Bridge.getType(cellData));
                 var cellText = "";
                 if (this.Element == null) {
@@ -14814,7 +14481,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         Core.MVVM.Html.Instance.Text(System.Nullable.eq(Bridge.cast(Bridge.unbox(cellData, System.Boolean), System.Boolean, true), true) ? "\u2611" : "\u2610");
                         Core.MVVM.Html.Context.style.fontSize = "1.2rem";
                     } else {
-                        Core.Components.Renderer.SmallCheckbox(Core.Components.Renderer.Padding(Core.MVVM.Html.Instance, Core.Components.Direction.bottom, 0), System.Nullable.getValue(Bridge.cast(Bridge.unbox(Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName), System.Boolean), System.Boolean)));
+                        Core.Components.Renderer.SmallCheckbox(Core.Components.Renderer.Padding(Core.MVVM.Html.Instance, Core.Components.Direction.bottom, 0), System.Nullable.getValue(Bridge.cast(Bridge.unbox(Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName), System.Boolean), System.Boolean)));
                         Core.MVVM.Html.Context.previousElementSibling.disabled = true;
                     }
 
@@ -14826,7 +14493,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         Core.MVVM.Html.Instance.Span.Render();
                     }
 
-                    Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.AsyncEvent$1("click", Bridge.fn.cacheBind(this, this.LabelClickHandler)), "cell-text").InnerHTML(cellText);
+                    Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Event$1("click", Bridge.fn.cacheBind(this, this.LabelClickHandler)), "cell-text").InnerHTML(cellText);
                 }
                 this.Element = Core.MVVM.Html.Context;
                 Core.MVVM.Html.Instance.End.Render();
@@ -14839,14 +14506,14 @@ Bridge.assembly("Core", function ($asm, globals) {
                         return cellText;
                     }
                     var listData;
-                    if (!(((listData = Bridge.as(Core.Extensions.Utils.GetComplexPropValue(this.Entity, fields[System.Array.index(0, fields)]), System.Collections.Generic.IEnumerable$1(System.Object)))) != null)) {
+                    if (!(((listData = Bridge.as(Core.Extensions.Utils.GetPropValue(this.Entity, fields[System.Array.index(0, fields)]), System.Collections.Generic.IEnumerable$1(System.Object)))) != null)) {
                         return cellText;
                     }
 
                     var restPivotField = Bridge.toArray(System.Linq.Enumerable.from(fields, System.String).skip(1).take(((fields.length - 2) | 0))).join(".");
                     var row = System.Linq.Enumerable.from(listData, System.Object).firstOrDefault(function (x) {
                             var $t;
-                            return Bridge.referenceEquals((($t = Core.Extensions.Utils.GetComplexPropValue(x, restPivotField)) != null ? Bridge.toString($t) : null), Bridge.toString(System.Linq.Enumerable.from(fields, System.String).last()));
+                            return Bridge.referenceEquals((($t = Core.Extensions.Utils.GetPropValue(x, restPivotField)) != null ? Bridge.toString($t) : null), Bridge.toString(System.Linq.Enumerable.from(fields, System.String).last()));
                         }, null);
                     cellText = row == null ? "" : Core.Extensions.Utils.FormatEntity$1(this.GuiInfo.FormatEntity, row);
                 } else {
@@ -14879,7 +14546,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }));
             },
             LabelClickHandler: function (e) {
-                return Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "click", [this.Entity]);
+                Core.Clients.Client.ExecTaskNoResult(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "click", [this.Entity]));
             },
             UpdateView: function (force, dirty, componentNames) {
                 if (force === void 0) { force = false; }
@@ -15307,10 +14974,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                 Core.Components.Renderer.SmallCheckbox(Core.Components.Renderer.TabIndex(Core.MVVM.Html.Take(this.ParentElement), -1), ($t = this._value, $t != null ? $t : false));
                 this._input = Bridge.as(Core.MVVM.Html.Context.previousElementSibling, HTMLInputElement);
                 this.Element = this._input.parentElement;
-                Core.MVVM.Html.Take(this._input).AsyncEvent$1("input", Bridge.fn.cacheBind(this, this.UserChange));
+                Core.MVVM.Html.Take(this._input).Event$1("input", Bridge.fn.cacheBind(this, this.UserChange));
                 this.SetDisableUI(!this.GuiInfo.Editable);
                 this.SetDefaultVal();
-                this.Value = Bridge.cast(Bridge.unbox(Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName), System.Boolean), System.Boolean, true);
+                this.Value = Bridge.cast(Bridge.unbox(Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName), System.Boolean), System.Boolean, true);
                 Core.Extensions.BridgeExt.SetComplexPropValue(this.Entity, this.GuiInfo.FieldName, Bridge.box(this._value, System.Boolean, System.Nullable.toStringFn(System.Boolean.toString), System.Nullable.getHashCode));
                 ($t1 = Core.Extensions.HtmlElementExtension.Closest(this.Element, "td")) != null ? $t1.addEventListener("keydown", Bridge.fn.cacheBind(this, this.ListViewItemTab)) : null;
                 !Bridge.staticEquals(($t2 = this.DOMContentLoaded), null) ? $t2() : null;
@@ -15319,113 +14986,34 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return this._value == null ? "N/A" : (System.Nullable.eq(this._value, true) ? "Check" : "Kh\u00f4ng check");
             },
             UserChange: function (e) {
-                var $step = 0,
-                    $task1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    check, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (this.Disabled) {
-                                            e.preventDefault();
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        check = this._input.checked;
-                                        $task1 = this.DataChanged(check);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $task1.getAwaitedResult();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                if (this.Disabled) {
+                    e.preventDefault();
+                    return;
+                }
+                var check = this._input.checked;
+                this.DataChanged(check);
             },
             DataChanged: function (check) {
-                var $step = 0,
-                    $task1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    oldVal, 
-                    $t, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        oldVal = this._value;
-                                        this._value = check;
-                                        if (this.Entity != null) {
-                                            Core.Extensions.BridgeExt.SetComplexPropValue(this.Entity, this.GuiInfo.FieldName, Bridge.box(check, System.Boolean, System.Boolean.toString));
-                                        }
-                                        this.Dirty = true;
-                                        if (!Bridge.staticEquals(this.UserInput, null)) {
-                                            this.UserInput(($t = new Core.MVVM.ObservableArgs(), $t.NewData = Bridge.box(this._value, System.Boolean, System.Nullable.toStringFn(System.Boolean.toString), System.Nullable.getHashCode), $t.OldData = Bridge.box(oldVal, System.Boolean, System.Nullable.toStringFn(System.Boolean.toString), System.Nullable.getHashCode), $t.EvType = "change", $t));
-                                        }
-                                        this.PopulateFields();
-                                        this.CascadeField();
-                                        $task1 = Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity]);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $task1.getAwaitedResult();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                var $t;
+                var oldVal = this._value;
+                this._value = check;
+                if (this.Entity != null) {
+                    Core.Extensions.BridgeExt.SetComplexPropValue(this.Entity, this.GuiInfo.FieldName, Bridge.box(check, System.Boolean, System.Boolean.toString));
+                }
+                this.Dirty = true;
+                if (!Bridge.staticEquals(this.UserInput, null)) {
+                    this.UserInput(($t = new Core.MVVM.ObservableArgs(), $t.NewData = Bridge.box(this._value, System.Boolean, System.Nullable.toStringFn(System.Boolean.toString), System.Nullable.getHashCode), $t.OldData = Bridge.box(oldVal, System.Boolean, System.Nullable.toStringFn(System.Boolean.toString), System.Nullable.getHashCode), $t.EvType = "change", $t));
+                }
+                this.PopulateFields();
+                this.CascadeField();
+                Core.Clients.Client.ExecTaskNoResult(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity]));
             },
             UpdateView: function (force, dirty, componentNames) {
                 var $t, $t1;
                 if (force === void 0) { force = false; }
                 if (dirty === void 0) { dirty = null; }
                 if (componentNames === void 0) { componentNames = []; }
-                var val = Bridge.cast(Bridge.unbox((($t = this.Entity) != null ? Core.Extensions.Utils.GetComplexPropValue($t, this.GuiInfo.FieldName) : null), System.Boolean), System.Boolean, true);
+                var val = Bridge.cast(Bridge.unbox((($t = this.Entity) != null ? Core.Extensions.Utils.GetPropValue($t, this.GuiInfo.FieldName) : null), System.Boolean), System.Boolean, true);
                 this.Value = val;
                 if (!this.Dirty) {
                     this.OriginalText = this._input.value;
@@ -15591,7 +15179,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             ctor: function (ui, ele) {
                 if (ele === void 0) { ele = null; }
-                var $t, $t1, $t2, $t3;
+                var $t, $t1, $t2, $t3, $t4;
 
                 this.$initialize();
                 Core.Components.EditableComponent.ctor.call(this, ui);
@@ -15599,12 +15187,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.GuiInfo = ui || (function () {
                     throw new System.ArgumentNullException.$ctor1("ui");
                 })();
-                this.Id = Bridge.toString(ui.Id);
+                this.Id = ($t = ui.Id) != null ? Bridge.toString($t) : null;
                 this.Name = ui.FieldName;
                 this.Header = new (System.Collections.Generic.List$1(Core.Models.Component)).ctor();
                 this.RowData = new (Core.MVVM.ObservableList$1(System.Object)).ctor();
                 this.RefData = new (System.Collections.Generic.Dictionary$2(System.String,System.Collections.Generic.List$1(System.Object))).ctor();
-                this.AdvSearchVM = ($t = new Core.Models.AdvSearchVM(), $t.ActiveState = Core.Enums.ActiveStateEnum.Yes, $t.OrderBy = Core.Clients.LocalStorage.GetItem(System.Collections.Generic.List$1(Core.Models.OrderBy), "OrderBy" + (this.GuiInfo.Id || "")) || new (System.Collections.Generic.List$1(Core.Models.OrderBy)).ctor(), $t);
+                this.AdvSearchVM = ($t1 = new Core.Models.AdvSearchVM(), $t1.ActiveState = Core.Enums.ActiveStateEnum.Yes, $t1.OrderBy = Core.Clients.LocalStorage.GetItem(System.Collections.Generic.List$1(Core.Models.OrderBy), "OrderBy" + (this.GuiInfo.Id || "")) || new (System.Collections.Generic.List$1(Core.Models.OrderBy)).ctor(), $t1);
                 this.DataSourceFilter = ui.DataSourceFilter;
                 this.StopChildrenHistory = true;
                 this._hasLoadRef = false;
@@ -15612,10 +15200,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.Resolve(ui, ele);
                 }
 
-                this._rowHeight = ($t = this.GuiInfo.BodyItemHeight, $t != null ? $t : 26);
-                this._theadTable = ($t1 = this.GuiInfo.HeaderHeight, $t1 != null ? $t1 : 40);
-                this._tfooterTable = ($t2 = this.GuiInfo.FooterHeight, $t2 != null ? $t2 : 35);
-                this._scrollTable = ($t3 = this.GuiInfo.ScrollHeight, $t3 != null ? $t3 : 10);
+                this._rowHeight = ($t1 = this.GuiInfo.BodyItemHeight, $t1 != null ? $t1 : 26);
+                this._theadTable = ($t2 = this.GuiInfo.HeaderHeight, $t2 != null ? $t2 : 40);
+                this._tfooterTable = ($t3 = this.GuiInfo.FooterHeight, $t3 != null ? $t3 : 35);
+                this._scrollTable = ($t4 = this.GuiInfo.ScrollHeight, $t4 != null ? $t4 : 10);
                 window.addEventListener(this.GuiInfo.QueueName, Bridge.fn.cacheBind(this, this.RealtimeUpdateListViewItem));
                 Core.Extensions.Utils.IsFunction(this.GuiInfo.PreQuery, Bridge.ref(this, "_preQueryFn"));
             }
@@ -15657,7 +15245,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 source = (source || "") + ((System.String.format("&$skip={0}&$top={1}{2}", Bridge.box(skip, System.Int32), Bridge.box(viewPortCount, System.Int32), (Bridge.referenceEquals(count, "true") ? System.String.format("&$count={0}", [count]) : ""))) || "");
                 return source;
             },
-            ReloadData: function (dataSourceFilter, cacheHeader, skip, pageSize) {
+            ReloadData: function (cacheHeader, skip, pageSize) {
                 var $step = 0,
                     $task1, 
                     $taskResult1, 
@@ -15681,7 +15269,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
-                                        if (dataSourceFilter === void 0) { dataSourceFilter = null; }
                                         if (cacheHeader === void 0) { cacheHeader = false; }
                                         if (skip === void 0) { skip = null; }
                                         if (pageSize === void 0) { pageSize = null; }
@@ -15995,7 +15582,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 $step = System.Array.min([0,1,2], $step);
                                 switch ($step) {
                                     case 0: {
-                                        $task1 = this.ReloadData(void 0, this.GuiInfo.CanCache, void 0, void 0);
+                                        $task1 = this.ReloadData(this.GuiInfo.CanCache, void 0, void 0);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -16330,7 +15917,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             SetRowDataIfExists: function () {
                 var value;
-                if (this.Entity != null && ((value = Bridge.as(Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName), System.Collections.IEnumerable))) != null && Bridge.getEnumerator(value).System$Collections$IEnumerator$moveNext()) {
+                if (this.Entity != null && ((value = Bridge.as(Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName), System.Collections.IEnumerable))) != null && Bridge.getEnumerator(value).System$Collections$IEnumerator$moveNext()) {
                     this.RowData._data = value;
                 }
             },
@@ -16658,10 +16245,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     continue;
                                 }
 
-                                var propVal = { v : Core.Extensions.Utils.GetComplexPropValue(row.v, objField) };
+                                var propVal = { v : Core.Extensions.Utils.GetPropValue(row.v, objField) };
                                 var found = ($t3 = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.String, System.Collections.Generic.List$1(System.Object), this.RefData, propType)) != null ? System.Linq.Enumerable.from($t3, System.Object).firstOrDefault((function ($me, row, header) {
                                         return function (source) {
-                                            return System.Nullable.eq(Bridge.unbox(source[Core.Components.EditableComponent.IdField]), Bridge.unbox(Core.Extensions.Utils.GetComplexPropValue(row.v, header.v.FieldName)));
+                                            return System.Nullable.eq(Bridge.unbox(source[Core.Components.EditableComponent.IdField]), Bridge.unbox(Core.Extensions.Utils.GetPropValue(row.v, header.v.FieldName)));
 
 
 
@@ -16712,7 +16299,7 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                 return System.Linq.Enumerable.from(entities, System.Object).select(function (x) {
                         var $t;
-                        var id = ($t = Core.Extensions.Utils.GetComplexPropValue(x, header.FieldName)) != null ? Bridge.toString($t) : null;
+                        var id = ($t = Core.Extensions.Utils.GetPropValue(x, header.FieldName)) != null ? Bridge.toString($t) : null;
                         if (Core.Extensions.StringExt.IsNullOrEmpty(id)) {
                             return null;
                         }
@@ -18446,7 +18033,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         }, null);
                     var cellSelecteds = System.Linq.Enumerable.from(selecteds, System.Object).select(function (selected) {
                             var $t;
-                            return ($t = new Core.Models.CellSelected(), $t.FieldName = e.TargetFieldName, $t.FieldText = com.ShortDesc, $t.ComponentType = com.ComponentType, $t.Value = Bridge.toString(Core.Extensions.BridgeExt.GetPropValue(selected, e.FieldName)), $t.ValueText = Bridge.toString(Core.Extensions.BridgeExt.GetPropValue(selected, e.FieldName)), $t.Operator = Core.Enums.OperatorEnum.In, $t.OperatorText = "Ch\u1ee9a", $t.Logic = Core.Enums.LogicOperation.Or, $t.IsSearch = true, $t.Group = true, $t);
+                            return ($t = new Core.Models.CellSelected(), $t.FieldName = e.TargetFieldName, $t.FieldText = com.ShortDesc, $t.ComponentType = com.ComponentType, $t.Value = Bridge.toString(Core.Extensions.Utils.GetPropValue(selected, e.FieldName)), $t.ValueText = Bridge.toString(Core.Extensions.Utils.GetPropValue(selected, e.FieldName)), $t.Operator = Core.Enums.OperatorEnum.In, $t.OperatorText = "Ch\u1ee9a", $t.Logic = Core.Enums.LogicOperation.Or, $t.IsSearch = true, $t.Group = true, $t);
                         });
                     gridView1.CellSelected.AddRange(cellSelecteds);
                     gridView1.ActionFilter();
@@ -18920,7 +18507,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             Render: function () {
                 var $t, $t1, $t2;
                 this.SetDefaultVal();
-                var fieldValue = Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName);
+                var fieldValue = Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName);
                 Core.Extensions.BridgeExt.SetComplexPropValue(this.Entity, this.GuiInfo.FieldName, Bridge.box(this._value, System.DateTime, System.Nullable.toStringFn(System.DateTime.format), System.Nullable.getHashCode));
                 var parsedVal = { v : System.DateTime.getMinValue() };
                 var strVal;
@@ -19517,7 +19104,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (force === void 0) { force = false; }
                 if (setDirty === void 0) { setDirty = null; }
                 if (componentNames === void 0) { componentNames = []; }
-                var value = ($t = this.Entity) != null ? Core.Extensions.Utils.GetComplexPropValue($t, this.GuiInfo.FieldName) : null;
+                var value = ($t = this.Entity) != null ? Core.Extensions.Utils.GetPropValue($t, this.GuiInfo.FieldName) : null;
                 var strVal;
                 if (((strVal = Bridge.as(value, System.String))) != null) {
                     var dateVal = { };
@@ -19526,7 +19113,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         this.Value = dateVal.v;
                     }
                 } else {
-                    this.Value = Bridge.cast(Bridge.unbox((($t1 = this.Entity) != null ? Core.Extensions.Utils.GetComplexPropValue($t1, this.GuiInfo.FieldName) : null), System.DateTime), System.DateTime, true);
+                    this.Value = Bridge.cast(Bridge.unbox((($t1 = this.Entity) != null ? Core.Extensions.Utils.GetPropValue($t1, this.GuiInfo.FieldName) : null), System.DateTime), System.DateTime, true);
                 }
             },
             ValidateAsync: function () {
@@ -21185,12 +20772,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var isSave = window.localStorage.getItem("isSave");
                 Core.MVVM.Html.Take$1(classname).Clear();
                 var html = Core.MVVM.Html.Take$1(classname);
-                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(html.A, "navbar-nav-link d-flex align-items-center dropdown-toggle").DataAttr$1("toggle", "dropdown").Span, "text-truncate").Text((this.CurrentUser.TenantCode || "") + ": " + (this.CurrentUser.FullName || "")).EndOf(Core.MVVM.ElementType.a).Div, "dropdown-menu dropdown-menu-right notClose mt-0 border-0").Style$1("border-top-left-radius: 0;border-top-right-radius: 0").A, "dropdown-item").AsyncEvent$1("click", Bridge.fn.cacheBind(this, this.ViewProfile)).I, "far fa-user").End.Text("Account (" + (this.CurrentUser.TenantCode || "") + ": " + (this.CurrentUser.FullName || "") + ")").EndOf(Core.MVVM.ElementType.a);
+                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(html.A, "navbar-nav-link d-flex align-items-center dropdown-toggle").DataAttr$1("toggle", "dropdown").Span, "text-truncate").Text((this.CurrentUser.TenantCode || "") + ": " + (this.CurrentUser.FullName || "")).EndOf(Core.MVVM.ElementType.a).Div, "dropdown-menu dropdown-menu-right notClose mt-0 border-0").Style$1("border-top-left-radius: 0;border-top-right-radius: 0").A, "dropdown-item").AsyncEvent("click", Bridge.fn.cacheBind(this, this.ViewProfile)).I, "far fa-user").End.Text("Account (" + (this.CurrentUser.TenantCode || "") + ": " + (this.CurrentUser.FullName || "") + ")").EndOf(Core.MVVM.ElementType.a);
                 Core.Components.Renderer.ClassName(html.Div, "dropdown-divider").EndOf(Core.MVVM.ElementType.div);
                 var langSelect = new Core.Components.LangSelect(new Core.Models.Component(), html.GetContext());
                 langSelect.Render();
                 Core.Components.Renderer.ClassName(html.Div, "dropdown-divider").EndOf(Core.MVVM.ElementType.div);
-                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(html.A.AsyncEvent$1("click", Bridge.fn.cacheBind(this, this.SignOut)), "dropdown-item").I, "far fa-power-off").End.Text("Logout").EndOf(Core.MVVM.ElementType.a);
+                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(html.A.AsyncEvent("click", Bridge.fn.cacheBind(this, this.SignOut)), "dropdown-item").I, "far fa-power-off").End.Text("Logout").EndOf(Core.MVVM.ElementType.a);
             },
             ShowProfile: function () {
                 this._profile.style.display = "block";
@@ -21350,7 +20937,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         $asyncBody();
                     })).Div, "media-body").H3, "dropdown-item-title").Text(task.Title).Span, "float-right text-sm " + (className || "")).I, "fas fa-star").End.End.End.P, "text-sm").Text(task.Description).End.P, "text-sm text-muted").I, "far fa-clock mr-1").End.Text(task.Deadline.ToString$1("dd/MM/yyyy HH:mm")).EndOf(Core.MVVM.ElementType.a);
                 }));
-                Core.Components.Renderer.ClassName(html.A, "dropdown-item dropdown-footer").AsyncEvent$1("click", Bridge.fn.cacheBind(this, this.SeeMore)).Text("See more").EndOf(Core.MVVM.ElementType.a);
+                Core.Components.Renderer.ClassName(html.A, "dropdown-item dropdown-footer").AsyncEvent("click", Bridge.fn.cacheBind(this, this.SeeMore)).Text("See more").EndOf(Core.MVVM.ElementType.a);
                 Core.Components.Framework.NotificationBL.Notifications.Data.ForEach(Bridge.fn.cacheBind(this, this.PopupNotification));
             },
             ToggleBageCount: function (count) {
@@ -21722,7 +21309,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             Render: function () {
                 var $t, $t1, $t2, $t3;
-                this._path = ($t = this.Entity) != null && ($t1 = Core.Extensions.Utils.GetComplexPropValue($t, this.GuiInfo.FieldName)) != null ? Bridge.toString($t1) : null;
+                this._path = ($t = this.Entity) != null && ($t1 = Core.Extensions.Utils.GetPropValue($t, this.GuiInfo.FieldName)) != null ? Bridge.toString($t1) : null;
                 var paths = this._path != null ? ($t2 = System.String, System.Linq.Enumerable.from(this._path.split(Core.Components.ImageServer.pathSeparator), $t2).toList($t2)) : null;
                 this.RenderUploadForm();
                 this.Path = this._path;
@@ -21736,7 +21323,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
                 Core.MVVM.Html.Instance.End.Render();
                 if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(path)) {
-                    Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Img.AsyncEvent("click", Bridge.fn.cacheBind(this, this.OpenForm)), "thumb").Style$1(this.GuiInfo.ChildStyle).Src(path).Render();
+                    Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Img.Event("click", Bridge.fn.cacheBind(this, this.OpenForm)), "thumb").Style$1(this.GuiInfo.ChildStyle).Src(path).Render();
                 }
                 return Core.MVVM.Html.Context.parentElement;
             },
@@ -21860,76 +21447,37 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.Element = Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.ParentElement), "uploader").Div.GetContext();
                 if (this._plus == null) {
                     if (System.Nullable.gt(this.GuiInfo.Precision, 0)) {
-                        Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.I.AsyncEvent("click", Bridge.fn.cacheBind(this, this.OpenForm)), "fal fa-plus mt-3").Style$1(this.GuiInfo.ChildStyle).End.Render();
+                        Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.I.Event("click", Bridge.fn.cacheBind(this, this.OpenForm)), "fal fa-plus mt-3").Style$1(this.GuiInfo.ChildStyle).End.Render();
                     } else {
                         if (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.Path)) {
-                            Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.I.AsyncEvent("click", Bridge.fn.cacheBind(this, this.OpenForm)), "fal fa-plus mt-3").Style$1(this.GuiInfo.ChildStyle).End.Render();
+                            Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.I.Event("click", Bridge.fn.cacheBind(this, this.OpenForm)), "fal fa-plus mt-3").Style$1(this.GuiInfo.ChildStyle).End.Render();
                         }
                     }
                     this._plus = Core.MVVM.Html.Context;
                 }
             },
             OpenForm: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    loadImage, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (Core.Components.ImageServer._backdrop == null) {
-                                            Core.Components.Renderer.TabIndex(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(document.body).Div, "backdrop").Style$1("z-index:2000"), -1);
-                                            Core.Components.ImageServer._backdrop = Core.MVVM.Html.Context;
-                                        }
-                                        Core.Extensions.HtmlElementExtension.Show(Core.Components.ImageServer._backdrop);
-                                        Core.Components.Renderer.IconForSpan(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(Core.Components.ImageServer._backdrop).Clear().Div, "popup-content").Style$1("width:100%").Div, "popup-title").Span, "");
-                                        Core.MVVM.Html.Instance.End.Span.Text("Danh s\u00e1ch h\u00ecnh \u1ea3nh");
-                                        Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Div, "icon-box").Span, "fa fa-times").Event("click", Bridge.fn.cacheBind(this, this.ClosePopup)).EndOf$1(".popup-title").Div, "popup-body");
-                                        Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Input.Type$1("file").Attr$1("multiple", "multiple").Attr$1("name", "imagefiles"), "d-none").Attr$1("accept", this.DataSourceFilter).AsyncEvent$1("change", Bridge.fn.bind(this, function (e) {
-                                            return this.UploadSelectedImages(e);
-                                        }));
-                                        this._input = Bridge.as(Core.MVVM.Html.Context, HTMLInputElement);
-                                        Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Div, "col-md-12").Style$1("padding: 20px 5%;").Div, "alert alert-info").Text("L\u01b0u \u00fd: H\u1ec7 th\u1ed1ng ch\u1ec9 nh\u1eadn c\u00e1c file \u1ea3nh (bmp, jpg, jpeg, gif, png) v\u00e0 dung l\u01b0\u1ee3ng d\u01b0\u1edbi 1Mb / file").End.Div, "gallery-buttons bottom-30px").Button.Event$1("click", Bridge.fn.bind(this, function (e) {
-                                            this.OpenNativeFileDialog(e);
-                                        })).Id("btn-upload"), "btn btn-success btn-md dz-clickable mr-1").I, "fa fa-upload mr-1").End.Text("Upload \u1ea3nh m\u1edbi").End.Button.Id("btn-upload"), "btn btn-success btn-md mr-1").I, "fa fa-heart mr-1").End.Text("Ch\u00e8n \u1ea3nh \u0111\u00e3 ch\u1ecdn").End.Button.Id("btn-upload"), "btn btn-danger btn-md mr-1").I, "fa fa-trash mr-1").End.Text("X\u00f3a \u1ea3nh \u0111\u00e3 ch\u1ecdn").End.End.Div, " list-group").Div, "row").Id("previewContainer");
-                                        $task1 = new Core.Clients.Client.$ctor1("Images").GetList(Core.Models.Images, System.String.format("?$filter=Active eq true", null));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        loadImage = $taskResult1;
-                                        if (loadImage.Value != null) {
-                                            this.RenderListImage(loadImage.Value.ToArray());
-                                        }
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                if (Core.Components.ImageServer._backdrop == null) {
+                    Core.Components.Renderer.TabIndex(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(document.body).Div, "backdrop").Style$1("z-index:2000"), -1);
+                    Core.Components.ImageServer._backdrop = Core.MVVM.Html.Context;
+                }
+                Core.Extensions.HtmlElementExtension.Show(Core.Components.ImageServer._backdrop);
+                Core.Components.Renderer.IconForSpan(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(Core.Components.ImageServer._backdrop).Clear().Div, "popup-content").Style$1("width:100%").Div, "popup-title").Span, "");
+                Core.MVVM.Html.Instance.End.Span.Text("Danh s\u00e1ch h\u00ecnh \u1ea3nh");
+                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Div, "icon-box").Span, "fa fa-times").Event("click", Bridge.fn.cacheBind(this, this.ClosePopup)).EndOf$1(".popup-title").Div, "popup-body");
+                Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Input.Type$1("file").Attr$1("multiple", "multiple").Attr$1("name", "imagefiles"), "d-none").Attr$1("accept", this.DataSourceFilter).AsyncEvent("change", Bridge.fn.bind(this, function (e) {
+                    return this.UploadSelectedImages(e);
+                }));
+                this._input = Bridge.as(Core.MVVM.Html.Context, HTMLInputElement);
+                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Div, "col-md-12").Style$1("padding: 20px 5%;").Div, "alert alert-info").Text("L\u01b0u \u00fd: H\u1ec7 th\u1ed1ng ch\u1ec9 nh\u1eadn c\u00e1c file \u1ea3nh (bmp, jpg, jpeg, gif, png) v\u00e0 dung l\u01b0\u1ee3ng d\u01b0\u1edbi 1Mb / file").End.Div, "gallery-buttons bottom-30px").Button.Event$1("click", Bridge.fn.bind(this, function (e) {
+                    this.OpenNativeFileDialog(e);
+                })).Id("btn-upload"), "btn btn-success btn-md dz-clickable mr-1").I, "fa fa-upload mr-1").End.Text("Upload \u1ea3nh m\u1edbi").End.Button.Id("btn-upload"), "btn btn-success btn-md mr-1").I, "fa fa-heart mr-1").End.Text("Ch\u00e8n \u1ea3nh \u0111\u00e3 ch\u1ecdn").End.Button.Id("btn-upload"), "btn btn-danger btn-md mr-1").I, "fa fa-trash mr-1").End.Text("X\u00f3a \u1ea3nh \u0111\u00e3 ch\u1ecdn").End.End.Div, " list-group").Div, "row").Id("previewContainer");
+                var loadImageTask = new Core.Clients.Client.$ctor1("Images").GetList(Core.Models.Images, System.String.format("?$filter=Active eq true", null));
+                Core.Clients.Client.ExecTask(Core.Models.OdataResult$1(Core.Models.Images), loadImageTask, Bridge.fn.bind(this, function (loadImage) {
+                    if (loadImage.Value != null) {
+                        this.RenderListImage(loadImage.Value.ToArray());
+                    }
+                }));
             },
             RenderPlaceHolder: function () {
                 if (Core.Extensions.StringExt.IsNullOrWhiteSpace(this._path)) {
@@ -22123,7 +21671,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (force === void 0) { force = false; }
                 if (dirty === void 0) { dirty = null; }
                 if (componentNames === void 0) { componentNames = []; }
-                this.Path = ($t = Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName)) != null ? Bridge.toString($t) : null;
+                this.Path = ($t = Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName)) != null ? Bridge.toString($t) : null;
                 Core.Components.EditableComponent.prototype.UpdateView.call(this);
             },
             UploadFile: function (file) {
@@ -22616,7 +22164,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         methods: {
             Render: function () {
                 var $t, $t1, $t2, $t3, $t4;
-                this._path = ($t = this.Entity) != null && ($t1 = Core.Extensions.Utils.GetComplexPropValue($t, this.GuiInfo.FieldName)) != null ? Bridge.toString($t1) : null;
+                this._path = ($t = this.Entity) != null && ($t1 = Core.Extensions.Utils.GetPropValue($t, this.GuiInfo.FieldName)) != null ? Bridge.toString($t1) : null;
                 var paths = this._path != null ? ($t2 = System.String, System.Linq.Enumerable.from(this._path.split(Core.Components.ImageUploader.PathSeparator), $t2).toList($t2)) : null;
                 this.RenderUploadForm();
                 this.Path = this._path;
@@ -22775,7 +22323,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             RenderUploadForm: function () {
                 var isMultiple = System.Nullable.eq(this.GuiInfo.Precision, 0);
-                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.ParentElement), "choose-files").Input.Type$1("file").Attr$1("name", "files"), "d-none").Attr$1("accept", this.DataSourceFilter).AsyncEvent$1("change", Bridge.fn.cacheBind(this, this.UploadSelectedImages)).Render();
+                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.ParentElement), "choose-files").Input.Type$1("file").Attr$1("name", "files"), "d-none").Attr$1("accept", this.DataSourceFilter).AsyncEvent("change", Bridge.fn.cacheBind(this, this.UploadSelectedImages)).Render();
                 this.Element = (this._input = Bridge.as(Core.MVVM.Html.Context, HTMLInputElement));
                 if (isMultiple) {
                     Core.MVVM.Html.Instance.Attr$1("multiple", "multiple");
@@ -22973,7 +22521,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (force === void 0) { force = false; }
                 if (dirty === void 0) { dirty = null; }
                 if (componentNames === void 0) { componentNames = []; }
-                this.Path = ($t = Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName)) != null ? Bridge.toString($t) : null;
+                this.Path = ($t = Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName)) != null ? Bridge.toString($t) : null;
                 Core.Components.EditableComponent.prototype.UpdateView.call(this, force, dirty, componentNames);
             },
             UploadFile: function (file) {
@@ -23644,7 +23192,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     return;
                 }
 
-                Core.Components.Renderer.TabIndex(Core.MVVM.Html.Take(this.Parent.Element.firstElementChild), -1).AsyncEvent$1("keypress", Bridge.fn.cacheBind(this, this.EnterSearch));
+                Core.Components.Renderer.TabIndex(Core.MVVM.Html.Take(this.Parent.Element.firstElementChild), -1).AsyncEvent("keypress", Bridge.fn.cacheBind(this, this.EnterSearch));
                 this.Element = Core.MVVM.Html.Context;
                 if (Bridge.referenceEquals(this.GuiInfo.ComponentType, "GridView") || Bridge.referenceEquals(this.GuiInfo.ComponentType, "TreeView") || !this.GuiInfo.IsRealtime) {
                     var txtSearch = ($t = new Core.Components.Textbox(($t1 = new Core.Models.Component(), $t1.FieldName = "SearchTerm", $t1.Visibility = true, $t1.Label = "T\u00ecm ki\u1ebfm", $t1.PlainText = "T\u00ecm ki\u1ebfm", $t1.ShowLabel = false, $t1)), $t.ParentElement = this.Element, $t);
@@ -24032,52 +23580,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                 ($t = System.Linq.Enumerable.from(ctxMenu.Element.children, HTMLElement).firstOrDefault(null, null)) != null ? $t.appendChild(this._uploader.parentElement) : null;
             },
             AdvancedSearch: function (arg) {
-                System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $taskResult1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        $async_e, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            $task1 = Core.Components.Extensions.ComponentExt.OpenPopup(this.TabEditor, "AdvancedSearch", Bridge.fn.bind(this, function () {
-                                                var $t;
-                                                var editor = ($t = new Core.Components.AdvancedSearch(this.ParentListView), $t.ParentListView = Bridge.as(this.Parent, Core.Components.ListView), $t.ParentElement = this.TabEditor.Element, $t);
-                                                return editor;
-                                            }));
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $taskResult1 = $task1.getAwaitedResult();
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                    return $tcs.task;
+                var task = Core.Components.Extensions.ComponentExt.OpenPopup(this.TabEditor, "AdvancedSearch", Bridge.fn.bind(this, function () {
+                    var $t;
+                    var editor = ($t = new Core.Components.AdvancedSearch(this.ParentListView), $t.ParentListView = Bridge.as(this.Parent, Core.Components.ListView), $t.ParentElement = this.TabEditor.Element, $t);
+                    return editor;
                 }));
+                Core.Clients.Client.ExecTaskNoResult(task);
             },
             ExportAllData: function (arg) {
                 System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
@@ -24570,7 +24078,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             _gv: null,
             _waitForInput: 0,
             _waitForDispose: 0,
-            _findMatchTextAwaiter: 0,
             _contextMenu: false,
             RowData: null,
             dataSourceFilter: null,
@@ -24580,6 +24087,11 @@ Bridge.assembly("Core", function ($asm, globals) {
             _isRendering: false
         },
         props: {
+            TextField: {
+                get: function () {
+                    return this.GuiInfo.TextField;
+                }
+            },
             Value: {
                 get: function () {
                     return this._value;
@@ -24592,56 +24104,7 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                     this._value = value;
                     ($t = this.Entity) != null ? Core.Extensions.BridgeExt.SetComplexPropValue($t, this.GuiInfo.FieldName, value) : null;
-                    System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                        var $step = 0,
-                            $task1, 
-                            $jumpFromFinally, 
-                            $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                            $returnValue, 
-                            $async_e, 
-                            $asyncBody = Bridge.fn.bind(this, function () {
-                                try {
-                                    for (;;) {
-                                        $step = System.Array.min([0,1], $step);
-                                        switch ($step) {
-                                            case 0: {
-                                                this._value = value;
-                                                $task1 = this.FindMatchTextAsync();
-                                                $step = 1;
-                                                if ($task1.isCompleted()) {
-                                                    continue;
-                                                }
-                                                $task1.continue($asyncBody);
-                                                return;
-                                            }
-                                            case 1: {
-                                                $task1.getAwaitedResult();
-                                                $tcs.setResult(null);
-                                                return;
-                                            }
-                                            default: {
-                                                $tcs.setResult(null);
-                                                return;
-                                            }
-                                        }
-                                    }
-                                } catch($async_e1) {
-                                    $async_e = System.Exception.create($async_e1);
-                                    $tcs.setException($async_e);
-                                }
-                            }, arguments);
-
-                        $asyncBody();
-                        return $tcs.task;
-                    }));
-                }
-            },
-            Text: {
-                get: function () {
-                    return this._input.value;
-                },
-                set: function (value) {
-                    this._input.value = value;
+                    this.FindMatchText();
                 }
             },
             SearchResultEle: null,
@@ -24695,7 +24158,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             Render: function () {
                 var $t, $t1;
                 this.SetDefaultVal();
-                var entityVal = Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName);
+                var entityVal = Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName);
                 var str_value;
                 if (((str_value = Bridge.as(entityVal, System.String))) != null) {
                     this._value = str_value;
@@ -24722,62 +24185,14 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this._input.autocomplete = "off";
                 Core.Components.Renderer.PlaceHolder(Core.MVVM.Html.Take(this._input), this.GuiInfo.PlainText).Attr$1("name", this.GuiInfo.FieldName).Event("contextmenu", Bridge.fn.bind(this, function () {
                     this._contextMenu = true;
-                })).Event("focus", Bridge.fn.cacheBind(this, this.FocusIn)).Event$1("blur", Bridge.fn.cacheBind(this, this.DiposeGvWrapper)).AsyncEvent("click", Bridge.fn.cacheBind(this, this.SEClickOpenRef)).Event("change", Bridge.fn.cacheBind(this, this.SEChangeHandler)).Event$1("keydown", Bridge.fn.cacheBind(this, this.SEKeydownHanlder)).Event("input", Bridge.fn.bind(this, function () {
+                })).Event("focus", Bridge.fn.cacheBind(this, this.FocusIn)).Event$1("blur", Bridge.fn.cacheBind(this, this.DiposeGvWrapper)).Event("click", Bridge.fn.cacheBind(this, this.SEClickOpenRef)).Event("change", Bridge.fn.cacheBind(this, this.SEChangeHandler)).Event$1("keydown", Bridge.fn.cacheBind(this, this.SEKeydownHanlder)).Event("input", Bridge.fn.bind(this, function () {
                     this.Search(this._input.value, true, 500, true, false);
                 }));
             },
             SEClickOpenRef: function () {
-                var $step = 0,
-                    $task1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (this.Disabled && !this.GuiInfo.FocusSearch) {
-                                            $step = 1;
-                                            continue;
-                                        } 
-                                        $step = 3;
-                                        continue;
-                                    }
-                                    case 1: {
-                                        $task1 = this.OpenRefDetail();
-                                        $step = 2;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $task1.getAwaitedResult();
-                                        $step = 3;
-                                        continue;
-                                    }
-                                    case 3: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                if (this.Disabled && !this.GuiInfo.FocusSearch) {
+                    this.OpenRefDetail();
+                }
             },
             SEChangeHandler: function () {
                 if (this._value == null) {
@@ -24907,7 +24322,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             RenderIcons: function () {
                 var title = Core.Components.LangSelect.Get("T\u1ea1o m\u1edbi d\u1eef li\u1ec7u ");
                 Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.Element.parentElement).Div, "search-icons");
-                var div = Core.Components.Renderer.Title(Core.Components.Renderer.Icon(Core.Components.Renderer.Title(Core.Components.Renderer.Icon(Core.MVVM.Html.Instance, "fa fa-info-circle"), (Core.Components.LangSelect.Get("Th\u00f4ng tin chi ti\u1ebft ") || "") + (Core.Components.LangSelect.Get(this.GuiInfo.Label).toLowerCase() || "")).AsyncEvent("click", Bridge.fn.cacheBind(this, this.OpenRefDetail)).End, "fa fa-plus"), System.String.format("{0} {1}", title, Core.Components.LangSelect.Get(this.GuiInfo.Label).toLowerCase())).AsyncEvent("click", Bridge.fn.cacheBind(this, this.CreateNewRef)).End.GetContext();
+                var div = Core.Components.Renderer.Title(Core.Components.Renderer.Icon(Core.Components.Renderer.Title(Core.Components.Renderer.Icon(Core.MVVM.Html.Instance, "fa fa-info-circle"), (Core.Components.LangSelect.Get("Th\u00f4ng tin chi ti\u1ebft ") || "") + (Core.Components.LangSelect.Get(this.GuiInfo.Label).toLowerCase() || "")).Event("click", Bridge.fn.cacheBind(this, this.OpenRefDetail)).End, "fa fa-plus"), System.String.format("{0} {1}", title, Core.Components.LangSelect.Get(this.GuiInfo.Label).toLowerCase())).Event("click", Bridge.fn.cacheBind(this, this.OpenRefDetail)).End.GetContext();
                 if (this.Element.nextElementSibling != null) {
                     this.Element.parentElement.insertBefore(div, this.Element.nextElementSibling);
                 } else {
@@ -24915,230 +24330,96 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
             },
             OpenRefDetail: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $task2, 
-                    $taskResult2, 
-                    $task3, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    feature, 
-                    type, 
-                    entity, 
-                    instance, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (Core.Extensions.StringExt.IsNullOrEmpty(this.GuiInfo.RefClass) || this.Matched == null) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
+                if (Core.Extensions.StringExt.IsNullOrEmpty(this.GuiInfo.RefClass) || this.Matched == null) {
+                    return;
+                }
 
-                                        $task1 = Core.Components.Extensions.ComponentExt.LoadFeatureByNameOrViewClass(this.GuiInfo.RefClass);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        feature = $taskResult1;
-                                        if (feature == null) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-
-                                        type = Bridge.Reflection.getType(this.GuiInfo.RefClass);
-                                        if (type == null) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        $task2 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName, this.GuiInfo.Reference != null ? this.GuiInfo.Reference.Namespace : null).GetRawAsync(this.Value);
-                                        $step = 2;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $taskResult2 = $task2.getAwaitedResult();
-                                        entity = $taskResult2;
-                                        instance = Bridge.as(Bridge.createInstance(type), Core.Components.Forms.TabEditor);
-                                        instance.Id = feature.Name;
-                                        instance.Entity = entity;
-                                        instance.ParentForm = this.TabEditor;
-                                        instance.ParentElement = this.TabEditor.Element;
-                                        this.TabEditor.AddChild(instance);
-                                        $task3 = Core.Components.Extensions.ComponentExt.DispatchCustomEventAsync(this, this.GuiInfo.Events, Core.Enums.CustomEventType.AfterCreated, [this.TabEditor]);
-                                        $step = 3;
-                                        if ($task3.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task3.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 3: {
-                                        $task3.getAwaitedResult();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                var featureTask = Core.Components.Extensions.ComponentExt.LoadFeatureByName(this.GuiInfo.RefClass);
+                Core.Clients.Client.ExecTask(Core.Models.Feature, featureTask, Bridge.fn.cacheBind(this, this.FeatureLoaded));
             },
-            CreateNewRef: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    feature, 
-                    instance, 
-                    res, 
-                    fn, 
-                    entity, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (Core.Extensions.StringExt.IsNullOrEmpty(this.GuiInfo.RefClass)) {
-                                            $tcs.setResult(null);
+            FeatureLoaded: function (feature) {
+                var instance = Bridge.as(Bridge.createInstance(Bridge.Reflection.getType(this.GuiInfo.RefClass)), Core.Components.Forms.TabEditor);
+                instance.Id = feature.Name;
+                instance.ParentForm = this.TabEditor;
+                instance.ParentElement = this.TabEditor.Element;
+                this.TabEditor.AddChild(instance);
+                var res;
+                if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.Template)) {
+                    var fn = { };
+                    if (Core.Extensions.Utils.IsFunction(this.GuiInfo.Template, fn)) {
+                        res = Bridge.toString(fn.v.call(this, Bridge.unbox(this.Matched), Bridge.unbox(this.Entity)));
+                    } else {
+                        res = Core.Extensions.Utils.FormatEntity(this.GuiInfo.Template, null, this.Matched, Core.Extensions.Utils.EmptyFormat, Core.Extensions.Utils.EmptyFormat);
+                    }
+                    var entity = Newtonsoft.Json.JsonConvert.DeserializeObject(res, System.Object);
+                    instance.Entity = entity;
+                }
+                instance.DOMContentLoaded = Bridge.fn.combine(instance.DOMContentLoaded, Bridge.fn.bind(this, function () {
+                    var groupButton = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.Section, instance, "Button");
+                    var htmlTd = document.createElement(System.Enum.toString(Core.MVVM.ElementType, Core.MVVM.ElementType.td));
+                    var htmlTr = Bridge.as(groupButton.Element.querySelector(System.Enum.toString(Core.MVVM.ElementType, Core.MVVM.ElementType.tr)), HTMLElement);
+                    Core.Extensions.HtmlElementExtension.Prepend(htmlTr, htmlTd);
+                    Core.Components.Renderer.IText(Core.Components.Renderer.Icon(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(htmlTd).Button, "btn btn-secondary"), "fal fa-file-check").End, "\u00c1p d\u1ee5ng").Event("click", Bridge.fn.bind(this, function () {
+                        var $step = 0,
+                            $task1, 
+                            $taskResult1, 
+                            $task2, 
+                            $taskResult2, 
+                            $jumpFromFinally, 
+                            rs, 
+                            $asyncBody = Bridge.fn.bind(this, function () {
+                                for (;;) {
+                                    $step = System.Array.min([0,1,2,3,4], $step);
+                                    switch ($step) {
+                                        case 0: {
+                                            $task1 = instance.IsFormValid();
+                                            $step = 1;
+                                            if ($task1.isCompleted()) {
+                                                continue;
+                                            }
+                                            $task1.continue($asyncBody);
                                             return;
                                         }
-
-                                        $task1 = Core.Components.Extensions.ComponentExt.LoadFeatureByNameOrViewClass(this.GuiInfo.RefClass);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
+                                        case 1: {
+                                            $taskResult1 = $task1.getAwaitedResult();
+                                            if (!($taskResult1)) {
+                                                $step = 2;
+                                                continue;
+                                            } 
+                                            $step = 3;
                                             continue;
                                         }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        feature = $taskResult1;
-                                        instance = Bridge.as(Bridge.createInstance(Bridge.Reflection.getType(this.GuiInfo.RefClass)), Core.Components.Forms.TabEditor);
-                                        instance.Id = feature.Name;
-                                        instance.ParentForm = this.TabEditor;
-                                        instance.ParentElement = this.TabEditor.Element;
-                                        this.TabEditor.AddChild(instance);
-                                        if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.Template)) {
-                                            fn = { };
-                                            if (Core.Extensions.Utils.IsFunction(this.GuiInfo.Template, fn)) {
-                                                res = Bridge.toString(fn.v.call(this, Bridge.unbox(this.Matched), Bridge.unbox(this.Entity)));
-                                            } else {
-                                                res = Core.Extensions.Utils.FormatEntity(this.GuiInfo.Template, null, this.Matched, Core.Extensions.Utils.EmptyFormat, Core.Extensions.Utils.EmptyFormat);
-                                            }
-                                            entity = Newtonsoft.Json.JsonConvert.DeserializeObject(res, System.Object);
-                                            instance.Entity = entity;
+                                        case 2: {
+                                            return;
                                         }
-                                        instance.DOMContentLoaded = Bridge.fn.combine(instance.DOMContentLoaded, Bridge.fn.bind(this, function () {
-                                            var groupButton = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.Section, instance, "Button");
-                                            var htmlTd = document.createElement(System.Enum.toString(Core.MVVM.ElementType, Core.MVVM.ElementType.td));
-                                            var htmlTr = Bridge.as(groupButton.Element.querySelector(System.Enum.toString(Core.MVVM.ElementType, Core.MVVM.ElementType.tr)), HTMLElement);
-                                            Core.Extensions.HtmlElementExtension.Prepend(htmlTr, htmlTd);
-                                            Core.Components.Renderer.IText(Core.Components.Renderer.Icon(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(htmlTd).Button, "btn btn-secondary"), "fal fa-file-check").End, "\u00c1p d\u1ee5ng").Event("click", Bridge.fn.bind(this, function () {
-                                                var $step = 0,
-                                                    $task1, 
-                                                    $taskResult1, 
-                                                    $task2, 
-                                                    $taskResult2, 
-                                                    $jumpFromFinally, 
-                                                    rs, 
-                                                    $asyncBody = Bridge.fn.bind(this, function () {
-                                                        for (;;) {
-                                                            $step = System.Array.min([0,1,2,3,4], $step);
-                                                            switch ($step) {
-                                                                case 0: {
-                                                                    $task1 = instance.IsFormValid();
-                                                                    $step = 1;
-                                                                    if ($task1.isCompleted()) {
-                                                                        continue;
-                                                                    }
-                                                                    $task1.continue($asyncBody);
-                                                                    return;
-                                                                }
-                                                                case 1: {
-                                                                    $taskResult1 = $task1.getAwaitedResult();
-                                                                    if (!($taskResult1)) {
-                                                                        $step = 2;
-                                                                        continue;
-                                                                    } 
-                                                                    $step = 3;
-                                                                    continue;
-                                                                }
-                                                                case 2: {
-                                                                    return;
-                                                                }
-                                                                case 3: {
-                                                                    $task2 = instance.AddOrUpdate(instance.Entity);
-                                                                    $step = 4;
-                                                                    if ($task2.isCompleted()) {
-                                                                        continue;
-                                                                    }
-                                                                    $task2.continue($asyncBody);
-                                                                    return;
-                                                                }
-                                                                case 4: {
-                                                                    $taskResult2 = $task2.getAwaitedResult();
-                                                                    rs = $taskResult2;
-                                                                    if (rs != null) {
-                                                                        this.SaveAndApply(rs);
-                                                                        instance.Dispose();
-                                                                    }
-                                                                    return;
-                                                                }
-                                                                default: {
-                                                                    return;
-                                                                }
-                                                            }
-                                                        }
-                                                    }, arguments);
-
-                                                $asyncBody();
-                                            })).End.Render();
-                                        }));
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
+                                        case 3: {
+                                            $task2 = instance.AddOrUpdate(instance.Entity);
+                                            $step = 4;
+                                            if ($task2.isCompleted()) {
+                                                continue;
+                                            }
+                                            $task2.continue($asyncBody);
+                                            return;
+                                        }
+                                        case 4: {
+                                            $taskResult2 = $task2.getAwaitedResult();
+                                            rs = $taskResult2;
+                                            if (rs != null) {
+                                                this.SaveAndApply(rs);
+                                                instance.Dispose();
+                                            }
+                                            return;
+                                        }
+                                        default: {
+                                            return;
+                                        }
                                     }
                                 }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
+                            }, arguments);
 
-                $asyncBody();
-                return $tcs.task;
+                        $asyncBody();
+                    })).End.Render();
+                }));
             },
             SaveAndApply: function (entity) {
                 var $t, $t1;
@@ -25419,245 +24700,35 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             FindMatchText: function (delay) {
                 if (delay === void 0) { delay = 0; }
-                if (delay === 0) {
-                    System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                        var $step = 0,
-                            $task1, 
-                            $jumpFromFinally, 
-                            $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                            $returnValue, 
-                            $async_e, 
-                            $asyncBody = Bridge.fn.bind(this, function () {
-                                try {
-                                    for (;;) {
-                                        $step = System.Array.min([0,1], $step);
-                                        switch ($step) {
-                                            case 0: {
-                                                $task1 = this.FindMatchTextAsync();
-                                                $step = 1;
-                                                if ($task1.isCompleted()) {
-                                                    continue;
-                                                }
-                                                $task1.continue($asyncBody);
-                                                return;
-                                            }
-                                            case 1: {
-                                                $task1.getAwaitedResult();
-                                                $tcs.setResult(null);
-                                                return;
-                                            }
-                                            default: {
-                                                $tcs.setResult(null);
-                                                return;
-                                            }
-                                        }
-                                    }
-                                } catch($async_e1) {
-                                    $async_e = System.Exception.create($async_e1);
-                                    $tcs.setException($async_e);
-                                }
-                            }, arguments);
-
-                        $asyncBody();
-                        return $tcs.task;
-                    }));
-                    return;
-                }
-                window.clearTimeout(this._findMatchTextAwaiter);
-                this._findMatchTextAwaiter = window.setTimeout(Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = this.FindMatchTextAsync();
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $task1.getAwaitedResult();
-                                        return;
-                                    }
-                                    default: {
-                                        return;
-                                    }
-                                }
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                }), delay);
-            },
-            FindMatchTextAsync: function (force) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    matched, 
-                    $t, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3,4], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (force === void 0) { force = false; }
-                                        if (this.EmptyRow || !force && this.ProcessLocalMatch()) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-
-                                        matched = null;
-                                        if (Bridge.referenceEquals((($t = this.GuiInfo.DefaultVal) != null ? $t.trim() : null), Bridge.toString((0))) && this.Value == null && this.Entity[Core.Components.EditableComponent.IdField] == null) {
-                                            $step = 1;
-                                            continue;
-                                        } else  {
-                                            $step = 3;
-                                            continue;
-                                        }
-                                    }
-                                    case 1: {
-                                        $task1 = this.SqlReader(0, 1);
-                                        $step = 2;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        matched = $taskResult1;
-                                        $step = 4;
-                                        continue;
-                                    }
-                                    case 3: {
-                                        if (this.Value == null) {
-                                            this.Matched = null;
-                                            this._input.value = null;
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        $step = 4;
-                                        continue;
-                                    }
-                                    case 4: {
-                                        this.Matched = matched;
-                                        this.SetMatchedValue();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
-            SqlReader: function (skip, pageSize) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    _preQueryFn, 
-                    isFn, 
-                    submitEntity, 
-                    data, 
-                    $t, 
-                    $t1, 
-                    $t2, 
-                    res, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        _preQueryFn = { };
-                                        isFn = Core.Extensions.Utils.IsFunction(this.GuiInfo.PreQuery, _preQueryFn);
-                                        submitEntity = isFn ? _preQueryFn.v.call(null, this) : null;
-                                        data = JSON.stringify(($t = new Core.ViewModels.SqlViewModel(), $t.Entity = submitEntity != null ? JSON.stringify(Bridge.unbox(submitEntity)) : null, $t.Paging = System.String.format("offset {0} rows\nfetch next {1} rows only", Bridge.box(skip, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(pageSize, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)), $t.OrderBy = Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.OrderBy) ? "ds.Id asc\n" : this.GuiInfo.OrderBy, $t.Where = System.String.format("charindex(N'{0}', {1}) >= 1", this.Value, Core.Components.EditableComponent.IdField), $t.ComId = this.GuiInfo.Id, $t.SkipXQuery = ($t1 = (this._gv != null && ($t2 = this._gv.Header) != null ? Core.Extensions.IEnumerableExtensions.HasElement(Core.Models.Component, $t2) : null), $t1 != null ? $t1 : false), $t));
-                                        $task1 = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = data, $t.Url = Core.Extensions.Utils.ComQuery, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        res = $taskResult1;
-
-                                        $tcs.setResult(res.length >= 1 ? res[System.Array.index(0, res)].length >= 1 ? ($t = res[System.Array.index(0, res)])[System.Array.index(0, $t)] : null : null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                this.ProcessLocalMatch();
             },
             ProcessLocalMatch: function () {
-                var $t;
-                var isLocalMatched = this._gv != null && Core.Extensions.IEnumerableExtensions.HasElement(System.Object, this.RowData.Data) || this.GuiInfo.LocalData != null;
-                if (isLocalMatched) {
-                    this.Matched = Core.Extensions.IEnumerableExtensions.HasElement(System.Object, this.GuiInfo.LocalData) ? System.Linq.Enumerable.from(this.GuiInfo.LocalData, System.Object).firstOrDefault(Bridge.fn.bind(this, function (x) {
-                            var $t;
-                            return Bridge.referenceEquals((($t = x[Core.Components.EditableComponent.IdField]) != null ? Bridge.toString($t) : null), this._value);
-                        }), null) : System.Linq.Enumerable.from(this.RowData.Data, System.Object).firstOrDefault(Bridge.fn.bind(this, function (x) {
-                            var $t;
-                            return Bridge.referenceEquals((($t = x[Core.Components.EditableComponent.IdField]) != null ? Bridge.toString($t) : null), this.Value);
-                        }), null);
-                }
-                if (isLocalMatched || this.Matched != null && Bridge.referenceEquals((($t = this.Matched[Core.Components.EditableComponent.IdField]) != null ? Bridge.toString($t) : null), this.Value) || this.Matched == null && Core.Extensions.StringExt.IsNullOrEmpty(this.Value)) {
-                    this.SetMatchedValue();
+                if (this.EmptyRow || this.Value == null) {
+                    this.Matched = null;
+                    this._input.value = null;
                     return true;
                 }
-                return false;
+                this.Matched = Core.Extensions.IEnumerableExtensions.HasElement(System.Object, this.GuiInfo.LocalData) ? System.Linq.Enumerable.from(this.GuiInfo.LocalData, System.Object).firstOrDefault(Bridge.fn.bind(this, function (x) {
+                        return Bridge.referenceEquals(Bridge.as(x[Core.Components.EditableComponent.IdField], System.String), this._value);
+                    }), null) : System.Linq.Enumerable.from(this.RowData.Data, System.Object).firstOrDefault(Bridge.fn.bind(this, function (x) {
+                        return Bridge.referenceEquals(Bridge.as(x[Core.Components.EditableComponent.IdField], System.String), this.Value);
+                    }), null);
+
+                this.SetMatchedValue();
+                return true;
             },
             CascadeAndPopulate: function () {
                 this.CascadeField();
                 this.PopulateFields(this.Matched);
             },
             SetMatchedValue: function () {
-                this.OriginalText = Bridge.as(this.Entity[this.GuiInfo.TextField], System.String);
-                this._input.value = this.EmptyRow ? "" : this.Matched != null ? this.GetMatchedText(this.Matched) : Bridge.as(this.Entity[this.GuiInfo.TextField], System.String);
-                this.Entity[this.GuiInfo.TextField] = this._input.value;
-                if (this.GuiInfo.AutoFit) {
-                    Core.Components.Extensions.ComponentExt.SetAutoWidth(this, this._input.value, Core.Extensions.HtmlElementExtension.GetComputedStyle(this._input).font, 48);
-                }
+                this.OriginalText = Bridge.as(Core.Extensions.Utils.GetPropValue(this.Entity, this.TextField), System.String);
+                this._input.value = this.EmptyRow ? "" : this.GetMatchedText(this.Matched);
+                Core.Extensions.BridgeExt.SetPropValue(this.Entity, this.GuiInfo.TextField, this._input.value);
                 this.UpdateValue();
+            },
+            GetEntityField: function (field) {
+                return Core.Extensions.Utils.GetPropValue(this.Entity, field);
             },
             UpdateValue: function () {
                 var $t;
@@ -25681,11 +24752,11 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             GetMatchedText: function (matched) {
                 var $t;
-                if (matched == null) {
+                if (matched == null && this.Entity == null) {
                     return "";
                 }
-                var res = ($t = matched[this.GuiInfo.FormatData]) != null ? Bridge.toString($t) : null;
-                return Core.Extensions.Utils.DecodeSpecialChar(res);
+                var res = ($t = Core.Extensions.Utils.GetPropValue(matched, this.GuiInfo.FormatData), $t != null ? $t : Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.TextField));
+                return Core.Extensions.Utils.DecodeSpecialChar((Bridge.as(res, System.String)));
             },
             EntrySelected: function (rowData) {
                 var $t, $t1;
@@ -25761,7 +24832,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (force === void 0) { force = false; }
                 if (dirty === void 0) { dirty = null; }
                 if (componentNames === void 0) { componentNames = []; }
-                this._value = Bridge.as((($t = this.Entity) != null ? Core.Extensions.Utils.GetComplexPropValue($t, this.GuiInfo.FieldName) : null), System.String);
+                this._value = Bridge.as((($t = this.Entity) != null ? Core.Extensions.Utils.GetPropValue($t, this.GuiInfo.FieldName) : null), System.String);
                 if (this._value == null) {
                     this.Matched = null;
                     this._input.value = null;
@@ -25770,47 +24841,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
                 var txt = Bridge.as(this.Entity[this.GuiInfo.TextField], System.String);
                 this._input.value = txt;
-                System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        $async_e, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            $task1 = this.FindMatchTextAsync(force);
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $task1.getAwaitedResult();
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                    return $tcs.task;
-                }));
+                this.ProcessLocalMatch();
             },
             ValidateAsync: function () {
                 var $step = 0,
@@ -25950,7 +24981,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var $t, $t1;
                 this.SetDefaultVal();
                 if (this.Entity != null) {
-                    var fieldVal = Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName);
+                    var fieldVal = Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName);
                     this._isString = Bridge.is(fieldVal, System.String);
                     this._nullable = this.IsNullable(System.Int32) || this.IsNullable(System.Int64) || this.IsNullable(System.Decimal);
                     this._value = this.GetDecimalValue();
@@ -25999,17 +25030,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this._input.addEventListener("change", Bridge.fn.cacheBind(this, this.ChangeSetValue));
                 this._input.autocomplete = "off";
                 this.Value = this._value; // set again to render in correct format
-                if (this.GuiInfo.AutoFit) {
-                    Core.Components.Extensions.ComponentExt.SetAutoWidth(this, this._input.value, Core.Extensions.HtmlElementExtension.GetComputedStyle(this._input).font);
+                var fn = { };
+                if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.ChildStyle) && Core.Extensions.Utils.IsFunction(this.GuiInfo.ChildStyle, fn)) {
+                    window.setTimeout(Bridge.fn.bind(this, function () {
+                        Bridge.toString(fn.v.call(this, Bridge.unbox(this.Entity), this._input));
+                    }), 100);
                 }
-                window.setTimeout(Bridge.fn.bind(this, function () {
-                    if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.ChildStyle)) {
-                        var fn = { };
-                        if (Core.Extensions.Utils.IsFunction(this.GuiInfo.ChildStyle, fn)) {
-                            Bridge.toString(fn.v.call(this, Bridge.unbox(this.Entity), this._input));
-                        }
-                    }
-                }), 100);
                 ($t = Core.Extensions.HtmlElementExtension.Closest(this.Element, "td")) != null ? $t.addEventListener("keydown", Bridge.fn.cacheBind(this, this.ListViewItemTab)) : null;
                 !Bridge.staticEquals(($t1 = this.DOMContentLoaded), null) ? $t1() : null;
             },
@@ -26374,7 +25400,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     return System.Decimal.lift(null);
                 }
 
-                var value = Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName);
+                var value = Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName);
                 if (value == null) {
                     return System.Decimal.lift(null);
                 }
@@ -27273,7 +26299,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     Core.MVVM.Html.Take(this.Element).Label.Attr$1("for", radioId).Text(System.String.format("{0} stars", [Bridge.box(item, System.Int32, System.Nullable.toString, System.Nullable.getHashCode)]));
                 }
                 Core.MVVM.Html.Take(this.Element).End.Render();
-                this._value = Bridge.unbox(Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName));
+                this._value = Bridge.unbox(Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName));
                 this.SetSelected(this._value);
                 !Bridge.staticEquals(($t = this.DOMContentLoaded), null) ? $t() : null;
             },
@@ -27342,7 +26368,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (force === void 0) { force = false; }
                 if (dirty === void 0) { dirty = null; }
                 if (componentNames === void 0) { componentNames = []; }
-                this.Value = Bridge.unbox(Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName));
+                this.Value = Bridge.unbox(Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName));
             },
             GetValueText: function () {
                 return this._value == null ? "Kh\u00f4ng \u0111\u00e1nh gi\u00e1" : System.Nullable.toString(this._value, null) + " sao";
@@ -27560,7 +26586,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (force === void 0) { force = false; }
                 if (dirty === void 0) { dirty = null; }
                 if (componentNames === void 0) { componentNames = []; }
-                var text = Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.GuiInfo.FieldName);
+                var text = Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldName);
                 this.editor.setContent(text || '');
             }
         }
@@ -27639,7 +26665,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             Render: function () {
                 var $t;
                 this.SetDefaultVal();
-                var entityVal = ($t = Core.Extensions.Utils.GetComplexPropValue(this.Entity, this.IdFieldName)) != null ? Bridge.toString($t) : null;
+                var entityVal = ($t = Core.Extensions.Utils.GetPropValue(this.Entity, this.IdFieldName)) != null ? Bridge.toString($t) : null;
                 var str_value;
                 if (((str_value = entityVal)) != null) {
                     this._value = str_value;
@@ -27885,7 +26911,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (force === void 0) { force = false; }
                 if (dirty === void 0) { dirty = null; }
                 if (componentNames === void 0) { componentNames = []; }
-                this._value = ($t = this.Entity) != null && ($t1 = Core.Extensions.Utils.GetComplexPropValue($t, this.GuiInfo.FieldName)) != null ? Bridge.toString($t1) : null;
+                this._value = ($t = this.Entity) != null && ($t1 = Core.Extensions.Utils.GetPropValue($t, this.GuiInfo.FieldName)) != null ? Bridge.toString($t1) : null;
                 if (this._value == null) {
                     this.Matched = null;
                     this._select.value = null;
@@ -27983,7 +27009,7 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                     var text = (this.EditForm.Feature != null && this.EditForm.Feature.IgnoreEncode) ? this._value != null ? Bridge.toString(this._value) : null : this._value != null ? Core.Extensions.Utils.DecodeSpecialChar(Bridge.toString(this._value)) : null;
                     if (Core.Extensions.StringExt.HasAnyChar(this.GuiInfo.FormatData)) {
-                        text = Core.Extensions.Utils.FormatEntity$1(this.GuiInfo.FormatData, ($t1 = this.Entity) != null ? Core.Extensions.Utils.GetComplexPropValue($t1, this.GuiInfo.FieldName) : null);
+                        text = Core.Extensions.Utils.FormatEntity$1(this.GuiInfo.FormatData, ($t1 = this.Entity) != null ? Core.Extensions.Utils.GetPropValue($t1, this.GuiInfo.FieldName) : null);
                     }
 
                     if (Core.Extensions.StringExt.HasAnyChar(this.GuiInfo.FormatEntity)) {
@@ -28255,7 +27281,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             Render: function () {
                 var $t, $t1, $t2, $t3, $t4, $t5, $t6, $t7;
                 this.SetDefaultVal();
-                var val = ($t = this.Entity) != null ? Core.Extensions.Utils.GetComplexPropValue($t, this.GuiInfo.FieldName) : null;
+                var val = ($t = this.Entity) != null ? Core.Extensions.Utils.GetPropValue($t, this.GuiInfo.FieldName) : null;
                 var str_val;
                 if (val != null && ((str_val = Bridge.as(val, System.String))) != null && this.EditForm != null && this.EditForm.Feature != null && !this.EditForm.Feature.IgnoreEncode) {
                     ($t1 = this.Entity) != null ? Core.Extensions.BridgeExt.SetComplexPropValue($t1, this.GuiInfo.FieldName, Core.Extensions.Utils.EncodeSpecialChar(Core.Extensions.Utils.DecodeSpecialChar(str_val))) : null;
@@ -28333,9 +27359,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.Input.onchange = Bridge.fn.combine(this.Input.onchange, Bridge.fn.bind(this, function (e) {
                         this.PopulateUIChange("change");
                     }));
-                    if (this.GuiInfo.AutoFit) {
-                        Core.Components.Extensions.ComponentExt.SetAutoWidth(this, this.Input.value, Core.Extensions.HtmlElementExtension.GetComputedStyle(this.Input).font);
-                    }
                     this.Input.addEventListener("keydown", Bridge.fn.bind(this, function (e) {
                         var $step = 0,
                             $task1, 
@@ -28366,7 +27389,6 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                         $asyncBody();
                     }));
-
                 }
                 if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.ChildStyle)) {
                     var fn = { };
@@ -28451,7 +27473,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (force === void 0) { force = false; }
                 if (dirty === void 0) { dirty = null; }
                 if (componentNames === void 0) { componentNames = []; }
-                this.Value = ($t = this.Entity) != null ? Core.Extensions.Utils.GetComplexPropValue($t, this.GuiInfo.FieldName) : null;
+                this.Value = ($t = this.Entity) != null ? Core.Extensions.Utils.GetPropValue($t, this.GuiInfo.FieldName) : null;
                 if (!this.Dirty) {
                     this.OriginalText = this._text;
                     !Bridge.staticEquals(($t1 = this.DOMContentLoaded), null) ? $t1() : null;
@@ -29080,6 +28102,9 @@ Bridge.assembly("Core", function ($asm, globals) {
             }
         },
         methods: {
+            DispatchClick: function () {
+                System.Threading.Tasks.Task.run(Bridge.fn.cacheBind(this, this.DispatchClickAsync));
+            },
             DispatchClickAsync: function () {
                 var $step = 0,
                     $task1, 
@@ -29130,63 +28155,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "menuBar").Div, "printBtn").Button, "btn btn-success mr-1 fa fa-print").Event("click", Bridge.fn.bind(this, function () {
                                                 this.EditForm.PrintSection(Bridge.as(this._preview.querySelector(".print-group"), HTMLElement), true, void 0, true, this.GuiInfo);
                                             })).End.Button, "btn btn-success mr-1").Text("a4").Event("click", Bridge.fn.bind(this, function () {
-                                                var $step = 0,
-                                                    $task1, 
-                                                    $jumpFromFinally, 
-                                                    $asyncBody = Bridge.fn.bind(this, function () {
-                                                        for (;;) {
-                                                            $step = System.Array.min([0,1], $step);
-                                                            switch ($step) {
-                                                                case 0: {
-                                                                    $task1 = this.GeneratePdf("a4");
-                                                                    $step = 1;
-                                                                    if ($task1.isCompleted()) {
-                                                                        continue;
-                                                                    }
-                                                                    $task1.continue($asyncBody);
-                                                                    return;
-                                                                }
-                                                                case 1: {
-                                                                    $task1.getAwaitedResult();
-                                                                    return;
-                                                                }
-                                                                default: {
-                                                                    return;
-                                                                }
-                                                            }
-                                                        }
-                                                    }, arguments);
-
-                                                $asyncBody();
+                                                this.GeneratePdf("a4");
                                             })).End.Button, "btn btn-success mr-1").Text("a5").Event("click", Bridge.fn.bind(this, function () {
-                                                var $step = 0,
-                                                    $task1, 
-                                                    $jumpFromFinally, 
-                                                    $asyncBody = Bridge.fn.bind(this, function () {
-                                                        for (;;) {
-                                                            $step = System.Array.min([0,1], $step);
-                                                            switch ($step) {
-                                                                case 0: {
-                                                                    $task1 = this.GeneratePdf("a5");
-                                                                    $step = 1;
-                                                                    if ($task1.isCompleted()) {
-                                                                        continue;
-                                                                    }
-                                                                    $task1.continue($asyncBody);
-                                                                    return;
-                                                                }
-                                                                case 1: {
-                                                                    $task1.getAwaitedResult();
-                                                                    return;
-                                                                }
-                                                                default: {
-                                                                    return;
-                                                                }
-                                                            }
-                                                        }
-                                                    }, arguments);
-
-                                                $asyncBody();
+                                                this.GeneratePdf("a5");
                                             })).End.Render();
                                             Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.EndOf$1(".menuBar").Div, "print-group");
                                         }
@@ -29444,75 +28415,37 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return $tcs.task;
             },
             GeneratePdf: function (format) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    element, 
-                    printEl, 
-                    first, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = Core.Clients.Client.LoadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        element = Bridge.as((this._preview.querySelector(".print-group")), HTMLElement);
-                                        printEl = element;
-                                        first = Bridge.as(System.Linq.Enumerable.from(printEl.querySelectorAll(".printable"), Node).firstOrDefault(null, null), HTMLElement);
-                                        first.style.pageBreakBefore = null;
-                                        const openPdfInNewWindow = (pdf) => {
-                                        const blob = pdf.output('blob');
-                                        var isMobile = Window.Instance["Cordova"] != null;
-                                        if (!isMobile)
-                                        {
-                                            window.open(window.URL.createObjectURL(blob));
-                                            return;
-                                        }
-                                        var isAndroid = Window.Instance["device"]["platform"].ToString() == "Android";
-                                            if (isAndroid)
-                                            {
-                                                Window.Location.Href = window.URL.createObjectURL(blob);
-                                                return;
-                                            }
-                                            cordova.InAppBrowser.open(window.URL.createObjectURL(blob), "_system");
-                                        };
-                                        html2pdf(printEl, {
-                                            filename : this.GuiInfo.PlainText,
-                                            jsPDF: { format: format},
-                                            image: { type: 'jpeg', quality: 0.98 },
-                                            pdfCallback: openPdfInNewWindow,
-                                        });
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
+                var task = Core.Clients.Client.LoadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
+                Core.Clients.Client.ExecTaskNoResult(task, Bridge.fn.cacheBind(this, this.PdfLibLoaded));
+            },
+            PdfLibLoaded: function () {
+                var element = Bridge.as((this._preview.querySelector(".print-group")), HTMLElement);
+                var printEl = element;
+                var first = Bridge.as(System.Linq.Enumerable.from(printEl.querySelectorAll(".printable"), Node).firstOrDefault(null, null), HTMLElement);
+                first.style.pageBreakBefore = null;
+                const openPdfInNewWindow = (pdf) => {
+                const blob = pdf.output('blob');
+                var isMobile = Window.Instance["Cordova"] != null;
+                if (!isMobile)
+                {
+                    window.open(window.URL.createObjectURL(blob));
+                    return;
+                }
+                var isAndroid = Window.Instance["device"]["platform"].ToString() == "Android";
+                    if (isAndroid)
+                    {
+                        Window.Location.Href = window.URL.createObjectURL(blob);
+                        return;
+                    }
+                    cordova.InAppBrowser.open(window.URL.createObjectURL(blob), "_system");
+                };
+                html2pdf(printEl, {
+                    filename : this.GuiInfo.PlainText,
+                    jsPDF: { format: format},
+                    image: { type: 'jpeg', quality: 0.98 },
+                    pdfCallback: openPdfInNewWindow,
+                });
 
-                $asyncBody();
-                return $tcs.task;
             },
             ClosePreview: function () {
                 this._preview.remove();
@@ -30548,7 +29481,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         var cellText = "";
                         var input = htmlElement.querySelector("input:first-child");
                         if (input != null) {
-                            cellText = Bridge.toString(Core.Extensions.BridgeExt.GetPropValue(input, "value"));
+                            cellText = Bridge.toString(Core.Extensions.Utils.GetPropValue(input, "value"));
                         } else {
                             cellText = cells[j].textContent == null ? "" : cells[j].textContent;
                         }
@@ -30676,10 +29609,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                     fieldName = com.GuiInfo.FieldName;
                     switch (com.GuiInfo.ComponentType) {
                         case "Dropdown": 
-                            value = Core.Extensions.BridgeExt.GetPropValue(focusedRow.Entity, header.FieldName) == null ? null : Core.Extensions.Utils.EncodeSpecialChar(Bridge.toString(Core.Extensions.BridgeExt.GetPropValue(focusedRow.Entity, header.FieldName)));
+                            value = Core.Extensions.Utils.GetPropValue(focusedRow.Entity, header.FieldName) == null ? null : Core.Extensions.Utils.EncodeSpecialChar(Bridge.toString(Core.Extensions.Utils.GetPropValue(focusedRow.Entity, header.FieldName)));
                             break;
                         case "Number": 
-                            value = Core.Extensions.BridgeExt.GetPropValue(focusedRow.Entity, header.FieldName) == null ? null : System.String.replaceAll(Bridge.toString(Core.Extensions.BridgeExt.GetPropValue(focusedRow.Entity, header.FieldName)), ",", "");
+                            value = Core.Extensions.Utils.GetPropValue(focusedRow.Entity, header.FieldName) == null ? null : System.String.replaceAll(Bridge.toString(Core.Extensions.Utils.GetPropValue(focusedRow.Entity, header.FieldName)), ",", "");
                             break;
                         case "Checkbox": 
                             value = Core.Components.Extensions.ComponentExt.GetValue(com) == null ? null : Core.Extensions.Utils.EncodeSpecialChar(Bridge.toString(Core.Components.Extensions.ComponentExt.GetValue(com))).toLowerCase();
@@ -30952,7 +29885,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                             var upItemD = System.Linq.Enumerable.from(this.AllListViewItem, Core.Components.ListViewItem).firstOrDefault(function (x) {
                                     return x.RowNo === (((currentItemD.RowNo - 1) | 0));
                                 }, null);
-                            Core.Extensions.BridgeExt.SetComplexPropValue(currentItemD.Entity, fieldName, Core.Extensions.BridgeExt.GetPropValue(upItemD.Entity, com.GuiInfo.FieldName));
+                            Core.Extensions.BridgeExt.SetComplexPropValue(currentItemD.Entity, fieldName, Core.Extensions.Utils.GetPropValue(upItemD.Entity, com.GuiInfo.FieldName));
                             var updated = System.Linq.Enumerable.from(currentItemD.FilterChildren$1(function (x) {
                                     return Bridge.referenceEquals(x.GuiInfo.FieldName, com.GuiInfo.FieldName);
                                 }), Core.Components.EditableComponent).firstOrDefault(null, null);
@@ -31356,7 +30289,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 Core.Components.Renderer.PlaceHolder(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "search-input").Style$1("margin-bottom: 12px;").Input.Style$1("width: 300px;").Event$1("input", Bridge.fn.bind(this, function (e) {
                     this.SearchTable(e);
                 })), "T\u00ecm ki\u1ebfm").End.End.Render();
-                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "search-button").Style$1("margin-bottom: 12px;").Button, "btn btn-info").AsyncEvent$1("click", Bridge.fn.bind(this, function (e) {
+                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "search-button").Style$1("margin-bottom: 12px;").Button, "btn btn-info").AsyncEvent("click", Bridge.fn.bind(this, function (e) {
                     var $step = 0,
                         $task1, 
                         $jumpFromFinally, 
@@ -31966,7 +30899,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         if (searching === void 0) { searching = true; }
                                         this._sum = false;
                                         this.DataTable.parentElement.scrollTop = 0;
-                                        $task1 = this.ReloadData("", true, void 0, void 0);
+                                        $task1 = this.ReloadData(true, void 0, void 0);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -34853,7 +33786,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     Core.Extensions.HtmlElementExtension.AddClass(this.Element, Core.Components.ListViewItem.SelectedClass);
                 }
 
-                Core.MVVM.Html.Take(this.Element).AsyncEvent$1("click", Bridge.fn.cacheBind(this, this.RowItemClick)).AsyncEvent$1("dblclick", Bridge.fn.cacheBind(this, this.RowDblClick)).Event("focusin", Bridge.fn.bind(this, function () {
+                Core.MVVM.Html.Take(this.Element).AsyncEvent("click", Bridge.fn.cacheBind(this, this.RowItemClick)).AsyncEvent("dblclick", Bridge.fn.cacheBind(this, this.RowDblClick)).Event("focusin", Bridge.fn.bind(this, function () {
                     Core.Extensions.IEnumerableExtensions.SelectForeach(Core.Components.ListViewItem, this.ListView.AllListViewItem, function (x) {
                         if (x.Focused) {
                             x.Focused = false;
@@ -34930,7 +33863,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var searchEntry;
                 if (((searchEntry = Bridge.as(component, Core.Components.SearchEntry))) != null && !(Bridge.is(component, Core.Components.MultipleSearchEntry))) {
                     var matched = ($t = header.LocalData) != null ? System.Linq.Enumerable.from($t, System.Object).firstOrDefault(function (x) {
-                            return Bridge.referenceEquals(Bridge.cast(x[Core.Components.EditableComponent.IdField], System.String), Bridge.cast((rowData != null ? Core.Extensions.Utils.GetComplexPropValue(rowData, header.FieldName) : null), System.String));
+                            var $t1;
+                            return Bridge.referenceEquals(Bridge.cast(x[Core.Components.EditableComponent.IdField], System.String), (rowData != null && ($t1 = Core.Extensions.Utils.GetPropValue(rowData, header.FieldName)) != null ? Bridge.toString($t1) : null));
                         }, null) : null;
                     searchEntry.Matched = matched;
                 }
@@ -35244,7 +34178,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     if (!Bridge.staticEquals(((fn = child.PatchUpdateDetail)), null)) {
                         return Bridge.as(fn.call(child), System.Array.type(Core.ViewModels.PatchUpdateDetail));
                     }
-                    var value = Core.Extensions.Utils.GetComplexPropValue(child.Entity, child.GuiInfo.FieldName);
+                    var value = Core.Extensions.Utils.GetPropValue(child.Entity, child.GuiInfo.FieldName);
                     var propType = Core.Extensions.BridgeExt.GetComplexPropType(Bridge.getType(child.Entity), child.GuiInfo.FieldName, child.Entity);
                     var patch = ($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = child.GuiInfo.FieldName, $t.OldVal = (child.OldValue != null && Core.Extensions.ReflectionExt.IsDate(propType)) ? Core.Extensions.DateTimeExt.DateConverter(Bridge.toString(child.OldValue)) : ($t1 = child.OldValue) != null ? Bridge.toString($t1) : null, $t.Value = (value != null && Core.Extensions.ReflectionExt.IsDate(propType)) ? Core.Extensions.DateTimeExt.DateConverter(Bridge.toString(value)) : !this.EditForm.Feature.IgnoreEncode ? value != null ? Core.Extensions.Utils.EncodeSpecialChar(Bridge.toString(value).trim()) : null : value != null ? Bridge.toString(value).trim() : null, $t);
                     return System.Array.init([patch], Core.ViewModels.PatchUpdateDetail);
@@ -35823,7 +34757,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         keys = this.GuiInfo.GroupBy.split(",");
                                         item[Core.Components.GroupListView._groupKey] = Bridge.toArray(System.Linq.Enumerable.from(keys, System.String).select(function (key) {
                                             var $t;
-                                            return ($t = Core.Extensions.Utils.GetComplexPropValue(item, key)) != null ? Bridge.toString($t) : null;
+                                            return ($t = Core.Extensions.Utils.GetPropValue(item, key)) != null ? Bridge.toString($t) : null;
                                         })).join(" ");
                                         groupKey = item[Core.Components.GroupListView._groupKey];
                                         existGroup = System.Linq.Enumerable.from(this.AllListViewItem, Core.Components.ListViewItem).firstOrDefault(function (group) {
@@ -36061,7 +34995,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }, function (x) {
                     return "N/A";
                 });
-                Core.Components.Renderer.Icon(Core.MVVM.Html.Take(groupSection.Element).AsyncEvent$2(System.Object, "click", Bridge.fn.cacheBind(this, this.DispatchClick), first).AsyncEvent$2(System.Object, "dblclick", Bridge.fn.cacheBind(this, this.DispatchDblClick), first), "fa fa-chevron-right").Event$3(Core.Components.GroupViewItem, "click", Bridge.fn.cacheBind(this, this.ToggleGroupRow), groupSection).End.Span.InnerHTML(groupText);
+                Core.Components.Renderer.Icon(Core.MVVM.Html.Take(groupSection.Element).AsyncEvent$1(System.Object, "click", Bridge.fn.cacheBind(this, this.DispatchClick), first).AsyncEvent$1(System.Object, "dblclick", Bridge.fn.cacheBind(this, this.DispatchDblClick), first), "fa fa-chevron-right").Event$3(Core.Components.GroupViewItem, "click", Bridge.fn.cacheBind(this, this.ToggleGroupRow), groupSection).End.Span.InnerHTML(groupText);
                 groupSection.GroupText = Core.MVVM.Html.Context;
                 groupRow.Children.ForEach(Bridge.fn.bind(this, function (child) {
                     Core.MVVM.Html.Take(groupSection.Element);
@@ -36357,11 +35291,15 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         fields: {
             _isStringSource: false,
-            _fieldName: null,
             _toggleButton: null,
             _listValues: null
         },
         props: {
+            FieldName: {
+                get: function () {
+                    return this.GuiInfo.FieldName;
+                }
+            },
             ListValues: {
                 get: function () {
                     return this._listValues;
@@ -36391,12 +35329,11 @@ Bridge.assembly("Core", function ($asm, globals) {
             ctor: function (ui) {
                 this.$initialize();
                 Core.Components.SearchEntry.ctor.call(this, ui);
-                this._fieldName = this.GuiInfo.FieldName;
             }
         },
         methods: {
             Render: function () {
-                this._isStringSource = this.Entity != null && Bridge.equals(Core.Extensions.BridgeExt.GetComplexPropType(Bridge.getType(this.Entity), this._fieldName, this.Entity), System.String);
+                this._isStringSource = this.Entity != null && Bridge.equals(Core.Extensions.BridgeExt.GetComplexPropType(Bridge.getType(this.Entity), this.FieldName, this.Entity), System.String);
                 Core.Components.SearchEntry.prototype.Render.call(this);
                 Core.Extensions.HtmlElementExtension.AddClass(this.Element.parentElement, Core.Components.MultipleSearchEntry.MultipleClass);
                 this.TryParseData();
@@ -36406,7 +35343,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (this.Entity == null) {
                     return;
                 }
-                var source = Core.Extensions.Utils.GetComplexPropValue(this.Entity, this._fieldName);
+                var source = Core.Extensions.Utils.GetPropValue(this.Entity, this.FieldName);
                 if (source == null) {
                     return;
                 }
@@ -36441,9 +35378,9 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             SetEntityValue: function (value) {
                 if (this._isStringSource) {
-                    Core.Extensions.BridgeExt.SetComplexPropValue(this.Entity, this._fieldName, Core.Extensions.IEnumerableExtensions.Combine(System.String, value));
+                    Core.Extensions.BridgeExt.SetComplexPropValue(this.Entity, this.FieldName, Core.Extensions.IEnumerableExtensions.Combine(System.String, value));
                 } else {
-                    Core.Extensions.BridgeExt.SetComplexPropValue(this.Entity, this._fieldName, value);
+                    Core.Extensions.BridgeExt.SetComplexPropValue(this.Entity, this.FieldName, value);
                 }
             },
             FindMatchText: function (delay) {
@@ -36653,7 +35590,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 })).End.Render();
             },
             EntrySelected: function (rowData) {
-                var $t, $t1;
+                var $t, $t1, $t2;
                 window.clearTimeout(this._waitForDispose);
                 if (rowData == null) {
                     return;
@@ -36678,50 +35615,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.Dirty = true;
                 this.FindMatchText();
                 this._input.focus();
-                if (!Bridge.staticEquals(this.UserInput, null)) {
-                    this.UserInput(($t1 = new Core.MVVM.ObservableArgs(), $t1.NewData = this.ListValues, $t1.OldData = this.ListValues, $t1.NewMatch = rowData, $t1.EvType = "change", $t1));
-                }
-                System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        $async_e, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            $task1 = Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity]);
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $task1.getAwaitedResult();
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                    return $tcs.task;
-                }));
+                !Bridge.staticEquals(($t1 = this.UserInput), null) ? $t1(($t2 = new Core.MVVM.ObservableArgs(), $t2.NewData = this.ListValues, $t2.OldData = this.ListValues, $t2.NewMatch = rowData, $t2.EvType = "change", $t2)) : null;
+                Core.Clients.Client.ExecTaskNoResult(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity]));
             },
             UpdateView: function (force, dirty, componentNames) {
                 if (force === void 0) { force = false; }
@@ -36968,7 +35863,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
-                                        $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).GetList(System.Object, System.String.format("?$filter=ParentId eq '{0}'", [Core.Extensions.BridgeExt.GetPropValue(row, Core.Components.EditableComponent.IdField)]));
+                                        $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).GetList(System.Object, System.String.format("?$filter=ParentId eq '{0}'", [Core.Extensions.Utils.GetPropValue(row, Core.Components.EditableComponent.IdField)]));
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -37464,7 +36359,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         this.FormattedRowData = System.Linq.Enumerable.from(args.ListData, System.Object).select(function (x) {
                                             x[Core.Components.GroupGridView._groupKey] = Bridge.toArray(System.Linq.Enumerable.from(keys, System.String).select(function (key) {
                                                 var $t1;
-                                                return (($t1 = Core.Extensions.Utils.GetComplexPropValue(x, key)) != null ? Bridge.toString($t1) : null);
+                                                return ($t1 = Core.Extensions.Utils.GetPropValue(x, key)) != null ? Bridge.toString($t1) : null;
                                             })).join(" ");
                                             return x;
                                         }).groupBy(function (x) {
@@ -37541,7 +36436,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         keys = this.GuiInfo.GroupBy.split(",");
                                         item[Core.Components.GroupGridView._groupKey] = Bridge.toArray(System.Linq.Enumerable.from(keys, System.String).select(function (key) {
                                             var $t;
-                                            return ($t = Core.Extensions.Utils.GetComplexPropValue(item, key)) != null ? Bridge.toString($t) : null;
+                                            return ($t = Core.Extensions.Utils.GetPropValue(item, key)) != null ? Bridge.toString($t) : null;
                                         })).join(" ");
                                         groupKey = item[Core.Components.GroupGridView._groupKey];
                                         existGroup = System.Linq.Enumerable.from(this.AllListViewItem, Core.Components.ListViewItem).firstOrDefault(function (group) {
@@ -37610,7 +36505,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     groupText = Core.Extensions.Utils.FormatEntity(this.GuiInfo.GroupFormat, null, first, Core.Extensions.Utils.EmptyFormat, Core.Extensions.Utils.EmptyFormat);
                 }
                 if (this.GuiInfo.GroupReferenceId != null) {
-                    var val = Core.Extensions.BridgeExt.GetPropValue(first, this.GuiInfo.GroupBy.substr(0, ((this.GuiInfo.GroupBy.length - 2) | 0)));
+                    var val = Core.Extensions.Utils.GetPropValue(first, this.GuiInfo.GroupBy.substr(0, ((this.GuiInfo.GroupBy.length - 2) | 0)));
                     groupSection.Entity = val;
                     Core.Extensions.BridgeExt.SetPropValue(groupSection.Entity, "ModelName", this.GuiInfo.RefName);
                     System.Linq.Enumerable.from(headers, Core.Models.Component).where(function (x) {
@@ -37624,7 +36519,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         Core.MVVM.Html.Instance.EndOf(Core.MVVM.ElementType.td);
                     }));
                 } else {
-                    Core.Components.Renderer.ClassName(Core.Components.Renderer.Icon(Core.Components.Renderer.ColSpan(Core.Components.Renderer.Icon(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.TData, "status-cell"), "mif-pencil").EndOf(Core.MVVM.ElementType.td).TData, ((headers.Count - 1) | 0)).AsyncEvent$2(System.Object, "click", Bridge.fn.cacheBind(this, this.DispatchClick), first).AsyncEvent$2(System.Object, "dblclick", Bridge.fn.cacheBind(this, this.DispatchDblClick), first), "fa fa-chevron-down").Event("click", function () {
+                    Core.Components.Renderer.ClassName(Core.Components.Renderer.Icon(Core.Components.Renderer.ColSpan(Core.Components.Renderer.Icon(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.TData, "status-cell"), "mif-pencil").EndOf(Core.MVVM.ElementType.td).TData, ((headers.Count - 1) | 0)).AsyncEvent$1(System.Object, "click", Bridge.fn.cacheBind(this, this.DispatchClick), first).AsyncEvent$1(System.Object, "dblclick", Bridge.fn.cacheBind(this, this.DispatchDblClick), first), "fa fa-chevron-down").Event("click", function () {
                         groupSection.ShowChildren = !groupSection.ShowChildren;
                     }).End.Div, "d-flex").InnerHTML(groupText);
                     groupSection.GroupText = Core.MVVM.Html.Context;
@@ -38388,7 +37283,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    calcFilter, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -38399,9 +37293,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         if (searching === void 0) { searching = true; }
                                         this._sum = false;
                                         this.CacheData.clear();
-                                        calcFilter = this.CalcFilterQuery(searching);
                                         this.DataTable.parentElement.scrollTop = 0;
-                                        $task1 = this.ReloadData(calcFilter, false, void 0, void 0);
+                                        $task1 = this.ReloadData(false, void 0, void 0);
                                         $step = 1;
                                         if ($task1.isCompleted()) {
                                             continue;
@@ -38815,7 +37708,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            ReloadData: function (DataSourceFilter, cache, skip, pageSize) {
+            ReloadData: function (cacheHeader, skip, pageSize) {
                 var $step = 0,
                     $task1, 
                     $taskResult1, 
@@ -38829,8 +37722,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
-                                        if (DataSourceFilter === void 0) { DataSourceFilter = null; }
-                                        if (cache === void 0) { cache = false; }
+                                        if (cacheHeader === void 0) { cacheHeader = false; }
                                         if (skip === void 0) { skip = null; }
                                         if (pageSize === void 0) { pageSize = null; }
                                         this.DisposeNoRecord();
@@ -39035,7 +37927,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                 },
                 SetSearchString: function (compareCell, comInfo) {
                     var component;
-                    comInfo.ComponentType = "Textbox";
+                    var com = new Core.Models.Component();
+                    Core.Extensions.ReflectionExt.CopyPropFrom$1(com, comInfo);
+                    com.ComponentType = "Textbox";
+                    com.FieldName = "Value";
                     component = new Core.Components.Textbox(comInfo);
                     compareCell.GuiInfo.LocalData = System.Linq.Enumerable.from(Core.Components.AdvancedSearch.OperatorFactory(Core.Enums.ComponentTypeTypeEnum.Textbox)).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object);
                     return component;
@@ -39075,27 +37970,34 @@ Bridge.assembly("Core", function ($asm, globals) {
                     compareCell.GuiInfo.LocalData = System.Linq.Enumerable.from(Core.Components.AdvancedSearch.OperatorFactory(Core.Enums.ComponentTypeTypeEnum.Number)).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object);
                     return component;
                 },
-                SetSearchBool: function (compareCell, comInfo) {
+                SetSearchBool: function (compareCell, com) {
+                    var comInfo = new Core.Models.Component();
+                    Core.Extensions.ReflectionExt.CopyPropFrom$1(comInfo, com);
                     var component;
-                    comInfo.FormatData = "{Description}";
-                    comInfo.ComponentType = "SearchEntry";
+                    comInfo.FormatData = "Description";
+                    comInfo.ComponentType = "MultipleSearchEntry";
                     comInfo.LocalRender = true;
                     comInfo.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.ActiveStateEnum);
-                    comInfo.LocalHeader = function (_o1) {
+                    comInfo.LocalHeader = Core.Components.AdvancedSearch.GetBooleanSearchHeader();
+                    component = new Core.Components.MultipleSearchEntry(comInfo);
+                    compareCell.GuiInfo.LocalData = System.Linq.Enumerable.from(Core.Components.AdvancedSearch.OperatorFactory(Core.Enums.ComponentTypeTypeEnum.SearchEntry)).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object);
+                    return component;
+                },
+                GetBooleanSearchHeader: function () {
+                    return function (_o1) {
                             var $t;
                             _o1.add(($t = new Core.Models.Component(), $t.FieldName = "Name", $t.ShortDesc = "Tr\u1ea1ng th\u00e1i", $t.Active = true, $t));
                             _o1.add(($t = new Core.Models.Component(), $t.FieldName = "Description", $t.ShortDesc = "Mi\u00eau t\u1ea3", $t.Active = true, $t));
                             return _o1;
                         }(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor());
-                    component = new Core.Components.SearchEntry(comInfo);
-                    compareCell.GuiInfo.LocalData = System.Linq.Enumerable.from(Core.Components.AdvancedSearch.OperatorFactory(Core.Enums.ComponentTypeTypeEnum.Checkbox)).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object);
-                    return component;
                 },
                 SetSearchDateTime: function (compareCell, comInfo) {
                     var component;
-                    comInfo.ComponentType = "Datepicker";
-                    comInfo.Precision = 7; // add time picker
-                    component = new Core.Components.Datepicker(comInfo);
+                    var com = new Core.Models.Component();
+                    Core.Extensions.ReflectionExt.CopyPropFrom$1(com, comInfo);
+                    com.ComponentType = "Datepicker";
+                    com.Precision = 7; // add time picker
+                    component = new Core.Components.Datepicker(com);
                     compareCell.GuiInfo.LocalData = System.Linq.Enumerable.from(Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.AdvSearchOperation)).select(function (x) { return Bridge.cast(x, Core.Models.Entity); }).where(function (x) {
                         return System.Int32.parse(x.Id) < Core.Enums.AdvSearchOperation.Contains;
                     }).select(function (x) {{ return Bridge.cast(x, System.Object); }}).toList(System.Object);
@@ -39106,14 +38008,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         fields: {
             _filterGrid: null,
             _orderByGrid: null,
-            _activeState: null,
-            _entityType: null,
             _headers: null,
             ParentListView: null,
             _orderById: null,
             _fieldConditionId: null,
             _ComponentId: null,
-            _entityId: null
+            _entityId: null,
+            _searchByIdList: null
         },
         props: {
             ModelNameSpace: null,
@@ -39137,20 +38038,22 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this._entityId = System.Linq.Enumerable.from(Core.Clients.Client.Entities.Values, Core.Models.Entity).firstOrDefault(function (x) {
                         return Bridge.referenceEquals(x.Name, "Entity");
                     }, null).Id;
+                this._searchByIdList = System.Array.init(["SearchEntry", "MultipleSearchEntry"], System.String);
             },
             ctor: function (parent) {
-                var $t, $t1;
                 this.$initialize();
                 Core.Components.Forms.PopupEditor.ctor.call(this, "Component");
                 this.Name = "AdvancedSearch";
                 this.Title = "T\u00ecm ki\u1ebfm n\u00e2ng cao";
                 this.Icon = "fa fa-search-plus";
                 this.ParentListView = parent;
-                this._entityType = Bridge.Reflection.getType(((($t = (($t1 = this.ParentListView.GuiInfo.Reference) != null ? $t1.Namespace : null), $t != null ? $t : Core.Clients.Client.ModelNamespace)) || "") + (this.ParentListView.GuiInfo.RefName || ""));
-                this.DOMContentLoaded = Bridge.fn.combine(this.DOMContentLoaded, Bridge.fn.cacheBind(this, this.LocalRender));
             }
         },
         methods: {
+            LoadFeatureAndRender: function (callback) {
+                if (callback === void 0) { callback = null; }
+                Core.Components.Forms.PopupEditor.prototype.LoadFeatureAndRender.call(this, Bridge.fn.cacheBind(this, this.LocalRender));
+            },
             LocalRender: function () {
                 var $t;
                 this._headers = System.Linq.Enumerable.from(this.ParentListView.Header, Core.Models.Component).where(function (x) {
@@ -39202,44 +38105,31 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             AddFilters: function (section) {
                 var $t, $t1;
-                this._activeState = new Core.Components.SearchEntry(($t = new Core.Models.Component(), $t.FieldName = "ActiveState", $t.Column = 4, $t.Label = "Tr\u1ea1ng th\u00e1i", $t.FormatData = "{Description}", $t.ShowLabel = true, $t.LocalRender = true, $t.ReferenceId = Bridge.toString(this._entityId), $t.RefName = "Entity", $t.Reference = ($t1 = new Core.Models.Entity(), $t1.Name = "Entity", $t1), $t.Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]", $t));
-                this._activeState.GuiInfo.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.ActiveStateEnum);
-                this._activeState.GuiInfo.LocalHeader = function (_o1) {
-                        var $t2;
-                        _o1.add(($t2 = new Core.Models.Component(), $t2.FieldName = "Name", $t2.ShortDesc = "Tr\u1ea1ng th\u00e1i", $t2.Active = true, $t2));
-                        _o1.add(($t2 = new Core.Models.Component(), $t2.FieldName = "Description", $t2.ShortDesc = "Mi\u00eau t\u1ea3", $t2.Active = true, $t2));
-                        return _o1;
-                    }(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor());
-                this._activeState.ParentElement = section.Element;
-                section.AddChild(this._activeState);
-
-                this._filterGrid = new Core.Components.GridView(($t = new Core.Models.Component(), $t.FieldName = "Conditions", $t.Column = 4, $t.ReferenceId = Bridge.toString(this._fieldConditionId), $t.RefName = "FieldCondition", $t.Reference = ($t1 = new Core.Models.Entity(), $t1.Name = "FieldCondition", $t1.Namespace = (Bridge.Reflection.getTypeNamespace(Core.Models.Component) || "") + ".", $t1), $t.LocalRender = true, $t.IgnoreConfirmHardDelete = true, $t.CanAdd = true, $t.Events = "{'DOMContentLoaded': 'FilterDomLoaded'}", $t));
+                this._filterGrid = new Core.Components.GridView(($t = new Core.Models.Component(), $t.Id = System.Id.op_Implicit$7(System.Id.NewGuid()), $t.FieldName = "Conditions", $t.Column = 4, $t.ReferenceId = Bridge.toString(this._fieldConditionId), $t.RefName = "FieldCondition", $t.Reference = ($t1 = new Core.Models.Entity(), $t1.Name = "FieldCondition", $t1.Namespace = (Bridge.Reflection.getTypeNamespace(Core.Models.Component) || "") + ".", $t1), $t.LocalRender = true, $t.IgnoreConfirmHardDelete = true, $t.CanAdd = true, $t.Events = "{'DOMContentLoaded': 'FilterDomLoaded'}", $t));
                 this._filterGrid.OnDeleteConfirmed = Bridge.fn.combine(this._filterGrid.OnDeleteConfirmed, Bridge.fn.bind(this, function () {
                     this._filterGrid.GetSelectedRows().ForEach(Bridge.fn.cacheBind(this._filterGrid.RowData, this._filterGrid.RowData.Remove));
                 }));
-                this._filterGrid.GuiInfo.LocalHeader = Bridge.fn.bind(this, function (_o5) {
+                this._filterGrid.GuiInfo.LocalHeader = Bridge.fn.bind(this, function (_o4) {
                         var $t2;
-                        _o5.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((1)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "FieldId", $t2.Events = "{'change': 'FieldId_Changed'}", $t2.ShortDesc = "T\u00ean c\u1ed9t", $t2.ReferenceId = this._ComponentId, $t2.RefName = "Component", $t2.FormatData = "{ShortDesc}", $t2.Active = true, $t2.Editable = true, $t2.ComponentType = "Dropdown", $t2.MinWidth = "100px", $t2.MaxWidth = "200px", $t2.LocalRender = true, $t2.LocalData = System.Linq.Enumerable.from(this._headers, Core.Models.Component).where(function (x) {
-                                return !Bridge.referenceEquals(x.FieldName, Core.Components.EditableComponent.IdField);
-                            }).select(function (x) {{ return Bridge.cast(x, System.Object); }}).toList(System.Object), $t2.LocalHeader = Bridge.fn.bind(this, function (_o2) {
+                        _o4.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((1)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "FieldId", $t2.Events = "{'change': 'FieldId_Changed'}", $t2.ShortDesc = "T\u00ean c\u1ed9t", $t2.ReferenceId = this._ComponentId, $t2.RefName = "Component", $t2.FormatData = "ShortDesc", $t2.Active = true, $t2.Editable = true, $t2.ComponentType = "SearchEntry", $t2.MinWidth = "100px", $t2.MaxWidth = "200px", $t2.LocalRender = true, $t2.LocalData = System.Linq.Enumerable.from(this._headers).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object), $t2.LocalHeader = Bridge.fn.bind(this, function (_o1) {
                                 var $t3;
-                                _o2.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._ComponentId, $t3.FieldName = "ShortDesc", $t3.ShortDesc = "T\u00ean c\u1ed9t", $t3.Active = true, $t3));
+                                _o1.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._ComponentId, $t3.FieldName = "ShortDesc", $t3.ShortDesc = "T\u00ean c\u1ed9t", $t3.Active = true, $t3));
+                                return _o1;
+                            })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t2.Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]", $t2));
+                        _o4.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((2)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "CompareOperatorId", $t2.ShortDesc = "To\u00e1n t\u1eed", $t2.ReferenceId = this._entityId, $t2.RefName = "Entity", $t2.ComponentType = "SearchEntry", $t2.FormatData = "Description", $t2.Active = true, $t2.Editable = true, $t2.MinWidth = "150px", $t2.LocalRender = true, $t2.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.AdvSearchOperation), $t2.LocalHeader = Bridge.fn.bind(this, function (_o2) {
+                                var $t3;
+                                _o2.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Name", $t3.ShortDesc = "To\u00e1n t\u1eed", $t3.Active = true, $t3));
+                                _o2.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Description", $t3.ShortDesc = "K\u00fd hi\u1ec7u", $t3.Active = true, $t3));
                                 return _o2;
                             })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t2.Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]", $t2));
-                        _o5.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((2)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "CompareOperatorId", $t2.ShortDesc = "To\u00e1n t\u1eed", $t2.ReferenceId = this._entityId, $t2.RefName = "Entity", $t2.ComponentType = "Dropdown", $t2.FormatData = "{Description}", $t2.Active = true, $t2.Editable = true, $t2.MinWidth = "150px", $t2.LocalRender = true, $t2.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.AdvSearchOperation), $t2.LocalHeader = Bridge.fn.bind(this, function (_o3) {
+                        _o4.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((3)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "Value", $t2.ShortDesc = "Gi\u00e1 tr\u1ecb", $t2.ReferenceId = this._entityId, $t2.RefName = "Entity", $t2.ComponentType = "Input", $t2.Active = true, $t2.Editable = true, $t2.MinWidth = "450px", $t2.Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]", $t2));
+                        _o4.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((2)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "LogicOperatorId", $t2.ShortDesc = "K\u1ebft h\u1ee3p", $t2.ReferenceId = this._entityId, $t2.RefName = "Entity", $t2.ComponentType = "SearchEntry", $t2.FormatData = "Description", $t2.Active = true, $t2.Editable = true, $t2.DefaultVal = "0", $t2.LocalRender = true, $t2.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.LogicOperation), $t2.LocalHeader = Bridge.fn.bind(this, function (_o3) {
                                 var $t3;
-                                _o3.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Name", $t3.ShortDesc = "To\u00e1n t\u1eed", $t3.Active = true, $t3));
-                                _o3.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Description", $t3.ShortDesc = "K\u00fd hi\u1ec7u", $t3.Active = true, $t3));
+                                _o3.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Name", $t3.ShortDesc = "K\u1ebft h\u1ee3p", $t3.Active = true, $t3));
+                                _o3.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Description", $t3.ShortDesc = "Mi\u00eau t\u1ea3", $t3.Active = true, $t3));
                                 return _o3;
-                            })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t2.Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]", $t2));
-                        _o5.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((3)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "Value", $t2.ShortDesc = "Gi\u00e1 tr\u1ecb", $t2.ReferenceId = this._entityId, $t2.RefName = "Entity", $t2.ComponentType = "Input", $t2.Active = true, $t2.Editable = true, $t2.MinWidth = "450px", $t2.Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]", $t2));
-                        _o5.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((2)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "LogicOperatorId", $t2.ShortDesc = "K\u1ebft h\u1ee3p", $t2.ReferenceId = this._entityId, $t2.RefName = "Entity", $t2.ComponentType = "Dropdown", $t2.FormatData = "{Description}", $t2.Active = true, $t2.Editable = true, $t2.DefaultVal = "0", $t2.LocalRender = true, $t2.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.LogicOperation), $t2.LocalHeader = Bridge.fn.bind(this, function (_o4) {
-                                var $t3;
-                                _o4.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Name", $t3.ShortDesc = "K\u1ebft h\u1ee3p", $t3.Active = true, $t3));
-                                _o4.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Description", $t3.ShortDesc = "Mi\u00eau t\u1ea3", $t3.Active = true, $t3));
-                                return _o4;
                             })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t2));
-                        return _o5;
+                        return _o4;
                     })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor());
                 this._filterGrid.GuiInfo.LocalData = System.Linq.Enumerable.from(this.AdvSearchEntity.Conditions).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object);
                 this._filterGrid.ParentElement = section.Element;
@@ -39249,7 +38139,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             FilterDomLoaded: function () {
                 this._filterGrid.MainSection.Children.ForEach(Bridge.fn.bind(this, function (x) {
                     var condition = Bridge.unbox(x.Entity);
-                    Bridge._ = this.FieldId_Changed(condition, condition.Field);
+                    this.FieldId_Changed(condition, condition.Field);
                 }));
             },
             HeaderForAdvSearch: function () {
@@ -39265,12 +38155,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }));
                 this._orderByGrid.GuiInfo.LocalHeader = Bridge.fn.bind(this, function (_o3) {
                         var $t2;
-                        _o3.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((1)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "FieldId", $t2.Events = "{'change': 'FieldId_Changed'}", $t2.ShortDesc = "T\u00ean c\u1ed9t", $t2.ReferenceId = this._ComponentId, $t2.RefName = "Component", $t2.FormatData = "{ShortDesc}", $t2.Active = true, $t2.Editable = true, $t2.ComponentType = "Dropdown", $t2.MinWidth = "100px", $t2.MaxWidth = "200px", $t2.LocalData = System.Linq.Enumerable.from(this._headers).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object), $t2.LocalRender = true, $t2.LocalHeader = Bridge.fn.bind(this, function (_o1) {
+                        _o3.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((1)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "FieldId", $t2.Events = "{'change': 'FieldId_Changed'}", $t2.ShortDesc = "T\u00ean c\u1ed9t", $t2.ReferenceId = this._ComponentId, $t2.RefName = "Component", $t2.FormatData = "ShortDesc", $t2.Active = true, $t2.Editable = true, $t2.ComponentType = "SearchEntry", $t2.MinWidth = "100px", $t2.MaxWidth = "200px", $t2.LocalData = System.Linq.Enumerable.from(this._headers).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object), $t2.LocalRender = true, $t2.LocalHeader = Bridge.fn.bind(this, function (_o1) {
                                 var $t3;
                                 _o1.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._ComponentId, $t3.FieldName = "ShortDesc", $t3.ShortDesc = "T\u00ean c\u1ed9t", $t3.Active = true, $t3));
                                 return _o1;
                             })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t2));
-                        _o3.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((2)), $t2.EntityId = this._orderById, $t2.FieldName = "OrderbyDirectionId", $t2.ShortDesc = "Th\u1ee9 t\u1ef1", $t2.ReferenceId = this._entityId, $t2.RefName = "Entity", $t2.ComponentType = "Dropdown", $t2.FormatData = "{Description}", $t2.Active = true, $t2.Editable = true, $t2.MinWidth = "100px", $t2.MaxWidth = "120px", $t2.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.OrderbyDirection), $t2.LocalHeader = Bridge.fn.bind(this, function (_o2) {
+                        _o3.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((2)), $t2.EntityId = this._orderById, $t2.FieldName = "OrderbyDirectionId", $t2.ShortDesc = "Th\u1ee9 t\u1ef1", $t2.ReferenceId = this._entityId, $t2.RefName = "Entity", $t2.ComponentType = "SearchEntry", $t2.FormatData = "Description", $t2.Active = true, $t2.Editable = true, $t2.MinWidth = "100px", $t2.MaxWidth = "120px", $t2.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.OrderbyDirection), $t2.LocalHeader = Bridge.fn.bind(this, function (_o2) {
                                 var $t3;
                                 _o2.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Name", $t3.ShortDesc = "Th\u1ee9 t\u1ef1", $t3.Active = true, $t3));
                                 return _o2;
@@ -39317,7 +38207,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
                     isValid, 
-                    query, 
                     $async_e, 
                     $asyncBody = Bridge.fn.bind(this, function () {
                         try {
@@ -39340,8 +38229,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             $tcs.setResult(null);
                                             return;
                                         }
-                                        query = this.CalcAdvSearchQuery();
-                                        $task2 = this.ParentListView.ReloadData(query);
+                                        this.CalcAdvSearchQuery();
+                                        $task2 = this.ParentListView.ReloadData(true, 0, void 0);
                                         $step = 2;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -39370,50 +38259,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return $tcs.task;
             },
             CalcAdvSearchQuery: function () {
-                var query = this.ParentListView.FormattedDataSource;
-                query = query.replace(new RegExp("(Active eq true (and|or)?)|( (and|or)?Active eq true^)"), "");
-                if (this.AdvSearchEntity.ActiveState === Core.Enums.ActiveStateEnum.Yes && !System.String.contains(query,"Active eq false")) {
-                    query = Core.Extensions.OdataExt.AppendClause(query, " and Active eq true");
-                } else if (this.AdvSearchEntity.ActiveState === Core.Enums.ActiveStateEnum.No && !System.String.contains(query,"Active eq true")) {
-                    query = Core.Extensions.OdataExt.AppendClause(query, " and Active eq false");
-                }
-                var originFilter = Core.Extensions.OdataExt.GetClausePart(query);
-                var conditions = System.Linq.Enumerable.from(this.AdvSearchEntity.Conditions, Core.Models.FieldCondition).select(Bridge.fn.bind(this, function (x, index) {
+                this.ParentListView.Wheres = System.Linq.Enumerable.from(this.AdvSearchEntity.Conditions, Core.Models.FieldCondition).select(Bridge.fn.bind(this, function (x, index) {
                         var $t;
-                        return new $asm.$AnonymousType$12(this.GetSearchValue(x), ($t = Core.Components.AdvancedSearch.GetLogicOp(x), $t != null ? $t : " and "), x.Group);
+                        return ($t = new Core.Models.Where(), $t.FieldName = this.GetSearchValue(x), $t);
                     })).where(function (x) {
-                    return Core.Extensions.StringExt.HasAnyChar(x.Term);
-                }).toList(System.Object);
-
-                var filterPart = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(conditions, System.Object).where(function (x) {
-                        return !x.Group;
-                    }).select(function (x, index) {
-                    return index < ((conditions.Count - 1) | 0) ? (x.Term || "") + (x.Operator || "") : x.Term;
-                }), "");
-                var filterPartGroup = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(conditions, System.Object).where(function (x) {
-                        return x.Group;
-                    }).select(function (x, index) {
-                    return index < ((conditions.Count - 1) | 0) ? (x.Term || "") + (x.Operator || "") : x.Term;
-                }), "");
-                var qr = System.String.format("({0})", [originFilter]);
-                if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filterPart)) {
-                    qr = (qr || "") + ((System.String.replaceAll(System.String.replaceAll(System.String.format(" and ({0})", [filterPart]), "and )", ")"), "or )", ")")) || "");
-                }
-                if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filterPartGroup)) {
-                    qr = (qr || "") + ((System.String.replaceAll(System.String.replaceAll(System.String.format(" and ({0})", [filterPartGroup]), "and )", ")"), "or )", ")")) || "");
-                }
-                if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filterPart) || !Core.Extensions.StringExt.IsNullOrWhiteSpace(filterPartGroup)) {
-                    query = Core.Extensions.OdataExt.ApplyClause(query, qr);
-                }
-                var orderbyList = System.Linq.Enumerable.from(this.AdvSearchEntity.OrderBy, Core.Models.OrderBy).select(function (orderby) {
-                        return System.String.format("{0} {1}", orderby.FieldName, System.Nullable.toString(orderby.OrderbyDirectionId, System.Enum.toStringFn(Core.Enums.OrderbyDirection)).toLowerCase());
-                    });
-                var orderByPart = Bridge.toArray(orderbyList).join(",");
-                if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(orderByPart)) {
-                    query = Core.Extensions.OdataExt.ApplyClause(query, Bridge.toArray(orderbyList).join(","), Core.Extensions.OdataExt.OrderByKeyword);
-                }
-
-                return query;
+                    return Core.Extensions.StringExt.HasAnyChar(x.FieldName);
+                }).toList(Core.Models.Where);
             },
             GetSearchValue: function (condition) {
                 var $t, $t1;
@@ -39422,21 +38273,18 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (value == null && System.Nullable.neq(condition.CompareOperatorId, Core.Enums.AdvSearchOperation.EqualNull) && System.Nullable.neq(condition.CompareOperatorId, Core.Enums.AdvSearchOperation.NotEqualNull)) {
                     return null;
                 }
-                var fieldType = Bridge.Reflection.getMembers(this._entityType, 16, 284, condition.Field.FieldName).rt;
-                if (Core.Extensions.ReflectionExt.IsDate(fieldType)) {
-                    if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(value)) {
-                        try {
-                            var dateTime = Core.Extensions.DateTimeExt.ToISOFormat(System.DateTime.parseExact(value, "dd/MM/yyyy", System.Globalization.CultureInfo.invariantCulture));
-                            value = System.String.format("cast({0},Edm.DateTimeOffset)", [dateTime]);
-                        } catch ($e1) {
-                            $e1 = System.Exception.create($e1);
-                            var dateTime1 = Core.Extensions.DateTimeExt.ToISOFormat(System.DateTime.parseExact(value, "MM/dd/yyyy HH:mm:ss", System.Globalization.CultureInfo.invariantCulture));
-                            value = System.String.format("cast({0},Edm.DateTimeOffset)", [dateTime1]);
-                        }
+                if (Bridge.referenceEquals(condition.Field.ComponentType, "Datepicker") && !Core.Extensions.StringExt.IsNullOrWhiteSpace(value)) {
+                    try {
+                        var dateTime = Core.Extensions.DateTimeExt.ToISOFormat(System.DateTime.parseExact(value, "dd/MM/yyyy", System.Globalization.CultureInfo.invariantCulture));
+                        value = System.String.format("cast({0},Edm.DateTimeOffset)", [dateTime]);
+                    } catch ($e1) {
+                        $e1 = System.Exception.create($e1);
+                        var dateTime1 = Core.Extensions.DateTimeExt.ToISOFormat(System.DateTime.parseExact(value, "MM/dd/yyyy HH:mm:ss", System.Globalization.CultureInfo.invariantCulture));
+                        value = System.String.format("cast({0},Edm.DateTimeOffset)", [dateTime1]);
                     }
-                } else if (Core.Extensions.ReflectionExt.IsNumber(fieldType)) {
+                } else if (Bridge.referenceEquals(condition.Field.ComponentType, "Number")) {
                     value = System.String.format("{0}", [value]);
-                } else if (Core.Extensions.ReflectionExt.IsBool(fieldType)) {
+                } else if (Bridge.referenceEquals(condition.Field.ComponentType, "Checkbox")) {
                     var state = { v : new Core.Enums.ActiveStateEnum() };
                     var tryParsed = System.Enum.tryParse(Core.Enums.ActiveStateEnum, value, state);
                     if (tryParsed && state.v === Core.Enums.ActiveStateEnum.Yes) {
@@ -39448,237 +38296,72 @@ Bridge.assembly("Core", function ($asm, globals) {
                     value = System.String.format("'{0}'", [Core.Extensions.Utils.EncodeSpecialChar(value)]);
                 }
 
-                var func = Core.Extensions.AdvOptionExt.OperationToOdata.getItem(System.Nullable.getValue(condition.CompareOperatorId));
+                var funcId = System.Nullable.getValue(Core.Extensions.Utils.TryParseInt(System.Nullable.toString(condition.CompareOperatorId, System.Enum.toStringFn(Core.Enums.AdvSearchOperation))));
+                var func = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(Core.Enums.AdvSearchOperation, System.String, Core.Extensions.AdvOptionExt.OperationToSql, funcId);
                 var formattedFunc = ignoreSearch ? "" : System.String.format(func, ($t1 = condition.Field) != null ? $t1.FieldName : null, value);
 
                 return formattedFunc;
             },
             FieldId_Changed: function (condition, field) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    fieldType, 
-                    cell, 
-                    compareCell, 
-                    parentCellElement, 
-                    parentCell, 
-                    component, 
-                    searchByIdList, 
-                    isSearchId, 
-                    $t, 
-                    $t1, 
-                    $t2, 
-                    $t3, 
-                    $t4, 
-                    $t5, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,7], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (condition == null || field == null) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        condition.Field = field;
-                                        fieldType = Bridge.Reflection.getMembers(this._entityType, 16, 284, field.FieldName).rt;
-                                        cell = Core.Components.Extensions.ComponentExt.FirstOrDefault(this._filterGrid, function (x) {
-                                            return x.GuiInfo != null && Bridge.referenceEquals(x.Entity, condition) && Bridge.referenceEquals(x.GuiInfo.FieldName, "Value");
-                                        });
-                                        compareCell = Bridge.as(Core.Components.Extensions.ComponentExt.FirstOrDefault(this._filterGrid, function (x) {
-                                            return x.GuiInfo != null && Bridge.referenceEquals(x.Entity, condition) && Bridge.referenceEquals(x.GuiInfo.FieldName, "CompareOperatorId");
-                                        }), Core.Components.SearchEntry);
-                                        if (cell == null) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-
-                                        parentCellElement = cell.ParentElement;
-                                        parentCell = cell.Parent;
-                                        cell.Dispose();
-                                        field.FieldName = "Value";
-                                        component = null;
-                                        searchByIdList = System.Array.init(["Dropdown", "SearchEntry", "MultipleSearchEntry"], System.String);
-                                        isSearchId = System.Array.contains(searchByIdList, field.ComponentType, System.String) || Core.Extensions.ReflectionExt.IsInt32(fieldType) && (System.Nullable.eq((($t = field.FieldName) != null ? System.String.endsWith($t, Core.Components.EditableComponent.IdField) : null), true) || Bridge.referenceEquals(field.FieldName, "InsertedBy") || Bridge.referenceEquals(field.FieldName, "UpdatedBy"));
-                                        if (Core.Extensions.ReflectionExt.IsDate(fieldType)) {
-                                            $step = 1;
-                                            continue;
-                                        } else  {
-                                            $step = 2;
-                                            continue;
-                                        }
-                                    }
-                                    case 1: {
-                                        component = Core.Components.AdvancedSearch.SetSearchDateTime(compareCell, field);
-                                        condition.Value = System.DateTimeOffset.Now.toString();
-                                        $step = 7;
-                                        continue;
-                                    }
-                                    case 2: {
-                                        if (isSearchId) {
-                                            $step = 3;
-                                            continue;
-                                        } else  {
-                                            $step = 5;
-                                            continue;
-                                        }
-                                    }
-                                    case 3: {
-                                        $task1 = this.SetSearchId(field, compareCell, field, component);
-                                        $step = 4;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 4: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        component = $taskResult1;
-                                        condition.Value = "";
-                                        $step = 6;
-                                        continue;
-                                    }
-                                    case 5: {
-                                        if (Core.Extensions.ReflectionExt.IsBool(fieldType)) {
-                                            component = Core.Components.AdvancedSearch.SetSearchBool(compareCell, field);
-                                            condition.Value = Bridge.toString((Core.Enums.ActiveStateEnum.All));
-                                        } else if (Core.Extensions.ReflectionExt.IsNumber(fieldType)) {
-                                            component = Core.Components.AdvancedSearch.SetSearchDecimal(compareCell, field);
-                                            condition.Value = Bridge.toString((0));
-                                        } else {
-                                            component = Core.Components.AdvancedSearch.SetSearchString(compareCell, field);
-                                        }
-                                        $step = 6;
-                                        continue;
-                                    }
-
-                                    case 7: {
-                                        condition.LogicOperatorId = ($t1 = condition.LogicOperatorId, $t1 != null ? $t1 : Core.Enums.LogicOperation.And);
-                                        ($t2 = Core.Components.Extensions.ComponentExt.FirstOrDefault(this._filterGrid, function (x) {
-                                            return x.GuiInfo != null && Bridge.referenceEquals(x.Entity, condition) && Bridge.referenceEquals(x.GuiInfo.FieldName, "LogicOperatorId");
-                                        })) != null ? $t2.UpdateView() : null;
-                                        condition.CompareOperatorId = ($t3 = System.Linq.Enumerable.from(compareCell.GuiInfo.LocalData).select(function (x) { return Bridge.cast(x, Core.Models.Entity); }).firstOrDefault(null, null)) != null && ($t4 = $t3.Id) != null ? Core.Extensions.Utils.TryParseInt($t4) : null;
-                                        compareCell.Value = ($t5 = condition.CompareOperatorId) != null ? Bridge.toString($t5) : null;
-                                        compareCell.UpdateView();
-                                        component.Entity = condition;
-                                        Core.Components.Extensions.ComponentExt.SetValue(component, "Value", condition.Value);
-                                        component.Parent = parentCell;
-                                        parentCell.Children.insert(2, component);
-                                        component.ParentElement = parentCellElement;
-                                        component.Render();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
-            SetSearchId: function (field, compareCell, comInfo, component) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    refId, 
-                    $t, 
-                    $t1, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        comInfo.ComponentType = "MultipleSearchEntry";
-                                        refId = ($t = field.ReferenceId, $t != null ? $t : this.ParentListView.GuiInfo.ReferenceId);
-                                        comInfo.ReferenceId = refId;
-                                        comInfo.Reference = Core.Extensions.Utils.GetEntity(refId);
-                                        comInfo.DataSourceFilter = field.DataSourceFilter;
-                                        $task1 = new Core.Clients.Client.$ctor1("Component", Bridge.Reflection.getTypeNamespace(Core.Models.User)).GetRawList(Core.Models.Component, System.String.format("?$filter=Active eq true and FeatureId eq null and EntityId eq '{0}'", [($t1 = field.ReferenceId, $t1 != null ? $t1 : field.EntityId)]));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        comInfo.LocalHeader = $taskResult1;
-                                        compareCell.GuiInfo.LocalData = System.Linq.Enumerable.from(Core.Components.AdvancedSearch.OperatorFactory(Core.Enums.ComponentTypeTypeEnum.SearchEntry)).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object);
-                                        component = new Core.Components.MultipleSearchEntry(comInfo);
-                                        component.EntityType = Core.Models.FieldCondition;
-                                        compareCell.Value = Bridge.toString((Core.Enums.AdvSearchOperation.In));
-                                        $tcs.setResult(component);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            }
-        }
-    });
-
-    Bridge.define("$AnonymousType$12", $asm, {
-        $kind: "anonymous",
-        ctors: {
-            ctor: function (term, operator, group) {
-                this.Term = term;
-                this.Operator = operator;
-                this.Group = group;
-            }
-        },
-        methods: {
-            equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$12)) {
-                    return false;
+                var $t, $t1, $t2, $t3, $t4;
+                if (condition == null || field == null) {
+                    return;
                 }
-                return Bridge.equals(this.Term, o.Term) && Bridge.equals(this.Operator, o.Operator) && Bridge.equals(this.Group, o.Group);
+                condition.Field = field;
+                var cell = Core.Components.Extensions.ComponentExt.FirstOrDefault(this._filterGrid, function (x) {
+                    return x.GuiInfo != null && Bridge.referenceEquals(x.Entity, condition) && Bridge.referenceEquals(x.GuiInfo.FieldName, "Value");
+                });
+                var compareCell = Bridge.as(Core.Components.Extensions.ComponentExt.FirstOrDefault(this._filterGrid, function (x) {
+                    return x.GuiInfo != null && Bridge.referenceEquals(x.Entity, condition) && Bridge.referenceEquals(x.GuiInfo.FieldName, "CompareOperatorId");
+                }), Core.Components.SearchEntry);
+                if (cell == null) {
+                    return;
+                }
+
+                var parentCellElement = cell.ParentElement;
+                var parentCell = cell.Parent;
+                cell.Dispose();
+                var component = null;
+                var isSearchId = System.Array.contains(this._searchByIdList, field.ComponentType, System.String);
+                if (Bridge.referenceEquals(field.ComponentType, "Datepicker")) {
+                    component = Core.Components.AdvancedSearch.SetSearchDateTime(compareCell, field);
+                    condition.Value = System.DateTimeOffset.Now.toString();
+                } else if (Bridge.referenceEquals(field.ComponentType, "SearchEntry") || Bridge.referenceEquals(field.ComponentType, "MultipleSearchEntry")) {
+                    component = this.SetSearchId(compareCell, field);
+                    condition.Value = "";
+                } else if (Bridge.referenceEquals(field.ComponentType, "Checkbox")) {
+                    component = Core.Components.AdvancedSearch.SetSearchBool(compareCell, field);
+                    condition.Value = Bridge.toString((Core.Enums.ActiveStateEnum.All));
+                } else if (Bridge.referenceEquals(field.ComponentType, "Number")) {
+                    component = Core.Components.AdvancedSearch.SetSearchDecimal(compareCell, field);
+                    condition.Value = Bridge.toString((0));
+                } else {
+                    component = Core.Components.AdvancedSearch.SetSearchString(compareCell, field);
+                }
+                component.GuiInfo.FieldName = "Value";
+                condition.LogicOperatorId = ($t = condition.LogicOperatorId, $t != null ? $t : Core.Enums.LogicOperation.And);
+                ($t1 = Core.Components.Extensions.ComponentExt.FirstOrDefault(this._filterGrid, function (x) {
+                        return x.GuiInfo != null && Bridge.referenceEquals(x.Entity, condition) && Bridge.referenceEquals(x.GuiInfo.FieldName, "LogicOperatorId");
+                    })) != null ? $t1.UpdateView() : null;
+                condition.CompareOperatorId = ($t2 = System.Linq.Enumerable.from(compareCell.GuiInfo.LocalData).select(function (x) { return Bridge.cast(x, Core.Models.Entity); }).firstOrDefault(null, null)) != null && ($t3 = $t2.Id) != null ? Core.Extensions.Utils.TryParseInt($t3) : null;
+                compareCell.Value = ($t4 = condition.CompareOperatorId) != null ? Bridge.toString($t4) : null;
+                compareCell.UpdateView();
+                component.Entity = condition;
+                Core.Components.Extensions.ComponentExt.SetValue(component, "Value", condition.Value);
+                component.Parent = parentCell;
+                parentCell.Children.insert(2, component);
+                component.ParentElement = parentCellElement;
+                component.Render();
             },
-            getHashCode: function () {
-                var h = Bridge.addHash([7550208986, this.Term, this.Operator, this.Group]);
-                return h;
-            },
-            toJSON: function () {
-                return {
-                    Term : this.Term,
-                    Operator : this.Operator,
-                    Group : this.Group
-                };
-            }
-        },
-        statics : {
-            methods: {
-                $metadata : function () { return {"m":[{"a":2,"n":"Group","t":16,"rt":System.Boolean,"g":{"a":2,"n":"get_Group","t":8,"rt":System.Boolean,"fg":"Group","box":function ($v) { return Bridge.box($v, System.Boolean, System.Boolean.toString);}},"fn":"Group"},{"a":2,"n":"Operator","t":16,"rt":System.String,"g":{"a":2,"n":"get_Operator","t":8,"rt":System.String,"fg":"Operator"},"fn":"Operator"},{"a":2,"n":"Term","t":16,"rt":System.String,"g":{"a":2,"n":"get_Term","t":8,"rt":System.String,"fg":"Term"},"fn":"Term"}]}; }
+            SetSearchId: function (compareCell, field) {
+                compareCell.GuiInfo.LocalData = System.Linq.Enumerable.from(Core.Components.AdvancedSearch.OperatorFactory(Core.Enums.ComponentTypeTypeEnum.SearchEntry)).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object);
+                compareCell.Value = Bridge.toString((Core.Enums.AdvSearchOperation.In));
+
+                var comInfo = new Core.Models.Component();
+                Core.Extensions.ReflectionExt.CopyPropFrom$1(comInfo, field);
+                comInfo.ComponentType = "MultipleSearchEntry";
+                var component = new Core.Components.MultipleSearchEntry(comInfo);
+                return component;
             }
         }
     });
@@ -39689,7 +38372,8 @@ Bridge.assembly("Core", function ($asm, globals) {
             ParentListView: null,
             _tbody: null,
             _headers: null,
-            _userSetting: null
+            _userSetting: null,
+            _table: null
         },
         ctors: {
             ctor: function (parent) {
@@ -39699,14 +38383,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.Title = "Xu\u1ea5t excel t\u00f9y ch\u1ecdn";
                 this.DOMContentLoaded = Bridge.fn.combine(this.DOMContentLoaded, Bridge.fn.bind(this, function () {
                     this.LocalRender();
-                    this.Move();
                 }));
             }
         },
         methods: {
             Move: function () {
                 var seft = this;
-                const table = document.getElementById('exTable');
+                const table = this._table;
 
                 let draggingEle;
                 let draggingRowIndex;
@@ -39904,7 +38587,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             GetUserSetting: function () {
                 var $t, $t1;
-                return Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.UserSvc, $t.Value = ($t1 = new Core.ViewModels.SqlViewModel(), $t1.ComId = "GridView", $t1.Action = "GetUserSettingByListViewId", $t1.Entity = JSON.stringify(new $asm.$AnonymousType$13(this.ParentListView.GuiInfo.Id)), $t1), $t.Method = Core.Enums.HttpMethod.POST, $t));
+                return Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.UserSvc, $t.Value = ($t1 = new Core.ViewModels.SqlViewModel(), $t1.ComId = "GridView", $t1.Action = "GetUserSettingByListViewId", $t1.Entity = JSON.stringify(new $asm.$AnonymousType$12(this.ParentListView.GuiInfo.Id)), $t1), $t.Method = Core.Enums.HttpMethod.POST, $t));
             },
             UserSettingLoaded: function (res) {
                 var $t, $t1, $t2;
@@ -39925,7 +38608,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                         return x.OrderExport;
                     }).toList(Core.Models.Component);
                 var content = Core.Components.Extensions.ComponentExt.FindComponentByName(Core.Components.Section, this, "Content");
-                Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(content.Element).Table, "table").Id("exTable").Thead.TRow.TData.Text("STT").End.TData.Checkbox(false).Event$1("input", Bridge.fn.bind(this, function (e) {
+                Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(content.Element).Table, "table");
+                this._table = Core.MVVM.Html.Context;
+                Core.MVVM.Html.Instance.Thead.TRow.TData.Text("STT").End.TData.Checkbox(false).Event$1("input", Bridge.fn.bind(this, function (e) {
                     this.ToggleAll(e);
                 })).End.End.TData.Text("T\u00ean c\u1ed9t").EndOf(Core.MVVM.ElementType.thead);
                 Core.MVVM.Html.Instance.TBody.Render();
@@ -39947,6 +38632,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         $t2.System$IDisposable$Dispose();
                     }
                 }
+                this.Move();
             },
             ToggleAll: function (e) {
                 var $t;
@@ -40029,7 +38715,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     }
                                     case 3: {
                                         this._userSetting.Value = Newtonsoft.Json.JsonConvert.SerializeObject(this._headers);
-                                        $task2 = Core.Clients.Client.Instance.SubmitAsync(System.Object, this.CreatePatch(this._userSetting.Id));
+                                        $task2 = Core.Clients.Client.Instance.SubmitAsync(System.Object, this.CreatePatch(this._userSetting.Id, this._userSetting.Id));
                                         $step = 4;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -40082,8 +38768,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            CreatePatch: function (id) {
+            CreatePatch: function (newId, oldId) {
                 var $t, $t1;
+                if (oldId === void 0) { oldId = null; }
                 var patch = ($t = new Core.ViewModels.PatchUpdate(), $t.Changes = Bridge.fn.bind(this, function (_o1) {
                         var $t1;
                         _o1.add(($t1 = new Core.ViewModels.PatchUpdateDetail(), $t1.Field = "Name", $t1.Value = System.String.format("Export-{0}", [this.ParentListView.GuiInfo.Id]), $t1));
@@ -40091,15 +38778,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                         _o1.add(($t1 = new Core.ViewModels.PatchUpdateDetail(), $t1.Field = "Value", $t1.Value = Newtonsoft.Json.JsonConvert.SerializeObject(this._headers), $t1));
                         return _o1;
                     })(new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor()), $t.ComId = this.ParentListView.GuiInfo.Id, $t.Table = "UserSetting", $t.ConnKey = ($t1 = this.ParentListView.GuiInfo.ConnKey, $t1 != null ? $t1 : Core.Extensions.Utils.DefaultConnKey), $t);
-                if (id != null) {
-                    patch.Changes.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Components.EditableComponent.IdField, $t.Value = id, $t));
-                }
+                patch.Changes.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Field = Core.Components.EditableComponent.IdField, $t.Value = newId, $t.OldVal = oldId, $t));
                 return ($t = new Core.Clients.XHRWrapper(), $t.Url = "/v2/user", $t.Value = JSON.stringify(patch), $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.PATCH, $t);
             }
         }
     });
 
-    Bridge.define("$AnonymousType$13", $asm, {
+    Bridge.define("$AnonymousType$12", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (gridId) {
@@ -40108,13 +38793,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$13)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$12)) {
                     return false;
                 }
                 return Bridge.equals(this.GridId, o.GridId);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550209242, this.GridId]);
+                var h = Bridge.addHash([7550208986, this.GridId]);
                 return h;
             },
             toJSON: function () {

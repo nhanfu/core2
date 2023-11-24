@@ -72,7 +72,7 @@ namespace Core.Components
 
         public override void Render()
         {
-            _path = Entity?.GetComplexPropValue(GuiInfo.FieldName)?.ToString();
+            _path = Entity?.GetPropValue(GuiInfo.FieldName)?.ToString();
             var paths = _path?.Split(PathSeparator).ToList();
             RenderUploadForm();
             Path = _path;
@@ -416,7 +416,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            Path = Entity.GetComplexPropValue(GuiInfo.FieldName)?.ToString();
+            Path = Entity.GetPropValue(GuiInfo.FieldName)?.ToString();
             base.UpdateView(force, dirty, componentNames);
         }
 

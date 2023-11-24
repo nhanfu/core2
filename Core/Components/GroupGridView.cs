@@ -44,7 +44,7 @@ namespace Core.Components
                 return;
             }
             Window.ClearTimeout(_rowDataChangeAwaiter);
-            _rowDataChangeAwaiter = Window.SetTimeout(async () =>
+            _rowDataChangeAwaiter = Window.SetTimeout((Action)(async () =>
             {
                 if (GuiInfo.GroupBy.IsNullOrEmpty())
                 {
@@ -69,11 +69,11 @@ namespace Core.Components
                 }
                 var keys = GuiInfo.GroupBy.Split(",");
                 FormattedRowData = args.ListData
-                    .Select(x =>
+                    .Select((Func<object, object>)(x =>
                     {
-                        x[_groupKey] = string.Join(" ", keys.Select(key => (x.GetComplexPropValue(key)?.ToString())));
+                        x[_groupKey] = string.Join(" ", keys.Select((Func<string, string>)(key => (string)(x.GetPropValue(key)?.ToString()))));
                         return x;
-                    })
+                    }))
                     .GroupBy(x => x[_groupKey])
                     .Select(x => new GroupRowData
                     {
@@ -83,7 +83,7 @@ namespace Core.Components
                     .Cast<object>().ToList();
                 base.Rerender();
                 DomLoaded();
-            });
+            }));
         }
 
         public override void RenderContent()
@@ -127,7 +127,7 @@ namespace Core.Components
         {
             DisposeNoRecord();
             var keys = GuiInfo.GroupBy.Split(",");
-            item[_groupKey] = string.Join(" ", keys.Select(key => item.GetComplexPropValue(key)?.ToString()));
+            item[_groupKey] = string.Join(" ", keys.Select(key => item.GetPropValue(key)?.ToString()));
             var groupKey = item[_groupKey];
             var existGroup = AllListViewItem
                 .FirstOrDefault(group => group.GroupRow && group.Entity.As<GroupRowData>().Key == groupKey);

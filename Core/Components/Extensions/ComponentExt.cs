@@ -277,9 +277,9 @@ namespace Core.Components.Extensions
                     tcs.TrySetResult(null);
                 }
                 var feature = ds[0][0].CastProp<Feature>();
-                var policies = ds[1].Select(x => x.CastProp<FeaturePolicy>()).ToArray();
-                var groups = ds[2].Select(x => x.CastProp<ComponentGroup>()).ToArray();
-                var components = ds[3].Select(x => x.CastProp<Component>()).ToArray();
+                var policies = ds[1].Select(x => x.CastProp<FeaturePolicy>()).ToList();
+                var groups = ds[2].Select(x => x.CastProp<ComponentGroup>()).ToList();
+                var components = ds[3].Select(x => x.CastProp<Component>()).ToList();
                 if (policies.Nothing() || groups.Nothing() || components.Nothing()) {
                     tcs.TrySetResult(null);
                     return;
@@ -462,12 +462,6 @@ namespace Core.Components.Extensions
                 return cellText.Element["innerText"];
             }
             return null;
-        }
-
-        public static void SetAutoWidth(this EditableComponent component, string text, string font, int padding = 8)
-        {
-            component.ParentElement.Style.MinWidth = text.TextWidth(font) + 8 + "px";
-            component.ParentElement.Style.MaxWidth = text.TextWidth(font) + 8 + "px";
         }
 
         public static void SetDisabled(this EditableComponent component, bool disabled)

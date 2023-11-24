@@ -63,7 +63,7 @@ namespace Core.Components
                 Html.Take(Element).Label.Attr("for", radioId).Text($"{item} stars");
             }
             Html.Take(Element).End.Render();
-            _value = Entity.GetComplexPropValue(GuiInfo.FieldName).As<int?>();
+            _value = Utils.GetPropValue(Entity, GuiInfo.FieldName).As<int?>();
             SetSelected(_value);
             DOMContentLoaded?.Invoke();
         }
@@ -96,7 +96,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            Value = Entity.GetComplexPropValue(GuiInfo.FieldName).As<int?>();
+            Value = Utils.GetPropValue(Entity, GuiInfo.FieldName).As<int?>();
         }
 
         public override bool Disabled

@@ -22,6 +22,7 @@ namespace Core.Components
         public HTMLElement _tbody;
         private List<Component> _headers;
         private dynamic _userSetting;
+        private HTMLElement _table;
 
         public ExportCustomData(ListView parent) : base(nameof(Component))
         {
@@ -30,7 +31,6 @@ namespace Core.Components
             DOMContentLoaded += () =>
             {
                 LocalRender();
-                Move();
             };
         }
 
@@ -38,7 +38,7 @@ namespace Core.Components
         {
             var seft = this;
             /*@
-                const table = document.getElementById('exTable');
+                const table = this._table;
 
                 let draggingEle;
                 let draggingRowIndex;
@@ -270,8 +270,9 @@ namespace Core.Components
             }
             _headers = _headers.OrderBy(x => x.OrderExport).ToList();
             var content = this.FindComponentByName<Section>("Content");
-            Html.Take(content.Element).Table.ClassName("table").Id("exTable")
-                .Thead
+            Html.Take(content.Element).Table.ClassName("table");
+            _table = Html.Context;
+            Html.Instance.Thead
                     .TRow.TData.Text("STT").End
                     .TData.Checkbox(false).Event(EventType.Input, (e) => ToggleAll(e)).End.End
                     .TData.Text("Tên cột").EndOf(ElementType.thead);
@@ -286,6 +287,7 @@ namespace Core.Components
                     .EndOf(ElementType.tr);
                 i++;
             }
+            Move();
         }
 
         private void ToggleAll(Event e)
@@ -330,7 +332,7 @@ namespace Core.Components
             else
             {
                 _userSetting.Value = JsonConvert.SerializeObject(_headers);
-                await Client.Instance.SubmitAsync<dynamic>(CreatePatch(_userSetting.Id));
+                await Client.Instance.SubmitAsync<dynamic>(CreatePatch(_userSetting.Id, _userSetting.Id));
             }
             var sql = ParentListView.GetSql();
             sql.Count = false;
@@ -347,7 +349,7 @@ namespace Core.Components
             Toast.Success("Xuất file thành công");
         }
 
-        private XHRWrapper CreatePatch(string id)
+        private XHRWrapper CreatePatch(string newId, string oldId = null)
         {
             var patch = new PatchUpdate
             {
@@ -360,10 +362,7 @@ namespace Core.Components
                 Table = nameof(UserSetting),
                 ConnKey = ParentListView.GuiInfo.ConnKey ?? Utils.DefaultConnKey
             };
-            if (id != null)
-            {
-                patch.Changes.Add(new PatchUpdateDetail { Field = IdField, Value = id });
-            }
+            patch.Changes.Add(new PatchUpdateDetail { Field = IdField, Value = newId, OldVal = oldId });
             return new XHRWrapper
             {
                 Url = "/v2/user",

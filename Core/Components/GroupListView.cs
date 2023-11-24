@@ -66,7 +66,7 @@ namespace Core.Components
         {
             DisposeNoRecord();
             var keys = GuiInfo.GroupBy.Split(",");
-            item[_groupKey] = string.Join(" ", keys.Select(key => item.GetComplexPropValue(key)?.ToString()));
+            item[_groupKey] = string.Join(" ", keys.Select(key => item.GetPropValue(key)?.ToString()));
             var groupKey = item[_groupKey];
             var existGroup = AllListViewItem
                 .FirstOrDefault(group => group.GroupRow && group.Entity.As<GroupRowData>().Key == groupKey);

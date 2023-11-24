@@ -711,7 +711,7 @@ namespace Core.Services
         {
             if (vm is null || vm.SvcId.IsNullOrWhiteSpace() && (vm.Action.IsNullOrWhiteSpace() || vm.ComId.IsNullOrWhiteSpace()))
             {
-                throw new ApiException("Service can NOT be identified due to lack of Id or action") { StatusCode = Enums.HttpStatusCode.BadRequest };
+                throw new ApiException("Service can NOT be identified due to lack of Id or action") { StatusCode = HttpStatusCode.BadRequest };
             }
             Models.Services sv;
             if (vm.SvcId is not null)

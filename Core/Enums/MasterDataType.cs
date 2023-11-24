@@ -30,11 +30,11 @@ namespace Core.Enums
     public enum ActiveStateEnum
     {
         [Description("Tất cả trạng thái")]
-        All = 1,
+        All = 2,
         [Description("Hiệu lực")]
-        Yes = 2,
+        Yes = 1,
         [Description("Không hiệu lực")]
-        No = 3,
+        No = 0,
     }
 
     public enum AdvSearchOperation

@@ -192,7 +192,7 @@ namespace Core.Clients
                     var tenantQuery = "t=" + (tenant ?? "wr1");
                     url += url.Contains(Utils.QuestionMark) ? "&" + tenantQuery : (Utils.QuestionMark + tenantQuery);
                 }
-                options.FinalUrl = Window.EncodeURI(System.IO.Path.Combine(options.Prefix ?? Prefix, options.EntityName, url));
+                options.FinalUrl = Window.EncodeURI(PathIO.Combine(options.Prefix ?? Prefix, options.EntityName, url));
             }
             xhr.Open(options.Method.ToString(), options.FinalUrl, true);
             options.Headers.SelectForeach(x => xhr.SetRequestHeader(x.Key, x.Value));
@@ -882,7 +882,7 @@ namespace Core.Clients
             var removePath = RemoveGuid(path);
             var a = new HTMLAnchorElement
             {
-                Href = path.Contains("http") ? path : System.IO.Path.Combine(Origin, path),
+                Href = path.Contains("http") ? path : PathIO.Combine(Origin, path),
                 Target = "_blank"
             };
             a.SetAttribute("download", removePath);
@@ -1011,20 +1011,20 @@ namespace Core.Clients
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
-        public static void ExecTask<T>(Task<T> task, Action<T> handler = null)
+        public static void ExecTask<T>(Task<T> task, Action<T> handler = null, Action<Exception> errorHandler = null)
         {
             var promise = ToPromise(task);
             /*@
-            promise.then(handler);
+            promise.then(handler).catch(errorHandler);
              */
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
-        public static void ExecTaskNoResult(Task task, Action handler = null)
+        public static void ExecTaskNoResult(Task task, Action handler = null, Action<Exception> errorHandler = null)
         {
             var promise = ToPromiseNoResult(task);
             /*@
-            promise.then(handler);
+            promise.then(handler).catch(errorHandler);
              */
         }
     }

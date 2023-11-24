@@ -38,7 +38,6 @@ namespace Core.Components
         public virtual HTMLElement Element { get; set; }
         public event Action Disposed;
         public Action DOMContentLoaded { get; set; }
-        public Type EntityType { get; set; }
         public string EntityId
         {
             get => Entity?[IdField]?.ToString();
@@ -617,7 +616,7 @@ namespace Core.Components
         internal void SetOldTextAndVal()
         {
             OriginalText = GetValueText();
-            OldValue = Entity.GetComplexPropValue(GuiInfo?.FieldName)?.ToString();
+            OldValue = Entity.GetPropValue(GuiInfo?.FieldName)?.ToString();
         }
 
         public virtual void UpdateDirty(bool dirty, params string[] componentNames)
@@ -913,8 +912,8 @@ namespace Core.Components
                 root.FilterChildren<EditableComponent>(x => x.Name == field)
                     .SelectForeach(target =>
                     {
-                        var value = entity.GetComplexPropValue(field);
-                        var oldVal = Entity.GetComplexPropValue(field);
+                        var value = Utils.GetPropValue(entity, field);
+                        var oldVal = Utils.GetPropValue(Entity, field);
                         var targetType = Entity.GetType().GetComplexPropType(field);
                         if (value == oldVal || targetType is null || Activator.CreateInstance(targetType) != oldVal)
                         {

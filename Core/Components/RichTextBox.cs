@@ -79,7 +79,7 @@ namespace Core.Components
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            var text = Entity.GetComplexPropValue(GuiInfo.FieldName);
+            var text = Utils.GetPropValue(Entity, GuiInfo.FieldName);
             /*@
             this.editor.setContent(text || '');
             */

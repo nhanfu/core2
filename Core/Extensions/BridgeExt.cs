@@ -76,11 +76,6 @@ namespace Core.Extensions
             }
         }
 
-        public static object GetPropValue(this object obj, string propName)
-        {
-            return obj is null ? null : obj[propName];
-        }
-
         public static void SetPropValue(this object instance, string propertyName, object value)
         {
             var type = instance.GetType();

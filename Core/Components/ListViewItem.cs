@@ -229,7 +229,7 @@ namespace Core.Components
             }
             if (component is SearchEntry searchEntry && !(component is MultipleSearchEntry))
             {
-                var matched = header.LocalData?.FirstOrDefault(x => (string)x[IdField] == (string)rowData?.GetComplexPropValue(header.FieldName));
+                var matched = header.LocalData?.FirstOrDefault(x => (string)x[IdField] == rowData?.GetPropValue(header.FieldName)?.ToString());
                 searchEntry.Matched = matched;
             }
             component.Id = header.Id;
@@ -344,7 +344,7 @@ namespace Core.Components
                     {
                         return fn.Call(child) as PatchUpdateDetail[];
                     }
-                    var value = child.Entity.GetComplexPropValue(child.GuiInfo.FieldName);
+                    var value = Utils.GetPropValue(child.Entity, child.GuiInfo.FieldName);
                     var propType = child.Entity.GetType().GetComplexPropType(child.GuiInfo.FieldName, child.Entity);
                     var patch = new PatchUpdateDetail
                     {

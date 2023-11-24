@@ -15,17 +15,16 @@ namespace Core.Components
     {
         private const string MultipleClass = "multiple";
         private bool _isStringSource;
-        private readonly string _fieldName;
+        private string FieldName => GuiInfo.FieldName;
         private HTMLButtonElement _toggleButton;
 
         public MultipleSearchEntry(Component ui) : base(ui)
         {
-            _fieldName = GuiInfo.FieldName;
         }
 
         public override void Render()
         {
-            _isStringSource = Entity != null && Entity.GetType().GetComplexPropType(_fieldName, Entity).Equals(typeof(string));
+            _isStringSource = Entity != null && Entity.GetType().GetComplexPropType(FieldName, Entity).Equals(typeof(string));
             base.Render();
             Element.ParentElement.AddClass(MultipleClass);
             TryParseData();
@@ -38,7 +37,7 @@ namespace Core.Components
             {
                 return;
             }
-            var source = Entity.GetComplexPropValue(_fieldName);
+            var source = Utils.GetPropValue(Entity, FieldName);
             if (source == null)
             {
                 return;
@@ -114,11 +113,11 @@ namespace Core.Components
         {
             if (_isStringSource)
             {
-                Entity.SetComplexPropValue(_fieldName, value.Combine());
+                Entity.SetComplexPropValue(FieldName, value.Combine());
             }
             else
             {
-                Entity.SetComplexPropValue(_fieldName, value);
+                Entity.SetComplexPropValue(FieldName, value);
             }
         }
 
@@ -189,7 +188,7 @@ namespace Core.Components
 
         private void ClearTagIfNotExists()
         {
-            var tags = 
+            var tags =
                 from HTMLElement tag in ParentElement.QuerySelectorAll("div > span")
                 let id = tag.Dataset["id"]
                 where id != null && !ListValues.Contains(id)
@@ -264,14 +263,8 @@ namespace Core.Components
             Dirty = true;
             FindMatchText();
             _input.Focus();
-            if (UserInput != null)
-            {
-                UserInput.Invoke(new ObservableArgs { NewData = ListValues, OldData = ListValues, NewMatch = rowData, EvType = EventType.Change });
-            }
-            Task.Run(async () =>
-            {
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
-            });
+            UserInput?.Invoke(new ObservableArgs { NewData = ListValues, OldData = ListValues, NewMatch = rowData, EvType = EventType.Change });
+            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity));
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)

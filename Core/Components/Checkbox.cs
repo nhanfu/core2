@@ -1,4 +1,5 @@
 ﻿using Bridge.Html5;
+using Core.Clients;
 using Core.Components.Extensions;
 using Core.Extensions;
 using Core.Models;
@@ -32,10 +33,10 @@ namespace Core.Components
             Html.Take(ParentElement).TabIndex(-1).SmallCheckbox(_value ?? false);
             _input = Html.Context.PreviousElementSibling as HTMLInputElement;
             Element = _input.ParentElement;
-            Html.Take(_input).AsyncEvent(EventType.Input, UserChange);
+            Html.Take(_input).Event(EventType.Input, UserChange);
             SetDisableUI(!GuiInfo.Editable);
             SetDefaultVal();
-            Value = (bool?)Entity.GetComplexPropValue(GuiInfo.FieldName);
+            Value = (bool?)Utils.GetPropValue(Entity, GuiInfo.FieldName);
             Entity.SetComplexPropValue(GuiInfo.FieldName, _value);
             Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
             DOMContentLoaded?.Invoke();
@@ -46,7 +47,7 @@ namespace Core.Components
             return _value is null ? "N/A" : (_value == true ? "Check" : "Không check");
         }
 
-        private async Task UserChange(Event e)
+        private void UserChange(Event e)
         {
             if (Disabled)
             {
@@ -54,10 +55,10 @@ namespace Core.Components
                 return;
             }
             var check = _input.Checked;
-            await DataChanged(check);
+            DataChanged(check);
         }
 
-        private async Task DataChanged(bool check)
+        private void DataChanged(bool check)
         {
             var oldVal = _value;
             _value = check;
@@ -72,12 +73,12 @@ namespace Core.Components
             }
             PopulateFields();
             CascadeField();
-            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
+            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity));
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            var val = (bool?)Entity?.GetComplexPropValue(GuiInfo.FieldName);
+            var val = (bool?)Entity?.GetPropValue(GuiInfo.FieldName);
             Value = val;
             if (!Dirty)
             {

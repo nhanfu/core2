@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Clients;
 
 namespace Core.Components
 {
@@ -47,7 +48,7 @@ namespace Core.Components
                 Element = ButtonEle;
             }
             Html.Take(Element).ClassName(GuiInfo.ClassName)
-                .AsyncEvent(EventType.Click, DispatchClickAsync).Style(GuiInfo.Style);
+                .Event(EventType.Click, DispatchClick).Style(GuiInfo.Style);
             if (!string.IsNullOrEmpty(GuiInfo.Icon))
             {
                 html.Icon(GuiInfo.Icon).End.Text(" ").Render();
@@ -58,7 +59,7 @@ namespace Core.Components
             DOMContentLoaded?.Invoke();
         }
 
-        public virtual async Task DispatchClickAsync()
+        public virtual void DispatchClick()
         {
             if (Disabled || Element.Hidden())
             {
@@ -68,7 +69,7 @@ namespace Core.Components
             try
             {
                 Spinner.AppendTo(Element);
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity, this);
+                Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity, this));
             }
             finally
             {

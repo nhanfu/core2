@@ -196,7 +196,7 @@ namespace Core.Components.Forms
                     {
                         return fn.Call(child) as PatchUpdateDetail[];
                     }
-                    var value = child.Entity.GetComplexPropValue(child.GuiInfo.FieldName);
+                    var value = Utils.GetPropValue(child.Entity, child.GuiInfo.FieldName);
                     var propType = child.Entity.GetType().GetComplexPropType(child.GuiInfo.FieldName, child.Entity);
                     var patch = new PatchUpdateDetail
                     {
@@ -609,28 +609,46 @@ namespace Core.Components.Forms
             {
                 ParentForm = ParentForm ?? LastForm;
             }
-            Task.Run(RenderAsync);
+            LoadFeatureAndRender();
             LastForm = this;
         }
 
+        /// <summary>
+        /// This property is used in component's expressions
+        /// </summary>
         public virtual Token Token
         {
             get => Client.Token;
             set => Client.Token = value;
         }
 
-        protected virtual async Task RenderAsync()
+        protected virtual void LoadFeatureAndRender(Action callback = null)
         {
-            var token = Client.Token;
             var featureTask = Feature != null ? Task.FromResult(Feature) : ComponentExt.LoadFeatureByName(Name, Public, Config);
             var entityTask = LoadEntity();
-            await Task.WhenAll(featureTask, entityTask);
-            var feature = featureTask.Result;
-            var layout = feature.LayoutId is null || InnerEntry != null
-                ? null
-                : await new Client(nameof(Models.Feature), typeof(User).Namespace, Config).FirstOrDefaultAsync<Feature>(
-                    $"/Public/?$filter=Active eq true and Id eq '{feature.LayoutId}' and {nameof(feature.Template)} ne null");
-            Entity.CopyPropFrom(entityTask.Result);
+            Client.ExecTaskNoResult(Task.WhenAll(featureTask, entityTask),
+                () => FeatureLoaded(featureTask.Result, entityTask.Result, callback));
+        }
+
+        private void FeatureLoaded(Feature feature, object entity, Action loadedCallback = null)
+        {
+            if (feature.LayoutId is null || InnerEntry != null)
+            {
+                LayoutLoaded(feature, entity, loadedCallback: loadedCallback);
+                return;
+            }
+            var layoutTask = new Client(nameof(Models.Feature), typeof(User).Namespace, Config).FirstOrDefaultAsync<Feature>(
+                $"/Public/?$filter=Active eq true and Id eq '{feature.LayoutId}' and {nameof(feature.Template)} ne null");
+            Client.ExecTask(layoutTask, layout =>
+            {
+                LayoutLoaded(feature, entity, layout, loadedCallback);
+            });
+        }
+
+        private void LayoutLoaded(Feature feature, object entity, Feature layout = null, Action loadedCallback = null)
+        {
+            var token = Client.Token;
+            Entity.CopyPropFrom(entity);
             SetFeatureProperties(feature);
             CurrentUserId = token?.UserId;
             RegionId = token?.RegionId;
@@ -645,11 +663,12 @@ namespace Core.Components.Forms
             RenderTabOrSection(groupTree);
             ResizeHandler();
             LockUpdate();
-            Html.Take(Element).TabIndex(-1).Trigger(EventType.Focus).Event(EventType.FocusIn, async () => await this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusIn, Entity))
-                .Event(EventType.KeyDown, async (e) => await KeyDownIntro(e))
-                .Event(EventType.FocusOut, async () => await this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusOut, Entity));
+            Html.Take(Element).TabIndex(-1).Trigger(EventType.Focus).Event(EventType.FocusIn, () => Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusIn, Entity)))
+                .Event(EventType.KeyDown, (e) => Client.ExecTaskNoResult(KeyDownIntro(e)))
+                .Event(EventType.FocusOut, () => Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusOut, Entity)));
             DOMContentLoaded?.Invoke();
-            await this.DispatchEventToHandlerAsync(Feature.Events, EventType.DOMContentLoaded, Entity);
+            loadedCallback?.Invoke();
+            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(Feature.Events, EventType.DOMContentLoaded, Entity));
         }
 
         private async Task KeyDownIntro(Event evt)
@@ -1430,7 +1449,7 @@ namespace Core.Components.Forms
                 {
                     printWindow.AddEventListener(EventType.BeforePrint, e =>
                     {
-                        var pageStyle = printWindow.Document.CreateElement(MVVM.ElementType.style.ToString());
+                        var pageStyle = printWindow.Document.CreateElement(ElementType.style.ToString());
                         pageStyle.InnerHTML = component.Style;
                         printWindow.Document.Head.AppendChild(pageStyle);
                     });

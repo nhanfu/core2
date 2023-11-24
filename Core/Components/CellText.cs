@@ -26,7 +26,7 @@ namespace Core.Components
         public override void Render()
         {
             SetDefaultVal();
-            var cellData = Entity.GetComplexPropValue(GuiInfo.FieldName);
+            var cellData = Utils.GetPropValue(Entity, GuiInfo.FieldName);
             var isBool = cellData != null && cellData.GetType().IsBool();
             string cellText = string.Empty;
             if (Element is null)
@@ -78,7 +78,7 @@ namespace Core.Components
                 else
                 {
                     Html.Instance.Padding(Direction.bottom, 0)
-                        .SmallCheckbox((bool)Entity.GetComplexPropValue(GuiInfo.FieldName));
+                        .SmallCheckbox((bool)Utils.GetPropValue(Entity, GuiInfo.FieldName));
                     Html.Context.PreviousElementSibling.As<HTMLInputElement>().Disabled = true;
                 }
 
@@ -95,7 +95,7 @@ namespace Core.Components
                     Html.Instance.Span.Render();
                 }
 
-                Html.Instance.AsyncEvent(EventType.Click, LabelClickHandler).ClassName("cell-text").InnerHTML(cellText);
+                Html.Instance.Event(EventType.Click, LabelClickHandler).ClassName("cell-text").InnerHTML(cellText);
             }
             Element = Html.Context;
             Html.Instance.End.Render();
@@ -112,13 +112,13 @@ namespace Core.Components
                     return cellText;
                 }
 
-                if (!(Entity.GetComplexPropValue(fields[0]) is IEnumerable<object> listData))
+                if (!(Utils.GetPropValue(Entity, fields[0]) is IEnumerable<object> listData))
                 {
                     return cellText;
                 }
 
                 var restPivotField = string.Join(".", fields.Skip(1).Take(fields.Length - 2));
-                var row = listData.FirstOrDefault(x => x.GetComplexPropValue(restPivotField)?.ToString() == fields.Last().ToString());
+                var row = listData.FirstOrDefault(x => x.GetPropValue(restPivotField)?.ToString() == fields.Last().ToString());
                 cellText = row == null ? string.Empty : Utils.FormatEntity(GuiInfo.FormatEntity, row);
             }
             else
@@ -165,9 +165,9 @@ namespace Core.Components
             });
         }
 
-        private Task LabelClickHandler(Event e)
+        private void LabelClickHandler(Event e)
         {
-            return this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity);
+            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity));
         }
 
         public static TextAlign CalcTextAlign(Component header, object cellData)

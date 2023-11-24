@@ -68,7 +68,7 @@ namespace Core.Components
 
         public override void Render()
         {
-            _path = Entity?.GetComplexPropValue(GuiInfo.FieldName)?.ToString();
+            _path = Entity?.GetPropValue(GuiInfo.FieldName)?.ToString();
             var paths = _path?.Split(pathSeparator).ToList();
             RenderUploadForm();
             Path = _path;
@@ -86,7 +86,7 @@ namespace Core.Components
             Html.Instance.End.Render();
             if (!path.IsNullOrWhiteSpace())
             {
-                Html.Instance.Img.AsyncEvent(EventType.Click, OpenForm).ClassName("thumb").Style(GuiInfo.ChildStyle).Src(path).Render();
+                Html.Instance.Img.Event(EventType.Click, OpenForm).ClassName("thumb").Style(GuiInfo.ChildStyle).Src(path).Render();
             }
             return Html.Context.ParentElement;
         }
@@ -270,20 +270,20 @@ namespace Core.Components
             {
                 if (GuiInfo.Precision > 0)
                 {
-                    Html.Instance.I.AsyncEvent(EventType.Click, OpenForm).ClassName("fal fa-plus mt-3").Style(GuiInfo.ChildStyle).End.Render();
+                    Html.Instance.I.Event(EventType.Click, OpenForm).ClassName("fal fa-plus mt-3").Style(GuiInfo.ChildStyle).End.Render();
                 }
                 else
                 {
                     if (Path.IsNullOrWhiteSpace())
                     {
-                        Html.Instance.I.AsyncEvent(EventType.Click, OpenForm).ClassName("fal fa-plus mt-3").Style(GuiInfo.ChildStyle).End.Render();
+                        Html.Instance.I.Event(EventType.Click, OpenForm).ClassName("fal fa-plus mt-3").Style(GuiInfo.ChildStyle).End.Render();
                     }
                 }
                 _plus = Html.Context;
             }
         }
 
-        private async Task OpenForm()
+        private void OpenForm()
         {
             if (_backdrop is null)
             {
@@ -312,11 +312,14 @@ namespace Core.Components
                     .Button.Id("btn-upload").ClassName("btn btn-danger btn-md mr-1").I.ClassName("fa fa-trash mr-1").End.Text("Xóa ảnh đã chọn").End.End
                 .Div.ClassName(" list-group")
                     .Div.ClassName("row").Id("previewContainer");
-            var loadImage = await new Client(nameof(Images)).GetList<Images>($"?$filter=Active eq true");
-            if (loadImage.Value != null)
+            var loadImageTask = new Client(nameof(Images)).GetList<Images>($"?$filter=Active eq true");
+            Client.ExecTask(loadImageTask, loadImage =>
             {
-                RenderListImage(loadImage.Value.ToArray());
-            }
+                if (loadImage.Value != null)
+                {
+                    RenderListImage(loadImage.Value.ToArray());
+                }
+            });
         }
 
         private void RenderPlaceHolder()
@@ -418,7 +421,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            Path = Entity.GetComplexPropValue(GuiInfo.FieldName)?.ToString();
+            Path = Entity.GetPropValue(GuiInfo.FieldName)?.ToString();
             base.UpdateView();
         }
 

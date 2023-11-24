@@ -50,7 +50,7 @@ namespace Core.Controllers
             var user = await db.User.FindAsync(UserId);
             if (profile.OldPassword.HasAnyChar())
             {
-                var hashPassword = base._userSvc.GetHash(UserUtils.sHA256, profile.OldPassword + user.Salt);
+                var hashPassword = _userSvc.GetHash(UserUtils.sHA256, profile.OldPassword + user.Salt);
                 if (hashPassword != user.Password)
                 {
                     throw new InvalidOperationException("The old password is not matched!");
@@ -59,8 +59,8 @@ namespace Core.Controllers
                 {
                     throw new InvalidOperationException("The password is not matched confirmed password!");
                 }
-                profile.Salt = base._userSvc.GenerateRandomToken();
-                profile.Password = base._userSvc.GetHash(UserUtils.sHA256, profile.NewPassword + profile.Salt);
+                profile.Salt = _userSvc.GenerateRandomToken();
+                profile.Password = _userSvc.GetHash(UserUtils.sHA256, profile.NewPassword + profile.Salt);
             }
             user.Salt = profile.Salt;
             user.Password = profile.Password;
@@ -82,9 +82,9 @@ namespace Core.Controllers
             user.UserRole = user.UserRole.Where(x => AllRoleIds.Contains(x.RoleId)).ToList();
             var roles = await db.Role.Where(x => AllRoleIds.Contains(x.Id)).Select(x => new { x.Id, x.Level }).ToListAsync();
             user.CreatedRoleId = roles.FirstOrDefault(x => x.Level == roles.Min(r => r.Level))?.Id;
-            user.Salt = base._userSvc.GenerateRandomToken();
+            user.Salt = _userSvc.GenerateRandomToken();
             var randomPassword = "123";
-            user.Password = base._userSvc.GetHash(UserUtils.sHA256, randomPassword + user.Salt);
+            user.Password = _userSvc.GetHash(UserUtils.sHA256, randomPassword + user.Salt);
             var res = await base.CreateAsync(user);
             user.Password = randomPassword;
             var accountCreatedEmailTemplate = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "AccountCreated");
@@ -125,7 +125,7 @@ namespace Core.Controllers
             }
             var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _configuration);
             var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
-            var ipAddress = base._userSvc.GetRemoteIpAddress(_httpContext.HttpContext);
+            var ipAddress = _userSvc.GetRemoteIpAddress(_httpContext.HttpContext);
             var userLogin = await db.UserLogin.FindAsync(sessionId) ?? throw new ApiException("Login session not found");
             userLogin.ExpiredDate = DateTimeOffset.Now;
             await db.SaveChangesAsync();
@@ -157,7 +157,7 @@ namespace Core.Controllers
             }
             // Send mail
             var emailTemplate = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "") ?? throw new InvalidOperationException("Cannot find recovery email template!");
-            var oneClickLink = base._userSvc.GenerateRandomToken();
+            var oneClickLink = _userSvc.GenerateRandomToken();
             user.Recover = oneClickLink;
             await db.SaveChangesAsync();
             var email = new EmailVM
@@ -174,9 +174,9 @@ namespace Core.Controllers
         public async Task<string> ReSendUser(string userId)
         {
             var user = await db.User.FirstOrDefaultAsync(x => x.Id == userId);
-            user.Salt = base._userSvc.GenerateRandomToken();
-            var randomPassword = base._userSvc.GenerateRandomToken(10);
-            user.Password = base._userSvc.GetHash(UserUtils.sHA256, randomPassword + user.Salt);
+            user.Salt = _userSvc.GenerateRandomToken();
+            var randomPassword = _userSvc.GenerateRandomToken(10);
+            user.Password = _userSvc.GetHash(UserUtils.sHA256, randomPassword + user.Salt);
             SetAuditInfo(user);
             await db.SaveChangesAsync();
             return randomPassword;

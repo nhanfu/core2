@@ -113,7 +113,7 @@ namespace Core.Components
         {
             DeleteTempIds = new List<string>();
             GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
-            Id = ui.Id.ToString();
+            Id = ui.Id?.ToString();
             Name = ui.FieldName;
             Header = new List<Component>();
             RowData = new ObservableList<object>();
@@ -189,8 +189,7 @@ namespace Core.Components
             return source;
         }
 
-        public virtual async Task<List<object>> ReloadData(string dataSourceFilter = null, 
-            bool cacheHeader = false, int? skip = null, int? pageSize = null)
+        public virtual async Task<List<object>> ReloadData(bool cacheHeader = false, int? skip = null, int? pageSize = null)
         {
             if (GuiInfo.LocalRender && GuiInfo.LocalData != null)
             {
@@ -540,7 +539,7 @@ namespace Core.Components
 
         protected void SetRowDataIfExists()
         {
-            if (Entity != null && Entity.GetComplexPropValue(GuiInfo.FieldName) is IEnumerable value && value.GetEnumerator().MoveNext())
+            if (Entity != null && Utils.GetPropValue(Entity, GuiInfo.FieldName) is IEnumerable value && value.GetEnumerator().MoveNext())
             {
                 RowData["_data"] = value;
             }
@@ -734,10 +733,10 @@ namespace Core.Components
                         continue;
                     }
 
-                    var propVal = row.GetComplexPropValue(objField);
+                    var propVal = Utils.GetPropValue(row, objField);
                     var found = RefData.GetValueOrDefault(propType)?.FirstOrDefault(source =>
                     {
-                        return source[IdField].As<int?>() == row.GetComplexPropValue(header.FieldName).As<int?>();
+                        return source[IdField].As<int?>() == Utils.GetPropValue(row, header.FieldName).As<int?>();
                     });
                     if (found != null)
                     {
@@ -774,16 +773,16 @@ namespace Core.Components
                 return Enumerable.Empty<string>();
             }
 
-            return entities.Select(x =>
+            return entities.Select((Func<object, string>)(x =>
             {
-                var id = x.GetComplexPropValue(header.FieldName)?.ToString();
-                if (id.IsNullOrEmpty())
+                var id = x.GetPropValue(header.FieldName)?.ToString();
+                if (StringExt.IsNullOrEmpty(id))
                 {
                     return null;
                 }
 
-                return id;
-            }).Where(id => id != null);
+                return (string)id;
+            })).Where(id => id != null);
         }
 
         public void DeactivateSelected(object ev = null)
@@ -1347,8 +1346,8 @@ namespace Core.Components
                         EntityId = Utils.GetEntity(nameof(Models.History)).Id,
                         FieldName = nameof(Models.History.InsertedBy),
                         ShortDesc = "Người thay đổi",
-                        ReferenceId=Utils.GetEntity(nameof(Models.User)).Id,
-                        RefName=nameof(Models.User),
+                        ReferenceId=Utils.GetEntity(nameof(User)).Id,
+                        RefName=nameof(User),
                         FormatData="{FullName}",
                         Active = true,
                         ComponentType = "Dropdown",

@@ -549,7 +549,7 @@ namespace Core.Components
                 {
                     filterString = "endswith";
                 }
-                var header = Enumerable.FirstOrDefault<Component>(base.Header, (Func<Component, bool>)(y => y.FieldName == x.FieldName));
+                var header = Enumerable.FirstOrDefault<Component>(Header, (Func<Component, bool>)(y => y.FieldName == x.FieldName));
                 if (!x.IsSearch)
                 {
                     if (x.FieldName.Contains("."))
@@ -1976,7 +1976,7 @@ namespace Core.Components
         {
             _sum = false;
             DataTable.ParentElement.ScrollTop = 0;
-            await ReloadData(string.Empty, cacheHeader: true);
+            await ReloadData(cacheHeader: true);
         }
 
         private void ColumnResizeHandler()
@@ -2069,7 +2069,7 @@ namespace Core.Components
             FormattedRowData.ToList().ForEach((Action<object>)((rowData) =>
             {
                 Html.Take(MainSection.Element);
-                RenderRowData((List<Component>)base.Header, rowData, MainSection);
+                RenderRowData((List<Component>)Header, rowData, MainSection);
             }));
             MainSection.Show = true;
             RenderIndex();
@@ -2137,7 +2137,7 @@ namespace Core.Components
             {
                 updatedData.Skip(dataSections.Length).ForEach((Action<object>)(newRow =>
                 {
-                    var rs = RenderRowData((List<Component>)base.Header, newRow, MainSection);
+                    var rs = RenderRowData((List<Component>)Header, newRow, MainSection);
                     StickyColumn(rs);
                 }));
             }
@@ -2231,7 +2231,7 @@ namespace Core.Components
             sums.ForEach((Action<Component>)(header =>
             {
                 AddNewEmptyRow();
-                RenderSummaryRow(header, (List<Component>)base.Header, FooterSection.Element as HTMLTableSectionElement, count);
+                RenderSummaryRow(header, (List<Component>)Header, FooterSection.Element as HTMLTableSectionElement, count);
             }));
         }
 

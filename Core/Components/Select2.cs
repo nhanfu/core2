@@ -57,7 +57,7 @@ namespace Core.Components
         public override void Render()
         {
             SetDefaultVal();
-            var entityVal = Entity.GetComplexPropValue(IdFieldName)?.ToString();
+            var entityVal = Entity.GetPropValue(IdFieldName)?.ToString();
             if (entityVal is string str_value)
             {
                 _value = str_value;
@@ -234,7 +234,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            _value = Entity?.GetComplexPropValue(GuiInfo.FieldName)?.ToString();
+            _value = Entity?.GetPropValue(GuiInfo.FieldName)?.ToString();
             if (_value is null)
             {
                 Matched = null;

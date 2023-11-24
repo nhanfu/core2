@@ -9,7 +9,6 @@ namespace Core.Models
         {
             ComponentGroup = new HashSet<ComponentGroup>();
             FeaturePolicy = new HashSet<FeaturePolicy>();
-            Component = new HashSet<Component>();
             InverseParent = new HashSet<Feature>();
         }
 
@@ -60,7 +59,6 @@ namespace Core.Models
         public virtual Feature Parent { get; set; }
         public virtual ICollection<ComponentGroup> ComponentGroup { get; set; }
         public virtual ICollection<FeaturePolicy> FeaturePolicy { get; set; }
-        public virtual ICollection<Component> Component { get; set; }
         public virtual ICollection<Feature> InverseParent { get; set; }
     }
 }
