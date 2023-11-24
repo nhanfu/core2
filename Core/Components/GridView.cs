@@ -1928,9 +1928,12 @@ namespace Core.Components
             }
             emptyRowData[IdField] = null;
             var rowSection = RenderRowData(Header, emptyRowData, EmptyRowSection, null, true);
-            emptyRowData.ForEachProp((field, value) => {
-                rowSection.PatchModel.Add(new PatchUpdateDetail {
-                    Field = field, Value = value?.ToString()
+            emptyRowData.ForEachProp((field, value) =>
+            {
+                rowSection.PatchModel.Add(new PatchUpdateDetail
+                {
+                    Field = field,
+                    Value = value?.ToString()
                 });
             });
             if (!GuiInfo.TopEmpty)
@@ -1949,6 +1952,7 @@ namespace Core.Components
 
         protected override List<Component> FilterColumns(List<Component> Component)
         {
+            if (Component.Nothing()) return Component;
             var specificComponent = Component.Any(x => x.ComponentId == GuiInfo.Id);
             if (specificComponent)
             {
@@ -2637,32 +2641,38 @@ namespace Core.Components
             }, 1000);
         }
 
-        protected override async Task<List<object>> CustomQuery(string submitEntity)
+        protected override Task<List<object>> CustomQuery(string submitEntity)
         {
-            var ds = await Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+            var tcs = new TaskCompletionSource<List<object>>();
+            var dsTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = submitEntity,
                 Url = Utils.ComQuery,
                 IsRawString = true,
                 Method = HttpMethod.POST
             });
-            if (ds.Nothing())
+            Client.ExecTask(dsTask, ds =>
             {
-                SetRowData(null);
-                return null;
-            }
-            var total = ds.Length > 1 ? ds[1].ToDynamic()[0].total : ds[0].Length;
-            if (ds.Length > 3)
-            {
-                var customHeaders = ds[2].Select(x => x.As<Component>()).ToList();
-                FilterColumns(customHeaders);
-                RenderTableHeader(Header);
-            }
-            var rows = new List<object>(ds[0]);
-            ClearRowData();
-            SetRowData(rows);
-            UpdatePagination(total, rows.Count);
-            return rows;
+                if (ds.Nothing())
+                {
+                    SetRowData(null);
+                    tcs.TrySetResult(null);
+                    return;
+                }
+                var total = ds.Length > 1 ? ds[1].ToDynamic()[0].total : ds[0].Length;
+                if (ds.Length > 3)
+                {
+                    var customHeaders = ds[2].Select(x => x.As<Component>()).ToList();
+                    FilterColumns(customHeaders);
+                    RenderTableHeader(Header);
+                }
+                var rows = new List<object>(ds[0]);
+                ClearRowData();
+                SetRowData(rows);
+                UpdatePagination(total, rows.Count);
+                tcs.TrySetResult(rows);
+            });
+            return tcs.Task;
         }
 
         private void MoveLeft(Component header, Event e)

@@ -10,6 +10,7 @@ namespace Core.Components.Forms
     {
         private HTMLElement _yesBtn;
         public HTMLElement PElement;
+        public EditForm OpenEditForm { get; set; }
         public Textbox Textbox { get; private set; }
         public Number Number { get; private set; }
         public Datepicker Datepicker { get; private set; }

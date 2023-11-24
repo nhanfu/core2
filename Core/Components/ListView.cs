@@ -189,12 +189,12 @@ namespace Core.Components
             return source;
         }
 
-        public virtual async Task<List<object>> ReloadData(bool cacheHeader = false, int? skip = null, int? pageSize = null)
+        public virtual Task<List<object>> ReloadData(bool cacheHeader = false, int? skip = null, int? pageSize = null)
         {
             if (GuiInfo.LocalRender && GuiInfo.LocalData != null)
             {
                 SetRowData(GuiInfo.LocalData);
-                return GuiInfo.LocalData;
+                return Task.FromResult(GuiInfo.LocalData);
             }
             if (Paginator != null)
             {
@@ -202,13 +202,13 @@ namespace Core.Components
             }
             pageSize = pageSize ?? Paginator?.Options?.PageSize ?? GuiInfo.Row ?? 12;
             skip = skip ?? Paginator?.Options?.PageIndex * pageSize ?? 0;
-            return await SqlReader(skip, pageSize, cacheHeader);
+            return SqlReader(skip, pageSize, cacheHeader);
         }
 
-        public async Task<List<object>> SqlReader(int? skip, int? pageSize, bool cacheHeader = false)
+        public Task<List<object>> SqlReader(int? skip, int? pageSize, bool cacheHeader = false)
         {
             var sql = GetSql(skip, pageSize, cacheHeader);
-            return await CustomQuery(JSON.Stringify(sql));
+            return CustomQuery(JSON.Stringify(sql));
         }
 
         public SqlViewModel GetSql(int? skip = null, int? pageSize = null, bool cacheHeader = false)
@@ -239,26 +239,31 @@ namespace Core.Components
             return data;
         }
 
-        protected virtual async Task<List<object>> CustomQuery(string submitEntity)
+        protected virtual Task<List<object>> CustomQuery(string submitEntity)
         {
-            var ds = await Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+            var tcs = new TaskCompletionSource<List<object>>();
+            var dsTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = submitEntity,
                 Url = Utils.ComQuery,
                 IsRawString = true,
                 Method = HttpMethod.POST
             });
-            if (ds.Nothing())
+            Client.ExecTask(dsTask, ds =>
             {
-                SetRowData(null);
-                return null;
-            }
-            var total = ds.Length > 1 ? ds[1].ToDynamic()[0].total : ds[0].Length;
-            var rows = new List<object>(ds[0]);
-            Spinner.Hide();
-            SetRowData(rows);
-            UpdatePagination(total, rows.Count);
-            return rows;
+                if (ds.Nothing())
+                {
+                    SetRowData(null);
+                    tcs.TrySetResult(null);
+                }
+                var total = ds.Length > 1 ? ds[1].ToDynamic()[0].total : ds[0].Length;
+                var rows = new List<object>(ds[0]);
+                Spinner.Hide();
+                SetRowData(rows);
+                UpdatePagination(total, rows.Count);
+                tcs.TrySetResult(rows);
+            }, err => tcs.TrySetException(err));
+            return tcs.Task;
         }
 
         public override void Render()
@@ -284,11 +289,7 @@ namespace Core.Components
                 }
                 return;
             }
-            Task.Run(async () =>
-            {
-                await LoadAllData();
-                RowData.Data = RowData.Data;
-            });
+            LoadAllData();
         }
 
         internal virtual void AddSections()
@@ -326,20 +327,30 @@ namespace Core.Components
             return ListViewSearch.CalcFilterQuery(null);
         }
 
-        public virtual async Task LoadAllData()
+        public void LoadAllData()
         {
-            await ReloadData(cacheHeader: GuiInfo.CanCache);
-            await LoadHeader();
+            Client.ExecTask(ReloadData(cacheHeader: GuiInfo.CanCache), (ds) => {
+                Task.Run(LoadHeader);
+            });
         }
 
-        public async Task LoadHeader()
+        public Task<bool> LoadHeader()
         {
-            if (_hasLoadUserSetting) return;
-            var columns = await LoadCustomHeaders();
-            columns = FilterColumns(columns);
-            Header = columns.OrderBy(x => x.Order).ToList();
-            ResetOrder();
-            HeaderLoaded?.Invoke(columns);
+            var tcs = new TaskCompletionSource<bool>();
+            if (_hasLoadUserSetting) return Task.FromResult(_hasLoadUserSetting);
+            Client.ExecTask(LoadCustomHeaders(), columns =>
+            {
+                if (columns.Nothing())
+                {
+                    tcs.TrySetResult(_hasLoadUserSetting);
+                    return;
+                };
+                columns = FilterColumns(columns);
+                Header = columns.OrderBy(x => x.Order).ToList();
+                ResetOrder();
+                HeaderLoaded?.Invoke(columns);
+            });
+            return tcs.Task;
         }
 
         public void ResetOrder()
@@ -354,6 +365,7 @@ namespace Core.Components
 
         protected virtual List<Component> FilterColumns(List<Component> Component)
         {
+            if (Component.Nothing()) return Component;
             var specificComponent = Component.Any(x => x.ComponentId == GuiInfo.Id);
             if (specificComponent)
             {
@@ -545,41 +557,40 @@ namespace Core.Components
             }
         }
 
-        protected virtual async Task<List<Component>> LoadCustomHeaders()
+        protected virtual Task<List<Component>> LoadCustomHeaders()
         {
-            List<Component> sysSetting = null;
-            UserSetting userSetting = null;
-            if (GuiInfo.LocalHeader.Nothing())
+            if (!GuiInfo.LocalHeader.Nothing())
             {
-                var vm = new SqlViewModel
-                {
-                    ComId = "UserSetting",
-                    Action = "GridColumn",
-                    Entity = JSON.Stringify(new { ComId = GuiInfo.Id })
-                };
-                var userSettingTask = await Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
-                {
-                    Url = Utils.UserSvc,
-                    Value = JSON.Stringify(vm),
-                    Method = HttpMethod.POST,
-                    IsRawString = true
-                });
-                userSetting = userSettingTask?.ElementAt(0)?.ElementAt(0)?.As<UserSetting>();
+                return Task.FromResult(GuiInfo.LocalHeader);
+            }
+            var tcs = new TaskCompletionSource<List<Component>>();
+            var vm = new SqlViewModel
+            {
+                ComId = "UserSetting",
+                Action = "GridColumn",
+                Entity = JSON.Stringify(new { ComId = GuiInfo.Id })
+            };
+            var userSettingTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+            {
+                Url = Utils.UserSvc,
+                Value = JSON.Stringify(vm),
+                Method = HttpMethod.POST,
+                IsRawString = true
+            });
+            Client.ExecTask(userSettingTask, ds =>
+            {
+                var userSetting = ds.Length == 0 || ds[0].Length == 0 ? null : ds[0][0].As<UserSetting>();
                 _hasLoadUserSetting = true;
-            }
-            else
-            {
-                sysSetting = new List<Component>(GuiInfo.LocalHeader);
-            }
-            if (userSetting is null)
-            {
-                return sysSetting;
-            }
-            else
-            {
-                var column = userSetting.Value;
-                return MergeComponent(sysSetting, JsonConvert.DeserializeObject<List<Component>>(column));
-            }
+                if (userSetting is null)
+                {
+                    tcs.TrySetResult(GuiInfo.LocalHeader);
+                    return;
+                }
+                var column = JsonConvert.DeserializeObject<List<Component>>(userSetting.Value);
+                var res = MergeComponent(GuiInfo.LocalHeader, column);
+                tcs.TrySetResult(res);
+            });
+            return tcs.Task;
         }
 
         protected virtual List<Component> MergeComponent(List<Component> sysSetting, List<Component> userSetting)
@@ -1126,7 +1137,8 @@ namespace Core.Components
             {
                 RowData.Data.Add(rowData);
             }
-            Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData), () => {
+            Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData), () =>
+            {
                 var row = RenderRowData(Header, rowData, MainSection, index);
                 tcs.TrySetResult(row);
                 Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData));

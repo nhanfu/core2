@@ -78,6 +78,7 @@ namespace Core.Extensions
 
         public static void SetPropValue(this object instance, string propertyName, object value)
         {
+            if (propertyName.IsNullOrWhiteSpace()) return;
             var type = instance.GetType();
             var prop = type.GetProperty(propertyName);
             if (prop != null && type != null && prop.CanWrite)

@@ -1375,31 +1375,27 @@ namespace Core.Components.Forms
             }
             _confirm = new ConfirmDialog()
             {
-                Content = "Bạn có muốn lưu dữ liệu trước khi đóng?"
+                Content = "Bạn có muốn lưu dữ liệu trước khi đóng?",
+                OpenEditForm = this
             };
-            _confirm.YesConfirmed += async () =>
+            _confirm.YesConfirmed += () =>
             {
-                await SaveAndLeaveAsync();
-                closeCallback?.Invoke();
+                Client.ExecTask( _confirm.OpenEditForm.SavePatch(), success => {
+                    if (!success) {
+                        Toast.Warning("Update data failed");
+                        return;
+                    }
+                    _confirm.OpenEditForm.Dispose();
+                    _confirm.Dispose();
+                });
             };
             _confirm.NoConfirmed += () =>
             {
-                Dispose();
-                closeCallback?.Invoke();
+                _confirm.OpenEditForm.Dispose();
+                _confirm.Dispose();
             };
             _confirm.IgnoreCancelButton = true;
             _confirm.Render();
-        }
-
-        private async Task SaveAndLeaveAsync()
-        {
-            var success = await Save();
-            if (!success)
-            {
-                return;
-            }
-
-            Dispose();
         }
 
         public virtual async Task EmailPdf(EmailVM email, params string[] pdfSelector)
