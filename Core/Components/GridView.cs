@@ -448,7 +448,7 @@ namespace Core.Components
                 return;
             }
             Spinner.AppendTo(DataTable);
-            var dropdowns = CellSelected.Where(x => (!x.Value.IsNullOrWhiteSpace() || !x.ValueText.IsNullOrWhiteSpace()) && (x.ComponentType == "Dropdown" || x.ComponentType == nameof(SearchEntry) || x.FieldName.Contains("."))).ToList();
+            var dropdowns = CellSelected.Where(x => (!x.Value.IsNullOrWhiteSpace() || !x.ValueText.IsNullOrWhiteSpace()) && x.ComponentType == nameof(SearchEntry) || x.FieldName.Contains(".")).ToList();
             var groups = CellSelected.Where(x => x.FieldName.Contains(".")).ToList();
             Client.ExecTask(FilterDropdownIds(dropdowns), data =>
             {
@@ -754,7 +754,7 @@ namespace Core.Components
             {
                 HeaderSection.Element.Focus();
             }
-            if (GuiInfo.ComponentType == "Dropdown")
+            if (GuiInfo.ComponentType == nameof(SearchEntry))
             {
                 var search = Parent as SearchEntry;
                 search?._input.Focus();
@@ -883,45 +883,7 @@ namespace Core.Components
             _summarys.ElementAtOrDefault(_summarys.Count - 1).Hide();
         }
 
-        private async Task ExportExcel(Event e)
-        {
-            var input = e.Target as HTMLInputElement;
-            var table = Document.GetElementById(_summaryId) as HTMLTableElement;
-            var url = await new Client(nameof(FileUpload)) { CustomPrefix = "https://cdn-tms.softek.com.vn/api" }.PostAsync<string>(table.OuterHTML, $"ExportExcelFromHtml?fileName=Summary{DateTimeOffset.Now:ddMMyyyyHHmm}", allowNested: true);
-            Client.Download(url);
-        }
-
-        private void SearchTable(Event e)
-        {
-            var input = e.Target as HTMLInputElement;
-            var table = Document.GetElementById(_summaryId) as HTMLTableElement;
-            var rows = table.TBodies.FirstOrDefault().Children;
-            // Loop through all table rows
-            for (var i = 0; i < rows.Length; i++)
-            {
-                var cells = rows[i].ChildNodes;
-                var found = false;
-                for (var j = 0; j < cells.Length; j++)
-                {
-                    var cellText = cells[j].TextContent;
-                    if (cellText.ToLowerCase().IndexOf(input.Value.ToLowerCase()) > -1)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if (found)
-                {
-                    rows[i].RemoveClass("d-none");
-                }
-                else
-                {
-                    rows[i].AddClass("d-none");
-                }
-            }
-        }
-
-        public void FullTextSearch()
+        public void SearchDisplayRows()
         {
             var table = DataTable as HTMLTableElement;
             var rows = table.TBodies.LastOrDefault().Children;
@@ -963,69 +925,6 @@ namespace Core.Components
             }
         }
 
-        private void SortTable(Event e, int columnIndex)
-        {
-            var th = e.Target as HTMLElement;
-            var tr = th.Closest("tr");
-            tr.Children.SelectForeach(td =>
-            {
-                td.RemoveClass("desc");
-                td.RemoveClass("asc");
-            });
-            var table = Document.GetElementById(_summaryId);
-            var tbody = table.QuerySelector("tbody");
-            var thead = table.QuerySelector("thead");
-            var sortOrder = table.GetAttribute("data-sort-order");
-            var dataType = th.GetAttribute("data-sort-type");
-            /*@
-              var rows = Array.from(tbody.children);
-              rows.sort(function(rowA, rowB)
-              {
-                var cellA = rowA.getElementsByTagName('td')[columnIndex];
-                var cellB = rowB.getElementsByTagName('td')[columnIndex];
-                var valueA = cellA.textContent || cellA.innerText;
-                var valueB = cellB.textContent || cellB.innerText;
-                
-                if (dataType === 'number')
-                {
-                  if (valueA === null || valueA === undefined || valueA === '')
-                  {
-                      valueA = '0';
-                  }
-                  if (valueB === null || valueB === undefined || valueB === '')
-                  {
-                      valueB = '0';
-                  }
-                  valueA = parseFloat(valueA.replaceAll(',', ''));
-                  valueB = parseFloat(valueB.replaceAll(',', ''));
-                }
-                else if (dataType === 'date') 
-                {
-                  valueA = cellA.getAttribute('data-value');
-                  valueB = cellB.getAttribute('data-value');
-                  valueA = new Date(valueA);
-                  valueB = new Date(valueB);
-                }
-                if (valueA < valueB) 
-                {
-                  return sortOrder === 'asc' ? -1 : 1;
-                } else if (valueA > valueB)
-                {
-                  return sortOrder === 'asc' ? 1 : -1;
-                } else 
-                {
-                  return 0;
-                }
-              });
-              rows.forEach(function(row)
-              {
-                tbody.appendChild(row);
-              });
-            */
-            th.AddClass(sortOrder == "asc" ? "desc" : "asc");
-            table.SetAttribute("data-sort-order", sortOrder == "asc" ? "desc" : "asc");
-        }
-
         public virtual void FocusCell(Event e, Component header)
         {
             var td = e.Target as HTMLElement;
@@ -1038,45 +937,6 @@ namespace Core.Components
 
             td.Closest(ElementType.tr.ToString()).AddClass("focus");
             td.Closest(ElementType.td.ToString()).AddClass("cell-selected");
-        }
-
-        public void FilterSumary(Component Component, string value, string valueText)
-        {
-            var dateTime = CellSelected.FirstOrDefault(x => Component.ComponentType == nameof(Datepicker) && x.FieldName == Component.FieldName && x.Operator == (int)OperatorEnum.In);
-            if (dateTime is null)
-            {
-                if (!CellSelected.Any(x => x.FieldName == Component.FieldName && x.Value == value && x.Operator == (int)OperatorEnum.In))
-                {
-                    var header = Header.FirstOrDefault(x => x.FieldName == Component.FieldName);
-                    CellSelected.Add(new CellSelected
-                    {
-                        FieldName = Component.FieldName,
-                        FieldText = header.ShortDesc,
-                        ComponentType = header.ComponentType,
-                        Value = value,
-                        ValueText = valueText,
-                        Operator = (int)OperatorEnum.In,
-                        OperatorText = "chứa",
-                        IsSearch = true
-                    });
-                }
-            }
-            else
-            {
-                dateTime.Value = value;
-                dateTime.ValueText = valueText;
-            }
-            HiddenSumary();
-            ActionFilter();
-        }
-
-        internal void HotKeyHandler(Event e, Component header, ListViewItem focusedRow)
-        {
-            EditableComponent com = focusedRow.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus.Id);
-            var el = e.Target as HTMLElement;
-            el = el.Closest(ElementType.td.ToString());
-            var keyCode = e.KeyCodeEnum();
-            ActionKeyHandler(e, header, focusedRow, com, el, keyCode);
         }
 
         public void ActionKeyHandler(Event e, Component header, ListViewItem focusedRow, EditableComponent com, HTMLElement el, KeyCodeEnum? keyCode)
@@ -1101,7 +961,7 @@ namespace Core.Components
                 fieldName = com.FieldName;
                 switch (com.GuiInfo.ComponentType)
                 {
-                    case "Dropdown":
+                    case nameof(SearchEntry):
                         value = focusedRow.Entity.GetPropValue(header.FieldName) is null ? null : focusedRow.Entity.GetPropValue(header.FieldName).ToString().EncodeSpecialChar();
                         break;
                     case nameof(Number):
@@ -1133,8 +993,8 @@ namespace Core.Components
 
             switch (keyCode)
             {
-                case KeyCodeEnum.F11:
-                    ProcessSort(e, com);
+                case KeyCodeEnum.F2:
+                    FilterSelected(new HotKeyModel { Operator = 2, OperatorText = "Loại trừ", Value = value, FieldName = fieldName, ValueText = text, ActValue = true });
                     break;
                 case KeyCodeEnum.F4:
                     ProcessFilterDetail(e, com, el, fieldName, text, value);
@@ -1146,12 +1006,8 @@ namespace Core.Components
                     FilterSelected(new HotKeyModel { Operator = 1, OperatorText = "Chứa", Value = value, FieldName = fieldName, ValueText = text, ActValue = true });
                     com.Focus();
                     break;
-                case KeyCodeEnum.F10:
-                    var header1 = Header.FirstOrDefault(x => x.Id == com.GuiInfo.Id);
-                    ViewSumary(e, header1);
-                    break;
-                case KeyCodeEnum.F2:
-                    FilterSelected(new HotKeyModel { Operator = 2, OperatorText = "Loại trừ", Value = value, FieldName = fieldName, ValueText = text, ActValue = true });
+                case KeyCodeEnum.F11:
+                    ProcessSort(e, com);
                     break;
                 case KeyCodeEnum.UpArrow:
                     var currentItemUp = GetItemFocus();
@@ -1309,7 +1165,7 @@ namespace Core.Components
                         updated.Dirty = true;
                         Task.Run(async () =>
                         {
-                            if (updated.GuiInfo.ComponentType == nameof(SearchEntry) || updated.GuiInfo.ComponentType == "Dropdown")
+                            if (updated.GuiInfo.ComponentType == nameof(SearchEntry))
                             {
                                 updated.UpdateView();
                                 var dropdown = com as SearchEntry;
@@ -1604,175 +1460,6 @@ namespace Core.Components
             ActionKeyHandler(e, LastComponentFocus, LastListViewItem, com, com.Element.Closest(ElementType.td.ToString()), keyCode);
         }
 
-        public void ViewSumary(object ev, Component header)
-        {
-            if (_waitingLoad)
-            {
-                Window.ClearTimeout(_renderPrepareCacheAwaiter);
-            }
-            Html.Take(Element).Div.ClassName("backdrop")
-            .Style("align-items: center;").Escape((e) => DisposeSumary());
-            _summarys.Add(Html.Context);
-            Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;min-width: 90%")
-                .Div.ClassName("popup-title").InnerHTML("Gộp theo cột hiện thời")
-                .Div.ClassName("icon-box").Span.ClassName("fa fa-times")
-                    .Event(EventType.Click, DisposeSumary)
-                .EndOf(".popup-title")
-                .Div.ClassName("popup-body scroll-content");
-            Html.Instance.Div.ClassName("container-rpt");
-            Html.Instance.Div.ClassName("menuBar d-flex");
-            Html.Instance.Div.ClassName("search-input").Style("margin-bottom: 12px;").Input.Style("width: 300px;").Event(EventType.Input, (e) => SearchTable(e)).PlaceHolder("Tìm kiếm").End.End.Render();
-            Html.Instance.Div.ClassName("search-button").Style("margin-bottom: 12px;").Button.ClassName("btn btn-info").AsyncEvent(EventType.Click, async (e) => await ExportExcel(e)).I.ClassName("fa fal fa-print").End.End.End.Render();
-            Html.Instance.EndOf(".menuBar");
-            Html.Instance.Div.ClassName("printable");
-            var body = Html.Context;
-            Task.Run(async () =>
-            {
-                var filter = Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
-                var filter1 = Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
-                var wh = new List<string>();
-                if (!filter.IsNullOrWhiteSpace())
-                {
-                    wh.Add($"({filter})");
-                }
-                if (!filter1.IsNullOrWhiteSpace())
-                {
-                    wh.Add($"({filter1})");
-                }
-                var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
-                var Component = Header.Where(x => x.ComponentType == nameof(Number) && x.FieldName != header.FieldName).ToList();
-                var sum = Component.Select(x => $"FORMAT(SUM(isnull([ds].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
-                var pre = GuiInfo.PreQuery;
-                if (pre != null && Utils.IsFunction(pre, out Function fn))
-                {
-                    pre = fn.Call(this, this, EditForm).ToString();
-                }
-                var dataSet = await new Client(GuiInfo.RefName).PostAsync<object[][]>(sum.Combine(), $"ViewSumary?group={header.FieldName}" +
-                    $"&tablename={GuiInfo.RefName}" +
-                    $"&refname={header.RefName}" +
-                    $"&join={GuiInfo.JoinTable}" +
-                    $"&formatsumary={GuiInfo.FormatSumaryField}" +
-                    $"&sql={Sql}&orderby={GuiInfo.OrderBySumary}" +
-                    $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(Wheres.Any() ? " and " : "")} {pre}")}");
-                var sumarys = dataSet[0];
-                object[] refn = null;
-                if (dataSet.Length > 1)
-                {
-                    refn = dataSet[1];
-                }
-                var datasorttypeHeader = string.Empty;
-                if (header.ComponentType == "Dropdown")
-                {
-                    datasorttypeHeader = "text";
-                }
-                else if (header.ComponentType == nameof(Datepicker))
-                {
-                    datasorttypeHeader = "date";
-                }
-                else if (header.ComponentType == nameof(Number))
-                {
-                    datasorttypeHeader = "number";
-                }
-                else
-                {
-                    datasorttypeHeader = "text";
-                }
-
-                _summaryId = "sumary" + new Random(10).GetHashCode();
-                var dir = refn?.ToDictionary(x => x[IdField]);
-                Html.Instance.Div.ClassName("grid-wrapper sticky").Style("max-height: calc(100vh - 317px) !important;").Div.ClassName("table-wrapper printable").Table.Id(_summaryId).Width("100%").ClassName("table")
-                .Thead
-                    .TRow.Render();
-                Html.Instance.Th.DataAttr("sort-type", datasorttypeHeader).Event(EventType.Click, (e) => SortTable(e, 0)).Style("max-width: 100%;").IText(header.ShortDesc).End.Render();
-                Html.Instance.Th.DataAttr("sort-type", "number").Event(EventType.Click, (e) => SortTable(e, 1)).Style("max-width: 100%;").IText("Tổng dữ liệu").End.Render();
-                Component.SelectForEach((item, index) =>
-                {
-                    var datasorttype = string.Empty;
-                    if (item.ComponentType == "Dropdown")
-                    {
-                        datasorttype = "text";
-                    }
-                    else if (item.ComponentType == nameof(Datepicker))
-                    {
-                        datasorttype = "date";
-                    }
-                    else if (item.ComponentType == nameof(Number))
-                    {
-                        datasorttype = "number";
-                    }
-                    else
-                    {
-                        datasorttype = "text";
-                    }
-                    Html.Instance.Th.Event(EventType.Click, (e) => SortTable(e, index + 2)).DataAttr("sort-type", datasorttype).Style("max-width: 100%;").IHtml(item.ShortDesc).End.Render();
-
-                });
-                Html.Instance.EndOf(ElementType.thead);
-                Html.Instance.TBody.Render();
-                var ttCount = sumarys.Sum(x => Convert.ToDecimal(x["TotalRecord"].ToString().Replace(",", "") == "" ? "0" : x["TotalRecord"].ToString().Replace(",", "")));
-                foreach (var item in sumarys)
-                {
-                    item[header.FieldName] = item[header.FieldName] ?? "";
-                    var dataHeader = item[header.FieldName].ToString();
-                    var value = string.Empty;
-                    var actValue = string.Empty;
-                    var valueText = string.Empty;
-                    if (header.ComponentType == "Dropdown")
-                    {
-                        var ob = dir.GetValueOrDefault(item[header.FieldName]);
-                        if (ob is null)
-                        {
-                            dataHeader = "";
-                        }
-                        else
-                        {
-                            dataHeader = ob[header.FormatData.Split("}")[0].Replace("{", "")].ToString();
-                            value = ob["Id"].ToString();
-                            valueText = dataHeader;
-                        }
-                    }
-                    else if (header.ComponentType == nameof(Datepicker))
-                    {
-                        var datetime = DateTimeExt.TryParseDateTime(item[header.FieldName].ToString());
-                        dataHeader = datetime?.ToString("dd/MM/yyyy");
-                        value = datetime?.ToString("dd/MM/yyyy");
-                        valueText = datetime?.ToString("dd/MM/yyyy");
-                        actValue = datetime.ToString();
-                    }
-                    else if (header.ComponentType == nameof(Number))
-                    {
-                        var numVal = (item[header.FieldName] is null || item[header.FieldName].ToString() == "") ? 0 : decimal.Parse(item[header.FieldName].ToString());
-                        dataHeader = numVal == 0 ? "" : numVal.ToString("N0");
-                        value = item[header.FieldName].ToString();
-                        valueText = dataHeader;
-                    }
-                    else
-                    {
-                        value = item[header.FieldName].ToString();
-                        valueText = item[header.FieldName].ToString();
-                    }
-                    Html.Instance.TRow.Event(EventType.DblClick, () => FilterSumary(header, value, valueText)).Event(EventType.Click, (e) => FocusCell(e, header)).Render();
-                    Html.Instance.TData.Style("max-width: 100%;").DataAttr("value", actValue).ClassName(header.ComponentType == nameof(Number) ? "text-right" : "text-left").IText(dataHeader.DecodeSpecialChar()).End.Render();
-                    Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item["TotalRecord"].ToString()).End.Render();
-                    foreach (var itemDetail in Component)
-                    {
-                        Html.Instance.TData.Style("max-width: 100%;").ClassName("text-right").IText(item[itemDetail.FieldName].ToString()).End.Render();
-                    }
-                    Html.Instance.EndOf(ElementType.tr);
-                }
-                Html.Instance.EndOf(ElementType.tbody);
-                Html.Instance.TFooter.TRow.ClassName("summary").Render();
-                Html.Instance.TData.Style("max-width: 100%;").IText("Tổng cộng").End.Render();
-                Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IText(ttCount.ToString("N0")).End.Render();
-                foreach (var item in Component)
-                {
-                    var de = sumarys.Select(x => x[item.FieldName].ToString().Replace(",", "")).ToList();
-                    var ttCount1 = de.Where(x => !x.IsNullOrWhiteSpace()).Sum(x => decimal.Parse(x));
-                    Html.Instance.TData.ClassName("text-right").Style("max-width: 100%;").IHtml(ttCount1.ToString("N0")).End.Render();
-                }
-            });
-        }
-
         public override void RenderCopyPasteMenu(bool canWrite)
         {
             if (canWrite)
@@ -1821,7 +1508,7 @@ namespace Core.Components
                     updated.Dirty = true;
                     Task.Run(async () =>
                     {
-                        if (updated.GuiInfo.ComponentType == nameof(SearchEntry) || updated.GuiInfo.ComponentType == "Dropdown")
+                        if (updated.GuiInfo.ComponentType == nameof(SearchEntry))
                         {
                             updated.UpdateView();
                             var dropdown = com as SearchEntry;
@@ -1917,10 +1604,10 @@ namespace Core.Components
             return Header;
         }
 
-        public override async Task ApplyFilter(bool searching = true)
+        public override Task ApplyFilter(bool searching = true)
         {
             DataTable.ParentElement.ScrollTop = 0;
-            await ReloadData(cacheHeader: true);
+            return ReloadData(cacheHeader: true);
         }
 
         private void ColumnResizeHandler()

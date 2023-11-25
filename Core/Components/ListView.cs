@@ -1364,7 +1364,7 @@ namespace Core.Components
                         RefName=nameof(User),
                         FormatData="{FullName}",
                         Active = true,
-                        ComponentType = "Dropdown",
+                        ComponentType = nameof(SearchEntry),
                         MaxWidth = "100px",
                         MinWidth = "100px",
                     },

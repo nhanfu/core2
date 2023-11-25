@@ -158,7 +158,7 @@ namespace Core.Components
                 txtFullTextSearch.UserInput = null;
                 AddChild(txtFullTextSearch);
                 _fullTextSearch = txtFullTextSearch.Input;
-                _fullTextSearch.AddEventListener(EventType.Input, ParentGridView.FullTextSearch);
+                _fullTextSearch.AddEventListener(EventType.Input, ParentGridView.SearchDisplayRows);
             }
 
             if (GuiInfo.UpperCase)

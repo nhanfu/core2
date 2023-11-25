@@ -13384,7 +13384,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         }));
                         break;
                     case "AddDropdown": 
-                        com.ComponentType = "Dropdown";
+                        com.ComponentType = "SearchEntry";
                         com.Visibility = true;
                         com.Order = lastOrder;
                         com.ComponentGroupId = componentGroup.Id;
@@ -17395,7 +17395,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var _filterGrid = new Core.Components.GridView(com);
                 _filterGrid.GuiInfo.LocalHeader = function (_o1) {
                         var $t1;
-                        _o1.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((1)), $t1.EntityId = Core.Extensions.Utils.GetEntity("History").Id, $t1.FieldName = "InsertedBy", $t1.ShortDesc = "Ng\u01b0\u1eddi thay \u0111\u1ed5i", $t1.ReferenceId = Core.Extensions.Utils.GetEntity("User").Id, $t1.RefName = "User", $t1.FormatData = "{FullName}", $t1.Active = true, $t1.ComponentType = "Dropdown", $t1.MaxWidth = "100px", $t1.MinWidth = "100px", $t1));
+                        _o1.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((1)), $t1.EntityId = Core.Extensions.Utils.GetEntity("History").Id, $t1.FieldName = "InsertedBy", $t1.ShortDesc = "Ng\u01b0\u1eddi thay \u0111\u1ed5i", $t1.ReferenceId = Core.Extensions.Utils.GetEntity("User").Id, $t1.RefName = "User", $t1.FormatData = "{FullName}", $t1.Active = true, $t1.ComponentType = "SearchEntry", $t1.MaxWidth = "100px", $t1.MinWidth = "100px", $t1));
                         _o1.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((2)), $t1.EntityId = Core.Extensions.Utils.GetEntity("History").Id, $t1.FieldName = "InsertedDate", $t1.ShortDesc = "Ng\u00e0y thay \u0111\u1ed5i", $t1.Active = true, $t1.FormatData = "{0: dd/MM/yyyy HH:mm}", $t1.ComponentType = "Datepicker", $t1.TextAlign = "left", $t1.MaxWidth = "150px", $t1.MinWidth = "150px", $t1));
                         _o1.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((4)), $t1.EntityId = Core.Extensions.Utils.GetEntity("History").Id, $t1.FieldName = "TextHistory", $t1.ShortDesc = "D\u1eef li\u1ec7u thay \u0111\u1ed5i", $t1.Active = true, $t1.ComponentType = "Label", $t1.MaxWidth = "700px", $t1.MinWidth = "700px", $t1));
                         return _o1;
@@ -22604,7 +22604,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     txtFullTextSearch.UserInput = null;
                     this.AddChild(txtFullTextSearch);
                     this._fullTextSearch = txtFullTextSearch.Input;
-                    this._fullTextSearch.addEventListener("input", Bridge.fn.cacheBind(this.ParentGridView, this.ParentGridView.FullTextSearch));
+                    this._fullTextSearch.addEventListener("input", Bridge.fn.cacheBind(this.ParentGridView, this.ParentGridView.SearchDisplayRows));
                 }
 
                 if (this.GuiInfo.UpperCase) {
@@ -28264,7 +28264,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
                 Core.Components.Spinner.AppendTo(this.DataTable);
                 var dropdowns = System.Linq.Enumerable.from(this.CellSelected, Core.Models.CellSelected).where(function (x) {
-                        return (!Core.Extensions.StringExt.IsNullOrWhiteSpace(x.Value) || !Core.Extensions.StringExt.IsNullOrWhiteSpace(x.ValueText)) && (Bridge.referenceEquals(x.ComponentType, "Dropdown") || Bridge.referenceEquals(x.ComponentType, "SearchEntry") || System.String.contains(x.FieldName,"."));
+                        return (!Core.Extensions.StringExt.IsNullOrWhiteSpace(x.Value) || !Core.Extensions.StringExt.IsNullOrWhiteSpace(x.ValueText)) && Bridge.referenceEquals(x.ComponentType, "SearchEntry") || System.String.contains(x.FieldName,".");
                     }).toList(Core.Models.CellSelected);
                 var groups = System.Linq.Enumerable.from(this.CellSelected, Core.Models.CellSelected).where(function (x) {
                         return System.String.contains(x.FieldName,".");
@@ -28491,7 +28491,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         if (Bridge.referenceEquals(this.GuiInfo.ComponentType, "VirtualGrid") && this.GuiInfo.CanSearch) {
                                             this.HeaderSection.Element.focus();
                                         }
-                                        if (Bridge.referenceEquals(this.GuiInfo.ComponentType, "Dropdown")) {
+                                        if (Bridge.referenceEquals(this.GuiInfo.ComponentType, "SearchEntry")) {
                                             search = Bridge.as(this.Parent, Core.Components.SearchEntry);
                                             search != null ? search._input.focus() : null;
                                         }
@@ -28606,79 +28606,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             HiddenSumary: function () {
                 Core.Extensions.HtmlElementExtension.Hide(System.Linq.Enumerable.from(this._summarys, HTMLElement).elementAtOrDefault(((this._summarys.Count - 1) | 0), null));
             },
-            ExportExcel: function (e) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    input, 
-                    table, 
-                    url, 
-                    $t, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        input = Bridge.as(e.target, HTMLInputElement);
-                                        table = Bridge.as(document.getElementById(this._summaryId), HTMLTableElement);
-                                        $task1 = ($t = new Core.Clients.Client.$ctor1("FileUpload"), $t.CustomPrefix = "https://cdn-tms.softek.com.vn/api", $t).PostAsync(System.String, table.outerHTML, System.String.format("ExportExcelFromHtml?fileName=Summary{0:ddMMyyyyHHmm}", [System.DateTimeOffset.Now.$clone()]), false, true);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        url = $taskResult1;
-                                        Core.Clients.Client.Download(url);
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
-            SearchTable: function (e) {
-                var input = Bridge.as(e.target, HTMLInputElement);
-                var table = Bridge.as(document.getElementById(this._summaryId), HTMLTableElement);
-                var rows = System.Linq.Enumerable.from(table.tBodies, HTMLTableSectionElement).firstOrDefault(null, null).children;
-                // Loop through all table rows
-                for (var i = 0; i < rows.length; i = (i + 1) | 0) {
-                    var cells = rows[i].childNodes;
-                    var found = false;
-                    for (var j = 0; j < cells.length; j = (j + 1) | 0) {
-                        var cellText = cells[j].textContent;
-                        if (System.String.indexOf(cellText.toLowerCase(), input.value.toLowerCase()) > -1) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found) {
-                        Core.Extensions.HtmlElementExtension.RemoveClass(rows[i], "d-none");
-                    } else {
-                        Core.Extensions.HtmlElementExtension.AddClass(rows[i], "d-none");
-                    }
-                }
-            },
-            FullTextSearch: function () {
+            SearchDisplayRows: function () {
                 var table = Bridge.as(this.DataTable, HTMLTableElement);
                 var rows = System.Linq.Enumerable.from(table.tBodies, HTMLTableSectionElement).lastOrDefault(null, null).children;
                 for (var i = 0; i < rows.length; i = (i + 1) | 0) {
@@ -28708,64 +28636,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }
                 }
             },
-            SortTable: function (e, columnIndex) {
-                var th = Bridge.as(e.target, HTMLElement);
-                var tr = Core.Extensions.HtmlElementExtension.Closest(th, "tr");
-                Core.Extensions.IEnumerableExtensions.SelectForeach(HTMLElement, tr.children, function (td) {
-                    Core.Extensions.HtmlElementExtension.RemoveClass(td, "desc");
-                    Core.Extensions.HtmlElementExtension.RemoveClass(td, "asc");
-                });
-                var table = document.getElementById(this._summaryId);
-                var tbody = table.querySelector("tbody");
-                var thead = table.querySelector("thead");
-                var sortOrder = table.getAttribute("data-sort-order");
-                var dataType = th.getAttribute("data-sort-type");
-                var rows = Array.from(tbody.children);
-                rows.sort(function(rowA, rowB)
-                {
-                    var cellA = rowA.getElementsByTagName('td')[columnIndex];
-                    var cellB = rowB.getElementsByTagName('td')[columnIndex];
-                    var valueA = cellA.textContent || cellA.innerText;
-                    var valueB = cellB.textContent || cellB.innerText;
-
-                    if (dataType === 'number')
-                    {
-                    if (valueA === null || valueA === undefined || valueA === '')
-                    {
-                        valueA = '0';
-                    }
-                    if (valueB === null || valueB === undefined || valueB === '')
-                    {
-                        valueB = '0';
-                    }
-                    valueA = parseFloat(valueA.replaceAll(',', ''));
-                    valueB = parseFloat(valueB.replaceAll(',', ''));
-                    }
-                    else if (dataType === 'date') 
-                    {
-                    valueA = cellA.getAttribute('data-value');
-                    valueB = cellB.getAttribute('data-value');
-                    valueA = new Date(valueA);
-                    valueB = new Date(valueB);
-                    }
-                    if (valueA < valueB) 
-                    {
-                    return sortOrder === 'asc' ? -1 : 1;
-                    } else if (valueA > valueB)
-                    {
-                    return sortOrder === 'asc' ? 1 : -1;
-                    } else 
-                    {
-                    return 0;
-                    }
-                });
-                rows.forEach(function(row)
-                {
-                    tbody.appendChild(row);
-                });
-                Core.Extensions.HtmlElementExtension.AddClass(th, Bridge.referenceEquals(sortOrder, "asc") ? "desc" : "asc");
-                table.setAttribute("data-sort-order", Bridge.referenceEquals(sortOrder, "asc") ? "desc" : "asc");
-            },
             FocusCell: function (e, header) {
                 var td = Bridge.as(e.target, HTMLElement);
 
@@ -28775,36 +28645,6 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                 Core.Extensions.HtmlElementExtension.AddClass(Core.Extensions.HtmlElementExtension.Closest(td, System.Enum.toString(Core.MVVM.ElementType, Core.MVVM.ElementType.tr)), "focus");
                 Core.Extensions.HtmlElementExtension.AddClass(Core.Extensions.HtmlElementExtension.Closest(td, System.Enum.toString(Core.MVVM.ElementType, Core.MVVM.ElementType.td)), "cell-selected");
-            },
-            FilterSumary: function (Component, value, valueText) {
-                var $t;
-                var dateTime = System.Linq.Enumerable.from(this.CellSelected, Core.Models.CellSelected).firstOrDefault(function (x) {
-                        return Bridge.referenceEquals(Component.ComponentType, "Datepicker") && Bridge.referenceEquals(x.FieldName, Component.FieldName) && System.Nullable.eq(x.Operator, Core.Enums.OperatorEnum.In);
-                    }, null);
-                if (dateTime == null) {
-                    if (!System.Linq.Enumerable.from(this.CellSelected, Core.Models.CellSelected).any(function (x) {
-                            return Bridge.referenceEquals(x.FieldName, Component.FieldName) && Bridge.referenceEquals(x.Value, value) && System.Nullable.eq(x.Operator, Core.Enums.OperatorEnum.In);
-                        })) {
-                        var header = System.Linq.Enumerable.from(this.Header, Core.Models.Component).firstOrDefault(function (x) {
-                                return Bridge.referenceEquals(x.FieldName, Component.FieldName);
-                            }, null);
-                        this.CellSelected.add(($t = new Core.Models.CellSelected(), $t.FieldName = Component.FieldName, $t.FieldText = header.ShortDesc, $t.ComponentType = header.ComponentType, $t.Value = value, $t.ValueText = valueText, $t.Operator = Core.Enums.OperatorEnum.In, $t.OperatorText = "ch\u1ee9a", $t.IsSearch = true, $t));
-                    }
-                } else {
-                    dateTime.Value = value;
-                    dateTime.ValueText = valueText;
-                }
-                this.HiddenSumary();
-                this.ActionFilter();
-            },
-            HotKeyHandler: function (e, header, focusedRow) {
-                var com = System.Linq.Enumerable.from(focusedRow.Children, Core.Components.EditableComponent).firstOrDefault(Bridge.fn.bind(this, function (x) {
-                        return Bridge.referenceEquals(x.GuiInfo.Id, this.LastComponentFocus.Id);
-                    }), null);
-                var el = Bridge.as(e.target, HTMLElement);
-                el = Core.Extensions.HtmlElementExtension.Closest(el, System.Enum.toString(Core.MVVM.ElementType, Core.MVVM.ElementType.td));
-                var keyCode = Core.Extensions.EventExt.KeyCodeEnum(e);
-                this.ActionKeyHandler(e, header, focusedRow, com, el, keyCode);
             },
             ActionKeyHandler: function (e, header, focusedRow, com, el, keyCode) {
                 var $t, $t1;
@@ -28819,7 +28659,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }
                     fieldName = com.FieldName;
                     switch (com.GuiInfo.ComponentType) {
-                        case "Dropdown": 
+                        case "SearchEntry": 
                             value = Core.Extensions.Utils.GetPropValue(focusedRow.Entity, header.FieldName) == null ? null : Core.Extensions.Utils.EncodeSpecialChar(Bridge.toString(Core.Extensions.Utils.GetPropValue(focusedRow.Entity, header.FieldName)));
                             break;
                         case "Number": 
@@ -28844,8 +28684,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
 
                 switch (keyCode) {
-                    case Core.Enums.KeyCodeEnum.F11: 
-                        this.ProcessSort(e, com);
+                    case Core.Enums.KeyCodeEnum.F2: 
+                        this.FilterSelected(($t = new Core.ViewModels.HotKeyModel(), $t.Operator = 2, $t.OperatorText = "Lo\u1ea1i tr\u1eeb", $t.Value = value, $t.FieldName = fieldName, $t.ValueText = text, $t.ActValue = true, $t));
                         break;
                     case Core.Enums.KeyCodeEnum.F4: 
                         this.ProcessFilterDetail(e, com, el, fieldName, text, value);
@@ -28857,14 +28697,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                         this.FilterSelected(($t = new Core.ViewModels.HotKeyModel(), $t.Operator = 1, $t.OperatorText = "Ch\u1ee9a", $t.Value = value, $t.FieldName = fieldName, $t.ValueText = text, $t.ActValue = true, $t));
                         com.Focus();
                         break;
-                    case Core.Enums.KeyCodeEnum.F10: 
-                        var header1 = System.Linq.Enumerable.from(this.Header, Core.Models.Component).firstOrDefault(function (x) {
-                                return Bridge.referenceEquals(x.Id, com.GuiInfo.Id);
-                            }, null);
-                        this.ViewSumary(e, header1);
-                        break;
-                    case Core.Enums.KeyCodeEnum.F2: 
-                        this.FilterSelected(($t = new Core.ViewModels.HotKeyModel(), $t.Operator = 2, $t.OperatorText = "Lo\u1ea1i tr\u1eeb", $t.Value = value, $t.FieldName = fieldName, $t.ValueText = text, $t.ActValue = true, $t));
+                    case Core.Enums.KeyCodeEnum.F11: 
+                        this.ProcessSort(e, com);
                         break;
                     case Core.Enums.KeyCodeEnum.UpArrow: 
                         var currentItemUp = this.GetItemFocus();
@@ -29118,7 +28952,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                 $step = System.Array.min([0,1,2,3,4,5,6,7,8,9], $step);
                                                 switch ($step) {
                                                     case 0: {
-                                                        if (Bridge.referenceEquals(updated.GuiInfo.ComponentType, "SearchEntry") || Bridge.referenceEquals(updated.GuiInfo.ComponentType, "Dropdown")) {
+                                                        if (Bridge.referenceEquals(updated.GuiInfo.ComponentType, "SearchEntry")) {
                                                             $step = 1;
                                                             continue;
                                                         } else  {
@@ -29486,302 +29320,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
                 this.ActionKeyHandler(e, this.LastComponentFocus, this.LastListViewItem, com, Core.Extensions.HtmlElementExtension.Closest(com.Element, System.Enum.toString(Core.MVVM.ElementType, Core.MVVM.ElementType.td)), keyCode);
             },
-            ViewSumary: function (ev, header) {
-                if (this._waitingLoad) {
-                    window.clearTimeout(this._renderPrepareCacheAwaiter);
-                }
-                Core.Components.Renderer.Escape(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.Element).Div, "backdrop").Style$1("align-items: center;"), Bridge.fn.bind(this, function (e) {
-                    this.DisposeSumary();
-                }));
-                this._summarys.add(Core.MVVM.Html.Context);
-                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "popup-content confirm-dialog").Style$1("top: 0;min-width: 90%").Div, "popup-title").InnerHTML("G\u1ed9p theo c\u1ed9t hi\u1ec7n th\u1eddi").Div, "icon-box").Span, "fa fa-times").Event("click", Bridge.fn.cacheBind(this, this.DisposeSumary)).EndOf$1(".popup-title").Div, "popup-body scroll-content");
-                Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "container-rpt");
-                Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "menuBar d-flex");
-                Core.Components.Renderer.PlaceHolder(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "search-input").Style$1("margin-bottom: 12px;").Input.Style$1("width: 300px;").Event$1("input", Bridge.fn.bind(this, function (e) {
-                    this.SearchTable(e);
-                })), "T\u00ecm ki\u1ebfm").End.End.Render();
-                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "search-button").Style$1("margin-bottom: 12px;").Button, "btn btn-info").AsyncEvent("click", Bridge.fn.bind(this, function (e) {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        $async_e, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            $task1 = this.ExportExcel(e);
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $task1.getAwaitedResult();
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                    return $tcs.task;
-                })).I, "fa fal fa-print").End.End.End.Render();
-                Core.MVVM.Html.Instance.EndOf$1(".menuBar");
-                Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "printable");
-                var body = Core.MVVM.Html.Context;
-                System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $taskResult1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        filter, 
-                        filter1, 
-                        wh, 
-                        stringWh, 
-                        Component, 
-                        sum, 
-                        pre, 
-                        fn, 
-                        dataSet, 
-                        sumarys, 
-                        refn, 
-                        datasorttypeHeader, 
-                        dir, 
-                        $t, 
-                        ttCount, 
-                        $t1, 
-                        item, 
-                        $t2, 
-                        dataHeader, 
-                        value, 
-                        actValue, 
-                        valueText, 
-                        ob, 
-                        $t3, 
-                        datetime, 
-                        numVal, 
-                        $t4, 
-                        itemDetail, 
-                        $t5, 
-                        item1, 
-                        de, 
-                        ttCount1, 
-                        $async_e, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            filter = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).where(function (x) {
-                                                return !x.Group;
-                                            }).select(function (x) {
-                                                return x.FieldName;
-                                            }), " and ");
-                                            filter1 = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).where(function (x) {
-                                                return x.Group;
-                                            }).select(function (x) {
-                                                return x.FieldName;
-                                            }), " or ");
-                                            wh = new (System.Collections.Generic.List$1(System.String)).ctor();
-                                            if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter)) {
-                                                wh.add(System.String.format("({0})", [filter]));
-                                            }
-                                            if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter1)) {
-                                                wh.add(System.String.format("({0})", [filter1]));
-                                            }
-                                            stringWh = System.Linq.Enumerable.from(wh, System.String).any() ? System.String.format("({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.String, wh, " and ")]) : "";
-                                            Component = System.Linq.Enumerable.from(this.Header, Core.Models.Component).where(function (x) {
-                                                return Bridge.referenceEquals(x.ComponentType, "Number") && !Bridge.referenceEquals(x.FieldName, header.FieldName);
-                                            }).toList(Core.Models.Component);
-                                            sum = System.Linq.Enumerable.from(Component, Core.Models.Component).select(function (x) {
-                                                return System.String.format("FORMAT(SUM(isnull([ds].{0},0)),'#,#') as {1}", x.FieldName, x.FieldName);
-                                            }).toList(System.String);
-                                            pre = this.GuiInfo.PreQuery;
-                                            fn = { };
-                                            if (pre != null && Core.Extensions.Utils.IsFunction(pre, fn)) {
-                                                pre = Bridge.toString(fn.v.call(this, this, this.EditForm));
-                                            }
-                                            $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).PostAsync(System.Array.type(System.Array.type(System.Object)), Core.Extensions.IEnumerableExtensions.Combine(System.String, sum), (System.String.format("ViewSumary?group={0}", [header.FieldName]) || "") + (System.String.format("&tablename={0}", [this.GuiInfo.RefName]) || "") + (System.String.format("&refname={0}", [header.RefName]) || "") + (System.String.format("&join={0}", [this.GuiInfo.JoinTable]) || "") + (System.String.format("&formatsumary={0}", [this.GuiInfo.FormatSumaryField]) || "") + (System.String.format("&sql={0}&orderby={1}", this.Sql, this.GuiInfo.OrderBySumary) || "") + (System.String.format("&where={0} {1}", stringWh, (Core.Extensions.StringExt.IsNullOrWhiteSpace(pre) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).any() ? " and " : ""), pre))) || ""));
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $taskResult1 = $task1.getAwaitedResult();
-                                            dataSet = $taskResult1;
-                                            sumarys = dataSet[System.Array.index(0, dataSet)];
-                                            refn = null;
-                                            if (dataSet.length > 1) {
-                                                refn = dataSet[System.Array.index(1, dataSet)];
-                                            }
-                                            datasorttypeHeader = "";
-                                            if (Bridge.referenceEquals(header.ComponentType, "Dropdown")) {
-                                                datasorttypeHeader = "text";
-                                            } else if (Bridge.referenceEquals(header.ComponentType, "Datepicker")) {
-                                                datasorttypeHeader = "date";
-                                            } else if (Bridge.referenceEquals(header.ComponentType, "Number")) {
-                                                datasorttypeHeader = "number";
-                                            } else {
-                                                datasorttypeHeader = "text";
-                                            }
-
-                                            this._summaryId = "sumary" + Bridge.getHashCode(new System.Random.$ctor1(10));
-                                            dir = refn != null ? ($t = System.Object, System.Linq.Enumerable.from(refn, $t).toDictionary(function (x) {
-                                                return x[Core.Components.EditableComponent.IdField];
-                                            }, null, System.Object, $t)) : null;
-                                            Core.Components.Renderer.ClassName(Core.Components.Renderer.Width(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "grid-wrapper sticky").Style$1("max-height: calc(100vh - 317px) !important;").Div, "table-wrapper printable").Table.Id(this._summaryId), "100%"), "table").Thead.TRow.Render();
-                                            Core.Components.Renderer.IText(Core.MVVM.Html.Instance.Th.DataAttr$1("sort-type", datasorttypeHeader).Event$1("click", Bridge.fn.bind(this, function (e) {
-                                                this.SortTable(e, 0);
-                                            })).Style$1("max-width: 100%;"), header.ShortDesc).End.Render();
-                                            Core.Components.Renderer.IText(Core.MVVM.Html.Instance.Th.DataAttr$1("sort-type", "number").Event$1("click", Bridge.fn.bind(this, function (e) {
-                                                this.SortTable(e, 1);
-                                            })).Style$1("max-width: 100%;"), "T\u1ed5ng d\u1eef li\u1ec7u").End.Render();
-                                            Core.Extensions.IEnumerableExtensions.SelectForEach(Core.Models.Component, Component, Bridge.fn.bind(this, function (item, index) {
-                                                var datasorttype = "";
-                                                if (Bridge.referenceEquals(item.ComponentType, "Dropdown")) {
-                                                    datasorttype = "text";
-                                                } else if (Bridge.referenceEquals(item.ComponentType, "Datepicker")) {
-                                                    datasorttype = "date";
-                                                } else if (Bridge.referenceEquals(item.ComponentType, "Number")) {
-                                                    datasorttype = "number";
-                                                } else {
-                                                    datasorttype = "text";
-                                                }
-                                                Core.Components.Renderer.IHtml(Core.MVVM.Html.Instance.Th.Event$1("click", Bridge.fn.bind(this, function (e) {
-                                                    this.SortTable(e, ((index + 2) | 0));
-                                                })).DataAttr$1("sort-type", datasorttype).Style$1("max-width: 100%;"), item.ShortDesc).End.Render();
-
-                                            }));
-                                            Core.MVVM.Html.Instance.EndOf(Core.MVVM.ElementType.thead);
-                                            Core.MVVM.Html.Instance.TBody.Render();
-                                            ttCount = System.Linq.Enumerable.from(sumarys, System.Object).sum(function (x) {
-                                                return System.Convert.toDecimal(Bridge.referenceEquals(System.String.replaceAll(Bridge.toString(x.TotalRecord), ",", ""), "") ? "0" : System.String.replaceAll(Bridge.toString(x.TotalRecord), ",", ""));
-                                            }, System.Decimal.Zero);
-                                            $t1 = Bridge.getEnumerator(sumarys);
-                                            try {
-                                                while ($t1.moveNext()) {
-                                                    item = $t1.Current;
-                                                    item[header.FieldName] = ($t2 = item[header.FieldName], $t2 != null ? $t2 : "");
-                                                    dataHeader = Bridge.toString(item[header.FieldName]);
-                                                    value = { v : "" };
-                                                    actValue = "";
-                                                    valueText = { v : "" };
-                                                    if (Bridge.referenceEquals(header.ComponentType, "Dropdown")) {
-                                                        ob = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.Object, System.Object, dir, item[header.FieldName]);
-                                                        if (ob == null) {
-                                                            dataHeader = "";
-                                                        } else {
-                                                            dataHeader = Bridge.toString(ob[System.String.replaceAll(($t3 = header.FormatData.split("}"))[System.Array.index(0, $t3)], "{", "")]);
-                                                            value.v = Bridge.toString(ob.Id);
-                                                            valueText.v = dataHeader;
-                                                        }
-                                                    } else if (Bridge.referenceEquals(header.ComponentType, "Datepicker")) {
-                                                        datetime = Core.Extensions.DateTimeExt.TryParseDateTime(Bridge.toString(item[header.FieldName]));
-                                                        dataHeader = !Bridge.equals(datetime, null) ? System.DateTime.format(System.Nullable.getValue(datetime), "dd/MM/yyyy") : null;
-                                                        value.v = !Bridge.equals(datetime, null) ? System.DateTime.format(System.Nullable.getValue(datetime), "dd/MM/yyyy") : null;
-                                                        valueText.v = !Bridge.equals(datetime, null) ? System.DateTime.format(System.Nullable.getValue(datetime), "dd/MM/yyyy") : null;
-                                                        actValue = System.Nullable.toString(datetime, function ($t) { return System.DateTime.format($t); });
-                                                    } else if (Bridge.referenceEquals(header.ComponentType, "Number")) {
-                                                        numVal = (item[header.FieldName] == null || Bridge.referenceEquals(Bridge.toString(item[header.FieldName]), "")) ? System.Decimal(0) : System.Decimal(Bridge.toString(item[header.FieldName]));
-                                                        dataHeader = numVal.equalsT(System.Decimal(0)) ? "" : Bridge.Int.format(numVal, "N0");
-                                                        value.v = Bridge.toString(item[header.FieldName]);
-                                                        valueText.v = dataHeader;
-                                                    } else {
-                                                        value.v = Bridge.toString(item[header.FieldName]);
-                                                        valueText.v = Bridge.toString(item[header.FieldName]);
-                                                    }
-                                                    Core.MVVM.Html.Instance.TRow.Event("dblclick", (function ($me, value, valueText) {
-                                                        return Bridge.fn.bind($me, function () {
-                                                            this.FilterSumary(header, value.v, valueText.v);
-                                                        });
-                                                    })(this, value, valueText)).Event$1("click", Bridge.fn.bind(this, function (e) {
-                                                        this.FocusCell(e, header);
-                                                    })).Render();
-                                                    Core.Components.Renderer.IText(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.TData.Style$1("max-width: 100%;").DataAttr$1("value", actValue), Bridge.referenceEquals(header.ComponentType, "Number") ? "text-right" : "text-left"), Core.Extensions.Utils.DecodeSpecialChar(dataHeader)).End.Render();
-                                                    Core.Components.Renderer.IText(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.TData.Style$1("max-width: 100%;"), "text-right"), Bridge.toString(item.TotalRecord)).End.Render();
-                                                    $t4 = Bridge.getEnumerator(Component);
-                                                    try {
-                                                        while ($t4.moveNext()) {
-                                                            itemDetail = $t4.Current;
-                                                            Core.Components.Renderer.IText(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.TData.Style$1("max-width: 100%;"), "text-right"), Bridge.toString(item[itemDetail.FieldName])).End.Render();
-                                                        }
-                                                    } finally {
-                                                        if (Bridge.is($t4, System.IDisposable)) {
-                                                            $t4.System$IDisposable$Dispose();
-                                                        }
-                                                    }
-                                                    Core.MVVM.Html.Instance.EndOf(Core.MVVM.ElementType.tr);
-                                                }
-                                            } finally {
-                                                if (Bridge.is($t1, System.IDisposable)) {
-                                                    $t1.System$IDisposable$Dispose();
-                                                }
-                                            }
-                                            Core.MVVM.Html.Instance.EndOf(Core.MVVM.ElementType.tbody);
-                                            Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.TFooter.TRow, "summary").Render();
-                                            Core.Components.Renderer.IText(Core.MVVM.Html.Instance.TData.Style$1("max-width: 100%;"), "T\u1ed5ng c\u1ed9ng").End.Render();
-                                            Core.Components.Renderer.IText(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.TData, "text-right").Style$1("max-width: 100%;"), Bridge.Int.format(ttCount, "N0")).End.Render();
-                                            $t5 = Bridge.getEnumerator(Component);
-                                            try {
-                                                while ($t5.moveNext()) {
-                                                    item1 = { v : $t5.Current };
-                                                    de = System.Linq.Enumerable.from(sumarys, System.Object).select((function ($me, item1) {
-                                                        return function (x) {
-                                                            return System.String.replaceAll(Bridge.toString(x[item1.v.FieldName]), ",", "");
-                                                        };
-                                                    })(this, item1)).toList(System.String);
-                                                    ttCount1 = System.Linq.Enumerable.from(de, System.String).where(function (x) {
-                                                        return !Core.Extensions.StringExt.IsNullOrWhiteSpace(x);
-                                                    }).sum(function (x) {
-                                                        return System.Decimal(x);
-                                                    }, System.Decimal.Zero);
-                                                    Core.Components.Renderer.IHtml(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.TData, "text-right").Style$1("max-width: 100%;"), Bridge.Int.format(ttCount1, "N0")).End.Render();
-                                                }
-                                            } finally {
-                                                if (Bridge.is($t5, System.IDisposable)) {
-                                                    $t5.System$IDisposable$Dispose();
-                                                }
-                                            }
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                    return $tcs.task;
-                }));
-            },
             RenderCopyPasteMenu: function (canWrite) {
                 var $t;
                 if (canWrite) {
@@ -29843,7 +29381,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             $step = System.Array.min([0,1,2,3,4,5,6,7,8,9], $step);
                                             switch ($step) {
                                                 case 0: {
-                                                    if (Bridge.referenceEquals(updated.GuiInfo.ComponentType, "SearchEntry") || Bridge.referenceEquals(updated.GuiInfo.ComponentType, "Dropdown")) {
+                                                    if (Bridge.referenceEquals(updated.GuiInfo.ComponentType, "SearchEntry")) {
                                                         $step = 1;
                                                         continue;
                                                     } else  {
@@ -30097,48 +29635,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return this.Header;
             },
             ApplyFilter: function (searching) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (searching === void 0) { searching = true; }
-                                        this.DataTable.parentElement.scrollTop = 0;
-                                        $task1 = this.ReloadData(true, void 0, void 0);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                if (searching === void 0) { searching = true; }
+                this.DataTable.parentElement.scrollTop = 0;
+                return this.ReloadData(true, void 0, void 0);
             },
             ColumnResizeHandler: function () {
                 var self = this;
@@ -36208,14 +35707,14 @@ Bridge.assembly("Core", function ($asm, globals) {
                 ctx.Left = Core.Extensions.EventExt.Left(e);
                 ctx.MenuItems = Bridge.fn.bind(this, function (_o1) {
                         var $t;
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Text = "Excel", $t.Icon = "fa fa-file-excel", $t.Click = Bridge.fn.cacheBind(this, this.ExportExcel$1), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Text = "Excel", $t.Icon = "fa fa-file-excel", $t.Click = Bridge.fn.cacheBind(this, this.ExportExcel), $t));
                         _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Text = "Pdf", $t.Icon = "fa fa-file-pdf", $t.Click = Bridge.fn.cacheBind(this, this.ExportPdf), $t));
                         return _o1;
                     })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor());
                 ctx.Render();
                 Core.Components.Extensions.ComponentExt.AlterPosition(ctx.Element, this._btnEle);
             },
-            ExportExcel$1: function (arg) {
+            ExportExcel: function (arg) {
                 Core.Extensions.ExcelExt.ExportTableToExcel(null, this.FieldName, this.Element.parentElement);
             },
             ExportPdf: function (arg) {

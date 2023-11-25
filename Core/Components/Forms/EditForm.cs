@@ -1236,7 +1236,7 @@ namespace Core.Components.Forms
                     });
                     break;
                 case "AddDropdown":
-                    com.ComponentType = "Dropdown";
+                    com.ComponentType = nameof(SearchEntry);
                     com.Visibility = true;
                     com.Order = lastOrder;
                     com.ComponentGroupId = componentGroup.Id;
