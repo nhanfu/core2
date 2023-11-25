@@ -38,7 +38,6 @@ namespace Core.Components
 
         public override async Task ApplyFilter(bool searching = true)
         {
-            _sum = false;
             CacheData.Clear();
             DataTable.ParentElement.ScrollTop = 0;
             await ReloadData(cacheHeader: false);

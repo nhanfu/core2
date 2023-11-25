@@ -83,10 +83,10 @@ namespace Core.Components
         public async Task GeneratePdf(string format)
         {
             await Client.LoadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
-            var element = (Element.ParentElement.QuerySelector(".printable") as HTMLElement);
+            var element = Element.ParentElement.QuerySelector(".printable") as HTMLElement;
             if (GuiInfo.Precision == 2)
             {
-                element = (Element.ParentElement.QuerySelector(".print-group")) as HTMLElement;
+                element = Element.ParentElement.QuerySelector(".print-group") as HTMLElement;
             }
             var printEl = element;
             printEl.Style.PageBreakBefore = null;

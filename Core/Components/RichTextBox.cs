@@ -5,7 +5,6 @@ using Core.Extensions;
 using Core.MVVM;
 using System;
 using System.Threading.Tasks;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Core.Components
 {

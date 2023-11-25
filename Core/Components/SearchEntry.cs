@@ -320,7 +320,7 @@ namespace Core.Components
                 htmlTr.Prepend(htmlTd);
                 Html.Take(htmlTd).Button.ClassName("btn btn-secondary").Icon("fal fa-file-check").End.IText("Áp dụng").Event(EventType.Click, async () =>
                 {
-                    if (!(await instance.IsFormValid()))
+                    if (!await instance.IsFormValid())
                     {
                         return;
                     }

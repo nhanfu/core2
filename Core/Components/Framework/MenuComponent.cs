@@ -395,14 +395,14 @@ namespace Core.Components.Framework
             {
                 return;
             }
-            ul.Style.Top = (top - 20) + Utils.Pixel;
+            ul.Style.Top = top - 20 + Utils.Pixel;
             ul.Style.Bottom = null;
             ul.Style.Transform = null;
             var outOfVp = ul.OutOfViewport();
             if (outOfVp.Bottom)
             {
                 ul.Style.Top = null;
-                ul.Style.Bottom = (Document.Body.ClientHeight - top) + Utils.Pixel;
+                ul.Style.Bottom = Document.Body.ClientHeight - top + Utils.Pixel;
                 outOfVp = ul.OutOfViewport();
                 if (outOfVp.Top)
                 {

@@ -8,7 +8,6 @@ using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
 using Newtonsoft.Json;
-using Retyped.Primitive;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -27,7 +26,6 @@ namespace Core.Components
         public List<HTMLElement> _summarys = new List<HTMLElement>();
         public HTMLElement LastThClick;
         public int? LastNumClick;
-        public bool _sum = false;
         private string _summaryId;
         public bool AutoFocus = false;
         public bool LoadRerender = false;
@@ -54,67 +52,6 @@ namespace Core.Components
                 AddSummaries();
             }
             PopulateFields();
-            if (!_sum && (GuiInfo.ComponentType == nameof(GridView) || GuiInfo.ComponentType == nameof(VirtualGrid)))
-            {
-                Task.Run(async () =>
-                {
-                    await AddSubTotal();
-                    _sum = true;
-                });
-            }
-        }
-
-        private async Task AddSubTotal()
-        {
-            if (Header.Nothing())
-            {
-                return;
-            }
-            var Component = Header.Where(x => x.FieldName != IdField && x.ComponentType == nameof(Number) && x.IsSumary == true).ToList();
-            if (Component.Nothing())
-            {
-                return;
-            }
-            var sum = Component.Select(x => $"FORMAT(SUM(isnull([ds].{x.FieldName},0)),'#,#') as {x.FieldName}").ToList();
-            var filter = Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
-            var filter1 = Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
-            var wh = new List<string>();
-            if (!filter.IsNullOrWhiteSpace())
-            {
-                wh.Add($"({filter})");
-            }
-            if (!filter1.IsNullOrWhiteSpace())
-            {
-                wh.Add($"({filter1})");
-            }
-            var pre = GuiInfo.PreQuery;
-            if (pre != null && Utils.IsFunction(pre, out Function fn))
-            {
-                pre = fn.Call(this, this, EditForm).ToString();
-            }
-            var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
-            var dataSet = await new Client(GuiInfo.RefName)
-                .SubmitAsync<object[][]>(new XHRWrapper
-                {
-                    Value = sum.Combine(),
-                    Url = $"SubTotal?group=" +
-                    $"&tablename={GuiInfo.RefName}" +
-                    $"&refname=" +
-                    $"&formatsumary={GuiInfo.FormatSumaryField}" +
-                    $"&dateTimeField={GuiInfo.DateTimeField}" +
-                    $"&showNull={GuiInfo.ShowNull}" +
-                    $"&sql={Sql}" +
-                    $"&orderby={GuiInfo.OrderBySumary}" +
-                    $"&where={stringWh} {(GuiInfo.PreQuery.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")}",
-                    Method = HttpMethod.POST,
-                    ErrorHandler = (x) => { }
-                });
-            var sumarys = dataSet[0][0];
-            var headers = HeaderSection.Children.Where(x => x.FieldName != IdField && x.GuiInfo.ComponentType == nameof(Number) && x.GuiInfo.IsSumary == true).ToList();
-            headers.ForEach(x =>
-            {
-                x.Element.Children[1].InnerHTML = "(" + sumarys[x.FieldName] + ")";
-            });
         }
 
         private void PopulateFields()
@@ -526,7 +463,7 @@ namespace Core.Components
                 {
                     HeaderSection.Element.Focus();
                 }
-                if (GuiInfo.ComponentType == "Dropdown")
+                if (GuiInfo.ComponentType == nameof(SearchEntry))
                 {
                     var search = Parent as SearchEntry;
                     search?._input.Focus();
@@ -536,44 +473,48 @@ namespace Core.Components
             });
         }
 
-        private async Task<dynamic[][]> FilterDropdownIds(List<CellSelected> dropdowns)
+        private Task<string[][]> FilterDropdownIds(List<CellSelected> dropdowns)
         {
-            var dataTask = dropdowns.Select((Func<CellSelected, Task<List<dynamic>>>)(x =>
+            var tcs = new TaskCompletionSource<string[][]>();
+            var dataTask = dropdowns.Select(x =>
             {
-                var filterString = "contains";
-                if (x.Operator == (int)OperatorEnum.Lr)
-                {
-                    filterString = "startswith";
-                }
-                if (x.Operator == (int)OperatorEnum.Rl)
-                {
-                    filterString = "endswith";
-                }
-                var header = Enumerable.FirstOrDefault<Component>(Header, (Func<Component, bool>)(y => y.FieldName == x.FieldName));
+                var header = Enumerable.FirstOrDefault(Header, y => y.FieldName == x.FieldName);
                 if (!x.IsSearch)
                 {
-                    if (x.FieldName.Contains("."))
+                    var filterOperation = AdvSearchOperation.Like;
+                    if (x.Operator == (int)OperatorEnum.Lr)
                     {
-                        var format = header.FieldName.Split(".").LastOrDefault();
-                        return new Client(header.GroupReferenceName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$top=1000&$filter={filterString}({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.GroupReferenceName);
+                        filterOperation = AdvSearchOperation.StartWith;
                     }
-                    else
+                    else if (x.Operator == (int)OperatorEnum.Rl)
                     {
-                        var format = header.FormatData.Split("}")[0].Replace("{", "");
-                        return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$top=1000&$filter={filterString}({format},'" + x.ValueText.EncodeSpecialChar() + "')", entityName: header.RefName);
+                        filterOperation = AdvSearchOperation.EndWidth;
                     }
+                    else if (x.Operator == (int)OperatorEnum.NotIn)
+                    {
+                        filterOperation = AdvSearchOperation.NotLike;
+                    }
+                    var func = AdvOptionExt.OperationToSql[filterOperation];
+                    var sqlFilter = string.Format(func, $"ds.[{header.FormatData}]", x.Value);
+                    return Client.Instance.GetIds(new SqlViewModel
+                    {
+                        ComId = header.Id,
+                        Where = sqlFilter,
+                    });
                 }
                 else
                 {
-                    return new Client(header.RefName).GetRawList<dynamic>($"?$select=Id&$orderby=Id desc&$filter=Id eq '{x.Value.EncodeSpecialChar()}'", entityName: header.RefName);
+                    return Task.FromResult(new string [] { x.Value });
                 }
-            })).ToArray();
-            await Task.WhenAll(dataTask);
-            var data = dataTask.Select(x => x.Result?.ToArray()).ToArray();
-            return data;
+            }).ToArray();
+            Client.ExecTask(Task.WhenAll(dataTask), ds =>
+            {
+                tcs.TrySetResult(ds);
+            });
+            return tcs.Task;
         }
 
-        private int BuildCondition(CellSelected cell, dynamic[][] data, int index, List<string> lisToast)
+        private int BuildCondition(CellSelected cell, string[][] data, int index, List<string> lisToast)
         {
             var where = string.Empty;
             var hl = Header.FirstOrDefault(y => y.FieldName == cell.FieldName);
@@ -587,7 +528,7 @@ namespace Core.Components
             }
             else
             {
-                if ((hl.ComponentType == "Dropdown" || hl.ComponentType == nameof(SearchEntry) || hl.FieldName.Contains(".")) && !hl.FormatData.IsNullOrWhiteSpace())
+                if (hl.ComponentType == nameof(SearchEntry) && hl.FormatData.HasNonSpaceChar())
                 {
                     if (isNUll)
                     {
@@ -596,10 +537,10 @@ namespace Core.Components
                     }
                     else
                     {
-                        var rsdynamic = data[index];
-                        if (rsdynamic.Any())
+                        var idArr = data[index];
+                        if (idArr.Any())
                         {
-                            ids = rsdynamic.Select(x => x.Id).Combine();
+                            ids = idArr.Combine();
                             where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} not in ({ids})" : $"[ds].{cell.FieldName} in ({ids})";
                         }
                         else
@@ -1737,7 +1678,7 @@ namespace Core.Components
                     datasorttypeHeader = "text";
                 }
 
-                _summaryId = "sumary" + (new Random(10)).GetHashCode();
+                _summaryId = "sumary" + new Random(10).GetHashCode();
                 var dir = refn?.ToDictionary(x => x[IdField]);
                 Html.Instance.Div.ClassName("grid-wrapper sticky").Style("max-height: calc(100vh - 317px) !important;").Div.ClassName("table-wrapper printable").Table.Id(_summaryId).Width("100%").ClassName("table")
                 .Thead
@@ -1978,7 +1919,6 @@ namespace Core.Components
 
         public override async Task ApplyFilter(bool searching = true)
         {
-            _sum = false;
             DataTable.ParentElement.ScrollTop = 0;
             await ReloadData(cacheHeader: true);
         }

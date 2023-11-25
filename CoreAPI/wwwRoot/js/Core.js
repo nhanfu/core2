@@ -771,6 +771,23 @@ Bridge.assembly("Core", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
+            GetIds: function (sqlVm) {
+                var $t;
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                sqlVm.Select = "ds.Id";
+                sqlVm.Count = false;
+                sqlVm.SkipXQuery = true;
+                var task = this.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.ComQuery, $t.Value = JSON.stringify(sqlVm), $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
+                Core.Clients.Client.ExecTask(System.Array.type(System.Array.type(System.Object)), task, function (ds) {
+                    var res = ds.length === 0 || ds[System.Array.index(0, ds)].length === 0 ? System.Array.init([], System.String) : System.Linq.Enumerable.from(ds[System.Array.index(0, ds)], System.Object).select(function (x) {
+                            return Bridge.as(x.Id, System.String);
+                        }).ToArray(System.String);
+                    tcs.trySetResult(res);
+                }, function (e) {
+                    tcs.trySetException(e);
+                });
+                return tcs.task;
+            },
             Fetch: function (T, options) {
                 var tcs = new System.Threading.Tasks.TaskCompletionSource();
                 Core.Clients.Client.FetchWrapper(options, function (x) {
@@ -3286,7 +3303,9 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                     searchTerm = searchTerm.trim();
                     var fieldName = Bridge.referenceEquals(com.ComponentType, "SearchEntry") ? com.TextField : com.FieldName;
-
+                    if (Core.Extensions.StringExt.IsNullOrWhiteSpace(fieldName)) {
+                        return "";
+                    }
                     if (Bridge.referenceEquals(com.ComponentType, "Datepicker")) {
                         var date = { v : new System.DateTimeOffset() };
                         var parsedDate = System.DateTimeOffset.TryParse(searchTerm, date);
@@ -5287,15 +5306,15 @@ Bridge.assembly("Core", function ($asm, globals) {
                             _o1.add(Core.Enums.AdvSearchOperation.GreaterThanOrEqual, "{0} >= N'{1}'");
                             _o1.add(Core.Enums.AdvSearchOperation.LessThan, "{0} < N'{1}'");
                             _o1.add(Core.Enums.AdvSearchOperation.LessThanOrEqual, "{0} <= N'{1}'");
-                            _o1.add(Core.Enums.AdvSearchOperation.Contains, "charindex({0}, N'{1}')");
+                            _o1.add(Core.Enums.AdvSearchOperation.Contains, "charindex({0}, N'{1}') >= 1");
                             _o1.add(Core.Enums.AdvSearchOperation.NotContains, "contains({0}, N'{1}') eq false");
                             _o1.add(Core.Enums.AdvSearchOperation.StartWith, "charindex({0}, N'{1}') = 1");
                             _o1.add(Core.Enums.AdvSearchOperation.NotStartWith, "charindex({0}, N'{1}') > 1");
                             _o1.add(Core.Enums.AdvSearchOperation.EndWidth, "{0} like N'%{1}')");
                             _o1.add(Core.Enums.AdvSearchOperation.NotEndWidth, "{0} not like N'%{1}'");
                             _o1.add(Core.Enums.AdvSearchOperation.In, "{0} in ({1})");
-                            _o1.add(Core.Enums.AdvSearchOperation.Like, "{0} like N'%{1}%')");
-                            _o1.add(Core.Enums.AdvSearchOperation.NotLike, "{0} not like N'{1}')");
+                            _o1.add(Core.Enums.AdvSearchOperation.Like, "{0} like N'%{1}%'");
+                            _o1.add(Core.Enums.AdvSearchOperation.NotLike, "{0} not like N'{1}'");
                             _o1.add(Core.Enums.AdvSearchOperation.NotIn, "{0} not in ({1})");
                             _o1.add(Core.Enums.AdvSearchOperation.EqualDatime, "cast(date, {0}) = N'{1}'");
                             _o1.add(Core.Enums.AdvSearchOperation.NotEqualDatime, "cast(date, {0}) != N'{1}'");
@@ -10506,6 +10525,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             Entity: null,
             AnnonymousTenant: null,
             Paging: null,
+            Select: null,
             Where: null,
             OrderBy: null,
             GroupBy: null,
@@ -15172,7 +15192,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             CalcDatasourse: function (viewPortCount, skip, count) {
                 if (count === void 0) { count = "true"; }
-                var source = this.CalcFilterQuery(true);
+                var source = this.CalcFilterQuery();
                 if (!System.String.contains(source,"?")) {
                     source = (source || "") + "?";
                 }
@@ -15214,7 +15234,7 @@ Bridge.assembly("Core", function ($asm, globals) {
 
 
                 }) : null;
-                var basicCondition = this.CalcFilterQuery(true);
+                var basicCondition = this.CalcFilterQuery();
                 var fnBtnCondition = Core.Extensions.IEnumerableExtensions.Combine$1(Core.Models.Where, System.String, this.Wheres, function (x) {
                     return System.String.format("({0})", [x.FieldName]);
                 }, " and ");
@@ -15331,8 +15351,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.ClearRowData();
                 Core.Clients.Client.ExecTaskNoResult(this.ReloadData());
             },
-            CalcFilterQuery: function (searching) {
-                return this.ListViewSearch.CalcFilterQuery(null);
+            CalcFilterQuery: function () {
+                return this.ListViewSearch.CalcFilterQuery();
             },
             LoadAllData: function () {
                 Core.Clients.Client.ExecTask(System.Collections.Generic.List$1(System.Object), this.ReloadData(this.GuiInfo.CanCache, void 0, void 0), Bridge.fn.bind(this, function (ds) {
@@ -19605,13 +19625,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                     if (ul == null) {
                         return;
                     }
-                    ul.style.top = System.Single.format((top - 20)) + (Core.Extensions.Utils.Pixel || "");
+                    ul.style.top = System.Single.format(top - 20) + (Core.Extensions.Utils.Pixel || "");
                     ul.style.bottom = null;
                     ul.style.transform = null;
                     var outOfVp = Core.Extensions.HtmlElementExtension.OutOfViewport(ul);
                     if (outOfVp.Bottom) {
                         ul.style.top = null;
-                        ul.style.bottom = System.Single.format((document.body.clientHeight - top)) + (Core.Extensions.Utils.Pixel || "");
+                        ul.style.bottom = System.Single.format(document.body.clientHeight - top) + (Core.Extensions.Utils.Pixel || "");
                         outOfVp = Core.Extensions.HtmlElementExtension.OutOfViewport(ul);
                         if (outOfVp.Top) {
                             ul.style.top = "50%";
@@ -23237,7 +23257,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 $step = System.Array.min([0,1], $step);
                                 switch ($step) {
                                     case 0: {
-                                        url = this.ParentListView.CalcFilterQuery(false);
+                                        url = this.ParentListView.CalcFilterQuery();
                                         options = this.ParentListView.Paginator.Options;
                                         if (paging) {
                                             url = (url || "") + ((System.String.format("&$skip={0}&$top={1}", Bridge.box(Bridge.Int.mul(options.PageIndex, options.PageSize), System.Int32), Bridge.box(options.PageSize, System.Int32))) || "");
@@ -23306,7 +23326,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             OpenExcelFileDialog: function (arg) {
                 this._uploader.click();
             },
-            CalcFilterQuery: function (prefix) {
+            CalcFilterQuery: function () {
                 var $t, $t1, $t2, $t3, $t4, $t5;
                 if (this.EntityVM.DateTimeField != null) {
                     this.DateTimeField = System.Linq.Enumerable.from(this.ParentListView.Header, Core.Models.Component).firstOrDefault(Bridge.fn.bind(this, function (x) {
@@ -23319,9 +23339,11 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var searchTerm = ($t = (($t1 = this.EntityVM.SearchTerm) != null ? Core.Extensions.Utils.EncodeSpecialChar($t1.trim()) : null), $t != null ? $t : "");
                 var finalFilter = "";
                 if (Core.Extensions.StringExt.IsNullOrEmpty(finalFilter)) {
-                    var operators = System.Linq.Enumerable.from(headers, Core.Models.Component).select(function (x) {
-                            return Core.Components.Extensions.ComponentExt.MapToFilterOperator(x, searchTerm);
-                        }).where(function (x) {
+                    var operators = System.Linq.Enumerable.from(headers, Core.Models.Component).where(function (x) {
+                            return Core.Extensions.StringExt.HasNonSpaceChar(x.FieldName);
+                        }).select(function (x) {
+                        return Core.Components.Extensions.ComponentExt.MapToFilterOperator(x, searchTerm);
+                    }).where(function (x) {
                         return Core.Extensions.StringExt.HasAnyChar(x);
                     });
                     finalFilter = Bridge.toArray(operators).join(" or ");
@@ -23762,7 +23784,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         }
                                         case 1: {
                                             $taskResult1 = $task1.getAwaitedResult();
-                                            if (!($taskResult1)) {
+                                            if (!$taskResult1) {
                                                 $step = 2;
                                                 continue;
                                             } 
@@ -25132,9 +25154,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     }
                                     case 1: {
                                         $taskResult1 = $task1.getAwaitedResult();
-                                        element = (Bridge.as(this.Element.parentElement.querySelector(".printable"), HTMLElement));
+                                        element = Bridge.as(this.Element.parentElement.querySelector(".printable"), HTMLElement);
                                         if (System.Nullable.eq(this.GuiInfo.Precision, 2)) {
-                                            element = Bridge.as((this.Element.parentElement.querySelector(".print-group")), HTMLElement);
+                                            element = Bridge.as(this.Element.parentElement.querySelector(".print-group"), HTMLElement);
                                         }
                                         printEl = element;
                                         printEl.style.pageBreakBefore = null;
@@ -27567,7 +27589,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             selectedData = parentGridView.RowData.Data;
                                         }
                                         selectedRow = System.Linq.Enumerable.from(selectedData, System.Object).where(function (x) {
-                                            return parentGridView.SelectedIds.contains((Bridge.toString(x.Id)));
+                                            return parentGridView.SelectedIds.contains(Bridge.toString(x.Id));
                                         }).toList(System.Object);
                                         $t = Bridge.getEnumerator(selectedRow);
                                         $step = 4;
@@ -27734,7 +27756,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                             selectedData1 = parentGridView1.RowData.Data;
                                         }
                                         selectedRow1 = System.Linq.Enumerable.from(selectedData1, System.Object).where(function (x) {
-                                            return parentGridView1.SelectedIds.contains((Bridge.toString(x.Id)));
+                                            return parentGridView1.SelectedIds.contains(Bridge.toString(x.Id));
                                         }).toList(System.Object);
                                         $t1 = Bridge.getEnumerator(selectedRow1);
                                         $step = 12;
@@ -27799,7 +27821,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 Core.Clients.Client.ExecTaskNoResult(task, Bridge.fn.cacheBind(this, this.PdfLibLoaded));
             },
             PdfLibLoaded: function () {
-                var element = Bridge.as((this._preview.querySelector(".print-group")), HTMLElement);
+                var element = Bridge.as(this._preview.querySelector(".print-group"), HTMLElement);
                 var printEl = element;
                 var first = Bridge.as(System.Linq.Enumerable.from(printEl.querySelectorAll(".printable"), Node).firstOrDefault(null, null), HTMLElement);
                 first.style.pageBreakBefore = null;
@@ -27887,7 +27909,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             _summarys: null,
             LastThClick: null,
             LastNumClick: null,
-            _sum: false,
             _summaryId: null,
             AutoFocus: false,
             LoadRerender: false,
@@ -27907,7 +27928,6 @@ Bridge.assembly("Core", function ($asm, globals) {
         ctors: {
             init: function () {
                 this._summarys = new (System.Collections.Generic.List$1(HTMLElement)).ctor();
-                this._sum = false;
                 this.AutoFocus = false;
                 this.LoadRerender = false;
                 this._hasFirstLoad = false;
@@ -27924,149 +27944,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.AddSummaries();
                 }
                 this.PopulateFields$1();
-                if (!this._sum && (Bridge.referenceEquals(this.GuiInfo.ComponentType, "GridView") || Bridge.referenceEquals(this.GuiInfo.ComponentType, "VirtualGrid"))) {
-                    System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                        var $step = 0,
-                            $task1, 
-                            $jumpFromFinally, 
-                            $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                            $returnValue, 
-                            $async_e, 
-                            $asyncBody = Bridge.fn.bind(this, function () {
-                                try {
-                                    for (;;) {
-                                        $step = System.Array.min([0,1], $step);
-                                        switch ($step) {
-                                            case 0: {
-                                                $task1 = this.AddSubTotal();
-                                                $step = 1;
-                                                if ($task1.isCompleted()) {
-                                                    continue;
-                                                }
-                                                $task1.continue($asyncBody);
-                                                return;
-                                            }
-                                            case 1: {
-                                                $task1.getAwaitedResult();
-                                                this._sum = true;
-                                                $tcs.setResult(null);
-                                                return;
-                                            }
-                                            default: {
-                                                $tcs.setResult(null);
-                                                return;
-                                            }
-                                        }
-                                    }
-                                } catch($async_e1) {
-                                    $async_e = System.Exception.create($async_e1);
-                                    $tcs.setException($async_e);
-                                }
-                            }, arguments);
-
-                        $asyncBody();
-                        return $tcs.task;
-                    }));
-                }
-            },
-            AddSubTotal: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    Component, 
-                    sum, 
-                    filter, 
-                    filter1, 
-                    wh, 
-                    pre, 
-                    fn, 
-                    stringWh, 
-                    dataSet, 
-                    $t, 
-                    sumarys, 
-                    headers, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.Component, this.Header)) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        Component = System.Linq.Enumerable.from(this.Header, Core.Models.Component).where(function (x) {
-                                            return !Bridge.referenceEquals(x.FieldName, Core.Components.EditableComponent.IdField) && Bridge.referenceEquals(x.ComponentType, "Number") && x.IsSumary === true;
-                                        }).toList(Core.Models.Component);
-                                        if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.Component, Component)) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        sum = System.Linq.Enumerable.from(Component, Core.Models.Component).select(function (x) {
-                                            return System.String.format("FORMAT(SUM(isnull([ds].{0},0)),'#,#') as {1}", x.FieldName, x.FieldName);
-                                        }).toList(System.String);
-                                        filter = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).where(function (x) {
-                                            return !x.Group;
-                                        }).select(function (x) {
-                                            return x.FieldName;
-                                        }), " and ");
-                                        filter1 = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).where(function (x) {
-                                            return x.Group;
-                                        }).select(function (x) {
-                                            return x.FieldName;
-                                        }), " or ");
-                                        wh = new (System.Collections.Generic.List$1(System.String)).ctor();
-                                        if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter)) {
-                                            wh.add(System.String.format("({0})", [filter]));
-                                        }
-                                        if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(filter1)) {
-                                            wh.add(System.String.format("({0})", [filter1]));
-                                        }
-                                        pre = this.GuiInfo.PreQuery;
-                                        fn = { };
-                                        if (pre != null && Core.Extensions.Utils.IsFunction(pre, fn)) {
-                                            pre = Bridge.toString(fn.v.call(this, this, this.EditForm));
-                                        }
-                                        stringWh = System.Linq.Enumerable.from(wh, System.String).any() ? System.String.format("({0})", [Core.Extensions.IEnumerableExtensions.Combine(System.String, wh, " and ")]) : "";
-                                        $task1 = new Core.Clients.Client.$ctor1(this.GuiInfo.RefName).SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = Core.Extensions.IEnumerableExtensions.Combine(System.String, sum), $t.Url = (System.String.format("SubTotal?group=", null) || "") + (System.String.format("&tablename={0}", [this.GuiInfo.RefName]) || "") + (System.String.format("&refname=", null) || "") + (System.String.format("&formatsumary={0}", [this.GuiInfo.FormatSumaryField]) || "") + (System.String.format("&dateTimeField={0}", [this.GuiInfo.DateTimeField]) || "") + (System.String.format("&showNull={0}", [Bridge.box(this.GuiInfo.ShowNull, System.Boolean, System.Boolean.toString)]) || "") + (System.String.format("&sql={0}", [this.Sql]) || "") + (System.String.format("&orderby={0}", [this.GuiInfo.OrderBySumary]) || "") + (System.String.format("&where={0} {1}", stringWh, (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.PreQuery) ? "" : System.String.format("{0} {1}", (System.Linq.Enumerable.from(wh, System.String).any() ? " and " : ""), pre))) || ""), $t.Method = Core.Enums.HttpMethod.POST, $t.ErrorHandler = function (x) { }, $t));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        dataSet = $taskResult1;
-                                        sumarys = ($t = dataSet[System.Array.index(0, dataSet)])[System.Array.index(0, $t)];
-                                        headers = System.Linq.Enumerable.from(this.HeaderSection.Children, Core.Components.EditableComponent).where(function (x) {
-                                            return !Bridge.referenceEquals(x.FieldName, Core.Components.EditableComponent.IdField) && Bridge.referenceEquals(x.GuiInfo.ComponentType, "Number") && x.GuiInfo.IsSumary === true;
-                                        }).toList(Core.Components.EditableComponent);
-                                        headers.ForEach(function (x) {
-                                            x.Element.children[1].innerHTML = System.String.concat("(", sumarys[x.FieldName]) + ")";
-                                        });
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
             },
             PopulateFields$1: function () {
                 if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.PopulateField)) {
@@ -28392,7 +28269,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var groups = System.Linq.Enumerable.from(this.CellSelected, Core.Models.CellSelected).where(function (x) {
                         return System.String.contains(x.FieldName,".");
                     }).toList(Core.Models.CellSelected);
-                Core.Clients.Client.ExecTask(System.Array.type(System.Array.type(System.Object)), this.FilterDropdownIds(dropdowns), Bridge.fn.bind(this, function (data) {
+                Core.Clients.Client.ExecTask(System.Array.type(System.Array.type(System.String)), this.FilterDropdownIds(dropdowns), Bridge.fn.bind(this, function (data) {
                     var index = 0;
                     var lisToast = new (System.Collections.Generic.List$1(System.String)).ctor();
                     this.CellSelected.ForEach(Bridge.fn.bind(this, function (cell) {
@@ -28402,7 +28279,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     if (Bridge.referenceEquals(this.GuiInfo.ComponentType, "VirtualGrid") && this.GuiInfo.CanSearch) {
                         this.HeaderSection.Element.focus();
                     }
-                    if (Bridge.referenceEquals(this.GuiInfo.ComponentType, "Dropdown")) {
+                    if (Bridge.referenceEquals(this.GuiInfo.ComponentType, "SearchEntry")) {
                         var search = Bridge.as(this.Parent, Core.Components.SearchEntry);
                         search != null ? search._input.focus() : null;
                     }
@@ -28411,76 +28288,32 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }));
             },
             FilterDropdownIds: function (dropdowns) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    dataTask, 
-                    data, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        dataTask = System.Linq.Enumerable.from(dropdowns, Core.Models.CellSelected).select(Bridge.fn.bind(this, function (x) {
-                                            var $t;
-                                            var filterString = "contains";
-                                            if (System.Nullable.eq(x.Operator, Core.Enums.OperatorEnum.Lr)) {
-                                                filterString = "startswith";
-                                            }
-                                            if (System.Nullable.eq(x.Operator, Core.Enums.OperatorEnum.Rl)) {
-                                                filterString = "endswith";
-                                            }
-                                            var header = System.Linq.Enumerable.from(this.Header, Core.Models.Component).firstOrDefault(function (y) {
-                                                return Bridge.referenceEquals(y.FieldName, x.FieldName);
-                                            }, null);
-                                            if (!x.IsSearch) {
-                                                if (System.String.contains(x.FieldName,".")) {
-                                                    var format = System.Linq.Enumerable.from(header.FieldName.split("."), System.String).lastOrDefault(null, null);
-                                                    return new Core.Clients.Client.$ctor1(header.GroupReferenceName).GetRawList(System.Object, (System.String.format("?$select=Id&$orderby=Id desc&$top=1000&$filter={0}({1},'", filterString, format) || "") + (Core.Extensions.Utils.EncodeSpecialChar(x.ValueText) || "") + "')", false, false, false, header.GroupReferenceName);
-                                                } else {
-                                                    var format1 = System.String.replaceAll(($t = header.FormatData.split("}"))[System.Array.index(0, $t)], "{", "");
-                                                    return new Core.Clients.Client.$ctor1(header.RefName).GetRawList(System.Object, (System.String.format("?$select=Id&$orderby=Id desc&$top=1000&$filter={0}({1},'", filterString, format1) || "") + (Core.Extensions.Utils.EncodeSpecialChar(x.ValueText) || "") + "')", false, false, false, header.RefName);
-                                                }
-                                            } else {
-                                                return new Core.Clients.Client.$ctor1(header.RefName).GetRawList(System.Object, System.String.format("?$select=Id&$orderby=Id desc&$filter=Id eq '{0}'", [Core.Extensions.Utils.EncodeSpecialChar(x.Value)]), false, false, false, header.RefName);
-                                            }
-                                        })).ToArray(System.Threading.Tasks.Task$1(System.Collections.Generic.List$1(System.Object)));
-                                        $task1 = System.Threading.Tasks.Task.whenAll.apply(System.Threading.Tasks.Task, dataTask);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        data = System.Linq.Enumerable.from(dataTask, System.Threading.Tasks.Task$1(System.Collections.Generic.List$1(System.Object))).select(function (x) {
-                                            var $t;
-                                            return ($t = x.getResult()) != null ? $t.ToArray() : null;
-                                        }).ToArray(System.Array.type(System.Object));
-                                        $tcs.setResult(data);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                var dataTask = System.Linq.Enumerable.from(dropdowns, Core.Models.CellSelected).select(Bridge.fn.bind(this, function (x) {
+                        var $t;
+                        var header = System.Linq.Enumerable.from(this.Header, Core.Models.Component).firstOrDefault(function (y) {
+                                return Bridge.referenceEquals(y.FieldName, x.FieldName);
+                            }, null);
+                        if (!x.IsSearch) {
+                            var filterOperation = Core.Enums.AdvSearchOperation.Like;
+                            if (System.Nullable.eq(x.Operator, Core.Enums.OperatorEnum.Lr)) {
+                                filterOperation = Core.Enums.AdvSearchOperation.StartWith;
+                            } else if (System.Nullable.eq(x.Operator, Core.Enums.OperatorEnum.Rl)) {
+                                filterOperation = Core.Enums.AdvSearchOperation.EndWidth;
+                            } else if (System.Nullable.eq(x.Operator, Core.Enums.OperatorEnum.NotIn)) {
+                                filterOperation = Core.Enums.AdvSearchOperation.NotLike;
                             }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
+                            var func = Core.Extensions.AdvOptionExt.OperationToSql.getItem(filterOperation);
+                            var sqlFilter = System.String.format(func, System.String.format("ds.[{0}]", [header.FormatData]), x.Value);
+                            return Core.Clients.Client.Instance.GetIds(($t = new Core.ViewModels.SqlViewModel(), $t.ComId = header.Id, $t.Where = sqlFilter, $t));
+                        } else {
+                            return System.Threading.Tasks.Task.fromResult(System.Array.init([x.Value], System.String), System.Array.type(System.String));
                         }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                    })).ToArray(System.Threading.Tasks.Task$1(System.Array.type(System.String)));
+                Core.Clients.Client.ExecTask(System.Array.type(System.Array.type(System.String)), System.Threading.Tasks.Task.whenAll.apply(System.Threading.Tasks.Task, dataTask), function (ds) {
+                    tcs.trySetResult(ds);
+                });
+                return tcs.task;
             },
             BuildCondition: function (cell, data, index, lisToast) {
                 var $t, $t1, $t2, $t3;
@@ -28495,16 +28328,14 @@ Bridge.assembly("Core", function ($asm, globals) {
                     where = System.Nullable.eq(cell.Operator, Core.Enums.OperatorEnum.NotIn) ? System.String.format("[ds].{0} not in ({1})", cell.FieldName, cell.Value) : System.String.format("[ds].{0} in ({1})", cell.FieldName, cell.Value);
                     lisToast.add((cell.FieldText || "") + " <span class='text-danger'>" + (cell.OperatorText || "") + "</span> " + (cell.ValueText || ""));
                 } else {
-                    if ((Bridge.referenceEquals(hl.ComponentType, "Dropdown") || Bridge.referenceEquals(hl.ComponentType, "SearchEntry") || System.String.contains(hl.FieldName,".")) && !Core.Extensions.StringExt.IsNullOrWhiteSpace(hl.FormatData)) {
+                    if (Bridge.referenceEquals(hl.ComponentType, "SearchEntry") && Core.Extensions.StringExt.HasNonSpaceChar(hl.FormatData)) {
                         if (isNUll) {
                             advo = System.Nullable.eq(cell.Operator, Core.Enums.OperatorEnum.NotIn) ? Core.Enums.AdvSearchOperation.NotEqualNull : Core.Enums.AdvSearchOperation.EqualNull;
                             where = System.Nullable.eq(cell.Operator, Core.Enums.OperatorEnum.NotIn) ? System.String.format("[ds].{0} is not null", [cell.FieldName]) : System.String.format("[ds].{0} is null", [cell.FieldName]);
                         } else {
-                            var rsdynamic = data[System.Array.index(index, data)];
-                            if (System.Linq.Enumerable.from(rsdynamic, System.Object).any()) {
-                                ids = Core.Extensions.IEnumerableExtensions.Combine(System.Object, System.Linq.Enumerable.from(rsdynamic, System.Object).select(function (x) {
-                                        return x.Id;
-                                    }));
+                            var idArr = data[System.Array.index(index, data)];
+                            if (System.Linq.Enumerable.from(idArr, System.String).any()) {
+                                ids = Core.Extensions.IEnumerableExtensions.Combine(System.String, idArr);
                                 where = System.Nullable.eq(cell.Operator, Core.Enums.OperatorEnum.NotIn) ? System.String.format("[ds].{0} not in ({1})", cell.FieldName, ids) : System.String.format("[ds].{0} in ({1})", cell.FieldName, ids);
                             } else {
                                 where = System.Nullable.eq(cell.Operator, Core.Enums.OperatorEnum.NotIn) ? System.String.format("[ds].{0} != {1}", cell.FieldName, cell.Value) : System.String.format("[ds].{0} = {1}", cell.FieldName, cell.Value);
@@ -29815,7 +29646,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                 datasorttypeHeader = "text";
                                             }
 
-                                            this._summaryId = "sumary" + Bridge.getHashCode((new System.Random.$ctor1(10)));
+                                            this._summaryId = "sumary" + Bridge.getHashCode(new System.Random.$ctor1(10));
                                             dir = refn != null ? ($t = System.Object, System.Linq.Enumerable.from(refn, $t).toDictionary(function (x) {
                                                 return x[Core.Components.EditableComponent.IdField];
                                             }, null, System.Object, $t)) : null;
@@ -30280,7 +30111,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 switch ($step) {
                                     case 0: {
                                         if (searching === void 0) { searching = true; }
-                                        this._sum = false;
                                         this.DataTable.parentElement.scrollTop = 0;
                                         $task1 = this.ReloadData(true, void 0, void 0);
                                         $step = 1;
@@ -35237,10 +35067,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }
                 }
             },
-            CalcFilterQuery: function (searching) {
-                var res = Core.Components.ListView.prototype.CalcFilterQuery.call(this, searching);
+            CalcFilterQuery: function () {
+                var res = Core.Components.ListView.prototype.CalcFilterQuery.call(this);
                 var resetSearch = Core.Extensions.StringExt.IsNullOrWhiteSpace(this.ListViewSearch.EntityVM.SearchTerm) && Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.FieldCondition, this.AdvSearchVM.Conditions);
-                if (searching && !resetSearch) {
+                if (!resetSearch) {
                     var filterPart = Core.Extensions.OdataExt.GetClausePart(res, Core.Extensions.OdataExt.FilterKeyword);
                     filterPart = filterPart.replace(new RegExp("((and|or) )?Parent(\\w|\\W)* eq null( (and|or)$)?"), "");
                     filterPart = filterPart.replace(new RegExp("^Parent(\\w|\\W)* eq null( (and|or))?"), "");
@@ -36570,7 +36400,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 switch ($step) {
                                     case 0: {
                                         if (searching === void 0) { searching = true; }
-                                        this._sum = false;
                                         this.CacheData.clear();
                                         this.DataTable.parentElement.scrollTop = 0;
                                         $task1 = this.ReloadData(false, void 0, void 0);
@@ -37467,7 +37296,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     return idMap.containsKey(Bridge.unbox(x.Entity[Core.Components.EditableComponent.IdField]));
                 }, function (x) {
                     var fieldCondition = Bridge.as(x.Entity, Core.Models.FieldCondition);
-                    fieldCondition.Level = (fieldCondition.Level || "") + (reducing ? -1 : 1);
+                    fieldCondition.Level = (fieldCondition.Level || "") + reducing ? -1 : 1;
                     System.Linq.Enumerable.from(x.Element.querySelectorAll("td")).select(function (x) { return Bridge.cast(x, HTMLElement); }).forEach(function (td) {
                         td.style.paddingLeft = (fieldCondition.Level || "") + "rem";
                     });

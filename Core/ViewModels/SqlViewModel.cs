@@ -10,6 +10,7 @@ namespace Core.ViewModels
         public string Entity { get; set; }
         public string AnnonymousTenant { get; set; }
         public string Paging { get; set; }
+        public string Select { get; set; }
         public string Where { get; set; }
         public string OrderBy { get; set; }
         public string GroupBy { get; set; }

@@ -61,7 +61,7 @@ namespace Core.Components
                     {
                         selectedData = parentGridView.RowData.Data;
                     }
-                    var selectedRow = selectedData.Where(x => parentGridView.SelectedIds.Contains((x["Id"].ToString()))).ToList();
+                    var selectedRow = selectedData.Where(x => parentGridView.SelectedIds.Contains(x["Id"].ToString())).ToList();
                     foreach (var item in selectedRow)
                     {
                         await Task.Delay(200);
@@ -133,7 +133,7 @@ namespace Core.Components
                     {
                         selectedData = parentGridView.RowData.Data;
                     }
-                    var selectedRow = selectedData.Where(x => parentGridView.SelectedIds.Contains((x["Id"].ToString()))).ToList();
+                    var selectedRow = selectedData.Where(x => parentGridView.SelectedIds.Contains(x["Id"].ToString())).ToList();
                     foreach (var item in selectedRow)
                     {
                         await Task.Delay(200);
@@ -160,7 +160,7 @@ namespace Core.Components
 
         private void PdfLibLoaded()
         {
-            var element = (_preview.QuerySelector(".print-group")) as HTMLElement;
+            var element = _preview.QuerySelector(".print-group") as HTMLElement;
             var printEl = element;
             var first = printEl.QuerySelectorAll(".printable").FirstOrDefault() as HTMLElement;
             first.Style.PageBreakBefore = null;

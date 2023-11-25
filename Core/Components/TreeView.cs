@@ -109,11 +109,11 @@ namespace Core.Components
             }
         }
 
-        public override string CalcFilterQuery(bool searching)
+        public override string CalcFilterQuery()
         {
-            var res = base.CalcFilterQuery(searching);
+            var res = base.CalcFilterQuery();
             var resetSearch = ListViewSearch.EntityVM.SearchTerm.IsNullOrWhiteSpace() && AdvSearchVM.Conditions.Nothing();
-            if (searching && !resetSearch)
+            if (!resetSearch)
             {
                 var filterPart = OdataExt.GetClausePart(res, OdataExt.FilterKeyword);
                 filterPart = filterPart.Replace(new RegExp(@"((and|or) )?Parent(\w|\W)* eq null( (and|or)$)?"), string.Empty);

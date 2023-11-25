@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Bridge.Html5;
+﻿using Bridge.Html5;
 using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
@@ -360,7 +359,7 @@ namespace Core.Components
             _filterGrid.RowAction(x => idMap.ContainsKey(x.Entity[IdField].As<int>()), x =>
             {
                 var fieldCondition = x.Entity as FieldCondition;
-                fieldCondition.Level += (reducing ? -1 : 1);
+                fieldCondition.Level += reducing ? -1 : 1;
                 x.Element.QuerySelectorAll("td").Cast<HTMLElement>().ForEach(td => td.Style.PaddingLeft = fieldCondition.Level + "rem");
             });
         }

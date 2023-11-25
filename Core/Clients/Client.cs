@@ -150,6 +150,27 @@ namespace Core.Clients
             return await SubmitAsyncWithToken<T>(options);
         }
 
+        public Task<string[]> GetIds(SqlViewModel sqlVm)
+        {
+            var tcs = new TaskCompletionSource<string[]>();
+            sqlVm.Select = "ds.Id";
+            sqlVm.Count = false;
+            sqlVm.SkipXQuery = true;
+            var task = SubmitAsync<dynamic[][]>(new XHRWrapper
+            {
+                Url = Utils.ComQuery,
+                Value = JSON.Stringify(sqlVm),
+                IsRawString = true,
+                Method = HttpMethod.POST
+            });
+            ExecTask(task, ds =>
+            {
+                var res = ds.Length == 0 || ds[0].Length == 0 ? new string[] { } : ds[0].Select(x => x.Id as string).ToArray();
+                tcs.TrySetResult(res);
+            }, e => tcs.TrySetException(e));
+            return tcs.Task;
+        }
+
         public Task<T> Fetch<T>(XHRWrapper options)
         {
             var tcs = new TaskCompletionSource<T>();

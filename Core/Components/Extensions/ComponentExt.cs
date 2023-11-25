@@ -144,7 +144,7 @@ namespace Core.Components.Extensions
 
             searchTerm = searchTerm.Trim();
             var fieldName = com.ComponentType == nameof(SearchEntry) ? com.TextField : com.FieldName;
-
+            if (fieldName.IsNullOrWhiteSpace()) return string.Empty;
             if (com.ComponentType == "Datepicker")
             {
                 var parsedDate = DateTimeOffset.TryParse(searchTerm, out var date);

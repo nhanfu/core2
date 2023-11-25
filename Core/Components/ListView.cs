@@ -180,7 +180,7 @@ namespace Core.Components
 
         public string CalcDatasourse(int viewPortCount, int skip, string count = "true")
         {
-            var source = CalcFilterQuery(true);
+            var source = CalcFilterQuery();
             if (!source.Contains("?"))
             {
                 source += "?";
@@ -219,7 +219,7 @@ namespace Core.Components
                 var sortDirection = x.OrderbyDirectionId == OrderbyDirection.ASC ? "asc" : "desc";
                 return $"ds.{x.FieldName} {sortDirection}";
             }) : null;
-            var basicCondition = CalcFilterQuery(true);
+            var basicCondition = CalcFilterQuery();
             var fnBtnCondition = Wheres.Combine(x => $"({x.FieldName})", " and ");
             var finalCon = new string[] { basicCondition, fnBtnCondition }
                 .Where(x => !x.IsNullOrWhiteSpace()).Combine(" and ");
@@ -322,9 +322,9 @@ namespace Core.Components
             Client.ExecTaskNoResult(ReloadData());
         }
 
-        public virtual string CalcFilterQuery(bool searching)
+        public virtual string CalcFilterQuery()
         {
-            return ListViewSearch.CalcFilterQuery(null);
+            return ListViewSearch.CalcFilterQuery();
         }
 
         public void LoadAllData()

@@ -573,7 +573,7 @@ namespace Core.Components
 
         private async Task ExportData(bool paging)
         {
-            var url = ParentListView.CalcFilterQuery(false);
+            var url = ParentListView.CalcFilterQuery();
             var options = ParentListView.Paginator.Options;
             if (paging)
             {
@@ -627,7 +627,7 @@ namespace Core.Components
             _uploader.Click();
         }
 
-        public string CalcFilterQuery(string prefix)
+        public string CalcFilterQuery()
         {
             if (EntityVM.DateTimeField != null)
             {
@@ -638,7 +638,8 @@ namespace Core.Components
             var finalFilter = string.Empty;
             if (finalFilter.IsNullOrEmpty())
             {
-                var operators = headers.Select(x => x.MapToFilterOperator(searchTerm)).Where(x => x.HasAnyChar());
+                var operators = headers.Where(x => x.FieldName.HasNonSpaceChar())
+                    .Select(x => x.MapToFilterOperator(searchTerm)).Where(x => x.HasAnyChar());
                 finalFilter = string.Join(" or ", operators);
             }
             var basicsAddDate = ParentListView.Header?.Where(x => x.AddDate)?.Select(x => x.Id)?.ToArray();
