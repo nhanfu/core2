@@ -2,8 +2,6 @@
 using Core.Models;
 using Core.MVVM;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Core.Components
 {
@@ -107,10 +105,5 @@ namespace Core.Components
         }
 
         public override bool Disabled { get => false; set => _disabled = false; }
-
-        public override StringBuilder BuildTextHistory(StringBuilder builder, HashSet<object> visited = null)
-        {
-            return builder;
-        }
     }
 }

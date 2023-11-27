@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Text;
 using Newtonsoft.Json;
 using Core.Enums;
 using Core.ViewModels;
@@ -268,8 +267,6 @@ namespace Core.Components
                 UpdateDirty(value);
             }
         }
-
-        public virtual string OriginalText { get; internal set; }
 
         public bool AlwaysValid { get; set; }
 
@@ -622,7 +619,6 @@ namespace Core.Components
 
         internal void SetOldTextAndVal()
         {
-            OriginalText = GetValueText();
             OldValue = Entity.GetPropValue(FieldName)?.ToString();
         }
 
@@ -801,65 +797,6 @@ namespace Core.Components
                      }
                  });
             });
-        }
-
-        public virtual StringBuilder BuildTextHistory(StringBuilder builder = null, HashSet<object> visited = null)
-        {
-            if (builder is null)
-            {
-                builder = new StringBuilder();
-            }
-            if (visited is null)
-            {
-                visited = new HashSet<object>();
-            }
-            if (visited.Contains(this))
-            {
-                return builder;
-            }
-            visited.Add(this);
-            BuildInternal(builder, visited);
-            return builder;
-        }
-
-        private void BuildInternal(StringBuilder builder, HashSet<object> visited)
-        {
-            BuildHistoryInternal(builder);
-            if (Children.HasElement() && !StopChildrenHistory)
-            {
-                foreach (var child in Children.Where(x => x is EditableComponent).Cast<EditableComponent>())
-                {
-                    child.BuildTextHistory(builder, visited);
-                }
-            }
-            return;
-        }
-
-        protected virtual void BuildHistoryInternal(StringBuilder builder)
-        {
-            if (GuiInfo is null)
-            {
-                return;
-            }
-
-            var updatedText = GetValueText();
-            if (updatedText.IsNullOrWhiteSpace())
-            {
-                updatedText = "N/A";
-            }
-            if (Updating)
-            {
-                var originText = OriginalText.IsNullOrWhiteSpace() ? "N/A" : OriginalText;
-                if (originText.Trim() == updatedText.Trim())
-                {
-                    return;
-                }
-                builder.Append(LangSelect.Get(GuiInfo.Label)).Append(": ").Append(originText).Append(" -> ").Append(updatedText).Append(Utils.NewLine);
-            }
-            else if (!Updating && AlwaysLogHistory)
-            {
-                builder.Append(LangSelect.Get(GuiInfo.Label)).Append(": ").Append(updatedText).Append(Utils.NewLine);
-            }
         }
 
         public virtual IEnumerable<EditableComponent> GetInvalid()

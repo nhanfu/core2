@@ -12,7 +12,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 
@@ -551,7 +550,8 @@ namespace Core.Components
 
         protected void SetRowDataIfExists()
         {
-            if (Entity != null && Utils.GetPropValue(Entity, FieldName) is IEnumerable value && value.GetEnumerator().MoveNext())
+            if (Entity != null && Utils.GetPropValue(Entity, FieldName) is IEnumerable value 
+                && value.GetEnumerator().MoveNext() && (value is string))
             {
                 RowData["_data"] = value;
             }
@@ -642,7 +642,7 @@ namespace Core.Components
             {
                 return;
             }
-            Client.ExecTaskNoResult(rowData.PatchUpdateOrCreate());
+            rowData.PatchUpdateOrCreate();
         }
 
         internal virtual async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
@@ -993,7 +993,7 @@ namespace Core.Components
                 {
                     foreach (var item in list)
                     {
-                        await item.PatchUpdateOrCreate();
+                        item.PatchUpdateOrCreate();
                     }
                     Toast.Success("Sao chép dữ liệu thành công !");
                     base.Dirty = false;
@@ -1069,7 +1069,7 @@ namespace Core.Components
                 {
                     foreach (var item in list)
                     {
-                        await item.PatchUpdateOrCreate();
+                        item.PatchUpdateOrCreate();
                     }
                     Toast.Success("Sao chép dữ liệu thành công !");
                     base.Dirty = false;
@@ -1749,40 +1749,6 @@ namespace Core.Components
                 });
             }
             Dirty = false;
-        }
-
-        public override StringBuilder BuildTextHistory(StringBuilder builder, HashSet<object> visited = null)
-        {
-            if (builder is null)
-            {
-                builder = new StringBuilder();
-            }
-            if (visited is null)
-            {
-                visited = new HashSet<object>();
-            }
-            if (visited.Contains(this))
-            {
-                return builder;
-            }
-            if (!Editable)
-            {
-                return builder;
-            }
-            visited.Add(this);
-            var dirty = AllListViewItem.Where(x => x.Dirty).DistinctBy(x => x.Entity).ToArray();
-            if (dirty.HasElement())
-            {
-                string label = GuiInfo.Label;
-                if (GuiInfo.Label.IsNullOrWhiteSpace())
-                {
-                    var section = this.FindClosest<Section>(x => x.ComponentGroup?.Label != null);
-                    label = section?.ComponentGroup?.Label;
-                }
-                builder.Append($"{LangSelect.Get(label)}:{Utils.NewLine}");
-                dirty.ForEach(x => x.BuildTextHistory(builder));
-            }
-            return builder;
         }
 
         internal int GetRowCountByHeight(double scrollTop)

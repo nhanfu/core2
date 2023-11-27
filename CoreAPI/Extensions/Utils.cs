@@ -67,20 +67,20 @@ namespace Core.Extensions
             return res.ToString();
         }
 
-        public static bool IsOwner(object entity, string userId, IEnumerable<string> roleIds)
+        public static bool IsOwner(Dictionary<string, object> entity, string userId, IEnumerable<string> roleIds)
         {
             if (entity is null || entity.GetPropValue(IdField) != null)
             {
                 return false;
             }
-            var ownerUserIds = entity.GetPropValue(OwnerUserIds)?.ToString();
+            var ownerUserIds = entity.GetValueOrDefault(OwnerUserIds)?.ToString();
             var isOwnerUser = ownerUserIds.HasNonSpaceChar() && ownerUserIds.Split(Comma).Contains(userId);
-            var ownerRoleIds = entity.GetPropValue(OwnerRoleIds)?.ToString();
+            var ownerRoleIds = entity.GetValueOrDefault(OwnerRoleIds)?.ToString();
             var isOwnerRole = ownerRoleIds.HasNonSpaceChar() &&
                 (from entityRole in ownerRoleIds.Split(Comma)
                  join tokenRole in roleIds on entityRole equals tokenRole
                  select entityRole).Any();
-            var createdId = entity.GetPropValue(InsertedBy)?.ToString();
+            var createdId = entity.GetValueOrDefault(InsertedBy)?.ToString();
             var isOwner = ownerUserIds.IsNullOrWhiteSpace() && createdId == userId || isOwnerRole || isOwnerUser;
             return isOwner;
         }

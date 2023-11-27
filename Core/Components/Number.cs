@@ -152,7 +152,7 @@ namespace Core.Components
                         await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
                         if (gridView.GuiInfo.IsRealtime)
                         {
-                            await upItem.PatchUpdateOrCreate();
+                            upItem.PatchUpdateOrCreate();
                         }
                         gridView.DataTable.ParentElement.ScrollTop += 26;
                         startNo++;
@@ -268,7 +268,6 @@ namespace Core.Components
             Value = GetDecimalValue();
             if (!Dirty)
             {
-                OriginalText = _input.Value;
                 DOMContentLoaded?.Invoke();
                 OldValue = _input.Value;
             }

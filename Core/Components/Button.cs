@@ -4,8 +4,6 @@ using Core.Components.Extensions;
 using Core.Extensions;
 using Core.MVVM;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Core.Clients;
 
 namespace Core.Components
@@ -84,11 +82,6 @@ namespace Core.Components
                 return _textEle.TextContent;
             }
             return Entity[FieldName]?.ToString();
-        }
-
-        public override StringBuilder BuildTextHistory(StringBuilder builder = null, HashSet<object> visited = null)
-        {
-            return builder;
         }
     }
 }

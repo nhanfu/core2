@@ -88,7 +88,6 @@ namespace Core.Components
             _nullable = IsNullable<DateTimeOffset>() || IsNullable<DateTime>();
             Entity.SetComplexPropValue(FieldName, _value);
             var str = _value.HasValue && _value != DateTime.MinValue ? _value.Value.ToString(InitFormat) : string.Empty;
-            OriginalText = str;
             OldValue = _value != DateTime.MinValue ? _value?.ToString().DateConverter() : string.Empty;
             Html.Take(ParentElement);
             if (Input is null)
@@ -215,7 +214,7 @@ namespace Core.Components
                         await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
                         if (gridView.GuiInfo.IsRealtime)
                         {
-                            await upItem.PatchUpdateOrCreate();
+                            upItem.PatchUpdateOrCreate();
                         }
                         gridView.DataTable.ParentElement.ScrollTop += 26;
                         startNo++;

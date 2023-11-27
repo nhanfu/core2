@@ -46,7 +46,6 @@
     <Compile Include="Components\Framework\NotificationBL.cs" />
     <Compile Include="Components\Framework\RegistrationBL.cs" />
     <Compile Include="Components\SecurityBL.cs" />
-    <Compile Include="Components\Select2.cs" />
     <Compile Include="Components\VirtualGrid.cs" />
     <Compile Include="Components\GridViewItem.cs" />
     <Compile Include="Components\ImageServer.cs" />

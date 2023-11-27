@@ -500,35 +500,29 @@ namespace Core.Services
                 throw new ApiException("Table name and change details can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
             }
             vm.Table = RemoveWhiteSpace(vm.Table);
-            vm.Changes.ForEach(x =>
+            vm.Changes = vm.Changes.Where(x =>
             {
                 if (x.Field.IsNullOrWhiteSpace()) throw new ApiException($"Field name can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
                 x.Field = RemoveWhiteSpace(x.Field);
-            });
+                return !x.JustHistory;
+            }).ToList();
             bool writePerm;
             var idField = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
             var oldId = idField?.OldVal;
             var com = await GetComponent(vm.ComId);
             var allRights = await GetComPermission(vm.ComId);
-            var connStr = await GetConnStrFromKey(vm.ConnKey);
+            var connStr = await GetConnStrFromKey(vm.ConnKey ?? com.ConnKey);
             if (oldId is null)
             {
-                writePerm = allRights.Any(x => x.CanWrite || x.CanWriteAll);
+                writePerm = allRights.Any(x => x.CanAdd || x.CanWriteAll);
             }
             else
             {
                 var origin = @$"select t.* from [{vm.Table}] as t where t.Id = '{oldId}'";
                 var ds = await ReadDataSet(origin, connStr);
                 var originRow = ds.Count() > 1 ? ds.ElementAt(0).FirstOrDefault() : null;
-                if (originRow is null)
-                {
-                    writePerm = allRights.Any(x => x.CanWrite || x.CanWriteAll);
-                }
-                else
-                {
-                    var isOwner = Utils.IsOwner(originRow, UserId, RoleIds);
-                    writePerm = allRights.Any(x => x.CanWrite && isOwner || x.CanWriteAll);
-                }
+                var isOwner = Utils.IsOwner(originRow, UserId, RoleIds);
+                writePerm = isOwner || allRights.Any(x => x.CanWriteAll);
             }
             if (!writePerm) throw new ApiException("Access denied!") { StatusCode = HttpStatusCode.Unauthorized };
             using SqlConnection connection = new(connStr);

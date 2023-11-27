@@ -375,8 +375,7 @@ namespace Core.Components
                 string valueText = null;
                 if (header.ComponentType == nameof(Datepicker))
                 {
-                    valueText = confirmDialog.Datepicker.OriginalText;
-                    value = confirmDialog.Datepicker.Value.ToString();
+                    valueText = value = confirmDialog.Datepicker.Value.ToString();
                 }
                 else if (header.ComponentType == nameof(Number))
                 {
@@ -504,7 +503,7 @@ namespace Core.Components
                 }
                 else
                 {
-                    return Task.FromResult(new string [] { x.Value });
+                    return Task.FromResult(new string[] { x.Value });
                 }
             }).ToArray();
             Client.ExecTask(Task.WhenAll(dataTask), ds =>
@@ -1181,7 +1180,7 @@ namespace Core.Components
                             await currentItemD.ListViewSection.ListView.DispatchEventToHandlerAsync(upItemD.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItemD.Entity);
                             if (GuiInfo.IsRealtime)
                             {
-                                await currentItemD.PatchUpdateOrCreate();
+                                currentItemD.PatchUpdateOrCreate();
                             }
                         });
                     }
@@ -1524,7 +1523,7 @@ namespace Core.Components
                         await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
                         if (GuiInfo.IsRealtime)
                         {
-                            await upItem.PatchUpdateOrCreate();
+                            upItem.PatchUpdateOrCreate();
                         }
                     });
                 }
@@ -1914,7 +1913,7 @@ namespace Core.Components
                 {
                     foreach (var item in list)
                     {
-                        await item.PatchUpdateOrCreate();
+                        item.PatchUpdateOrCreate();
                     }
                     Toast.Success("Sao chép dữ liệu thành công !");
                     base.Dirty = false;
@@ -2047,7 +2046,7 @@ namespace Core.Components
         internal override async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
         {
             await Task.Delay(50);
-            var com = new List<string>() { nameof(SearchEntry), nameof(Select2) };
+            var com = new List<string>() { nameof(SearchEntry) };
             if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
                 await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData, this);
@@ -2055,7 +2054,7 @@ namespace Core.Components
                 if (GuiInfo.IsRealtime)
                 {
                     var entity = rowData;
-                    await rowSection.PatchUpdateOrCreate();
+                    rowSection.PatchUpdateOrCreate();
                     Dirty = false;
                 }
                 else
@@ -2259,12 +2258,20 @@ namespace Core.Components
         private void ChangeHeader(Event e, Component header)
         {
             Window.ClearTimeout(_imeout);
-            _imeout = Window.SetTimeout(async () =>
+            _imeout = Window.SetTimeout(() =>
             {
-                var headerDB = await new Client(nameof(Component)).GetByIdAsync<Component>(header.Id);
                 var html = e.Target as HTMLElement;
-                headerDB.ShortDesc = html.TextContent.Trim();
-                await new Client(nameof(Component)).UpdateAsync<Component>(headerDB);
+                var patchVM = new PatchUpdate
+                {
+                    Table = nameof(Component),
+                    ComId = GuiInfo.Id,
+                    Changes = new List<PatchUpdateDetail>
+                    {
+                        new PatchUpdateDetail { Field = nameof(Component.Id), Value = header.Id, OldVal = header.Id },
+                        new PatchUpdateDetail { Field = nameof(Component.ShortDesc), Value = html.TextContent.Trim(), OldVal = header.ShortDesc },
+                    }
+                };
+                Client.Instance.PatchAsync(patchVM);
             }, 1000);
         }
 
@@ -2500,9 +2507,9 @@ namespace Core.Components
             if (isSave is null)
             {
                 Window.ClearTimeout(awaiter1);
-                awaiter1 = Window.SetTimeout(async () =>
+                awaiter1 = Window.SetTimeout(() =>
                 {
-                    await UpdateUserSetting();
+                    Task.Run(UpdateUserSetting);
                 }, 100);
             }
         }
@@ -2517,21 +2524,7 @@ namespace Core.Components
              e.target.style.maxWidth = "";
              e.target.style.width = "";
              */
-            Task.Run(async () => await UpdateUserSetting());
-        }
-
-        private void HideColumn(object arg)
-        {
-            var entity = arg["header"] as Component;
-            var e = arg["events"] as Event;
-            /*@
-             var $table = $(e.target).closest('table');
-             var $cell = $(e.target).closest('th,td');
-             var cellIndex = $cell[0].cellIndex + 1;
-             $table.find("tbody tr, thead tr").children(":nth-child("+cellIndex+")").hide();
-             console.log($(e.target).attr("data-field"));
-             */
-            Task.Run(async () => await UpdateUserSettingColumn());
+            Task.Run(UpdateUserSetting);
         }
 
         private async Task UpdateUserSetting()

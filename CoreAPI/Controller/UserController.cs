@@ -10,16 +10,10 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace Core.Controllers
 {
-    public class UserController : TMSController<User>
+    public class UserController(CoreContext context, IConfiguration configuration,
+        IHttpContextAccessor httpContextAccessor, EntityService entityService) : TMSController<User>(context, entityService, httpContextAccessor)
     {
-        private readonly IConfiguration _configuration;
-
-        public UserController(CoreContext context, IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor, EntityService entityService) : base(context, entityService, httpContextAccessor)
-        {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-        }
-
+        private readonly IConfiguration _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
         public override async Task<ActionResult<User>> UpdateAsync([FromBody] User user, string reasonOfChange = "")
         {

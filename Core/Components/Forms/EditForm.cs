@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
-using History = Core.Models.History;
 
 namespace Core.Components.Forms
 {
@@ -218,55 +217,21 @@ namespace Core.Components.Forms
                 return false;
             }
             var pathModel = GetPathEntity();
-            if (pathModel.Changes.Count == 1)
+            BeforeSaved?.Invoke();
+            var rs = await Client.PatchAsync(pathModel);
+            if (!rs)
             {
-                Toast.Warning(NotDirtyMessage);
+                Toast.Warning("Dữ liệu của bạn chưa được lưu vui lòng nhập lại!");
+                UpdateView();
                 return false;
             }
-            BeforeSaved?.Invoke();
-            var rs = Entity;
-            var updating = Entity[IdField] != null;
-            if (updating)
-            {
-                try
-                {
-                    rs = await Client.PatchAsync<object>(pathModel);
-                }
-                catch
-                {
-                    Toast.Warning("Dữ liệu của bạn chưa được lưu vui lòng nhập lại!");
-                    rs = (await Client.GetList<object>($"?$filter=Id eq '{Entity[IdField]}'")).Value.FirstOrDefault();
-                    Entity.CopyPropFrom(rs);
-                    UpdateView();
-                    return false;
-                }
-            }
-            else
-            {
-                Entity[IdField] = 0;
-                rs = await Client.CreateAsync<object>(Entity);
-            }
-            Entity.CopyPropFrom(rs);
+
             await UpdateIndependantGridView();
             if (Feature.DeleteTemp)
             {
                 await DeleteGridView();
             }
-            var arr = FilterChildren<EditableComponent>(x => (!x.Dirty || x.GetValueText().IsNullOrWhiteSpace()) && x.GuiInfo != null).Select(x => x.FieldName).ToArray();
-            UpdateView(true, arr);
-            var changing = BuildTextHistory().ToString();
-            if (!changing.IsNullOrWhiteSpace())
-            {
-                await new Client(nameof(History)).CreateAsync<History>(new History
-                {
-                    ReasonOfChange = "Auto update",
-                    TextHistory = changing.ToString(),
-                    RecordId = EntityId,
-                    EntityId = Utils.GetEntity(Client.EntityName).Id
-                });
-            }
-            var prefix = updating ? "Cập nhật" : "Tạo mới";
-            Toast.Success($"{prefix} thành công");
+            Toast.Success($"The data was saved");
             Dirty = false;
             AfterSaved?.Invoke(true);
             return true;
@@ -366,7 +331,6 @@ namespace Core.Components.Forms
         public async Task<object> AddOrUpdate(object entity)
         {
             var showMessage = entity != null;
-            var changedLog = BuildTextHistory().ToString();
             var id = Entity[IdField].As<string>();
             var updating = id != null;
             var updated = await AddOrUpdateEntity(entity, updating);
@@ -374,7 +338,6 @@ namespace Core.Components.Forms
             {
                 return null;
             }
-            await UpdateHistory(changedLog);
             ReloadAndShowMessage(showMessage, updating);
             Dirty = false;
             return updated;
@@ -414,29 +377,6 @@ namespace Core.Components.Forms
                 {
                     Toast.Warning("Lỗi xóa chi tiết vui lòng kiểm tra lại");
                 }
-            }
-        }
-
-        private async Task UpdateHistory(string changedLog)
-        {
-            if (changedLog.IsNullOrWhiteSpace())
-            {
-                return;
-            }
-            var history = new History
-            {
-                EntityId = Utils.GetEntity(Client.EntityName).Id,
-                RecordId = Entity?[IdField]?.ToString(),
-                ReasonOfChange = ReasonOfChange ?? "Cập nhật thông tin",
-                TextHistory = changedLog,
-            };
-            try
-            {
-                await new Client(nameof(History), typeof(User).Namespace).CreateAsync<History>(history);
-                ReasonOfChange = null;
-            }
-            catch
-            {
             }
         }
 
@@ -1380,8 +1320,10 @@ namespace Core.Components.Forms
             };
             _confirm.YesConfirmed += () =>
             {
-                Client.ExecTask( _confirm.OpenEditForm.SavePatch(), success => {
-                    if (!success) {
+                Client.ExecTask(_confirm.OpenEditForm.SavePatch(), success =>
+                {
+                    if (!success)
+                    {
                         Toast.Warning("Update data failed");
                         return;
                     }
@@ -1588,48 +1530,6 @@ namespace Core.Components.Forms
                     Toast.Warning("Xóa không thành công");
                 }
             };
-        }
-
-        public void CreateFeaturePolicyHeader(Component arg) => CreateFeaturePolicy(arg, arg.FeatureId, arg.Id);
-
-        public void CreateFeaturePolicySection(ComponentGroup arg) => CreateFeaturePolicy(arg, arg.FeatureId);
-        public async Task CreateFeaturePolicyComponent(Component arg)
-        {
-            var section = await new Client(nameof(ComponentGroup), typeof(User).Namespace).GetByIdAsync<ComponentGroup>(arg.ComponentGroupId);
-            CreateFeaturePolicy(arg, section.FeatureId);
-        }
-
-        public void CreateFeaturePolicy(object arg, string featureId = null, string recordId = null)
-        {
-            var isSecurityVM = arg is SecurityVM;
-            var originalModel = arg is SecurityVM security ? security : null;
-            var entityId = arg is Component ? Utils.ComponentId
-                        : arg is ComponentGroup ? Utils.ComponentGroupId
-                        : Utils.ComponentId;
-            var detail = new SecurityEditorBL
-            {
-                Entity = originalModel ?? new SecurityVM
-                {
-                    FeatureId = featureId,
-                    EntityId = entityId,
-                    RecordIds = new string[] { recordId ?? arg[IdField]?.ToString() }
-                },
-            };
-            detail.DOMContentLoaded += () =>
-            {
-                this.SetShow(false, nameof(FeaturePolicy.RecordId));
-            };
-            detail.AfterSaved += async (success) =>
-            {
-                if (isSecurityVM)
-                {
-                    return;
-                }
-                arg.SetPropValue(nameof(Component.IsPrivate), true);
-                UpdateView(componentNames: nameof(Component.IsPrivate));
-                await Save(false);
-            };
-            TabEditor.ActiveTab.AddChild(detail);
         }
 
         public void SignIn()

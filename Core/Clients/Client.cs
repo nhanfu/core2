@@ -564,26 +564,34 @@ namespace Core.Clients
             return await httpGetList.MakeGenericMethod(refType).Invoke(this, filter, clearCache).As<Task<List<T>>>();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0034:Simplify 'default' expression", Justification = "<Pending>")]
-        public async Task<T> GetByIdAsync<T>(string id)
+        public Task<dynamic> GetByIdAsync(string id, string table)
         {
-            if (id.IsNullOrEmpty())
+            if (id.IsNullOrWhiteSpace() || table.IsNullOrWhiteSpace())
             {
-                return default(T);
+                return Task.FromResult(default(object));
             }
-            EntityName = typeof(T).Name;
-            var odata = await SubmitAsync<OdataResult<T>>(new XHRWrapper
+            var tcs = new TaskCompletionSource<object>();
+            var vm = new SqlViewModel 
             {
-                Value = id,
+                Entity = JSON.Stringify(new { Id = id, Table = table }),
+                ComId = "Entity",
+                Action = "ById"
+            };
+            var odata = SubmitAsync<object>(new XHRWrapper
+            {
+                Value = JSON.Stringify(vm),
                 IsRawString = true,
                 Method = HttpMethod.POST,
-                Url = "ById",
+                Url = Utils.UserSvc,
                 Headers = new Dictionary<string, string>
                 {
                     { "content-type", "application/json" }
                 }
             });
-            return odata.Value.FirstOrDefault();
+            ExecTask(odata, ds => {
+                tcs.TrySetResult(ds);
+            });
+            return tcs.Task;
         }
 
         public Task<object> GetRawAsync(string id)
@@ -684,14 +692,13 @@ namespace Core.Clients
             });
         }
 
-        public Task<T> PatchAsync<T>(PatchUpdate value, string subUrl = string.Empty, string ig = string.Empty, bool annonymous = false, bool allowNested = false)
+        public Task<bool> PatchAsync(PatchUpdate value, string subUrl = null, bool annonymous = false)
         {
-            var id = value.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
-            return SubmitAsync<T>(new XHRWrapper
+            return SubmitAsync<bool>(new XHRWrapper
             {
-                Value = JsonConvert.SerializeObject(value),
+                Value = JSON.Stringify(value),
                 IsRawString = true,
-                Url = subUrl,
+                Url = subUrl ?? Utils.PatchSvc,
                 Headers = new Dictionary<string, string> { { "Content-type", "application/json" } },
                 Method = HttpMethod.PATCH,
                 AllowAnonymous = annonymous,
@@ -767,17 +774,6 @@ namespace Core.Clients
             });
             var res = await Task.WhenAll(tasks);
             return res.ToList();
-        }
-
-        public async Task<List<T>> PatchAsync<T>(List<PatchUpdate> value, string reasonOfChange = string.Empty, bool multipleThread = true)
-        {
-            var tasks = value.Select(x => PatchAsync<T>(x));
-            var res = new List<T>();
-            foreach (var item in value)
-            {
-                res.Add(await PatchAsync<T>(item));
-            }
-            return res;
         }
 
         public Task<bool> HardDeleteAsync(string id) => HardDeleteAsync(new List<string> { id });

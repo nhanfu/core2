@@ -10,7 +10,6 @@ using Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 
@@ -113,15 +112,7 @@ namespace Core.Components
         public ListViewItem(ElementType elementType = ElementType.tr) : base(elementType)
         {
             StopChildrenHistory = true;
-            DOMContentLoaded += RowItemReady;
             NotCellText = new List<string> { "Button", "Image", "Checkbox" };
-        }
-
-        private void RowItemReady()
-        {
-            var historyBuilder = new StringBuilder();
-            BuildTextHistory(historyBuilder);
-            OriginalText = historyBuilder.ToString();
         }
 
         public override void Render()
@@ -274,32 +265,28 @@ namespace Core.Components
             };
         }
 
-        public async Task PatchUpdateOrCreate()
+        public void PatchUpdateOrCreate()
         {
             if (!Dirty)
             {
                 return;
             }
             var patchModel = GetPatchEntity();
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, patchModel, this);
-            lastpathModel = patchModel;
-            var success = false;
-            try
+            Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, patchModel, this), () =>
             {
-                success = await Client.Instance.SubmitAsync<bool>(new XHRWrapper
+                lastpathModel = patchModel;
+                Client.ExecTask(Client.Instance.PatchAsync(patchModel), success =>
                 {
-                    Url = Utils.PatchSvc,
-                    Value = JSON.Stringify(patchModel),
-                    IsRawString = true,
-                    Method = HttpMethod.PATCH
+                    PatchUpdateCb(success, patchModel);
                 });
-            }
-            catch
-            {
-                Toast.Warning("Update row was not succeded");
-            }
+            });
+        }
+
+        private void PatchUpdateCb(bool success, PatchUpdate patchModel)
+        {
             if (!success)
             {
+                Toast.Warning("Save data was not succeded");
                 var idField = PatchModel.FirstOrDefault(x => x.Field == IdField);
                 if (idField != null && idField.OldVal is null)
                 {
@@ -309,29 +296,10 @@ namespace Core.Components
             }
             else
             {
-                await PatchSuccess(patchModel);
+                Dirty = false;
+                EmptyRow = false;
             }
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this);
-        }
-
-        private async Task PatchSuccess(PatchUpdate patchModel)
-        {
-            Dirty = false;
-            EmptyRow = false;
-            var arr = FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace())
-                .Select(x => x.FieldName).ToArray();
-            var changing = BuildTextHistory().ToString();
-            if (!changing.IsNullOrWhiteSpace())
-            {
-                await new Client(nameof(Models.History)).CreateAsync<Models.History>(new Models.History
-                {
-                    ReasonOfChange = "Auto update",
-                    TextHistory = changing.ToString(),
-                    RecordId = EntityId,
-                    EntityId = Utils.GetEntity(GuiInfo.RefName).Id
-                });
-            }
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this);
+            Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this));
         }
 
         public PatchUpdate GetPatchEntity()
@@ -507,13 +475,6 @@ namespace Core.Components
             }
         }
 
-        private void ToastSelected()
-        {
-            if (ListViewSection.ListView.SelectedIds.Count % 10 == 0 && ListViewSection.ListView.SelectedIds.Count > 0)
-            {
-            }
-        }
-
         protected virtual void RowFocusOut()
         {
             Task.Run(async () => await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.RowFocusOut, Entity));
@@ -529,41 +490,6 @@ namespace Core.Components
         {
             Element.RemoveClass(HoveringClass);
             Task.Run(async () => await this.DispatchCustomEventAsync(ListViewSection.ListView.GuiInfo.Events, CustomEventType.RowMouseLeave, Entity));
-        }
-
-        public override StringBuilder BuildTextHistory(StringBuilder builder = null, HashSet<object> visited = null)
-        {
-            var buildFromRow = builder is null;
-            if (buildFromRow)
-            {
-                builder = new StringBuilder();
-            }
-            if (visited is null)
-            {
-                visited = new HashSet<object>();
-            }
-            if (visited.Contains(this))
-            {
-                return builder;
-            }
-            if (Children.Nothing())
-            {
-                return builder;
-            }
-            visited.Add(this);
-            if (!buildFromRow)
-            {
-                builder.Append(Utils.Indent).Append(BasicUpdateText).Append(" dòng ").Append(RowNo + 1).Append(":").Append(Utils.NewLine);
-            }
-            Children.ForEach(x =>
-            {
-                if (!buildFromRow)
-                {
-                    builder.Append(Utils.Indent);
-                }
-                x.BuildTextHistory(builder);
-            });
-            return builder;
         }
 
         public override bool Show { get => base.Show; set => Toggle(value); }

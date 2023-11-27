@@ -391,6 +391,8 @@ namespace Core.Components
         }
 
         private bool _isRendering;
+        protected string OriginalText;
+
         public void RenderGridView(string term = null)
         {
             if (_isRendering)
@@ -632,7 +634,8 @@ namespace Core.Components
                 {
                     Field = GuiInfo.TextField,
                     Value = _input.Value,
-                    OldVal = OriginalText
+                    OldVal = OriginalText,
+                    JustHistory = !GuiInfo.ShouldSaveText
                 });
             }
             return res.ToArray();
@@ -717,19 +720,17 @@ namespace Core.Components
             ProcessLocalMatch();
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public override async Task<bool> ValidateAsync()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        public override Task<bool> ValidateAsync()
         {
             if (ValidationRules.Nothing())
             {
-                return true;
+                return Task.FromResult(true);
             }
             ValidationResult.Clear();
             ValidateRequired(_value);
             Validate(ValidationRule.Equal, _value, (string value, string ruleValue) => value == ruleValue);
             Validate(ValidationRule.NotEqual, _value, (string value, string ruleValue) => value != ruleValue);
-            return IsValid;
+            return Task.FromResult(IsValid);
         }
 
         protected override void SetDisableUI(bool value)

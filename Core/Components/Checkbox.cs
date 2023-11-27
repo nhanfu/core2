@@ -81,7 +81,6 @@ namespace Core.Components
             Value = val;
             if (!Dirty)
             {
-                OriginalText = _input.Value;
                 DOMContentLoaded?.Invoke();
                 OldValue = _input.Value;
             }

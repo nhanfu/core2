@@ -13,7 +13,9 @@ namespace Core.ViewModels
     public class PatchUpdateDetail
     {
         public string Field { get; set; }
+        public string Label { get; set; }
         public string OldVal { get; set; }
         public string Value { get; set; }
+        public bool JustHistory { get; set; }
     }
 }
