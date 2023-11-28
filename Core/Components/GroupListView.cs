@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
+using Core.Clients;
 
 namespace Core.Components
 {
@@ -23,43 +24,6 @@ namespace Core.Components
         {
             base.Render();
             Html.Take(Element).ClassName("group-listview").End.Render();
-        }
-
-        protected override void RowDataChanged(ObservableListArgs<object> args)
-        {
-            if (args.Action == ObservableAction.Remove)
-            {
-                RemoveRowById(args.Item[IdField].ToString());
-                return;
-            }
-            Window.ClearTimeout(_rowDataChangeAwaiter);
-            _rowDataChangeAwaiter = Window.SetTimeout((Action)(async () =>
-            {
-                if (GuiInfo.GroupBy.IsNullOrEmpty())
-                {
-                    return;
-                }
-
-                if (args.ListData.Nothing())
-                {
-                    NoRecordFound();
-                    return;
-                }
-                switch (args.Action)
-                {
-                    case ObservableAction.Add:
-                        await AddRow(args.Item);
-                        return;
-                    case ObservableAction.AddRange:
-                        await AddRows(args.ListData);
-                        return;
-                    case ObservableAction.Update:
-                        await AddOrUpdateRow(args.Item);
-                        return;
-                }
-                FormattedRowData = ComponentExt.BuildGroupTree(args.ListData, GuiInfo.GroupBy.Split(",")).ToList();
-                base.Rerender();
-            }));
         }
 
         public override Task<ListViewItem> AddRow(object item, int fromIndex = 0, bool singleAdd = true)
@@ -142,8 +106,8 @@ namespace Core.Components
             listViewSection.AddChild(groupSection);
             var first = groupRow.Children.FirstOrDefault();
             var groupText = Utils.FormatEntity(GuiInfo.GroupFormat, null, first, x => "N/A", x => "N/A");
-            Html.Take(groupSection.Element).AsyncEvent(EventType.Click, DispatchClick, first)
-                    .AsyncEvent(EventType.DblClick, DispatchDblClick, first)
+            Html.Take(groupSection.Element).Event(EventType.Click, DispatchClick, first)
+                    .Event(EventType.DblClick, DispatchDblClick, first)
                     .Icon("fa fa-chevron-right").Event(EventType.Click, ToggleGroupRow, groupSection).End
                     .Span.InnerHTML(groupText);
             groupSection.GroupText = Html.Context;
@@ -164,14 +128,14 @@ namespace Core.Components
             return groupSection;
         }
 
-        private Task DispatchClick(object row)
+        private void DispatchClick(object row)
         {
-            return this.DispatchEventToHandlerAsync(GuiInfo.GroupEvent, EventType.Click, row);
+            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.GroupEvent, EventType.Click, row));
         }
 
-        private Task DispatchDblClick(object row)
+        private void DispatchDblClick(object row)
         {
-            return this.DispatchEventToHandlerAsync(GuiInfo.GroupEvent, EventType.DblClick, row);
+            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.GroupEvent, EventType.DblClick, row));
         }
 
         private void ToggleGroupRow(ListViewItem groupSection, Event e)

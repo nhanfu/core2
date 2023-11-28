@@ -9,6 +9,7 @@ using Core.MVVM;
 using Core.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
@@ -152,30 +153,31 @@ namespace Core.Components.Framework
             var html = Html.Take(classname);
             html.A.ClassName("navbar-nav-link d-flex align-items-center dropdown-toggle").DataAttr("toggle", "dropdown").Span.ClassName("text-truncate").Text(CurrentUser.TenantCode + ": " + CurrentUser.FullName).EndOf(ElementType.a)
                 .Div.ClassName("dropdown-menu dropdown-menu-right notClose mt-0 border-0").Style("border-top-left-radius: 0;border-top-right-radius: 0")
-                    .A.ClassName("dropdown-item").AsyncEvent(EventType.Click, ViewProfile).I.ClassName("far fa-user").End.Text("Account (" + CurrentUser.TenantCode + ": " + CurrentUser.FullName + ")").EndOf(ElementType.a);
+                    .A.ClassName("dropdown-item").Event(EventType.Click, ViewProfile).I.ClassName("far fa-user").End.Text("Account (" + CurrentUser.TenantCode + ": " + CurrentUser.FullName + ")").EndOf(ElementType.a);
             html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
             var langSelect = new LangSelect(new Core.Models.Component(), html.GetContext());
             langSelect.Render();
             html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
-            html.A.AsyncEvent(EventType.Click, SignOut).ClassName("dropdown-item").I.ClassName("far fa-power-off").End.Text("Logout").EndOf(ElementType.a);
+            html.A.Event(EventType.Click, SignOut).ClassName("dropdown-item").I.ClassName("far fa-power-off").End.Text("Logout").EndOf(ElementType.a);
         }
 
-        private async Task SignOut(Event e)
+        private void SignOut(Event e)
         {
             e.PreventDefault();
-            var client = new Client(nameof(User));
-            await client.CreateAsync<bool>(Client.Token, "SignOut");
-            Client.SignOutEventHandler?.Invoke();
-            Client.Token = null;
-            EditForm.NotificationClient?.Close();
-            await Task.Delay(1000);
-            Window.Location.Reload();
+            var task = Client.Instance.CreateAsync<bool>(Client.Token, "/user/signOut");
+            Client.ExecTask(task, (res) =>
+            {
+                Client.SignOutEventHandler?.Invoke();
+                Client.Token = null;
+                EditForm.NotificationClient?.Close();
+                Window.SetTimeout(() => Window.Location.Reload(), 1000);
+            });
         }
 
-        private async Task ViewProfile(Event e)
+        private void ViewProfile(Event e)
         {
             e.PreventDefault();
-            await this.OpenTab(id: "User" + Client.Token.UserId,
+            var task = this.OpenTab(id: "User" + Client.Token.UserId,
                 featureName: "UserProfile",
                 factory: () =>
                 {
@@ -183,6 +185,7 @@ namespace Core.Components.Framework
                     var instance = Activator.CreateInstance(type) as TabEditor;
                     return instance;
                 });
+            Client.ExecTask(task);
             Dispose();
         }
 
@@ -204,16 +207,16 @@ namespace Core.Components.Framework
                 }
 
                 var className = task.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString() ? "text-danger" : "text-muted";
-                html.A.ClassName("dropdown-item").Div.ClassName("media").Event(EventType.Click, async (e) =>
+                html.A.ClassName("dropdown-item").Div.ClassName("media").Event(EventType.Click, (e) =>
                 {
-                    await OpenNotification(task);
+                    OpenNotification(task);
                 })
                 .Div.ClassName("media-body").H3.ClassName("dropdown-item-title").Text(task.Title).Span.ClassName("float-right text-sm " + className).I.ClassName("fas fa-star").End.End.End
                 .P.ClassName("text-sm").Text(task.Description).End
                 .P.ClassName("text-sm text-muted")
                     .I.ClassName("far fa-clock mr-1").End.Text(task.Deadline.ToString("dd/MM/yyyy HH:mm")).EndOf(ElementType.a);
             });
-            html.A.ClassName("dropdown-item dropdown-footer").AsyncEvent(EventType.Click, SeeMore).Text("See more").EndOf(ElementType.a);
+            html.A.ClassName("dropdown-item dropdown-footer").Event(EventType.Click, SeeMore).Text("See more").EndOf(ElementType.a);
             Notifications.Data.ForEach(PopupNotification);
         }
 
@@ -236,31 +239,36 @@ namespace Core.Components.Framework
             _task.Focus();
         }
 
-        private async Task SeeMore(Event e)
+        private void SeeMore(Event e)
         {
             var lastSeenTask = Notifications.Data.LastOrDefault();
             var lastSeenDate = lastSeenTask?.InsertedDate ?? DateTime.Now;
-            var olderTasks = await new Client(nameof(TaskNotification)).GetRawList<TaskNotification>(
+            var olderTasks = new Client(nameof(TaskNotification)).GetRawList<TaskNotification>(
                 $"?$filter=InsertedDate lt {lastSeenDate.ToISOFormat()}&$expand=Entity&$orderby=InsertedDate desc&$top=50");
-            var taskList = Notifications.Data.Union(olderTasks).ToList();
-            Notifications.Data = taskList;
+            Client.ExecTask(olderTasks, olderItems =>
+            {
+                var taskList = Notifications.Data.Union(olderItems).ToList();
+                Notifications.Data = taskList;
+            });
         }
 
-        public async Task MarkAllAsRead(Event e)
+        public void MarkAllAsRead(Event e)
         {
             e.PreventDefault();
-            Client client = new Client(nameof(TaskNotification));
-            var res = await client.PostAsync<bool>(null, "MarkAllAsRead");
-            ToggleBageCount(Notifications.Data.Count(x => x.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString()));
-            foreach (var task in _task.QuerySelectorAll(".task-unread"))
+            var allReadTask = Client.Instance.PostAsync<bool>(null, nameof(TaskNotification) + "/MarkAllAsRead");
+            Client.ExecTask(allReadTask, res =>
             {
-                task.ReplaceClass("task-unread", "task-read");
-            }
+                ToggleBageCount(Notifications.Data.Count(x => x.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString()));
+                foreach (var task in _task.QuerySelectorAll(".task-unread"))
+                {
+                    task.ReplaceClass("task-unread", "task-read");
+                }
+            });
         }
 
-        public async Task OpenNotification(TaskNotification notification)
+        public void OpenNotification(TaskNotification notification)
         {
-            await MarkAsRead(notification);
+            MarkAsRead(notification);
         }
 
         protected override void RemoveDOM()
@@ -268,11 +276,11 @@ namespace Core.Components.Framework
             Html.Take("#notification").Clear();
         }
 
-        private async Task MarkAsRead(TaskNotification task)
+        private void MarkAsRead(TaskNotification task)
         {
             task.StatusId = ((int)TaskStateEnum.Read).ToString();
-            await new Client(nameof(TaskNotification)).UpdateAsync<TaskNotification>(task);
-            SetBadgeNumber();
+            var a = Client.Instance.UpdateAsync<TaskNotification>(task, nameof(TaskNotification));
+            Client.ExecTask(a, res => SetBadgeNumber());
         }
 
         public override void Dispose()

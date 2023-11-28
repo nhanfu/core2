@@ -133,7 +133,7 @@ namespace Core.Components
             var rotate = 0;
             Html.Take(base.EditForm.Element).Div.ClassName("dark-overlay")
                 .Escape((e) => _preview.Remove())
-                .Event(EventType.KeyDown, (Action<Event>)((Event e) =>
+                .Event(EventType.KeyDown, (Event e) =>
                 {
                     var keyCode = EventExt.KeyCodeEnum(e);
                     if (keyCode != Enums.KeyCodeEnum.LeftArrow && keyCode != Enums.KeyCodeEnum.RightArrow)
@@ -149,7 +149,7 @@ namespace Core.Components
                     {
                         path = MoveRight(path, img);
                     }
-                }));
+                });
             _preview = Html.Context;
             Html.Instance
                 .Img.Src(Client.Origin + path);
@@ -302,7 +302,7 @@ namespace Core.Components
             Html.Instance
                 .Input.Type("file").Attr("multiple", "multiple").Attr("name", "imagefiles").ClassName("d-none")
                 .Attr("accept", DataSourceFilter)
-                .AsyncEvent(EventType.Change, (e) => UploadSelectedImages(e));
+                .Event(EventType.Change, (e) => UploadSelectedImages(e));
             _input = Html.Context as HTMLInputElement;
             Html.Instance.End.Div.ClassName("col-md-12").Style("padding: 20px 5%;")
                 .Div.ClassName("alert alert-info").Text("Lưu ý: Hệ thống chỉ nhận các file ảnh (bmp, jpg, jpeg, gif, png) và dung lượng dưới 1Mb / file").End
@@ -343,29 +343,25 @@ namespace Core.Components
                 return;
             }
 
-            Task.Run(async () =>
+            var oldVal = _path;
+            if (GuiInfo.Precision > 1)
             {
-                var oldVal = _path;
-                if (GuiInfo.Precision > 1)
-                {
-                    var newPath = _path.Replace(removedPath, string.Empty)
-                        .Split(pathSeparator).Where(x => x.HasAnyChar()).ToList();
-                    Path = string.Join(pathSeparator, newPath);
-                }
-                else
-                {
-                    Path = null;
-                }
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
-                if (UserInput != null)
-                {
-                    UserInput.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName });
-                }
+                var newPath = _path.Replace(removedPath, string.Empty).Split(pathSeparator).Where(x => x.HasAnyChar()).ToList();
+                Path = string.Join(pathSeparator, newPath);
+            }
+            else
+            {
+                Path = null;
+            }
+            var dispatchTask = this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
+            Client.ExecTaskNoResult(dispatchTask, () =>
+            {
+                UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName });
                 Dirty = true;
             });
         }
 
-        private async Task UploadSelectedImages(Event e)
+        private void UploadSelectedImages(Event e)
         {
             e.PreventDefault();
             var files = e.Target["files"] as FileList;
@@ -374,17 +370,18 @@ namespace Core.Components
                 return;
             }
             var oldVal = _path;
-            await UploadAllFiles(files);
-            Dirty = true;
-            _input.Value = string.Empty;
-            if (UserInput != null)
+            var task = UploadAllFiles(files);
+            Client.ExecTaskNoResult(task, () =>
             {
-                UserInput.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName });
-            }
-            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
+                Dirty = true;
+                _input.Value = string.Empty;
+                UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName });
+                var dispatchTask = this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
+                Client.ExecTaskNoResult(dispatchTask);
+            });
         }
 
-        private async Task<Images> UploadBase64Image(string base64Image, string fileName)
+        private Task<Images> UploadBase64Image(string base64Image, string fileName)
         {
             if (base64Image.Contains(PNGUrlPrefix))
             {
@@ -394,7 +391,7 @@ namespace Core.Components
             {
                 base64Image = base64Image.Substring(JpegUrlPrefix.Length);
             }
-            return await new Client(nameof(Images)).PostAsync<Images>(base64Image, $"UploadImage?filename={fileName}&path={(GuiInfo.DataSourceFilter.IsNullOrWhiteSpace() ? "\\upload\\images" : GuiInfo.DataSourceFilter)}");
+            return new Client(nameof(Images)).PostAsync<Images>(base64Image, $"UploadImage?filename={fileName}&path={(GuiInfo.DataSourceFilter.IsNullOrWhiteSpace() ? "\\upload\\images" : GuiInfo.DataSourceFilter)}");
         }
 
         public override bool Disabled

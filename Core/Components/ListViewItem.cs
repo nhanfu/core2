@@ -127,8 +127,8 @@ namespace Core.Components
             }
 
             Html.Take(Element)
-                .AsyncEvent(EventType.Click, RowItemClick)
-                .AsyncEvent(EventType.DblClick, RowDblClick)
+                .Event(EventType.Click, RowItemClick)
+                .Event(EventType.DblClick, RowDblClick)
                 .Event(EventType.FocusIn, () =>
                 {
                     ListView.AllListViewItem.SelectForeach(x =>
@@ -333,14 +333,14 @@ namespace Core.Components
             };
         }
 
-        private async Task RowDblClick(Event e)
+        private void RowDblClick(Event e)
         {
             e.StopPropagation();
             ListViewSection.ListView.DblClick?.Invoke(Entity);
-            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.DblClick, Entity);
+            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.DblClick, Entity));
         }
 
-        protected virtual async Task RowItemClick(Event e)
+        protected virtual void RowItemClick(Event e)
         {
             e.StopPropagation();
             var ctrl = e.CtrlOrMetaKey();
@@ -353,7 +353,7 @@ namespace Core.Components
                 ListViewSection.ListView.RowClick?.Invoke(Entity);
             }
             ListViewSection.ListView.LastListViewItem = this;
-            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity);
+            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity));
         }
 
         private void HotKeySelectRow(bool ctrl, bool shift, bool focusing)

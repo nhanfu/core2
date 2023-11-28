@@ -341,7 +341,7 @@ namespace Core.Extensions
             if (type.IsEnum)
             {
                 var parsed = Enum.TryParse<T>(value, out var t);
-                return parsed ? t : (T?)null;
+                return parsed ? t : null;
             }
             else if (type == typeof(int) || type == typeof(int?))
             {

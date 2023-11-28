@@ -141,7 +141,7 @@ namespace Core.Components
             var rotate = 0;
             Html.Take(base.EditForm.Element).Div.ClassName("dark-overlay zoom")
                 .Escape((e) => _preview.Remove())
-                .Event(EventType.KeyDown, (Action<Event>)((Event e) =>
+                .Event(EventType.KeyDown, (Event e) =>
                 {
                     var keyCode = EventExt.KeyCodeEnum(e);
                     if (keyCode != Enums.KeyCodeEnum.LeftArrow && keyCode != Enums.KeyCodeEnum.RightArrow)
@@ -157,7 +157,7 @@ namespace Core.Components
                     {
                         path = MoveRight(path, img);
                     }
-                }));
+                });
             _preview = Html.Context;
             Html.Instance
                     .Img.Src((path.Contains("http") ? "" : Client.Origin) + path);
@@ -312,7 +312,7 @@ namespace Core.Components
                 .Input.Type("file").Attr("name", "files")
                 .ClassName("d-none")
                 .Attr("accept", DataSourceFilter)
-                .AsyncEvent(EventType.Change, UploadSelectedImages).Render();
+                .Event(EventType.Change, UploadSelectedImages).Render();
             Element = _input = Html.Context as HTMLInputElement;
             if (isMultiple)
             {
@@ -353,7 +353,7 @@ namespace Core.Components
             });
         }
 
-        private async Task UploadSelectedImages(Event e)
+        private void UploadSelectedImages(Event e)
         {
             e.PreventDefault();
             if (EditForm.IsLock)
@@ -366,14 +366,15 @@ namespace Core.Components
                 return;
             }
             var oldVal = _path;
-            await UploadAllFiles(files);
-            Dirty = true;
-            _input.Value = string.Empty;
-            if (UserInput != null)
+            var task = UploadAllFiles(files);
+            Client.ExecTaskNoResult(task, () =>
             {
-                UserInput.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName, EvType = EventType.Change });
-            }
-            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
+                Dirty = true;
+                _input.Value = string.Empty;
+                UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName, EvType = EventType.Change });
+                var dispatch = this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
+                Client.ExecTaskNoResult(dispatch);
+            });
         }
 
         public async Task<string> UploadBase64Image(string base64Image, string fileName)

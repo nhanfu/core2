@@ -648,15 +648,6 @@ namespace Core.MVVM
             return this;
         }
 
-        public Html AsyncEvent<T>(EventType type, Func<T, Task> action, T model)
-        {
-            Context.AddEventListener(type, (Event e) =>
-            {
-                Client.ExecTaskNoResult(action(model));
-            });
-            return this;
-        }
-
         public Html AsyncEvent(EventType type, Func<Event, Task> action)
         {
             Context.AddEventListener(type, (Event e) =>
@@ -923,14 +914,14 @@ namespace Core.MVVM
 
         public Html Visibility(bool visible)
         {
-            var ele = Context as HTMLElement;
+            var ele = Context;
             ele.Style.Visibility = visible ? "" : Bridge.Html5.Visibility.Hidden.ToString();
             return this;
         }
 
         public Html Visibility(Observable<bool> visible)
         {
-            var ele = Context as HTMLElement;
+            var ele = Context;
             ele.Style.Visibility = visible.Data ? "" : Bridge.Html5.Visibility.Hidden.ToString();
             visible.Changed += (arg) =>
             {
@@ -941,14 +932,14 @@ namespace Core.MVVM
 
         public Html Display(bool shouldShow)
         {
-            var ele = Context as HTMLElement;
+            var ele = Context;
             ele.Style.Display = shouldShow ? string.Empty : Bridge.Html5.Display.None.ToString();
             return this;
         }
 
         public Html Display(Observable<bool> shouldShow)
         {
-            var ele = Context as HTMLElement;
+            var ele = Context;
             ele.Style.Display = shouldShow.Data ? string.Empty : Bridge.Html5.Display.None.ToString();
             shouldShow.Changed += (arg) =>
             {

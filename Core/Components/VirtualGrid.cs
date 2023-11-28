@@ -37,7 +37,7 @@ namespace Core.Components
             });
         }
 
-        public override Task ApplyFilter(bool searching = true)
+        public override Task ApplyFilter()
         {
             CacheData.Clear();
             DataTable.ParentElement.ScrollTop = 0;
@@ -179,7 +179,7 @@ namespace Core.Components
             Client.ExecTask(Client.Instance.ComQuery(sql), ds =>
             {
                 var rows = ds.Length > 0 ? ds[0].ToList() : null;
-                RenderVirtualHeader(count, ds, rows);
+                if (count) ProcessMetaData(ds, rows.Count);
                 FormattedRowData = rows;
                 rows.SelectForEach((x, index) => x[RowNo] = skip + index + 1);
                 if (rows.Count < Paginator.Options.Total)
@@ -192,20 +192,6 @@ namespace Core.Components
                 tcs.TrySetResult(rows);
             });
             return tcs.Task;
-        }
-
-        private void RenderVirtualHeader(bool count, object[][] ds, List<object> rows)
-        {
-            if (!count) return;
-            var total = ds.Length > 1 && ds[1].Length > 0 ? (int?)ds[1][0]["total"] : null;
-            var headers = ds.Length > 2 ? ds[2].Select(x => x.CastProp<Component>()).ToList() : null;
-            var userSetting = ds.Length > 3 && ds[3].Length > 0 ? ds[3][0].As<UserSetting>() : null;
-            FilterColumns(MergeComponent(headers, userSetting));
-            RenderTableHeader(Header);
-            if (Paginator != null && count)
-            {
-                Paginator.Options.Total = total ?? rows.Count;
-            }
         }
 
         public override Task<List<object>> ReloadData(bool cacheHeader = false, int? skip = null, int? pageSize = null)

@@ -124,7 +124,7 @@ namespace Core.Components
                 return;
             }
 
-            Html.Take(Parent.Element.FirstElementChild).TabIndex(-1).AsyncEvent(EventType.KeyPress, EnterSearch);
+            Html.Take(Parent.Element.FirstElementChild).TabIndex(-1).Event(EventType.KeyPress, EnterSearch);
             Element = Html.Context;
             if (GuiInfo.ComponentType == nameof(GridView) || GuiInfo.ComponentType == nameof(TreeView) || !GuiInfo.IsRealtime)
             {
@@ -311,14 +311,14 @@ namespace Core.Components
              */
         }
 
-        private async Task EnterSearch(Event e)
+        private void EnterSearch(Event e)
         {
             if (e.KeyCode() != 13)
             {
                 return;
             }
 
-            await ParentListView.ApplyFilter();
+            Task.Run(ParentListView.ApplyFilter);
         }
 
         private async Task UploadCsv(Event e)

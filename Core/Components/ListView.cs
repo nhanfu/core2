@@ -291,10 +291,10 @@ namespace Core.Components
             RenderPaginator();
         }
 
-        public virtual async Task ApplyFilter(bool searching = true)
+        public virtual Task ApplyFilter()
         {
             ClearRowData();
-            await ReloadData();
+            return ReloadData(cacheHeader: true);
         }
 
         public virtual void ActionFilter()
@@ -310,28 +310,7 @@ namespace Core.Components
 
         public void LoadAllData()
         {
-            Client.ExecTask(ReloadData(cacheHeader: GuiInfo.CanCache), (ds) => {
-                Task.Run(LoadHeader);
-            });
-        }
-
-        public Task<bool> LoadHeader()
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            if (_hasLoadUserSetting) return Task.FromResult(_hasLoadUserSetting);
-            Client.ExecTask(LoadCustomHeaders(), columns =>
-            {
-                if (columns.Nothing())
-                {
-                    tcs.TrySetResult(_hasLoadUserSetting);
-                    return;
-                };
-                columns = FilterColumns(columns);
-                Header = columns.OrderBy(x => x.Order).ToList();
-                ResetOrder();
-                HeaderLoaded?.Invoke(columns);
-            });
-            return tcs.Task;
+            Client.ExecTask(ReloadData(cacheHeader: GuiInfo.CanCache));
         }
 
         public void ResetOrder()
@@ -441,10 +420,10 @@ namespace Core.Components
                 return;
             }
 
-            FormattedRowData.SelectForEach((Action<object, int>)((rowData, index) =>
+            FormattedRowData.SelectForEach((rowData, index) =>
             {
-                var rowSection = RenderRowData((List<Component>)this.Header, rowData, MainSection);
-            }));
+                var rowSection = RenderRowData(Header, rowData, MainSection);
+            });
         }
 
         protected virtual void Rerender()
@@ -477,40 +456,6 @@ namespace Core.Components
             DOMContentLoaded?.Invoke();
         }
 
-        protected virtual void RowDataChanged(ObservableListArgs<object> args)
-        {
-            if (args.Action == ObservableAction.Remove)
-            {
-                RemoveRowById(args.Item[IdField].As<string>());
-                return;
-            }
-            Window.ClearTimeout(_rowDataChangeAwaiter);
-            _rowDataChangeAwaiter = Window.SetTimeout(async () =>
-            {
-                if (RowData.Data.Nothing() && args.Action == ObservableAction.Render)
-                {
-                    Rerender();
-                    return;
-                }
-                switch (args.Action)
-                {
-                    case ObservableAction.Add:
-                        await AddRow(args.Item, args.Index);
-                        break;
-                    case ObservableAction.AddRange:
-                        await AddRows(args.ListData, args.Index);
-                        break;
-                    case ObservableAction.Update:
-                        await AddOrUpdateRow(args.Item);
-                        break;
-                    case ObservableAction.Render:
-                        Rerender();
-                        break;
-                }
-                Spinner.Hide();
-            });
-        }
-
         protected virtual void SetRowData(List<object> listData)
         {
             RowData._data.Clear();
@@ -519,11 +464,7 @@ namespace Core.Components
             {
                 listData.ForEach(RowData._data.Add); // Not to use AddRange because the _data is not always List
             }
-            RowDataChanged(new ObservableListArgs<object>
-            {
-                Action = ObservableAction.Render,
-                ListData = RowData._data
-            });
+            RenderContent();
             if (Entity != null && ShouldSetEntity)
             {
                 Entity.SetComplexPropValue(FieldName, RowData.Data);
@@ -537,41 +478,6 @@ namespace Core.Components
             {
                 RowData["_data"] = value;
             }
-        }
-
-        protected virtual Task<List<Component>> LoadCustomHeaders()
-        {
-            if (!GuiInfo.LocalHeader.Nothing())
-            {
-                return Task.FromResult(GuiInfo.LocalHeader);
-            }
-            var tcs = new TaskCompletionSource<List<Component>>();
-            var vm = new SqlViewModel
-            {
-                ComId = "UserSetting",
-                Action = "GridColumn",
-                Entity = JSON.Stringify(new { ComId = GuiInfo.Id })
-            };
-            var userSettingTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
-            {
-                Url = Utils.UserSvc,
-                Value = JSON.Stringify(vm),
-                Method = HttpMethod.POST,
-                IsRawString = true
-            });
-            Client.ExecTask(userSettingTask, ds =>
-            {
-                var userSetting = ds.Length == 0 || ds[0].Length == 0 ? null : ds[0][0].As<UserSetting>();
-                _hasLoadUserSetting = true;
-                if (userSetting is null)
-                {
-                    tcs.TrySetResult(GuiInfo.LocalHeader);
-                    return;
-                }
-                var res = MergeComponent(GuiInfo.LocalHeader, userSetting);
-                tcs.TrySetResult(res);
-            });
-            return tcs.Task;
         }
 
         protected virtual List<Component> MergeComponent(List<Component> sysSetting, UserSetting userSetting)
@@ -767,7 +673,7 @@ namespace Core.Components
                 return Enumerable.Empty<string>();
             }
 
-            return entities.Select((Func<object, string>)(x =>
+            return entities.Select(x =>
             {
                 var id = x.GetPropValue(header.FieldName)?.ToString();
                 if (StringExt.IsNullOrEmpty(id))
@@ -775,8 +681,8 @@ namespace Core.Components
                     return null;
                 }
 
-                return (string)id;
-            })).Where(id => id != null);
+                return id;
+            }).Where(id => id != null);
         }
 
         public void DeactivateSelected(object ev = null)
@@ -1533,9 +1439,9 @@ namespace Core.Components
             gridView1.AdvSearchVM.Conditions.Clear();
             gridView1.ListViewSearch.EntityVM.StartDate = null;
             gridView1.ListViewSearch.EntityVM.EndDate = null;
-            Client.ExecTask(GetRealTimeSelectedRows(), (Action<List<object>>)(selecteds =>
+            Client.ExecTask(GetRealTimeSelectedRows(), selecteds =>
             {
-                var com = Enumerable.FirstOrDefault<Component>(gridView1.Header, (Func<Component, bool>)(x => x.FieldName == e.TargetFieldName));
+                var com = Enumerable.FirstOrDefault<Component>(gridView1.Header, x => x.FieldName == e.TargetFieldName);
                 var cellSelecteds = selecteds.Select(selected =>
                 {
                     return new CellSelected()
@@ -1554,7 +1460,7 @@ namespace Core.Components
                 });
                 gridView1.CellSelected.AddRange(cellSelecteds);
                 gridView1.ActionFilter();
-            }));
+            });
         }
 
         public virtual void RenderCopyPasteMenu(bool canWrite)

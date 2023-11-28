@@ -443,7 +443,7 @@ namespace Core.Components
         {
             if (CellSelected.Nothing())
             {
-                Client.ExecTaskNoResult(NoCellSelected());
+                NoCellSelected();
                 return;
             }
             Spinner.AppendTo(DataTable);
@@ -468,7 +468,7 @@ namespace Core.Components
                     search?._input.Focus();
                 }
                 Toast.Success(lisToast.Combine("</br>"));
-                Client.ExecTaskNoResult(ApplyFilter(true));
+                ApplyFilter();
             });
         }
 
@@ -744,11 +744,11 @@ namespace Core.Components
             return index;
         }
 
-        private async Task NoCellSelected()
+        private void NoCellSelected()
         {
             var dataSourceFilter = GuiInfo.DataSourceFilter;
             MainSection.DisposeChildren();
-            await ApplyFilter(true);
+            ApplyFilter();
             if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.CanSearch)
             {
                 HeaderSection.Element.Focus();
@@ -1597,7 +1597,7 @@ namespace Core.Components
             return Header;
         }
 
-        public override Task ApplyFilter(bool searching = true)
+        public override Task ApplyFilter()
         {
             DataTable.ParentElement.ScrollTop = 0;
             return ReloadData(cacheHeader: true);
@@ -1690,11 +1690,11 @@ namespace Core.Components
                 return;
             }
             MainSection.Show = false;
-            FormattedRowData.ToList().ForEach((Action<object>)((rowData) =>
+            FormattedRowData.ToList().ForEach((rowData) =>
             {
                 Html.Take(MainSection.Element);
-                RenderRowData((List<Component>)Header, rowData, MainSection);
-            }));
+                RenderRowData(Header, rowData, MainSection);
+            });
             MainSection.Show = true;
             RenderIndex();
             DomLoaded();
@@ -1759,11 +1759,11 @@ namespace Core.Components
             var shouldAddRow = AllListViewItem.Count() <= updatedData.Length;
             if (shouldAddRow)
             {
-                updatedData.Skip(dataSections.Length).ForEach((Action<object>)(newRow =>
+                updatedData.Skip(dataSections.Length).ForEach(newRow =>
                 {
-                    var rs = RenderRowData((List<Component>)Header, newRow, MainSection);
+                    var rs = RenderRowData(Header, newRow, MainSection);
                     StickyColumn(rs);
-                }));
+                });
             }
             else
             {
@@ -1852,11 +1852,11 @@ namespace Core.Components
             var sums = Header.Where(x => !x.Summary.IsNullOrWhiteSpace());
             MainSection.Element.As<HTMLTableElement>().Children.Where(x => x.HasClass(SummaryClass)).ToArray().ForEach(x => x.Remove());
             var count = sums.DistinctBy(x => x.Summary).Count();
-            sums.ForEach((Action<Component>)(header =>
+            sums.ForEach(header =>
             {
                 AddNewEmptyRow();
-                RenderSummaryRow(header, (List<Component>)Header, FooterSection.Element as HTMLTableSectionElement, count);
-            }));
+                RenderSummaryRow(header, Header, FooterSection.Element as HTMLTableSectionElement, count);
+            });
         }
 
         public override void DuplicateSelected(Event ev, bool addRow = false)
@@ -2146,6 +2146,19 @@ namespace Core.Components
             rowSection.ListViewSection = MainSection;
         }
 
+        protected void ProcessMetaData(object[][] ds, int rowCount)
+        {
+            var total = ds.Length > 1 && ds[1].Length > 0 ? (int?)ds[1][0]["total"] : null;
+            var headers = ds.Length > 2 ? ds[2].Select(x => x.CastProp<Component>()).ToList() : null;
+            var userSetting = ds.Length > 3 && ds[3].Length > 0 ? ds[3][0].As<UserSetting>() : null;
+            FilterColumns(MergeComponent(headers, userSetting));
+            RenderTableHeader(Header);
+            if (Paginator != null)
+            {
+                Paginator.Options.Total = total ?? rowCount;
+            }
+        }
+
         protected virtual void RenderTableHeader(List<Component> headers)
         {
             if (headers.Nothing())
@@ -2283,9 +2296,7 @@ namespace Core.Components
                 var total = ds.Length > 1 ? ds[1].ToDynamic()[0].total : ds[0].Length;
                 if (ds.Length > 3)
                 {
-                    var customHeaders = ds[2].Select(x => x.As<Component>()).ToList();
-                    FilterColumns(customHeaders);
-                    RenderTableHeader(Header);
+                    ProcessMetaData(ds, total);
                 }
                 var rows = new List<object>(ds[0]);
                 ClearRowData();

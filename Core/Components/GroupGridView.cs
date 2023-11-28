@@ -1,4 +1,5 @@
 ﻿using Bridge.Html5;
+using Core.Clients;
 using Core.Components.Extensions;
 using Core.Extensions;
 using Core.Models;
@@ -44,7 +45,7 @@ namespace Core.Components
                 return;
             }
             Window.ClearTimeout(_rowDataChangeAwaiter);
-            _rowDataChangeAwaiter = Window.SetTimeout((Action)(async () =>
+            _rowDataChangeAwaiter = Window.SetTimeout(async () =>
             {
                 if (GuiInfo.GroupBy.IsNullOrEmpty())
                 {
@@ -69,11 +70,11 @@ namespace Core.Components
                 }
                 var keys = GuiInfo.GroupBy.Split(",");
                 FormattedRowData = args.ListData
-                    .Select((Func<object, object>)(x =>
+                    .Select(x =>
                     {
-                        x[_groupKey] = string.Join(" ", keys.Select((Func<string, string>)(key => (string)(x.GetPropValue(key)?.ToString()))));
+                        x[_groupKey] = string.Join(" ", keys.Select(key => (x.GetPropValue(key)?.ToString())));
                         return x;
-                    }))
+                    })
                     .GroupBy(x => x[_groupKey])
                     .Select(x => new GroupRowData
                     {
@@ -83,7 +84,7 @@ namespace Core.Components
                     .Cast<object>().ToList();
                 base.Rerender();
                 DomLoaded();
-            }));
+            });
         }
 
         public override void RenderContent()
@@ -104,10 +105,10 @@ namespace Core.Components
             MainSection.Show = true;
         }
 
-        public override Task ApplyFilter(bool searching = true)
+        public override Task ApplyFilter()
         {
             MainSection.DisposeChildren();
-            return base.ApplyFilter(searching);
+            return base.ApplyFilter();
         }
 
         private void NoRowData(List<object> list)
@@ -211,8 +212,8 @@ namespace Core.Components
             {
                 Html.Instance.TData.ClassName("status-cell").Icon("mif-pencil").EndOf(ElementType.td)
                 .TData.ColSpan(headers.Count - 1)
-                    .AsyncEvent(EventType.Click, DispatchClick, first)
-                    .AsyncEvent(EventType.DblClick, DispatchDblClick, first)
+                    .Event(EventType.Click, DispatchClick, first)
+                    .Event(EventType.DblClick, DispatchDblClick, first)
                     .Icon("fa fa-chevron-down").Event(EventType.Click, () => groupSection.ShowChildren = !groupSection.ShowChildren).End
                     .Div.ClassName("d-flex").InnerHTML(groupText);
                 groupSection.GroupText = Html.Context;
@@ -232,14 +233,14 @@ namespace Core.Components
             return groupSection;
         }
 
-        private Task DispatchClick(object row)
+        private void DispatchClick(object row)
         {
-            return this.DispatchEventToHandlerAsync(GuiInfo.GroupEvent, EventType.Click, row);
+            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.GroupEvent, EventType.Click, row));
         }
 
-        private Task DispatchDblClick(object row)
+        private void DispatchDblClick(object row)
         {
-            return this.DispatchEventToHandlerAsync(GuiInfo.GroupEvent, EventType.DblClick, row);
+            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.GroupEvent, EventType.DblClick, row));
         }
 
         public override void ToggleAll()
@@ -386,11 +387,7 @@ namespace Core.Components
             {
                 listData.ForEach(RowData._data.Add); // Not to use AddRange because the _data is not always List
             }
-            RowDataChanged(new ObservableListArgs<object>
-            {
-                Action = ObservableAction.Render,
-                ListData = RowData._data
-            });
+            RenderContent();
 
             if (Entity != null && ShouldSetEntity)
             {
