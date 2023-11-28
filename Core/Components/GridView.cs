@@ -961,16 +961,16 @@ namespace Core.Components
                 switch (com.GuiInfo.ComponentType)
                 {
                     case nameof(SearchEntry):
-                        value = focusedRow.Entity.GetPropValue(header.FieldName) is null ? null : focusedRow.Entity.GetPropValue(header.FieldName).ToString().EncodeSpecialChar();
+                        value = focusedRow.Entity.GetPropValue(header.FieldName)?.ToString().EncodeSpecialChar();
                         break;
                     case nameof(Number):
-                        value = focusedRow.Entity.GetPropValue(header.FieldName) is null ? null : focusedRow.Entity.GetPropValue(header.FieldName).ToString().Replace(",", "");
+                        value = focusedRow.Entity.GetPropValue(header.FieldName)?.ToString()?.Replace(",", "");
                         break;
                     case nameof(Checkbox):
-                        value = com.GetValue() is null ? null : com.GetValue().ToString().EncodeSpecialChar().ToLower();
+                        value = com.GetValue()?.ToString()?.ToLower();
                         break;
                     default:
-                        value = com.GetValue() is null ? null : com.GetValue().ToString().EncodeSpecialChar();
+                        value = com.GetValue()?.ToString().EncodeSpecialChar();
                         break;
                 }
                 if (value is null)
@@ -1108,19 +1108,16 @@ namespace Core.Components
                         currentItemHome.Focused = false;
                     }
                     DataTable.ParentElement.ScrollTop = 0;
-                    Task.Run(async () =>
+                    RenderViewPort();
+                    var upItemHome = AllListViewItem.FirstOrDefault();
+                    if (upItemHome != null)
                     {
-                        await RenderViewPort();
-                        var upItemHome = AllListViewItem.FirstOrDefault();
-                        if (upItemHome != null)
-                        {
-                            upItemHome.Focused = true;
-                            var upComponent = upItemHome.FirstOrDefault(x => x.FieldName == fieldName);
-                            var tdup = upComponent.Element.Closest(ElementType.td.ToString());
-                            upItemHome.Focus();
-                            tdup.Focus();
-                        }
-                    });
+                        upItemHome.Focused = true;
+                        var upComponent = upItemHome.FirstOrDefault(x => x.FieldName == fieldName);
+                        var tdup = upComponent.Element.Closest(ElementType.td.ToString());
+                        upItemHome.Focus();
+                        tdup.Focus();
+                    }
                     break;
                 case KeyCodeEnum.End:
                     var lastSelectedEnd = GetSelectedRows().LastOrDefault();
@@ -1130,19 +1127,16 @@ namespace Core.Components
                         currentItemEnd.Focused = false;
                     }
                     DataTable.ParentElement.ScrollTop = DataTable.ParentElement.ScrollHeight;
-                    Task.Run(async () =>
+                    RenderViewPort();
+                    var upItemEnd = AllListViewItem.LastOrDefault();
+                    if (upItemEnd != null)
                     {
-                        await RenderViewPort();
-                        var upItemEnd = AllListViewItem.LastOrDefault();
-                        if (upItemEnd != null)
-                        {
-                            upItemEnd.Focused = true;
-                            var upComponent = upItemEnd.FirstOrDefault(x => x.FieldName == fieldName);
-                            var tdup = upComponent.Element.Closest(ElementType.td.ToString());
-                            upItemEnd.Focus();
-                            tdup.Focus();
-                        }
-                    });
+                        upItemEnd.Focused = true;
+                        var upComponent = upItemEnd.FirstOrDefault(x => x.FieldName == fieldName);
+                        var tdup = upComponent.Element.Closest(ElementType.td.ToString());
+                        upItemEnd.Focus();
+                        tdup.Focus();
+                    }
                     break;
                 case KeyCodeEnum.Insert:
                     var currentItemInsert = GetItemFocus();
@@ -1309,9 +1303,9 @@ namespace Core.Components
             AdvSearchVM.OrderBy.Clear();
         }
 
-        internal virtual Task<bool> RenderViewPort(bool count = true, bool firstLoad = false)
+        internal virtual void RenderViewPort(bool count = true, bool firstLoad = false)
         {
-            return Task.FromResult(true);
+            return;
         }
 
         public void HotKeyF6Handler(Event e, KeyCodeEnum? keyCode)
@@ -2264,7 +2258,6 @@ namespace Core.Components
                 var patchVM = new PatchUpdate
                 {
                     Table = nameof(Component),
-                    ComId = GuiInfo.Id,
                     Changes = new List<PatchUpdateDetail>
                     {
                         new PatchUpdateDetail { Field = nameof(Component.Id), Value = header.Id, OldVal = header.Id },
@@ -2275,16 +2268,10 @@ namespace Core.Components
             }, 1000);
         }
 
-        protected override Task<List<object>> CustomQuery(string submitEntity)
+        protected override Task<List<object>> CustomQuery(SqlViewModel vm)
         {
             var tcs = new TaskCompletionSource<List<object>>();
-            var dsTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
-            {
-                Value = submitEntity,
-                Url = Utils.ComQuery,
-                IsRawString = true,
-                Method = HttpMethod.POST
-            });
+            var dsTask = Client.Instance.ComQuery(vm);
             Client.ExecTask(dsTask, ds =>
             {
                 if (ds.Nothing())
@@ -2459,12 +2446,11 @@ namespace Core.Components
             }
             if (VirtualScroll && !anySelected)
             {
-                var data = CalcDatasourse(Paginator.Options.Total, 0, "false");
-                var task = new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>($"{data}&$select=Id", true);
-                Client.ExecTask(task, selectedOdataIds =>
+                var sql = GetSql(0, Paginator.Options.Total, cacheHeader: true);
+                var task = Client.Instance.GetIds(sql);
+                Client.ExecTask(task, ids =>
                 {
-                    var selectedIds = selectedOdataIds.Value.Select(x => x[IdField].ToString()).ToList();
-                    SelectedIds = selectedIds.Distinct().As<HashSet<string>>();
+                    SelectedIds = ids.Distinct().As<HashSet<string>>();
                 });
             }
         }

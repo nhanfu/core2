@@ -3,6 +3,7 @@ using Core.Clients;
 using Core.Components.Extensions;
 using Core.Extensions;
 using Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,14 +37,14 @@ namespace Core.Components
             });
         }
 
-        public override async Task ApplyFilter(bool searching = true)
+        public override Task ApplyFilter(bool searching = true)
         {
             CacheData.Clear();
             DataTable.ParentElement.ScrollTop = 0;
-            await ReloadData(cacheHeader: false);
+            return ReloadData(cacheHeader: false);
         }
 
-        private async Task PrepareCache(int skip = 0)
+        private Task<bool> PrepareCache(int skip = 0)
         {
             if (CacheData.HasElement())
             {
@@ -52,39 +53,40 @@ namespace Core.Components
                 if (skip > firstRowNo && skip < shouldEndNo)
                 {
                     _waitingLoad = false;
-                    return;
+                    return Task.FromResult(true);
                 }
             }
+            var tcs = new TaskCompletionSource<bool>();
             var start = skip - viewPortCount * cacheAhead;
             if (start < 0)
             {
                 start = 0;
             }
-            var source = CalcDatasourse(viewPortCount + viewPortCount * cacheAhead * 2, start, "false");
-            if (!GuiInfo.DescValue.IsNullOrWhiteSpace())
+            var sql = GetSql(start, viewPortCount + viewPortCount * cacheAhead * 2, cacheHeader: true, count: false);
+            Client.ExecTask(Client.Instance.ComQuery(sql), ds =>
             {
-                source = OdataExt.AppendClause(source, GuiInfo.DescValue, "$select=");
-            }
-            var data = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
-            if (data.Value.Nothing())
-            {
+                if (ds.Nothing())
+                {
+                    _waitingLoad = false;
+                    return;
+                }
+                CacheData.Clear();
+                CacheData.AddRange(ds[0]);
+                CacheData.SelectForEach((x, index) => x[RowNo] = start + index + 1);
                 _waitingLoad = false;
-                return;
-            }
-            CacheData.Clear();
-            CacheData.AddRange(data.Value);
-            CacheData.SelectForEach((x, index) => x[RowNo] = start + index + 1);
-            _waitingLoad = false;
+                tcs.TrySetResult(true);
+            }, e => tcs.TrySetException(e));
+            return tcs.Task;
         }
 
-        internal override async Task<bool> RenderViewPort(bool count = true, bool firstLoad = false)
+        internal override void RenderViewPort(bool count = true, bool firstLoad = false)
         {
             _renderingViewPort = true;
             viewPortCount = GetViewPortItem();
             var scrollTop = DataTable.ParentElement.ScrollTop;
             if (scrollTop == _lastScrollTop)
             {
-                return true;
+                return;
             }
             var skip = GetRowCountByHeight(scrollTop);
             if (viewPortCount <= 0)
@@ -94,16 +96,33 @@ namespace Core.Components
             List<object> rows;
             if (firstLoad)
             {
-                rows = await FirstLoadData(count, skip);
+                LoadData(scrollTop, skip, count);
             }
             else
             {
                 rows = ReadCache(skip, viewPortCount).ToList();
                 if (rows.Count < viewPortCount && rows.Count < Paginator.Options.Total)
                 {
-                    rows = await FirstLoadData(count, skip);
+                    LoadData(scrollTop, skip, count);
+                }
+                else
+                {
+                    RowDataLoaded(scrollTop, skip, rows);
                 }
             }
+        }
+
+        private void LoadData(int scrollTop, int skip, bool count)
+        {
+            var task = FirstLoadData(count, skip);
+            Client.ExecTask(task, rows =>
+            {
+                RowDataLoaded(scrollTop, skip, rows);
+            });
+        }
+
+        private void RowDataLoaded(int scrollTop, int skip, List<object> rows)
+        {
             FormattedRowData = rows;
             if (scrollTop == 0)
             {
@@ -125,7 +144,6 @@ namespace Core.Components
             _renderingViewPort = false;
             RenderIndex();
             DomLoaded();
-            return true;
         }
 
         private IEnumerable<object> ReadCache(int skip, int viewPortCount)
@@ -153,40 +171,50 @@ namespace Core.Components
             }
         }
 
-        private async Task<List<object>> FirstLoadData(bool count, int skip)
+        private Task<List<object>> FirstLoadData(bool count, int skip)
         {
+            var tcs = new TaskCompletionSource<List<object>>();
             _skip = skip;
-            List<object> rows;
-            var source = CalcDatasourse(viewPortCount, skip, count ? "true" : "false");
-            if (!GuiInfo.DescValue.IsNullOrWhiteSpace())
+            var sql = GetSql(skip, viewPortCount, cacheHeader: false, count);
+            Client.ExecTask(Client.Instance.ComQuery(sql), ds =>
             {
-                source = OdataExt.AppendClause(source, GuiInfo.DescValue, "$select=");
-            }
-            var oDataRows = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>(source);
-            Sql = oDataRows.Sql;
-            rows = oDataRows.Value;
-            if (Paginator != null && count)
-            {
-                Paginator.Options.Total = oDataRows.Odata.Count ?? rows.Count;
-            }
-            FormattedRowData = rows;
-            rows.SelectForEach((x, index) => x[RowNo] = skip + index + 1);
-            if (rows.Count < Paginator.Options.Total)
-            {
-                Window.ClearTimeout(_renderPrepareCacheAwaiter);
-                _waitingLoad = true;
-                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(skip), 7000);
-            }
-            return rows;
+                var rows = ds.Length > 0 ? ds[0].ToList() : null;
+                RenderVirtualHeader(count, ds, rows);
+                FormattedRowData = rows;
+                rows.SelectForEach((x, index) => x[RowNo] = skip + index + 1);
+                if (rows.Count < Paginator.Options.Total)
+                {
+                    Window.ClearTimeout(_renderPrepareCacheAwaiter);
+                    _waitingLoad = true;
+                    _renderPrepareCacheAwaiter = Window.SetTimeout(() =>
+                        Client.ExecTaskNoResult(PrepareCache(skip + viewPortCount)), 7000);
+                }
+                tcs.TrySetResult(rows);
+            });
+            return tcs.Task;
         }
 
-        public override async Task<List<object>> ReloadData(bool cacheHeader = false, int? skip = null, int? pageSize = null)
+        private void RenderVirtualHeader(bool count, object[][] ds, List<object> rows)
+        {
+            if (!count) return;
+            var total = ds.Length > 1 && ds[1].Length > 0 ? (int?)ds[1][0]["total"] : null;
+            var headers = ds.Length > 2 ? ds[2].Select(x => x.CastProp<Component>()).ToList() : null;
+            var userSetting = ds.Length > 3 && ds[3].Length > 0 ? ds[3][0].As<UserSetting>() : null;
+            FilterColumns(MergeComponent(headers, userSetting));
+            RenderTableHeader(Header);
+            if (Paginator != null && count)
+            {
+                Paginator.Options.Total = total ?? rows.Count;
+            }
+        }
+
+        public override Task<List<object>> ReloadData(bool cacheHeader = false, int? skip = null, int? pageSize = null)
         {
             DisposeNoRecord();
             VirtualScroll = GuiInfo.GroupBy.Nothing() && GuiInfo.VirtualScroll && Element.Style.Display.ToString() != Display.None.ToString();
             _lastScrollTop = -1;
-            await RenderViewPort(firstLoad: true);
-            return FormattedRowData;
+            RenderViewPort(firstLoad: true);
+            return Task.FromResult(FormattedRowData);
         }
 
         private void RenderViewPortWrapper(Event e)
@@ -194,7 +222,7 @@ namespace Core.Components
             if (_waitingLoad)
             {
                 Window.ClearTimeout(_renderPrepareCacheAwaiter);
-                _renderPrepareCacheAwaiter = Window.SetTimeout(async () => await PrepareCache(_skip), 7000);
+                _renderPrepareCacheAwaiter = Window.SetTimeout(() => Client.ExecTask(PrepareCache(_skip)), 7000);
             }
             if (_renderingViewPort || !VirtualScroll)
             {
@@ -203,7 +231,7 @@ namespace Core.Components
                 return;
             }
             Window.ClearTimeout(_renderViewPortAwaiter);
-            _renderViewPortAwaiter = Window.SetTimeout(async () => await RenderViewPort(false), 100);
+            _renderViewPortAwaiter = Window.SetTimeout(() => RenderViewPort(false), 100);
         }
 
         internal void RenderVirtualRow(HTMLTableSectionElement tbody, int skip, int viewPort)

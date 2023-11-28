@@ -457,113 +457,13 @@ namespace Core.Components
 
         private void ExportAllData(object arg)
         {
-            Task.Run(async () =>
-            {
-                Toast.Success("Đang xuất excel");
-                var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"ds.{orderby.FieldName} {orderby.OrderbyDirectionId.ToString().ToLowerCase()}");
-                var finalFilter = string.Empty;
-                if (orderbyList.HasElement())
-                {
-                    finalFilter = orderbyList.Combine();
-                }
-                if (finalFilter.IsNullOrWhiteSpace())
-                {
-                    finalFilter = OdataExt.GetClausePart(ParentListView.FormattedDataSource, OdataExt.OrderByKeyword);
-                    if (finalFilter.Contains(","))
-                    {
-                        var k = finalFilter.Split(",").ToList();
-                        finalFilter = k.Select(x => $"ds.{x}").Combine();
-                    }
-                    else
-                    {
-                        finalFilter = $"ds.{finalFilter}";
-                    }
-                }
-                var filter = ParentListView.Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
-                var filter1 = ParentListView.Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
-                var wh = new List<string>();
-                if (!filter.IsNullOrWhiteSpace())
-                {
-                    wh.Add($"({filter})");
-                }
-                if (!filter1.IsNullOrWhiteSpace())
-                {
-                    wh.Add($"({filter1})");
-                }
-                var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
-                var pre = ParentListView.GuiInfo.PreQuery;
-                if (pre != null && Utils.IsFunction(pre, out Function fn))
-                {
-                    pre = fn.Call(this, this, EditForm).ToString();
-                }
-                var path = await new Client(GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}" +
-                    $"&sql={ParentListView.Sql}" +
-                    $"&join={ParentListView.GuiInfo.JoinTable}" +
-                    $"&showNull={GuiInfo.ShowNull}" +
-                    $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")}" +
-                    $"&custom=false&featureId={EditForm.Feature.Id}&orderby={finalFilter}");
-                Client.Download($"/excel/Download/{path}");
-                Toast.Success("Xuất file thành công");
-            });
+            // TODO: Use CustomExport
+
         }
 
         private void ExportSelectedData(object arg)
         {
-            var selectedIds = ParentListView.SelectedIds;
-            if (selectedIds.Nothing())
-            {
-                Toast.Warning("Vui lòng chọn dòng muốn xuất");
-                return;
-            }
-
-            Task.Run(async () =>
-            {
-                Toast.Success("Đang xuất excel");
-                var orderbyList = ParentListView.AdvSearchVM.OrderBy.Select(orderby => $"ds.{orderby.FieldName} {orderby.OrderbyDirectionId.ToString().ToLowerCase()}");
-                var finalFilter = string.Empty;
-                if (orderbyList.HasElement())
-                {
-                    finalFilter = orderbyList.Combine();
-                }
-                if (finalFilter.IsNullOrWhiteSpace())
-                {
-                    finalFilter = OdataExt.GetClausePart(ParentListView.FormattedDataSource, OdataExt.OrderByKeyword);
-                    if (finalFilter.Contains(","))
-                    {
-                        var k = finalFilter.Split(",").ToList();
-                        finalFilter = k.Select(x => $"ds.{x}").Combine();
-                    }
-                    else
-                    {
-                        finalFilter = $"ds.{finalFilter}";
-                    }
-                }
-                var filter = ParentListView.Wheres.Where(x => !x.Group).Select(x => x.FieldName).Combine(" and ");
-                var filter1 = ParentListView.Wheres.Where(x => x.Group).Select(x => x.FieldName).Combine(" or ");
-                var wh = new List<string>();
-                if (!filter.IsNullOrWhiteSpace())
-                {
-                    wh.Add($"({filter})");
-                }
-                if (!filter1.IsNullOrWhiteSpace())
-                {
-                    wh.Add($"({filter1})");
-                }
-                var stringWh = wh.Any() ? $"({wh.Combine(" and ")})" : "";
-                var pre = ParentListView.GuiInfo.PreQuery;
-                if (pre != null && Utils.IsFunction(pre, out Function fn))
-                {
-                    pre = fn.Call(this, this, EditForm).ToString();
-                }
-                var path = await new Client(GuiInfo.RefName).GetAsync<string>($"/ExportExcel?componentId={ParentListView.GuiInfo.Id}" +
-                    $"&sql={ParentListView.Sql}" +
-                    $"&join={ParentListView.GuiInfo.JoinTable}" +
-                    $"&showNull={GuiInfo.ShowNull}" +
-                    $"&where={stringWh} {(pre.IsNullOrWhiteSpace() ? "" : $"{(wh.Any() ? " and " : "")} {pre}")} {$" and ds.Id in ({selectedIds.Combine()})"}" +
-                    $"&custom=false&featureId={EditForm.Feature.Id}&orderby={finalFilter}");
-                Client.Download($"/excel/Download/{path}");
-                Toast.Success("Xuất file thành công");
-            });
+            // TODO: Use CustomExport
         }
 
         private void ExportDisplay(object arg)

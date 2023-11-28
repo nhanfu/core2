@@ -509,9 +509,8 @@ namespace Core.Services
             bool writePerm;
             var idField = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
             var oldId = idField?.OldVal;
-            var com = await GetComponent(vm.ComId);
-            var allRights = await GetComPermission(vm.ComId);
-            var connStr = await GetConnStrFromKey(vm.ConnKey ?? com.ConnKey);
+            var allRights = await GetEntityPerm(vm.Table, recordId: null);
+            var connStr = await GetConnStrFromKey(vm.ConnKey);
             if (oldId is null)
             {
                 writePerm = allRights.Any(x => x.CanAdd || x.CanWriteAll);
@@ -656,7 +655,7 @@ namespace Core.Services
                 if (com is null) return null;
                 await _cache.SetStringAsync(comKey, JsonConvert.SerializeObject(com), Utils.CacheTTL);
             }
-            var readPermission = await GetComPermission(comId, x => x.CanRead);
+            var readPermission = await GetEntityPerm("Component", comId, x => x.CanRead);
             var hasPerm = com.Annonymous || !com.IsPrivate && UserId != null || readPermission.Any();
             if (!hasPerm)
             {
@@ -666,10 +665,10 @@ namespace Core.Services
             return com;
         }
 
-        private async Task<FeaturePolicy[]> GetComPermission(string comId, Expression<Func<FeaturePolicy, bool>> pre = null)
+        private async Task<FeaturePolicy[]> GetEntityPerm(string entityName, string recordId, Expression<Func<FeaturePolicy, bool>> pre = null)
         {
-            var prop = ((pre?.Body as MemberExpression)?.Member as PropertyInfo)?.Name ?? "AllRights";
-            var key = comId + "_" + prop;
+            var permission = ((pre?.Body as MemberExpression)?.Member as PropertyInfo)?.Name ?? "AllRights";
+            var key = entityName + "_" + permission;
             var permissionByComCache = await _cache.GetStringAsync(key);
             FeaturePolicy[] permissions;
             if (!permissionByComCache.IsNullOrWhiteSpace())
@@ -681,7 +680,7 @@ namespace Core.Services
                 var query = db.FeaturePolicy as IQueryable<FeaturePolicy>;
                 if (pre != null) query = query.Where(pre);
                 permissions = await query
-                    .Where(x => x.EntityId == "Component" && x.RecordId == comId && RoleIds.Contains(x.RoleId))
+                    .Where(x => x.EntityName == entityName && x.RecordId == recordId && RoleIds.Contains(x.RoleId))
                     .ToArrayAsync();
                 await _cache.SetStringAsync(key, JsonConvert.SerializeObject(permissions), Utils.CacheTTL);
             }

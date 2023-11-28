@@ -623,6 +623,7 @@ namespace Core.Components
             {
                 new PatchUpdateDetail
                 {
+                    Label = Label + "(value)",
                     Field = FieldName,
                     Value = _value,
                     OldVal = OldValue
@@ -632,6 +633,7 @@ namespace Core.Components
             {
                 res.Add(new PatchUpdateDetail
                 {
+                    Label = Label + "(text)",
                     Field = GuiInfo.TextField,
                     Value = _input.Value,
                     OldVal = OriginalText,

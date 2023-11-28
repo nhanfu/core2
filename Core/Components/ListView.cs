@@ -50,7 +50,6 @@ namespace Core.Components
         public ObservableList<object> RowData { get; set; }
         public List<object> FormattedRowData { get; set; }
         internal bool VirtualScroll { get; set; }
-        public string Sql { get; set; }
         public string StartRow { get; set; }
         public string EndRow { get; set; }
         public string StartCol { get; set; }
@@ -177,17 +176,6 @@ namespace Core.Components
             }
         }
 
-        public string CalcDatasourse(int viewPortCount, int skip, string count = "true")
-        {
-            var source = CalcFilterQuery();
-            if (!source.Contains("?"))
-            {
-                source += "?";
-            }
-            source += $"&$skip={skip}&$top={viewPortCount}{(count == "true" ? $"&$count={count}" : "")}";
-            return source;
-        }
-
         public virtual Task<List<object>> ReloadData(bool cacheHeader = false, int? skip = null, int? pageSize = null)
         {
             if (GuiInfo.LocalRender && GuiInfo.LocalData != null)
@@ -207,10 +195,10 @@ namespace Core.Components
         public Task<List<object>> SqlReader(int? skip, int? pageSize, bool cacheHeader = false)
         {
             var sql = GetSql(skip, pageSize, cacheHeader);
-            return CustomQuery(JSON.Stringify(sql));
+            return CustomQuery(sql);
         }
 
-        public SqlViewModel GetSql(int? skip = null, int? pageSize = null, bool cacheHeader = false)
+        public SqlViewModel GetSql(int? skip = null, int? pageSize = null, bool cacheHeader = false, bool count = true)
         {
             var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
             var orderBy = AdvSearchVM.OrderBy.Any() ? AdvSearchVM.OrderBy.Combine(x =>
@@ -228,7 +216,7 @@ namespace Core.Components
                 Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
                 OrderBy = orderBy ?? (GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy),
                 Where = finalCon,
-                Count = true,
+                Count = count,
                 SkipXQuery = cacheHeader,
             };
             if (skip.HasValue && pageSize.HasValue)
@@ -238,16 +226,10 @@ namespace Core.Components
             return data;
         }
 
-        protected virtual Task<List<object>> CustomQuery(string submitEntity)
+        protected virtual Task<List<object>> CustomQuery(SqlViewModel vm)
         {
             var tcs = new TaskCompletionSource<List<object>>();
-            var dsTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
-            {
-                Value = submitEntity,
-                Url = Utils.ComQuery,
-                IsRawString = true,
-                Method = HttpMethod.POST
-            });
+            var dsTask = Client.Instance.ComQuery(vm);
             Client.ExecTask(dsTask, ds =>
             {
                 if (ds.Nothing())
@@ -586,21 +568,22 @@ namespace Core.Components
                     tcs.TrySetResult(GuiInfo.LocalHeader);
                     return;
                 }
-                var column = JsonConvert.DeserializeObject<List<Component>>(userSetting.Value);
-                var res = MergeComponent(GuiInfo.LocalHeader, column);
+                var res = MergeComponent(GuiInfo.LocalHeader, userSetting);
                 tcs.TrySetResult(res);
             });
             return tcs.Task;
         }
 
-        protected virtual List<Component> MergeComponent(List<Component> sysSetting, List<Component> userSetting)
+        protected virtual List<Component> MergeComponent(List<Component> sysSetting, UserSetting userSetting)
         {
-            if (userSetting.Nothing() || GuiInfo.Focus)
+            if (userSetting is null) return sysSetting;
+            var column = JsonConvert.DeserializeObject<List<Component>>(userSetting.Value);
+            if (column.Nothing())
             {
                 return sysSetting;
             }
             var Components = new List<Component>();
-            var userSettings = userSetting.ToDictionary(x => x.Id);
+            var userSettings = column.DistinctBy(x => x.Id).ToDictionary(x => x.Id);
             sysSetting.ForEach(x =>
             {
                 var current = userSettings.GetValueOrDefault(x.Id);

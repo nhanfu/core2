@@ -18,6 +18,7 @@
         public int? LockDeleteAfterCreated { get; set; }
         public int? LockUpdateAfterCreated { get; set; }
         public string EntityId { get; set; }
+        public string EntityName { get; set; }
         public string RecordId { get; set; }
         public string UserId { get; set; }
         public bool CanShare { get; set; }

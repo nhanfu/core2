@@ -31,6 +31,13 @@ namespace Core.Components
                 if (GuiInfo != null) GuiInfo.FieldName = value;
             }
         }
+        public string Label
+        {
+            get => GuiInfo?.Label; set
+            {
+                if (GuiInfo != null) GuiInfo.Label = value;
+            }
+        }
         public string ComponentType { get; set; }
         public string Name { get; set; }
         public EditableComponent Parent { get; set; }

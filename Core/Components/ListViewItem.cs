@@ -316,6 +316,7 @@ namespace Core.Components
                     var propType = child.Entity.GetType().GetComplexPropType(child.FieldName, child.Entity);
                     var patch = new PatchUpdateDetail
                     {
+                        Label = child.Label,
                         Field = child.FieldName,
                         OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
                         Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
@@ -327,7 +328,6 @@ namespace Core.Components
             return new PatchUpdate
             {
                 Changes = dirtyPatch,
-                ComId = ListView.GuiInfo.Id,
                 Table = ListView.GuiInfo.RefName,
                 ConnKey = ListView.GuiInfo.ConnKey ?? Utils.DefaultConnKey,
             };
@@ -388,11 +388,8 @@ namespace Core.Components
                     }
                     if (ListViewSection.ListView.VirtualScroll && currentIndex > _lastIndex)
                     {
-                        var data = ListViewSection.ListView.CalcDatasourse(currentIndex - _lastIndex + 1, _lastIndex - 1, "false");
-                        Task.Run(async () =>
-                        {
-                            var selectedOdataIds = await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetList<object>($"{data}&$select=Id", true);
-                            var selectedIds = selectedOdataIds.Value.Select(x => x[IdField]?.ToString()).ToList();
+                        var sql = ListView.GetSql(_lastIndex - 1, currentIndex - _lastIndex + 1, true);
+                        Client.ExecTask(Client.Instance.GetIds(sql), selectedIds => {
                             if (Selected)
                             {
                                 selectedIds.Except(ListViewSection.ListView.SelectedIds).ForEach(ListViewSection.ListView.SelectedIds.Add);

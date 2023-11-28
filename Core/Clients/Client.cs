@@ -150,6 +150,15 @@ namespace Core.Clients
             return await SubmitAsyncWithToken<T>(options);
         }
 
+        public Task<object[][]> ComQuery(SqlViewModel vm) {
+            return SubmitAsync<object[][]>(new XHRWrapper {
+                Value = JSON.Stringify(vm),
+                Url = Utils.ComQuery,
+                IsRawString = true,
+                Method = HttpMethod.POST
+            });
+        }
+
         public Task<string[]> GetIds(SqlViewModel sqlVm)
         {
             var tcs = new TaskCompletionSource<string[]>();
@@ -594,19 +603,6 @@ namespace Core.Clients
             return tcs.Task;
         }
 
-        public Task<object> GetRawAsync(string id)
-        {
-            var refType = Type.GetType(NameSpace + EntityName);
-            var get = GetType().GetMethods()
-                .FirstOrDefault(x => x.Name == nameof(GetAsync) && x.IsGenericMethodDefinition);
-            if (get is null)
-            {
-                return null;
-            }
-
-            return get.MakeGenericMethod(refType).Invoke(this, id).As<Task<object>>();
-        }
-
         /// <summary>
         /// This method is used when we don't have return type at compiled time
         /// </summary>
@@ -729,6 +725,7 @@ namespace Core.Clients
                 Url = "Email"
             });
         }
+
         public Task<bool> CloneFeatureAsync(string id)
         {
             return SubmitAsync<bool>(new XHRWrapper
@@ -748,35 +745,6 @@ namespace Core.Clients
                 Method = HttpMethod.DELETE
             });
         }
-
-        public async Task<List<T>> BulkUpdateAsync<T>(List<T> value, string reasonOfChange = string.Empty, bool multipleThread = true)
-        {
-            if (!multipleThread)
-            {
-                return await SubmitAsync<List<T>>(new XHRWrapper
-                {
-                    Url = $"BulkUpdate/?reasonOfChange={reasonOfChange}",
-                    Value = value,
-                    Method = HttpMethod.PUT
-                });
-            }
-
-            var tasks = value.Select(x =>
-            {
-                if (x[Utils.IdField].As<int>() > 0)
-                {
-                    return UpdateAsync<T>(x, $"?reasonOfChange={reasonOfChange}");
-                }
-                else
-                {
-                    return CreateAsync<T>(x, $"?reasonOfChange=Thêm mới dữ liệu");
-                }
-            });
-            var res = await Task.WhenAll(tasks);
-            return res.ToList();
-        }
-
-        public Task<bool> HardDeleteAsync(string id) => HardDeleteAsync(new List<string> { id });
 
         public Task<bool> HardDeleteAsync(List<string> ids)
         {
@@ -919,7 +887,7 @@ namespace Core.Clients
             return thumbText;
         }
 
-        public static IPromise ToPromise<T>(Task<T> task)
+    public static IPromise ToPromise<T>(Task<T> task)
         {
             if (task == null) return null;
             /*@

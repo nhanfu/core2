@@ -186,7 +186,7 @@ namespace Core.Components.Forms
             return res;
         }
 
-        public PatchUpdate GetPathEntity()
+        public PatchUpdate GetPatchEntity()
         {
             var details = FilterChildren(child => child is EditableComponent editable && !(child.Parent is ListViewItem) && editable.Dirty && child.GuiInfo != null && child.GuiInfo.ComponentType != nameof(GridView) && child.GuiInfo.ComponentType != nameof(VirtualGrid))
                 .SelectMany(child =>
@@ -199,6 +199,7 @@ namespace Core.Components.Forms
                     var propType = child.Entity.GetType().GetComplexPropType(child.FieldName, child.Entity);
                     var patch = new PatchUpdateDetail
                     {
+                        Label = child.Label,
                         Field = child.FieldName,
                         OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
                         Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
@@ -206,7 +207,7 @@ namespace Core.Components.Forms
                     return new PatchUpdateDetail[] { patch };
                 }).ToList();
             AddIdToPatch(details);
-            return new PatchUpdate { Changes = details };
+            return new PatchUpdate { Changes = details, Table = Feature.EntityName };
         }
 
         public virtual async Task<bool> SavePatch(object entity = null)
@@ -216,9 +217,9 @@ namespace Core.Components.Forms
                 Toast.Warning(NotDirtyMessage);
                 return false;
             }
-            var pathModel = GetPathEntity();
+            var pathModel = GetPatchEntity();
             BeforeSaved?.Invoke();
-            var rs = await Client.PatchAsync(pathModel);
+            var rs = await Client.Instance.PatchAsync(pathModel);
             if (!rs)
             {
                 Toast.Warning("Dữ liệu của bạn chưa được lưu vui lòng nhập lại!");
