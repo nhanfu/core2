@@ -57,7 +57,6 @@ namespace Core.Components
         private HTMLElement _placeHolder;
 
         public string DataSourceFilter { get; set; }
-        public string Label { get; set; }
         private string[] _imageSources => _path?.Split(pathSeparator);
 
         public ImageServer(Component ui) : base(ui)

@@ -105,7 +105,7 @@ namespace Core.Components
         public string EntityFocusId { get; set; }
         public bool ShouldSetEntity { get; set; } = true;
 
-        public event Action<List<Component>> HeaderLoaded;
+        public event Action<object[][]> DataLoaded;
 
         public ListView(Component ui, HTMLElement ele = null) : base(ui)
         {
@@ -243,6 +243,7 @@ namespace Core.Components
                 SetRowData(rows);
                 UpdatePagination(total, rows.Count);
                 tcs.TrySetResult(rows);
+                DataLoaded?.Invoke(ds);
             }, err => tcs.TrySetException(err));
             return tcs.Task;
         }
@@ -255,7 +256,6 @@ namespace Core.Components
             Html.Take(ParentElement).DataAttr("name", FieldName);
             AddSections();
             SetRowDataIfExists();
-            RowData.ListChanged += RowDataChanged;
             EditForm.ResizeListView();
             if (GuiInfo.LocalData.HasElement() && GuiInfo.LocalHeader.HasElement())
             {
@@ -294,7 +294,7 @@ namespace Core.Components
         public virtual Task ApplyFilter()
         {
             ClearRowData();
-            return ReloadData(cacheHeader: true);
+            return ReloadData(skip: 0, cacheHeader: true);
         }
 
         public virtual void ActionFilter()

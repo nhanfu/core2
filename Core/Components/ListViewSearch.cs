@@ -67,9 +67,12 @@ namespace Core.Components
             Entity = new ListViewSearchVM();
         }
 
-        private void ParentListView_HeaderLoaded(List<Component> basicSearchHeader)
+        bool _hasRender;
+        private void ListView_DataLoaded(object[][] basicSearchHeader)
         {
-            BasicSearch = basicSearchHeader.Where(x => x.BasicSearch).OrderByDescending(x => x.Order).ToArray();
+            if (_hasRender) return;
+            _hasRender = true;
+            BasicSearch = ParentListView.Header.Where(x => x.BasicSearch).OrderByDescending(x => x.Order).ToArray();
             if (BasicSearch.Nothing())
             {
                 return;
@@ -118,7 +121,7 @@ namespace Core.Components
         public override void Render()
         {
             ParentListView = Parent as ListView;
-            ParentListView.HeaderLoaded += ParentListView_HeaderLoaded;
+            ParentListView.DataLoaded += ListView_DataLoaded;
             if (!GuiInfo.CanSearch)
             {
                 return;
@@ -137,9 +140,9 @@ namespace Core.Components
                     ShowLabel = false,
                 })
                 {
-                    ParentElement = Element
+                    ParentElement = Element,
+                    UserInput = null
                 };
-                txtSearch.UserInput = null;
                 AddChild(txtSearch);
             }
             if (GuiInfo.ComponentType != nameof(ListView) && GuiInfo.ComponentType != nameof(TreeView))
@@ -153,9 +156,9 @@ namespace Core.Components
                     ShowLabel = false,
                 })
                 {
-                    ParentElement = Element
+                    ParentElement = Element,
+                    UserInput = null
                 };
-                txtFullTextSearch.UserInput = null;
                 AddChild(txtFullTextSearch);
                 _fullTextSearch = txtFullTextSearch.Input;
                 _fullTextSearch.AddEventListener(EventType.Input, ParentGridView.SearchDisplayRows);
@@ -408,15 +411,7 @@ namespace Core.Components
 
         private void ExportCustomData(object arg)
         {
-            var task = TabEditor.OpenPopup("Export CustomData", () =>
-            {
-                var editor = new ExportCustomData(ParentListView)
-                {
-                    ParentListView = Parent as ListView,
-                    ParentElement = TabEditor.Element
-                };
-                return editor;
-            });
+            var task = TabEditor.OpenPopup("Export CustomData", () => Exporter);
             Client.ExecTaskNoResult(task);
         }
 
@@ -455,15 +450,29 @@ namespace Core.Components
             Client.ExecTaskNoResult(task);
         }
 
+        private ExportCustomData _export;
+        public ExportCustomData Exporter
+        {
+            get
+            {
+                if (_export is null) { 
+                    _export = new ExportCustomData(ParentListView) {
+                        ParentElement = TabEditor.Element
+                    };
+                    _export.Disposed += () => _export = null;
+                }
+                return _export;
+            }
+        }
+
         private void ExportAllData(object arg)
         {
-            // TODO: Use CustomExport
-
+            Exporter.ExportSelectedData();
         }
 
         private void ExportSelectedData(object arg)
         {
-            // TODO: Use CustomExport
+            Exporter.ExportSelectedData(selectedIds: ParentListView.SelectedIds.ToArray());
         }
 
         private void ExportDisplay(object arg)

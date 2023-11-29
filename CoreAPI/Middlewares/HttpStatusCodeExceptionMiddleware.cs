@@ -136,7 +136,7 @@ namespace CoreAPI.Middlewares
             contentType ??= "application/json; charset=utf-8";
             context.Response.Clear();
             context.Response.StatusCode = (int)statusCode;
-            context.Response.Headers.Add("Content-type", contentType);
+            context.Response.Headers.TryAdd("Content-type", contentType);
             context.Response.ContentType = contentType;
             var response = string.Empty;
             var message = ex.Message;

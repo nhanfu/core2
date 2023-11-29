@@ -688,16 +688,17 @@ namespace Core.Clients
             });
         }
 
-        public Task<bool> PatchAsync(PatchUpdate value, string subUrl = null, bool annonymous = false)
+        public Task<bool> PatchAsync(PatchUpdate value, Action<XMLHttpRequest> errHandler = null, bool annonymous = false)
         {
             return SubmitAsync<bool>(new XHRWrapper
             {
                 Value = JSON.Stringify(value),
                 IsRawString = true,
-                Url = subUrl ?? Utils.PatchSvc,
+                Url = Utils.PatchSvc,
                 Headers = new Dictionary<string, string> { { "Content-type", "application/json" } },
                 Method = HttpMethod.PATCH,
                 AllowAnonymous = annonymous,
+                ErrorHandler = errHandler
             });
         }
 

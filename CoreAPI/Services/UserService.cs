@@ -10,6 +10,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Newtonsoft.Json;
+using System.Buffers;
 using System.Data;
 using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
@@ -443,41 +444,59 @@ namespace Core.Services
                 .Any(x => x.TokenType == TSqlTokenType.MultilineComment || x.TokenType == TSqlTokenType.SingleLineComment);
         }
 
+        public bool HasSideEffect(string sql)
+        {
+            TSql110Parser parser = new(true);
+            var fragments = parser.Parse(new StringReader(sql), out var errors);
+            return fragments.ScriptTokenStream.Any(x => x.TokenType == TSqlTokenType.Insert 
+                || x.TokenType == TSqlTokenType.Update || x.TokenType == TSqlTokenType.Delete 
+                || x.TokenType == TSqlTokenType.Create || x.TokenType == TSqlTokenType.Drop
+                || x.TokenType == TSqlTokenType.Alter || x.TokenType == TSqlTokenType.Truncate 
+                || x.TokenType == TSqlTokenType.MultilineComment || x.TokenType == TSqlTokenType.SingleLineComment);
+        }
+
         public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSet(string query, string connStr, bool exportQuery = true)
         {
-            var anyComment = HasSqlComment(query);
-            if (anyComment) throw new ApiException("Comment is NOT allowed");
-            var connectionStr = connStr;
-            using var con = new SqlConnection(connectionStr);
-            var sqlCmd = new SqlCommand(query, con)
+            try
             {
-                CommandType = CommandType.Text
-            };
-            con.Open();
-            var tables = new List<List<Dictionary<string, object>>>();
-            using var reader = await sqlCmd.ExecuteReaderAsync();
-            do
-            {
-                var table = new List<Dictionary<string, object>>();
-                while (await reader.ReadAsync())
+                var sideEffect = HasSideEffect(query);
+                if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
+                var connectionStr = connStr;
+                using var con = new SqlConnection(connectionStr);
+                var sqlCmd = new SqlCommand(query, con)
                 {
-                    table.Add(Read(reader));
-                }
-                tables.Add(table);
-            } while (await reader.NextResultAsync());
-#if DEBUG
-            if (exportQuery)
-            {
-                tables.Add(new List<Dictionary<string, object>>
+                    CommandType = CommandType.Text
+                };
+                await con.OpenAsync();
+                var tables = new List<List<Dictionary<string, object>>>();
+                using var reader = await sqlCmd.ExecuteReaderAsync();
+                do
                 {
-                    new Dictionary<string, object>
+                    var table = new List<Dictionary<string, object>>();
+                    while (await reader.ReadAsync())
                     {
-                        { "query",  query }
+                        table.Add(Read(reader));
                     }
-                });
-            }
+                    tables.Add(table);
+                } while (await reader.NextResultAsync());
+#if DEBUG
+                if (exportQuery)
+                {
+                    tables.Add(
+                    [
+                        new() { { "query",  query } }
+                    ]);
+                }
 #endif
-            return tables;
+                return tables;
+            }
+            catch (Exception e)
+            {
+                throw new ApiException($"{e.Message} {query}", e)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                };
+            }
         }
 
         protected static Dictionary<string, object> Read(IDataRecord reader)
@@ -525,8 +544,8 @@ namespace Core.Services
             }
             if (!writePerm) throw new ApiException("Access denied!") { StatusCode = HttpStatusCode.Unauthorized };
             using SqlConnection connection = new(connStr);
-            connection.Open();
-            using SqlTransaction transaction = connection.BeginTransaction();
+            await connection.OpenAsync();
+            using var transaction = connection.BeginTransaction();
             try
             {
                 using SqlCommand command = new();
@@ -582,8 +601,8 @@ namespace Core.Services
             string decryptedQuery = null;
             if (com is null)
             {
-                var (connStr, query) = await DecryptQuery(vm.Component.Signed);
-                decryptedConnStr = connStr;
+                var (conn, query) = await DecryptQuery(vm.Component.Signed);
+                decryptedConnStr = conn;
                 decryptedQuery = query;
             }
             var anyInvalid = _fobiddenTerm.Any(term =>
@@ -601,7 +620,8 @@ namespace Core.Services
                 throw new ArgumentException("Parameters must NOT contains sql keywords");
             }
             var jsRes = await ExecJs(vm.Entity, decryptedQuery ?? com.Query);
-            return await GetResultFromQuery(vm, decryptedConnStr ?? await GetConnStrFromKey(com.ConnKey), jsRes);
+            var connStr = await GetConnStrFromKey(com.ConnKey);
+            return await GetResultFromQuery(vm, decryptedConnStr ?? connStr, jsRes);
         }
 
         private async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> GetResultFromQuery(SqlViewModel vm, string decryptedConnStr, SqlQueryResult jsRes)
@@ -745,7 +765,14 @@ namespace Core.Services
             var dataSets = await ReadDataSetWrapper(vm);
             var table = dataSets.ElementAt(0);
             var headers = JsonConvert.DeserializeObject<List<Component>>(JsonConvert.SerializeObject(dataSets.ElementAt(1)));
-            headers = headers.Where(x => vm.FieldName.Contains(x.FieldName)).ToList();
+            if (vm.FieldName.HasElement())
+            {
+                headers = headers.Where(x =>
+                {
+                    var field = x.TextField.HasNonSpaceChar() ? x.TextField : x.FieldName;
+                    return x.Active && x.ShortDesc.HasNonSpaceChar() && vm.FieldName.Contains(x.FieldName);
+                }).ToList();
+            }
             return ExportExcel(vm.ComId, headers, table);
         }
 
@@ -781,6 +808,7 @@ namespace Core.Services
 
         private string ExportExcel(string refName, List<Component> headers, IEnumerable<Dictionary<string, object>> dataSet)
         {
+            headers = headers.Where(x => x.Active && x.ShortDesc.HasNonSpaceChar()).ToList();
             XLWorkbook workbook;
             bool anyGroup = headers.Any(x => !string.IsNullOrEmpty(x.GroupName));
             workbook = new XLWorkbook();
@@ -879,45 +907,34 @@ namespace Core.Services
                 worksheet.Cell(x, 1).Style.Border.TopBorder = XLBorderStyleValues.Thin;
                 worksheet.Cell(x, 1).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                 worksheet.Cell(x, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                foreach (var itemDetail in headers)
+                foreach (var header in headers)
                 {
-                    var vl = item.GetValueOrDefault(itemDetail.FieldName);
-                    switch (itemDetail.ComponentType)
+                    var field = header.TextField.HasNonSpaceChar() ? header.TextField : header.FieldName;
+                    var vl = item.GetValueOrDefault(field);
+                    switch (header.ComponentType)
                     {
                         case "Input":
-                            var vl1 = vl is null ? null : vl.ToString().DecodeSpecialChar();
-                            worksheet.Cell(x, y).SetValue(vl1);
-                            break;
                         case "Textarea":
-                            var vl2 = vl is null ? null : vl.ToString().DecodeSpecialChar();
-                            worksheet.Cell(x, y).SetValue(vl2);
-                            break;
                         case "Label":
-                            var vl3 = vl is null ? null : vl.ToString().DecodeSpecialChar();
-                            worksheet.Cell(x, y).SetValue(vl3);
+                        case "SearchEntry":
+                            worksheet.Cell(x, y).SetValue(vl?.ToString().DecodeSpecialChar());
                             break;
                         case "Datepicker":
                             worksheet.Cell(x, y).SetValue((DateTime?)vl);
                             break;
                         case "Number":
-                            if (vl is int)
+                            if (vl is int v)
                             {
-                                worksheet.Cell(x, y).SetValue(vl is null ? default(int) : (int)vl);
+                                worksheet.Cell(x, y).SetValue(vl is null ? default : v);
                             }
                             else
                             {
-                                worksheet.Cell(x, y).SetValue(vl is null ? default(decimal) : (decimal)vl);
+                                worksheet.Cell(x, y).SetValue(vl is null ? default : (decimal)vl);
                                 worksheet.Cell(x, y).Style.NumberFormat.Format = "#,##";
                             }
                             break;
-                        case "SearchEntry":
-                            var objField = itemDetail.FieldName.Substring(0, itemDetail.FieldName.Length - 2);
-                            vl = item.GetValueOrDefault(objField);
-                            var vl4 = vl is null ? null : vl.ToString().DecodeSpecialChar();
-                            worksheet.Cell(x, y).SetValue(vl4);
-                            break;
                         case "Checkbox":
-                            worksheet.Cell(x, y).SetValue(vl.ToString() == "False" ? default(int) : 1);
+                            worksheet.Cell(x, y).SetValue(vl.ToString() == "False" ? default : 1);
                             break;
                         default:
                             break;

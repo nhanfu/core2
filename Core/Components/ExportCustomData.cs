@@ -16,13 +16,14 @@ using ElementType = Core.MVVM.ElementType;
 
 namespace Core.Components
 {
-    internal class ExportCustomData : PopupEditor
+    public class ExportCustomData : PopupEditor
     {
         public ListView ParentListView;
         public HTMLElement _tbody;
         private List<Component> _headers;
         private dynamic _userSetting;
         private HTMLElement _table;
+        private bool _hasLoadSetting;
 
         public ExportCustomData(ListView parent) : base(nameof(Component))
         {
@@ -32,6 +33,8 @@ namespace Core.Components
             {
                 LocalRender();
             };
+            ParentListView = parent;
+            _headers = ParentListView.Header.Where(x => x.ComponentType != nameof(Button) && !x.ShortDesc.IsNullOrWhiteSpace()).ToList();
         }
 
         private void Move()
@@ -231,9 +234,8 @@ namespace Core.Components
 
         private void LocalRender()
         {
-            _headers = ParentListView.Header.Where(x => x.ComponentType != nameof(Button) && !x.ShortDesc.IsNullOrWhiteSpace()).ToList();
             var getUsrSettingTask = GetUserSetting();
-            Client.ExecTask(getUsrSettingTask, UserSettingLoaded);
+            Client.ExecTask(getUsrSettingTask, x => UserSettingLoaded(x, true));
         }
 
         private Task<object[][]> GetUserSetting()
@@ -251,8 +253,9 @@ namespace Core.Components
             });
         }
 
-        private void UserSettingLoaded(object[][] res)
+        private void UserSettingLoaded(object[][] res, bool render = true)
         {
+            _hasLoadSetting = true;
             _userSetting = res[0].Length > 0 ? res[0][0] : null as dynamic;
             if (_userSetting != null)
             {
@@ -260,6 +263,7 @@ namespace Core.Components
                     .ToDictionary(x => x.Id);
                 _headers.ForEach(x =>
                 {
+                    x.IsExport = true;
                     var current = usrHeaders.GetValueOrDefault(x.Id);
                     if (current != null)
                     {
@@ -269,31 +273,39 @@ namespace Core.Components
                 });
             }
             _headers = _headers.OrderBy(x => x.OrderExport).ToList();
+            if (!render) return;
             var content = this.FindComponentByName<Section>("Content");
             Html.Take(content.Element).Table.ClassName("table");
             _table = Html.Context;
             Html.Instance.Thead
                     .TRow.TData.Text("STT").End
-                    .TData.Checkbox(false).Event(EventType.Input, (e) => ToggleAll(e)).End.End
+                    .TData.Checkbox(false).Event(EventType.Input, (e) =>
+                    {
+                        _headers.ForEach(x => x.IsExport = e.GetChecked());
+                        RenderDetails();
+                    }).End.End
                     .TData.Text("Tên cột").EndOf(ElementType.thead);
             Html.Instance.TBody.Render();
             _tbody = Html.Context;
-            var i = 1;
-            foreach (var item in _headers)
-            {
-                Html.Instance.TRow.DataAttr("id", item.Id).TData.Style("padding:0").IText(i.ToString()).End
-                    .TData.Style("padding:0").Checkbox(item.IsExport).Event(EventType.Input, (e) => item.IsExport = e.Target.Cast<HTMLInputElement>().Checked).End.End
-                    .TData.Style("padding:0").ClassName("text-left").IText(item.ShortDesc).End
-                    .EndOf(ElementType.tr);
-                i++;
-            }
+            RenderDetails();
             Move();
         }
 
-        private void ToggleAll(Event e)
+        private void SetChecked(Component item, Event e)
+        {
+            item.IsExport = e.Target.Cast<HTMLInputElement>().Checked;
+            Dirty = true;
+        }
+
+        public override void DirtyCheckAndCancel()
+        {
+            Dirty = true;
+            base.DirtyCheckAndCancel();
+        }
+
+        private void RenderDetails()
         {
             Html.Take(_tbody).Clear();
-            _headers.ForEach(x => x.IsExport = e.Target.Cast<HTMLInputElement>().Checked);
             var i = 1;
             foreach (var item in _headers)
             {
@@ -316,9 +328,61 @@ namespace Core.Components
             });
         }
 
-        public async Task ExportData()
+        public void ExportData() => ExportSelectedData();
+
+        public void ExportSelectedData(int? skip = null, int? pageSize = null, string[] selectedIds = null)
         {
             Toast.Success("Đang xuất excel");
+            if (_hasLoadSetting)
+            {
+                Client.ExecTask(UpdateSetting(), res => { Console.Write(res); });
+                ExportWithSetting(skip, pageSize, selectedIds);
+                return;
+            }
+            var getUsrSettingTask = GetUserSetting();
+            Client.ExecTask(getUsrSettingTask, x =>
+            {
+                UserSettingLoaded(x, render: false);
+                ExportWithSetting(skip, pageSize, selectedIds);
+            });
+        }
+
+        private void ExportWithSetting(int? skip, int? pageSize, string[] selectedIds)
+        {
+            var sql = ParentListView.GetSql(skip, pageSize);
+            sql.Count = false;
+            if (_headers.HasElement())
+            {
+                sql.FieldName = _headers
+                    .Where(x => x.IsExport)
+                    .Select(x => x.TextField.IsNullOrWhiteSpace() ? x.FieldName : x.TextField)
+                    .ToArray();
+                sql.Select = sql.FieldName.HasElement() ? sql.FieldName.Combine() : null;
+            }
+            if (selectedIds.HasElement())
+            {
+                var ids = selectedIds.CombineToIds();
+                sql.Where = $"Id in ({ids})";
+            }
+            var pathTask = Client.Instance.SubmitAsync<string>(new XHRWrapper
+            {
+                Value = JSON.Stringify(sql),
+                Url = Utils.ExportExcel,
+                IsRawString = true,
+                Method = HttpMethod.POST
+            });
+            Client.ExecTask(pathTask, path =>
+            {
+                Client.Download($"/excel/Download/{path}");
+                Toast.Success("Xuất file thành công");
+            });
+        }
+
+        private Task<bool> UpdateSetting()
+        {
+            if (!Dirty) return Task.FromResult(true);
+            var tcs = new TaskCompletionSource<bool>();
+            PatchUpdate patch;
             if (_userSetting is null)
             {
                 _userSetting = new UserSetting()
@@ -327,29 +391,22 @@ namespace Core.Components
                     UserId = Client.Token.UserId,
                     Value = JsonConvert.SerializeObject(_headers)
                 };
-                await Client.Instance.SubmitAsync<dynamic>(CreatePatch(System.Id.NewGuid()));
+                patch = CreatePatch(System.Id.NewGuid());
             }
             else
             {
                 _userSetting.Value = JsonConvert.SerializeObject(_headers);
-                await Client.Instance.SubmitAsync<dynamic>(CreatePatch(_userSetting.Id, _userSetting.Id));
+                patch = CreatePatch(_userSetting.Id, _userSetting.Id);
             }
-            var sql = ParentListView.GetSql();
-            sql.Count = false;
-            sql.FieldName = _headers.Where(x => x.IsExport).Select(x => x.FieldName).ToList();
-            var path = await Client.Instance.SubmitAsync<string>(new XHRWrapper
+            var task = Client.Instance.PatchAsync(patch);
+            Client.ExecTask(task, r =>
             {
-                Value = JSON.Stringify(sql),
-                Url = Utils.ExportExcel,
-                IsRawString = true,
-                Method = HttpMethod.POST
-            });
-            
-            Client.Download($"/excel/Download/{path}");
-            Toast.Success("Xuất file thành công");
+                tcs.TrySetResult(r);
+            }, e => tcs.TrySetException(e));
+            return tcs.Task;
         }
 
-        private XHRWrapper CreatePatch(string newId, string oldId = null)
+        private PatchUpdate CreatePatch(string newId, string oldId = null)
         {
             var patch = new PatchUpdate
             {
@@ -363,13 +420,7 @@ namespace Core.Components
                 ConnKey = ParentListView.GuiInfo.ConnKey ?? Utils.DefaultConnKey
             };
             patch.Changes.Add(new PatchUpdateDetail { Field = IdField, Value = newId, OldVal = oldId });
-            return new XHRWrapper
-            {
-                Url = "/v2/user",
-                Value = JSON.Stringify(patch),
-                IsRawString = true,
-                Method = HttpMethod.PATCH
-            };
+            return patch;
         }
     }
 }

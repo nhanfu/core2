@@ -12,19 +12,6 @@ namespace Core.Components
     {
         public HTMLElement ButtonEle { get; set; }
         private HTMLSpanElement _textEle;
-        public string Label
-        {
-            get => _textEle?.TextContent;
-            set
-            {
-                if (Element is null)
-                {
-                    throw new InvalidOperationException("Element is null");
-                }
-
-                _textEle.TextContent = value;
-            }
-        }
 
         public Button(Component ui, HTMLElement ele = null) : base(ui)
         {

@@ -84,7 +84,7 @@ namespace Core.Controllers
             meta.SetAttributeValue("name", "startupSvc");
             meta.SetAttributeValue("content", page.SvcId);
             htmlDoc.DocumentNode.SelectSingleNode("//head")?.AppendChild(meta);
-            reponse.Headers.Add(ContentType, Utils.GetMimeType("html"));
+            reponse.Headers.TryAdd(ContentType, Utils.GetMimeType("html"));
             reponse.StatusCode = (int)HttpStatusCode.OK;
             await reponse.WriteAsync(htmlDoc.DocumentNode.OuterHtml);
         }
@@ -104,11 +104,8 @@ namespace Core.Controllers
         {
             if (!Response.HasStarted)
             {
-                if (!Response.Headers.ContainsKey(ContentType))
-                {
-                    Response.Headers.Add(ContentType, contentType);
-                    Response.Headers.Add("Content-Encoding", "gzip");
-                }
+                Response.Headers.TryAdd(ContentType, contentType);
+                Response.Headers.TryAdd("Content-Encoding", "gzip");
                 Response.StatusCode = (int)code;
             }
             var html = await System.IO.File.ReadAllTextAsync(file, encoding: Encoding.UTF8);

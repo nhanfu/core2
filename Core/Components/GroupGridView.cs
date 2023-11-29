@@ -32,61 +32,6 @@ namespace Core.Components
             Html.Take(Element).ClassName("group-table").End.Render();
         }
 
-        protected override void RowDataChanged(ObservableListArgs<object> args)
-        {
-            if (args.Action == ObservableAction.Remove)
-            {
-                if (args.Item is null && args.Item[IdField].As<int?>() != null)
-                {
-                    return;
-                }
-
-                RemoveRowById(args.Item[IdField].ToString());
-                return;
-            }
-            Window.ClearTimeout(_rowDataChangeAwaiter);
-            _rowDataChangeAwaiter = Window.SetTimeout(async () =>
-            {
-                if (GuiInfo.GroupBy.IsNullOrEmpty())
-                {
-                    return;
-                }
-
-                if (args.Action == ObservableAction.Render)
-                {
-                    NoRowData(args.ListData);
-                }
-                switch (args.Action)
-                {
-                    case ObservableAction.Add:
-                        await AddRow(args.Item);
-                        return;
-                    case ObservableAction.AddRange:
-                        await AddRows(args.ListData, args.Index);
-                        return;
-                    case ObservableAction.Update:
-                        await AddOrUpdateRow(args.Item);
-                        return;
-                }
-                var keys = GuiInfo.GroupBy.Split(",");
-                FormattedRowData = args.ListData
-                    .Select(x =>
-                    {
-                        x[_groupKey] = string.Join(" ", keys.Select(key => (x.GetPropValue(key)?.ToString())));
-                        return x;
-                    })
-                    .GroupBy(x => x[_groupKey])
-                    .Select(x => new GroupRowData
-                    {
-                        Key = x.Key,
-                        Children = x.ToList()
-                    })
-                    .Cast<object>().ToList();
-                base.Rerender();
-                DomLoaded();
-            });
-        }
-
         public override void RenderContent()
         {
             AddSections();

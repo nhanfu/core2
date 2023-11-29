@@ -26,5 +26,6 @@ namespace Core.Extensions
         /// <returns></returns>
         public static bool CtrlOrMetaKey(this Event e) => (bool)e["ctrlKey"] || (bool)e["metaKey"];
         public static bool AltKey(this Event e) => (bool)e["altKey"];
+        public static bool GetChecked(this Event e) => e.Target.Cast<HTMLInputElement>().Checked;
     }
 }

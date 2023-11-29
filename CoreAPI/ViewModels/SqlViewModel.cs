@@ -17,7 +17,7 @@ namespace Core.ViewModels
         public string OrderBy { get; set; }
         public string Paging { get; set; }
         public bool Count { get; set; }
-        public List<string> FieldName { get; set; }
+        public string[] FieldName { get; set; }
         public bool SkipXQuery { get; set; }
     }
 

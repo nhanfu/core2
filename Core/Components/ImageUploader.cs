@@ -57,13 +57,11 @@ namespace Core.Components
 
         public event Action FileUploaded;
         public string DataSourceFilter { get; set; }
-        public string Label { get; set; }
         private string[] _imageSources => _path?.Split(PathSeparator);
 
         public ImageUploader(Component ui) : base(ui)
         {
             GuiInfo = ui;
-            Label = GuiInfo.PlainText ?? "image/invoice.svg";
             DataSourceFilter = GuiInfo.DataSourceFilter ?? "image/*";
         }
 

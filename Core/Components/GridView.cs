@@ -26,7 +26,6 @@ namespace Core.Components
         public List<HTMLElement> _summarys = new List<HTMLElement>();
         public HTMLElement LastThClick;
         public int? LastNumClick;
-        private string _summaryId;
         public bool AutoFocus = false;
         public bool LoadRerender = false;
         public bool _waitingLoad;
