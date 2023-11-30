@@ -1,6 +1,7 @@
 ﻿using Bridge.Html5;
 using Core.Enums;
 using System;
+using System.Threading.Tasks;
 
 namespace Core.Extensions
 {
@@ -27,5 +28,148 @@ namespace Core.Extensions
         public static bool CtrlOrMetaKey(this Event e) => (bool)e["ctrlKey"] || (bool)e["metaKey"];
         public static bool AltKey(this Event e) => (bool)e["altKey"];
         public static bool GetChecked(this Event e) => e.Target.Cast<HTMLInputElement>().Checked;
+        public static string GetInputText(this Event e) => e.Target.Cast<HTMLInputElement>().Value;
+
+        public static IPromise ToPromise<T>(this Task<T> task)
+        {
+            if (task == null) return null;
+            /*@
+            return new Promise((resolve, reject) => {
+            var $step = 0,
+                $task1, 
+                $taskResult1, 
+                $jumpFromFinally, 
+                $returnValue, 
+                t, 
+                $async_e, 
+                $asyncBody = Bridge.fn.bind(this, function () {
+                    try {
+                        for (;;) {
+                            $step = System.Array.min([0,1], $step);
+                            switch ($step) {
+                                case 0: {
+                                    if (task == null) {
+                                        resolve(null);
+                                        return;
+                                    }
+                                    $task1 = task;
+                                    $step = 1;
+                                    if ($task1.isCompleted()) {
+                                        continue;
+                                    }
+                                    $task1.continue($asyncBody);
+                                    return;
+                                }
+                                case 1: {
+                                    $taskResult1 = $task1.getAwaitedResult();
+                                    t = $taskResult1;
+                                    resolve(t);
+                                    return;
+                                }
+                                default: {
+                                    resolve(null);
+                                    return;
+                                }
+                            }
+                        }
+                    } catch($async_e1) {
+                        $async_e = System.Exception.create($async_e1);
+                        reject($async_e);
+                    }
+                }, arguments);
+
+            $asyncBody();
+            });
+            */
+            return null;
+        }
+
+        public static IPromise ToPromiseNoResult(Task task)
+        {
+            if (task == null) return null;
+            /*@
+            return new Promise((resolve, reject) => {
+            var $step = 0,
+                $task1, 
+                $taskResult1, 
+                $jumpFromFinally, 
+                $returnValue, 
+                t, 
+                $async_e, 
+                $asyncBody = Bridge.fn.bind(this, function () {
+                    try {
+                        for (;;) {
+                            $step = System.Array.min([0,1], $step);
+                            switch ($step) {
+                                case 0: {
+                                    if (task == null) {
+                                        resolve(null);
+                                        return;
+                                    }
+                                    $task1 = task;
+                                    $step = 1;
+                                    if ($task1.isCompleted()) {
+                                        continue;
+                                    }
+                                    $task1.continue($asyncBody);
+                                    return;
+                                }
+                                case 1: {
+                                    $taskResult1 = $task1.getAwaitedResult();
+                                    t = $taskResult1;
+                                    resolve(t);
+                                    return;
+                                }
+                                default: {
+                                    resolve(null);
+                                    return;
+                                }
+                            }
+                        }
+                    } catch($async_e1) {
+                        $async_e = System.Exception.create($async_e1);
+                        reject($async_e);
+                    }
+                }, arguments);
+
+            $asyncBody();
+            });
+            */
+            return null;
+        }
+
+        public static IPromise Done<T>(this Task<T> task, Action<T> handler = null)
+        {
+            var promise = task.ToPromise();
+            /*@
+            promise.then(handler);
+             */
+            return promise;
+        }
+
+        public static IPromise Catch(this IPromise task, Action<Exception> handler = null)
+        {
+            /*@
+            task.catch(handler);
+             */
+            return task;
+        }
+
+        public static IPromise Finally(this IPromise task, Action handler = null)
+        {
+            /*@
+            task.finally(handler);
+             */
+            return task;
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
+        public static void Done(this Task task, Action handler = null, Action<Exception> errorHandler = null)
+        {
+            var promise = ToPromiseNoResult(task);
+            /*@
+            promise.then(handler).catch(errorHandler);
+             */
+        }
     }
 }

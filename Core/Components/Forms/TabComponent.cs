@@ -65,7 +65,6 @@ namespace Core.Components.Forms
         {
             ComponentGroup = group;
             Name = group.Name;
-            Window.Instance.AddEventListener("Count" + Name, RealtimeUpdateBadge);
         }
 
         public virtual string Badge
@@ -136,71 +135,6 @@ namespace Core.Components.Forms
                     RenderTabContent();
                 }
             });
-            Task.Run(CountBadge);
-        }
-
-        internal void RealtimeUpdateBadge(dynamic updatedData)
-        {
-            DisplayBadge = true;
-            Badge = updatedData;
-        }
-
-        internal async Task CountBadge()
-        {
-            var parent = Parent as TabGroup;
-            if (ComponentGroup.BadgeMonth is null)
-            {
-                return;
-            }
-            var gridView = ComponentGroup.Component.FirstOrDefault();
-            if (gridView is null || gridView.DataSourceFilter.IsNullOrEmpty())
-            {
-                return;
-            }
-            try
-            {
-                var query = ListView.GetFormattedDataSource(this, gridView.DataSourceFilter);
-                var badgeMonth = ComponentGroup.BadgeMonth;
-                if (badgeMonth == null)
-                {
-                    return;
-                }
-                var finalCount = CalcBadgeMonth(query, badgeMonth) + "&$count=true";
-                var res = await new Clients.Client(gridView.RefName).GetAsync<OdataResult<object>>(finalCount);
-                if (res is null || res.Odata is null)
-                {
-                    return;
-                }
-                DisplayBadge = true;
-                var count = res.Odata.Count;
-                if (count <= 1000)
-                {
-                    Badge = count.ToString();
-                }
-                else if (count < 1000000)
-                {
-                    Badge = (count / 1000) + "K";
-                }
-                else
-                {
-                    Badge = (count / 1000000) + "M";
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        public static string CalcBadgeMonth(string query, int? badgeMonth)
-        {
-            if (badgeMonth is null)
-            {
-                return query;
-            }
-            var startDate = DateTime.Now.AddMonths(-badgeMonth.Value);
-            startDate = startDate.AddDays(-startDate.Day);
-            var filterPart = OdataExt.GetClausePart(query, OdataExt.FilterKeyword) + $" and {nameof(User.InsertedDate)} ge cast({startDate.ToISOFormat()},Edm.DateTimeOffset)";
-            return OdataExt.ApplyClause(query, filterPart, OdataExt.FilterKeyword);
         }
 
         public void RenderTabContent()
@@ -210,10 +144,7 @@ namespace Core.Components.Forms
             var editForm = this.FindClosest<EditForm>();
             RenderSection(this, ComponentGroup);
             HasRendered = true;
-            Task.Run(async () =>
-            {
-                await this.DispatchEventToHandlerAsync(ComponentGroup.Events, EventType.DOMContentLoaded, Entity);
-            });
+            this.DispatchEventToHandlerAsync(ComponentGroup.Events, EventType.DOMContentLoaded, Entity).Done();
         }
 
         public override void Focus()
@@ -224,10 +155,7 @@ namespace Core.Components.Forms
                 .ForEach(x => x.Show = false);
             Show = true;
             EditForm.ResizeListView();
-            Task.Run(async () =>
-            {
-                await this.DispatchEventToHandlerAsync(ComponentGroup.Events, EventType.FocusIn, Entity);
-            });
+            this.DispatchEventToHandlerAsync(ComponentGroup.Events, EventType.FocusIn, Entity).Done();
         }
 
         public override bool Show
@@ -245,19 +173,13 @@ namespace Core.Components.Forms
                 {
                     _li.AddClass(ActiveClass);
                     _li.QuerySelector(ElementType.a.ToString()).AddClass(ActiveClass);
-                    Task.Run(async () =>
-                    {
-                        await this.DispatchEventToHandlerAsync(ComponentGroup.Events, EventType.FocusIn, Entity);
-                    });
+                    this.DispatchEventToHandlerAsync(ComponentGroup.Events, EventType.FocusIn, Entity).Done();
                 }
                 else
                 {
                     _li.RemoveClass(ActiveClass);
                     _li.QuerySelector(ElementType.a.ToString()).RemoveClass(ActiveClass);
-                    Task.Run(async () =>
-                    {
-                        await this.DispatchEventToHandlerAsync(ComponentGroup.Events, EventType.FocusOut, Entity);
-                    });
+                    this.DispatchEventToHandlerAsync(ComponentGroup.Events, EventType.FocusOut, Entity).Done();
                 }
             }
         }
@@ -308,12 +230,6 @@ namespace Core.Components.Forms
                     NextTab.Focus();
                 }
             }
-        }
-
-        public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
-        {
-            Task.Run(CountBadge);
-            base.UpdateView(force, dirty, componentNames);
         }
     }
 }

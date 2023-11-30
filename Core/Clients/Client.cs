@@ -14,7 +14,7 @@ namespace Core.Clients
 {
     public class Client
     {
-        public static DateTime EpsilonNow => DateTime.Now.AddMinutes(2);
+        public static DateTimeOffset EpsilonNow => DateTimeOffset.Now.AddMinutes(2);
         public const string ErrorMessage = "Hệ thống đang cập nhật vui lòng chờ trong 30s!";
         public static string ModelNamespace;
         private readonly string _nameSpace;
@@ -150,8 +150,10 @@ namespace Core.Clients
             return await SubmitAsyncWithToken<T>(options);
         }
 
-        public Task<object[][]> ComQuery(SqlViewModel vm) {
-            return SubmitAsync<object[][]>(new XHRWrapper {
+        public Task<object[][]> ComQuery(SqlViewModel vm)
+        {
+            return SubmitAsync<object[][]>(new XHRWrapper
+            {
                 Value = JSON.Stringify(vm),
                 Url = Utils.ComQuery,
                 IsRawString = true,
@@ -343,7 +345,7 @@ namespace Core.Clients
             TmpException exp;
             try
             {
-                exp = JsonConvert.DeserializeObject<TmpException>(xhr.ResponseText);
+                exp = JSON.Parse(xhr.ResponseText).As<TmpException>();
                 exp.StatusCode = (HttpStatusCode)xhr.Status;
             }
             catch
@@ -524,22 +526,6 @@ namespace Core.Clients
             return res?.Value?.FirstOrDefault();
         }
 
-        public async Task<object> FirstOrDefaultAsync(Type type, string filter = null, bool clearCache = false)
-        {
-            filter = OdataExt.ApplyClause(filter, 1.ToString(), OdataExt.TopKeyword);
-            EntityName = type.Name;
-            var headers = ClearCacheHeader(clearCache);
-            var response = await SubmitAsync<OdataResult<object>>(new XHRWrapper
-            {
-                Value = null,
-                Url = filter,
-                Headers = headers,
-                Method = HttpMethod.GET
-            });
-            var res = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(response.Value.FirstOrDefault()), type);
-            return res;
-        }
-
         public Task<OdataResult<object>> LoadById(string listId, string tenant = string.Empty, string action = "ById")
         {
             return SubmitAsync<OdataResult<object>>(new XHRWrapper
@@ -580,7 +566,7 @@ namespace Core.Clients
                 return Task.FromResult(default(object));
             }
             var tcs = new TaskCompletionSource<object>();
-            var vm = new SqlViewModel 
+            var vm = new SqlViewModel
             {
                 Entity = JSON.Stringify(new { Id = id, Table = table }),
                 ComId = "Entity",
@@ -597,7 +583,8 @@ namespace Core.Clients
                     { "content-type", "application/json" }
                 }
             });
-            ExecTask(odata, ds => {
+            ExecTask(odata, ds =>
+            {
                 tcs.TrySetResult(ds);
             });
             return tcs.Task;
@@ -752,7 +739,7 @@ namespace Core.Clients
             return SubmitAsync<bool>(new XHRWrapper
             {
                 Url = "HardDelete",
-                Value = JsonConvert.SerializeObject(ids),
+                Value = JSON.Stringify(ids),
                 Method = HttpMethod.DELETE,
                 IsRawString = true,
                 Headers = new Dictionary<string, string>
@@ -814,39 +801,40 @@ namespace Core.Clients
             return tcs.Task;
         }
 
-        public static async Task<Token> RefreshToken(Action<Token> success = null)
+        public static Task<Token> RefreshToken(Action<Token> success = null)
         {
+            var tcs = new TaskCompletionSource<Token>();
             Token oldToken = Token;
             if (oldToken is null || oldToken.RefreshTokenExp <= EpsilonNow)
             {
-                return null;
+                return Task.FromResult(null as Token);
             }
             if (oldToken.AccessTokenExp > EpsilonNow)
             {
-                return oldToken;
+                return Task.FromResult(oldToken);
             }
             if (oldToken.AccessTokenExp <= EpsilonNow && oldToken.RefreshTokenExp > EpsilonNow)
             {
-                var newToken = await GetToken(oldToken);
-                if (newToken != null)
+                var newTokenTask = GetToken(oldToken);
+                ExecTask(newTokenTask, newToken =>
                 {
-                    Token = newToken;
-                    if (success != null)
+                    if (newToken != null)
                     {
-                        success.Invoke(newToken);
+                        Token = newToken;
+                        success?.Invoke(newToken);
                     }
-                }
+                    tcs.TrySetResult(newToken);
+                }, e => tcs.TrySetException(e));
             }
-            return null;
+            return tcs.Task;
         }
 
         public static async Task<Token> GetToken(Token oldToken)
         {
-            var client = new Client(nameof(User), typeof(User).Namespace);
-            var newToken = await client.SubmitAsync<Token>(new XHRWrapper
+            var newToken = await Instance.SubmitAsync<Token>(new XHRWrapper
             {
                 NoQueue = true,
-                Url = $"Refresh?t={Token.TenantCode ?? Tenant}",
+                Url = $"/user/Refresh?t={Token.TenantCode ?? Tenant}",
                 Method = HttpMethod.POST,
                 Value = new RefreshVM { AccessToken = oldToken.AccessToken, RefreshToken = oldToken.RefreshToken },
                 AllowAnonymous = true,
@@ -888,7 +876,7 @@ namespace Core.Clients
             return thumbText;
         }
 
-    public static IPromise ToPromise<T>(Task<T> task)
+        public static IPromise ToPromise<T>(Task<T> task)
         {
             if (task == null) return null;
             /*@

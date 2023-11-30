@@ -926,7 +926,7 @@ namespace Core.Components
         public virtual void DuplicateSelected(Event ev, bool addRow = false)
         {
             var originalRows = GetSelectedRows();
-            var copiedRows = ReflectionExt.CopyRowWithoutId(originalRows);
+            var copiedRows = ReflectionExt.CloneRows(originalRows);
             if (copiedRows.Nothing() || !CanWrite)
             {
                 return;
@@ -1206,7 +1206,7 @@ namespace Core.Components
         public void CopySelected(object ev)
         {
             _originRows = GetSelectedRows();
-            _copiedRows = ReflectionExt.CopyRowWithoutId(_originRows);
+            _copiedRows = ReflectionExt.CloneRows(_originRows);
             (Window.Instance as dynamic).navigator.clipboard.writeText(JSON.Stringify(_copiedRows));
             Task.Run(async () =>
             {

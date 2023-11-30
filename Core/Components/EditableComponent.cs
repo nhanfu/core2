@@ -883,13 +883,14 @@ namespace Core.Components
 
         protected void AddIdToPatch(List<PatchUpdateDetail> details)
         {
+            var idField = details.FirstOrDefault(x => x.Field == IdField);
+            if (idField != null) details.Remove(idField);
             if (EntityId is null)
             {
-                EntityId = System.Id.NewGuid();
                 details.Add(new PatchUpdateDetail
                 {
                     Field = Utils.IdField,
-                    Value = EntityId
+                    Value = System.Id.NewGuid()
                 });
             }
             else

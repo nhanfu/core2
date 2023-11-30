@@ -64,16 +64,9 @@ namespace Core.Extensions
             }
 
             T res;
-            try
-            {
-                return (T)obj;
-            }
-            catch (Exception)
-            {
-                res = (T)Activator.CreateInstance(typeof(T));
-                res.CopyPropFrom(obj);
-                return res;
-            }
+            res = (T)Activator.CreateInstance(typeof(T));
+            res.CopyPropFrom(obj);
+            return res;
         }
 
         public static void SetPropValue(this object instance, string propertyName, object value)

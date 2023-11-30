@@ -99,7 +99,7 @@ namespace Core.Components
             }
             else
             {
-                options = JsonConvert.DeserializeObject<object>(GuiInfo.FormatData);
+                options = JSON.Parse(GuiInfo.FormatData);
             }
             var isFotmatDataFn = Utils.IsFunction(GuiInfo.FormatEntity, out var function);
             if (!isFotmatDataFn && !GuiInfo.GroupBy.IsNullOrEmpty())

@@ -467,12 +467,16 @@ namespace Core.Components
 
         private void ExportAllData(object arg)
         {
-            Exporter.ExportSelectedData();
+            Exporter.Export();
         }
 
         private void ExportSelectedData(object arg)
         {
-            Exporter.ExportSelectedData(selectedIds: ParentListView.SelectedIds.ToArray());
+            if (ParentListView.SelectedIds.Nothing()) {
+                Toast.Warning("Select at least 1 one to export excel");
+                return;
+            }
+            Exporter.Export(selectedIds: ParentListView.SelectedIds.ToArray());
         }
 
         private void ExportDisplay(object arg)

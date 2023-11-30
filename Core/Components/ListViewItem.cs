@@ -287,15 +287,10 @@ namespace Core.Components
             if (!success)
             {
                 Toast.Warning("Save data was not succeded");
-                var idField = PatchModel.FirstOrDefault(x => x.Field == IdField);
-                if (idField != null && idField.OldVal is null)
-                {
-                    EntityId = null;
-                    PatchModel.Remove(idField);
-                }
             }
             else
             {
+                EntityId = patchModel.EntityId;
                 Dirty = false;
                 EmptyRow = false;
             }
@@ -304,8 +299,9 @@ namespace Core.Components
 
         public PatchUpdate GetPatchEntity()
         {
+            var shouldGetAll = EntityId is null;
             var dirtyPatch = Children
-                .Where(child => child is EditableComponent editable && editable.Dirty)
+                .Where(child => child is EditableComponent editable && (shouldGetAll || editable.Dirty))
                 .SelectMany(child =>
                 {
                     if (child[nameof(PatchUpdateDetail)] is Func<PatchUpdateDetail[]> fn)

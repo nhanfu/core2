@@ -259,7 +259,7 @@ namespace Core.Components
             _userSetting = res[0].Length > 0 ? res[0][0] : null as dynamic;
             if (_userSetting != null)
             {
-                var usrHeaders = JsonConvert.DeserializeObject<List<Component>>(_userSetting.Value as string)
+                var usrHeaders = JSON.Parse(_userSetting.Value as string).As<Component[]>()
                     .ToDictionary(x => x.Id);
                 _headers.ForEach(x =>
                 {
@@ -328,9 +328,17 @@ namespace Core.Components
             });
         }
 
-        public void ExportData() => ExportSelectedData();
+        public void ExportAll() => Export();
+        public void ExportSelected() 
+        {
+            if (ParentListView.SelectedIds.Nothing()) {
+                Toast.Warning("Select at lease 1 row to export");
+                return;
+            }
+            Export(selectedIds: ParentListView.SelectedIds.ToArray());
+        }
 
-        public void ExportSelectedData(int? skip = null, int? pageSize = null, string[] selectedIds = null)
+        public void Export(int? skip = null, int? pageSize = null, string[] selectedIds = null)
         {
             Toast.Success("Đang xuất excel");
             if (_hasLoadSetting)
@@ -361,9 +369,10 @@ namespace Core.Components
             }
             if (selectedIds.HasElement())
             {
-                var ids = selectedIds.CombineToIds();
+                var ids = selectedIds.CombineStrings();
                 sql.Where = $"Id in ({ids})";
             }
+            sql.Entity = ParentListView.GuiInfo.Label ?? ParentListView.GuiInfo.EntityName;
             var pathTask = Client.Instance.SubmitAsync<string>(new XHRWrapper
             {
                 Value = JSON.Stringify(sql),

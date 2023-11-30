@@ -250,7 +250,7 @@ namespace Core.Extensions
         public const string IdField = "Id";
         public const string StatusIdField = "StatusId";
         public const string FreightStateId = "FreightStateId";
-        public static IEnumerable<object> CopyRowWithoutId(List<object> selectedRows, string path = null)
+        public static IEnumerable<object> CloneRows(List<object> selectedRows, string path = null)
         {
             return selectedRows.Select(x =>
             {

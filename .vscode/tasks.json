@@ -3,23 +3,11 @@
     "tasks": [
         {
             "label": "build",
-            "command": "dotnet",
+            "command": "msbuild",
             "type": "process",
             "args": [
-                "build",
-                "${workspaceFolder}/CoreAPI/CoreAPI.csproj",
+                "${workspaceFolder}/Core/Core.csproj",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary;ForceNoAlign"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "buildBE",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/CoreAPI/CoreAPI.csproj",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
             "problemMatcher": "$msCompile"

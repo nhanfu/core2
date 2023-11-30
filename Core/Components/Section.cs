@@ -173,7 +173,7 @@ namespace Core.Components
                 subTab.RenderTabContent();
                 subTab.Focus();
                 subTab.ToggleShow(group.ShowExp);
-                subTab.ToggleShow(group.DisabledExp);
+                subTab.ToggleDisabled(group.DisabledExp);
             }
             else
             {
@@ -187,9 +187,10 @@ namespace Core.Components
                 };
                 subTab.Disabled = disabled;
                 tabG.Children.Add(subTab);
-                subTab.ToggleShow(group.ShowExp);
-                subTab.ToggleDisabled(group.DisabledExp);
                 subTab.Render();
+                subTab.RenderTabContent();
+                subTab.ToggleDisabled(group.DisabledExp);
+                tabG.FirstChild.Focus();
             }
         }
 

@@ -479,15 +479,6 @@ namespace Core.Services
                     }
                     tables.Add(table);
                 } while (await reader.NextResultAsync());
-#if DEBUG
-                if (exportQuery)
-                {
-                    tables.Add(
-                    [
-                        new() { { "query",  query } }
-                    ]);
-                }
-#endif
                 return tables;
             }
             catch (Exception e)
@@ -773,7 +764,7 @@ namespace Core.Services
                     return x.Active && x.ShortDesc.HasNonSpaceChar() && vm.FieldName.Contains(x.FieldName);
                 }).ToList();
             }
-            return ExportExcel(vm.ComId, headers, table);
+            return ExportExcel(vm.Entity ?? "Export data", headers, table);
         }
 
         public string ConvertHtmlToPlainText(string htmlContent)

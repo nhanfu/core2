@@ -98,14 +98,13 @@ namespace Core.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("api/{system}/{tenant}/[Controller]/SignIn")]
-        public async Task<ActionResult<Token>> SignInAsync([FromBody] LoginVM login, [FromRoute] string system, [FromRoute] string tenant)
+        [HttpPost("api/{tenant}/[Controller]/SignIn")]
+        public async Task<ActionResult<Token>> SignInAsync([FromBody] LoginVM login, [FromRoute] string tenant)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            login.System ??= system;
             login.CompanyName ??= tenant;
             return await _userSvc.SignInAsync(login);
         }

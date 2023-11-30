@@ -125,13 +125,13 @@ namespace Core.Extensions
             return res;
         }
 
-        public static string CombineToIds(this IEnumerable<string> source, string combinator = ",")
+        public static string CombineStrings(this IEnumerable<string> source, string combinator = ",")
         {
             if (combinator is null || source is null)
             {
                 return string.Empty;
             }
-            return combinator.Select(x => $"'{x}'").Combine(combinator);
+            return source.Select(x => $"'{x}'").Combine(combinator);
         }
 
         public static string Combine<T>(this IEnumerable<T> source, string combinator = ",")

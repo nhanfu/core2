@@ -97,16 +97,12 @@ namespace Core.Components.Framework
                 Html.Instance.Div.ClassName("modal-container")
                             .Div.ClassName("modal-left")
                                 .H1.ClassName("modal-title").Text("XIN CHÀO").End
-                                .Div.ClassName("input-block")
-                                    .Label.ClassName("input-label").Text("Công ty").End
-                                    .Input.Event(EventType.Input, (e) => LoginEntity.CompanyName = e.Target.Cast<HTMLInputElement>().Value)
-                                    .Attr("name", "CompanyName").Value(LoginEntity.CompanyName).Type("text").End.End
                                  .Div.ClassName("input-block")
                                     .Label.ClassName("input-label").Text("Tên tài khoản").End
-                                    .Input.Event(EventType.Input, (e) => LoginEntity.UserName = e.Target.Cast<HTMLInputElement>().Value).Attr("name", "UserName").Value(LoginEntity.UserName).Type("text").End.End
+                                    .Input.Event(EventType.Input, (e) => ParseUsername(e)).Attr("name", "UserName").Type("text").End.End
                                 .Div.ClassName("input-block")
                                     .Label.ClassName("input-label").Text("Mật khẩu").End
-                                    .Input.Event(EventType.Input, (e) => LoginEntity.Password = e.Target.Cast<HTMLInputElement>().Value).Attr("name", "Password").Value(LoginEntity.Password).Type("password").End.End
+                                    .Input.Event(EventType.Input, (e) => LoginEntity.Password = e.GetInputText()).Attr("name", "Password").Value(LoginEntity.Password).Type("password").End.End
                                 .Div.ClassName("input-block")
                                     .Label.ClassName("input-label").Text("Ghi nhớ").End
                                     .Label.ClassName("checkbox input-small transition-on style2")
@@ -114,11 +110,19 @@ namespace Core.Components.Framework
                                     .Span.ClassName("check myCheckbox").End.End.End
                                 .Div.ClassName("modal-buttons")
                                     .A.Href("").Text("Quên mật khẩu?").End
-                                    .Button.Id("btnLogin").Event(EventType.Click, () => Client.ExecTask(Login(LoginEntity))).ClassName("input-button").Text("Đăng nhập").End.End.End
+                                    .Button.Id("btnLogin").Event(EventType.Click, () => Login().Done()).ClassName("input-button").Text("Đăng nhập").End.End.End
                             .Div.ClassName("modal-right")
                                 .Img.Src("../image/bg-launch.jpg").End.Render();
-                Element = Html.Context;
+                base.Element = Html.Context;
             }, 100);
+        }
+
+        private void ParseUsername(Event e)
+        {
+            var value = e.GetInputText().Split('/');
+            if (value.Length < 2) return;
+            LoginEntity.CompanyName = value[0];
+            LoginEntity.UserName = value[1];
         }
 
         private void KeyCodeEnter(Event e)
@@ -131,48 +135,58 @@ namespace Core.Components.Framework
             Document.GetElementById("btnLogin").Click();
         }
 
-        public async Task<bool> Login(LoginVM login)
+        public Task<bool> Login()
         {
-            var isValid = await IsFormValid();
-            if (!isValid)
+            var tcs = new TaskCompletionSource<bool>();
+            IsFormValid().Done(isValid =>
             {
-                return false;
-            }
-            login.RecoveryToken = Utils.GetUrlParam("recovery");
-            Token res = null;
-            try
-            {
-                var doc = Document.Instance as dynamic;
-                var urlParts = Window.Location.PathName.Split("/");
-                login.System = doc.head.children.system.content ?? "Core";
-                login.CompanyName = login.CompanyName ?? doc.head.children.tenant.content ?? "System";
-                login.Env = doc.head.children.system.env ?? "test";
-                res = await Client.Instance.SubmitAsync<Token>(new XHRWrapper
+                if (!isValid)
                 {
-                    Url = $"/{login.System}/{login.CompanyName}/User/SignIn",
-                    Value = JSON.Stringify(login),
-                    IsRawString = true,
-                    Method = HttpMethod.POST
-                });
-            }
-            catch
+                    tcs.TrySetResult(false);
+                    return;
+                }
+                ProcessValidLogin().Done(status => tcs.TrySetResult(status));
+            });
+            return tcs.Task;
+        }
+
+        private Task<bool> ProcessValidLogin()
+        {
+            var login = LoginEntity;
+            if (login.CompanyName.IsNullOrWhiteSpace())
             {
+                Toast.Warning("Company name must be provided!\nFor example my-compay/my-username");
+                return Task.FromResult(false);
             }
-            if (!login.AutoSignIn)
+            var tcs = new TaskCompletionSource<bool>();
+            login.RecoveryToken = Utils.GetUrlParam("recovery");
+            var urlParts = Window.Location.PathName.Split("/");
+            login.CompanyName = login.CompanyName ?? Utils.Doc.head.children.tenant.content ?? "System";
+            login.Env = Utils.Doc.head.children.env.content ?? "test";
+            Client.Instance.SubmitAsync<Token>(new XHRWrapper
             {
-                login.Password = string.Empty;
-            }
-            if (res != null)
-            {
+                Url = $"/{login.CompanyName}/User/SignIn",
+                Value = JSON.Stringify(login),
+                IsRawString = true,
+                Method = HttpMethod.POST
+            }).Done(res => {
+                if (res == null)
+                {
+                    tcs.TrySetResult(false);
+                    return;
+                }
                 Toast.Success($"Xin chào {res.FullName}!");
                 Client.Token = res;
                 login.UserName = string.Empty;
+                login.Password = string.Empty;
                 InitAppIfEmpty();
                 InitFCM();
                 SignedInHandler?.Invoke(Client.Token);
+                tcs.TrySetResult(true);
                 Dispose();
-            }
-            return true;
+            })
+            .Catch(e => tcs.TrySetResult(false));
+            return tcs.Task;
         }
 
         public async Task<bool> ForgotPassword(LoginVM login)

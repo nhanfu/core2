@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Core.Extensions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Core.ViewModels
 {
@@ -9,6 +11,7 @@ namespace Core.ViewModels
         public string Table { get; set; }
         public string ConnKey { get; set; }
         public List<PatchUpdateDetail> Changes { get; set; }
+        public string EntityId => Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
     }
 
     public class PatchUpdateDetail

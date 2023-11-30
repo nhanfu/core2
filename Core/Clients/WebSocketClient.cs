@@ -30,7 +30,7 @@ namespace Core.Clients
             _socket.OnMessage += e =>
             {
                 var responseStr = e.Data.ToString();
-                var objRs = JsonConvert.DeserializeObject<MQData>(responseStr);
+                var objRs = JSON.Parse(responseStr).As<MQData>();
                 var queueName = objRs.QueueName;
                 Window.DispatchEvent(new CustomEvent(objRs.QueueName, new CustomEventInit() { Detail = objRs }));
             };

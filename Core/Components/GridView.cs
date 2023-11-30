@@ -1861,7 +1861,7 @@ namespace Core.Components
         public override void DuplicateSelected(Event ev, bool addRow = false)
         {
             var originalRows = GetSelectedRows();
-            var copiedRows = ReflectionExt.CopyRowWithoutId(originalRows, GuiInfo.RefClass).ToList();
+            var copiedRows = ReflectionExt.CloneRows(originalRows).ToList();
             if (copiedRows.Nothing() || !CanWrite)
             {
                 return;
@@ -2293,7 +2293,7 @@ namespace Core.Components
                     return;
                 }
                 var total = ds.Length > 1 ? ds[1].ToDynamic()[0].total : ds[0].Length;
-                if (ds.Length > 3)
+                if (ds.Length >= 3)
                 {
                     ProcessMetaData(ds, total);
                 }

@@ -17,7 +17,7 @@ namespace Core.Components.Forms
 {
     public partial class EditForm : EditableComponent
     {
-        public const string NotDirtyMessage = "Dữ liệu chưa thay đổi";
+        public const string NotDirtyMessage = "Data was not changed!";
         public const string ExpiredDate = "ExpiredDate";
         public const string BtnExpired = "btnExpired";
         public const string BtnSave = "btnSave";
@@ -60,6 +60,7 @@ namespace Core.Components.Forms
         protected ListView _currentListView;
         protected Component _componentCoppy;
         private HTMLElement InnerEntry => Document.GetElementById("entry");
+        public string EntityName => Feature?.EntityName;
 
         public bool IsLock { get; private set; }
 
@@ -188,24 +189,30 @@ namespace Core.Components.Forms
 
         public PatchUpdate GetPatchEntity()
         {
-            var details = FilterChildren(child => child is EditableComponent editable && !(child.Parent is ListViewItem) && editable.Dirty && child.GuiInfo != null && child.GuiInfo.ComponentType != nameof(GridView) && child.GuiInfo.ComponentType != nameof(VirtualGrid))
-                .SelectMany(child =>
+            var shouldGetAll = EntityId is null;
+            var details = FilterChildren(child => { 
+                return child is EditableComponent editable && !(child is Button)
+                    && (shouldGetAll || editable.Dirty) && child.GuiInfo != null
+                    && child.GuiInfo.FieldName.HasNonSpaceChar();
+            }, x => x is ListView || x.AlwaysValid || !x.PopulateDirty)
+            .DistinctBy(x => x.GuiInfo.Id)
+            .SelectMany(child =>
+            {
+                if (child[nameof(PatchUpdateDetail)] is Func<PatchUpdateDetail[]> fn)
                 {
-                    if (child[nameof(PatchUpdateDetail)] is Func<PatchUpdateDetail[]> fn)
-                    {
-                        return fn.Call(child) as PatchUpdateDetail[];
-                    }
-                    var value = Utils.GetPropValue(child.Entity, child.FieldName);
-                    var propType = child.Entity.GetType().GetComplexPropType(child.FieldName, child.Entity);
-                    var patch = new PatchUpdateDetail
-                    {
-                        Label = child.Label,
-                        Field = child.FieldName,
-                        OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
-                        Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
-                    };
-                    return new PatchUpdateDetail[] { patch };
-                }).ToList();
+                    return fn.Call(child) as PatchUpdateDetail[];
+                }
+                var value = Utils.GetPropValue(child.Entity, child.FieldName);
+                var propType = child.Entity.GetType().GetComplexPropType(child.FieldName, child.Entity);
+                var patch = new PatchUpdateDetail
+                {
+                    Label = child.Label,
+                    Field = child.FieldName,
+                    OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
+                    Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
+                };
+                return new PatchUpdateDetail[] { patch };
+            }).ToList();
             AddIdToPatch(details);
             return new PatchUpdate { Changes = details, Table = Feature.EntityName };
         }
@@ -226,7 +233,7 @@ namespace Core.Components.Forms
                 UpdateView();
                 return false;
             }
-
+            EntityId = pathModel.EntityId;
             await UpdateIndependantGridView();
             if (Feature.DeleteTemp)
             {
@@ -800,19 +807,13 @@ namespace Core.Components.Forms
             return child;
         }
 
-        protected virtual async Task<object> LoadEntity()
+        protected virtual Task<object> LoadEntity()
         {
-            if (!ShouldLoadEntity || Entity is null)
+            if (!ShouldLoadEntity || EntityId.IsNullOrWhiteSpace())
             {
-                return null;
+                return Task.FromResult(null as object);
             }
-            var id = Entity[IdField]?.ToString();
-            if (id.IsNullOrWhiteSpace())
-            {
-                return null;
-            }
-            var entity = (await Client.LoadById(id)).Value.FirstOrDefault() ?? Entity;
-            return entity;
+            return Client.Instance.GetByIdAsync(EntityId, EntityName);
         }
 
         private void LockUpdate()
@@ -1071,7 +1072,7 @@ namespace Core.Components.Forms
 
         public void AddComponent(object arg)
         {
-            var action = arg["action"].CastProp<string>();
+            var action = arg["action"] as string;
             var componentGroup = arg["group"].CastProp<ComponentGroup>();
             var com = new Component();
             var childComponent = Feature.ComponentGroup.FirstOrDefault(x => x.Id == componentGroup.Id);
