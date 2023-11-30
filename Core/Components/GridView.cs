@@ -1247,7 +1247,7 @@ namespace Core.Components
             var th = HeaderSection.Children.FirstOrDefault(x => x.GuiInfo.Id == com.GuiInfo.Id);
             th.Element.RemoveClass("desc");
             th.Element.RemoveClass("asc");
-            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.GuiInfo.TextField : com.FieldName;
+            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.GuiInfo.FieldText : com.FieldName;
             var sort = new OrderBy
             {
                 FieldName = fieldName,
@@ -2148,7 +2148,7 @@ namespace Core.Components
         protected void ProcessMetaData(object[][] ds, int rowCount)
         {
             var total = ds.Length > 1 && ds[1].Length > 0 ? (int?)ds[1][0]["total"] : null;
-            var headers = ds.Length > 2 ? ds[2].Select(x => x.CastProp<Component>()).ToList() : null;
+            var headers = ds.Length > 2 ? ds[2].Select(x => x.MapToCom()).ToList() : null;
             var userSetting = ds.Length > 3 && ds[3].Length > 0 ? ds[3][0].As<UserSetting>() : null;
             FilterColumns(MergeComponent(headers, userSetting));
             RenderTableHeader(Header);

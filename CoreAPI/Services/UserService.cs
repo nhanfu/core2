@@ -760,7 +760,7 @@ namespace Core.Services
             {
                 headers = headers.Where(x =>
                 {
-                    var field = x.TextField.HasNonSpaceChar() ? x.TextField : x.FieldName;
+                    var field = x.FieldText.HasNonSpaceChar() ? x.FieldText : x.FieldName;
                     return x.Active && x.ShortDesc.HasNonSpaceChar() && vm.FieldName.Contains(x.FieldName);
                 }).ToList();
             }
@@ -900,7 +900,7 @@ namespace Core.Services
                 worksheet.Cell(x, 1).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                 foreach (var header in headers)
                 {
-                    var field = header.TextField.HasNonSpaceChar() ? header.TextField : header.FieldName;
+                    var field = header.FieldText.HasNonSpaceChar() ? header.FieldText : header.FieldName;
                     var vl = item.GetValueOrDefault(field);
                     switch (header.ComponentType)
                     {

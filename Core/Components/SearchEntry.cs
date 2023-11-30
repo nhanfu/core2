@@ -18,7 +18,7 @@ namespace Core.Components
 {
     public class SearchEntry : EditableComponent
     {
-        protected string TextField => GuiInfo.TextField;
+        protected string FieldText => GuiInfo.FieldText;
         private const string SEntryClass = "search-entry";
         private string _value;
 
@@ -598,9 +598,9 @@ namespace Core.Components
 
         public virtual void SetMatchedValue()
         {
-            OriginalText = Entity.GetPropValue(TextField) as string;
+            OriginalText = Entity.GetPropValue(FieldText) as string;
             _input.Value = EmptyRow ? string.Empty : GetMatchedText(Matched);
-            Entity.SetPropValue(GuiInfo.TextField, _input.Value);
+            Entity.SetPropValue(GuiInfo.FieldText, _input.Value);
             UpdateValue();
         }
 
@@ -634,7 +634,7 @@ namespace Core.Components
                 res.Add(new PatchUpdateDetail
                 {
                     Label = Label + "(text)",
-                    Field = GuiInfo.TextField,
+                    Field = GuiInfo.FieldText,
                     Value = _input.Value,
                     OldVal = OriginalText,
                     JustHistory = !GuiInfo.ShouldSaveText
@@ -649,7 +649,7 @@ namespace Core.Components
             {
                 return string.Empty;
             }
-            var res = matched.GetPropValue(GuiInfo.FormatData) ?? Entity.GetPropValue(GuiInfo.TextField);
+            var res = matched.GetPropValue(GuiInfo.FormatData) ?? Entity.GetPropValue(GuiInfo.FieldText);
             return (res as string).DecodeSpecialChar();
         }
 
@@ -717,7 +717,7 @@ namespace Core.Components
                 UpdateValue();
                 return;
             }
-            var txt = Entity[GuiInfo.TextField] as string;
+            var txt = Entity[GuiInfo.FieldText] as string;
             _input.Value = txt;
             ProcessLocalMatch();
         }

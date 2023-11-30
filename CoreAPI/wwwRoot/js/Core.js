@@ -2977,13 +2977,18 @@ Bridge.assembly("Core", function ($asm, globals) {
                     $asyncBody();
                     return $tcs.task;
                 },
+                MapToCom: function (raw) {
+                    var com = Core.Extensions.BridgeExt.CastProp(Core.Models.Component, raw);
+                    com.FieldText = Bridge.as(raw.FieldText, System.String);
+                    return com;
+                },
                 MapToFilterOperator: function (com, searchTerm) {
                     if (Core.Extensions.StringExt.IsNullOrWhiteSpace(searchTerm) || !com.HasFilter || Core.Extensions.StringExt.IsNullOrEmpty(com.FieldName)) {
                         return "";
                     }
 
                     searchTerm = searchTerm.trim();
-                    var fieldName = Bridge.referenceEquals(com.ComponentType, "SearchEntry") ? com.TextField : com.FieldName;
+                    var fieldName = Bridge.referenceEquals(com.ComponentType, "SearchEntry") ? com.FieldText : com.FieldName;
                     if (Core.Extensions.StringExt.IsNullOrWhiteSpace(fieldName)) {
                         return "";
                     }
@@ -3225,7 +3230,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 return Core.Extensions.BridgeExt.CastProp(Core.Models.ComponentGroup, x);
                             }).toList(Core.Models.ComponentGroup);
                         var components = System.Linq.Enumerable.from(ds[System.Array.index(3, ds)], System.Object).select(function (x) {
-                                return Core.Extensions.BridgeExt.CastProp(Core.Models.Component, x);
+                                return Core.Components.Extensions.ComponentExt.MapToCom(x);
                             }).toList(Core.Models.Component);
                         if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.FeaturePolicy, policies) || Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.ComponentGroup, groups) || Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.Component, components)) {
                             tcs.trySetResult(null);
@@ -8608,7 +8613,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             AutoFit: false,
             DisplayNone: false,
             Signed: null,
-            TextField: null,
+            FieldText: null,
             OrderBy: null,
             TextAlignEnum: null,
             IsPivot: false,
@@ -12582,7 +12587,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.AddChild(editor);
             },
             CoppyComponent: function (arg) {
-                var component = Core.Extensions.BridgeExt.CastProp(Core.Models.Component, arg);
+                var component = Core.Components.Extensions.ComponentExt.MapToCom(arg);
                 this._componentCoppy = component;
             },
             PasteComponent: function (arg) {
@@ -21944,9 +21949,9 @@ Bridge.assembly("Core", function ($asm, globals) {
             OriginalText: null
         },
         props: {
-            TextField: {
+            FieldText: {
                 get: function () {
-                    return this.GuiInfo.TextField;
+                    return this.GuiInfo.FieldText;
                 }
             },
             Value: {
@@ -22579,9 +22584,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.PopulateFields(this.Matched);
             },
             SetMatchedValue: function () {
-                this.OriginalText = Bridge.as(Core.Extensions.Utils.GetPropValue(this.Entity, this.TextField), System.String);
+                this.OriginalText = Bridge.as(Core.Extensions.Utils.GetPropValue(this.Entity, this.FieldText), System.String);
                 this._input.value = this.EmptyRow ? "" : this.GetMatchedText(this.Matched);
-                Core.Extensions.BridgeExt.SetPropValue(this.Entity, this.GuiInfo.TextField, this._input.value);
+                Core.Extensions.BridgeExt.SetPropValue(this.Entity, this.GuiInfo.FieldText, this._input.value);
                 this.UpdateValue();
             },
             GetEntityField: function (field) {
@@ -22603,7 +22608,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         return _o1;
                     })(new (System.Collections.Generic.List$1(Core.ViewModels.PatchUpdateDetail)).ctor());
                 if (this.GuiInfo.ShouldSaveText) {
-                    res.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Label = (this.Label || "") + "(text)", $t.Field = this.GuiInfo.TextField, $t.Value = this._input.value, $t.OldVal = this.OriginalText, $t.JustHistory = !this.GuiInfo.ShouldSaveText, $t));
+                    res.add(($t = new Core.ViewModels.PatchUpdateDetail(), $t.Label = (this.Label || "") + "(text)", $t.Field = this.GuiInfo.FieldText, $t.Value = this._input.value, $t.OldVal = this.OriginalText, $t.JustHistory = !this.GuiInfo.ShouldSaveText, $t));
                 }
                 return res.ToArray();
             },
@@ -22612,7 +22617,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (matched == null && this.Entity == null) {
                     return "";
                 }
-                var res = ($t = Core.Extensions.Utils.GetPropValue(matched, this.GuiInfo.FormatData), $t != null ? $t : Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.TextField));
+                var res = ($t = Core.Extensions.Utils.GetPropValue(matched, this.GuiInfo.FormatData), $t != null ? $t : Core.Extensions.Utils.GetPropValue(this.Entity, this.GuiInfo.FieldText));
                 return Core.Extensions.Utils.DecodeSpecialChar((Bridge.as(res, System.String)));
             },
             EntrySelected: function (rowData) {
@@ -22696,7 +22701,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.UpdateValue();
                     return;
                 }
-                var txt = Bridge.as(this.Entity[this.GuiInfo.TextField], System.String);
+                var txt = Bridge.as(this.Entity[this.GuiInfo.FieldText], System.String);
                 this._input.value = txt;
                 this.ProcessLocalMatch();
             },
@@ -26950,7 +26955,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }, null);
                 Core.Extensions.HtmlElementExtension.RemoveClass(th.Element, "desc");
                 Core.Extensions.HtmlElementExtension.RemoveClass(th.Element, "asc");
-                var fieldName = Bridge.referenceEquals(com.ComponentType, "SearchEntry") ? com.GuiInfo.TextField : com.FieldName;
+                var fieldName = Bridge.referenceEquals(com.ComponentType, "SearchEntry") ? com.GuiInfo.FieldText : com.FieldName;
                 var sort = ($t = new Core.Models.OrderBy(), $t.FieldName = fieldName, $t.OrderbyDirectionId = Core.Enums.OrderbyDirection.ASC, $t.ComId = com.GuiInfo.Id, $t);
                 if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.OrderBy, this.AdvSearchVM.OrderBy)) {
                     this.AdvSearchVM.OrderBy = function (_o1) {
@@ -28104,7 +28109,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var $t, $t1, $t2;
                 var total = ds.length > 1 && ds[System.Array.index(1, ds)].length > 0 ? Bridge.cast(Bridge.unbox(($t = ds[System.Array.index(1, ds)])[System.Array.index(0, $t)].total, System.Int32), System.Int32, true) : null;
                 var headers = ds.length > 2 ? System.Linq.Enumerable.from(ds[System.Array.index(2, ds)], System.Object).select(function (x) {
-                        return Core.Extensions.BridgeExt.CastProp(Core.Models.Component, x);
+                        return Core.Components.Extensions.ComponentExt.MapToCom(x);
                     }).toList(Core.Models.Component) : null;
                 var userSetting = ds.length > 3 && ds[System.Array.index(3, ds)].length > 0 ? Bridge.unbox(($t1 = ds[System.Array.index(3, ds)])[System.Array.index(0, $t1)]) : null;
                 this.FilterColumns(this.MergeComponent(headers, userSetting));
@@ -33751,7 +33756,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     sql.FieldName = System.Linq.Enumerable.from(this._headers, Core.Models.Component).where(function (x) {
                             return x.IsExport;
                         }).select(function (x) {
-                        return Core.Extensions.StringExt.IsNullOrWhiteSpace(x.TextField) ? x.FieldName : x.TextField;
+                        return Core.Extensions.StringExt.IsNullOrWhiteSpace(x.FieldText) ? x.FieldName : x.FieldText;
                     }).ToArray(System.String);
                     sql.Select = Core.Extensions.IEnumerableExtensions.HasElement(System.String, sql.FieldName) ? Core.Extensions.IEnumerableExtensions.Combine(System.String, sql.FieldName) : null;
                 }

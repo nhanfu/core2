@@ -135,6 +135,13 @@ namespace Core.Components.Extensions
             await InvokeEventAsync(com, events, eventTypeName, parameters);
         }
 
+        public static Component MapToCom(this object raw)
+        {
+            var com = raw.CastProp<Component>();
+            com.FieldText = raw["FieldText"] as string;
+            return com;
+        }
+
         public static string MapToFilterOperator(this Component com, string searchTerm)
         {
             if (searchTerm.IsNullOrWhiteSpace() || !com.HasFilter || com.FieldName.IsNullOrEmpty())
@@ -143,7 +150,7 @@ namespace Core.Components.Extensions
             }
 
             searchTerm = searchTerm.Trim();
-            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.TextField : com.FieldName;
+            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.FieldText : com.FieldName;
             if (fieldName.IsNullOrWhiteSpace()) return string.Empty;
             if (com.ComponentType == "Datepicker")
             {
@@ -262,8 +269,10 @@ namespace Core.Components.Extensions
                 return tcs.Task;
             }
 #endif
-            var featureTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper {
-                Value = JSON.Stringify(new SqlViewModel {
+            var featureTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+            {
+                Value = JSON.Stringify(new SqlViewModel
+                {
                     ComId = "Feature",
                     Action = "GetByName",
                     Entity = JSON.Stringify(new { Name = featureName })
@@ -272,20 +281,24 @@ namespace Core.Components.Extensions
                 IsRawString = true,
                 Method = HttpMethod.POST
             });
-            Client.ExecTask(featureTask, ds => {
-                if (ds.Nothing() || ds[0].Nothing()) {
+            Client.ExecTask(featureTask, ds =>
+            {
+                if (ds.Nothing() || ds[0].Nothing())
+                {
                     tcs.TrySetResult(null);
                 }
                 var feature = ds[0][0].CastProp<Feature>();
                 var policies = ds[1].Select(x => x.CastProp<FeaturePolicy>()).ToList();
                 var groups = ds[2].Select(x => x.CastProp<ComponentGroup>()).ToList();
-                var components = ds[3].Select(x => x.CastProp<Component>()).ToList();
-                if (policies.Nothing() || groups.Nothing() || components.Nothing()) {
+                var components = ds[3].Select(x => x.MapToCom()).ToList();
+                if (policies.Nothing() || groups.Nothing() || components.Nothing())
+                {
                     tcs.TrySetResult(null);
                     return;
                 }
                 var groupMap = groups.DistinctBy(x => x.Id).ToDictionary(x => x.Id);
-                components.ForEach(com => {
+                components.ForEach(com =>
+                {
                     var g = groupMap.GetValueOrDefault(com.ComponentGroupId);
                     g.Component.Add(com);
                 });
@@ -293,7 +306,7 @@ namespace Core.Components.Extensions
                 feature.FeaturePolicy = policies;
                 tcs.TrySetResult(feature);
             });
-            
+
             return tcs.Task;
         }
 

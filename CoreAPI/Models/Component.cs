@@ -244,7 +244,7 @@
         
         public string Signed { get; set; }
 
-        public string TextField { get; set; }
+        public string FieldText { get; set; }
         
         public string OrderBy { get; set; }
 

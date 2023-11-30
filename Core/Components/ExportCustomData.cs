@@ -363,7 +363,7 @@ namespace Core.Components
             {
                 sql.FieldName = _headers
                     .Where(x => x.IsExport)
-                    .Select(x => x.TextField.IsNullOrWhiteSpace() ? x.FieldName : x.TextField)
+                    .Select(x => x.FieldText.IsNullOrWhiteSpace() ? x.FieldName : x.FieldText)
                     .ToArray();
                 sql.Select = sql.FieldName.HasElement() ? sql.FieldName.Combine() : null;
             }

@@ -1053,7 +1053,7 @@ namespace Core.Components.Forms
 
         public void CoppyComponent(object arg)
         {
-            var component = arg.CastProp<Component>();
+            var component = arg.MapToCom();
             _componentCoppy = component;
         }
 
