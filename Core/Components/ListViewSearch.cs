@@ -240,7 +240,7 @@ namespace Core.Components
                     .Event(EventType.Click, AdvancedOptions).End
                 .Button(className: "btnSearch button secondary small btn-toolbar right", icon: "fa fa-undo")
                     .Title("Làm mới")
-                    .Event(EventType.Click, async () => await RefershListView()).End
+                    .Event(EventType.Click, RefershListView).End
                 .Button(className: "btn btn-secondary btn-sm", icon: "fal fa-compress-wide")
                     .Title("Phóng to")
                     .Event(EventType.Click, FullScreen).End
@@ -321,7 +321,7 @@ namespace Core.Components
                 return;
             }
 
-            Task.Run(ParentListView.ApplyFilter);
+            ParentListView.ApplyFilter().Done();
         }
 
         private async Task UploadCsv(Event e)
@@ -402,38 +402,10 @@ namespace Core.Components
             ParentListView.ActionFilter();
         }
 
-        private void LiteGridView(object arg)
-        {
-            var show = LocalStorage.GetItem<bool?>("Show" + GuiInfo.Id) is null ? false : LocalStorage.GetItem<bool?>("Show" + GuiInfo.Id);
-            LocalStorage.SetItem<bool?>("Show" + GuiInfo.Id, !show.Value);
-            Window.Location.Reload();
-        }
-
         private void ExportCustomData(object arg)
         {
             var task = TabEditor.OpenPopup("Export CustomData", () => Exporter);
             Client.ExecTaskNoResult(task);
-        }
-
-        private void ShowHidden(Event e)
-        {
-            var buttonRect = e.Target.As<HTMLElement>().GetBoundingClientRect();
-            var ctxMenu = ContextMenu.Instance;
-            ctxMenu.Top = buttonRect.Bottom;
-            ctxMenu.Left = buttonRect.Left;
-            ctxMenu.MenuItems = new List<ContextMenuItem>
-            {
-                    new ContextMenuItem { Icon = "fa fa-cloud-upload-alt", Text = "Nhập excel", Click = OpenExcelFileDialog },
-                    new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất hiển thị", Click = ExportDisplay },
-                    new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất toàn bộ", Click = ExportAllData },
-                    new ContextMenuItem { Icon = "fa fa-download", Text = "Xuất tùy chọn", Click = ExportAllData },
-            };
-            ctxMenu.Render();
-            Html.Take(Element).Form.Attr("method", "POST").Attr("enctype", "multipart/form-data")
-                .Display(false).Input.Type("file").Id($"id_{GetHashCode()}").Attr("name", "files").Attr("accept", ".csv");
-            _uploader = Html.Context as HTMLInputElement;
-            _uploader.AddEventListener(EventType.Change.ToString(), async (ev) => await UploadCsv(ev));
-            ctxMenu.Element.Children.FirstOrDefault()?.AppendChild(_uploader.ParentElement);
         }
 
         public void AdvancedSearch(object arg)
@@ -477,62 +449,6 @@ namespace Core.Components
                 return;
             }
             Exporter.Export(selectedIds: ParentListView.SelectedIds.ToArray());
-        }
-
-        private void ExportDisplay(object arg)
-        {
-            Task.Run(async () => await ExportData(paging: true));
-        }
-
-        private async Task ExportData(bool paging)
-        {
-            var url = ParentListView.CalcFilterQuery();
-            var options = ParentListView.Paginator.Options;
-            if (paging)
-            {
-                url += $"&$skip={options.PageIndex * options.PageSize}&$top={options.PageSize}";
-            }
-            Spinner.AppendTo(ParentElement, autoHide: true);
-            var localData = await new Client(GuiInfo.Reference.Name).GetList<object>(url);
-            var copyHeaders = ParentListView.Header
-                .Where(x => x.ComponentType != nameof(Button))
-                .Select(x =>
-                {
-                    var header = new Component();
-                    header.CopyPropFrom(x);
-                    header.Editable = false;
-                    if (x.ComponentType == nameof(Checkbox))
-                    {
-                        header.SimpleText = true;
-                    }
-                    header.ComponentType = "Label";
-                    return header;
-                }).ToList();
-            var copyGui = new Component();
-            copyGui.CopyPropFrom(ParentListView.GuiInfo);
-            copyGui.CanSearch = false;
-            copyGui.LocalData = localData.Value;
-            copyGui.LocalHeader = copyHeaders;
-            var copyListView = new GridView(copyGui) { ParentElement = ParentListView.ParentElement };
-            ParentListView.Parent.AddChild(copyListView);
-            copyListView.Element.Style.Display = Display.None;
-            copyListView.DOMContentLoaded += () =>
-            {
-                copyListView.Element.QuerySelector("table").QuerySelectorAll("td").SelectForeach(x =>
-                {
-                    /*@
-                     x.style="border:1px solid;white-space: nowrap;font-family: 'times new roman', times, serif;";
-                     */
-                });
-                copyListView.Element.QuerySelector("table").QuerySelectorAll("th").SelectForeach(x =>
-                {
-                    /*@
-                     x.style="border:1px solid;white-space: nowrap;font-family: 'times new roman', times, serif;";
-                     */
-                });
-                ExcelExt.ExportTableToExcel(null, FieldName ?? "Export", copyListView.Element.QuerySelector("table") as HTMLElement);
-                copyListView.Dispose();
-            };
         }
 
         private void OpenExcelFileDialog(object arg)
@@ -622,7 +538,7 @@ namespace Core.Components
             return finalFilter;
         }
 
-        public async Task RefershListView()
+        public void RefershListView()
         {
             EntityVM.SearchTerm = string.Empty;
             EntityVM.StartDate = null;
@@ -637,7 +553,7 @@ namespace Core.Components
             listView.CellSelected.Clear();
             listView.AdvSearchVM.Conditions.Clear();
             listView.Wheres.Clear();
-            await listView.ApplyFilter();
+            listView.ApplyFilter().Done();
         }
 
         public override bool Disabled { get => false; set => _disabled = false; }

@@ -161,14 +161,16 @@ namespace Core.Components.Framework
             var tcs = new TaskCompletionSource<bool>();
             login.RecoveryToken = Utils.GetUrlParam("recovery");
             var urlParts = Window.Location.PathName.Split("/");
-            login.CompanyName = login.CompanyName ?? Utils.Doc.head.children.tenant.content ?? "System";
-            login.Env = Utils.Doc.head.children.env.content ?? "test";
+            login.CompanyName = urlParts.Length > 1 ? urlParts[0] : Client.Tenant;
+            login.UserName = urlParts.Length > 1 ? urlParts[1] : login.UserName;
+            login.Env = Client.Env;
             Client.Instance.SubmitAsync<Token>(new XHRWrapper
             {
                 Url = $"/{login.CompanyName}/User/SignIn",
                 Value = JSON.Stringify(login),
                 IsRawString = true,
-                Method = HttpMethod.POST
+                Method = HttpMethod.POST,
+                AllowAnonymous = true
             }).Done(res => {
                 if (res == null)
                 {

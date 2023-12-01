@@ -6,6 +6,7 @@ using Core.MVVM;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.ViewModels;
 
 namespace Core.Components
 {
@@ -59,29 +60,36 @@ namespace Core.Components
 
         private async Task RenderRow(IEnumerable<Component> headers, EditableComponent node, object row, HTMLElement ul)
         {
-            var data = await new Client(GuiInfo.RefName).GetList<object>($"?$filter=ParentId eq '{row.GetPropValue(IdField)}'");
-            var datas = data.Value;
-            var count = datas.Count;
-            Html.Take(ul);
-            var rowSection = new ListViewItem(MVVM.ElementType.li)
+            var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var fn);
+            var data = await Client.Instance.ComQuery(new SqlViewModel
             {
-                Entity = row,
-                ListViewSection = MainSection
-            };
-            node.AddChild(rowSection);
-            Html.Instance.Div.ClassName(count > 0 ? "has" : "").Render();
-            var label = Html.Context;
-            headers.SelectForeach(header =>
+                ComId = GuiInfo.Id,
+                Entity = isFn ? JSON.Stringify(fn.Call(null, this)) : null
+            }).Done(ds =>
             {
-                var com = header;
-                Html.Take(label).P.Render();
-                rowSection.RenderTableCell(row, com);
-                Html.Take(label).EndOf(MVVM.ElementType.p);
+                var datas = ds.Length > 0 ? ds[0].ToList() : null;
+                var count = ds.Length > 1 && ds[1].Length > 0 ? (int)(ds[1] as dynamic).total : 0;
+                Html.Take(ul);
+                var rowSection = new ListViewItem(MVVM.ElementType.li)
+                {
+                    Entity = row,
+                    ListViewSection = MainSection
+                };
+                node.AddChild(rowSection);
+                Html.Instance.Div.ClassName(count > 0 ? "has" : "").Render();
+                var label = Html.Context;
+                headers.SelectForeach(header =>
+                {
+                    var com = header;
+                    Html.Take(label).P.Render();
+                    rowSection.RenderTableCell(row, com);
+                    Html.Take(label).EndOf(MVVM.ElementType.p);
+                });
+                if (count > 0)
+                {
+                    rowSection.Element.AddEventListener(EventType.Click, () => FocusIn(rowSection, row, datas));
+                }
             });
-            if (count > 0)
-            {
-                rowSection.Element.AddEventListener(EventType.Click, () => FocusIn(rowSection, row, datas));
-            }
         }
 
         private void FocusIn(ListViewItem listViewItem, object row, List<object> datas)

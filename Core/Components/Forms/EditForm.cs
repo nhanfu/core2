@@ -187,7 +187,7 @@ namespace Core.Components.Forms
             return res;
         }
 
-        public PatchUpdate GetPatchEntity()
+        public PatchVM GetPatchEntity()
         {
             var shouldGetAll = EntityId is null;
             var details = FilterChildren(child => { 
@@ -198,23 +198,23 @@ namespace Core.Components.Forms
             .DistinctBy(x => x.GuiInfo.Id)
             .SelectMany(child =>
             {
-                if (child[nameof(PatchUpdateDetail)] is Func<PatchUpdateDetail[]> fn)
+                if (child[nameof(PatchDetail)] is Func<PatchDetail[]> fn)
                 {
-                    return fn.Call(child) as PatchUpdateDetail[];
+                    return fn.Call(child) as PatchDetail[];
                 }
                 var value = Utils.GetPropValue(child.Entity, child.FieldName);
                 var propType = child.Entity.GetType().GetComplexPropType(child.FieldName, child.Entity);
-                var patch = new PatchUpdateDetail
+                var patch = new PatchDetail
                 {
                     Label = child.Label,
                     Field = child.FieldName,
                     OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
                     Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
                 };
-                return new PatchUpdateDetail[] { patch };
+                return new PatchDetail[] { patch };
             }).ToList();
             AddIdToPatch(details);
-            return new PatchUpdate { Changes = details, Table = Feature.EntityName };
+            return new PatchVM { Changes = details, Table = Feature.EntityName };
         }
 
         public virtual async Task<bool> SavePatch(object entity = null)
@@ -574,8 +574,8 @@ namespace Core.Components.Forms
         {
             var featureTask = Feature != null ? Task.FromResult(Feature) : ComponentExt.LoadFeatureByName(Name, Public, Config);
             var entityTask = LoadEntity();
-            Client.ExecTaskNoResult(Task.WhenAll(featureTask, entityTask),
-                () => FeatureLoaded(featureTask.Result, entityTask.Result, callback));
+            Task.WhenAll(featureTask, entityTask).Done(() => 
+                FeatureLoaded(featureTask.Result, entityTask.Result, callback));
         }
 
         private void FeatureLoaded(Feature feature, object entity, Action loadedCallback = null)
@@ -587,7 +587,7 @@ namespace Core.Components.Forms
             }
             var layoutTask = new Client(nameof(Models.Feature), typeof(User).Namespace, Config).FirstOrDefaultAsync<Feature>(
                 $"/Public/?$filter=Active eq true and Id eq '{feature.LayoutId}' and {nameof(feature.Template)} ne null");
-            Client.ExecTask(layoutTask, layout =>
+            layoutTask.Done(layout =>
             {
                 LayoutLoaded(feature, entity, layout, loadedCallback);
             });

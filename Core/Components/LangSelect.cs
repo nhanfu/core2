@@ -123,13 +123,12 @@ namespace Core.Components
 
         public static Task<bool> Translate(bool annonymous = true)
         {
-            var tenant = Utils.Doc.head.children.tenant.content;
             var tcs = new TaskCompletionSource<bool>();
             var vm = new SqlViewModel
             {
                 ComId = "Dictionary",
                 Action = "GetAll",
-                AnnonymousTenant = tenant
+                AnnonymousTenant = Client.Tenant
             };
             var dictionaryTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {

@@ -31,18 +31,10 @@ namespace Core.Clients
         private static Dictionary<string, Entity> entities;
         private static Token token;
         public static int GuidLength = 36;
-        public static string Tenant => Document.Head.Children.Where(x => x is HTMLMetaElement).Cast<HTMLMetaElement>().FirstOrDefault(x =>
-        {
-            return x is HTMLMetaElement meta && meta.Name == "tenant";
-        })?.Content;
-        public static string FileFTP => Document.Head.Children.Where(x => x is HTMLMetaElement).Cast<HTMLMetaElement>().FirstOrDefault(x =>
-        {
-            return x is HTMLMetaElement meta && meta.Name == "file";
-        })?.Content;
-        public static string Config => Document.Head.Children.Where(x => x is HTMLMetaElement).Cast<HTMLMetaElement>().FirstOrDefault(x =>
-        {
-            return x is HTMLMetaElement meta && meta.Name == "config";
-        })?.Content;
+        public static string Tenant = Utils.HeadChildren.tenant.content as string ?? "System";
+        public static string Env = Utils.HeadChildren.env.content as string ?? "test";
+        public static string FileFTP => Utils.HeadChildren.file.content as string ?? "/user";
+        public static string Config => Utils.HeadChildren.config.content as string ?? string.Empty;
         public static BadGatewayQueue BadGatewayRequest = new BadGatewayQueue();
         public static Action<XHRWrapper> UnAuthorizedEventHandler;
         public static Action SignOutEventHandler;
@@ -180,88 +172,6 @@ namespace Core.Clients
                 tcs.TrySetResult(res);
             }, e => tcs.TrySetException(e));
             return tcs.Task;
-        }
-
-        public Task<T> Fetch<T>(XHRWrapper options)
-        {
-            var tcs = new TaskCompletionSource<T>();
-            FetchWrapper(options, (x) =>
-            {
-                tcs.TrySetResult((T)x);
-            }, (x) =>
-            {
-                tcs.TrySetException(new Exception(x.ResponseText));
-            });
-            return tcs.Task;
-        }
-
-        private static void FetchWrapper(XHRWrapper options, Action<object> success, Action<XMLHttpRequest> error)
-        {
-            var isNotFormData = options.FormData is null;
-            var xhr = new XMLHttpRequest();
-            if (options.Headers is null && options.FormData is null)
-            {
-                options.Headers = new Dictionary<string, string>
-                {
-                    { "content-type", "application/json" }
-                };
-            }
-            if (options.Url.HasAnyChar() && options.Url[0] == '/')
-            {
-                options.Url = options.Url.Substring(1);
-            }
-
-            if (options.FinalUrl is null)
-            {
-                var url = options.Url;
-                var tenant = Utils.GetUrlParam(Utils.TenantField);
-                if (tenant.IsNullOrEmpty())
-                {
-                    tenant = Tenant;
-                }
-                if (Utils.GetUrlParam(Utils.TenantField, options.Url).IsNullOrWhiteSpace() && Token is null && options.AddTenant)
-                {
-                    var tenantQuery = "t=" + (tenant ?? "wr1");
-                    url += url.Contains(Utils.QuestionMark) ? "&" + tenantQuery : (Utils.QuestionMark + tenantQuery);
-                }
-                options.FinalUrl = Window.EncodeURI(PathIO.Combine(options.Prefix ?? Prefix, options.EntityName, url));
-            }
-            xhr.Open(options.Method.ToString(), options.FinalUrl, true);
-            options.Headers.SelectForeach(x => xhr.SetRequestHeader(x.Key, x.Value));
-            if (!options.AllowAnonymous)
-            {
-                xhr.SetRequestHeader(Utils.Authorization, "Bearer " + Token?.AccessToken);
-            }
-
-            xhr.OnReadyStateChange += () =>
-            {
-                if (xhr.ReadyState != AjaxReadyState.Done)
-                {
-                    return;
-                }
-
-                if (xhr.Status >= (int)HttpStatusCode.OK && xhr.Status < (int)HttpStatusCode.MultipleChoices)
-                {
-                    var json = JSON.Parse(xhr.ResponseText);
-                    success.Call(null, json, xhr);
-                }
-                else
-                {
-                    error.Call(null, xhr);
-                }
-            };
-            if (options.ProgressHandler != null)
-            {
-                xhr.AddEventListener(EventType.Progress, options.ProgressHandler);
-            }
-            if (isNotFormData)
-            {
-                xhr.Send(options.JsonData);
-            }
-            else
-            {
-                xhr.Send(options.FormData);
-            }
         }
 
         private Task<T> SubmitAsyncWithToken<T>(XHRWrapper options)
@@ -446,37 +356,6 @@ namespace Core.Clients
                     tcs.TrySetResult(Convert.ChangeType(jsonT, typeof(T)).As<T>());
                 }
             }
-        }
-
-        public async Task<OdataResult<T>> GetList<T>(string filter = null, bool clearCache = false) where T : class
-        {
-            var headers = ClearCacheHeader(clearCache);
-            var xhr = new XHRWrapper
-            {
-                Value = null,
-                Url = filter,
-                Headers = headers,
-                Method = HttpMethod.GET
-            };
-
-            if (typeof(T) != typeof(object))
-            {
-                var type = typeof(T);
-                EntityName = type?.Name;
-                return await SubmitAsync<OdataResult<T>>(xhr);
-            }
-            var refType = Type.GetType(NameSpace + EntityName);
-            if (refType == null)
-            {
-                return await SubmitAsync<OdataResult<object>>(xhr).As<Task<OdataResult<T>>>();
-            }
-            var request = GetType().GetMethods().FirstOrDefault(x => x.Name == nameof(GetList) && x.IsGenericMethodDefinition);
-            if (request is null)
-            {
-                return new OdataResult<T>();
-            }
-
-            return await request.MakeGenericMethod(refType).Invoke(this, filter, clearCache).As<Task<OdataResult<T>>>();
         }
 
         public async Task<List<T>> GetRawList<T>(string filter = null, bool clearCache = false, bool addTenant = false, bool annonymous = false, string entityName = null) where T : class
@@ -675,7 +554,7 @@ namespace Core.Clients
             });
         }
 
-        public Task<bool> PatchAsync(PatchUpdate value, Action<XMLHttpRequest> errHandler = null, bool annonymous = false)
+        public Task<bool> PatchAsync(PatchVM value, Action<XMLHttpRequest> errHandler = null, bool annonymous = false)
         {
             return SubmitAsync<bool>(new XHRWrapper
             {

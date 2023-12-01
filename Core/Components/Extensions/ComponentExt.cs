@@ -310,28 +310,6 @@ namespace Core.Components.Extensions
             return tcs.Task;
         }
 
-        public static async Task<Feature> LoadFeatureByNameOrViewClass(string nameOrViewClass)
-        {
-            var exists = FeatureMap.Values.FirstOrDefault(x => x.ViewClass == nameOrViewClass);
-            if (exists != null)
-            {
-                return exists;
-            }
-            var featureTask = new Client(nameof(Feature), typeof(User).Namespace).FirstOrDefaultAsync<Feature>(
-                $"?$expand=Entity($select=Name)&$filter=Active eq true and (Name eq '{nameOrViewClass}' or ViewClass eq '{nameOrViewClass}')");
-            var policyTask = new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
-                $"?$filter=Active eq true and (Feature/Name eq '{nameOrViewClass}' or Feature/ViewClass eq '{nameOrViewClass}')");
-            var componentGroupTask = new Client(nameof(ComponentGroup), typeof(User).Namespace).GetRawList<ComponentGroup>(
-                $"?$expand=Component($filter=Active eq true;$expand=Reference($select=Id,Name,Namespace))" +
-                $"&$filter=Active eq true and (Feature/Name eq '{nameOrViewClass}' or Feature/ViewClass eq '{nameOrViewClass}')");
-            await Task.WhenAll(featureTask, policyTask, componentGroupTask);
-            var feature = featureTask.Result;
-            feature.FeaturePolicy = policyTask.Result;
-            feature.ComponentGroup = componentGroupTask.Result;
-            FeatureMap.TryAdd(feature.Name, feature);
-            return feature;
-        }
-
         public static async Task<List<FeaturePolicy>> LoadRecordPolicy(string[] ids, string entity)
         {
             if (ids.Nothing() || ids.All(x => x == null))

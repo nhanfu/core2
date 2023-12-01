@@ -381,8 +381,10 @@ namespace Core.Controllers
         }
 
         [HttpPost("api/[Controller]/Image")]
-        public async Task<string> PostImageAsync([FromServices] IWebHostEnvironment host, [FromBody] string image, string name = "Captured", bool reup = false)
+        public async Task<string> PostImageAsync([FromServices] IWebHostEnvironment host,
+            [FromQuery] string name = "Captured", [FromQuery] bool reup = false)
         {
+            var image = await Utils.ReadRequestBodyAsync(Request, leaveOpen: false);
             var fileName = $"{Path.GetFileNameWithoutExtension(name)}{Path.GetExtension(name)}";
             var path = GetUploadPath(fileName, host.WebRootPath);
             EnsureDirectoryExist(path);

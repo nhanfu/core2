@@ -572,7 +572,7 @@ namespace Core.Components
             TriggerSearch(null);
         }
 
-        public virtual void FindMatchText(int delay = 0) => ProcessLocalMatch();
+        public virtual void FindMatchText() => ProcessLocalMatch();
 
         protected virtual bool ProcessLocalMatch()
         {
@@ -617,11 +617,11 @@ namespace Core.Components
             }
         }
 
-        public PatchUpdateDetail[] PatchUpdateDetail()
+        public PatchDetail[] PatchUpdateDetail()
         {
-            var res = new List<PatchUpdateDetail>
+            var res = new List<PatchDetail>
             {
-                new PatchUpdateDetail
+                new PatchDetail
                 {
                     Label = Label + "(value)",
                     Field = FieldName,
@@ -631,7 +631,7 @@ namespace Core.Components
             };
             if (GuiInfo.ShouldSaveText)
             {
-                res.Add(new PatchUpdateDetail
+                res.Add(new PatchDetail
                 {
                     Label = Label + "(text)",
                     Field = GuiInfo.FieldText,

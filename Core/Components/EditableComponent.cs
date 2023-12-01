@@ -881,13 +881,13 @@ namespace Core.Components
             return Element.TextContent;
         }
 
-        protected void AddIdToPatch(List<PatchUpdateDetail> details)
+        protected void AddIdToPatch(List<PatchDetail> details)
         {
             var idField = details.FirstOrDefault(x => x.Field == IdField);
             if (idField != null) details.Remove(idField);
             if (EntityId is null)
             {
-                details.Add(new PatchUpdateDetail
+                details.Add(new PatchDetail
                 {
                     Field = Utils.IdField,
                     Value = System.Id.NewGuid()
@@ -895,7 +895,7 @@ namespace Core.Components
             }
             else
             {
-                details.Add(new PatchUpdateDetail
+                details.Add(new PatchDetail
                 {
                     Field = Utils.IdField,
                     Value = EntityId,

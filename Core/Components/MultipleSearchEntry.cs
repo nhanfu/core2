@@ -4,6 +4,7 @@ using Core.Components.Extensions;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -122,7 +123,7 @@ namespace Core.Components
 
         public List<object> MatchedItems { get; set; } = new List<object>();
 
-        public override void FindMatchText(int delay = 250)
+        public override void FindMatchText()
         {
             if (EmptyRow || ProcessLocalMatch())
             {
@@ -135,25 +136,12 @@ namespace Core.Components
                 SetMatchedValue();
                 return;
             }
-            Task.Run(async () =>
+            Client.Instance.ComQuery(new SqlViewModel
             {
-                OdataResult<object> source;
-                var formatted = FormattedDataSource;
-                if (formatted.StartsWith("/"))
-                {
-                    formatted = OdataExt.ApplyClause(formatted, $"Id in ({values.Combine()})");
-                    source = await new Client(GuiInfo.RefName).GetList<object>(formatted);
-                }
-                else
-                {
-                    source = await new Client(GuiInfo.RefName).LoadById(values.Combine());
-                }
-                if (source is null || source.Value is null)
-                {
-                    return;
-                }
+                ComId = GuiInfo.Id,
 
-                MatchedItems = source.Value;
+            }).Done(ds => {
+                MatchedItems = ds.Length > 0 ? ds[0].ToList() : MatchedItems;
                 SetMatchedValue();
             });
         }
@@ -213,7 +201,7 @@ namespace Core.Components
             Html.Take(Element.ParentElement).Span.Attr("data-id", idAttr).InnerHTML(GetMatchedText(item));
             var tag = Html.Context;
             Element.ParentElement.InsertBefore(Html.Context, _input);
-            Html.Instance.Button.ClassName("fa fa-times").End.Event(EventType.Click, async () =>
+            Html.Instance.Button.ClassName("fa fa-times").End.Event(EventType.Click, () =>
             {
                 var oldList = ListValues.ToList();
                 MatchedItems.Remove(item);
@@ -225,12 +213,9 @@ namespace Core.Components
                 ListValues = ListValues;
                 Dirty = true;
                 FindMatchText();
-                if (UserInput != null)
-                {
-                    UserInput.Invoke(new ObservableArgs { NewData = ListValues, OldData = oldList, EvType = EventType.Change });
-                }
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, ListValues, oldList);
+                UserInput?.Invoke(new ObservableArgs { NewData = ListValues, OldData = oldList, EvType = EventType.Change });
                 tag.Remove();
+                this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, ListValues, oldList).Done();
             }).End.Render();
         }
 

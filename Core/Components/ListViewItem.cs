@@ -23,7 +23,7 @@ namespace Core.Components
         public const string FocusedClass = "focus";
         public const string HoveringClass = "hovering";
         public ListViewItem GroupSection { get; set; }
-        public PatchUpdate lastpathModel { get; set; }
+        public PatchVM lastpathModel { get; set; }
         public ListViewSection ListViewSection { get; internal set; }
         public ListView ListView { get; internal set; }
         public Function PreQueryFn { get; set; }
@@ -173,7 +173,7 @@ namespace Core.Components
             Dirty = (!id.HasValue || id <= 0) && !emptyRow;
         }
 
-        public List<PatchUpdateDetail> PatchModel = new List<PatchUpdateDetail>();
+        public List<PatchDetail> PatchModel = new List<PatchDetail>();
 
         private bool CanDo(IEnumerable<FeaturePolicy> gridPolicies, Func<FeaturePolicy, bool> permissionPredicate)
         {
@@ -282,7 +282,7 @@ namespace Core.Components
             });
         }
 
-        private void PatchUpdateCb(bool success, PatchUpdate patchModel)
+        private void PatchUpdateCb(bool success, PatchVM patchModel)
         {
             if (!success)
             {
@@ -297,31 +297,31 @@ namespace Core.Components
             Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this));
         }
 
-        public PatchUpdate GetPatchEntity()
+        public PatchVM GetPatchEntity()
         {
             var shouldGetAll = EntityId is null;
             var dirtyPatch = Children
                 .Where(child => child is EditableComponent editable && (shouldGetAll || editable.Dirty))
                 .SelectMany(child =>
                 {
-                    if (child[nameof(PatchUpdateDetail)] is Func<PatchUpdateDetail[]> fn)
+                    if (child[nameof(PatchDetail)] is Func<PatchDetail[]> fn)
                     {
-                        return fn.Call(child) as PatchUpdateDetail[];
+                        return fn.Call(child) as PatchDetail[];
                     }
                     var value = Utils.GetPropValue(child.Entity, child.FieldName);
                     var propType = child.Entity.GetType().GetComplexPropType(child.FieldName, child.Entity);
-                    var patch = new PatchUpdateDetail
+                    var patch = new PatchDetail
                     {
                         Label = child.Label,
                         Field = child.FieldName,
                         OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
                         Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
                     };
-                    return new PatchUpdateDetail[] { patch };
+                    return new PatchDetail[] { patch };
                 }).ToList();
             AddIdToPatch(dirtyPatch);
             PatchModel.AddRange(dirtyPatch);
-            return new PatchUpdate
+            return new PatchVM
             {
                 Changes = dirtyPatch,
                 Table = ListView.GuiInfo.RefName,

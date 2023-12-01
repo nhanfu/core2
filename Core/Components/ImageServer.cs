@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using PathIO = System.IO.Path;
+using Core.ViewModels;
 
 namespace Core.Components
 {
@@ -311,12 +312,18 @@ namespace Core.Components
                     .Button.Id("btn-upload").ClassName("btn btn-danger btn-md mr-1").I.ClassName("fa fa-trash mr-1").End.Text("Xóa ảnh đã chọn").End.End
                 .Div.ClassName(" list-group")
                     .Div.ClassName("row").Id("previewContainer");
-            var loadImageTask = new Client(nameof(Images)).GetList<Images>($"?$filter=Active eq true");
-            Client.ExecTask(loadImageTask, loadImage =>
+            
+            var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var fn);
+            var loadImageTask = Client.Instance.ComQuery(new SqlViewModel {
+                ComId = GuiInfo.Id,
+                Entity = isFn ? JSON.Stringify(fn.Call(null, this)) : null
+            })
+            .Done(ds =>
             {
-                if (loadImage.Value != null)
+                var images = ds.Length > 0 ? ds[0].As<Images[]>() : null;
+                if (images.HasElement())
                 {
-                    RenderListImage(loadImage.Value.ToArray());
+                    RenderListImage(images);
                 }
             });
         }

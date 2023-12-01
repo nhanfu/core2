@@ -1147,7 +1147,7 @@ namespace Core.Components
             {
                 if (force)
                 {
-                    Task.Run(async () => await ListViewSearch.RefershListView());
+                    ListViewSearch.RefershListView();
                 }
             }
             else
@@ -1659,7 +1659,7 @@ namespace Core.Components
         public Task<bool> UpdateSetting(UserSetting setting, string prefix, string value)
         {
             var tcs = new TaskCompletionSource<bool>();
-            PatchUpdate patch;
+            PatchVM patch;
             if (setting is null)
             {
                 patch = CreateSettingPatch(prefix, System.Id.NewGuid(), value);
@@ -1676,19 +1676,19 @@ namespace Core.Components
             return tcs.Task;
         }
 
-        public PatchUpdate CreateSettingPatch(string prefix, string newId, string value, string oldId = null)
+        public PatchVM CreateSettingPatch(string prefix, string newId, string value, string oldId = null)
         {
-            var patch = new PatchUpdate
+            var patch = new PatchVM
             {
-                Changes = new List<PatchUpdateDetail> {
-                    new PatchUpdateDetail { Field = nameof(UserSetting.Name), Value = $"{prefix}-{GuiInfo.Id}" },
-                    new PatchUpdateDetail { Field = nameof(UserSetting.UserId), Value = Client.Token.UserId },
-                    new PatchUpdateDetail { Field = nameof(UserSetting.Value), Value = value },
+                Changes = new List<PatchDetail> {
+                    new PatchDetail { Field = nameof(UserSetting.Name), Value = $"{prefix}-{GuiInfo.Id}" },
+                    new PatchDetail { Field = nameof(UserSetting.UserId), Value = Client.Token.UserId },
+                    new PatchDetail { Field = nameof(UserSetting.Value), Value = value },
                 },
                 Table = nameof(UserSetting),
                 ConnKey = GuiInfo.ConnKey ?? Utils.DefaultConnKey
             };
-            patch.Changes.Add(new PatchUpdateDetail { Field = IdField, Value = newId, OldVal = oldId });
+            patch.Changes.Add(new PatchDetail { Field = IdField, Value = newId, OldVal = oldId });
             return patch;
         }
 

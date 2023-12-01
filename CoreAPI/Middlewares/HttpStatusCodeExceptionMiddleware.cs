@@ -22,16 +22,6 @@ namespace CoreAPI.Middlewares
             _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
         }
 
-        private static async Task<string> ReadRequestBodyAsync(HttpRequest request)
-        {
-            request.EnableBuffering();
-
-            using StreamReader reader = new(request.Body, leaveOpen: true);
-            var requestBody = await reader.ReadToEndAsync();
-            request.Body.Position = 0;
-            return requestBody;
-        }
-
         public async Task Invoke(HttpContext context)
         {
             try
@@ -89,7 +79,7 @@ namespace CoreAPI.Middlewares
         private async Task RunSideEffectContext(HttpContext context)
         {
             var request = context.Request;
-            var requestBody = await ReadRequestBodyAsync(request);
+            var requestBody = await Utils.ReadRequestBodyAsync(request, true, 0);
             if (!requestBody.IsNullOrWhiteSpace())
             {
                 using var scope = _serviceScopeFactory.CreateScope();

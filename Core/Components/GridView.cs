@@ -1549,7 +1549,7 @@ namespace Core.Components
             var rowSection = RenderRowData(Header, emptyRowData, EmptyRowSection, null, true);
             emptyRowData.ForEachProp((field, value) =>
             {
-                rowSection.PatchModel.Add(new PatchUpdateDetail
+                rowSection.PatchModel.Add(new PatchDetail
                 {
                     Field = field,
                     Value = value?.ToString()
@@ -2266,13 +2266,13 @@ namespace Core.Components
             _imeout = Window.SetTimeout(() =>
             {
                 var html = e.Target as HTMLElement;
-                var patchVM = new PatchUpdate
+                var patchVM = new PatchVM
                 {
                     Table = nameof(Component),
-                    Changes = new List<PatchUpdateDetail>
+                    Changes = new List<PatchDetail>
                     {
-                        new PatchUpdateDetail { Field = nameof(Component.Id), Value = header.Id, OldVal = header.Id },
-                        new PatchUpdateDetail { Field = nameof(Component.ShortDesc), Value = html.TextContent.Trim(), OldVal = header.ShortDesc },
+                        new PatchDetail { Field = nameof(Component.Id), Value = header.Id, OldVal = header.Id },
+                        new PatchDetail { Field = nameof(Component.ShortDesc), Value = html.TextContent.Trim(), OldVal = header.ShortDesc },
                     }
                 };
                 Client.Instance.PatchAsync(patchVM);
@@ -2658,7 +2658,7 @@ namespace Core.Components
                 if (force)
                 {
                     DisposeNoRecord();
-                    Task.Run(async () => await ListViewSearch.RefershListView());
+                    ListViewSearch.RefershListView();
                 }
             }
             else

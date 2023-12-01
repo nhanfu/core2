@@ -1,4 +1,5 @@
-﻿using Bridge.Html5;
+﻿using System.Net;
+using Bridge.Html5;
 using Core.Models;
 using Core.Clients;
 using Core.Components.Extensions;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PathIO = System.IO.Path;
 using Core.ViewModels;
+using System.Collections.Generic;
 
 namespace Core.Components
 {
@@ -375,17 +377,15 @@ namespace Core.Components
             });
         }
 
-        public async Task<string> UploadBase64Image(string base64Image, string fileName)
+        public Task<string> UploadBase64Image(string base64Image, string fileName)
         {
-            if (base64Image.Contains(PNGUrlPrefix))
+            return Client.Instance.SubmitAsync<string>(new XHRWrapper
             {
-                base64Image = base64Image.Substring(PNGUrlPrefix.Length);
-            }
-            else if (base64Image.Contains(JpegUrlPrefix))
-            {
-                base64Image = base64Image.Substring(JpegUrlPrefix.Length);
-            }
-            return await new Client(nameof(FileUpload)) { CustomPrefix = Client.FileFTP }.PostAsync<string>(base64Image, $"Image?name={fileName.DecodeSpecialChar()}&tanentcode={Client.Tenant}&userid={Client.Token.UserId}", allowNested: true);
+                Value = base64Image,
+                Url = $"/user/image/?name={fileName}",
+                IsRawString = true,
+                Method = Enums.HttpMethod.POST
+            });
         }
 
         public override bool Disabled

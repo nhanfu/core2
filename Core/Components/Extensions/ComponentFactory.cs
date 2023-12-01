@@ -43,13 +43,13 @@ namespace Core.Components.Extensions
                 case "Textarea":
                     childComponent = new Textbox(ui) { MultipleLine = true };
                     break;
-                case "Dropdown":
+                case nameof(SearchEntry):
                     childComponent = ui.Precision != null && ui.Precision >= 2 ? new MultipleSearchEntry(ui) : new SearchEntry(ui);
                     break;
                 case "Image":
                     childComponent = new ImageUploader(ui);
                     break;
-                case "GridView":
+                case nameof(GridView):
                     if (ui.GroupBy.IsNullOrWhiteSpace())
                     {
                         childComponent = new GridView(ui);

@@ -41,7 +41,7 @@ namespace Core.Components
         {
             CacheData.Clear();
             DataTable.ParentElement.ScrollTop = 0;
-            return ReloadData(cacheHeader: false);
+            return ReloadData(cacheHeader: true);
         }
 
         private Task<bool> PrepareCache(int skip = 0)

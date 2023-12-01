@@ -398,6 +398,16 @@ namespace Core.Extensions
             return null;
         }
 
+        public static async Task<string> ReadRequestBodyAsync(HttpRequest request, bool leaveOpen = true, int? resetPosition = null)
+        {
+            request.EnableBuffering();
+
+            using StreamReader reader = new(request.Body, leaveOpen: leaveOpen);
+            var requestBody = await reader.ReadToEndAsync();
+            if (resetPosition.HasValue) request.Body.Position = resetPosition.Value;
+            return requestBody;
+        }
+
         public static string GetMimeType(string extension)
         {
             if (extension == null)
