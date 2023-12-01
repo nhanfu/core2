@@ -711,23 +711,5 @@ namespace Core.Components.Extensions
             document.body.removeChild(a);
              */
         }
-
-        public static bool CheckValidity(this EditableComponent com, bool showMessage = true)
-        {
-            var invalidFields = com.GetInvalid();
-            if (invalidFields.Nothing())
-            {
-                return true;
-            }
-
-            if (showMessage)
-            {
-                invalidFields.SelectForeach(x => { x.Disabled = false; });
-                invalidFields.FirstOrDefault().Focus();
-                var message = string.Join("<br />", invalidFields.SelectMany(x => x.ValidationResult.Values));
-                Toast.Warning(message);
-            }
-            return false;
-        }
     }
 }

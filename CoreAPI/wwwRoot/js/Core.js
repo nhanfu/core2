@@ -3473,25 +3473,6 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                     // Remove anchor from body
                     document.body.removeChild(a);
-                },
-                CheckValidity: function (com, showMessage) {
-                    if (showMessage === void 0) { showMessage = true; }
-                    var invalidFields = com.GetInvalid();
-                    if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Components.EditableComponent, invalidFields)) {
-                        return true;
-                    }
-
-                    if (showMessage) {
-                        Core.Extensions.IEnumerableExtensions.SelectForeach(Core.Components.EditableComponent, invalidFields, function (x) {
-                            x.Disabled = false;
-                        });
-                        System.Linq.Enumerable.from(invalidFields, Core.Components.EditableComponent).firstOrDefault(null, null).Focus();
-                        var message = Bridge.toArray(System.Linq.Enumerable.from(invalidFields, Core.Components.EditableComponent).selectMany(function (x) {
-                                    return x.ValidationResult.Values;
-                                })).join("<br />");
-                        Core.Extensions.Toast.Warning(message);
-                    }
-                    return false;
                 }
             }
         }
@@ -6431,6 +6412,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 PatchSvc: null,
                 UserSvc: null,
                 ExportExcel: null,
+                FileSvc: null,
                 DefaultConnKey: null,
                 GOOGLE_MAP: null,
                 GOOGLE_MAP_PLACES: null,
@@ -6473,6 +6455,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.PatchSvc = "/v2/user";
                     this.UserSvc = "/user/svc";
                     this.ExportExcel = "/user/excel";
+                    this.FileSvc = "/user/file";
                     this.DefaultConnKey = "default";
                     this.GOOGLE_MAP = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCr_2PaKJplCyvwN4q78lBkX3UBpfZ_HsY";
                     this.GOOGLE_MAP_PLACES = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=places";
@@ -19291,663 +19274,6 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Core.Components.ImageServer", {
-        inherits: [Core.Components.EditableComponent],
-        statics: {
-            fields: {
-                pathSeparator: null,
-                PNGUrlPrefix: null,
-                JpegUrlPrefix: null,
-                GuidLength: 0,
-                _backdrop: null,
-                _preview: null
-            },
-            props: {
-                Camera: null
-            },
-            ctors: {
-                init: function () {
-                    this.pathSeparator = "    ";
-                    this.PNGUrlPrefix = "data:image/png;base64,";
-                    this.JpegUrlPrefix = "data:image/jpeg;base64,";
-                    this.GuidLength = 36;
-                }
-            },
-            methods: {
-                RemoveGuid: function (path) {
-                    var thumbText = path;
-                    if (path.length > Core.Components.ImageServer.GuidLength) {
-                        var fileName = System.IO.Path.GetFileNameWithoutExtension(path);
-                        thumbText = (Core.Extensions.StringExt.SubStrIndex$1(fileName, 0, ((fileName.length - Core.Components.ImageServer.GuidLength) | 0)) || "") + (System.IO.Path.GetExtension(path) || "");
-                    }
-
-                    return thumbText;
-                }
-            }
-        },
-        fields: {
-            _path: null,
-            _input: null,
-            _plus: null,
-            _disabledDelete: false,
-            _placeHolder: null
-        },
-        props: {
-            Path: {
-                get: function () {
-                    return this._path;
-                },
-                set: function (value) {
-                    var $t;
-                    this.RemoveChild$1();
-                    this._path = value;
-                    if (this.Entity != null) {
-                        Core.Extensions.BridgeExt.SetComplexPropValue(this.Entity, this.FieldName, this._path);
-                    }
-
-                    if (this._path == null) {
-                        this.RenderFileThumb(this._path);
-                        return;
-                    }
-
-                    var updatedImages = ($t = System.String, System.Linq.Enumerable.from(this._path.split(Core.Components.ImageServer.pathSeparator), $t).toList($t));
-                    updatedImages.ForEach(Bridge.fn.bind(this, function (x) {
-                        this.RenderFileThumb(x);
-                    }));
-                }
-            },
-            DataSourceFilter: null,
-            _imageSources: {
-                get: function () {
-                    return this._path != null ? this._path.split(Core.Components.ImageServer.pathSeparator) : null;
-                }
-            },
-            Disabled: {
-                get: function () {
-                    return Bridge.ensureBaseProperty(this, "Disabled").$Core$Components$EditableComponent$Disabled;
-                },
-                set: function (value) {
-                    if (this._input != null) {
-                        this._input.disabled = value;
-                    }
-
-                    Bridge.ensureBaseProperty(this, "Disabled").$Core$Components$EditableComponent$Disabled = value;
-                    if (value) {
-                        this.ParentElement.setAttribute("disabled", "");
-                    } else {
-                        this.ParentElement.removeAttribute("disabled");
-                    }
-                }
-            }
-        },
-        ctors: {
-            ctor: function (ui) {
-                var $t;
-                this.$initialize();
-                Core.Components.EditableComponent.ctor.call(this, ui);
-                this.GuiInfo = ui;
-                this.DataSourceFilter = ($t = this.GuiInfo.DataSourceFilter, $t != null ? $t : "image/*");
-            }
-        },
-        methods: {
-            RemoveChild$1: function () {
-                System.Linq.Enumerable.from(this.ParentElement.querySelectorAll(".thumb-wrapper")).select(function (x) { return Bridge.cast(x, HTMLElement); }).forEach(function (x) {
-                    x.remove();
-                });
-            },
-            Render: function () {
-                var $t, $t1, $t2, $t3;
-                this._path = ($t = this.Entity) != null && ($t1 = Core.Extensions.Utils.GetPropValue($t, this.FieldName)) != null ? Bridge.toString($t1) : null;
-                var paths = this._path != null ? ($t2 = System.String, System.Linq.Enumerable.from(this._path.split(Core.Components.ImageServer.pathSeparator), $t2).toList($t2)) : null;
-                this.RenderUploadForm();
-                this.Path = this._path;
-                !Bridge.staticEquals(($t3 = this.DOMContentLoaded), null) ? $t3() : null;
-            },
-            RenderFileThumb: function (path, first) {
-                if (first === void 0) { first = false; }
-                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.Element).Div, "thumb-wrapper").Div, "overlay");
-                if (!this._disabledDelete && path != null && !Bridge.referenceEquals(path, "")) {
-                    Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.I, "fal fa-eye").Event$2(System.String, "click", Bridge.fn.cacheBind(this, this.Preview), path).End.I, "fa fa-times").Event$4(System.String, "click", Bridge.fn.cacheBind(this, this.RemoveFile), path).End.Render();
-                }
-                Core.MVVM.Html.Instance.End.Render();
-                if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(path)) {
-                    Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Img.Event("click", Bridge.fn.cacheBind(this, this.OpenForm)), "thumb").Style$1(this.GuiInfo.ChildStyle).Src(path).Render();
-                }
-                return Core.MVVM.Html.Context.parentElement;
-            },
-            SetCanDeleteImage: function (canDelete) {
-                this._disabledDelete = !canDelete;
-                if (canDelete) {
-                    this.UpdateView();
-                } else {
-                    System.Linq.Enumerable.from(this.Element.querySelectorAll(".overlay .fa-times")).select(function (x) { return Bridge.cast(x, HTMLElement); }).forEach(function (x) {
-                        x.remove();
-                    });
-                }
-            },
-            Preview: function (path) {
-                if (Core.Extensions.StringExt.IsNullOrWhiteSpace(path)) {
-                    return;
-                }
-
-                if (!System.IO.Path.IsImage(path)) {
-                    Core.Clients.Client.Download(path);
-                    return;
-                }
-
-                var img = null;
-                var rotate = 0;
-                Core.Components.Renderer.Escape(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(Bridge.ensureBaseProperty(this, "EditForm").$Core$Components$EditableComponent$EditForm.Element).Div, "dark-overlay"), function (e) {
-                    Core.Components.ImageServer._preview.remove();
-                }).Event$1("keydown", Bridge.fn.bind(this, function (e) {
-                    var keyCode = Core.Extensions.EventExt.KeyCodeEnum(e);
-                    if (System.Nullable.neq(keyCode, Core.Enums.KeyCodeEnum.LeftArrow) && System.Nullable.neq(keyCode, Core.Enums.KeyCodeEnum.RightArrow)) {
-                        return;
-                    }
-
-                    if (System.Nullable.eq(keyCode, Core.Enums.KeyCodeEnum.LeftArrow)) {
-                        path = this.MoveLeft(path, img);
-                    } else {
-                        path = this.MoveRight(path, img);
-                    }
-                }));
-                Core.Components.ImageServer._preview = Core.MVVM.Html.Context;
-                Core.MVVM.Html.Instance.Img.Src((Core.Clients.Client.Origin || "") + (path || ""));
-                img = Bridge.as(Core.MVVM.Html.Context, HTMLImageElement);
-                Core.Components.Renderer.Icon(Core.Components.Renderer.Icon(Core.Components.Renderer.Icon(Core.Components.Renderer.Title(Core.Components.Renderer.Icon(Core.Components.Renderer.Icon(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Span, "close").Event("click", function () {
-                    Core.Components.ImageServer._preview.remove();
-                }).End.Div, "toolbar"), "fa fa-undo ro-left").Event("click", function () {
-                    rotate = (rotate - 90) | 0;
-                    img.style.transform = System.String.format("rotate({0}deg)", [Bridge.box(rotate, System.Int32)]);
-                }).End, "fa fa-cloud-download-alt"), "T\u1ea3i xu\u1ed1ng").Event("click", function () {
-                    var link = Bridge.as(document.createElement("a"), HTMLAnchorElement);
-                    link.href = img.src;
-                    link.download = img.src.substr(img.src.lastIndexOf("/"));
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-                }).End, "fa fa-redo ro-right").Event("click", function () {
-                    rotate = (rotate + 90) | 0;
-                    img.style.transform = System.String.format("rotate({0}deg)", [Bridge.box(rotate, System.Int32)]);
-                }).End.End, "fa fa-chevron-left").Event("click", Bridge.fn.bind(this, function () {
-                    path = this.MoveLeft(path, img);
-                })).End, "fa fa-chevron-right").Event("click", Bridge.fn.bind(this, function () {
-                    path = this.MoveRight(path, img);
-                })).End.Render();
-            },
-            MoveAround: function (e, path) {
-                var keyCode = Core.Extensions.EventExt.KeyCodeEnum(e);
-                if (System.Nullable.neq(keyCode, Core.Enums.KeyCodeEnum.LeftArrow) && System.Nullable.neq(keyCode, Core.Enums.KeyCodeEnum.RightArrow)) {
-                    return;
-                }
-                var img;
-                if (!(((img = Bridge.as(e.target.firstElementChild, HTMLImageElement))) != null)) {
-                    return;
-                }
-
-                if (System.Nullable.eq(keyCode, Core.Enums.KeyCodeEnum.LeftArrow)) {
-                    this.MoveLeft(path, img);
-                } else {
-                    this.MoveRight(path, img);
-                }
-            },
-            MoveLeft: function (path, img) {
-                var $t, $t1;
-                var index = System.Array.indexOfT(this._imageSources, path);
-                if (index === 0) {
-                    index = (this._imageSources.length - 1) | 0;
-                } else {
-                    index = (index - 1) | 0;
-                }
-
-                img.src = (Core.Clients.Client.Origin || "") + (($t = this._imageSources)[System.Array.index(index, $t)] || "");
-                return ($t1 = this._imageSources)[System.Array.index(index, $t1)];
-            },
-            MoveRight: function (path, img) {
-                var $t, $t1;
-                var index = System.Array.indexOfT(this._imageSources, path);
-                if (index === 0) {
-                    index = (this._imageSources.length - 1) | 0;
-                } else {
-                    index = (index - 1) | 0;
-                }
-
-                img.src = (Core.Clients.Client.Origin || "") + (($t = this._imageSources)[System.Array.index(index, $t)] || "");
-                return ($t1 = this._imageSources)[System.Array.index(index, $t1)];
-            },
-            OpenFileDialog: function (e) {
-                if (this.Disabled) {
-                    return;
-                }
-
-                this.OpenNativeFileDialog(e);
-                return;
-                if (typeof(navigator.camera) === 'undefined')
-                {
-                    this._input.click();
-                }
-                else
-                {
-                    this.RenderImageSourceChooser();
-                }
-            },
-            RenderUploadForm: function () {
-                this.Element = Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.ParentElement), "uploader").Div.GetContext();
-                if (this._plus == null) {
-                    if (System.Nullable.gt(this.GuiInfo.Precision, 0)) {
-                        Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.I.Event("click", Bridge.fn.cacheBind(this, this.OpenForm)), "fal fa-plus mt-3").Style$1(this.GuiInfo.ChildStyle).End.Render();
-                    } else {
-                        if (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.Path)) {
-                            Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.I.Event("click", Bridge.fn.cacheBind(this, this.OpenForm)), "fal fa-plus mt-3").Style$1(this.GuiInfo.ChildStyle).End.Render();
-                        }
-                    }
-                    this._plus = Core.MVVM.Html.Context;
-                }
-            },
-            OpenForm: function () {
-                var $t;
-                if (Core.Components.ImageServer._backdrop == null) {
-                    Core.Components.Renderer.TabIndex(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(document.body).Div, "backdrop").Style$1("z-index:2000"), -1);
-                    Core.Components.ImageServer._backdrop = Core.MVVM.Html.Context;
-                }
-                Core.Extensions.HtmlElementExtension.Show(Core.Components.ImageServer._backdrop);
-                Core.Components.Renderer.IconForSpan(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(Core.Components.ImageServer._backdrop).Clear().Div, "popup-content").Style$1("width:100%").Div, "popup-title").Span, "");
-                Core.MVVM.Html.Instance.End.Span.Text("Danh s\u00e1ch h\u00ecnh \u1ea3nh");
-                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Div, "icon-box").Span, "fa fa-times").Event("click", Bridge.fn.cacheBind(this, this.ClosePopup)).EndOf$1(".popup-title").Div, "popup-body");
-                Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Input.Type$1("file").Attr$1("multiple", "multiple").Attr$1("name", "imagefiles"), "d-none").Attr$1("accept", this.DataSourceFilter).Event$1("change", Bridge.fn.bind(this, function (e) {
-                    this.UploadSelectedImages(e);
-                }));
-                this._input = Bridge.as(Core.MVVM.Html.Context, HTMLInputElement);
-                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Div, "col-md-12").Style$1("padding: 20px 5%;").Div, "alert alert-info").Text("L\u01b0u \u00fd: H\u1ec7 th\u1ed1ng ch\u1ec9 nh\u1eadn c\u00e1c file \u1ea3nh (bmp, jpg, jpeg, gif, png) v\u00e0 dung l\u01b0\u1ee3ng d\u01b0\u1edbi 1Mb / file").End.Div, "gallery-buttons bottom-30px").Button.Event$1("click", Bridge.fn.bind(this, function (e) {
-                    this.OpenNativeFileDialog(e);
-                })).Id("btn-upload"), "btn btn-success btn-md dz-clickable mr-1").I, "fa fa-upload mr-1").End.Text("Upload \u1ea3nh m\u1edbi").End.Button.Id("btn-upload"), "btn btn-success btn-md mr-1").I, "fa fa-heart mr-1").End.Text("Ch\u00e8n \u1ea3nh \u0111\u00e3 ch\u1ecdn").End.Button.Id("btn-upload"), "btn btn-danger btn-md mr-1").I, "fa fa-trash mr-1").End.Text("X\u00f3a \u1ea3nh \u0111\u00e3 ch\u1ecdn").End.End.Div, " list-group").Div, "row").Id("previewContainer");
-                var fn = { };
-
-                var isFn = Core.Extensions.Utils.IsFunction(this.GuiInfo.PreQuery, fn);
-                var loadImageTask = Core.Extensions.EventExt.Done(System.Array.type(System.Array.type(System.Object)), Core.Clients.Client.Instance.ComQuery(($t = new Core.ViewModels.SqlViewModel(), $t.ComId = this.GuiInfo.Id, $t.Entity = isFn ? JSON.stringify(Bridge.unbox(fn.v.call(null, this))) : null, $t)), Bridge.fn.bind(this, function (ds) {
-                    var images = ds.length > 0 ? Bridge.unbox(ds[System.Array.index(0, ds)]) : null;
-                    if (Core.Extensions.IEnumerableExtensions.HasElement(Core.Models.Images, images)) {
-                        this.RenderListImage(images);
-                    }
-                }));
-            },
-            RenderPlaceHolder: function () {
-                if (Core.Extensions.StringExt.IsNullOrWhiteSpace(this._path)) {
-                    this._placeHolder = this.RenderFileThumb(null, true);
-                }
-            },
-            RemoveFile: function (e, removedPath) {
-                if (this.Disabled) {
-                    return;
-                }
-                this._plus = null;
-                e.stopPropagation();
-                if (Core.Extensions.StringExt.IsNullOrEmpty(removedPath)) {
-                    return;
-                }
-
-                var oldVal = this._path;
-                if (System.Nullable.gt(this.GuiInfo.Precision, 1)) {
-                    var newPath = System.Linq.Enumerable.from(System.String.replaceAll(this._path, removedPath, "").split(Core.Components.ImageServer.pathSeparator), System.String).where(function (x) {
-                            return Core.Extensions.StringExt.HasAnyChar(x);
-                        }).toList(System.String);
-                    this.Path = Bridge.toArray(newPath).join(Core.Components.ImageServer.pathSeparator);
-                } else {
-                    this.Path = null;
-                }
-                var dispatchTask = Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity]);
-                Core.Clients.Client.ExecTaskNoResult(dispatchTask, Bridge.fn.bind(this, function () {
-                    var $t, $t1;
-                    !Bridge.staticEquals(($t = this.UserInput), null) ? $t(($t1 = new Core.MVVM.ObservableArgs(), $t1.NewData = this._path, $t1.OldData = oldVal, $t1.FieldName = this.FieldName, $t1)) : null;
-                    this.Dirty = true;
-                }));
-            },
-            UploadSelectedImages: function (e) {
-                e.preventDefault();
-                var files = Bridge.as(e.target.files, FileList);
-                if (Core.Extensions.IEnumerableExtensions.Nothing(File, files)) {
-                    return;
-                }
-                var oldVal = this._path;
-                var task = this.UploadAllFiles(files);
-                Core.Clients.Client.ExecTaskNoResult(task, Bridge.fn.bind(this, function () {
-                    var $t, $t1;
-                    this.Dirty = true;
-                    this._input.value = "";
-                    !Bridge.staticEquals(($t = this.UserInput), null) ? $t(($t1 = new Core.MVVM.ObservableArgs(), $t1.NewData = this._path, $t1.OldData = oldVal, $t1.FieldName = this.FieldName, $t1)) : null;
-                    var dispatchTask = Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity]);
-                    Core.Clients.Client.ExecTaskNoResult(dispatchTask);
-                }));
-            },
-            UploadBase64Image: function (base64Image, fileName) {
-                if (System.String.contains(base64Image,Core.Components.ImageServer.PNGUrlPrefix)) {
-                    base64Image = base64Image.substr(Core.Components.ImageServer.PNGUrlPrefix.length);
-                } else if (System.String.contains(base64Image,Core.Components.ImageServer.JpegUrlPrefix)) {
-                    base64Image = base64Image.substr(Core.Components.ImageServer.JpegUrlPrefix.length);
-                }
-                return new Core.Clients.Client.$ctor1("Images").PostAsync(Core.Models.Images, base64Image, System.String.format("UploadImage?filename={0}&path={1}", fileName, (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.DataSourceFilter) ? "\\upload\\images" : this.GuiInfo.DataSourceFilter)));
-            },
-            UpdateView: function (force, dirty, componentNames) {
-                var $t;
-                if (force === void 0) { force = false; }
-                if (dirty === void 0) { dirty = null; }
-                if (componentNames === void 0) { componentNames = []; }
-                this.Path = ($t = Core.Extensions.Utils.GetPropValue(this.Entity, this.FieldName)) != null ? Bridge.toString($t) : null;
-                Core.Components.EditableComponent.prototype.UpdateView.call(this);
-            },
-            UploadFile: function (file) {
-                var tcs = new System.Threading.Tasks.TaskCompletionSource();
-                var reader = new FileReader();
-                var isImage = Core.Extensions.IEnumerableExtensions.HasElement(System.String, file.type.match("image.*"));
-                if (isImage) {
-                    reader.onload = Bridge.fn.bind(this, function (e) {
-                        var $step = 0,
-                            $task1, 
-                            $taskResult1, 
-                            $jumpFromFinally, 
-                            path, 
-                            $asyncBody = Bridge.fn.bind(this, function () {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            $task1 = this.ResizeAndUploadImage(Bridge.toString(e.target.result), file.name);
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $taskResult1 = $task1.getAwaitedResult();
-                                            path = $taskResult1;
-                                            tcs.setResult(path);
-                                            return;
-                                        }
-                                        default: {
-                                            return;
-                                        }
-                                    }
-                                }
-                            }, arguments);
-
-                        $asyncBody();
-                    });
-                    reader.readAsDataURL(file);
-                } else {
-                    System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                        var $step = 0,
-                            $task1, 
-                            $taskResult1, 
-                            $jumpFromFinally, 
-                            $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                            $returnValue, 
-                            path, 
-                            $async_e, 
-                            $asyncBody = Bridge.fn.bind(this, function () {
-                                try {
-                                    for (;;) {
-                                        $step = System.Array.min([0,1], $step);
-                                        switch ($step) {
-                                            case 0: {
-                                                $task1 = new Core.Clients.Client.$ctor1("Images").PostFilesAsync(Core.Models.Images, file, "file");
-                                                $step = 1;
-                                                if ($task1.isCompleted()) {
-                                                    continue;
-                                                }
-                                                $task1.continue($asyncBody);
-                                                return;
-                                            }
-                                            case 1: {
-                                                $taskResult1 = $task1.getAwaitedResult();
-                                                path = $taskResult1;
-                                                tcs.setResult(path);
-                                                $tcs.setResult(null);
-                                                return;
-                                            }
-                                            default: {
-                                                $tcs.setResult(null);
-                                                return;
-                                            }
-                                        }
-                                    }
-                                } catch($async_e1) {
-                                    $async_e = System.Exception.create($async_e1);
-                                    $tcs.setException($async_e);
-                                }
-                            }, arguments);
-
-                        $asyncBody();
-                        return $tcs.task;
-                    }));
-                }
-                return tcs.task;
-            },
-            ResizeAndUploadImage: function (src, fileName) {
-                var tcs = new System.Threading.Tasks.TaskCompletionSource();
-                var image = new Image();
-                image.onload = Bridge.fn.combine(image.onload, Bridge.fn.bind(this, function (imageEvent) {
-                    var $step = 0,
-                        $task1, 
-                        $taskResult1, 
-                        $jumpFromFinally, 
-                        canvas, 
-                        max_size, 
-                        width, 
-                        height, 
-                        ctx, 
-                        dataUrl, 
-                        path, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        canvas = document.createElement("canvas");
-                                        max_size = 1024;
-                                        width = image.width;
-                                        height = image.height;
-                                        if (width > height) {
-                                            if (width > max_size) {
-                                                height = Bridge.Int.clip32(height * (max_size / width));
-                                                width = max_size;
-                                            }
-                                        } else {
-                                            if (height > max_size) {
-                                                width = Bridge.Int.clip32(width * (max_size / height));
-                                                height = max_size;
-                                            }
-                                        }
-                                        canvas.width = width;
-                                        canvas.height = height;
-                                        ctx = canvas.getContext("2d");
-                                        ctx.drawImage(image, 0, 0, width, height);
-                                        dataUrl = canvas.toDataURL();
-                                        $task1 = this.UploadBase64Image(dataUrl, fileName);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        path = $taskResult1;
-                                        tcs.setResult(path);
-                                        return;
-                                    }
-                                    default: {
-                                        return;
-                                    }
-                                }
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                }));
-                image.src = src;
-                return tcs.task;
-            },
-            UploadAllFiles: function (filesSelected) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    files, 
-                    allPath, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        Core.Components.Spinner.AppendTo(Core.Components.ImageServer._backdrop);
-                                        files = System.Linq.Enumerable.from(filesSelected, File).select(Bridge.fn.cacheBind(this, this.UploadFile));
-                                        $task1 = System.Threading.Tasks.Task.whenAll(files);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        allPath = $taskResult1;
-                                        if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.Images, allPath)) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        this.RenderListImage(allPath);
-                                        Core.Components.Spinner.Hide();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
-            RenderListImage: function (allPath) {
-                allPath.forEach(Bridge.fn.bind(this, function (img) {
-                        Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take$1("#previewContainer").Div, "item col-md-1 col-sm-3").Div, "thumbnail").Div.Img.Event("click", Bridge.fn.bind(this, function () {
-                            var $step = 0,
-                                $task1, 
-                                $jumpFromFinally, 
-                                $asyncBody = Bridge.fn.bind(this, function () {
-                                    for (;;) {
-                                        $step = System.Array.min([0,1], $step);
-                                        switch ($step) {
-                                            case 0: {
-                                                $task1 = this.ChooseImage(img);
-                                                $step = 1;
-                                                if ($task1.isCompleted()) {
-                                                    continue;
-                                                }
-                                                $task1.continue($asyncBody);
-                                                return;
-                                            }
-                                            case 1: {
-                                                $task1.getAwaitedResult();
-                                                return;
-                                            }
-                                            default: {
-                                                return;
-                                            }
-                                        }
-                                    }
-                                }, arguments);
-
-                            $asyncBody();
-                        })).Src(img.Url), "list-group-image").End.Input.Type$1("checkbox").End.End.End.End.Render();
-                    }));
-            },
-            ChooseImage: function (img) {
-                var $step = 0,
-                    $task1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $t, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (System.Nullable.gt(this.GuiInfo.Precision, 1)) {
-                                            this.Path = (this.Path || "") + ((System.String.format("{0}{1}", Core.Components.ImageServer.pathSeparator, img.Url)) || "");
-                                        } else {
-                                            this.Path = System.String.format("{0}", [img.Url]);
-                                            this.ClosePopup();
-                                        }
-                                        this.Dirty = true;
-                                        if (!Bridge.staticEquals(this.UserInput, null)) {
-                                            this.UserInput(($t = new Core.MVVM.ObservableArgs(), $t.NewData = this._path, $t.FieldName = this.FieldName, $t.EvType = "change", $t));
-                                        }
-                                        $task1 = Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity]);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $task1.getAwaitedResult();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
-            OpenNativeFileDialog: function (e) {
-                e != null ? e.preventDefault() : null;
-                this._input.click();
-            },
-            GetValueText: function () {
-                if (Core.Extensions.IEnumerableExtensions.Nothing(System.String, this._imageSources)) {
-                    return null;
-                }
-                return Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this._imageSources, System.String).select(function (path) {
-                        var label = Core.Components.ImageServer.RemoveGuid(path);
-                        return System.String.format("<a target=\"_blank\" href=\"{0}\">{1}</a>", path, label);
-                    }), ",");
-            },
-            ClosePopup: function () {
-                Core.Components.ImageServer._backdrop != null ? Core.Extensions.HtmlElementExtension.Hide(Core.Components.ImageServer._backdrop) : null;
-            }
-        }
-    });
-
     Bridge.define("Core.Components.ImageUploader", {
         inherits: [Core.Components.EditableComponent],
         statics: {
@@ -20314,11 +19640,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             UploadBase64Image: function (base64Image, fileName) {
                 var $t;
-                if (System.String.contains(base64Image,Core.Components.ImageUploader.PNGUrlPrefix)) {
-                    base64Image = base64Image.substr(Core.Components.ImageUploader.PNGUrlPrefix.length);
-                } else if (System.String.contains(base64Image,Core.Components.ImageUploader.JpegUrlPrefix)) {
-                    base64Image = base64Image.substr(Core.Components.ImageUploader.JpegUrlPrefix.length);
-                }
                 return Core.Clients.Client.Instance.SubmitAsync(System.String, ($t = new Core.Clients.XHRWrapper(), $t.Value = base64Image, $t.Url = System.String.format("/user/image/?name={0}", [fileName]), $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
             },
             UpdateView: function (force, dirty, componentNames) {
@@ -20331,105 +19652,31 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             UploadFile: function (file) {
                 var tcs = new System.Threading.Tasks.TaskCompletionSource();
-                var reader = new FileReader();
-                if (!this.GuiInfo.IsRealtime && Core.Extensions.IEnumerableExtensions.HasElement(System.String, file.type.match("image.*"))) {
-                    reader.onload = Bridge.fn.bind(this, function (e) {
-                        var $step = 0,
-                            $task1, 
-                            $taskResult1, 
-                            $task2, 
-                            $taskResult2, 
-                            $jumpFromFinally, 
-                            path, 
-                            upload, 
-                            $t, 
-                            $asyncBody = Bridge.fn.bind(this, function () {
-                                for (;;) {
-                                    $step = System.Array.min([0,1,2], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            $task1 = this.UploadBase64Image(Bridge.toString(e.target.result), file.name);
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $taskResult1 = $task1.getAwaitedResult();
-                                            path = $taskResult1;
-                                            upload = ($t = new Core.ViewModels.FileUpload(), $t.EntityName = Bridge.Reflection.getTypeName(Bridge.getType(this.Entity)), $t.RecordId = this.EntityId, $t.SectionId = this.GuiInfo.ComponentGroupId, $t.FieldName = this.FieldName, $t.FileName = file.name, $t.FilePath = path, $t);
-                                            $task2 = new Core.Clients.Client.$ctor1("FileUpload").CreateAsync(Core.ViewModels.FileUpload, upload);
-                                            $step = 2;
-                                            if ($task2.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task2.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 2: {
-                                            $taskResult2 = $task2.getAwaitedResult();
-                                            tcs.setResult(path);
-                                            return;
-                                        }
-                                        default: {
-                                            return;
-                                        }
-                                    }
-                                }
-                            }, arguments);
-
-                        $asyncBody();
+                if (this.GuiInfo.IsRealtime || !Core.Extensions.IEnumerableExtensions.HasElement(System.String, file.type.match("image.*"))) {
+                    Core.Extensions.EventExt.Done(System.String, Core.Clients.Client.Instance.PostFilesAsync(System.String, file, Core.Extensions.Utils.FileSvc), function (path) {
+                        tcs.setResult(path);
                     });
-                    reader.readAsDataURL(file);
-                } else {
-                    System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                        var $step = 0,
-                            $task1, 
-                            $taskResult1, 
-                            $jumpFromFinally, 
-                            $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                            $returnValue, 
-                            path, 
-                            $async_e, 
-                            $asyncBody = Bridge.fn.bind(this, function () {
-                                try {
-                                    for (;;) {
-                                        $step = System.Array.min([0,1], $step);
-                                        switch ($step) {
-                                            case 0: {
-                                                $task1 = new Core.Clients.Client.$ctor1("FileUpload").PostFilesAsync(System.String, file, System.String.format("file?&tanentcode={0}&userid={1}", Core.Clients.Client.Tenant, Core.Clients.Client.Token.UserId));
-                                                $step = 1;
-                                                if ($task1.isCompleted()) {
-                                                    continue;
-                                                }
-                                                $task1.continue($asyncBody);
-                                                return;
-                                            }
-                                            case 1: {
-                                                $taskResult1 = $task1.getAwaitedResult();
-                                                path = $taskResult1;
-                                                tcs.setResult(path);
-                                                $tcs.setResult(null);
-                                                return;
-                                            }
-                                            default: {
-                                                $tcs.setResult(null);
-                                                return;
-                                            }
-                                        }
-                                    }
-                                } catch($async_e1) {
-                                    $async_e = System.Exception.create($async_e1);
-                                    $tcs.setException($async_e);
-                                }
-                            }, arguments);
-
-                        $asyncBody();
-                        return $tcs.task;
-                    }));
+                    return tcs.task;
                 }
+                var reader = new FileReader();
+                reader.onload = Bridge.fn.bind(this, function (e) {
+                    Core.Extensions.EventExt.Done(System.String, this.UploadBase64Image(Bridge.toString(e.target.result), file.name), Bridge.fn.bind(this, function (path) {
+                        var $t;
+                        tcs.setResult(path);
+                        Core.Extensions.EventExt.Done(System.Boolean, Core.Clients.Client.Instance.PatchAsync(($t = new Core.ViewModels.PatchVM(), $t.Table = "FileUpload", $t.Changes = Bridge.fn.bind(this, function (_o1) {
+                                var $t1;
+                                _o1.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = this.Id, $t1.Value = System.Id.op_Implicit$7(System.Id.NewGuid()), $t1));
+                                _o1.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = "EntityName", $t1.Value = this.GuiInfo.EntityName, $t1));
+                                _o1.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = "RecordId", $t1.Value = this.EntityId, $t1));
+                                _o1.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = "SectionId", $t1.Value = this.GuiInfo.ComponentGroupId, $t1));
+                                _o1.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = "FieldName", $t1.Value = this.FieldName, $t1));
+                                _o1.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = "FileName", $t1.Value = file.name, $t1));
+                                _o1.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = "FilePath", $t1.Value = path, $t1));
+                                return _o1;
+                            })(new (System.Collections.Generic.List$1(Core.ViewModels.PatchDetail)).ctor()), $t)));
+                    }));
+                });
+                reader.readAsDataURL(file);
                 return tcs.task;
             },
             UploadAllFiles: function (filesSelected) {
@@ -29943,6 +29190,296 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                 $asyncBody();
                 return $tcs.task;
+            }
+        }
+    });
+
+    Bridge.define("Core.Components.ImageServer", {
+        inherits: [Core.Components.ImageUploader],
+        statics: {
+            fields: {
+                pathSeparator: null,
+                _backdrop: null,
+                _preview: null
+            },
+            props: {
+                Camera: null
+            },
+            ctors: {
+                init: function () {
+                    this.pathSeparator = "    ";
+                }
+            }
+        },
+        fields: {
+            _input$1: null,
+            _plus: null,
+            _disabledDelete$1: false,
+            _placeHolder: null
+        },
+        props: {
+            Path: {
+                get: function () {
+                    return this._path;
+                },
+                set: function (value) {
+                    var $t;
+                    this.RemoveChild$1();
+                    this._path = value;
+                    if (this.Entity != null) {
+                        Core.Extensions.BridgeExt.SetComplexPropValue(this.Entity, this.FieldName, this._path);
+                    }
+
+                    if (this._path == null) {
+                        this.RenderFileThumb$1(this._path);
+                        return;
+                    }
+
+                    var updatedImages = ($t = System.String, System.Linq.Enumerable.from(this._path.split(Core.Components.ImageServer.pathSeparator), $t).toList($t));
+                    updatedImages.ForEach(Bridge.fn.bind(this, function (x) {
+                        this.RenderFileThumb$1(x);
+                    }));
+                }
+            },
+            _imageSources$1: {
+                get: function () {
+                    return this._path != null ? this._path.split(Core.Components.ImageServer.pathSeparator) : null;
+                }
+            },
+            Disabled: {
+                get: function () {
+                    return Bridge.ensureBaseProperty(this, "Disabled").$Core$Components$ImageUploader$Disabled;
+                },
+                set: function (value) {
+                    if (this._input$1 != null) {
+                        this._input$1.disabled = value;
+                    }
+
+                    Bridge.ensureBaseProperty(this, "Disabled").$Core$Components$ImageUploader$Disabled = value;
+                    if (value) {
+                        this.ParentElement.setAttribute("disabled", "");
+                    } else {
+                        this.ParentElement.removeAttribute("disabled");
+                    }
+                }
+            }
+        },
+        ctors: {
+            ctor: function (ui) {
+                var $t;
+                this.$initialize();
+                Core.Components.ImageUploader.ctor.call(this, ui);
+                this.GuiInfo = ui;
+                this.DataSourceFilter = ($t = this.GuiInfo.DataSourceFilter, $t != null ? $t : "image/*");
+            }
+        },
+        methods: {
+            RemoveChild$1: function () {
+                System.Linq.Enumerable.from(this.ParentElement.querySelectorAll(".thumb-wrapper")).select(function (x) { return Bridge.cast(x, HTMLElement); }).forEach(function (x) {
+                    x.remove();
+                });
+            },
+            Render: function () {
+                var $t, $t1, $t2, $t3;
+                this._path = ($t = this.Entity) != null && ($t1 = Core.Extensions.Utils.GetPropValue($t, this.FieldName)) != null ? Bridge.toString($t1) : null;
+                var paths = this._path != null ? ($t2 = System.String, System.Linq.Enumerable.from(this._path.split(Core.Components.ImageServer.pathSeparator), $t2).toList($t2)) : null;
+                this.RenderUploadForm$1();
+                this.Path = this._path;
+                !Bridge.staticEquals(($t3 = this.DOMContentLoaded), null) ? $t3() : null;
+            },
+            RenderFileThumb$1: function (path, first) {
+                if (first === void 0) { first = false; }
+                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.Element).Div, "thumb-wrapper").Div, "overlay");
+                if (!this._disabledDelete$1 && path != null && !Bridge.referenceEquals(path, "")) {
+                    Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.I, "fal fa-eye").Event$2(System.String, "click", Bridge.fn.cacheBind(this, this.Preview$1), path).End.I, "fa fa-times").Event$4(System.String, "click", Bridge.fn.cacheBind(this, this.RemoveFile$1), path).End.Render();
+                }
+                Core.MVVM.Html.Instance.End.Render();
+                if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(path)) {
+                    Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Img.Event("click", Bridge.fn.cacheBind(this, this.OpenForm)), "thumb").Style$1(this.GuiInfo.ChildStyle).Src(path).Render();
+                }
+                return Core.MVVM.Html.Context.parentElement;
+            },
+            Preview$1: function (path) {
+                if (Core.Extensions.StringExt.IsNullOrWhiteSpace(path)) {
+                    return;
+                }
+
+                if (!System.IO.Path.IsImage(path)) {
+                    Core.Clients.Client.Download(path);
+                    return;
+                }
+
+                var img = null;
+                var rotate = 0;
+                Core.Components.Renderer.Escape(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(Bridge.ensureBaseProperty(this, "EditForm").$Core$Components$EditableComponent$EditForm.Element).Div, "dark-overlay"), function (e) {
+                    Core.Components.ImageServer._preview.remove();
+                }).Event$1("keydown", Bridge.fn.bind(this, function (e) {
+                    var keyCode = Core.Extensions.EventExt.KeyCodeEnum(e);
+                    if (System.Nullable.neq(keyCode, Core.Enums.KeyCodeEnum.LeftArrow) && System.Nullable.neq(keyCode, Core.Enums.KeyCodeEnum.RightArrow)) {
+                        return;
+                    }
+
+                    if (System.Nullable.eq(keyCode, Core.Enums.KeyCodeEnum.LeftArrow)) {
+                        path = this.MoveLeft(path, img);
+                    } else {
+                        path = this.MoveRight(path, img);
+                    }
+                }));
+                Core.Components.ImageServer._preview = Core.MVVM.Html.Context;
+                Core.MVVM.Html.Instance.Img.Src((Core.Clients.Client.Origin || "") + (path || ""));
+                img = Bridge.as(Core.MVVM.Html.Context, HTMLImageElement);
+                Core.Components.Renderer.Icon(Core.Components.Renderer.Icon(Core.Components.Renderer.Icon(Core.Components.Renderer.Title(Core.Components.Renderer.Icon(Core.Components.Renderer.Icon(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Span, "close").Event("click", function () {
+                    Core.Components.ImageServer._preview.remove();
+                }).End.Div, "toolbar"), "fa fa-undo ro-left").Event("click", function () {
+                    rotate = (rotate - 90) | 0;
+                    img.style.transform = System.String.format("rotate({0}deg)", [Bridge.box(rotate, System.Int32)]);
+                }).End, "fa fa-cloud-download-alt"), "T\u1ea3i xu\u1ed1ng").Event("click", function () {
+                    var link = Bridge.as(document.createElement("a"), HTMLAnchorElement);
+                    link.href = img.src;
+                    link.download = img.src.substr(img.src.lastIndexOf("/"));
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                }).End, "fa fa-redo ro-right").Event("click", function () {
+                    rotate = (rotate + 90) | 0;
+                    img.style.transform = System.String.format("rotate({0}deg)", [Bridge.box(rotate, System.Int32)]);
+                }).End.End, "fa fa-chevron-left").Event("click", Bridge.fn.bind(this, function () {
+                    path = this.MoveLeft(path, img);
+                })).End, "fa fa-chevron-right").Event("click", Bridge.fn.bind(this, function () {
+                    path = this.MoveRight(path, img);
+                })).End.Render();
+            },
+            RenderUploadForm$1: function () {
+                this.Element = Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.ParentElement), "uploader").Div.GetContext();
+                if (this._plus == null) {
+                    if (System.Nullable.gt(this.GuiInfo.Precision, 0)) {
+                        Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.I.Event("click", Bridge.fn.cacheBind(this, this.OpenForm)), "fal fa-plus mt-3").Style$1(this.GuiInfo.ChildStyle).End.Render();
+                    } else {
+                        if (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.Path)) {
+                            Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.I.Event("click", Bridge.fn.cacheBind(this, this.OpenForm)), "fal fa-plus mt-3").Style$1(this.GuiInfo.ChildStyle).End.Render();
+                        }
+                    }
+                    this._plus = Core.MVVM.Html.Context;
+                }
+            },
+            OpenForm: function () {
+                var $t;
+                if (Core.Components.ImageServer._backdrop == null) {
+                    Core.Components.Renderer.TabIndex(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(document.body).Div, "backdrop").Style$1("z-index:2000"), -1);
+                    Core.Components.ImageServer._backdrop = Core.MVVM.Html.Context;
+                }
+                Core.Extensions.HtmlElementExtension.Show(Core.Components.ImageServer._backdrop);
+                Core.Components.Renderer.IconForSpan(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(Core.Components.ImageServer._backdrop).Clear().Div, "popup-content").Style$1("width:100%").Div, "popup-title").Span, "");
+                Core.MVVM.Html.Instance.End.Span.Text("Danh s\u00e1ch h\u00ecnh \u1ea3nh");
+                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Div, "icon-box").Span, "fa fa-times").Event("click", Bridge.fn.cacheBind(this, this.ClosePopup)).EndOf$1(".popup-title").Div, "popup-body");
+                Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Input.Type$1("file").Attr$1("multiple", "multiple").Attr$1("name", "imagefiles"), "d-none").Attr$1("accept", this.DataSourceFilter).Event$1("change", Bridge.fn.bind(this, function (e) {
+                    this.UploadSelectedImages$1(e);
+                }));
+                this._input$1 = Bridge.as(Core.MVVM.Html.Context, HTMLInputElement);
+                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.End.Div, "col-md-12").Style$1("padding: 20px 5%;").Div, "alert alert-info").Text("L\u01b0u \u00fd: H\u1ec7 th\u1ed1ng ch\u1ec9 nh\u1eadn c\u00e1c file \u1ea3nh (bmp, jpg, jpeg, gif, png) v\u00e0 dung l\u01b0\u1ee3ng d\u01b0\u1edbi 1Mb / file").End.Div, "gallery-buttons bottom-30px").Button.Event$1("click", Bridge.fn.bind(this, function (e) {
+                    this.OpenNativeFileDialog$1(e);
+                })).Id("btn-upload"), "btn btn-success btn-md dz-clickable mr-1").I, "fa fa-upload mr-1").End.Text("Upload \u1ea3nh m\u1edbi").End.Button.Id("btn-upload"), "btn btn-success btn-md mr-1").I, "fa fa-heart mr-1").End.Text("Ch\u00e8n \u1ea3nh \u0111\u00e3 ch\u1ecdn").End.Button.Id("btn-upload"), "btn btn-danger btn-md mr-1").I, "fa fa-trash mr-1").End.Text("X\u00f3a \u1ea3nh \u0111\u00e3 ch\u1ecdn").End.End.Div, " list-group").Div, "row").Id("previewContainer");
+                var fn = { };
+
+                var isFn = Core.Extensions.Utils.IsFunction(this.GuiInfo.PreQuery, fn);
+                var loadImageTask = Core.Extensions.EventExt.Done(System.Array.type(System.Array.type(System.Object)), Core.Clients.Client.Instance.ComQuery(($t = new Core.ViewModels.SqlViewModel(), $t.ComId = this.GuiInfo.Id, $t.Entity = isFn ? JSON.stringify(Bridge.unbox(fn.v.call(null, this))) : null, $t)), Bridge.fn.bind(this, function (ds) {
+                    var images = ds.length > 0 ? Bridge.unbox(ds[System.Array.index(0, ds)]) : null;
+                    if (Core.Extensions.IEnumerableExtensions.HasElement(Core.Models.Images, images)) {
+                        this.RenderListImage(System.Linq.Enumerable.from(images, Core.Models.Images).select(function (x) {
+                                return x.Url;
+                            }).ToArray(System.String));
+                    }
+                }));
+            },
+            RemoveFile$1: function (e, removedPath) {
+                if (this.Disabled) {
+                    return;
+                }
+                this._plus = null;
+                e.stopPropagation();
+                if (Core.Extensions.StringExt.IsNullOrEmpty(removedPath)) {
+                    return;
+                }
+
+                var oldVal = this._path;
+                if (System.Nullable.gt(this.GuiInfo.Precision, 1)) {
+                    var newPath = System.Linq.Enumerable.from(System.String.replaceAll(this._path, removedPath, "").split(Core.Components.ImageServer.pathSeparator), System.String).where(function (x) {
+                            return Core.Extensions.StringExt.HasAnyChar(x);
+                        }).toList(System.String);
+                    this.Path = Bridge.toArray(newPath).join(Core.Components.ImageServer.pathSeparator);
+                } else {
+                    this.Path = null;
+                }
+                var dispatchTask = Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity]);
+                Core.Clients.Client.ExecTaskNoResult(dispatchTask, Bridge.fn.bind(this, function () {
+                    var $t, $t1;
+                    !Bridge.staticEquals(($t = this.UserInput), null) ? $t(($t1 = new Core.MVVM.ObservableArgs(), $t1.NewData = this._path, $t1.OldData = oldVal, $t1.FieldName = this.FieldName, $t1)) : null;
+                    this.Dirty = true;
+                }));
+            },
+            UploadSelectedImages$1: function (e) {
+                e.preventDefault();
+                var files = Bridge.as(e.target.files, FileList);
+                if (Core.Extensions.IEnumerableExtensions.Nothing(File, files)) {
+                    return;
+                }
+                var oldVal = this._path;
+                Core.Extensions.EventExt.Done$1(this.UploadAllFiles$1(files), Bridge.fn.bind(this, function () {
+                    var $t, $t1;
+                    this.Dirty = true;
+                    this._input$1.value = "";
+                    !Bridge.staticEquals(($t = this.UserInput), null) ? $t(($t1 = new Core.MVVM.ObservableArgs(), $t1.NewData = this._path, $t1.OldData = oldVal, $t1.FieldName = this.FieldName, $t1)) : null;
+                    Core.Extensions.EventExt.Done$1(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity]));
+                }));
+            },
+            UploadAllFiles$1: function (filesSelected) {
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                Core.Components.Spinner.AppendTo(Core.Components.ImageServer._backdrop);
+                var files = System.Linq.Enumerable.from(filesSelected, File).select(Bridge.fn.cacheBind(this, this.UploadFile));
+                Core.Extensions.EventExt.Done(System.Array.type(System.String), System.Threading.Tasks.Task.whenAll(files), Bridge.fn.bind(this, function (allPath) {
+                    if (Core.Extensions.IEnumerableExtensions.Nothing(System.String, allPath)) {
+                        return;
+                    }
+                    this.RenderListImage(allPath);
+                    Core.Components.Spinner.Hide();
+                    tcs.trySetResult(true);
+                }));
+                return tcs.task;
+            },
+            RenderListImage: function (allPath) {
+                allPath.forEach(Bridge.fn.bind(this, function (img) {
+                        Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take$1("#previewContainer").Div, "item col-md-1 col-sm-3").Div, "thumbnail").Div.Img.Event("click", Bridge.fn.bind(this, function () {
+                            this.ChooseImage(img);
+                        })).Src(img), "list-group-image").End.Input.Type$1("checkbox").End.End.End.End.Render();
+                    }));
+            },
+            ChooseImage: function (img) {
+                var $t, $t1;
+                if (System.Nullable.gt(this.GuiInfo.Precision, 1)) {
+                    this.Path = (this.Path || "") + ((System.String.format("{0}{1}", Core.Components.ImageServer.pathSeparator, img)) || "");
+                } else {
+                    this.Path = System.String.format("{0}", [img]);
+                    this.ClosePopup();
+                }
+                this.Dirty = true;
+                !Bridge.staticEquals(($t = this.UserInput), null) ? $t(($t1 = new Core.MVVM.ObservableArgs(), $t1.NewData = this._path, $t1.FieldName = this.FieldName, $t1.EvType = "change", $t1)) : null;
+                Core.Extensions.EventExt.Done$1(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity]));
+            },
+            OpenNativeFileDialog$1: function (e) {
+                e != null ? e.preventDefault() : null;
+                this._input$1.click();
+            },
+            GetValueText: function () {
+                if (Core.Extensions.IEnumerableExtensions.Nothing(System.String, this._imageSources$1)) {
+                    return null;
+                }
+                return Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(this._imageSources$1, System.String).select(function (path) {
+                        var label = Core.Components.ImageUploader.RemoveGuid(path);
+                        return System.String.format("<a target=\"_blank\" href=\"{0}\">{1}</a>", path, label);
+                    }), ",");
+            },
+            ClosePopup: function () {
+                Core.Components.ImageServer._backdrop != null ? Core.Extensions.HtmlElementExtension.Hide(Core.Components.ImageServer._backdrop) : null;
             }
         }
     });

@@ -9,14 +9,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using PathIO = System.IO.Path;
 using Core.ViewModels;
+using System.Collections.Generic;
 
 namespace Core.Components
 {
-    public class ImageServer : EditableComponent
+    public class ImageServer : ImageUploader
     {
         protected static HTMLElement _backdrop;
-        private string _path;
-        public string Path
+        public override string Path
         {
             get => _path;
             set
@@ -47,9 +47,6 @@ namespace Core.Components
         }
 
         private const string pathSeparator = "    ";
-        private const string PNGUrlPrefix = "data:image/png;base64,";
-        private const string JpegUrlPrefix = "data:image/jpeg;base64,";
-        private const int GuidLength = 36;
         private HTMLInputElement _input;
         private static HTMLElement _preview;
         private HTMLElement _plus;
@@ -57,7 +54,6 @@ namespace Core.Components
         private bool _disabledDelete;
         private HTMLElement _placeHolder;
 
-        public string DataSourceFilter { get; set; }
         private string[] _imageSources => _path?.Split(pathSeparator);
 
         public ImageServer(Component ui) : base(ui)
@@ -89,31 +85,6 @@ namespace Core.Components
                 Html.Instance.Img.Event(EventType.Click, OpenForm).ClassName("thumb").Style(GuiInfo.ChildStyle).Src(path).Render();
             }
             return Html.Context.ParentElement;
-        }
-
-        private static string RemoveGuid(string path)
-        {
-            string thumbText = path;
-            if (path.Length > GuidLength)
-            {
-                var fileName = PathIO.GetFileNameWithoutExtension(path);
-                thumbText = fileName.SubStrIndex(0, fileName.Length - GuidLength) + PathIO.GetExtension(path);
-            }
-
-            return thumbText;
-        }
-
-        public void SetCanDeleteImage(bool canDelete)
-        {
-            _disabledDelete = !canDelete;
-            if (canDelete)
-            {
-                UpdateView();
-            }
-            else
-            {
-                Element.QuerySelectorAll(".overlay .fa-times").Cast<HTMLElement>().ForEach(x => x.Remove());
-            }
         }
 
         private void Preview(string path)
@@ -187,82 +158,6 @@ namespace Core.Components
                 }).End.Render();
         }
 
-        private void MoveAround(Event e, string path)
-        {
-            var keyCode = e.KeyCodeEnum();
-            if (keyCode != Enums.KeyCodeEnum.LeftArrow && keyCode != Enums.KeyCodeEnum.RightArrow)
-            {
-                return;
-            }
-
-            if (!(e.Target.As<HTMLElement>().FirstElementChild is HTMLImageElement img))
-            {
-                return;
-            }
-
-            if (keyCode == Enums.KeyCodeEnum.LeftArrow)
-            {
-                MoveLeft(path, img);
-            }
-            else
-            {
-                MoveRight(path, img);
-            }
-        }
-
-        private string MoveLeft(string path, HTMLImageElement img)
-        {
-            var index = Array.IndexOf(_imageSources, path);
-            if (index == 0)
-            {
-                index = _imageSources.Length - 1;
-            }
-            else
-            {
-                index--;
-            }
-
-            img.Src = Client.Origin + _imageSources[index];
-            return _imageSources[index];
-        }
-
-        private string MoveRight(string path, HTMLImageElement img)
-        {
-            var index = Array.IndexOf(_imageSources, path);
-            if (index == 0)
-            {
-                index = _imageSources.Length - 1;
-            }
-            else
-            {
-                index--;
-            }
-
-            img.Src = Client.Origin + _imageSources[index];
-            return _imageSources[index];
-        }
-
-        public void OpenFileDialog(Event e)
-        {
-            if (Disabled)
-            {
-                return;
-            }
-
-            OpenNativeFileDialog(e);
-            return;
-            /*@
-            if (typeof(navigator.camera) === 'undefined')
-            {
-                this._input.click();
-            }
-            else
-            {
-                this.RenderImageSourceChooser();
-            }
-            */
-        }
-
         private void RenderUploadForm()
         {
             Element = Html.Take(ParentElement).ClassName("uploader").Div.GetContext();
@@ -312,9 +207,10 @@ namespace Core.Components
                     .Button.Id("btn-upload").ClassName("btn btn-danger btn-md mr-1").I.ClassName("fa fa-trash mr-1").End.Text("Xóa ảnh đã chọn").End.End
                 .Div.ClassName(" list-group")
                     .Div.ClassName("row").Id("previewContainer");
-            
+
             var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var fn);
-            var loadImageTask = Client.Instance.ComQuery(new SqlViewModel {
+            var loadImageTask = Client.Instance.ComQuery(new SqlViewModel
+            {
                 ComId = GuiInfo.Id,
                 Entity = isFn ? JSON.Stringify(fn.Call(null, this)) : null
             })
@@ -323,17 +219,9 @@ namespace Core.Components
                 var images = ds.Length > 0 ? ds[0].As<Images[]>() : null;
                 if (images.HasElement())
                 {
-                    RenderListImage(images);
+                    RenderListImage(images.Select(x => x.Url).ToArray());
                 }
             });
-        }
-
-        private void RenderPlaceHolder()
-        {
-            if (_path.IsNullOrWhiteSpace())
-            {
-                _placeHolder = RenderFileThumb(null, true);
-            }
         }
 
         private void RemoveFile(Event e, string removedPath)
@@ -376,28 +264,13 @@ namespace Core.Components
                 return;
             }
             var oldVal = _path;
-            var task = UploadAllFiles(files);
-            Client.ExecTaskNoResult(task, () =>
+            UploadAllFiles(files).Done(() =>
             {
                 Dirty = true;
                 _input.Value = string.Empty;
                 UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName });
-                var dispatchTask = this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
-                Client.ExecTaskNoResult(dispatchTask);
+                this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity).Done();
             });
-        }
-
-        private Task<Images> UploadBase64Image(string base64Image, string fileName)
-        {
-            if (base64Image.Contains(PNGUrlPrefix))
-            {
-                base64Image = base64Image.Substring(PNGUrlPrefix.Length);
-            }
-            else if (base64Image.Contains(JpegUrlPrefix))
-            {
-                base64Image = base64Image.Substring(JpegUrlPrefix.Length);
-            }
-            return new Client(nameof(Images)).PostAsync<Images>(base64Image, $"UploadImage?filename={fileName}&path={(GuiInfo.DataSourceFilter.IsNullOrWhiteSpace() ? "\\upload\\images" : GuiInfo.DataSourceFilter)}");
         }
 
         public override bool Disabled
@@ -422,115 +295,48 @@ namespace Core.Components
             }
         }
 
-        public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
+        private Task UploadAllFiles(FileList filesSelected)
         {
-            Path = Entity.GetPropValue(FieldName)?.ToString();
-            base.UpdateView();
-        }
-
-        private Task<Images> UploadFile(File file)
-        {
-            var tcs = new TaskCompletionSource<Images>();
-            var reader = new FileReader();
-            var isImage = file.Type.Match("image.*").HasElement();
-            if (isImage)
-            {
-                reader.OnLoad = async (e) =>
-                {
-                    var path = await ResizeAndUploadImage(e.Target["result"].ToString(), file.Name);
-                    tcs.SetResult(path);
-                };
-                reader.ReadAsDataURL(file);
-            }
-            else
-            {
-                Task.Run(async () =>
-                {
-                    var path = await new Client(nameof(Images)).PostFilesAsync<Images>(file, "file");
-                    tcs.SetResult(path);
-                });
-            }
-            return tcs.Task;
-        }
-
-        public Task<Images> ResizeAndUploadImage(string src, string fileName)
-        {
-            var tcs = new TaskCompletionSource<Images>();
-            var image = new HTMLImageElement();
-            image.OnLoad += async (imageEvent) =>
-            {
-                var canvas = Document.CreateElement("canvas").As<HTMLCanvasElement>();
-                var max_size = 1024;
-                var width = image.Width;
-                var height = image.Height;
-                if (width > height)
-                {
-                    if (width > max_size)
-                    {
-                        height = (int)(height * ((float)max_size / width));
-                        width = max_size;
-                    }
-                }
-                else
-                {
-                    if (height > max_size)
-                    {
-                        width = (int)(width * ((float)max_size / height));
-                        height = max_size;
-                    }
-                }
-                canvas.Width = width;
-                canvas.Height = height;
-                var ctx = canvas.GetContext("2d").As<CanvasRenderingContext2D>();
-                ctx.DrawImage(image, 0, 0, width, height);
-                var dataUrl = canvas.ToDataURL();
-                var path = await UploadBase64Image(dataUrl, fileName);
-                tcs.SetResult(path);
-            };
-            image.Src = src;
-            return tcs.Task;
-        }
-
-        private async Task UploadAllFiles(FileList filesSelected)
-        {
+            var tcs = new TaskCompletionSource<bool>();
             Spinner.AppendTo(_backdrop);
             var files = filesSelected.Select(UploadFile);
-            var allPath = await Task.WhenAll(files);
-            if (allPath.Nothing())
+            Task.WhenAll(files).Done(allPath =>
             {
-                return;
-            }
-            RenderListImage(allPath);
-            Spinner.Hide();
+                if (allPath.Nothing())
+                {
+                    return;
+                }
+                RenderListImage(allPath);
+                Spinner.Hide();
+                tcs.TrySetResult(true);
+            });
+            return tcs.Task;
         }
 
-        private void RenderListImage(Images[] allPath)
+        private void RenderListImage(string[] allPath)
         {
             allPath.ForEach(img =>
             {
                 Html.Take("#previewContainer").Div.ClassName("item col-md-1 col-sm-3")
                  .Div.ClassName("thumbnail")
-                     .Div.Img.Event(EventType.Click, async () => await ChooseImage(img)).Src(img.Url).ClassName("list-group-image").End.Input.Type("checkbox").End.End.End.End.Render();
+                     .Div.Img.Event(EventType.Click, () => ChooseImage(img)).Src(img).ClassName("list-group-image").End.Input.Type("checkbox").End.End.End.End.Render();
             });
         }
 
-        private async Task ChooseImage(Images img)
+        private void ChooseImage(string img)
         {
             if (GuiInfo.Precision > 1)
             {
-                Path += $"{pathSeparator}{img.Url}";
+                Path += $"{pathSeparator}{img}";
             }
             else
             {
-                Path = $"{img.Url}";
+                Path = $"{img}";
                 ClosePopup();
             }
             Dirty = true;
-            if (UserInput != null)
-            {
-                UserInput.Invoke(new ObservableArgs { NewData = _path, FieldName = FieldName, EvType = EventType.Change });
-            }
-            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
+            UserInput?.Invoke(new ObservableArgs { NewData = _path, FieldName = FieldName, EvType = EventType.Change });
+            this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity).Done();
         }
 
         private void OpenNativeFileDialog(Event e)

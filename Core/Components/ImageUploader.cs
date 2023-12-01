@@ -17,8 +17,8 @@ namespace Core.Components
 {
     public class ImageUploader : EditableComponent
     {
-        private string _path;
-        public string Path
+        protected string _path;
+        public virtual string Path
         {
             get => _path;
             set
@@ -228,7 +228,7 @@ namespace Core.Components
             //img.Style.Transform = $"scale({zoomLevel})";
         }
 
-        private void MoveAround(Event e, string path)
+        protected void MoveAround(Event e, string path)
         {
             var keyCode = e.KeyCodeEnum();
             if (keyCode != Enums.KeyCodeEnum.LeftArrow && keyCode != Enums.KeyCodeEnum.RightArrow)
@@ -251,7 +251,7 @@ namespace Core.Components
             }
         }
 
-        private string MoveLeft(string path, HTMLImageElement img)
+        protected string MoveLeft(string path, HTMLImageElement img)
         {
             var index = Array.IndexOf(_imageSources, path);
             if (index == 0)
@@ -267,7 +267,7 @@ namespace Core.Components
             return _imageSources[index];
         }
 
-        private string MoveRight(string path, HTMLImageElement img)
+        protected string MoveRight(string path, HTMLImageElement img)
         {
             var index = Array.IndexOf(_imageSources, path);
             if (index == 0)
@@ -416,37 +416,39 @@ namespace Core.Components
             base.UpdateView(force, dirty, componentNames);
         }
 
-        private Task<string> UploadFile(File file)
+        protected Task<string> UploadFile(File file)
         {
             var tcs = new TaskCompletionSource<string>();
-            var reader = new FileReader();
-            if (!GuiInfo.IsRealtime && file.Type.Match("image.*").HasElement())
+            if (GuiInfo.IsRealtime || !file.Type.Match("image.*").HasElement())
             {
-                reader.OnLoad = async (e) =>
+                Client.Instance.PostFilesAsync<string>(file, Utils.FileSvc).Done(path =>
                 {
-                    var path = await UploadBase64Image(e.Target["result"].ToString(), file.Name);
-                    var upload = new FileUpload
-                    {
-                        EntityName = Entity.GetType().Name,
-                        RecordId = EntityId,
-                        SectionId = GuiInfo.ComponentGroupId,
-                        FieldName = FieldName,
-                        FileName = file.Name,
-                        FilePath = path,
-                    };
-                    await new Client(nameof(FileUpload)).CreateAsync<FileUpload>(upload);
-                    tcs.SetResult(path);
-                };
-                reader.ReadAsDataURL(file);
-            }
-            else
-            {
-                Task.Run(async () =>
-                {
-                    var path = await new Client(nameof(FileUpload)).PostFilesAsync<string>(file, $"file?&tanentcode={Client.Tenant}&userid={Client.Token.UserId}");
                     tcs.SetResult(path);
                 });
+                return tcs.Task;
             }
+            var reader = new FileReader();
+            reader.OnLoad = (e) =>
+            {
+                UploadBase64Image(e.Target["result"].ToString(), file.Name).Done(path =>
+                {
+                    tcs.SetResult(path);
+                    Client.Instance.PatchAsync(new PatchVM
+                    {
+                        Table = nameof(FileUpload),
+                        Changes = new List<PatchDetail> {
+                                new PatchDetail{ Field = Id, Value = System.Id.NewGuid() },
+                                new PatchDetail{ Field = nameof(FileUpload.EntityName), Value = GuiInfo.EntityName },
+                                new PatchDetail{ Field = nameof(FileUpload.RecordId), Value = EntityId },
+                                new PatchDetail{ Field = nameof(FileUpload.SectionId), Value = GuiInfo.ComponentGroupId },
+                                new PatchDetail{ Field = nameof(FileUpload.FieldName), Value = FieldName },
+                                new PatchDetail{ Field = nameof(FileUpload.FileName), Value = file.Name },
+                                new PatchDetail{ Field = nameof(FileUpload.FilePath), Value = path },
+                        }
+                    }).Done();
+                });
+            };
+            reader.ReadAsDataURL(file);
             return tcs.Task;
         }
 

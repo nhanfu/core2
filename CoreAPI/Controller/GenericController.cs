@@ -625,28 +625,14 @@ namespace Core.Controllers
             return (content, fieldValues);
         }
 
-        private bool ValidId(List<int> ids)
-        {
-            if (ids.Nothing())
-            {
-                return false;
-            }
-            ids = ids.Where(x => x > 0).ToList();
-            if (ids.Nothing())
-            {
-                return false;
-            }
-            return true;
-        }
-
         protected string GetUploadPath(string fileName, string webRootPath)
         {
-            return Path.Combine(webRootPath, "upload", "DongA", $"U{UserId:00000000}", fileName);
+            return Path.Combine(webRootPath, "upload", _userSvc.TenantCode, $"U{UserId}", fileName);
         }
 
         protected string GetUploadExcelPath(string fileName, string webRootPath)
         {
-            return Path.Combine(webRootPath, "excel", "DongA", $"U{UserId:00000000}", fileName);
+            return Path.Combine(webRootPath, "excel", _userSvc.TenantCode, $"U{UserId}", fileName);
         }
 
         public static bool AcceptAllCertifications(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
