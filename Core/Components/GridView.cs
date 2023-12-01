@@ -31,7 +31,6 @@ namespace Core.Components
         public bool _waitingLoad;
         public int _renderPrepareCacheAwaiter;
         public HTMLElement DataTable { get; set; }
-        private UserSetting _settings { get; set; }
         public static Component ToolbarColumn = new Component
         {
             StatusBar = true,
@@ -2149,8 +2148,8 @@ namespace Core.Components
         {
             var total = ds.Length > 1 && ds[1].Length > 0 ? (int?)ds[1][0]["total"] : null;
             var headers = ds.Length > 2 ? ds[2].Select(x => x.MapToCom()).ToList() : null;
-            var userSetting = ds.Length > 3 && ds[3].Length > 0 ? ds[3][0].As<UserSetting>() : null;
-            FilterColumns(MergeComponent(headers, userSetting));
+            Settings = ds.Length > 3 && ds[3].Length > 0 ? ds[3][0].As<UserSetting>() : null;
+            FilterColumns(MergeComponent(headers, Settings));
             RenderTableHeader(Header);
             if (Paginator != null)
             {
@@ -2505,7 +2504,7 @@ namespace Core.Components
                 Window.ClearTimeout(awaiter1);
                 awaiter1 = Window.SetTimeout(() =>
                 {
-                    Task.Run(UpdateUserSetting);
+                    UpdateSetting(Settings, "ListView", GetHeaderSettings()).Done();
                 }, 100);
             }
         }
@@ -2520,70 +2519,25 @@ namespace Core.Components
              e.target.style.maxWidth = "";
              e.target.style.width = "";
              */
-            Task.Run(UpdateUserSetting);
+            UpdateSetting(Settings, "ListView", GetHeaderSettings()).Done();
         }
 
-        private async Task UpdateUserSetting()
+        private string GetHeaderSettings()
         {
-            _settings = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>(
-                $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'ListView-{GuiInfo.Id}'");
-            var headerElement = HeaderSection.Children.Where(x => x.GuiInfo != null).ToList().ToDictionary(x => x.GuiInfo.Id);
-            Header.ForEach(x =>
+            var headerElement = HeaderSection.Children
+                .Where(x => x.GuiInfo?.Id != null)
+                .ToDictionary(x => x.GuiInfo.Id);
+            var columns = Header.Where(x => x.Id != null).Select(x =>
             {
                 var match = headerElement.GetValueOrDefault(x.Id);
-                if (match != null)
-                {
-                    x.Width = match.Element.OffsetWidth + "px";
-                    x.MaxWidth = match.Element.OffsetWidth + "px";
-                    x.MinWidth = match.Element.OffsetWidth + "px";
-                }
-            });
-            var column = Header;
-            var value = JsonConvert.SerializeObject(column);
-            if (_settings is null)
-            {
-                _settings = new UserSetting
-                {
-                    UserId = Client.Token.UserId,
-                    Name = "ListView-" + GuiInfo.Id,
-                    Value = value
-                };
-                _settings = await new Client(nameof(UserSetting)).CreateAsync<UserSetting>(_settings);
-            }
-            else
-            {
-                _settings.Value = value;
-                _settings.Name = "ListView-" + GuiInfo.Id;
-                _settings = await new Client(nameof(UserSetting)).UpdateAsync<UserSetting>(_settings);
-            }
-        }
-
-        private async Task UpdateUserSettingColumn()
-        {
-            _settings = await new Client(nameof(UserSetting)).FirstOrDefaultAsync<UserSetting>(
-                $"?$filter=UserId eq '{Client.Token.UserId}' and Name eq 'ListView-{GuiInfo.Id}'");
-            Header.ForEach(x =>
-            {
-                x.Active = false;
-            });
-            var column = Header;
-            var value = JsonConvert.SerializeObject(column);
-            if (_settings is null)
-            {
-                _settings = new UserSetting
-                {
-                    UserId = Client.Token.UserId,
-                    Name = "ListView-" + GuiInfo.Id,
-                    Value = value
-                };
-                _settings = await new Client(nameof(UserSetting)).CreateAsync<UserSetting>(_settings);
-            }
-            else
-            {
-                _settings.Value = value;
-                _settings.Name = "ListView-" + GuiInfo.Id;
-                _settings = await new Client(nameof(UserSetting)).UpdateAsync<UserSetting>(_settings);
-            }
+                if (match is null) return null;
+                x.Width = match.Element.OffsetWidth + "px";
+                x.MaxWidth = match.Element.OffsetWidth + "px";
+                x.MinWidth = match.Element.OffsetWidth + "px";
+                return x;
+            }).Where(x => x != null).ToArray();
+            var value = JsonConvert.SerializeObject(columns);
+            return value;
         }
 
         private void ShowWidth(object arg)
@@ -2598,18 +2552,14 @@ namespace Core.Components
              e.target.style.maxWidth = "";
              e.target.style.width = "";
              */
-            Task.Run(async () => await UpdateUserSetting());
+            UpdateSetting(Settings, "ListView", GetHeaderSettings()).Done();
         }
 
         private void FrozenColumn(object arg)
         {
             var entity = arg["header"] as Component;
             Header.FirstOrDefault(x => x.Id == entity.Id).Frozen = !entity.Frozen;
-            Task.Run(async () =>
-            {
-                await UpdateUserSetting();
-                Window.Location.Reload();
-            });
+            UpdateSetting(Settings, "ListView", GetHeaderSettings()).Done(x => ReloadData(cacheHeader: false));
         }
 
         public void CloneHeader(object arg)

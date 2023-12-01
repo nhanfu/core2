@@ -18,6 +18,7 @@ namespace Core.Components
 {
     public class ExportCustomData : PopupEditor
     {
+        private const string Prefix = "Export";
         public ListView ParentListView;
         public HTMLElement _tbody;
         private List<Component> _headers;
@@ -234,23 +235,8 @@ namespace Core.Components
 
         private void LocalRender()
         {
-            var getUsrSettingTask = GetUserSetting();
+            var getUsrSettingTask = ParentListView.GetUserSetting(Prefix);
             Client.ExecTask(getUsrSettingTask, x => UserSettingLoaded(x, true));
-        }
-
-        private Task<object[][]> GetUserSetting()
-        {
-            return Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
-            {
-                Url = Utils.UserSvc,
-                Value = new SqlViewModel
-                {
-                    ComId = "GridView",
-                    Action = "GetUserSettingByListViewId",
-                    Entity = JSON.Stringify(new { GridId = ParentListView.GuiInfo.Id })
-                },
-                Method = HttpMethod.POST
-            });
         }
 
         private void UserSettingLoaded(object[][] res, bool render = true)
@@ -341,14 +327,13 @@ namespace Core.Components
         public void Export(int? skip = null, int? pageSize = null, string[] selectedIds = null)
         {
             Toast.Success("Đang xuất excel");
-            if (_hasLoadSetting)
+            if (_hasLoadSetting && Dirty)
             {
-                Client.ExecTask(UpdateSetting(), res => { Console.Write(res); });
+                ParentListView.UpdateSetting(_userSetting, Prefix, JSON.Stringify(_headers)).Done();
                 ExportWithSetting(skip, pageSize, selectedIds);
                 return;
             }
-            var getUsrSettingTask = GetUserSetting();
-            Client.ExecTask(getUsrSettingTask, x =>
+            ParentListView.GetUserSetting(Prefix).Done(x => 
             {
                 UserSettingLoaded(x, render: false);
                 ExportWithSetting(skip, pageSize, selectedIds);
@@ -385,51 +370,6 @@ namespace Core.Components
                 Client.Download($"/excel/Download/{path}");
                 Toast.Success("Xuất file thành công");
             });
-        }
-
-        private Task<bool> UpdateSetting()
-        {
-            if (!Dirty) return Task.FromResult(true);
-            var tcs = new TaskCompletionSource<bool>();
-            PatchUpdate patch;
-            if (_userSetting is null)
-            {
-                _userSetting = new UserSetting()
-                {
-                    Name = $"Export-{ParentListView.GuiInfo.Id}",
-                    UserId = Client.Token.UserId,
-                    Value = JsonConvert.SerializeObject(_headers)
-                };
-                patch = CreatePatch(System.Id.NewGuid());
-            }
-            else
-            {
-                _userSetting.Value = JsonConvert.SerializeObject(_headers);
-                patch = CreatePatch(_userSetting.Id, _userSetting.Id);
-            }
-            var task = Client.Instance.PatchAsync(patch);
-            Client.ExecTask(task, r =>
-            {
-                tcs.TrySetResult(r);
-            }, e => tcs.TrySetException(e));
-            return tcs.Task;
-        }
-
-        private PatchUpdate CreatePatch(string newId, string oldId = null)
-        {
-            var patch = new PatchUpdate
-            {
-                Changes = new List<PatchUpdateDetail> {
-                    new PatchUpdateDetail { Field = nameof(UserSetting.Name), Value = $"Export-{ParentListView.GuiInfo.Id}" },
-                    new PatchUpdateDetail { Field = nameof(UserSetting.UserId), Value = Client.Token.UserId },
-                    new PatchUpdateDetail { Field = nameof(UserSetting.Value), Value = JsonConvert.SerializeObject(_headers) },
-                },
-                ComId = ParentListView.GuiInfo.Id,
-                Table = nameof(UserSetting),
-                ConnKey = ParentListView.GuiInfo.ConnKey ?? Utils.DefaultConnKey
-            };
-            patch.Changes.Add(new PatchUpdateDetail { Field = IdField, Value = newId, OldVal = oldId });
-            return patch;
         }
     }
 }

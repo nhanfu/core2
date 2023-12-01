@@ -68,7 +68,7 @@ namespace Core.Components
             {
                 return;
             }
-            GuiInfo.LocalData = JSON.Parse<List<object>>(ui.LocalQuery);
+            GuiInfo.LocalData = JsonConvert.DeserializeObject<List<object>>(ui.LocalQuery);
             GuiInfo.LocalRender = true;
         }
 

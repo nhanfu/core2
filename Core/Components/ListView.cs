@@ -28,15 +28,11 @@ namespace Core.Components
         protected static IEnumerable<object> _copiedRows;
         public Action<object> RowClick;
         public Action<object> DblClick;
-        protected bool _isFocusCell;
         public bool CanWrite;
-        protected bool _firstCache;
         protected Section _noRecord;
         public Action BodyContextMenuShow;
         private HTMLElement _history;
         public Component LastComponentFocus;
-        public int LastHeaderId;
-        public int _delay = 0;
         public List<string> DeleteTempIds;
         public AdvSearchVM AdvSearchVM { get; set; }
         public bool Editable { get; set; }
@@ -50,10 +46,6 @@ namespace Core.Components
         public ObservableList<object> RowData { get; set; }
         public List<object> FormattedRowData { get; set; }
         internal bool VirtualScroll { get; set; }
-        public string StartRow { get; set; }
-        public string EndRow { get; set; }
-        public string StartCol { get; set; }
-        public string EndCol { get; set; }
         public List<object> CacheData { get; set; } = new List<object>();
         public string FormattedDataSource
         {
@@ -87,23 +79,18 @@ namespace Core.Components
         public ListViewSection MainSection { get; set; }
         public ListViewSection FooterSection { get; set; }
         public Dictionary<string, List<object>> RefData { get; set; }
-        protected int _rowDataChangeAwaiter;
         private static List<object> _originRows;
-
         public string DataSourceFilter { get; set; }
         public Action OnDeleteConfirmed { get; set; }
         public IEnumerable<ListViewItem> AllListViewItem => MainSection.Children.Cast<ListViewItem>();
         public List<object> UpdatedRows => AllListViewItem.OrderBy(x => x.RowNo).Where(x => x.Dirty).Select(x => x.Entity).Distinct().ToList();
-
-        public PatchUpdate LastUpdate { get; set; }
-
-        public bool IgnoreConfirmHardDelete { get; set; }
         public List<CellSelected> CellSelected = new List<CellSelected>();
         public List<Where> Wheres = new List<Where>();
         public HashSet<string> SelectedIds { get; set; } = new HashSet<string>();
         public string FocusId { get; set; }
         public string EntityFocusId { get; set; }
         public bool ShouldSetEntity { get; set; } = true;
+        protected UserSetting Settings { get; set; }
 
         public event Action<object[][]> DataLoaded;
 
@@ -1652,6 +1639,57 @@ namespace Core.Components
             {
                 _rowHeight = existRow.ScrollHeight > 0 ? existRow.ScrollHeight : _rowHeight;
             }
+        }
+
+        public Task<object[][]> GetUserSetting(string prefix)
+        {
+            return Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+            {
+                Url = Utils.UserSvc,
+                Value = new SqlViewModel
+                {
+                    ComId = "UserSetting",
+                    Action = "GetByComId",
+                    Entity = JSON.Stringify(new { ComId = GuiInfo.Id, Prefix = prefix })
+                },
+                Method = HttpMethod.POST
+            });
+        }
+
+        public Task<bool> UpdateSetting(UserSetting setting, string prefix, string value)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            PatchUpdate patch;
+            if (setting is null)
+            {
+                patch = CreateSettingPatch(prefix, System.Id.NewGuid(), value);
+            }
+            else
+            {
+                setting.Value = value;
+                patch = CreateSettingPatch(prefix, setting.Id, value, setting.Id);
+            }
+            Client.Instance.PatchAsync(patch)
+            .Done(r => {
+                tcs.TrySetResult(r);
+            });
+            return tcs.Task;
+        }
+
+        public PatchUpdate CreateSettingPatch(string prefix, string newId, string value, string oldId = null)
+        {
+            var patch = new PatchUpdate
+            {
+                Changes = new List<PatchUpdateDetail> {
+                    new PatchUpdateDetail { Field = nameof(UserSetting.Name), Value = $"{prefix}-{GuiInfo.Id}" },
+                    new PatchUpdateDetail { Field = nameof(UserSetting.UserId), Value = Client.Token.UserId },
+                    new PatchUpdateDetail { Field = nameof(UserSetting.Value), Value = value },
+                },
+                Table = nameof(UserSetting),
+                ConnKey = GuiInfo.ConnKey ?? Utils.DefaultConnKey
+            };
+            patch.Changes.Add(new PatchUpdateDetail { Field = IdField, Value = newId, OldVal = oldId });
+            return patch;
         }
 
         public override void Dispose()
