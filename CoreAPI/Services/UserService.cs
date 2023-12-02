@@ -610,18 +610,16 @@ namespace Core.Services
                 using SqlCommand command = new();
                 command.Transaction = transaction;
                 command.Connection = connection;
+                command.CommandText = deleteCmd;
                 await command.ExecuteNonQueryAsync();
                 await transaction.CommitAsync();
+                return canDeleteRows;
             }
             catch
             {
                 await transaction.RollbackAsync();
+                throw;
             }
-            finally
-            {
-                await transaction.DisposeAsync();
-            }
-            return canDeleteRows;
         }
 
         internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSetWrapper(SqlViewModel vm)
