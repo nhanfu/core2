@@ -23,7 +23,7 @@ namespace Core.Components.Framework
             {
                 return;
             }
-            var result = await Client.PostAsync<bool>(VM, "Register", true);
+            var result = await FormClient.PostAsync<bool>(VM, "Register", true);
             if (result)
             {
                 ShowDialog();

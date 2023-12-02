@@ -8,6 +8,7 @@ namespace Core.ViewModels
         public string ComId { get; set; }
         public string Action { get; set; }
         public string Entity { get; set; }
+        public string[] Ids { get; set; }
         public Component Component { get; set; }
         public string AnnonymousTenant { get; set; }
         public string Select { get; set; } = "*";
@@ -19,6 +20,7 @@ namespace Core.ViewModels
         public bool Count { get; set; }
         public string[] FieldName { get; set; }
         public bool SkipXQuery { get; set; }
+        public string ConnKey { get; set; }
     }
 
     public class SqlQueryResult

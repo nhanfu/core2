@@ -50,7 +50,7 @@ namespace Core.Components
             }
             if (singleAdd)
             {
-                FinalAddOrUpdate();
+                AddNewEmptyRow();
             }
             Dirty = true;
             tcs.TrySetResult(rowSection);
@@ -219,14 +219,8 @@ namespace Core.Components
             }
             if (singleAdd)
             {
-                FinalAddOrUpdate();
+                AddNewEmptyRow();
             }
-        }
-
-        public override async Task AddOrUpdateRows(IEnumerable<object> rows)
-        {
-            await rows.ForEachAsync(async row => await AddOrUpdateRow(row, false));
-            AddNewEmptyRow();
         }
     }
 }

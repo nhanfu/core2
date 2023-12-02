@@ -336,7 +336,7 @@ namespace Core.Components
             var uploadForm = _uploader.ParentElement as HTMLFormElement;
             var formData = new FormData(uploadForm);
             var parentForm = this.FindClosest<EditForm>();
-            var response = await parentForm.Client.SubmitAsync<Blob>(new XHRWrapper
+            var response = await parentForm.FormClient.SubmitAsync<Blob>(new XHRWrapper
             {
                 FormData = formData,
                 Url = "importCsv",

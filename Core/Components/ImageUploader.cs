@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Bridge.Html5;
+﻿using Bridge.Html5;
 using Core.Models;
 using Core.Clients;
 using Core.Components.Extensions;

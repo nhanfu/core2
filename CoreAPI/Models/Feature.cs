@@ -73,29 +73,18 @@
         public string Properties { get; set; }
 
         public string Template { get; set; }
-
         public string LayoutId { get; set; }
-
         public string DataSource { get; set; }
-
         public string Gallery { get; set; }
-
         public bool DeleteTemp { get; set; }
-
         public bool CustomNextCell { get; set; }
-
         public string Signed { get; set; }
-        
         public bool IsPortal { get; set; }
-
+        public string ConnKey { get; set; }
         public virtual ICollection<ComponentGroup> ComponentGroup { get; set; } = new List<ComponentGroup>();
-
         public virtual Entity Entity { get; set; }
-
         public virtual ICollection<FeaturePolicy> FeaturePolicy { get; set; } = new List<FeaturePolicy>();
-
         public virtual ICollection<Feature> InverseParent { get; set; } = new List<Feature>();
-
         public virtual Feature Parent { get; set; }
     }
 }

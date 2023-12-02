@@ -4,7 +4,6 @@ using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
-using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

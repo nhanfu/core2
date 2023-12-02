@@ -53,7 +53,7 @@ namespace Core.Components.Forms
         public DateTime Now => DateTime.Now;
         public Action<bool> AfterSaved;
         public Func<bool> BeforeSaved;
-        public Client Client { get; set; }
+        public Client FormClient { get; set; }
         public bool IsEditMode => Entity != null && Entity[IdField].As<int>() > 0;
         public static WebSocketClient NotificationClient;
         private int awaiter;
@@ -112,7 +112,7 @@ namespace Core.Components.Forms
             }
             ListViews = new HashSet<ListView>();
             _entity = entity;
-            Client = new Client(entity);
+            FormClient = new Client(entity);
             var entityType = Type.GetType(Client.ModelNamespace + entity);
             if (entityType != null)
             {
@@ -165,32 +165,11 @@ namespace Core.Components.Forms
             return true;
         }
 
-        public virtual async Task<bool> SaveWithouUpdateView(object entity)
-        {
-            if (Entity is null)
-            {
-                throw new InvalidOperationException("Entity is null");
-            }
-
-            bool res;
-            var isValid = await IsFormValid();
-            if (!isValid)
-            {
-                return false;
-            }
-
-            BeforeSaved?.Invoke();
-            await AddOrUpdate(entity);
-            Dirty = false;
-            res = true;
-            AfterSaved?.Invoke(res);
-            return res;
-        }
-
         public PatchVM GetPatchEntity()
         {
             var shouldGetAll = EntityId is null;
-            var details = FilterChildren(child => { 
+            var details = FilterChildren(child =>
+            {
                 return child is EditableComponent editable && !(child is Button)
                     && (shouldGetAll || editable.Dirty) && child.GuiInfo != null
                     && child.GuiInfo.FieldName.HasNonSpaceChar();
@@ -217,107 +196,39 @@ namespace Core.Components.Forms
             return new PatchVM { Changes = details, Table = Feature.EntityName };
         }
 
-        public virtual async Task<bool> SavePatch(object entity = null)
+        public virtual Task<bool> SavePatch(object entity = null)
         {
             if (!Dirty)
             {
                 Toast.Warning(NotDirtyMessage);
-                return false;
+                return Task.FromResult(false);
             }
+            var tcs = new TaskCompletionSource<bool>();
             var pathModel = GetPatchEntity();
             BeforeSaved?.Invoke();
-            var rs = await Client.Instance.PatchAsync(pathModel);
-            if (!rs)
+            Client.Instance.PatchAsync(pathModel).Done(rs =>
             {
-                Toast.Warning("Dữ liệu của bạn chưa được lưu vui lòng nhập lại!");
-                UpdateView();
-                return false;
-            }
-            EntityId = pathModel.EntityId;
-            await UpdateIndependantGridView();
-            if (Feature.DeleteTemp)
-            {
-                await DeleteGridView();
-            }
-            Toast.Success($"The data was saved");
-            Dirty = false;
-            AfterSaved?.Invoke(true);
-            return true;
-        }
-
-        public virtual async Task<bool> Save(object entity = null)
-        {
-            if (Entity is null)
-            {
-                throw new InvalidOperationException("Entity is null");
-            }
-
-            bool res;
-            if (!Dirty)
-            {
-                Toast.Warning(NotDirtyMessage);
-                return false;
-            }
-            var isValid = await IsFormValid(showMessage: entity != null);
-            if (!isValid)
-            {
-                return false;
-            }
-            BeforeSaved?.Invoke();
-            var data = await AddOrUpdate(entity);
-            res = data != null;
-            AfterSaved?.Invoke(res);
-            if (res)
-            {
-                Entity.CopyPropFrom(data);
-                UpdateViewAwait(true);
-            }
-            if (ShouldUpdateParentForm)
-            {
-                ParentForm?.UpdateView(true);
-            }
-            return res;
-        }
-
-        public virtual void AddNew(object entity = null)
-        {
-            Dirty = true;
-            Entity.SetPropValue(IdField, 0);
-            var dirtyGrid = ListViews
-                .Where(x => x.GuiInfo.IdField.HasAnyChar() && x.GuiInfo.CanAdd)
-                .ToArray();
-            dirtyGrid.ForEach(x =>
-            {
-                x.RowData.Data.ForEach(row =>
+                if (!rs)
                 {
-                    row.SetPropValue(x.GuiInfo.IdField, null);
-                    row.SetPropValue(IdField, 0);
+                    Toast.Warning("Dữ liệu của bạn chưa được lưu vui lòng nhập lại!");
+                    tcs.TrySetResult(false);
+                    return;
+                }
+                EntityId = pathModel.EntityId;
+                UpdateIndependantGridView().Done(() =>
+                {
+                    if (Feature.DeleteTemp)
+                    {
+                        DeleteGridView();
+                    }
+                    Toast.Success($"The data was saved");
+                    Dirty = false;
+                    AfterSaved?.Invoke(true);
+                    tcs.TrySetResult(true);
                 });
+                return;
             });
-            Client.ExecTask(Save(null), rs =>
-            {
-                if (rs)
-                {
-                    Toast.Success("Tạo mới thành công");
-                    ParentForm.FindActiveComponent<GridView>().FirstOrDefault().ActionFilter();
-                }
-                else
-                {
-                    Toast.Warning("Tạo mới lỗi");
-                }
-            });
-        }
-
-        private void UpdateViewForm()
-        {
-            var parentForm = ParentForm ?? (this is TabEditor tab && tab.Popup ? tab.Parent : null);
-            if (parentForm != null)
-            {
-                var openFrom = parentForm
-                    .FilterChildren(x => x.Entity != null && x.Entity == Entity)
-                    .FirstOrDefault();
-                openFrom?.UpdateView();
-            }
+            return tcs.Task;
         }
 
         private ListView[] GetDirtyGrid()
@@ -336,37 +247,25 @@ namespace Core.Components.Forms
                 .ToArray();
         }
 
-        public async Task<object> AddOrUpdate(object entity)
-        {
-            var showMessage = entity != null;
-            var id = Entity[IdField].As<string>();
-            var updating = id != null;
-            var updated = await AddOrUpdateEntity(entity, updating);
-            if (updated is null)
-            {
-                return null;
-            }
-            ReloadAndShowMessage(showMessage, updating);
-            Dirty = false;
-            return updated;
-        }
-
-        private async Task UpdateIndependantGridView()
+        private Task UpdateIndependantGridView()
         {
             var dirtyGrid = GetDirtyGrid();
             if (dirtyGrid.Nothing())
             {
-                return;
+                return Task.FromResult(true);
             }
-            var id = Entity[IdField] as string;
-            dirtyGrid.ForEach(x =>
+            var id = EntityId;
+            var tasks = dirtyGrid.Select(x =>
             {
                 x.UpdatedRows.ForEach(row => row.SetPropValue(x.GuiInfo.IdField, id));
-            });
-            await Task.WhenAll(dirtyGrid.Select(x => x.BatchUpdate()));
+                return x.BatchUpdate();
+            }).ToArray();
+            var tcs = new TaskCompletionSource<object>();
+            Task.WhenAll(tasks).Done(x => tcs.TrySetResult(true));
+            return tcs.Task;
         }
 
-        private async Task DeleteGridView()
+        private void DeleteGridView()
         {
             var dirtyGrid = GetDeleteGrid();
             if (dirtyGrid.Nothing())
@@ -376,48 +275,20 @@ namespace Core.Components.Forms
             foreach (var item in dirtyGrid)
             {
                 var client = new Client(item.GuiInfo.RefName);
-                var success = await client.HardDeleteAsync(item.DeleteTempIds);
-                if (success)
+                Client.Instance.HardDeleteAsync(item.DeleteTempIds.ToArray(), item.GuiInfo.RefName, GuiInfo.ConnKey)
+                .Done(ids =>
                 {
-                    item.DeleteTempIds.Clear();
-                }
-                else
-                {
-                    Toast.Warning("Lỗi xóa chi tiết vui lòng kiểm tra lại");
-                }
+                    if (ids.HasElement())
+                    {
+                        item.DeleteTempIds.Intersect(ids).ToArray()
+                            .ForEach(x => item.DeleteTempIds.Remove(x));
+                    }
+                    else
+                    {
+                        Toast.Warning("Lỗi xóa chi tiết vui lòng kiểm tra lại");
+                    }
+                });
             }
-        }
-
-        private async Task<object> AddOrUpdateEntity(object entity, bool updating)
-        {
-            object data;
-            try
-            {
-                if (updating)
-                {
-                    data = await Client.UpdateAsync<object>(Entity);
-                }
-                else
-                {
-                    Entity[IdField] = 0;
-                    data = await Client.CreateAsync<object>(Entity);
-                }
-            }
-            catch
-            {
-                if (entity is bool showMessage && showMessage)
-                {
-                    Toast.Warning(Client.ErrorMessage);
-                }
-                data = null;
-            }
-            Entity.CopyPropFrom(data);
-            await UpdateIndependantGridView();
-            if (Feature.DeleteTemp)
-            {
-                await DeleteGridView();
-            }
-            return data;
         }
 
         public async Task<bool> IsFormValid(bool showMessage = true, Func<EditableComponent, bool> predicate = null, Func<EditableComponent, bool> ignorePredicate = null)
@@ -574,7 +445,7 @@ namespace Core.Components.Forms
         {
             var featureTask = Feature != null ? Task.FromResult(Feature) : ComponentExt.LoadFeatureByName(Name, Public, Config);
             var entityTask = LoadEntity();
-            Task.WhenAll(featureTask, entityTask).Done(() => 
+            Task.WhenAll(featureTask, entityTask).Done(() =>
                 FeatureLoaded(featureTask.Result, entityTask.Result, callback));
         }
 
@@ -1302,7 +1173,7 @@ namespace Core.Components.Forms
 
         public override void Dispose()
         {
-            Client = null;
+            FormClient = null;
             Window.RemoveEventListener(EventType.Resize, ResizeHandler);
             base.Dispose();
         }
@@ -1357,7 +1228,7 @@ namespace Core.Components.Forms
                 });
                 email.PdfText.AddRange(pdfText);
             }
-            var sucess = await Client.PostAsync<bool>(email, "EmailAttached", allowNested: true);
+            var sucess = await FormClient.PostAsync<bool>(email, "EmailAttached", allowNested: true);
             if (sucess)
             {
                 Toast.Success("Gởi email thành công!");
@@ -1496,21 +1367,6 @@ namespace Core.Components.Forms
             });
         }
 
-        public void SetExpired()
-        {
-            var confirm = new ConfirmDialog
-            {
-                Content = "Bạn có chắc chắn muốn cài đặt hết hạn?",
-            };
-            confirm.Render();
-            confirm.YesConfirmed += async () =>
-            {
-                Entity.SetPropValue(ExpiredDate, DateTime.Now);
-                UpdateView(componentNames: ExpiredDate);
-                await AddOrUpdate(true);
-            };
-        }
-
         public virtual void Delete()
         {
             var confirm = new ConfirmDialog
@@ -1518,19 +1374,22 @@ namespace Core.Components.Forms
                 Content = "Bạn có chắc chắn xóa không?",
             };
             confirm.Render();
-            confirm.YesConfirmed += async () =>
+            confirm.YesConfirmed += () =>
             {
-                var success = await Client.HardDeleteAsync(new List<string>() { Entity[IdField].ToString() });
-                if (success)
+                Client.Instance.HardDeleteAsync(new string[] { EntityId }, Feature.EntityName, Feature.ConnKey)
+                .Done(ids =>
                 {
-                    ParentForm.UpdateView(true);
-                    Dispose();
-                    Toast.Success("Xóa dữ liệu thành công");
-                }
-                else
-                {
-                    Toast.Warning("Xóa không thành công");
-                }
+                    if (ids.HasElement())
+                    {
+                        Toast.Success("Delete data succeeded");
+                        ParentForm.UpdateView(true);
+                        Dispose();
+                    }
+                    else
+                    {
+                        Toast.Warning("An error occurs while deleting data");
+                    }
+                });
             };
         }
 

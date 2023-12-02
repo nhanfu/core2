@@ -364,11 +364,10 @@ namespace Core.Services
                     ?? throw new ApiException("Tenant config not found");
                 connKey = tenantConnKey;
             }
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Hash, hash),
-                new Claim(ClaimTypes.System, connKey, PassPhrase),
-            };
+            List<Claim> claims = [
+                new(ClaimTypes.Hash, hash),
+                new(ClaimTypes.System, connKey, PassPhrase),
+            ];
             if (encryptQuery)
             {
                 claims.Add(new Claim("Query", query));
@@ -444,18 +443,20 @@ namespace Core.Services
                 .Any(x => x.TokenType == TSqlTokenType.MultilineComment || x.TokenType == TSqlTokenType.SingleLineComment);
         }
 
-        public bool HasSideEffect(string sql)
+        static TSqlTokenType[] SideEffectCmd = [
+                TSqlTokenType.Insert, TSqlTokenType.Update, TSqlTokenType.Delete,
+                TSqlTokenType.Create, TSqlTokenType.Drop, TSqlTokenType.Alter,
+                TSqlTokenType.Truncate, TSqlTokenType.MultilineComment, TSqlTokenType.SingleLineComment
+            ];
+        public bool HasSideEffect(string sql, params TSqlTokenType[] allowCmds)
         {
+            var finalCmd = SideEffectCmd.Except(allowCmds).ToArray();
             TSql110Parser parser = new(true);
             var fragments = parser.Parse(new StringReader(sql), out var errors);
-            return fragments.ScriptTokenStream.Any(x => x.TokenType == TSqlTokenType.Insert 
-                || x.TokenType == TSqlTokenType.Update || x.TokenType == TSqlTokenType.Delete 
-                || x.TokenType == TSqlTokenType.Create || x.TokenType == TSqlTokenType.Drop
-                || x.TokenType == TSqlTokenType.Alter || x.TokenType == TSqlTokenType.Truncate 
-                || x.TokenType == TSqlTokenType.MultilineComment || x.TokenType == TSqlTokenType.SingleLineComment);
+            return fragments.ScriptTokenStream.Any(x => finalCmd.Contains(x.TokenType));
         }
 
-        public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSet(string query, string connStr, bool exportQuery = true)
+        public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSet(string query, string connStr, params object[] objects)
         {
             try
             {
@@ -583,6 +584,44 @@ namespace Core.Services
                 await transaction.RollbackAsync();
                 throw;
             }
+        }
+
+        public async Task<string[]> HardDeleteAsync(SqlViewModel vm)
+        {
+            var connStr = await GetConnStrFromKey(vm.ConnKey ?? "default");
+            var allRights = await GetEntityPerm(vm.Entity, null);
+            var canDeleteAll = allRights.Any(x => x.CanDeleteAll);
+            var canDeleteSelf = allRights.Any(x => x.CanDelete);
+            var query = $"select * from {vm.Entity} where Id in ({vm.Ids.CombineStrings()})";
+            var ds = (await ReadDataSet(query, connStr)).ToList();
+            var rows = ds.Count > 0 ? ds[0] : null;
+            if (rows.Nothing()) return null;
+            var canDeleteRows = rows.Where(x =>
+            {
+                return canDeleteAll || canDeleteSelf && Utils.IsOwner(x, UserId, RoleIds);
+            }).Select(x => x.GetValueOrDefault(Utils.IdField)?.ToString()).ToArray();
+            if (canDeleteRows.Nothing()) return null;
+            var deleteCmd = $"delete from {vm.Entity} where Id in ({canDeleteRows.CombineStrings()})";
+            using SqlConnection connection = new(connStr);
+            await connection.OpenAsync();
+            using var transaction = connection.BeginTransaction();
+            try
+            {
+                using SqlCommand command = new();
+                command.Transaction = transaction;
+                command.Connection = connection;
+                await command.ExecuteNonQueryAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+            }
+            finally
+            {
+                await transaction.DisposeAsync();
+            }
+            return canDeleteRows;
         }
 
         internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSetWrapper(SqlViewModel vm)

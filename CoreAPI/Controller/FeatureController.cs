@@ -253,7 +253,8 @@ namespace Core.Controllers
             return await base.DeactivateAsync(ids);
         }
 
-        public override async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<string> ids)
+        [HttpDelete("api/[Controller]/HardDelete", Order = 0)]
+        public async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<string> ids)
         {
             var hasSystemRole = await HasSystemRole();
             if (!hasSystemRole)

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Core.ViewModels
+﻿namespace Core.ViewModels
 {
     public class SqlViewModel
     {
@@ -8,7 +6,7 @@ namespace Core.ViewModels
         public string ComId { get; set; }
         public string Action { get; set; }
         public string Entity { get; set; }
-        public string Ids { get; set; }
+        public string[] Ids { get; set; }
         public string AnnonymousTenant { get; set; }
         public string Paging { get; set; }
         public string Select { get; set; }
@@ -20,6 +18,7 @@ namespace Core.ViewModels
         public bool RawQuery { get; set; }
         public string[] FieldName { get; set; }
         public bool SkipXQuery { get; set; }
+        public string ConnKey { get; internal set; }
     }
 
     public class SignedCom

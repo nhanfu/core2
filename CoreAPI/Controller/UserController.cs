@@ -193,5 +193,11 @@ namespace Core.Controllers
         {
             return _userSvc.Patch(patch);
         }
+
+        [HttpDelete("api/[Controller]/HardDelete", Order = 0)]
+        public Task<string[]> HardDeleteAsync([FromBody] SqlViewModel vm)
+        {
+            return _userSvc.HardDeleteAsync(vm);
+        }
     }
 }

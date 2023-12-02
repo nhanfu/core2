@@ -9,7 +9,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using PathIO = System.IO.Path;
 using Core.ViewModels;
-using System.Collections.Generic;
 
 namespace Core.Components
 {

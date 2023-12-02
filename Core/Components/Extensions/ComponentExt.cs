@@ -103,36 +103,15 @@ namespace Core.Components.Extensions
             }
         }
 
-        public static async Task InvokeMethodAsync(this EditForm bl, string methodName, params object[] parameters)
-        {
-            var method = bl[methodName];
-            if (method is null)
-            {
-                return;
-            }
-
-            using (Task task = null)
-            {
-                /*@
-                var task = method.apply(bl, parameters);
-                if (task == null || task.isCompleted == null) {
-                    $tcs.setResult(null);
-                    return;
-                }
-                */
-                await task;
-            }
-        }
-
-        public static async Task DispatchCustomEventAsync(this EditableComponent com, string events, CustomEventType eventType, params object[] parameters)
+        public static Task DispatchCustomEventAsync(this EditableComponent com, string events, CustomEventType eventType, params object[] parameters)
         {
             if (events.IsNullOrEmpty())
             {
-                return;
+                return Task.FromResult(true);
             }
 
             var eventTypeName = eventType.ToString();
-            await InvokeEventAsync(com, events, eventTypeName, parameters);
+            return InvokeEventAsync(com, events, eventTypeName, parameters);
         }
 
         public static Component MapToCom(this object raw)

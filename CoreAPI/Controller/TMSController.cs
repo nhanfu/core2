@@ -40,12 +40,6 @@ namespace Core.Controllers
             return UpdateAsync(entity);
         }
 
-        [HttpDelete("api/listener/[Controller]/{id}")]
-        public virtual Task<ActionResult<bool>> HardDeleteListenerAsync([FromRoute] string id)
-        {
-            return HardDeleteAsync(id);
-        }
-
         protected async Task<bool> HasSystemRole()
         {
             return await db.Role.AnyAsync(x => AllRoleIds.Contains(x.Id) && x.RoleName.Contains("system"));

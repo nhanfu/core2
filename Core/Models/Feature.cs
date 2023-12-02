@@ -57,6 +57,7 @@ namespace Core.Models
 
         public virtual Entity Entity { get; set; }
         public virtual Feature Parent { get; set; }
+        public string ConnKey { get; set; }
         public virtual ICollection<ComponentGroup> ComponentGroup { get; set; }
         public virtual ICollection<FeaturePolicy> FeaturePolicy { get; set; }
         public virtual ICollection<Feature> InverseParent { get; set; }

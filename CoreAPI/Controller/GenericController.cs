@@ -459,43 +459,12 @@ namespace Core.Controllers
             return entities;
         }
 
-        [HttpDelete("api/[Controller]/{id}", Order = 1)]
-        public virtual async Task<ActionResult<bool>> HardDeleteAsync([FromRoute] string id)
-        {
-            return await HardDeleteAsync(new List<string> { id });
-        }
-
         [HttpDelete("api/[Controller]/Delete", Order = 1)]
         public virtual async Task<ActionResult<bool>> DeactivateAsync([FromBody] List<string> ids)
         {
             var updateCommand = string.Format("Update [{0}] set Active = 0 where Id in ({1})", typeof(T).Name, string.Join(",", ids));
             await ctx.Database.ExecuteSqlRawAsync(updateCommand);
             return true;
-        }
-
-        [HttpDelete("api/[Controller]/HardDelete", Order = 1)]
-        public virtual async Task<ActionResult<bool>> HardDeleteAsync([FromBody] List<string> ids)
-        {
-            if (ids.Nothing())
-            {
-                return false;
-            }
-            ids = ids.Where(x => x.HasAnyChar()).ToList();
-            if (ids.Nothing())
-            {
-                return false;
-            }
-            try
-            {
-                var idSql = ids.Select(x => $"'{x}'").Combine();
-                var deleteCommand = $"delete from [{typeof(T).Name}] where Id in ({idSql})";
-                await ctx.Database.ExecuteSqlRawAsync(deleteCommand);
-                return true;
-            }
-            catch
-            {
-                throw new ApiException("Không thể xóa dữ liệu!") { StatusCode = HttpStatusCode.BadRequest };
-            }
         }
 
         [HttpPost("api/[Controller]/ImportCsv")]

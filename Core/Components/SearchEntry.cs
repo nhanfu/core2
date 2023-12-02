@@ -318,18 +318,20 @@ namespace Core.Components
                 var htmlTd = Document.CreateElement(ElementType.td.ToString());
                 var htmlTr = groupButton.Element.QuerySelector(ElementType.tr.ToString()) as HTMLElement;
                 htmlTr.Prepend(htmlTd);
-                Html.Take(htmlTd).Button.ClassName("btn btn-secondary").Icon("fal fa-file-check").End.IText("Áp dụng").Event(EventType.Click, async () =>
+                Html.Take(htmlTd).Button.ClassName("btn btn-secondary").Icon("fal fa-file-check").End.IText("Apply").Event(EventType.Click, () =>
                 {
-                    if (!await instance.IsFormValid())
+                    instance.IsFormValid().Done(valid =>
                     {
-                        return;
-                    }
-                    var rs = await instance.AddOrUpdate(instance.Entity);
-                    if (rs != null)
-                    {
-                        SaveAndApply(rs);
-                        instance.Dispose();
-                    }
+                        if (!valid) return;
+                        instance.SavePatch().Done(success =>
+                        {
+                            if (success)
+                            {
+                                SaveAndApply(instance.Entity);
+                                instance.Dispose();
+                            }
+                        });
+                    });
                 }).End.Render();
             };
         }
@@ -585,7 +587,7 @@ namespace Core.Components
             Matched = GuiInfo.LocalData.HasElement()
                 ? GuiInfo.LocalData.FirstOrDefault(x => x[IdField] as string == _value)
                 : RowData.Data.FirstOrDefault(x => x[IdField] as string == Value);
-            
+
             SetMatchedValue();
             return true;
         }

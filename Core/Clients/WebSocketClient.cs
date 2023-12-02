@@ -1,6 +1,5 @@
 ﻿using Bridge.Html5;
 using Core.Models;
-using Newtonsoft.Json;
 using System;
 
 namespace Core.Clients

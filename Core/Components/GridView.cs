@@ -1694,7 +1694,7 @@ namespace Core.Components
                 RenderRowData(Header, rowData, MainSection);
             });
             MainSection.Show = true;
-            RenderIndex();
+            ContentRendered();
             DomLoaded();
         }
 
@@ -2598,26 +2598,24 @@ namespace Core.Components
                 Content = "Bạn có chắc chắn muốn xóa cột này không?",
             };
             confirm.Render();
-            confirm.YesConfirmed += async () =>
+            confirm.YesConfirmed += () =>
             {
-                var ids = new List<string> { entity.Id };
-                var success = await new Client(nameof(Component)).HardDeleteAsync(ids);
-                if (success)
+                var ids = new string[] { entity.Id };
+                Client.Instance.HardDeleteAsync(ids, GuiInfo.EntityName, GuiInfo.ConnKey)
+                .Done(delIds =>
                 {
-                    Header.Remove(entity);
-                    Rerender();
-                    Toast.Success("delete success");
-                }
-                else
-                {
-                    Toast.Warning("delete error");
-                }
+                    if (delIds.HasElement())
+                    {
+                        Toast.Success("Delete success");
+                        Header.Remove(entity);
+                        Rerender();
+                    }
+                    else
+                    {
+                        Toast.Warning("delete error");
+                    }
+                });
             };
-        }
-
-        public override async Task AddOrUpdateRows(IEnumerable<object> rows)
-        {
-            await base.AddOrUpdateRows(rows);
         }
 
         public override void RemoveRowById(string id)
@@ -2632,20 +2630,19 @@ namespace Core.Components
             RenderIndex();
         }
 
-        public override async Task<IEnumerable<object>> HardDeleteConfirmed(List<object> deleted)
+        public override Task<List<object>> HardDeleteConfirmed(List<object> deleted)
         {
-            var res = await base.HardDeleteConfirmed(deleted);
-            if (GuiInfo.ComponentType == nameof(VirtualGrid) && res != null)
+            var tcs = new TaskCompletionSource<List<object>>();
+            base.HardDeleteConfirmed(deleted).Done((res) =>
             {
-                var ids = res.Select(x => x[IdField]?.ToString()).ToList();
-                CacheData.RemoveAll(x => ids.Contains(x[IdField]?.ToString()));
-            }
-            RenderIndex();
-            if (GuiInfo.IsSumary)
-            {
-                AddSummaries();
-            }
-            return res;
+                RenderIndex();
+                if (GuiInfo.IsSumary)
+                {
+                    AddSummaries();
+                }
+                tcs.TrySetResult(res);
+            });
+            return tcs.Task;
         }
 
         protected int _renderIndexAwaiter;

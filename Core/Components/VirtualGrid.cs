@@ -3,7 +3,6 @@ using Core.Clients;
 using Core.Components.Extensions;
 using Core.Extensions;
 using Core.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -278,6 +277,17 @@ namespace Core.Components
 
             td.Closest(ElementType.tr.ToString()).AddClass("focus");
             td.Closest(ElementType.td.ToString()).AddClass("cell-selected");
+        }
+
+        public override Task<List<object>> HardDeleteConfirmed(List<object> deleted)
+        {
+            var tcs = new TaskCompletionSource<List<object>>();
+            base.HardDeleteConfirmed(deleted).Done((res) => {
+                var ids = res.Select(x => x[IdField]?.ToString()).ToList();
+                CacheData.RemoveAll(x => ids.Contains(x[IdField]?.ToString()));
+                tcs.TrySetResult(res);
+            });
+            return tcs.Task;
         }
     }
 }

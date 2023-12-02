@@ -31,10 +31,11 @@ namespace Core.Clients
         private static Dictionary<string, Entity> entities;
         private static Token token;
         public static int GuidLength = 36;
-        public static string Tenant = Utils.HeadChildren.tenant.content as string ?? "System";
-        public static string Env = Utils.HeadChildren.env.content as string ?? "test";
-        public static string FileFTP => Utils.HeadChildren.file.content as string ?? "/user";
-        public static string Config => Utils.HeadChildren.config.content as string ?? string.Empty;
+        public static string ConnKey = Utils.HeadChildren.connKey?.content as string ?? "default";
+        public static string Tenant = Utils.HeadChildren.tenant?.content as string ?? "System";
+        public static string Env = Utils.HeadChildren.env?.content as string ?? "test";
+        public static string FileFTP => Utils.HeadChildren.file?.content as string ?? "/user";
+        public static string Config => Utils.HeadChildren.config?.content as string ?? string.Empty;
         public static BadGatewayQueue BadGatewayRequest = new BadGatewayQueue();
         public static Action<XHRWrapper> UnAuthorizedEventHandler;
         public static Action SignOutEventHandler;
@@ -613,12 +614,18 @@ namespace Core.Clients
             });
         }
 
-        public Task<bool> HardDeleteAsync(List<string> ids)
+        public Task<string[]> HardDeleteAsync(string[] ids, string table, string connKey)
         {
-            return SubmitAsync<bool>(new XHRWrapper
+            var vm = new SqlViewModel
             {
-                Url = "HardDelete",
-                Value = JSON.Stringify(ids),
+                Ids = ids,
+                Entity = table,
+                ConnKey = connKey ?? ConnKey
+            };
+            return SubmitAsync<string[]>(new XHRWrapper
+            {
+                Url = Utils.HardDelSvc,
+                Value = JSON.Stringify(vm),
                 Method = HttpMethod.DELETE,
                 IsRawString = true,
                 Headers = new Dictionary<string, string>
@@ -879,6 +886,11 @@ namespace Core.Clients
             /*@
             promise.then(handler).catch(errorHandler);
              */
+        }
+
+        internal object HardDeleteAsync(string[] strings, string entityName, object connKey)
+        {
+            throw new NotImplementedException();
         }
     }
 }

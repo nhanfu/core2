@@ -411,6 +411,7 @@ namespace Core.Components
             {
                 var rowSection = RenderRowData(Header, rowData, MainSection);
             });
+            ContentRendered();
         }
 
         protected virtual void Rerender()
@@ -420,7 +421,11 @@ namespace Core.Components
             MainSection.DisposeChildren();
             Html.Take(MainSection.Element).Clear();
             RenderContent();
+        }
 
+        protected virtual void ContentRendered()
+        {
+            RenderIndex();
             if (Editable)
             {
                 AddNewEmptyRow();
@@ -460,7 +465,7 @@ namespace Core.Components
 
         protected void SetRowDataIfExists()
         {
-            if (Entity != null && Utils.GetPropValue(Entity, FieldName) is IEnumerable value 
+            if (Entity != null && Utils.GetPropValue(Entity, FieldName) is IEnumerable value
                 && value.GetEnumerator().MoveNext() && (value is string))
             {
                 RowData["_data"] = value;
@@ -569,10 +574,7 @@ namespace Core.Components
         {
             e.PreventDefault();
             e.StopPropagation();
-            Task.Run(async () =>
-            {
-                await TbodyContextMenu(e);
-            });
+            TbodyContextMenu(e);
         }
 
         protected void SetRemoteSource(List<object> remoteData, string typeName, Component header)
@@ -760,7 +762,7 @@ namespace Core.Components
             }
         }
 
-        public virtual async Task<IEnumerable<object>> HardDeleteConfirmed(List<object> deleted)
+        public virtual Task<List<object>> HardDeleteConfirmed(List<object> deleted)
         {
             var entity = GuiInfo.RefName;
             var ids = deleted.Select(x => x[IdField]?.ToString()).Where(x => x != null).ToList();
@@ -772,8 +774,8 @@ namespace Core.Components
             }
             if (deleted.Nothing())
             {
-                Toast.Success("Xóa dữ liệu thành công");
-                return null;
+                Toast.Success("Select at least 1 row to delete");
+                return Task.FromResult(null as List<object>);
             }
             if (EditForm.Feature.DeleteTemp)
             {
@@ -785,31 +787,30 @@ namespace Core.Components
                 DeleteTempIds.AddRange(ids);
                 AllListViewItem.Where(x => x.Selected).ToArray().ForEach(x => x.Dispose());
                 ClearSelected();
-                base.Dirty = true;
-                Toast.Success("Xóa tạm thành công");
-                return deleted;
+                Dirty = true;
+                Toast.Success("Delete data success");
+                return Task.FromResult(deleted);
             }
-            else
+            var tcs = new TaskCompletionSource<List<object>>();
+            Client.Instance.HardDeleteAsync(ids.ToArray(), GuiInfo.RefName, GuiInfo.ConnKey)
+            .Done(delSuccessIds =>
             {
-                var client = new Client(entity);
-                var success = await client.HardDeleteAsync(ids);
-                if (success)
+                if (delSuccessIds.HasElement())
                 {
-                    AllListViewItem.Where(x => x.Selected).ToArray().ForEach(x => x.Dispose());
-                    Toast.Success("Xóa dữ liệu thành công");
-                    ClearSelected();
-                    if (deletes.Any())
-                    {
-                        RemoveRange(deletes);
-                    }
-                    return deleted;
+                    var allDeleted = delSuccessIds.Length == ids.Count ? string.Empty : " partially";
+                    Toast.Success($"Delete data{allDeleted} success");
+                    AllListViewItem.Where(x => x.Selected && delSuccessIds.Contains(x.EntityId))
+                        .ToArray().ForEach(x => x.Dispose());
+                    tcs.TrySetResult(deleted);
+                    return;
                 }
                 else
                 {
-                    Toast.Warning("Xóa không thành công");
+                    Toast.Warning("No row was deleted");
                 }
-                return null;
-            }
+                tcs.TrySetResult(null);
+            });
+            return tcs.Task;
         }
 
         public virtual void RemoveRange(IEnumerable<object> deleted)
@@ -919,10 +920,11 @@ namespace Core.Components
                 return;
             }
 
-            _ = Task.Run(async () =>
+            Toast.Success("Đang Sao chép liệu !");
+            ComponentExt
+            .DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows)
+            .Done(() =>
             {
-                Toast.Success("Đang Sao chép liệu !");
-                await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows);
                 var index = AllListViewItem.IndexOf(x => x.Selected);
                 if (addRow)
                 {
@@ -935,10 +937,20 @@ namespace Core.Components
                         index = AllListViewItem.LastOrDefault().RowNo;
                     }
                 }
-                var list = await AddRowsNo(copiedRows, index);
-                base.Dirty = true;
-                base.Focus();
-                await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows);
+                AddRowsNo(copiedRows, index).Done(list =>
+                {
+                    DuplocateRowSuccess(list, originalRows, copiedRows);
+                });
+            });
+        }
+
+        private void DuplocateRowSuccess(List<ListViewItem> list, List<object> originalRows, IEnumerable<object> copiedRows)
+        {
+            list.ForEach(x => x.Dirty = true);
+            base.Focus();
+            ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows)
+            .Done(() =>
+            {
                 RenderIndex();
                 ClearSelected();
                 if (GuiInfo.IsRealtime)
@@ -957,7 +969,7 @@ namespace Core.Components
             });
         }
 
-        public virtual async Task AddOrUpdateRow(object rowData, bool singleAdd = true, bool force = false, params string[] fields)
+        public virtual Task AddOrUpdateRow(object rowData, bool singleAdd = true, bool force = false, params string[] fields)
         {
             var existRowData = MainSection
                 .FilterChildren(x => x is ListViewItem && x.Entity == rowData)
@@ -968,8 +980,7 @@ namespace Core.Components
                 {
                     RowData.Data.Add(rowData);
                 }
-                await AddRow(rowData, RowData.Data.Count - 1, singleAdd);
-                return;
+                return AddRow(rowData, RowData.Data.Count - 1, singleAdd);
             }
             if (existRowData.EmptyRow)
             {
@@ -984,20 +995,9 @@ namespace Core.Components
             });
             if (singleAdd)
             {
-                FinalAddOrUpdate();
+                AddNewEmptyRow();
             }
-        }
-
-        protected void FinalAddOrUpdate()
-        {
-            AddNewEmptyRow();
-        }
-
-        public virtual async Task AddOrUpdateRows(IEnumerable<object> rows)
-        {
-            RowData.Data.AddRange(rows);
-            await rows.ForEachAsync(async row => await AddOrUpdateRow(row, false));
-            FinalAddOrUpdate();
+            return Task.FromResult(true);
         }
 
         public virtual Task<ListViewItem> AddRow(object rowData, int index = 0, bool singleAdd = true)
@@ -1013,11 +1013,11 @@ namespace Core.Components
             {
                 RowData.Data.Add(rowData);
             }
-            Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData), () =>
+            this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData).Done(() =>
             {
                 var row = RenderRowData(Header, rowData, MainSection, index);
                 tcs.TrySetResult(row);
-                Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData));
+                this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData).Done();
             });
             return tcs.Task;
         }
@@ -1301,7 +1301,7 @@ namespace Core.Components
         }
 
         protected List<FeaturePolicy> RecordPolicy = new List<FeaturePolicy>();
-        public async Task TbodyContextMenu(Event e)
+        public void TbodyContextMenu(Event e)
         {
             ContextMenu.Instance.MenuItems.Clear();
             BodyContextMenuShow?.Invoke();
@@ -1318,15 +1318,19 @@ namespace Core.Components
             var ctxMenu = ContextMenu.Instance;
             var gridPolicies = EditForm.GetElementPolicies(GuiInfo.Id, Utils.ComponentId);
             var canWrite = GuiInfo.CanAdd && CanWrite;
-            await RenderViewMenu();
-            RenderCopyPasteMenu(canWrite);
-            RenderEditMenu(selectedRows, gridPolicies);
-            await RenderShareMenu(selectedRows, gridPolicies);
-            ctxMenu.Top = e.Top();
-            ctxMenu.Left = e.Left();
-            ctxMenu.Render();
-            Element.AppendChild(ctxMenu.Element);
-            ctxMenu.Element.Style.Position = Position.absolute.ToString();
+            RenderViewMenu().Done(() =>
+            {
+                RenderCopyPasteMenu(canWrite);
+                RenderEditMenu(selectedRows, gridPolicies);
+                RenderShareMenu(selectedRows, gridPolicies).Done(() =>
+                {
+                    ctxMenu.Top = e.Top();
+                    ctxMenu.Left = e.Left();
+                    ctxMenu.Render();
+                    Element.AppendChild(ctxMenu.Element);
+                    ctxMenu.Element.Style.Position = Position.absolute.ToString();
+                });
+            });
         }
 
         private void SetSelected(Event e)
@@ -1463,27 +1467,18 @@ namespace Core.Components
                 Text = "Xem lịch sử",
                 Click = ViewHistory,
             });
-            var canDeactivate = CanDo(gridPolicies, x => x.CanDeactivate);
-            if (canDeactivate)
+            ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
             {
-                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
-                {
-                    Icon = "mif-unlink",
-                    Text = "Hủy (không xóa)",
-                    Click = DeactivateSelected,
-                });
-            }
-            var isOwner = selectedRows.All(x => Utils.IsOwner(x, true));
-            var canDelete = CanDo(gridPolicies, x => x.CanDelete && isOwner || x.CanDeleteAll);
-            if (canDelete)
+                Icon = "mif-unlink",
+                Text = "Hủy (không xóa)",
+                Click = DeactivateSelected,
+            });
+            ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
             {
-                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
-                {
-                    Icon = "fa fa-trash",
-                    Text = "Xóa dữ liệu",
-                    Click = HardDeleteSelected,
-                });
-            }
+                Icon = "fa fa-trash",
+                Text = "Xóa dữ liệu",
+                Click = HardDeleteSelected,
+            });
         }
 
         private async Task RenderShareMenu(List<object> selectedRows, IEnumerable<FeaturePolicy> gridPolicies)
@@ -1537,10 +1532,11 @@ namespace Core.Components
             RowAction(x => x.Selected = true, true);
         }
 
-        public void ClearSelected()
+        public void ClearSelected(params string[] ids)
         {
-            RowAction(x => x.Selected = false);
-            SelectedIds.Clear();
+            var shouldClear = ids.Any() ? SelectedIds.Intersect(ids).ToArray() : SelectedIds.ToArray();
+            shouldClear.ForEach(x => SelectedIds.Remove(x));
+            AllListViewItem.Where(x => shouldClear.Contains(x.EntityId)).ForEach(x => x.Selected = false);
             LastListViewItem = null;
         }
 
@@ -1670,7 +1666,8 @@ namespace Core.Components
                 patch = CreateSettingPatch(prefix, setting.Id, value, setting.Id);
             }
             Client.Instance.PatchAsync(patch)
-            .Done(r => {
+            .Done(r =>
+            {
                 tcs.TrySetResult(r);
             });
             return tcs.Task;
@@ -1686,7 +1683,7 @@ namespace Core.Components
                     new PatchDetail { Field = nameof(UserSetting.Value), Value = value },
                 },
                 Table = nameof(UserSetting),
-                ConnKey = GuiInfo.ConnKey ?? Utils.DefaultConnKey
+                ConnKey = GuiInfo.ConnKey ?? Client.ConnKey
             };
             patch.Changes.Add(new PatchDetail { Field = IdField, Value = newId, OldVal = oldId });
             return patch;

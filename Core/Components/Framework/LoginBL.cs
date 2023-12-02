@@ -193,7 +193,7 @@ namespace Core.Components.Framework
 
         public async Task<bool> ForgotPassword(LoginVM login)
         {
-            var res = await Client.PostAsync<bool?>(login, "ForgotPassword");
+            var res = await FormClient.PostAsync<bool?>(login, "ForgotPassword");
             if (res is null || !res.Value)
             {
                 Toast.Warning("An error occurs. Please contact the administrator to get your password!");

@@ -193,7 +193,7 @@ namespace Core.Components
             return listData;
         }
 
-        public override async Task<IEnumerable<object>> HardDeleteConfirmed(List<object> deleted)
+        public override async Task<List<object>> HardDeleteConfirmed(List<object> deleted)
         {
             var deleted1 = await base.HardDeleteConfirmed(deleted);
             Dirty = true;

@@ -48,6 +48,7 @@ namespace Core.Components
                 RenderRowData(Header, row, MainSection, null);
             });
             MainSection.Show = true;
+            ContentRendered();
         }
 
         public override Task ApplyFilter()
@@ -275,11 +276,6 @@ namespace Core.Components
                 existRowData.Entity.CopyPropFrom(rowData);
                 RowAction(x => x.Entity == existRowData.Entity, x => x.UpdateView(force: force, componentNames: fields));
             }
-        }
-
-        public override async Task AddOrUpdateRows(IEnumerable<object> rows)
-        {
-            await rows.ForEachAsync(async row => await AddOrUpdateRow(row, false));
         }
 
         protected override void RenderIndex(int? skip = null)
