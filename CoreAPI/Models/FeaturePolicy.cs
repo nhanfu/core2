@@ -28,6 +28,7 @@
         public bool CanAdd { get; set; }
         public bool CanWriteMeta { get; set; }
         public bool CanWriteMetaAll { get; set; }
+        public bool CanDeactivateAll { get; set; }
         public virtual Feature Feature { get; set; }
         public virtual Role Role { get; set; }
     }

@@ -341,11 +341,12 @@ namespace Core.Components.Framework
         {
             var feature = ev as Feature;
             var confirmDialog = new ConfirmDialog();
-            confirmDialog.Content = "Bạn có muốn deactivate feature này?";
-            confirmDialog.YesConfirmed += async () =>
+            confirmDialog.Content = "DO you want to deactivate this feature?";
+            confirmDialog.YesConfirmed += () =>
             {
-                var client = new Client(nameof(Feature));
-                await client.DeactivateAsync(new List<string> { feature.Id });
+                Client.Instance
+                    .DeactivateAsync(new string[] { feature.Id }, nameof(Feature), Client.ConnKey)
+                    .Done();
             };
             AddChild(confirmDialog);
         }

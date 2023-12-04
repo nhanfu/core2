@@ -166,6 +166,7 @@ namespace Core.Components
 
             if (GuiInfo.UpperCase)
             {
+#pragma warning disable IDE0017 // Simplify object initialization
                 var txtScan = new Textbox(new Component
                 {
                     FieldName = nameof(ListViewSearchVM.ScanTerm),
@@ -179,9 +180,11 @@ namespace Core.Components
                 {
                     ParentElement = Element
                 };
+#pragma warning restore IDE0017 // Simplify object initialization
                 txtScan.UserInput = null;
                 AddChild(txtScan);
             }
+#pragma warning disable IDE0017 // Simplify object initialization
             var startDate = new Datepicker(new Component
             {
                 FieldName = nameof(ListViewSearchVM.StartDate),
@@ -193,8 +196,10 @@ namespace Core.Components
             {
                 ParentElement = Element
             };
+#pragma warning restore IDE0017 // Simplify object initialization
             startDate.UserInput = null;
             AddChild(startDate);
+#pragma warning disable IDE0017 // Simplify object initialization
             var endDate = new Datepicker(new Component
             {
                 FieldName = nameof(ListViewSearchVM.EndDate),
@@ -206,10 +211,12 @@ namespace Core.Components
             {
                 ParentElement = Element
             };
+#pragma warning restore IDE0017 // Simplify object initialization
             endDate.UserInput = null;
             AddChild(endDate);
             if (ParentListView.GuiInfo.ShowDatetimeField)
             {
+#pragma warning disable IDE0017 // Simplify object initialization
                 var dateType = new SearchEntry(new Component
                 {
                     FieldName = nameof(Component.DateTimeField),
@@ -224,6 +231,7 @@ namespace Core.Components
                 {
                     ParentElement = Element
                 };
+#pragma warning restore IDE0017 // Simplify object initialization
                 dateType.UserInput = null;
                 AddChild(dateType);
             }

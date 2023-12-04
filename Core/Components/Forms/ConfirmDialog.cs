@@ -198,10 +198,12 @@ namespace Core.Components.Forms
 
         public static ConfirmDialog RenderConfirm(string content, string textButton = "Đóng")
         {
+#pragma warning disable IDE0017 // Simplify object initialization
             var dialog = new ConfirmDialog
             {
                 Content = content,
             };
+#pragma warning restore IDE0017 // Simplify object initialization
             dialog.YesText = textButton;
             dialog.IgnoreNoButton = true;
             dialog.Render();

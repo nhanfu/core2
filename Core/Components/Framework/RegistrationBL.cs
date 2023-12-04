@@ -32,6 +32,7 @@ namespace Core.Components.Framework
 
         private void ShowDialog()
         {
+#pragma warning disable IDE0017 // Simplify object initialization
             _confirm = new ConfirmDialog()
             {
                 Content = $"Bạn đã đăng ký success, 1 email đã được gởi vào địa chỉ {VM.Email}.<br />" +
@@ -39,6 +40,7 @@ namespace Core.Components.Framework
                                 $"Email gởi đến có thể nằm trong thùng rác.<br />" +
                                 $"Xin lưu ý, duyệt tài khoản của bạn có thể diễn ra trong 1 - 3 ngày làm việc."
             };
+#pragma warning restore IDE0017 // Simplify object initialization
             _confirm.YesText = "Đồng ý";
             _confirm.YesConfirmed += Dispose;
             _confirm.Canceled += Dispose;

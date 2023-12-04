@@ -681,11 +681,12 @@ namespace Core.Components
                 Content = "Are you sure to deactivate?"
             };
             confirm.Render();
-            confirm.YesConfirmed += async () =>
+            confirm.YesConfirmed += () =>
             {
                 confirm.Dispose();
-                await Deactivate();
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.Deactivated, Entity);
+                Deactivate().Done(() => {
+                    this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.Deactivated, Entity).Done();
+                });
             };
         }
 
@@ -717,7 +718,9 @@ namespace Core.Components
                     OnDeleteConfirmed.Invoke();
                     return;
                 }
+#pragma warning disable IDE0017 // Simplify object initialization
                 var confirm = new ConfirmDialog();
+#pragma warning restore IDE0017 // Simplify object initialization
                 confirm.Title = $"Bạn có chắc xóa {deletedItems.Count} dòng dữ liêu không!";
                 confirm.Render();
                 confirm.YesConfirmed += async () =>
@@ -741,25 +744,30 @@ namespace Core.Components
             });
         }
 
-        public virtual async Task Deactivate()
+        public virtual Task<string[]> Deactivate()
         {
+            var tcs = new TaskCompletionSource<string[]>();
             var entity = GuiInfo.RefName;
             var selected = GetSelectedRows();
-            var ids = selected.Select(x => (string)x[IdField]).ToList();
-            var client = new Client(entity);
-            var success = await client.DeactivateAsync(ids);
-            if (success)
+            var ids = selected.Select(x => x[IdField] as string).ToArray();
+            Client.Instance.DeactivateAsync(ids, GuiInfo.RefName)
+            .Done(deacvitedIds =>
             {
-                Toast.Success("Hủy dữ liệu thành công");
-                if (AdvSearchVM.ActiveState == ActiveStateEnum.Yes)
+                if (deacvitedIds.HasElement())
                 {
-                    RemoveRange(selected);
+                    Toast.Success("Hủy dữ liệu thành công");
+                    if (AdvSearchVM.ActiveState == ActiveStateEnum.Yes)
+                    {
+                        RemoveRange(selected);
+                    }
                 }
-            }
-            else
-            {
-                Toast.Warning("Đã có lỗi xảy ra khi hủy dữ liệu, vui lòng thử lại hoặc liên hệ hỗ trợ!");
-            }
+                else
+                {
+                    Toast.Warning("Đã có lỗi xảy ra khi hủy dữ liệu, vui lòng thử lại hoặc liên hệ hỗ trợ!");
+                }
+                tcs.TrySetResult(deacvitedIds);
+            });
+            return tcs.Task;
         }
 
         public virtual Task<List<object>> HardDeleteConfirmed(List<object> deleted)
@@ -1219,7 +1227,9 @@ namespace Core.Components
                 .EndOf(".popup-title")
                 .Div.ClassName("popup-body scroll-content");
             var body = Html.Context;
+#pragma warning disable IDE0017 // Simplify object initialization
             var com = new Component();
+#pragma warning restore IDE0017 // Simplify object initialization
             com.Id = Guid.NewGuid().ToString();
             com.FieldName = nameof(AdvSearchVM.Conditions);
             com.Column = 4;

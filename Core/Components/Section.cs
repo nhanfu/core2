@@ -146,6 +146,7 @@ namespace Core.Components
             var tabG = parent.EditForm.TabGroup.FirstOrDefault(x => x.Name == group.TabGroup);
             if (tabG is null)
             {
+#pragma warning disable IDE0017 // Simplify object initialization
                 tabG = new TabGroup
                 {
                     Name = group.TabGroup,
@@ -155,7 +156,9 @@ namespace Core.Components
                     ComponentGroup = group,
                     EditForm = parent.EditForm,
                 };
+#pragma warning restore IDE0017 // Simplify object initialization
                 tabG.Disabled = disabled;
+#pragma warning disable IDE0017 // Simplify object initialization
                 var subTab = new TabComponent(group)
                 {
                     Parent = tabG,
@@ -164,6 +167,7 @@ namespace Core.Components
                     Name = group.Name,
                     EditForm = parent.EditForm,
                 };
+#pragma warning restore IDE0017 // Simplify object initialization
                 subTab.Disabled = disabled;
                 tabG.Children.Add(subTab);
                 parent.EditForm.TabGroup.Add(tabG);
@@ -177,6 +181,7 @@ namespace Core.Components
             }
             else
             {
+#pragma warning disable IDE0017 // Simplify object initialization
                 var subTab = new TabComponent(group)
                 {
                     Parent = tabG,
@@ -185,6 +190,7 @@ namespace Core.Components
                     ComponentGroup = group,
                     Name = group.Name
                 };
+#pragma warning restore IDE0017 // Simplify object initialization
                 subTab.Disabled = disabled;
                 tabG.Children.Add(subTab);
                 subTab.Render();

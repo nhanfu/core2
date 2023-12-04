@@ -959,13 +959,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (allowNested === void 0) { allowNested = false; }
                 return this.SubmitAsync(T, ($t = new Core.Clients.XHRWrapper(), $t.Value = value, $t.Url = subUrl, $t.Method = Core.Enums.HttpMethod.POST, $t.AllowAnonymous = annonymous, $t));
             },
-            PutAsync: function (T, value, subUrl, annonymous, allowNested) {
-                var $t;
-                if (subUrl === void 0) { subUrl = ""; }
-                if (annonymous === void 0) { annonymous = false; }
-                if (allowNested === void 0) { allowNested = false; }
-                return this.SubmitAsync(T, ($t = new Core.Clients.XHRWrapper(), $t.Value = value, $t.Url = subUrl, $t.Method = Core.Enums.HttpMethod.PUT, $t.AllowAnonymous = annonymous, $t));
-            },
             GetAsync: function (T, subUrl) {
                 var $t;
                 return this.SubmitAsync(T, ($t = new Core.Clients.XHRWrapper(), $t.Url = subUrl, $t.Method = Core.Enums.HttpMethod.GET, $t));
@@ -1027,12 +1020,18 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var $t;
                 return this.SubmitAsync(System.Boolean, ($t = new Core.Clients.XHRWrapper(), $t.Url = "Clone", $t.Value = id, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
             },
-            DeactivateAsync: function (ids) {
-                var $t;
-                return this.SubmitAsync(System.Boolean, ($t = new Core.Clients.XHRWrapper(), $t.Url = "Delete", $t.Value = Core.Extensions.IEnumerableExtensions.Combine(System.String, ids), $t.Method = Core.Enums.HttpMethod.DELETE, $t));
+            DeactivateAsync: function (ids, table, connKey) {
+                var $t, $t1;
+                if (connKey === void 0) { connKey = null; }
+                var vm = ($t = new Core.ViewModels.SqlViewModel(), $t.Ids = ids, $t.Entity = table, $t.ConnKey = ($t1 = connKey, $t1 != null ? $t1 : Core.Clients.Client.ConnKey), $t);
+                return this.SubmitAsync(System.Array.type(System.String), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.DeactivateSvc, $t.Value = JSON.stringify(vm), $t.Method = Core.Enums.HttpMethod.DELETE, $t.IsRawString = true, $t.Headers = function (_o1) {
+                        _o1.add("content-type", "application/json");
+                        return _o1;
+                    }(new (System.Collections.Generic.Dictionary$2(System.String,System.String)).ctor()), $t));
             },
             HardDeleteAsync: function (ids, table, connKey) {
                 var $t, $t1;
+                if (connKey === void 0) { connKey = null; }
                 var vm = ($t = new Core.ViewModels.SqlViewModel(), $t.Ids = ids, $t.Entity = table, $t.ConnKey = ($t1 = connKey, $t1 != null ? $t1 : Core.Clients.Client.ConnKey), $t);
                 return this.SubmitAsync(System.Array.type(System.String), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.HardDelSvc, $t.Value = JSON.stringify(vm), $t.Method = Core.Enums.HttpMethod.DELETE, $t.IsRawString = true, $t.Headers = function (_o1) {
                         _o1.add("content-type", "application/json");
@@ -6292,9 +6291,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                 PatchSvc: null,
                 UserSvc: null,
                 HardDelSvc: null,
+                DeactivateSvc: null,
                 ExportExcel: null,
                 FileSvc: null,
-                DefaultConnKey: null,
                 GOOGLE_MAP: null,
                 GOOGLE_MAP_PLACES: null,
                 GOOGLE_MAP_GEOMETRY: null,
@@ -6336,9 +6335,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.PatchSvc = "/v2/user";
                     this.UserSvc = "/user/svc";
                     this.HardDelSvc = "/user/hardDelete";
+                    this.DeactivateSvc = "/user/Deactivate";
                     this.ExportExcel = "/user/excel";
                     this.FileSvc = "/user/file";
-                    this.DefaultConnKey = "default";
                     this.GOOGLE_MAP = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCr_2PaKJplCyvwN4q78lBkX3UBpfZ_HsY";
                     this.GOOGLE_MAP_PLACES = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=places";
                     this.GOOGLE_MAP_GEOMETRY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=geometry";
@@ -14221,46 +14220,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var confirm = ($t = new Core.Components.Forms.ConfirmDialog(), $t.Content = "Are you sure to deactivate?", $t);
                 confirm.Render();
                 confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $task2, 
-                        $jumpFromFinally, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        confirm.Dispose();
-                                        $task1 = this.Deactivate();
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $task1.getAwaitedResult();
-                                        $task2 = Core.Components.Extensions.ComponentExt.DispatchCustomEventAsync(this, this.GuiInfo.Events, Core.Enums.CustomEventType.Deactivated, [this.Entity]);
-                                        $step = 2;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $task2.getAwaitedResult();
-                                        return;
-                                    }
-                                    default: {
-                                        return;
-                                    }
-                                }
-                            }
-                        }, arguments);
-
-                    $asyncBody();
+                    confirm.Dispose();
+                    Core.Extensions.EventExt.Done$1(this.Deactivate(), Bridge.fn.bind(this, function () {
+                        Core.Extensions.EventExt.Done$1(Core.Components.Extensions.ComponentExt.DispatchCustomEventAsync(this, this.GuiInfo.Events, Core.Enums.CustomEventType.Deactivated, [this.Entity]));
+                    }));
                 }));
             },
             SetSelect: function (row, selected) {
@@ -14327,7 +14290,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                 this.OnDeleteConfirmed();
                                                 $tcs.setResult(null);
                                                 return;
-                                            }
+                                            } /// Simplify object initialization
+
+
                                             confirm = new Core.Components.Forms.ConfirmDialog();
                                             confirm.Title = System.String.format("B\u1ea1n c\u00f3 ch\u1eafc x\u00f3a {0} d\u00f2ng d\u1eef li\u00eau kh\u00f4ng!", [Bridge.box(deletedItems.Count, System.Int32)]);
                                             confirm.Render();
@@ -14417,66 +14382,24 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }));
             },
             Deactivate: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    entity, 
-                    selected, 
-                    ids, 
-                    client, 
-                    success, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        entity = this.GuiInfo.RefName;
-                                        selected = this.GetSelectedRows();
-                                        ids = System.Linq.Enumerable.from(selected, System.Object).select(function (x) {
-                                            return Bridge.cast(x[Core.Components.EditableComponent.IdField], System.String);
-                                        }).toList(System.String);
-                                        client = new Core.Clients.Client.$ctor1(entity);
-                                        $task1 = client.DeactivateAsync(ids);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        success = $taskResult1;
-                                        if (success) {
-                                            Core.Extensions.Toast.Success("H\u1ee7y d\u1eef li\u1ec7u th\u00e0nh c\u00f4ng");
-                                            if (this.AdvSearchVM.ActiveState === Core.Enums.ActiveStateEnum.Yes) {
-                                                this.RemoveRange(selected);
-                                            }
-                                        } else {
-                                            Core.Extensions.Toast.Warning("\u0110\u00e3 c\u00f3 l\u1ed7i x\u1ea3y ra khi h\u1ee7y d\u1eef li\u1ec7u, vui l\u00f2ng th\u1eed l\u1ea1i ho\u1eb7c li\u00ean h\u1ec7 h\u1ed7 tr\u1ee3!");
-                                        }
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                var entity = this.GuiInfo.RefName;
+                var selected = this.GetSelectedRows();
+                var ids = System.Linq.Enumerable.from(selected, System.Object).select(function (x) {
+                        return Bridge.as(x[Core.Components.EditableComponent.IdField], System.String);
+                    }).ToArray(System.String);
+                Core.Extensions.EventExt.Done(System.Array.type(System.String), Core.Clients.Client.Instance.DeactivateAsync(ids, this.GuiInfo.RefName), Bridge.fn.bind(this, function (deacvitedIds) {
+                    if (Core.Extensions.IEnumerableExtensions.HasElement(System.String, deacvitedIds)) {
+                        Core.Extensions.Toast.Success("H\u1ee7y d\u1eef li\u1ec7u th\u00e0nh c\u00f4ng");
+                        if (this.AdvSearchVM.ActiveState === Core.Enums.ActiveStateEnum.Yes) {
+                            this.RemoveRange(selected);
                         }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                    } else {
+                        Core.Extensions.Toast.Warning("\u0110\u00e3 c\u00f3 l\u1ed7i x\u1ea3y ra khi h\u1ee7y d\u1eef li\u1ec7u, vui l\u00f2ng th\u1eed l\u1ea1i ho\u1eb7c li\u00ean h\u1ec7 h\u1ed7 tr\u1ee3!");
+                    }
+                    tcs.trySetResult(deacvitedIds);
+                }));
+                return tcs.task;
             },
             HardDeleteConfirmed: function (deleted) {
                 var entity = this.GuiInfo.RefName;
@@ -14530,7 +14453,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         tcs.trySetResult(deleted);
                         return;
                     } else {
-                        Core.Extensions.Toast.Warning("No row was delelted");
+                        Core.Extensions.Toast.Warning("No row was deleted");
                     }
                     tcs.trySetResult(null);
                 }));
@@ -15282,7 +15205,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }));
                 this._history = Core.MVVM.Html.Context;
                 Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "popup-content confirm-dialog").Style$1("top: 0;").Div, "popup-title").InnerHTML("Xem l\u1ecbch s\u1eed").Div, "icon-box").Span, "fa fa-times").Event("click", Bridge.fn.cacheBind(this, this.DisposeHistory)).EndOf$1(".popup-title").Div, "popup-body scroll-content");
-                var body = Core.MVVM.Html.Context;
+                var body = Core.MVVM.Html.Context; /// Simplify object initialization
+
+
                 var com = new Core.Models.Component();
                 com.Id = System.Guid.NewGuid().toString();
                 com.FieldName = "Conditions";
@@ -16827,10 +16752,18 @@ Bridge.assembly("Core", function ($asm, globals) {
                     var tabG = System.Linq.Enumerable.from(parent.EditForm.TabGroup, Core.Components.Forms.TabGroup).firstOrDefault(function (x) {
                             return Bridge.referenceEquals(x.Name, group.TabGroup);
                         }, null);
-                    if (tabG == null) {
-                        tabG = ($t = new Core.Components.Forms.TabGroup(), $t.Name = group.TabGroup, $t.Parent = parent, $t.ParentElement = parent.Element, $t.Entity = parent.Entity, $t.ComponentGroup = group, $t.EditForm = parent.EditForm, $t);
-                        tabG.Disabled = disabled;
-                        var subTab = ($t = new Core.Components.Forms.TabComponent(group), $t.Parent = tabG, $t.Entity = parent.Entity, $t.ComponentGroup = group, $t.Name = group.Name, $t.EditForm = parent.EditForm, $t);
+                    if (tabG == null) { /// Simplify object initialization
+
+
+                        tabG = ($t = new Core.Components.Forms.TabGroup(), $t.Name = group.TabGroup, $t.Parent = parent, $t.ParentElement = parent.Element, $t.Entity = parent.Entity, $t.ComponentGroup = group, $t.EditForm = parent.EditForm, $t); /// Simplify object initialization
+
+
+                        tabG.Disabled = disabled; /// Simplify object initialization
+
+
+                        var subTab = ($t = new Core.Components.Forms.TabComponent(group), $t.Parent = tabG, $t.Entity = parent.Entity, $t.ComponentGroup = group, $t.Name = group.Name, $t.EditForm = parent.EditForm, $t); /// Simplify object initialization
+
+
                         subTab.Disabled = disabled;
                         tabG.Children.add(subTab);
                         parent.EditForm.TabGroup.add(tabG);
@@ -16841,7 +16774,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                         subTab.Focus();
                         subTab.ToggleShow(group.ShowExp);
                         subTab.ToggleDisabled(group.DisabledExp);
-                    } else {
+                    } else { /// Simplify object initialization
+
+
                         var subTab1 = ($t = new Core.Components.Forms.TabComponent(group), $t.Parent = tabG, $t.ParentElement = tabG.Element, $t.Entity = parent.Entity, $t.ComponentGroup = group, $t.Name = group.Name, $t);
                         subTab1.Disabled = disabled;
                         tabG.Children.add(subTab1);
@@ -17833,43 +17768,10 @@ Bridge.assembly("Core", function ($asm, globals) {
             Deactivate: function (ev) {
                 var feature = Bridge.as(ev, Core.Models.Feature);
                 var confirmDialog = new Core.Components.Forms.ConfirmDialog();
-                confirmDialog.Content = "B\u1ea1n c\u00f3 mu\u1ed1n deactivate feature n\u00e0y?";
-                confirmDialog.YesConfirmed = Bridge.fn.combine(confirmDialog.YesConfirmed, Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $taskResult1, 
-                        $jumpFromFinally, 
-                        client, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        client = new Core.Clients.Client.$ctor1("Feature");
-                                        $task1 = client.DeactivateAsync(function (_o1) {
-                                            _o1.add(feature.Id);
-                                            return _o1;
-                                        }(new (System.Collections.Generic.List$1(System.String)).ctor()));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        return;
-                                    }
-                                    default: {
-                                        return;
-                                    }
-                                }
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                }));
+                confirmDialog.Content = "DO you want to deactivate this feature?";
+                confirmDialog.YesConfirmed = Bridge.fn.combine(confirmDialog.YesConfirmed, function () {
+                    Core.Extensions.EventExt.Done(System.Array.type(System.String), Core.Clients.Client.Instance.DeactivateAsync(System.Array.init([feature.Id], System.String), "Feature", Core.Clients.Client.ConnKey));
+                });
                 this.AddChild(confirmDialog);
             },
             MenuItemClick: function (feature, e) {
@@ -18594,7 +18496,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                         tcs.setResult(path);
                     });
                     return tcs.task;
-                }
+                } /// Simplify object initialization
+
+
                 var reader = new FileReader();
                 reader.onload = Bridge.fn.bind(this, function (e) {
                     Core.Extensions.EventExt.Done(System.String, this.UploadBase64Image(Bridge.toString(e.target.result), file.name), Bridge.fn.bind(this, function (path) {
@@ -19211,18 +19115,32 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this._fullTextSearch.addEventListener("input", Bridge.fn.cacheBind(this.ParentGridView, this.ParentGridView.SearchDisplayRows));
                 }
 
-                if (this.GuiInfo.UpperCase) {
-                    var txtScan = ($t = new Core.Components.Textbox(($t1 = new Core.Models.Component(), $t1.FieldName = "ScanTerm", $t1.Visibility = true, $t1.Label = "Scan", $t1.PlainText = "Scan", $t1.ShowLabel = false, $t1.Focus = true, $t1.Events = "{'input':'ScanGridView'}", $t1)), $t.ParentElement = this.Element, $t);
+                if (this.GuiInfo.UpperCase) { /// Simplify object initialization
+
+
+                    var txtScan = ($t = new Core.Components.Textbox(($t1 = new Core.Models.Component(), $t1.FieldName = "ScanTerm", $t1.Visibility = true, $t1.Label = "Scan", $t1.PlainText = "Scan", $t1.ShowLabel = false, $t1.Focus = true, $t1.Events = "{'input':'ScanGridView'}", $t1)), $t.ParentElement = this.Element, $t); /// Simplify object initialization
+
+
                     txtScan.UserInput = null;
                     this.AddChild(txtScan);
-                }
-                var startDate = ($t = new Core.Components.Datepicker(($t1 = new Core.Models.Component(), $t1.FieldName = "StartDate", $t1.Visibility = true, $t1.Label = "T\u1eeb ng\u00e0y", $t1.PlainText = "T\u1eeb ng\u00e0y", $t1.ShowLabel = false, $t1)), $t.ParentElement = this.Element, $t);
+                } /// Simplify object initialization
+
+
+                var startDate = ($t = new Core.Components.Datepicker(($t1 = new Core.Models.Component(), $t1.FieldName = "StartDate", $t1.Visibility = true, $t1.Label = "T\u1eeb ng\u00e0y", $t1.PlainText = "T\u1eeb ng\u00e0y", $t1.ShowLabel = false, $t1)), $t.ParentElement = this.Element, $t); /// Simplify object initialization
+
+
                 startDate.UserInput = null;
-                this.AddChild(startDate);
-                var endDate = ($t = new Core.Components.Datepicker(($t1 = new Core.Models.Component(), $t1.FieldName = "EndDate", $t1.Visibility = true, $t1.Label = "\u0110\u1ebfn ng\u00e0y", $t1.PlainText = "\u0110\u1ebfn ng\u00e0y", $t1.ShowLabel = false, $t1)), $t.ParentElement = this.Element, $t);
+                this.AddChild(startDate); /// Simplify object initialization
+
+
+                var endDate = ($t = new Core.Components.Datepicker(($t1 = new Core.Models.Component(), $t1.FieldName = "EndDate", $t1.Visibility = true, $t1.Label = "\u0110\u1ebfn ng\u00e0y", $t1.PlainText = "\u0110\u1ebfn ng\u00e0y", $t1.ShowLabel = false, $t1)), $t.ParentElement = this.Element, $t); /// Simplify object initialization
+
+
                 endDate.UserInput = null;
                 this.AddChild(endDate);
-                if (this.ParentListView.GuiInfo.ShowDatetimeField) {
+                if (this.ParentListView.GuiInfo.ShowDatetimeField) { /// Simplify object initialization
+
+
                     var dateType = ($t = new Core.Components.SearchEntry(($t1 = new Core.Models.Component(), $t1.FieldName = "DateTimeField", $t1.PlainText = "Lo\u1ea1i ng\u00e0y", $t1.FormatData = "{ShortDesc}", $t1.DataSourceFilter = System.String.format("?$filter=Active eq true and ComponentType eq '{0}' and FeatureId eq {1}", "Datepicker", this.EditForm.Feature.Id), $t1.ShowLabel = false, $t1.ReferenceId = Core.Extensions.Utils.GetEntity("Component").Id, $t1.RefName = "Component", $t1.Reference = ($t2 = new Core.Models.Entity(), $t2.Name = "Component", $t2), $t1)), $t.ParentElement = this.Element, $t);
                     dateType.UserInput = null;
                     this.AddChild(dateType);
@@ -26480,7 +26398,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                 },
                 RenderConfirm$1: function (content, textButton) {
                     var $t;
-                    if (textButton === void 0) { textButton = "\u0110\u00f3ng"; }
+                    if (textButton === void 0) { textButton = "\u0110\u00f3ng"; } /// Simplify object initialization
+
+
                     var dialog = ($t = new Core.Components.Forms.ConfirmDialog(), $t.Content = content, $t);
                     dialog.YesText = textButton;
                     dialog.IgnoreNoButton = true;
@@ -27182,7 +27102,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 })).toList(Core.ViewModels.PatchDetail);
                 this.AddIdToPatch(dirtyPatch);
                 this.PatchModel.AddRange(dirtyPatch);
-                return ($t = new Core.ViewModels.PatchVM(), $t.Changes = dirtyPatch, $t.Table = this.ListView.GuiInfo.RefName, $t.ConnKey = ($t1 = this.ListView.GuiInfo.ConnKey, $t1 != null ? $t1 : Core.Extensions.Utils.DefaultConnKey), $t);
+                return ($t = new Core.ViewModels.PatchVM(), $t.Changes = dirtyPatch, $t.Table = this.ListView.GuiInfo.RefName, $t.ConnKey = ($t1 = this.ListView.GuiInfo.ConnKey, $t1 != null ? $t1 : Core.Clients.Client.ConnKey), $t);
             },
             RowDblClick: function (e) {
                 var $t;
@@ -31551,8 +31471,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            ShowDialog: function () {
-                var $t;
+            ShowDialog: function () {                 var $t;
+/// Simplify object initialization
+
+
                 this._confirm = ($t = new Core.Components.Forms.ConfirmDialog(), $t.Content = (System.String.format("B\u1ea1n \u0111\u00e3 \u0111\u0103ng k\u00fd success, 1 email \u0111\u00e3 \u0111\u01b0\u1ee3c g\u1edfi v\u00e0o \u0111\u1ecba ch\u1ec9 {0}.<br />", [this.VM.Email]) || "") + (System.String.format("Vui l\u00f2ng ki\u1ec3m tra email \u0111\u1ec3 x\u00e1c nh\u1eadn vi\u1ec7c \u0111\u0103ng k\u00fd.<br />", null) || "") + (System.String.format("Email g\u1edfi \u0111\u1ebfn c\u00f3 th\u1ec3 n\u1eb1m trong th\u00f9ng r\u00e1c.<br />", null) || "") + (System.String.format("Xin l\u01b0u \u00fd, duy\u1ec7t t\u00e0i kho\u1ea3n c\u1ee7a b\u1ea1n c\u00f3 th\u1ec3 di\u1ec5n ra trong 1 - 3 ng\u00e0y l\u00e0m vi\u1ec7c.", null) || ""), $t);
                 this._confirm.YesText = "\u0110\u1ed3ng \u00fd";
                 this._confirm.YesConfirmed = Bridge.fn.combine(this._confirm.YesConfirmed, Bridge.fn.cacheBind(this, this.Dispose));

@@ -426,7 +426,9 @@ namespace Core.Components
                 });
                 return tcs.Task;
             }
+#pragma warning disable IDE0017 // Simplify object initialization
             var reader = new FileReader();
+#pragma warning restore IDE0017 // Simplify object initialization
             reader.OnLoad = (e) =>
             {
                 UploadBase64Image(e.Target["result"].ToString(), file.Name).Done(path =>

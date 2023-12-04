@@ -199,5 +199,11 @@ namespace Core.Controllers
         {
             return _userSvc.HardDeleteAsync(vm);
         }
+
+        [HttpDelete("api/[Controller]/Deactivate", Order = 0)]
+        public Task<string[]> DeactivateAsync([FromBody] SqlViewModel vm)
+        {
+            return _userSvc.DeactivateAsync(vm);
+        }
     }
 }

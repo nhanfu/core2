@@ -39,9 +39,9 @@ namespace Core.Extensions
         public const string PatchSvc = "/v2/user";
         public const string UserSvc = "/user/svc";
         public const string HardDelSvc = "/user/hardDelete";
+        public const string DeactivateSvc = "/user/Deactivate";
         public const string ExportExcel = "/user/excel";
         public const string FileSvc = "/user/file";
-        public const string DefaultConnKey = "default";
         public static dynamic HeadChildren = (Document.Instance as dynamic).head.children;
 
         public const string GOOGLE_MAP = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCr_2PaKJplCyvwN4q78lBkX3UBpfZ_HsY";

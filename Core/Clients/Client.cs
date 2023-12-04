@@ -505,17 +505,6 @@ namespace Core.Clients
             });
         }
 
-        public Task<T> PutAsync<T>(object value, string subUrl = string.Empty, bool annonymous = false, bool allowNested = false)
-        {
-            return SubmitAsync<T>(new XHRWrapper
-            {
-                Value = value,
-                Url = subUrl,
-                Method = HttpMethod.PUT,
-                AllowAnonymous = annonymous,
-            });
-        }
-
         public Task<T> GetAsync<T>(string subUrl)
         {
             return SubmitAsync<T>(new XHRWrapper
@@ -604,17 +593,29 @@ namespace Core.Clients
                 Method = HttpMethod.POST
             });
         }
-        public Task<bool> DeactivateAsync(List<string> ids)
+
+        public Task<string[]> DeactivateAsync(string[] ids, string table, string connKey = null)
         {
-            return SubmitAsync<bool>(new XHRWrapper
+            var vm = new SqlViewModel
             {
-                Url = "Delete",
-                Value = ids.Combine(),
-                Method = HttpMethod.DELETE
+                Ids = ids,
+                Entity = table,
+                ConnKey = connKey ?? ConnKey
+            };
+            return SubmitAsync<string[]>(new XHRWrapper
+            {
+                Url = Utils.DeactivateSvc,
+                Value = JSON.Stringify(vm),
+                Method = HttpMethod.DELETE,
+                IsRawString = true,
+                Headers = new Dictionary<string, string>
+                {
+                    { "content-type", "application/json" }
+                }
             });
         }
 
-        public Task<string[]> HardDeleteAsync(string[] ids, string table, string connKey)
+        public Task<string[]> HardDeleteAsync(string[] ids, string table, string connKey = null)
         {
             var vm = new SqlViewModel
             {

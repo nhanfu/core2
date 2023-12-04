@@ -622,6 +622,42 @@ namespace Core.Services
             }
         }
 
+        public async Task<string[]> DeactivateAsync(SqlViewModel vm)
+        {
+            var connStr = await GetConnStrFromKey(vm.ConnKey ?? "default");
+            var allRights = await GetEntityPerm(vm.Entity, null);
+            var canDeactivateAll = allRights.Any(x => x.CanDeactivateAll);
+            var canDeactivateSelf = allRights.Any(x => x.CanDeactivate);
+            var query = $"select * from {vm.Entity} where Id in ({vm.Ids.CombineStrings()})";
+            var ds = (await ReadDataSet(query, connStr)).ToList();
+            var rows = ds.Count > 0 ? ds[0] : null;
+            if (rows.Nothing()) return null;
+            var canDeactivateRows = rows.Where(x =>
+            {
+                return canDeactivateAll || canDeactivateSelf && Utils.IsOwner(x, UserId, RoleIds);
+            }).Select(x => x.GetValueOrDefault(Utils.IdField)?.ToString()).ToArray();
+            if (canDeactivateRows.Nothing()) return null;
+            var deactivateCmd = $"update {vm.Entity} set Active = 0 where Id in ({canDeactivateRows.CombineStrings()})";
+            using SqlConnection connection = new(connStr);
+            await connection.OpenAsync();
+            using var transaction = connection.BeginTransaction();
+            try
+            {
+                using SqlCommand command = new();
+                command.Transaction = transaction;
+                command.Connection = connection;
+                command.CommandText = deactivateCmd;
+                await command.ExecuteNonQueryAsync();
+                await transaction.CommitAsync();
+                return canDeactivateRows;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
         internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSetWrapper(SqlViewModel vm)
         {
             var com = await GetComponent(vm.ComId);

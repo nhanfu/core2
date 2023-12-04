@@ -325,7 +325,7 @@ namespace Core.Components
             {
                 Changes = dirtyPatch,
                 Table = ListView.GuiInfo.RefName,
-                ConnKey = ListView.GuiInfo.ConnKey ?? Utils.DefaultConnKey,
+                ConnKey = ListView.GuiInfo.ConnKey ?? Client.ConnKey,
             };
         }
 
