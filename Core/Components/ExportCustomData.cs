@@ -232,8 +232,7 @@ namespace Core.Components
 
         private void LocalRender()
         {
-            var getUsrSettingTask = ParentListView.GetUserSetting(Prefix);
-            Client.ExecTask(getUsrSettingTask, x => UserSettingLoaded(x, true));
+            ParentListView.GetUserSetting(Prefix).Done(x => UserSettingLoaded(x, true));
         }
 
         private void UserSettingLoaded(object[][] res, bool render = true)
@@ -355,6 +354,7 @@ namespace Core.Components
                 sql.Where = $"Id in ({ids})";
             }
             sql.Entity = ParentListView.GuiInfo.Label ?? ParentListView.GuiInfo.EntityName;
+            sql.Table = ParentListView.GuiInfo.RefName;
             var pathTask = Client.Instance.SubmitAsync<string>(new XHRWrapper
             {
                 Value = JSON.Stringify(sql),

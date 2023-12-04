@@ -9916,7 +9916,8 @@ Bridge.assembly("Core", function ($asm, globals) {
             RawQuery: false,
             FieldName: null,
             SkipXQuery: false,
-            ConnKey: null
+            ConnKey: null,
+            Table: null
         }
     });
 
@@ -12215,63 +12216,26 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this._confirm.Render();
             },
             EmailPdf: function (email, pdfSelector) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    pdfText, 
-                    sucess, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (pdfSelector === void 0) { pdfSelector = []; }
-                                        if (email == null) {
-                                            throw new System.ArgumentNullException.$ctor1("email");
-                                        }
-                                        if (Core.Extensions.IEnumerableExtensions.HasElement(System.String, pdfSelector)) {
-                                            pdfText = System.Linq.Enumerable.from(pdfSelector, System.String).select(Bridge.fn.bind(this, function (x) {
-                                                var ele = Bridge.as(this.Element.querySelector(x), HTMLElement);
-                                                return this.PrintSection(ele, false);
-                                            }));
-                                            email.PdfText.AddRange(pdfText);
-                                        }
-                                        $task1 = this.FormClient.PostAsync(System.Boolean, email, "EmailAttached", false, true);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        sucess = $taskResult1;
-                                        if (sucess) {
-                                            Core.Extensions.Toast.Success("G\u1edfi email th\u00e0nh c\u00f4ng!");
-                                        }
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                if (pdfSelector === void 0) { pdfSelector = []; }
+                if (email == null) {
+                    throw new System.ArgumentNullException.$ctor1("email");
+                }
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                if (Core.Extensions.IEnumerableExtensions.HasElement(System.String, pdfSelector)) {
+                    var pdfText = System.Linq.Enumerable.from(pdfSelector, System.String).select(Bridge.fn.bind(this, function (x) {
+                            var ele = Bridge.as(this.Element.querySelector(x), HTMLElement);
+                            return this.PrintSection(ele, false);
+                        }));
+                    email.PdfText.AddRange(pdfText);
+                }
+                Core.Extensions.EventExt.Catch(Core.Extensions.EventExt.Done(System.Boolean, Core.Clients.Client.Instance.PostAsync(System.Boolean, email, "/user/EmailAttached", false, true), function (sucess) {
+                    Core.Extensions.Toast.Success("Send email success!");
+                    tcs.trySetResult(sucess);
+                }), function (e) {
+                    Core.Extensions.Toast.Success("Error occurs while sending email!");
+                    tcs.trySetException(e);
+                });
+                return tcs.task;
             },
             Print: function (selector) {
                 if (selector === void 0) { selector = ".printable"; }
@@ -18811,9 +18775,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (!this.GuiInfo.CanSearch) {
                     return;
                 }
-
                 Core.Components.Renderer.TabIndex(Core.MVVM.Html.Take(this.Parent.Element.firstElementChild), -1).Event$1("keypress", Bridge.fn.cacheBind(this, this.EnterSearch));
                 this.Element = Core.MVVM.Html.Context;
+                this.RenderImportBtn();
                 if (Bridge.referenceEquals(this.GuiInfo.ComponentType, "GridView") || Bridge.referenceEquals(this.GuiInfo.ComponentType, "TreeView") || !this.GuiInfo.IsRealtime) {
                     var txtSearch = ($t = new Core.Components.Textbox(($t1 = new Core.Models.Component(), $t1.FieldName = "SearchTerm", $t1.Visibility = true, $t1.Label = "T\u00ecm ki\u1ebfm", $t1.PlainText = "T\u00ecm ki\u1ebfm", $t1.ShowLabel = false, $t1)), $t.ParentElement = this.Element, $t.UserInput = null, $t);
                     this.AddChild(txtSearch);
@@ -18825,32 +18789,18 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this._fullTextSearch.addEventListener("input", Bridge.fn.cacheBind(this.ParentGridView, this.ParentGridView.SearchDisplayRows));
                 }
 
-                if (this.GuiInfo.UpperCase) { /// Simplify object initialization
-
-
-                    var txtScan = ($t = new Core.Components.Textbox(($t1 = new Core.Models.Component(), $t1.FieldName = "ScanTerm", $t1.Visibility = true, $t1.Label = "Scan", $t1.PlainText = "Scan", $t1.ShowLabel = false, $t1.Focus = true, $t1.Events = "{'input':'ScanGridView'}", $t1)), $t.ParentElement = this.Element, $t); /// Simplify object initialization
-
-
+                if (this.GuiInfo.UpperCase) {
+                    var txtScan = ($t = new Core.Components.Textbox(($t1 = new Core.Models.Component(), $t1.FieldName = "ScanTerm", $t1.Visibility = true, $t1.Label = "Scan", $t1.PlainText = "Scan", $t1.ShowLabel = false, $t1.Focus = true, $t1.Events = "{'input':'ScanGridView'}", $t1)), $t.ParentElement = this.Element, $t);
                     txtScan.UserInput = null;
                     this.AddChild(txtScan);
-                } /// Simplify object initialization
-
-
-                var startDate = ($t = new Core.Components.Datepicker(($t1 = new Core.Models.Component(), $t1.FieldName = "StartDate", $t1.Visibility = true, $t1.Label = "T\u1eeb ng\u00e0y", $t1.PlainText = "T\u1eeb ng\u00e0y", $t1.ShowLabel = false, $t1)), $t.ParentElement = this.Element, $t); /// Simplify object initialization
-
-
+                }
+                var startDate = ($t = new Core.Components.Datepicker(($t1 = new Core.Models.Component(), $t1.FieldName = "StartDate", $t1.Visibility = true, $t1.Label = "T\u1eeb ng\u00e0y", $t1.PlainText = "T\u1eeb ng\u00e0y", $t1.ShowLabel = false, $t1)), $t.ParentElement = this.Element, $t);
                 startDate.UserInput = null;
-                this.AddChild(startDate); /// Simplify object initialization
-
-
-                var endDate = ($t = new Core.Components.Datepicker(($t1 = new Core.Models.Component(), $t1.FieldName = "EndDate", $t1.Visibility = true, $t1.Label = "\u0110\u1ebfn ng\u00e0y", $t1.PlainText = "\u0110\u1ebfn ng\u00e0y", $t1.ShowLabel = false, $t1)), $t.ParentElement = this.Element, $t); /// Simplify object initialization
-
-
+                this.AddChild(startDate);
+                var endDate = ($t = new Core.Components.Datepicker(($t1 = new Core.Models.Component(), $t1.FieldName = "EndDate", $t1.Visibility = true, $t1.Label = "\u0110\u1ebfn ng\u00e0y", $t1.PlainText = "\u0110\u1ebfn ng\u00e0y", $t1.ShowLabel = false, $t1)), $t.ParentElement = this.Element, $t);
                 endDate.UserInput = null;
                 this.AddChild(endDate);
-                if (this.ParentListView.GuiInfo.ShowDatetimeField) { /// Simplify object initialization
-
-
+                if (this.ParentListView.GuiInfo.ShowDatetimeField) {
                     var dateType = ($t = new Core.Components.SearchEntry(($t1 = new Core.Models.Component(), $t1.FieldName = "DateTimeField", $t1.PlainText = "Lo\u1ea1i ng\u00e0y", $t1.FormatData = "{ShortDesc}", $t1.DataSourceFilter = System.String.format("?$filter=Active eq true and ComponentType eq '{0}' and FeatureId eq {1}", "Datepicker", this.EditForm.Feature.Id), $t1.ShowLabel = false, $t1.ReferenceId = Core.Extensions.Utils.GetEntity("Component").Id, $t1.RefName = "Component", $t1.Reference = ($t2 = new Core.Models.Entity(), $t2.Name = "Component", $t2), $t1)), $t.ParentElement = this.Element, $t);
                     dateType.UserInput = null;
                     this.AddChild(dateType);
@@ -18946,70 +18896,24 @@ Bridge.assembly("Core", function ($asm, globals) {
                 Core.Extensions.EventExt.Done$1(this.ParentListView.ApplyFilter());
             },
             UploadCsv: function (e) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    files, 
-                    fileName, 
-                    uploadForm, 
-                    formData, 
-                    parentForm, 
-                    response, 
-                    $t, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        files = Bridge.as(e.target.files, FileList);
-                                        if (Core.Extensions.IEnumerableExtensions.Nothing(File, files)) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
+                var $t;
+                var files = Bridge.as(e.target.files, FileList);
+                if (Core.Extensions.IEnumerableExtensions.Nothing(File, files)) {
+                    return;
+                }
 
-                                        fileName = System.Linq.Enumerable.from(files, File).firstOrDefault(null, null).name;
-                                        uploadForm = Bridge.as(this._uploader.parentElement, HTMLFormElement);
-                                        formData = new FormData(uploadForm);
-                                        parentForm = Core.Components.Extensions.ComponentExt.FindClosest(Core.Components.Forms.EditForm, this);
-                                        $task1 = parentForm.FormClient.SubmitAsync(Blob, ($t = new Core.Clients.XHRWrapper(), $t.FormData = formData, $t.Url = "importCsv", $t.Method = Core.Enums.HttpMethod.POST, $t.ResponseMimeType = Core.Extensions.Utils.GetMimeType("csv"), $t));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        response = $taskResult1;
-                                        Core.Components.Extensions.ComponentExt.DownloadFile(fileName, response);
-                                        Core.Extensions.Toast.Success("Import excel th\u00e0nh c\u00f4ng");
-                                        this._uploader.value = "";
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                var fileName = System.Linq.Enumerable.from(files, File).firstOrDefault(null, null).name;
+                var uploadForm = Bridge.as(this._uploader.parentElement, HTMLFormElement);
+                var formData = new FormData(uploadForm);
+                var meta = this.ParentListView.GuiInfo;
+                Core.Extensions.EventExt.Catch(Core.Extensions.EventExt.Done(System.Boolean, Core.Clients.Client.Instance.SubmitAsync(System.Boolean, ($t = new Core.Clients.XHRWrapper(), $t.FormData = formData, $t.Url = System.String.format("/user/importCsv?table={0}&comId={1}", meta.RefName, meta.Id), $t.Method = Core.Enums.HttpMethod.POST, $t.ResponseMimeType = Core.Extensions.Utils.GetMimeType("csv"), $t)), Bridge.fn.bind(this, function (success) {
+                    Core.Extensions.Toast.Success("Import excel success");
+                    this._uploader.value = "";
+                })), Bridge.fn.bind(this, function (error) {
+                    this._uploader.value = "";
+                }));
             },
             AdvancedOptions: function (e) {
-                var $t;
                 var buttonRect = e.target.getBoundingClientRect();
                 var show = Core.Clients.LocalStorage.GetItem(System.Nullable$1(System.Boolean), "Show" + (this.GuiInfo.Id || "")) == null ? false : Core.Clients.LocalStorage.GetItem(System.Nullable$1(System.Boolean), "Show" + (this.GuiInfo.Id || ""));
                 var ctxMenu = Core.Components.Forms.ContextMenu.Instance;
@@ -19017,53 +18921,31 @@ Bridge.assembly("Core", function ($asm, globals) {
                 ctxMenu.Left = buttonRect.left;
                 ctxMenu.MenuItems = Bridge.fn.bind(this, function (_o1) {
                         var $t;
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fa fa-search-plus mr-1", $t.Text = "N\u00e2ng cao", $t.Click = Bridge.fn.cacheBind(this, this.AdvancedSearch), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fa fa-search mr-1", $t.Text = "L\u1ecdc d\u1eef li\u1ec7u \u0111\u00e3 ch\u1ecdn", $t.Click = Bridge.fn.cacheBind(this, this.FilterSelected), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fa fa-download mr-1", $t.Text = "Excel to\u00e0n b\u1ed9", $t.Click = Bridge.fn.cacheBind(this, this.ExportAllData), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fa fal fa-ballot-check mr-1", $t.Text = "Excel \u0111\u00e3 ch\u1ecdn", $t.Click = Bridge.fn.cacheBind(this, this.ExportSelectedData), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fa fa-download mr-1", $t.Text = "Excel t\u00f9y ch\u1ecdn", $t.Click = Bridge.fn.cacheBind(this, this.ExportCustomData), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fa fa-search-plus mr-1", $t.Text = "Advanced search", $t.Click = Bridge.fn.cacheBind(this, this.AdvancedSearch), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fa fa-search mr-1", $t.Text = "Show selected only", $t.Click = Bridge.fn.cacheBind(this, this.FilterSelected), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fa fa-download mr-1", $t.Text = "Import csv", $t.Click = Bridge.fn.bind(this, function (obj) {
+                            this._uploader.click();
+                        }), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fa fa-download mr-1", $t.Text = "Export all", $t.Click = Bridge.fn.cacheBind(this, this.ExportAllData), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fa fal fa-ballot-check mr-1", $t.Text = "Export selected", $t.Click = Bridge.fn.cacheBind(this, this.ExportSelectedData), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fa fa-download mr-1", $t.Text = "Customize export", $t.Click = Bridge.fn.cacheBind(this, this.ExportCustomData), $t));
                         return _o1;
                     })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor());
                 ctxMenu.Render();
+            },
+            RenderImportBtn: function () {
                 Core.MVVM.Html.Take(this.Element).Form.Attr$1("method", "POST").Attr$1("enctype", "multipart/form-data").Display$1(false).Input.Type$1("file").Id(System.String.format("id_{0}", [Bridge.box(Bridge.getHashCode(this), System.Int32)])).Attr$1("name", "files").Attr$1("accept", ".csv");
                 this._uploader = Bridge.as(Core.MVVM.Html.Context, HTMLInputElement);
                 this._uploader.addEventListener(System.Enum.toString(System.String, "change"), Bridge.fn.bind(this, function (ev) {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = this.UploadCsv(ev);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $task1.getAwaitedResult();
-                                        return;
-                                    }
-                                    default: {
-                                        return;
-                                    }
-                                }
-                            }
-                        }, arguments);
-
-                    $asyncBody();
+                    this.UploadCsv(ev);
                 }));
-                ($t = System.Linq.Enumerable.from(ctxMenu.Element.children, HTMLElement).firstOrDefault(null, null)) != null ? $t.appendChild(this._uploader.parentElement) : null;
+                Core.MVVM.Html.Instance.End.End.Render();
             },
             FilterSelected: function (arg) {
                 var $t;
                 var selectedIds = this.ParentListView.SelectedIds;
                 if (Core.Extensions.IEnumerableExtensions.Nothing(System.String, selectedIds)) {
-                    Core.Extensions.Toast.Warning("Vui l\u00f2ng ch\u1ecdn d\u00f2ng c\u1ea7n l\u1ecdc");
+                    Core.Extensions.Toast.Warning("Select rows to filter");
                     return;
                 }
                 if (System.Linq.Enumerable.from(this.ParentListView.CellSelected, Core.Models.CellSelected).any(function (x) {
@@ -30472,8 +30354,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 });
             },
             LocalRender: function () {
-                var getUsrSettingTask = this.ParentListView.GetUserSetting(Core.Components.ExportCustomData.Prefix);
-                Core.Clients.Client.ExecTask(System.Array.type(System.Array.type(System.Object)), getUsrSettingTask, Bridge.fn.bind(this, function (x) {
+                Core.Extensions.EventExt.Done(System.Array.type(System.Array.type(System.Object)), this.ParentListView.GetUserSetting(Core.Components.ExportCustomData.Prefix), Bridge.fn.bind(this, function (x) {
                     this.UserSettingLoaded(x, true);
                 }));
             },
@@ -30597,6 +30478,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     sql.Where = System.String.format("Id in ({0})", [ids]);
                 }
                 sql.Entity = ($t = this.ParentListView.GuiInfo.Label, $t != null ? $t : this.ParentListView.GuiInfo.EntityName);
+                sql.Table = this.ParentListView.GuiInfo.RefName;
                 var pathTask = Core.Clients.Client.Instance.SubmitAsync(System.String, ($t1 = new Core.Clients.XHRWrapper(), $t1.Value = JSON.stringify(sql), $t1.Url = Core.Extensions.Utils.ExportExcel, $t1.IsRawString = true, $t1.Method = Core.Enums.HttpMethod.POST, $t1));
                 Core.Clients.Client.ExecTask(System.String, pathTask, function (path) {
                     Core.Clients.Client.Download(System.String.format("/excel/Download/{0}", [path]));
@@ -31006,53 +30888,16 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return tcs.task;
             },
             ForgotPassword: function (login) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    res, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = this.FormClient.PostAsync(System.Nullable$1(System.Boolean), login, "ForgotPassword");
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        res = $taskResult1;
-                                        if (res == null || !System.Nullable.getValue(res)) {
-                                            Core.Extensions.Toast.Warning("An error occurs. Please contact the administrator to get your password!");
-                                        } else {
-                                            Core.Extensions.Toast.Success(System.String.format("A recovery email has been sent to your email address. Please check and follow the steps in the email!", null));
-                                        }
-                                        $tcs.setResult(true);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                Core.Extensions.EventExt.Done(System.Boolean, Core.Clients.Client.Instance.PostAsync(System.Boolean, login, "/user/ForgotPassword"), function (res) {
+                    if (res) {
+                        Core.Extensions.Toast.Warning("An error occurs. Please contact the administrator to get your password!");
+                    } else {
+                        Core.Extensions.Toast.Success(System.String.format("A recovery email has been sent to your email address. Please check and follow the steps in the email!", null));
+                    }
+                    tcs.trySetResult(res);
+                });
+                return tcs.task;
             },
             InitAppIfEmpty: function () {
                 var $t;
@@ -31110,74 +30955,20 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             Register: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $task2, 
-                    $taskResult2, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    isValid, 
-                    result, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = this.IsFormValid();
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        isValid = $taskResult1;
-                                        if (!isValid) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        $task2 = this.FormClient.PostAsync(System.Boolean, this.VM, "Register", true);
-                                        $step = 2;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $taskResult2 = $task2.getAwaitedResult();
-                                        result = $taskResult2;
-                                        if (result) {
-                                            this.ShowDialog();
-                                        }
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
+                Core.Extensions.EventExt.Done(System.Boolean, this.IsFormValid(), Bridge.fn.bind(this, function (isValid) {
+                    if (!isValid) {
+                        return;
+                    }
+                    Core.Extensions.EventExt.Done(System.Boolean, Core.Clients.Client.Instance.PostAsync(System.Boolean, this.VM, "Register", true), Bridge.fn.bind(this, function (result) {
+                        if (!result) {
+                            return;
                         }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                        this.ShowDialog();
+                    }));
+                }));
             },
-            ShowDialog: function () {                 var $t;
-/// Simplify object initialization
-
-
+            ShowDialog: function () {
+                var $t;
                 this._confirm = ($t = new Core.Components.Forms.ConfirmDialog(), $t.Content = (System.String.format("B\u1ea1n \u0111\u00e3 \u0111\u0103ng k\u00fd success, 1 email \u0111\u00e3 \u0111\u01b0\u1ee3c g\u1edfi v\u00e0o \u0111\u1ecba ch\u1ec9 {0}.<br />", [this.VM.Email]) || "") + (System.String.format("Vui l\u00f2ng ki\u1ec3m tra email \u0111\u1ec3 x\u00e1c nh\u1eadn vi\u1ec7c \u0111\u0103ng k\u00fd.<br />", null) || "") + (System.String.format("Email g\u1edfi \u0111\u1ebfn c\u00f3 th\u1ec3 n\u1eb1m trong th\u00f9ng r\u00e1c.<br />", null) || "") + (System.String.format("Xin l\u01b0u \u00fd, duy\u1ec7t t\u00e0i kho\u1ea3n c\u1ee7a b\u1ea1n c\u00f3 th\u1ec3 di\u1ec5n ra trong 1 - 3 ng\u00e0y l\u00e0m vi\u1ec7c.", null) || ""), $t);
                 this._confirm.YesText = "\u0110\u1ed3ng \u00fd";
                 this._confirm.YesConfirmed = Bridge.fn.combine(this._confirm.YesConfirmed, Bridge.fn.cacheBind(this, this.Dispose));

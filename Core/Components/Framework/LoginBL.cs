@@ -171,7 +171,8 @@ namespace Core.Components.Framework
                 IsRawString = true,
                 Method = HttpMethod.POST,
                 AllowAnonymous = true
-            }).Done(res => {
+            }).Done(res =>
+            {
                 if (res == null)
                 {
                     tcs.TrySetResult(false);
@@ -191,18 +192,24 @@ namespace Core.Components.Framework
             return tcs.Task;
         }
 
-        public async Task<bool> ForgotPassword(LoginVM login)
+        public Task<bool> ForgotPassword(LoginVM login)
         {
-            var res = await FormClient.PostAsync<bool?>(login, "ForgotPassword");
-            if (res is null || !res.Value)
-            {
-                Toast.Warning("An error occurs. Please contact the administrator to get your password!");
-            }
-            else
-            {
-                Toast.Success($"A recovery email has been sent to your email address. Please check and follow the steps in the email!");
-            }
-            return true;
+            var tcs = new TaskCompletionSource<bool>();
+            Client.Instance
+                .PostAsync<bool>(login, "/user/ForgotPassword")
+                .Done(res =>
+                {
+                    if (res)
+                    {
+                        Toast.Warning("An error occurs. Please contact the administrator to get your password!");
+                    }
+                    else
+                    {
+                        Toast.Success($"A recovery email has been sent to your email address. Please check and follow the steps in the email!");
+                    }
+                    tcs.TrySetResult(res);
+                });
+            return tcs.Task;
         }
 
         public void InitAppIfEmpty()

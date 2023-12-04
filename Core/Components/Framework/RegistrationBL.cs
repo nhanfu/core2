@@ -1,7 +1,8 @@
-﻿using Core.Components.Forms;
+﻿using Core.Clients;
+using Core.Components.Forms;
+using Core.Extensions;
 using Core.Models;
 using Core.ViewModels;
-using System.Threading.Tasks;
 
 namespace Core.Components.Framework
 {
@@ -15,24 +16,22 @@ namespace Core.Components.Framework
             Title = Name;
             Public = true;
         }
-        
-        public async Task Register()
+
+        public void Register()
         {
-            var isValid = await IsFormValid();
-            if (!isValid)
+            IsFormValid().Done(isValid =>
             {
-                return;
-            }
-            var result = await FormClient.PostAsync<bool>(VM, "Register", true);
-            if (result)
-            {
-                ShowDialog();
-            }
+                if (!isValid) return;
+                Client.Instance.PostAsync<bool>(VM, "Register", true).Done(result =>
+                {
+                    if (!result) return;
+                    ShowDialog();
+                });
+            });
         }
 
         private void ShowDialog()
         {
-#pragma warning disable IDE0017 // Simplify object initialization
             _confirm = new ConfirmDialog()
             {
                 Content = $"Bạn đã đăng ký success, 1 email đã được gởi vào địa chỉ {VM.Email}.<br />" +
@@ -40,7 +39,6 @@ namespace Core.Components.Framework
                                 $"Email gởi đến có thể nằm trong thùng rác.<br />" +
                                 $"Xin lưu ý, duyệt tài khoản của bạn có thể diễn ra trong 1 - 3 ngày làm việc."
             };
-#pragma warning restore IDE0017 // Simplify object initialization
             _confirm.YesText = "Đồng ý";
             _confirm.YesConfirmed += Dispose;
             _confirm.Canceled += Dispose;

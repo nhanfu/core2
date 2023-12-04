@@ -6,6 +6,7 @@ using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -126,9 +127,9 @@ namespace Core.Components
             {
                 return;
             }
-
             Html.Take(Parent.Element.FirstElementChild).TabIndex(-1).Event(EventType.KeyPress, EnterSearch);
             Element = Html.Context;
+            RenderImportBtn();
             if (GuiInfo.ComponentType == nameof(GridView) || GuiInfo.ComponentType == nameof(TreeView) || !GuiInfo.IsRealtime)
             {
                 var txtSearch = new Textbox(new Component
@@ -166,7 +167,6 @@ namespace Core.Components
 
             if (GuiInfo.UpperCase)
             {
-#pragma warning disable IDE0017 // Simplify object initialization
                 var txtScan = new Textbox(new Component
                 {
                     FieldName = nameof(ListViewSearchVM.ScanTerm),
@@ -180,11 +180,9 @@ namespace Core.Components
                 {
                     ParentElement = Element
                 };
-#pragma warning restore IDE0017 // Simplify object initialization
                 txtScan.UserInput = null;
                 AddChild(txtScan);
             }
-#pragma warning disable IDE0017 // Simplify object initialization
             var startDate = new Datepicker(new Component
             {
                 FieldName = nameof(ListViewSearchVM.StartDate),
@@ -196,10 +194,8 @@ namespace Core.Components
             {
                 ParentElement = Element
             };
-#pragma warning restore IDE0017 // Simplify object initialization
             startDate.UserInput = null;
             AddChild(startDate);
-#pragma warning disable IDE0017 // Simplify object initialization
             var endDate = new Datepicker(new Component
             {
                 FieldName = nameof(ListViewSearchVM.EndDate),
@@ -211,12 +207,10 @@ namespace Core.Components
             {
                 ParentElement = Element
             };
-#pragma warning restore IDE0017 // Simplify object initialization
             endDate.UserInput = null;
             AddChild(endDate);
             if (ParentListView.GuiInfo.ShowDatetimeField)
             {
-#pragma warning disable IDE0017 // Simplify object initialization
                 var dateType = new SearchEntry(new Component
                 {
                     FieldName = nameof(Component.DateTimeField),
@@ -231,7 +225,6 @@ namespace Core.Components
                 {
                     ParentElement = Element
                 };
-#pragma warning restore IDE0017 // Simplify object initialization
                 dateType.UserInput = null;
                 AddChild(dateType);
             }
@@ -332,7 +325,7 @@ namespace Core.Components
             ParentListView.ApplyFilter().Done();
         }
 
-        private async Task UploadCsv(Event e)
+        private void UploadCsv(Event e)
         {
             var files = e.Target["files"] as FileList;
             if (files.Nothing())
@@ -343,17 +336,20 @@ namespace Core.Components
             var fileName = files.FirstOrDefault().Name;
             var uploadForm = _uploader.ParentElement as HTMLFormElement;
             var formData = new FormData(uploadForm);
-            var parentForm = this.FindClosest<EditForm>();
-            var response = await parentForm.FormClient.SubmitAsync<Blob>(new XHRWrapper
+            var meta = ParentListView.GuiInfo;
+            Client.Instance.SubmitAsync<bool>(new XHRWrapper
             {
                 FormData = formData,
-                Url = "importCsv",
+                Url = $"/user/importCsv?table={meta.RefName}&comId={meta.Id}",
                 Method = HttpMethod.POST,
                 ResponseMimeType = Utils.GetMimeType("csv")
+            }).Done(success => {
+                Toast.Success("Import excel success");
+                _uploader.Value = string.Empty;
+            }).Catch(error => {
+                Toast.Warning(error.Message);
+                _uploader.Value = string.Empty;
             });
-            ComponentExt.DownloadFile(fileName, response);
-            Toast.Success("Import excel thành công");
-            _uploader.Value = string.Empty;
         }
 
         private void AdvancedOptions(Event e)
@@ -365,18 +361,23 @@ namespace Core.Components
             ctxMenu.Left = buttonRect.Left;
             ctxMenu.MenuItems = new List<ContextMenuItem>
             {
-                    new ContextMenuItem { Icon = "fa fa-search-plus mr-1", Text = "Nâng cao", Click = AdvancedSearch },
-                    new ContextMenuItem { Icon = "fa fa-search mr-1", Text = "Lọc dữ liệu đã chọn", Click = FilterSelected },
-                    new ContextMenuItem { Icon = "fa fa-download mr-1", Text = "Excel toàn bộ", Click = ExportAllData },
-                    new ContextMenuItem { Icon = "fa fal fa-ballot-check mr-1", Text = "Excel đã chọn", Click = ExportSelectedData },
-                    new ContextMenuItem { Icon = "fa fa-download mr-1", Text = "Excel tùy chọn", Click = ExportCustomData },
+                    new ContextMenuItem { Icon = "fa fa-search-plus mr-1", Text = "Advanced search", Click = AdvancedSearch },
+                    new ContextMenuItem { Icon = "fa fa-search mr-1", Text = "Show selected only", Click = FilterSelected },
+                    new ContextMenuItem { Icon = "fa fa-download mr-1", Text = "Import csv", Click = (obj) => _uploader.Click() },
+                    new ContextMenuItem { Icon = "fa fa-download mr-1", Text = "Export all", Click = ExportAllData },
+                    new ContextMenuItem { Icon = "fa fal fa-ballot-check mr-1", Text = "Export selected", Click = ExportSelectedData },
+                    new ContextMenuItem { Icon = "fa fa-download mr-1", Text = "Customize export", Click = ExportCustomData },
             };
             ctxMenu.Render();
+        }
+
+        private void RenderImportBtn()
+        {
             Html.Take(Element).Form.Attr("method", "POST").Attr("enctype", "multipart/form-data")
-                .Display(false).Input.Type("file").Id($"id_{GetHashCode()}").Attr("name", "files").Attr("accept", ".csv");
+                            .Display(false).Input.Type("file").Id($"id_{GetHashCode()}").Attr("name", "files").Attr("accept", ".csv");
             _uploader = Html.Context as HTMLInputElement;
-            _uploader.AddEventListener(EventType.Change.ToString(), async (ev) => await UploadCsv(ev));
-            ctxMenu.Element.Children.FirstOrDefault()?.AppendChild(_uploader.ParentElement);
+            _uploader.AddEventListener(EventType.Change.ToString(), (ev) => UploadCsv(ev));
+            Html.Instance.End.End.Render();
         }
 
         private void FilterSelected(object arg)
@@ -384,7 +385,7 @@ namespace Core.Components
             var selectedIds = ParentListView.SelectedIds;
             if (selectedIds.Nothing())
             {
-                Toast.Warning("Vui lòng chọn dòng cần lọc");
+                Toast.Warning("Select rows to filter");
                 return;
             }
             if (ParentListView.CellSelected.Any(x => x.FieldName == IdField))

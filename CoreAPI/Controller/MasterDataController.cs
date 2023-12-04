@@ -19,7 +19,7 @@ namespace Core.Controllers
         {
         }
 
-        public override async Task<ActionResult<MasterData>> PatchAsync([FromQuery] ODataQueryOptions<MasterData> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
+        public override async Task<ActionResult<MasterData>> PatchAsync([FromQuery] ODataQueryOptions<MasterData> options, [FromBody] PatchVM patch, [FromQuery] bool disableTrigger = false)
         {
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             using SqlConnection connection = new(_config.GetConnectionString("Default"));

@@ -4,14 +4,14 @@ using Core.Exceptions;
 
 namespace Core.ViewModels
 {
-    public class PatchUpdate
+    public class PatchVM
     {
         public string FeatureId { get; set; }
         public string ComId { get; set; }
         public string QueueName { get; set; }
         public string Table { get; set; }
         public string ConnKey { get; set; } = "default";
-        public List<PatchUpdateDetail> Changes { get; set; }
+        public List<PatchDetail> Changes { get; set; }
 
         public void ApplyTo<T>(T obj)
         {
@@ -42,7 +42,7 @@ namespace Core.ViewModels
             }
         }
 
-        private static void CheckConflict<T>(T obj, System.Reflection.PropertyInfo prop, PatchUpdateDetail fieldPatch)
+        private static void CheckConflict<T>(T obj, System.Reflection.PropertyInfo prop, PatchDetail fieldPatch)
         {
             if (prop.PropertyType.IsDate())
             {
@@ -83,7 +83,7 @@ namespace Core.ViewModels
         }
     }
 
-    public class PatchUpdateDetail
+    public class PatchDetail
     {
         public string Field { get; set; }
         public string Label { get; set; }

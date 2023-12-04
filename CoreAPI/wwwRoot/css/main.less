@@ -252,7 +252,7 @@ button {
 
     > div.headers-wrapper {
         width: 100%;
-        padding-top: 0.5rem;
+        padding: 0.5rem 1rem;
     }
 
     > div > ul.nav-tabs {
@@ -263,6 +263,7 @@ button {
         padding-top: 2px;
         max-width: 100%;
         overflow: visible;
+        border: 0;
 
         li {
             color: #000000;
@@ -1803,7 +1804,6 @@ tr .uploader img {
     height: @buttonHeight;
     display: flex;
     justify-content: center;
-    .box-shadow;
 
     > label {
         display: none;
@@ -1838,15 +1838,6 @@ tr .uploader img {
             & + .caption {
                 margin: 0;
             }
-        }
-
-        &:not(.last)::after {
-            position: absolute;
-            content: '';
-            border-right: 1px solid #ccc;
-            height: 50%;
-            top: 25%;
-            right: 0;
         }
     }
 }
@@ -2075,6 +2066,7 @@ div > [class*="cell"]:last-child {
     }
 
     .nav-tabs {
+        border: 0;
         > li {
             display: inline-flex !important;
             align-items: center;

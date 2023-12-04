@@ -19,6 +19,7 @@
         public string[] FieldName { get; set; }
         public bool SkipXQuery { get; set; }
         public string ConnKey { get; internal set; }
+        public string Table { get; set; }
     }
 
     public class SignedCom

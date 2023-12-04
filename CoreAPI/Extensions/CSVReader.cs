@@ -5,6 +5,7 @@ namespace Core.Extensions
     internal enum TokenType
     {
         Comma,
+        SemiColon,
         Quote,
         Value
     }
@@ -51,6 +52,7 @@ namespace Core.Extensions
                             yield return new CsvToken(TokenType.Quote, c.ToString());
                             break;
                         case ',':
+                        case ';':
                             if (value.Length > 0)
                             {
                                 yield return new CsvToken(TokenType.Value, value.ToString());
@@ -102,6 +104,7 @@ namespace Core.Extensions
                 switch (token.Type)
                 {
                     case TokenType.Comma:
+                    case TokenType.SemiColon:
                         if (inQuote)
                         {
                             result.Append(token.Value);

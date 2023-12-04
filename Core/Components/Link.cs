@@ -5,7 +5,6 @@ using Core.Models;
 using Core.MVVM;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Core.Components
 {

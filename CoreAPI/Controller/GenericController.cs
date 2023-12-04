@@ -233,7 +233,7 @@ namespace Core.Controllers
         }
 
         [HttpPatch("api/[Controller]", Order = 1)]
-        public virtual async Task<ActionResult<T>> PatchAsync([FromQuery] ODataQueryOptions<T> options, [FromBody] PatchUpdate patch, [FromQuery] bool disableTrigger = false)
+        public virtual async Task<ActionResult<T>> PatchAsync([FromQuery] ODataQueryOptions<T> options, [FromBody] PatchVM patch, [FromQuery] bool disableTrigger = false)
         {
             var id = patch.Changes.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
             using SqlConnection connection = new(_config.GetConnectionString("Default"));
@@ -280,52 +280,6 @@ namespace Core.Controllers
             }
         }
 
-        [HttpPost("api/[Controller]/EmailAttached")]
-        public async Task<bool> EmailAttached([FromBody] EmailVM email, [FromServices] IWebHostEnvironment host)
-        {
-            var paths = await GeneratePdf(email, host, absolute: true);
-            paths.SelectForeach(email.ServerAttachements.Add);
-            await SendMail(email, ctx as CoreContext, host.WebRootPath);
-            return true;
-        }
-
-        [HttpPost("api/[Controller]/GeneratePdf")]
-        public async Task<IEnumerable<string>> GeneratePdf([FromBody] EmailVM email, [FromServices] IWebHostEnvironment host, bool absolute = false)
-        {
-            if (email.PdfText.Nothing())
-            {
-                return Enumerable.Empty<string>();
-            }
-            List<string> paths = new();
-            using var browserFetcher = new BrowserFetcher();
-            await browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
-            var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
-            var page = await browser.NewPageAsync();
-            await email.PdfText.ForEachAsync(async pdf =>
-            {
-                await page.SetContentAsync(pdf);
-                var path = Path.Combine(host.WebRootPath, "download", _userSvc.UserId.ToString(), Guid.NewGuid() + ".pdf");
-                EnsureDirectoryExist(path);
-                await page.PdfAsync(path);
-                paths.Add(path);
-            });
-            return absolute ? paths : paths.Select(path => path.Replace(host.WebRootPath, string.Empty));
-        }
-
-        public static async Task SendMail(EmailVM email, CoreContext db, string webRoot = null)
-        {
-            var config = await db.MasterData.Where(x => x.Parent.Name == nameof(ConfigEmailVM)).ToListAsync();
-            var fromName = config.FirstOrDefault(x => x.Name == "FromName")?.Description;
-            var fromAddress = email.FromAddress ?? config.FirstOrDefault(x => x.Name == "FromAddress")?.Description;
-            var password = config.FirstOrDefault(x => x.Name == "Password")?.Description ?? throw new ApiException("Email server is not authorzied") { StatusCode = HttpStatusCode.InternalServerError };
-            var server = config.FirstOrDefault(x => x.Name == "Server").Description ?? throw new ApiException("Email server is not authorzied") { StatusCode = HttpStatusCode.InternalServerError };
-            var strPort = config.FirstOrDefault(x => x.Name == "Port")?.Description;
-            var strSSL = config.FirstOrDefault(x => x.Name == "SSL")?.Description;
-            var port = strPort.TryParseInt();
-            var ssl = strSSL.TryParseBool();
-            await email.SendMailAsync(fromName, fromAddress, password, server, port ?? 587, ssl ?? false, webRoot);
-        }
-
         protected async Task<T> GetEntityByOdataOptions(ODataQueryOptions<T> options)
         {
             options.SetReadonlyPropValue(nameof(options.Top), null);
@@ -366,61 +320,6 @@ namespace Core.Controllers
         }
 
         protected void SetAuditInfo<K>(K entity) where K : class => _userSvc.SetAuditInfo(entity);
-
-        [HttpPost("api/[Controller]/File")]
-        public async Task<string> PostFileAsync([FromServices] IWebHostEnvironment host, [FromForm] IFormFile file, bool reup = false)
-        {
-            var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-            var path = GetUploadPath(fileName, host.WebRootPath);
-            EnsureDirectoryExist(path);
-            path = reup ? IncreaseFileName(path) : path;
-            using var stream = FileIO.Create(path);
-            await file.CopyToAsync(stream);
-            stream.Close();
-            return GetRelativePath(path, host.WebRootPath);
-        }
-
-        [HttpPost("api/[Controller]/Image")]
-        public async Task<string> PostImageAsync([FromServices] IWebHostEnvironment host,
-            [FromQuery] string name = "Captured", [FromQuery] bool reup = false)
-        {
-            var image = await Utils.ReadRequestBodyAsync(Request, leaveOpen: false);
-            var fileName = $"{Path.GetFileNameWithoutExtension(name)}{Path.GetExtension(name)}";
-            var path = GetUploadPath(fileName, host.WebRootPath);
-            EnsureDirectoryExist(path);
-            path = reup ? IncreaseFileName(path) : path;
-            await FileIO.WriteAllBytesAsync(path, Convert.FromBase64String(image));
-            return GetRelativePath(path, host.WebRootPath);
-        }
-
-        public string GetRelativePath(string path, string webRootPath)
-        {
-            return Request.Scheme + "://" + Request.Host.Value + path.Replace(webRootPath, string.Empty).Replace("\\", "/");
-        }
-
-        public static void EnsureDirectoryExist(string path)
-        {
-            var dir = Path.GetDirectoryName(path);
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
-        }
-
-        public static string IncreaseFileName(string path)
-        {
-            var uploadedPath = path;
-            var index = 0;
-            while (FileIO.Exists(path))
-            {
-                var noExtension = Path.GetFileNameWithoutExtension(uploadedPath);
-                var dir = Path.GetDirectoryName(uploadedPath);
-                index++;
-                path = Path.Combine(dir, noExtension + "_" + index + Path.GetExtension(uploadedPath));
-            }
-
-            return path;
-        }
 
         [HttpPut("api/[Controller]/BulkUpdate")]
         public virtual async Task<List<T>> BulkUpdateAsync([FromBody] List<T> entities, string reasonOfChange)
@@ -465,138 +364,6 @@ namespace Core.Controllers
             var updateCommand = string.Format("Update [{0}] set Active = 0 where Id in ({1})", typeof(T).Name, string.Join(",", ids));
             await ctx.Database.ExecuteSqlRawAsync(updateCommand);
             return true;
-        }
-
-        [HttpPost("api/[Controller]/ImportCsv")]
-        public async Task<IActionResult> ImportCsv([FromServices] IWebHostEnvironment host, List<IFormFile> files)
-        {
-            if (files.Nothing())
-            {
-                return BadRequest("Không có file nào được upload");
-            }
-            var file = files.FirstOrDefault();
-            var path = GetUploadPath(file.FileName, host.WebRootPath);
-            EnsureDirectoryExist(path);
-            path = IncreaseFileName(path);
-            using var stream = FileIO.Create(path);
-            await file.CopyToAsync(stream);
-            stream.Close();
-            await ParseCsvFile(path);
-            var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None, 4096, FileOptions.DeleteOnClose);
-            return File(fs, "text/csv");
-        }
-
-        private async Task ParseCsvFile(string path)
-        {
-            if (!FileIO.Exists(path))
-            {
-                return;
-            }
-            var tempPath = IncreaseFileName(path);
-            using (var streamReader = new StreamReader(path))
-            {
-                using var streamWriter = new StreamWriter(tempPath);
-                string currentLine;
-                var lineCount = 0;
-                while ((currentLine = await streamReader.ReadLineAsync()) != null)
-                {
-                    if (lineCount == 0 || currentLine.IsNullOrWhiteSpace())
-                    {
-                        lineCount++;
-                        await streamWriter.WriteLineAsync(currentLine);
-                        continue;
-                    }
-                    var updatedLine = await AddOrUpdateCsvObject(currentLine, lineCount);
-                    await streamWriter.WriteLineAsync(updatedLine?.ToArray());
-                    lineCount++;
-                }
-            }
-            FileIO.Replace(tempPath, path, null);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="currentLine"></param>
-        /// <param name="lineCount"></param>
-        /// <returns>shouldUpdate, updatedLine</returns>
-        private async Task<string> AddOrUpdateCsvObject(string currentLine, int lineCount)
-        {
-            var (content, fieldValues) = ParseCsvLine(currentLine, lineCount);
-            if (content is null)
-            {
-                return null;
-            }
-            SetAuditInfo<T>(content);
-            var id = content.GetPropValue(IdField) as int?;
-            if (id is null)
-            {
-                return null;
-            }
-            else if (id.Value > 0)
-            {
-                ctx.Update(content);
-            }
-            else
-            {
-                ctx.Add(content);
-            }
-            try
-            {
-                await ctx.SaveChangesAsync();
-                if (fieldValues.Count == 0)
-                {
-                    return null;
-                }
-                fieldValues[0] = content.GetPropValue(IdField).ToString();
-                return string.Join(",", fieldValues);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private static (T, List<string>) ParseCsvLine(string currentLine, int lineCount)
-        {
-            T content = Activator.CreateInstance<T>();
-            List<string> fieldValues;
-            PropertyInfo prop = null;
-            string propVal = null;
-            try
-            {
-                var props = typeof(T).GetProperties().Where(x => x.PropertyType.IsSimple())
-                    .OrderByDescending(x => x.Name == IdField).ThenBy(x => x.Name).ToList();
-                var parser = new CsvParser(currentLine);
-                fieldValues = parser.ToList();
-                for (int index = 0; index < props.Count() && index < fieldValues.Count; index++)
-                {
-                    prop = props[index];
-                    propVal = fieldValues[index];
-                    if (propVal == "null" || propVal.IsNullOrWhiteSpace())
-                    {
-                        prop.SetValue(content, null);
-                        continue;
-                    }
-                    var converter = TypeDescriptor.GetConverter(prop.PropertyType);
-                    var parsedVal = converter.ConvertFromInvariantString(propVal);
-                    prop.SetValue(content, parsedVal);
-                }
-            }
-            catch
-            {
-                throw new ApiException($"Cấu trúc dữ liệu dòng {lineCount}, field {prop?.Name}, giá trị {propVal} không hợp lệ")
-                {
-                    StatusCode = HttpStatusCode.BadRequest
-                };
-            }
-
-            return (content, fieldValues);
-        }
-
-        protected string GetUploadPath(string fileName, string webRootPath)
-        {
-            return Path.Combine(webRootPath, "upload", _userSvc.TenantCode, $"U{UserId}", fileName);
         }
 
         protected string GetUploadExcelPath(string fileName, string webRootPath)

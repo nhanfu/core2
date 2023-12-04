@@ -715,7 +715,7 @@ button {
 }
 .tab-group > div.headers-wrapper {
   width: 100%;
-  padding-top: 0.5rem;
+  padding: 0.5rem 1rem;
 }
 .tab-group > div > ul.nav-tabs {
   width: 100%;
@@ -725,6 +725,7 @@ button {
   padding-top: 2px;
   max-width: 100%;
   overflow: visible;
+  border: 0;
 }
 .tab-group > div > ul.nav-tabs li {
   color: #000000;
@@ -1978,9 +1979,6 @@ tr .uploader img {
   height: 3rem;
   display: flex;
   justify-content: center;
-  box-shadow: rgba(39, 42, 67, 0.2) 0px 1.5px 4px;
-  background-color: white;
-  grid-gap: 1rem;
 }
 .ribbon-group > label {
   display: none;
@@ -2011,14 +2009,6 @@ tr .uploader img {
 }
 .ribbon-group button .icon + .caption {
   margin: 0;
-}
-.ribbon-group button:not(.last)::after {
-  position: absolute;
-  content: '';
-  border-right: 1px solid #ccc;
-  height: 50%;
-  top: 25%;
-  right: 0;
 }
 .floating-button {
   border: 0px;
@@ -2209,6 +2199,9 @@ div > [class*="cell"]:last-child {
 .mobile .tabs-content {
   height: 100%;
   overflow: auto;
+}
+.mobile .nav-tabs {
+  border: 0;
 }
 .mobile .nav-tabs > li {
   display: inline-flex !important;

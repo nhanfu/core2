@@ -1192,12 +1192,13 @@ namespace Core.Components.Forms
             _confirm.Render();
         }
 
-        public virtual async Task EmailPdf(EmailVM email, params string[] pdfSelector)
+        public virtual Task<bool> EmailPdf(EmailVM email, params string[] pdfSelector)
         {
             if (email is null)
             {
                 throw new ArgumentNullException(nameof(email));
             }
+            var tcs = new TaskCompletionSource<bool>();
             if (pdfSelector.HasElement())
             {
                 var pdfText = pdfSelector.Select(x =>
@@ -1207,11 +1208,17 @@ namespace Core.Components.Forms
                 });
                 email.PdfText.AddRange(pdfText);
             }
-            var sucess = await FormClient.PostAsync<bool>(email, "EmailAttached", allowNested: true);
-            if (sucess)
-            {
-                Toast.Success("Gởi email thành công!");
-            }
+            Client.Instance
+                .PostAsync<bool>(email, "/user/EmailAttached", allowNested: true)
+                .Done(sucess =>
+                {
+                    Toast.Success("Send email success!");
+                    tcs.TrySetResult(sucess);
+                }).Catch(e => {
+                    Toast.Success("Error occurs while sending email!");
+                    tcs.TrySetException(e);
+                });
+            return tcs.Task;
         }
 
         public virtual void Print(string selector = ".printable")
