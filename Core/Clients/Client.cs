@@ -587,7 +587,7 @@ namespace Core.Clients
         {
             return SubmitAsync<bool>(new XHRWrapper
             {
-                Url = "Clone",
+                Url = "/feature/Clone",
                 Value = id,
                 IsRawString = true,
                 Method = HttpMethod.POST

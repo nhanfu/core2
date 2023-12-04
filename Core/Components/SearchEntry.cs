@@ -287,8 +287,7 @@ namespace Core.Components
                 return;
             }
 
-            var featureTask = ComponentExt.LoadFeatureByName(GuiInfo.RefClass);
-            Client.ExecTask(featureTask, FeatureLoaded);
+            ComponentExt.LoadFeature(GuiInfo.RefClass).Done(FeatureLoaded);
         }
 
         private void FeatureLoaded(Feature feature)

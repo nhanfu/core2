@@ -723,7 +723,6 @@ button {
   flex-flow: row nowrap;
   margin: 0;
   padding-top: 2px;
-  justify-content: space-around;
   max-width: 100%;
   overflow: visible;
 }
@@ -733,6 +732,7 @@ button {
   display: inline-block;
   margin-top: -1px;
   text-align: left;
+  border-radius: 35px;
 }
 .tab-group > div > ul.nav-tabs li .nav-link-icon i {
   margin-right: 0.5rem;
@@ -741,9 +741,10 @@ button {
   white-space: nowrap;
 }
 .tab-group > div > ul.nav-tabs li > a.active {
-  border-bottom: 2px solid #2b938c;
   color: #2b938c;
   font-weight: 600;
+  border-radius: 35px;
+  background-color: aliceblue;
 }
 .tab-group > div > ul.nav-tabs li > a.active .headline {
   font-weight: 600;

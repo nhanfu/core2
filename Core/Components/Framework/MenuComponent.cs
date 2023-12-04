@@ -318,11 +318,12 @@ namespace Core.Components.Framework
             {
                 Content = "Bạn có muốn clone feature này?"
             };
-            confirmDialog.YesConfirmed += async () =>
+            confirmDialog.YesConfirmed += () =>
             {
-                var client = new Client(nameof(Feature), typeof(Feature).Namespace);
-                await client.CloneFeatureAsync(feature.Id);
-                ReloadMenu(feature.ParentId);
+                Client.Instance.CloneFeatureAsync(feature.Id).Done(() =>
+                {
+                    ReloadMenu(feature.ParentId);
+                });
             };
             AddChild(confirmDialog);
         }
@@ -446,8 +447,7 @@ namespace Core.Components.Framework
                 exists.Focus();
                 return;
             }
-            var featureTask = ComponentExt.LoadFeatureByName(feature.Name);
-            Client.ExecTask(featureTask, (f) =>
+            ComponentExt.LoadFeature(feature.Name).Done(f =>
             {
                 if (f is null) return;
                 EditForm instance = null;

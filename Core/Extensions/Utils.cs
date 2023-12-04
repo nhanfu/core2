@@ -26,6 +26,8 @@ namespace Core.Extensions
         public const string NewLine = "\r\n";
         public const string Indent = "\t";
         public const string Dot = ".";
+        public const string Slash = "/";
+        public const string Hash = "#";
         public const string Comma = ",";
         public const string Semicolon = ";";
         public const string Space = " ";
@@ -331,16 +333,16 @@ namespace Core.Extensions
             objList.Add(field == "0" ? source : value);
         }
 
-        public static string GetCellText(Component header, object cellData, object row, Dictionary<string, List<object>> refData, bool server, bool emptyRow = false)
+        public static string GetCellText(Component header, object cellData, object row, bool emptyRow = false)
         {
-            return GetCellTextInternal(header, cellData, row, refData, server, emptyRow).DecodeSpecialChar();
+            return GetCellTextInternal(header, cellData, row, emptyRow).DecodeSpecialChar();
         }
 
-        private static string GetCellTextInternal(Component header, object cellData, object row, Dictionary<string, List<object>> refData, bool server, bool emptyRow = false)
+        private static string GetCellTextInternal(Component header, object cellData, object row, bool emptyRow = false)
         {
             var dt = DateTime.Now;
             var isDate = cellData != null && header.ComponentType == nameof(Datepicker) && DateTime.TryParse(cellData.ToString(), out dt);
-            var isRef = header.LocalData.HasElement() || header.ReferenceId.HasAnyChar() || header.Reference != null && header.Reference.Name.HasAnyChar();
+            var isRef = header.FieldText.HasNonSpaceChar() || header.LocalData.HasElement() || header.ReferenceId.HasAnyChar();
             if (emptyRow)
             {
                 return string.Empty;
@@ -349,7 +351,7 @@ namespace Core.Extensions
             {
                 return string.Empty;
             }
-            if ((!isRef || !server) && header.FormatEntity.HasAnyChar())
+            if (!isRef && header.FormatEntity.HasAnyChar())
             {
                 if (IsFunction(header.FormatEntity, out var fn))
                 {
@@ -367,29 +369,7 @@ namespace Core.Extensions
             }
             else if (isRef)
             {
-                var source = header.LocalData ?? refData?.GetValueOrDefault(header.RefName);
-                try
-                {
-                    var found = source?.FirstOrDefault(x => CompareIdField(x, cellData));
-                    if (found == null)
-                    {
-                        return string.Empty; // Should find data source here if not found
-                    }
-                    if (header.FormatData.HasAnyChar())
-                    {
-                        return FormatEntity(header.FormatData, null, found, EmptyFormat, EmptyFormat);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Format of {header.FieldName} is null");
-                        return string.Empty;
-                    }
-                }
-                catch
-                {
-                    Console.WriteLine($"Format of {header.FieldName} is null");
-                    return string.Empty;
-                }
+                return row[header.FieldText] as string;
             }
             else if (header.FormatData.HasAnyChar())
             {

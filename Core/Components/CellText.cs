@@ -32,9 +32,10 @@ namespace Core.Components
             {
                 RenderNewEle(cellText, cellData, isBool);
             }
-            if (!GuiInfo.Query.IsNullOrWhiteSpace())
+            if (!GuiInfo.Query.IsNullOrWhiteSpace()
+                && Utils.IsFunction(GuiInfo.FormatEntity, out var formatter))
             {
-                RenderCellText();
+                RenderCellText(formatter);
                 return;
             }
             else
@@ -122,7 +123,7 @@ namespace Core.Components
             }
             else
             {
-                cellText = Utils.GetCellText(GuiInfo, cellData, Entity, RefData, false, EmptyRow);
+                cellText = Utils.GetCellText(GuiInfo, cellData, Entity, EmptyRow);
             }
             if (cellText is null || cellText == "null")
             {
@@ -131,9 +132,9 @@ namespace Core.Components
             return cellText;
         }
 
-        private void RenderCellText()
+        private void RenderCellText(Function formatter)
         {
-            if (GuiInfo.Query.IsNullOrEmpty())
+            if (GuiInfo.Query.IsNullOrEmpty() || formatter is null)
             {
                 return;
             }
@@ -144,22 +145,19 @@ namespace Core.Components
                 Entity = JSON.Stringify(entity),
                 ComId = GuiInfo.Id
             };
-            var dataTask = Client.Instance.SubmitAsync<object[]>(new XHRWrapper
+            Client.Instance.SubmitAsync<object[]>(new XHRWrapper
             {
                 Url = Utils.ComQuery,
                 IsRawString = true,
                 Value = JSON.Stringify(submit),
                 Method = Enums.HttpMethod.POST
-            });
-            Client.ExecTask(dataTask, data =>
+            }).Done(data =>
             {
                 if (data.Nothing())
                 {
                     return;
                 }
-                var isFormatFn = Utils.IsFunction(GuiInfo.FormatEntity, out var formatter);
-                var text = isFormatFn ? formatter.Apply(this, new object[] { data }).ToString() : Utils.FormatEntity(GuiInfo.FormatEntity, data[0]);
-
+                var text = formatter.Apply(this, new object[] { data }).ToString();
                 UpdateEle(text, null, false);
             });
         }

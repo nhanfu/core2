@@ -185,7 +185,7 @@ namespace Core.Components.Extensions
                 exists.Focus();
                 return exists;
             }
-            var feature = await LoadFeatureByName(featureName, publicForm: anonymous);
+            var feature = await LoadFeature(featureName);
             var tab = factory.Invoke();
             tab.Popup = popup;
             tab.Name = featureName;
@@ -219,9 +219,8 @@ namespace Core.Components.Extensions
         {
             var tcs = new TaskCompletionSource<EditForm>();
             var featureName = hash.Replace("-", " ").Replace("#", string.Empty);
-            Task.Run(async () =>
+            LoadFeature(featureName).Done(feature =>
             {
-                var feature = await LoadFeatureByName(featureName, true);
                 if (feature is null)
                 {
                     return;
@@ -238,7 +237,7 @@ namespace Core.Components.Extensions
             return tcs.Task;
         }
 
-        public static Task<Feature> LoadFeatureByName(string featureName, bool publicForm = false, bool config = false)
+        public static Task<Feature> LoadFeature(string name, string id = null)
         {
             var tcs = new TaskCompletionSource<Feature>();
 #if RELEASE
@@ -253,8 +252,8 @@ namespace Core.Components.Extensions
                 Value = JSON.Stringify(new SqlViewModel
                 {
                     ComId = "Feature",
-                    Action = "GetByName",
-                    Entity = JSON.Stringify(new { Name = featureName })
+                    Action = "GetFeature",
+                    Entity = JSON.Stringify(new { Name = name, Id = id })
                 }),
                 Url = Utils.UserSvc,
                 IsRawString = true,

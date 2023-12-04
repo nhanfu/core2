@@ -443,7 +443,8 @@ namespace Core.Components.Forms
 
         protected virtual void LoadFeatureAndRender(Action callback = null)
         {
-            var featureTask = Feature != null ? Task.FromResult(Feature) : ComponentExt.LoadFeatureByName(Name, Public, Config);
+            var featureTask = Feature != null ? Task.FromResult(Feature) 
+                : ComponentExt.LoadFeature(Name);
             var entityTask = LoadEntity();
             Task.WhenAll(featureTask, entityTask).Done(() =>
                 FeatureLoaded(featureTask.Result, entityTask.Result, callback));
@@ -456,9 +457,8 @@ namespace Core.Components.Forms
                 LayoutLoaded(feature, entity, loadedCallback: loadedCallback);
                 return;
             }
-            var layoutTask = new Client(nameof(Models.Feature), typeof(User).Namespace, Config).FirstOrDefaultAsync<Feature>(
-                $"/Public/?$filter=Active eq true and Id eq '{feature.LayoutId}' and {nameof(feature.Template)} ne null");
-            layoutTask.Done(layout =>
+            ComponentExt.LoadFeature(null, feature.LayoutId)
+            .Done(layout =>
             {
                 LayoutLoaded(feature, entity, layout, loadedCallback);
             });
@@ -482,12 +482,13 @@ namespace Core.Components.Forms
             RenderTabOrSection(groupTree);
             ResizeHandler();
             LockUpdate();
-            Html.Take(Element).TabIndex(-1).Trigger(EventType.Focus).Event(EventType.FocusIn, () => Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusIn, Entity)))
-                .Event(EventType.KeyDown, (e) => Client.ExecTaskNoResult(KeyDownIntro(e)))
-                .Event(EventType.FocusOut, () => Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusOut, Entity)));
+            Html.Take(Element).TabIndex(-1).Trigger(EventType.Focus)
+                .Event(EventType.FocusIn, () => this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusIn, Entity).Done())
+                .Event(EventType.KeyDown, (e) => KeyDownIntro(e).Done())
+                .Event(EventType.FocusOut, () => this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusOut, Entity).Done());
             DOMContentLoaded?.Invoke();
             loadedCallback?.Invoke();
-            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(Feature.Events, EventType.DOMContentLoaded, Entity));
+            this.DispatchEventToHandlerAsync(Feature.Events, EventType.DOMContentLoaded, Entity).Done();
         }
 
         private async Task KeyDownIntro(Event evt)
@@ -848,11 +849,9 @@ namespace Core.Components.Forms
             ctxMenu.MenuItems = new List<ContextMenuItem>
             {
                     component is null ? null : new ContextMenuItem { Icon = "fal fa-cog", Text = "Tùy chọn dữ liệu", Click = ComponentProperties, Parameter = component },
-                    component is null ? null : new ContextMenuItem { Icon = "fal fa-clone", Text = "Sao chép", Click = CoppyComponent, Parameter = component },
-                    _componentCoppy is null ? null : new ContextMenuItem { Icon = "fal fa-paste", Text = "Dán", Click = PasteComponent, Parameter = group },
+                    component is null ? null : new ContextMenuItem { Icon = "fal fa-clone", Text = "Sao chép", Click = CopyComponent, Parameter = component },
                     new ContextMenuItem { Icon = "fal fa-cogs", Text = "Thêm Component", MenuItems = menuItems },
                     new ContextMenuItem { Icon = "fal fa-cogs", Text = "Tùy chọn vùng dữ liệu", Click = SectionProperties, Parameter = group },
-                    new ContextMenuItem { Icon = "fal fa-clone", Text = "Clone vùng dữ liệu", Click = CloneProperties, Parameter = group },
                     new ContextMenuItem { Icon = "fal fa-folder-open", Text = "Thiết lập chung", Click = FeatureProperties },
                     new ContextMenuItem { Icon = "fal fa-clone", Text = "Clone feature", Click = CloneFeature, Parameter = Feature },
             };
@@ -867,10 +866,9 @@ namespace Core.Components.Forms
                 Content = "Bạn có muốn clone feature này?",
                 Title = "Xác nhận"
             };
-            confirmDialog.YesConfirmed += async () =>
+            confirmDialog.YesConfirmed += () =>
             {
-                var client = new Client(nameof(Feature));
-                await client.CloneFeatureAsync(feature.Id);
+                Client.Instance.CloneFeatureAsync(feature.Id).Done();
             };
             AddChild(confirmDialog);
         }
@@ -922,23 +920,17 @@ namespace Core.Components.Forms
             AddChild(editor);
         }
 
-        public void CoppyComponent(object arg)
+        public void CopyComponent(object arg)
         {
             var component = arg.MapToCom();
             _componentCoppy = component;
         }
 
-        public void PasteComponent(object arg)
+        private PatchVM CreateComGroupPatch(Component com) 
         {
-            var componentGroup = arg.CastProp<ComponentGroup>();
-            _componentCoppy.ComponentGroupId = componentGroup.Id;
-            Task.Run(async () =>
-            {
-                _componentCoppy.Id = null;
-                var client = await new Client(nameof(Component)).CreateAsync(_componentCoppy);
-                _componentCoppy = null;
-                Toast.Success("Sao chép thành công!");
-            });
+            var res = new PatchVM();
+
+            return res;
         }
 
         public void AddComponent(object arg)
@@ -1128,19 +1120,6 @@ namespace Core.Components.Forms
                 OpenFrom = this.FindClosest<EditForm>()
             };
             AddChild(editor);
-        }
-
-        public void CloneProperties(object arg)
-        {
-            var group = arg.CastProp<ComponentGroup>();
-            ConfirmDialog.RenderConfirm($"Clone the section CG{group.Id:0000000}?", async () =>
-            {
-                group.InverseParent = null;
-                group.Component = null;
-                group.Id = null;
-                await new Client(nameof(ComponentGroup)).CreateAsync(group);
-                Toast.Success("Clone thành công");
-            });
         }
 
         public void FeatureProperties(object arg)

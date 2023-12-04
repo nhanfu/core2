@@ -4,6 +4,7 @@ using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Core.Components
@@ -22,7 +23,7 @@ namespace Core.Components
             {
                 Element = Html.Take(ParentElement).A.IText(GuiInfo.PlainText ?? GuiInfo.Label).GetContext();
             }
-            Element.AddEventListener(EventType.Click, async (e) => await DispatchClick(e));
+            Element.AddEventListener(EventType.Click, (e) => DispatchClick(e));
             DOMContentLoaded?.Invoke();
         }
 
@@ -31,19 +32,22 @@ namespace Core.Components
             // not to do anything here
         }
 
-        private async Task DispatchClick(Event e)
+        private void DispatchClick(Event e)
         {
             e.PreventDefault();
             if (GuiInfo.Events.HasAnyChar() && GuiInfo.Events.ToLower().Contains("click"))
             {
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity);
+                this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity).Done();
                 return;
             }
             var a = Element as HTMLAnchorElement;
-            var f = Utils.GetUrlParam(Utils.FeatureField, a.Href);
-            Spinner.AppendTo(Document.QuerySelector("header") as HTMLElement ?? Document.Body, timeout: 1000);
-            await ComponentExt.InitFeatureByName(f ?? "Home");
-            Window.History.PushState(null, a.Title, a.Href);
+            var f = a.Href.Split(Utils.Slash).Where(x => x.HasNonSpaceChar())
+                .Where(x => !x.Contains(Utils.QuestionMark) && !x.Contains(Utils.Hash)).LastOrDefault();
+            Spinner.AppendTo(Document.Body, timeout: 1000);
+            ComponentExt.InitFeatureByName(f ?? string.Empty).Done(x =>
+            {
+                Window.History.PushState(null, a.Title, a.Href);
+            });
         }
     }
 }

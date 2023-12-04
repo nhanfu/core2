@@ -17,7 +17,7 @@ namespace Core.Components
 {
     public class ListViewItem : Section
     {
-        private static List<string> NotCellText;
+        private readonly static string[] NotCellText = new string[] { "Button", "Image", "Checkbox" };
         public const string EmptyRowClass = "empty-row";
         public const string SelectedClass = "__selected__";
         public const string FocusedClass = "focus";
@@ -112,7 +112,6 @@ namespace Core.Components
         public ListViewItem(ElementType elementType = ElementType.tr) : base(elementType)
         {
             StopChildrenHistory = true;
-            NotCellText = new List<string> { "Button", "Image", "Checkbox" };
         }
 
         public override void Render()

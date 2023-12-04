@@ -1395,7 +1395,7 @@ namespace Core.Components
                 return;
             }
             _hasLoadRef = false;
-            Client.ExecTask(ComponentExt.LoadFeatureByName(e.ViewClass), currentFeature =>
+            ComponentExt.LoadFeature(e.ViewClass).Done(currentFeature =>
             {
                 var id = currentFeature.Name + currentFeature.Id;
                 Type type;
