@@ -84,6 +84,7 @@ namespace Core.Components
         public Action OnDeleteConfirmed { get; set; }
         public IEnumerable<ListViewItem> AllListViewItem => MainSection.Children.Cast<ListViewItem>();
         public List<object> UpdatedRows => AllListViewItem.OrderBy(x => x.RowNo).Where(x => x.Dirty).Select(x => x.Entity).Distinct().ToList();
+        public List<ListViewItem> UpdatedListItems => AllListViewItem.OrderBy(x => x.RowNo).Where(x => x.Dirty).ToList();
         public List<CellSelected> CellSelected = new List<CellSelected>();
         public List<Where> Wheres = new List<Where>();
         public List<string> SelectedIds { get; set; } = new List<string>();
@@ -1359,24 +1360,32 @@ namespace Core.Components
             }
         }
 
-        public async Task RenderViewMenu()
+        public Task RenderViewMenu()
         {
-            var targetRef = await new Client(nameof(EntityRef)).GetRawList<EntityRef>($"?$filter=ComId eq '{GuiInfo.Id}'");
-            if (targetRef.Nothing())
+            var tcs = new TaskCompletionSource<object>();
+            Client.Instance.GetByIdAsync(nameof(EntityRef), GuiInfo.ConnKey, GuiInfo.Id)
+            .Done(targetRef =>
             {
-                return;
-            }
-            var menuItems = targetRef.Select(x => new ContextMenuItem
-            {
-                Text = x.MenuText,
-                Click = (arg) => OpenFeature(x),
-            }).ToList();
-            ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
-            {
-                Icon = "fa fal fa-ellipsis-h",
-                Text = "Dữ liệu liên quan",
-                MenuItems = menuItems
+                if (targetRef.Nothing())
+                {
+                    tcs.TrySetResult(null);
+                    return;
+                }
+                var tRef = targetRef.As<EntityRef[]>();
+                var menuItems = tRef.Select(x => new ContextMenuItem
+                {
+                    Text = x.MenuText,
+                    Click = (arg) => OpenFeature(x),
+                }).ToList();
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
+                {
+                    Icon = "fa fal fa-ellipsis-h",
+                    Text = "Dữ liệu liên quan",
+                    MenuItems = menuItems
+                });
+                tcs.TrySetResult(null);
             });
+            return tcs.Task;
         }
         public bool _hasLoadRef { get; set; }
         protected Function _preQueryFn;
@@ -1593,43 +1602,20 @@ namespace Core.Components
             return AllListViewItem.Where(x => x.Entity[IdField] == row[IdField]);
         }
 
-        public virtual async Task<List<object>> BatchUpdate(bool updateView = false)
+        public virtual void BatchUpdate(bool updateView = false)
         {
             if (!Dirty)
             {
-                return null;
+                return;
             }
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchCreate, Entity, null, this);
-            var updateTasks = new List<Task<dynamic>>();
-            foreach (var item in UpdatedRows)
+            this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchCreate, Entity, null, this)
+            .Done(() =>
             {
-                if (item[IdField]?.ToString() != null)
+                foreach (var item in UpdatedListItems)
                 {
-                    updateTasks.Add(new Client(GuiInfo.Reference.Name).UpdateAsync(item));
+                    item.PatchUpdateOrCreate();
                 }
-                else
-                {
-                    updateTasks.Add(new Client(GuiInfo.Reference.Name).CreateAsync(item));
-                }
-            }
-            await Task.WhenAll(updateTasks);
-            var updatedRows = updateTasks.Select(x => x.Result).ToList();
-            InternalUpdateRows(updateView, updatedRows);
-            return updatedRows;
-        }
-
-        private void InternalUpdateRows(bool updateView, List<object> updatedRows)
-        {
-            UpdatedRows.CopyPropFrom(updatedRows);
-            if (updateView)
-            {
-                RowAction(row => row.Dirty && !row.EmptyRow, row =>
-                {
-                    row.UpdateView();
-                    row.Element.AddClass("new-row");
-                });
-            }
-            Dirty = false;
+            });
         }
 
         internal int GetRowCountByHeight(double scrollTop)

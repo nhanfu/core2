@@ -139,32 +139,6 @@ namespace Core.Components.Forms
             Dirty = false;
         }
 
-        public virtual async Task<bool> BulkUpdate()
-        {
-            var grid = this.FindActiveComponent<ListView>();
-            if (!Dirty)
-            {
-                Toast.Warning(NotDirtyMessage);
-                return false;
-            }
-            if (grid.Nothing())
-            {
-                return false;
-            }
-            var tasks = grid.Select(x => x.Dirty ? x.BatchUpdate() : null).Where(x => x != null);
-            var rs = await Task.WhenAll(tasks);
-            if (rs != null && rs.Any(x => x.HasElement()))
-            {
-                Toast.Success("Cập nhật thành công");
-            }
-            else
-            {
-                Toast.Warning(Client.ErrorMessage);
-            }
-            Dirty = false;
-            return true;
-        }
-
         public PatchVM GetPatchEntity()
         {
             var shouldGetAll = EntityId is null;
@@ -215,17 +189,15 @@ namespace Core.Components.Forms
                     return;
                 }
                 EntityId = pathModel.EntityId;
-                UpdateIndependantGridView().Done(() =>
+                UpdateIndependantGridView();
+                if (Feature.DeleteTemp)
                 {
-                    if (Feature.DeleteTemp)
-                    {
-                        DeleteGridView();
-                    }
-                    Toast.Success($"The data was saved");
-                    Dirty = false;
-                    AfterSaved?.Invoke(true);
-                    tcs.TrySetResult(true);
-                });
+                    DeleteGridView();
+                }
+                Toast.Success($"The data was saved");
+                Dirty = false;
+                AfterSaved?.Invoke(true);
+                tcs.TrySetResult(true);
                 return;
             });
             return tcs.Task;
@@ -247,22 +219,19 @@ namespace Core.Components.Forms
                 .ToArray();
         }
 
-        private Task UpdateIndependantGridView()
+        private void UpdateIndependantGridView()
         {
             var dirtyGrid = GetDirtyGrid();
             if (dirtyGrid.Nothing())
             {
-                return Task.FromResult(true);
+                return;
             }
             var id = EntityId;
-            var tasks = dirtyGrid.Select(x =>
+            dirtyGrid.ForEach(x =>
             {
                 x.UpdatedRows.ForEach(row => row.SetPropValue(x.GuiInfo.IdField, id));
-                return x.BatchUpdate();
-            }).ToArray();
-            var tcs = new TaskCompletionSource<object>();
-            Task.WhenAll(tasks).Done(x => tcs.TrySetResult(true));
-            return tcs.Task;
+                x.BatchUpdate();
+            });
         }
 
         private void DeleteGridView()
@@ -443,7 +412,7 @@ namespace Core.Components.Forms
 
         protected virtual void LoadFeatureAndRender(Action callback = null)
         {
-            var featureTask = Feature != null ? Task.FromResult(Feature) 
+            var featureTask = Feature != null ? Task.FromResult(Feature)
                 : ComponentExt.LoadFeature(Name);
             var entityTask = LoadEntity();
             Task.WhenAll(featureTask, entityTask).Done(() =>
@@ -686,7 +655,8 @@ namespace Core.Components.Forms
                 return Task.FromResult(null as object);
             }
             var tcs = new TaskCompletionSource<object>();
-            Client.Instance.GetByIdAsync(EntityName, Feature.ConnKey ?? Client.ConnKey, EntityId).Done(ds => {
+            Client.Instance.GetByIdAsync(EntityName, Feature.ConnKey ?? Client.ConnKey, EntityId).Done(ds =>
+            {
                 if (ds.Nothing()) tcs.TrySetResult(null);
                 else tcs.TrySetResult(ds[0]);
             });
@@ -931,7 +901,7 @@ namespace Core.Components.Forms
             _componentCoppy = component;
         }
 
-        private PatchVM CreateComGroupPatch(Component com) 
+        private PatchVM CreateComGroupPatch(Component com)
         {
             var res = new PatchVM();
 
@@ -1219,7 +1189,8 @@ namespace Core.Components.Forms
                 {
                     Toast.Success("Send email success!");
                     tcs.TrySetResult(sucess);
-                }).Catch(e => {
+                }).Catch(e =>
+                {
                     Toast.Success("Error occurs while sending email!");
                     tcs.TrySetException(e);
                 });

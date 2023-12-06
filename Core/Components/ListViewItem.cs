@@ -271,10 +271,11 @@ namespace Core.Components
                 return;
             }
             var patchModel = GetPatchEntity();
-            Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, patchModel, this), () =>
+            this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, patchModel, this)
+            .Done(() =>
             {
                 lastpathModel = patchModel;
-                Client.ExecTask(Client.Instance.PatchAsync(patchModel), success =>
+                Client.Instance.PatchAsync(patchModel).Done(success =>
                 {
                     PatchUpdateCb(success, patchModel);
                 });

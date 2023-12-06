@@ -376,17 +376,6 @@ namespace Core.Controllers
             return true;
         }
 
-        [HttpPost("api/[Controller]/DeleteFile")]
-        public ActionResult DeleteFile([FromServices] IWebHostEnvironment host, [FromBody] string path)
-        {
-            var absolutePath = Path.Combine(host.WebRootPath, path);
-            if (FileIO.Exists(absolutePath))
-            {
-                FileIO.Delete(absolutePath);
-            }
-            return Ok(true);
-        }
-
         protected static Dictionary<string, object> Read(IDataRecord reader)
         {
             var row = new Dictionary<string, object>();

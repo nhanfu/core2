@@ -131,7 +131,7 @@ namespace Core.Components
             }
             else
             {
-                var featureTemplate = await new Client(nameof(Feature)).FirstOrDefaultAsync<Feature>(GuiInfo.DataSourceFilter);
+                var featureTemplate = await ComponentExt.LoadFeature(GuiInfo.RefClass, GuiInfo.RefClass);
                 template = featureTemplate.Template;
             }
             if (template.IsNullOrEmpty())

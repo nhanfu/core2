@@ -1293,4 +1293,14 @@ public class UserService
         var ssl = strSSL.TryParseBool();
         await email.SendMailAsync(fromName, fromAddress, password, server, port ?? 587, ssl ?? false, webRoot);
     }
+
+    internal ValueTask<bool> DeleteFile(string path)
+    {
+        var absolutePath = Path.Combine(_host.WebRootPath, path);
+        if (File.Exists(absolutePath))
+        {
+            File.Delete(absolutePath);
+        }
+        return new ValueTask<bool>(true);
+    }
 }

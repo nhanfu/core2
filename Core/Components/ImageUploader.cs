@@ -335,20 +335,21 @@ namespace Core.Components
             {
                 return;
             }
-            ConfirmDialog.RenderConfirm($"Bạn chắc chắn muốn xóa {PathIO.GetFileNameWithoutExtension(RemoveGuid(removedPath.DecodeSpecialChar())) + PathIO.GetExtension(RemoveGuid(removedPath.DecodeSpecialChar()))}", async () =>
+            var message = $"Bạn chắc chắn muốn xóa {PathIO.GetFileNameWithoutExtension(RemoveGuid(removedPath.DecodeSpecialChar())) + PathIO.GetExtension(RemoveGuid(removedPath.DecodeSpecialChar()))}";
+            ConfirmDialog.RenderConfirm(message, () =>
             {
-                var removed = await new Client(nameof(User)) { CustomPrefix = Client.FileFTP }.PostAsync<bool>(removedPath, "DeleteFile");
-                var oldVal = _path;
-                var newPath = _path.Replace(removedPath, string.Empty)
-                    .Replace(PathSeparator + PathSeparator, string.Empty)
-                    .Split(PathSeparator).Where(x => x.HasAnyChar()).Distinct().ToList();
-                Path = string.Join(PathSeparator, newPath);
-                Dirty = true;
-                if (UserInput != null)
+                Client.Instance.PostAsync<bool>(removedPath, Client.FileFTP + "/DeleteFile")
+                .Done(success =>
                 {
-                    UserInput.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName, EvType = EventType.Change });
-                }
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
+                    var oldVal = _path;
+                    var newPath = _path.Replace(removedPath, string.Empty)
+                        .Replace(PathSeparator + PathSeparator, string.Empty)
+                        .Split(PathSeparator).Where(x => x.HasAnyChar()).Distinct().ToList();
+                    Path = string.Join(PathSeparator, newPath);
+                    Dirty = true;
+                    UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName, EvType = EventType.Change });
+                    this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity).Done();
+                });
             });
         }
 
