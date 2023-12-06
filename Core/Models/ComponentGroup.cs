@@ -56,6 +56,7 @@ namespace Core.Models
         public string ShowExp { get; set; }
         public string DisabledExp { get; set; }
         public bool IsDropDown { get; set; }
+        public int ItemInRow { get; set; }
 
         public virtual Feature Feature { get; set; }
         public virtual ComponentGroup Parent { get; set; }

@@ -1403,7 +1403,7 @@ namespace Core.Components
                 return;
             }
             _hasLoadRef = false;
-            ComponentExt.LoadFeature(e.ViewClass).Done(currentFeature =>
+            ComponentExt.LoadFeature(ConnKey, e.ViewClass).Done(currentFeature =>
             {
                 var id = currentFeature.Name + currentFeature.Id;
                 Type type;

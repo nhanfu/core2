@@ -43,7 +43,7 @@ namespace Core.Components
             var f = a.Href.Split(Utils.Slash).Where(x => x.HasNonSpaceChar())
                 .Where(x => !x.Contains(Utils.QuestionMark) && !x.Contains(Utils.Hash)).LastOrDefault();
             Spinner.AppendTo(Document.Body, timeout: 1000);
-            ComponentExt.InitFeatureByName(f ?? string.Empty).Done(x =>
+            ComponentExt.InitFeatureByName(ConnKey, f ?? string.Empty).Done(x =>
             {
                 Window.History.PushState(null, a.Title, a.Href);
             });

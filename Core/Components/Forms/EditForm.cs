@@ -51,6 +51,7 @@ namespace Core.Components.Forms
 
         public bool ShouldUpdateParentForm { get; set; }
         public DateTime Now => DateTime.Now;
+        public string FeatureConnKey => Feature?.ConnKey ?? Client.ConnKey;
         public Action<bool> AfterSaved;
         public Func<bool> BeforeSaved;
         public Client FormClient { get; set; }
@@ -413,7 +414,7 @@ namespace Core.Components.Forms
         protected virtual void LoadFeatureAndRender(Action callback = null)
         {
             var featureTask = Feature != null ? Task.FromResult(Feature)
-                : ComponentExt.LoadFeature(Name);
+                : ComponentExt.LoadFeature(FeatureConnKey, Name);
             var entityTask = LoadEntity();
             Task.WhenAll(featureTask, entityTask).Done(() =>
                 FeatureLoaded(featureTask.Result, entityTask.Result, callback));

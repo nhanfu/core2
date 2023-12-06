@@ -286,7 +286,7 @@ namespace Core.Components
                 return;
             }
 
-            ComponentExt.LoadFeature(GuiInfo.RefClass).Done(FeatureLoaded);
+            ComponentExt.LoadFeature(ConnKey, GuiInfo.RefClass).Done(FeatureLoaded);
         }
 
         private void FeatureLoaded(Feature feature)

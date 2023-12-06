@@ -2755,7 +2755,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                 $tcs.setResult(exists);
                                                 return;
                                             }
-                                            $task1 = Core.Components.Extensions.ComponentExt.LoadFeature(featureName);
+                                            $task1 = Core.Components.Extensions.ComponentExt.LoadFeature(Core.Clients.Client.ConnKey, featureName);
                                             $step = 1;
                                             if ($task1.isCompleted()) {
                                                 continue;
@@ -2848,11 +2848,11 @@ Bridge.assembly("Core", function ($asm, globals) {
                     $asyncBody();
                     return $tcs.task;
                 },
-                InitFeatureByName: function (hash, portal) {
+                InitFeatureByName: function (connKey, hash, portal) {
                     if (portal === void 0) { portal = true; }
                     var tcs = new System.Threading.Tasks.TaskCompletionSource();
                     var featureName = System.String.replaceAll(System.String.replaceAll(hash, "-", " "), "#", "");
-                    Core.Extensions.EventExt.Done(Core.Models.Feature, Core.Components.Extensions.ComponentExt.LoadFeature(featureName), function (feature) {
+                    Core.Extensions.EventExt.Done(Core.Models.Feature, Core.Components.Extensions.ComponentExt.LoadFeature(connKey, featureName), function (feature) {
                         if (feature == null) {
                             return;
                         }
@@ -2867,11 +2867,11 @@ Bridge.assembly("Core", function ($asm, globals) {
                     });
                     return tcs.task;
                 },
-                LoadFeature: function (name, id) {
+                LoadFeature: function (connKey, name, id) {
                     var $t, $t1;
                     if (id === void 0) { id = null; }
                     var tcs = new System.Threading.Tasks.TaskCompletionSource();
-                    var featureTask = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = JSON.stringify(($t1 = new Core.ViewModels.SqlViewModel(), $t1.ComId = "Feature", $t1.Action = "GetFeature", $t1.Params = JSON.stringify(new $asm.$AnonymousType$2(name, id)), $t1)), $t.Url = Core.Extensions.Utils.UserSvc, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
+                    var featureTask = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = JSON.stringify(($t1 = new Core.ViewModels.SqlViewModel(), $t1.ComId = "Feature", $t1.Action = "GetFeature", $t1.ConnKey = Core.Clients.Client.ConnKey, $t1.Params = JSON.stringify(new $asm.$AnonymousType$2(name, id)), $t1)), $t.Url = Core.Extensions.Utils.UserSvc, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t));
                     Core.Clients.Client.ExecTask(System.Array.type(System.Array.type(System.Object)), featureTask, function (ds) {
                         var $t2, $t3;
                         if (Core.Extensions.IEnumerableExtensions.Nothing(System.Array.type(System.Object), ds) || Core.Extensions.IEnumerableExtensions.Nothing(System.Object, ds[System.Array.index(0, ds)])) {
@@ -8212,7 +8212,6 @@ Bridge.assembly("Core", function ($asm, globals) {
 
     Bridge.define("Core.Models.ComponentGroup", {
         props: {
-            ItemInRow: 0,
             Id: null,
             FeatureId: null,
             Name: null,
@@ -8258,6 +8257,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             ShowExp: null,
             DisabledExp: null,
             IsDropDown: false,
+            ItemInRow: 0,
             Feature: null,
             Parent: null,
             Component: null,
@@ -8312,14 +8312,6 @@ Bridge.assembly("Core", function ($asm, globals) {
         ctors: {
             init: function () {
                 this.InsertedDate = new System.DateTimeOffset();
-            }
-        },
-        methods: {
-            GetEntityType: function (ns) {
-                var $t, $t1, $t2;
-                if (ns === void 0) { ns = null; }
-                var name = ($t = this.AliasFor, $t != null ? $t : this.Name);
-                return Bridge.Reflection.getType(((($t1 = ns, $t1 != null ? $t1 : ($t2 = this.Namespace, $t2 != null ? $t2 : Core.Clients.Client.ModelNamespace))) || "") + (name || ""));
             }
         }
     });
@@ -10650,6 +10642,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                     return System.DateTime.getNow();
                 }
             },
+            FeatureConnKey: {
+                get: function () {
+                    var $t, $t1;
+                    return ($t = (($t1 = this.Feature) != null ? $t1.ConnKey : null), $t != null ? $t : Core.Clients.Client.ConnKey);
+                }
+            },
             FormClient: null,
             IsEditMode: {
                 get: function () {
@@ -11068,7 +11066,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             LoadFeatureAndRender: function (callback) {
                 if (callback === void 0) { callback = null; }
-                var featureTask = this.Feature != null ? System.Threading.Tasks.Task.fromResult(this.Feature, Core.Models.Feature) : Core.Components.Extensions.ComponentExt.LoadFeature(this.Name);
+                var featureTask = this.Feature != null ? System.Threading.Tasks.Task.fromResult(this.Feature, Core.Models.Feature) : Core.Components.Extensions.ComponentExt.LoadFeature(this.FeatureConnKey, this.Name);
                 var entityTask = this.LoadEntity();
                 Core.Extensions.EventExt.Done$1(System.Threading.Tasks.Task.whenAll(featureTask, entityTask), Bridge.fn.bind(this, function () {
                     this.FeatureLoaded(featureTask.getResult(), entityTask.getResult(), callback);
@@ -14972,7 +14970,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     return;
                 }
                 this._hasLoadRef = false;
-                Core.Extensions.EventExt.Done(Core.Models.Feature, Core.Components.Extensions.ComponentExt.LoadFeature(e.ViewClass), Bridge.fn.bind(this, function (currentFeature) {
+                Core.Extensions.EventExt.Done(Core.Models.Feature, Core.Components.Extensions.ComponentExt.LoadFeature(this.ConnKey, e.ViewClass), Bridge.fn.bind(this, function (currentFeature) {
                     var id = (currentFeature.Name || "") + (currentFeature.Id || "");
                     var type;
                     if (currentFeature.ViewClass != null) {
@@ -16860,7 +16858,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         exists.Focus();
                         return;
                     }
-                    Core.Extensions.EventExt.Done(Core.Models.Feature, Core.Components.Extensions.ComponentExt.LoadFeature(feature.Name), function (f) {
+                    Core.Extensions.EventExt.Done(Core.Models.Feature, Core.Components.Extensions.ComponentExt.LoadFeature(Core.Clients.Client.ConnKey, feature.Name), function (f) {
                         if (f == null) {
                             return;
                         }
@@ -18269,7 +18267,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     return !System.String.contains(x,Core.Extensions.Utils.QuestionMark) && !System.String.contains(x,Core.Extensions.Utils.Hash);
                 }).lastOrDefault(null, null);
                 Core.Components.Spinner.AppendTo(document.body, true, true, 1000);
-                Core.Extensions.EventExt.Done(Core.Components.Forms.EditForm, Core.Components.Extensions.ComponentExt.InitFeatureByName(($t = f, $t != null ? $t : "")), function (x) {
+                Core.Extensions.EventExt.Done(Core.Components.Forms.EditForm, Core.Components.Extensions.ComponentExt.InitFeatureByName(this.ConnKey, ($t = f, $t != null ? $t : "")), function (x) {
                     window.history.pushState(null, a.title, a.href);
                 });
             }
@@ -18962,7 +18960,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (Core.Extensions.StringExt.IsNullOrEmpty(this.GuiInfo.RefClass) || this.Matched == null) {
                     return;
                 }
-                Core.Extensions.EventExt.Done(Core.Models.Feature, Core.Components.Extensions.ComponentExt.LoadFeature(this.GuiInfo.RefClass), Bridge.fn.cacheBind(this, this.FeatureLoaded));
+                Core.Extensions.EventExt.Done(Core.Models.Feature, Core.Components.Extensions.ComponentExt.LoadFeature(this.ConnKey, this.GuiInfo.RefClass), Bridge.fn.cacheBind(this, this.FeatureLoaded));
             },
             FeatureLoaded: function (feature) {
                 var instance = Bridge.as(Bridge.createInstance(Bridge.Reflection.getType(this.GuiInfo.RefClass)), Core.Components.Forms.TabEditor);
@@ -20119,7 +20117,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
                 this.Element.innerHTML = null;
                 this.AddSections();
-                System.Threading.Tasks.Task.run(Bridge.fn.cacheBind(this, this.RenderAsync));
+                this.RenderInternal();
             },
             AddSections: function () {
                 if (this._rptContent != null || !this.Show) {
@@ -20284,161 +20282,70 @@ Bridge.assembly("Core", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            RenderAsync: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $task2, 
-                    $taskResult2, 
-                    $task3, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    template, 
-                    featureTemplate, 
-                    dataSet, 
-                    formatted, 
-                    dsCount, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5,6,7,8], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (!this.Show) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        this.DisposeChildren();
-                                        if (Core.Extensions.StringExt.HasAnyChar(this.GuiInfo.Template)) {
-                                            $step = 1;
-                                            continue;
-                                        } else  {
-                                            $step = 2;
-                                            continue;
-                                        }
-                                    }
-                                    case 1: {
-                                        template = this.GuiInfo.Template;
-                                        $step = 4;
-                                        continue;
-                                    }
-                                    case 2: {
-                                        $task1 = new Core.Clients.Client.$ctor1("Feature").FirstOrDefaultAsync(Core.Models.Feature, this.GuiInfo.DataSourceFilter);
-                                        $step = 3;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 3: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        featureTemplate = $taskResult1;
-                                        template = featureTemplate.Template;
-                                        $step = 4;
-                                        continue;
-                                    }
-                                    case 4: {
-                                        if (Core.Extensions.StringExt.IsNullOrEmpty(template)) {
-                                            throw new System.InvalidOperationException.$ctor1(Core.Components.PdfReport.TemplateNotFound);
-                                        }
-                                        $task2 = this.LoadData();
-                                        $step = 5;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 5: {
-                                        $taskResult2 = $task2.getAwaitedResult();
-                                        dataSet = $taskResult2;
-                                        if (dataSet == null) {
-                                            this.ShowErrorMessage(Core.Components.PdfReport.DataNotFound);
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        if (dataSet[Core.Components.PdfReport.ErrorMessage] != null) {
-                                            this.ShowErrorMessage(Bridge.toString(dataSet[Core.Components.PdfReport.ErrorMessage]));
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        this.Element.style.display = "";
-                                        formatted = Core.Extensions.Utils.FormatEntity(template, null, dataSet, function (x) {
-                                            return "";
-                                        }, void 0);
-                                        this._rptContent.innerHTML = formatted;
-                                        dsCount = 0;
-                                        Core.Extensions.IEnumerableExtensions.SelectForeach(HTMLElement, this._rptContent.children, Bridge.fn.bind(this, function (child) {
-                                            this.EditForm.BindingTemplate(child, this, false, dataSet, Bridge.fn.bind(this, function (ele, component, parent, isLayout, entity) {
-                                                var $t;
-                                                var table;
-                                                if (((table = Bridge.as(ele, HTMLTableElement))) != null && Bridge.referenceEquals(table.dataset.grid, "true")) {
-                                                    dsCount = (dsCount + 1) | 0;
-                                                    var ds = dataSet["ds" + dsCount];
-                                                    var com = ($t = new Core.Components.Section.$ctor1(Core.MVVM.ElementType.table), $t.Element = ele, $t);
-                                                    var tbody = table.tBodies[0];
-                                                    var arr = Bridge.as(ds, System.Array.type(System.Object));
-                                                    if (Core.Extensions.IEnumerableExtensions.Nothing(System.Object, arr)) {
-                                                        arr = System.Array.init([{ }], System.Object);
-                                                    }
-                                                    var formattedRows = System.Linq.Enumerable.from(arr, System.Object).select(Bridge.fn.bind(this, function (arrItem) {
-                                                        var $t1;
-                                                        var cloned = this.CloneRow(($t1 = HTMLTableRowElement, System.Linq.Enumerable.from(tbody.rows, $t1).ToArray($t1)));
-                                                        return this.BindingRowData(cloned, arrItem);
-                                                    })).selectMany(function (x) {
-                                                        return x;
-                                                    }).ToArray(HTMLTableRowElement);
-                                                    tbody.innerHTML = null;
-                                                    formattedRows.forEach(function (x) {
-                                                        tbody.appendChild(x);
-                                                    });
-                                                    return com;
-                                                }
-                                                return this.EditForm.BindingData(ele, component, parent, isLayout, entity);
-                                            }), void 0);
-                                        }));
-                                        if (this.GuiInfo != null && Core.Extensions.StringExt.HasAnyChar(this.GuiInfo.Events)) {
-                                            $step = 6;
-                                            continue;
-                                        } 
-                                        $step = 8;
-                                        continue;
-                                    }
-                                    case 6: {
-                                        $task3 = Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "DOMContentLoaded", [this.Entity]);
-                                        $step = 7;
-                                        if ($task3.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task3.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 7: {
-                                        $task3.getAwaitedResult();
-                                        $step = 8;
-                                        continue;
-                                    }
-                                    case 8: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
+            RenderInternal: function () {
+                if (!this.Show) {
+                    return;
+                }
+                this.DisposeChildren();
+                var template;
+                if (Core.Extensions.StringExt.HasAnyChar(this.GuiInfo.Template)) {
+                    template = this.GuiInfo.Template;
+                    this.TemplateLoaded(template);
+                } else {
+                    Core.Extensions.EventExt.Done(Core.Models.Feature, Core.Components.Extensions.ComponentExt.LoadFeature(this.ConnKey, this.GuiInfo.RefClass, this.GuiInfo.RefClass), Bridge.fn.bind(this, function (ft) {
+                        template = ft.Template;
+                        this.TemplateLoaded(template);
+                    }));
+                }
+            },
+            TemplateLoaded: function (template) {
+                if (Core.Extensions.StringExt.IsNullOrEmpty(template)) {
+                    throw new System.InvalidOperationException.$ctor1(Core.Components.PdfReport.TemplateNotFound);
+                }
+                Core.Extensions.EventExt.Done(System.Object, this.LoadData(), Bridge.fn.bind(this, function (dataSet) {
+                    if (dataSet == null) {
+                        this.ShowErrorMessage(Core.Components.PdfReport.DataNotFound);
+                        return;
+                    }
+                    this.Element.style.display = "";
+                    var formatted = Core.Extensions.Utils.FormatEntity(template, null, dataSet, function (x) {
+                        return "";
+                    }, void 0);
+                    this._rptContent.innerHTML = formatted;
+                    var dsCount = 0;
+                    Core.Extensions.IEnumerableExtensions.SelectForeach(HTMLElement, this._rptContent.children, Bridge.fn.bind(this, function (child) {
+                        this.EditForm.BindingTemplate(child, this, false, dataSet, Bridge.fn.bind(this, function (ele, component, parent, isLayout, entity) {
+                            var $t;
+                            var table;
+                            if (((table = Bridge.as(ele, HTMLTableElement))) != null) {
+                                dsCount = (dsCount + 1) | 0;
+                                var ds = dataSet["ds" + dsCount];
+                                var com = ($t = new Core.Components.Section.$ctor1(Core.MVVM.ElementType.table), $t.Element = ele, $t);
+                                var tbody = table.tBodies[0];
+                                var arr = Bridge.as(ds, System.Array.type(System.Object));
+                                if (Core.Extensions.IEnumerableExtensions.Nothing(System.Object, arr)) {
+                                    arr = System.Array.init([{ }], System.Object);
                                 }
+                                var formattedRows = System.Linq.Enumerable.from(arr, System.Object).select(Bridge.fn.bind(this, function (arrItem) {
+                                        var $t1;
+                                        var cloned = this.CloneRow(($t1 = HTMLTableRowElement, System.Linq.Enumerable.from(tbody.rows, $t1).ToArray($t1)));
+                                        return this.BindingRowData(cloned, arrItem);
+                                    })).selectMany(function (x) {
+                                    return x;
+                                }).ToArray(HTMLTableRowElement);
+                                tbody.innerHTML = null;
+                                formattedRows.forEach(function (x) {
+                                        tbody.appendChild(x);
+                                    });
+                                return com;
                             }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                            return this.EditForm.BindingData(ele, component, parent, isLayout, entity);
+                        }), void 0);
+                    }));
+                    if (this.GuiInfo != null && Core.Extensions.StringExt.HasAnyChar(this.GuiInfo.Events)) {
+                        Core.Extensions.EventExt.Done$1(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "DOMContentLoaded", [this.Entity]));
+                    }
+                }));
             },
             ShowErrorMessage: function (message) {
                 if (Core.Extensions.HtmlElementExtension.Hidden(this.Element)) {
@@ -20511,165 +20418,70 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return res.ToArray();
             },
             LoadData: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $task2, 
-                    $taskResult2, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    dataSet, 
-                    DataSourceFilter, 
-                    $t, 
-                    res, 
-                    formatter, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3,4], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        dataSet = null;
-                                        $task1 = this.TryGetDataSource();
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        DataSourceFilter = $taskResult1;
-                                        if (Core.Extensions.StringExt.IsNullOrWhiteSpace(DataSourceFilter)) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        if (this.Data == null) {
-                                            $step = 2;
-                                            continue;
-                                        } 
-                                        $step = 4;
-                                        continue;
-                                    }
-                                    case 2: {
-                                        $task2 = new Core.Clients.Client.$ctor1("User").PostAsync(System.Array.type(System.Array.type(System.Object)), DataSourceFilter, System.String.format("ReportDataSet?sys={0}", [this.GuiInfo.IdField]));
-                                        $step = 3;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 3: {
-                                        $taskResult2 = $task2.getAwaitedResult();
-                                        dataSet = ($t = $taskResult2, this.Data = $t, $t);
-                                        if (Core.Extensions.IEnumerableExtensions.Nothing(System.Array.type(System.Object), dataSet) || System.Linq.Enumerable.from(dataSet, System.Array.type(System.Object)).all(function (x) {
-                                            return Core.Extensions.IEnumerableExtensions.Nothing(System.Object, x);
-                                        })) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        $step = 4;
-                                        continue;
-                                    }
-                                    case 4: {
-                                        res = { };
-                                        formatter = { };
-                                        var hasSubRpt = false;
-                                        for (var i = 0; i < dataSet.length; i++) {
-                                            for (var j = 0; j < dataSet[i].length; j++) {
-                                                for (var prop in dataSet[i][j]) {
-                                                    if (typeof(dataSet[i][j][prop]) === 'string') {
-                                                        dataSet[i][j][prop]=Core.Extensions.Utils.DecodeSpecialChar(dataSet[i][j][prop]);
-                                                    }
-                                                }
-                                            }
-                                        	            if (i == 0) {
-                                        		            for (var field in dataSet[0][0]) {
-                                        			            res[field] = dataSet[0][0][field];
-                                        		            }
-                                        	            }
-                                        	            else {
-                                        		            var ds = dataSet[i];
-                                        		            var subRptField = [], groupField = [], subRptName;
-                                        		            if (ds == null || ds.length == 0) continue;
-                                        		            for (var field in ds[0]) if (field.indexOf('.') >= 0) subRptField.push(field); else groupField.push(field);
-                                        		            if (subRptField.length > 0) {
-                                        			            subRptName = subRptField[0].split('.')[0];
-                                        			            var fieldMap = subRptField.map(x => { return { field: x.split('.').reverse()[0], fullField: x} });
-                                        			            ds = System.Linq.Enumerable.from(ds)
-                                        				            .groupBy(x => System.String.concat(groupField.map(g => x[g])))
-                                        				            .select(x => { 
-                                        					            var arr = x.ToArray();
-                                        					            var first = arr[0];
-                                        					            var children = arr.map(item => {
-                                                                var res = {}; 
-                                                                fieldMap.forEach(field => { res[field.field] = item[field.fullField]; delete item[field.fullField]; });
-                                                                return res;
-                                                            });
-                                        					            first[subRptName] = children;
-                                        					            return first;
-                                        				            }).ToArray();
-                                        		            }
-                                        		            res['ds' + i] = ds;
-                                        	            }
-                                        }
-                                        if (Core.Extensions.Utils.IsFunction(this.GuiInfo.FormatEntity, formatter)) {
-                                            $tcs.setResult(formatter.v.call(null, Bridge.unbox(res), this));
-                                            return;
-                                        }
-                                        $tcs.setResult(res);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
-            TryGetDataSource: function () {
                 var $t;
-                var tcs = new System.Threading.Tasks.TaskCompletionSource();
-                try {
-                    var fn = { };
-                    var isFnPowerQuery = Core.Extensions.Utils.IsFunction(this.GuiInfo.Query, fn);
-                    var preQueryFn = { };
-                    var isFnPreQuery = Core.Extensions.Utils.IsFunction(this.GuiInfo.PreQuery, preQueryFn);
-                    var preQuery = isFnPreQuery ? preQueryFn.v.call(this, Bridge.unbox(this.Entity), this, Bridge.unbox(this.Selected)) : null;
-                    var DataSourceFilter = null;
-                    if (isFnPowerQuery) {
-                        var query = fn.v.call(this, Bridge.unbox(($t = preQuery, $t != null ? $t : this.Entity)), this, Bridge.unbox(this.Selected));
-                        if (query == null) {
-                            tcs.setException(new System.NullReferenceException.$ctor1("Query is null"));
-                        }
-                        if (Bridge.referenceEquals(Bridge.getType(query), System.String)) {
-                            tcs.setResult(Bridge.toString(query));
-                        } else {
-                            query.then(finalQuery => {
-                                tcs.setResult(finalQuery);
-                            });
-                        }
-                    } else {
-                        DataSourceFilter = Core.Extensions.Utils.FormatEntity$1(this.GuiInfo.Query, this.Entity);
-                        tcs.setResult(DataSourceFilter);
-                    }
-                } catch (ex) {
-                    ex = System.Exception.create(ex);
-                    tcs.setException(ex);
+                if (this.Data != null) {
+                    var res = this.ProcessData(this.Data);
+                    return System.Threading.Tasks.Task.fromResult(res, System.Object);
                 }
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                var fn = { };
+                var isFn = Core.Extensions.Utils.IsFunction(this.GuiInfo.PreQuery, fn);
+                var sql = ($t = new Core.ViewModels.SqlViewModel(), $t.ComId = this.GuiInfo.Id, $t.Params = isFn ? JSON.stringify(Bridge.unbox(fn.v.call(null, this))) : null, $t.ConnKey = this.ConnKey, $t);
+                Core.Extensions.EventExt.Catch(Core.Extensions.EventExt.Done(System.Array.type(System.Array.type(System.Object)), Core.Clients.Client.Instance.ComQuery(sql), Bridge.fn.bind(this, function (ds) {
+                    this.Data = ds;
+                    var res1 = this.ProcessData(this.Data);
+                    tcs.trySetResult(res1);
+                })), Bridge.fn.bind(this, function (e) {
+                    this.ShowErrorMessage(e.Message);
+                }));
                 return tcs.task;
+            },
+            ProcessData: function (dataSet) {
+                var res = { };
+                var formatter = { };
+                var hasSubRpt = false;
+                for (var i = 0; i < dataSet.length; i++) {
+                    for (var j = 0; j < dataSet[i].length; j++) {
+                        for (var prop in dataSet[i][j]) {
+                            if (typeof(dataSet[i][j][prop]) === 'string') {
+                                dataSet[i][j][prop]=Core.Extensions.Utils.DecodeSpecialChar(dataSet[i][j][prop]);
+                            }
+                        }
+                    }
+                	            if (i == 0) {
+                		            for (var field in dataSet[0][0]) {
+                			            res[field] = dataSet[0][0][field];
+                		            }
+                	            }
+                	            else {
+                		            var ds = dataSet[i];
+                		            var subRptField = [], groupField = [], subRptName;
+                		            if (ds == null || ds.length == 0) continue;
+                		            for (var field in ds[0]) if (field.indexOf('.') >= 0) subRptField.push(field); else groupField.push(field);
+                		            if (subRptField.length > 0) {
+                			            subRptName = subRptField[0].split('.')[0];
+                			            var fieldMap = subRptField.map(x => { return { field: x.split('.').reverse()[0], fullField: x} });
+                			            ds = System.Linq.Enumerable.from(ds)
+                				            .groupBy(x => System.String.concat(groupField.map(g => x[g])))
+                				            .select(x => { 
+                					            var arr = x.ToArray();
+                					            var first = arr[0];
+                					            var children = arr.map(item => {
+                                        var res = {}; 
+                                        fieldMap.forEach(field => { res[field.field] = item[field.fullField]; delete item[field.fullField]; });
+                                        return res;
+                                    });
+                					            first[subRptName] = children;
+                					            return first;
+                				            }).ToArray();
+                		            }
+                		            res['ds' + i] = ds;
+                	            }
+                }
+                if (Core.Extensions.Utils.IsFunction(this.GuiInfo.FormatEntity, formatter)) {
+                    return formatter.v.call(null, Bridge.unbox(res), this);
+                }
+                return res;
             },
             UpdateView: function (force, dirty, componentNames) {
                 if (force === void 0) { force = false; }
@@ -20677,36 +20489,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (componentNames === void 0) { componentNames = []; }
                 this.Data = null;
                 window.clearTimeout(this._updateViewAwaiter$1);
-                this._updateViewAwaiter$1 = window.setTimeout(Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = this.RenderAsync();
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $task1.getAwaitedResult();
-                                        return;
-                                    }
-                                    default: {
-                                        return;
-                                    }
-                                }
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                }), 100);
+                this._updateViewAwaiter$1 = window.setTimeout(Bridge.fn.cacheBind(this, this.RenderInternal), 200);
             }
         }
     });
@@ -28603,179 +28386,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
 
                 this.GroupText.innerHTML = text;
-            }
-        }
-    });
-
-    Bridge.define("Core.Components.Table", {
-        inherits: [Core.Components.GridView],
-        fields: {
-            _bodyEle: null,
-            _headerEle: null,
-            _btnEle: null
-        },
-        props: {
-            Data: null
-        },
-        ctors: {
-            ctor: function (ui) {
-                this.$initialize();
-                Core.Components.GridView.ctor.call(this, ui);
-                this.GuiInfo = ui || (function () {
-                    throw new System.ArgumentNullException.$ctor1("ui");
-                })();
-            }
-        },
-        methods: {
-            Render: function () {
-                Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.ParentElement).Div, "table-report").Style$1("overflow: auto;").Button, "btn-toolbar fas fa-bars box-shadow").Style$1("padding: 8px;").Event$1("click", Bridge.fn.cacheBind(this, this.ShowExportMenu)).End.Table, "table").Thead.End.TBody.Render();
-                this._bodyEle = Bridge.as(Core.MVVM.Html.Context, HTMLTableSectionElement);
-                this._headerEle = this._bodyEle.previousElementSibling;
-                this.Element = this._bodyEle.parentElement.parentElement;
-                this._btnEle = this.Element.firstElementChild;
-                System.Threading.Tasks.Task.run(Bridge.fn.cacheBind(this, this.RenderAsync));
-            },
-            ShowExportMenu: function (e) {
-                var ctx = Core.Components.Forms.ContextMenu.Instance;
-                ctx.Top = Core.Extensions.EventExt.Top(e);
-                ctx.Left = Core.Extensions.EventExt.Left(e);
-                ctx.MenuItems = Bridge.fn.bind(this, function (_o1) {
-                        var $t;
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Text = "Excel", $t.Icon = "fa fa-file-excel", $t.Click = Bridge.fn.cacheBind(this, this.ExportExcel), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Text = "Pdf", $t.Icon = "fa fa-file-pdf", $t.Click = Bridge.fn.cacheBind(this, this.ExportPdf), $t));
-                        return _o1;
-                    })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor());
-                ctx.Render();
-                Core.Components.Extensions.ComponentExt.AlterPosition(ctx.Element, this._btnEle);
-            },
-            ExportExcel: function (arg) {
-                Core.Extensions.ExcelExt.ExportTableToExcel(null, this.FieldName, this.Element.parentElement);
-            },
-            ExportPdf: function (arg) {
-                this.EditForm.PrintSection(this.Element.parentElement);
-            },
-            RenderAsync: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $t, 
-                    fn, 
-                    isFn, 
-                    DataSourceFilter, 
-                    firstData, 
-                    $t1, 
-                    header, 
-                    html, 
-                    $t2, 
-                    data, 
-                    $t3, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (Core.Extensions.StringExt.HasAnyChar(this.GuiInfo.FormatData)) {
-                                            this.Header = ($t = Core.Models.Component, System.Linq.Enumerable.from(Newtonsoft.Json.JsonConvert.DeserializeObject(this.GuiInfo.FormatData, System.Array.type(Core.Models.Component)), $t).toList($t));
-                                        }
-                                        fn = { };
-                                        isFn = Core.Extensions.Utils.IsFunction(this.GuiInfo.Query, fn);
-                                        if (!isFn) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        DataSourceFilter = Bridge.toString(fn.v.call(this, Bridge.unbox(this.Entity)));
-                                        if (this.Data == null) {
-                                            $step = 1;
-                                            continue;
-                                        } 
-                                        $step = 3;
-                                        continue;
-                                    }
-                                    case 1: {
-                                        $task1 = new Core.Clients.Client.$ctor1("User").PostAsync(System.Array.type(System.Array.type(System.Object)), DataSourceFilter, "ReportDataSet");
-                                        $step = 2;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        this.Data = $taskResult1;
-                                        $step = 3;
-                                        continue;
-                                    }
-                                    case 3: {
-                                        if (Core.Extensions.IEnumerableExtensions.Nothing(System.Array.type(System.Object), this.Data)) {
-                                            this.NoRecordFound();
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        this.DisposeNoRecord();
-                                        firstData = ($t1 = System.Linq.Enumerable.from(this.Data, System.Array.type(System.Object)).firstOrDefault(null, null)) != null ? System.Linq.Enumerable.from($t1, System.Object).firstOrDefault(null, null) : null;
-                                        header = this.Header.ToArray();
-                                        Core.MVVM.Html.Take(this._headerEle).Render();
-                                        html = Core.MVVM.Html.Instance;
-                                        for (var key in firstData) {
-                                            if (header != null && header.map(x => x.FieldName).indexOf(key) >= 0) {
-                                                var matchHeader = header.filter(x => x.FieldName == key)[0];
-                                                this.RenderHeader(matchHeader && matchHeader.ShortDesc);
-                                            } else {
-                                                this.RenderHeader(key);
-                                            }
-                                        }
-                                        $t2 = Bridge.getEnumerator(this.Data);
-                                        try {
-                                            while ($t2.moveNext()) {
-                                                data = $t2.Current;
-                                                Core.MVVM.Html.Take(this._bodyEle).TRow.Render();
-                                                for (var key in firstData) {
-                                                    if (header != null && header.map(x => x.FieldName).indexOf(key) >= 0) {
-                                                        var matchHeader = header.filter(x => x.FieldName == key);
-                                                        this.RenderCell(data[key], matchHeader[0] && matchHeader[0].FormatData);
-                                                    } else {
-                                                        this.RenderCell(data[key]);
-                                                    }
-                                                }
-                                            }
-                                        } finally {
-                                            if (Bridge.is($t2, System.IDisposable)) {
-                                                $t2.System$IDisposable$Dispose();
-                                            }
-                                        }
-                                        !Bridge.staticEquals(($t3 = this.DOMContentLoaded), null) ? $t3() : null;
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
-            RenderHeader: function (text) {
-                var $t;
-                this.Header.add(($t = new Core.Models.Component(), $t.ShortDesc = text, $t));
-                Core.Components.Renderer.IText(Core.MVVM.Html.Instance.Th, text).End.Render();
-            },
-            RenderCell: function (text, formatData) {
-                var finalText = Core.Extensions.StringExt.IsNullOrEmpty(formatData) ? text : System.String.format(formatData, [text]);
-                Core.Components.Renderer.IText(Core.MVVM.Html.Instance.TData, finalText).End.Render();
             }
         }
     });

@@ -5,6 +5,7 @@ using Core.Components.Forms;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace Core.Components
             }
             Element.InnerHTML = null;
             AddSections();
-            Task.Run(RenderAsync);
+            RenderInternal();
         }
 
         private void AddSections()
@@ -117,7 +118,7 @@ namespace Core.Components
              */
         }
 
-        public async Task RenderAsync()
+        public void RenderInternal()
         {
             if (!Show)
             {
@@ -128,65 +129,71 @@ namespace Core.Components
             if (GuiInfo.Template.HasAnyChar())
             {
                 template = GuiInfo.Template;
+                TemplateLoaded(template);
             }
             else
             {
-                var featureTemplate = await ComponentExt.LoadFeature(GuiInfo.RefClass, GuiInfo.RefClass);
-                template = featureTemplate.Template;
+                ComponentExt.LoadFeature(ConnKey, GuiInfo.RefClass, GuiInfo.RefClass)
+                .Done(ft =>
+                {
+                    template = ft.Template;
+                    TemplateLoaded(template);
+                });
             }
+        }
+
+        private void TemplateLoaded(string template)
+        {
             if (template.IsNullOrEmpty())
             {
                 throw new InvalidOperationException(TemplateNotFound);
             }
-            var dataSet = await LoadData();
-            if (dataSet is null)
+            LoadData().Done(dataSet =>
             {
-                ShowErrorMessage(DataNotFound);
-                return;
-            }
-            if (dataSet[ErrorMessage] != null)
-            {
-                ShowErrorMessage(dataSet[ErrorMessage].ToString());
-                return;
-            }
-            Element.Style.Display = string.Empty;
-            var formatted = Utils.FormatEntity(template, null, dataSet, nullHandler: x => string.Empty);
-            _rptContent.InnerHTML = formatted;
-            var dsCount = 0;
-            _rptContent.Children.SelectForeach(child =>
-            {
-                EditForm.BindingTemplate(child, this, false, dataSet, factory: (ele, component, parent, isLayout, entity) =>
+                if (dataSet is null)
                 {
-                    if (ele is HTMLTableElement table && table.Dataset["grid"] == "true")
+                    ShowErrorMessage(DataNotFound);
+                    return;
+                }
+                Element.Style.Display = string.Empty;
+                var formatted = Utils.FormatEntity(template, null, dataSet, nullHandler: x => string.Empty);
+                _rptContent.InnerHTML = formatted;
+                var dsCount = 0;
+                _rptContent.Children.SelectForeach(child =>
+                {
+                    EditForm.BindingTemplate(child, this, false, dataSet, factory: (ele, component, parent, isLayout, entity) =>
                     {
-                        dsCount++;
-                        var ds = dataSet["ds" + dsCount];
-                        var com = new Section(MVVM.ElementType.table)
+                        if (ele is HTMLTableElement table)
                         {
-                            Element = ele
-                        };
-                        var tbody = table.TBodies[0];
-                        var arr = ds as object[];
-                        if (arr.Nothing())
-                        {
-                            arr = new object[] { new object() };
+                            dsCount++;
+                            var ds = dataSet["ds" + dsCount];
+                            var com = new Section(MVVM.ElementType.table)
+                            {
+                                Element = ele
+                            };
+                            var tbody = table.TBodies[0];
+                            var arr = ds as object[];
+                            if (arr.Nothing())
+                            {
+                                arr = new object[] { new object() };
+                            }
+                            var formattedRows = arr.Select(arrItem =>
+                            {
+                                var cloned = CloneRow(tbody.Rows.ToArray());
+                                return BindingRowData(cloned, arrItem);
+                            }).SelectMany(x => x).ToArray();
+                            tbody.InnerHTML = null;
+                            formattedRows.ForEach(x => tbody.AppendChild(x));
+                            return com;
                         }
-                        var formattedRows = arr.Select(arrItem =>
-                        {
-                            var cloned = CloneRow(tbody.Rows.ToArray());
-                            return BindingRowData(cloned, arrItem);
-                        }).SelectMany(x => x).ToArray();
-                        tbody.InnerHTML = null;
-                        formattedRows.ForEach(x => tbody.AppendChild(x));
-                        return com;
-                    }
-                    return EditForm.BindingData(ele, component, parent, isLayout, entity);
+                        return EditForm.BindingData(ele, component, parent, isLayout, entity);
+                    });
                 });
+                if (GuiInfo != null && GuiInfo.Events.HasAnyChar())
+                {
+                    this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.DOMContentLoaded, Entity).Done();
+                }
             });
-            if (GuiInfo != null && GuiInfo.Events.HasAnyChar())
-            {
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.DOMContentLoaded, Entity);
-            }
         }
 
         private void ShowErrorMessage(string message)
@@ -263,23 +270,36 @@ namespace Core.Components
             return res.ToArray();
         }
 
-        private async Task<object> LoadData()
+        private Task<object> LoadData()
         {
-            object[][] dataSet = null;
-            var DataSourceFilter = await TryGetDataSource();
-            if (DataSourceFilter.IsNullOrWhiteSpace())
+            if (Data != null)
             {
-                return null;
+                var res = ProcessData(Data);
+                return Task.FromResult(res);
             }
-            if (Data is null)
+            var tcs = new TaskCompletionSource<object>();
+            var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var fn);
+            var sql = new SqlViewModel
             {
-                dataSet = Data = await new Client(nameof(User)).PostAsync<object[][]>(DataSourceFilter, $"ReportDataSet?sys={GuiInfo.IdField}");
-                if (dataSet.Nothing() || dataSet.All(x => x.Nothing()))
-                {
-                    return null;
-                }
-            }
+                ComId = GuiInfo.Id,
+                Params = isFn ? JSON.Stringify(fn.Call(null, this)) : null,
+                ConnKey = ConnKey
+            };
+            Client.Instance.ComQuery(sql).Done(ds =>
+            {
+                Data = ds;
+                var res = ProcessData(Data);
+                tcs.TrySetResult(res);
+            })
+            .Catch(e =>
+            {
+                ShowErrorMessage(e.Message);
+            });
+            return tcs.Task;
+        }
 
+        private object ProcessData(object[][] dataSet)
+        {
             var res = new object();
             /*@
             var hasSubRpt = false;
@@ -329,55 +349,13 @@ namespace Core.Components
             return res;
         }
 
-        private Task<string> TryGetDataSource()
-        {
-            var tcs = new TaskCompletionSource<string>();
-            try
-            {
-                var isFnPowerQuery = Utils.IsFunction(GuiInfo.Query, out var fn);
-                var isFnPreQuery = Utils.IsFunction(GuiInfo.PreQuery, out var preQueryFn);
-                var preQuery = isFnPreQuery ? preQueryFn.Call(this, Entity, this, Selected) : null;
-                string DataSourceFilter = null;
-                if (isFnPowerQuery)
-                {
-                    var query = fn.Call(this, preQuery ?? Entity, this, Selected);
-                    if (query == null)
-                    {
-                        tcs.SetException(new NullReferenceException("Query is null"));
-                    }
-                    if (query.GetType() == typeof(string))
-                    {
-                        tcs.SetResult(query.ToString());
-                    }
-                    else
-                    {
-                        /*@
-                        query.then(finalQuery => {
-                           tcs.setResult(finalQuery);
-                        });
-                         */
-                    }
-                }
-                else
-                {
-                    DataSourceFilter = Utils.FormatEntity(GuiInfo.Query, Entity);
-                    tcs.SetResult(DataSourceFilter);
-                }
-            }
-            catch (Exception ex)
-            {
-                tcs.SetException(ex);
-            }
-            return tcs.Task;
-        }
-
         private int _updateViewAwaiter;
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
             Data = null;
             Window.ClearTimeout(_updateViewAwaiter);
-            _updateViewAwaiter = Window.SetTimeout(async () => await RenderAsync(), 100);
+            _updateViewAwaiter = Window.SetTimeout(RenderInternal, 200);
         }
     }
 }

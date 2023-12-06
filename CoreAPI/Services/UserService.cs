@@ -693,7 +693,7 @@ public class UserService
         {
             throw new ArgumentException("Parameters must NOT contains sql keywords");
         }
-        var jsRes = await ExecJs(JsonConvert.SerializeObject(vm), decryptedQuery ?? com.Query);
+        var jsRes = await ExecJs(vm.Params, decryptedQuery ?? com.Query);
         var connStr = await GetConnStrFromKey(com.ConnKey);
         return await GetResultFromQuery(vm, decryptedConnStr ?? connStr, jsRes);
     }

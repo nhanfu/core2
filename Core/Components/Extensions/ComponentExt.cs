@@ -199,7 +199,7 @@ namespace Core.Components.Extensions
                 exists.Focus();
                 return exists;
             }
-            var feature = await LoadFeature(featureName);
+            var feature = await LoadFeature(Client.ConnKey, featureName);
             var tab = factory.Invoke();
             tab.Popup = popup;
             tab.Name = featureName;
@@ -229,11 +229,11 @@ namespace Core.Components.Extensions
             return await com.OpenTab(com.GetHashCode().ToString(), featureName, factory, true, anonymous);
         }
 
-        public static Task<EditForm> InitFeatureByName(string hash, bool portal = true)
+        public static Task<EditForm> InitFeatureByName(string connKey, string hash, bool portal = true)
         {
             var tcs = new TaskCompletionSource<EditForm>();
             var featureName = hash.Replace("-", " ").Replace("#", string.Empty);
-            LoadFeature(featureName).Done(feature =>
+            LoadFeature(connKey, featureName).Done(feature =>
             {
                 if (feature is null)
                 {
@@ -251,7 +251,7 @@ namespace Core.Components.Extensions
             return tcs.Task;
         }
 
-        public static Task<Feature> LoadFeature(string name, string id = null)
+        public static Task<Feature> LoadFeature(string connKey, string name, string id = null)
         {
             var tcs = new TaskCompletionSource<Feature>();
 #if RELEASE
@@ -267,6 +267,7 @@ namespace Core.Components.Extensions
                 {
                     ComId = "Feature",
                     Action = "GetFeature",
+                    ConnKey = Client.ConnKey,
                     Params = JSON.Stringify(new { Name = name, Id = id })
                 }),
                 Url = Utils.UserSvc,

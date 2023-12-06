@@ -447,7 +447,7 @@ namespace Core.Components.Framework
                 exists.Focus();
                 return;
             }
-            ComponentExt.LoadFeature(feature.Name).Done(f =>
+            ComponentExt.LoadFeature(Client.ConnKey, feature.Name).Done(f =>
             {
                 if (f is null) return;
                 EditForm instance = null;

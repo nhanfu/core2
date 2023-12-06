@@ -91,7 +91,6 @@
     <Compile Include="Components\SearchEntry.cs" />
     <Compile Include="Components\Section.cs" />
     <Compile Include="Components\Spinner.cs" />
-    <Compile Include="Components\Table.cs" />
     <Compile Include="Components\Textbox.cs" />
     <Compile Include="Components\Timepicker.cs" />
     <Compile Include="Components\TreeView.cs" />
@@ -100,7 +99,6 @@
     <Compile Include="Clients\WebSocketClient.cs" />
     <Compile Include="Extensions\DateTimeExt.cs" />
     <Compile Include="Extensions\ExcelExt.cs" />
-    <Compile Include="Extensions\FrontEndExt.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\NumberExtensions.cs" />
     <Compile Include="Extensions\Path.cs" />
