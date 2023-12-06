@@ -46,12 +46,12 @@ namespace Core.Clients
         {
             get
             {
-                if (token != null)
+                if (token == null)
                 {
-                    return token;
+                    token = LocalStorage.GetItem<Token>("UserInfo");
                 }
 
-                return LocalStorage.GetItem<Token>("UserInfo");
+                return token;
             }
 
             set

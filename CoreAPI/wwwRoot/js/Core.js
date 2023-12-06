@@ -128,11 +128,11 @@ Bridge.assembly("Core", function ($asm, globals) {
                 },
                 Token: {
                     get: function () {
-                        if (Core.Clients.Client.token != null) {
-                            return Core.Clients.Client.token;
+                        if (Core.Clients.Client.token == null) {
+                            Core.Clients.Client.token = Core.Clients.LocalStorage.GetItem(Core.ViewModels.Token, "UserInfo");
                         }
 
-                        return Core.Clients.LocalStorage.GetItem(Core.ViewModels.Token, "UserInfo");
+                        return Core.Clients.Client.token;
                     },
                     set: function (value) {
                         Core.Clients.Client.token = value;
@@ -4570,10 +4570,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                             _o1.add(Core.Enums.AdvSearchOperation.GreaterThanOrEqual, "{0} >= N'{1}'");
                             _o1.add(Core.Enums.AdvSearchOperation.LessThan, "{0} < N'{1}'");
                             _o1.add(Core.Enums.AdvSearchOperation.LessThanOrEqual, "{0} <= N'{1}'");
-                            _o1.add(Core.Enums.AdvSearchOperation.Contains, "charindex({0}, N'{1}') >= 1");
+                            _o1.add(Core.Enums.AdvSearchOperation.Contains, "charindex(N'{1}', {0}) >= 1");
                             _o1.add(Core.Enums.AdvSearchOperation.NotContains, "contains({0}, N'{1}') eq false");
-                            _o1.add(Core.Enums.AdvSearchOperation.StartWith, "charindex({0}, N'{1}') = 1");
-                            _o1.add(Core.Enums.AdvSearchOperation.NotStartWith, "charindex({0}, N'{1}') > 1");
+                            _o1.add(Core.Enums.AdvSearchOperation.StartWith, "charindex(N'{1}', {0}) = 1");
+                            _o1.add(Core.Enums.AdvSearchOperation.NotStartWith, "charindex(N'{1}', {0}) > 1");
                             _o1.add(Core.Enums.AdvSearchOperation.EndWidth, "{0} like N'%{1}')");
                             _o1.add(Core.Enums.AdvSearchOperation.NotEndWidth, "{0} not like N'%{1}'");
                             _o1.add(Core.Enums.AdvSearchOperation.In, "{0} in ({1})");
@@ -8447,6 +8447,7 @@ Bridge.assembly("Core", function ($asm, globals) {
     Bridge.define("Core.Models.FieldCondition", {
         props: {
             Id: null,
+            OriginFieldName: null,
             FieldId: null,
             Field: null,
             CompareOperatorId: null,
@@ -8774,7 +8775,7 @@ Bridge.assembly("Core", function ($asm, globals) {
 
     Bridge.define("Core.Models.Where", {
         props: {
-            FieldName: null,
+            Condition: null,
             Group: false
         }
     });
@@ -13513,7 +13514,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (cacheMeta === void 0) { cacheMeta = false; }
                 if (count === void 0) { count = true; }
                 var submitEntity = this._preQueryFn != null ? this._preQueryFn.call(null, this) : null;
-                var orderBy = System.Linq.Enumerable.from(this.AdvSearchVM.OrderBy, Core.Models.OrderBy).any() ? Core.Extensions.IEnumerableExtensions.Combine$1(Core.Models.OrderBy, System.String, this.AdvSearchVM.OrderBy, function (x) {
+                var orderBy = Core.Extensions.IEnumerableExtensions.HasElement(Core.Models.OrderBy, this.AdvSearchVM.OrderBy) ? Core.Extensions.IEnumerableExtensions.Combine$1(Core.Models.OrderBy, System.String, this.AdvSearchVM.OrderBy, function (x) {
                     var sortDirection = System.Nullable.eq(x.OrderbyDirectionId, Core.Enums.OrderbyDirection.ASC) ? "asc" : "desc";
                     return System.String.format("ds.{0} {1}", x.FieldName, sortDirection);
 
@@ -13523,7 +13524,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }) : null;
                 var basicCondition = this.CalcFilterQuery();
                 var fnBtnCondition = Core.Extensions.IEnumerableExtensions.Combine$1(Core.Models.Where, System.String, this.Wheres, function (x) {
-                    return System.String.format("({0})", [x.FieldName]);
+                    return System.String.format("({0})", [x.Condition]);
                 }, " and ");
                 var finalCon = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(System.Array.init([basicCondition, fnBtnCondition], System.String), System.String).where(function (x) {
                         return !Core.Extensions.StringExt.IsNullOrWhiteSpace(x);
@@ -13564,16 +13565,19 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.AddSections();
                 this.SetRowDataIfExists();
                 this.EditForm.ResizeListView();
-                if (Core.Extensions.IEnumerableExtensions.HasElement(System.Object, this.GuiInfo.LocalData) && Core.Extensions.IEnumerableExtensions.HasElement(Core.Models.Component, this.GuiInfo.LocalHeader)) {
-                    this.Header = this.GuiInfo.LocalHeader;
-                    if (this.GuiInfo.LocalRender) {
-                        this.Rerender();
-                    } else {
-                        this.RowData.Data = this.GuiInfo.LocalData;
-                    }
-                    return;
+                if (this.GuiInfo.LocalRender) {
+                    this.LocalRender();
+                } else {
+                    this.LoadAllData();
                 }
-                this.LoadAllData();
+            },
+            LocalRender: function () {
+                this.Header = this.GuiInfo.LocalHeader;
+                if (this.GuiInfo.LocalRender) {
+                    this.Rerender();
+                } else {
+                    this.RowData.Data = this.GuiInfo.LocalData;
+                }
             },
             AddSections: function () {
                 Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.ParentElement).Div, "grid-wrapper"), this.Editable ? "editable" : "");
@@ -18650,36 +18654,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.AddChild(dateType);
                 }
                 Core.Components.Renderer.Title(Core.Components.Renderer.Button(Core.Components.Renderer.Title(Core.Components.Renderer.Button(Core.Components.Renderer.Icon(Core.Components.Renderer.Title(Core.Components.Renderer.Button(Core.Components.Renderer.Button(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.Element).Div, "searching-block"), "T\u00ecm ki\u1ebfm", "button secondary small btn-toolbar", "fa fa-search").Event("click", Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $taskResult1, 
-                        $jumpFromFinally, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        this.ParentListView.ClearSelected();
-                                        $task1 = this.ParentListView.ReloadData();
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        return;
-                                    }
-                                    default: {
-                                        return;
-                                    }
-                                }
-                            }
-                        }, arguments);
-
-                    $asyncBody();
+                    this.ParentListView.ClearSelected();
+                    Core.Extensions.EventExt.Done(System.Collections.Generic.List$1(System.Object), this.ParentListView.ReloadData());
                 })).End, "", "button secondary small btn-toolbar right", "fa fa-cog"), "N\u00e2ng cao"), "fa fa-chevron-down").End.Event$1("click", Bridge.fn.cacheBind(this, this.AdvancedOptions)).End, "", "btnSearch button secondary small btn-toolbar right", "fa fa-undo"), "L\u00e0m m\u1edbi").Event("click", Bridge.fn.cacheBind(this, this.RefershListView)).End, "", "btn btn-secondary btn-sm", "fal fa-compress-wide"), "Ph\u00f3ng to").Event("click", Bridge.fn.cacheBind(this, this.FullScreen)).End.Render();
                 if (this.GuiInfo.ShowHotKey && this.ParentGridView != null) {
                     Core.Components.Renderer.Button(Core.Components.Renderer.Button(Core.Components.Renderer.Button(Core.Components.Renderer.Button(Core.Components.Renderer.Button(Core.Components.Renderer.Button(Core.Components.Renderer.Button(Core.Components.Renderer.Button(Core.Components.Renderer.Button(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.Element).Div, "hotkey-block"), "F1", "btn btn-light btn-sm", "").Event("click", Bridge.fn.cacheBind(this.ParentGridView, this.ParentGridView.ToggleAll)).Attr$1("title", "B\u1ecf ch\u1ecdn t\u1ea5t c\u1ea3").End, "F2", "btn btn-light btn-sm", "").Event$1("click", Bridge.fn.bind(this, function (e) {
@@ -18867,18 +18843,18 @@ Bridge.assembly("Core", function ($asm, globals) {
                     });
                 if (!parentGrid && !Bridge.equals(this.EntityVM.StartDate, null)) {
                     var oldStartDate = System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).firstOrDefault(Bridge.fn.bind(this, function (x) {
-                            return System.String.contains(x.FieldName,System.String.format("ds.[{0}] >=", [this.DateTimeField]));
+                            return System.String.contains(x.Condition,System.String.format("ds.[{0}] >=", [this.DateTimeField]));
                         }), null);
                     if (oldStartDate == null) {
-                        this.ParentListView.Wheres.add(($t5 = new Core.Models.Where(), $t5.FieldName = System.String.format("ds.[{0}] >= '{1:yyyy-MM-dd}'", this.DateTimeField, Bridge.box(System.Nullable.getValue(this.EntityVM.StartDate), System.DateTime, System.DateTime.format)), $t5.Group = false, $t5));
+                        this.ParentListView.Wheres.add(($t5 = new Core.Models.Where(), $t5.Condition = System.String.format("ds.[{0}] >= '{1:yyyy-MM-dd}'", this.DateTimeField, Bridge.box(System.Nullable.getValue(this.EntityVM.StartDate), System.DateTime, System.DateTime.format)), $t5.Group = false, $t5));
                     } else {
-                        oldStartDate.FieldName = System.String.format("ds.[{0}] >= '{1:yyyy-MM-dd}'", this.DateTimeField, Bridge.box(System.Nullable.getValue(this.EntityVM.StartDate), System.DateTime, System.DateTime.format));
+                        oldStartDate.Condition = System.String.format("ds.[{0}] >= '{1:yyyy-MM-dd}'", this.DateTimeField, Bridge.box(System.Nullable.getValue(this.EntityVM.StartDate), System.DateTime, System.DateTime.format));
                     }
                     this.EntityVM.StartDate = System.DateTime.getDate(System.Nullable.getValue(this.EntityVM.StartDate));
                     Core.Clients.LocalStorage.SetItem(System.String, "FromDate" + (this.ParentListView.GuiInfo.Id || ""), System.DateTime.format(System.Nullable.getValue(this.EntityVM.StartDate), "yyyy/MM/dd"));
                 } else if (Bridge.equals(this.EntityVM.StartDate, null)) {
                     var check = System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).firstOrDefault(Bridge.fn.bind(this, function (x) {
-                            return System.String.contains(x.FieldName,System.String.format("ds.[{0}] >=", [this.DateTimeField]));
+                            return System.String.contains(x.Condition,System.String.format("ds.[{0}] >=", [this.DateTimeField]));
                         }), null);
                     if (System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).any() && check != null) {
                         this.ParentListView.Wheres.remove(check);
@@ -18891,17 +18867,17 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }
                     var endDate = System.DateTime.addDays(System.DateTime.getDate(System.Nullable.getValue(this.EntityVM.EndDate)), 1);
                     var oldEndDate = System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).firstOrDefault(Bridge.fn.bind(this, function (x) {
-                            return System.String.contains(x.FieldName,System.String.format("ds.[{0}] <", [this.DateTimeField]));
+                            return System.String.contains(x.Condition,System.String.format("ds.[{0}] <", [this.DateTimeField]));
                         }), null);
                     if (oldEndDate == null) {
-                        this.ParentListView.Wheres.add(($t5 = new Core.Models.Where(), $t5.FieldName = System.String.format("ds.[{0}] < '{1:yyyy-MM-dd}'", this.DateTimeField, Bridge.box(endDate, System.DateTime, System.DateTime.format)), $t5.Group = false, $t5));
+                        this.ParentListView.Wheres.add(($t5 = new Core.Models.Where(), $t5.Condition = System.String.format("ds.[{0}] < '{1:yyyy-MM-dd}'", this.DateTimeField, Bridge.box(endDate, System.DateTime, System.DateTime.format)), $t5.Group = false, $t5));
                     } else {
-                        oldEndDate.FieldName = System.String.format("ds.[{0}] < '{1:yyyy-MM-dd}'", this.DateTimeField, Bridge.box(endDate, System.DateTime, System.DateTime.format));
+                        oldEndDate.Condition = System.String.format("ds.[{0}] < '{1:yyyy-MM-dd}'", this.DateTimeField, Bridge.box(endDate, System.DateTime, System.DateTime.format));
                     }
                     Core.Clients.LocalStorage.SetItem(System.String, "ToDate" + (this.ParentListView.GuiInfo.Id || ""), System.DateTime.format(System.Nullable.getValue(this.EntityVM.EndDate), "MM/dd/yyyy"));
                 } else if (Bridge.equals(this.EntityVM.EndDate, null)) {
                     var check1 = System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).firstOrDefault(Bridge.fn.bind(this, function (x) {
-                            return System.String.contains(x.FieldName,System.String.format("ds.[{0}] <", [this.DateTimeField]));
+                            return System.String.contains(x.Condition,System.String.format("ds.[{0}] <", [this.DateTimeField]));
                         }), null);
                     if (System.Linq.Enumerable.from(this.ParentListView.Wheres, Core.Models.Where).any() && check1 != null) {
                         this.ParentListView.Wheres.remove(check1);
@@ -19582,7 +19558,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return Core.Extensions.Utils.DecodeSpecialChar((Bridge.as(res, System.String)));
             },
             EntrySelected: function (rowData) {
-                var $t, $t1;
+                var $t;
                 window.clearTimeout(this._waitForDispose);
                 this.EmptyRow = false;
                 if (rowData == null || this.Disabled) {
@@ -19604,51 +19580,11 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this._gv.Show = false;
                 }
                 this.CascadeAndPopulate();
-                System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                    var $step = 0,
-                        $task1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        $async_e, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            $task1 = Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity, rowData, oldMatch]);
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $task1.getAwaitedResult();
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                    return $tcs.task;
+                Core.Extensions.EventExt.Done$1(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity, rowData, oldMatch]), Bridge.fn.bind(this, function () {
+                    var $t1, $t2;
+                    !Bridge.staticEquals(($t1 = this.UserInput), null) ? $t1(($t2 = new Core.MVVM.ObservableArgs(), $t2.NewData = this._value, $t2.OldData = oldValue, $t2.EvType = "change", $t2)) : null;
+                    this.DiposeGvWrapper();
                 }));
-                if (!Bridge.staticEquals(this.UserInput, null)) {
-                    this.UserInput(($t1 = new Core.MVVM.ObservableArgs(), $t1.NewData = this._value, $t1.OldData = oldValue, $t1.EvType = "change", $t1));
-                }
-                this.DiposeGvWrapper();
             },
             UpdateView: function (force, dirty, componentNames) {
                 var $t;
@@ -23394,8 +23330,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                             return Bridge.referenceEquals(x.Field.FieldName, cell.FieldName) && System.Nullable.eq(x.CompareOperatorId, advo);
                         }, null).Value = Core.Extensions.StringExt.IsNullOrWhiteSpace(value) ? cell.ValueText : value;
                     System.Linq.Enumerable.from(this.Wheres, Core.Models.Where).firstOrDefault(function (x) {
-                            return System.String.contains(x.FieldName,System.String.format("[ds].{0}", [cell.FieldName]));
-                        }, null).FieldName = where;
+                            return System.String.contains(x.Condition,System.String.format("[ds].{0}", [cell.FieldName]));
+                        }, null).Condition = where;
                 } else {
                     if (!System.Linq.Enumerable.from(this.AdvSearchVM.Conditions, Core.Models.FieldCondition).any(function (x) {
                             return Bridge.referenceEquals(x.Field.FieldName, cell.FieldName) && System.Nullable.eq(x.CompareOperatorId, advo) && Bridge.referenceEquals(x.Value, cell.Value);
@@ -23412,7 +23348,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 this.AdvSearchVM.Conditions.add(($t1 = new Core.Models.FieldCondition(), $t1.Field = hl, $t1.CompareOperatorId = advo, $t1.LogicOperatorId = ($t3 = cell.Logic, $t3 != null ? $t3 : Core.Enums.LogicOperation.And), $t1.Value = Core.Extensions.StringExt.IsNullOrWhiteSpace(value) ? cell.ValueText : value, $t1.Group = cell.Group, $t1));
                             }
                         }
-                        this.Wheres.add(($t1 = new Core.Models.Where(), $t1.FieldName = where, $t1.Group = cell.Group, $t1));
+                        this.Wheres.add(($t1 = new Core.Models.Where(), $t1.Condition = where, $t1.Group = cell.Group, $t1));
                     }
                 }
 
@@ -25080,9 +25016,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                     if (header.StatusBar) {
                         Core.Components.Renderer.Icon(Core.MVVM.Html.Instance, "fa fa-edit").Event("click", Bridge.fn.cacheBind(this, this.ToggleAll)).End.Render();
                     }
-                    var orderBy = System.Linq.Enumerable.from(this.AdvSearchVM.OrderBy, Core.Models.OrderBy).firstOrDefault(function (x) {
+                    var orderBy = ($t = this.AdvSearchVM.OrderBy) != null ? System.Linq.Enumerable.from($t, Core.Models.OrderBy).firstOrDefault(function (x) {
                             return Bridge.referenceEquals(x.ComId, header.Id);
-                        }, null);
+                        }, null) : null;
                     if (orderBy != null) {
                         Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance, System.Nullable.eq(orderBy.OrderbyDirectionId, Core.Enums.OrderbyDirection.ASC) ? "asc" : "desc").Render();
                     }
@@ -27675,7 +27611,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.FindMatchText();
                 this._input.focus();
                 !Bridge.staticEquals(($t1 = this.UserInput), null) ? $t1(($t2 = new Core.MVVM.ObservableArgs(), $t2.NewData = this.ListValues, $t2.OldData = this.ListValues, $t2.NewMatch = rowData, $t2.EvType = "change", $t2)) : null;
-                Core.Clients.Client.ExecTaskNoResult(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity]));
+                Core.Extensions.EventExt.Done$1(Core.Components.Extensions.ComponentExt.DispatchEventToHandlerAsync(this, this.GuiInfo.Events, "change", [this.Entity]));
             },
             UpdateView: function (force, dirty, componentNames) {
                 if (force === void 0) { force = false; }
@@ -29506,7 +29442,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                     var com = new Core.Models.Component();
                     Core.Extensions.ReflectionExt.CopyPropFrom$1(com, comInfo);
                     com.ComponentType = "Textbox";
-                    com.FieldName = "Value";
                     component = new Core.Components.Textbox(comInfo);
                     compareCell.GuiInfo.LocalData = System.Linq.Enumerable.from(Core.Components.AdvancedSearch.OperatorFactory(Core.Enums.ComponentTypeTypeEnum.Textbox)).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object);
                     return component;
@@ -29638,10 +29573,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                 System.Array.add(this.Feature.FeaturePolicy, ($t = new Core.Models.FeaturePolicy(), $t.CanRead = true, $t.CanWrite = true, $t.CanDelete = true, $t), Core.Models.FeaturePolicy);
                 this.Entity = this.ParentListView.AdvSearchVM;
                 var fieldMap = this.HeaderForAdvSearch();
-                var orderby = Core.Extensions.OdataExt.GetClausePart(this.ParentListView.FormattedDataSource, Core.Extensions.OdataExt.OrderByKeyword);
-                this.ParentListView.AdvSearchVM.OrderBy = System.Linq.Enumerable.from(orderby.split(","), System.String).select(Bridge.fn.bind(this, function (x) {
+                var orderby = this.ParentListView.GuiInfo.OrderBy;
+                this.ParentListView.AdvSearchVM.OrderBy = Core.Extensions.StringExt.IsNullOrWhiteSpace(orderby) ? this.ParentListView.AdvSearchVM.OrderBy : System.Linq.Enumerable.from(orderby.split(","), System.String).select(Bridge.fn.bind(this, function (x) {
                         var $t1;
-                        var orderField = x.trim().replace(new RegExp("\\s+"), " ").split(" ");
+                        if (Core.Extensions.StringExt.IsNullOrWhiteSpace(x)) {
+                            return null;
+                        }
+                        var orderField = System.String.replaceAll(x.trim().replace(new RegExp("\\s+"), " "), "ds.", "").split(" ");
                         if (orderField.length < 1) {
                             return null;
                         }
@@ -29681,11 +29619,11 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             AddFilters: function (section) {
                 var $t, $t1;
-                this._filterGrid = new Core.Components.GridView(($t = new Core.Models.Component(), $t.Id = System.Id.op_Implicit$7(System.Id.NewGuid()), $t.FieldName = "Conditions", $t.Column = 4, $t.ReferenceId = Bridge.toString(this._fieldConditionId), $t.RefName = "FieldCondition", $t.Reference = ($t1 = new Core.Models.Entity(), $t1.Name = "FieldCondition", $t1.Namespace = (Bridge.Reflection.getTypeNamespace(Core.Models.Component) || "") + ".", $t1), $t.LocalRender = true, $t.IgnoreConfirmHardDelete = true, $t.CanAdd = true, $t.Events = "{'DOMContentLoaded': 'FilterDomLoaded'}", $t));
+                this._filterGrid = new Core.Components.GridView(($t = new Core.Models.Component(), $t.Id = System.Id.op_Implicit$7(System.Id.NewGuid()), $t.FieldName = "Conditions", $t.Column = 4, $t.ReferenceId = Bridge.toString(this._fieldConditionId), $t.RefName = "FieldCondition", $t.Reference = ($t1 = new Core.Models.Entity(), $t1.Name = "FieldCondition", $t1.Namespace = (Bridge.Reflection.getTypeNamespace(Core.Models.Component) || "") + ".", $t1), $t.LocalRender = true, $t.IgnoreConfirmHardDelete = true, $t.CanAdd = true, $t.Events = System.String.format("{{'DOMContentLoaded': '{0}'}}", ["FilterDomLoaded"]), $t));
                 this._filterGrid.OnDeleteConfirmed = Bridge.fn.combine(this._filterGrid.OnDeleteConfirmed, Bridge.fn.bind(this, function () {
                     this._filterGrid.GetSelectedRows().ForEach(Bridge.fn.cacheBind(this._filterGrid.RowData, this._filterGrid.RowData.Remove));
                 }));
-                this._filterGrid.GuiInfo.LocalHeader = Bridge.fn.bind(this, function (_o4) {
+                this._filterGrid.Header = ($t = Bridge.fn.bind(this, function (_o4) {
                         var $t2;
                         _o4.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((1)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "FieldId", $t2.Events = "{'change': 'FieldId_Changed'}", $t2.ShortDesc = "T\u00ean c\u1ed9t", $t2.ReferenceId = this._ComponentId, $t2.RefName = "Component", $t2.FormatData = "ShortDesc", $t2.Active = true, $t2.Editable = true, $t2.ComponentType = "SearchEntry", $t2.MinWidth = "100px", $t2.MaxWidth = "200px", $t2.LocalRender = true, $t2.LocalData = System.Linq.Enumerable.from(this._headers).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object), $t2.LocalHeader = Bridge.fn.bind(this, function (_o1) {
                                 var $t3;
@@ -29706,8 +29644,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                                 return _o3;
                             })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t2));
                         return _o4;
-                    })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor());
-                this._filterGrid.GuiInfo.LocalData = System.Linq.Enumerable.from(this.AdvSearchEntity.Conditions).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object);
+                    })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), this._filterGrid.GuiInfo.LocalHeader = $t, $t);
+                this._filterGrid.RowData.Data = ($t1 = System.Linq.Enumerable.from(this.AdvSearchEntity.Conditions).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object), this._filterGrid.GuiInfo.LocalData = $t1, $t1);
                 this._filterGrid.ParentElement = section.Element;
                 section.AddChild(this._filterGrid);
                 this._filterGrid.Element.addEventListener("keydown", Bridge.fn.cacheBind(this, this.ToggleIndent));
@@ -29743,7 +29681,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                             })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t2.LocalRender = true, $t2));
                         return _o3;
                     })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor());
-                this._orderByGrid.GuiInfo.LocalData = System.Linq.Enumerable.from(this.AdvSearchEntity.OrderBy).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object);
+                this._orderByGrid.GuiInfo.LocalData = ($t = this.AdvSearchEntity.OrderBy) != null && ($t1 = System.Linq.Enumerable.from($t).select(function (x) { return Bridge.cast(x, System.Object); })) != null ? $t1.toList(System.Object) : null;
                 this._orderByGrid.ParentElement = section.Element;
                 section.AddChild(this._orderByGrid);
             },
@@ -29774,76 +29712,24 @@ Bridge.assembly("Core", function ($asm, globals) {
                 Core.Components.Forms.PopupEditor.prototype.Dispose.call(this);
             },
             ApplyFilter: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $task2, 
-                    $taskResult2, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    isValid, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task1 = this.IsFormValid();
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        isValid = $taskResult1;
-                                        if (!isValid) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        this.CalcAdvSearchQuery();
-                                        $task2 = this.ParentListView.ReloadData(true, 0, void 0);
-                                        $step = 2;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $taskResult2 = $task2.getAwaitedResult();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                Core.Extensions.EventExt.Done(System.Boolean, this.IsFormValid(), Bridge.fn.bind(this, function (isValid) {
+                    if (!isValid) {
+                        return;
+                    }
+                    this.CalcAdvSearchQuery();
+                    Core.Extensions.EventExt.Done(System.Collections.Generic.List$1(System.Object), this.ParentListView.ReloadData(true, 0, void 0));
+                }));
             },
             CalcAdvSearchQuery: function () {
                 this.ParentListView.Wheres = System.Linq.Enumerable.from(this.AdvSearchEntity.Conditions, Core.Models.FieldCondition).select(Bridge.fn.bind(this, function (x, index) {
                         var $t;
-                        return ($t = new Core.Models.Where(), $t.FieldName = this.GetSearchValue(x), $t);
+                        return ($t = new Core.Models.Where(), $t.Condition = this.GetSearchValue(x), $t);
                     })).where(function (x) {
-                    return Core.Extensions.StringExt.HasAnyChar(x.FieldName);
+                    return Core.Extensions.StringExt.HasAnyChar(x.Condition);
                 }).toList(Core.Models.Where);
             },
             GetSearchValue: function (condition) {
-                var $t, $t1;
+                var $t;
                 var ignoreSearch = false;
                 var value = ($t = condition.Value) != null ? Bridge.toString($t) : null;
                 if (value == null && System.Nullable.neq(condition.CompareOperatorId, Core.Enums.AdvSearchOperation.EqualNull) && System.Nullable.neq(condition.CompareOperatorId, Core.Enums.AdvSearchOperation.NotEqualNull)) {
@@ -29866,7 +29752,7 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                 var funcId = System.Nullable.getValue(Core.Extensions.Utils.TryParseInt(System.Nullable.toString(condition.CompareOperatorId, System.Enum.toStringFn(Core.Enums.AdvSearchOperation))));
                 var func = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(Core.Enums.AdvSearchOperation, System.String, Core.Extensions.AdvOptionExt.OperationToSql, funcId);
-                var formattedFunc = ignoreSearch ? "" : System.String.format(func, ($t1 = condition.Field) != null ? $t1.FieldName : null, value);
+                var formattedFunc = ignoreSearch ? "" : System.String.format(func, condition.OriginFieldName, value);
 
                 return formattedFunc;
             },
@@ -29875,6 +29761,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (condition == null || field == null) {
                     return;
                 }
+                condition.OriginFieldName = field.FieldName;
                 condition.Field = field;
                 var cell = Core.Components.Extensions.ComponentExt.FirstOrDefault(this._filterGrid, function (x) {
                     return Bridge.referenceEquals(x.Entity, condition) && Bridge.referenceEquals(x.FieldName, "Value");
@@ -29906,7 +29793,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                 } else {
                     component = Core.Components.AdvancedSearch.SetSearchString(compareCell, field);
                 }
-                component.FieldName = "Value";
+                // Binding data manually because of field name confliction
+                component.UserInput = Bridge.fn.combine(component.UserInput, function (e) {
+                    component.Entity.Value = e.NewData;
+                });
                 condition.LogicOperatorId = ($t = condition.LogicOperatorId, $t != null ? $t : Core.Enums.LogicOperation.And);
                 ($t1 = Core.Components.Extensions.ComponentExt.FirstOrDefault(this._filterGrid, function (x) {
                         return x.GuiInfo != null && Bridge.referenceEquals(x.Entity, condition) && Bridge.referenceEquals(x.FieldName, "LogicOperatorId");

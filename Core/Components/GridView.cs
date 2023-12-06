@@ -679,7 +679,7 @@ namespace Core.Components
             && (x.CompareOperatorId == AdvSearchOperation.Like || x.CompareOperatorId == AdvSearchOperation.In || x.CompareOperatorId == AdvSearchOperation.EqualDatime)) && !cell.Shift && !cell.Group)
             {
                 AdvSearchVM.Conditions.FirstOrDefault(x => x.Field.FieldName == cell.FieldName && x.CompareOperatorId == advo).Value = value.IsNullOrWhiteSpace() ? cell.ValueText : value;
-                Wheres.FirstOrDefault(x => x.FieldName.Contains($"[ds].{cell.FieldName}")).FieldName = where;
+                Wheres.FirstOrDefault(x => x.Condition.Contains($"[ds].{cell.FieldName}")).Condition = where;
             }
             else
             {
@@ -733,7 +733,7 @@ namespace Core.Components
                     }
                     Wheres.Add(new Where()
                     {
-                        FieldName = where,
+                        Condition = where,
                         Group = cell.Group
                     });
                 }
@@ -2205,7 +2205,7 @@ namespace Core.Components
                 {
                     Html.Instance.Icon("fa fa-edit").Event(EventType.Click, ToggleAll).End.Render();
                 }
-                var orderBy = AdvSearchVM.OrderBy.FirstOrDefault(x => x.ComId == header.Id);
+                var orderBy = AdvSearchVM.OrderBy?.FirstOrDefault(x => x.ComId == header.Id);
                 if (orderBy != null)
                 {
                     Html.Instance.ClassName(orderBy.OrderbyDirectionId == OrderbyDirection.ASC ? "asc" : "desc").Render();

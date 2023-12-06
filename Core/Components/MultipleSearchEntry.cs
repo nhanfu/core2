@@ -247,7 +247,7 @@ namespace Core.Components
             FindMatchText();
             _input.Focus();
             UserInput?.Invoke(new ObservableArgs { NewData = ListValues, OldData = ListValues, NewMatch = rowData, EvType = EventType.Change });
-            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity));
+            this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity).Done();
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)

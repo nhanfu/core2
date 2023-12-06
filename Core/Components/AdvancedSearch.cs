@@ -5,6 +5,7 @@ using Core.Components.Forms;
 using Core.Enums;
 using Core.Extensions;
 using Core.Models;
+using Core.MVVM;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -54,10 +55,12 @@ namespace Core.Components
             });
             Entity = ParentListView.AdvSearchVM;
             var fieldMap = HeaderForAdvSearch();
-            var orderby = OdataExt.GetClausePart(ParentListView.FormattedDataSource, OdataExt.OrderByKeyword);
-            ParentListView.AdvSearchVM.OrderBy = orderby.Split(",").Select(x =>
+            var orderby = ParentListView.GuiInfo.OrderBy;
+            ParentListView.AdvSearchVM.OrderBy = orderby.IsNullOrWhiteSpace() ? ParentListView.AdvSearchVM.OrderBy :
+            orderby.Split(",").Select(x =>
             {
-                var orderField = x.Trim().Replace(new RegExp(@"\s+"), " ").Split(" ");
+                if (x.IsNullOrWhiteSpace()) return null;
+                var orderField = x.Trim().Replace(new RegExp(@"\s+"), " ").Replace("ds.", string.Empty).Split(" ");
                 if (orderField.Length < 1)
                 {
                     return null;
@@ -123,13 +126,13 @@ namespace Core.Components
                 LocalRender = true,
                 IgnoreConfirmHardDelete = true,
                 CanAdd = true,
-                Events = "{'DOMContentLoaded': 'FilterDomLoaded'}",
+                Events = $"{{'DOMContentLoaded': '{nameof(FilterDomLoaded)}'}}",
             });
             _filterGrid.OnDeleteConfirmed += () =>
             {
                 _filterGrid.GetSelectedRows().ForEach(_filterGrid.RowData.Remove);
             };
-            _filterGrid.GuiInfo.LocalHeader = new List<Component>
+            _filterGrid.Header = _filterGrid.GuiInfo.LocalHeader = new List<Component>
             {
                 new Component
                 {
@@ -242,7 +245,7 @@ namespace Core.Components
                     }
                 },
             };
-            _filterGrid.GuiInfo.LocalData = AdvSearchEntity.Conditions.Cast<object>().ToList();
+            _filterGrid.RowData.Data = _filterGrid.GuiInfo.LocalData = AdvSearchEntity.Conditions.Cast<object>().ToList();
             _filterGrid.ParentElement = section.Element;
             section.AddChild(_filterGrid);
             _filterGrid.Element.AddEventListener(EventType.KeyDown, ToggleIndent);
@@ -339,7 +342,7 @@ namespace Core.Components
                     LocalRender = true,
                 },
             };
-            _orderByGrid.GuiInfo.LocalData = AdvSearchEntity.OrderBy.Cast<object>().ToList();
+            _orderByGrid.GuiInfo.LocalData = AdvSearchEntity.OrderBy?.Cast<object>()?.ToList();
             _orderByGrid.ParentElement = section.Element;
             section.AddChild(_orderByGrid);
         }
@@ -369,23 +372,22 @@ namespace Core.Components
             base.Dispose();
         }
 
-        public async Task ApplyFilter()
+        public void ApplyFilter()
         {
-            var isValid = await IsFormValid();
-            if (!isValid)
+            IsFormValid().Done(isValid =>
             {
-                return;
-            }
-            CalcAdvSearchQuery();
-            await ParentListView.ReloadData(cacheHeader: true, skip: 0);
+                if (!isValid) return;
+                CalcAdvSearchQuery();
+                ParentListView.ReloadData(cacheHeader: true, skip: 0).Done();
+            });
         }
 
         public void CalcAdvSearchQuery()
         {
             ParentListView.Wheres = AdvSearchEntity.Conditions.Select((x, index) => new Where
             {
-                FieldName = GetSearchValue(x),
-            }).Where(x => x.FieldName.HasAnyChar()).ToList();
+                Condition = GetSearchValue(x),
+            }).Where(x => x.Condition.HasAnyChar()).ToList();
         }
 
         private string GetSearchValue(FieldCondition condition)
@@ -420,7 +422,7 @@ namespace Core.Components
 
             var funcId = (AdvSearchOperation)condition.CompareOperatorId.ToString().TryParseInt();
             var func = AdvOptionExt.OperationToSql.GetValueOrDefault(funcId);
-            var formattedFunc = ignoreSearch ? string.Empty : string.Format(func, condition.Field?.FieldName, value);
+            var formattedFunc = ignoreSearch ? string.Empty : string.Format(func, condition.OriginFieldName, value);
 
             return formattedFunc;
         }
@@ -441,6 +443,7 @@ namespace Core.Components
             {
                 return;
             }
+            condition.OriginFieldName = field.FieldName;
             condition.Field = field;
             var cell = _filterGrid.FirstOrDefault(x => x.Entity == condition && x.FieldName == nameof(FieldCondition.Value));
             var compareCell = _filterGrid.FirstOrDefault(x => x.Entity == condition
@@ -479,7 +482,10 @@ namespace Core.Components
             {
                 component = SetSearchString(compareCell, field);
             }
-            component.FieldName = nameof(FieldCondition.Value);
+            // Binding data manually because of field name confliction
+            component.UserInput += (ObservableArgs e) => {
+                component.Entity[nameof(FieldCondition.Value)] = e.NewData;
+            };
             condition.LogicOperatorId = condition.LogicOperatorId ?? LogicOperation.And;
             _filterGrid.FirstOrDefault(x => x.GuiInfo != null && x.Entity == condition
                 && x.FieldName == nameof(FieldCondition.LogicOperatorId))?.UpdateView();
@@ -500,7 +506,6 @@ namespace Core.Components
             var com = new Component();
             com.CopyPropFrom(comInfo);
             com.ComponentType = nameof(Textbox);
-            com.FieldName = nameof(FieldCondition.Value);
             component = new Textbox(comInfo);
             compareCell.GuiInfo.LocalData = OperatorFactory(ComponentTypeTypeEnum.Textbox).Cast<object>().ToList();
             return component;

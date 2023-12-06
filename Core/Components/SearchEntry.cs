@@ -696,15 +696,11 @@ namespace Core.Components
                 _gv.Show = false;
             }
             CascadeAndPopulate();
-            Task.Run(async () =>
+            this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, rowData, oldMatch).Done(() =>
             {
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, rowData, oldMatch);
+                UserInput?.Invoke(new ObservableArgs { NewData = _value, OldData = oldValue, EvType = EventType.Change });
+                DiposeGvWrapper();
             });
-            if (UserInput != null)
-            {
-                UserInput.Invoke(new ObservableArgs { NewData = _value, OldData = oldValue, EvType = EventType.Change });
-            }
-            DiposeGvWrapper();
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)

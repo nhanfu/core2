@@ -188,13 +188,13 @@ namespace Core.Components
         public SqlViewModel GetSql(int? skip = null, int? pageSize = null, bool cacheMeta = false, bool count = true)
         {
             var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
-            var orderBy = AdvSearchVM.OrderBy.Any() ? AdvSearchVM.OrderBy.Combine(x =>
+            var orderBy = AdvSearchVM.OrderBy.HasElement() ? AdvSearchVM.OrderBy.Combine(x =>
             {
                 var sortDirection = x.OrderbyDirectionId == OrderbyDirection.ASC ? "asc" : "desc";
                 return $"ds.{x.FieldName} {sortDirection}";
             }) : null;
             var basicCondition = CalcFilterQuery();
-            var fnBtnCondition = Wheres.Combine(x => $"({x.FieldName})", " and ");
+            var fnBtnCondition = Wheres.Combine(x => $"({x.Condition})", " and ");
             var finalCon = new string[] { basicCondition, fnBtnCondition }
                 .Where(x => !x.IsNullOrWhiteSpace()).Combine(" and ");
             var data = new SqlViewModel
@@ -244,20 +244,21 @@ namespace Core.Components
             AddSections();
             SetRowDataIfExists();
             EditForm.ResizeListView();
-            if (GuiInfo.LocalData.HasElement() && GuiInfo.LocalHeader.HasElement())
+            if (GuiInfo.LocalRender) LocalRender();
+            else LoadAllData();
+        }
+
+        private void LocalRender()
+        {
+            Header = GuiInfo.LocalHeader;
+            if (GuiInfo.LocalRender)
             {
-                Header = GuiInfo.LocalHeader;
-                if (GuiInfo.LocalRender)
-                {
-                    Rerender();
-                }
-                else
-                {
-                    RowData.Data = GuiInfo.LocalData;
-                }
-                return;
+                Rerender();
             }
-            LoadAllData();
+            else
+            {
+                RowData.Data = GuiInfo.LocalData;
+            }
         }
 
         internal virtual void AddSections()
@@ -688,7 +689,8 @@ namespace Core.Components
             confirm.YesConfirmed += () =>
             {
                 confirm.Dispose();
-                Deactivate().Done(() => {
+                Deactivate().Done(() =>
+                {
                     this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.Deactivated, Entity).Done();
                 });
             };
@@ -843,7 +845,8 @@ namespace Core.Components
         {
             var tcs = new TaskCompletionSource<List<object>>();
             Client.Instance.GetByIdAsync(GuiInfo.RefName, ConnKey ?? Client.ConnKey, SelectedIds.ToArray())
-                .Done(res => {
+                .Done(res =>
+                {
                     tcs.TrySetResult(res?.ToList());
                 });
             return tcs.Task;

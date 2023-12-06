@@ -32,13 +32,14 @@ namespace Core.Models
 
     public class Where
     {
-        public string FieldName { get; set; }
+        public string Condition { get; set; }
         public bool Group { get; set; }
     }
 
     public class FieldCondition
     {
         public string Id { get; set; }
+        public string OriginFieldName { get; set; }
         public string FieldId { get; set; }
         public Component Field { get; set; }
         public AdvSearchOperation? CompareOperatorId { get; set; }

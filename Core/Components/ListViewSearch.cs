@@ -230,10 +230,10 @@ namespace Core.Components
             }
             Html.Take(Element).Div.ClassName("searching-block")
                 .Button("Tìm kiếm", className: "button secondary small btn-toolbar", icon: "fa fa-search")
-                    .Event(EventType.Click, async () =>
+                    .Event(EventType.Click, () =>
                     {
                         ParentListView.ClearSelected();
-                        await ParentListView.ReloadData();
+                        ParentListView.ReloadData().Done();
                     }).End
                 .Button(className: "button secondary small btn-toolbar right", icon: "fa fa-cog")
                     .Title("Nâng cao")
@@ -484,25 +484,25 @@ namespace Core.Components
             var parentGrid = basicsAddDate != null && basicsAddDate.Any() && ParentGridView.AdvSearchVM.Conditions.Any(x => basicsAddDate.Contains(x.FieldId) && !x.Value.IsNullOrWhiteSpace());
             if (!parentGrid && EntityVM.StartDate != null)
             {
-                var oldStartDate = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"ds.[{DateTimeField}] >="));
+                var oldStartDate = ParentListView.Wheres.FirstOrDefault(x => x.Condition.Contains($"ds.[{DateTimeField}] >="));
                 if (oldStartDate is null)
                 {
                     ParentListView.Wheres.Add(new Where()
                     {
-                        FieldName = $"ds.[{DateTimeField}] >= '{EntityVM.StartDate.Value:yyyy-MM-dd}'",
+                        Condition = $"ds.[{DateTimeField}] >= '{EntityVM.StartDate.Value:yyyy-MM-dd}'",
                         Group = false
                     });
                 }
                 else
                 {
-                    oldStartDate.FieldName = $"ds.[{DateTimeField}] >= '{EntityVM.StartDate.Value:yyyy-MM-dd}'";
+                    oldStartDate.Condition = $"ds.[{DateTimeField}] >= '{EntityVM.StartDate.Value:yyyy-MM-dd}'";
                 }
                 EntityVM.StartDate = EntityVM.StartDate.Value.Date;
                 LocalStorage.SetItem("FromDate" + ParentListView.GuiInfo.Id, EntityVM.StartDate.Value.ToString("yyyy/MM/dd"));
             }
             else if (EntityVM.StartDate is null)
             {
-                var check = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"ds.[{DateTimeField}] >="));
+                var check = ParentListView.Wheres.FirstOrDefault(x => x.Condition.Contains($"ds.[{DateTimeField}] >="));
                 if (ParentListView.Wheres.Any() && check != null)
                 {
                     ParentListView.Wheres.Remove(check);
@@ -516,24 +516,24 @@ namespace Core.Components
                     finalFilter += " and ";
                 }
                 var endDate = EntityVM.EndDate.Value.Date.AddDays(1);
-                var oldEndDate = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"ds.[{DateTimeField}] <"));
+                var oldEndDate = ParentListView.Wheres.FirstOrDefault(x => x.Condition.Contains($"ds.[{DateTimeField}] <"));
                 if (oldEndDate is null)
                 {
                     ParentListView.Wheres.Add(new Where()
                     {
-                        FieldName = $"ds.[{DateTimeField}] < '{endDate:yyyy-MM-dd}'",
+                        Condition = $"ds.[{DateTimeField}] < '{endDate:yyyy-MM-dd}'",
                         Group = false
                     });
                 }
                 else
                 {
-                    oldEndDate.FieldName = $"ds.[{DateTimeField}] < '{endDate:yyyy-MM-dd}'";
+                    oldEndDate.Condition = $"ds.[{DateTimeField}] < '{endDate:yyyy-MM-dd}'";
                 }
                 LocalStorage.SetItem("ToDate" + ParentListView.GuiInfo.Id, EntityVM.EndDate.Value.ToString("MM/dd/yyyy"));
             }
             else if (EntityVM.EndDate is null)
             {
-                var check1 = ParentListView.Wheres.FirstOrDefault(x => x.FieldName.Contains($"ds.[{DateTimeField}] <"));
+                var check1 = ParentListView.Wheres.FirstOrDefault(x => x.Condition.Contains($"ds.[{DateTimeField}] <"));
                 if (ParentListView.Wheres.Any() && check1 != null)
                 {
                     ParentListView.Wheres.Remove(check1);
