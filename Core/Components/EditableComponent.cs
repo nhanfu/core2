@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Core.Enums;
 using Core.ViewModels;
+using Core.Clients;
 
 namespace Core.Components
 {
@@ -51,6 +52,8 @@ namespace Core.Components
         public virtual HTMLElement Element { get; set; }
         public event Action Disposed;
         public Action DOMContentLoaded { get; set; }
+        public string ConnKey => GuiInfo != null && GuiInfo.ConnKey.IsNullOrWhiteSpace()
+            ? Client.ConnKey : GuiInfo.ConnKey;
         public string EntityId
         {
             get => Entity?[IdField]?.ToString();

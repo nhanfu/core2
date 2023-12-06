@@ -439,20 +439,20 @@ namespace Core.Clients
             return await httpGetList.MakeGenericMethod(refType).Invoke(this, filter, clearCache).As<Task<List<T>>>();
         }
 
-        public Task<dynamic> GetByIdAsync(string id, string table)
+        public Task<object[]> GetByIdAsync(string table, string connKey, params string[] ids)
         {
-            if (id.IsNullOrWhiteSpace() || table.IsNullOrWhiteSpace())
+            if (table.IsNullOrWhiteSpace() || ids.Nothing())
             {
-                return Task.FromResult(default(object));
+                return Task.FromResult(null as object[]);
             }
-            var tcs = new TaskCompletionSource<object>();
+            var tcs = new TaskCompletionSource<object[]>();
             var vm = new SqlViewModel
             {
-                Entity = JSON.Stringify(new { Id = id, Table = table }),
+                Params = JSON.Stringify(new { Table = table, Ids = ids }),
                 ComId = "Entity",
                 Action = "ById"
             };
-            var odata = SubmitAsync<object>(new XHRWrapper
+            SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = JSON.Stringify(vm),
                 IsRawString = true,
@@ -462,10 +462,9 @@ namespace Core.Clients
                 {
                     { "content-type", "application/json" }
                 }
-            });
-            ExecTask(odata, ds =>
+            }).Done(ds =>
             {
-                tcs.TrySetResult(ds);
+                tcs.TrySetResult(ds.Length > 0 ? ds[0] : null);
             });
             return tcs.Task;
         }
@@ -599,7 +598,7 @@ namespace Core.Clients
             var vm = new SqlViewModel
             {
                 Ids = ids,
-                Entity = table,
+                Params = table,
                 ConnKey = connKey ?? ConnKey
             };
             return SubmitAsync<string[]>(new XHRWrapper
@@ -620,7 +619,7 @@ namespace Core.Clients
             var vm = new SqlViewModel
             {
                 Ids = ids,
-                Entity = table,
+                Table = table,
                 ConnKey = connKey ?? ConnKey
             };
             return SubmitAsync<string[]>(new XHRWrapper

@@ -86,7 +86,7 @@ namespace Core.Components
         public List<object> UpdatedRows => AllListViewItem.OrderBy(x => x.RowNo).Where(x => x.Dirty).Select(x => x.Entity).Distinct().ToList();
         public List<CellSelected> CellSelected = new List<CellSelected>();
         public List<Where> Wheres = new List<Where>();
-        public HashSet<string> SelectedIds { get; set; } = new HashSet<string>();
+        public List<string> SelectedIds { get; set; } = new List<string>();
         public string FocusId { get; set; }
         public string EntityFocusId { get; set; }
         public bool ShouldSetEntity { get; set; } = true;
@@ -185,7 +185,7 @@ namespace Core.Components
             return CustomQuery(sql);
         }
 
-        public SqlViewModel GetSql(int? skip = null, int? pageSize = null, bool cacheHeader = false, bool count = true)
+        public SqlViewModel GetSql(int? skip = null, int? pageSize = null, bool cacheMeta = false, bool count = true)
         {
             var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
             var orderBy = AdvSearchVM.OrderBy.Any() ? AdvSearchVM.OrderBy.Combine(x =>
@@ -200,11 +200,11 @@ namespace Core.Components
             var data = new SqlViewModel
             {
                 ComId = GuiInfo.Id,
-                Entity = submitEntity != null ? JSON.Stringify(submitEntity) : null,
+                Params = submitEntity != null ? JSON.Stringify(submitEntity) : null,
                 OrderBy = orderBy ?? (GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy),
                 Where = finalCon,
                 Count = count,
-                SkipXQuery = cacheHeader,
+                SkipXQuery = cacheMeta,
             };
             if (skip.HasValue && pageSize.HasValue)
             {
@@ -426,16 +426,20 @@ namespace Core.Components
         protected virtual void ContentRendered()
         {
             RenderIndex();
+            DomLoaded();
             if (Editable)
             {
                 AddNewEmptyRow();
             }
-            else if (RowData.Data.Nothing())
+            if (RowData.Data.Nothing() && !Editable)
             {
                 NoRecordFound();
-                return;
             }
-            MainSection.Element.AddEventListener(EventType.ContextMenu, BodyContextMenuHandler);
+            else
+            {
+                DisposeNoRecord();
+                MainSection.Element.AddEventListener(EventType.ContextMenu, BodyContextMenuHandler);
+            }
             Spinner.Hide();
         }
 
@@ -700,48 +704,35 @@ namespace Core.Components
             RowAction(x => x.Selected = selected);
         }
 
-        public void HardDeleteSelected(object ev = null)
+        protected virtual void HardDeleteSelected(object e = null)
         {
-            Task.Run(async () =>
+            if (GuiInfo.IgnoreConfirmHardDelete && OnDeleteConfirmed != null)
             {
-                var deletedItems = new List<object>();
-                if (GuiInfo.ComponentType == nameof(VirtualGrid))
-                {
-                    deletedItems = await GetRealTimeSelectedRows();
-                }
-                else
-                {
-                    deletedItems = GetSelectedRows();
-                }
-                if (GuiInfo.IgnoreConfirmHardDelete && OnDeleteConfirmed != null)
+                OnDeleteConfirmed.Invoke();
+                return;
+            }
+            var deletedItems = GetSelectedRows().ToList();
+            var confirm = new ConfirmDialog();
+            confirm.Title = $"Bạn có chắc xóa {deletedItems.Count} dòng dữ liêu không!";
+            confirm.Render();
+            confirm.YesConfirmed += async () =>
+            {
+                if (OnDeleteConfirmed != null)
                 {
                     OnDeleteConfirmed.Invoke();
+                    DOMContentLoaded?.Invoke();
                     return;
                 }
-#pragma warning disable IDE0017 // Simplify object initialization
-                var confirm = new ConfirmDialog();
-#pragma warning restore IDE0017 // Simplify object initialization
-                confirm.Title = $"Bạn có chắc xóa {deletedItems.Count} dòng dữ liêu không!";
-                confirm.Render();
-                confirm.YesConfirmed += async () =>
+                confirm.Dispose();
+                if (deletedItems.Nothing())
                 {
-                    if (OnDeleteConfirmed != null)
-                    {
-                        OnDeleteConfirmed.Invoke();
-                        DOMContentLoaded?.Invoke();
-                        return;
-                    }
-                    confirm.Dispose();
-                    if (deletedItems.Nothing())
-                    {
-                        deletedItems = GetFocusedRows().ToList();
-                    }
-                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems);
-                    await HardDeleteConfirmed(deletedItems);
-                    DOMContentLoaded?.Invoke();
-                    await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems);
-                };
-            });
+                    deletedItems = GetFocusedRows();
+                }
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems);
+                await HardDeleteConfirmed(deletedItems);
+                DOMContentLoaded?.Invoke();
+                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems);
+            };
         }
 
         public virtual Task<string[]> Deactivate()
@@ -800,7 +791,7 @@ namespace Core.Components
                 return Task.FromResult(deleted);
             }
             var tcs = new TaskCompletionSource<List<object>>();
-            Client.Instance.HardDeleteAsync(ids.ToArray(), GuiInfo.RefName, GuiInfo.ConnKey)
+            Client.Instance.HardDeleteAsync(ids.ToArray(), GuiInfo.RefName, ConnKey)
             .Done(delSuccessIds =>
             {
                 if (delSuccessIds.HasElement())
@@ -848,9 +839,14 @@ namespace Core.Components
             }
         }
 
-        public virtual async Task<List<object>> GetRealTimeSelectedRows()
+        public virtual Task<List<object>> GetRealTimeSelectedRows()
         {
-            return await new Client(GuiInfo.RefName, GuiInfo.Reference?.Namespace).GetRawListById<object>(SelectedIds.ToList());
+            var tcs = new TaskCompletionSource<List<object>>();
+            Client.Instance.GetByIdAsync(GuiInfo.RefName, ConnKey ?? Client.ConnKey, SelectedIds.ToArray())
+                .Done(res => {
+                    tcs.TrySetResult(res?.ToList());
+                });
+            return tcs.Task;
         }
 
         public void PasteSelected(object ev)
@@ -1440,9 +1436,9 @@ namespace Core.Components
             gridView1.AdvSearchVM.Conditions.Clear();
             gridView1.ListViewSearch.EntityVM.StartDate = null;
             gridView1.ListViewSearch.EntityVM.EndDate = null;
-            Client.ExecTask(GetRealTimeSelectedRows(), selecteds =>
+            GetRealTimeSelectedRows().Done(selecteds =>
             {
-                var com = Enumerable.FirstOrDefault<Component>(gridView1.Header, x => x.FieldName == e.TargetFieldName);
+                var com = Enumerable.FirstOrDefault(gridView1.Header, x => x.FieldName == e.TargetFieldName);
                 var cellSelecteds = selecteds.Select(selected =>
                 {
                     return new CellSelected()
@@ -1656,7 +1652,7 @@ namespace Core.Components
                 {
                     ComId = "UserSetting",
                     Action = "GetByComId",
-                    Entity = JSON.Stringify(new { ComId = GuiInfo.Id, Prefix = prefix })
+                    Params = JSON.Stringify(new { ComId = GuiInfo.Id, Prefix = prefix })
                 },
                 Method = HttpMethod.POST
             });
@@ -1693,7 +1689,7 @@ namespace Core.Components
                     new PatchDetail { Field = nameof(UserSetting.Value), Value = value },
                 },
                 Table = nameof(UserSetting),
-                ConnKey = GuiInfo.ConnKey ?? Client.ConnKey
+                ConnKey = ConnKey ?? Client.ConnKey
             };
             patch.Changes.Add(new PatchDetail { Field = IdField, Value = newId, OldVal = oldId });
             return patch;

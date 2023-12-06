@@ -48,8 +48,11 @@ public class UserService
     static readonly Regex[] _fobiddenTerm = new Regex[] { new Regex(@"delete\s"), new Regex(@"create\s"), new Regex(@"insert\s"),
                 new Regex(@"update\s"), new Regex(@"select\s"), new Regex(@"from\s"),new Regex(@"where\s"),
                 new Regex(@"group by\s"), new Regex(@"having\s"), new Regex(@"order by\s") };
-    static readonly string[] _systemFields = new string[] { IdField, nameof(TenantCode), nameof(User.Active), nameof(User.InsertedBy), nameof(User.InsertedDate) }
-        .Select(x => x.ToLower()).ToArray();
+    static readonly string[] _systemFields = new string[] 
+    { 
+        IdField, nameof(TenantCode), nameof(User.InsertedBy), nameof(User.InsertedDate)
+        , nameof(User.UpdatedBy), nameof(User.UpdatedDate) 
+    }.Select(x => x.ToLower()).ToArray();
 
     public UserService(IHttpContextAccessor httpContextAccessor, CoreContext db,
         IConfiguration configuration, IDistributedCache cache, IWebHostEnvironment host)
@@ -593,19 +596,22 @@ public class UserService
     public async Task<string[]> HardDeleteAsync(SqlViewModel vm)
     {
         var connStr = await GetConnStrFromKey(vm.ConnKey ?? "default");
-        var allRights = await GetEntityPerm(vm.Entity, null);
+        var allRights = await GetEntityPerm(vm.Table, null);
         var canDeleteAll = allRights.Any(x => x.CanDeleteAll);
         var canDeleteSelf = allRights.Any(x => x.CanDelete);
-        var query = $"select * from {vm.Entity} where Id in ({vm.Ids.CombineStrings()})";
+        var query = $"select * from {vm.Table} where Id in ({vm.Ids.CombineStrings()})";
         var ds = (await ReadDataSet(query, connStr)).ToList();
         var rows = ds.Count > 0 ? ds[0] : null;
-        if (rows.Nothing()) return null;
+        if (rows.Nothing()) throw new ApiException("No record found")
+        {
+            StatusCode = HttpStatusCode.BadRequest
+        };
         var canDeleteRows = rows.Where(x =>
         {
             return canDeleteAll || canDeleteSelf && Utils.IsOwner(x, UserId, RoleIds);
         }).Select(x => x.GetValueOrDefault(Utils.IdField)?.ToString()).ToArray();
         if (canDeleteRows.Nothing()) return null;
-        var deleteCmd = $"delete from {vm.Entity} where Id in ({canDeleteRows.CombineStrings()})";
+        var deleteCmd = $"delete from {vm.Table} where Id in ({canDeleteRows.CombineStrings()})";
         using SqlConnection connection = new(connStr);
         await connection.OpenAsync();
         using var transaction = connection.BeginTransaction();
@@ -629,10 +635,10 @@ public class UserService
     public async Task<string[]> DeactivateAsync(SqlViewModel vm)
     {
         var connStr = await GetConnStrFromKey(vm.ConnKey ?? "default");
-        var allRights = await GetEntityPerm(vm.Entity, null);
+        var allRights = await GetEntityPerm(vm.Table, null);
         var canDeactivateAll = allRights.Any(x => x.CanDeactivateAll);
         var canDeactivateSelf = allRights.Any(x => x.CanDeactivate);
-        var query = $"select * from {vm.Entity} where Id in ({vm.Ids.CombineStrings()})";
+        var query = $"select * from {vm.Table} where Id in ({vm.Ids.CombineStrings()})";
         var ds = (await ReadDataSet(query, connStr)).ToList();
         var rows = ds.Count > 0 ? ds[0] : null;
         if (rows.Nothing()) return null;
@@ -641,7 +647,7 @@ public class UserService
             return canDeactivateAll || canDeactivateSelf && Utils.IsOwner(x, UserId, RoleIds);
         }).Select(x => x.GetValueOrDefault(Utils.IdField)?.ToString()).ToArray();
         if (canDeactivateRows.Nothing()) return null;
-        var deactivateCmd = $"update {vm.Entity} set Active = 0 where Id in ({canDeactivateRows.CombineStrings()})";
+        var deactivateCmd = $"update {vm.Table} set Active = 0 where Id in ({canDeactivateRows.CombineStrings()})";
         using SqlConnection connection = new(connStr);
         await connection.OpenAsync();
         using var transaction = connection.BeginTransaction();
@@ -676,7 +682,7 @@ public class UserService
         var anyInvalid = _fobiddenTerm.Any(term =>
         {
             return vm.Select != null && term.IsMatch(vm.Select.ToLower())
-            || vm.Entity != null && term.IsMatch(vm.Entity.ToLower())
+            || vm.Table != null && term.IsMatch(vm.Table.ToLower())
             || vm.Where != null && term.IsMatch(vm.Where.ToLower())
             || vm.GroupBy != null && term.IsMatch(vm.GroupBy.ToLower())
             || vm.Having != null && term.IsMatch(vm.Having.ToLower())
@@ -779,7 +785,7 @@ public class UserService
     internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ExecUserSvc(SqlViewModel vm)
     {
         var sv = await GetService(vm);
-        var jsRes = await ExecJs(vm.Entity, sv.Content);
+        var jsRes = await ExecJs(vm.Params, sv.Content);
         var conStr = TenantCode is null && vm.AnnonymousTenant is not null
             ? sv.ConnKey : await GetConnStrFromKey(sv.ConnKey);
         return await GetResultFromQuery(vm, conStr, jsRes);
@@ -841,7 +847,7 @@ public class UserService
                 return x.Active && x.ShortDesc.HasNonSpaceChar() && vm.FieldName.Contains(x.FieldName);
             }).ToList();
         }
-        return ExportExcel(vm.Entity ?? "Export data", headers, table);
+        return ExportExcel(vm.Params ?? "Export data", headers, table);
     }
 
     public string ConvertHtmlToPlainText(string htmlContent)

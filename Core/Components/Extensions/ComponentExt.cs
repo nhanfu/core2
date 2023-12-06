@@ -121,6 +121,20 @@ namespace Core.Components.Extensions
             return com;
         }
 
+        public static PatchVM MapToPatch(this object com, string table)
+        {
+            var patch = new PatchVM
+            {
+                Table = table
+            };
+            com.ForEachProp((prop, val) => {
+                patch.Changes.Add(new PatchDetail {
+                    Field = prop, Value = val?.ToString()
+                });
+            });
+            return patch;
+        }
+
         public static string MapToFilterOperator(this Component com, string searchTerm)
         {
             if (searchTerm.IsNullOrWhiteSpace() || !com.HasFilter || com.FieldName.IsNullOrEmpty())
@@ -253,7 +267,7 @@ namespace Core.Components.Extensions
                 {
                     ComId = "Feature",
                     Action = "GetFeature",
-                    Entity = JSON.Stringify(new { Name = name, Id = id })
+                    Params = JSON.Stringify(new { Name = name, Id = id })
                 }),
                 Url = Utils.UserSvc,
                 IsRawString = true,

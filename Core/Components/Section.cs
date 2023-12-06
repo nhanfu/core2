@@ -7,6 +7,7 @@ using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -383,25 +384,33 @@ namespace Core.Components
         private void ChangeLabel(Event e, Component com)
         {
             Window.ClearTimeout(_imeout);
-            _imeout = Window.SetTimeout(async () =>
+            _imeout = Window.SetTimeout(() =>
             {
-                var comDB = await Client.Instance.GetByIdAsync(com.Id, nameof(Component));
-                var html = e.Target as HTMLElement;
-                comDB.Label = html.TextContent.Trim();
-                await new Client(nameof(Component)).UpdateAsync<Component>(comDB);
+                SubmitLabelChanged(nameof(Component), com.Id, (e.Target as HTMLElement).TextContent.DecodeSpecialChar());
             }, 1000);
+        }
+
+        private static void SubmitLabelChanged(string table, string id, string label)
+        {
+            var patch = new PatchVM
+            {
+                Table = table,
+                Changes = new List<PatchDetail>
+                {
+                    new PatchDetail { Field = IdField, Value = id },
+                    new PatchDetail { Field = nameof(Component.Label), Value = label },
+                }
+            };
+            Client.Instance.PatchAsync(patch).Done();
         }
 
         private static int _imeout1;
         private static void ChangeComponentGroupLabel(Event e, ComponentGroup com)
         {
             Window.ClearTimeout(_imeout1);
-            _imeout1 = Window.SetTimeout(async () =>
+            _imeout1 = Window.SetTimeout(() =>
             {
-                var comDB = await Client.Instance.GetByIdAsync(com.Id, nameof(ComponentGroup));
-                var html = e.Target as HTMLElement;
-                comDB.Label = html.TextContent.Trim();
-                await new Client(nameof(ComponentGroup)).UpdateAsync<ComponentGroup>(comDB);
+                SubmitLabelChanged(nameof(ComponentGroup), com.Id, (e.Target as HTMLElement).TextContent.DecodeSpecialChar());
             }, 1000);
         }
 

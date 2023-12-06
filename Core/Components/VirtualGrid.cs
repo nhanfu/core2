@@ -1,6 +1,8 @@
 ﻿using Bridge.Html5;
 using Core.Clients;
 using Core.Components.Extensions;
+using Core.Components.Forms;
+using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using System.Collections.Generic;
@@ -20,6 +22,7 @@ namespace Core.Components
         internal int viewPortCount;
         internal int _skip;
         internal static int cacheAhead = 5;
+        private bool firstLoad;
 
         public VirtualGrid(Component ui) : base(ui)
         {
@@ -61,7 +64,7 @@ namespace Core.Components
             {
                 start = 0;
             }
-            var sql = GetSql(start, viewPortCount + viewPortCount * cacheAhead * 2, cacheHeader: true, count: false);
+            var sql = GetSql(start, viewPortCount + viewPortCount * cacheAhead * 2, cacheMeta: true, count: false);
             Client.ExecTask(Client.Instance.ComQuery(sql), ds =>
             {
                 if (ds.Nothing())
@@ -95,7 +98,7 @@ namespace Core.Components
             List<object> rows;
             if (firstLoad)
             {
-                LoadData(scrollTop, skip, count);
+                LoadData(scrollTop, skip, count, firstLoad);
             }
             else
             {
@@ -111,12 +114,12 @@ namespace Core.Components
             }
         }
 
-        private void LoadData(int scrollTop, int skip, bool count)
+        private void LoadData(int scrollTop, int skip, bool count, bool firstLoad = false)
         {
-            var task = FirstLoadData(count, skip);
-            Client.ExecTask(task, rows =>
+            Fetch(count, skip, !firstLoad).Done(rows =>
             {
                 RowDataLoaded(scrollTop, skip, rows);
+                if (firstLoad) ContentRendered();
             });
         }
 
@@ -141,8 +144,6 @@ namespace Core.Components
                 SetFocusingCom();
             }
             _renderingViewPort = false;
-            RenderIndex();
-            DomLoaded();
         }
 
         private IEnumerable<object> ReadCache(int skip, int viewPortCount)
@@ -170,12 +171,12 @@ namespace Core.Components
             }
         }
 
-        private Task<List<object>> FirstLoadData(bool count, int skip)
+        private Task<List<object>> Fetch(bool count, int skip, bool cacheMeta)
         {
             var tcs = new TaskCompletionSource<List<object>>();
             _skip = skip;
-            var sql = GetSql(skip, viewPortCount, cacheHeader: false, count);
-            Client.ExecTask(Client.Instance.ComQuery(sql), ds =>
+            var sql = GetSql(skip, viewPortCount, cacheMeta: cacheMeta, count);
+            Client.Instance.ComQuery(sql).Done(ds =>
             {
                 var rows = ds.Length > 0 ? ds[0].ToList() : null;
                 if (count) ProcessMetaData(ds, rows.Count);
@@ -186,7 +187,7 @@ namespace Core.Components
                     Window.ClearTimeout(_renderPrepareCacheAwaiter);
                     _waitingLoad = true;
                     _renderPrepareCacheAwaiter = Window.SetTimeout(() =>
-                        Client.ExecTaskNoResult(PrepareCache(skip + viewPortCount)), 7000);
+                        PrepareCache(skip + viewPortCount).Done(), 7000);
                 }
                 tcs.TrySetResult(rows);
             });
@@ -279,15 +280,74 @@ namespace Core.Components
             td.Closest(ElementType.td.ToString()).AddClass("cell-selected");
         }
 
+        protected override void HardDeleteSelected(object e = null)
+        {
+            if (GuiInfo.IgnoreConfirmHardDelete && OnDeleteConfirmed != null)
+            {
+                OnDeleteConfirmed.Invoke();
+                return;
+            }
+            GetRealTimeSelectedRows().Done(deletedItems =>
+            {
+                var confirm = new ConfirmDialog();
+                confirm.Title = $"Bạn có chắc xóa {deletedItems.Count} dòng dữ liêu không!";
+                confirm.Render();
+                confirm.YesConfirmed += () =>
+                {
+                    if (OnDeleteConfirmed != null)
+                    {
+                        OnDeleteConfirmed.Invoke();
+                        DOMContentLoaded?.Invoke();
+                        return;
+                    }
+                    confirm.Dispose();
+                    if (deletedItems.Nothing())
+                    {
+                        deletedItems = GetFocusedRows();
+                    }
+                    this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems)
+                    .Done(() =>
+                    {
+                        HardDeleteConfirmed(deletedItems).Done(success =>
+                        {
+                            DOMContentLoaded?.Invoke();
+                            this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems).Done();
+                        });
+                    });
+                };
+            });
+        }
+
         public override Task<List<object>> HardDeleteConfirmed(List<object> deleted)
         {
             var tcs = new TaskCompletionSource<List<object>>();
-            base.HardDeleteConfirmed(deleted).Done((res) => {
+            base.HardDeleteConfirmed(deleted).Done((res) =>
+            {
                 var ids = res.Select(x => x[IdField]?.ToString()).ToList();
                 CacheData.RemoveAll(x => ids.Contains(x[IdField]?.ToString()));
                 tcs.TrySetResult(res);
             });
             return tcs.Task;
+        }
+
+        public override void ToggleAll()
+        {
+            var anySelected = AllListViewItem.Any(x => x.Selected);
+            if (anySelected)
+            {
+                ClearSelected();
+                return;
+            }
+            RowAction(x =>
+            {
+                if (x.EmptyRow) return;
+                x.Selected = !anySelected;
+            });
+            var sql = GetSql(0, Paginator.Options.Total, cacheMeta: true);
+            Client.Instance.GetIds(sql).Done(ids =>
+            {
+                SelectedIds = ids.Distinct().ToList();
+            });
         }
     }
 }

@@ -5,7 +5,7 @@
         public string SvcId { get; set; }
         public string ComId { get; set; }
         public string Action { get; set; }
-        public string Entity { get; set; }
+        public string Params { get; set; }
         public string[] Ids { get; set; }
         public string AnnonymousTenant { get; set; }
         public string Paging { get; set; }

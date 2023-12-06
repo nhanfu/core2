@@ -7,7 +7,7 @@ namespace Core.ViewModels
         public string SvcId { get; set; }
         public string ComId { get; set; }
         public string Action { get; set; }
-        public string Entity { get; set; }
+        public string Params { get; set; }
         public string Table { get; set; }
         public string[] Ids { get; set; }
         public Component Component { get; set; }

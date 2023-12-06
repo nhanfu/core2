@@ -142,7 +142,7 @@ namespace Core.Components
             var entity = isFn ? fn.Call(this, this).ToString() : string.Empty;
             var submit = new SqlViewModel
             {
-                Entity = JSON.Stringify(entity),
+                Params = JSON.Stringify(entity),
                 ComId = GuiInfo.Id
             };
             Client.Instance.SubmitAsync<object[]>(new XHRWrapper

@@ -1199,7 +1199,7 @@ namespace Core.Components
             var canDelete = CanDo(gridPolicies, x => x.CanDelete && isOwner || x.CanDeleteAll);
             if (canDelete)
             {
-                HardDeleteSelected();
+                HardDeleteSelected(null);
             }
         }
 
@@ -1394,9 +1394,8 @@ namespace Core.Components
                 case KeyCodeEnum.F3:
                     e.PreventDefault();
                     e.StopPropagation();
-                    Task.Run(async () =>
+                    GetRealTimeSelectedRows().Done(selected =>
                     {
-                        var selected = await GetRealTimeSelectedRows();
                         if (selected.Count == 0)
                         {
                             selected = RowData.Data.ToList();
@@ -2440,28 +2439,13 @@ namespace Core.Components
             if (anySelected)
             {
                 ClearSelected();
+                return;
             }
-            else
+            RowAction(x =>
             {
-                RowAction(x =>
-                {
-                    if (x.EmptyRow)
-                    {
-                        return;
-                    }
-
-                    x.Selected = true;
-                });
-            }
-            if (VirtualScroll && !anySelected)
-            {
-                var sql = GetSql(0, Paginator.Options.Total, cacheHeader: true);
-                var task = Client.Instance.GetIds(sql);
-                Client.ExecTask(task, ids =>
-                {
-                    SelectedIds = ids.Distinct().As<HashSet<string>>();
-                });
-            }
+                if (x.EmptyRow) return;
+                x.Selected = true;
+            });
         }
 
         private void HeaderContextMenu(Event e, Component header)
@@ -2570,23 +2554,23 @@ namespace Core.Components
                 Content = "Bạn có chắc chắn muốn clone cột này không?",
             };
             confirm.Render();
-            confirm.YesConfirmed += async () =>
+            confirm.YesConfirmed += () =>
             {
-                var ids = new List<string> { entity.Id };
-                var client = new Client(nameof(Component));
-                entity.Id = null;
-                var success = await client.CreateAsync<Component>(entity);
-                if (success != null)
+                var cloned = XHRWrapper.UnboxValue(entity) as Component;
+                cloned.Id = System.Id.NewGuid();
+                var patch = cloned.MapToPatch(nameof(Component));
+                Client.Instance.PatchAsync(patch).Done(success =>
                 {
-                    Header.Add(success);
+                    if (!success)
+                    {
+                        Toast.Warning("Clone error");
+                        return;
+                    }
+                    Header.Add(cloned);
                     Header = Header.OrderByDescending(x => x.Frozen).ThenByDescending(header => header.ComponentType == "Button").ThenBy(x => x.Order).ToList();
                     Rerender();
-                    Toast.Success("Clone thàng công");
-                }
-                else
-                {
-                    Toast.Warning("Clone error");
-                }
+                    Toast.Success("Clone success");
+                });
             };
         }
 
@@ -2601,7 +2585,7 @@ namespace Core.Components
             confirm.YesConfirmed += () =>
             {
                 var ids = new string[] { entity.Id };
-                Client.Instance.HardDeleteAsync(ids, GuiInfo.EntityName, GuiInfo.ConnKey)
+                Client.Instance.HardDeleteAsync(ids, nameof(Component), ConnKey)
                 .Done(delIds =>
                 {
                     if (delIds.HasElement())

@@ -211,7 +211,7 @@ namespace Core.Components
             var loadImageTask = Client.Instance.ComQuery(new SqlViewModel
             {
                 ComId = GuiInfo.Id,
-                Entity = isFn ? JSON.Stringify(fn.Call(null, this)) : null
+                Params = isFn ? JSON.Stringify(fn.Call(null, this)) : null
             })
             .Done(ds =>
             {

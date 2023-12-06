@@ -64,7 +64,7 @@ namespace Core.Components
             var data = await Client.Instance.ComQuery(new SqlViewModel
             {
                 ComId = GuiInfo.Id,
-                Entity = isFn ? JSON.Stringify(fn.Call(null, this)) : null
+                Params = isFn ? JSON.Stringify(fn.Call(null, this)) : null
             }).Done(ds =>
             {
                 var datas = ds.Length > 0 ? ds[0].ToList() : null;

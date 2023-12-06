@@ -56,7 +56,7 @@ namespace Core.Components
                 var submitEntity = isPreQueryFn ? _preQuery.Call(null, this) : null;
                 var entity = JSON.Stringify(new SqlViewModel
                 {
-                    Entity = isPreQueryFn ? JSON.Stringify(submitEntity) : null,
+                    Params = isPreQueryFn ? JSON.Stringify(submitEntity) : null,
                     ComId = GuiInfo.Id,
                 });
                 Data = await Client.Instance.SubmitAsync<object[]>(new XHRWrapper

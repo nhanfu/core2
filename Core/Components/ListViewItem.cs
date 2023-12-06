@@ -324,7 +324,7 @@ namespace Core.Components
             {
                 Changes = dirtyPatch,
                 Table = ListView.GuiInfo.RefName,
-                ConnKey = ListView.GuiInfo.ConnKey ?? Client.ConnKey,
+                ConnKey = ListView.ConnKey ?? Client.ConnKey,
             };
         }
 
@@ -384,7 +384,7 @@ namespace Core.Components
                     if (ListViewSection.ListView.VirtualScroll && currentIndex > _lastIndex)
                     {
                         var sql = ListView.GetSql(_lastIndex - 1, currentIndex - _lastIndex + 1, true);
-                        Client.ExecTask(Client.Instance.GetIds(sql), selectedIds => {
+                        Client.Instance.GetIds(sql).Done(selectedIds => {
                             if (Selected)
                             {
                                 selectedIds.Except(ListViewSection.ListView.SelectedIds).ForEach(ListViewSection.ListView.SelectedIds.Add);
@@ -451,11 +451,11 @@ namespace Core.Components
             var items = ListViewSection.ListView.AllListViewItem.Where(x => x.RowNo >= start && x.RowNo <= currentIndex).ToList();
             if (!ListViewSection.ListView.VirtualScroll)
             {
-                ListViewSection.ListView.SelectedIds = new HashSet<string>(items.Select(x => x.Entity[IdField]?.ToString()));
+                ListViewSection.ListView.SelectedIds = items.Select(x => x.EntityId).ToList();
             }
             foreach (var item in items)
             {
-                var id = item.Entity[IdField].ToString();
+                var id = item.EntityId;
                 if (ListViewSection.ListView.SelectedIds.Contains(id))
                 {
                     item.Selected = Selected;

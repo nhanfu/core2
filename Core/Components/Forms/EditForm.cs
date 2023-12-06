@@ -275,7 +275,7 @@ namespace Core.Components.Forms
             foreach (var item in dirtyGrid)
             {
                 var client = new Client(item.GuiInfo.RefName);
-                Client.Instance.HardDeleteAsync(item.DeleteTempIds.ToArray(), item.GuiInfo.RefName, GuiInfo.ConnKey)
+                Client.Instance.HardDeleteAsync(item.DeleteTempIds.ToArray(), item.GuiInfo.RefName, item.ConnKey)
                 .Done(ids =>
                 {
                     if (ids.HasElement())
@@ -685,7 +685,12 @@ namespace Core.Components.Forms
             {
                 return Task.FromResult(null as object);
             }
-            return Client.Instance.GetByIdAsync(EntityId, EntityName);
+            var tcs = new TaskCompletionSource<object>();
+            Client.Instance.GetByIdAsync(EntityName, Feature.ConnKey ?? Client.ConnKey, EntityId).Done(ds => {
+                if (ds.Nothing()) tcs.TrySetResult(null);
+                else tcs.TrySetResult(ds[0]);
+            });
+            return tcs.Task;
         }
 
         private void LockUpdate()

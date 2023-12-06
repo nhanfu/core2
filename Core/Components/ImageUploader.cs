@@ -439,7 +439,7 @@ namespace Core.Components
                         Table = nameof(FileUpload),
                         Changes = new List<PatchDetail> {
                                 new PatchDetail{ Field = Id, Value = System.Id.NewGuid() },
-                                new PatchDetail{ Field = nameof(FileUpload.EntityName), Value = GuiInfo.EntityName },
+                                new PatchDetail{ Field = nameof(FileUpload.EntityName), Value = GuiInfo.RefName },
                                 new PatchDetail{ Field = nameof(FileUpload.RecordId), Value = EntityId },
                                 new PatchDetail{ Field = nameof(FileUpload.SectionId), Value = GuiInfo.ComponentGroupId },
                                 new PatchDetail{ Field = nameof(FileUpload.FieldName), Value = FieldName },
