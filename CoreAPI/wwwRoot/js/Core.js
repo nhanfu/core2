@@ -10731,7 +10731,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 try {
                     while ($t.moveNext()) {
                         var item = { v : $t.Current };
-                        var client = new Core.Clients.Client.$ctor1(item.v.GuiInfo.RefName);
                         Core.Extensions.EventExt.Done(System.Array.type(System.String), Core.Clients.Client.Instance.HardDeleteAsync(item.v.DeleteTempIds.ToArray(), item.v.GuiInfo.RefName, item.v.ConnKey), (function ($me, item) {
                             return function (ids) {
                                 if (Core.Extensions.IEnumerableExtensions.HasElement(System.String, ids)) {
@@ -11010,8 +11009,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                     $jumpFromFinally, 
                     $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
                     $returnValue, 
-                    intro, 
+                    sql, 
                     $t, 
+                    xhr, 
+                    intro, 
                     script, 
                     item, 
                     fn, 
@@ -11041,7 +11042,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                                     }
                                     case 2: {
                                         $taskResult1 = $task1.getAwaitedResult();
-                                        $task2 = new Core.Clients.Client.ctor().SubmitAsync(System.Array.type(System.Object), ($t = new Core.Clients.XHRWrapper(), $t.Url = System.String.format("/Intro/?$filter=FeatureId eq '{0}'&$orderby=Order asc", [this.Feature.Id]), $t.Method = Core.Enums.HttpMethod.GET, $t));
+                                        sql = ($t = new Core.ViewModels.SqlViewModel(), $t.ComId = "Intro", $t.Action = "GetByFeatureId", $t.Params = JSON.stringify(new $asm.$AnonymousType$3(this.Feature.Id)), $t);
+                                        xhr = ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.UserSvc, $t.Method = Core.Enums.HttpMethod.POST, $t.IsRawString = true, $t.Value = JSON.stringify(sql), $t);
+                                        $task2 = Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Object), xhr);
                                         $step = 3;
                                         if ($task2.isCompleted()) {
                                             continue;
@@ -11336,16 +11339,16 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
                 var menuItems = Bridge.fn.bind(this, function (_o1) {
                         var $t;
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-link mt-2", $t.Text = "Add Link", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$3(group, "AddLink"), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Input", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$3(group, "AddInput"), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Timepicker", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$3(group, "AddTimepicker"), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-lock mt-2", $t.Text = "Add Password", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$3(group, "AddPassword"), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Label", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$3(group, "AddLabel"), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Textarea", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$3(group, "AddTextarea"), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Dropdown", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$3(group, "AddDropdown"), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-images mt-2", $t.Text = "Add Image", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$3(group, "AddImage"), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add GridView", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$3(group, "AddGridView"), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add ListView", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$3(group, "AddListView"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-link mt-2", $t.Text = "Add Link", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$4(group, "AddLink"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Input", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$4(group, "AddInput"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Timepicker", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$4(group, "AddTimepicker"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-lock mt-2", $t.Text = "Add Password", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$4(group, "AddPassword"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Label", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$4(group, "AddLabel"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Textarea", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$4(group, "AddTextarea"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add Dropdown", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$4(group, "AddDropdown"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-images mt-2", $t.Text = "Add Image", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$4(group, "AddImage"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add GridView", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$4(group, "AddGridView"), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fas fa-plus-circle mt-2", $t.Text = "Add ListView", $t.Click = Bridge.fn.cacheBind(this, this.AddComponent), $t.Parameter = new $asm.$AnonymousType$4(group, "AddListView"), $t));
                         return _o1;
                     })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor());
                 e.preventDefault();
@@ -12244,6 +12247,37 @@ Bridge.assembly("Core", function ($asm, globals) {
     });
 
     Bridge.define("$AnonymousType$3", $asm, {
+    $kind: "anonymous",
+    ctors: {
+        ctor: function (id) {
+            this.id = id;
+        }
+    },
+    methods: {
+        equals: function (o) {
+            if (!Bridge.is(o, $asm.$AnonymousType$3)) {
+                return false;
+            }
+            return Bridge.equals(this.id, o.id);
+        },
+        getHashCode: function () {
+            var h = Bridge.addHash([7550196188, this.id]);
+            return h;
+        },
+        toJSON: function () {
+            return {
+                id : this.id
+            };
+        }
+    },
+    statics : {
+        methods: {
+            $metadata : function () { return {"m":[{"a":2,"n":"id","t":16,"rt":System.String,"g":{"a":2,"n":"get_id","t":8,"rt":System.String,"fg":"id"},"fn":"id"}]}; }
+        }
+    }
+});
+
+    Bridge.define("$AnonymousType$4", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (group, action) {
@@ -12253,13 +12287,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$3)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$4)) {
                     return false;
                 }
                 return Bridge.equals(this.group, o.group) && Bridge.equals(this.action, o.action);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550196188, this.group, this.action]);
+                var h = Bridge.addHash([7550196189, this.group, this.action]);
                 return h;
             },
             toJSON: function () {
@@ -12804,14 +12838,14 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                 return data;
                                             }).groupBy(function (x) {
                                                 var $t1, $t2;
-                                                return new $asm.$AnonymousType$4(Bridge.toString(x.type), ($t1 = x.name) != null ? Bridge.toString($t1) : null, ($t2 = x.axisYType) != null ? Bridge.toString($t2) : null);
+                                                return new $asm.$AnonymousType$5(Bridge.toString(x.type), ($t1 = x.name) != null ? Bridge.toString($t1) : null, ($t2 = x.axisYType) != null ? Bridge.toString($t2) : null);
                                             }).select(function (x) {
-                                                return new $asm.$AnonymousType$5(x.key().type, x.firstOrDefault(null, null).toolTipContent, x.key().axisYType, x.ToArray(System.Object));
+                                                return new $asm.$AnonymousType$6(x.key().type, x.firstOrDefault(null, null).toolTipContent, x.key().axisYType, x.ToArray(System.Object));
                                             }).ToArray(System.Object);
                                         } else if (isFotmatDataFn) {
                                             options.data = $function.v.call.apply($function.v, [this].concat(Bridge.unbox(this.Data)));
                                         } else {
-                                            options.data = System.Array.init([new $asm.$AnonymousType$6(type, "{label} {y}", this.Data)], System.Object);
+                                            options.data = System.Array.init([new $asm.$AnonymousType$7(type, "{label} {y}", this.Data)], System.Object);
                                         }
                                         var chart = new CanvasJS.Chart(this.Element, options);
                                         chart.render();
@@ -12848,7 +12882,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$4", $asm, {
+    Bridge.define("$AnonymousType$5", $asm, {
     $kind: "anonymous",
     ctors: {
         ctor: function (type, name, axisYType) {
@@ -12859,13 +12893,13 @@ Bridge.assembly("Core", function ($asm, globals) {
     },
     methods: {
         equals: function (o) {
-            if (!Bridge.is(o, $asm.$AnonymousType$4)) {
+            if (!Bridge.is(o, $asm.$AnonymousType$5)) {
                 return false;
             }
             return Bridge.equals(this.type, o.type) && Bridge.equals(this.name, o.name) && Bridge.equals(this.axisYType, o.axisYType);
         },
         getHashCode: function () {
-            var h = Bridge.addHash([7550196189, this.type, this.name, this.axisYType]);
+            var h = Bridge.addHash([7550196190, this.type, this.name, this.axisYType]);
             return h;
         },
         toJSON: function () {
@@ -12883,7 +12917,7 @@ Bridge.assembly("Core", function ($asm, globals) {
     }
 });
 
-    Bridge.define("$AnonymousType$5", $asm, {
+    Bridge.define("$AnonymousType$6", $asm, {
     $kind: "anonymous",
     ctors: {
         ctor: function (type, toolTipContent, axisYType, dataPoints) {
@@ -12895,13 +12929,13 @@ Bridge.assembly("Core", function ($asm, globals) {
     },
     methods: {
         equals: function (o) {
-            if (!Bridge.is(o, $asm.$AnonymousType$5)) {
+            if (!Bridge.is(o, $asm.$AnonymousType$6)) {
                 return false;
             }
             return Bridge.equals(this.type, o.type) && Bridge.equals(this.toolTipContent, o.toolTipContent) && Bridge.equals(this.axisYType, o.axisYType) && Bridge.equals(this.dataPoints, o.dataPoints);
         },
         getHashCode: function () {
-            var h = Bridge.addHash([7550196190, this.type, this.toolTipContent, this.axisYType, this.dataPoints]);
+            var h = Bridge.addHash([7550196191, this.type, this.toolTipContent, this.axisYType, this.dataPoints]);
             return h;
         },
         toJSON: function () {
@@ -12920,7 +12954,7 @@ Bridge.assembly("Core", function ($asm, globals) {
     }
 });
 
-    Bridge.define("$AnonymousType$6", $asm, {
+    Bridge.define("$AnonymousType$7", $asm, {
     $kind: "anonymous",
     ctors: {
         ctor: function (type, toolTipContent, dataPoints) {
@@ -12931,13 +12965,13 @@ Bridge.assembly("Core", function ($asm, globals) {
     },
     methods: {
         equals: function (o) {
-            if (!Bridge.is(o, $asm.$AnonymousType$6)) {
+            if (!Bridge.is(o, $asm.$AnonymousType$7)) {
                 return false;
             }
             return Bridge.equals(this.type, o.type) && Bridge.equals(this.toolTipContent, o.toolTipContent) && Bridge.equals(this.dataPoints, o.dataPoints);
         },
         getHashCode: function () {
-            var h = Bridge.addHash([7550196191, this.type, this.toolTipContent, this.dataPoints]);
+            var h = Bridge.addHash([7550196192, this.type, this.toolTipContent, this.dataPoints]);
             return h;
         },
         toJSON: function () {
@@ -13099,7 +13133,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         })) {
                         return System.Threading.Tasks.Task.fromResult(System.Array.init([], Core.Models.FeaturePolicy), System.Array.type(Core.Models.FeaturePolicy));
                     }
-                    var sql = ($t = new Core.ViewModels.SqlViewModel(), $t.ComId = "Policy", $t.Action = "GetById", $t.Table = "FeaturePolicy", $t.ConnKey = connKey, $t.Params = JSON.stringify(new $asm.$AnonymousType$7(ids, entity)), $t);
+                    var sql = ($t = new Core.ViewModels.SqlViewModel(), $t.ComId = "Policy", $t.Action = "GetById", $t.Table = "FeaturePolicy", $t.ConnKey = connKey, $t.Params = JSON.stringify(new $asm.$AnonymousType$8(ids, entity)), $t);
                     var xhr = ($t = new Core.Clients.XHRWrapper(), $t.Method = Core.Enums.HttpMethod.POST, $t.Url = Core.Extensions.Utils.UserSvc, $t.IsRawString = true, $t.Value = JSON.stringify(sql), $t);
                     return Core.Clients.Client.Instance.SubmitAsync(System.Array.type(Core.Models.FeaturePolicy), xhr);
                 }
@@ -14987,7 +15021,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             GetUserSetting: function (prefix) {
                 var $t, $t1;
-                return Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.UserSvc, $t.Value = ($t1 = new Core.ViewModels.SqlViewModel(), $t1.ComId = "UserSetting", $t1.Action = "GetByComId", $t1.Params = JSON.stringify(new $asm.$AnonymousType$8(this.GuiInfo.Id, prefix)), $t1), $t.Method = Core.Enums.HttpMethod.POST, $t));
+                return Core.Clients.Client.Instance.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Url = Core.Extensions.Utils.UserSvc, $t.Value = ($t1 = new Core.ViewModels.SqlViewModel(), $t1.ComId = "UserSetting", $t1.Action = "GetByComId", $t1.Params = JSON.stringify(new $asm.$AnonymousType$9(this.GuiInfo.Id, prefix)), $t1), $t.Method = Core.Enums.HttpMethod.POST, $t));
             },
             UpdateSetting: function (setting, prefix, value) {
                 var tcs = new System.Threading.Tasks.TaskCompletionSource();
@@ -15023,7 +15057,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$7", $asm, {
+    Bridge.define("$AnonymousType$8", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (ids, table) {
@@ -15033,13 +15067,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$7)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$8)) {
                     return false;
                 }
                 return Bridge.equals(this.ids, o.ids) && Bridge.equals(this.table, o.table);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550196192, this.ids, this.table]);
+                var h = Bridge.addHash([7550196193, this.ids, this.table]);
                 return h;
             },
             toJSON: function () {
@@ -15056,7 +15090,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$8", $asm, {
+    Bridge.define("$AnonymousType$9", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (comId, prefix) {
@@ -15066,13 +15100,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$8)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$9)) {
                     return false;
                 }
                 return Bridge.equals(this.ComId, o.ComId) && Bridge.equals(this.Prefix, o.Prefix);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550196193, this.ComId, this.Prefix]);
+                var h = Bridge.addHash([7550196194, this.ComId, this.Prefix]);
                 return h;
             },
             toJSON: function () {
@@ -22281,7 +22315,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     confirmDialog.Textbox.Text = null;
                     this.ActionFilter();
                 }));
-                confirmDialog.Entity = new $asm.$AnonymousType$9("");
+                confirmDialog.Entity = new $asm.$AnonymousType$10("");
                 confirmDialog.Render();
                 if (!Core.Extensions.StringExt.IsNullOrWhiteSpace(subFilter)) {
                     if (Bridge.referenceEquals(header.ComponentType, "Datepicker")) {
@@ -22987,7 +23021,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                             _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-greater-than", $t.Text = "L\u1edbn h\u01a1n", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = ($t1 = new Core.ViewModels.HotKeyModel(), $t1.Operator = Core.Enums.OperatorEnum.Gt, $t1.OperatorText = "L\u1edbn h\u01a1n", $t1.Value = value, $t1.FieldName = fieldName, $t1.ValueText = text, $t1.Shift = Core.Extensions.EventExt.ShiftKey(e), $t1), $t));
                             _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-less-than", $t.Text = "Nh\u1ecf h\u01a1n", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = ($t1 = new Core.ViewModels.HotKeyModel(), $t1.Operator = Core.Enums.OperatorEnum.Lt, $t1.OperatorText = "Nh\u1ecf h\u01a1n", $t1.Value = value, $t1.FieldName = fieldName, $t1.ValueText = text, $t1.Shift = Core.Extensions.EventExt.ShiftKey(e), $t1), $t));
                             _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-greater-than-equal", $t.Text = "L\u1edbn h\u01a1n b\u1eb1ng", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = ($t1 = new Core.ViewModels.HotKeyModel(), $t1.Operator = Core.Enums.OperatorEnum.Ge, $t1.OperatorText = "L\u1edbn h\u01a1n b\u1eb1ng", $t1.Value = value, $t1.FieldName = fieldName, $t1.ValueText = text, $t1.Shift = Core.Extensions.EventExt.ShiftKey(e), $t1), $t));
-                            _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-less-than-equal", $t.Text = "Nh\u1ecf h\u01a1n b\u1eb1ng", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$10(Core.Enums.OperatorEnum.Le, "Nh\u1ecf h\u01a1n b\u1eb1ng", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
+                            _o2.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-less-than-equal", $t.Text = "Nh\u1ecf h\u01a1n b\u1eb1ng", $t.Click = Bridge.fn.cacheBind(this, this.FilterInSelected), $t.Parameter = new $asm.$AnonymousType$11(Core.Enums.OperatorEnum.Le, "Nh\u1ecf h\u01a1n b\u1eb1ng", value, fieldName, text, Core.Extensions.EventExt.ShiftKey(e)), $t));
                             return _o2;
                         })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor()));
                 }
@@ -24354,7 +24388,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                             return null;
                         }
 
-                        return new $asm.$AnonymousType$11(sortedField[System.Array.index(0, sortedField)], sortedField.length === 2 && Bridge.referenceEquals(sortedField[System.Array.index(1, sortedField)].toLowerCase(), "desc"));
+                        return new $asm.$AnonymousType$12(sortedField[System.Array.index(0, sortedField)], sortedField.length === 2 && Bridge.referenceEquals(sortedField[System.Array.index(1, sortedField)].toLowerCase(), "desc"));
                     }).where(function (x) {
                     return x != null;
                 }), function (x) {
@@ -24393,9 +24427,9 @@ Bridge.assembly("Core", function ($asm, globals) {
 
                 menu.MenuItems = Bridge.fn.bind(this, function (_o1) {
                         var $t;
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-eye", $t.Text = "Hi\u1ec7n ti\u00eau \u0111\u1ec1", $t.Click = Bridge.fn.cacheBind(this, this.ShowWidth), $t.Parameter = new $asm.$AnonymousType$12(header, e), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-eye-slash", $t.Text = "\u1ea8n ti\u00eau \u0111\u1ec1", $t.Click = Bridge.fn.cacheBind(this, this.HideWidth), $t.Parameter = new $asm.$AnonymousType$12(header, e), $t));
-                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = header.Frozen ? "fal fa-snowflakes" : "fal fa-snowflake", $t.Text = header.Frozen ? "H\u1ee7y \u0111\u1ecbnh c\u1ed9t" : "C\u1ed1 \u0111\u1ecbnh c\u1ed9t", $t.Click = Bridge.fn.cacheBind(this, this.FrozenColumn), $t.Parameter = new $asm.$AnonymousType$12(header, e), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-eye", $t.Text = "Hi\u1ec7n ti\u00eau \u0111\u1ec1", $t.Click = Bridge.fn.cacheBind(this, this.ShowWidth), $t.Parameter = new $asm.$AnonymousType$13(header, e), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = "fal fa-eye-slash", $t.Text = "\u1ea8n ti\u00eau \u0111\u1ec1", $t.Click = Bridge.fn.cacheBind(this, this.HideWidth), $t.Parameter = new $asm.$AnonymousType$13(header, e), $t));
+                        _o1.add(($t = new Core.Components.Forms.ContextMenuItem(), $t.Icon = header.Frozen ? "fal fa-snowflakes" : "fal fa-snowflake", $t.Text = header.Frozen ? "H\u1ee7y \u0111\u1ecbnh c\u1ed9t" : "C\u1ed1 \u0111\u1ecbnh c\u1ed9t", $t.Click = Bridge.fn.cacheBind(this, this.FrozenColumn), $t.Parameter = new $asm.$AnonymousType$13(header, e), $t));
                         return _o1;
                     })(new (System.Collections.Generic.List$1(Core.Components.Forms.ContextMenuItem)).ctor());
                 if (Core.Clients.Client.SystemRole) {
@@ -24681,7 +24715,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$9", $asm, {
+    Bridge.define("$AnonymousType$10", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (reasonOfChange) {
@@ -24690,13 +24724,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$9)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$10)) {
                     return false;
                 }
                 return Bridge.equals(this.ReasonOfChange, o.ReasonOfChange);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550196194, this.ReasonOfChange]);
+                var h = Bridge.addHash([7550208474, this.ReasonOfChange]);
                 return h;
             },
             toJSON: function () {
@@ -24712,7 +24746,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$10", $asm, {
+    Bridge.define("$AnonymousType$11", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (operator, operatorText, value, fieldName, valueText, shift) {
@@ -24726,13 +24760,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$10)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$11)) {
                     return false;
                 }
                 return Bridge.equals(this.Operator, o.Operator) && Bridge.equals(this.OperatorText, o.OperatorText) && Bridge.equals(this.Value, o.Value) && Bridge.equals(this.FieldName, o.FieldName) && Bridge.equals(this.ValueText, o.ValueText) && Bridge.equals(this.Shift, o.Shift);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550208474, this.Operator, this.OperatorText, this.Value, this.FieldName, this.ValueText, this.Shift]);
+                var h = Bridge.addHash([7550208730, this.Operator, this.OperatorText, this.Value, this.FieldName, this.ValueText, this.Shift]);
                 return h;
             },
             toJSON: function () {
@@ -24753,7 +24787,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$11", $asm, {
+    Bridge.define("$AnonymousType$12", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (field, desc) {
@@ -24763,13 +24797,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$11)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$12)) {
                     return false;
                 }
                 return Bridge.equals(this.Field, o.Field) && Bridge.equals(this.Desc, o.Desc);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550208730, this.Field, this.Desc]);
+                var h = Bridge.addHash([7550208986, this.Field, this.Desc]);
                 return h;
             },
             toJSON: function () {
@@ -24786,7 +24820,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$12", $asm, {
+    Bridge.define("$AnonymousType$13", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (header, events) {
@@ -24796,13 +24830,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$12)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$13)) {
                     return false;
                 }
                 return Bridge.equals(this.header, o.header) && Bridge.equals(this.events, o.events);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550208986, this.header, this.events]);
+                var h = Bridge.addHash([7550209242, this.header, this.events]);
                 return h;
             },
             toJSON: function () {
@@ -26691,7 +26725,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             ClearTagIfNotExists: function () {
                 var $t;
                 var tags = System.Linq.Enumerable.from(this.ParentElement.querySelectorAll("div > span")).select(function (x) { return Bridge.cast(x, HTMLElement); }).select(function (tag) {
-                    return new $asm.$AnonymousType$13(tag, tag.dataset.id);
+                    return new $asm.$AnonymousType$14(tag, tag.dataset.id);
                 }).where(Bridge.fn.bind(this, function (x0) {
                     return x0.id != null && !this.ListValues.contains(x0.id);
                 })).select(function (x1) {
@@ -26776,7 +26810,7 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("$AnonymousType$13", $asm, {
+    Bridge.define("$AnonymousType$14", $asm, {
         $kind: "anonymous",
         ctors: {
             ctor: function (tag, id) {
@@ -26786,13 +26820,13 @@ Bridge.assembly("Core", function ($asm, globals) {
         },
         methods: {
             equals: function (o) {
-                if (!Bridge.is(o, $asm.$AnonymousType$13)) {
+                if (!Bridge.is(o, $asm.$AnonymousType$14)) {
                     return false;
                 }
                 return Bridge.equals(this.tag, o.tag) && Bridge.equals(this.id, o.id);
             },
             getHashCode: function () {
-                var h = Bridge.addHash([7550209242, this.tag, this.id]);
+                var h = Bridge.addHash([7550209498, this.tag, this.id]);
                 return h;
             },
             toJSON: function () {

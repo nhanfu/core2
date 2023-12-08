@@ -242,7 +242,6 @@ namespace Core.Components.Forms
             }
             foreach (var item in dirtyGrid)
             {
-                var client = new Client(item.GuiInfo.RefName);
                 Client.Instance.HardDeleteAsync(item.DeleteTempIds.ToArray(), item.GuiInfo.RefName, item.ConnKey)
                 .Done(ids =>
                 {
@@ -465,11 +464,20 @@ namespace Core.Components.Forms
             {
                 evt.PreventDefault();
                 await Client.LoadScript("https://unpkg.com/intro.js/intro.js");
-                var intro = await new Client().SubmitAsync<dynamic[]>(new XHRWrapper
+                var sql = new SqlViewModel
                 {
-                    Url = $"/Intro/?$filter=FeatureId eq '{Feature.Id}'&$orderby=Order asc",
-                    Method = HttpMethod.GET
-                });
+                    ComId = "Intro",
+                    Action = "GetByFeatureId",
+                    Params = JSON.Stringify(new { id = Feature.Id })
+                };
+                var xhr = new XHRWrapper
+                {
+                    Url = Utils.UserSvc,
+                    Method = HttpMethod.POST,
+                    IsRawString = true,
+                    Value = JSON.Stringify(sql)
+                };
+                var intro = await Client.Instance.SubmitAsync<dynamic[]>(xhr);
                 var script = @"(x) => {
                                 introJs().setOptions({
                                   steps: [
