@@ -372,13 +372,13 @@ namespace Core.Components
             base.Dispose();
         }
 
-        public void ApplyFilter()
+        public void ApplyAdvSearch()
         {
             IsFormValid().Done(isValid =>
             {
                 if (!isValid) return;
                 CalcAdvSearchQuery();
-                ParentListView.ReloadData(cacheHeader: true, skip: 0).Done();
+                ParentListView.ReloadData(cacheHeader: false, skip: 0).Done();
             });
         }
 

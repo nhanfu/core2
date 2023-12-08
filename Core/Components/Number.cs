@@ -273,13 +273,11 @@ namespace Core.Components
             }
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public override async Task<bool> ValidateAsync()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        public override Task<bool> ValidateAsync()
         {
             if (ValidationRules.Nothing())
             {
-                return true;
+                return Task.FromResult(true);
             }
             ValidationResult.Clear();
             ValidateRequired(_value);
@@ -289,7 +287,7 @@ namespace Core.Components
             Validate(ValidationRule.LessThanOrEqual, _value, (decimal? value, decimal? ruleValue) => ruleValue is null || value != null && value <= ruleValue);
             Validate(ValidationRule.Equal, _value, (decimal? value, decimal? ruleValue) => value == ruleValue);
             Validate(ValidationRule.NotEqual, _value, (decimal? value, decimal? ruleValue) => value != ruleValue);
-            return IsValid;
+            return Task.FromResult(IsValid);
         }
 
         protected override void SetDisableUI(bool value)

@@ -672,10 +672,7 @@ namespace Core.Components
 
         public virtual Task<bool> ValidateAsync()
         {
-            var tcs = new TaskCompletionSource<bool>();
-            ValidationResult.Clear();
-            tcs.TrySetResult(true);
-            return tcs.Task;
+            return Task.FromResult(true);
         }
 
         protected void SetRequired()
@@ -733,7 +730,7 @@ namespace Core.Components
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0034:Simplify 'default' expression", Justification = "<Pending>")]
         protected bool ValidateRequired<T>(T Value)
         {
-            if (Element is null || ValidationRules.Nothing())
+            if (Element is null || ValidationRules.Nothing() || EmptyRow || AlwaysValid)
             {
                 return true;
             }
@@ -749,12 +746,12 @@ namespace Core.Components
             {
                 Element.RemoveAttribute("readonly");
                 ValidationResult.TryAdd(ValidationRule.Required, string.Format(requiredRule.Message, LangSelect.Get(GuiInfo.Label), Entity));
-                return true;
+                return false;
             }
             else
             {
                 ValidationResult.Remove(ValidationRule.Required);
-                return false;
+                return true;
             }
         }
 

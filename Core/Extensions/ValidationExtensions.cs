@@ -28,19 +28,4 @@ namespace Core.Extensions
         public string Condition { get; set; }
         public bool RejectInvalid { get; set; }
     }
-
-    public static class ValidationExtensions
-    {
-        public static async Task<bool> IsUnique<T>(T entity, string fieldName, string filter = null)
-        {
-            const string id = "Id";
-            if (filter is null)
-            {
-                filter = $"Active eq true and {fieldName} eq '{entity.GetPropValue(fieldName)}' and Id ne {entity["Id"].As<int>()}";
-            }
-            var isExists = await new Client(typeof(T).Name).GetAsync<OdataResult<T>>(
-                $"?$select={id},{fieldName}&$filter={filter}");
-            return isExists?.Value?.Count == 0 || isExists?.Value?.Count == 1 && entity[id] == isExists.Value.First()[id];
-        }
-    }
 }

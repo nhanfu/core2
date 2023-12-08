@@ -2131,10 +2131,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return "";
             },
             ValidateAsync: function () {
-                var tcs = new System.Threading.Tasks.TaskCompletionSource();
-                this.ValidationResult.clear();
-                tcs.trySetResult(true);
-                return tcs.task;
+                return System.Threading.Tasks.Task.fromResult(true, System.Boolean);
             },
             SetRequired: function () {
                 var $t, $t1;
@@ -2181,7 +2178,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return false;
             },
             ValidateRequired: function (T, Value) {
-                if (this.Element == null || Core.Extensions.IEnumerableExtensions.Nothing(System.Collections.Generic.KeyValuePair$2(System.String,Core.Extensions.ValidationRule), this.ValidationRules)) {
+                if (this.Element == null || Core.Extensions.IEnumerableExtensions.Nothing(System.Collections.Generic.KeyValuePair$2(System.String,Core.Extensions.ValidationRule), this.ValidationRules) || this.EmptyRow || this.AlwaysValid) {
                     return true;
                 }
 
@@ -2194,10 +2191,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                 if (System.Collections.Generic.EqualityComparer$1(T).def.equals2(Value, Bridge.getDefaultValue(T)) || Core.Extensions.StringExt.IsNullOrWhiteSpace(Bridge.toString(Value))) {
                     this.Element.removeAttribute("readonly");
                     System.Collections.Generic.CollectionExtensions.TryAdd(System.String, System.String, this.ValidationResult, Core.Extensions.ValidationRule.Required, System.String.format(requiredRule.Message, Core.Components.LangSelect.Get(this.GuiInfo.Label), this.Entity));
-                    return true;
+                    return false;
                 } else {
                     this.ValidationResult.remove(Core.Extensions.ValidationRule.Required);
-                    return false;
+                    return true;
                 }
             },
             AddRule: function (rule) {
@@ -7925,65 +7922,6 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Core.Extensions.ValidationExtensions", {
-        statics: {
-            methods: {
-                IsUnique: function (T, entity, fieldName, filter) {
-                    var $step = 0,
-                        $task1, 
-                        $taskResult1, 
-                        $jumpFromFinally, 
-                        $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                        $returnValue, 
-                        id, 
-                        isExists, 
-                        $t, 
-                        $t1, 
-                        $async_e, 
-                        $asyncBody = Bridge.fn.bind(this, function () {
-                            try {
-                                for (;;) {
-                                    $step = System.Array.min([0,1], $step);
-                                    switch ($step) {
-                                        case 0: {
-                                            if (filter === void 0) { filter = null; }
-                                            id = "Id";
-                                            if (filter == null) {
-                                                filter = System.String.format("Active eq true and {0} eq '{1}' and Id ne {2}", fieldName, Core.Extensions.Utils.GetPropValue(entity, fieldName), Bridge.box(Bridge.unbox(entity.Id), System.Int32));
-                                            }
-                                            $task1 = new Core.Clients.Client.$ctor1(Bridge.Reflection.getTypeName(T)).GetAsync(Core.Models.OdataResult$1(T), System.String.format("?$select={0},{1}&$filter={2}", id, fieldName, filter));
-                                            $step = 1;
-                                            if ($task1.isCompleted()) {
-                                                continue;
-                                            }
-                                            $task1.continue($asyncBody);
-                                            return;
-                                        }
-                                        case 1: {
-                                            $taskResult1 = $task1.getAwaitedResult();
-                                            isExists = $taskResult1;
-                                            $tcs.setResult(System.Nullable.eq((isExists != null && ($t = isExists.Value) != null ? $t.Count : null), 0) || System.Nullable.eq((isExists != null && ($t1 = isExists.Value) != null ? $t1.Count : null), 1) && Bridge.referenceEquals(entity[id], System.Linq.Enumerable.from(isExists.Value, T).first()[id]));
-                                            return;
-                                        }
-                                        default: {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                    }
-                                }
-                            } catch($async_e1) {
-                                $async_e = System.Exception.create($async_e1);
-                                $tcs.setException($async_e);
-                            }
-                        }, arguments);
-
-                    $asyncBody();
-                    return $tcs.task;
-                }
-            }
-        }
-    });
-
     Bridge.define("Core.Extensions.ValidationRule", {
         statics: {
             fields: {
@@ -10892,7 +10830,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                                         }
                                         if (Bridge.staticEquals(ignorePredicate, null)) {
                                             ignorePredicate = function (x) {
-                                                return x.AlwaysValid;
+                                                return x.AlwaysValid || x.EmptyRow;
                                             };
                                         }
                                         $task1 = Core.Extensions.IEnumerableExtensions.ForEachAsync(Core.Components.EditableComponent, this.FilterChildren(Core.Components.EditableComponent, predicate, ignorePredicate, void 0), function (x) {
@@ -12345,69 +12283,15 @@ Bridge.assembly("Core", function ($asm, globals) {
                 !Bridge.staticEquals(Core.Clients.Client.UnAuthorizedEventHandler, null) ? Core.Clients.Client.UnAuthorizedEventHandler(null) : null;
             },
             SignOut: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $task2, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    e, 
-                    client, 
-                    $t, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        e = Bridge.as(window.event, Event);
-                                        e.preventDefault();
-                                        client = new Core.Clients.Client.$ctor1("User");
-                                        $task1 = client.CreateAsync(System.Boolean, Core.Clients.Client.Token, "SignOut");
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        Core.Extensions.Toast.Success("B\u1ea1n \u0111\u00e3 \u0111\u0103ng xu\u1ea5t!", 3000);
-                                        !Bridge.staticEquals(Core.Clients.Client.SignOutEventHandler, null) ? Core.Clients.Client.SignOutEventHandler() : null;
-                                        Core.Clients.Client.Token = null;
-                                        Core.Components.Forms.EditForm.NotificationClient != null ? Core.Components.Forms.EditForm.NotificationClient.Close() : null;
-                                        $task2 = System.Threading.Tasks.Task.delay(1000);
-                                        $step = 2;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $task2.getAwaitedResult();
-                                        ($t = Core.Components.Forms.EditForm.LayoutForm) != null ? $t.UpdateView() : null;
-                                        window.location.reload();
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                var e = Bridge.as(window.event, Event);
+                e.preventDefault();
+                Core.Extensions.EventExt.Done(System.Boolean, Core.Clients.Client.Instance.PostAsync(System.Boolean, Core.Clients.Client.Token, "user/SignOut"), function (success) {
+                    Core.Extensions.Toast.Success("B\u1ea1n \u0111\u00e3 \u0111\u0103ng xu\u1ea5t!", 3000);
+                    !Bridge.staticEquals(Core.Clients.Client.SignOutEventHandler, null) ? Core.Clients.Client.SignOutEventHandler() : null;
+                    Core.Clients.Client.Token = null;
+                    Core.Components.Forms.EditForm.NotificationClient != null ? Core.Components.Forms.EditForm.NotificationClient.Close() : null;
+                    window.location.reload();
+                });
             }
         }
     });
@@ -14746,35 +14630,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
             },
             ValidateAsync: function () {
-                var $step = 0,
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        this.ValidationResult.clear();
-                                        $tcs.setResult(this.ValidateRequired$1());
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                this.ValidationResult.clear();
+                this.ValidateRequired$1();
+                return System.Threading.Tasks.Task.fromResult(this.IsValid, System.Boolean);
             },
             ValidateRequired$1: function () {
                 if (this.Element == null || Core.Extensions.IEnumerableExtensions.Nothing(System.Collections.Generic.KeyValuePair$2(System.String,Core.Extensions.ValidationRule), this.ValidationRules)) {
@@ -15992,69 +15850,30 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
             },
             ValidateAsync: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (Core.Extensions.IEnumerableExtensions.Nothing(System.Collections.Generic.KeyValuePair$2(System.String,Core.Extensions.ValidationRule), this.ValidationRules)) {
-                                            $tcs.setResult(true);
-                                            return;
-                                        }
-                                        $task1 = Core.Components.EditableComponent.prototype.ValidateAsync.call(this);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        this.Validate(System.Nullable$1(System.DateTime), System.Nullable$1(System.DateTime), Core.Extensions.ValidationRule.GreaterThan, this._value, function (value, ruleValue) {
-                                            return Bridge.equals(ruleValue, null) || !Bridge.equals(value, null) && System.DateTime.gt(value, ruleValue);
-                                        });
-                                        this.Validate(System.Nullable$1(System.DateTime), System.Nullable$1(System.DateTime), Core.Extensions.ValidationRule.LessThan, this._value, function (value, ruleValue) {
-                                            return Bridge.equals(ruleValue, null) || !Bridge.equals(value, null) && System.DateTime.lt(value, ruleValue);
-                                        });
-                                        this.Validate(System.Nullable$1(System.DateTime), System.Nullable$1(System.DateTime), Core.Extensions.ValidationRule.GreaterThanOrEqual, this._value, function (value, ruleValue) {
-                                            return Bridge.equals(ruleValue, null) || !Bridge.equals(value, null) && System.DateTime.gte(value, ruleValue);
-                                        });
-                                        this.Validate(System.Nullable$1(System.DateTime), System.Nullable$1(System.DateTime), Core.Extensions.ValidationRule.LessThanOrEqual, this._value, function (value, ruleValue) {
-                                            return Bridge.equals(ruleValue, null) || !Bridge.equals(value, null) && System.DateTime.lte(value, ruleValue);
-                                        });
-                                        this.Validate(System.Nullable$1(System.DateTime), System.Nullable$1(System.DateTime), Core.Extensions.ValidationRule.Equal, this._value, function (value, ruleValue) {
-                                            return Bridge.equals(value, ruleValue);
-                                        });
-                                        this.Validate(System.Nullable$1(System.DateTime), System.Nullable$1(System.DateTime), Core.Extensions.ValidationRule.NotEqual, this._value, function (value, ruleValue) {
-                                            return !Bridge.equals(value, ruleValue);
-                                        });
-                                        this.ValidateRequired(System.Nullable$1(System.DateTime), this._value);
-                                        $tcs.setResult(this.IsValid);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                if (Core.Extensions.IEnumerableExtensions.Nothing(System.Collections.Generic.KeyValuePair$2(System.String,Core.Extensions.ValidationRule), this.ValidationRules)) {
+                    return System.Threading.Tasks.Task.fromResult(true, System.Boolean);
+                }
+                this.ValidationResult.clear();
+                this.Validate(System.Nullable$1(System.DateTime), System.Nullable$1(System.DateTime), Core.Extensions.ValidationRule.GreaterThan, this._value, function (value, ruleValue) {
+                    return Bridge.equals(ruleValue, null) || !Bridge.equals(value, null) && System.DateTime.gt(value, ruleValue);
+                });
+                this.Validate(System.Nullable$1(System.DateTime), System.Nullable$1(System.DateTime), Core.Extensions.ValidationRule.LessThan, this._value, function (value, ruleValue) {
+                    return Bridge.equals(ruleValue, null) || !Bridge.equals(value, null) && System.DateTime.lt(value, ruleValue);
+                });
+                this.Validate(System.Nullable$1(System.DateTime), System.Nullable$1(System.DateTime), Core.Extensions.ValidationRule.GreaterThanOrEqual, this._value, function (value, ruleValue) {
+                    return Bridge.equals(ruleValue, null) || !Bridge.equals(value, null) && System.DateTime.gte(value, ruleValue);
+                });
+                this.Validate(System.Nullable$1(System.DateTime), System.Nullable$1(System.DateTime), Core.Extensions.ValidationRule.LessThanOrEqual, this._value, function (value, ruleValue) {
+                    return Bridge.equals(ruleValue, null) || !Bridge.equals(value, null) && System.DateTime.lte(value, ruleValue);
+                });
+                this.Validate(System.Nullable$1(System.DateTime), System.Nullable$1(System.DateTime), Core.Extensions.ValidationRule.Equal, this._value, function (value, ruleValue) {
+                    return Bridge.equals(value, ruleValue);
+                });
+                this.Validate(System.Nullable$1(System.DateTime), System.Nullable$1(System.DateTime), Core.Extensions.ValidationRule.NotEqual, this._value, function (value, ruleValue) {
+                    return !Bridge.equals(value, ruleValue);
+                });
+                this.ValidateRequired(System.Nullable$1(System.DateTime), this._value);
+                return System.Threading.Tasks.Task.fromResult(this.IsValid, System.Boolean);
             },
             RemoveDOM: function () {
                 if (this.Element != null && this.Element.parentElement != null) {
@@ -19918,58 +19737,30 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
             },
             ValidateAsync: function () {
-                var $step = 0,
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (Core.Extensions.IEnumerableExtensions.Nothing(System.Collections.Generic.KeyValuePair$2(System.String,Core.Extensions.ValidationRule), this.ValidationRules)) {
-                                            $tcs.setResult(true);
-                                            return;
-                                        }
-                                        this.ValidationResult.clear();
-                                        this.ValidateRequired(System.Nullable$1(System.Decimal), this._value);
-                                        this.Validate(System.Nullable$1(System.Decimal), System.Nullable$1(System.Decimal), Core.Extensions.ValidationRule.GreaterThan, this._value, function (value, ruleValue) {
-                                            return System.Nullable.lifteq("equals", ruleValue, System.Decimal.lift(null)) || System.Nullable.liftne("ne", value, System.Decimal.lift(null)) && System.Nullable.liftcmp("gt", value, ruleValue);
-                                        });
-                                        this.Validate(System.Nullable$1(System.Decimal), System.Nullable$1(System.Decimal), Core.Extensions.ValidationRule.LessThan, this._value, function (value, ruleValue) {
-                                            return System.Nullable.lifteq("equals", ruleValue, System.Decimal.lift(null)) || System.Nullable.liftne("ne", value, System.Decimal.lift(null)) && System.Nullable.liftcmp("lt", value, ruleValue);
-                                        });
-                                        this.Validate(System.Nullable$1(System.Decimal), System.Nullable$1(System.Decimal), Core.Extensions.ValidationRule.GreaterThanOrEqual, this._value, function (value, ruleValue) {
-                                            return System.Nullable.lifteq("equals", ruleValue, System.Decimal.lift(null)) || System.Nullable.liftne("ne", value, System.Decimal.lift(null)) && System.Nullable.liftcmp("gte", value, ruleValue);
-                                        });
-                                        this.Validate(System.Nullable$1(System.Decimal), System.Nullable$1(System.Decimal), Core.Extensions.ValidationRule.LessThanOrEqual, this._value, function (value, ruleValue) {
-                                            return System.Nullable.lifteq("equals", ruleValue, System.Decimal.lift(null)) || System.Nullable.liftne("ne", value, System.Decimal.lift(null)) && System.Nullable.liftcmp("lte", value, ruleValue);
-                                        });
-                                        this.Validate(System.Nullable$1(System.Decimal), System.Nullable$1(System.Decimal), Core.Extensions.ValidationRule.Equal, this._value, function (value, ruleValue) {
-                                            return System.Nullable.lifteq("equals", value, ruleValue);
-                                        });
-                                        this.Validate(System.Nullable$1(System.Decimal), System.Nullable$1(System.Decimal), Core.Extensions.ValidationRule.NotEqual, this._value, function (value, ruleValue) {
-                                            return System.Nullable.liftne("ne", value, ruleValue);
-                                        });
-                                        $tcs.setResult(this.IsValid);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                if (Core.Extensions.IEnumerableExtensions.Nothing(System.Collections.Generic.KeyValuePair$2(System.String,Core.Extensions.ValidationRule), this.ValidationRules)) {
+                    return System.Threading.Tasks.Task.fromResult(true, System.Boolean);
+                }
+                this.ValidationResult.clear();
+                this.ValidateRequired(System.Nullable$1(System.Decimal), this._value);
+                this.Validate(System.Nullable$1(System.Decimal), System.Nullable$1(System.Decimal), Core.Extensions.ValidationRule.GreaterThan, this._value, function (value, ruleValue) {
+                    return System.Nullable.lifteq("equals", ruleValue, System.Decimal.lift(null)) || System.Nullable.liftne("ne", value, System.Decimal.lift(null)) && System.Nullable.liftcmp("gt", value, ruleValue);
+                });
+                this.Validate(System.Nullable$1(System.Decimal), System.Nullable$1(System.Decimal), Core.Extensions.ValidationRule.LessThan, this._value, function (value, ruleValue) {
+                    return System.Nullable.lifteq("equals", ruleValue, System.Decimal.lift(null)) || System.Nullable.liftne("ne", value, System.Decimal.lift(null)) && System.Nullable.liftcmp("lt", value, ruleValue);
+                });
+                this.Validate(System.Nullable$1(System.Decimal), System.Nullable$1(System.Decimal), Core.Extensions.ValidationRule.GreaterThanOrEqual, this._value, function (value, ruleValue) {
+                    return System.Nullable.lifteq("equals", ruleValue, System.Decimal.lift(null)) || System.Nullable.liftne("ne", value, System.Decimal.lift(null)) && System.Nullable.liftcmp("gte", value, ruleValue);
+                });
+                this.Validate(System.Nullable$1(System.Decimal), System.Nullable$1(System.Decimal), Core.Extensions.ValidationRule.LessThanOrEqual, this._value, function (value, ruleValue) {
+                    return System.Nullable.lifteq("equals", ruleValue, System.Decimal.lift(null)) || System.Nullable.liftne("ne", value, System.Decimal.lift(null)) && System.Nullable.liftcmp("lte", value, ruleValue);
+                });
+                this.Validate(System.Nullable$1(System.Decimal), System.Nullable$1(System.Decimal), Core.Extensions.ValidationRule.Equal, this._value, function (value, ruleValue) {
+                    return System.Nullable.lifteq("equals", value, ruleValue);
+                });
+                this.Validate(System.Nullable$1(System.Decimal), System.Nullable$1(System.Decimal), Core.Extensions.ValidationRule.NotEqual, this._value, function (value, ruleValue) {
+                    return System.Nullable.liftne("ne", value, ruleValue);
+                });
+                return System.Threading.Tasks.Task.fromResult(this.IsValid, System.Boolean);
             },
             SetDisableUI: function (value) {
                 this._input.readOnly = value;
@@ -20643,78 +20434,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return this._value == null ? "Kh\u00f4ng \u0111\u00e1nh gi\u00e1" : System.Nullable.toString(this._value, null) + " sao";
             },
             ValidateAsync: function () {
-                var $step = 0,
-                    $task1, 
-                    $task2, 
-                    $task3, 
-                    $taskResult3, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $taskResult2, 
-                    $taskResult1, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2,3,4,5], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        $task3 = Core.Components.EditableComponent.prototype.ValidateAsync.call(this);
-                                        $step = 1;
-                                        if ($task3.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task3.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult3 = $task3.getAwaitedResult();
-                                        if (($taskResult3)) {
-                                            $step = 2;
-                                            continue;
-                                        }
-                                        $taskResult2 = false;
-                                        $step = 3;
-                                        continue;
-                                    }
-                                    case 2: {
-                                        $taskResult2 = System.Nullable.hasValue(this.Value);
-                                        $step = 3;
-                                        continue;
-                                    }
-                                    case 3: {
-                                        if ($taskResult2) {
-                                            $step = 4;
-                                            continue;
-                                        }
-                                        $taskResult1 = false;
-                                        $step = 5;
-                                        continue;
-                                    }
-                                    case 4: {
-                                        $taskResult1 = this.ValidateRequired(System.Int32, System.Nullable.getValue(this.Value));
-                                        $step = 5;
-                                        continue;
-                                    }
-                                    case 5: {
-                                        $tcs.setResult($taskResult1);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                this.ValidationResult.clear();
+                if (this.Value == null) {
+                    return System.Threading.Tasks.Task.fromResult(false, System.Boolean);
+                }
+                var isValid = System.Nullable.hasValue(this.Value) && this.ValidateRequired(System.Int32, System.Nullable.getValue(this.Value));
+                return System.Threading.Tasks.Task.fromResult(isValid, System.Boolean);
             }
         }
     });
@@ -21342,72 +21067,26 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
             },
             ValidateAsync: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $task2, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1,2], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (Core.Extensions.IEnumerableExtensions.Nothing(System.Collections.Generic.KeyValuePair$2(System.String,Core.Extensions.ValidationRule), this.ValidationRules)) {
-                                            $tcs.setResult(true);
-                                            return;
-                                        }
-                                        $task1 = Core.Components.EditableComponent.prototype.ValidateAsync.call(this);
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        this.Validate(System.String, System.Int64, Core.Extensions.ValidationRule.MinLength, this._text, Bridge.fn.bind(this, function (value, minLength) {
-                                            return this._text != null && System.Int64(this._text.length).gte(minLength);
-                                        }));
-                                        this.Validate(System.String, System.Int64, Core.Extensions.ValidationRule.CheckLength, this._text, Bridge.fn.bind(this, function (text, checkLength) {
-                                            return this._text == null || Bridge.referenceEquals(this._text, "") || System.Int64(this._text.length).equals(checkLength);
-                                        }));
-                                        this.Validate(System.String, System.Int64, Core.Extensions.ValidationRule.MaxLength, this._text, Bridge.fn.bind(this, function (text, maxLength) {
-                                            return this._text == null || System.Int64(this._text.length).lte(maxLength);
-                                        }));
-                                        this.Validate(System.String, System.String, Core.Extensions.ValidationRule.RegEx, this._text, Bridge.fn.cacheBind(this, this.ValidateRegEx));
-                                        this.ValidateRequired(System.String, this.Text);
-                                        $task2 = this.ValidateUnique();
-                                        $step = 2;
-                                        if ($task2.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task2.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 2: {
-                                        $task2.getAwaitedResult();
-                                        $tcs.setResult(this.IsValid);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                if (Core.Extensions.IEnumerableExtensions.Nothing(System.Collections.Generic.KeyValuePair$2(System.String,Core.Extensions.ValidationRule), this.ValidationRules)) {
+                    return System.Threading.Tasks.Task.fromResult(true, System.Boolean);
+                }
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                this.ValidationResult.clear();
+                this.Validate(System.String, System.Int64, Core.Extensions.ValidationRule.MinLength, this._text, Bridge.fn.bind(this, function (value, minLength) {
+                    return this._text != null && System.Int64(this._text.length).gte(minLength);
+                }));
+                this.Validate(System.String, System.Int64, Core.Extensions.ValidationRule.CheckLength, this._text, Bridge.fn.bind(this, function (text, checkLength) {
+                    return this._text == null || Bridge.referenceEquals(this._text, "") || System.Int64(this._text.length).equals(checkLength);
+                }));
+                this.Validate(System.String, System.Int64, Core.Extensions.ValidationRule.MaxLength, this._text, Bridge.fn.bind(this, function (text, maxLength) {
+                    return this._text == null || System.Int64(this._text.length).lte(maxLength);
+                }));
+                this.Validate(System.String, System.String, Core.Extensions.ValidationRule.RegEx, this._text, Bridge.fn.cacheBind(this, this.ValidateRegEx));
+                this.ValidateRequired(System.String, this.Text);
+                Core.Extensions.EventExt.Done$1(this.ValidateUnique(), Bridge.fn.bind(this, function () {
+                    tcs.trySetResult(this.IsValid);
+                }));
+                return tcs.task;
             },
             ValidateUnique: function () {
                 var $step = 0,
@@ -23456,9 +23135,10 @@ Bridge.assembly("Core", function ($asm, globals) {
                 });
                 this.AdvSearchVM.OrderBy.clear();
             },
-            RenderViewPort: function (count, firstLoad) {
+            RenderViewPort: function (count, firstLoad, skip) {
                 if (count === void 0) { count = true; }
                 if (firstLoad === void 0) { firstLoad = false; }
+                if (skip === void 0) { skip = null; }
                 return;
             },
             HotKeyF6Handler: function (e, keyCode) {
@@ -28411,8 +28091,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             _renderingViewPort: false,
             LastData: null,
             viewPortCount: 0,
-            _skip: 0,
-            firstLoad: false
+            _skip: 0
         },
         ctors: {
             ctor: function (ui) {
@@ -28467,29 +28146,30 @@ Bridge.assembly("Core", function ($asm, globals) {
                 });
                 return tcs.task;
             },
-            RenderViewPort: function (count, firstLoad) {
-                var $t, $t1;
+            RenderViewPort: function (count, firstLoad, skip) {
+                var $t, $t1, $t2;
                 if (count === void 0) { count = true; }
                 if (firstLoad === void 0) { firstLoad = false; }
+                if (skip === void 0) { skip = null; }
                 this._renderingViewPort = true;
                 this.viewPortCount = this.GetViewPortItem();
                 var scrollTop = this.DataTable.parentElement.scrollTop;
                 if (scrollTop === this._lastScrollTop) {
                     return;
                 }
-                var skip = this.GetRowCountByHeight(scrollTop);
+                var actualSkip = ($t = skip, $t != null ? $t : this.GetRowCountByHeight(scrollTop));
                 if (this.viewPortCount <= 0) {
-                    this.viewPortCount = ($t = this.GuiInfo.Row, $t != null ? $t : 20);
+                    this.viewPortCount = ($t1 = this.GuiInfo.Row, $t1 != null ? $t1 : 20);
                 }
                 var rows;
                 if (firstLoad) {
-                    this.LoadData(scrollTop, skip, count, firstLoad);
+                    this.LoadData(scrollTop, actualSkip, count, firstLoad);
                 } else {
-                    rows = ($t1 = System.Object, System.Linq.Enumerable.from(this.ReadCache(skip, this.viewPortCount), $t1).toList($t1));
+                    rows = ($t2 = System.Object, System.Linq.Enumerable.from(this.ReadCache(actualSkip, this.viewPortCount), $t2).toList($t2));
                     if (rows.Count < this.viewPortCount && rows.Count < this.Paginator.Options.Total) {
-                        this.LoadData(scrollTop, skip, count);
+                        this.LoadData(scrollTop, actualSkip, count);
                     } else {
-                        this.RowDataLoaded(scrollTop, skip, rows);
+                        this.RowDataLoaded(scrollTop, actualSkip, rows);
                     }
                 }
             },
@@ -28644,7 +28324,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.DisposeNoRecord();
                 this.VirtualScroll = Core.Extensions.IEnumerableExtensions.Nothing(System.Char, this.GuiInfo.GroupBy) && this.GuiInfo.VirtualScroll && !Bridge.referenceEquals(Bridge.toString(this.Element.style.display), System.Enum.toString(System.String, "none"));
                 this._lastScrollTop = -1;
-                this.RenderViewPort(true, true);
+                this.RenderViewPort(true, !cacheHeader, skip);
                 return System.Threading.Tasks.Task.fromResult(this.FormattedRowData, System.Collections.Generic.List$1(System.Object));
             },
             RenderViewPortWrapper: function (e) {
@@ -29101,13 +28781,13 @@ Bridge.assembly("Core", function ($asm, globals) {
             DirtyCheckAndCancel: function () {
                 Core.Components.Forms.PopupEditor.prototype.Dispose.call(this);
             },
-            ApplyFilter: function () {
+            ApplyAdvSearch: function () {
                 Core.Extensions.EventExt.Done(System.Boolean, this.IsFormValid(), Bridge.fn.bind(this, function (isValid) {
                     if (!isValid) {
                         return;
                     }
                     this.CalcAdvSearchQuery();
-                    Core.Extensions.EventExt.Done(System.Collections.Generic.List$1(System.Object), this.ParentListView.ReloadData(true, 0, void 0));
+                    Core.Extensions.EventExt.Done(System.Collections.Generic.List$1(System.Object), this.ParentListView.ReloadData(false, 0, void 0));
                 }));
             },
             CalcAdvSearchQuery: function () {

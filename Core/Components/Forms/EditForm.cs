@@ -269,7 +269,7 @@ namespace Core.Components.Forms
             }
             if (ignorePredicate == null)
             {
-                ignorePredicate = (EditableComponent x) => x.AlwaysValid;
+                ignorePredicate = (EditableComponent x) => x.AlwaysValid || x.EmptyRow;
             }
             var allValid = await FilterChildren(
                 predicate: predicate,
@@ -1361,19 +1361,19 @@ namespace Core.Components.Forms
             Client.UnAuthorizedEventHandler?.Invoke(null);
         }
 
-        public async Task SignOut()
+        public void SignOut()
         {
             var e = Window.Instance["event"] as Event;
             e.PreventDefault();
-            var client = new Client(nameof(User));
-            await client.CreateAsync<bool>(Client.Token, "SignOut");
-            Toast.Success("Bạn đã đăng xuất!", 3000);
-            Client.SignOutEventHandler?.Invoke();
-            Client.Token = null;
-            NotificationClient?.Close();
-            await Task.Delay(1000);
-            LayoutForm?.UpdateView();
-            Window.Location.Reload();
+            Client.Instance.PostAsync<bool>(Client.Token, "user/SignOut")
+            .Done(success =>
+            {
+                Toast.Success("Bạn đã đăng xuất!", 3000);
+                Client.SignOutEventHandler?.Invoke();
+                Client.Token = null;
+                NotificationClient?.Close();
+                Window.Location.Reload();
+            });
         }
     }
 }

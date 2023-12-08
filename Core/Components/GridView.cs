@@ -1301,7 +1301,7 @@ namespace Core.Components
             AdvSearchVM.OrderBy.Clear();
         }
 
-        internal virtual void RenderViewPort(bool count = true, bool firstLoad = false)
+        internal virtual void RenderViewPort(bool count = true, bool firstLoad = false, int? skip = null)
         {
             return;
         }

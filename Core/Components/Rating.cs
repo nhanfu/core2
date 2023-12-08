@@ -114,9 +114,12 @@ namespace Core.Components
             return _value is null ? "Không đánh giá" : _value + " sao";
         }
 
-        public override async Task<bool> ValidateAsync()
+        public override Task<bool> ValidateAsync()
         {
-            return (await base.ValidateAsync()) && Value.HasValue && ValidateRequired((int)Value);
+            ValidationResult.Clear();
+            if (Value is null) return Task.FromResult(false);
+            var isValid = Value.HasValue && ValidateRequired((int)Value);
+            return Task.FromResult(isValid);
         }
     }
 }

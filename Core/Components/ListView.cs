@@ -1164,12 +1164,11 @@ namespace Core.Components
             }
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public override async Task<bool> ValidateAsync()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        public override Task<bool> ValidateAsync()
         {
             ValidationResult.Clear();
-            return ValidateRequired();
+            ValidateRequired();
+            return Task.FromResult(IsValid);
         }
 
         private bool ValidateRequired()

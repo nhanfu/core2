@@ -22,7 +22,6 @@ namespace Core.Components
         internal int viewPortCount;
         internal int _skip;
         internal static int cacheAhead = 5;
-        private bool firstLoad;
 
         public VirtualGrid(Component ui) : base(ui)
         {
@@ -81,7 +80,7 @@ namespace Core.Components
             return tcs.Task;
         }
 
-        internal override void RenderViewPort(bool count = true, bool firstLoad = false)
+        internal override void RenderViewPort(bool count = true, bool firstLoad = false, int? skip = null)
         {
             _renderingViewPort = true;
             viewPortCount = GetViewPortItem();
@@ -90,7 +89,7 @@ namespace Core.Components
             {
                 return;
             }
-            var skip = GetRowCountByHeight(scrollTop);
+            var actualSkip = skip ?? GetRowCountByHeight(scrollTop);
             if (viewPortCount <= 0)
             {
                 viewPortCount = GuiInfo.Row ?? 20;
@@ -98,18 +97,18 @@ namespace Core.Components
             List<object> rows;
             if (firstLoad)
             {
-                LoadData(scrollTop, skip, count, firstLoad);
+                LoadData(scrollTop, actualSkip, count, firstLoad);
             }
             else
             {
-                rows = ReadCache(skip, viewPortCount).ToList();
+                rows = ReadCache(actualSkip, viewPortCount).ToList();
                 if (rows.Count < viewPortCount && rows.Count < Paginator.Options.Total)
                 {
-                    LoadData(scrollTop, skip, count);
+                    LoadData(scrollTop, actualSkip, count);
                 }
                 else
                 {
-                    RowDataLoaded(scrollTop, skip, rows);
+                    RowDataLoaded(scrollTop, actualSkip, rows);
                 }
             }
         }
@@ -199,7 +198,7 @@ namespace Core.Components
             DisposeNoRecord();
             VirtualScroll = GuiInfo.GroupBy.Nothing() && GuiInfo.VirtualScroll && Element.Style.Display.ToString() != Display.None.ToString();
             _lastScrollTop = -1;
-            RenderViewPort(firstLoad: true);
+            RenderViewPort(firstLoad: !cacheHeader, skip: skip);
             return Task.FromResult(FormattedRowData);
         }
 

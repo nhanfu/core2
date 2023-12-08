@@ -556,13 +556,13 @@ namespace Core.Components
             }
         }
 
-        public override async Task<bool> ValidateAsync()
+        public override Task<bool> ValidateAsync()
         {
             if (ValidationRules.Nothing())
             {
-                return true;
+                return Task.FromResult(true);
             }
-            await base.ValidateAsync();
+            ValidationResult.Clear();
             Validate(ValidationRule.GreaterThan, _value, (DateTime? value, DateTime? ruleValue) => ruleValue is null || value != null && value > ruleValue);
             Validate(ValidationRule.LessThan, _value, (DateTime? value, DateTime? ruleValue) => ruleValue is null || value != null && value < ruleValue);
             Validate(ValidationRule.GreaterThanOrEqual, _value, (DateTime? value, DateTime? ruleValue) => ruleValue is null || value != null && value >= ruleValue);
@@ -570,7 +570,7 @@ namespace Core.Components
             Validate(ValidationRule.Equal, _value, (DateTime? value, DateTime? ruleValue) => value == ruleValue);
             Validate(ValidationRule.NotEqual, _value, (DateTime? value, DateTime? ruleValue) => value != ruleValue);
             ValidateRequired(_value);
-            return IsValid;
+            return Task.FromResult(IsValid);
         }
 
         protected override void RemoveDOM()

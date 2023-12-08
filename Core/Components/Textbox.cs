@@ -267,20 +267,23 @@ namespace Core.Components
             }
         }
 
-        public override async Task<bool> ValidateAsync()
+        public override Task<bool> ValidateAsync()
         {
             if (ValidationRules.Nothing())
             {
-                return true;
+                return Task.FromResult(true);
             }
-            await base.ValidateAsync();
+            var tcs = new TaskCompletionSource<bool>();
+            ValidationResult.Clear();
             Validate(ValidationRule.MinLength, _text, (string value, long minLength) => _text != null && _text.Length >= minLength);
             Validate(ValidationRule.CheckLength, _text, (string text, long checkLength) => _text == null || _text == "" || _text.Length == checkLength);
             Validate(ValidationRule.MaxLength, _text, (string text, long maxLength) => _text == null || _text.Length <= maxLength);
             Validate<string, string>(ValidationRule.RegEx, _text, ValidateRegEx);
             ValidateRequired(Text);
-            await ValidateUnique();
-            return IsValid;
+            ValidateUnique().Done(() => {
+                tcs.TrySetResult(IsValid);
+            });
+            return tcs.Task;
         }
 
         protected async Task ValidateUnique()
