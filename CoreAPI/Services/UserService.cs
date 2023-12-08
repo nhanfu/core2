@@ -787,7 +787,7 @@ public class UserService
         var sv = await GetService(vm);
         var jsRes = await ExecJs(vm.Params, sv.Content);
         var conStr = TenantCode is null && vm.AnnonymousTenant is not null
-            ? sv.ConnKey : await GetConnStrFromKey(sv.ConnKey);
+            ? sv.ConnKey : await GetConnStrFromKey(sv.ConnKey ?? Utils.ConnKey);
         return await GetResultFromQuery(vm, conStr, jsRes);
     }
 

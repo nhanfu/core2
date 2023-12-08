@@ -54,7 +54,6 @@ namespace Core.Components.Forms
         public string FeatureConnKey => Feature?.ConnKey ?? Client.ConnKey;
         public Action<bool> AfterSaved;
         public Func<bool> BeforeSaved;
-        public Client FormClient { get; set; }
         public bool IsEditMode => Entity != null && Entity[IdField].As<int>() > 0;
         public static WebSocketClient NotificationClient;
         private int awaiter;
@@ -113,7 +112,6 @@ namespace Core.Components.Forms
             }
             ListViews = new HashSet<ListView>();
             _entity = entity;
-            FormClient = new Client(entity);
             var entityType = Type.GetType(Client.ModelNamespace + entity);
             if (entityType != null)
             {
@@ -1128,7 +1126,6 @@ namespace Core.Components.Forms
 
         public override void Dispose()
         {
-            FormClient = null;
             Window.RemoveEventListener(EventType.Resize, ResizeHandler);
             base.Dispose();
         }

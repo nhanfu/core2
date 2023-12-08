@@ -24,7 +24,7 @@ namespace Core.Components
         internal int _tfooterTable = 35;
         internal int _scrollTable = 10;
         private const string PermissionLoaded = "PermissionLoaded";
-        private const string IsOwner = "IsOwner";
+        private const string IsOwner = "__IsOwner__";
         protected static IEnumerable<object> _copiedRows;
         public Action<object> RowClick;
         public Action<object> DblClick;
@@ -1498,7 +1498,7 @@ namespace Core.Components
             });
         }
 
-        private async Task RenderShareMenu(List<object> selectedRows, IEnumerable<FeaturePolicy> gridPolicies)
+        private Task RenderShareMenu(List<object> selectedRows, IEnumerable<FeaturePolicy> gridPolicies)
         {
             var noPolicyRows = selectedRows.Where(x =>
             {
@@ -1507,26 +1507,56 @@ namespace Core.Components
                 return !(hasPolicy || loaded == true);
             });
             var noPolicyRowIds = noPolicyRows.Select(x => x[IdField].As<string>()).ToArray();
-            var rowPolicy = await ComponentExt.LoadRecordPolicy(noPolicyRowIds, GuiInfo.ReferenceId);
-            rowPolicy.ForEach(RecordPolicy.Add);
-            noPolicyRows.ForEach(x => x[PermissionLoaded] = true);
-            var ownedRecords = selectedRows.Where(x =>
+            var tcs = new TaskCompletionSource<object>();
+            LoadRecordPolicy(ConnKey, GuiInfo.RefName, noPolicyRowIds).Done(rowPolicy =>
             {
-                var isOwner = Utils.IsOwner(x);
-                x[IsOwner] = isOwner || rowPolicy.Any(policy => policy.CanShare && x[IdField].As<string>() == policy.RecordId);
-                return isOwner;
-            }).Select(x => x[IdField].As<int>()).ToList();
-            var canShare = CanDo(gridPolicies, x => x.CanShare) && ownedRecords.Any();
-            if (!canShare)
-            {
-                return;
-            }
-            ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
-            {
-                Icon = "mif-security",
-                Text = "Bảo mật & Phân quyền",
-                Click = SecurityRows,
+                rowPolicy.ForEach(RecordPolicy.Add);
+                noPolicyRows.ForEach(x => x[PermissionLoaded] = true);
+                var ownedRecords = selectedRows.Where(x =>
+                {
+                    var isOwner = Utils.IsOwner(x);
+                    x[IsOwner] = isOwner;
+                    return isOwner;
+                }).Select(x => x[IdField].As<string>()).ToList();
+                var canShare = CanDo(gridPolicies, x => x.CanShare) && ownedRecords.Any();
+                if (!canShare)
+                {
+                    tcs.TrySetResult(null);
+                    return;
+                }
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
+                {
+                    Icon = "mif-security",
+                    Text = "Bảo mật & Phân quyền",
+                    Click = SecurityRows,
+                });
+                tcs.TrySetResult(null);
             });
+            return tcs.Task;
+        }
+
+        public static Task<FeaturePolicy[]> LoadRecordPolicy(string connKey, string entity, string[] ids)
+        {
+            if (ids.Nothing() || ids.All(x => x == null))
+            {
+                return Task.FromResult(new FeaturePolicy[] { });
+            }
+            var sql = new SqlViewModel
+            {
+                ComId = "Policy",
+                Action = "GetById",
+                Table = nameof(FeaturePolicy),
+                ConnKey = connKey,
+                Params = JSON.Stringify(new { ids, table = entity })
+            };
+            var xhr = new XHRWrapper
+            {
+                Method = HttpMethod.POST,
+                Url = Utils.UserSvc,
+                IsRawString = true,
+                Value = JSON.Stringify(sql)
+            };
+            return Client.Instance.SubmitAsync<FeaturePolicy[]>(xhr);
         }
 
         public void MoveDown()

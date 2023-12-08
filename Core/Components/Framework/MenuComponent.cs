@@ -62,12 +62,9 @@ namespace Core.Components.Framework
 
         public void ReloadMenu(string focusedParentFeatureId)
         {
-            Task.Run(async () =>
+            BoostrapTask().Done(ds =>
             {
-                var featureTask = new Client(nameof(Feature), typeof(Feature).Namespace).GetRawList<Feature>(
-                    "?$expand=Entity($select=Name)&$filter=Active eq true and IsMenu eq true&$orderby=Order");
-                var feature = await featureTask;
-                _feature = feature;
+                _feature = ds[0].Select(x => x.CastProp<Feature>()).ToList();
                 BuildFeatureTree();
                 Html.Take(".sidebar-items").Clear();
                 RenderMenuItems(_feature);
@@ -87,6 +84,19 @@ namespace Core.Components.Framework
             }
 
             _hasRender = true;
+            var startup = BoostrapTask();
+            var roles = string.Join("\\", Client.Token.RoleIds);
+            Client.ExecTask(startup, (res) =>
+            {
+                var features = res[0].Select(x => x.CastProp<Feature>()).ToArray();
+                var startApps = res[1].Select(x => x.CastProp<UserSetting>()).ToArray();
+                var entities = res[2].Select(x => x.CastProp<Entity>()).ToArray();
+                GetFeatureCb(features, startApps, entities);
+            });
+        }
+
+        private static Task<object[][]> BoostrapTask()
+        {
             var doc = Document.Instance as dynamic;
             var meta = doc.head.children.startupSvc;
             var submitEntity = new SqlViewModel
@@ -101,14 +111,7 @@ namespace Core.Components.Framework
                 IsRawString = true,
                 Method = HttpMethod.POST
             });
-            var roles = string.Join("\\", Client.Token.RoleIds);
-            Client.ExecTask(startup, (res) =>
-            {
-                var features = res[0].Select(x => x.CastProp<Feature>()).ToArray();
-                var startApps = res[1].Select(x => x.CastProp<UserSetting>()).ToArray();
-                var entities = res[2].Select(x => x.CastProp<Entity>()).ToArray();
-                GetFeatureCb(features, startApps, entities);
-            });
+            return startup;
         }
 
         private void GetFeatureCb(Feature[] feature, UserSetting[] startApp, Entity[] entities)

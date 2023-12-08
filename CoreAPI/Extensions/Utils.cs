@@ -26,6 +26,7 @@ namespace Core.Extensions
         public const string ComponentId = "20";
         public const string ComponentGroupId = "30";
         public const string HistoryId = "4199";
+        public const string ConnKey = "default";
         public const string InsertedBy = "InsertedBy";
         public const string OwnerUserIds = "OwnerUserIds";
         public const string OwnerRoleIds = "OwnerRoleIds";

@@ -127,9 +127,12 @@ namespace Core.Components.Extensions
             {
                 Table = table
             };
-            com.ForEachProp((prop, val) => {
-                patch.Changes.Add(new PatchDetail {
-                    Field = prop, Value = val?.ToString()
+            com.ForEachProp((prop, val) =>
+            {
+                patch.Changes.Add(new PatchDetail
+                {
+                    Field = prop,
+                    Value = val?.ToString()
                 });
             });
             return patch;
@@ -301,16 +304,6 @@ namespace Core.Components.Extensions
             });
 
             return tcs.Task;
-        }
-
-        public static async Task<List<FeaturePolicy>> LoadRecordPolicy(string[] ids, string entity)
-        {
-            if (ids.Nothing() || ids.All(x => x == null))
-            {
-                return new List<FeaturePolicy>();
-            }
-            return await new Client(nameof(FeaturePolicy), typeof(User).Namespace).GetRawList<FeaturePolicy>(
-                $"?$filter=Active eq true and EntityId eq '{entity}' and RecordId in ({ids.Select(x => $"'{x}'").Combine(",")})");
         }
 
         public static EditableComponent FirstOrDefault(this EditableComponent component, Func<EditableComponent, bool> predicate, Func<EditableComponent, bool> ignorePredicate = null)
