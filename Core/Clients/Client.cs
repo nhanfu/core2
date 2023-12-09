@@ -359,22 +359,6 @@ namespace Core.Clients
             }
         }
 
-        public async Task<List<T>> GetRawList<T>(string filter = null, bool clearCache = false, bool addTenant = false, bool annonymous = false, string entityName = null) where T : class
-        {
-            EntityName = entityName ?? typeof(T).Name;
-            var headers = ClearCacheHeader(clearCache);
-            var res = await SubmitAsync<OdataResult<T>>(new XHRWrapper
-            {
-                Value = null,
-                AddTenant = addTenant,
-                Url = filter,
-                Headers = headers,
-                AllowAnonymous = annonymous,
-                Method = HttpMethod.GET
-            });
-            return res?.Value;
-        }
-
         private static Dictionary<string, string> ClearCacheHeader(bool clearCache)
         {
             var headers = new Dictionary<string, string>();
@@ -406,39 +390,6 @@ namespace Core.Clients
             return res?.Value?.FirstOrDefault();
         }
 
-        public Task<OdataResult<object>> LoadById(string listId, string tenant = string.Empty, string action = "ById")
-        {
-            return SubmitAsync<OdataResult<object>>(new XHRWrapper
-            {
-                Value = listId,
-                IsRawString = true,
-                Method = HttpMethod.POST,
-                Url = action,
-                Headers = new Dictionary<string, string>
-                {
-                    { "content-type", "application/json" }
-                }
-            });
-        }
-
-        public async Task<List<T>> GetRawListById<T>(List<string> listId, string tenant = string.Empty, string action = string.Empty, bool clearCache = false) where T : class
-        {
-            if (listId.Nothing())
-            {
-                return new List<T>();
-            }
-            var listIdStr = listId.Distinct().Select(x => $"'{x}'").Combine(",");
-            var refType = Type.GetType(NameSpace + EntityName);
-            var httpGetList = GetType().GetMethods()
-                .FirstOrDefault(x => x.Name == nameof(GetRawList) && x.IsGenericMethodDefinition);
-            if (httpGetList is null)
-            {
-                return new List<T>();
-            }
-            var filter = $"{action}/?{(tenant != string.Empty ? $"t={tenant}&" : string.Empty)}$filter=Id in ({listIdStr})";
-            return await httpGetList.MakeGenericMethod(refType).Invoke(this, filter, clearCache).As<Task<List<T>>>();
-        }
-
         public Task<object[]> GetByIdAsync(string table, string connKey, params string[] ids)
         {
             if (table.IsNullOrWhiteSpace() || ids.Nothing())
@@ -450,7 +401,8 @@ namespace Core.Clients
             {
                 Params = JSON.Stringify(new { Table = table, Ids = ids }),
                 ComId = "Entity",
-                Action = "ById"
+                Action = "ById",
+                ConnKey = connKey ?? ConnKey
             };
             SubmitAsync<object[][]>(new XHRWrapper
             {
@@ -469,30 +421,6 @@ namespace Core.Clients
             return tcs.Task;
         }
 
-        /// <summary>
-        /// This method is used when we don't have return type at compiled time
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="subUrl"></param>
-        /// <returns></returns>
-        public Task<object> CreateAsync(object value, string subUrl = string.Empty)
-        {
-            var refType = Type.GetType(NameSpace + EntityName);
-            var httpGetList = GetType().GetMethods()
-                .FirstOrDefault(x => x.Name == nameof(PostAsync) && x.IsGenericMethodDefinition);
-            if (httpGetList is null)
-            {
-                return Task.FromResult(new object());
-            }
-
-            return httpGetList.MakeGenericMethod(refType).Invoke(this, value, subUrl).As<Task<object>>();
-        }
-
-        public Task<T> CreateAsync<T>(object value, string subUrl = string.Empty)
-        {
-            return PostAsync<T>(value, subUrl);
-        }
-
         public Task<T> PostAsync<T>(object value, string subUrl = string.Empty, bool annonymous = false, bool allowNested = false)
         {
             return SubmitAsync<T>(new XHRWrapper
@@ -500,45 +428,6 @@ namespace Core.Clients
                 Value = value,
                 Url = subUrl,
                 Method = HttpMethod.POST,
-                AllowAnonymous = annonymous,
-            });
-        }
-
-        public Task<T> GetAsync<T>(string subUrl)
-        {
-            return SubmitAsync<T>(new XHRWrapper
-            {
-                Url = subUrl,
-                Method = HttpMethod.GET
-            });
-        }
-
-        /// <summary>
-        /// This method is used when we don't have return type at compiled time
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="subUrl"></param>
-        /// <returns></returns>
-        public Task<dynamic> UpdateAsync(object value, string subUrl = string.Empty)
-        {
-            var refType = Type.GetType((NameSpace ?? "Core.Models.") + EntityName);
-            var httpGetList = GetType().GetMethods()
-                .FirstOrDefault(x => x.Name == nameof(UpdateAsync) && x.IsGenericMethodDefinition);
-            if (httpGetList is null)
-            {
-                return Task.FromResult(new object());
-            }
-
-            return httpGetList.MakeGenericMethod(refType).Invoke(this, value, subUrl).ToDynamic();
-        }
-
-        public Task<T> UpdateAsync<T>(object value, string subUrl = string.Empty, bool annonymous = false, bool allowNested = false)
-        {
-            return SubmitAsync<T>(new XHRWrapper
-            {
-                Value = value,
-                Url = subUrl,
-                Method = HttpMethod.PUT,
                 AllowAnonymous = annonymous,
             });
         }

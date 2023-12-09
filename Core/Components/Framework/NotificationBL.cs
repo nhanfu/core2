@@ -164,7 +164,7 @@ namespace Core.Components.Framework
         private void SignOut(Event e)
         {
             e.PreventDefault();
-            var task = Client.Instance.CreateAsync<bool>(Client.Token, "/user/signOut");
+            var task = Client.Instance.PostAsync<bool>(Client.Token, "/user/signOut");
             Client.ExecTask(task, (res) =>
             {
                 Client.SignOutEventHandler?.Invoke();
@@ -295,8 +295,8 @@ namespace Core.Components.Framework
         private void MarkAsRead(TaskNotification task)
         {
             task.StatusId = ((int)TaskStateEnum.Read).ToString();
-            var a = Client.Instance.UpdateAsync<TaskNotification>(task, nameof(TaskNotification));
-            Client.ExecTask(a, res => SetBadgeNumber());
+            Client.Instance.PatchAsync(task.MapToPatch(nameof(TaskNotification)))
+                .Done(x => SetBadgeNumber());
         }
 
         public override void Dispose()

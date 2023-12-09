@@ -5,10 +5,10 @@ using Core.Components.Extensions;
 using Core.Enums;
 using Core.Extensions;
 using Core.MVVM;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Core.ViewModels;
 
 namespace Core.Components
 {
@@ -280,44 +280,47 @@ namespace Core.Components
             Validate(ValidationRule.MaxLength, _text, (string text, long maxLength) => _text == null || _text.Length <= maxLength);
             Validate<string, string>(ValidationRule.RegEx, _text, ValidateRegEx);
             ValidateRequired(Text);
-            ValidateUnique().Done(() => {
+            ValidateUnique().Done(() =>
+            {
                 tcs.TrySetResult(IsValid);
             });
             return tcs.Task;
         }
 
-        protected async Task ValidateUnique()
+        protected Task ValidateUnique()
         {
             if (!ValidationRules.ContainsKey(ValidationRule.Unique))
             {
-                return;
+                return Task.FromResult(true);
             }
             var rule = ValidationRules[ValidationRule.Unique];
             if (rule is null || _text.IsNullOrWhiteSpace())
             {
-                return;
+                return Task.FromResult(true);
             }
-            var fieldName = FieldName;
-            var entityId = Entity[IdField].As<int?>();
-            var filter = rule.Condition ?? $"Active eq true and ";
-            if (entityId > 0)
+            var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var fn);
+            var table = GuiInfo.RefName.HasNonSpaceChar() ? GuiInfo.RefName : EditForm.Feature.EntityName;
+            var sql = new SqlViewModel
             {
-                filter += $"{fieldName} eq '{_text.EncodeSpecialChar()}' and Id ne {entityId}";
-            }
-            else
+                ComId = GuiInfo.Id,
+                Params = isFn ? JSON.Stringify(fn.Call(null, this)) : null,
+                ConnKey = ConnKey
+            };
+            var tcs = new TaskCompletionSource<object>();
+            Client.Instance.ComQuery(sql).Done(ds =>
             {
-                filter += $"{fieldName} eq '{_text.EncodeSpecialChar()}'";
-            }
-            var entity = Utils.GetEntity(EditForm.Feature.EntityId)?.Name;
-            var exists = await new Client(entity).GetAsync<bool>($"/Exists/?$select={IdField},{fieldName}&$filter={filter}");
-            if (!exists)
-            {
-                ValidationResult.Remove(ValidationRule.Unique);
-            }
-            else
-            {
-                ValidationResult.TryAdd(ValidationRule.Unique, string.Format(rule.Message, LangSelect.Get(GuiInfo.Label), _text));
-            }
+                var exists = ds.Length > 0 && ds[0].Length > 0;
+                if (exists)
+                {
+                    ValidationResult.TryAdd(ValidationRule.Unique, string.Format(rule.Message, LangSelect.Get(GuiInfo.Label), _text));
+                }
+                else
+                {
+                    ValidationResult.Remove(ValidationRule.Unique);
+                }
+                tcs.TrySetResult(true);
+            });
+            return tcs.Task;
         }
 
         private bool ValidateRegEx(string value, string regText)

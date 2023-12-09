@@ -729,60 +729,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
                 return tcs.task;
             },
-            GetRawList: function (T, filter, clearCache, addTenant, annonymous, entityName) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    $t, 
-                    headers, 
-                    res, 
-                    $t1, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (filter === void 0) { filter = null; }
-                                        if (clearCache === void 0) { clearCache = false; }
-                                        if (addTenant === void 0) { addTenant = false; }
-                                        if (annonymous === void 0) { annonymous = false; }
-                                        if (entityName === void 0) { entityName = null; }
-                                        this.EntityName = ($t = entityName, $t != null ? $t : Bridge.Reflection.getTypeName(T));
-                                        headers = Core.Clients.Client.ClearCacheHeader(clearCache);
-                                        $task1 = this.SubmitAsync(Core.Models.OdataResult$1(T), ($t1 = new Core.Clients.XHRWrapper(), $t1.Value = null, $t1.AddTenant = addTenant, $t1.Url = filter, $t1.Headers = headers, $t1.AllowAnonymous = annonymous, $t1.Method = Core.Enums.HttpMethod.GET, $t1));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        res = $taskResult1;
-                                        $tcs.setResult(res != null ? res.Value : null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
             FirstOrDefaultAsync: function (T, filter, clearCache, addTenant) {
                 var $step = 0,
                     $task1, 
@@ -835,88 +781,14 @@ Bridge.assembly("Core", function ($asm, globals) {
                 $asyncBody();
                 return $tcs.task;
             },
-            LoadById: function (listId, tenant, action) {
-                var $t;
-                if (tenant === void 0) { tenant = ""; }
-                if (action === void 0) { action = "ById"; }
-                return this.SubmitAsync(Core.Models.OdataResult$1(System.Object), ($t = new Core.Clients.XHRWrapper(), $t.Value = listId, $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t.Url = action, $t.Headers = function (_o1) {
-                        _o1.add("content-type", "application/json");
-                        return _o1;
-                    }(new (System.Collections.Generic.Dictionary$2(System.String,System.String)).ctor()), $t));
-            },
-            GetRawListById: function (T, listId, tenant, action, clearCache) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    listIdStr, 
-                    refType, 
-                    httpGetList, 
-                    filter, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (tenant === void 0) { tenant = ""; }
-                                        if (action === void 0) { action = ""; }
-                                        if (clearCache === void 0) { clearCache = false; }
-                                        if (Core.Extensions.IEnumerableExtensions.Nothing(System.String, listId)) {
-                                            $tcs.setResult(new (System.Collections.Generic.List$1(T)).ctor());
-                                            return;
-                                        }
-                                        listIdStr = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(listId, System.String).distinct().select(function (x) {
-                                            return System.String.format("'{0}'", [x]);
-                                        }), ",");
-                                        refType = Bridge.Reflection.getType((this.NameSpace || "") + (this.EntityName || ""));
-                                        httpGetList = System.Linq.Enumerable.from(Bridge.Reflection.getMembers(Bridge.getType(this), 8, 28), System.Reflection.MethodInfo).firstOrDefault(function (x) {
-                                            return Bridge.referenceEquals(x.n, "GetRawList") && Bridge.Reflection.isGenericMethodDefinition(x);
-                                        }, null);
-                                        if (httpGetList == null) {
-                                            $tcs.setResult(new (System.Collections.Generic.List$1(T)).ctor());
-                                            return;
-                                        }
-                                        filter = System.String.format("{0}/?{1}$filter=Id in ({2})", action, (!Bridge.referenceEquals(tenant, "") ? System.String.format("t={0}&", [tenant]) : ""), listIdStr);
-                                        $task1 = Bridge.unbox(Bridge.Reflection.midel(Bridge.Reflection.makeGenericMethod(httpGetList, [refType]), this)(filter, clearCache));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        $tcs.setResult($taskResult1);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
             GetByIdAsync: function (table, connKey, ids) {
-                var $t;
+                var $t, $t1;
                 if (ids === void 0) { ids = []; }
                 if (Core.Extensions.StringExt.IsNullOrWhiteSpace(table) || Core.Extensions.IEnumerableExtensions.Nothing(System.String, ids)) {
                     return System.Threading.Tasks.Task.fromResult(null, System.Array.type(System.Object));
                 }
                 var tcs = new System.Threading.Tasks.TaskCompletionSource();
-                var vm = ($t = new Core.ViewModels.SqlViewModel(), $t.Params = JSON.stringify(new $asm.$AnonymousType$1(table, ids)), $t.ComId = "Entity", $t.Action = "ById", $t);
+                var vm = ($t = new Core.ViewModels.SqlViewModel(), $t.Params = JSON.stringify(new $asm.$AnonymousType$1(table, ids)), $t.ComId = "Entity", $t.Action = "ById", $t.ConnKey = ($t1 = connKey, $t1 != null ? $t1 : Core.Clients.Client.ConnKey), $t);
                 Core.Extensions.EventExt.Done(System.Array.type(System.Array.type(System.Object)), this.SubmitAsync(System.Array.type(System.Array.type(System.Object)), ($t = new Core.Clients.XHRWrapper(), $t.Value = JSON.stringify(vm), $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t.Url = Core.Extensions.Utils.UserSvc, $t.Headers = function (_o1) {
                         _o1.add("content-type", "application/json");
                         return _o1;
@@ -925,74 +797,12 @@ Bridge.assembly("Core", function ($asm, globals) {
                 });
                 return tcs.task;
             },
-            /**
-             * This method is used when we don't have return type at compiled time
-             *
-             * @instance
-             * @public
-             * @this Core.Clients.Client
-             * @memberof Core.Clients.Client
-             * @param   {System.Object}                    value     
-             * @param   {string}                           subUrl
-             * @return  {System.Threading.Tasks.Task$1}
-             */
-            CreateAsync$1: function (value, subUrl) {
-                if (subUrl === void 0) { subUrl = ""; }
-                var refType = Bridge.Reflection.getType((this.NameSpace || "") + (this.EntityName || ""));
-                var httpGetList = System.Linq.Enumerable.from(Bridge.Reflection.getMembers(Bridge.getType(this), 8, 28), System.Reflection.MethodInfo).firstOrDefault(function (x) {
-                        return Bridge.referenceEquals(x.n, "PostAsync") && Bridge.Reflection.isGenericMethodDefinition(x);
-                    }, null);
-                if (httpGetList == null) {
-                    return System.Threading.Tasks.Task.fromResult({ }, System.Object);
-                }
-
-                return Bridge.unbox(Bridge.Reflection.midel(Bridge.Reflection.makeGenericMethod(httpGetList, [refType]), this)(Bridge.unbox(value), subUrl));
-            },
-            CreateAsync: function (T, value, subUrl) {
-                if (subUrl === void 0) { subUrl = ""; }
-                return this.PostAsync(T, value, subUrl);
-            },
             PostAsync: function (T, value, subUrl, annonymous, allowNested) {
                 var $t;
                 if (subUrl === void 0) { subUrl = ""; }
                 if (annonymous === void 0) { annonymous = false; }
                 if (allowNested === void 0) { allowNested = false; }
                 return this.SubmitAsync(T, ($t = new Core.Clients.XHRWrapper(), $t.Value = value, $t.Url = subUrl, $t.Method = Core.Enums.HttpMethod.POST, $t.AllowAnonymous = annonymous, $t));
-            },
-            GetAsync: function (T, subUrl) {
-                var $t;
-                return this.SubmitAsync(T, ($t = new Core.Clients.XHRWrapper(), $t.Url = subUrl, $t.Method = Core.Enums.HttpMethod.GET, $t));
-            },
-            /**
-             * This method is used when we don't have return type at compiled time
-             *
-             * @instance
-             * @public
-             * @this Core.Clients.Client
-             * @memberof Core.Clients.Client
-             * @param   {System.Object}                    value     
-             * @param   {string}                           subUrl
-             * @return  {System.Threading.Tasks.Task$1}
-             */
-            UpdateAsync$1: function (value, subUrl) {
-                var $t;
-                if (subUrl === void 0) { subUrl = ""; }
-                var refType = Bridge.Reflection.getType(((($t = this.NameSpace, $t != null ? $t : "Core.Models.")) || "") + (this.EntityName || ""));
-                var httpGetList = System.Linq.Enumerable.from(Bridge.Reflection.getMembers(Bridge.getType(this), 8, 28), System.Reflection.MethodInfo).firstOrDefault(function (x) {
-                        return Bridge.referenceEquals(x.n, "UpdateAsync") && Bridge.Reflection.isGenericMethodDefinition(x);
-                    }, null);
-                if (httpGetList == null) {
-                    return System.Threading.Tasks.Task.fromResult({ }, System.Object);
-                }
-
-                return Bridge.Reflection.midel(Bridge.Reflection.makeGenericMethod(httpGetList, [refType]), this)(Bridge.unbox(value), subUrl);
-            },
-            UpdateAsync: function (T, value, subUrl, annonymous, allowNested) {
-                var $t;
-                if (subUrl === void 0) { subUrl = ""; }
-                if (annonymous === void 0) { annonymous = false; }
-                if (allowNested === void 0) { allowNested = false; }
-                return this.SubmitAsync(T, ($t = new Core.Clients.XHRWrapper(), $t.Value = value, $t.Url = subUrl, $t.Method = Core.Enums.HttpMethod.PUT, $t.AllowAnonymous = annonymous, $t));
             },
             PatchAsync: function (value, errHandler, annonymous) {
                 var $t;
@@ -10549,24 +10359,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             OpenFrom: null,
             ParentForm: null,
             ReasonOfChange: null,
-            Config: false,
-            /**
-             * This property is used in component's expressions
-             *
-             * @instance
-             * @public
-             * @memberof Core.Components.Forms.EditForm
-             * @function Token
-             * @type Core.ViewModels.Token
-             */
-            Token: {
-                get: function () {
-                    return Core.Clients.Client.Token;
-                },
-                set: function (value) {
-                    Core.Clients.Client.Token = value;
-                }
-            }
+            Config: false
         },
         ctors: {
             init: function () {
@@ -10628,6 +10421,19 @@ Bridge.assembly("Core", function ($asm, globals) {
                     Core.Extensions.Toast.Warning(Core.Components.Forms.EditForm.NotDirtyMessage);
                     return System.Threading.Tasks.Task.fromResult(false, System.Boolean);
                 }
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                Core.Extensions.EventExt.Done(System.Boolean, this.IsFormValid(), Bridge.fn.bind(this, function (valid) {
+                    if (valid) {
+                        Core.Extensions.EventExt.Done(System.Boolean, this.ValidSavePatch(), function (sucess) {
+                            tcs.trySetResult(sucess);
+                        });
+                    } else {
+                        tcs.trySetResult(false);
+                    }
+                }));
+                return tcs.task;
+            },
+            ValidSavePatch: function () {
                 var tcs = new System.Threading.Tasks.TaskCompletionSource();
                 var pathModel = this.GetPatchEntity();
                 !Bridge.staticEquals(this.BeforeSaved, null) ? this.BeforeSaved() : null;
@@ -10710,92 +10516,49 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
             },
             IsFormValid: function (showMessage, predicate, ignorePredicate) {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    allValid, 
-                    invalidFields, 
-                    $t, 
-                    message, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (showMessage === void 0) { showMessage = true; }
-                                        if (predicate === void 0) { predicate = null; }
-                                        if (ignorePredicate === void 0) { ignorePredicate = null; }
-                                        if (Bridge.staticEquals(predicate, null)) {
-                                            predicate = function (x) {
-                                                return true;
-                                            };
-                                        }
-                                        if (Bridge.staticEquals(ignorePredicate, null)) {
-                                            ignorePredicate = function (x) {
-                                                return x.AlwaysValid || x.EmptyRow;
-                                            };
-                                        }
-                                        $task1 = Core.Extensions.IEnumerableExtensions.ForEachAsync(Core.Components.EditableComponent, this.FilterChildren(Core.Components.EditableComponent, predicate, ignorePredicate, void 0), function (x) {
-                                            return x.ValidateAsync();
-                                        });
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        allValid = $taskResult1;
-                                        invalidFields = System.Linq.Enumerable.from(($t = Core.Components.EditableComponent, System.Linq.Enumerable.from(allValid, $t).toList($t)), Core.Components.EditableComponent).where(function (x) {
-                                            return !x.IsValid;
-                                        });
-                                        if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Components.EditableComponent, invalidFields)) {
-                                            $tcs.setResult(true);
-                                            return;
-                                        }
-
-                                        if (showMessage) {
-                                            invalidFields.forEach(function (x) {
-                                                x.Disabled = false;
-                                            });
-                                            invalidFields.firstOrDefault(null, null).Focus();
-                                            message = Bridge.toArray(invalidFields.selectMany(function (x) {
-                                                return x.ValidationResult.Values;
-                                            })).join("<br />");
-                                            Core.Extensions.Toast.Warning(message);
-                                        }
-                                        $tcs.setResult(false);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
-            },
-            ReloadAndShowMessage: function (showMessage, updating) {
-                var prefix = updating ? "C\u1eadp nh\u1eadt" : "T\u1ea1o m\u1edbi";
-                if (showMessage) {
-                    Core.Extensions.Toast.Success(System.String.format("{0} th\u00e0nh c\u00f4ng", [prefix]));
+                if (showMessage === void 0) { showMessage = true; }
+                if (predicate === void 0) { predicate = null; }
+                if (ignorePredicate === void 0) { ignorePredicate = null; }
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                if (Bridge.staticEquals(predicate, null)) {
+                    predicate = function (x) {
+                        return true;
+                    };
                 }
-
-                this.UpdateView();
+                if (Bridge.staticEquals(ignorePredicate, null)) {
+                    ignorePredicate = function (x) {
+                        return x.AlwaysValid || x.EmptyRow;
+                    };
+                }
+                var allValid = Core.Extensions.IEnumerableExtensions.ForEachAsync(Core.Components.EditableComponent, this.FilterChildren(Core.Components.EditableComponent, predicate, ignorePredicate, void 0), function (x) {
+                    return x.ValidateAsync();
+                });
+                Core.Extensions.EventExt.Done(System.Collections.Generic.IEnumerable$1(Core.Components.EditableComponent), allValid, function (validities) {
+                    var $t;
+                    var res = ($t = Core.Components.EditableComponent, System.Linq.Enumerable.from(validities, $t).ToArray($t));
+                    var invalid = System.Linq.Enumerable.from(res, Core.Components.EditableComponent).any(function (x) {
+                            return !x.IsValid;
+                        });
+                    if (!invalid) {
+                        tcs.trySetResult(true);
+                        return;
+                    }
+                    if (showMessage) {
+                        var invalidCom = System.Linq.Enumerable.from(res, Core.Components.EditableComponent).where(function (x) {
+                                return !x.IsValid;
+                            }).ToArray(Core.Components.EditableComponent);
+                        invalidCom.forEach(function (x) {
+                                x.Disabled = false;
+                            });
+                        System.Linq.Enumerable.from(invalidCom, Core.Components.EditableComponent).firstOrDefault(null, null).Focus();
+                        var message = Bridge.toArray(System.Linq.Enumerable.from(invalidCom, Core.Components.EditableComponent).selectMany(function (x) {
+                                    return x.ValidationResult.Values;
+                                })).join("<br />");
+                        Core.Extensions.Toast.Warning(message);
+                    }
+                    tcs.trySetResult(false);
+                });
+                return tcs.task;
             },
             BuildTree: function (componentGroup) {
                 var $t, $t1, $t2, $t3;
@@ -11501,7 +11264,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
                 this._confirm = ($t = new Core.Components.Forms.ConfirmDialog(), $t.Content = "B\u1ea1n c\u00f3 mu\u1ed1n l\u01b0u d\u1eef li\u1ec7u tr\u01b0\u1edbc khi \u0111\u00f3ng?", $t.OpenEditForm = this, $t);
                 this._confirm.YesConfirmed = Bridge.fn.combine(this._confirm.YesConfirmed, Bridge.fn.bind(this, function () {
-                    Core.Clients.Client.ExecTask(System.Boolean, this._confirm.OpenEditForm.SavePatch(), Bridge.fn.bind(this, function (success) {
+                    Core.Extensions.EventExt.Done(System.Boolean, this._confirm.OpenEditForm.SavePatch(), Bridge.fn.bind(this, function (success) {
                         if (!success) {
                             Core.Extensions.Toast.Warning("Update data failed");
                             return;
@@ -12804,7 +12567,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var finalCon = Core.Extensions.IEnumerableExtensions.Combine(System.String, System.Linq.Enumerable.from(System.Array.init([basicCondition, fnBtnCondition], System.String), System.String).where(function (x) {
                         return !Core.Extensions.StringExt.IsNullOrWhiteSpace(x);
                     }), " and ");
-                var data = ($t = new Core.ViewModels.SqlViewModel(), $t.ComId = this.GuiInfo.Id, $t.Params = submitEntity != null ? JSON.stringify(Bridge.unbox(submitEntity)) : null, $t.OrderBy = ($t1 = orderBy, $t1 != null ? $t1 : (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.OrderBy) ? "ds.Id asc\n" : this.GuiInfo.OrderBy)), $t.Where = finalCon, $t.Count = count, $t.SkipXQuery = cacheMeta, $t);
+                var data = ($t = new Core.ViewModels.SqlViewModel(), $t.ComId = this.GuiInfo.Id, $t.Params = submitEntity != null ? JSON.stringify(Bridge.unbox(submitEntity)) : null, $t.OrderBy = ($t1 = orderBy, $t1 != null ? $t1 : (Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.OrderBy) ? "ds.Id asc\n" : this.GuiInfo.OrderBy)), $t.Where = finalCon, $t.Count = count, $t.SkipXQuery = cacheMeta, $t.ConnKey = this.ConnKey, $t);
                 if (System.Nullable.hasValue(skip) && System.Nullable.hasValue(pageSize)) {
                     data.Paging = System.String.format("offset {0} rows\nfetch next {1} rows only", Bridge.box(skip, System.Int32, System.Nullable.toString, System.Nullable.getHashCode), Bridge.box(pageSize, System.Int32, System.Nullable.toString, System.Nullable.getHashCode));
                 }
@@ -16635,7 +16398,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             SignOut: function (e) {
                 e.preventDefault();
-                var task = Core.Clients.Client.Instance.CreateAsync(System.Boolean, Core.Clients.Client.Token, "/user/signOut");
+                var task = Core.Clients.Client.Instance.PostAsync(System.Boolean, Core.Clients.Client.Token, "/user/signOut");
                 Core.Clients.Client.ExecTask(System.Boolean, task, function (res) {
                     !Bridge.staticEquals(Core.Clients.Client.SignOutEventHandler, null) ? Core.Clients.Client.SignOutEventHandler() : null;
                     Core.Clients.Client.Token = null;
@@ -16740,8 +16503,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             MarkAsRead: function (task) {
                 task.StatusId = Bridge.toString((Core.Enums.TaskStateEnum.Read));
-                var a = Core.Clients.Client.Instance.UpdateAsync(Core.Models.TaskNotification, task, "TaskNotification");
-                Core.Clients.Client.ExecTask(Core.Models.TaskNotification, a, Bridge.fn.bind(this, function (res) {
+                Core.Extensions.EventExt.Done(System.Boolean, Core.Clients.Client.Instance.PatchAsync(Core.Components.Extensions.ComponentExt.MapToPatch(task, "TaskNotification")), Bridge.fn.bind(this, function (x) {
                     this.SetBadgeNumber();
                 }));
             },
@@ -20515,78 +20277,29 @@ Bridge.assembly("Core", function ($asm, globals) {
                 return tcs.task;
             },
             ValidateUnique: function () {
-                var $step = 0,
-                    $task1, 
-                    $taskResult1, 
-                    $jumpFromFinally, 
-                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                    $returnValue, 
-                    rule, 
-                    fieldName, 
-                    entityId, 
-                    filter, 
-                    $t, 
-                    entity, 
-                    $t1, 
-                    exists, 
-                    $async_e, 
-                    $asyncBody = Bridge.fn.bind(this, function () {
-                        try {
-                            for (;;) {
-                                $step = System.Array.min([0,1], $step);
-                                switch ($step) {
-                                    case 0: {
-                                        if (!this.ValidationRules.containsKey(Core.Extensions.ValidationRule.Unique)) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        rule = this.ValidationRules.getItem(Core.Extensions.ValidationRule.Unique);
-                                        if (rule == null || Core.Extensions.StringExt.IsNullOrWhiteSpace(this._text)) {
-                                            $tcs.setResult(null);
-                                            return;
-                                        }
-                                        fieldName = this.FieldName;
-                                        entityId = Bridge.unbox(this.Entity[Core.Components.EditableComponent.IdField]);
-                                        filter = ($t = rule.Condition, $t != null ? $t : System.String.format("Active eq true and ", null));
-                                        if (System.Nullable.gt(entityId, 0)) {
-                                            filter = (filter || "") + ((System.String.format("{0} eq '{1}' and Id ne {2}", fieldName, Core.Extensions.Utils.EncodeSpecialChar(this._text), Bridge.box(entityId, System.Int32, System.Nullable.toString, System.Nullable.getHashCode))) || "");
-                                        } else {
-                                            filter = (filter || "") + ((System.String.format("{0} eq '{1}'", fieldName, Core.Extensions.Utils.EncodeSpecialChar(this._text))) || "");
-                                        }
-                                        entity = ($t1 = Core.Extensions.Utils.GetEntity(this.EditForm.Feature.EntityId)) != null ? $t1.Name : null;
-                                        $task1 = new Core.Clients.Client.$ctor1(entity).GetAsync(System.Boolean, System.String.format("/Exists/?$select={0},{1}&$filter={2}", Core.Components.EditableComponent.IdField, fieldName, filter));
-                                        $step = 1;
-                                        if ($task1.isCompleted()) {
-                                            continue;
-                                        }
-                                        $task1.continue($asyncBody);
-                                        return;
-                                    }
-                                    case 1: {
-                                        $taskResult1 = $task1.getAwaitedResult();
-                                        exists = $taskResult1;
-                                        if (!exists) {
-                                            this.ValidationResult.remove(Core.Extensions.ValidationRule.Unique);
-                                        } else {
-                                            System.Collections.Generic.CollectionExtensions.TryAdd(System.String, System.String, this.ValidationResult, Core.Extensions.ValidationRule.Unique, System.String.format(rule.Message, Core.Components.LangSelect.Get(this.GuiInfo.Label), this._text));
-                                        }
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                    default: {
-                                        $tcs.setResult(null);
-                                        return;
-                                    }
-                                }
-                            }
-                        } catch($async_e1) {
-                            $async_e = System.Exception.create($async_e1);
-                            $tcs.setException($async_e);
-                        }
-                    }, arguments);
-
-                $asyncBody();
-                return $tcs.task;
+                var $t;
+                if (!this.ValidationRules.containsKey(Core.Extensions.ValidationRule.Unique)) {
+                    return System.Threading.Tasks.Task.fromResult(true, System.Boolean);
+                }
+                var rule = this.ValidationRules.getItem(Core.Extensions.ValidationRule.Unique);
+                if (rule == null || Core.Extensions.StringExt.IsNullOrWhiteSpace(this._text)) {
+                    return System.Threading.Tasks.Task.fromResult(true, System.Boolean);
+                }
+                var fn = { };
+                var isFn = Core.Extensions.Utils.IsFunction(this.GuiInfo.PreQuery, fn);
+                var table = Core.Extensions.StringExt.HasNonSpaceChar(this.GuiInfo.RefName) ? this.GuiInfo.RefName : this.EditForm.Feature.EntityName;
+                var sql = ($t = new Core.ViewModels.SqlViewModel(), $t.ComId = this.GuiInfo.Id, $t.Params = isFn ? JSON.stringify(Bridge.unbox(fn.v.call(null, this))) : null, $t.ConnKey = this.ConnKey, $t);
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                Core.Extensions.EventExt.Done(System.Array.type(System.Array.type(System.Object)), Core.Clients.Client.Instance.ComQuery(sql), Bridge.fn.bind(this, function (ds) {
+                    var exists = ds.length > 0 && ds[System.Array.index(0, ds)].length > 0;
+                    if (exists) {
+                        System.Collections.Generic.CollectionExtensions.TryAdd(System.String, System.String, this.ValidationResult, Core.Extensions.ValidationRule.Unique, System.String.format(rule.Message, Core.Components.LangSelect.Get(this.GuiInfo.Label), this._text));
+                    } else {
+                        this.ValidationResult.remove(Core.Extensions.ValidationRule.Unique);
+                    }
+                    tcs.trySetResult(Bridge.box(true, System.Boolean, System.Boolean.toString));
+                }));
+                return tcs.task;
             },
             ValidateRegEx: function (value, regText) {
                 if (value == null) {

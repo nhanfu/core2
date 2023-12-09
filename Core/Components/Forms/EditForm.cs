@@ -177,6 +177,17 @@ namespace Core.Components.Forms
                 return Task.FromResult(false);
             }
             var tcs = new TaskCompletionSource<bool>();
+            IsFormValid().Done(valid =>
+            {
+                if (valid) ValidSavePatch().Done(sucess => tcs.TrySetResult(sucess));
+                else tcs.TrySetResult(false);
+            });
+            return tcs.Task;
+        }
+
+        private Task<bool> ValidSavePatch()
+        {
+            var tcs = new TaskCompletionSource<bool>();
             var pathModel = GetPatchEntity();
             BeforeSaved?.Invoke();
             Client.Instance.PatchAsync(pathModel).Done(rs =>
@@ -258,8 +269,9 @@ namespace Core.Components.Forms
             }
         }
 
-        public async Task<bool> IsFormValid(bool showMessage = true, Func<EditableComponent, bool> predicate = null, Func<EditableComponent, bool> ignorePredicate = null)
+        public Task<bool> IsFormValid(bool showMessage = true, Func<EditableComponent, bool> predicate = null, Func<EditableComponent, bool> ignorePredicate = null)
         {
+            var tcs = new TaskCompletionSource<bool>();
             if (predicate == null)
             {
                 predicate = (EditableComponent x) => true;
@@ -268,35 +280,30 @@ namespace Core.Components.Forms
             {
                 ignorePredicate = (EditableComponent x) => x.AlwaysValid || x.EmptyRow;
             }
-            var allValid = await FilterChildren(
+            var allValid = FilterChildren(
                 predicate: predicate,
                 ignorePredicate: ignorePredicate
             ).ForEachAsync(x => x.ValidateAsync());
-            var invalidFields = allValid.ToList().Where(x => !x.IsValid);
-            if (invalidFields.Nothing())
+            allValid.Done((validities) =>
             {
-                return true;
-            }
-
-            if (showMessage)
-            {
-                invalidFields.ForEach(x => { x.Disabled = false; });
-                invalidFields.FirstOrDefault().Focus();
-                var message = string.Join("<br />", invalidFields.SelectMany(x => x.ValidationResult.Values));
-                Toast.Warning(message);
-            }
-            return false;
-        }
-
-        protected void ReloadAndShowMessage(bool showMessage, bool updating)
-        {
-            var prefix = updating ? "Cập nhật" : "Tạo mới";
-            if (showMessage)
-            {
-                Toast.Success($"{prefix} thành công");
-            }
-
-            UpdateView();
+                var res = validities.ToArray();
+                var invalid = res.Any(x => !x.IsValid);
+                if (!invalid)
+                {
+                    tcs.TrySetResult(true);
+                    return;
+                }
+                if (showMessage)
+                {
+                    var invalidCom = res.Where(x => !x.IsValid).ToArray();
+                    invalidCom.ForEach(x => { x.Disabled = false; });
+                    invalidCom.FirstOrDefault().Focus();
+                    var message = string.Join("<br />", invalidCom.SelectMany(x => x.ValidationResult.Values));
+                    Toast.Warning(message);
+                }
+                tcs.TrySetResult(false);
+            });
+            return tcs.Task;
         }
 
         protected List<ComponentGroup> BuildTree(List<ComponentGroup> componentGroup)
@@ -397,15 +404,6 @@ namespace Core.Components.Forms
             }
             LoadFeatureAndRender();
             LastForm = this;
-        }
-
-        /// <summary>
-        /// This property is used in component's expressions
-        /// </summary>
-        public virtual Token Token
-        {
-            get => Client.Token;
-            set => Client.Token = value;
         }
 
         protected virtual void LoadFeatureAndRender(Action callback = null)
@@ -1063,7 +1061,7 @@ namespace Core.Components.Forms
             };
             _confirm.YesConfirmed += () =>
             {
-                Client.ExecTask(_confirm.OpenEditForm.SavePatch(), success =>
+                _confirm.OpenEditForm.SavePatch().Done(success =>
                 {
                     if (!success)
                     {

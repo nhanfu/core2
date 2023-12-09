@@ -206,6 +206,7 @@ namespace Core.Components
                 Where = finalCon,
                 Count = count,
                 SkipXQuery = cacheMeta,
+                ConnKey = ConnKey
             };
             if (skip.HasValue && pageSize.HasValue)
             {
