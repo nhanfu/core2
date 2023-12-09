@@ -17,12 +17,13 @@ namespace Core.Components.Framework
 {
     public class NotificationBL : EditableComponent
     {
+        private const string NoMoreTask = "No more task";
         private static NotificationBL _instance;
         private static Observable<string> _countNtf;
         private static Observable<string> _countUser;
         private HTMLElement _task;
         private HTMLElement _countBadge;
-        public static ObservableList<TaskNotification> Notifications { get; private set; }
+        public static ObservableList<TaskNotification> Notifications { get; set; }
         public static ObservableList<User> UserActive { get; set; }
         private Token CurrentUser { get; set; }
 
@@ -53,7 +54,6 @@ namespace Core.Components.Framework
             {
                 Notifications.Add(task, 0);
                 ToggleBageCount(Notifications.Data.Count);
-                PopupNotification(task);
             }
             SetBadgeNumber();
             var entity = Utils.GetEntityById(task.EntityId);
@@ -126,23 +126,24 @@ namespace Core.Components.Framework
 
         public override void Render()
         {
-            Task.Run(RenderAsync);
-        }
-
-        public async Task RenderAsync()
-        {
             Html.Take("#notification-list").Clear();
             Html.Take("#user-active").Clear();
-            var notifications = new Client(nameof(TaskNotification)).GetRawList<TaskNotification>($"?$expand=Entity&$orderby=InsertedDate desc&$top=50");
-            var userActive = new Client(nameof(TaskNotification)).PostAsync<List<User>>(null, $"GetUserActive");
-            await Task.WhenAll(notifications, userActive);
-            Notifications.Data = notifications.Result;
-            UserActive.Data = userActive.Result;
             SetBadgeNumber();
             CurrentUser = Client.Token;
             CurrentUser.Avatar = (CurrentUser.Avatar.Contains("://") ? "" : Client.Origin) + (CurrentUser.Avatar.IsNullOrWhiteSpace() ? "./image/chinese.jfif" : CurrentUser.Avatar);
             RenderNotification();
             RenderProfile(".profile-info1");
+            var xhr = new XHRWrapper 
+            {
+                Url = $"/{nameof(TaskNotification)}/GetUserActive",
+                Method = HttpMethod.POST,
+                ShowError = false
+            };
+            Client.Instance.SubmitAsync<List<User>>(xhr)
+            .Done(x => {
+                UserActive.Data = x;
+            })
+            .Catch(Console.WriteLine);
         }
 
         public void RenderProfile(string classname)
@@ -197,26 +198,32 @@ namespace Core.Components.Framework
                 _countBadge = Html.Context;
             };
             html.EndOf(ElementType.a);
-            html.Div.Style("border-top-left-radius: 0;border-top-right-radius: 0").ClassName("dropdown-menu dropdown-menu-right dropdown-content wmin-md-300 mt-0").Style("border-top-left-radius: 0;border-top-right-radius: 0");
-            html.ForEach(Notifications, (task, index) =>
+            html.Div.Style("border-top-left-radius: 0;border-top-right-radius: 0")
+                .ClassName("dropdown-menu dropdown-menu-right dropdown-content wmin-md-300 mt-0")
+                .Style("border-top-left-radius: 0; border-top-right-radius: 0");
+            html.Div.ForEach(Notifications, (task, index) =>
             {
-                if (task is null)
-                {
-                    return;
-                }
-
-                var className = task.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString() ? "text-danger" : "text-muted";
-                html.A.ClassName("dropdown-item").Div.ClassName("media").Event(EventType.Click, (e) =>
-                {
-                    OpenNotification(task);
-                })
-                .Div.ClassName("media-body").H3.ClassName("dropdown-item-title").Text(task.Title).Span.ClassName("float-right text-sm " + className).I.ClassName("fas fa-star").End.End.End
-                .P.ClassName("text-sm").Text(task.Description).End
-                .P.ClassName("text-sm text-muted")
-                    .I.ClassName("far fa-clock mr-1").End.Text(task.Deadline.ToString("dd/MM/yyyy HH:mm")).EndOf(ElementType.a);
-            });
+                RenderTask(task);
+            }).End.Render();
             html.A.ClassName("dropdown-item dropdown-footer").Event(EventType.Click, SeeMore).Text("See more").EndOf(ElementType.a);
-            Notifications.Data.ForEach(PopupNotification);
+        }
+
+        private void RenderTask(TaskNotification task)
+        {
+            if (task is null)
+            {
+                return;
+            }
+
+            var className = task.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString() ? "text-danger" : "text-muted";
+            Html.Instance.A.ClassName("dropdown-item").Div.ClassName("media").Event(EventType.Click, (e) =>
+            {
+                OpenNotification(task);
+            })
+            .Div.ClassName("media-body").H3.ClassName("dropdown-item-title").Text(task.Title).Span.ClassName("float-right text-sm " + className).I.ClassName("fas fa-star").End.End.End
+            .P.ClassName("text-sm").Text(task.Description).End
+            .P.ClassName("text-sm text-muted")
+                .I.ClassName("far fa-clock mr-1").End.Text(task.Deadline.ToString("dd/MM/yyyy HH:mm")).EndOf(ElementType.a);
         }
 
         private void ToggleBageCount(int count)
@@ -224,30 +231,40 @@ namespace Core.Components.Framework
             _countBadge.Style.Display = count == 0 ? Display.None : Display.InlineBlock;
         }
 
-        private void PopupNotification(TaskNotification task)
-        {
-            if (task.StatusId != ((int)TaskStateEnum.UnreadStatus).ToString())
-            {
-                return;
-            }
-        }
-
-        private void ToggleNotification()
-        {
-            _task.Style.Display = Display.Block;
-            _task.Focus();
-        }
-
         private void SeeMore(Event e)
         {
-            var lastSeenTask = Notifications.Data.LastOrDefault();
-            var lastSeenDate = lastSeenTask?.InsertedDate ?? DateTime.Now;
-            var olderTasks = new Client(nameof(TaskNotification)).GetRawList<TaskNotification>(
-                $"?$filter=InsertedDate lt {lastSeenDate.ToISOFormat()}&$expand=Entity&$orderby=InsertedDate desc&$top=50");
-            Client.ExecTask(olderTasks, olderItems =>
+            e.PreventDefault();
+            var lastSeenTask = Notifications.Data.OrderByDescending(x => x.InsertedDate).FirstOrDefault();
+            if (lastSeenTask is null) {
+                Toast.Warning(NoMoreTask);
+                return;
+            }
+            Spinner.AppendTo(Element, timeout: 250);
+            var lastSeenDateStr = lastSeenTask.InsertedDate.ToISOFormat();
+            var sql = new SqlViewModel
             {
+                ComId = "Task",
+                Action = "SeeMore",
+                ConnKey = Client.ConnKey,
+                Params = JSON.Stringify(new { Date = lastSeenDateStr })
+            };
+            var xhr = new XHRWrapper
+            {
+                Method = HttpMethod.POST, IsRawString = true, Url = Utils.UserSvc,
+                Value = JSON.Stringify(sql)
+            };
+            Client.Instance.SubmitAsync<object[][]>(xhr).Done(ds =>
+            {
+                var olderItems = ds.Length > 0 ? ds[0].Select(x => x.CastProp<TaskNotification>()).ToArray() : null;
+                if (olderItems.Nothing()) 
+                {
+                    Toast.Warning(NoMoreTask);
+                    return;
+                }
                 var taskList = Notifications.Data.Union(olderItems).ToList();
                 Notifications.Data = taskList;
+            }).Catch(err => {
+                Toast.Warning(err?.Message ?? NoMoreTask);
             });
         }
 

@@ -86,13 +86,21 @@ namespace Core.Components.Framework
             _hasRender = true;
             var startup = BoostrapTask();
             var roles = string.Join("\\", Client.Token.RoleIds);
-            Client.ExecTask(startup, (res) =>
+            startup.Done(res =>
             {
-                var features = res[0].Select(x => x.CastProp<Feature>()).ToArray();
-                var startApps = res[1].Select(x => x.CastProp<UserSetting>()).ToArray();
-                var entities = res[2].Select(x => x.CastProp<Entity>()).ToArray();
+                var features = res.Length > 0 ? res[0].Select(x => x.CastProp<Feature>()).ToArray() : null;
+                var startApps = res.Length > 1 ? res[1].Select(x => x.CastProp<UserSetting>()).ToArray() : null;
+                var entities = res.Length > 2 ? res[2].Select(x => x.CastProp<Entity>()).ToArray() : null;
+                var tasks = res.Length > 3 ? res[3].Select(x => x.CastProp<TaskNotification>()).ToList() : null;
+                SetTask(tasks);
                 GetFeatureCb(features, startApps, entities);
             });
+        }
+
+        private void SetTask(List<TaskNotification> tasks)
+        {
+            if (tasks.Nothing()) return;
+            NotificationBL.Notifications.Data = tasks;
         }
 
         private static Task<object[][]> BoostrapTask()

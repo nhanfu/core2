@@ -927,59 +927,30 @@ namespace Core.Components.Forms
             {
                 case "AddLink":
                     com.ComponentType = nameof(Link);
-                    com.Visibility = true;
-                    com.Order = lastOrder;
-                    com.ComponentGroupId = componentGroup.Id;
-                    com.FieldName = "";
-                    com.Label = "";
-                    Task.Run(async () =>
-                    {
-                        var client = await new Client(nameof(Component)).CreateAsync(com);
-                        UpdateRender(com, componentGroup);
-                        Toast.Success("Tạo thành công!");
-                    });
                     break;
                 case "AddInput":
                     com.ComponentType = "Input";
-                    com.Visibility = true;
-                    com.Order = lastOrder;
-                    com.ComponentGroupId = componentGroup.Id;
-                    com.FieldName = "";
-                    com.Label = "";
-                    Task.Run(async () =>
-                    {
-                        var client = await new Client(nameof(Component)).CreateAsync(com);
-                        UpdateRender(com, componentGroup);
-                        Toast.Success("Tạo thành công!");
-                    });
                     break;
                 case "AddTimepicker":
                     com.ComponentType = nameof(Timepicker);
-                    com.Visibility = true;
-                    com.Order = lastOrder;
-                    com.ComponentGroupId = componentGroup.Id;
-                    com.FieldName = "";
-                    com.Label = "";
-                    Task.Run(async () =>
-                    {
-                        var client = await new Client(nameof(Component)).CreateAsync(com);
-                        UpdateRender(com, componentGroup);
-                        Toast.Success("Tạo thành công!");
-                    });
                     break;
                 case "AddPassword":
                     com.ComponentType = "Password";
-                    com.Visibility = true;
-                    com.Order = lastOrder;
-                    com.ComponentGroupId = componentGroup.Id;
-                    com.FieldName = "";
-                    com.Label = "";
-                    Task.Run(async () =>
-                    {
-                        var client = await new Client(nameof(Component)).CreateAsync(com);
-                        UpdateRender(com, componentGroup);
-                        Toast.Success("Tạo thành công!");
-                    });
+                    break;
+                case "AddTextarea":
+                    com.ComponentType = "Textarea";
+                    break;
+                case "AddDropdown":
+                    com.ComponentType = nameof(SearchEntry);
+                    break;
+                case "AddImage":
+                    com.ComponentType = "Image";
+                    break;
+                case "AddGridView":
+                    com.ComponentType = nameof(GridView);
+                    break;
+                case "AddListView":
+                    com.ComponentType = nameof(ListView);
                     break;
                 case "AddLabel":
                     com.ComponentType = "Label";
@@ -1000,87 +971,26 @@ namespace Core.Components.Forms
                     confirm.YesConfirmed += () =>
                     {
                         com.Label = confirm.Textbox?.Text;
-                        Task.Run(async () =>
-                        {
-                            var client = await new Client(nameof(Component)).CreateAsync<Component>(com);
-                            UpdateRender(client, componentGroup);
-                            Toast.Success("Tạo thành công!");
-                        });
+                        SaveNewComponent(componentGroup, com);
                     };
-                    break;
-                case "AddTextarea":
-                    com.ComponentType = "Textarea";
-                    com.Visibility = true;
-                    com.Order = lastOrder;
-                    com.ComponentGroupId = componentGroup.Id;
-                    com.FieldName = "";
-                    com.Label = "";
-                    Task.Run(async () =>
-                    {
-                        var client = await new Client(nameof(Component)).CreateAsync(com);
-                        UpdateRender(com, componentGroup);
-                        Toast.Success("Tạo thành công!");
-                    });
-                    break;
-                case "AddDropdown":
-                    com.ComponentType = nameof(SearchEntry);
-                    com.Visibility = true;
-                    com.Order = lastOrder;
-                    com.ComponentGroupId = componentGroup.Id;
-                    com.FieldName = "";
-                    com.Label = "";
-                    Task.Run(async () =>
-                    {
-                        var client = await new Client(nameof(Component)).CreateAsync(com);
-                        UpdateRender(com, componentGroup);
-                        Toast.Success("Tạo thành công!");
-                    });
-                    break;
-                case "AddImage":
-                    com.ComponentType = "Image";
-                    com.Visibility = true;
-                    com.Order = lastOrder;
-                    com.ComponentGroupId = componentGroup.Id;
-                    com.FieldName = "";
-                    com.Label = "";
-                    Task.Run(async () =>
-                    {
-                        var client = await new Client(nameof(Component)).CreateAsync(com);
-                        UpdateRender(com, componentGroup);
-                        Toast.Success("Tạo thành công!");
-                    });
-                    break;
-                case "AddGridView":
-                    com.ComponentType = nameof(GridView);
-                    com.Visibility = true;
-                    com.DataSourceFilter = "?$filter=Active eq true";
-                    com.Label = "";
-                    com.ComponentGroupId = componentGroup.Id;
-                    com.Order = lastOrder;
-                    com.FieldName = "";
-                    Task.Run(async () =>
-                    {
-                        var client = await new Client(nameof(Component)).CreateAsync(com);
-                        UpdateRender(com, componentGroup);
-                        Toast.Success("Tạo thành công!");
-                    });
-                    break;
-                case "AddListView":
-                    com.ComponentType = nameof(ListView);
-                    com.Visibility = true;
-                    com.DataSourceFilter = "?$filter=Active eq true";
-                    com.Label = "";
-                    com.ComponentGroupId = componentGroup.Id;
-                    com.Order = lastOrder;
-                    com.FieldName = "";
-                    Task.Run(async () =>
-                    {
-                        var client = await new Client(nameof(Component)).CreateAsync(com);
-                        UpdateRender(com, componentGroup);
-                        Toast.Success("Tạo thành công!");
-                    });
-                    break;
+                    return;
             }
+            com.Id = System.Id.NewGuid();
+            com.Visibility = true;
+            com.Label = "";
+            com.ComponentGroupId = componentGroup.Id;
+            com.Order = lastOrder;
+            com.FieldName = "";
+            SaveNewComponent(componentGroup, com);
+        }
+
+        private void SaveNewComponent(ComponentGroup componentGroup, Component com)
+        {
+            Client.Instance.PatchAsync(com.MapToPatch(nameof(Component))).Done(x =>
+            {
+                UpdateRender(com, componentGroup);
+                Toast.Success("Tạo thành công!");
+            });
         }
 
         private void UpdateRender(Component component, ComponentGroup componentGroup)

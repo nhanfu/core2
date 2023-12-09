@@ -14,6 +14,10 @@ namespace Core.Extensions
 
         public static string ToISOFormat(this DateTime date)
         {
+            /*@
+            var isRaw = date.toISOString != null;
+            if (isRaw) return date.toISOString();
+            */
             return date.ToString(DateFormat);
         }
 
@@ -36,11 +40,6 @@ namespace Core.Extensions
                datestr= `${year}/${mnth}/${day} ${hours1}:${minutes}:${seconds}`
              */
             return datestr;
-        }
-
-        public static string ToOdataFormat(this DateTime date)
-        {
-            return string.Concat("cast(", date.ToISOFormat(), ",Edm.DateTimeOffset)");
         }
 
         public static (int, int, int) ToDayHourMinute(this TimeSpan span)
