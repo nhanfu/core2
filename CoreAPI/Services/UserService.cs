@@ -5,6 +5,8 @@ using Core.Extensions;
 using Core.Models;
 using Core.ViewModels;
 using Hangfire;
+using HtmlAgilityPack;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
@@ -29,6 +31,10 @@ namespace Core.Services;
 
 public class UserService
 {
+    private const string ContentType = "Content-Type";
+    private const string NotFoundFile = "wwwRoot/404.html";
+    private const string href = "href";
+    private const string src = "src";
     private const int MAX_LOGIN = 5;
     public readonly IHttpContextAccessor Context;
     private readonly CoreContext db;
@@ -1282,7 +1288,7 @@ public class UserService
 
     public async Task SendMail(EmailVM email, CoreContext db, string webRoot = null)
     {
-        var config = await db.MasterData.Where(x => x.Parent.Name == nameof(ConfigEmailVM)).ToListAsync();
+        var config = await db.MasterData.Where(x => x.Parent.Name == "ConfigEmailVM").ToListAsync();
         var fromName = config.FirstOrDefault(x => x.Name == "FromName")?.Description;
         var fromAddress = email.FromAddress ?? config.FirstOrDefault(x => x.Name == "FromAddress")?.Description;
         var password = config.FirstOrDefault(x => x.Name == "Password")?.Description ?? throw new ApiException("Email server is not authorzied") { StatusCode = HttpStatusCode.InternalServerError };
@@ -1302,5 +1308,189 @@ public class UserService
             File.Delete(absolutePath);
         }
         return new ValueTask<bool>(true);
+    }
+
+    internal async Task<bool> SignOutAsync(Token token)
+    {
+        if (token is null)
+        {
+            throw new ApiException("Token is required");
+        }
+        var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _configuration);
+        var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
+        var ipAddress = GetRemoteIpAddress(Context.HttpContext);
+        var userLogin = await db.UserLogin.FindAsync(sessionId) ?? throw new ApiException("Login session not found");
+        userLogin.ExpiredDate = DateTimeOffset.Now;
+        await db.SaveChangesAsync();
+        return true;
+    }
+
+    internal async Task<bool> ForgotPassword(LoginVM login)
+    {
+        var str_maxLoginFailed = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "10");
+        var maxLoginFailed = str_maxLoginFailed.Description.TryParseInt() ?? 5;
+        var user = await db.User.FirstOrDefaultAsync(x => x.UserName == login.UserName);
+        var span = DateTimeOffset.Now - (user.UpdatedDate ?? DateTimeOffset.Now);
+        if (user.LoginFailedCount >= maxLoginFailed && span.TotalMinutes < 5)
+        {
+            throw new ApiException($"The account {login.UserName} has been locked for a while! Please contact your administrator to unlock.");
+        }
+        // Send mail
+        var emailTemplate = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "") ?? throw new InvalidOperationException("Cannot find recovery email template!");
+        var oneClickLink = GenerateRandomToken();
+        user.Recover = oneClickLink;
+        await db.SaveChangesAsync();
+        var email = new EmailVM
+        {
+            ToAddresses = [user.Email],
+            Subject = "Email recovery",
+            Body = Utils.FormatEntity(emailTemplate.Description, user)
+        };
+        await SendMail(email, db);
+        return true;
+    }
+
+    internal async Task<string> ResendUser(string userId)
+    {
+        var user = await db.User.FirstOrDefaultAsync(x => x.Id == userId);
+        user.Salt = GenerateRandomToken();
+        var randomPassword = GenerateRandomToken(10);
+        user.Password = GetHash(UserUtils.sHA256, randomPassword + user.Salt);
+        await db.SaveChangesAsync();
+        return randomPassword;
+    }
+
+    private static async Task WriteTemplateAsync(HttpResponse reponse, TenantPage page, string env, string tenant)
+    {
+        var htmlDoc = new HtmlDocument();
+        htmlDoc.LoadHtml(page.Template);
+
+        var links = htmlDoc.DocumentNode.SelectNodes("//link | //script")
+            .SelectForEach((HtmlNode x, int i) =>
+            {
+                ShouldAddVersion(x, href);
+                ShouldAddVersion(x, src);
+            });
+        var meta = new HtmlNode(HtmlNodeType.Element, htmlDoc, 1)
+        {
+            Name = "meta"
+        };
+        meta.SetAttributeValue("name", "startupSvc");
+        meta.SetAttributeValue("content", page.SvcId);
+        htmlDoc.DocumentNode.SelectSingleNode("//head")?.AppendChild(meta);
+        reponse.Headers.TryAdd(ContentType, Utils.GetMimeType("html"));
+        reponse.StatusCode = (int)HttpStatusCode.OK;
+        await reponse.WriteAsync(htmlDoc.DocumentNode.OuterHtml);
+    }
+
+    private static void ShouldAddVersion(HtmlNode x, string attr)
+    {
+        var shouldAdd = x.Attributes.Contains(attr)
+            && x.Attributes[attr].Value.IndexOf("?v=") < 0;
+        if (shouldAdd)
+        {
+            x.Attributes[attr].Value += "?v=" + Guid.NewGuid().ToString();
+        }
+    }
+
+    private async Task WriteDefaultFile(string file, string contentType
+        , HttpStatusCode code = HttpStatusCode.OK)
+    {
+        var response = Context.HttpContext.Response;
+        if (!response.HasStarted)
+        {
+            response.Headers.TryAdd(ContentType, contentType);
+            response.Headers.TryAdd("Content-Encoding", "gzip");
+            response.StatusCode = (int)code;
+        }
+        var html = await File.ReadAllTextAsync(file, encoding: Encoding.UTF8);
+        await response.WriteAsync(html);
+    }
+
+    internal async Task Launch(string tenant, string area, string env)
+    {
+        if (TenantCode != null && TenantCode != tenant)
+        {
+            throw new UnauthorizedAccessException($"Page not found for the tanent {tenant} due to the current user was signed in with the tenant {TenantCode}.");
+        }
+        var request = Context.HttpContext.Request;
+        var response = Context.HttpContext.Response;
+        var ext = Path.GetExtension(request.Path);
+        if (!ext.IsNullOrWhiteSpace())
+        {
+            await response.WriteAsync("File not found");
+            return;
+        }
+        var htmlMimeType = Utils.GetMimeType("html");
+        var key = $"{tenant}_{env}_{area}";
+#if RELEASE
+        var cache = await _cache.GetStringAsync(key);
+        if (cache != null)
+        {
+            var pageCached = JsonConvert.DeserializeObject<TenantPage>(cache);
+            await WriteTemplateAsync(Response, pageCached, env, tenant);
+            return;
+        }
+#endif
+
+        var tenantEnv = await db.TenantEnv.FirstOrDefaultAsync(x => x.TenantCode == tenant && x.Env == env);
+        if (tenantEnv is null)
+        {
+            await WriteDefaultFile(NotFoundFile, htmlMimeType, HttpStatusCode.NotFound);
+            return;
+        }
+        var page = await db.TenantPage.AsNoTracking().FirstOrDefaultAsync(x =>
+            x.TenantEnvId == tenantEnv.Id && x.Area == area);
+        await _cache.SetStringAsync(key, JsonConvert.SerializeObject(page));
+        await WriteTemplateAsync(response, page, env: env, tenant: tenant);
+    }
+
+    internal async Task<bool> CloneFeature(string id)
+    {
+        if (id == null)
+        {
+            return false;
+        }
+        var feature = await db.Feature.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        var policies = await db.FeaturePolicy.AsNoTracking().Where(x => x.FeatureId == id).ToArrayAsync();
+        var groups = await db.ComponentGroup.AsNoTracking().Where(x => x.FeatureId == id).ToArrayAsync();
+        var components = await db.Component.AsNoTracking().Where(x => groups.Select(g => g.Id).Contains(x.ComponentGroupId)).ToArrayAsync();
+        feature.Id = Id.NewGuid().ToString();
+        policies.SelectForeach(x =>
+        {
+            x.Id = Id.NewGuid().ToString();
+            x.FeatureId = feature.Id;
+        });
+        feature.FeaturePolicy = policies;
+        groups.SelectForeach(group =>
+        {
+            var com = components.Where(c => c.ComponentGroupId == group.Id).ToList();
+            group.Id = Id.NewGuid().ToString();
+            com.ForEach(c =>
+            {
+                c.Id = Id.NewGuid().ToString();
+                c.ComponentGroupId = group.Id;
+            });
+        });
+        feature.ComponentGroup = groups;
+        db.Add(feature);
+        db.AddRange(groups);
+        db.AddRange(components);
+        await db.SaveChangesAsync();
+        return true;
+    }
+
+    internal async Task<bool> HardDeleteFeature(List<string> ids)
+    {
+        var features = await db.Feature.Where(x => ids.Contains(x.Id)).ToListAsync();
+        var policies = await db.FeaturePolicy.Where(x => ids.Contains(x.FeatureId)).ToListAsync();
+        var groups = await db.ComponentGroup.Where(x => ids.Contains(x.FeatureId)).ToListAsync();
+        var components = await db.Component.Where(x => groups.Select(g => g.Id).Contains(x.ComponentGroupId)).ToArrayAsync();
+        db.FeaturePolicy.RemoveRange(policies);
+        db.ComponentGroup.RemoveRange(groups);
+        db.Component.RemoveRange(components);
+        db.Feature.RemoveRange(features);
+        await db.SaveChangesAsync();
+        return true;
     }
 }

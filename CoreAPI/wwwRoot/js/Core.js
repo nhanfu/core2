@@ -6022,7 +6022,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.InsertedBy = "InsertedBy";
                     this.OwnerUserIds = "OwnerUserIds";
                     this.OwnerRoleIds = "OwnerRoleIds";
-                    this.ComQuery = "/component/Reader";
+                    this.ComQuery = "/user/reader";
                     this.PatchSvc = "/v2/user";
                     this.UserSvc = "/user/svc";
                     this.HardDelSvc = "/user/hardDelete";
@@ -16380,7 +16380,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.CurrentUser.Avatar = ((System.String.contains(this.CurrentUser.Avatar,"://") ? "" : Core.Clients.Client.Origin) || "") + ((Core.Extensions.StringExt.IsNullOrWhiteSpace(this.CurrentUser.Avatar) ? "./image/chinese.jfif" : this.CurrentUser.Avatar) || "");
                 this.RenderNotification();
                 this.RenderProfile(".profile-info1");
-                var xhr = ($t = new Core.Clients.XHRWrapper(), $t.Url = System.String.format("/{0}/GetUserActive", ["TaskNotification"]), $t.Method = Core.Enums.HttpMethod.POST, $t.ShowError = false, $t);
+                var xhr = ($t = new Core.Clients.XHRWrapper(), $t.Url = System.String.format("/GetUserActive", null), $t.Method = Core.Enums.HttpMethod.POST, $t.ShowError = false, $t);
                 Core.Extensions.EventExt.Catch(Core.Extensions.EventExt.Done(System.Collections.Generic.List$1(Core.Models.User), Core.Clients.Client.Instance.SubmitAsync(System.Collections.Generic.List$1(Core.Models.User), xhr), function (x) {
                     Core.Components.Framework.NotificationBL.UserActive.Data = x;
                 }), System.Console.WriteLine);

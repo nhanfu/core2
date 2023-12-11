@@ -1,10 +1,4 @@
-﻿using Core.Models;
-using Core.Clients;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Core.Extensions
+﻿namespace Core.Extensions
 {
     public class ValidationRule
     {

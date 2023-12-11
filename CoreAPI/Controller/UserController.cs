@@ -1,102 +1,14 @@
 ﻿using Core.Exceptions;
-using Core.Extensions;
 using Core.Models;
+using Core.Services;
 using Core.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace Core.Controllers;
 
-public class UserController(CoreContext context, IConfiguration configuration,
-    IHttpContextAccessor httpContextAccessor, EntityService entityService) 
-    : TMSController<User>(context, entityService, httpContextAccessor)
+public class UserController(UserService _userSvc, TaskService _taskSvc) : ControllerBase
 {
-    private readonly IConfiguration _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-
-    public override async Task<ActionResult<User>> UpdateAsync([FromBody] User user, string reasonOfChange = "")
-    {
-        //await EnsureEditUserPermission();
-        SetAuditInfo(user);
-        db.Entry(user).Property(p => p.Salt).IsModified = false;
-        db.Entry(user).Property(p => p.Password).IsModified = false;
-        db.Entry(user).Property(p => p.InsertedBy).IsModified = false;
-        db.Entry(user).Property(p => p.InsertedDate).IsModified = false;
-        db.Update(user);
-        await db.SaveChangesAsync();
-        return user;
-    }
-
-    private async Task EnsureEditUserPermission()
-    {
-        var canWriteUser = await db.FeaturePolicy
-            .AnyAsync(x => x.Feature.Name == "User Detail" && AllRoleIds.Contains(x.RoleId) && x.CanWrite);
-        if (!canWriteUser)
-        {
-            throw new UnauthorizedAccessException("No permission to update");
-        }
-    }
-
-    [HttpPut("api/[Controller]/UpdateProfile")]
-    public async Task<ActionResult<bool>> UpdateProfileAsync([FromBody] UserProfileVM profile)
-    {
-        var user = await db.User.FindAsync(UserId);
-        if (profile.OldPassword.HasAnyChar())
-        {
-            var hashPassword = _userSvc.GetHash(UserUtils.sHA256, profile.OldPassword + user.Salt);
-            if (hashPassword != user.Password)
-            {
-                throw new InvalidOperationException("The old password is not matched!");
-            }
-            if (profile.NewPassword != profile.ConfirmedPassword)
-            {
-                throw new InvalidOperationException("The password is not matched confirmed password!");
-            }
-            profile.Salt = _userSvc.GenerateRandomToken();
-            profile.Password = _userSvc.GetHash(UserUtils.sHA256, profile.NewPassword + profile.Salt);
-        }
-        user.Salt = profile.Salt;
-        user.Password = profile.Password;
-        if (!profile.OldPassword.HasAnyChar())
-        {
-            db.Entry(user).Property(p => p.Salt).IsModified = false;
-            db.Entry(user).Property(p => p.Password).IsModified = false;
-            db.Entry(user).Property(p => p.InsertedBy).IsModified = false;
-            db.Entry(user).Property(p => p.InsertedDate).IsModified = false;
-        }
-        SetAuditInfo(user);
-        await db.SaveChangesAsync();
-        return true;
-    }
-
-    public override async Task<ActionResult<User>> CreateAsync([FromBody] User user)
-    {
-        user.UserRole = user.UserRole.Where(x => AllRoleIds.Contains(x.RoleId)).ToList();
-        var roles = await db.Role.Where(x => AllRoleIds.Contains(x.Id)).Select(x => new { x.Id, x.Level }).ToListAsync();
-        user.CreatedRoleId = roles.FirstOrDefault(x => x.Level == roles.Min(r => r.Level))?.Id;
-        user.Salt = _userSvc.GenerateRandomToken();
-        var randomPassword = "123";
-        user.Password = _userSvc.GetHash(UserUtils.sHA256, randomPassword + user.Salt);
-        var res = await base.CreateAsync(user);
-        user.Password = randomPassword;
-        var accountCreatedEmailTemplate = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "AccountCreated");
-        if (user.Email.HasAnyChar())
-        {
-            var email = new EmailVM
-            {
-                Body = Utils.FormatEntity(accountCreatedEmailTemplate.Description, user),
-                Subject = $"[{_config["SysName"]}] Tài khoản của bạn vừa được khởi tạo",
-                ToAddresses = new List<string> { user.Email }
-            };
-            await _userSvc.SendMail(email, db);
-        }
-        user.Salt = null;
-        user.Password = null;
-        return res;
-    }
-
     [AllowAnonymous]
     [HttpPost("api/{tenant}/[Controller]/SignIn")]
     public async Task<ActionResult<Token>> SignInAsync([FromBody] LoginVM login, [FromRoute] string tenant)
@@ -110,19 +22,9 @@ public class UserController(CoreContext context, IConfiguration configuration,
     }
 
     [HttpPost("api/[Controller]/SignOut")]
-    public async Task<bool> SignOutAsync([FromBody] Token token)
+    public Task<bool> SignOutAsync([FromBody] Token token)
     {
-        if (token is null)
-        {
-            throw new ApiException("Token is required");
-        }
-        var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _configuration);
-        var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
-        var ipAddress = _userSvc.GetRemoteIpAddress(_httpContext.HttpContext);
-        var userLogin = await db.UserLogin.FindAsync(sessionId) ?? throw new ApiException("Login session not found");
-        userLogin.ExpiredDate = DateTimeOffset.Now;
-        await db.SaveChangesAsync();
-        return true;
+        return _userSvc.SignOutAsync(token);
     }
 
     [AllowAnonymous]
@@ -138,41 +40,15 @@ public class UserController(CoreContext context, IConfiguration configuration,
 
     [AllowAnonymous]
     [HttpPost("api/[Controller]/ForgotPassword")]
-    public async Task<bool> ForgotPassword([FromBody] LoginVM login)
+    public Task<bool> ForgotPassword([FromBody] LoginVM login)
     {
-        var str_maxLoginFailed = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "10");
-        var maxLoginFailed = str_maxLoginFailed.Description.TryParseInt() ?? 5;
-        var user = await db.User.FirstOrDefaultAsync(x => x.UserName == login.UserName);
-        var span = DateTimeOffset.Now - (user.UpdatedDate ?? DateTimeOffset.Now);
-        if (user.LoginFailedCount >= maxLoginFailed && span.TotalMinutes < 5)
-        {
-            throw new ApiException($"The account {login.UserName} has been locked for a while! Please contact your administrator to unlock.");
-        }
-        // Send mail
-        var emailTemplate = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "") ?? throw new InvalidOperationException("Cannot find recovery email template!");
-        var oneClickLink = _userSvc.GenerateRandomToken();
-        user.Recover = oneClickLink;
-        await db.SaveChangesAsync();
-        var email = new EmailVM
-        {
-            ToAddresses = [user.Email],
-            Subject = "Email recovery",
-            Body = Utils.FormatEntity(emailTemplate.Description, user)
-        };
-        await _userSvc.SendMail(email, db);
-        return true;
+        return _userSvc.ForgotPassword(login);
     }
 
     [HttpGet("api/User/ReSendUser/{userId}")]
-    public async Task<string> ReSendUser(string userId)
+    public Task<string> ReSendUser(string userId)
     {
-        var user = await db.User.FirstOrDefaultAsync(x => x.Id == userId);
-        user.Salt = _userSvc.GenerateRandomToken();
-        var randomPassword = _userSvc.GenerateRandomToken(10);
-        user.Password = _userSvc.GetHash(UserUtils.sHA256, randomPassword + user.Salt);
-        SetAuditInfo(user);
-        await db.SaveChangesAsync();
-        return randomPassword;
+        return _userSvc.ResendUser(userId);
     }
 
     [AllowAnonymous]
@@ -241,5 +117,44 @@ public class UserController(CoreContext context, IConfiguration configuration,
     public ValueTask<bool> DeleteFile([FromBody] string path)
     {
         return _userSvc.DeleteFile(path);
+    }
+
+    [HttpPost("api/[Controller]/Reader")]
+    public Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> Reader(
+        [FromBody] SqlViewModel model)
+    {
+        return _userSvc.ReadDataSetWrapper(model);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("/{tenant?}/{area?}/{env?}/{feature?}")]
+    public Task Index([FromRoute] string tenant = "system",
+        [FromRoute] string area = "admin", [FromRoute] string env = "test")
+    {
+        return _userSvc.Launch(tenant, area, env);
+    }
+
+    [HttpPost("api/feature/Clone")]
+    public Task<bool> CloneFeatureAsync([FromBody] string id)
+    {
+        return _userSvc.CloneFeature(id);
+    }
+
+    [HttpDelete("api/feature/HardDelete")]
+    public Task<bool> HardDeleteFeature([FromBody] List<string> ids)
+    {
+        return _userSvc.HardDeleteFeature(ids);
+    }
+
+    [HttpPost("/api/chat")]
+    public Task<Chat> CreateAsync([FromBody] Chat entity)
+    {
+        return _taskSvc.Chat(entity);
+    }
+
+    [HttpPost("api/GetUserActive")]
+    public Task<List<User>> GetUserActive()
+    {
+        return _taskSvc.GetUserActive();
     }
 }

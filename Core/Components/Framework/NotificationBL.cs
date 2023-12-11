@@ -10,7 +10,6 @@ using Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 
 namespace Core.Components.Framework
@@ -135,7 +134,7 @@ namespace Core.Components.Framework
             RenderProfile(".profile-info1");
             var xhr = new XHRWrapper 
             {
-                Url = $"/{nameof(TaskNotification)}/GetUserActive",
+                Url = $"/GetUserActive",
                 Method = HttpMethod.POST,
                 ShowError = false
             };

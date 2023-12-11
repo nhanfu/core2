@@ -1,5 +1,4 @@
 using Core.Extensions;
-using Core.ViewModels;
 using Hangfire;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
@@ -124,7 +123,6 @@ namespace Core
             services.AddScoped<WebSocketService>();
             services.AddScoped<TaskService>();
             services.AddScoped<UserService>();
-            services.AddScoped<VendorSvc>();
         }
 
         static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
@@ -145,23 +143,6 @@ namespace Core
                 connectionStr = connectionStr.Replace($"softek_donga", $"softek_{tenantCode ?? "Softek"}");
             }
             return connectionStr;
-        }
-
-        public static CoreContext GetTMSContext(string conStr, bool subVendor = false)
-        {
-            if (conStr.IsNullOrWhiteSpace())
-            {
-                return null;
-            }
-            var vendorConnStr = conStr;
-            if (subVendor)
-            {
-                var connStr = JsonConvert.DeserializeObject<List<VendorConnStrVM>>(conStr);
-                vendorConnStr = connStr.FirstOrDefault(x => x.Name == "TMS").ConStr;
-            }
-            var builder = new DbContextOptionsBuilder<CoreContext>().UseSqlServer(vendorConnStr).Options;
-            var context = new CoreContext(builder);
-            return context;
         }
 
         private static string GetTanentCode(IServiceProvider serviceProvider)
