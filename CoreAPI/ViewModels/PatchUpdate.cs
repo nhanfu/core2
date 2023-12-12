@@ -6,15 +6,15 @@ namespace Core.ViewModels
 {
     public class PatchVM
     {
+        public bool ByPassPerm { get; set; } = true;
         public string FeatureId { get; set; }
         public string ComId { get; set; }
         public string QueueName { get; set; }
         public string Table { get; set; }
-        public string ConnKey { get; set; } = "default";
+        public string TenantCode { get; set; }
+        public string ConnKey { get; set; } = Utils.ConnKey;
+        public string ConnStr { get; set; }
         public List<PatchDetail> Changes { get; set; }
-        public string ConnStr { get; internal set; }
-        public bool ByPassPerm { get; internal set; } = true;
-        public string TenantCode { get; internal set; }
 
         public void ApplyTo<T>(T obj)
         {

@@ -15,6 +15,8 @@ namespace Core.Models
 
         public virtual DbSet<RequestLog> RequestLog { get; set; }
 
+        public virtual DbSet<History> History { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RequestLog>(entity =>

@@ -179,11 +179,6 @@ public class UserService
         return await GetUserToken(matchedUser, roles, login);
     }
 
-    private Task<object> GetConnStrFromKey(object connKey, string companyName, string env)
-    {
-        throw new NotImplementedException();
-    }
-
     private async Task<(User, Role[])> GetUserByLogin(LoginVM login)
     {
         var query = @$"

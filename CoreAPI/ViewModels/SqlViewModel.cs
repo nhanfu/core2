@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Extensions;
+using Core.Models;
 
 namespace Core.ViewModels
 {
@@ -22,7 +23,7 @@ namespace Core.ViewModels
         public bool Count { get; set; }
         public string[] FieldName { get; set; }
         public bool SkipXQuery { get; set; }
-        public string ConnKey { get; set; }
+        public string ConnKey { get; set; } = Utils.ConnKey;
         public string CacheConnStr { get; set; }
     }
 

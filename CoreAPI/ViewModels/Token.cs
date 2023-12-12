@@ -10,8 +10,6 @@ namespace Core.ViewModels
         public string CostCenterId { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
         public string FullName { get; set; }
         public string Address { get; set; }
         public string Avatar { get; set; }
@@ -19,9 +17,6 @@ namespace Core.ViewModels
         public string RefreshToken { get; set; }
         public DateTimeOffset AccessTokenExp { get; set; }
         public DateTimeOffset RefreshTokenExp { get; set; }
-        public string HashPassword { get; set; }
-        public string Recovery { get; set; }
-        public string SysName { get; set; } = "TMS";
         public string TenantCode { get; set; }
         public Vendor Vendor { get; set; }
         public List<string> RoleIds { get; set; }
@@ -32,7 +27,6 @@ namespace Core.ViewModels
         public string TeamId { get; set; }
         public string PartnerId { get; set; }
         public string RegionId { get; set; }
-        public object Additional { get; set; }
         public DateTimeOffset SigninDate { get; set; }
         public string ConnKey { get; internal set; }
     }

@@ -1,12 +1,9 @@
 using Core.Extensions;
 using Hangfire;
-using Microsoft.AspNet.OData.Builder;
-using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OData.Edm;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Extensions.Http;
@@ -54,7 +51,6 @@ namespace Core
             {
                 options.Providers.Add<GzipCompressionProvider>();
             });
-            services.AddSingleton<EntityService>();
             services.AddWebSocketManager();
             services.AddMvc(options =>
             {
@@ -70,13 +66,6 @@ namespace Core
                 options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 options.SerializerSettings.DateParseHandling = DateParseHandling.DateTimeOffset;
                 options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
-            });
-            services.AddDbContext<HistoryContext>((serviceProvider, options) =>
-            {
-                options.UseSqlServer(_configuration.GetConnectionString($"History"), x => x.EnableRetryOnFailure());
-#if DEBUG
-                options.EnableSensitiveDataLogging();
-#endif
             });
             services.AddDbContext<LOGContext>((serviceProvider, options) =>
             {
@@ -94,7 +83,6 @@ namespace Core
 #endif
             });
             services.AddHangfire(configuration => configuration.UseSqlServerStorage(_configuration.GetConnectionString($"Log")));
-            services.AddOData();
             var tokenOptions = new TokenValidationParameters()
             {
                 ValidIssuer = _configuration["Tokens:Issuer"],
@@ -165,17 +153,8 @@ namespace Core
         }
 
         [Obsolete]
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, CoreContext tms, EntityService entity, IConfiguration configuration, ConnectionManager connectionManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, CoreContext tms, IConfiguration configuration, ConnectionManager connectionManager)
         {
-            if (entity.Entities.Nothing())
-            {
-                entity.Entities = tms.Entity.ToDictionary(x => x.Id, x =>
-                {
-                    var res = new Entity();
-                    res.CopyPropFrom(x);
-                    return res;
-                });
-            }
             app.UseCors("MyPolicy");
             if (env.IsDevelopment())
             {
@@ -196,28 +175,8 @@ namespace Core
             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
             app.Map("/task", app => app.UseMiddleware<WebSocketManagerMiddleware>(serviceProvider.GetService<WebSocketService>()));
             app.UseAuthentication();
-            var model = GetEdmModel(app.ApplicationServices);
-            app.UseMvc(builder =>
-            {
-                builder.EnableDependencyInjection();
-                builder.MapODataServiceRoute("odataroute", "api", model);
-                builder.Select().Expand().Filter().OrderBy().MaxTop(null).Count();
-            });
+            app.UseMvc();
             app.UseRouting();
-        }
-
-        private IEdmModel GetEdmModel(IServiceProvider applicationServices)
-        {
-            var builder = new ODataConventionModelBuilder(applicationServices);
-
-            var userBuilder = builder.EntitySet<User>(nameof(User));
-            userBuilder.EntityType.Ignore(x => x.Salt);
-            userBuilder.EntityType.Ignore(x => x.Password);
-            userBuilder.EntityType.Ignore(x => x.Recover);
-            userBuilder.EntityType.Ignore(x => x.LastFailedLogin);
-            userBuilder.EntityType.Ignore(x => x.LoginFailedCount);
-            userBuilder.EntityType.Ignore(x => x.LastLogin);
-            return builder.GetEdmModel();
         }
     }
 }

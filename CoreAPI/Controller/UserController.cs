@@ -67,6 +67,7 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
     [HttpPatch("api/v2/[Controller]", Order = 0)]
     public Task<bool> PatchAsync([FromBody] PatchVM patch)
     {
+        patch.ByPassPerm = false;
         return _userSvc.SavePatch(patch);
     }
 
