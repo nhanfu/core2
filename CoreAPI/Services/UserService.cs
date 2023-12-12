@@ -131,7 +131,7 @@ public class UserService
         {
             login.CompanyName = login.CompanyName.Trim();
         }
-        login.ConnStr = await GetConnStrFromKey(login.ConnKey, login.CompanyName, login.Env);
+        login.CachedConnStr = await GetConnStrFromKey(login.ConnKey, login.CompanyName, login.Env);
         var (matchedUser, roles) = await GetUserByLogin(login);
         if (matchedUser is null)
         {
@@ -166,7 +166,7 @@ public class UserService
         await SavePatch(new PatchVM
         {
             Table = nameof(User),
-            ConnStr = login.ConnStr,
+            CachedConnStr = login.CachedConnStr,
             Changes = changes
         });
         if (!matchPassword)
@@ -193,7 +193,7 @@ public class UserService
             left join [Role] r on ur.RoleId = r.Id
             where u.Active = 1 and u.Username = @username and v.Code = @tenant"
         ;
-        var ds = await ReadDataSet(query, login.ConnStr);
+        var ds = await ReadDataSet(query, login.CachedConnStr);
         var userDb = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<User>() : null;
         var roles = ds.Length > 1 && ds[1].Length > 0 ? ds[1].Select(x => x.MapTo<Role>()).ToArray() : null;
         return (userDb, roles);
@@ -245,8 +245,9 @@ public class UserService
             ExpiredDate = res.RefreshTokenExp,
             SignInDate = signinDate,
         };
-        db.Add(userLogin);
-        await db.SaveChangesAsync();
+        var patch = userLogin.MapToPatch(nameof(UserLogin));
+        patch.CachedConnStr = login.CachedConnStr;
+        await SavePatch(patch);
         return res;
     }
 
@@ -463,7 +464,7 @@ public class UserService
         var idField = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
         var oldId = idField?.OldVal;
         var allRights = await GetEntityPerm(vm.Table, recordId: null);
-        var connStr = vm.ConnStr ?? await GetConnStrFromKey(vm.ConnKey);
+        var connStr = vm.CachedConnStr ?? await GetConnStrFromKey(vm.ConnKey);
         if (oldId is null)
         {
             writePerm = allRights.Any(x => x.CanAdd || x.CanWriteAll);

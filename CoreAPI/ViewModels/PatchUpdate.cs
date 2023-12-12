@@ -13,8 +13,8 @@ namespace Core.ViewModels
         public string Table { get; set; }
         public string TenantCode { get; set; }
         public string ConnKey { get; set; } = Utils.ConnKey;
-        public string ConnStr { get; set; }
-        public List<PatchDetail> Changes { get; set; }
+        public string CachedConnStr { get; set; }
+        public List<PatchDetail> Changes { get; set; } = new List<PatchDetail>();
 
         public void ApplyTo<T>(T obj)
         {

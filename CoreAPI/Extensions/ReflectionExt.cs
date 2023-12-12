@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Core.ViewModels;
+using System.Collections;
 using System.Reflection;
 
 namespace Core.Extensions
@@ -194,6 +195,27 @@ namespace Core.Extensions
                 prop.SetValue(instance, keyVal[key]);
             }
             return instance;
+        }
+
+        public static PatchVM MapToPatch<T>(this T com, string table = null)
+        {
+            if (com is null) return null;
+            var type = typeof(T);
+            var patch = new PatchVM
+            {
+                Table = table ?? type.Name,
+            };
+            var props = typeof(T).GetProperties().ToList();
+            props.ForEach(prop =>
+            {
+                var val = prop.GetValue(com);
+                patch.Changes.Add(new PatchDetail
+                {
+                    Field = prop.Name,
+                    Value = val?.ToString()
+                });
+            });
+            return patch;
         }
     }
 }
