@@ -99,7 +99,7 @@ namespace Core.Components.Framework
                                 .H1.ClassName("modal-title").Text("XIN CHÀO").End
                                  .Div.ClassName("input-block")
                                     .Label.ClassName("input-label").Text("Tên tài khoản").End
-                                    .Input.Event(EventType.Input, (e) => ParseUsername(e)).Attr("name", "UserName").Type("text").End.End
+                                    .Input.Event(EventType.Input, (e) => LoginEntity.UserName = e.GetInputText()).Attr("name", "UserName").Type("text").End.End
                                 .Div.ClassName("input-block")
                                     .Label.ClassName("input-label").Text("Mật khẩu").End
                                     .Input.Event(EventType.Input, (e) => LoginEntity.Password = e.GetInputText()).Attr("name", "Password").Value(LoginEntity.Password).Type("password").End.End
@@ -115,14 +115,6 @@ namespace Core.Components.Framework
                                 .Img.Src("../image/bg-launch.jpg").End.Render();
                 base.Element = Html.Context;
             }, 100);
-        }
-
-        private void ParseUsername(Event e)
-        {
-            var value = e.GetInputText().Split('/');
-            if (value.Length < 2) return;
-            LoginEntity.CompanyName = value[0];
-            LoginEntity.UserName = value[1];
         }
 
         private void KeyCodeEnter(Event e)
@@ -153,16 +145,16 @@ namespace Core.Components.Framework
         private Task<bool> ProcessValidLogin()
         {
             var login = LoginEntity;
+            var tcs = new TaskCompletionSource<bool>();
+            login.RecoveryToken = Utils.GetUrlParam("recovery");
+            var domainUser = login.UserName.Split('/');
+            login.CompanyName = domainUser.Length > 1 ? domainUser[0] : Client.Tenant;
+            login.UserName = domainUser.Length > 1 ? domainUser[1] : login.UserName;
             if (login.CompanyName.IsNullOrWhiteSpace())
             {
                 Toast.Warning("Company name must be provided!\nFor example my-compay/my-username");
                 return Task.FromResult(false);
             }
-            var tcs = new TaskCompletionSource<bool>();
-            login.RecoveryToken = Utils.GetUrlParam("recovery");
-            var urlParts = Window.Location.PathName.Split("/");
-            login.CompanyName = urlParts.Length > 1 ? urlParts[0] : Client.Tenant;
-            login.UserName = urlParts.Length > 1 ? urlParts[1] : login.UserName;
             login.Env = Client.Env;
             Client.Instance.SubmitAsync<Token>(new XHRWrapper
             {

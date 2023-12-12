@@ -9489,11 +9489,19 @@ Bridge.assembly("Core", function ($asm, globals) {
     Bridge.define("Core.ViewModels.LoginVM", {
         props: {
             CompanyName: null,
+            ConnKey: null,
             UserName: null,
             Password: null,
             AutoSignIn: false,
             RecoveryToken: null,
             Env: null
+        },
+        ctors: {
+            init: function () {
+                this.CompanyName = Core.Clients.Client.Tenant;
+                this.ConnKey = Core.Clients.Client.ConnKey;
+                this.Env = Core.Clients.Client.Env;
+            }
         }
     });
 
@@ -28721,7 +28729,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     Core.Components.Renderer.ClassName(Core.MVVM.Html.Take$1("#tab-content").Div, "modal is-open").Event$1("keypress", Bridge.fn.cacheBind(this, this.KeyCodeEnter));
                     this._backdrop = Core.MVVM.Html.Context;
                     Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.Components.Renderer.ClassName(Core.MVVM.Html.Instance.Div, "modal-container").Div, "modal-left").H1, "modal-title").Text("XIN CH\u00c0O").End.Div, "input-block").Label, "input-label").Text("T\u00ean t\u00e0i kho\u1ea3n").End.Input.Event$1("input", Bridge.fn.bind(this, function (e) {
-                        this.ParseUsername(e);
+                        this.LoginEntity.UserName = Core.Extensions.EventExt.GetInputText(e);
                     })).Attr$1("name", "UserName").Type$1("text").End.End.Div, "input-block").Label, "input-label").Text("M\u1eadt kh\u1ea9u").End.Input.Event$1("input", Bridge.fn.bind(this, function (e) {
                         this.LoginEntity.Password = Core.Extensions.EventExt.GetInputText(e);
                     })).Attr$1("name", "Password").Value(this.LoginEntity.Password).Type$1("password").End.End.Div, "input-block").Label, "input-label").Text("Ghi nh\u1edb").End.Label, "checkbox input-small transition-on style2").Checkbox(this.LoginEntity.AutoSignIn).Event$1("input", Bridge.fn.bind(this, function (e) {
@@ -28731,14 +28739,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                     })), "input-button").Text("\u0110\u0103ng nh\u1eadp").End.End.End.Div, "modal-right").Img.Src("../image/bg-launch.jpg").End.Render();
                     Bridge.ensureBaseProperty(this, "Element").$Core$Components$EditableComponent$Element = Core.MVVM.Html.Context;
                 }), 100);
-            },
-            ParseUsername: function (e) {
-                var value = System.String.split(Core.Extensions.EventExt.GetInputText(e), [47].map(function (i) {{ return String.fromCharCode(i); }}));
-                if (value.length < 2) {
-                    return;
-                }
-                this.LoginEntity.CompanyName = value[System.Array.index(0, value)];
-                this.LoginEntity.UserName = value[System.Array.index(1, value)];
             },
             KeyCodeEnter: function (e) {
                 if (Core.Extensions.EventExt.KeyCode(e) !== Core.Enums.KeyCodeEnum.Enter) {
@@ -28763,15 +28763,15 @@ Bridge.assembly("Core", function ($asm, globals) {
             ProcessValidLogin: function () {
                 var $t;
                 var login = this.LoginEntity;
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                login.RecoveryToken = Core.Extensions.Utils.GetUrlParam("recovery");
+                var domainUser = System.String.split(login.UserName, [47].map(function (i) {{ return String.fromCharCode(i); }}));
+                login.CompanyName = domainUser.length > 1 ? domainUser[System.Array.index(0, domainUser)] : Core.Clients.Client.Tenant;
+                login.UserName = domainUser.length > 1 ? domainUser[System.Array.index(1, domainUser)] : login.UserName;
                 if (Core.Extensions.StringExt.IsNullOrWhiteSpace(login.CompanyName)) {
                     Core.Extensions.Toast.Warning("Company name must be provided!\nFor example my-compay/my-username");
                     return System.Threading.Tasks.Task.fromResult(false, System.Boolean);
                 }
-                var tcs = new System.Threading.Tasks.TaskCompletionSource();
-                login.RecoveryToken = Core.Extensions.Utils.GetUrlParam("recovery");
-                var urlParts = window.location.pathname.split("/");
-                login.CompanyName = urlParts.length > 1 ? urlParts[System.Array.index(0, urlParts)] : Core.Clients.Client.Tenant;
-                login.UserName = urlParts.length > 1 ? urlParts[System.Array.index(1, urlParts)] : login.UserName;
                 login.Env = Core.Clients.Client.Env;
                 Core.Extensions.EventExt.Catch(Core.Extensions.EventExt.Done(Core.ViewModels.Token, Core.Clients.Client.Instance.SubmitAsync(Core.ViewModels.Token, ($t = new Core.Clients.XHRWrapper(), $t.Url = System.String.format("/{0}/User/SignIn", [login.CompanyName]), $t.Value = JSON.stringify(login), $t.IsRawString = true, $t.Method = Core.Enums.HttpMethod.POST, $t.AllowAnonymous = true, $t)), Bridge.fn.bind(this, function (res) {
                     var $t1;
