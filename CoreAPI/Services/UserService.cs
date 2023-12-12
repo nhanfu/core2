@@ -6,7 +6,6 @@ using Core.Models;
 using Core.ViewModels;
 using Hangfire;
 using HtmlAgilityPack;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
@@ -43,22 +42,27 @@ public class UserService
     private readonly IWebHostEnvironment _host;
 
     public string UserId { get; set; }
+    public string UserName { get; set; }
+    public string ConnKey { get; set; }
     public string BranchId { get; set; }
     public List<string> CenterIds { get; set; }
     public string VendorId { get; set; }
     public string Env { get; set; }
     public string TenantCode { get; set; }
-    public List<string> AllRoleIds { get; set; }
     public List<string> RoleIds { get; set; }
 
-    static readonly Regex[] _fobiddenTerm = new Regex[] { new Regex(@"delete\s"), new Regex(@"create\s"), new Regex(@"insert\s"),
-                new Regex(@"update\s"), new Regex(@"select\s"), new Regex(@"from\s"),new Regex(@"where\s"),
-                new Regex(@"group by\s"), new Regex(@"having\s"), new Regex(@"order by\s") };
-    static readonly string[] _systemFields = new string[] 
-    { 
-        IdField, nameof(TenantCode), nameof(User.InsertedBy), nameof(User.InsertedDate)
-        , nameof(User.UpdatedBy), nameof(User.UpdatedDate) 
+    static readonly Regex[] _fobiddenTerm =
+    [
+        new(@"delete\s"), new(@"create\s"), new(@"insert\s"),
+        new(@"update\s"), new(@"select\s"), new(@"from\s"),new(@"where\s"),
+        new(@"group by\s"), new(@"having\s"), new(@"order by\s")
+    ];
+    static readonly string[] _systemFields = new string[]
+    {
+        IdField, nameof(TenantCode), nameof(User.InsertedBy),
+        nameof(User.InsertedDate), nameof(User.UpdatedBy), nameof(User.UpdatedDate)
     }.Select(x => x.ToLower()).ToArray();
+    private const string ConnKeyClaim = "ConnKey";
 
     public UserService(IHttpContextAccessor httpContextAccessor, CoreContext db,
         IConfiguration configuration, IDistributedCache cache, IWebHostEnvironment host)
@@ -77,7 +81,8 @@ public class UserService
         var claims = Context.HttpContext.User.Claims;
         BranchId = claims.FirstOrDefault(x => x.Type == nameof(BranchId))?.Value;
         UserId = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-        AllRoleIds = claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).Where(x => x != null).ToList();
+        ConnKey = claims.FirstOrDefault(x => x.Type == ConnKeyClaim)?.Value;
+        UserName = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
         CenterIds = claims.Where(x => x.Type == nameof(CenterIds)).Select(x => x.Value).Where(x => x != null).ToList();
         RoleIds = claims.Where(x => x.Type == ClaimTypes.Actor).Select(x => x.Value).Where(x => x != null).ToList();
         VendorId = claims.FirstOrDefault(x => x.Type == ClaimTypes.GroupSid)?.Value;
@@ -111,127 +116,134 @@ public class UserService
 
     public const string IdField = "Id";
     private const string PassPhrase = "d7a9220a-6949-44c8-a702-789587e536cb";
-
-    public void SetAuditInfo<K>(K entity, string userId = null) where K : class
-    {
-        ReflectionExt.ProcessObjectRecursive(entity, (obj) =>
-        {
-            string id = obj.GetPropValue(IdField)?.ToString();
-
-            if (id is null)
-            {
-                obj.SetPropValue(IdField, Guid.NewGuid().ToString());
-                obj.SetPropValue(nameof(User.TenantCode), TenantCode);
-                obj.SetPropValue(nameof(User.InsertedBy), userId ?? UserId);
-                obj.SetPropValue(nameof(User.InsertedDate), DateTimeOffset.Now);
-                obj.SetPropValue(nameof(User.UpdatedBy), userId ?? UserId);
-                obj.SetPropValue(nameof(User.UpdatedDate), DateTimeOffset.Now);
-                obj.SetPropValue(nameof(User.Active), true);
-            }
-            else
-            {
-                obj.SetPropValue(nameof(User.UpdatedBy), userId ?? UserId);
-                obj.SetPropValue(nameof(User.UpdatedDate), DateTimeOffset.Now);
-                obj.SetPropValue(nameof(User.TenantCode), TenantCode);
-            }
-        });
-    }
+    private const string BranchIdClaim = "BranchId";
 
     public string GetRemoteIpAddress(HttpContext context)
     {
-        return context.Request.Headers.ContainsKey("X-Forwarded-For")
-            ? context.Request.Headers["X-Forwarded-For"].ToString().Split(',')[0].Trim()
+        return context.Request.Headers.TryGetValue("X-Forwarded-For", out var value)
+            ? value.ToString().Split(',')[0].Trim()
             : context.Connection.RemoteIpAddress.ToString();
     }
 
-    public async Task<Token> SignInAsync(LoginVM login, bool skipHash = false)
+    public async Task<Token> SignInAsync(LoginVM login)
     {
         if (login.CompanyName.HasAnyChar())
         {
             login.CompanyName = login.CompanyName.Trim();
         }
-        var matchedUser = await GetUserByLogin(login) ?? throw new ApiException($"Sai mật khẩu hoặc tên đăng nhập.<br /> Vui lòng đăng nhập lại!") { StatusCode = HttpStatusCode.BadRequest };
+        login.ConnStr = await GetConnStrFromKey(login.ConnKey, login.CompanyName, login.Env);
+        var (matchedUser, roles) = await GetUserByLogin(login);
+        if (matchedUser is null)
+        {
+            throw new ApiException($"Sai mật khẩu hoặc tên đăng nhập.<br /> Vui lòng đăng nhập lại!")
+            {
+                StatusCode = HttpStatusCode.BadRequest
+            };
+        }
         if (matchedUser.LoginFailedCount >= MAX_LOGIN && matchedUser.LastFailedLogin < DateTimeOffset.Now.AddMinutes(5))
         {
-            throw new ApiException($"Tài khoản {login.UserName} đã bị khóa trong 5 phút!") { StatusCode = HttpStatusCode.Conflict };
+            throw new ApiException($"Tài khoản {login.UserName} đã bị khóa trong 5 phút!")
+            {
+                StatusCode = HttpStatusCode.Conflict
+            };
         }
         var hashedPassword = GetHash(UserUtils.sHA256, login.Password + matchedUser.Salt);
-        var matchPassword = skipHash ? matchedUser.Password == login.Password : matchedUser.Password == hashedPassword;
+        var matchPassword = matchedUser.Password == hashedPassword;
+        List<PatchDetail> changes = [new PatchDetail { Field = IdField, OldVal = matchedUser.Id }];
         if (!matchPassword)
         {
-            if (!login.RecoveryToken.IsNullOrWhiteSpace() && login.RecoveryToken == matchedUser.Recover)
-            {
-                matchedUser.Password = hashedPassword;
-            }
-            else
-            {
-                matchedUser.LastFailedLogin = DateTimeOffset.Now;
-                matchedUser.LoginFailedCount = matchedUser.LoginFailedCount.HasValue ? matchedUser.LoginFailedCount + 1 : 1;
-            }
+            var loginFailedCount = matchedUser.LoginFailedCount.HasValue ? matchedUser.LoginFailedCount + 1 : 1;
+            changes.Add(new PatchDetail { Field = nameof(User.LastFailedLogin), Value = DateTimeOffset.Now.ToISOFormat() });
+            changes.Add(new PatchDetail { Field = nameof(User.LoginFailedCount), Value = loginFailedCount.ToString() });
         }
         else
         {
             matchedUser.LastLogin = DateTimeOffset.Now;
             matchedUser.LoginFailedCount = 0;
+            changes.Add(new PatchDetail { Field = nameof(User.LastLogin), Value = DateTimeOffset.Now.ToISOFormat() });
+            changes.Add(new PatchDetail { Field = nameof(User.LoginFailedCount), Value = 0.ToString() });
         }
-        if (!skipHash)
+        await SavePatch(new PatchVM
         {
-            await db.SaveChangesAsync();
-        }
+            Table = nameof(User),
+            ConnStr = login.ConnStr,
+            Changes = changes
+        });
         if (!matchPassword)
         {
-            throw new ApiException($"Wrong username or password. Please try again!") { StatusCode = HttpStatusCode.BadRequest };
+            throw new ApiException($"Wrong username or password. Please try again!")
+            {
+                StatusCode = HttpStatusCode.BadRequest
+            };
         }
-        return await GetUserToken(matchedUser, tenant: login.CompanyName, env: login.Env, null, login.AutoSignIn);
+        return await GetUserToken(matchedUser, roles, login);
     }
 
-    private async Task<User> GetUserByLogin(LoginVM login)
+    private Task<object> GetConnStrFromKey(object connKey, string companyName, string env)
     {
-        var matchedUser =
-            from user in db.User.Include(user => user.Vendor).Include(user => user.UserRole).ThenInclude(userRole => userRole.Role)
-            where user.UserName == login.UserName && user.Active && user.Vendor.Code == login.CompanyName
-            select user;
-        return await matchedUser.FirstOrDefaultAsync();
+        throw new NotImplementedException();
     }
 
-    protected virtual async Task<Token> GetUserToken(User user, string tenant, string env, string refreshToken = null, bool autoSigin = false)
+    private async Task<(User, Role[])> GetUserByLogin(LoginVM login)
+    {
+        var query = @$"
+        declare @username varchar(100) = '{login.UserName}';
+        declare @tenant varchar(100) = '{login.CompanyName}';
+            select u.* from [User] u 
+            join Vendor v on u.VendorId = v.Id
+            where u.Active = 1 and u.Username = @username and v.Code = @tenant;
+        select r.* from [User] u 
+            join Vendor v on u.VendorId = v.Id
+            left join UserRole ur on u.Id = ur.UserId
+            left join [Role] r on ur.RoleId = r.Id
+            where u.Active = 1 and u.Username = @username and v.Code = @tenant"
+        ;
+        var ds = await ReadDataSet(query, login.ConnStr);
+        var userDb = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<User>() : null;
+        var roles = ds.Length > 1 && ds[1].Length > 0 ? ds[1].Select(x => x.MapTo<Role>()).ToArray() : null;
+        return (userDb, roles);
+    }
+
+    protected async Task<Token> GetUserToken(User user, Role[] roles, LoginVM login, string refreshToken = null)
     {
         if (user is null)
         {
             return null;
         }
-        var roleIds = user.UserRole.Select(x => x.RoleId).Distinct().ToList();
-        var allRoles = await GetDecendantPath<Role>(roleIds, true);
+        var roleIds = roles.Select(x => x.Id).Distinct().ToList();
         var signinDate = DateTimeOffset.Now;
         var jit = Guid.NewGuid().ToString();
-        var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.GroupSid, user.VendorId.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(nameof(User.BranchId), user.BranchId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-                new Claim(JwtRegisteredClaimNames.Birthdate, user.DoB.ToString()),
-                new Claim(JwtRegisteredClaimNames.FamilyName, user.FullName?? string.Empty),
-                new Claim(JwtRegisteredClaimNames.Iat, signinDate.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, jit),
-                new Claim(ClaimTypes.PrimaryGroupSid, tenant),
-                new Claim(ClaimTypes.Spn, env),
-            };
-        claims.AddRange(allRoles.Select(x => new Claim(ClaimTypes.Role, x.ToString())));
+        List<Claim> claims =
+        [
+            new(ClaimTypes.GroupSid, user.VendorId.ToString()),
+            new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new (ClaimTypes.Name, user.UserName),
+            new (BranchIdClaim, user.BranchId?.ToString() ?? string.Empty),
+            new (JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+            new (JwtRegisteredClaimNames.Birthdate, user.DoB?.ToString() ?? string.Empty),
+        ];
+        List<Claim> claim2 = [
+            new (JwtRegisteredClaimNames.FamilyName, user.FullName?? string.Empty),
+            new (JwtRegisteredClaimNames.Iat, signinDate.ToString()),
+            new (JwtRegisteredClaimNames.Jti, jit),
+            new (ClaimTypes.PrimaryGroupSid, login.CompanyName ?? string.Empty),
+            new (ClaimTypes.Spn, login.Env ?? string.Empty),
+            new (ConnKeyClaim, login.ConnKey ?? Utils.ConnKey),
+        ];
+        claims.AddRange(claim2);
         claims.AddRange(roleIds.Select(x => new Claim(ClaimTypes.Actor, x.ToString())));
         var newLogin = refreshToken is null;
         refreshToken ??= GenerateRandomToken();
         var (token, exp) = AccessToken(claims);
-        var res = JsonToken(user, user.UserRole.ToList(), tenant, allRoles.ToList(), refreshToken, token, exp, signinDate);
-        if (!newLogin || !autoSigin)
+        var res = JsonToken(user, roles, login.CompanyName, refreshToken, token, exp, signinDate);
+        if (!newLogin || !login.AutoSignIn)
         {
             return res;
         }
         var userLogin = new UserLogin
         {
             Id = jit,
-            TenantCode = tenant,
+            TenantCode = login.CompanyName,
             UserId = user.Id,
             IpAddress = GetRemoteIpAddress(Context.HttpContext),
             RefreshToken = refreshToken,
@@ -241,27 +253,6 @@ public class UserService
         db.Add(userLogin);
         await db.SaveChangesAsync();
         return res;
-    }
-
-    private Task<List<string>> GetDecendantPath<T>(string rootId, bool includeRoot) where T : class => GetDecendantPath<T>(new List<string> { rootId }, includeRoot);
-    public async Task<List<string>> GetDecendantPath<T>(List<string> rootIds, bool includeRoot) where T : class
-    {
-        var str_roleIds = string.Join(",", rootIds);
-        var tableName = typeof(T).Name;
-        var decendants = rootIds.Nothing() ? new List<T>() : await db.Set<T>().FromSqlRaw(
-            $"select * from [{tableName}] d " +
-            $"cross apply (select [data] from dbo.SplitStringToTable(d.Path, '\\') where [data] in ({str_roleIds})) as decendants"
-        ).ToListAsync();
-        List<string> result = null;
-        if (includeRoot)
-        {
-            result = decendants.Select(x => (string)x.GetPropValue(IdField)).Union(rootIds).ToList();
-        }
-        else
-        {
-            result = decendants.Select(x => (string)x.GetPropValue(IdField)).Except(rootIds).ToList();
-        }
-        return result;
     }
 
     public (JwtSecurityToken, DateTimeOffset) AccessToken(IEnumerable<Claim> claims, DateTimeOffset? expire = null)
@@ -278,8 +269,7 @@ public class UserService
         return (token, exp);
     }
 
-    private Token JsonToken(User user,
-        List<UserRole> roles, string tanent, List<string> allRoleIds, string refreshToken,
+    private static Token JsonToken(User user, Role[] roles, string tanent, string refreshToken,
         JwtSecurityToken token, DateTimeOffset exp, DateTimeOffset signinDate)
     {
         var vendor = new Vendor();
@@ -288,8 +278,6 @@ public class UserService
         {
             UserId = user.Id,
             CostCenterId = user.BranchId,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
             FullName = user.FullName,
             UserName = user.UserName,
             Address = user.Address,
@@ -300,13 +288,11 @@ public class UserService
             AccessTokenExp = exp,
             RefreshTokenExp = DateTimeOffset.Now.AddYears(1),
             RefreshToken = refreshToken,
-            RoleIds = roles.Select(x => x.RoleId).ToList(),
-            AllRoleIds = allRoleIds,
-            RoleNames = roles.Select(x => x.Role.RoleName).ToList(),
+            RoleIds = roles.Select(x => x.Id).ToList(),
+            RoleNames = roles.Select(x => x.RoleName).ToList(),
             Vendor = vendor,
             TenantCode = tanent,
-            SysName = _configuration["SysName"],
-            SigninDate = signinDate
+            SigninDate = signinDate,
         };
     }
 
@@ -315,16 +301,18 @@ public class UserService
         var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _configuration);
         var issuedAt = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Iat)?.Value.TryParseDateTime();
         var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+        var userName = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
         var tenant = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimaryGroupSid)?.Value;
         var env = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Spn)?.Value;
-        if (userId is null)
+        var connKey = principal.Claims.FirstOrDefault(x => x.Type == ConnKeyClaim)?.Value;
+        if (userName is null)
         {
-            throw new InvalidOperationException($"{nameof(userId)} is null");
+            throw new InvalidOperationException($"{nameof(userName)} is null");
         }
         var ipAddress = GetRemoteIpAddress(Context.HttpContext);
         var userLogin = await db.UserLogin
             .OrderByDescending(x => x.SignInDate)
-            .FirstOrDefaultAsync(x => x.UserId == userId
+            .FirstOrDefaultAsync(x => x.UserId == userName
                 && x.RefreshToken == token.RefreshToken
                 && x.ExpiredDate > DateTimeOffset.Now);
 
@@ -333,88 +321,34 @@ public class UserService
             Console.WriteLine("Refresh token timeout.");
             return null;
         }
-        var updatedUser = await db.User.Include(user => user.Vendor)
-            .Include(x => x.UserRole).ThenInclude(x => x.Role)
-            .FirstOrDefaultAsync(x => x.Id == userId);
-        return await GetUserToken(user: updatedUser, tenant: tenant, env: env, refreshToken: token.RefreshToken);
+        var login = new LoginVM
+        {
+            CompanyName = tenant,
+            UserName = userName,
+            ConnKey = connKey
+        };
+        var (updatedUser, roles) = await GetUserByLogin(login);
+        return await GetUserToken(updatedUser, roles, login, token.RefreshToken);
     }
 
-    public async Task<Role> GetRole(string roleName, RoleSelection? selection = RoleSelection.TopFirst)
+    public async Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
     {
-        var roleQuery = db.Role
-            .Where(x => AllRoleIds.Contains(x.Id) && x.RoleName.Contains(roleName));
-        if (selection == RoleSelection.TopFirst)
-        {
-            roleQuery = roleQuery.OrderBy(x => x.Path.Length);
-        }
-        else
-        {
-            roleQuery = roleQuery.OrderByDescending(x => x.Path.Length);
-        }
-        return await roleQuery.FirstOrDefaultAsync();
-    }
-
-    public async Task<User> GetUserByRole(string roleName, RoleSelection? selection = RoleSelection.TopFirst)
-    {
-        var role = await GetRole(roleName, selection);
-        var userQuery =
-            from user in db.User
-            join userRole in db.UserRole on user.Id equals userRole.UserId
-            where user.Active && userRole.Active && role.Id == userRole.RoleId
-            select user;
-        return await userQuery.FirstOrDefaultAsync();
-    }
-
-    public async Task<string> EncryptQuery(string query, string env, string system, string tenantCode, bool encryptQuery = false, string connKey = null)
-    {
-        if (query.IsNullOrEmpty()) return null;
-        var hash = GetHash(UserUtils.sHA256, query);
-        if (connKey is null)
-        {
-            var tenantConnKey = await db.TenantEnv
-                .Where(x => x.TenantCode == tenantCode && x.Env == env)
-                .Select(x => x.ConnKey).FirstOrDefaultAsync()
-                ?? throw new ApiException("Tenant config not found");
-            connKey = tenantConnKey;
-        }
-        List<Claim> claims = [
-            new(ClaimTypes.Hash, hash),
-                new(ClaimTypes.System, connKey, PassPhrase),
-            ];
-        if (encryptQuery)
-        {
-            claims.Add(new Claim("Query", query));
-        }
-        var accessToken = AccessToken(claims, DateTimeOffset.Now.AddDays(1)).Item1;
-        return new JwtSecurityTokenHandler().WriteToken(accessToken);
-    }
-
-    public async Task<(string Conn, string Query)> DecryptQuery(string signed, string plainQuery = null)
-    {
-        var token = UserUtils.GetPrincipalFromAccessToken(signed, _configuration);
-        var hash = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Hash)?.Value;
-        var query = token.Claims.FirstOrDefault(x => x.Type == "Query")?.Value ?? plainQuery;
-        if (plainQuery.HasAnyChar())
-        {
-            var originalHash = GetHash(UserUtils.sHA256, query);
-            if (hash != originalHash)
-            {
-                throw new ApiException("Permission denied!") { StatusCode = HttpStatusCode.Unauthorized };
-            }
-        }
-        var connKey = token.Claims.FirstOrDefault(x => x.Type == ClaimTypes.System)?.Value;
-        var connString = await GetConnStrFromKey(connKey);
-        return (connString, query);
-    }
-
-    public async Task<string> GetConnStrFromKey(string connKey)
-    {
-        var key = $"{TenantCode}_{connKey}_{Env}";
+        if (connKey.IsNullOrWhiteSpace()) connKey = Utils.ConnKey;
+        if (TenantCode.HasNonSpaceChar() && tenantCode.HasNonSpaceChar() 
+            && !string.Equals(TenantCode, tenantCode, StringComparison.InvariantCultureIgnoreCase))
+            throw new ApiException($"Tenant code \"{tenantCode}\" is different from signed in \"{TenantCode}\"");
+        if (Env.HasNonSpaceChar() && env.HasNonSpaceChar() 
+            && !string.Equals(Env, env, StringComparison.InvariantCultureIgnoreCase))
+            throw new ApiException($"Env code \"{env}\" is different from signed in \"{Env}\"");
+        tenantCode ??= TenantCode;
+        env ??= Env;
+        var key = $"{tenantCode}_{connKey}_{env}";
         var conStr = await _cache.GetStringAsync(key);
         if (conStr != null) return conStr;
         var tenantEnvTask = db.TenantEnv
-            .Where(x => x.TenantCode == TenantCode && x.ConnKey == connKey && x.Env == Env);
-        var tenantEnv = await tenantEnvTask.FirstOrDefaultAsync();
+            .Where(x => x.TenantCode == tenantCode && x.ConnKey == connKey && x.Env == env);
+        var tenantEnv = await tenantEnvTask.FirstOrDefaultAsync() 
+            ?? throw new ApiException($"Tenant environment NOT found {key}");
         await _cache.SetStringAsync(key, tenantEnv.ConnStr, Utils.CacheTTL);
         return tenantEnv.ConnStr;
     }
@@ -429,7 +363,7 @@ public class UserService
         var claims = Context.HttpContext.User?.Claims;
         if (claims != null)
         {
-            var map = new { UserId, RoleIds, AllRoleIds, TenantCode, Env, CenterIds, BranchId, VendorId };
+            var map = new { UserId, RoleIds, TenantCode, Env, CenterIds, BranchId, VendorId };
             engine.SetValue("claims", JsonConvert.SerializeObject(map));
         }
         engine.SetValue("args", entityParam);
@@ -469,20 +403,20 @@ public class UserService
         return fragments.ScriptTokenStream.Any(x => finalCmd.Contains(x.TokenType));
     }
 
-    public async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSet(string query, string connStr, params object[] objects)
+    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo, bool isConnKey = false)
     {
         try
         {
             var sideEffect = HasSideEffect(query);
             if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
-            var connectionStr = connStr;
+            var connectionStr = isConnKey ? await GetConnStrFromKey(connInfo) : connInfo;
             using var con = new SqlConnection(connectionStr);
             var sqlCmd = new SqlCommand(query, con)
             {
                 CommandType = CommandType.Text
             };
             await con.OpenAsync();
-            var tables = new List<List<Dictionary<string, object>>>();
+            var tables = new List<Dictionary<string, object>[]>();
             using var reader = await sqlCmd.ExecuteReaderAsync();
             do
             {
@@ -491,9 +425,9 @@ public class UserService
                 {
                     table.Add(Read(reader));
                 }
-                tables.Add(table);
+                tables.Add([.. table]);
             } while (await reader.NextResultAsync());
-            return tables;
+            return [.. tables];
         }
         catch (Exception e)
         {
@@ -517,7 +451,7 @@ public class UserService
 
     public static string RemoveWhiteSpace(string val) => val.Replace(" ", "");
 
-    public async Task<bool> Patch(PatchVM vm)
+    public async Task<bool> SavePatch(PatchVM vm)
     {
         if (vm == null || vm.Table.IsNullOrWhiteSpace() || vm.Changes.Nothing())
         {
@@ -534,7 +468,7 @@ public class UserService
         var idField = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
         var oldId = idField?.OldVal;
         var allRights = await GetEntityPerm(vm.Table, recordId: null);
-        var connStr = await GetConnStrFromKey(vm.ConnKey);
+        var connStr = vm.ConnStr ?? await GetConnStrFromKey(vm.ConnKey);
         if (oldId is null)
         {
             writePerm = allRights.Any(x => x.CanAdd || x.CanWriteAll);
@@ -543,42 +477,43 @@ public class UserService
         {
             var origin = @$"select t.* from [{vm.Table}] as t where t.Id = '{oldId}'";
             var ds = await ReadDataSet(origin, connStr);
-            var originRow = ds.Count() > 1 ? ds.ElementAt(0).FirstOrDefault() : null;
+            var originRow = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0] : null;
             var isOwner = Utils.IsOwner(originRow, UserId, RoleIds);
             writePerm = isOwner || allRights.Any(x => x.CanWriteAll);
         }
-        if (!writePerm) throw new ApiException("Access denied!") { StatusCode = HttpStatusCode.Unauthorized };
+        if (!writePerm && !vm.ByPassPerm) throw new ApiException("Access denied!")
+        {
+            StatusCode = HttpStatusCode.Unauthorized
+        };
         using SqlConnection connection = new(connStr);
         await connection.OpenAsync();
         using var transaction = connection.BeginTransaction();
         try
         {
-            using SqlCommand command = new();
-            command.Transaction = transaction;
-            command.Connection = connection;
+            using SqlCommand cmd = new();
+            cmd.Transaction = transaction;
+            cmd.Connection = connection;
 
             var valueFields = vm.Changes.Where(x => !_systemFields.Contains(x.Field.ToLower())).ToList();
-            var update = valueFields.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
+            var update = valueFields.Combine(x => $"[{x.Field}] = N'{x.Value}'", ", ");
             var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
+            var strBuilder = new StringBuilder();
             if (oldId is not null)
             {
-                command.CommandText = @$"update [{vm.Table}] set {update.Combine()}, 
-                            TenantCode = '{TenantCode}', UpdatedBy = '{UserId}', UpdatedDate = '{now}' where Id = '{oldId}';";
+                strBuilder.AppendLine(@$"update [{vm.Table}] set {update}, 
+                    TenantCode = '{TenantCode ?? vm.TenantCode}', UpdatedBy = '{UserId ?? 1.ToString()}', UpdatedDate = '{now}' where Id = '{oldId}';");
             }
             else
             {
                 var fields = valueFields.Combine(x => $"[{x.Field}]");
-                var fieldParams = valueFields.Combine(x => $"@{x.Field}");
-                command.CommandText = @$"insert into [{vm.Table}] ([Id], [TenantCode], [Active], [InsertedBy], [InsertedDate], {fields}) 
-                        values ('{idField.Value}', '{TenantCode}', 1, '{UserId}', '{now}', {fieldParams});";
+                var values = valueFields.Combine(x => $"N'{x.Value}'");
+                strBuilder.AppendLine(@$"insert into [{vm.Table}] ([Id], [TenantCode], [Active], [InsertedBy], [InsertedDate], {fields}) 
+                    values ('{idField.Value}', '{TenantCode ?? vm.TenantCode}', 1, '{UserId ?? 1.ToString()}', '{now}', {values});");
             }
-            foreach (var item in valueFields)
-            {
-                command.Parameters.AddWithValue($"@{item.Field.ToLower()}", item.Value is null ? DBNull.Value : item.Value);
-            }
-            var anyComment = HasSqlComment(command.CommandText);
+            cmd.CommandText = strBuilder.ToString();
+            var anyComment = HasSqlComment(cmd.CommandText);
             if (anyComment) throw new ApiException("Comment is NOT allowed");
-            await command.ExecuteNonQueryAsync();
+            await cmd.ExecuteNonQueryAsync();
             await transaction.CommitAsync();
             if (!vm.QueueName.IsNullOrWhiteSpace())
             {
@@ -606,8 +541,8 @@ public class UserService
         var canDeleteAll = allRights.Any(x => x.CanDeleteAll);
         var canDeleteSelf = allRights.Any(x => x.CanDelete);
         var query = $"select * from {vm.Table} where Id in ({vm.Ids.CombineStrings()})";
-        var ds = (await ReadDataSet(query, connStr)).ToList();
-        var rows = ds.Count > 0 ? ds[0] : null;
+        var ds = await ReadDataSet(query, connStr);
+        var rows = ds.Length > 0 ? ds[0] : null;
         if (rows.Nothing()) throw new ApiException("No record found")
         {
             StatusCode = HttpStatusCode.BadRequest
@@ -645,8 +580,8 @@ public class UserService
         var canDeactivateAll = allRights.Any(x => x.CanDeactivateAll);
         var canDeactivateSelf = allRights.Any(x => x.CanDeactivate);
         var query = $"select * from {vm.Table} where Id in ({vm.Ids.CombineStrings()})";
-        var ds = (await ReadDataSet(query, connStr)).ToList();
-        var rows = ds.Count > 0 ? ds[0] : null;
+        var ds = await ReadDataSet(query, connStr);
+        var rows = ds.Length > 0 ? ds[0] : null;
         if (rows.Nothing()) return null;
         var canDeactivateRows = rows.Where(x =>
         {
@@ -674,17 +609,9 @@ public class UserService
         }
     }
 
-    internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ReadDataSetWrapper(SqlViewModel vm)
+    internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ComQuery(SqlViewModel vm)
     {
         var com = await GetComponent(vm.ComId);
-        string decryptedConnStr = null;
-        string decryptedQuery = null;
-        if (com is null)
-        {
-            var (conn, query) = await DecryptQuery(vm.Component.Signed);
-            decryptedConnStr = conn;
-            decryptedQuery = query;
-        }
         var anyInvalid = _fobiddenTerm.Any(term =>
         {
             return vm.Select != null && term.IsMatch(vm.Select.ToLower())
@@ -699,9 +626,9 @@ public class UserService
         {
             throw new ArgumentException("Parameters must NOT contains sql keywords");
         }
-        var jsRes = await ExecJs(vm.Params, decryptedQuery ?? com.Query);
+        var jsRes = await ExecJs(vm.Params, com.Query);
         var connStr = await GetConnStrFromKey(com.ConnKey);
-        return await GetResultFromQuery(vm, decryptedConnStr ?? connStr, jsRes);
+        return await GetResultFromQuery(vm, connStr, jsRes);
     }
 
     private async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> GetResultFromQuery(SqlViewModel vm, string decryptedConnStr, SqlQueryResult jsRes)
@@ -788,13 +715,11 @@ public class UserService
         return permissions;
     }
 
-    internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ExecUserSvc(SqlViewModel vm)
+    internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> RunUserSvc(SqlViewModel vm)
     {
         var sv = await GetService(vm);
         var jsRes = await ExecJs(vm.Params, sv.Content);
-        var conStr = TenantCode is null && vm.AnnonymousTenant is not null
-            ? sv.ConnKey : await GetConnStrFromKey(sv.ConnKey ?? Utils.ConnKey);
-        return await GetResultFromQuery(vm, conStr, jsRes);
+        return await GetResultFromQuery(vm, vm.CacheConnStr, jsRes);
     }
 
     private async Task<Models.Services> GetService(SqlViewModel vm)
@@ -814,8 +739,10 @@ public class UserService
         }
 
         var query = @$"select * from Services
-                where (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
-        var ds = await ReadDataSet(query, _configuration.GetConnectionString("default"));
+                where (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') 
+                and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
+        vm.CacheConnStr = await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
+        var ds = await ReadDataSet(query, vm.CacheConnStr);
         if (ds.Nothing()) return null;
         sv = new Models.Services();
         var svKeyMap = ds.ElementAt(0)?.ElementAt(0);
@@ -842,7 +769,7 @@ public class UserService
 
     internal async Task<string> ExportExcel(SqlViewModel vm)
     {
-        var dataSets = await ReadDataSetWrapper(vm);
+        var dataSets = await ComQuery(vm);
         var table = dataSets.ElementAt(0);
         var headers = JsonConvert.DeserializeObject<List<Component>>(JsonConvert.SerializeObject(dataSets.ElementAt(1)));
         if (vm.FieldName.HasElement())
@@ -1319,9 +1246,20 @@ public class UserService
         var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _configuration);
         var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
         var ipAddress = GetRemoteIpAddress(Context.HttpContext);
-        var userLogin = await db.UserLogin.FindAsync(sessionId) ?? throw new ApiException("Login session not found");
-        userLogin.ExpiredDate = DateTimeOffset.Now;
-        await db.SaveChangesAsync();
+        var query = $"select * from UserLogin where Id = '{sessionId}'";
+        var connStr = await GetConnStrFromKey(token.ConnKey);
+        var ds = await ReadDataSet(query, connStr);
+        var userLogin = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<UserLogin>() : null;
+        if (userLogin is null) return true;
+        await SavePatch(new PatchVM
+        {
+            Table = nameof(UserLogin),
+            Changes = 
+            [
+                new PatchDetail { Field = nameof(UserLogin.Id), OldVal = userLogin.Id },
+                new PatchDetail { Field = nameof(UserLogin.ExpiredDate), Value = DateTimeOffset.Now.ToISOFormat() },
+            ]
+        });
         return true;
     }
 

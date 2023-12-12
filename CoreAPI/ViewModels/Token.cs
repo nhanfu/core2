@@ -26,7 +26,6 @@ namespace Core.ViewModels
         public Vendor Vendor { get; set; }
         public List<string> RoleIds { get; set; }
         public List<string> RoleNames { get; set; }
-        public List<string> AllRoleIds { get; set; }
         public List<string> CenterIds { get; set; }
         public string Ssn { get; set; }
         public string PhoneNumber { get; set; }
@@ -35,6 +34,7 @@ namespace Core.ViewModels
         public string RegionId { get; set; }
         public object Additional { get; set; }
         public DateTimeOffset SigninDate { get; set; }
+        public string ConnKey { get; internal set; }
     }
 
     [Serializable]

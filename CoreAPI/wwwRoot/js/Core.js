@@ -9579,6 +9579,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             Params: null,
             Ids: null,
             AnnonymousTenant: null,
+            AnnonymousEnv: null,
             Paging: null,
             Select: null,
             Where: null,
@@ -9591,6 +9592,13 @@ Bridge.assembly("Core", function ($asm, globals) {
             SkipXQuery: false,
             ConnKey: null,
             Table: null
+        },
+        ctors: {
+            init: function () {
+                this.AnnonymousTenant = Core.Clients.Client.Tenant;
+                this.AnnonymousEnv = Core.Clients.Client.Env;
+                this.ConnKey = Core.Clients.Client.ConnKey;
+            }
         }
     });
 
@@ -9616,7 +9624,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             Vendor: null,
             RoleIds: null,
             RoleNames: null,
-            AllRoleIds: null,
             CenterIds: null,
             Ssn: null,
             PhoneNumber: null,
@@ -10297,7 +10304,6 @@ Bridge.assembly("Core", function ($asm, globals) {
         props: {
             CurrentUserId: null,
             RegionId: null,
-            AllRoleIds: null,
             CenterIds: null,
             RoleIds: null,
             CostCenterId: null,
@@ -10707,7 +10713,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.SetFeatureProperties(feature);
                 this.CurrentUserId = token != null ? token.UserId : null;
                 this.RegionId = token != null ? token.RegionId : null;
-                this.AllRoleIds = (token != null ? token.AllRoleIds : null) != null ? Bridge.toArray(token.AllRoleIds).join(",") : "";
                 this.CenterIds = (token != null ? token.CenterIds : null) != null ? Bridge.toArray(token.CenterIds).join(",") : "";
                 this.RoleIds = (token != null ? token.RoleIds : null) != null ? Bridge.toArray(token.RoleIds).join(",") : "";
                 this.CostCenterId = token != null ? token.CostCenterId : null;
@@ -11111,7 +11116,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             GetElementPolicies$1: function (recordIds, entityId) {
                 if (entityId === void 0) { entityId = "30"; }
                 var hasHidden = System.Linq.Enumerable.from(this.Feature.FeaturePolicy, Core.Models.FeaturePolicy).where(function (x) {
-                        return Core.Extensions.StringExt.HasAnyChar(x.RoleId) && Core.Clients.Client.Token.AllRoleIds.contains(x.RoleId) || (Core.Extensions.StringExt.HasAnyChar(x.UserId) && Bridge.referenceEquals(Core.Clients.Client.Token.UserId, x.UserId));
+                        return Core.Extensions.StringExt.HasAnyChar(x.RoleId) || (Core.Extensions.StringExt.HasAnyChar(x.UserId) && Bridge.referenceEquals(Core.Clients.Client.Token.UserId, x.UserId));
                     }).where(function (x) {
                     return Bridge.referenceEquals(x.EntityId, entityId) && System.Array.contains(recordIds, x.RecordId, System.String);
                 }).ToArray(Core.Models.FeaturePolicy);
@@ -11120,7 +11125,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             GetElementPolicies: function (recordId, entityId) {
                 if (entityId === void 0) { entityId = "20"; }
                 var hasHidden = System.Linq.Enumerable.from(this.Feature.FeaturePolicy, Core.Models.FeaturePolicy).where(function (x) {
-                        return Core.Extensions.StringExt.HasAnyChar(x.RoleId) && Core.Clients.Client.Token.AllRoleIds.contains(x.RoleId) || (Core.Extensions.StringExt.HasAnyChar(x.UserId) && Bridge.referenceEquals(Core.Clients.Client.Token.UserId, x.UserId));
+                        return Core.Extensions.StringExt.HasAnyChar(x.RoleId) || (Core.Extensions.StringExt.HasAnyChar(x.UserId) && Bridge.referenceEquals(Core.Clients.Client.Token.UserId, x.UserId));
                     }).where(function (x) {
                     return Bridge.referenceEquals(x.EntityId, entityId) && Bridge.referenceEquals(recordId, x.RecordId);
                 }).ToArray(Core.Models.FeaturePolicy);
@@ -11129,7 +11134,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             GetGridPolicies$1: function (recordIds, entityId) {
                 if (entityId === void 0) { entityId = "30"; }
                 var hasHidden = System.Linq.Enumerable.from(this.Feature.FeaturePolicy, Core.Models.FeaturePolicy).where(function (x) {
-                        return Core.Extensions.StringExt.HasAnyChar(x.RoleId) && Core.Clients.Client.Token.AllRoleIds.contains(x.RoleId) || (Core.Extensions.StringExt.HasAnyChar(x.UserId) && Bridge.referenceEquals(Core.Clients.Client.Token.UserId, x.UserId));
+                        return Core.Extensions.StringExt.HasAnyChar(x.RoleId) || (Core.Extensions.StringExt.HasAnyChar(x.UserId) && Bridge.referenceEquals(Core.Clients.Client.Token.UserId, x.UserId));
                     }).where(function (x) {
                     return Bridge.referenceEquals(x.EntityId, entityId) && System.Array.contains(recordIds, x.RecordId, System.String);
                 }).ToArray(Core.Models.FeaturePolicy);
@@ -11138,7 +11143,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             GetGridPolicies: function (recordId, entityId) {
                 if (entityId === void 0) { entityId = "20"; }
                 var hasHidden = System.Linq.Enumerable.from(this.Feature.FeaturePolicy, Core.Models.FeaturePolicy).where(function (x) {
-                        return (Core.Extensions.StringExt.HasAnyChar(x.RoleId) && Core.Clients.Client.Token.AllRoleIds.contains(x.RoleId)) || (Core.Extensions.StringExt.HasAnyChar(x.UserId) && Bridge.referenceEquals(Core.Clients.Client.Token.UserId, x.UserId));
+                        return Core.Extensions.StringExt.HasAnyChar(x.RoleId) || (Core.Extensions.StringExt.HasAnyChar(x.UserId) && Bridge.referenceEquals(Core.Clients.Client.Token.UserId, x.UserId));
                     }).where(function (x) {
                     return Bridge.referenceEquals(x.EntityId, entityId) && Bridge.referenceEquals(recordId, x.RecordId);
                 }).ToArray(Core.Models.FeaturePolicy);

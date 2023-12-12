@@ -28,7 +28,6 @@ namespace Core.ViewModels
         public Vendor Vendor { get; set; }
         public List<string> RoleIds { get; set; }
         public List<string> RoleNames { get; set; }
-        public List<string> AllRoleIds { get; set; }
         public List<string> CenterIds { get; set; }
         public string Ssn { get; set; }
         public string PhoneNumber { get; set; }

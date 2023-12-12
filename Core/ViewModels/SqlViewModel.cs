@@ -1,4 +1,6 @@
-﻿namespace Core.ViewModels
+﻿using Core.Clients;
+
+namespace Core.ViewModels
 {
     public class SqlViewModel
     {
@@ -7,7 +9,8 @@
         public string Action { get; set; }
         public string Params { get; set; }
         public string[] Ids { get; set; }
-        public string AnnonymousTenant { get; set; }
+        public string AnnonymousTenant { get; set; } = Client.Tenant;
+        public string AnnonymousEnv { get; set; } = Client.Env;
         public string Paging { get; set; }
         public string Select { get; set; }
         public string Where { get; set; }
@@ -18,7 +21,7 @@
         public bool RawQuery { get; set; }
         public string[] FieldName { get; set; }
         public bool SkipXQuery { get; set; }
-        public string ConnKey { get; internal set; }
+        public string ConnKey { get; internal set; } = Client.ConnKey;
         public string Table { get; set; }
     }
 

@@ -43,7 +43,6 @@ namespace Core.Components.Forms
         protected HTMLElement IconElement;
         public string CurrentUserId { get; private set; }
         public string RegionId { get; set; }
-        public string AllRoleIds { get; private set; }
         public string CenterIds { get; private set; }
         public string RoleIds { get; private set; }
         public string CostCenterId { get; private set; }
@@ -436,7 +435,6 @@ namespace Core.Components.Forms
             SetFeatureProperties(feature);
             CurrentUserId = token?.UserId;
             RegionId = token?.RegionId;
-            AllRoleIds = token?.AllRoleIds != null ? string.Join(",", token.AllRoleIds) : string.Empty;
             CenterIds = token?.CenterIds != null ? string.Join(",", token.CenterIds) : string.Empty;
             RoleIds = token?.RoleIds != null ? string.Join(",", token.RoleIds) : string.Empty;
             CostCenterId = token?.CostCenterId;
@@ -856,7 +854,7 @@ namespace Core.Components.Forms
         public FeaturePolicy[] GetElementPolicies(string[] recordIds, string entityId = Utils.ComponentGroupId) // Default of component group
         {
             var hasHidden = Feature.FeaturePolicy
-                    .Where(x => x.RoleId.HasAnyChar() && Client.Token.AllRoleIds.Contains(x.RoleId) || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
+                    .Where(x => x.RoleId.HasAnyChar() || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
                     .Where(x => x.EntityId == entityId && recordIds.Contains(x.RecordId))
                     .ToArray();
             return hasHidden;
@@ -865,7 +863,7 @@ namespace Core.Components.Forms
         public FeaturePolicy[] GetGridPolicies(string[] recordIds, string entityId = Utils.ComponentGroupId) // Default of component group
         {
             var hasHidden = Feature.FeaturePolicy
-                    .Where(x => x.RoleId.HasAnyChar() && Client.Token.AllRoleIds.Contains(x.RoleId) || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
+                    .Where(x => x.RoleId.HasAnyChar() || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
                     .Where(x => x.EntityId == entityId && recordIds.Contains(x.RecordId))
                     .ToArray();
             return hasHidden;
@@ -874,7 +872,7 @@ namespace Core.Components.Forms
         public FeaturePolicy[] GetElementPolicies(string recordId, string entityId = Utils.ComponentId) // Default of component
         {
             var hasHidden = Feature.FeaturePolicy
-                    .Where(x => x.RoleId.HasAnyChar() && Client.Token.AllRoleIds.Contains(x.RoleId) || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
+                    .Where(x => x.RoleId.HasAnyChar() || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
                     .Where(x => x.EntityId == entityId && recordId == x.RecordId)
                     .ToArray();
             return hasHidden;
@@ -883,7 +881,7 @@ namespace Core.Components.Forms
         public FeaturePolicy[] GetGridPolicies(string recordId, string entityId = Utils.ComponentId) // Default of component
         {
             var hasHidden = Feature.FeaturePolicy
-                    .Where(x => (x.RoleId.HasAnyChar() && Client.Token.AllRoleIds.Contains(x.RoleId)) || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
+                    .Where(x => x.RoleId.HasAnyChar() || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
                     .Where(x => x.EntityId == entityId && recordId == x.RecordId)
                     .ToArray();
             return hasHidden;

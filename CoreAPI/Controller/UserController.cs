@@ -55,7 +55,7 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
     [HttpPost("api/[Controller]/svc")]
     public Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ExecUserSvc([FromBody] SqlViewModel vm)
     {
-        return _userSvc.ExecUserSvc(vm);
+        return _userSvc.RunUserSvc(vm);
     }
 
     [HttpPost("api/[Controller]/excel")]
@@ -67,7 +67,7 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
     [HttpPatch("api/v2/[Controller]", Order = 0)]
     public Task<bool> PatchAsync([FromBody] PatchVM patch)
     {
-        return _userSvc.Patch(patch);
+        return _userSvc.SavePatch(patch);
     }
 
     [HttpDelete("api/[Controller]/HardDelete", Order = 0)]
@@ -123,7 +123,7 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
     public Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> Reader(
         [FromBody] SqlViewModel model)
     {
-        return _userSvc.ReadDataSetWrapper(model);
+        return _userSvc.ComQuery(model);
     }
 
     [AllowAnonymous]

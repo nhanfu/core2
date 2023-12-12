@@ -39453,7 +39453,7 @@ if (typeof window !== 'undefined' && window.performance && window.performance.no
                 },
                 ValidateDate: function (dateTime, offset) {
                     var utcTicks = System.DateTime.getTicks(dateTime).sub(offset.getTicks());
-                    if (utcTicks.lt(System.DateTime.getMinTicks()) || utcTicks.gt(System.DateTime.getMaxTicks())) {
+                    if (utcTicks.gt(System.DateTime.getMaxTicks())) {
                         throw new System.ArgumentOutOfRangeException.$ctor4("offset", System.Environment.GetResourceString("Argument_UTCOutOfRange"));
                     }
                     return System.DateTime.create$2(utcTicks, 0);

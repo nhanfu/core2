@@ -1,4 +1,6 @@
-﻿namespace Core.ViewModels
+﻿using Core.Extensions;
+
+namespace Core.ViewModels
 {
     public class LoginVM
     {
@@ -10,5 +12,7 @@
         public string System { get; set; }
         public bool AutoSignIn { get; set; }
         public string RecoveryToken { get; set; }
+        public string ConnStr { get; internal set; }
+        public string ConnKey { get; internal set; } = Utils.ConnKey;
     }
 }
