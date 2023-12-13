@@ -37,7 +37,7 @@ public class UserService
     private const int MAX_LOGIN = 5;
     public readonly IHttpContextAccessor Context;
     private readonly CoreContext db;
-    private readonly IConfiguration _configuration;
+    private readonly IConfiguration _cfg;
     private readonly IDistributedCache _cache;
     private readonly IWebHostEnvironment _host;
 
@@ -67,7 +67,7 @@ public class UserService
     public UserService(IHttpContextAccessor httpContextAccessor, CoreContext db,
         IConfiguration configuration, IDistributedCache cache, IWebHostEnvironment host)
     {
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _cfg = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache)); ;
         _host = host ?? throw new ArgumentNullException(nameof(host));
         this.db = db ?? throw new ArgumentNullException(nameof(db));
@@ -254,11 +254,11 @@ public class UserService
     public (JwtSecurityToken, DateTimeOffset) AccessToken(IEnumerable<Claim> claims, DateTimeOffset? expire = null)
     {
         var exp = expire ?? DateTimeOffset.Now.AddDays(1);
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_cfg["Tokens:Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var token = new JwtSecurityToken(
-            _configuration["Tokens:Issuer"],
-            _configuration["Tokens:Issuer"],
+            _cfg["Tokens:Issuer"],
+            _cfg["Tokens:Issuer"],
             claims,
             expires: exp.DateTime,
             signingCredentials: creds);
@@ -294,7 +294,7 @@ public class UserService
 
     public async Task<Token> RefreshAsync(RefreshVM token)
     {
-        var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _configuration);
+        var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
         var issuedAt = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Iat)?.Value.TryParseDateTime();
         var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
         var userName = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
@@ -330,10 +330,10 @@ public class UserService
     public async Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
     {
         if (connKey.IsNullOrWhiteSpace()) connKey = Utils.ConnKey;
-        if (TenantCode.HasNonSpaceChar() && tenantCode.HasNonSpaceChar() 
+        if (TenantCode.HasNonSpaceChar() && tenantCode.HasNonSpaceChar()
             && !string.Equals(TenantCode, tenantCode, StringComparison.InvariantCultureIgnoreCase))
             throw new ApiException($"Tenant code \"{tenantCode}\" is different from signed in \"{TenantCode}\"");
-        if (Env.HasNonSpaceChar() && env.HasNonSpaceChar() 
+        if (Env.HasNonSpaceChar() && env.HasNonSpaceChar()
             && !string.Equals(Env, env, StringComparison.InvariantCultureIgnoreCase))
             throw new ApiException($"Env code \"{env}\" is different from signed in \"{Env}\"");
         tenantCode ??= TenantCode;
@@ -343,7 +343,7 @@ public class UserService
         if (conStr != null) return conStr;
         var tenantEnvTask = db.TenantEnv
             .Where(x => x.TenantCode == tenantCode && x.ConnKey == connKey && x.Env == env);
-        var tenantEnv = await tenantEnvTask.FirstOrDefaultAsync() 
+        var tenantEnv = await tenantEnvTask.FirstOrDefaultAsync()
             ?? throw new ApiException($"Tenant environment NOT found {key}");
         await _cache.SetStringAsync(key, tenantEnv.ConnStr, Utils.CacheTTL);
         return tenantEnv.ConnStr;
@@ -399,13 +399,13 @@ public class UserService
         return fragments.ScriptTokenStream.Any(x => finalCmd.Contains(x.TokenType));
     }
 
-    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo, bool isConnKey = false)
+    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo, bool shouldGetConnStr = false)
     {
         try
         {
             var sideEffect = HasSideEffect(query);
             if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
-            var connectionStr = isConnKey ? await GetConnStrFromKey(connInfo) : connInfo;
+            var connectionStr = shouldGetConnStr ? await GetConnStrFromKey(connInfo) : connInfo;
             using var con = new SqlConnection(connectionStr);
             var sqlCmd = new SqlCommand(query, con)
             {
@@ -463,8 +463,8 @@ public class UserService
         bool writePerm;
         var idField = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
         var oldId = idField?.OldVal;
-        var allRights = await GetEntityPerm(vm.Table, recordId: null);
         var connStr = vm.CachedConnStr ?? await GetConnStrFromKey(vm.ConnKey);
+        var allRights = await GetEntityPerm(vm.Table, recordId: null, connStr);
         if (oldId is null)
         {
             writePerm = allRights.Any(x => x.CanAdd || x.CanWriteAll);
@@ -533,7 +533,7 @@ public class UserService
     public async Task<string[]> HardDeleteAsync(SqlViewModel vm)
     {
         var connStr = await GetConnStrFromKey(vm.ConnKey ?? "default");
-        var allRights = await GetEntityPerm(vm.Table, null);
+        var allRights = await GetEntityPerm(vm.Table, null, connStr);
         var canDeleteAll = allRights.Any(x => x.CanDeleteAll);
         var canDeleteSelf = allRights.Any(x => x.CanDelete);
         var query = $"select * from {vm.Table} where Id in ({vm.Ids.CombineStrings()})";
@@ -572,7 +572,7 @@ public class UserService
     public async Task<string[]> DeactivateAsync(SqlViewModel vm)
     {
         var connStr = await GetConnStrFromKey(vm.ConnKey ?? "default");
-        var allRights = await GetEntityPerm(vm.Table, null);
+        var allRights = await GetEntityPerm(vm.Table, null, connStr);
         var canDeactivateAll = allRights.Any(x => x.CanDeactivateAll);
         var canDeactivateSelf = allRights.Any(x => x.CanDeactivate);
         var query = $"select * from {vm.Table} where Id in ({vm.Ids.CombineStrings()})";
@@ -607,7 +607,7 @@ public class UserService
 
     internal async Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ComQuery(SqlViewModel vm)
     {
-        var com = await GetComponent(vm.ComId);
+        var com = await GetComponent(vm);
         var anyInvalid = _fobiddenTerm.Any(term =>
         {
             return vm.Select != null && term.IsMatch(vm.Select.ToLower())
@@ -653,10 +653,10 @@ public class UserService
         return await ReadDataSet(finalQuery, decryptedConnStr);
     }
 
-    private async Task<Component> GetComponent(string comId)
+    private async Task<Component> GetComponent(SqlViewModel vm)
     {
         Component com = null;
-        var comKey = "com_" + comId;
+        var comKey = "com_" + vm.ComId;
         var cached = _cache.GetString(comKey);
         if (cached != null)
         {
@@ -669,29 +669,33 @@ public class UserService
 
             }
         }
+        string connStr = null;
         if (com is null)
         {
-            com = await db.Component
-                .Where(x => x.Annonymous || !x.IsPrivate || x.TenantCode == TenantCode)
-                .Where(x => x.Id == comId)
-                .FirstOrDefaultAsync();
+            var query = @$"select top 1 * from Component 
+            where Id = '{vm.ComId}' and (Annonymous = 1 or IsPrivate = 0 and '{TenantCode}' != '' or TenantCode = '{TenantCode}')";
+            connStr = await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
+            var ds = await ReadDataSet(query, connStr);
+            com = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<Component>() : null;
             if (com is null) return null;
             await _cache.SetStringAsync(comKey, JsonConvert.SerializeObject(com), Utils.CacheTTL);
         }
-        var readPermission = await GetEntityPerm("Component", comId, x => x.CanRead);
-        var hasPerm = com.Annonymous || !com.IsPrivate && UserId != null || readPermission.Any();
+        var readPermission = await GetEntityPerm("Component", vm.ComId, connStr, x => x.CanRead);
+        var hasPerm = com.Annonymous || !com.IsPrivate && UserId != null || readPermission.Length != 0;
         if (!hasPerm)
-        {
-            throw new ApiException("Access denied") { StatusCode = HttpStatusCode.Unauthorized };
-        }
+            throw new ApiException("Access denied")
+            {
+                StatusCode = HttpStatusCode.Unauthorized
+            };
 
         return com;
     }
 
-    private async Task<FeaturePolicy[]> GetEntityPerm(string entityName, string recordId, Expression<Func<FeaturePolicy, bool>> pre = null)
+    private async Task<FeaturePolicy[]> GetEntityPerm(string entityName, string recordId, string connStr,
+        Expression<Func<FeaturePolicy, bool>> pre = null)
     {
-        var permission = ((pre?.Body as MemberExpression)?.Member as PropertyInfo)?.Name ?? "AllRights";
-        var key = entityName + "_" + permission;
+        var permissionName = ((pre?.Body as MemberExpression)?.Member as PropertyInfo)?.Name;
+        var key = entityName + "_" + (permissionName ?? "AllRights");
         var permissionByComCache = await _cache.GetStringAsync(key);
         FeaturePolicy[] permissions;
         if (!permissionByComCache.IsNullOrWhiteSpace())
@@ -700,11 +704,12 @@ public class UserService
         }
         else
         {
-            var query = db.FeaturePolicy as IQueryable<FeaturePolicy>;
-            if (pre != null) query = query.Where(pre);
-            permissions = await query
-                .Where(x => x.EntityName == entityName && x.RecordId == recordId && RoleIds.Contains(x.RoleId))
-                .ToArrayAsync();
+            var q = @$"select * from FeaturePolicy 
+            where Active = 1 and EntityName = '{entityName}'
+            and (RecordId = '{recordId}' or '{recordId}' = '') and RoleId in ({RoleIds.Combine()})";
+            if (pre != null) q += $" and {permissionName} = 1";
+            var ds = await ReadDataSet(q, connStr);
+            permissions = ds.Length > 0 ? ds[0].Select(x => x.MapTo<FeaturePolicy>()).ToArray() : [];
             await _cache.SetStringAsync(key, JsonConvert.SerializeObject(permissions), Utils.CacheTTL);
         }
 
@@ -1018,7 +1023,7 @@ public class UserService
         return Context.HttpContext.Request.Scheme + "://" + Context.HttpContext.Request.Host.Value + path.Replace(webRootPath, string.Empty).Replace("\\", "/");
     }
 
-    public async Task<bool> ImportCsv(List<IFormFile> files, string table, string comId)
+    public async Task<bool> ImportCsv(List<IFormFile> files, string table, string comId, string connKey)
     {
         if (comId.IsNullOrWhiteSpace() || table.IsNullOrWhiteSpace())
         {
@@ -1028,10 +1033,14 @@ public class UserService
         {
             throw new ApiException("No file uploaded") { StatusCode = HttpStatusCode.BadRequest };
         }
-        var com = await GetComponent(comId);
+        var com = await GetComponent(new SqlViewModel
+        {
+            ComId = comId,
+            ConnKey = connKey
+        });
         var connStr = await GetConnStrFromKey(com.ConnKey);
         // var headers = await ReadDataSet($"select * from Component where ParentId = {comId}", connStr);
-        var tableRights = await GetEntityPerm(table, null);
+        var tableRights = await GetEntityPerm(table, connStr, null);
         if (!tableRights.Any(x => x.CanAdd || x.CanWriteAll))
             throw new UnauthorizedAccessException("Cannot import data due to lack of permission");
 
@@ -1239,7 +1248,7 @@ public class UserService
         {
             throw new ApiException("Token is required");
         }
-        var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _configuration);
+        var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
         var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
         var ipAddress = GetRemoteIpAddress(Context.HttpContext);
         var query = $"select * from UserLogin where Id = '{sessionId}'";
@@ -1250,7 +1259,7 @@ public class UserService
         await SavePatch(new PatchVM
         {
             Table = nameof(UserLogin),
-            Changes = 
+            Changes =
             [
                 new PatchDetail { Field = nameof(UserLogin.Id), OldVal = userLogin.Id },
                 new PatchDetail { Field = nameof(UserLogin.ExpiredDate), Value = DateTimeOffset.Now.ToISOFormat() },
@@ -1357,25 +1366,27 @@ public class UserService
         }
         var htmlMimeType = Utils.GetMimeType("html");
         var key = $"{tenant}_{env}_{area}";
-#if RELEASE
         var cache = await _cache.GetStringAsync(key);
         if (cache != null)
         {
             var pageCached = JsonConvert.DeserializeObject<TenantPage>(cache);
-            await WriteTemplateAsync(Response, pageCached, env, tenant);
+            await WriteTemplateAsync(response, pageCached, env, tenant);
             return;
         }
-#endif
-
-        var tenantEnv = await db.TenantEnv.FirstOrDefaultAsync(x => x.TenantCode == tenant && x.Env == env);
-        if (tenantEnv is null)
+        var envQuery = $"select * from TenantEnv where TenantCode = '{tenant}' and Env = '{env}'";
+        var connStr = _cfg.GetConnectionString(Utils.ConnKey);
+        var ds = await ReadDataSet(envQuery, _cfg.GetConnectionString(Utils.ConnKey));
+        var tnEnv = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<TenantEnv>() : null;
+        if (tnEnv is null)
         {
             await WriteDefaultFile(NotFoundFile, htmlMimeType, HttpStatusCode.NotFound);
             return;
         }
-        var page = await db.TenantPage.AsNoTracking().FirstOrDefaultAsync(x =>
-            x.TenantEnvId == tenantEnv.Id && x.Area == area);
-        await _cache.SetStringAsync(key, JsonConvert.SerializeObject(page));
+        var pageQuery = $"select * from TenantPage where TenantEnvId = '{tnEnv.Id}' and Area = '{area}'";
+        var pageDs = await ReadDataSet(pageQuery, connStr);
+
+        var page = pageDs.Length > 0 && pageDs[0].Length > 0 ? pageDs[0][0].MapTo<TenantPage>() : null;
+        await _cache.SetStringAsync(key, JsonConvert.SerializeObject(page), Utils.CacheTTL);
         await WriteTemplateAsync(response, page, env: env, tenant: tenant);
     }
 

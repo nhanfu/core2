@@ -338,7 +338,7 @@ namespace Core.Components
             Client.Instance.SubmitAsync<bool>(new XHRWrapper
             {
                 FormData = formData,
-                Url = $"/user/importCsv?table={meta.RefName}&comId={meta.Id}",
+                Url = $"/user/importCsv?table={meta.RefName}&comId={meta.Id}&connKey={meta.ConnKey}",
                 Method = HttpMethod.POST,
                 ResponseMimeType = Utils.GetMimeType("csv")
             }).Done(success => {

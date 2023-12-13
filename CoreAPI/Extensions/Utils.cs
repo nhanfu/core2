@@ -92,7 +92,7 @@ namespace Core.Extensions
             #if DEBUG
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30)
             #else 
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(120)
             #endif
         };
 

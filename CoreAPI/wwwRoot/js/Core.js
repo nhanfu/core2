@@ -17524,7 +17524,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var uploadForm = Bridge.as(this._uploader.parentElement, HTMLFormElement);
                 var formData = new FormData(uploadForm);
                 var meta = this.ParentListView.GuiInfo;
-                Core.Extensions.EventExt.Catch(Core.Extensions.EventExt.Done(System.Boolean, Core.Clients.Client.Instance.SubmitAsync(System.Boolean, ($t = new Core.Clients.XHRWrapper(), $t.FormData = formData, $t.Url = System.String.format("/user/importCsv?table={0}&comId={1}", meta.RefName, meta.Id), $t.Method = Core.Enums.HttpMethod.POST, $t.ResponseMimeType = Core.Extensions.Utils.GetMimeType("csv"), $t)), Bridge.fn.bind(this, function (success) {
+                Core.Extensions.EventExt.Catch(Core.Extensions.EventExt.Done(System.Boolean, Core.Clients.Client.Instance.SubmitAsync(System.Boolean, ($t = new Core.Clients.XHRWrapper(), $t.FormData = formData, $t.Url = System.String.format("/user/importCsv?table={0}&comId={1}&connKey={2}", meta.RefName, meta.Id, meta.ConnKey), $t.Method = Core.Enums.HttpMethod.POST, $t.ResponseMimeType = Core.Extensions.Utils.GetMimeType("csv"), $t)), Bridge.fn.bind(this, function (success) {
                     Core.Extensions.Toast.Success("Import excel success");
                     this._uploader.value = "";
                 })), Bridge.fn.bind(this, function (error) {

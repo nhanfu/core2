@@ -84,9 +84,9 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
     }
 
     [HttpPost("api/[Controller]/ImportCsv")]
-    public Task<bool> ImportCsv([FromForm] List<IFormFile> files, [FromQuery] string table, [FromQuery] string comId)
+    public Task<bool> ImportCsv([FromForm] List<IFormFile> files, [FromQuery] string table, [FromQuery] string comId, [FromQuery] string connKey)
     {
-        return _userSvc.ImportCsv(files, table, comId);
+        return _userSvc.ImportCsv(files, table, comId, connKey);
     }
 
     [HttpPost("api/[Controller]/File")]
