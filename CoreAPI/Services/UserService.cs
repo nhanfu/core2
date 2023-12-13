@@ -299,13 +299,12 @@ public class UserService
             throw new InvalidOperationException($"{nameof(userName)} is null");
         }
         var ipAddress = GetRemoteIpAddress(_ctx.HttpContext);
-        var query = 
+        var query =
             @$"select * from UserLogin 
             where UserId = '{userId}' and RefreshToken = '{token.RefreshToken}'
             and ExpiredDate > '{DateTimeOffset.Now}' order by SignInDate desc";
         var connStr = await GetConnStrFromKey(connKey, tenant, env);
-        var ds = await ReadDataSet(query, connStr);
-        var userLogin = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<UserLogin>() : null;
+        var userLogin = await ReadDsAs<UserLogin>(query, connStr);
 
         if (userLogin == null)
         {
@@ -337,9 +336,8 @@ public class UserService
         var conStr = await _cache.GetStringAsync(key);
         if (conStr != null) return conStr;
         var query = $"select * from TenantEnv where TenantCode = '{tenantCode}' and ConnKey = '{connKey}' and Env = '{env}'";
-        var ds = await ReadDataSet(query, _cfg.GetConnectionString(Utils.ConnKey));
-        var tenantEnv = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<TenantEnv>() : null;
-        if (tenantEnv is null) throw new ApiException($"Tenant environment NOT found {key}");
+        var tenantEnv = await ReadDsAs<TenantEnv>(query, _cfg.GetConnectionString(Utils.ConnKey))
+            ?? throw new ApiException($"Tenant environment NOT found {key}");
         await _cache.SetStringAsync(key, tenantEnv.ConnStr, Utils.CacheTTL);
         return tenantEnv.ConnStr;
     }
@@ -392,6 +390,20 @@ public class UserService
         TSql110Parser parser = new(true);
         var fragments = parser.Parse(new StringReader(sql), out var errors);
         return fragments.ScriptTokenStream.Any(x => finalCmd.Contains(x.TokenType));
+    }
+
+    public async Task<T> ReadDsAs<T>(string query, string connInfo, bool shouldGetConnStr = false) where T : class
+    {
+        var ds = await ReadDataSet(query, connInfo, shouldGetConnStr);
+        if (ds.Length == 0 || ds[0].Length == 0) return null;
+        return ds[0][0].MapTo<T>();
+    }
+
+    public async Task<IEnumerable<T>> ReadDsAsEnumerable<T>(string query, string connInfo, bool shouldGetConnStr = false) where T : class
+    {
+        var ds = await ReadDataSet(query, connInfo, shouldGetConnStr);
+        if (ds.Length == 0 || ds[0].Length == 0) return Enumerable.Empty<T>();
+        return ds[0].Select(x => x.MapTo<T>()).AsEnumerable();
     }
 
     public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo, bool shouldGetConnStr = false)
@@ -670,8 +682,7 @@ public class UserService
             var query = @$"select top 1 * from Component 
             where Id = '{vm.ComId}' and (Annonymous = 1 or IsPrivate = 0 and '{TenantCode}' != '' or TenantCode = '{TenantCode}')";
             connStr = await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
-            var ds = await ReadDataSet(query, connStr);
-            com = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<Component>() : null;
+            com = await ReadDsAs<Component>(query, connStr);
             if (com is null) return null;
             await _cache.SetStringAsync(comKey, JsonConvert.SerializeObject(com), Utils.CacheTTL);
         }
@@ -703,8 +714,8 @@ public class UserService
             where Active = 1 and EntityName = '{entityName}'
             and (RecordId = '{recordId}' or '{recordId}' = '') and RoleId in ({RoleIds.CombineStrings()})";
             if (pre != null) q += $" and {permissionName} = 1";
-            var ds = await ReadDataSet(q, connStr);
-            permissions = ds.Length > 0 ? ds[0].Select(x => x.MapTo<FeaturePolicy>()).ToArray() : [];
+            var ds = await ReadDsAsEnumerable<FeaturePolicy>(q, connStr);
+            permissions = ds.ToArray();
             await _cache.SetStringAsync(key, JsonConvert.SerializeObject(permissions), Utils.CacheTTL);
         }
 
@@ -724,7 +735,7 @@ public class UserService
         {
             throw new ApiException("Service can NOT be identified due to lack of Id or action") { StatusCode = HttpStatusCode.BadRequest };
         }
-        Models.Services sv;
+        Models.Services sv = null;
         if (vm.SvcId is not null)
         {
             var cacheSv = await _cache.GetStringAsync(vm.SvcId);
@@ -733,19 +744,14 @@ public class UserService
                 sv = JsonConvert.DeserializeObject<Models.Services>(cacheSv);
             }
         }
-
-        var query = @$"select * from Services
+        if (sv is null)
+        {
+            var query = @$"select * from Services
                 where (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') 
                 and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
-        vm.CacheConnStr = await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        var ds = await ReadDataSet(query, vm.CacheConnStr);
-        if (ds.Nothing()) return null;
-        sv = new Models.Services();
-        var svKeyMap = ds.ElementAt(0)?.ElementAt(0);
-        svKeyMap.Keys.SelectForEach((x, i) =>
-        {
-            sv.SetPropValue(x, svKeyMap[x]);
-        });
+            vm.CacheConnStr = await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
+            sv = await ReadDsAs<Models.Services>(query, vm.CacheConnStr);
+        }
 
         if (sv == null)
         {
@@ -1034,7 +1040,6 @@ public class UserService
             ConnKey = connKey
         });
         var connStr = await GetConnStrFromKey(com.ConnKey);
-        // var headers = await ReadDataSet($"select * from Component where ParentId = {comId}", connStr);
         var tableRights = await GetEntityPerm(table, connStr, null);
         if (!tableRights.Any(x => x.CanAdd || x.CanWriteAll))
             throw new UnauthorizedAccessException("Cannot import data due to lack of permission");
@@ -1248,8 +1253,7 @@ public class UserService
         var ipAddress = GetRemoteIpAddress(_ctx.HttpContext);
         var query = $"select * from UserLogin where Id = '{sessionId}'";
         var connStr = await GetConnStrFromKey(token.ConnKey);
-        var ds = await ReadDataSet(query, connStr);
-        var userLogin = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<UserLogin>() : null;
+        var userLogin = await ReadDsAs<UserLogin>(query, connStr);
         if (userLogin is null) return true;
         await SavePatch(new PatchVM
         {
@@ -1370,17 +1374,14 @@ public class UserService
         }
         var envQuery = $"select * from TenantEnv where TenantCode = '{tenant}' and Env = '{env}'";
         var connStr = _cfg.GetConnectionString(Utils.ConnKey);
-        var ds = await ReadDataSet(envQuery, _cfg.GetConnectionString(Utils.ConnKey));
-        var tnEnv = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<TenantEnv>() : null;
+        var tnEnv = await ReadDsAs<TenantEnv>(envQuery, _cfg.GetConnectionString(Utils.ConnKey));
         if (tnEnv is null)
         {
             await WriteDefaultFile(NotFoundFile, htmlMimeType, HttpStatusCode.NotFound);
             return;
         }
         var pageQuery = $"select * from TenantPage where TenantEnvId = '{tnEnv.Id}' and Area = '{area}'";
-        var pageDs = await ReadDataSet(pageQuery, connStr);
-
-        var page = pageDs.Length > 0 && pageDs[0].Length > 0 ? pageDs[0][0].MapTo<TenantPage>() : null;
+        var page = await ReadDsAs<TenantPage>(pageQuery, connStr);
         await _cache.SetStringAsync(key, JsonConvert.SerializeObject(page), Utils.CacheTTL);
         await WriteTemplateAsync(response, page, env: env, tenant: tenant);
     }
@@ -1443,7 +1444,8 @@ public class UserService
             await cmd.ExecuteNonQueryAsync();
             await transaction.CommitAsync();
         }
-        catch {
+        catch
+        {
             await transaction.RollbackAsync();
         }
         return true;
