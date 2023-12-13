@@ -142,9 +142,9 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
     }
 
     [HttpDelete("api/feature/HardDelete")]
-    public Task<bool> HardDeleteFeature([FromBody] List<string> ids)
+    public Task<bool> HardDeleteFeature(SqlViewModel vm)
     {
-        return _userSvc.HardDeleteFeature(ids);
+        return _userSvc.HardDeleteFeature(vm);
     }
 
     [HttpPost("/api/chat")]

@@ -96,7 +96,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             props: {
                 EpsilonNow: {
                     get: function () {
-                        return System.DateTimeOffset.Now.AddMinutes(2);
+                        return System.DateTimeOffset.Now.AddMinutes(1);
                     }
                 },
                 Host: {
@@ -341,14 +341,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                         return System.Threading.Tasks.Task.fromResult(oldToken, Core.ViewModels.Token);
                     }
                     if (System.DateTimeOffset.op_LessThanOrEqual(oldToken.AccessTokenExp.$clone(), Core.Clients.Client.EpsilonNow.$clone()) && System.DateTimeOffset.op_GreaterThan(oldToken.RefreshTokenExp.$clone(), Core.Clients.Client.EpsilonNow.$clone())) {
-                        var newTokenTask = Core.Clients.Client.GetToken(oldToken);
-                        Core.Clients.Client.ExecTask(Core.ViewModels.Token, newTokenTask, function (newToken) {
+                        Core.Extensions.EventExt.Catch(Core.Extensions.EventExt.Done(Core.ViewModels.Token, Core.Clients.Client.GetToken(oldToken), function (newToken) {
                             if (newToken != null) {
                                 Core.Clients.Client.Token = newToken;
                                 !Bridge.staticEquals(success, null) ? success(newToken) : null;
                             }
                             tcs.trySetResult(newToken);
-                        }, function (e) {
+                        }), function (e) {
                             tcs.trySetException(e);
                         });
                     }
@@ -28667,6 +28666,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     Core.Components.Forms.EditForm.NotificationClient != null ? Core.Components.Forms.EditForm.NotificationClient.Close() : null;
                 });
                 this.Public = true;
+                this.HeartBeat();
             }
         },
         methods: {
@@ -28677,51 +28677,18 @@ Bridge.assembly("Core", function ($asm, globals) {
                 } else if (System.DateTimeOffset.op_GreaterThan(oldToken.AccessTokenExp.$clone(), Core.Clients.Client.EpsilonNow.$clone())) {
                     this.InitAppIfEmpty();
                 } else if (System.DateTimeOffset.op_GreaterThan(oldToken.RefreshTokenExp.$clone(), Core.Clients.Client.EpsilonNow.$clone())) {
-                    System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
-                        var $step = 0,
-                            $task1, 
-                            $taskResult1, 
-                            $jumpFromFinally, 
-                            $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
-                            $returnValue, 
-                            $async_e, 
-                            $asyncBody = Bridge.fn.bind(this, function () {
-                                try {
-                                    for (;;) {
-                                        $step = System.Array.min([0,1], $step);
-                                        switch ($step) {
-                                            case 0: {
-                                                $task1 = Core.Clients.Client.RefreshToken(Bridge.fn.bind(this, function (newToken) {
-                                                        this.InitAppIfEmpty();
-                                                    }));
-                                                    $step = 1;
-                                                    if ($task1.isCompleted()) {
-                                                        continue;
-                                                    }
-                                                    $task1.continue($asyncBody);
-                                                    return;
-                                            }
-                                            case 1: {
-                                                $taskResult1 = $task1.getAwaitedResult();
-                                                $tcs.setResult($taskResult1);
-                                                    return;
-                                            }
-                                            default: {
-                                                $tcs.setResult(null);
-                                                return;
-                                            }
-                                        }
-                                    }
-                                } catch($async_e1) {
-                                    $async_e = System.Exception.create($async_e1);
-                                    $tcs.setException($async_e);
-                                }
-                            }, arguments);
-
-                        $asyncBody();
-                        return $tcs.task;
+                    Core.Extensions.EventExt.Done(Core.ViewModels.Token, Core.Clients.Client.RefreshToken(), Bridge.fn.bind(this, function (newToken) {
+                        this.InitAppIfEmpty();
                     }));
                 }
+            },
+            HeartBeat: function () {
+                window.setInterval(function () {
+                    if (Core.Clients.Client.Token == null) {
+                        return;
+                    }
+                    Core.Extensions.EventExt.Done(Core.ViewModels.Token, Core.Clients.Client.RefreshToken());
+                }, 1000);
             },
             RenderLoginForm: function () {
                 window.clearTimeout(this._renderAwaiter);
@@ -28759,13 +28726,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                         tcs.trySetResult(false);
                         return;
                     }
-                    Core.Extensions.EventExt.Done(System.Boolean, this.ProcessValidLogin(), function (status) {
+                    Core.Extensions.EventExt.Done(System.Boolean, this.SubmitLogin(), function (status) {
                         tcs.trySetResult(status);
                     });
                 }));
                 return tcs.task;
             },
-            ProcessValidLogin: function () {
+            SubmitLogin: function () {
                 var $t;
                 var login = this.LoginEntity;
                 var tcs = new System.Threading.Tasks.TaskCompletionSource();

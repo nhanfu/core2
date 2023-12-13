@@ -14,7 +14,7 @@ namespace Core.Clients
 {
     public class Client
     {
-        public static DateTimeOffset EpsilonNow => DateTimeOffset.Now.AddMinutes(2);
+        public static DateTimeOffset EpsilonNow => DateTimeOffset.Now.AddMinutes(1);
         public const string ErrorMessage = "Hệ thống đang cập nhật vui lòng chờ trong 30s!";
         public static string ModelNamespace;
         private readonly string _nameSpace;
@@ -590,8 +590,7 @@ namespace Core.Clients
             }
             if (oldToken.AccessTokenExp <= EpsilonNow && oldToken.RefreshTokenExp > EpsilonNow)
             {
-                var newTokenTask = GetToken(oldToken);
-                ExecTask(newTokenTask, newToken =>
+                GetToken(oldToken).Done(newToken =>
                 {
                     if (newToken != null)
                     {
@@ -599,7 +598,7 @@ namespace Core.Clients
                         success?.Invoke(newToken);
                     }
                     tcs.TrySetResult(newToken);
-                }, e => tcs.TrySetException(e));
+                }).Catch(e => tcs.TrySetException(e));
             }
             return tcs.Task;
         }

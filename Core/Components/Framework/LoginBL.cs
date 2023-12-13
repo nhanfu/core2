@@ -45,6 +45,7 @@ namespace Core.Components.Framework
             Title = "Đăng nhập";
             Window.AddEventListener(EventType.BeforeUnload, () => NotificationClient?.Close());
             Public = true;
+            HeartBeat();
         }
 
         public static LoginBL Instance
@@ -73,11 +74,22 @@ namespace Core.Components.Framework
             }
             else if (oldToken.RefreshTokenExp > Client.EpsilonNow)
             {
-                Task.Run(async () => await Client.RefreshToken((newToken) =>
+                Client.RefreshToken().Done(newToken =>
                 {
                     InitAppIfEmpty();
-                }));
+                });
             }
+        }
+
+        private void HeartBeat()
+        {
+            Window.SetInterval(() =>
+            {
+                if (Client.Token is null) {
+                    return;
+                }
+                Client.RefreshToken().Done();
+            }, 1000);
         }
 
         public void RenderLoginForm()
@@ -137,12 +149,12 @@ namespace Core.Components.Framework
                     tcs.TrySetResult(false);
                     return;
                 }
-                ProcessValidLogin().Done(status => tcs.TrySetResult(status));
+                SubmitLogin().Done(status => tcs.TrySetResult(status));
             });
             return tcs.Task;
         }
 
-        private Task<bool> ProcessValidLogin()
+        private Task<bool> SubmitLogin()
         {
             var login = LoginEntity;
             var tcs = new TaskCompletionSource<bool>();

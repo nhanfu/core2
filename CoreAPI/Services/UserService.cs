@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using Core.Enums;
 using Core.Exceptions;
 using Core.Extensions;
 using Core.Models;
@@ -35,8 +34,8 @@ public class UserService
     private const string href = "href";
     private const string src = "src";
     private const int MAX_LOGIN = 5;
-    public readonly IHttpContextAccessor Context;
-    private readonly CoreContext db;
+    public readonly IHttpContextAccessor _ctx;
+    private readonly CoreContext _db;
     private readonly IConfiguration _cfg;
     private readonly IDistributedCache _cache;
     private readonly IWebHostEnvironment _host;
@@ -70,15 +69,9 @@ public class UserService
         _cfg = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache)); ;
         _host = host ?? throw new ArgumentNullException(nameof(host));
-        this.db = db ?? throw new ArgumentNullException(nameof(db));
-        Context = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-        if (Context?.HttpContext is null)
-        {
-            UserId = Utils.SystemId;
-            VendorId = Utils.SelfVendorId;
-            return;
-        }
-        var claims = Context.HttpContext.User.Claims;
+        _db = db ?? throw new ArgumentNullException(nameof(db));
+        _ctx = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+        var claims = _ctx.HttpContext.User.Claims;
         BranchId = claims.FirstOrDefault(x => x.Type == nameof(BranchId))?.Value;
         UserId = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
         ConnKey = claims.FirstOrDefault(x => x.Type == ConnKeyClaim)?.Value;
@@ -240,7 +233,7 @@ public class UserService
             Id = jit,
             TenantCode = login.CompanyName,
             UserId = user.Id,
-            IpAddress = GetRemoteIpAddress(Context.HttpContext),
+            IpAddress = GetRemoteIpAddress(_ctx.HttpContext),
             RefreshToken = refreshToken,
             ExpiredDate = res.RefreshTokenExp,
             SignInDate = signinDate,
@@ -305,23 +298,25 @@ public class UserService
         {
             throw new InvalidOperationException($"{nameof(userName)} is null");
         }
-        var ipAddress = GetRemoteIpAddress(Context.HttpContext);
-        var userLogin = await db.UserLogin
-            .OrderByDescending(x => x.SignInDate)
-            .FirstOrDefaultAsync(x => x.UserId == userName
-                && x.RefreshToken == token.RefreshToken
-                && x.ExpiredDate > DateTimeOffset.Now);
+        var ipAddress = GetRemoteIpAddress(_ctx.HttpContext);
+        var query = 
+            @$"select * from UserLogin 
+            where UserId = '{userId}' and RefreshToken = '{token.RefreshToken}'
+            and ExpiredDate > '{DateTimeOffset.Now}' order by SignInDate desc";
+        var connStr = await GetConnStrFromKey(connKey, tenant, env);
+        var ds = await ReadDataSet(query, connStr);
+        var userLogin = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<UserLogin>() : null;
 
         if (userLogin == null)
         {
-            Console.WriteLine("Refresh token timeout.");
             return null;
         }
         var login = new LoginVM
         {
             CompanyName = tenant,
             UserName = userName,
-            ConnKey = connKey
+            ConnKey = connKey,
+            CachedConnStr = connStr,
         };
         var (updatedUser, roles) = await GetUserByLogin(login);
         return await GetUserToken(updatedUser, roles, login, token.RefreshToken);
@@ -341,10 +336,10 @@ public class UserService
         var key = $"{tenantCode}_{connKey}_{env}";
         var conStr = await _cache.GetStringAsync(key);
         if (conStr != null) return conStr;
-        var tenantEnvTask = db.TenantEnv
-            .Where(x => x.TenantCode == tenantCode && x.ConnKey == connKey && x.Env == env);
-        var tenantEnv = await tenantEnvTask.FirstOrDefaultAsync()
-            ?? throw new ApiException($"Tenant environment NOT found {key}");
+        var query = $"select * from TenantEnv where TenantCode = '{tenantCode}' and ConnKey = '{connKey}' and Env = '{env}'";
+        var ds = await ReadDataSet(query, _cfg.GetConnectionString(Utils.ConnKey));
+        var tenantEnv = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<TenantEnv>() : null;
+        if (tenantEnv is null) throw new ApiException($"Tenant environment NOT found {key}");
         await _cache.SetStringAsync(key, tenantEnv.ConnStr, Utils.CacheTTL);
         return tenantEnv.ConnStr;
     }
@@ -356,7 +351,7 @@ public class UserService
         engine.SetValue("JSON", new JSONObject());
         engine.AddType<HttpClient>("HttpClient");
         engine.AddNamespace("System");
-        var claims = Context.HttpContext.User?.Claims;
+        var claims = _ctx.HttpContext.User?.Claims;
         if (claims != null)
         {
             var map = new { UserId, RoleIds, TenantCode, Env, CenterIds, BranchId, VendorId };
@@ -706,7 +701,7 @@ public class UserService
         {
             var q = @$"select * from FeaturePolicy 
             where Active = 1 and EntityName = '{entityName}'
-            and (RecordId = '{recordId}' or '{recordId}' = '') and RoleId in ({RoleIds.Combine()})";
+            and (RecordId = '{recordId}' or '{recordId}' = '') and RoleId in ({RoleIds.CombineStrings()})";
             if (pre != null) q += $" and {permissionName} = 1";
             var ds = await ReadDataSet(q, connStr);
             permissions = ds.Length > 0 ? ds[0].Select(x => x.MapTo<FeaturePolicy>()).ToArray() : [];
@@ -997,7 +992,7 @@ public class UserService
     public async Task<string> PostImageAsync(IWebHostEnvironment host,
             string name = "Captured", bool reup = false)
     {
-        var image = await Utils.ReadRequestBodyAsync(Context.HttpContext.Request, leaveOpen: false);
+        var image = await Utils.ReadRequestBodyAsync(_ctx.HttpContext.Request, leaveOpen: false);
         var fileName = $"{Path.GetFileNameWithoutExtension(name)}{Path.GetExtension(name)}";
         var path = GetUploadPath(fileName, host.WebRootPath);
         EnsureDirectoryExist(path);
@@ -1020,7 +1015,7 @@ public class UserService
 
     public string GetHttpPath(string path, string webRootPath)
     {
-        return Context.HttpContext.Request.Scheme + "://" + Context.HttpContext.Request.Host.Value + path.Replace(webRootPath, string.Empty).Replace("\\", "/");
+        return _ctx.HttpContext.Request.Scheme + "://" + _ctx.HttpContext.Request.Host.Value + path.Replace(webRootPath, string.Empty).Replace("\\", "/");
     }
 
     public async Task<bool> ImportCsv(List<IFormFile> files, string table, string comId, string connKey)
@@ -1214,7 +1209,7 @@ public class UserService
     {
         var paths = await GeneratePdf(email, host, absolute: true);
         paths.SelectForeach(email.ServerAttachements.Add);
-        await SendMail(email, db, host.WebRootPath);
+        await SendMail(email, _db, host.WebRootPath);
         return true;
     }
 
@@ -1250,7 +1245,7 @@ public class UserService
         }
         var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
         var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
-        var ipAddress = GetRemoteIpAddress(Context.HttpContext);
+        var ipAddress = GetRemoteIpAddress(_ctx.HttpContext);
         var query = $"select * from UserLogin where Id = '{sessionId}'";
         var connStr = await GetConnStrFromKey(token.ConnKey);
         var ds = await ReadDataSet(query, connStr);
@@ -1270,36 +1265,36 @@ public class UserService
 
     internal async Task<bool> ForgotPassword(LoginVM login)
     {
-        var str_maxLoginFailed = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "10");
+        var str_maxLoginFailed = await _db.MasterData.FirstOrDefaultAsync(x => x.Name == "10");
         var maxLoginFailed = str_maxLoginFailed.Description.TryParseInt() ?? 5;
-        var user = await db.User.FirstOrDefaultAsync(x => x.UserName == login.UserName);
+        var user = await _db.User.FirstOrDefaultAsync(x => x.UserName == login.UserName);
         var span = DateTimeOffset.Now - (user.UpdatedDate ?? DateTimeOffset.Now);
         if (user.LoginFailedCount >= maxLoginFailed && span.TotalMinutes < 5)
         {
             throw new ApiException($"The account {login.UserName} has been locked for a while! Please contact your administrator to unlock.");
         }
         // Send mail
-        var emailTemplate = await db.MasterData.FirstOrDefaultAsync(x => x.Name == "") ?? throw new InvalidOperationException("Cannot find recovery email template!");
+        var emailTemplate = await _db.MasterData.FirstOrDefaultAsync(x => x.Name == "") ?? throw new InvalidOperationException("Cannot find recovery email template!");
         var oneClickLink = GenerateRandomToken();
         user.Recover = oneClickLink;
-        await db.SaveChangesAsync();
+        await _db.SaveChangesAsync();
         var email = new EmailVM
         {
             ToAddresses = [user.Email],
             Subject = "Email recovery",
             Body = Utils.FormatEntity(emailTemplate.Description, user)
         };
-        await SendMail(email, db);
+        await SendMail(email, _db);
         return true;
     }
 
     internal async Task<string> ResendUser(string userId)
     {
-        var user = await db.User.FirstOrDefaultAsync(x => x.Id == userId);
+        var user = await _db.User.FirstOrDefaultAsync(x => x.Id == userId);
         user.Salt = GenerateRandomToken();
         var randomPassword = GenerateRandomToken(10);
         user.Password = GetHash(UserUtils.sHA256, randomPassword + user.Salt);
-        await db.SaveChangesAsync();
+        await _db.SaveChangesAsync();
         return randomPassword;
     }
 
@@ -1339,7 +1334,7 @@ public class UserService
     private async Task WriteDefaultFile(string file, string contentType
         , HttpStatusCode code = HttpStatusCode.OK)
     {
-        var response = Context.HttpContext.Response;
+        var response = _ctx.HttpContext.Response;
         if (!response.HasStarted)
         {
             response.Headers.TryAdd(ContentType, contentType);
@@ -1356,8 +1351,8 @@ public class UserService
         {
             throw new UnauthorizedAccessException($"Page not found for the tanent {tenant} due to the current user was signed in with the tenant {TenantCode}.");
         }
-        var request = Context.HttpContext.Request;
-        var response = Context.HttpContext.Response;
+        var request = _ctx.HttpContext.Request;
+        var response = _ctx.HttpContext.Response;
         var ext = Path.GetExtension(request.Path);
         if (!ext.IsNullOrWhiteSpace())
         {
@@ -1396,10 +1391,10 @@ public class UserService
         {
             return false;
         }
-        var feature = await db.Feature.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-        var policies = await db.FeaturePolicy.AsNoTracking().Where(x => x.FeatureId == id).ToArrayAsync();
-        var groups = await db.ComponentGroup.AsNoTracking().Where(x => x.FeatureId == id).ToArrayAsync();
-        var components = await db.Component.AsNoTracking().Where(x => groups.Select(g => g.Id).Contains(x.ComponentGroupId)).ToArrayAsync();
+        var feature = await _db.Feature.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        var policies = await _db.FeaturePolicy.AsNoTracking().Where(x => x.FeatureId == id).ToArrayAsync();
+        var groups = await _db.ComponentGroup.AsNoTracking().Where(x => x.FeatureId == id).ToArrayAsync();
+        var components = await _db.Component.AsNoTracking().Where(x => groups.Select(g => g.Id).Contains(x.ComponentGroupId)).ToArrayAsync();
         feature.Id = Id.NewGuid().ToString();
         policies.SelectForeach(x =>
         {
@@ -1418,24 +1413,39 @@ public class UserService
             });
         });
         feature.ComponentGroup = groups;
-        db.Add(feature);
-        db.AddRange(groups);
-        db.AddRange(components);
-        await db.SaveChangesAsync();
+        _db.Add(feature);
+        _db.AddRange(groups);
+        _db.AddRange(components);
+        await _db.SaveChangesAsync();
         return true;
     }
 
-    internal async Task<bool> HardDeleteFeature(List<string> ids)
+    internal async Task<bool> HardDeleteFeature(SqlViewModel vm)
     {
-        var features = await db.Feature.Where(x => ids.Contains(x.Id)).ToListAsync();
-        var policies = await db.FeaturePolicy.Where(x => ids.Contains(x.FeatureId)).ToListAsync();
-        var groups = await db.ComponentGroup.Where(x => ids.Contains(x.FeatureId)).ToListAsync();
-        var components = await db.Component.Where(x => groups.Select(g => g.Id).Contains(x.ComponentGroupId)).ToArrayAsync();
-        db.FeaturePolicy.RemoveRange(policies);
-        db.ComponentGroup.RemoveRange(groups);
-        db.Component.RemoveRange(components);
-        db.Feature.RemoveRange(features);
-        await db.SaveChangesAsync();
+        var ids = vm.Ids;
+        var fQuery = @$"delete Component where Id in (
+            select * from ComponentGroup where FeatureId in ({ids.CombineStrings()})
+        );
+        delete ComponentGroup where FeatureId in ({ids.CombineStrings()});
+        delete FeaturePolicy where FeatureId in ({ids.CombineStrings()});
+        delete Feature where Id in ({ids.CombineStrings()})";
+        var connStr = await GetConnStrFromKey(vm.ConnKey);
+        using SqlConnection connection = new(connStr);
+        await connection.OpenAsync();
+        using var transaction = connection.BeginTransaction();
+        try
+        {
+            using SqlCommand cmd = new();
+            cmd.Transaction = transaction;
+            cmd.Connection = connection;
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = fQuery;
+            await cmd.ExecuteNonQueryAsync();
+            await transaction.CommitAsync();
+        }
+        catch {
+            await transaction.RollbackAsync();
+        }
         return true;
     }
 }

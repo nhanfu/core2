@@ -1,42 +1,21 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
-using System.Reflection;
 using System.Text;
 
 namespace Core.Extensions
 {
     public static partial class Utils
     {
-        public const string SystemId = "1";
-        public const string TenantField = "t";
-        public const string Pixel = "px";
-        public const string FeatureField = "f";
         public const string QuestionMark = "?";
         public const string Amp = "&";
-        public const string ApplicationJson = "application/json";
-        public const string Authorization = "Authorization";
-        public const string SelfVendorId = "65";
-        public const string AutoSaveReason = "Tự động cập nhật";
         public const string IdField = "Id";
-        public const string NewLine = "\r\n";
-        public const string Indent = "\t";
-        public const string Dot = ".";
         public const string Comma = ",";
-        public const string Semicolon = ";";
         public const string Space = " ";
-        public const string ComponentId = "20";
-        public const string ComponentGroupId = "30";
-        public const string HistoryId = "4199";
         public const string TenantCode = "System";
         public const string ConnKey = "default";
         public const string InsertedBy = "InsertedBy";
         public const string OwnerUserIds = "OwnerUserIds";
         public const string OwnerRoleIds = "OwnerRoleIds";
 
-        public const string GOOGLE_MAP = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCr_2PaKJplCyvwN4q78lBkX3UBpfZ_HsY";
-        public const string GOOGLE_MAP_PLACES = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=places";
-        public const string GOOGLE_MAP_GEOMETRY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=geometry";
-        public const string GOOGLE_MAP_WEEKLY = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc&libraries=&v=weekly";
-        public const string GOOGLE_MAP_GEO_REQUEST = "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBfVrTUFatsZTyqaCKwRzbj09DD72VxSwc";
         public static Dictionary<char, string> SpecialChar = new Dictionary<char, string>()
         {
             { '+', "%2B" },
@@ -96,34 +75,6 @@ namespace Core.Extensions
             #endif
         };
 
-        public static object EncodeProperties(this object value)
-        {
-            PropertyInfo[] props = value?.GetType().GetProperties();
-            foreach (var pi in props)
-            {
-                if (pi.PropertyType == typeof(string) && pi.CanWrite)
-                {
-                    var oldValue = pi.GetValue(value, null)?.ToString();
-                    pi.SetValue(value, oldValue.EncodeSpecialChar(), null);
-                }
-            }
-            return value;
-        }
-
-        public static object DecodeProperties(this object value)
-        {
-            PropertyInfo[] props = value?.GetType().GetProperties();
-            foreach (var pi in props)
-            {
-                if (pi.PropertyType == typeof(string) && pi.CanWrite)
-                {
-                    var oldValue = pi.GetValue(value, null)?.ToString();
-                    pi.SetValue(value, oldValue.DecodeSpecialChar(), null);
-                }
-            }
-            return value;
-        }
-
         public static string DecodeSpecialChar(this string str)
         {
             if (str is null)
@@ -146,27 +97,6 @@ namespace Core.Extensions
                 }
             }
             return res.ToString();
-        }
-
-        public static object GetComplexPropValue(this object obj, string propName)
-        {
-            if (obj == null || string.IsNullOrWhiteSpace(propName))
-            {
-                return null;
-            }
-
-            var hierarchy = propName.Split('.');
-            var res = obj;
-            foreach (var key in hierarchy)
-            {
-                if (res == null)
-                {
-                    return null;
-                }
-
-                res = res.GetPropValue(key);
-            }
-            return res;
         }
 
         public static string FormatEntity(string format, object source)
@@ -303,13 +233,6 @@ namespace Core.Extensions
             return builder.ToString();
         }
 
-        public static DateTime LastDayOfMonth(DateTime? time = null)
-        {
-
-            var current = time ?? DateTime.Now;
-            return new DateTime(current.Year, current.Month, DateTime.DaysInMonth(current.Year, current.Month));
-        }
-
         public static int? TryParseInt(this string value)
         {
             var parsed = int.TryParse(value, out var res);
@@ -329,74 +252,6 @@ namespace Core.Extensions
                 return res;
             }
 
-            return null;
-        }
-
-        public static T? TryParse<T>(this string value) where T : struct
-        {
-            if (value.IsNullOrWhiteSpace())
-            {
-                return null;
-            }
-
-            var type = typeof(T);
-            if (type.IsEnum)
-            {
-                var parsed = Enum.TryParse<T>(value, out var t);
-                return parsed ? t : null;
-            }
-            else if (type == typeof(int) || type == typeof(int?))
-            {
-                return Convert.ToInt32(value) as T?;
-            }
-            else if (type == typeof(long) || type == typeof(long?))
-            {
-                return Convert.ToInt64(value) as T?;
-            }
-            else if (type == typeof(short) || type == typeof(short?))
-            {
-                return Convert.ToInt16(value) as T?;
-            }
-            else if (type == typeof(bool) || type == typeof(bool?))
-            {
-                return Convert.ToBoolean(value) as T?;
-            }
-            else if (type == typeof(TimeSpan) || type == typeof(TimeSpan?))
-            {
-                var parsed = TimeSpan.TryParse(value, out TimeSpan res);
-                return parsed ? res as T? : null;
-            }
-            else if (type == typeof(DateTime) || type == typeof(DateTime?))
-            {
-                var parsed = DateTime.TryParse(value, out DateTime res);
-                return parsed ? res as T? : null;
-            }
-            else if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?))
-            {
-                var parsed = DateTimeOffset.TryParse(value, out DateTimeOffset res);
-                return parsed ? res as T? : null;
-            }
-            else if (type == typeof(byte) || type == typeof(byte?))
-            {
-                return Convert.ToByte(value) as T?;
-            }
-            else if (type == typeof(char) || type == typeof(char?))
-            {
-                return Convert.ToChar(value) as T?;
-            }
-            else if (type == typeof(decimal) || type == typeof(decimal?))
-            {
-                return Convert.ToDecimal(value) as T?;
-            }
-            else if (type == typeof(double) || type == typeof(double?))
-            {
-                return Convert.ToDouble(value) as T?;
-            }
-            else if (type == typeof(float) || type == typeof(float?))
-            {
-                var parsed = float.TryParse(value, out float res);
-                return parsed ? res as T? : null;
-            }
             return null;
         }
 
