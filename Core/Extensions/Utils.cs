@@ -37,7 +37,7 @@ namespace Core.Extensions
         public const string InsertedBy = "InsertedBy";
         public const string OwnerUserIds = "OwnerUserIds";
         public const string OwnerRoleIds = "OwnerRoleIds";
-        public const string ComQuery = "/user/reader";
+        public const string ComQuery = "/user/comQuery";
         public const string PatchSvc = "/v2/user";
         public const string UserSvc = "/user/svc";
         public const string HardDelSvc = "/user/hardDelete";

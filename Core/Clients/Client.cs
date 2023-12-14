@@ -134,15 +134,6 @@ namespace Core.Clients
             EntityName = entityName;
         }
 
-        public async Task<T> SubmitAsync<T>(XHRWrapper options)
-        {
-            if (!options.AllowAnonymous)
-            {
-                await RefreshToken();
-            }
-            return await SubmitAsyncWithToken<T>(options);
-        }
-
         public Task<object[][]> ComQuery(SqlViewModel vm)
         {
             return SubmitAsync<object[][]>(new XHRWrapper
@@ -175,7 +166,7 @@ namespace Core.Clients
             return tcs.Task;
         }
 
-        private Task<T> SubmitAsyncWithToken<T>(XHRWrapper options)
+        public Task<T> SubmitAsync<T>(XHRWrapper options)
         {
             CustomPrefix = _config ? Config : CustomPrefix;
             var isNotFormData = options.FormData is null;
@@ -432,9 +423,9 @@ namespace Core.Clients
             });
         }
 
-        public Task<bool> PatchAsync(PatchVM value, Action<XMLHttpRequest> errHandler = null, bool annonymous = false)
+        public Task<int> PatchAsync(PatchVM value, Action<XMLHttpRequest> errHandler = null, bool annonymous = false)
         {
-            return SubmitAsync<bool>(new XHRWrapper
+            return SubmitAsync<int>(new XHRWrapper
             {
                 Value = JSON.Stringify(value),
                 IsRawString = true,

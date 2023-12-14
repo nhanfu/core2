@@ -164,7 +164,7 @@ namespace Core.Components
 
         private void LabelClickHandler(Event e)
         {
-            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity));
+            Client.ExecTaskNoResult(this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity));
         }
 
         public static TextAlign CalcTextAlign(Component header, object cellData)

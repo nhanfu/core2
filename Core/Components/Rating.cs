@@ -90,7 +90,7 @@ namespace Core.Components
             }
             Task.Run(async () =>
             {
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity);
+                await this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity);
             });
         }
 

@@ -214,7 +214,7 @@ namespace Core.Components
                 FindMatchText();
                 UserInput?.Invoke(new ObservableArgs { NewData = ListValues, OldData = oldList, EvType = EventType.Change });
                 tag.Remove();
-                this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, ListValues, oldList).Done();
+                this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity, ListValues, oldList).Done();
             }).End.Render();
         }
 
@@ -247,7 +247,7 @@ namespace Core.Components
             FindMatchText();
             _input.Focus();
             UserInput?.Invoke(new ObservableArgs { NewData = ListValues, OldData = ListValues, NewMatch = rowData, EvType = EventType.Change });
-            this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity).Done();
+            this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done();
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)

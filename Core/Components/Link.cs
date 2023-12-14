@@ -36,7 +36,7 @@ namespace Core.Components
             e.PreventDefault();
             if (GuiInfo.Events.HasAnyChar() && GuiInfo.Events.ToLower().Contains("click"))
             {
-                this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity).Done();
+                this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity).Done();
                 return;
             }
             var a = Element as HTMLAnchorElement;

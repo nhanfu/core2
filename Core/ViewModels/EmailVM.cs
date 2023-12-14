@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Core.Clients;
+using System.Collections.Generic;
 
 namespace Core.ViewModels
 {
     public class EmailVM
     {
+        public string ConnKey { get; set; } = Client.ConnKey;
         public string FromAddress { get; set; }
         public List<string> ToAddresses { get; set; }
         public List<string> CC { get; set; }

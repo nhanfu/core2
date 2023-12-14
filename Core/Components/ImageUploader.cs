@@ -348,7 +348,7 @@ namespace Core.Components
                     Path = string.Join(PathSeparator, newPath);
                     Dirty = true;
                     UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName, EvType = EventType.Change });
-                    this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity).Done();
+                    this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done();
                 });
             });
         }
@@ -372,7 +372,7 @@ namespace Core.Components
                 Dirty = true;
                 _input.Value = string.Empty;
                 UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName, EvType = EventType.Change });
-                var dispatch = this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
+                var dispatch = this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity);
                 Client.ExecTaskNoResult(dispatch);
             });
         }

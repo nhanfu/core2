@@ -304,13 +304,13 @@ namespace Core.Components
                     {
                         deletedItems = GetFocusedRows();
                     }
-                    this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems)
+                    this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems)
                     .Done(() =>
                     {
                         HardDeleteConfirmed(deletedItems).Done(success =>
                         {
                             DOMContentLoaded?.Invoke();
-                            this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems).Done();
+                            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems).Done();
                         });
                     });
                 };

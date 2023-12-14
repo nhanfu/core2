@@ -353,10 +353,7 @@ namespace Core.Components
             if (UserInput != null)
             {
                 CascadeAndPopulate();
-                Task.Run(async () =>
-                {
-                    await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, currentItem.Entity, Matched);
-                });
+                this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity, currentItem.Entity, Matched).Done();
                 UserInput.Invoke(new ObservableArgs { NewData = _value, OldData = oldValue, EvType = EventType.Change });
             }
         }
@@ -552,14 +549,8 @@ namespace Core.Components
                 Entity?.SetComplexPropValue(FieldName, null);
                 Dirty = true;
                 CascadeAndPopulate();
-                Task.Run(async () =>
-                {
-                    await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, Matched, oldMatch);
-                });
-                if (UserInput != null)
-                {
-                    UserInput.Invoke(new ObservableArgs { NewData = null, OldData = oldValue, EvType = EventType.Change });
-                }
+                this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity, Matched, oldMatch).Done();
+                UserInput?.Invoke(new ObservableArgs { NewData = null, OldData = oldValue, EvType = EventType.Change });
             }
             if (delete && _input.Value.IsNullOrEmpty())
             {
@@ -696,7 +687,7 @@ namespace Core.Components
                 _gv.Show = false;
             }
             CascadeAndPopulate();
-            this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, rowData, oldMatch).Done(() =>
+            this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity, rowData, oldMatch).Done(() =>
             {
                 UserInput?.Invoke(new ObservableArgs { NewData = _value, OldData = oldValue, EvType = EventType.Change });
                 DiposeGvWrapper();

@@ -25,7 +25,7 @@ namespace Core.Components
 
         private async Task DispatchClickAsync()
         {
-            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity, GuiInfo);
+            await this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity, GuiInfo);
             Html.Take(Document.Body).Div.ClassName("backdrop")
                 .Style("align-items: center;").Escape((e) => Dispose());
             _preview = Html.Context;
@@ -83,7 +83,7 @@ namespace Core.Components
                         printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
                         printWindow.AddEventListener(EventType.AfterPrint, async e =>
                         {
-                            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.AfterPrint, selectedRow);
+                            await this.DispatchEvent(GuiInfo.Events, EventType.AfterPrint, selectedRow);
                         });
                         printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
                         if (!GuiInfo.Style.IsNullOrWhiteSpace())
@@ -110,7 +110,7 @@ namespace Core.Components
                         printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
                         printWindow.AddEventListener(EventType.AfterPrint, async e =>
                         {
-                            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.AfterPrint, EditForm);
+                            await this.DispatchEvent(GuiInfo.Events, EventType.AfterPrint, EditForm);
                         });
                         if (!GuiInfo.Style.IsNullOrWhiteSpace())
                         {

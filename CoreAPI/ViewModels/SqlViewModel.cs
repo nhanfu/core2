@@ -1,5 +1,6 @@
 ﻿using Core.Extensions;
 using Core.Models;
+using System.Text.Json.Serialization;
 
 namespace Core.ViewModels
 {
@@ -14,6 +15,7 @@ namespace Core.ViewModels
         public Component Component { get; set; }
         public string AnnonymousTenant { get; set; }
         public string AnnonymousEnv { get; set; }
+        public string JsScript { get; internal set; }
         public string Select { get; set; } = "*";
         public string Where { get; set; }
         public string GroupBy { get; set; }
@@ -29,6 +31,7 @@ namespace Core.ViewModels
 
     public class SqlQueryResult
     {
+        public string Result { get; set; }
         public string Query { get; set; }
         public string XQuery { get; set; }
     }

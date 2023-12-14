@@ -271,13 +271,13 @@ namespace Core.Components
                 return;
             }
             var patchModel = GetPatchEntity();
-            this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, patchModel, this)
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, patchModel, this)
             .Done(() =>
             {
                 lastpathModel = patchModel;
                 Client.Instance.PatchAsync(patchModel).Done(success =>
                 {
-                    PatchUpdateCb(success, patchModel);
+                    PatchUpdateCb(success > 0, patchModel);
                 });
             });
         }
@@ -294,7 +294,7 @@ namespace Core.Components
                 Dirty = false;
                 EmptyRow = false;
             }
-            Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this));
+            Client.ExecTaskNoResult(this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this));
         }
 
         public PatchVM GetPatchEntity()
@@ -333,7 +333,7 @@ namespace Core.Components
         {
             e.StopPropagation();
             ListViewSection.ListView.DblClick?.Invoke(Entity);
-            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.DblClick, Entity));
+            Client.ExecTaskNoResult(this.DispatchEvent(GuiInfo.Events, EventType.DblClick, Entity));
         }
 
         protected virtual void RowItemClick(Event e)
@@ -349,7 +349,7 @@ namespace Core.Components
                 ListViewSection.ListView.RowClick?.Invoke(Entity);
             }
             ListViewSection.ListView.LastListViewItem = this;
-            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity));
+            Client.ExecTaskNoResult(this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity));
         }
 
         private void HotKeySelectRow(bool ctrl, bool shift, bool focusing)
@@ -470,19 +470,19 @@ namespace Core.Components
 
         protected virtual void RowFocusOut()
         {
-            Task.Run(async () => await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.RowFocusOut, Entity));
+            Task.Run(async () => await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.RowFocusOut, Entity));
         }
 
         internal void MouseEnter()
         {
             Element.AddClass(HoveringClass);
-            Task.Run(async () => await this.DispatchCustomEventAsync(ListViewSection.ListView.GuiInfo.Events, CustomEventType.RowMouseEnter, Entity));
+            Task.Run(async () => await this.DispatchCustomEvent(ListViewSection.ListView.GuiInfo.Events, CustomEventType.RowMouseEnter, Entity));
         }
 
         internal void MouseLeave()
         {
             Element.RemoveClass(HoveringClass);
-            Task.Run(async () => await this.DispatchCustomEventAsync(ListViewSection.ListView.GuiInfo.Events, CustomEventType.RowMouseLeave, Entity));
+            Task.Run(async () => await this.DispatchCustomEvent(ListViewSection.ListView.GuiInfo.Events, CustomEventType.RowMouseLeave, Entity));
         }
 
         public override bool Show { get => base.Show; set => Toggle(value); }

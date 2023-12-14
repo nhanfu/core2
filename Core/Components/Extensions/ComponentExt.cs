@@ -28,17 +28,17 @@ namespace Core.Components.Extensions
         /// <param name="events"></param>
         /// <param name="eventType"></param>
         /// <param name="parameters"></param>
-        public static async Task DispatchEventToHandlerAsync(this EditableComponent com, string events, EventType eventType, params object[] parameters)
+        public static Task DispatchEvent(this EditableComponent com, string events, EventType eventType, params object[] parameters)
         {
             if (events.IsNullOrEmpty())
             {
-                return;
+                return Task.FromResult(true);
             }
             var eventTypeName = eventType.ToString();
-            await InvokeEventAsync(com, events, eventTypeName, parameters);
+            return InvokeEventAsync(com, events, eventTypeName, parameters);
         }
 
-        private static async Task InvokeEventAsync(EditableComponent com, string events, string eventTypeName, params object[] parameters)
+        private static Task InvokeEventAsync(EditableComponent com, string events, string eventTypeName, params object[] parameters)
         {
             object eventObj;
             try
@@ -47,23 +47,23 @@ namespace Core.Components.Extensions
             }
             catch
             {
-                return;
+                return Task.FromResult(false);
             }
             var form = com.EditForm;
             if (form is null)
             {
-                return;
+                return Task.FromResult(false);
             }
             var eventName = eventObj[eventTypeName]?.ToString();
             var isFn = Utils.IsFunction(eventName, out var func);
             if (isFn)
             {
-                func.Call(form, form, com);
-                return;
+                func.Call(null, form, com);
+                return Task.FromResult(true);
             }
             if (eventName.IsNullOrEmpty())
             {
-                return;
+                return Task.FromResult(false);
             }
 
             var method = form[eventName];
@@ -72,38 +72,28 @@ namespace Core.Components.Extensions
                 form = form.FindComponentEvent(eventName);
                 if (form is null)
                 {
-                    return;
+                    return Task.FromResult(false);
                 }
                 method = form[eventName];
             }
             if (method is null)
             {
-                return;
+                return Task.FromResult(false);
             }
-
-            using (Task task = null)
-            {
-                /*@
-                var task = method.apply(form, parameters);
-                if (task == null || task.isCompleted == null) {
-                    $tcs.setResult(null);
-                    return;
-                }
-                */
-                try
-                {
-                    await task;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                    throw ex;
-                }
+            var tcs = new TaskCompletionSource<bool>();
+            Task task = null;
+            /*@
+            task = method.apply(form, parameters);
+            if (task === null || task === undefined || task.isCompleted == null) {
+                tcs.setResult(false);
+                return tcs.Task;
             }
+            */
+            task.Done(() => tcs.TrySetResult(true)).Catch(e => tcs.TrySetException(e));
+            return tcs.Task;
         }
 
-        public static Task DispatchCustomEventAsync(this EditableComponent com, string events, CustomEventType eventType, params object[] parameters)
+        public static Task DispatchCustomEvent(this EditableComponent com, string events, CustomEventType eventType, params object[] parameters)
         {
             if (events.IsNullOrEmpty())
             {
@@ -194,22 +184,37 @@ namespace Core.Components.Extensions
             return tab;
         }
 
-        public static async Task<TabEditor> OpenTab(this EditableComponent com,
+        public static Task<TabEditor> OpenTab(this EditableComponent com,
             string id, string featureName, Func<TabEditor> factory, bool popup = false, bool anonymous = false)
         {
+            var tcs = new TaskCompletionSource<TabEditor>();
             if (!popup && TabEditor.FindTab(id) is TabEditor exists)
             {
                 exists.Focus();
-                return exists;
+                tcs.TrySetResult(exists);
+                return tcs.Task;
             }
-            var feature = await LoadFeature(Client.ConnKey, featureName);
-            var tab = factory.Invoke();
-            tab.Popup = popup;
-            tab.Name = featureName;
-            tab.Id = id;
-            tab.Feature = feature;
-            OpenTabOrPopup(com, tab);
-            return tab;
+            LoadFeature(Client.ConnKey, featureName).Done(feature =>
+            {
+                var tab = factory.Invoke();
+                tab.Popup = popup;
+                tab.Name = featureName;
+                tab.Id = id;
+                tab.Feature = feature;
+                AssignMethods(feature, tab);
+                OpenTabOrPopup(com, tab);
+            }); ;
+            return tcs.Task;
+        }
+
+        public static void AssignMethods(Feature f, object instance)
+        {
+            var fn = new Function(f.Script);
+            var obj = fn.Call(null, f);
+            /*@
+            for (let prop in obj) instance[prop] = obj[prop];
+            if (instance.Init != null) instance.Init();
+            */
         }
 
         private static void OpenTabOrPopup(EditableComponent com, TabEditor tab)
@@ -227,9 +232,9 @@ namespace Core.Components.Extensions
             tab.OpenFrom = parentTab?.FilterChildren<ListViewItem>(x => x.Entity == tab.Entity)?.FirstOrDefault();
         }
 
-        public static async Task<TabEditor> OpenPopup(this EditableComponent com, string featureName, Func<TabEditor> factory, bool anonymous = false, bool child = false)
+        public static Task<TabEditor> OpenPopup(this EditableComponent com, string featureName, Func<TabEditor> factory, bool anonymous = false, bool child = false)
         {
-            return await com.OpenTab(com.GetHashCode().ToString(), featureName, factory, true, anonymous);
+            return com.OpenTab(com.GetHashCode().ToString(), featureName, factory, true, anonymous);
         }
 
         public static Task<EditForm> InitFeatureByName(string connKey, string hash, bool portal = true)

@@ -138,6 +138,7 @@ namespace Core.Extensions
             return null;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
         public static IPromise Done<T>(this Task<T> task, Action<T> handler = null)
         {
             var promise = task.ToPromise();
@@ -163,13 +164,16 @@ namespace Core.Extensions
             return task;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
-        public static void Done(this Task task, Action handler = null, Action<Exception> errorHandler = null)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
+        public static IPromise Done(this Task task, Action handler = null, Action<Exception> errorHandler = null)
         {
+            if (task is null) return null;
             var promise = ToPromiseNoResult(task);
             /*@
-            promise.then(handler).catch(errorHandler);
+            promise.then(handler);
+            if (errorHandler != null) promise.catch(errorHandler);
              */
+            return promise;
         }
     }
 }

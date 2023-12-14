@@ -246,7 +246,7 @@ namespace Core.Components
             {
                 Path = null;
             }
-            var dispatchTask = this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity);
+            var dispatchTask = this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity);
             Client.ExecTaskNoResult(dispatchTask, () =>
             {
                 UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName });
@@ -268,7 +268,7 @@ namespace Core.Components
                 Dirty = true;
                 _input.Value = string.Empty;
                 UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName });
-                this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity).Done();
+                this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done();
             });
         }
 
@@ -335,7 +335,7 @@ namespace Core.Components
             }
             Dirty = true;
             UserInput?.Invoke(new ObservableArgs { NewData = _path, FieldName = FieldName, EvType = EventType.Change });
-            this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity).Done();
+            this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done();
         }
 
         private void OpenNativeFileDialog(Event e)

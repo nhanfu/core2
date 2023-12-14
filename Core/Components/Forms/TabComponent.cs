@@ -143,7 +143,7 @@ namespace Core.Components.Forms
             var editForm = this.FindClosest<EditForm>();
             RenderSection(this, ComponentGroup);
             HasRendered = true;
-            this.DispatchEventToHandlerAsync(ComponentGroup.Events, EventType.DOMContentLoaded, Entity).Done();
+            this.DispatchEvent(ComponentGroup.Events, EventType.DOMContentLoaded, Entity).Done();
         }
 
         public override void Focus()
@@ -154,7 +154,7 @@ namespace Core.Components.Forms
                 .ForEach(x => x.Show = false);
             Show = true;
             EditForm.ResizeListView();
-            this.DispatchEventToHandlerAsync(ComponentGroup.Events, EventType.FocusIn, Entity).Done();
+            this.DispatchEvent(ComponentGroup.Events, EventType.FocusIn, Entity).Done();
         }
 
         public override bool Show
@@ -172,13 +172,13 @@ namespace Core.Components.Forms
                 {
                     _li.AddClass(ActiveClass);
                     _li.QuerySelector(ElementType.a.ToString()).AddClass(ActiveClass);
-                    this.DispatchEventToHandlerAsync(ComponentGroup.Events, EventType.FocusIn, Entity).Done();
+                    this.DispatchEvent(ComponentGroup.Events, EventType.FocusIn, Entity).Done();
                 }
                 else
                 {
                     _li.RemoveClass(ActiveClass);
                     _li.QuerySelector(ElementType.a.ToString()).RemoveClass(ActiveClass);
-                    this.DispatchEventToHandlerAsync(ComponentGroup.Events, EventType.FocusOut, Entity).Done();
+                    this.DispatchEvent(ComponentGroup.Events, EventType.FocusOut, Entity).Done();
                 }
             }
         }

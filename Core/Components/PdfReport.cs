@@ -191,7 +191,7 @@ namespace Core.Components
                 });
                 if (GuiInfo != null && GuiInfo.Events.HasAnyChar())
                 {
-                    this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.DOMContentLoaded, Entity).Done();
+                    this.DispatchEvent(GuiInfo.Events, EventType.DOMContentLoaded, Entity).Done();
                 }
             });
         }

@@ -53,7 +53,7 @@ namespace Core.Components
             try
             {
                 Spinner.AppendTo(Element);
-                Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Click, Entity, this));
+                this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity, this).Done();
             }
             finally
             {

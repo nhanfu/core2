@@ -134,7 +134,7 @@ namespace Core.Components
             listViewItem.Entity.CopyPropFrom(updatedData);
             var arr = listViewItem.FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.FieldName).ToArray();
             listViewItem.UpdateView(false, arr);
-            Client.ExecTaskNoResult(this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem));
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem).Done();
         }
 
         public void Resolve(Component com, HTMLElement ele = null)
@@ -537,9 +537,9 @@ namespace Core.Components
         {
             if (rowSection.EmptyRow && Editable)
             {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
+                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
                 RowData.Data.Add(rowData);
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
+                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
                 Entity.SetComplexPropValue(FieldName, RowData.Data);
                 RowAction(x => x.Entity == rowSection.Entity, x =>
                 {
@@ -552,7 +552,7 @@ namespace Core.Components
                 });
                 AddNewEmptyRow();
             }
-            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, rowData);
+            await this.DispatchEvent(GuiInfo.Events, EventType.Change, rowData);
         }
 
         public virtual void AddNewEmptyRow()
@@ -693,7 +693,7 @@ namespace Core.Components
                 confirm.Dispose();
                 Deactivate().Done(() =>
                 {
-                    this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.Deactivated, Entity).Done();
+                    this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.Deactivated, Entity).Done();
                 });
             };
         }
@@ -732,10 +732,10 @@ namespace Core.Components
                 {
                     deletedItems = GetFocusedRows();
                 }
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems);
+                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems);
                 await HardDeleteConfirmed(deletedItems);
                 DOMContentLoaded?.Invoke();
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems);
+                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems);
             };
         }
 
@@ -869,12 +869,12 @@ namespace Core.Components
             Task.Run(async () =>
             {
                 Toast.Success("Đang Sao chép liệu !");
-                await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.BeforePasted, _originRows, _copiedRows);
+                await ComponentExt.DispatchCustomEvent(this, GuiInfo.Events, CustomEventType.BeforePasted, _originRows, _copiedRows);
                 var index = AllListViewItem.IndexOf(x => x.Selected);
                 var list = await AddRowsNo(_copiedRows, index);
                 base.Dirty = true;
                 base.Focus();
-                await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.AfterPasted, _originRows, _copiedRows);
+                await ComponentExt.DispatchCustomEvent(this, GuiInfo.Events, CustomEventType.AfterPasted, _originRows, _copiedRows);
                 if (GuiInfo.IsRealtime)
                 {
                     foreach (var item in list)
@@ -931,7 +931,7 @@ namespace Core.Components
 
             Toast.Success("Đang Sao chép liệu !");
             ComponentExt
-            .DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows)
+            .DispatchCustomEvent(this, GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows)
             .Done(() =>
             {
                 var index = AllListViewItem.IndexOf(x => x.Selected);
@@ -957,7 +957,7 @@ namespace Core.Components
         {
             list.ForEach(x => x.Dirty = true);
             base.Focus();
-            ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows)
+            ComponentExt.DispatchCustomEvent(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows)
             .Done(() =>
             {
                 RenderIndex();
@@ -1022,11 +1022,11 @@ namespace Core.Components
             {
                 RowData.Data.Add(rowData);
             }
-            this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData).Done(() =>
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreated, rowData).Done(() =>
             {
                 var row = RenderRowData(Header, rowData, MainSection, index);
                 tcs.TrySetResult(row);
-                this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData).Done();
+                this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreated, rowData).Done();
             });
             return tcs.Task;
         }
@@ -1056,7 +1056,7 @@ namespace Core.Components
                 }
                 indextemp++;
             });
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
+            await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
             var listItem = new List<ListViewItem>();
             indextemp = index;
             await rows.AsEnumerable().Reverse().ForEachAsync(async data =>
@@ -1064,7 +1064,7 @@ namespace Core.Components
                 listItem.Add(await AddRow(data, indextemp, false));
                 indextemp++;
             });
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreatedList, rows);
+            await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreatedList, rows);
             AddNewEmptyRow();
             return listItem;
         }
@@ -1088,7 +1088,7 @@ namespace Core.Components
                 }
                 indextemp++;
             });
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
+            await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
             var listItem = new List<ListViewItem>();
             indextemp = index;
             await rows.ForEachAsync(async data =>
@@ -1096,7 +1096,7 @@ namespace Core.Components
                 listItem.Add(await AddRow(data, indextemp, false));
                 indextemp++;
             });
-            await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreatedList, rows);
+            await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreatedList, rows);
             AddNewEmptyRow();
             return listItem;
         }
@@ -1205,7 +1205,7 @@ namespace Core.Components
             (Window.Instance as dynamic).navigator.clipboard.writeText(JSON.Stringify(_copiedRows));
             Task.Run(async () =>
             {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCopied, _originRows, _copiedRows);
+                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCopied, _originRows, _copiedRows);
             });
         }
 
@@ -1638,7 +1638,7 @@ namespace Core.Components
             {
                 return;
             }
-            this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforePatchCreate, Entity, null, this)
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforePatchCreate, Entity, null, this)
             .Done(() =>
             {
                 foreach (var item in UpdatedListItems)
@@ -1693,7 +1693,7 @@ namespace Core.Components
             Client.Instance.PatchAsync(patch)
             .Done(r =>
             {
-                tcs.TrySetResult(r);
+                tcs.TrySetResult(r > 0);
             });
             return tcs.Task;
         }

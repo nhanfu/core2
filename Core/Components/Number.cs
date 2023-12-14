@@ -113,9 +113,9 @@ namespace Core.Components
             {
                 return;
             }
-            var check = evt.KeyCodeEnum() == KeyCodeEnum.V && evt.CtrlOrMetaKey() && evt.ShiftKey();
+            var fnKey = evt.KeyCodeEnum() == KeyCodeEnum.V && evt.CtrlOrMetaKey() && evt.ShiftKey();
             var tcs = new TaskCompletionSource<string>();
-            if (check)
+            if (fnKey)
             {
                 /*@
                  navigator.clipboard.readText().then(clipText => tcs.setResult(clipText));
@@ -148,8 +148,8 @@ namespace Core.Components
                         updated.Value = item.Replace(",", "").Replace(".", "").IsNullOrWhiteSpace() ? default(decimal) : decimal.Parse(item.Replace(",", "").Replace(".", ""));
                         updated.UpdateView();
                         updated.PopulateFields();
-                        await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
-                        await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
+                        await updated.DispatchEvent(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
+                        await upItem.ListViewSection.ListView.DispatchEvent(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
                         if (gridView.GuiInfo.IsRealtime)
                         {
                             upItem.PatchUpdateOrCreate();
@@ -172,10 +172,7 @@ namespace Core.Components
             if (_input.Value.IsNullOrWhiteSpace())
             {
                 Value = null;
-                if (UserInput != null)
-                {
-                    UserInput.Invoke(new ObservableArgs { NewData = null, OldData = oldVal, EvType = EventType.Change });
-                }
+                UserInput?.Invoke(new ObservableArgs { NewData = null, OldData = oldVal, EvType = EventType.Change });
                 return;
             }
             _input.Value = _input.Value.Trim();
@@ -192,15 +189,9 @@ namespace Core.Components
                 return;
             }
             Value = value;
-            if (UserInput != null)
-            {
-                UserInput.Invoke(new ObservableArgs { NewData = value, OldData = oldVal, EvType = EventType.Change });
-            }
+            UserInput?.Invoke(new ObservableArgs { NewData = value, OldData = oldVal, EvType = EventType.Change });
             PopulateFields();
-            Task.Run(async () =>
-            {
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, Entity, value, oldVal);
-            });
+            this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity, value, oldVal).Done();
         }
 
         private void SetValue()
@@ -226,14 +217,8 @@ namespace Core.Components
             }
             var oldVal = _value;
             Value = value;
-            if (UserInput != null)
-            {
-                UserInput.Invoke(new ObservableArgs { NewData = value, OldData = oldVal, EvType = EventType.Input });
-            }
-            Task.Run(async () =>
-            {
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Input, Entity, value, oldVal);
-            });
+            UserInput?.Invoke(new ObservableArgs { NewData = value, OldData = oldVal, EvType = EventType.Input });
+            this.DispatchEvent(GuiInfo.Events, EventType.Input, Entity, value, oldVal).Done();
         }
 
         private decimal? GetDecimalValue()

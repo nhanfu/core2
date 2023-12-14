@@ -307,7 +307,7 @@ namespace Core.Components
                 SetRequired();
                 if (GuiInfo != null && GuiInfo.Events.HasAnyChar())
                 {
-                    await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.DOMContentLoaded, Entity);
+                    await this.DispatchEvent(GuiInfo.Events, EventType.DOMContentLoaded, Entity);
                 }
                 SetOldTextAndVal();
             };

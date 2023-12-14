@@ -45,17 +45,18 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
         return _userSvc.ForgotPassword(login);
     }
 
-    [HttpGet("api/User/ReSendUser/{userId}")]
-    public Task<string> ReSendUser(string userId)
+    [HttpGet("api/User/ReSendUser/")]
+    public Task<string> ReSendUser(SqlViewModel vm)
     {
-        return _userSvc.ResendUser(userId);
+        return _userSvc.ResendUser(vm);
     }
 
     [AllowAnonymous]
     [HttpPost("api/[Controller]/svc")]
-    public Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> ExecUserSvc([FromBody] SqlViewModel vm)
+    public async Task<object> ExecUserSvc([FromBody] SqlViewModel vm)
     {
-        return _userSvc.RunUserSvc(vm);
+        var res = await _userSvc.RunUserSvc(vm);
+        return res;
     }
 
     [HttpPost("api/[Controller]/excel")]
@@ -65,7 +66,7 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
     }
 
     [HttpPatch("api/v2/[Controller]", Order = 0)]
-    public Task<bool> PatchAsync([FromBody] PatchVM patch)
+    public Task<int> PatchAsync([FromBody] PatchVM patch)
     {
         patch.ByPassPerm = false;
         return _userSvc.SavePatch(patch);
@@ -120,9 +121,8 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
         return _userSvc.DeleteFile(path);
     }
 
-    [HttpPost("api/[Controller]/Reader")]
-    public Task<IEnumerable<IEnumerable<Dictionary<string, object>>>> Reader(
-        [FromBody] SqlViewModel model)
+    [HttpPost("api/[Controller]/ComQuery")]
+    public Task<object> ComQuery([FromBody] SqlViewModel model)
     {
         return _userSvc.ComQuery(model);
     }

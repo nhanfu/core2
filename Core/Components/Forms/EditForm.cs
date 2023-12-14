@@ -120,23 +120,6 @@ namespace Core.Components.Forms
             LayoutForm = LayoutForm ?? new EditForm(null);
         }
 
-        private static bool ListViewItemFilter(object updatedData, EditableComponent x)
-        {
-            if (x is GroupViewItem)
-            {
-                return false;
-            }
-
-            return x.Entity != null && x.Entity.GetType().Name == updatedData.GetType().Name && x.Entity[IdField].ToString() == updatedData[IdField].ToString();
-        }
-
-        public void UpdateViewAwait(int millisecond = 100)
-        {
-            Window.ClearTimeout(awaiter);
-            awaiter = Window.SetTimeout(() => UpdateView(), millisecond);
-            Dirty = false;
-        }
-
         public PatchVM GetPatchEntity()
         {
             var shouldGetAll = EntityId is null;
@@ -191,7 +174,7 @@ namespace Core.Components.Forms
             BeforeSaved?.Invoke();
             Client.Instance.PatchAsync(pathModel).Done(rs =>
             {
-                if (!rs)
+                if (rs == 0)
                 {
                     Toast.Warning("Dữ liệu của bạn chưa được lưu vui lòng nhập lại!");
                     tcs.TrySetResult(false);
@@ -208,6 +191,9 @@ namespace Core.Components.Forms
                 AfterSaved?.Invoke(true);
                 tcs.TrySetResult(true);
                 return;
+            }).Catch(e => {
+                tcs.TrySetResult(false);
+                Toast.Warning(e.Message);
             });
             return tcs.Task;
         }
@@ -446,12 +432,12 @@ namespace Core.Components.Forms
             ResizeHandler();
             LockUpdate();
             Html.Take(Element).TabIndex(-1).Trigger(EventType.Focus)
-                .Event(EventType.FocusIn, () => this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusIn, Entity).Done())
+                .Event(EventType.FocusIn, () => this.DispatchEvent(Feature.Events, EventType.FocusIn, Entity).Done())
                 .Event(EventType.KeyDown, (e) => KeyDownIntro(e).Done())
-                .Event(EventType.FocusOut, () => this.DispatchEventToHandlerAsync(Feature.Events, EventType.FocusOut, Entity).Done());
+                .Event(EventType.FocusOut, () => this.DispatchEvent(Feature.Events, EventType.FocusOut, Entity).Done());
             DOMContentLoaded?.Invoke();
             loadedCallback?.Invoke();
-            this.DispatchEventToHandlerAsync(Feature.Events, EventType.DOMContentLoaded, Entity).Done();
+            this.DispatchEvent(Feature.Events, EventType.DOMContentLoaded, Entity).Done();
         }
 
         private async Task KeyDownIntro(Event evt)
@@ -1141,7 +1127,7 @@ namespace Core.Components.Forms
                     printWindow.Print();
                     printWindow.AddEventListener(EventType.AfterPrint, async e =>
                     {
-                        await this.DispatchEventToHandlerAsync(component.Events, EventType.AfterPrint, this);
+                        await this.DispatchEvent(component.Events, EventType.AfterPrint, this);
                     });
                     printWindow.AddEventListener(EventType.MouseMove, e => printWindow.Close());
                     printWindow.AddEventListener(EventType.Click, e => printWindow.Close());

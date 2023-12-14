@@ -1161,15 +1161,15 @@ namespace Core.Components
                                 updated.UpdateView();
                                 var dropdown = com as SearchEntry;
                                 updated.PopulateFields(dropdown.Matched);
-                                await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, currentItemD.Entity, dropdown.Matched);
+                                await updated.DispatchEvent(updated.GuiInfo.Events, EventType.Change, currentItemD.Entity, dropdown.Matched);
                             }
                             else
                             {
                                 updated.UpdateView();
                                 updated.PopulateFields();
-                                await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, currentItemD.Entity);
+                                await updated.DispatchEvent(updated.GuiInfo.Events, EventType.Change, currentItemD.Entity);
                             }
-                            await currentItemD.ListViewSection.ListView.DispatchEventToHandlerAsync(upItemD.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItemD.Entity);
+                            await currentItemD.ListViewSection.ListView.DispatchEvent(upItemD.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItemD.Entity);
                             if (GuiInfo.IsRealtime)
                             {
                                 currentItemD.PatchUpdateOrCreate();
@@ -1503,15 +1503,15 @@ namespace Core.Components
                             updated.UpdateView();
                             var dropdown = com as SearchEntry;
                             updated.PopulateFields(dropdown.Matched);
-                            await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, upItem.Entity, dropdown.Matched);
+                            await updated.DispatchEvent(updated.GuiInfo.Events, EventType.Change, upItem.Entity, dropdown.Matched);
                         }
                         else
                         {
                             updated.UpdateView();
                             updated.PopulateFields();
-                            await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
+                            await updated.DispatchEvent(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
                         }
-                        await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
+                        await upItem.ListViewSection.ListView.DispatchEvent(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
                         if (GuiInfo.IsRealtime)
                         {
                             upItem.PatchUpdateOrCreate();
@@ -1564,7 +1564,7 @@ namespace Core.Components
             }
             Task.Run(async () =>
             {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterEmptyRowCreated, emptyRow);
+                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterEmptyRowCreated, emptyRow);
             });
         }
 
@@ -1868,7 +1868,7 @@ namespace Core.Components
             _ = Task.Run(async () =>
             {
                 Toast.Success("Đang Sao chép liệu !");
-                await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows);
+                await ComponentExt.DispatchCustomEvent(this, GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows);
                 var index = AllListViewItem.IndexOf(x => x.Selected);
                 if (addRow)
                 {
@@ -1888,7 +1888,7 @@ namespace Core.Components
                 base.Dirty = true;
                 var lastChild = list.FirstOrDefault().FilterChildren<EditableComponent>(x => x.GuiInfo.Editable).FirstOrDefault();
                 lastChild?.Focus();
-                await ComponentExt.DispatchCustomEventAsync(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows);
+                await ComponentExt.DispatchCustomEvent(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows);
                 RenderIndex();
                 if (GuiInfo.IsSumary)
                 {
@@ -2040,7 +2040,7 @@ namespace Core.Components
             var com = new List<string>() { nameof(SearchEntry) };
             if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData, this);
+                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreated, rowData, this);
                 object rs;
                 if (GuiInfo.IsRealtime)
                 {
@@ -2069,13 +2069,13 @@ namespace Core.Components
                     LastListViewItem = rowSection;
                     LastElementFocus.Focus();
                 }
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
+                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
             if (component != null && component.ComponentType == nameof(GridView))
             {
-                await this.DispatchEventToHandlerAsync(component.GuiInfo.Events, observableArgs.EvType, rowData, rowSection);
+                await this.DispatchEvent(component.GuiInfo.Events, observableArgs.EvType, rowData, rowSection);
             }
-            await this.DispatchEventToHandlerAsync(GuiInfo.Events, observableArgs.EvType, rowData, rowSection);
+            await this.DispatchEvent(GuiInfo.Events, observableArgs.EvType, rowData, rowSection);
             if (observableArgs.EvType == EventType.Change)
             {
                 PopulateFields();
@@ -2561,7 +2561,7 @@ namespace Core.Components
                 var patch = cloned.MapToPatch(nameof(Component));
                 Client.Instance.PatchAsync(patch).Done(success =>
                 {
-                    if (!success)
+                    if (success == 0)
                     {
                         Toast.Warning("Clone error");
                         return;
@@ -2653,7 +2653,7 @@ namespace Core.Components
             await Task.Delay(CellCountNoSticky);
             if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
+                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
                 rowSection.EmptyRow = false;
                 MoveEmptyRow(rowSection);
                 var headers = Header.Where(y => y.Editable).ToList();
@@ -2668,12 +2668,12 @@ namespace Core.Components
                 EmptyRowSection.Children.Clear();
                 AddNewEmptyRow();
                 Entity.SetComplexPropValue(FieldName, RowData.Data);
-                await this.DispatchCustomEventAsync(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
+                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
             }
             AddSummaries();
             PopulateFields();
             RenderIndex();
-            await this.DispatchEventToHandlerAsync(GuiInfo.Events, EventType.Change, rowData);
+            await this.DispatchEvent(GuiInfo.Events, EventType.Change, rowData);
         }
 
         internal int GetViewPortItem()

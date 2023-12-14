@@ -181,12 +181,12 @@ namespace Core.Components
 
         private void DispatchClick(object row)
         {
-            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.GroupEvent, EventType.Click, row));
+            Client.ExecTaskNoResult(this.DispatchEvent(GuiInfo.GroupEvent, EventType.Click, row));
         }
 
         private void DispatchDblClick(object row)
         {
-            Client.ExecTaskNoResult(this.DispatchEventToHandlerAsync(GuiInfo.GroupEvent, EventType.DblClick, row));
+            Client.ExecTaskNoResult(this.DispatchEvent(GuiInfo.GroupEvent, EventType.DblClick, row));
         }
 
         public override void ToggleAll()

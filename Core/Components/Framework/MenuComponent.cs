@@ -465,11 +465,7 @@ namespace Core.Components.Framework
                 instance = new TabEditor(f.EntityName);
                 if (!f.Script.IsNullOrWhiteSpace())
                 {
-                    var obj = Window.Eval<object>(f.Script);
-                    /*@
-                    for (let prop in obj) instance[prop] = obj[prop];
-                    if (instance.Init != null) instance.Init();
-                    */
+                    ComponentExt.AssignMethods(f, instance);
                 }
 
                 instance.Name = f.Name;

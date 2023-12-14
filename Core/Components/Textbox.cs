@@ -135,8 +135,8 @@ namespace Core.Components
                         updated.Value = item;
                         updated.UpdateView();
                         updated.PopulateFields();
-                        await updated.DispatchEventToHandlerAsync(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
-                        await upItem.ListViewSection.ListView.DispatchEventToHandlerAsync(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
+                        await updated.DispatchEvent(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
+                        await upItem.ListViewSection.ListView.DispatchEvent(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
                         if (gridView.GuiInfo.IsRealtime)
                         {
                             upItem.PatchUpdateOrCreate();
@@ -253,7 +253,7 @@ namespace Core.Components
             PopulateFields();
             Task.Run(async () =>
             {
-                await this.DispatchEventToHandlerAsync(GuiInfo.Events, type, Entity);
+                await this.DispatchEvent(GuiInfo.Events, type, Entity);
             });
         }
 
