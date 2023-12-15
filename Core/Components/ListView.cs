@@ -719,7 +719,7 @@ namespace Core.Components
             var confirm = new ConfirmDialog();
             confirm.Title = $"Bạn có chắc xóa {deletedItems.Count} dòng dữ liêu không!";
             confirm.Render();
-            confirm.YesConfirmed += async () =>
+            confirm.YesConfirmed += () =>
             {
                 if (OnDeleteConfirmed != null)
                 {
@@ -732,10 +732,12 @@ namespace Core.Components
                 {
                     deletedItems = GetFocusedRows();
                 }
-                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems);
-                await HardDeleteConfirmed(deletedItems);
-                DOMContentLoaded?.Invoke();
-                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems);
+                this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems).Done(() => {
+                    HardDeleteConfirmed(deletedItems).Done(res => {
+                    DOMContentLoaded?.Invoke();
+                    this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems).Done();
+                    });
+                });
             };
         }
 

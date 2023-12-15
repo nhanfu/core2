@@ -191,7 +191,8 @@ namespace Core.Components.Forms
                 AfterSaved?.Invoke(true);
                 tcs.TrySetResult(true);
                 return;
-            }).Catch(e => {
+            }).Catch(e =>
+            {
                 tcs.TrySetResult(false);
                 Toast.Warning(e.Message);
             });
@@ -832,7 +833,19 @@ namespace Core.Components.Forms
             };
             confirmDialog.YesConfirmed += () =>
             {
-                Client.Instance.CloneFeatureAsync(feature.Id).Done();
+                var sql = new SqlViewModel
+                {
+                    ComId = "Feature",
+                    Action = "Clone",
+                    Ids = new string[] { feature.Id }
+                };
+                Client.Instance.SubmitAsync<bool>(new XHRWrapper
+                {
+                    IsRawString = true,
+                    Url = Utils.UserSvc,
+                    Method = HttpMethod.POST,
+                    Value = JSON.Stringify(sql)
+                }).Done();
             };
             AddChild(confirmDialog);
         }

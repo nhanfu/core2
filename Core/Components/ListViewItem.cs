@@ -235,7 +235,7 @@ namespace Core.Components
             {
                 component.Element.Style.CssText = header.ChildStyle;
             }
-            component.UserInput += async (arg) =>
+            component.UserInput += (arg) =>
             {
                 if (component.ComponentType == "Input" || component.ComponentType == nameof(Textbox) || component.ComponentType == "Textarea")
                 {
@@ -245,21 +245,25 @@ namespace Core.Components
                         {
                             return;
                         }
-                        await ListView.RowChangeHandler(component.Entity, this, arg, component);
-                        ListView.RealtimeUpdate(this, arg);
+                        ListView.RowChangeHandler(component.Entity, this, arg, component).Done(() =>
+                        {
+                            ListView.RealtimeUpdate(this, arg);
+                        });
                     }
                 }
                 else
                 {
-                    await ListView.RowChangeHandler(component.Entity, this, arg, component);
-                    if (arg.EvType == EventType.Change)
+                    ListView.RowChangeHandler(component.Entity, this, arg, component).Done(() =>
                     {
-                        if (component.Disabled)
+                        if (arg.EvType == EventType.Change)
                         {
-                            return;
+                            if (component.Disabled)
+                            {
+                                return;
+                            }
+                            ListView.RealtimeUpdate(this, arg);
                         }
-                        ListView.RealtimeUpdate(this, arg);
-                    }
+                    });
                 }
             };
         }
@@ -385,7 +389,8 @@ namespace Core.Components
                     if (ListViewSection.ListView.VirtualScroll && currentIndex > _lastIndex)
                     {
                         var sql = ListView.GetSql(_lastIndex - 1, currentIndex - _lastIndex + 1, true);
-                        Client.Instance.GetIds(sql).Done(selectedIds => {
+                        Client.Instance.GetIds(sql).Done(selectedIds =>
+                        {
                             if (Selected)
                             {
                                 selectedIds.Except(ListViewSection.ListView.SelectedIds).ForEach(ListViewSection.ListView.SelectedIds.Add);

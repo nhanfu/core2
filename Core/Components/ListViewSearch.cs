@@ -41,6 +41,8 @@ namespace Core.Components
             set => parentListView = value;
         }
 
+        public override TabEditor TabEditor { get => Parent.TabEditor ?? Parent.EditForm as TabEditor; internal set => Parent.TabEditor = value; }
+
         private GridView ParentGridView
         {
             get
@@ -411,13 +413,12 @@ namespace Core.Components
 
         private void ExportCustomData(object arg)
         {
-            var task = TabEditor.OpenPopup("Export CustomData", () => Exporter);
-            Client.ExecTaskNoResult(task);
+            TabEditor.OpenPopup("Export CustomData", () => Exporter).Done();
         }
 
         public void AdvancedSearch(object arg)
         {
-            var task = TabEditor.OpenPopup("AdvancedSearch", () =>
+            TabEditor.OpenPopup("AdvancedSearch", () =>
             {
                 var editor = new AdvancedSearch(ParentListView)
                 {
@@ -425,8 +426,7 @@ namespace Core.Components
                     ParentElement = TabEditor.Element
                 };
                 return editor;
-            });
-            Client.ExecTaskNoResult(task);
+            }).Done();
         }
 
         private ExportCustomData _export;

@@ -8,6 +8,7 @@ namespace Core.Extensions
         public const string QuestionMark = "?";
         public const string Amp = "&";
         public const string IdField = "Id";
+        public const string SemiColon = ";";
         public const string Comma = ",";
         public const string Space = " ";
         public const string TenantCode = "System";

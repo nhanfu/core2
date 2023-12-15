@@ -151,18 +151,16 @@ namespace Core.Clients
             sqlVm.Select = "ds.Id";
             sqlVm.Count = false;
             sqlVm.SkipXQuery = true;
-            var task = SubmitAsync<dynamic[][]>(new XHRWrapper
+            SubmitAsync<dynamic[][]>(new XHRWrapper
             {
                 Url = Utils.ComQuery,
                 Value = JSON.Stringify(sqlVm),
                 IsRawString = true,
                 Method = HttpMethod.POST
-            });
-            ExecTask(task, ds =>
-            {
+            }).Done(ds => {
                 var res = ds.Length == 0 || ds[0].Length == 0 ? new string[] { } : ds[0].Select(x => x.Id as string).ToArray();
                 tcs.TrySetResult(res);
-            }, e => tcs.TrySetException(e));
+            }).Catch(e => tcs.TrySetException(e));
             return tcs.Task;
         }
 
@@ -462,17 +460,6 @@ namespace Core.Clients
             });
         }
 
-        public Task<bool> CloneFeatureAsync(string id)
-        {
-            return SubmitAsync<bool>(new XHRWrapper
-            {
-                Url = "/feature/Clone",
-                Value = id,
-                IsRawString = true,
-                Method = HttpMethod.POST
-            });
-        }
-
         public Task<string[]> DeactivateAsync(string[] ids, string table, string connKey = null)
         {
             var vm = new SqlViewModel
@@ -498,15 +485,16 @@ namespace Core.Clients
         {
             var vm = new SqlViewModel
             {
+                ComId = table,
+                Action = "HardDelete",
                 Ids = ids,
-                Table = table,
                 ConnKey = connKey ?? ConnKey
             };
             return SubmitAsync<string[]>(new XHRWrapper
             {
-                Url = Utils.HardDelSvc,
+                Url = Utils.UserSvc,
                 Value = JSON.Stringify(vm),
-                Method = HttpMethod.DELETE,
+                Method = HttpMethod.POST,
                 IsRawString = true,
                 Headers = new Dictionary<string, string>
                 {

@@ -1,6 +1,5 @@
 ﻿using Core.Extensions;
 using Core.Models;
-using System.Text.Json.Serialization;
 
 namespace Core.ViewModels
 {
@@ -26,12 +25,12 @@ namespace Core.ViewModels
         public string[] FieldName { get; set; }
         public bool SkipXQuery { get; set; }
         public string ConnKey { get; set; } = Utils.ConnKey;
-        public string CacheConnStr { get; set; }
+        public string CachedConnStr { get; internal set; }
     }
 
     public class SqlQueryResult
     {
-        public string Result { get; set; }
+        public object Result { get; set; }
         public string Query { get; set; }
         public string XQuery { get; set; }
     }

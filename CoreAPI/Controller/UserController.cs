@@ -135,12 +135,6 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
         return _userSvc.Launch(tenant, area, env);
     }
 
-    [HttpPost("api/feature/Clone")]
-    public Task<bool> CloneFeatureAsync([FromBody] string id)
-    {
-        return _userSvc.CloneFeature(id);
-    }
-
     [HttpDelete("api/feature/HardDelete")]
     public Task<bool> HardDeleteFeature(SqlViewModel vm)
     {

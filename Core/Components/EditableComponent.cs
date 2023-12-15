@@ -245,8 +245,6 @@ namespace Core.Components
         public string OldValue { get; internal set; }
         public Dictionary<string, string> ValidationResult { get; set; }
         public string ClassName { get => Element.ClassName; set => Element.ClassName = value; }
-        public string BasicUpdateText => Updating ? "Cập nhật" : "Thêm mới";
-        public virtual bool Updating => Entity != null && Entity[IdField].As<int>() > 0;
         protected bool StopChildrenHistory { get; set; }
         public Dictionary<string, ValidationRule> ValidationRules { get; set; }
         public virtual bool Disabled
@@ -302,14 +300,13 @@ namespace Core.Components
 
             ValidationResult = new Dictionary<string, string>();
             Children = new List<EditableComponent>();
-            DOMContentLoaded += async () =>
+            DOMContentLoaded += () =>
             {
                 SetRequired();
                 if (GuiInfo != null && GuiInfo.Events.HasAnyChar())
                 {
-                    await this.DispatchEvent(GuiInfo.Events, EventType.DOMContentLoaded, Entity);
+                    this.DispatchEvent(GuiInfo.Events, EventType.DOMContentLoaded, Entity).Done();
                 }
-                SetOldTextAndVal();
             };
         }
 
@@ -615,42 +612,11 @@ namespace Core.Components
             {
                 _setDirty = true;
             }
-            if (!Updating)
-            {
-                SetOldTextAndVal();
-            }
         }
 
         private void ClearDirtyInternal()
         {
             _dirty = false;
-            SetOldTextAndVal();
-        }
-
-        internal void SetOldTextAndVal()
-        {
-            OldValue = Entity.GetPropValue(FieldName)?.ToString();
-        }
-
-        public virtual void UpdateDirty(bool dirty, params string[] componentNames)
-        {
-            if (componentNames.Nothing())
-            {
-                return;
-            }
-
-            FilterChildren<EditableComponent>(child => child.GuiInfo != null && componentNames.Contains(child.Name))
-                .SelectForeach(x =>
-                {
-                    if (dirty)
-                    {
-                        x.SetDirtyInternal();
-                    }
-                    else
-                    {
-                        x.ClearDirtyInternal();
-                    }
-                });
         }
 
         public virtual string GetValueText()

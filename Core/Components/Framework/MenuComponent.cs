@@ -331,8 +331,19 @@ namespace Core.Components.Framework
             };
             confirmDialog.YesConfirmed += () =>
             {
-                Client.Instance.CloneFeatureAsync(feature.Id).Done(() =>
+                var sql = new SqlViewModel
                 {
+                    ComId = "Feature",
+                    Action = "Clone",
+                    Ids = new string[] { feature.Id }
+                };
+                Client.Instance.SubmitAsync<bool>(new XHRWrapper
+                {
+                    IsRawString = true,
+                    Url = Utils.UserSvc,
+                    Method = HttpMethod.POST,
+                    Value = JSON.Stringify(sql)
+                }).Done(x => {
                     ReloadMenu(feature.ParentId);
                 });
             };

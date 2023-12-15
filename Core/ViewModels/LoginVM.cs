@@ -1,5 +1,4 @@
 ﻿using Core.Clients;
-using System.ComponentModel.DataAnnotations;
 
 namespace Core.ViewModels
 {

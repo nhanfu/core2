@@ -1,6 +1,5 @@
 ﻿using Core.ViewModels;
 using System.Collections;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace Core.Extensions
@@ -198,7 +197,7 @@ namespace Core.Extensions
             return instance;
         }
 
-        public static PatchVM MapToPatch<T>(this T com, string table = null)
+        public static PatchVM MapToPatch<T>(this T com, bool includeNull = false, string table = null)
         {
             if (com is null) return null;
             var type = typeof(T);
@@ -206,10 +205,11 @@ namespace Core.Extensions
             {
                 Table = table ?? type.Name,
             };
-            var props = typeof(T).GetProperties().ToList();
+            var props = typeof(T).GetProperties().Where(x => x.PropertyType.IsSimple()).ToList();
             props.ForEach(prop =>
             {
                 var val = prop.GetValue(com);
+                if (val is null && !includeNull) return;
                 patch.Changes.Add(new PatchDetail
                 {
                     Field = prop.Name,
