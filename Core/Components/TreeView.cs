@@ -78,7 +78,7 @@ namespace Core.Components
                 node.AddChild(rowSection);
                 Html.Instance.Div.ClassName(count > 0 ? "has" : "").Render();
                 var label = Html.Context;
-                headers.SelectForeach(header =>
+                headers.SelectForEach(header =>
                 {
                     var com = header;
                     Html.Take(label).P.Render();

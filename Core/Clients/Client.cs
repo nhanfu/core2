@@ -198,7 +198,7 @@ namespace Core.Clients
                 options.FinalUrl = Window.EncodeURI(PathIO.Combine(CustomPrefix ?? Prefix, EntityName, url));
             }
             xhr.Open(options.Method.ToString(), options.FinalUrl, true);
-            options.Headers.SelectForeach(x => xhr.SetRequestHeader(x.Key, x.Value));
+            options.Headers.SelectForEach(x => xhr.SetRequestHeader(x.Key, x.Value));
             if (!options.AllowAnonymous)
             {
                 xhr.SetRequestHeader(Utils.Authorization, "Bearer " + Token?.AccessToken);

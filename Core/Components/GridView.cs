@@ -1747,7 +1747,7 @@ namespace Core.Components
             dataSections.SelectForEach((child, index) =>
             {
                 child.Entity = updatedData[index];
-                child.Children.Flattern(x => x.Children).SelectForeach(x =>
+                child.Children.Flattern(x => x.Children).SelectForEach(x =>
                 {
                     x.Entity = updatedData[index];
                 });
@@ -1865,55 +1865,67 @@ namespace Core.Components
                 return;
             }
 
-            _ = Task.Run(async () =>
+            Toast.Success("Đang Sao chép liệu !");
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows).Done(() =>
             {
-                Toast.Success("Đang Sao chép liệu !");
-                await ComponentExt.DispatchCustomEvent(this, GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows);
-                var index = AllListViewItem.IndexOf(x => x.Selected);
-                if (addRow)
+                var index = GetStartIndex(ev, addRow);
+                base.AddRowsNo(copiedRows, index).Done(list =>
                 {
-                    if (ev.KeyCodeEnum() == KeyCodeEnum.U && ev.CtrlOrMetaKey())
+                    RowsAdded(list, originalRows, copiedRows);
+                });
+            });
+        }
+
+        private int GetStartIndex(Event ev, bool addRow)
+        {
+            var index = AllListViewItem.IndexOf(x => x.Selected);
+            if (addRow)
+            {
+                if (ev.KeyCodeEnum() == KeyCodeEnum.U && ev.CtrlOrMetaKey())
+                {
+                    if (GuiInfo.TopEmpty)
                     {
-                        if (GuiInfo.TopEmpty)
-                        {
-                            index = 0;
-                        }
-                        else
-                        {
-                            index = AllListViewItem.LastOrDefault().RowNo;
-                        }
+                        index = 0;
+                    }
+                    else
+                    {
+                        index = AllListViewItem.LastOrDefault().RowNo;
                     }
                 }
-                var list = await AddRowsNo(copiedRows, index);
-                base.Dirty = true;
-                var lastChild = list.FirstOrDefault().FilterChildren<EditableComponent>(x => x.GuiInfo.Editable).FirstOrDefault();
-                lastChild?.Focus();
-                await ComponentExt.DispatchCustomEvent(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows);
-                RenderIndex();
-                if (GuiInfo.IsSumary)
-                {
-                    AddSummaries();
-                }
-                ClearSelected();
+            }
+
+            return index;
+        }
+
+        private void RowsAdded(ListViewItem[] list, List<object> originalRows, List<object> copiedRows)
+        {
+            var lastChild = list.FirstOrDefault().FilterChildren<EditableComponent>(x => x.GuiInfo.Editable).FirstOrDefault();
+            lastChild?.Focus();
+            RenderIndex();
+            if (GuiInfo.IsSumary)
+            {
+                AddSummaries();
+            }
+            ClearSelected();
+            foreach (var item in list)
+            {
+                item.Selected = true;
+            }
+            LastListViewItem = list.FirstOrDefault();
+            if (GuiInfo.IsRealtime)
+            {
                 foreach (var item in list)
                 {
-                    item.Selected = true;
+                    item.PatchUpdateOrCreate();
                 }
-                LastListViewItem = list.FirstOrDefault();
-                if (GuiInfo.IsRealtime)
-                {
-                    foreach (var item in list)
-                    {
-                        item.PatchUpdateOrCreate();
-                    }
-                    Toast.Success("Sao chép dữ liệu thành công !");
-                    base.Dirty = false;
-                }
-                else
-                {
-                    Toast.Success("Sao chép dữ liệu thành công !");
-                }
-            });
+                Toast.Success("Sao chép dữ liệu thành công !");
+                base.Dirty = false;
+            }
+            else
+            {
+                Toast.Success("Sao chép dữ liệu thành công !");
+            }
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows).Done();
         }
 
         private void RenderSummaryRow(Component sum, List<Component> headers, HTMLTableSectionElement footer, int count)
@@ -1994,7 +2006,7 @@ namespace Core.Components
             }
             var result = MainSection.FirstChild.Element.CloneNode(true) as HTMLTableRowElement;
             footer.AppendChild(result);
-            result.Children.SelectForeach(x => x.InnerHTML = null);
+            result.Children.SelectForEach(x => x.InnerHTML = null);
             return result;
         }
 

@@ -26,8 +26,9 @@ namespace Core.Components
             Html.Take(Element).ClassName("group-listview").End.Render();
         }
 
-        public override Task<ListViewItem> AddRow(object item, int fromIndex = 0, bool singleAdd = true)
+        public override Task<ListViewItem> AddRow(object item, int fromIndex, bool singleAdd = true)
         {
+            fromIndex = 0;
             var tcs = new TaskCompletionSource<ListViewItem>();
             DisposeNoRecord();
             var keys = GuiInfo.GroupBy.Split(",");
@@ -58,16 +59,6 @@ namespace Core.Components
         }
 
         public override async Task<List<ListViewItem>> AddRows(IEnumerable<object> rowsData, int index = 0)
-        {
-            var listItem = new List<ListViewItem>();
-            await rowsData.ForEachAsync(async x =>
-            {
-                listItem.Add(await AddRow(x, 0, false));
-            });
-            return listItem;
-        }
-
-        public override async Task<List<ListViewItem>> AddRowsNo(IEnumerable<object> rowsData, int index = 0)
         {
             var listItem = new List<ListViewItem>();
             await rowsData.ForEachAsync(async x =>
@@ -189,7 +180,7 @@ namespace Core.Components
 
         public override void RemoveRange(IEnumerable<object> data)
         {
-            data.SelectForeach(x => RemoveRowById(x[IdField].ToString()));
+            data.SelectForEach(x => RemoveRowById(x[IdField].ToString()));
         }
 
         public override async Task AddOrUpdateRow(object rowData, bool singleAdd = true, bool force = false, params string[] fields)

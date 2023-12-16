@@ -303,7 +303,7 @@ namespace Core.Components
         private void OrderBy()
         {
             var j = 1;
-            _tbody.Children.SelectForeach(y =>
+            _tbody.Children.SelectForEach(y =>
             {
                 _headers.FirstOrDefault(x => x.Id == y.GetAttribute("data-id")).OrderExport = j;
                 j++;

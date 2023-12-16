@@ -9,7 +9,7 @@ namespace Core.Extensions
 {
     public static class IEnumerableExtensions
     {
-        public static IEnumerable<T> SelectForeach<T>(this IEnumerable<T> source, Action<T> action)
+        public static IEnumerable<T> SelectForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
             if (source.Nothing() || action is null)
             {
@@ -39,6 +39,21 @@ namespace Core.Extensions
             return source;
         }
 
+        public static IEnumerable<K> SelectForEach<T, K>(this IEnumerable<T> source, Func<T, int, K> mapper)
+        {
+            if (source == null || mapper is null)
+            {
+                throw new ArgumentNullException("source or mapper is null");
+            }
+
+            int index = 0;
+            foreach (var item in source)
+            {
+                yield return mapper(item, index);
+                index++;
+            }
+        }
+        
         public static async Task<IEnumerable<T>> ForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
         {
             if (source.Nothing() || action is null)

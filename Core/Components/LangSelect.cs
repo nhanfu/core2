@@ -156,7 +156,7 @@ namespace Core.Components
             }
             LocalStorage.SetItem(Culture, map);
             // find all element that should translate
-            Travel(Document.Instance).SelectForeach(x =>
+            Travel(Document.Instance).SelectForEach(x =>
             {
                 var props = x[LangProp]?.ToString();
                 if (props is null)

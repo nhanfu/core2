@@ -8,13 +8,13 @@ namespace Core.Extensions
         {
             if (border)
             {
-                table.QuerySelectorAll("td").SelectForeach(x =>
+                table.QuerySelectorAll("td").SelectForEach(x =>
                 {
                     /*@
                      x.style="border:1px solid;white-space: nowrap;font-family: 'times new roman', times, serif;";
                      */
                 });
-                table.QuerySelectorAll("th").SelectForeach(x =>
+                table.QuerySelectorAll("th").SelectForEach(x =>
                 {
                     /*@
                      x.style="border:1px solid;white-space: nowrap;font-family: 'times new roman', times, serif;";
@@ -62,13 +62,13 @@ namespace Core.Extensions
             }*/
             if (border)
             {
-                table.QuerySelectorAll("td").SelectForeach(x =>
+                table.QuerySelectorAll("td").SelectForEach(x =>
                 {
                     /*@
                      x.style="";
                      */
                 });
-                table.QuerySelectorAll("th").SelectForeach(x =>
+                table.QuerySelectorAll("th").SelectForEach(x =>
                 {
                     /*@
                      x.style="";

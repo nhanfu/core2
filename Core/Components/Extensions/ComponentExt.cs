@@ -28,17 +28,17 @@ namespace Core.Components.Extensions
         /// <param name="events"></param>
         /// <param name="eventType"></param>
         /// <param name="parameters"></param>
-        public static Task DispatchEvent(this EditableComponent com, string events, EventType eventType, params object[] parameters)
+        public static Task<bool> DispatchEvent(this EditableComponent com, string events, EventType eventType, params object[] parameters)
         {
             if (events.IsNullOrEmpty())
             {
                 return Task.FromResult(true);
             }
             var eventTypeName = eventType.ToString();
-            return InvokeEventAsync(com, events, eventTypeName, parameters);
+            return InvokeEvent(com, events, eventTypeName, parameters);
         }
 
-        private static Task InvokeEventAsync(EditableComponent com, string events, string eventTypeName, params object[] parameters)
+        private static Task<bool> InvokeEvent(EditableComponent com, string events, string eventTypeName, params object[] parameters)
         {
             object eventObj;
             try
@@ -93,7 +93,7 @@ namespace Core.Components.Extensions
             return tcs.Task;
         }
 
-        public static Task DispatchCustomEvent(this EditableComponent com, string events, CustomEventType eventType, params object[] parameters)
+        public static Task<bool> DispatchCustomEvent(this EditableComponent com, string events, CustomEventType eventType, params object[] parameters)
         {
             if (events.IsNullOrEmpty())
             {
@@ -101,7 +101,7 @@ namespace Core.Components.Extensions
             }
 
             var eventTypeName = eventType.ToString();
-            return InvokeEventAsync(com, events, eventTypeName, parameters);
+            return InvokeEvent(com, events, eventTypeName, parameters);
         }
 
         public static Component MapToCom(this object raw)
@@ -369,7 +369,7 @@ namespace Core.Components.Extensions
                 }
 
                 var res = child.FindActiveComponent<T>();
-                res.SelectForeach(x => result.Add(x));
+                res.SelectForEach(x => result.Add(x));
             }
             return result.Distinct();
         }
@@ -550,7 +550,7 @@ namespace Core.Components.Extensions
                 return;
             }
 
-            component.FilterChildren(x => fieldNames.Contains(x.Name)).SelectForeach(x => x.Show = show);
+            component.FilterChildren(x => fieldNames.Contains(x.Name)).SelectForEach(x => x.Show = show);
         }
 
         public static void SetDisabled(this EditableComponent component, bool disabled, params string[] fieldNames)
@@ -560,7 +560,7 @@ namespace Core.Components.Extensions
                 return;
             }
 
-            component.FilterChildren<EditableComponent>(x => fieldNames.Contains(x.Name)).SelectForeach(x => x.Disabled = disabled);
+            component.FilterChildren<EditableComponent>(x => fieldNames.Contains(x.Name)).SelectForEach(x => x.Disabled = disabled);
         }
 
         public static void AlterPosition(this HTMLElement element, HTMLElement parentEle)

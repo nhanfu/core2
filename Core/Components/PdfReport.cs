@@ -159,7 +159,7 @@ namespace Core.Components
                 var formatted = Utils.FormatEntity(template, null, dataSet, nullHandler: x => string.Empty);
                 _rptContent.InnerHTML = formatted;
                 var dsCount = 0;
-                _rptContent.Children.SelectForeach(child =>
+                _rptContent.Children.SelectForEach(child =>
                 {
                     EditForm.BindingTemplate(child, this, false, dataSet, factory: (ele, component, parent, isLayout, entity) =>
                     {

@@ -568,7 +568,7 @@ namespace Core.Components.Forms
             }
             var newCom = factory?.Invoke(ele, component, parent, isLayout, entity) ?? BindingData(ele, component, parent, isLayout, entity);
             parent = newCom is Section ? newCom : parent;
-            ele.Children.SelectForeach(child => BindingTemplate(child, parent, isLayout, entity, factory, visited));
+            ele.Children.SelectForEach(child => BindingTemplate(child, parent, isLayout, entity, factory, visited));
         }
 
         private static CellText RenderCellText(HTMLElement ele, object entity, bool isLayout)

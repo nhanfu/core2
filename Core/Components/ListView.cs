@@ -544,7 +544,7 @@ namespace Core.Components
                 RowAction(x => x.Entity == rowSection.Entity, x =>
                 {
                     x.EmptyRow = false;
-                    x.FilterChildren(child => true).SelectForeach(child =>
+                    x.FilterChildren(child => true).SelectForEach(child =>
                     {
                         child.EmptyRow = false;
                         child.UpdateView(force: true);
@@ -732,10 +732,12 @@ namespace Core.Components
                 {
                     deletedItems = GetFocusedRows();
                 }
-                this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems).Done(() => {
-                    HardDeleteConfirmed(deletedItems).Done(res => {
-                    DOMContentLoaded?.Invoke();
-                    this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems).Done();
+                this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems).Done(() =>
+                {
+                    HardDeleteConfirmed(deletedItems).Done(res =>
+                    {
+                        DOMContentLoaded?.Invoke();
+                        this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems).Done();
                     });
                 });
             };
@@ -820,7 +822,7 @@ namespace Core.Components
 
         public virtual void RemoveRange(IEnumerable<object> deleted)
         {
-            deleted.SelectForeach(x => RemoveRowById(x[IdField].As<string>()));
+            deleted.SelectForEach(x => RemoveRowById(x[IdField].As<string>()));
         }
 
         public List<object> GetFocusedRows()
@@ -868,29 +870,29 @@ namespace Core.Components
                 return;
             }
 
-            Task.Run(async () =>
+            Toast.Success("Đang Sao chép liệu !");
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforePasted, _originRows, _copiedRows).Done(() =>
             {
-                Toast.Success("Đang Sao chép liệu !");
-                await ComponentExt.DispatchCustomEvent(this, GuiInfo.Events, CustomEventType.BeforePasted, _originRows, _copiedRows);
                 var index = AllListViewItem.IndexOf(x => x.Selected);
-                var list = await AddRowsNo(_copiedRows, index);
-                base.Dirty = true;
-                base.Focus();
-                await ComponentExt.DispatchCustomEvent(this, GuiInfo.Events, CustomEventType.AfterPasted, _originRows, _copiedRows);
-                if (GuiInfo.IsRealtime)
+                AddRowsNo(_copiedRows, index).Done(list =>
                 {
-                    foreach (var item in list)
+                    base.Focus();
+                    if (GuiInfo.IsRealtime)
                     {
-                        item.PatchUpdateOrCreate();
+                        foreach (var item in list)
+                        {
+                            item.PatchUpdateOrCreate();
+                        }
+                        Toast.Success("Sao chép dữ liệu thành công !");
+                        base.Dirty = false;
+                        ClearSelected();
                     }
-                    Toast.Success("Sao chép dữ liệu thành công !");
-                    base.Dirty = false;
-                    ClearSelected();
-                }
-                else
-                {
-                    Toast.Success("Sao chép dữ liệu thành công !");
-                }
+                    else
+                    {
+                        Toast.Success("Sao chép dữ liệu thành công !");
+                    }
+                    this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterPasted, _originRows, _copiedRows).Done();
+                });
             });
         }
 
@@ -932,8 +934,7 @@ namespace Core.Components
             }
 
             Toast.Success("Đang Sao chép liệu !");
-            ComponentExt
-            .DispatchCustomEvent(this, GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows)
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows)
             .Done(() =>
             {
                 var index = AllListViewItem.IndexOf(x => x.Selected);
@@ -950,12 +951,12 @@ namespace Core.Components
                 }
                 AddRowsNo(copiedRows, index).Done(list =>
                 {
-                    DuplocateRowSuccess(list, originalRows, copiedRows);
+                    DuplicateRowSuccess(list, originalRows, copiedRows);
                 });
             });
         }
 
-        private void DuplocateRowSuccess(List<ListViewItem> list, List<object> originalRows, IEnumerable<object> copiedRows)
+        private void DuplicateRowSuccess(ListViewItem[] list, List<object> originalRows, IEnumerable<object> copiedRows)
         {
             list.ForEach(x => x.Dirty = true);
             base.Focus();
@@ -969,14 +970,10 @@ namespace Core.Components
                     foreach (var item in list)
                     {
                         item.PatchUpdateOrCreate();
+                        item.Dirty = false;
                     }
-                    Toast.Success("Sao chép dữ liệu thành công !");
-                    base.Dirty = false;
                 }
-                else
-                {
-                    Toast.Success("Sao chép dữ liệu thành công !");
-                }
+                Toast.Success("Sao chép dữ liệu thành công !");
             });
         }
 
@@ -1046,7 +1043,7 @@ namespace Core.Components
                 index = 0;
             }
             var indextemp = index;
-            rows.SelectForeach(row =>
+            rows.SelectForEach(row =>
             {
                 if (RowData.Data is IList)
                 {
@@ -1071,14 +1068,14 @@ namespace Core.Components
             return listItem;
         }
 
-        public virtual async Task<List<ListViewItem>> AddRowsNo(IEnumerable<object> rows, int index = 0)
+        public virtual Task<ListViewItem[]> AddRowsNo(IEnumerable<object> rows, int index = 0)
         {
             if (index < 0)
             {
                 index = 0;
             }
             var indextemp = index;
-            rows.SelectForeach(row =>
+            rows.SelectForEach(row =>
             {
                 if (RowData.Data is IList)
                 {
@@ -1090,17 +1087,22 @@ namespace Core.Components
                 }
                 indextemp++;
             });
-            await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
-            var listItem = new List<ListViewItem>();
-            indextemp = index;
-            await rows.ForEachAsync(async data =>
+            var tcs = new TaskCompletionSource<ListViewItem[]>();
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows)
+            .Done(() =>
             {
-                listItem.Add(await AddRow(data, indextemp, false));
-                indextemp++;
+                var tasks = rows.SelectForEach((data, innerIndex) =>
+                {
+                    return AddRow(data, innerIndex + index, false);
+                });
+                Task.WhenAll(tasks).Done((result) =>
+                {
+                    AddNewEmptyRow();
+                    this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreatedList, rows).Done();
+                    tcs.TrySetResult(result);
+                });
             });
-            await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreatedList, rows);
-            AddNewEmptyRow();
-            return listItem;
+            return tcs.Task;
         }
 
         public virtual void RemoveRowById(string id)
