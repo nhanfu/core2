@@ -3,7 +3,7 @@ using Core.Models;
 
 namespace Core.Extensions
 {
-    public static class IEnumerableExtensions
+    public static class IEnumerableCore
     {
         public static IEnumerable<object> GetSourceByType(this IEnumerable<IEnumerable<object>> sources, Type type)
         {

@@ -4,7 +4,6 @@ using Core.Extensions;
 using Core.Models;
 using Core.ViewModels;
 using HtmlAgilityPack;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -70,6 +69,11 @@ public class UserService
         _cache = cache ?? throw new ArgumentNullException(nameof(cache)); ;
         _host = host ?? throw new ArgumentNullException(nameof(host));
         _ctx = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+        ExtractClaims();
+    }
+
+    private void ExtractClaims()
+    {
         var claims = _ctx.HttpContext.User.Claims;
         BranchId = claims.FirstOrDefault(x => x.Type == BranchIdClaim)?.Value;
         UserId = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -348,6 +352,8 @@ public class UserService
         engine.AddType<HttpClient>("HttpClient");
         engine.AddNamespace("System");
         engine.AddNamespace("Core");
+        engine.AddExtensionMethods(typeof(Enumerable));
+        engine.AddExtensionMethods(typeof(IEnumerableCore));
         var claims = _ctx.HttpContext.User?.Claims;
         if (claims != null)
         {
@@ -614,29 +620,6 @@ public class UserService
             await cmd.DisposeAsync();
             await connection.DisposeAsync();
         }
-    }
-
-    public async Task<string[]> HardDeleteAsync(SqlViewModel vm)
-    {
-        vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey);
-        var allRights = await GetEntityPerm(vm.Table, recordId: null, vm.CachedConnStr);
-        var canDeleteAll = allRights.Any(x => x.CanDeleteAll);
-        var canDeleteSelf = allRights.Any(x => x.CanDelete);
-        var query = $"select * from {vm.Table} where Id in ({vm.Ids.CombineStrings()})";
-        var ds = await ReadDataSet(query, vm.CachedConnStr);
-        var rows = ds.Length > 0 ? ds[0] : null;
-        if (rows.Nothing()) throw new ApiException("No record found")
-        {
-            StatusCode = HttpStatusCode.BadRequest
-        };
-        var canDeleteRows = rows.Where(x =>
-        {
-            return canDeleteAll || canDeleteSelf && Utils.IsOwner(x, UserId, RoleIds);
-        }).Select(x => x.GetValueOrDefault(Utils.IdField)?.ToString()).ToArray();
-        if (canDeleteRows.Nothing()) return null;
-        var deleteCmd = $"delete from {vm.Table} where Id in ({canDeleteRows.CombineStrings()})";
-        await RunSqlCmd(vm.CachedConnStr, deleteCmd);
-        return canDeleteRows;
     }
 
     public async Task<string[]> DeactivateAsync(SqlViewModel vm)
@@ -1533,19 +1516,5 @@ public class UserService
             c.Id = Id.NewGuid().ToString();
             c.ComponentGroupId = group.Id;
         });
-    }
-
-    public async Task<bool> HardDeleteFeature(SqlViewModel vm)
-    {
-        var ids = vm.Ids.CombineStrings();
-        var query = @$"delete Component where FeatureId in ({ids}) or ComponentGroupId in (
-            select Id from ComponentGroup where FeatureId in ({ids})
-        );
-        delete ComponentGroup where FeatureId in ({ids});
-        delete FeaturePolicy where FeatureId in ({ids});
-        delete Feature where Id in ({ids})";
-        vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey);
-        await RunSqlCmd(vm.CachedConnStr, query);
-        return true;
     }
 }

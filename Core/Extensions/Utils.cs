@@ -40,7 +40,6 @@ namespace Core.Extensions
         public const string ComQuery = "/user/comQuery";
         public const string PatchSvc = "/v2/user";
         public const string UserSvc = "/user/svc";
-        public const string HardDelSvc = "/user/hardDelete";
         public const string DeactivateSvc = "/user/Deactivate";
         public const string ExportExcel = "/user/excel";
         public const string FileSvc = "/user/file";

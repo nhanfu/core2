@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Core.Extensions
 {
-    public static class ReflectionExt
+    public static class Reflection
     {
         public static bool IsSimple(this Type type)
         {

@@ -460,7 +460,7 @@ namespace Core.Clients
             });
         }
 
-        public Task<string[]> DeactivateAsync(string[] ids, string table, string connKey = null)
+        public Task<string[]> DeactivateAsync(string[] ids, string table, string connKey)
         {
             var vm = new SqlViewModel
             {

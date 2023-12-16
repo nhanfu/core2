@@ -72,12 +72,6 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
         return _userSvc.SavePatch(patch);
     }
 
-    [HttpDelete("api/[Controller]/HardDelete", Order = 0)]
-    public Task<string[]> HardDeleteAsync([FromBody] SqlViewModel vm)
-    {
-        return _userSvc.HardDeleteAsync(vm);
-    }
-
     [HttpDelete("api/[Controller]/Deactivate", Order = 0)]
     public Task<string[]> DeactivateAsync([FromBody] SqlViewModel vm)
     {
@@ -133,12 +127,6 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
         [FromRoute] string area = "admin", [FromRoute] string env = "test")
     {
         return _userSvc.Launch(tenant, area, env);
-    }
-
-    [HttpDelete("api/feature/HardDelete")]
-    public Task<bool> HardDeleteFeature(SqlViewModel vm)
-    {
-        return _userSvc.HardDeleteFeature(vm);
     }
 
     [HttpPost("/api/chat")]

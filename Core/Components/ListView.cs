@@ -747,7 +747,7 @@ namespace Core.Components
             var entity = GuiInfo.RefName;
             var selected = GetSelectedRows();
             var ids = selected.Select(x => x[IdField] as string).ToArray();
-            Client.Instance.DeactivateAsync(ids, GuiInfo.RefName)
+            Client.Instance.DeactivateAsync(ids, GuiInfo.RefName, ConnKey)
             .Done(deacvitedIds =>
             {
                 if (deacvitedIds.HasElement())
