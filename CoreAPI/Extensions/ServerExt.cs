@@ -43,10 +43,7 @@ namespace Core.Extensions
         {
             var type = instance.GetType();
             var prop = type.BaseType.GetProperty(propertyName);
-            if (prop != null)
-            {
-                prop.SetValue(instance, value, null);
-            }
+            prop?.SetValue(instance, value, null);
         }
 
         public static string ToJson(this object value) => JsonConvert.SerializeObject(value, new JsonSerializerSettings

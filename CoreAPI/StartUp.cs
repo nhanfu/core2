@@ -5,10 +5,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Polly;
-using Polly.Extensions.Http;
 using System.IO.Compression;
-using System.Security.Claims;
 using System.Text;
 using Core.Models;
 using Core.Services;
@@ -19,11 +16,11 @@ namespace Core
 {
     public class Startup
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _conf;
 
         public Startup(IConfiguration configuration)
         {
-            _configuration = configuration;
+            _conf = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -42,7 +39,7 @@ namespace Core
             services.AddLogging(config =>
             {
                 config.ClearProviders();
-                config.AddConfiguration(_configuration.GetSection("Logging"));
+                config.AddConfiguration(_conf.GetSection("Logging"));
                 config.AddDebug();
                 config.AddEventSourceLogger();
             });
@@ -67,27 +64,12 @@ namespace Core
                 options.SerializerSettings.DateParseHandling = DateParseHandling.DateTimeOffset;
                 options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
             });
-            services.AddDbContext<LOGContext>((serviceProvider, options) =>
-            {
-                options.UseSqlServer(_configuration.GetConnectionString($"Log"), x => x.EnableRetryOnFailure());
-#if DEBUG
-                options.EnableSensitiveDataLogging();
-#endif
-            });
-            services.AddDbContext<CoreContext>((serviceProvider, options) =>
-            {
-                string connectionStr = GetConnectionString(serviceProvider, _configuration, "Default");
-                options.UseSqlServer(connectionStr, x => x.EnableRetryOnFailure());
-#if DEBUG
-                options.EnableSensitiveDataLogging();
-#endif
-            });
-            services.AddHangfire(configuration => configuration.UseSqlServerStorage(_configuration.GetConnectionString($"Log")));
+            services.AddHangfire(configuration => configuration.UseSqlServerStorage(_conf.GetConnectionString($"Log")));
             var tokenOptions = new TokenValidationParameters()
             {
-                ValidIssuer = _configuration["Tokens:Issuer"],
-                ValidAudience = _configuration["Tokens:Issuer"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"])),
+                ValidIssuer = _conf["Tokens:Issuer"],
+                ValidAudience = _conf["Tokens:Issuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_conf["Tokens:Key"])),
                 ClockSkew = TimeSpan.Zero
             };
             services.AddSingleton(tokenOptions);
@@ -113,47 +95,8 @@ namespace Core
             services.AddScoped<UserService>();
         }
 
-        static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
-        {
-            return HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-                .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-        }
-
-        public static string GetConnectionString(IServiceProvider serviceProvider, IConfiguration _configuration, string system)
-        {
-            string tenantCode = GetTanentCode(serviceProvider);
-            var connectionStr = _configuration.GetConnectionString($"{system}{tenantCode}")
-                ?? _configuration.GetConnectionString(system);
-            if (!tenantCode.IsNullOrWhiteSpace())
-            {
-                connectionStr = connectionStr.Replace($"softek_donga", $"softek_{tenantCode ?? "Softek"}");
-            }
-            return connectionStr;
-        }
-
-        private static string GetTanentCode(IServiceProvider serviceProvider)
-        {
-            var httpContext = serviceProvider.GetService<IHttpContextAccessor>();
-            string tenantCode = null;
-            if (httpContext?.HttpContext is not null)
-            {
-                var claim = httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimaryGroupSid);
-                if (claim is not null)
-                {
-                    tenantCode = claim.Value.ToUpper();
-                }
-                if (tenantCode.IsNullOrWhiteSpace())
-                {
-                    tenantCode = httpContext.HttpContext.Request.Query["t"].ToString();
-                }
-            }
-            return tenantCode;
-        }
-
         [Obsolete]
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, CoreContext tms, IConfiguration configuration, ConnectionManager connectionManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors("MyPolicy");
             if (env.IsDevelopment())
@@ -164,19 +107,25 @@ namespace Core
             {
                 app.UseHsts();
             }
+            app.UseHttpsRedirection();
             app.UseResponseCompression();
             app.UseStaticFiles();
             app.UseHangfireDashboard();
             app.UseHangfireServer();
-            app.UseMiddleware<HttpStatusCodeExceptionMiddleware>();
-            app.UseHttpsRedirection();
+            app.UseMiddleware<ExceptionMiddleware>();
+            app.UseMiddleware<LoadBalaceMiddleware>();
+            UseSocket(app);
+            app.UseAuthentication();
+            app.UseMvc();
+            app.UseRouting();
+        }
+
+        private void UseSocket(IApplicationBuilder app)
+        {
             app.UseWebSockets();
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
             app.Map("/task", app => app.UseMiddleware<WebSocketManagerMiddleware>(serviceProvider.GetService<WebSocketService>()));
-            app.UseAuthentication();
-            app.UseMvc();
-            app.UseRouting();
         }
     }
 }

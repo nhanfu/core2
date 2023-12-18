@@ -4,16 +4,9 @@ using Core.Extensions;
 
 namespace Core.Websocket
 {
-    public class WebSocketManagerMiddleware
+    public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService webSocketHandler)
     {
-        private readonly RequestDelegate _next;
-        private WebSocketService WebSocketHandler { get; set; }
-
-        public WebSocketManagerMiddleware(RequestDelegate next, WebSocketService webSocketHandler)
-        {
-            _next = next;
-            WebSocketHandler = webSocketHandler;
-        }
+        private WebSocketService WebSocketHandler { get; set; } = webSocketHandler;
 
         public async Task Invoke(HttpContext context)
         {
@@ -25,7 +18,7 @@ namespace Core.Websocket
             var socket = await context.WebSockets.AcceptWebSocketAsync();
             var token = context.Request.Query["access_token"].ToString();
             var configuration = context.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration;
-            var principal = UserUtils.GetPrincipalFromAccessToken(token, configuration);
+            var principal = Utils.GetPrincipalFromAccessToken(token, configuration);
             var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
             var roleIds = principal.Claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).ToList();
             await WebSocketHandler.OnConnected(socket, userId, roleIds, context.Connection.RemoteIpAddress.ToString());

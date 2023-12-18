@@ -30,18 +30,11 @@ namespace Core.Websocket
         public string ClickAction { get; set; }
     }
 
-    public class WebSocketService
+    public class WebSocketService(ConnectionManager connectionManager, IConfiguration configuration)
     {
-        protected ConnectionManager ConnectionManager { get; set; }
-        private readonly string FCM_API_KEY;
-        private readonly string FCM_SENDER_ID;
-
-        public WebSocketService(ConnectionManager connectionManager, IConfiguration configuration)
-        {
-            ConnectionManager = connectionManager;
-            FCM_API_KEY = configuration["FCM_API_KEY"];
-            FCM_SENDER_ID = configuration["FCM_SENDER_ID"];
-        }
+        protected ConnectionManager ConnectionManager { get; set; } = connectionManager;
+        private readonly string FCM_API_KEY = configuration["FCM_API_KEY"];
+        private readonly string FCM_SENDER_ID = configuration["FCM_SENDER_ID"];
 
         public virtual Task OnConnected(WebSocket socket, string userId, List<string> roleIds, string ip)
         {
@@ -152,9 +145,9 @@ namespace Core.Websocket
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
-        public Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
+        public async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
         {
-            return Task.CompletedTask;
+            await socket.SendAsync(Encoding.ASCII.GetBytes("connected"), WebSocketMessageType.Text, true, CancellationToken.None);
         }
     }
 }

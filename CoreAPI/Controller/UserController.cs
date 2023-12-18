@@ -136,7 +136,7 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
     }
 
     [HttpPost("api/GetUserActive")]
-    public Task<List<User>> GetUserActive()
+    public IEnumerable<User> GetUserActive()
     {
         return _taskSvc.GetUserActive();
     }

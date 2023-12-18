@@ -198,7 +198,7 @@ namespace FTP.Controllers
             return Request.Scheme + "://" + Request.Host.Value + path.Replace(webRootPath, string.Empty).Replace("\\", "/");
         }
 
-        private void EnsureDirectoryExist(string path)
+        private static void EnsureDirectoryExist(string path)
         {
             var dir = Path.GetDirectoryName(path);
             if (!Directory.Exists(dir))
@@ -207,7 +207,7 @@ namespace FTP.Controllers
             }
         }
 
-        private string IncreaseFileName(string path)
+        private static string IncreaseFileName(string path)
         {
             var uploadedPath = path;
             var index = 0;
@@ -222,7 +222,7 @@ namespace FTP.Controllers
             return path;
         }
 
-        private string GetUploadPath(string fileName, string webRootPath, string tanentcode, int userid)
+        private static string GetUploadPath(string fileName, string webRootPath, string tanentcode, int userid)
         {
             return Path.Combine(webRootPath, "upload", tanentcode, DateTime.Now.ToString("MMyyyy"), $"U{userid:00000000}", fileName);
         }

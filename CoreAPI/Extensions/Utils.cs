@@ -1,4 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Core.Extensions
@@ -12,12 +16,13 @@ namespace Core.Extensions
         public const string Comma = ",";
         public const string Space = " ";
         public const string TenantCode = "System";
+        public const string Env = "test";
         public const string ConnKey = "default";
         public const string InsertedBy = "InsertedBy";
         public const string OwnerUserIds = "OwnerUserIds";
         public const string OwnerRoleIds = "OwnerRoleIds";
-
-        public static Dictionary<char, string> SpecialChar = new Dictionary<char, string>()
+        public readonly static SHA256 SHA256 = SHA256.Create();
+        public readonly static Dictionary<char, string> SpecialChar = new()
         {
             { '+', "%2B" },
             { '/', "%2F" },
@@ -25,7 +30,31 @@ namespace Core.Extensions
             { '#', "%23" },
             { '&', "%26" },
         };
-        public static Dictionary<string, char> ReverseSpecialChar = SpecialChar.ToDictionary(x => x.Value, x => x.Key);
+
+        public static ClaimsPrincipal GetPrincipalFromAccessToken(string accessToken, IConfiguration _configuration)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidIssuer = _configuration["Tokens:Issuer"],
+                ValidAudience = _configuration["Tokens:Issuer"],
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"])),
+                ValidateLifetime = false
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out var securityToken);
+            if (securityToken is not JwtSecurityToken token || !token.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new SecurityTokenException("Invalid token");
+            }
+
+            return principal;
+        }
+        
+        public readonly static Dictionary<string, char> ReverseSpecialChar = SpecialChar.ToDictionary(x => x.Value, x => x.Key);
         public static string EncodeSpecialChar(this string str)
         {
             if (str is null)
@@ -37,9 +66,9 @@ namespace Core.Extensions
             var res = new StringBuilder();
             for (int i = 0; i < arr.Length; i++)
             {
-                if (SpecialChar.ContainsKey(arr[i]))
+                if (SpecialChar.TryGetValue(arr[i], out var value))
                 {
-                    res.Append(SpecialChar[arr[i]]);
+                    res.Append(value);
                 }
                 else
                 {
@@ -114,9 +143,9 @@ namespace Core.Extensions
 
             return FormatEntity(format, null, source);
         }
-        public static Func<string, string> NullFormatHandler = x => "null";
-        public static Func<string, string> NotFoundHandler = x => "{" + x + "}";
-        public static Func<string, string> EmptyFormat = x => string.Empty;
+        public readonly static Func<string, string> NullFormatHandler = x => "null";
+        public readonly static Func<string, string> NotFoundHandler = x => "{" + x + "}";
+        public readonly static Func<string, string> EmptyFormat = x => string.Empty;
 
         public static string FormatEntity(string format, IFormatProvider provider, object source,
             Func<string, string> nullHandler = null, Func<string, string> notFoundHandler = null)
@@ -131,15 +160,9 @@ namespace Core.Extensions
                 return format;
             }
 
-            if (nullHandler is null)
-            {
-                nullHandler = NullFormatHandler;
-            }
+            nullHandler ??= NullFormatHandler;
 
-            if (notFoundHandler is null)
-            {
-                notFoundHandler = NotFoundHandler;
-            }
+            notFoundHandler ??= NotFoundHandler;
 
             var formatted = new StringBuilder();
             var index = 0;
@@ -256,7 +279,7 @@ namespace Core.Extensions
             return null;
         }
 
-        public static async Task<string> ReadRequestBodyAsync(HttpRequest request, bool leaveOpen = true, int? resetPosition = null)
+        public static async Task<string> ReadRequestBody(HttpRequest request, bool leaveOpen = true, int? resetPosition = null)
         {
             request.EnableBuffering();
 

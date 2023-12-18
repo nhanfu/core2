@@ -7,7 +7,6 @@ namespace Core.ViewModels
     [Serializable]
     public partial class Token
     {
-
         public string UserId { get; set; }
         public string CostCenterId { get; set; }
         public string UserName { get; set; }
@@ -23,7 +22,6 @@ namespace Core.ViewModels
         public DateTimeOffset RefreshTokenExp { get; set; }
         public string HashPassword { get; set; }
         public string Recovery { get; set; }
-        public string SysName { get; set; } = "TMS";
         public string TenantCode { get; set; }
         public Vendor Vendor { get; set; }
         public List<string> RoleIds { get; set; }

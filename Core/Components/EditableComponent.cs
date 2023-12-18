@@ -601,7 +601,7 @@ namespace Core.Components
             else
             {
                 ClearDirtyInternal();
-                FilterChildren<EditableComponent>(x => x._dirty).SelectForeach(x => x.ClearDirtyInternal());
+                FilterChildren<EditableComponent>(x => x._dirty).SelectForEach(x => x.ClearDirtyInternal());
             }
         }
 
@@ -757,7 +757,7 @@ namespace Core.Components
             cascadeFields.ForEach(field =>
             {
                 root.FilterChildren(x => x.Name == field)
-                 .SelectForeach(x =>
+                 .SelectForEach(x =>
                  {
                      if (x is SearchEntry com && com != null)
                      {
@@ -827,7 +827,7 @@ namespace Core.Components
             {
                 var isEditing = Entity[IdField].As<int>() <= 0;
                 root.FilterChildren<EditableComponent>(x => x.Name == field)
-                    .SelectForeach(target =>
+                    .SelectForEach(target =>
                     {
                         var value = Utils.GetPropValue(entity, field);
                         var oldVal = Utils.GetPropValue(Entity, field);

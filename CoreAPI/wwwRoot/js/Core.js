@@ -9332,7 +9332,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             RefreshTokenExp: null,
             HashPassword: null,
             Recovery: null,
-            SysName: null,
             TenantCode: null,
             Vendor: null,
             RoleIds: null,
@@ -9351,7 +9350,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.AccessTokenExp = new System.DateTimeOffset();
                 this.RefreshTokenExp = new System.DateTimeOffset();
                 this.SigninDate = new System.DateTimeOffset();
-                this.SysName = "TMS";
             }
         }
     });
@@ -13271,7 +13269,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }));
                 var tcs = new System.Threading.Tasks.TaskCompletionSource();
                 Core.Extensions.EventExt.Done(Core.Components.Extensions.ComponentExt.DispatchCustomEvent(this, this.GuiInfo.Events, Core.Enums.CustomEventType.BeforeCreatedList, [rows]), Bridge.fn.bind(this, function () {
-                    indextemp = index;
                     var tasks = Core.Extensions.IEnumerableExtensions.SelectForEach$2(System.Object, System.Threading.Tasks.Task$1(Core.Components.ListViewItem), rows, Bridge.fn.bind(this, function (data, innerIndex) {
                         return this.AddRow(data, ((innerIndex + index) | 0), false);
                     }));

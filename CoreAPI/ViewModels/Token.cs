@@ -31,13 +31,6 @@ namespace Core.ViewModels
         public string ConnKey { get; internal set; }
     }
 
-    [Serializable]
-    public class GPS
-    {
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-    }
-
     public class RefreshVM
     {
         public string AccessToken { get; set; }

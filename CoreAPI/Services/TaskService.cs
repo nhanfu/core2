@@ -12,20 +12,17 @@ namespace Core.Services
 {
     public class TaskService
     {
-        private readonly CoreContext db;
-        private readonly UserService _userService;
+        private readonly UserService _userSvc;
         private readonly WebSocketService _socket;
-        private JsonSerializerSettings _jsonSetting;
-
-        public TaskService(UserService userService, CoreContext db, WebSocketService _socket)
+        private static readonly JsonSerializerSettings _jsonSetting = new()
         {
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            this.db = db ?? throw new ArgumentNullException(nameof(db));
-            this._socket = _socket ?? throw new ArgumentNullException(nameof(_socket));
-            _jsonSetting = new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            };
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        };
+
+        public TaskService(UserService userService, WebSocketService socket)
+        {
+            _userSvc = userService ?? throw new ArgumentNullException(nameof(userService));
+            _socket = socket ?? throw new ArgumentNullException(nameof(socket));
         }
 
         public async Task NotifyAsync(IEnumerable<TaskNotification> entities, string queueName)
@@ -43,18 +40,18 @@ namespace Core.Services
 
         public async Task SendChatToUser(MQEvent task)
         {
-            await _socket.SendMessageToUsersAsync(new List<string>() { task.Message.ToId }, JsonConvert.SerializeObject(task, _jsonSetting), null);
+            await _socket.SendMessageToUsersAsync([task.Message.ToId], JsonConvert.SerializeObject(task, _jsonSetting), null);
         }
 
         public async Task ChatGptSendToUser(MQEvent task)
         {
-            await _socket.SendMessageToUsersAsync(new List<string>() { task.Message.FromId }, JsonConvert.SerializeObject(task, _jsonSetting), null);
+            await _socket.SendMessageToUsersAsync([task.Message.FromId], JsonConvert.SerializeObject(task, _jsonSetting), null);
         }
 
         private async Task SendMessageToUser(MQEvent task)
         {
-            var tenantCode = _userService.TenantCode;
-            var env = _userService.Env;
+            var tenantCode = _userSvc.TenantCode;
+            var env = _userSvc.Env;
             var fcm = new FCMWrapper
             {
                 To = $"/topics/{tenantCode}/{env}/U{task.Message.AssignedId:0000000}",
@@ -114,11 +111,11 @@ namespace Core.Services
                 messages =
                     [
                         new ChatGptMessVM
-                    {
-                        role = "user",
-                        content = entity.Context,
-                        name = entity.FromId.ToString(),
-                    }
+                        {
+                            role = "user",
+                            content = entity.Context,
+                            name = entity.FromId.ToString(),
+                        }
                     ]
             };
             var jsonRequestData = JsonConvert.SerializeObject(requestData);
@@ -146,18 +143,17 @@ namespace Core.Services
 
         internal async Task<Chat> Chat(Chat entity)
         {
-            db.Add(entity);
-            await db.SaveChangesAsync();
+            var patchMV = entity.MapToPatch();
+            await _userSvc.SavePatch(patchMV);
             if (entity.ToId == 552.ToString())
             {
                 var rs1 = await GetChatGPTResponse(entity);
-                db.Add(rs1);
-                await db.SaveChangesAsync();
+                await _userSvc.SavePatch(rs1.MapToPatch());
                 var chat = new MQEvent
                 {
                     QueueName = entity.QueueName,
                     Message = rs1,
-                    Id = 1.ToString(),
+                    Id = Id.NewGuid(),
                 };
                 await SendChatToUser(chat);
             }
@@ -167,33 +163,26 @@ namespace Core.Services
                 {
                     QueueName = entity.QueueName,
                     Message = entity,
-                    Id = 1.ToString(),
+                    Id = Id.NewGuid(),
                 };
                 await SendChatToUser(chat);
             }
             return entity;
         }
 
-        internal async Task<List<User>> GetUserActive()
+        internal IEnumerable<User> GetUserActive()
         {
-            var online = GetAll().ToList();
+            var online = GetAll().Keys;
             var us = online.Select(x =>
             {
-                var split = x.Key.Split("/");
+                var split = x.Split("/");
                 return new User
                 {
                     Id = split[0],
                     Recover = split[3],
-                    Email = x.Key
+                    Email = x
                 };
-            }).OrderBy(x => x.Id).ToList();
-            var ids = us.Select(x => x.Id).Distinct().ToList();
-            var user = await db.User.Where(x => ids.Contains(x.Id)).ToDictionaryAsync(x => x.Id);
-            us.ForEach(x =>
-            {
-                var u = user.GetValueOrDefault(x.Id);
-                x.CopyPropFrom(u, nameof(u.Recover), nameof(u.Email));
-            });
+            }).OrderBy(x => x.Id);
             return us;
         }
     }

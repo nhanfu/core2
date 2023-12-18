@@ -14,7 +14,9 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
+using System.Net.Http.Headers;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -62,13 +64,12 @@ public class UserService
     private const string EnvClaim = "Environment";
     private const string TenantClaim = "TenantCode";
 
-    public UserService(IHttpContextAccessor httpContextAccessor, CoreContext db,
-        IConfiguration configuration, IDistributedCache cache, IWebHostEnvironment host)
+    public UserService(IHttpContextAccessor ctx, IConfiguration conf, IDistributedCache cache, IWebHostEnvironment host)
     {
-        _cfg = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _cfg = conf ?? throw new ArgumentNullException(nameof(conf));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache)); ;
         _host = host ?? throw new ArgumentNullException(nameof(host));
-        _ctx = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+        _ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
         ExtractClaims();
     }
 
@@ -113,13 +114,16 @@ public class UserService
     public const string IdField = "Id";
     private const string PassPhrase = "d7a9220a-6949-44c8-a702-789587e536cb";
     private const string BranchIdClaim = "BranchId";
+    private const string ForwardedIP = "X-Forwarded-For";
 
     public string GetRemoteIpAddress(HttpContext context)
     {
-        return context.Request.Headers.TryGetValue("X-Forwarded-For", out var value)
+        return context.Request.Headers.TryGetValue(ForwardedIP, out var value)
             ? value.ToString().Split(',')[0].Trim()
             : context.Connection.RemoteIpAddress.ToString();
     }
+
+    private string DefaultConnStr() => _cfg.GetConnectionString(Utils.ConnKey);
 
     public async Task<Token> SignInAsync(LoginVM login)
     {
@@ -143,7 +147,7 @@ public class UserService
                 StatusCode = HttpStatusCode.Conflict
             };
         }
-        var hashedPassword = GetHash(UserUtils.sHA256, login.Password + matchedUser.Salt);
+        var hashedPassword = GetHash(Utils.SHA256, login.Password + matchedUser.Salt);
         var matchPassword = matchedUser.Password == hashedPassword;
         List<PatchDetail> changes = [new PatchDetail { Field = IdField, OldVal = matchedUser.Id }];
         if (!matchPassword)
@@ -219,7 +223,7 @@ public class UserService
             new (JwtRegisteredClaimNames.Jti, jit),
             new (TenantClaim, login.CompanyName),
             new (EnvClaim, login.Env),
-            new (ConnKeyClaim, login.ConnKey ?? Utils.ConnKey),
+            new (ConnKeyClaim, login.ConnKey),
         ];
         claims.AddRange(claim2);
         claims.AddRange(roleIds.Select(x => new Claim(ClaimTypes.Actor, x.ToString())));
@@ -288,7 +292,7 @@ public class UserService
         };
     }
 
-    private void EnsureTokenParam(params string[] claims)
+    private static void EnsureTokenParam(params string[] claims)
     {
         foreach (var claim in claims)
         {
@@ -300,7 +304,7 @@ public class UserService
     }
     public async Task<Token> RefreshAsync(RefreshVM token)
     {
-        var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
+        var principal = Utils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
         var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
         var userName = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
         var tenant = principal.Claims.FirstOrDefault(x => x.Type == TenantClaim)?.Value;
@@ -329,9 +333,9 @@ public class UserService
         return await GetUserToken(updatedUser, roles, login, token.RefreshToken);
     }
 
-    public async Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
+    private async Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
     {
-        if (connKey.IsNullOrWhiteSpace()) connKey = Utils.ConnKey;
+        ArgumentException.ThrowIfNullOrWhiteSpace(connKey);
         tenantCode = TenantCode ?? tenantCode;
         env = Env ?? env;
         var key = $"{tenantCode}_{connKey}_{env}";
@@ -405,26 +409,25 @@ public class UserService
         return fragments.ScriptTokenStream.Any(x => finalCmd.Contains(x.TokenType));
     }
 
-    public async Task<T> ReadDsAs<T>(string query, string connInfo, bool shouldGetConnStr = false) where T : class
+    public async Task<T> ReadDsAs<T>(string query, string connInfo) where T : class
     {
-        var ds = await ReadDataSet(query, connInfo, shouldGetConnStr);
+        var ds = await ReadDataSet(query, connInfo);
         if (ds.Length == 0 || ds[0].Length == 0) return null;
         return ds[0][0].MapTo<T>();
     }
 
-    public async Task<T[]> ReadDsAsArr<T>(string query, string connInfo, bool shouldGetConnStr = false) where T : class
+    public async Task<T[]> ReadDsAsArr<T>(string query, string connInfo) where T : class
     {
-        var ds = await ReadDataSet(query, connInfo, shouldGetConnStr);
+        var ds = await ReadDataSet(query, connInfo);
         if (ds.Length == 0 || ds[0].Length == 0) return [];
         return ds[0].Select(x => x.MapTo<T>()).ToArray();
     }
 
-    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo, bool shouldGetConnStr = false)
+    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo)
     {
         var sideEffect = HasSideEffect(query);
         if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
         var connStr = connInfo;
-        if (shouldGetConnStr) connStr = await GetConnStrFromKey(connInfo);
         var con = new SqlConnection(connStr);
         var sqlCmd = new SqlCommand(query, con)
         {
@@ -1037,7 +1040,7 @@ public class UserService
     public async Task<string> PostImageAsync(IWebHostEnvironment host,
             string name = "Captured", bool reup = false)
     {
-        var image = await Utils.ReadRequestBodyAsync(_ctx.HttpContext.Request, leaveOpen: false);
+        var image = await Utils.ReadRequestBody(_ctx.HttpContext.Request, leaveOpen: false);
         var fileName = $"{Path.GetFileNameWithoutExtension(name)}{Path.GetExtension(name)}";
         var path = GetUploadPath(fileName, host.WebRootPath);
         EnsureDirectoryExist(path);
@@ -1108,7 +1111,7 @@ public class UserService
             await command.ExecuteNonQueryAsync();
             await transaction.CommitAsync();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             await transaction.RollbackAsync();
             throw;
@@ -1289,7 +1292,7 @@ public class UserService
         {
             throw new ApiException("Token is required");
         }
-        var principal = UserUtils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
+        var principal = Utils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
         var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
         var ipAddress = GetRemoteIpAddress(_ctx.HttpContext);
         var query = $"select * from UserLogin where Id = '{sessionId}'";
@@ -1344,7 +1347,7 @@ public class UserService
         var user = await ReadDsAs<User>($"select * from [User] where Id in ({vm.Ids.CombineStrings()})", vm.CachedConnStr);
         user.Salt = GenerateRandomToken();
         var randomPassword = GenerateRandomToken(10);
-        user.Password = GetHash(UserUtils.sHA256, randomPassword + user.Salt);
+        user.Password = GetHash(Utils.SHA256, randomPassword + user.Salt);
         List<PatchDetail> changes =
         [
             new PatchDetail { Field = nameof(User.Id), OldVal = user.Id },
@@ -1431,8 +1434,8 @@ public class UserService
             return;
         }
         var envQuery = $"select * from TenantEnv where TenantCode = '{tenant}' and Env = '{env}'";
-        var connStr = _cfg.GetConnectionString(Utils.ConnKey);
-        var tnEnv = await ReadDsAs<TenantEnv>(envQuery, _cfg.GetConnectionString(Utils.ConnKey));
+        var connStr = DefaultConnStr();
+        var tnEnv = await ReadDsAs<TenantEnv>(envQuery, connStr);
         if (tnEnv is null)
         {
             await WriteDefaultFile(NotFoundFile, htmlMimeType, HttpStatusCode.NotFound);
@@ -1516,5 +1519,81 @@ public class UserService
             c.Id = Id.NewGuid().ToString();
             c.ComponentGroupId = group.Id;
         });
+    }
+
+    const string LoadBalanceCache = "LoadBalance";
+    readonly List<Server> Servers = [];
+    int _serverIndex = 0;
+
+    public async Task<HttpResponseMessage> LoadBalance(string role)
+    {
+        await ResolveServers(role);
+        if (Servers.Nothing()) throw new ApiException("No down stream server found")
+        {
+            StatusCode = HttpStatusCode.InternalServerError
+        };
+        var maxRetry = 5;
+    pipe:
+        try
+        {
+            var server = Servers[_serverIndex++];
+            _serverIndex %= Servers.Count;
+            var path = _ctx.HttpContext.Request.Path;
+            var downStream = Path.Combine(server.GlobalIP ?? server.LocalIP, path);
+            var response = await PipeStream(downStream);
+            return response;
+        }
+        catch (HttpRequestException)
+        {
+            if (maxRetry == 0) throw;
+            maxRetry--;
+            goto pipe;
+        }
+    }
+
+    private async Task ResolveServers(string role)
+    {
+        if (Servers.HasElement()) return;
+        Server[] servers;
+        var cachedServers = await _cache.GetStringAsync(LoadBalanceCache);
+        if (cachedServers is not null)
+        {
+            servers = JsonConvert.DeserializeObject<Server[]>(cachedServers);
+        }
+        else
+        {
+            var downStreamServer = $"select * from MasterData where Active = 1 and [Name] = '{role}'";
+            var masterData = await ReadDsAs<MasterData>(downStreamServer, DefaultConnStr());
+            servers = JsonConvert.DeserializeObject<Server[]>(masterData.Description);
+            await _cache.SetStringAsync(LoadBalanceCache, JsonConvert.SerializeObject(servers));
+        }
+        Servers.AddRange(servers);
+    }
+
+    public async Task<HttpResponseMessage> PipeStream(string downstreamUrl)
+    {
+        var request = _ctx.HttpContext.Request;
+        var parsed = Enum.TryParse<Enums.HttpMethod>(request.Method, out var method);
+        if (parsed) throw new ApiException("Unkown method request") { StatusCode = HttpStatusCode.BadRequest };
+
+        using var client = new HttpClient();
+        client.BaseAddress = new Uri(downstreamUrl);
+        if (method == Enums.HttpMethod.GET)
+        {
+            return await client.GetAsync(string.Empty);
+        }
+
+        var mediaType = request.Headers.TryGetValue(ContentType, out var media);
+        var content = new StreamContent(request.Body);
+        content.Headers.ContentType = MediaTypeHeaderValue.Parse(media);
+        content.Headers.Add(ForwardedIP, GetRemoteIpAddress(_ctx.HttpContext));
+
+        return method switch
+        {
+            Enums.HttpMethod.DELETE => await client.DeleteAsync(string.Empty),
+            Enums.HttpMethod.PATCH => await client.PatchAsync(string.Empty, content),
+            Enums.HttpMethod.PUT => await client.PutAsync(string.Empty, content),
+            _ => await client.PostAsync(string.Empty, content),
+        };
     }
 }
