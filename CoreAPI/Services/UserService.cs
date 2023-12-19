@@ -764,6 +764,7 @@ public class UserService
 
     public async Task<object> RunUserSvc(SqlViewModel vm)
     {
+        vm.CachedConnStr = await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
         var sv = await GetService(vm)
             ?? throw new ApiException($"Service \"{vm.ComId} - {vm.Action}\" NOT found")
             {
@@ -784,38 +785,36 @@ public class UserService
         {
             throw new ApiException("Service can NOT be identified due to lack of Id or action") { StatusCode = HttpStatusCode.BadRequest };
         }
-        Models.Services sv = null;
-        if (vm.SvcId is not null)
+
+        var key = $"sv_{vm.ComId}_{vm.Action}_{vm.SvcId}";
+        var cacheSv = await _cache.GetStringAsync(key);
+        Models.Services sv;
+        if (cacheSv != null)
         {
-            var cacheSv = await _cache.GetStringAsync(vm.SvcId);
-            if (cacheSv != null)
-            {
-                sv = JsonConvert.DeserializeObject<Models.Services>(cacheSv);
-            }
+            sv = JsonConvert.DeserializeObject<Models.Services>(cacheSv);
+            EnsureSvPermission(sv);
+            return sv;
         }
-        if (sv is null)
-        {
-            var query = @$"select * from Services
+        var query = @$"select * from Services
                 where (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') 
                 and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
-            vm.CachedConnStr = await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
-            sv = await ReadDsAs<Models.Services>(query, vm.CachedConnStr);
-        }
+        sv = await ReadDsAs<Models.Services>(query, vm.CachedConnStr);
+        await _cache.SetStringAsync(key, JsonConvert.SerializeObject(sv), Utils.CacheTTL);
+        EnsureSvPermission(sv);
+        return sv;
+    }
 
-        if (sv == null)
-        {
-            return null;
-        }
+    private void EnsureSvPermission(Models.Services sv)
+    {
         if (TenantCode is null && !sv.Annonymous)
         {
             throw new UnauthorizedAccessException("The service is required login");
         }
         var isValidRole = sv.IsPublicInTenant ||
-            (from svRole in sv.RoleIds.Split(',')
-             join usrRole in RoleIds on svRole equals usrRole
-             select svRole).Any();
+                    (from svRole in sv.RoleIds.Split(',')
+                     join usrRole in RoleIds on svRole equals usrRole
+                     select svRole).Any();
         if (!isValidRole) throw new UnauthorizedAccessException("The service is not accessible by your roles");
-        return sv;
     }
 
     public async Task<string> ExportExcel(SqlViewModel vm)
@@ -1519,81 +1518,5 @@ public class UserService
             c.Id = Id.NewGuid().ToString();
             c.ComponentGroupId = group.Id;
         });
-    }
-
-    const string LoadBalanceCache = "LoadBalance";
-    readonly List<Server> Servers = [];
-    int _serverIndex = 0;
-
-    public async Task<HttpResponseMessage> LoadBalance(string role)
-    {
-        await ResolveServers(role);
-        if (Servers.Nothing()) throw new ApiException("No down stream server found")
-        {
-            StatusCode = HttpStatusCode.InternalServerError
-        };
-        var maxRetry = 5;
-    pipe:
-        try
-        {
-            var server = Servers[_serverIndex++];
-            _serverIndex %= Servers.Count;
-            var path = _ctx.HttpContext.Request.Path;
-            var downStream = Path.Combine(server.GlobalIP ?? server.LocalIP, path);
-            var response = await PipeStream(downStream);
-            return response;
-        }
-        catch (HttpRequestException)
-        {
-            if (maxRetry == 0) throw;
-            maxRetry--;
-            goto pipe;
-        }
-    }
-
-    private async Task ResolveServers(string role)
-    {
-        if (Servers.HasElement()) return;
-        Server[] servers;
-        var cachedServers = await _cache.GetStringAsync(LoadBalanceCache);
-        if (cachedServers is not null)
-        {
-            servers = JsonConvert.DeserializeObject<Server[]>(cachedServers);
-        }
-        else
-        {
-            var downStreamServer = $"select * from MasterData where Active = 1 and [Name] = '{role}'";
-            var masterData = await ReadDsAs<MasterData>(downStreamServer, DefaultConnStr());
-            servers = JsonConvert.DeserializeObject<Server[]>(masterData.Description);
-            await _cache.SetStringAsync(LoadBalanceCache, JsonConvert.SerializeObject(servers));
-        }
-        Servers.AddRange(servers);
-    }
-
-    public async Task<HttpResponseMessage> PipeStream(string downstreamUrl)
-    {
-        var request = _ctx.HttpContext.Request;
-        var parsed = Enum.TryParse<Enums.HttpMethod>(request.Method, out var method);
-        if (parsed) throw new ApiException("Unkown method request") { StatusCode = HttpStatusCode.BadRequest };
-
-        using var client = new HttpClient();
-        client.BaseAddress = new Uri(downstreamUrl);
-        if (method == Enums.HttpMethod.GET)
-        {
-            return await client.GetAsync(string.Empty);
-        }
-
-        var mediaType = request.Headers.TryGetValue(ContentType, out var media);
-        var content = new StreamContent(request.Body);
-        content.Headers.ContentType = MediaTypeHeaderValue.Parse(media);
-        content.Headers.Add(ForwardedIP, GetRemoteIpAddress(_ctx.HttpContext));
-
-        return method switch
-        {
-            Enums.HttpMethod.DELETE => await client.DeleteAsync(string.Empty),
-            Enums.HttpMethod.PATCH => await client.PatchAsync(string.Empty, content),
-            Enums.HttpMethod.PUT => await client.PutAsync(string.Empty, content),
-            _ => await client.PostAsync(string.Empty, content),
-        };
     }
 }
