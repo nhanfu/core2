@@ -80,7 +80,6 @@ services.AddAuthentication(x =>
     cfg.TokenValidationParameters = tokenOptions;
 
 });
-services.AddDistributedMemoryCache();
 services.AddHttpContextAccessor();
 
 // the instance created for each request

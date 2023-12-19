@@ -99,10 +99,10 @@ namespace Core.Extensions
         public static DistributedCacheEntryOptions CacheTTL = new()
         {
             #if DEBUG
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30)
-            #else 
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(120)
-            #endif
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+#else
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
+#endif
         };
 
         public static string DecodeSpecialChar(this string str)
