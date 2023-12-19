@@ -10,6 +10,7 @@ public class LoadBalaceMiddleware
     private readonly IConfiguration _conf;
     private readonly HttpClient _httpClient;
     private readonly ProxyOptions _defaultOptions;
+    private readonly BalancerData _balancerData;
 
     private static readonly string[] NotForwardedWebSocketHeaders = ["Connection", "Host", "Upgrade", "Sec-WebSocket-Key", "Sec-WebSocket-Version"];
 
@@ -22,9 +23,10 @@ public class LoadBalaceMiddleware
             SendChunked = false
         };
         _httpClient = new HttpClient(_defaultOptions.BackChannelMessageHandler ?? new HttpClientHandler());
+        _balancerData = new BalancerData();
     }
 
-    private void SetPortAndSchema(ProxyOptions options)
+    private static void SetPortAndSchema(ProxyOptions options)
     {
         if (!options.Port.HasValue)
         {
@@ -43,8 +45,6 @@ public class LoadBalaceMiddleware
         }
     }
 
-    static List<Node> Nodes = [];
-    static int _nodeIndex;
     public async Task Invoke(HttpContext context)
     {
         if (_conf.GetSection("Role").Get<string>() != "Balancer")
@@ -53,18 +53,47 @@ public class LoadBalaceMiddleware
             return;
         }
         var options = _defaultOptions;
-        Nodes = _conf.GetSection("Proxy:Destination").Get<List<Node>>();
-        var node = RoundRobin();
+        _balancerData.Nodes = _conf.GetSection("LoadBalance:Destination").Get<List<Node>>();
+        var node = ResolveAlgorithm();
         options.Port = node.Port;
         SetPortAndSchema(options);
         await Dispatch(context, options, node);
     }
 
-    private static Node RoundRobin()
+    private Node ResolveAlgorithm()
     {
-        var node = Nodes[_nodeIndex++];
-        _nodeIndex %= Nodes.Count;
+        var algorithm = _conf.GetSection("LoadBalance:Algorithm").Get<string>();
+        return algorithm switch
+        {
+            "LRU" => LeastRecentlyUsed(),
+            _ => RoundRobin(),
+        };
+    }
+
+    private Node LeastRecentlyUsed()
+    {
+        var key = _balancerData.Scores.MinBy(x => x.Value).Key;
+        var node = _balancerData.Nodes[key];
+
+        if (_balancerData.Scores[key] + 1 < long.MaxValue)
+        {
+            _balancerData.Scores[key]++;
+        }
+        else
+        {
+            for (int i = 0; i < _balancerData.Scores.Count; i++)
+            {
+                _balancerData.Scores[i] = 0;
+            }
+
+        }
         return node;
+    }
+
+    private Node RoundRobin()
+    {
+        _balancerData.LastServed = (_balancerData.LastServed + 1) % _balancerData.Nodes.Count;
+        return _balancerData.Nodes[_balancerData.LastServed];
     }
 
     private async Task Dispatch(HttpContext context, ProxyOptions options, Node destination)
@@ -143,7 +172,6 @@ public class LoadBalaceMiddleware
 
     private async Task HandleHttpRequest(HttpContext context, ProxyOptions _options, Node destination, string host, int port, string scheme)
     {
-
         var requestMessage = new HttpRequestMessage();
         var requestMethod = context.Request.Method;
 
@@ -160,7 +188,6 @@ public class LoadBalaceMiddleware
                 requestMessage.Content?.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray());
             }
         }
-
 
         requestMessage.Headers.Host = host;
         string uriString = GetUri(context, host, port, scheme);
@@ -269,4 +296,11 @@ public class Node
     public string Host { get; set; }
     public int Port { get; set; }
     public string Scheme { get; set; }
+}
+
+public class BalancerData
+{
+    public Dictionary<int, long> Scores { get; set; }
+    public int LastServed { get; set; }
+    public List<Node> Nodes = [];
 }

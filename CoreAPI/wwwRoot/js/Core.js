@@ -4506,7 +4506,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                 },
                 Done$1: function (T, task, handler) {
                     if (handler === void 0) { handler = null; }
+                    if (task == null) {
+                        return null;
+                    }
                     var promise = Core.Extensions.EventExt.ToPromise(T, task);
+                    if (promise == null) {
+                        return null;
+                    }
                     promise.then(handler);
                     return promise;
                 },
@@ -4517,17 +4523,26 @@ Bridge.assembly("Core", function ($asm, globals) {
                         return null;
                     }
                     var promise = Core.Extensions.EventExt.ToPromiseNoResult(task);
+                    if (promise == null) {
+                        return null;
+                    }
                     promise.then(handler);
                     if (errorHandler != null) promise.catch(errorHandler);
                     return promise;
                 },
                 Catch: function (task, handler) {
                     if (handler === void 0) { handler = null; }
+                    if (task == null) {
+                        return null;
+                    }
                     task.catch(handler);
                     return task;
                 },
                 Finally: function (task, handler) {
                     if (handler === void 0) { handler = null; }
+                    if (task == null) {
+                        return null;
+                    }
                     task.finally(handler);
                     return task;
                 }
