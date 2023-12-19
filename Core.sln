@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreAPI", "CoreAPI\CoreAPI.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{A1E39D33-D84C-4595-B7AC-6EF005935B80}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FTP", "FTP\FTP.csproj", "{B23F518E-6A5E-49EC-8A00-60894CE260F5}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,14 +31,6 @@ Global
 		{A1E39D33-D84C-4595-B7AC-6EF005935B80}.Linux|Any CPU.Build.0 = Debug|Any CPU
 		{A1E39D33-D84C-4595-B7AC-6EF005935B80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1E39D33-D84C-4595-B7AC-6EF005935B80}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B23F518E-6A5E-49EC-8A00-60894CE260F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B23F518E-6A5E-49EC-8A00-60894CE260F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B23F518E-6A5E-49EC-8A00-60894CE260F5}.DebugSQL|Any CPU.ActiveCfg = Debug|Any CPU
-		{B23F518E-6A5E-49EC-8A00-60894CE260F5}.DebugSQL|Any CPU.Build.0 = Debug|Any CPU
-		{B23F518E-6A5E-49EC-8A00-60894CE260F5}.Linux|Any CPU.ActiveCfg = Debug|Any CPU
-		{B23F518E-6A5E-49EC-8A00-60894CE260F5}.Linux|Any CPU.Build.0 = Debug|Any CPU
-		{B23F518E-6A5E-49EC-8A00-60894CE260F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B23F518E-6A5E-49EC-8A00-60894CE260F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
