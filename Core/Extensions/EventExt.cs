@@ -141,7 +141,9 @@ namespace Core.Extensions
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
         public static IPromise Done<T>(this Task<T> task, Action<T> handler = null)
         {
+            if (task is null) return null;
             var promise = task.ToPromise();
+            if (promise is null) return null;
             /*@
             promise.then(handler);
              */
@@ -150,6 +152,7 @@ namespace Core.Extensions
 
         public static IPromise Catch(this IPromise task, Action<Exception> handler = null)
         {
+            if (task is null) return null;
             /*@
             task.catch(handler);
              */
@@ -158,6 +161,7 @@ namespace Core.Extensions
 
         public static IPromise Finally(this IPromise task, Action handler = null)
         {
+            if (task is null) return null;
             /*@
             task.finally(handler);
              */
@@ -169,6 +173,7 @@ namespace Core.Extensions
         {
             if (task is null) return null;
             var promise = ToPromiseNoResult(task);
+            if (promise is null) return null;
             /*@
             promise.then(handler);
             if (errorHandler != null) promise.catch(errorHandler);

@@ -10,6 +10,7 @@ public class LoadBalaceMiddleware
     private readonly IConfiguration _conf;
     private readonly HttpClient _httpClient;
     private readonly ProxyOptions _defaultOptions;
+    private readonly BalancerOptions _balancer;
 
     private static readonly string[] NotForwardedWebSocketHeaders = ["Connection", "Host", "Upgrade", "Sec-WebSocket-Key", "Sec-WebSocket-Version"];
 
@@ -21,10 +22,14 @@ public class LoadBalaceMiddleware
         {
             SendChunked = false
         };
+        _balancer = new BalancerOptions
+        {
+            Nodes = _conf.GetSection("Proxy:Destination").Get<List<Node>>()
+        };
         _httpClient = new HttpClient(_defaultOptions.BackChannelMessageHandler ?? new HttpClientHandler());
     }
 
-    private void SetPortAndSchema(ProxyOptions options)
+    private static void SetPortAndSchema(ProxyOptions options)
     {
         if (!options.Port.HasValue)
         {
@@ -43,8 +48,6 @@ public class LoadBalaceMiddleware
         }
     }
 
-    static List<Node> Nodes = [];
-    static int _nodeIndex;
     public async Task Invoke(HttpContext context)
     {
         if (_conf.GetSection("Role").Get<string>() != "Balancer")
@@ -53,22 +56,54 @@ public class LoadBalaceMiddleware
             return;
         }
         var options = _defaultOptions;
-        Nodes = _conf.GetSection("Proxy:Destination").Get<List<Node>>();
-        var node = RoundRobin();
+        int maxRetry = 5;
+    Start:
+        var node = ResolveNode();
         options.Port = node.Port;
         SetPortAndSchema(options);
-        await Dispatch(context, options, node);
+        try
+        {
+            await Dispatch(context, options, node);
+            node.Alive = true;
+            node.LastResponse = DateTimeOffset.Now;
+        }
+        catch (HttpRequestException)
+        {
+            node.Alive = false;
+            if (maxRetry == 0)
+            {
+                throw;
+            }
+            maxRetry--;
+            goto Start;
+        }
     }
 
-    private static Node RoundRobin()
+    public int RecoveryMinutes = 10;
+    private Node ResolveNode()
     {
-        var node = Nodes[_nodeIndex++];
-        _nodeIndex %= Nodes.Count;
-        return node;
+        var nodes = new List<Node>();
+        for (var i = 0; i < _balancer.Nodes.Count; i++)
+        {
+            var node = _balancer.Nodes[i];
+            if (node.Alive || node.LastResponse < DateTimeOffset.Now.AddMinutes(-RecoveryMinutes))
+                nodes.Add(node);
+        }
+        _balancer.AvailableNodes = nodes;
+        var result = _balancer.Index >= 0 && _balancer.Index < _balancer.AvailableNodes.Count
+            ? _balancer.AvailableNodes[_balancer.Index] : _balancer.AvailableNodes[0];
+        _balancer.Index++;
+        _balancer.Index %= _balancer.AvailableNodes.Count;
+        return result;
     }
 
     private async Task Dispatch(HttpContext context, ProxyOptions options, Node destination)
     {
+        context.Request.Headers["X-Forwarded-For"] = context.Connection.RemoteIpAddress.ToString();
+        context.Request.Headers["X-Forwarded-Proto"] = context.Request.Protocol.ToString();
+        int port = context.Request.Host.Port ?? (context.Request.IsHttps ? 443 : 80);
+        context.Request.Headers["X-Forwarded-Port"] = port.ToString();
+
         var chost = (destination == null) ? options.Host : destination.Host;
         var cport = (destination == null) ? options.Port : destination.Port;
         var scheme = (destination == null) ? options.Scheme : destination.Scheme;
@@ -143,7 +178,6 @@ public class LoadBalaceMiddleware
 
     private async Task HandleHttpRequest(HttpContext context, ProxyOptions _options, Node destination, string host, int port, string scheme)
     {
-
         var requestMessage = new HttpRequestMessage();
         var requestMethod = context.Request.Method;
 
@@ -161,25 +195,20 @@ public class LoadBalaceMiddleware
             }
         }
 
-
         requestMessage.Headers.Host = host;
         string uriString = GetUri(context, host, port, scheme);
         requestMessage.RequestUri = new Uri(uriString);
         requestMessage.Method = new HttpMethod(context.Request.Method);
         using var responseMessage = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, context.RequestAborted);
-
         context.Response.StatusCode = (int)responseMessage.StatusCode;
         foreach (var header in responseMessage.Headers)
         {
             context.Response.Headers[header.Key] = header.Value.ToArray();
         }
-
         foreach (var header in responseMessage.Content.Headers)
         {
             context.Response.Headers[header.Key] = header.Value.ToArray();
         }
-
-
         if (!_options.SendChunked)
         {
             context.Response.Headers.Remove("transfer-encoding");
@@ -188,7 +217,6 @@ public class LoadBalaceMiddleware
         else
         {
             var buffer = new byte[_options.BufferSize ?? DefaultBufferSize];
-
             using var responseStream = await responseMessage.Content.ReadAsStreamAsync();
             int len = 0;
             int full = 0;
@@ -199,7 +227,6 @@ public class LoadBalaceMiddleware
             }
             context.Response.Headers.Remove("transfer-encoding");
         }
-
     }
 
     private static string GetUri(HttpContext context, string host, int? port, string scheme)
@@ -249,23 +276,19 @@ public class ProxyOptions
     }
 }
 
-public class VHostOptions
-{
-    public string Host { get; set; }
-    public int Port { get; set; }
-    public string Scheme { get; set; }
-    public List<string> Filters { get; set; }
-
-}
-
 public class BalancerOptions
 {
-    public Node[] Nodes { get; set; }
+    public List<Node> AvailableNodes { get; set; }
+    public List<Node> Nodes { get; set; }
+    public int Index { get; set; }
     public string Policy { get; set; }
+    public Dictionary<int, long> Score { get; set; }
 }
 
 public class Node
 {
+    public bool Alive { get; set; } = true;
+    public DateTimeOffset LastResponse { get; set; } = DateTimeOffset.Now;
     public string Host { get; set; }
     public int Port { get; set; }
     public string Scheme { get; set; }
