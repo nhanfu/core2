@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Core.Websocket;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Reflection;
-using Core.Websocket;
 
 namespace Core.Extensions
 {
@@ -19,6 +19,16 @@ namespace Core.Extensions
                 }
             }
             return services;
+        }
+
+        public static IApplicationBuilder UseSocketHandler(this IApplicationBuilder app, string prefix = "/task")
+        {
+            var factory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
+            var provider = factory.CreateScope().ServiceProvider;
+            var config = provider.GetService<IConfiguration>();
+            if (config.GetSection("Role").Get<string>() == "Balancer") return app;
+            app.Map(prefix, app => app.UseMiddleware<WebSocketManagerMiddleware>(provider.GetService<WebSocketService>()));
+            return app;
         }
 
         public static object GetPropValue(this object obj, string propName)

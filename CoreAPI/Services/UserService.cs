@@ -14,9 +14,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
-using System.Net.Http.Headers;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -370,6 +368,7 @@ public class UserService
 
         await engine.ExecuteScriptAsync(vm.JsScript);
         var res = engine.GetValue("result");
+        if (res is SqlQueryResult final) return final;
         if (res is not string strRes)
         {
             result.Result = res;
@@ -493,7 +492,12 @@ public class UserService
         };
         var cmd = GetCmd(vm);
         var connStr = vm.CachedConnStr ?? await GetConnStrFromKey(vm.ConnKey);
-        return await RunSqlCmd(connStr, cmd);
+        var result = await RunSqlCmd(connStr, cmd);
+        await RunUserSvc(new SqlViewModel
+        {
+            ComId = vm.Table, Action = "AfterPatch", Params = vm.ToJson()
+        }, shouldThrow: false);
+        return result;
     }
 
     private async Task<bool> HasWritePermission(PatchVM vm)
@@ -762,14 +766,18 @@ public class UserService
         return permissions;
     }
 
-    public async Task<object> RunUserSvc(SqlViewModel vm)
+    public async Task<object> RunUserSvc(SqlViewModel vm, bool shouldThrow = true)
     {
         vm.CachedConnStr = await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        var sv = await GetService(vm)
-            ?? throw new ApiException($"Service \"{vm.ComId} - {vm.Action}\" NOT found")
+        var sv = await GetService(vm);
+        if (sv is null)
+        {
+            if (shouldThrow) throw new ApiException($"Service \"{vm.ComId} - {vm.Action}\" NOT found")
             {
                 StatusCode = HttpStatusCode.NotFound
             };
+            return null;
+        }
         vm.JsScript = sv.Content;
         var jsRes = await ExecJs(vm);
         if (jsRes.Result is not null)

@@ -3240,3 +3240,9 @@ img.image {
 .wtree .has::after {
     display: block; /* Show the arrow only if the parent has a child */
 }
+.fade {
+    transition: opacity 0.15s linear;
+}
+.fade:not(.show) {
+    opacity: 0;
+}

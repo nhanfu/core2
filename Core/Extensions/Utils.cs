@@ -104,6 +104,8 @@ namespace Core.Extensions
             */
         }
 
+        public static string ToJson(this object value) => JSON.Stringify(value);
+
         public static object EncodeProperties(this object value)
         {
             PropertyInfo[] props = value?.GetType().GetProperties();

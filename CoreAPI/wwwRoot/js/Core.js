@@ -4506,7 +4506,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                 },
                 Done$1: function (T, task, handler) {
                     if (handler === void 0) { handler = null; }
+                    if (task == null) {
+                        return null;
+                    }
                     var promise = Core.Extensions.EventExt.ToPromise(T, task);
+                    if (promise == null) {
+                        return null;
+                    }
                     promise.then(handler);
                     return promise;
                 },
@@ -4517,17 +4523,26 @@ Bridge.assembly("Core", function ($asm, globals) {
                         return null;
                     }
                     var promise = Core.Extensions.EventExt.ToPromiseNoResult(task);
+                    if (promise == null) {
+                        return null;
+                    }
                     promise.then(handler);
                     if (errorHandler != null) promise.catch(errorHandler);
                     return promise;
                 },
                 Catch: function (task, handler) {
                     if (handler === void 0) { handler = null; }
+                    if (task == null) {
+                        return null;
+                    }
                     task.catch(handler);
                     return task;
                 },
                 Finally: function (task, handler) {
                     if (handler === void 0) { handler = null; }
+                    if (task == null) {
+                        return null;
+                    }
                     task.finally(handler);
                     return task;
                 }
@@ -5800,6 +5815,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                 },
                 AddDebugger: function () {
                     debugger;
+                },
+                ToJson: function (value) {
+                    return JSON.stringify(Bridge.unbox(value));
                 },
                 EncodeProperties: function (value) {
                     var $t, $t1;
@@ -9300,7 +9318,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             GroupBy: null,
             Having: null,
             Count: false,
-            RawQuery: false,
             FieldName: null,
             SkipXQuery: false,
             ConnKey: null,

@@ -12,7 +12,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
-var _conf = builder.Configuration;
+var conf = builder.Configuration;
 services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 {
     builder.AllowAnyOrigin()
@@ -27,7 +27,7 @@ services.AddDistributedMemoryCache();
 services.AddLogging(config =>
 {
     config.ClearProviders();
-    config.AddConfiguration(_conf.GetSection("Logging"));
+    config.AddConfiguration(conf.GetSection("Logging"));
     config.AddDebug();
     config.AddEventSourceLogger();
 });
@@ -52,12 +52,13 @@ services.AddMvc(options =>
     options.SerializerSettings.DateParseHandling = DateParseHandling.DateTimeOffset;
     options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
 });
-services.AddHangfire(configuration => configuration.UseSqlServerStorage(_conf.GetConnectionString($"Log")));
+services.AddHangfire(configuration => configuration.UseSqlServerStorage(conf.GetConnectionString($"Log")));
+services.AddHangfireServer();
 var tokenOptions = new TokenValidationParameters()
 {
-    ValidIssuer = _conf["Tokens:Issuer"],
-    ValidAudience = _conf["Tokens:Issuer"],
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_conf["Tokens:Key"])),
+    ValidIssuer = conf["Tokens:Issuer"],
+    ValidAudience = conf["Tokens:Issuer"],
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(conf["Tokens:Key"])),
     ClockSkew = TimeSpan.Zero
 };
 services.AddSingleton(tokenOptions);
@@ -85,32 +86,15 @@ services.AddScoped<UserService>();
 var app = builder.Build();
 
 app.UseCors("MyPolicy");
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-else
-{
-    app.UseHsts();
-}
-app.UseHttpsRedirection();
+app.UseWebSockets();
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<LoadBalaceMiddleware>();
+app.UseSocketHandler();
 app.UseResponseCompression();
 app.UseStaticFiles();
 app.UseHangfireDashboard();
-app.UseHangfireServer();
-app.UseMiddleware<ExceptionMiddleware>();
-app.UseMiddleware<LoadBalaceMiddleware>();
-UseSocket(app);
 app.UseAuthentication();
 app.UseMvc();
 app.UseRouting();
 
 app.Run();
-
-void UseSocket(IApplicationBuilder app)
-{
-    app.UseWebSockets();
-    var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
-    var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
-    app.Map("/task", app => app.UseMiddleware<WebSocketManagerMiddleware>(serviceProvider.GetService<WebSocketService>()));
-}

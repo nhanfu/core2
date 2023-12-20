@@ -18,7 +18,6 @@ namespace Core.ViewModels
         public string GroupBy { get; set; }
         public string Having { get; set; }
         public bool Count { get; set; }
-        public bool RawQuery { get; set; }
         public string[] FieldName { get; set; }
         public bool SkipXQuery { get; set; }
         public string ConnKey { get; internal set; } = Client.ConnKey;

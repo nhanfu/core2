@@ -110,15 +110,15 @@ public class LoadBalaceMiddleware
 
         if (context.WebSockets.IsWebSocketRequest)
         {
-            await HandleWebSocketRequest(context, options, destination, chost, cport.Value, scheme);
+            await HandleWebSocketRequest(context, options, destination, chost, cport.Value);
         }
         else
         {
-            await HandleHttpRequest(context, options, destination, chost, cport.Value, scheme);
+            await HandleHttpRequest(context, options, chost, cport.Value, scheme);
         }
     }
 
-    private static async Task HandleWebSocketRequest(HttpContext context, ProxyOptions _options, Node destination, string host, int port, string scheme)
+    private static async Task HandleWebSocketRequest(HttpContext context, ProxyOptions _options, Node destination, string host, int port)
     {
         using var client = new ClientWebSocket();
         foreach (var headerEntry in context.Request.Headers)
@@ -130,7 +130,7 @@ public class LoadBalaceMiddleware
         }
 
         var wsScheme = string.Equals(destination.Scheme, "https", StringComparison.OrdinalIgnoreCase) ? "wss" : "ws";
-        string url = GetUri(context, host, port, scheme);
+        string url = GetUri(context, host, port, wsScheme);
 
         if (_options.WebSocketKeepAliveInterval.HasValue)
         {
@@ -176,7 +176,7 @@ public class LoadBalaceMiddleware
         }
     }
 
-    private async Task HandleHttpRequest(HttpContext context, ProxyOptions _options, Node destination, string host, int port, string scheme)
+    private async Task HandleHttpRequest(HttpContext context, ProxyOptions _options, string host, int port, string scheme)
     {
         var requestMessage = new HttpRequestMessage();
         var requestMethod = context.Request.Method;
@@ -240,11 +240,6 @@ public class LoadBalaceMiddleware
             urlPort = ":" + port.Value;
         }
         return $"{scheme}://{host}{urlPort}{context.Request.PathBase}{context.Request.Path}{context.Request.QueryString}";
-    }
-
-    public bool Terminate(HttpContext httpContext)
-    {
-        return true;
     }
 }
 
