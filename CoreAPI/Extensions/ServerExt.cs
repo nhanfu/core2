@@ -1,4 +1,7 @@
 ﻿using Core.Websocket;
+using CoreAPI.Middlewares;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Reflection;
@@ -26,8 +29,23 @@ namespace Core.Extensions
             var factory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var provider = factory.CreateScope().ServiceProvider;
             var config = provider.GetService<IConfiguration>();
-            if (config.GetSection("Role").Get<string>() == "Balancer") return app;
+            if (config.GetSection("Role").Get<string>() == Utils.Balancer) return app;
             app.Map(prefix, app => app.UseMiddleware<WebSocketManagerMiddleware>(provider.GetService<WebSocketService>()));
+            return app;
+        }
+
+        public static WebApplication UseClusterAPI(this WebApplication app)
+        {
+            if (app.Configuration.GetSection("Role").Get<string>() != Utils.Balancer) return app;
+            app.MapPost("/api/cluster/add", [Authorize] ([FromBody] Node node) =>
+            {
+                Cluster.Data.Nodes.Add(node);
+            });
+            app.MapPost("/api/cluster/remove", [Authorize] ([FromBody] Node node) =>
+            {
+                var node2Remove = Cluster.Data.Nodes.FirstOrDefault(x => x.Host == node.Host && x.Port == node.Port && x.Scheme == node.Scheme);
+                Cluster.Data.Nodes.Remove(node2Remove);
+            });
             return app;
         }
 
@@ -55,12 +73,25 @@ namespace Core.Extensions
             var prop = type.BaseType.GetProperty(propertyName);
             prop?.SetValue(instance, value, null);
         }
-
-        public static string ToJson(this object value) => JsonConvert.SerializeObject(value, new JsonSerializerSettings
+        private static JsonSerializerSettings settings = new JsonSerializerSettings
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             ContractResolver = new CamelCasePropertyNamesContractResolver()
-        });
+        };
+
+        public static string ToJson(this object value) => JsonConvert.SerializeObject(value, settings);
+
+        public static T TryParse<T>(this string value)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(value);
+            }
+            catch
+            {
+                return default(T);
+            }
+        }
 
         /// <summary>
         /// 

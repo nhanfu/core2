@@ -1,4 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using Core.Extensions;
+using CoreAPI.ViewModels;
+using Newtonsoft.Json;
+using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
 
@@ -145,9 +148,22 @@ namespace Core.Websocket
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
-        public async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
+        public async Task ReceiveAsync(string userId, List<string> roleIds, string ip, WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
         {
-            await socket.SendAsync(Encoding.ASCII.GetBytes("connected"), WebSocketMessageType.Text, true, CancellationToken.None);
+            var text = Encoding.UTF8.GetString(buffer);
+            var mq = text.TryParse<MQEvent>();
+            if (mq is null)
+            {
+                await socket.SendAsync(Encoding.ASCII.GetBytes("connected"), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+            else if (mq.Action == "Subscribe")
+            {
+                ConnectionManager.SubScribeQueue(userId, roleIds, ip, mq.QueueName);
+            }
+            else if (mq.Action == "Unsubscribe")
+            {
+                ConnectionManager.UnsubScribeQueue(userId, roleIds, ip, mq.QueueName);
+            }
         }
     }
 }

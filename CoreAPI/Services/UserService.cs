@@ -3,6 +3,9 @@ using Core.Exceptions;
 using Core.Extensions;
 using Core.Models;
 using Core.ViewModels;
+using Core.Websocket;
+using CoreAPI.ViewModels;
+using Hangfire;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
@@ -11,10 +14,12 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Newtonsoft.Json;
 using PuppeteerSharp;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.Data;
 using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
+using System.Net.WebSockets;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -38,6 +43,7 @@ public class UserService
     private readonly IDistributedCache _cache;
     private readonly IWebHostEnvironment _host;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly WebSocketService _socketSvc;
 
     public string UserId { get; set; }
     public string UserName { get; set; }
@@ -65,19 +71,21 @@ public class UserService
     private const string TenantClaim = "TenantCode";
 
     public UserService(IHttpContextAccessor ctx, IConfiguration conf,
-        IDistributedCache cache, IWebHostEnvironment host, IHttpClientFactory httpClientFactory)
+        IDistributedCache cache, IWebHostEnvironment host, IHttpClientFactory httpClientFactory, WebSocketService socket)
     {
         _cfg = conf ?? throw new ArgumentNullException(nameof(conf));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache)); ;
         _host = host ?? throw new ArgumentNullException(nameof(host));
         _ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
+        _socketSvc = socket;
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         ExtractClaims();
     }
 
     private void ExtractClaims()
     {
-        var claims = _ctx.HttpContext.User.Claims;
+        var claims = _ctx.HttpContext.User?.Claims;
+        if (claims is null) return;
         BranchId = claims.FirstOrDefault(x => x.Type == BranchIdClaim)?.Value;
         UserId = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
         ConnKey = claims.FirstOrDefault(x => x.Type == ConnKeyClaim)?.Value;
@@ -117,10 +125,9 @@ public class UserService
     private const string PassPhrase = "d7a9220a-6949-44c8-a702-789587e536cb";
     private const string BranchIdClaim = "BranchId";
     private const string ForwardedIP = "X-Forwarded-For";
-    private const string CacheHost = "Cache";
-    public const string Hub = "Hub";
+    private const string APIClusterKey = "API_clusters";
 
-    public string GetRemoteIpAddress(HttpContext context)
+    public static string GetRemoteIpAddress(HttpContext context)
     {
         return context.Request.Headers.TryGetValue(ForwardedIP, out var value)
             ? value.ToString().Split(',')[0].Trim()
@@ -505,7 +512,7 @@ public class UserService
         var sql = new SqlViewModel
         {
             CachedConnStr = vm.CachedConnStr,
-            ComId = vm.Table,
+            QueueName = vm.QueueName,
             Action = "AfterPatch",
         };
         var sv = await GetService(sql);
@@ -514,29 +521,76 @@ public class UserService
             sql.Params = vm.ToJson();
             await RunJs(sql);
         }
-        await TryInvalidCacheComponent(sql);
+        await TryNotifyChange(sql);
         return result;
     }
 
-    private async Task TryInvalidCacheComponent(SqlViewModel sql)
+    private async Task TryNotifyChange(SqlViewModel sql)
     {
-        if (sql?.ComId != nameof(Component)) return;
         var p = JsonConvert.DeserializeObject<PatchVM>(sql.Params);
         var id = p.Id.OldVal ?? p.Id.Value;
-        await _cache.RemoveAsync("com_" + id);
-        await NotifyCacheChange("com_" + id, null, sql.CachedConnStr);
+        await InvalidCacheInternal(sql.QueueName + id, null, sql.CachedConnStr);
+        await NotifyDeviceInternal(new MQEvent { Id = Id.NewGuid(), Message = sql.Params, QueueName = sql.QueueName }, sql);
     }
 
-    public async Task NotifyCacheChange(string key, string value, string connStr)
+    public async Task NotifyDeviceInternal(MQEvent e, SqlViewModel sql)
     {
+        NotifyDevice(e);
         var client = _httpClientFactory.CreateClient();
-        var clusterQuery = $"select * from MasterData where Name = 'System/Clusters'";
-        var cluster = await ReadDsAs<MasterData>(clusterQuery, connStr);
-        if (cluster is null) return;
-        await cluster.Description.Split(";").Where(x => x != _ctx.HttpContext.Request.Host.Value)
-        .ForEachAsync(async host =>
+        var clusters = await GetClusters(role: "API", sql.CachedConnStr);
+        await clusters.Where(x => x.Host != _ctx.HttpContext.Request.Host.Host && x.Port != _ctx.HttpContext.Request.Host.Port)
+        .ForEachAsync(async x =>
         {
-            var uri = Path.Combine(host, nameof(SetStringToStorage));
+            var uri = Path.Combine(x.Host, nameof(NotifyDevice));
+            var request = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = new StringContent(e.ToJson(), Encoding.UTF8, Utils.ApplicationJson)
+            };
+            CopyHeaders(request);
+            var response = await client.SendAsync(request);
+        });
+    }
+
+    private void CopyHeaders(HttpRequestMessage request)
+    {
+        foreach (var header in _ctx.HttpContext.Request.Headers)
+        {
+            if (!request.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray()) && request.Content != null)
+            {
+                request.Content?.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray());
+            }
+        }
+    }
+
+    public void NotifyDevice(MQEvent e)
+    {
+        BackgroundJob.Enqueue(() => SendMessageToSubscribers(e));
+    }
+
+    private async Task<Cluster[]> GetClusters(string role, string connStr)
+    {
+        Cluster[] clusters = null;
+        var cachedCluster = await _cache.GetStringAsync(APIClusterKey);
+        if (cachedCluster is not null)
+        {
+            clusters = cachedCluster.TryParse<Cluster[]>();
+        }
+        if (clusters is not null) return clusters;
+        var clusterQuery = $"select * from Cluster where ClusterRole = '{role}'";
+        clusters = await ReadDsAsArr<Cluster>(clusterQuery, connStr);
+        await _cache.SetStringAsync(APIClusterKey, clusters.ToJson());
+        return clusters;
+    }
+
+    public async Task InvalidCacheInternal(string key, string value, string connStr)
+    {
+        await _cache.RemoveAsync(key);
+        var client = _httpClientFactory.CreateClient();
+        var clusters = await GetClusters(role: "API", connStr);
+        await clusters.Where(x => x.Host != _ctx.HttpContext.Request.Host.Host && x.Port != _ctx.HttpContext.Request.Host.Port)
+        .ForEachAsync(async x =>
+        {
+            var uri = Path.Combine(x.Host, nameof(SetStringToStorage));
             var request = new HttpRequestMessage(HttpMethod.Post, uri)
             {
                 Content = new StringContent(JsonConvert.SerializeObject(new { key, value }), Encoding.UTF8, Utils.ApplicationJson)
@@ -754,7 +808,7 @@ public class UserService
     private async Task<Component> GetComponent(SqlViewModel vm)
     {
         Component com = null;
-        var comKey = "com_" + vm.ComId;
+        var comKey = nameof(Component) + vm.ComId;
         var cached = _cache.GetString(comKey);
         if (cached != null)
         {
@@ -839,8 +893,7 @@ public class UserService
             throw new ApiException("Service can NOT be identified due to lack of Id or action") { StatusCode = HttpStatusCode.BadRequest };
         }
 
-        var key = $"sv_{vm.ComId}_{vm.Action}_{vm.SvcId}";
-        var cacheSv = await _cache.GetStringAsync(key);
+        var cacheSv = await _cache.GetStringAsync($"{nameof(Services)}{vm.SvcId}");
         Models.Services sv;
         if (cacheSv != null)
         {
@@ -852,7 +905,7 @@ public class UserService
                 where (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') 
                 and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
         sv = await ReadDsAs<Models.Services>(query, vm.CachedConnStr);
-        await _cache.SetStringAsync(key, JsonConvert.SerializeObject(sv), Utils.CacheTTL);
+        await _cache.SetStringAsync($"{nameof(Services)}{vm.SvcId}", JsonConvert.SerializeObject(sv), Utils.CacheTTL);
         EnsureSvPermission(sv);
         return sv;
     }
@@ -1571,5 +1624,151 @@ public class UserService
             c.Id = Id.NewGuid().ToString();
             c.ComponentGroupId = group.Id;
         });
+    }
+
+    public Task NotifyDevices(IEnumerable<TaskNotification> tasks, string queueName)
+    {
+        return tasks
+            .Where(x => x.AssignedId.HasAnyChar())
+            .Select(x => new MQEvent
+            {
+                QueueName = queueName,
+                Id = Id.NewGuid(),
+                Message = x
+            })
+        .ForEachAsync(SendMessageToUser);
+    }
+
+    private async Task SendMessageToUser(MQEvent task)
+    {
+        var tenantCode = TenantCode;
+        var env = Env;
+        var fcm = new FCMWrapper
+        {
+            To = $"/topics/{tenantCode}/{env}/U{task.Message.AssignedId:0000000}",
+            Data = new FCMData
+            {
+                Title = task.Message.Title,
+                Body = task.Message.Description,
+            },
+            Notification = new FCMNotification
+            {
+                Title = task.Message.Title,
+                Body = task.Message.Description,
+                ClickAction = "com.softek.tms.push.background.MESSAGING_EVENT"
+            }
+        };
+        await _socketSvc.SendMessageToUsersAsync([task.Message.AssignedId], task.ToJson(), fcm.ToJson());
+    }
+
+    public async Task SendMessageSocket(string socket, TaskNotification task, string queueName)
+    {
+        var entity = new MQEvent
+        {
+            QueueName = queueName,
+            Id = Id.NewGuid(),
+            Message = task
+        };
+        await _socketSvc.SendMessageToSocketAsync(socket, entity.ToJson());
+    }
+
+    public async Task SendMessageToSubscribers(MQEvent task)
+    {
+        await _socketSvc.SendMessageToSubscribers(task.ToJson(), task.QueueName);
+    }
+
+    private static async Task<Chat> GetChatGPTResponse(Chat entity)
+    {
+        var languageRules = new[]
+        {
+            new { Language = "javascript", Regex = @"```javascript([\s\S]+?)```", Replacement = "<pre><code class=\"language-javascript\">$1</code></pre>" },
+            new { Language = "html", Regex = @"```html([\s\S]+?)```", Replacement = "<pre><code class=\"language-html\">$1</code></pre>" },
+            new { Language = "csharp", Regex = @"```csharp([\s\S]+?)```", Replacement = "<pre><code class=\"language-csharp\">$1</code></pre>" },
+            new { Language = "code", Regex = @"```([\s\S]+?)```", Replacement = "<pre><code>$1</code></pre>" }
+        };
+
+        var apiKey = "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";
+        var endpoint = "https://api.openai.com/v1/chat/completions";
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+        var requestData = new ChatGptVM
+        {
+            model = "gpt-3.5-turbo",
+            messages =
+            [
+                new ChatGptMessVM
+                {
+                    role = "user",
+                    content = entity.Context,
+                    name = entity.FromId.ToString(),
+                }
+            ]
+        };
+        var jsonRequestData = JsonConvert.SerializeObject(requestData);
+        var response = await httpClient.PostAsync(endpoint, new StringContent(jsonRequestData, Encoding.UTF8, "application/json"));
+        var jsonResponseData = await response.Content.ReadAsStringAsync();
+        var rs = JsonConvert.DeserializeObject<RsChatGpt>(jsonResponseData);
+        var text = rs.choices.FirstOrDefault().message.content;
+        foreach (var rule in languageRules)
+        {
+            var language = rule.Language;
+            var regex = new System.Text.RegularExpressions.Regex(rule.Regex);
+            var replacement = rule.Replacement;
+            text = regex.Replace(text, replacement);
+        }
+
+        return new Chat()
+        {
+            FromId = entity.ToId,
+            ToId = entity.FromId,
+            Context = text,
+            ConversationId = entity.ConversationId,
+            IsSeft = true,
+        };
+    }
+
+    internal async Task<Chat> Chat(Chat entity)
+    {
+        var patchMV = entity.MapToPatch();
+        await SavePatch(patchMV);
+        if (entity.ToId == 552.ToString())
+        {
+            var rs1 = await GetChatGPTResponse(entity);
+            await SavePatch(rs1.MapToPatch());
+            var chat = new MQEvent
+            {
+                QueueName = entity.QueueName,
+                Message = rs1,
+                Id = Id.NewGuid(),
+            };
+            await SendMessageToUser(chat);
+        }
+        else
+        {
+            var chat = new MQEvent
+            {
+                QueueName = entity.QueueName,
+                Message = entity,
+                Id = Id.NewGuid(),
+            };
+            await SendMessageToUser(chat);
+        }
+        return entity;
+    }
+
+    internal IEnumerable<User> GetUserActive()
+    {
+        var online = _socketSvc.GetAll().Keys;
+        var us = online.Select(x =>
+        {
+            var split = x.Split("/");
+            return new User
+            {
+                Id = split[0],
+                Recover = split[3],
+                Email = x
+            };
+        }).OrderBy(x => x.Id);
+        return us;
     }
 }

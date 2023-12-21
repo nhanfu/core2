@@ -1458,6 +1458,9 @@ Bridge.assembly("Core", function ($asm, globals) {
             RemoveChild: function (child) {
                 this.Children.remove(child);
             },
+            Render: function () {
+                this.SendQueueAction("Subscribe");
+            },
             Focus: function () {
                 var $t;
                 ($t = this.Element) != null ? $t.focus() : null;
@@ -1541,6 +1544,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
             },
             Dispose: function () {
+                this.SendQueueAction("Unsubscribe");
                 this.DisposeChildren();
                 this.RemoveDOM();
                 this.Children = null;
@@ -2082,6 +2086,14 @@ Bridge.assembly("Core", function ($asm, globals) {
                 } else {
                     details.add(($t = new Core.ViewModels.PatchDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = this.EntityId, $t.OldVal = this.EntityId, $t));
                 }
+            },
+            SendQueueAction: function (action) {
+                var $t;
+                if (this.GuiInfo != null && Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.QueueName)) {
+                    return;
+                }
+                var mq = ($t = new Core.Models.MQData(), $t.QueueName = this.GuiInfo.QueueName, $t.Action = action, $t);
+                Core.Components.Forms.EditForm.NotificationClient.Send(Core.Extensions.Utils.ToJson(mq));
             }
         }
     });
@@ -7888,7 +7900,8 @@ Bridge.assembly("Core", function ($asm, globals) {
             Id: null,
             PrevId: null,
             QueueName: null,
-            Message: null
+            Message: null,
+            Action: null
         }
     });
 
@@ -10018,7 +10031,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             IconElement: null,
             AfterSaved: null,
             BeforeSaved: null,
-            awaiter: 0,
             _currentListView: null,
             _componentCoppy: null
         },

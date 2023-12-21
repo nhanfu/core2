@@ -1,6 +1,7 @@
 ﻿using System.Net.WebSockets;
 using System.Security.Claims;
 using Core.Extensions;
+using Core.Services;
 
 namespace Core.Websocket;
 
@@ -22,12 +23,13 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
         var principal = Utils.GetPrincipalFromAccessToken(token, configuration);
         var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
         var roleIds = principal.Claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).ToList();
+        var ip = UserService.GetRemoteIpAddress(context);
         await WebSocketHandler.OnConnected(socket, userId, roleIds, context.Connection.RemoteIpAddress.ToString());
-        await Receive(socket, async (result, buffer) =>
+        await Receive(socket, userId, roleIds, ip, async (userId, roleIds, ip, result, buffer) =>
         {
             if (result.MessageType == WebSocketMessageType.Text)
             {
-                await WebSocketHandler.ReceiveAsync(socket, result, buffer);
+                await WebSocketHandler.ReceiveAsync(userId, roleIds, ip, socket, result, buffer);
                 return;
             }
             else if (result.MessageType == WebSocketMessageType.Close)
@@ -38,13 +40,13 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
         });
     }
 
-    private static async Task Receive(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
+    private static async Task Receive(WebSocket socket, string userId, List<string> roleIds, string ip, Action<string, List<string>, string, WebSocketReceiveResult, byte[]> handleMessage)
     {
         var buffer = new byte[1024 * 4];
         while (socket.State == WebSocketState.Open)
         {
             var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            handleMessage(result, buffer);
+            handleMessage(userId, roleIds, ip, result, buffer);
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Core.ViewModels
         public string Action { get; set; }
         public string Params { get; set; }
         public string Table { get; set; }
+        public string QueueName { get; set; }
         public string[] Ids { get; set; }
         public Component Component { get; set; }
         public string AnnonymousTenant { get; set; }

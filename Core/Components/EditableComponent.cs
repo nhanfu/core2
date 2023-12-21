@@ -371,7 +371,10 @@ namespace Core.Components
             Children.Remove(child);
         }
 
-        public abstract void Render();
+        public virtual void Render()
+        {
+            SendQueueAction("Subscribe");
+        }
 
         public virtual void Focus()
         {
@@ -438,6 +441,7 @@ namespace Core.Components
 
         public virtual void Dispose()
         {
+            SendQueueAction("Unsubscribe");
             DisposeChildren();
             RemoveDOM();
             Children = null;
@@ -868,6 +872,17 @@ namespace Core.Components
                     OldVal = EntityId
                 });
             }
+        }
+
+        protected void SendQueueAction(string action)
+        {
+            if (GuiInfo != null && GuiInfo.QueueName.IsNullOrWhiteSpace()) return;
+            var mq = new MQData
+            {
+                QueueName = GuiInfo.QueueName,
+                Action = action
+            };
+            EditForm.NotificationClient.Send(mq.ToJson());
         }
     }
 }

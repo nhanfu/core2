@@ -55,7 +55,6 @@ namespace Core.Components.Forms
         public Func<bool> BeforeSaved;
         public bool IsEditMode => Entity != null && Entity[IdField].As<int>() > 0;
         public static WebSocketClient NotificationClient;
-        private int awaiter;
         protected ListView _currentListView;
         protected Component _componentCoppy;
         private HTMLElement InnerEntry => Document.GetElementById("entry");
@@ -148,7 +147,7 @@ namespace Core.Components.Forms
                 return new PatchDetail[] { patch };
             }).ToList();
             AddIdToPatch(details);
-            return new PatchVM { Changes = details, Table = Feature.EntityName };
+            return new PatchVM { Changes = details, Table = Feature.EntityName, QueueName = Feature.QueueName };
         }
 
         public virtual Task<bool> SavePatch(object entity = null)
@@ -901,13 +900,6 @@ namespace Core.Components.Forms
         {
             var component = arg.MapToCom();
             _componentCoppy = component;
-        }
-
-        private PatchVM CreateComGroupPatch(Component com)
-        {
-            var res = new PatchVM();
-
-            return res;
         }
 
         public void AddComponent(object arg)

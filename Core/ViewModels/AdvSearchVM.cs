@@ -64,5 +64,6 @@ namespace Core.Models
         public string PrevId { get; set; }
         public string QueueName { get; set; }
         public dynamic Message { get; set; }
+        public string Action { get; set; }
     }
 }

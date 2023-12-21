@@ -82,20 +82,20 @@ services.AddHttpContextAccessor();
 
 // the instance created for each request
 services.AddScoped<WebSocketService>();
-services.AddScoped<TaskService>();
 services.AddScoped<UserService>();
 
 var app = builder.Build();
 
 app.UseCors("MyPolicy");
+app.UseAuthentication();
 app.UseWebSockets();
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseClusterAPI();
 app.UseMiddleware<LoadBalaceMiddleware>();
 app.UseSocketHandler();
 app.UseResponseCompression();
 app.UseStaticFiles();
 app.UseHangfireDashboard();
-app.UseAuthentication();
 app.UseMvc();
 app.UseRouting();
 

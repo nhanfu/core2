@@ -17,6 +17,7 @@ namespace Core.Extensions
         public const string Comma = ",";
         public const string Space = " ";
         public const string TenantCode = "System";
+        public const string Balancer = "Balancer";
         public const string Env = "test";
         public const string ConnKey = "default";
         public const string InsertedBy = "InsertedBy";

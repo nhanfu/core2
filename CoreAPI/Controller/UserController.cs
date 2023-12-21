@@ -2,14 +2,14 @@
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
+using CoreAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
 
 namespace Core.Controllers;
 
 [Authorize]
-public class UserController(UserService _userSvc, TaskService _taskSvc) : ControllerBase
+public class UserController(UserService _userSvc) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("api/{tenant}/[Controller]/SignIn")]
@@ -22,7 +22,7 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
         login.CompanyName ??= tenant;
         return await _userSvc.SignInAsync(login);
     }
-    
+
     [AllowAnonymous]
     [HttpPost("api/[Controller]/SignOut")]
     public Task<bool> SignOutAsync([FromBody] Token token)
@@ -135,17 +135,24 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
     [HttpPost("/api/chat")]
     public Task<Chat> CreateAsync([FromBody] Chat entity)
     {
-        return _taskSvc.Chat(entity);
+        return _userSvc.Chat(entity);
     }
 
     [HttpPost("api/GetUserActive")]
     public IEnumerable<User> GetUserActive()
     {
         // Need to summarize info from all clusters
-        return _taskSvc.GetUserActive();
+        return _userSvc.GetUserActive();
     }
 
     [AllowAnonymous]
     [HttpPost("SetStringToStorage")]
     public Task SetStringToStorage([FromBody] string key, [FromBody] string value) => _userSvc.SetStringToStorage(key, value);
+
+    [HttpPost("NotifyDevice")]
+    public ValueTask<bool> NotifyDevice([FromBody] MQEvent e) 
+    {
+        _userSvc.NotifyDevice(e);
+        return new ValueTask<bool>(true);
+    }
 }

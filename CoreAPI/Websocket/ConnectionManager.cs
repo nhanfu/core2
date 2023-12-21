@@ -5,6 +5,7 @@ namespace Core.Websocket
 {
     public class ConnectionManager
     {
+        private readonly ConcurrentDictionary<string, List<string>> _queues = new();
         private readonly ConcurrentDictionary<string, WebSocket> _sockets = new();
 
         public WebSocket GetSocketById(string id)
@@ -25,6 +26,30 @@ namespace Core.Websocket
         public void AddSocket(WebSocket socket, string userId, List<string> roleIds, string ip)
         {
             _sockets.TryAdd($"{userId}/{string.Join(",", roleIds)}/{Guid.NewGuid()}/{ip}", socket);
+        }
+
+        public void SubScribeQueue(string userId, List<string> roleIds, string ip, string queueName)
+        {
+            var key = $"{userId}/{string.Join(",", roleIds)}/{Guid.NewGuid()}/{ip}";
+            var hasVal = _queues.TryGetValue(key, out var value);
+            if (hasVal && !value.Contains(queueName))
+            {
+                value.Add(queueName);
+            }
+            else
+            {
+                _queues[key] = [queueName];
+            }
+        }
+
+        public void UnsubScribeQueue(string userId, List<string> roleIds, string ip, string queueName)
+        {
+            var key = $"{userId}/{string.Join(",", roleIds)}/{Guid.NewGuid()}/{ip}";
+            var hasVal = _queues.TryGetValue(key, out var value);
+            if (hasVal)
+            {
+                value.Remove(queueName);
+            }
         }
 
         public async Task RemoveSocket(string id)

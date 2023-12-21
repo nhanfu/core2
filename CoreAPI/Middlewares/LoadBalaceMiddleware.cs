@@ -1,4 +1,6 @@
-﻿using System.Net.WebSockets;
+﻿using Core.Extensions;
+using Core.Services;
+using System.Net.WebSockets;
 
 namespace CoreAPI.Middlewares;
 
@@ -10,7 +12,7 @@ public class LoadBalaceMiddleware
     private readonly IConfiguration _conf;
     private readonly HttpClient _httpClient;
     private readonly ProxyOptions _defaultOptions;
-    private readonly BalancerOptions _balancer;
+    private static Cluster Balancer => Cluster.Data;
 
     private static readonly string[] NotForwardedWebSocketHeaders = ["Connection", "Host", "Upgrade", "Sec-WebSocket-Key", "Sec-WebSocket-Version"];
 
@@ -22,7 +24,7 @@ public class LoadBalaceMiddleware
         {
             SendChunked = false
         };
-        _balancer = new BalancerOptions
+        Cluster.Data = new Cluster
         {
             Nodes = _conf.GetSection("Proxy:Destination").Get<List<Node>>()
         };
@@ -50,7 +52,7 @@ public class LoadBalaceMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        if (_conf.GetSection("Role").Get<string>() != "Balancer")
+        if (_conf.GetSection("Role").Get<string>() != Utils.Balancer)
         {
             await _next(context);
             return;
@@ -83,17 +85,17 @@ public class LoadBalaceMiddleware
     private Node ResolveNode()
     {
         var nodes = new List<Node>();
-        for (var i = 0; i < _balancer.Nodes.Count; i++)
+        for (var i = 0; i < Balancer.Nodes.Count; i++)
         {
-            var node = _balancer.Nodes[i];
+            var node = Balancer.Nodes[i];
             if (node.Alive || node.LastResponse < DateTimeOffset.Now.AddMinutes(-RecoveryMinutes))
                 nodes.Add(node);
         }
-        _balancer.AvailableNodes = nodes;
-        var result = _balancer.Index >= 0 && _balancer.Index < _balancer.AvailableNodes.Count
-            ? _balancer.AvailableNodes[_balancer.Index] : _balancer.AvailableNodes[0];
-        _balancer.Index++;
-        _balancer.Index %= _balancer.AvailableNodes.Count;
+        Balancer.AvailableNodes = nodes;
+        var result = Balancer.Index >= 0 && Balancer.Index < Balancer.AvailableNodes.Count
+            ? Balancer.AvailableNodes[Balancer.Index] : Balancer.AvailableNodes[0];
+        Balancer.Index++;
+        Balancer.Index %= Balancer.AvailableNodes.Count;
         return result;
     }
 
@@ -271,13 +273,14 @@ public class ProxyOptions
     }
 }
 
-public class BalancerOptions
+public class Cluster
 {
     public List<Node> AvailableNodes { get; set; }
     public List<Node> Nodes { get; set; }
     public int Index { get; set; }
     public string Policy { get; set; }
     public Dictionary<int, long> Score { get; set; }
+    public static Cluster Data { get; set; }
 }
 
 public class Node
