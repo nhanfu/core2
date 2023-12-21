@@ -4,9 +4,11 @@ using Core.Services;
 using Core.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Core.Controllers;
 
+[Authorize]
 public class UserController(UserService _userSvc, TaskService _taskSvc) : ControllerBase
 {
     [AllowAnonymous]
@@ -20,7 +22,8 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
         login.CompanyName ??= tenant;
         return await _userSvc.SignInAsync(login);
     }
-
+    
+    [AllowAnonymous]
     [HttpPost("api/[Controller]/SignOut")]
     public Task<bool> SignOutAsync([FromBody] Token token)
     {
@@ -138,6 +141,11 @@ public class UserController(UserService _userSvc, TaskService _taskSvc) : Contro
     [HttpPost("api/GetUserActive")]
     public IEnumerable<User> GetUserActive()
     {
+        // Need to summarize info from all clusters
         return _taskSvc.GetUserActive();
     }
+
+    [AllowAnonymous]
+    [HttpPost("SetStringToStorage")]
+    public Task SetStringToStorage([FromBody] string key, [FromBody] string value) => _userSvc.SetStringToStorage(key, value);
 }

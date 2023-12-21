@@ -6,6 +6,7 @@ using Core.ViewModels;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Newtonsoft.Json;
 using PuppeteerSharp;
@@ -36,6 +37,7 @@ public class UserService
     private readonly IConfiguration _cfg;
     private readonly IDistributedCache _cache;
     private readonly IWebHostEnvironment _host;
+    private readonly IHttpClientFactory _httpClientFactory;
 
     public string UserId { get; set; }
     public string UserName { get; set; }
@@ -62,12 +64,14 @@ public class UserService
     private const string EnvClaim = "Environment";
     private const string TenantClaim = "TenantCode";
 
-    public UserService(IHttpContextAccessor ctx, IConfiguration conf, IDistributedCache cache, IWebHostEnvironment host)
+    public UserService(IHttpContextAccessor ctx, IConfiguration conf,
+        IDistributedCache cache, IWebHostEnvironment host, IHttpClientFactory httpClientFactory)
     {
         _cfg = conf ?? throw new ArgumentNullException(nameof(conf));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache)); ;
         _host = host ?? throw new ArgumentNullException(nameof(host));
         _ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
+        _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         ExtractClaims();
     }
 
@@ -113,6 +117,8 @@ public class UserService
     private const string PassPhrase = "d7a9220a-6949-44c8-a702-789587e536cb";
     private const string BranchIdClaim = "BranchId";
     private const string ForwardedIP = "X-Forwarded-For";
+    private const string CacheHost = "Cache";
+    public const string Hub = "Hub";
 
     public string GetRemoteIpAddress(HttpContext context)
     {
@@ -326,6 +332,7 @@ public class UserService
             UserName = userName,
             ConnKey = connKey,
             CachedConnStr = token.CachedConnStr,
+            Env = env,
         };
         var (updatedUser, roles) = await GetUserByLogin(login);
         return await GetUserToken(updatedUser, roles, login, token.RefreshToken);
@@ -346,14 +353,15 @@ public class UserService
         return tenantEnv.ConnStr;
     }
 
-    public async Task<SqlQueryResult> ExecJs(SqlViewModel vm)
+    public async Task<SqlQueryResult> RunJs(SqlViewModel vm)
     {
         SqlQueryResult result = new();
         var engine = new TopazEngine();
         engine.SetValue("JSON", new JSONObject());
         engine.AddType<HttpClient>("HttpClient");
         engine.AddNamespace("System");
-        engine.AddNamespace("Core");
+        engine.AddNamespace("Core.ViewModels");
+        engine.AddNamespace("Core.Models");
         engine.AddExtensionMethods(typeof(Enumerable));
         engine.AddExtensionMethods(typeof(IEnumerableCore));
         var claims = _ctx.HttpContext.User?.Claims;
@@ -485,6 +493,7 @@ public class UserService
 
     public async Task<int> SavePatch(PatchVM vm)
     {
+        vm.CachedConnStr = await GetConnStrFromKey(vm.ConnKey);
         var canWrite = await HasWritePermission(vm);
         if (!canWrite) throw new ApiException($"Unauthorized access on \"{vm.Table}\"")
         {
@@ -493,20 +502,60 @@ public class UserService
         var cmd = GetCmd(vm);
         var connStr = vm.CachedConnStr ?? await GetConnStrFromKey(vm.ConnKey);
         var result = await RunSqlCmd(connStr, cmd);
-        await RunUserSvc(new SqlViewModel
+        var sql = new SqlViewModel
         {
-            ComId = vm.Table, Action = "AfterPatch", Params = vm.ToJson()
-        }, shouldThrow: false);
+            CachedConnStr = vm.CachedConnStr,
+            ComId = vm.Table,
+            Action = "AfterPatch",
+        };
+        var sv = await GetService(sql);
+        if (sv is not null)
+        {
+            sql.Params = vm.ToJson();
+            await RunJs(sql);
+        }
+        await TryInvalidCacheComponent(sql);
         return result;
+    }
+
+    private async Task TryInvalidCacheComponent(SqlViewModel sql)
+    {
+        if (sql?.ComId != nameof(Component)) return;
+        var p = JsonConvert.DeserializeObject<PatchVM>(sql.Params);
+        var id = p.Id.OldVal ?? p.Id.Value;
+        await _cache.RemoveAsync("com_" + id);
+        await NotifyCacheChange("com_" + id, null, sql.CachedConnStr);
+    }
+
+    public async Task NotifyCacheChange(string key, string value, string connStr)
+    {
+        var client = _httpClientFactory.CreateClient();
+        var clusterQuery = $"select * from MasterData where Name = 'System/Clusters'";
+        var cluster = await ReadDsAs<MasterData>(clusterQuery, connStr);
+        if (cluster is null) return;
+        await cluster.Description.Split(";").Where(x => x != _ctx.HttpContext.Request.Host.Value)
+        .ForEachAsync(async host =>
+        {
+            var uri = Path.Combine(host, nameof(SetStringToStorage));
+            var request = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(new { key, value }), Encoding.UTF8, Utils.ApplicationJson)
+            };
+            var response = await client.SendAsync(request);
+        });
+    }
+
+    public async Task SetStringToStorage(string key, string value)
+    {
+        if (value is null) await _cache.RemoveAsync(key);
+        else await _cache.SetStringAsync(key, value);
     }
 
     private async Task<bool> HasWritePermission(PatchVM vm)
     {
         if (vm.ByPassPerm) return true;
         bool writePerm = false;
-        var connStr = vm.CachedConnStr ?? await GetConnStrFromKey(vm.ConnKey);
-        vm.CachedConnStr = connStr;
-        var allRights = vm.ByPassPerm ? [] : await GetEntityPerm(vm.Table, recordId: null, connStr);
+        var allRights = vm.ByPassPerm ? [] : await GetEntityPerm(vm.Table, recordId: null, vm.CachedConnStr);
         var idField = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
         var oldId = idField?.OldVal;
         if (oldId is null)
@@ -516,7 +565,7 @@ public class UserService
         else
         {
             var origin = @$"select t.* from [{vm.Table}] as t where t.Id = '{oldId}'";
-            var ds = await ReadDataSet(origin, connStr);
+            var ds = await ReadDataSet(origin, vm.CachedConnStr);
             var originRow = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0] : null;
             var isOwner = Utils.IsOwner(originRow, UserId, RoleIds);
             writePerm = isOwner || allRights.Any(x => x.CanWriteAll);
@@ -668,7 +717,7 @@ public class UserService
             throw new ArgumentException("Parameters must NOT contains sql keywords");
         }
         vm.JsScript = com.Query;
-        var jsRes = await ExecJs(vm);
+        var jsRes = await RunJs(vm);
         if (jsRes.Result != null)
         {
             return jsRes.Result;
@@ -766,20 +815,16 @@ public class UserService
         return permissions;
     }
 
-    public async Task<object> RunUserSvc(SqlViewModel vm, bool shouldThrow = true)
+    public async Task<object> RunUserSvc(SqlViewModel vm)
     {
         vm.CachedConnStr = await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        var sv = await GetService(vm);
-        if (sv is null)
-        {
-            if (shouldThrow) throw new ApiException($"Service \"{vm.ComId} - {vm.Action}\" NOT found")
+        var sv = await GetService(vm)
+            ?? throw new ApiException($"Service Id - \"{vm.SvcId}\", ComId \"{vm.ComId}\" - Action \"{vm.Action}\" NOT found")
             {
                 StatusCode = HttpStatusCode.NotFound
             };
-            return null;
-        }
         vm.JsScript = sv.Content;
-        var jsRes = await ExecJs(vm);
+        var jsRes = await RunJs(vm);
         if (jsRes.Result is not null)
         {
             return jsRes.Result;

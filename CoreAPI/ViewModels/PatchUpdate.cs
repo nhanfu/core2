@@ -13,6 +13,7 @@ namespace Core.ViewModels
         public string ConnKey { get; set; } = Utils.ConnKey;
         public string CachedConnStr { get; internal set; }
         public List<PatchDetail> Changes { get; set; } = [];
+        public PatchDetail Id => Changes.FirstOrDefault(x => x.Field == Utils.IdField);
     }
 
     public class PatchDetail

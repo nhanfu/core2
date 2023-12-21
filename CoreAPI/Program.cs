@@ -6,6 +6,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.IO.Compression;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var conf = builder.Configuration;
+services.AddHttpClient();
 services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 {
     builder.AllowAnyOrigin()

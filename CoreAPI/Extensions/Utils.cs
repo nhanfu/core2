@@ -9,6 +9,7 @@ namespace Core.Extensions
 {
     public static partial class Utils
     {
+        public const string ApplicationJson = "application/json";
         public const string QuestionMark = "?";
         public const string Amp = "&";
         public const string IdField = "Id";
