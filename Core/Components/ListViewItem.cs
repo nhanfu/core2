@@ -327,6 +327,8 @@ namespace Core.Components
             PatchModel.AddRange(dirtyPatch);
             return new PatchVM
             {
+                CacheName = CacheName,
+                QueueName = QueueName,
                 Changes = dirtyPatch,
                 Table = ListView.GuiInfo.RefName,
                 ConnKey = ListView.ConnKey ?? Client.ConnKey,

@@ -105,6 +105,7 @@ public class LoadBalaceMiddleware
         context.Request.Headers["X-Forwarded-Proto"] = context.Request.Protocol.ToString();
         int port = context.Request.Host.Port ?? (context.Request.IsHttps ? 443 : 80);
         context.Request.Headers["X-Forwarded-Port"] = port.ToString();
+        context.Request.Headers["X-Forwarded-To-Port"] = destination.Port.ToString();
 
         var chost = (destination == null) ? options.Host : destination.Host;
         var cport = (destination == null) ? options.Port : destination.Port;
@@ -132,7 +133,7 @@ public class LoadBalaceMiddleware
         }
 
         var wsScheme = string.Equals(destination.Scheme, "https", StringComparison.OrdinalIgnoreCase) ? "wss" : "ws";
-        string url = GetUri(context, host, port, wsScheme);
+        string url = UserService.GetUri(host, port, wsScheme, $"{context.Request.PathBase}{context.Request.Path}{context.Request.QueryString}");
 
         if (_options.WebSocketKeepAliveInterval.HasValue)
         {
@@ -198,7 +199,7 @@ public class LoadBalaceMiddleware
         }
 
         requestMessage.Headers.Host = host;
-        string uriString = GetUri(context, host, port, scheme);
+        string uriString = UserService.GetUri(host, port, scheme, $"{context.Request.PathBase}{context.Request.Path}{context.Request.QueryString}");
         requestMessage.RequestUri = new Uri(uriString);
         requestMessage.Method = new HttpMethod(context.Request.Method);
         using var responseMessage = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, context.RequestAborted);
@@ -229,19 +230,6 @@ public class LoadBalaceMiddleware
             }
             context.Response.Headers.Remove("transfer-encoding");
         }
-    }
-
-    private static string GetUri(HttpContext context, string host, int? port, string scheme)
-    {
-        var urlPort = "";
-        if (port.HasValue
-            && !(port.Value == 443 && "https".Equals(scheme, StringComparison.InvariantCultureIgnoreCase))
-            && !(port.Value == 80 && "http".Equals(scheme, StringComparison.InvariantCultureIgnoreCase))
-            )
-        {
-            urlPort = ":" + port.Value;
-        }
-        return $"{scheme}://{host}{urlPort}{context.Request.PathBase}{context.Request.Path}{context.Request.QueryString}";
     }
 }
 

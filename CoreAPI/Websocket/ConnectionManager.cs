@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using Core.Extensions;
+using System.Collections.Concurrent;
 using System.Net.WebSockets;
 
 namespace Core.Websocket
@@ -13,6 +14,18 @@ namespace Core.Websocket
             return _sockets.FirstOrDefault(p => p.Key == id).Value;
         }
 
+        public IEnumerable<WebSocket> GetSocketByQueue(string queueName)
+        {
+            var hasQueue  = _queues.TryGetValue(queueName, out var deviceIds);
+            if (!hasQueue) yield break;
+            foreach (var item in deviceIds)
+            {
+                var hasDevice = _sockets.TryGetValue(item, out var device);
+                if (!hasDevice) continue;
+                yield return device;
+            }
+        }
+
         public ConcurrentDictionary<string, WebSocket> GetAll()
         {
             return _sockets;
@@ -23,32 +36,32 @@ namespace Core.Websocket
             return _sockets.FirstOrDefault(p => p.Value == socket).Key;
         }
 
-        public void AddSocket(WebSocket socket, string userId, List<string> roleIds, string ip)
+        public string AddSocket(WebSocket socket, string userId, List<string> roleIds, string ip)
         {
-            _sockets.TryAdd($"{userId}/{string.Join(",", roleIds)}/{Guid.NewGuid()}/{ip}", socket);
+            var deviceKey = $"{userId}/{roleIds.Combine()}/{ip}/{Guid.NewGuid()}";
+            _sockets.TryAdd(deviceKey, socket);
+            return deviceKey;
         }
 
-        public void SubScribeQueue(string userId, List<string> roleIds, string ip, string queueName)
+        public void SubScribeQueue(string deviceKey, string queueName)
         {
-            var key = $"{userId}/{string.Join(",", roleIds)}/{Guid.NewGuid()}/{ip}";
-            var hasVal = _queues.TryGetValue(key, out var value);
-            if (hasVal && !value.Contains(queueName))
+            var hasVal = _queues.TryGetValue(queueName, out var devices);
+            if (hasVal && !devices.Contains(deviceKey))
             {
-                value.Add(queueName);
+                devices.Add(deviceKey);
             }
-            else
+            else if (!hasVal)
             {
-                _queues[key] = [queueName];
+                _queues[queueName] = [deviceKey];
             }
         }
 
-        public void UnsubScribeQueue(string userId, List<string> roleIds, string ip, string queueName)
+        public void UnsubScribeQueue(string deviceKey, string queueName)
         {
-            var key = $"{userId}/{string.Join(",", roleIds)}/{Guid.NewGuid()}/{ip}";
-            var hasVal = _queues.TryGetValue(key, out var value);
-            if (hasVal)
+            var hasVal = _queues.TryGetValue(queueName, out var devices);
+            if (hasVal && devices.Contains(deviceKey))
             {
-                value.Remove(queueName);
+                devices.Remove(deviceKey);
             }
         }
 

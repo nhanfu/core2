@@ -1,5 +1,6 @@
 ﻿using System.Net.WebSockets;
 using System.Security.Claims;
+using System.Text;
 using Core.Extensions;
 using Core.Services;
 
@@ -24,12 +25,13 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
         var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
         var roleIds = principal.Claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).ToList();
         var ip = UserService.GetRemoteIpAddress(context);
-        await WebSocketHandler.OnConnected(socket, userId, roleIds, context.Connection.RemoteIpAddress.ToString());
-        await Receive(socket, userId, roleIds, ip, async (userId, roleIds, ip, result, buffer) =>
+        var deviceKey = WebSocketHandler.OnConnected(socket, userId, roleIds, context.Connection.RemoteIpAddress.ToString());
+        await socket.SendAsync(Encoding.ASCII.GetBytes(deviceKey), WebSocketMessageType.Text, true, CancellationToken.None);
+        await Receive(socket, deviceKey, async (deviceKey, result, buffer) =>
         {
             if (result.MessageType == WebSocketMessageType.Text)
             {
-                await WebSocketHandler.ReceiveAsync(userId, roleIds, ip, socket, result, buffer);
+                await WebSocketHandler.ReceiveAsync(deviceKey, socket, buffer);
                 return;
             }
             else if (result.MessageType == WebSocketMessageType.Close)
@@ -40,13 +42,13 @@ public class WebSocketManagerMiddleware(RequestDelegate next, WebSocketService w
         });
     }
 
-    private static async Task Receive(WebSocket socket, string userId, List<string> roleIds, string ip, Action<string, List<string>, string, WebSocketReceiveResult, byte[]> handleMessage)
+    private static async Task Receive(WebSocket socket, string deviceKey, Action<string, WebSocketReceiveResult, byte[]> handleMessage)
     {
         var buffer = new byte[1024 * 4];
         while (socket.State == WebSocketState.Open)
         {
             var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            handleMessage(userId, roleIds, ip, result, buffer);
+            handleMessage(deviceKey, result, buffer);
         }
     }
 }

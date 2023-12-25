@@ -2,6 +2,7 @@
 using Core.Clients;
 using Core.Components;
 using Core.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,7 +105,7 @@ namespace Core.Extensions
             */
         }
 
-        public static string ToJson(this object value) => JSON.Stringify(value);
+        public static string ToJson<T>(this T value) => JsonConvert.SerializeObject(value);
 
         public static object EncodeProperties(this object value)
         {
@@ -468,6 +469,18 @@ namespace Core.Extensions
             }
 
             return null;
+        }
+
+        public static T Parse<T>(this string value) where T : class
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(value);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public static T? TryParse<T>(this string value) where T : struct

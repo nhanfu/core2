@@ -8,6 +8,7 @@ namespace Core.ViewModels
         public string FeatureId { get; set; }
         public string ComId { get; set; }
         public string QueueName { get; set; }
+        public string CacheName { get; set; }
         public string Table { get; set; }
         public string TenantCode { get; set; }
         public string ConnKey { get; set; } = Utils.ConnKey;

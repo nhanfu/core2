@@ -8,6 +8,7 @@ using CoreAPI.ViewModels;
 using Hangfire;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -33,7 +34,8 @@ namespace Core.Services;
 
 public class UserService
 {
-    private const string ContentType = "Content-Type";
+    private HttpRequest _request;
+    public static int Port;
     private const string NotFoundFile = "wwwRoot/404.html";
     private const string href = "href";
     private const string src = "src";
@@ -77,14 +79,16 @@ public class UserService
         _cache = cache ?? throw new ArgumentNullException(nameof(cache)); ;
         _host = host ?? throw new ArgumentNullException(nameof(host));
         _ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
-        _socketSvc = socket;
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-        ExtractClaims();
+        _socketSvc = socket ?? throw new ArgumentNullException(nameof(socket));
+        _request = _ctx.HttpContext.Request;
+        ExtractMeta();
     }
 
-    private void ExtractClaims()
+    private void ExtractMeta()
     {
-        var claims = _ctx.HttpContext.User?.Claims;
+        Port = ParsePort(_request);
+        var claims = _ctx.HttpContext?.User?.Claims;
         if (claims is null) return;
         BranchId = claims.FirstOrDefault(x => x.Type == BranchIdClaim)?.Value;
         UserId = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -415,6 +419,7 @@ public class UserService
                 TSqlTokenType.Create, TSqlTokenType.Drop, TSqlTokenType.Alter,
                 TSqlTokenType.Truncate, TSqlTokenType.MultilineComment, TSqlTokenType.SingleLineComment
         ];
+
     public bool HasSideEffect(string sql, params TSqlTokenType[] allowCmds)
     {
         var finalCmd = SideEffectCmd.Except(allowCmds).ToArray();
@@ -507,64 +512,116 @@ public class UserService
             StatusCode = HttpStatusCode.Unauthorized
         };
         var cmd = GetCmd(vm);
-        var connStr = vm.CachedConnStr ?? await GetConnStrFromKey(vm.ConnKey);
-        var result = await RunSqlCmd(connStr, cmd);
+        var result = await RunSqlCmd(vm.CachedConnStr, cmd);
+        await TryNotifyChange(vm);
+        await AfterPatch(vm);
+        return result;
+    }
+
+    private async Task AfterPatch(PatchVM vm)
+    {
         var sql = new SqlViewModel
         {
             CachedConnStr = vm.CachedConnStr,
             QueueName = vm.QueueName,
+            ComId = vm.Table,
             Action = "AfterPatch",
         };
         var sv = await GetService(sql);
         if (sv is not null)
         {
             sql.Params = vm.ToJson();
-            await RunJs(sql);
-        }
-        await TryNotifyChange(sql);
-        return result;
-    }
-
-    private async Task TryNotifyChange(SqlViewModel sql)
-    {
-        var p = JsonConvert.DeserializeObject<PatchVM>(sql.Params);
-        var id = p.Id.OldVal ?? p.Id.Value;
-        await InvalidCacheInternal(sql.QueueName + id, null, sql.CachedConnStr);
-        await NotifyDeviceInternal(new MQEvent { Id = Id.NewGuid(), Message = sql.Params, QueueName = sql.QueueName }, sql);
-    }
-
-    public async Task NotifyDeviceInternal(MQEvent e, SqlViewModel sql)
-    {
-        NotifyDevice(e);
-        var client = _httpClientFactory.CreateClient();
-        var clusters = await GetClusters(role: "API", sql.CachedConnStr);
-        await clusters.Where(x => x.Host != _ctx.HttpContext.Request.Host.Host && x.Port != _ctx.HttpContext.Request.Host.Port)
-        .ForEachAsync(async x =>
-        {
-            var uri = Path.Combine(x.Host, nameof(NotifyDevice));
-            var request = new HttpRequestMessage(HttpMethod.Post, uri)
+            sql.JsScript = sv.Content;
+            try
             {
-                Content = new StringContent(e.ToJson(), Encoding.UTF8, Utils.ApplicationJson)
-            };
-            CopyHeaders(request);
-            var response = await client.SendAsync(request);
-        });
-    }
-
-    private void CopyHeaders(HttpRequestMessage request)
-    {
-        foreach (var header in _ctx.HttpContext.Request.Headers)
-        {
-            if (!request.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray()) && request.Content != null)
+                await RunJs(sql);
+            }
+            catch
             {
-                request.Content?.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray());
+
             }
         }
     }
 
-    public void NotifyDevice(MQEvent e)
+    public async Task TryNotifyChange(PatchVM vm)
     {
-        BackgroundJob.Enqueue(() => SendMessageToSubscribers(e));
+        await TryInvalidCacheInternal(vm.CacheName, null, vm.CachedConnStr);
+        await TryNotifyDeviceInternal(new MQEvent
+        {
+            Id = Id.NewGuid(),
+            Message = vm.ToJson(),
+            QueueName = vm.QueueName
+        }, vm.CachedConnStr);
+    }
+
+    public async Task TryNotifyDeviceInternal(MQEvent e, string connStr)
+    {
+        if (e is null || e.QueueName.IsNullOrWhiteSpace()) return;
+        await NotifyDevice(e);
+        var clusters = await GetClusters(role: "API", connStr);
+        try
+        {
+            await NotifyOtherClusters(clusters, nameof(NotifyDevice), e.ToJson());
+        }
+        catch
+        {
+        }
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "<Pending>")]
+    private Task NotifyOtherClusters(Cluster[] clusters, string path, string json)
+    {
+        var request = _ctx.HttpContext.Request;
+        var client = _httpClientFactory.CreateClient();
+        var otherClusters = GetOtherClusters(clusters, _request.Host.Value, Port);
+        var tasks = otherClusters.Select(x =>
+        {
+            var uri = GetUri(x.Host, x.Port, x.Schema, "/" + path);
+            var request = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = new StringContent(json, Encoding.UTF8, Utils.ApplicationJson)
+            };
+            CopyHeaders(request, HeaderNames.ContentLength, HeaderNames.ContentType);
+            client.Timeout = TimeSpan.FromSeconds(5);
+            return client.SendAsync(request);
+        });
+        return Task.WhenAll(tasks);
+    }
+
+    public int ParsePort(HttpRequest request)
+    {
+        if (Port != 0) return Port;
+        var parsePort = request.Headers.TryGetValue("X-Forwarded-To-Port", out var strPort);
+        if (parsePort)
+        {
+            return strPort.ToString().TryParse<int>();
+        }
+        return 0;
+    }
+
+    public static string GetUri(string host, int? port, string scheme, string path)
+    {
+        var urlPort = "";
+        if (port.HasValue
+            && !(port.Value == 443 && "https".Equals(scheme, StringComparison.InvariantCultureIgnoreCase))
+            && !(port.Value == 80 && "http".Equals(scheme, StringComparison.InvariantCultureIgnoreCase))
+            )
+        {
+            urlPort = ":" + port.Value;
+        }
+        return $"{scheme}://{host}{urlPort}{path}";
+    }
+
+    public void CopyHeaders(HttpRequestMessage request, params string[] excepts)
+    {
+        foreach (var headerKey in _ctx.HttpContext.Request.Headers.Keys.Except(excepts))
+        {
+            var headerValue = _ctx.HttpContext.Request.Headers[headerKey].ToArray();
+            if (!request.Headers.TryAddWithoutValidation(headerKey, headerValue) && request.Content != null)
+            {
+                request.Content?.Headers.TryAddWithoutValidation(headerKey, headerValue);
+            }
+        }
     }
 
     private async Task<Cluster[]> GetClusters(string role, string connStr)
@@ -582,21 +639,28 @@ public class UserService
         return clusters;
     }
 
-    public async Task InvalidCacheInternal(string key, string value, string connStr)
+    public async Task TryInvalidCacheInternal(string key, string value, string connStr)
     {
+        if (key.IsNullOrWhiteSpace()) return;
         await _cache.RemoveAsync(key);
-        var client = _httpClientFactory.CreateClient();
         var clusters = await GetClusters(role: "API", connStr);
-        await clusters.Where(x => x.Host != _ctx.HttpContext.Request.Host.Host && x.Port != _ctx.HttpContext.Request.Host.Port)
-        .ForEachAsync(async x =>
+        try
         {
-            var uri = Path.Combine(x.Host, nameof(SetStringToStorage));
-            var request = new HttpRequestMessage(HttpMethod.Post, uri)
-            {
-                Content = new StringContent(JsonConvert.SerializeObject(new { key, value }), Encoding.UTF8, Utils.ApplicationJson)
-            };
-            var response = await client.SendAsync(request);
-        });
+            await NotifyOtherClusters(clusters, nameof(SetStringToStorage), new { key, value }.ToJson());
+        }
+        catch
+        {
+        }
+    }
+
+    private static Cluster[] GetOtherClusters(Cluster[] clusters, string host, int port)
+    {
+        var res = new List<Cluster>();
+        for (int i = 0; i < clusters.Length; i++)
+        {
+            if (clusters[i].Host != host || clusters[i].Port != port) res.Add(clusters[i]);
+        }
+        return [.. res];
     }
 
     public async Task SetStringToStorage(string key, string value)
@@ -883,29 +947,33 @@ public class UserService
         {
             return jsRes.Result;
         }
-        return await GetResultFromQuery(vm, vm.CachedConnStr, jsRes);
+        return await GetResultFromQuery(vm, sv.Annonymous ? sv.ConnKey : vm.CachedConnStr, jsRes);
     }
 
     private async Task<Models.Services> GetService(SqlViewModel vm)
     {
         if (vm is null || vm.SvcId.IsNullOrWhiteSpace() && (vm.Action.IsNullOrWhiteSpace() || vm.ComId.IsNullOrWhiteSpace()))
-        {
-            throw new ApiException("Service can NOT be identified due to lack of Id or action") { StatusCode = HttpStatusCode.BadRequest };
-        }
-
-        var cacheSv = await _cache.GetStringAsync($"{nameof(Services)}{vm.SvcId}");
-        Models.Services sv;
+            throw new ApiException("Service can NOT be identified due to lack of Id or action")
+            {
+                StatusCode = HttpStatusCode.BadRequest
+            };
+        var key = $"{nameof(Services)}_{vm.ComId}_{vm.Action}_{vm.SvcId}";
+        var cacheSv = await _cache.GetStringAsync(key);
         if (cacheSv != null)
         {
-            sv = JsonConvert.DeserializeObject<Models.Services>(cacheSv);
-            EnsureSvPermission(sv);
-            return sv;
+            var res = cacheSv.TryParse<Models.Services>();
+            if (res is not null)
+            {
+                EnsureSvPermission(res);
+                return res;
+            }
         }
         var query = @$"select * from Services
                 where (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') 
                 and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
-        sv = await ReadDsAs<Models.Services>(query, vm.CachedConnStr);
-        await _cache.SetStringAsync($"{nameof(Services)}{vm.SvcId}", JsonConvert.SerializeObject(sv), Utils.CacheTTL);
+        var sv = await ReadDsAs<Models.Services>(query, vm.CachedConnStr);
+        if (sv is null) return null;
+        await _cache.SetStringAsync(key, sv.ToJson(), Utils.CacheTTL);
         EnsureSvPermission(sv);
         return sv;
     }
@@ -1486,7 +1554,7 @@ public class UserService
         meta.SetAttributeValue("name", "startupSvc");
         meta.SetAttributeValue("content", page.SvcId);
         htmlDoc.DocumentNode.SelectSingleNode("//head")?.AppendChild(meta);
-        reponse.Headers.TryAdd(ContentType, Utils.GetMimeType("html"));
+        reponse.Headers.TryAdd(HeaderNames.ContentType, Utils.GetMimeType("html"));
         reponse.StatusCode = (int)HttpStatusCode.OK;
         await reponse.WriteAsync(htmlDoc.DocumentNode.OuterHtml);
     }
@@ -1507,8 +1575,8 @@ public class UserService
         var response = _ctx.HttpContext.Response;
         if (!response.HasStarted)
         {
-            response.Headers.TryAdd(ContentType, contentType);
-            response.Headers.TryAdd("Content-Encoding", "gzip");
+            response.Headers.TryAdd(HeaderNames.ContentType, contentType);
+            response.Headers.TryAdd(HeaderNames.ContentEncoding, "gzip");
             response.StatusCode = (int)code;
         }
         var html = await File.ReadAllTextAsync(file, encoding: Encoding.UTF8);
@@ -1672,9 +1740,10 @@ public class UserService
         await _socketSvc.SendMessageToSocketAsync(socket, entity.ToJson());
     }
 
-    public async Task SendMessageToSubscribers(MQEvent task)
+    public async Task NotifyDevice(MQEvent e)
     {
-        await _socketSvc.SendMessageToSubscribers(task.ToJson(), task.QueueName);
+        if (e is null || e.QueueName is null) return;
+        await _socketSvc.SendMessageToSubscribers(e.ToJson(), e.QueueName);
     }
 
     private static async Task<Chat> GetChatGPTResponse(Chat entity)

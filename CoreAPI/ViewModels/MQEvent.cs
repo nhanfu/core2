@@ -1,6 +1,7 @@
 ﻿namespace CoreAPI.ViewModels;
 public class MQEvent
 {
+    public string DeviceKey { get; set; }
     public string QueueName { get; set; }
     public string Action { get; set; }
     public string Id { get; set; }

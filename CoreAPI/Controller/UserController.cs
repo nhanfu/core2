@@ -145,14 +145,13 @@ public class UserController(UserService _userSvc) : ControllerBase
         return _userSvc.GetUserActive();
     }
 
-    [AllowAnonymous]
     [HttpPost("SetStringToStorage")]
     public Task SetStringToStorage([FromBody] string key, [FromBody] string value) => _userSvc.SetStringToStorage(key, value);
 
     [HttpPost("NotifyDevice")]
-    public ValueTask<bool> NotifyDevice([FromBody] MQEvent e) 
+    public Task<bool> NotifyDevice([FromBody] MQEvent e)
     {
-        _userSvc.NotifyDevice(e);
-        return new ValueTask<bool>(true);
+        Task.Run(async () => await _userSvc.NotifyDevice(e));
+        return Task.FromResult(true);
     }
 }

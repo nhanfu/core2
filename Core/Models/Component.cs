@@ -270,6 +270,7 @@ namespace Core.Models
         public string QueueName { get; set; }
         public string ConnKey { get; set; }
         public bool ShouldSaveText { get; set; }
+        public string CacheName { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
         public virtual Entity Reference { get; set; }

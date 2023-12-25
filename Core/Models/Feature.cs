@@ -55,6 +55,7 @@ namespace Core.Models
         public bool Signed { get; set; }
         public bool IsPortal { get; set; }
         public string QueueName { get; set; }
+        public string CacheName { get; set; }
 
         public virtual Entity Entity { get; set; }
         public virtual Feature Parent { get; set; }

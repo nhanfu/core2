@@ -73,10 +73,10 @@ namespace Core.Extensions
             var prop = type.BaseType.GetProperty(propertyName);
             prop?.SetValue(instance, value, null);
         }
-        private static JsonSerializerSettings settings = new JsonSerializerSettings
+
+        private static readonly JsonSerializerSettings settings = new()
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
 
         public static string ToJson(this object value) => JsonConvert.SerializeObject(value, settings);
@@ -89,7 +89,7 @@ namespace Core.Extensions
             }
             catch
             {
-                return default(T);
+                return default;
             }
         }
 

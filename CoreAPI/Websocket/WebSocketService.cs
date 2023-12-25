@@ -39,10 +39,9 @@ namespace Core.Websocket
         private readonly string FCM_API_KEY = configuration["FCM_API_KEY"];
         private readonly string FCM_SENDER_ID = configuration["FCM_SENDER_ID"];
 
-        public virtual Task OnConnected(WebSocket socket, string userId, List<string> roleIds, string ip)
+        public virtual string OnConnected(WebSocket socket, string userId, List<string> roleIds, string ip)
         {
-            ConnectionManager.AddSocket(socket, userId, roleIds, ip);
-            return Task.CompletedTask;
+            return ConnectionManager.AddSocket(socket, userId, roleIds, ip);
         }
 
         public virtual async Task OnDisconnected(WebSocket socket)
@@ -97,12 +96,12 @@ namespace Core.Websocket
 
         public async Task SendMessageToSubscribers(string message, string queueName)
         {
-            var users = ConnectionManager.GetAll().Where(x => !x.Key.Contains(queueName));
-            foreach (var pair in users)
+            var connections = ConnectionManager.GetSocketByQueue(queueName);
+            foreach (var socket in connections)
             {
-                if (pair.Value.State == WebSocketState.Open)
+                if (socket.State == WebSocketState.Open)
                 {
-                    await SendMessageAsync(pair.Value, message);
+                    await SendMessageAsync(socket, message);
                 }
             }
         }
@@ -147,22 +146,23 @@ namespace Core.Websocket
             await Task.WhenAll(realtimeTasks);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
-        public async Task ReceiveAsync(string userId, List<string> roleIds, string ip, WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
+        public async Task ReceiveAsync(string deviceKey, WebSocket socket, byte[] buffer)
         {
             var text = Encoding.UTF8.GetString(buffer);
             var mq = text.TryParse<MQEvent>();
             if (mq is null)
             {
-                await socket.SendAsync(Encoding.ASCII.GetBytes("connected"), WebSocketMessageType.Text, true, CancellationToken.None);
+                await socket.SendAsync(Encoding.ASCII.GetBytes(deviceKey), WebSocketMessageType.Text, true, CancellationToken.None);
             }
             else if (mq.Action == "Subscribe")
             {
-                ConnectionManager.SubScribeQueue(userId, roleIds, ip, mq.QueueName);
+                ConnectionManager.SubScribeQueue(deviceKey, mq.QueueName);
+                await socket.SendAsync(Encoding.ASCII.GetBytes(mq.Action), WebSocketMessageType.Text, true, CancellationToken.None);
             }
             else if (mq.Action == "Unsubscribe")
             {
-                ConnectionManager.UnsubScribeQueue(userId, roleIds, ip, mq.QueueName);
+                ConnectionManager.UnsubScribeQueue(deviceKey, mq.QueueName);
+                await socket.SendAsync(Encoding.ASCII.GetBytes(mq.Action), WebSocketMessageType.Text, true, CancellationToken.None);
             }
         }
     }

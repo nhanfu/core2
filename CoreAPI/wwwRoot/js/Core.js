@@ -924,7 +924,8 @@ Bridge.assembly("Core", function ($asm, globals) {
 
     Bridge.define("Core.Clients.WebSocketClient", {
         fields: {
-            _socket: null
+            _socket: null,
+            deviceKey: null
         },
         ctors: {
             ctor: function (url) {
@@ -943,13 +944,17 @@ Bridge.assembly("Core", function ($asm, globals) {
                     System.Console.WriteLine(e);
                 });
 
-                this._socket.onmessage = Bridge.fn.combine(this._socket.onmessage, function (e) {
+                this._socket.onmessage = Bridge.fn.combine(this._socket.onmessage, Bridge.fn.bind(this, function (e) {
                     var $t;
                     var responseStr = Bridge.toString(e.data);
-                    var objRs = Bridge.unbox(JSON.parse(responseStr));
+                    var objRs = Core.Extensions.Utils.Parse(Core.Models.MQEvent, responseStr);
+                    if (objRs == null) {
+                        this.deviceKey = responseStr;
+                        return;
+                    }
                     var queueName = objRs.QueueName;
                     window.dispatchEvent(new CustomEvent(objRs.QueueName, ($t = new Object(), $t.detail = objRs, $t)));
-                });
+                }));
                 this._socket.binaryType = "arraybuffer";
             }
         },
@@ -1276,7 +1281,29 @@ Bridge.assembly("Core", function ($asm, globals) {
                     return this.ValidationResult.Count === 0;
                 }
             },
-            PopulateDirty: false
+            PopulateDirty: false,
+            CacheName: {
+                get: function () {
+                    var $t;
+                    var form;
+                    var fn = ((form = Bridge.as(this, Core.Components.Forms.EditForm))) != null ? form.Feature.CacheName : ($t = this.GuiInfo) != null ? $t.CacheName : null;
+                    if (Core.Extensions.StringExt.IsNullOrWhiteSpace(fn)) {
+                        return null;
+                    }
+                    var cacheNameFn = { };
+                    if (Core.Extensions.Utils.IsFunction(fn, cacheNameFn)) {
+                        return Bridge.as(cacheNameFn.v.call(null, this), System.String);
+                    }
+                    return null;
+                }
+            },
+            QueueName: {
+                get: function () {
+                    var $t;
+                    var form;
+                    return ((form = Bridge.as(this, Core.Components.Forms.EditForm))) != null ? form.Feature.QueueName : ($t = this.GuiInfo) != null ? $t.QueueName : null;
+                }
+            }
         },
         ctors: {
             init: function () {
@@ -1304,6 +1331,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.Children = new (System.Collections.Generic.List$1(Core.Components.EditableComponent)).ctor();
                 this.DOMContentLoaded = Bridge.fn.combine(this.DOMContentLoaded, Bridge.fn.bind(this, function () {
                     this.SetRequired();
+                    this.SendQueueAction("Subscribe");
                     if (this.GuiInfo != null && Core.Extensions.StringExt.HasAnyChar(this.GuiInfo.Events)) {
                         Core.Extensions.EventExt.Done$1(System.Boolean, Core.Components.Extensions.ComponentExt.DispatchEvent(this, this.GuiInfo.Events, "DOMContentLoaded", [this.Entity]));
                     }
@@ -1457,9 +1485,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             RemoveChild: function (child) {
                 this.Children.remove(child);
-            },
-            Render: function () {
-                this.SendQueueAction("Subscribe");
             },
             Focus: function () {
                 var $t;
@@ -2088,12 +2113,19 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
             },
             SendQueueAction: function (action) {
-                var $t;
-                if (this.GuiInfo != null && Core.Extensions.StringExt.IsNullOrWhiteSpace(this.GuiInfo.QueueName)) {
+                var queueName = this.QueueName;
+                if (Core.Extensions.StringExt.IsNullOrWhiteSpace(queueName)) {
                     return;
                 }
-                var mq = ($t = new Core.Models.MQData(), $t.QueueName = this.GuiInfo.QueueName, $t.Action = action, $t);
-                Core.Components.Forms.EditForm.NotificationClient.Send(Core.Extensions.Utils.ToJson(mq));
+                Core.Components.Forms.EditForm.NotificationClient.Send(System.String.format("{{\"QueueName\": \"{0}\", \"Action\": \"{1}\"}}", queueName, action));
+                if (Bridge.referenceEquals(action, "Subscribe")) {
+                    window.addEventListener(queueName, this.QueueHandler);
+                } else {
+                    window.removeEventListener(queueName, this.QueueHandler);
+                }
+            },
+            QueueHandler: function (e) {
+                System.Console.WriteLine(Core.Extensions.Utils.ToJson(System.Object, e.detail));
             }
         }
     });
@@ -5828,8 +5860,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                 AddDebugger: function () {
                     debugger;
                 },
-                ToJson: function (value) {
-                    return JSON.stringify(Bridge.unbox(value));
+                ToJson: function (T, value) {
+                    return Newtonsoft.Json.JsonConvert.SerializeObject(value);
                 },
                 EncodeProperties: function (value) {
                     var $t, $t1;
@@ -6150,6 +6182,14 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }
 
                     return System.Decimal.lift(null);
+                },
+                Parse: function (T, value) {
+                    try {
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject(value, T);
+                    } catch ($e1) {
+                        $e1 = System.Exception.create($e1);
+                        return null;
+                    }
                 },
                 TryParse: function (T, value) {
                     if (Core.Extensions.StringExt.IsNullOrWhiteSpace(value)) {
@@ -7596,6 +7636,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             QueueName: null,
             ConnKey: null,
             ShouldSaveText: false,
+            CacheName: null,
             ComponentGroup: null,
             Reference: null
         },
@@ -7784,6 +7825,8 @@ Bridge.assembly("Core", function ($asm, globals) {
             CustomNextCell: false,
             Signed: false,
             IsPortal: false,
+            QueueName: null,
+            CacheName: null,
             Entity: null,
             Parent: null,
             ConnKey: null,
@@ -7895,13 +7938,20 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
-    Bridge.define("Core.Models.MQData", {
+    Bridge.define("Core.Models.MQEvent", {
         props: {
+            DeviceKey: null,
+            QueueName: null,
+            Action: null,
             Id: null,
             PrevId: null,
-            QueueName: null,
-            Message: null,
-            Action: null
+            Time: null,
+            Message: null
+        },
+        ctors: {
+            init: function () {
+                this.Time = new System.DateTimeOffset();
+            }
         }
     });
 
@@ -9271,6 +9321,8 @@ Bridge.assembly("Core", function ($asm, globals) {
             FeatureId: null,
             ComId: null,
             Table: null,
+            QueueName: null,
+            CacheName: null,
             ConnKey: null,
             Changes: null,
             EntityId: {
@@ -10152,7 +10204,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         return System.Array.init([patch], Core.ViewModels.PatchDetail);
                     })).toList(Core.ViewModels.PatchDetail);
                 this.AddIdToPatch(details);
-                return ($t = new Core.ViewModels.PatchVM(), $t.Changes = details, $t.Table = this.Feature.EntityName, $t);
+                return ($t = new Core.ViewModels.PatchVM(), $t.Changes = details, $t.Table = this.Feature.EntityName, $t.QueueName = this.QueueName, $t.CacheName = this.CacheName, $t);
             },
             SavePatch: function (entity) {
                 if (entity === void 0) { entity = null; }
@@ -10887,11 +10939,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             CopyComponent: function (arg) {
                 var component = Core.Components.Extensions.ComponentExt.MapToCom(arg);
                 this._componentCoppy = component;
-            },
-            CreateComGroupPatch: function (com) {
-                var res = new Core.ViewModels.PatchVM();
-
-                return res;
             },
             AddComponent: function (arg) {
                 var $t;
@@ -24049,7 +24096,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 })).toList(Core.ViewModels.PatchDetail);
                 this.AddIdToPatch(dirtyPatch);
                 this.PatchModel.AddRange(dirtyPatch);
-                return ($t = new Core.ViewModels.PatchVM(), $t.Changes = dirtyPatch, $t.Table = this.ListView.GuiInfo.RefName, $t.ConnKey = ($t1 = this.ListView.ConnKey, $t1 != null ? $t1 : Core.Clients.Client.ConnKey), $t);
+                return ($t = new Core.ViewModels.PatchVM(), $t.CacheName = this.CacheName, $t.QueueName = this.QueueName, $t.Changes = dirtyPatch, $t.Table = this.ListView.GuiInfo.RefName, $t.ConnKey = ($t1 = this.ListView.ConnKey, $t1 != null ? $t1 : Core.Clients.Client.ConnKey), $t);
             },
             RowDblClick: function (e) {
                 var $t;

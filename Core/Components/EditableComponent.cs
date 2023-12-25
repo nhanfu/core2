@@ -282,6 +282,28 @@ namespace Core.Components
 
         public bool PopulateDirty { get; set; } = true;
 
+        public string CacheName
+        {
+            get
+            {
+                string fn = this is EditForm form ? form.Feature.CacheName : GuiInfo?.CacheName;
+                if (fn.IsNullOrWhiteSpace()) return null;
+                if (Utils.IsFunction(fn, out var cacheNameFn))
+                {
+                    return cacheNameFn.Call(null, this) as string;
+                }
+                return null;
+            }
+        }
+
+        public string QueueName
+        {
+            get
+            {
+                return this is EditForm form ? form.Feature.QueueName : GuiInfo?.QueueName;
+            }
+        }
+
         public EditableComponent(Component guiInfo)
         {
             GuiInfo = guiInfo;
@@ -303,6 +325,7 @@ namespace Core.Components
             DOMContentLoaded += () =>
             {
                 SetRequired();
+                SendQueueAction("Subscribe");
                 if (GuiInfo != null && GuiInfo.Events.HasAnyChar())
                 {
                     this.DispatchEvent(GuiInfo.Events, EventType.DOMContentLoaded, Entity).Done();
@@ -371,10 +394,7 @@ namespace Core.Components
             Children.Remove(child);
         }
 
-        public virtual void Render()
-        {
-            SendQueueAction("Subscribe");
-        }
+        public abstract void Render();
 
         public virtual void Focus()
         {
@@ -876,13 +896,26 @@ namespace Core.Components
 
         protected void SendQueueAction(string action)
         {
-            if (GuiInfo != null && GuiInfo.QueueName.IsNullOrWhiteSpace()) return;
-            var mq = new MQData
+            var queueName = QueueName;
+            if (queueName.IsNullOrWhiteSpace()) return;
+            EditForm.NotificationClient.Send($"{{\"QueueName\": \"{queueName}\", \"Action\": \"{action}\"}}");
+            if (action == "Subscribe")
             {
-                QueueName = GuiInfo.QueueName,
-                Action = action
-            };
-            EditForm.NotificationClient.Send(mq.ToJson());
+                /*@
+                window.addEventListener(queueName, this.QueueHandler);
+                 */
+            }
+            else
+            {
+                /*@
+                window.removeEventListener(queueName, this.QueueHandler);
+                 */
+            }
+        }
+
+        protected virtual void QueueHandler(CustomEvent e)
+        {
+            Console.WriteLine(e.Detail.ToJson());
         }
     }
 }

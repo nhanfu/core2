@@ -1,4 +1,5 @@
 ﻿using Bridge.Html5;
+using Core.Extensions;
 using Core.Models;
 using System;
 
@@ -7,6 +8,7 @@ namespace Core.Clients
     public class WebSocketClient
     {
         private readonly WebSocket _socket;
+        private string deviceKey;
         public WebSocketClient(string url)
         {
             var wsUri = $"wss://{Client.Host}/{url}?access_token=" + Client.Token.AccessToken;
@@ -29,7 +31,12 @@ namespace Core.Clients
             _socket.OnMessage += e =>
             {
                 var responseStr = e.Data.ToString();
-                var objRs = JSON.Parse(responseStr).As<MQData>();
+                var objRs = responseStr.Parse<MQEvent>();
+                if (objRs is null)
+                {
+                    deviceKey = responseStr;
+                    return;
+                }
                 var queueName = objRs.QueueName;
                 Window.DispatchEvent(new CustomEvent(objRs.QueueName, new CustomEventInit() { Detail = objRs }));
             };

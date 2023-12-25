@@ -147,7 +147,7 @@ namespace Core.Components.Forms
                 return new PatchDetail[] { patch };
             }).ToList();
             AddIdToPatch(details);
-            return new PatchVM { Changes = details, Table = Feature.EntityName, QueueName = Feature.QueueName };
+            return new PatchVM { Changes = details, Table = Feature.EntityName, QueueName = QueueName, CacheName = CacheName };
         }
 
         public virtual Task<bool> SavePatch(object entity = null)
