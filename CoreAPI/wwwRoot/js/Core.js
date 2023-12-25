@@ -9425,13 +9425,15 @@ Bridge.assembly("Core", function ($asm, globals) {
             PartnerId: null,
             RegionId: null,
             Additional: null,
-            SigninDate: null
+            SigninDate: null,
+            ConnKey: null
         },
         ctors: {
             init: function () {
                 this.AccessTokenExp = new System.DateTimeOffset();
                 this.RefreshTokenExp = new System.DateTimeOffset();
                 this.SigninDate = new System.DateTimeOffset();
+                this.ConnKey = Core.Clients.Client.ConnKey;
             }
         }
     });

@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Clients;
+using Core.Models;
 using System;
 using System.Collections.Generic;
 
@@ -22,7 +23,6 @@ namespace Core.ViewModels
         public DateTimeOffset RefreshTokenExp { get; set; }
         public string HashPassword { get; set; }
         public string Recovery { get; set; }
-        public string TenantCode { get; set; }
         public Vendor Vendor { get; set; }
         public List<string> RoleIds { get; set; }
         public List<string> RoleNames { get; set; }
@@ -34,6 +34,9 @@ namespace Core.ViewModels
         public string RegionId { get; set; }
         public object Additional { get; set; }
         public DateTimeOffset SigninDate { get; set; }
+        public string TenantCode { get; set; } = Client.Tenant;
+        public string Env { get; set; } = Client.Env;
+        public string ConnKey { get; set; } = Client.ConnKey;
     }
 
     [Serializable]

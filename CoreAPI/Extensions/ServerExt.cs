@@ -1,9 +1,8 @@
-﻿using Core.Websocket;
+﻿using Core.Services;
+using Core.Websocket;
 using CoreAPI.Middlewares;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System.Reflection;
 
 namespace Core.Extensions
@@ -36,15 +35,13 @@ namespace Core.Extensions
 
         public static WebApplication UseClusterAPI(this WebApplication app)
         {
-            if (app.Configuration.GetSection("Role").Get<string>() != Utils.Balancer) return app;
-            app.MapPost("/api/cluster/add", [Authorize] ([FromBody] Node node) =>
+            app.MapPost("/api/cluster/add", ([FromBody] Node node, [FromServices] UserService _userSvc) =>
             {
-                Cluster.Data.Nodes.Add(node);
+                _userSvc.AddCluster(node);
             });
-            app.MapPost("/api/cluster/remove", [Authorize] ([FromBody] Node node) =>
+            app.MapPost("/api/cluster/remove", ([FromBody] Node node, [FromServices] UserService _userSvc) =>
             {
-                var node2Remove = Cluster.Data.Nodes.FirstOrDefault(x => x.Host == node.Host && x.Port == node.Port && x.Scheme == node.Scheme);
-                Cluster.Data.Nodes.Remove(node2Remove);
+                _userSvc.RemoveCluster(node);
             });
             return app;
         }

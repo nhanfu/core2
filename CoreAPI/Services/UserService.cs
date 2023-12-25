@@ -4,23 +4,20 @@ using Core.Extensions;
 using Core.Models;
 using Core.ViewModels;
 using Core.Websocket;
+using CoreAPI.Middlewares;
 using CoreAPI.ViewModels;
-using Hangfire;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Newtonsoft.Json;
 using PuppeteerSharp;
 using System.Buffers;
-using System.Collections.Concurrent;
 using System.Data;
 using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
-using System.Net.WebSockets;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -34,13 +31,13 @@ namespace Core.Services;
 
 public class UserService
 {
-    private HttpRequest _request;
     public static int Port;
     private const string NotFoundFile = "wwwRoot/404.html";
     private const string href = "href";
     private const string src = "src";
     private const int MAX_LOGIN = 5;
     public readonly IHttpContextAccessor _ctx;
+    private readonly HttpRequest _request;
     private readonly IConfiguration _cfg;
     private readonly IDistributedCache _cache;
     private readonly IWebHostEnvironment _host;
@@ -56,6 +53,7 @@ public class UserService
     public string Env { get; set; }
     public string TenantCode { get; set; }
     public List<string> RoleIds { get; set; }
+    public List<string> RoleNames { get; set; }
 
     static readonly Regex[] _fobiddenTerm =
     [
@@ -71,6 +69,7 @@ public class UserService
     private const string ConnKeyClaim = "ConnKey";
     private const string EnvClaim = "Environment";
     private const string TenantClaim = "TenantCode";
+    private const string RoleNameClaim = "Role";
 
     public UserService(IHttpContextAccessor ctx, IConfiguration conf,
         IDistributedCache cache, IWebHostEnvironment host, IHttpClientFactory httpClientFactory, WebSocketService socket)
@@ -96,6 +95,7 @@ public class UserService
         UserName = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
         CenterIds = claims.Where(x => x.Type == nameof(CenterIds)).Select(x => x.Value).Where(x => x != null).ToList();
         RoleIds = claims.Where(x => x.Type == ClaimTypes.Actor).Select(x => x.Value).Where(x => x != null).ToList();
+        RoleNames = claims.Where(x => x.Type == RoleNameClaim).Select(x => x.Value).Where(x => x != null).ToList();
         VendorId = claims.FirstOrDefault(x => x.Type == ClaimTypes.GroupSid)?.Value;
         TenantCode = claims.FirstOrDefault(x => x.Type == TenantClaim)?.Value.ToUpper();
         Env = claims.FirstOrDefault(x => x.Type == EnvClaim)?.Value.ToUpper();
@@ -221,6 +221,7 @@ public class UserService
             return null;
         }
         var roleIds = roles.Select(x => x.Id).Distinct().ToList();
+        var roleNames = roles.Select(x => x.RoleName).Distinct().ToList();
         var signinDate = DateTimeOffset.Now;
         var jit = Guid.NewGuid().ToString();
         List<Claim> claims =
@@ -242,6 +243,7 @@ public class UserService
         ];
         claims.AddRange(claim2);
         claims.AddRange(roleIds.Select(x => new Claim(ClaimTypes.Actor, x.ToString())));
+        claims.AddRange(roleNames.Select(x => new Claim(RoleNameClaim, x.ToString())));
         var newLogin = refreshToken is null;
         refreshToken ??= GenerateRandomToken();
         var (token, exp) = AccessToken(claims);
@@ -469,14 +471,15 @@ public class UserService
                 var next = await reader.NextResultAsync();
                 if (!next) break;
             }
+            if (Env.Equals("test", StringComparison.OrdinalIgnoreCase))
+            {
+                _ctx.HttpContext.Response.Headers.TryAdd("Query", query);
+            }
             return [.. tables];
         }
         catch (Exception e)
         {
-            var message = $"{e.Message} {query} {connStr}";
-#if RELEASE
-            message = $"{e.Message} {query} ";
-#endif
+            var message = $"{e.Message} {query}";
             throw new ApiException(message, e)
             {
                 StatusCode = HttpStatusCode.InternalServerError,
@@ -505,7 +508,7 @@ public class UserService
 
     public async Task<int> SavePatch(PatchVM vm)
     {
-        vm.CachedConnStr = await GetConnStrFromKey(vm.ConnKey);
+        vm.CachedConnStr = vm.CachedConnStr ?? await GetConnStrFromKey(vm.ConnKey, vm.TenantCode, vm.Env);
         var canWrite = await HasWritePermission(vm);
         if (!canWrite) throw new ApiException($"Unauthorized access on \"{vm.Table}\"")
         {
@@ -568,7 +571,6 @@ public class UserService
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "<Pending>")]
     private Task NotifyOtherClusters(Cluster[] clusters, string path, string json)
     {
         var request = _ctx.HttpContext.Request;
@@ -1839,5 +1841,24 @@ public class UserService
             };
         }).OrderBy(x => x.Id);
         return us;
+    }
+
+    internal void AddCluster(Node node)
+    {
+        EnsureSystemRole();
+        Clusters.Data.Nodes.Add(node);
+    }
+
+    private void EnsureSystemRole()
+    {
+        if (!RoleNames.Any(x => x.Equals("System", StringComparison.OrdinalIgnoreCase)))
+            throw new ApiException("Unauthorize access") { StatusCode = HttpStatusCode.Unauthorized };
+    }
+
+    internal void RemoveCluster(Node node)
+    {
+        EnsureSystemRole();
+        var node2Remove = Clusters.Data.Nodes.FirstOrDefault(x => x.Host == node.Host && x.Port == node.Port && x.Scheme == node.Scheme);
+        Clusters.Data.Nodes.Remove(node2Remove);
     }
 }

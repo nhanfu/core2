@@ -12,7 +12,7 @@ public class LoadBalaceMiddleware
     private readonly IConfiguration _conf;
     private readonly HttpClient _httpClient;
     private readonly ProxyOptions _defaultOptions;
-    private static Cluster Balancer => Cluster.Data;
+    private static Clusters Balancer => Clusters.Data;
 
     private static readonly string[] NotForwardedWebSocketHeaders = ["Connection", "Host", "Upgrade", "Sec-WebSocket-Key", "Sec-WebSocket-Version"];
 
@@ -24,7 +24,7 @@ public class LoadBalaceMiddleware
         {
             SendChunked = false
         };
-        Cluster.Data = new Cluster
+        Clusters.Data = new Clusters
         {
             Nodes = _conf.GetSection("Proxy:Destination").Get<List<Node>>()
         };
@@ -261,14 +261,14 @@ public class ProxyOptions
     }
 }
 
-public class Cluster
+public class Clusters
 {
     public List<Node> AvailableNodes { get; set; }
     public List<Node> Nodes { get; set; }
     public int Index { get; set; }
     public string Policy { get; set; }
     public Dictionary<int, long> Score { get; set; }
-    public static Cluster Data { get; set; }
+    public static Clusters Data { get; set; }
 }
 
 public class Node

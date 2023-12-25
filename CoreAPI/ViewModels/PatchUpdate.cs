@@ -11,6 +11,7 @@ namespace Core.ViewModels
         public string CacheName { get; set; }
         public string Table { get; set; }
         public string TenantCode { get; set; }
+        public string Env { get; set; }
         public string ConnKey { get; set; } = Utils.ConnKey;
         public string CachedConnStr { get; internal set; }
         public List<PatchDetail> Changes { get; set; } = [];
