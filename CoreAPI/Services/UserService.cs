@@ -471,10 +471,6 @@ public class UserService
                 var next = await reader.NextResultAsync();
                 if (!next) break;
             }
-            if (Env.Equals("test", StringComparison.OrdinalIgnoreCase))
-            {
-                _ctx.HttpContext.Response.Headers.TryAdd("Query", query);
-            }
             return [.. tables];
         }
         catch (Exception e)
