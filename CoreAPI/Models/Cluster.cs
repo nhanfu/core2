@@ -7,7 +7,7 @@ public partial class Cluster
     public string Env { get; set; }
     public string Host { get; set; }
     public int Port { get; set; }
-    public string Schema { get; set; }
+    public string Scheme { get; set; }
     public string ClusterRole { get; set; }
 
     public bool Active { get; set; }

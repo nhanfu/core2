@@ -8,6 +8,7 @@ namespace Core.Websocket
     {
         private readonly ConcurrentDictionary<string, List<string>> _queues = new();
         private readonly ConcurrentDictionary<string, WebSocket> _sockets = new();
+        private readonly ConcurrentDictionary<string, WebSocket> _clusters = new();
 
         public WebSocket GetSocketById(string id)
         {
@@ -26,9 +27,14 @@ namespace Core.Websocket
             }
         }
 
-        public ConcurrentDictionary<string, WebSocket> GetAll()
+        public ConcurrentDictionary<string, WebSocket> GetDeviceSockets()
         {
             return _sockets;
+        }
+
+        public ConcurrentDictionary<string, WebSocket> GetClusterSockets()
+        {
+            return _clusters;
         }
 
         public string GetId(WebSocket socket)
@@ -36,7 +42,19 @@ namespace Core.Websocket
             return _sockets.FirstOrDefault(p => p.Value == socket).Key;
         }
 
-        public string AddSocket(WebSocket socket, string userId, List<string> roleIds, string ip)
+        public string AddSocket(WebSocket socket, string deviceKey)
+        {
+            _sockets.TryAdd(deviceKey, socket);
+            return deviceKey;
+        }
+
+        public string AddClusterSocket(WebSocket socket, string clusterKey)
+        {
+            _clusters.TryAdd(clusterKey, socket);
+            return clusterKey;
+        }
+
+        public string AddDeviceSocket(WebSocket socket, string userId, List<string> roleIds, string ip)
         {
             var deviceKey = $"{userId}/{roleIds.Combine()}/{ip}/{Guid.NewGuid()}";
             _sockets.TryAdd(deviceKey, socket);

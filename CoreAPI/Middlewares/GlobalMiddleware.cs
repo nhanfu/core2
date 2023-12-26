@@ -5,7 +5,7 @@ using Core.Exceptions;
 
 namespace CoreAPI.Middlewares
 {
-    public class ExceptionMiddleware(RequestDelegate next)
+    public class GlobalMiddleware(RequestDelegate next)
     {
         private readonly RequestDelegate _next = next ?? throw new ArgumentNullException(nameof(next));
 
@@ -13,6 +13,7 @@ namespace CoreAPI.Middlewares
         {
             try
             {
+                UserServiceHelpers.Port = UserServiceHelpers.ParsePort(context.Request);
                 await _next(context);
             }
             catch (UnauthorizedAccessException ex)

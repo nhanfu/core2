@@ -2,6 +2,8 @@
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
+using Core.Websocket;
+using CoreAPI.Middlewares;
 using CoreAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -153,5 +155,17 @@ public class UserController(UserService _userSvc) : ControllerBase
     {
         Task.Run(async () => await _userSvc.NotifyDevice(e));
         return Task.FromResult(true);
+    }
+
+    [HttpPost("api/cluster/add")]
+    public Task AddCluster([FromBody] Node e)
+    {
+        return _userSvc.AddCluster(e);
+    }
+
+    [HttpPost("api/cluster/remove")]
+    public Task RemoveCluster([FromBody] Node e)
+    {
+        return _userSvc.RemoveCluster(e);
     }
 }

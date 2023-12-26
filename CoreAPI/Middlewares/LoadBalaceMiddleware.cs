@@ -1,5 +1,7 @@
 ﻿using Core.Extensions;
 using Core.Services;
+using Core.Websocket;
+using Microsoft.Net.Http.Headers;
 using System.Net.WebSockets;
 
 namespace CoreAPI.Middlewares;
@@ -11,9 +13,9 @@ public class LoadBalaceMiddleware
     private readonly RequestDelegate _next;
     private readonly IConfiguration _conf;
     private readonly HttpClient _httpClient;
+    private UserService _userSvc;
     private readonly ProxyOptions _defaultOptions;
     private static Clusters Balancer => Clusters.Data;
-
     private static readonly string[] NotForwardedWebSocketHeaders = ["Connection", "Host", "Upgrade", "Sec-WebSocket-Key", "Sec-WebSocket-Version"];
 
     public LoadBalaceMiddleware(RequestDelegate next, IConfiguration conf)
@@ -52,15 +54,18 @@ public class LoadBalaceMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        if (_conf.GetSection("Role").Get<string>() != Utils.Balancer)
+        var role = _conf.GetSection("Role").Get<string>();
+        if (role != Utils.Balancer || context.Request.Headers.TryGetValue(HeaderNames.Connection, out var con) && con == "hub")
         {
             await _next(context);
             return;
         }
+        //_userSvc = context.RequestServices.GetService<UserService>();
+        //await _userSvc.OpenAPIClustersSocket();
         var options = _defaultOptions;
         int maxRetry = 5;
     Start:
-        var node = ResolveNode();
+        var node = ResolveNode(); // try to resolve node from cluster table in the db, not only from config
         options.Port = node.Port;
         SetPortAndSchema(options);
         try
@@ -133,7 +138,7 @@ public class LoadBalaceMiddleware
         }
 
         var wsScheme = string.Equals(destination.Scheme, "https", StringComparison.OrdinalIgnoreCase) ? "wss" : "ws";
-        string url = UserService.GetUri(host, port, wsScheme, $"{context.Request.PathBase}{context.Request.Path}{context.Request.QueryString}");
+        string url = UserServiceHelpers.GetUri(host, port, wsScheme, $"{context.Request.PathBase}{context.Request.Path}{context.Request.QueryString}");
 
         if (_options.WebSocketKeepAliveInterval.HasValue)
         {
@@ -199,7 +204,7 @@ public class LoadBalaceMiddleware
         }
 
         requestMessage.Headers.Host = host;
-        string uriString = UserService.GetUri(host, port, scheme, $"{context.Request.PathBase}{context.Request.Path}{context.Request.QueryString}");
+        string uriString = UserServiceHelpers.GetUri(host, port, scheme, $"{context.Request.PathBase}{context.Request.Path}{context.Request.QueryString}");
         requestMessage.RequestUri = new Uri(uriString);
         requestMessage.Method = new HttpMethod(context.Request.Method);
         using var responseMessage = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, context.RequestAborted);
@@ -275,7 +280,9 @@ public class Node
 {
     public bool Alive { get; set; } = true;
     public DateTimeOffset LastResponse { get; set; } = DateTimeOffset.Now;
+    public string Id { get; set; }
     public string Host { get; set; }
     public int Port { get; set; }
     public string Scheme { get; set; }
+    public string Role { get; set; }
 }

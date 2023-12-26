@@ -18,6 +18,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
+using System.Net.WebSockets;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -31,18 +32,14 @@ namespace Core.Services;
 
 public class UserService
 {
-    public static int Port;
-    private const string NotFoundFile = "wwwRoot/404.html";
-    private const string href = "href";
-    private const string src = "src";
-    private const int MAX_LOGIN = 5;
     public readonly IHttpContextAccessor _ctx;
     private readonly HttpRequest _request;
     private readonly IConfiguration _cfg;
     private readonly IDistributedCache _cache;
     private readonly IWebHostEnvironment _host;
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly WebSocketService _socketSvc;
+    private readonly WebSocketService _taskSocketSvc;
+    private readonly WebSocketService _clusterSocketSvc;
 
     public string UserId { get; set; }
     public string UserName { get; set; }
@@ -55,50 +52,35 @@ public class UserService
     public List<string> RoleIds { get; set; }
     public List<string> RoleNames { get; set; }
 
-    static readonly Regex[] _fobiddenTerm =
-    [
-        new(@"delete\s"), new(@"create\s"), new(@"insert\s"),
-        new(@"update\s"), new(@"select\s"), new(@"from\s"),new(@"where\s"),
-        new(@"group by\s"), new(@"having\s"), new(@"order by\s")
-    ];
-    static readonly string[] _systemFields = new string[]
-    {
-        IdField, nameof(TenantCode), nameof(User.InsertedBy),
-        nameof(User.InsertedDate), nameof(User.UpdatedBy), nameof(User.UpdatedDate)
-    }.Select(x => x.ToLower()).ToArray();
-    private const string ConnKeyClaim = "ConnKey";
-    private const string EnvClaim = "Environment";
-    private const string TenantClaim = "TenantCode";
-    private const string RoleNameClaim = "Role";
-
     public UserService(IHttpContextAccessor ctx, IConfiguration conf,
-        IDistributedCache cache, IWebHostEnvironment host, IHttpClientFactory httpClientFactory, WebSocketService socket)
+        IDistributedCache cache, IWebHostEnvironment host, IHttpClientFactory httpClientFactory,
+        [FromKeyedServices("/task")] WebSocketService taskSocket, ConnectionManager conn)
     {
         _cfg = conf ?? throw new ArgumentNullException(nameof(conf));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache)); ;
         _host = host ?? throw new ArgumentNullException(nameof(host));
         _ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-        _socketSvc = socket ?? throw new ArgumentNullException(nameof(socket));
+        _taskSocketSvc = taskSocket ?? throw new ArgumentNullException(nameof(taskSocket));
+        _conn = conn ?? throw new ArgumentNullException(nameof(conn));
         _request = _ctx.HttpContext.Request;
         ExtractMeta();
     }
 
     private void ExtractMeta()
     {
-        Port = ParsePort(_request);
         var claims = _ctx.HttpContext?.User?.Claims;
         if (claims is null) return;
-        BranchId = claims.FirstOrDefault(x => x.Type == BranchIdClaim)?.Value;
+        BranchId = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.BranchIdClaim)?.Value;
         UserId = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-        ConnKey = claims.FirstOrDefault(x => x.Type == ConnKeyClaim)?.Value;
+        ConnKey = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.ConnKeyClaim)?.Value;
         UserName = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
         CenterIds = claims.Where(x => x.Type == nameof(CenterIds)).Select(x => x.Value).Where(x => x != null).ToList();
         RoleIds = claims.Where(x => x.Type == ClaimTypes.Actor).Select(x => x.Value).Where(x => x != null).ToList();
-        RoleNames = claims.Where(x => x.Type == RoleNameClaim).Select(x => x.Value).Where(x => x != null).ToList();
+        RoleNames = claims.Where(x => x.Type == UserServiceHelpers.RoleNameClaim).Select(x => x.Value).Where(x => x != null).ToList();
         VendorId = claims.FirstOrDefault(x => x.Type == ClaimTypes.GroupSid)?.Value;
-        TenantCode = claims.FirstOrDefault(x => x.Type == TenantClaim)?.Value.ToUpper();
-        Env = claims.FirstOrDefault(x => x.Type == EnvClaim)?.Value.ToUpper();
+        TenantCode = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.TenantClaim)?.Value.ToUpper();
+        Env = claims.FirstOrDefault(x => x.Type == UserServiceHelpers.EnvClaim)?.Value.ToUpper();
     }
 
     public string GenerateRandomToken(int? maxLength = 32)
@@ -125,15 +107,9 @@ public class UserService
         return sBuilder.ToString();
     }
 
-    public const string IdField = "Id";
-    private const string PassPhrase = "d7a9220a-6949-44c8-a702-789587e536cb";
-    private const string BranchIdClaim = "BranchId";
-    private const string ForwardedIP = "X-Forwarded-For";
-    private const string APIClusterKey = "API_clusters";
-
     public static string GetRemoteIpAddress(HttpContext context)
     {
-        return context.Request.Headers.TryGetValue(ForwardedIP, out var value)
+        return context.Request.Headers.TryGetValue(UserServiceHelpers.ForwardedIP, out var value)
             ? value.ToString().Split(',')[0].Trim()
             : context.Connection.RemoteIpAddress.ToString();
     }
@@ -155,7 +131,7 @@ public class UserService
                 StatusCode = HttpStatusCode.BadRequest
             };
         }
-        if (matchedUser.LoginFailedCount >= MAX_LOGIN && matchedUser.LastFailedLogin < DateTimeOffset.Now.AddMinutes(5))
+        if (matchedUser.LoginFailedCount >= UserServiceHelpers.MAX_LOGIN && matchedUser.LastFailedLogin < DateTimeOffset.Now.AddMinutes(5))
         {
             throw new ApiException($"Tài khoản {login.UserName} đã bị khóa trong 5 phút!")
             {
@@ -164,7 +140,7 @@ public class UserService
         }
         var hashedPassword = GetHash(Utils.SHA256, login.Password + matchedUser.Salt);
         var matchPassword = matchedUser.Password == hashedPassword;
-        List<PatchDetail> changes = [new PatchDetail { Field = IdField, OldVal = matchedUser.Id }];
+        List<PatchDetail> changes = [new PatchDetail { Field = UserServiceHelpers.IdField, OldVal = matchedUser.Id }];
         if (!matchPassword)
         {
             var loginFailedCount = matchedUser.LoginFailedCount.HasValue ? matchedUser.LoginFailedCount + 1 : 1;
@@ -229,7 +205,7 @@ public class UserService
             new(ClaimTypes.GroupSid, user.VendorId.ToString()),
             new (ClaimTypes.NameIdentifier, user.Id.ToString()),
             new (ClaimTypes.Name, user.UserName),
-            new (BranchIdClaim, user.BranchId?.ToString() ?? string.Empty),
+            new (UserServiceHelpers.BranchIdClaim, user.BranchId?.ToString() ?? string.Empty),
             new (JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
             new (JwtRegisteredClaimNames.Birthdate, user.DoB?.ToString() ?? string.Empty),
         ];
@@ -237,13 +213,13 @@ public class UserService
             new (JwtRegisteredClaimNames.FamilyName, user.FullName?? string.Empty),
             new (JwtRegisteredClaimNames.Iat, signinDate.ToString()),
             new (JwtRegisteredClaimNames.Jti, jit),
-            new (TenantClaim, login.CompanyName),
-            new (EnvClaim, login.Env),
-            new (ConnKeyClaim, login.ConnKey),
+            new (UserServiceHelpers.TenantClaim, login.CompanyName),
+            new (UserServiceHelpers.EnvClaim, login.Env),
+            new (UserServiceHelpers.ConnKeyClaim, login.ConnKey),
         ];
         claims.AddRange(claim2);
         claims.AddRange(roleIds.Select(x => new Claim(ClaimTypes.Actor, x.ToString())));
-        claims.AddRange(roleNames.Select(x => new Claim(RoleNameClaim, x.ToString())));
+        claims.AddRange(roleNames.Select(x => new Claim(UserServiceHelpers.RoleNameClaim, x.ToString())));
         var newLogin = refreshToken is null;
         refreshToken ??= GenerateRandomToken();
         var (token, exp) = AccessToken(claims);
@@ -324,9 +300,9 @@ public class UserService
         var principal = Utils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
         var userId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
         var userName = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
-        var tenant = principal.Claims.FirstOrDefault(x => x.Type == TenantClaim)?.Value;
-        var env = principal.Claims.FirstOrDefault(x => x.Type == EnvClaim)?.Value;
-        var connKey = principal.Claims.FirstOrDefault(x => x.Type == ConnKeyClaim)?.Value;
+        var tenant = principal.Claims.FirstOrDefault(x => x.Type == UserServiceHelpers.TenantClaim)?.Value;
+        var env = principal.Claims.FirstOrDefault(x => x.Type == UserServiceHelpers.EnvClaim)?.Value;
+        var connKey = principal.Claims.FirstOrDefault(x => x.Type == UserServiceHelpers.ConnKeyClaim)?.Value;
         EnsureTokenParam(userId, userName, tenant, env, connKey);
         var query =
             @$"select * from UserLogin 
@@ -571,10 +547,10 @@ public class UserService
     {
         var request = _ctx.HttpContext.Request;
         var client = _httpClientFactory.CreateClient();
-        var otherClusters = GetOtherClusters(clusters, _request.Host.Value, Port);
+        var otherClusters = GetOtherClusters(clusters, _request.Host.Value, UserServiceHelpers.Port);
         var tasks = otherClusters.Select(x =>
         {
-            var uri = GetUri(x.Host, x.Port, x.Schema, "/" + path);
+            var uri = UserServiceHelpers.GetUri(x.Host, x.Port, x.Scheme, "/" + path);
             var request = new HttpRequestMessage(HttpMethod.Post, uri)
             {
                 Content = new StringContent(json, Encoding.UTF8, Utils.ApplicationJson)
@@ -584,30 +560,6 @@ public class UserService
             return client.SendAsync(request);
         });
         return Task.WhenAll(tasks);
-    }
-
-    public int ParsePort(HttpRequest request)
-    {
-        if (Port != 0) return Port;
-        var parsePort = request.Headers.TryGetValue("X-Forwarded-To-Port", out var strPort);
-        if (parsePort)
-        {
-            return strPort.ToString().TryParse<int>();
-        }
-        return 0;
-    }
-
-    public static string GetUri(string host, int? port, string scheme, string path)
-    {
-        var urlPort = "";
-        if (port.HasValue
-            && !(port.Value == 443 && "https".Equals(scheme, StringComparison.InvariantCultureIgnoreCase))
-            && !(port.Value == 80 && "http".Equals(scheme, StringComparison.InvariantCultureIgnoreCase))
-            )
-        {
-            urlPort = ":" + port.Value;
-        }
-        return $"{scheme}://{host}{urlPort}{path}";
     }
 
     public void CopyHeaders(HttpRequestMessage request, params string[] excepts)
@@ -625,7 +577,7 @@ public class UserService
     private async Task<Cluster[]> GetClusters(string role, string connStr)
     {
         Cluster[] clusters = null;
-        var cachedCluster = await _cache.GetStringAsync(APIClusterKey);
+        var cachedCluster = await _cache.GetStringAsync(UserServiceHelpers.APIClusterKey);
         if (cachedCluster is not null)
         {
             clusters = cachedCluster.TryParse<Cluster[]>();
@@ -633,7 +585,7 @@ public class UserService
         if (clusters is not null) return clusters;
         var clusterQuery = $"select * from Cluster where ClusterRole = '{role}'";
         clusters = await ReadDsAsArr<Cluster>(clusterQuery, connStr);
-        await _cache.SetStringAsync(APIClusterKey, clusters.ToJson());
+        await _cache.SetStringAsync(UserServiceHelpers.APIClusterKey, clusters.ToJson());
         return clusters;
     }
 
@@ -717,7 +669,7 @@ public class UserService
 
     private static PatchDetail GetIdField(PatchVM x)
     {
-        return x.Changes.FirstOrDefault(x => x.Field == IdField);
+        return x.Changes.FirstOrDefault(x => x.Field == UserServiceHelpers.IdField);
     }
 
     public string GetCmd(PatchVM vm)
@@ -733,10 +685,10 @@ public class UserService
             x.Field = RemoveWhiteSpace(x.Field);
             x.Value = x.Value?.Replace("'", "''");
             x.OldVal = x.OldVal?.Replace("'", "''");
-            return !x.JustHistory && !_systemFields.Contains(x.Field);
+            return !x.JustHistory && !UserServiceHelpers.SystemFields.Contains(x.Field);
         }).ToList();
         var idField = GetIdField(vm);
-        var valueFields = vm.Changes.Where(x => !_systemFields.Contains(x.Field.ToLower())).ToArray();
+        var valueFields = vm.Changes.Where(x => !UserServiceHelpers.SystemFields.Contains(x.Field.ToLower())).ToArray();
         var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
         var oldId = idField?.OldVal;
         if (oldId is not null)
@@ -818,7 +770,7 @@ public class UserService
     {
         vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
         var com = await GetComponent(vm);
-        var anyInvalid = _fobiddenTerm.Any(term =>
+        var anyInvalid = UserServiceHelpers.FobiddenTerms.Any(term =>
         {
             return vm.Select != null && term.IsMatch(vm.Select.ToLower())
             || vm.Table != null && term.IsMatch(vm.Table.ToLower())
@@ -1295,7 +1247,7 @@ public class UserService
     {
         var idField = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
         var oldId = idField?.OldVal;
-        var valueFields = vm.Changes.Where(x => !_systemFields.Contains(x.Field.ToLower())).ToList();
+        var valueFields = vm.Changes.Where(x => !UserServiceHelpers.SystemFields.Contains(x.Field.ToLower())).ToList();
         var update = valueFields.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
         var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
 
@@ -1487,7 +1439,7 @@ public class UserService
         login.CachedConnStr ??= await GetConnStrFromKey(login.ConnKey, login.CompanyName, login.Env);
         var user = await ReadDsAs<User>($"select * from [User] where UserName = '{login.UserName}'", login.CachedConnStr);
         var span = DateTimeOffset.Now - (user.UpdatedDate ?? DateTimeOffset.Now);
-        if (user.LoginFailedCount >= MAX_LOGIN && span.TotalMinutes < 5)
+        if (user.LoginFailedCount >= UserServiceHelpers.MAX_LOGIN && span.TotalMinutes < 5)
         {
             throw new ApiException($"The account {login.UserName} has been locked for a while! Please contact your administrator to unlock.");
         }
@@ -1542,8 +1494,8 @@ public class UserService
         var links = htmlDoc.DocumentNode.SelectNodes("//link | //script")
             .SelectForEach((HtmlNode x, int i) =>
             {
-                ShouldAddVersion(x, href);
-                ShouldAddVersion(x, src);
+                ShouldAddVersion(x, UserServiceHelpers.Href);
+                ShouldAddVersion(x, UserServiceHelpers.Src);
             });
         var meta = new HtmlNode(HtmlNodeType.Element, htmlDoc, 1)
         {
@@ -1609,7 +1561,7 @@ public class UserService
         var tnEnv = await ReadDsAs<TenantEnv>(envQuery, connStr);
         if (tnEnv is null)
         {
-            await WriteDefaultFile(NotFoundFile, htmlMimeType, HttpStatusCode.NotFound);
+            await WriteDefaultFile(UserServiceHelpers.NotFoundFile, htmlMimeType, HttpStatusCode.NotFound);
             return;
         }
         var pageQuery = $"select * from TenantPage where TenantEnvId = '{tnEnv.Id}' and Area = '{area}'";
@@ -1700,7 +1652,7 @@ public class UserService
             {
                 QueueName = queueName,
                 Id = Id.NewGuid(),
-                Message = x
+                Message = x.ToJson()
             })
         .ForEachAsync(SendMessageToUser);
     }
@@ -1724,7 +1676,7 @@ public class UserService
                 ClickAction = "com.softek.tms.push.background.MESSAGING_EVENT"
             }
         };
-        await _socketSvc.SendMessageToUsersAsync([task.Message.AssignedId], task.ToJson(), fcm.ToJson());
+        await _taskSocketSvc.SendMessageToUsersAsync([task.Message.AssignedId], task.ToJson(), fcm.ToJson());
     }
 
     public async Task SendMessageSocket(string socket, TaskNotification task, string queueName)
@@ -1735,13 +1687,13 @@ public class UserService
             Id = Id.NewGuid(),
             Message = task
         };
-        await _socketSvc.SendMessageToSocketAsync(socket, entity.ToJson());
+        await _taskSocketSvc.SendMessageToSocketAsync(socket, entity.ToJson());
     }
 
     public async Task NotifyDevice(MQEvent e)
     {
         if (e is null || e.QueueName is null) return;
-        await _socketSvc.SendMessageToSubscribers(e.ToJson(), e.QueueName);
+        await _taskSocketSvc.SendMessageToSubscribers(e.ToJson(), e.QueueName);
     }
 
     private static async Task<Chat> GetChatGPTResponse(Chat entity)
@@ -1825,7 +1777,7 @@ public class UserService
 
     internal IEnumerable<User> GetUserActive()
     {
-        var online = _socketSvc.GetAll().Keys;
+        var online = _taskSocketSvc.GetAll().Keys;
         var us = online.Select(x =>
         {
             var split = x.Split("/");
@@ -1839,21 +1791,56 @@ public class UserService
         return us;
     }
 
-    internal void AddCluster(Node node)
+    private static bool _hasOpenClusterSocket = false;
+    private readonly ConnectionManager _conn;
+    public async Task OpenAPIClustersSocket(string role = "API")
+    {
+        if (_hasOpenClusterSocket) return;
+        _hasOpenClusterSocket = true;
+        var clusterQuery = $"select * from [Cluster] where [ClusterRole] = '{role}'";
+        var clusters = await ReadDsAsArr<Cluster>(clusterQuery, _cfg.GetConnectionString(Utils.ConnKey));
+        if (clusters.Nothing()) return;
+        var tasks = clusters.Select(Connect);
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task Connect(Cluster cluster)
+    {
+        var ws = new ClientWebSocket();
+        ws.Options.KeepAliveInterval = TimeSpan.FromSeconds(1);
+        var wsScheme = string.Equals(cluster.Scheme, "https", StringComparison.OrdinalIgnoreCase) ? "wss" : "ws";
+        string url = UserServiceHelpers.GetUri(cluster.Host, cluster.Port, wsScheme, "/clusters");
+        try
+        {
+            await ws.ConnectAsync(new Uri(url), CancellationToken.None);
+            //await Listen(ws);
+            _conn.AddClusterSocket(ws, $"Balancer/{Id.NewGuid()}");
+        }
+        catch
+        {
+        }
+    }
+
+    internal async Task AddCluster(Node node)
     {
         EnsureSystemRole();
+        var delCmd = @$"insert into Cluster (Id, TenantCode, Host, Env, Port, Scheme, ClusterRole, Active, InsertedDate, InsertedBy) values
+            ('{node.Id}', '{TenantCode}', '{node.Host}', '{Env}', '{node.Port}', '{node.Scheme}', '{node.Role}', 1, '{DateTimeOffset.UtcNow}', 1)";
+        await RunSqlCmd(DefaultConnStr(), delCmd);
         Clusters.Data.Nodes.Add(node);
     }
 
     private void EnsureSystemRole()
     {
         if (!RoleNames.Any(x => x.Equals("System", StringComparison.OrdinalIgnoreCase)))
-            throw new ApiException("Unauthorize access") { StatusCode = HttpStatusCode.Unauthorized };
+            throw new ApiException("Unauthorize access") { StatusCode = Enums.HttpStatusCode.Unauthorized };
     }
 
-    internal void RemoveCluster(Node node)
+    internal async Task RemoveCluster(Node node)
     {
         EnsureSystemRole();
+        var delCmd = $"delete from Cluster where Id = '{node.Id}'";
+        await RunSqlCmd(DefaultConnStr(), delCmd);
         var node2Remove = Clusters.Data.Nodes.FirstOrDefault(x => x.Host == node.Host && x.Port == node.Port && x.Scheme == node.Scheme);
         Clusters.Data.Nodes.Remove(node2Remove);
     }

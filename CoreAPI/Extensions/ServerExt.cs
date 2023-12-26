@@ -1,48 +1,36 @@
-﻿using Core.Services;
-using Core.Websocket;
-using CoreAPI.Middlewares;
-using Microsoft.AspNetCore.Mvc;
+﻿using Core.Websocket;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Utilities.Net;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 
 namespace Core.Extensions
 {
     public static class ServerExt
     {
-        public static IServiceCollection AddWebSocketManager(this IServiceCollection services)
+        public static IApplicationBuilder UseSocketHandler(this IApplicationBuilder app, IServiceProvider provider, string prefix = "/task")
         {
-            services.AddSingleton<ConnectionManager>();
-
-            foreach (var type in Assembly.GetExecutingAssembly().ExportedTypes)
-            {
-                if (type.GetTypeInfo().BaseType == typeof(WebSocketService))
-                {
-                    services.AddSingleton(type);
-                }
-            }
-            return services;
-        }
-
-        public static IApplicationBuilder UseSocketHandler(this IApplicationBuilder app, string prefix = "/task")
-        {
-            var factory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
-            var provider = factory.CreateScope().ServiceProvider;
-            var config = provider.GetService<IConfiguration>();
-            if (config.GetSection("Role").Get<string>() == Utils.Balancer) return app;
-            app.Map(prefix, app => app.UseMiddleware<WebSocketManagerMiddleware>(provider.GetService<WebSocketService>()));
+            app.Map(prefix, app => app.UseMiddleware<WebSocketManagerMiddleware>(provider.GetKeyedService<WebSocketService>(prefix)));
             return app;
         }
 
-        public static WebApplication UseClusterAPI(this WebApplication app)
+        public static IApplicationBuilder UseClusterSocket(this IApplicationBuilder app)
         {
-            app.MapPost("/api/cluster/add", ([FromBody] Node node, [FromServices] UserService _userSvc) =>
+            var factory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
+            var provider = factory.CreateScope().ServiceProvider;
+            var conf = provider.GetService<IConfiguration>();
+            var isBalancer = conf.GetSection("Role").Get<string>() == Utils.Balancer;
+            if (isBalancer)
             {
-                _userSvc.AddCluster(node);
-            });
-            app.MapPost("/api/cluster/remove", ([FromBody] Node node, [FromServices] UserService _userSvc) =>
+                app.UseSocketHandler(provider, "/clusters");
+            }
+            else
             {
-                _userSvc.RemoveCluster(node);
-            });
+                app.UseSocketHandler(provider, "/clusters");
+                app.UseSocketHandler(provider, "/task");
+            }
+
             return app;
         }
 

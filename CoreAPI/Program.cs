@@ -2,11 +2,9 @@ using Core.Extensions;
 using Core.Services;
 using Core.Websocket;
 using CoreAPI.Middlewares;
-using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.IO.Compression;
 using System.Text;
@@ -38,7 +36,7 @@ services.AddResponseCompression(options =>
 {
     options.Providers.Add<GzipCompressionProvider>();
 });
-services.AddWebSocketManager();
+services.AddSingleton<ConnectionManager>();
 services.AddMvc(options =>
 {
     options.EnableEndpointRouting = false;
@@ -54,8 +52,6 @@ services.AddMvc(options =>
     options.SerializerSettings.DateParseHandling = DateParseHandling.DateTimeOffset;
     options.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
 });
-services.AddHangfire(configuration => configuration.UseSqlServerStorage(conf.GetConnectionString($"Log")));
-services.AddHangfireServer();
 var tokenOptions = new TokenValidationParameters()
 {
     ValidIssuer = conf["Tokens:Issuer"],
@@ -81,7 +77,8 @@ services.AddDistributedMemoryCache();
 services.AddHttpContextAccessor();
 
 // the instance created for each request
-services.AddScoped<WebSocketService>();
+services.AddKeyedScoped<WebSocketService>("/clusters");
+services.AddKeyedScoped<WebSocketService>("/task");
 services.AddScoped<UserService>();
 
 var app = builder.Build();
@@ -89,13 +86,11 @@ var app = builder.Build();
 app.UseCors("MyPolicy");
 app.UseAuthentication();
 app.UseWebSockets();
-app.UseMiddleware<ExceptionMiddleware>();
-app.UseClusterAPI();
+app.UseMiddleware<GlobalMiddleware>();
 app.UseMiddleware<LoadBalaceMiddleware>();
-app.UseSocketHandler();
+app.UseClusterSocket();
 app.UseResponseCompression();
 app.UseStaticFiles();
-app.UseHangfireDashboard();
 app.UseMvc();
 app.UseRouting();
 

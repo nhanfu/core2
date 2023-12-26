@@ -1,6 +1,6 @@
 ﻿using Core.Extensions;
+using CoreAPI.Middlewares;
 using CoreAPI.ViewModels;
-using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
@@ -33,20 +33,26 @@ namespace Core.Websocket
         public string ClickAction { get; set; }
     }
 
-    public class WebSocketService(ConnectionManager connectionManager, IConfiguration configuration)
+    public class WebSocketService(ConnectionManager connManager, IConfiguration configuration)
     {
-        protected ConnectionManager ConnectionManager { get; set; } = connectionManager;
+        public const string AddNodeAction = "addNode";
+        public const string RemoveNodeAction = "removeNode";
         private readonly string FCM_API_KEY = configuration["FCM_API_KEY"];
         private readonly string FCM_SENDER_ID = configuration["FCM_SENDER_ID"];
 
-        public virtual string OnConnected(WebSocket socket, string userId, List<string> roleIds, string ip)
+        public virtual string OnClientConnected(WebSocket socket, string userId, List<string> roleIds, string ip)
         {
-            return ConnectionManager.AddSocket(socket, userId, roleIds, ip);
+            return connManager.AddDeviceSocket(socket, userId, roleIds, ip);
+        }
+
+        public virtual string OnClusterConnected(WebSocket socket, string host, int port)
+        {
+            return connManager.AddClusterSocket(socket, $"{host}/{port}/{Id.NewGuid()}");
         }
 
         public virtual async Task OnDisconnected(WebSocket socket)
         {
-            await ConnectionManager.RemoveSocket(ConnectionManager.GetId(socket));
+            await connManager.RemoveSocket(connManager.GetId(socket));
         }
 
         public async Task SendMessageAsync(WebSocket socket, string message)
@@ -84,7 +90,7 @@ namespace Core.Websocket
 
         public async Task SendMessageToAll(string message)
         {
-            var users = ConnectionManager.GetAll();
+            var users = connManager.GetDeviceSockets();
             foreach (var pair in users)
             {
                 if (pair.Value.State == WebSocketState.Open)
@@ -96,7 +102,7 @@ namespace Core.Websocket
 
         public async Task SendMessageToSubscribers(string message, string queueName)
         {
-            var connections = ConnectionManager.GetSocketByQueue(queueName);
+            var connections = connManager.GetSocketByQueue(queueName);
             foreach (var socket in connections)
             {
                 if (socket.State == WebSocketState.Open)
@@ -108,19 +114,19 @@ namespace Core.Websocket
 
         public ConcurrentDictionary<string, WebSocket> GetAll()
         {
-            return ConnectionManager.GetAll();
+            return connManager.GetDeviceSockets();
         }
 
         public Task SendMessageToUsersAsync(List<string> userIds, string message, string fcm = null)
         {
-            var userGroup = ConnectionManager.GetAll()
+            var userGroup = connManager.GetDeviceSockets()
                 .Where(x => userIds.Contains(x.Key.Split("/").FirstOrDefault()));
             return NotifyUserGroup(message, userGroup, fcm);
         }
 
         public async Task SendMessageToSocketAsync(string token, string message, string fcm = null)
         {
-            var pair = ConnectionManager.GetAll()
+            var pair = connManager.GetDeviceSockets()
                 .FirstOrDefault(x => x.Key == token);
             var fcmTask = SendFCMNotfication(fcm);
             if (pair.Value.State != WebSocketState.Open)
@@ -153,16 +159,26 @@ namespace Core.Websocket
             if (mq is null)
             {
                 await socket.SendAsync(Encoding.ASCII.GetBytes(deviceKey), WebSocketMessageType.Text, true, CancellationToken.None);
+                return;
             }
-            else if (mq.Action == "Subscribe")
+            var node = (mq.Message as string).TryParse<Node>();
+            switch (mq.Action)
             {
-                ConnectionManager.SubScribeQueue(deviceKey, mq.QueueName);
-                await socket.SendAsync(Encoding.ASCII.GetBytes(mq.Action), WebSocketMessageType.Text, true, CancellationToken.None);
-            }
-            else if (mq.Action == "Unsubscribe")
-            {
-                ConnectionManager.UnsubScribeQueue(deviceKey, mq.QueueName);
-                await socket.SendAsync(Encoding.ASCII.GetBytes(mq.Action), WebSocketMessageType.Text, true, CancellationToken.None);
+                case "Subscribe":
+                    connManager.SubScribeQueue(deviceKey, mq.QueueName);
+                    await socket.SendAsync(Encoding.ASCII.GetBytes(mq.Action), WebSocketMessageType.Text, true, CancellationToken.None);
+                    break;
+                case "Unsubscribe":
+                    connManager.UnsubScribeQueue(deviceKey, mq.QueueName);
+                    await socket.SendAsync(Encoding.ASCII.GetBytes(mq.Action), WebSocketMessageType.Text, true, CancellationToken.None);
+                    break;
+                case AddNodeAction:
+                    Clusters.Data.Nodes.Add(node);
+                    break;
+                case RemoveNodeAction:
+                    var node2Remove = Clusters.Data.Nodes.FirstOrDefault(x => x.Host == node.Host && x.Port == node.Port && x.Scheme == node.Scheme);
+                    Clusters.Data.Nodes.Remove(node2Remove);
+                    break;
             }
         }
     }
