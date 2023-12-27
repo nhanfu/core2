@@ -6,6 +6,7 @@ using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.Structs;
 using Core.ViewModels;
 using Newtonsoft.Json;
 using System;
@@ -1234,7 +1235,7 @@ namespace Core.Components
 #pragma warning disable IDE0017 // Simplify object initialization
             var com = new Component();
 #pragma warning restore IDE0017 // Simplify object initialization
-            com.Id = Guid.NewGuid().ToString();
+            com.Id = Uuid7.Id25();
             com.FieldName = nameof(AdvSearchVM.Conditions);
             com.Column = 4;
             com.ReferenceId = Utils.GetEntity(nameof(Models.History)).Id;
@@ -1687,7 +1688,7 @@ namespace Core.Components
             PatchVM patch;
             if (setting is null)
             {
-                patch = CreateSettingPatch(prefix, System.Id.NewGuid(), value);
+                patch = CreateSettingPatch(prefix, Uuid7.Id25(), value);
             }
             else
             {

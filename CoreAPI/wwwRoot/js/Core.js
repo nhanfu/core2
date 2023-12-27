@@ -1299,9 +1299,9 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             QueueName: {
                 get: function () {
-                    var $t;
+                    var $t, $t1;
                     var form;
-                    return ((form = Bridge.as(this, Core.Components.Forms.EditForm))) != null ? form.Feature.QueueName : ($t = this.GuiInfo) != null ? $t.QueueName : null;
+                    return ((form = Bridge.as(this, Core.Components.Forms.EditForm))) != null ? ($t = form.Feature) != null ? $t.QueueName : null : ($t1 = this.GuiInfo) != null ? $t1.QueueName : null;
                 }
             }
         },
@@ -2107,7 +2107,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     details.remove(idField);
                 }
                 if (this.EntityId == null) {
-                    details.add(($t = new Core.ViewModels.PatchDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = System.Id.op_Implicit$7(System.Id.NewGuid()), $t));
+                    details.add(($t = new Core.ViewModels.PatchDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = Core.Structs.Uuid7.Id25(), $t));
                 } else {
                     details.add(($t = new Core.ViewModels.PatchDetail(), $t.Field = Core.Extensions.Utils.IdField, $t.Value = this.EntityId, $t.OldVal = this.EntityId, $t));
                 }
@@ -5857,6 +5857,17 @@ Bridge.assembly("Core", function ($asm, globals) {
                     res = JSON.parse(jsonPayload);
                     return res;
                 },
+                GenerateRandomToken: function (maxLength) {
+                    if (maxLength === void 0) { maxLength = 32; }
+                    var builder = new System.Text.StringBuilder();
+                    var random = new System.Random.ctor();
+                    var ch;
+                    for (var i = 0; System.Nullable.lt(i, maxLength); i = (i + 1) | 0) {
+                        ch = System.Convert.toChar(System.Convert.toInt32(Bridge.box(Math.floor(26 * random.NextDouble() + 65), System.Double, System.Double.format, System.Double.getHashCode)), null, 9);
+                        builder.append(String.fromCharCode(ch));
+                    }
+                    return builder.toString();
+                },
                 AddDebugger: function () {
                     debugger;
                 },
@@ -9209,6 +9220,289 @@ Bridge.assembly("Core", function ($asm, globals) {
         }
     });
 
+    /** @namespace Core.Structs */
+
+    /**
+     * Generate a UUIDv7 following the Peabody and Davis RFC draft.
+     Aim is to get get 100ns resolution if possible, 
+     working on both Windows and Linux.
+     *
+     * @public
+     * @class Core.Structs.Uuid7
+     */
+    Bridge.define("Core.Structs.Uuid7", {
+        statics: {
+            fields: {
+                /**
+                 * A UUIDv7 Guid transformed into a 25-character lower-case string which 
+                 preserves the time-ordered property. Using this distinct representation can
+                 reduce the chance that some v4 UUIDs end up in a collection of v7 UUIDs.
+                 As for the Uuid7.Guid(), the current time is used, unless overridden.
+                 The special value of 0 gives an all zero uuid.
+                 *
+                 * @static
+                 * @private
+                 * @memberof Core.Structs.Uuid7
+                 * @constant
+                 * @default "0123456789abcdefghijkmnopqrstuvwxyz"
+                 * @type string
+                 * @return  {[type]}        25-character string like "0q974fmmvghw8qfathid7qekc" that is time-sortable.
+                 */
+                alphabet: null,
+                _x: System.Int64(0),
+                _y: System.Int64(0),
+                _z: System.Int64(0),
+                _seq: 0,
+                _x_asOf: System.Int64(0),
+                _y_asOf: System.Int64(0),
+                _z_asOf: System.Int64(0),
+                _seq_asOf: 0
+            },
+            ctors: {
+                init: function () {
+                    this.alphabet = "0123456789abcdefghijkmnopqrstuvwxyz";
+                    this._x = System.Int64(0);
+                    this._y = System.Int64(0);
+                    this._z = System.Int64(0);
+                    this._seq = 0;
+                    this._x_asOf = System.Int64(0);
+                    this._y_asOf = System.Int64(0);
+                    this._z_asOf = System.Int64(0);
+                    this._seq_asOf = 0;
+                }
+            },
+            methods: {
+                /**
+                 * The current time in integer nanoseconds, 
+                 measured from the Unix epoch (midnight on 1 January 1970).
+                 *
+                 * @static
+                 * @public
+                 * @this Core.Structs.Uuid7
+                 * @memberof Core.Structs.Uuid7
+                 * @return  {System.Int64}        Integer number of nanoseconds.
+                 */
+                TimeNs: function () {
+                    return System.Int64(100).mul(System.DateTime.subdd(System.DateTime.getUtcNow(), System.DateTime.create(1970, 1, 1)).getTicks());
+                },
+                /**
+                 * A new UUIDv7 Guid, which is time-ordered, with a nominal
+                 time resolution of 100ns and 32 bits of randomness.
+                 The current time is used, unless overridden.
+                 Consecutive calls using the same Uuid7 instance employ a 14-bit sequence
+                 counter so their uuids/Id25s stay time-ordered. The lowest 48 bits are random.
+                 The special value of 0 gives an all zero uuid.
+                 *
+                 * @static
+                 * @public
+                 * @this Core.Structs.Uuid7
+                 * @memberof Core.Structs.Uuid7
+                 * @param   {?System.Int64}    asOfNs    Optional time to use, in integer nanoseconds since the Unix epoch.
+                 * @return  {System.Guid}                Guid that follows UUID v7 format whose string and integer representations are time-sortable.
+                 */
+                Guid: function (asOfNs) {
+                    if (asOfNs === void 0) { asOfNs = null; }
+                    /* The time resolution stored here is 24 fractional bits,
+                      corresponding to 50ns. This is sufficient for the underlying
+                      100ns tick size. The actual clock precision may be several
+                      times less than this.
+
+                     0                   1                   2                   3
+                     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                    |                            unixts                             |
+                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                    |unixts |   msec (12 bits)      |  ver  |     usec (12 bits)    |
+                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                    |var|       seq (14 bits)       |          rand (16 bits)       |
+                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                    |                          rand (32 bits)                       |
+                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+                    */
+                    var uuidVersion = 7;
+                    // The UUID variant is the top-most bits of byte #9.
+                    // The number of bits increases because as new variants were added, 
+                    // the previous maximum variant value with "all 1 bits" got
+                    // extended with a new 0/1 bit to the right.
+                    // Thus variant 1 for RFC4122 UUIDs is represented by bits 10.
+                    // (Variant 2 for Microsoft Guids is represented by three bits 110).
+                    var uuidVariant = 2;
+                    var maxSeqValue = 16383;
+
+                    var ns;
+                    if (System.Nullable.lifteq("equals", asOfNs, System.Int64.lift(null))) {
+                        ns = Core.Structs.Uuid7.TimeNs();
+                    } else {
+                        if (System.Nullable.lifteq("equals", asOfNs, System.Int64(0))) {
+                            return new System.Guid.$ctor4("00000000-0000-0000-0000-000000000000");
+                        } else {
+                            ns = System.Nullable.getValue(asOfNs);
+                        }
+                    }
+                    var rest1 = { };
+
+                    // Get timestamp components of length 32, 16, 12 bits,
+                    // with the first 36 bits being whole seconds and
+                    // the remaining 24 bits being fractional seconds.
+                    var x = System.Int64.divRem(ns, System.Int64([-1179869184,3]), rest1);
+                    var rest2 = { };
+                    var y = System.Int64.divRem(rest1.v.shl(16), System.Int64([-1179869184,3]), rest2);
+                    var _discard1 = { };
+                    var z = System.Int64.divRem(rest2.v.shl(12), System.Int64([-1179869184,3]), _discard1);
+
+                    var seq;
+                    if (System.Nullable.liftne("ne", asOfNs, System.Int64.lift(null))) {
+                        if (x.equals(Core.Structs.Uuid7._x) && y.equals(Core.Structs.Uuid7._y) && z.equals(Core.Structs.Uuid7._z)) {
+                            // Shouldn't be possible to call often enough that seq overflows
+                            // before the next time tick. If that does happen
+                            // subsequent uuids with that time tick will be unique
+                            // (because of the random bytes) but no longer ordered.
+                            if (Core.Structs.Uuid7._seq < maxSeqValue) {
+                                Core.Structs.Uuid7._seq = (Core.Structs.Uuid7._seq + 1) | 0;
+                            }
+                        } else {
+                            Core.Structs.Uuid7._seq = 0;
+                            Core.Structs.Uuid7._x = x;
+                            Core.Structs.Uuid7._y = y;
+                            Core.Structs.Uuid7._z = z;
+                        }
+                        seq = Core.Structs.Uuid7._seq;
+                    } else {
+                        // Check other counters if using asOfNs
+                        if (x.equals(Core.Structs.Uuid7._x_asOf) && y.equals(Core.Structs.Uuid7._y_asOf) && z.equals(Core.Structs.Uuid7._z_asOf)) {
+                            if (Core.Structs.Uuid7._seq_asOf < maxSeqValue) {
+                                Core.Structs.Uuid7._seq_asOf = (Core.Structs.Uuid7._seq_asOf + 1) | 0;
+                            }
+                        } else {
+                            Core.Structs.Uuid7._seq_asOf = 0;
+                            Core.Structs.Uuid7._x_asOf = x;
+                            Core.Structs.Uuid7._y_asOf = y;
+                            Core.Structs.Uuid7._z_asOf = z;
+                        }
+                        seq = Core.Structs.Uuid7._seq_asOf;
+                    }
+
+                    // Last 8 bytes of uuid have variant and sequence in first two bytes,
+                    // then six bytes of randomness.
+                    var last8Bytes = System.Array.init(8, 0, System.Byte);
+                    var random = new System.Random.ctor();
+                    random.NextBytes(last8Bytes);
+                    last8Bytes[System.Array.index(0, last8Bytes)] = (uuidVariant << 6 | seq >> 8) & 255;
+                    last8Bytes[System.Array.index(1, last8Bytes)] = (seq & 255) & 255;
+
+                    // Don't use Guid(bytes[]), which internally uses a mix of
+                    // big and little endian byte orderings for historical reasons
+                    // (see https://en.wikipedia.org/wiki/Universally_unique_identifier#Variants).
+                    // Instead use Guid(int, short, short, bytes[]), which doesn't mix endianness.
+                    return new System.Guid.$ctor3(System.Int64.clip32(x), System.Int64.clip16(y), System.Int64.clip16(System.Int64((uuidVersion << 12)).add(z).and(System.Int64(65535))), last8Bytes);
+                },
+                String: function (asOfNs) {
+                    if (asOfNs === void 0) { asOfNs = null; }
+                    return Core.Structs.Uuid7.Guid(asOfNs).toString();
+                },
+                /**
+                 * A UUIDv7 Guid transformed into a 25-character lower-case string which 
+                 preserves the time-ordered property. This representation, called Id25,
+                 is distinctive and reduces the chance that some v4 UUIDs end up 
+                 in a collection meant to contain only v7 UUIDs.
+                 As for the Uuid7.Guid(), the current time is used, unless overridden.
+                 Consecutive calls using the same Uuid7 instance employ a 14-bit sequence
+                 counter so their uuids/Id25s stay time-ordered. The lowest 48 bits are random.
+                 The special value of 0 gives an all zero uuid.
+                 *
+                 * @static
+                 * @public
+                 * @this Core.Structs.Uuid7
+                 * @memberof Core.Structs.Uuid7
+                 * @param   {?System.Int64}    asOfNs    Optional time to use, in integer nanoseconds since the Unix epoch.
+                 * @return  {string}                     25-character string like "0q974fmmvghw8qfathid7qekc" that is time-sortable.
+                 */
+                Id25: function (asOfNs) {
+                    if (asOfNs === void 0) { asOfNs = null; }
+                    var guid = Core.Structs.Uuid7.Guid(asOfNs);
+                    return Core.Structs.Uuid7.Id25Internal(guid);
+                },
+                Id25Internal: function (guid) {
+                    var id25_chars = System.Array.init(25, 0, System.Char);
+
+                    var arr = guid.ToByteArray();
+                    // C# GUIDs use a mix of big endian and little ending ordering.
+                    // e.g. Guid  00010203-0405-0607-0809-0A0B0C0D0E0F becomes
+                    // byte array 030201000504070608090A0B0C0D0E0F.
+                    // So do endian conversion for first 8 bytes as long-short-short.
+                    var b;
+                    b = arr[System.Array.index(3, arr)];
+                    arr[System.Array.index(3, arr)] = arr[System.Array.index(0, arr)];
+                    arr[System.Array.index(0, arr)] = b;
+                    b = arr[System.Array.index(2, arr)];
+                    arr[System.Array.index(2, arr)] = arr[System.Array.index(1, arr)];
+                    arr[System.Array.index(1, arr)] = b;
+                    b = arr[System.Array.index(4, arr)];
+                    arr[System.Array.index(4, arr)] = arr[System.Array.index(5, arr)];
+                    arr[System.Array.index(5, arr)] = b;
+                    b = arr[System.Array.index(6, arr)];
+                    arr[System.Array.index(6, arr)] = arr[System.Array.index(7, arr)];
+                    arr[System.Array.index(7, arr)] = b;
+
+                    var isZero = System.Linq.Enumerable.from(arr, System.Byte).all(function (i) {
+                            return i === 0;
+                        });
+                    var uuidVersion = arr[System.Array.index(6, arr)] >> 4;
+                    var uuidVariant = arr[System.Array.index(8, arr)] >> 6;
+                    if ((!isZero) && (uuidVersion !== 7 || uuidVariant !== 2)) {
+                        throw new System.ArgumentException.$ctor1("Not v7 UUID");
+                    }
+                    var rest = Core.Structs.Uuid7.ArrToBigInt(arr);
+                    var rem = rest;
+                    var divisor = Core.Structs.Uuid7.ArrToBigInt(System.Text.Encoding.ASCII.GetBytes$2("#")); // # is 35
+
+                    for (var pos = 24; pos >= 0; pos = (pos - 1) | 0) {
+                        rem = rest % divisor;
+                        rest /= divisor;
+                        var c = Core.Structs.Uuid7.alphabet[rem];
+                        id25_chars[System.Array.index(pos, id25_chars)] = c;
+                    }
+                    return id25_chars.join('');
+                },
+                ArrToBigInt: function (arr) {
+                    return arr.reduce((acc, val) => (acc << 8n) | BigInt(val), 0n);
+                    return null;
+                },
+                /**
+                 * Check whether the tick values on this system are being returned
+                 with ~100ns precision. We should not see 15ms!
+                 Typical values on Win11 seem to be 132ns.
+                 *
+                 * @static
+                 * @public
+                 * @this Core.Structs.Uuid7
+                 * @memberof Core.Structs.Uuid7
+                 * @return  {string}        String with description of timing analysis.
+                 */
+                CheckTimingPrecision: function () {
+                    var distinctValues = new (System.Collections.Generic.HashSet$1(System.Int64)).ctor();
+                    var sw = System.Diagnostics.Stopwatch.startNew();
+                    var numLoops = System.Int64(0);
+                    while (sw.timeSpan().getTotalSeconds() < 0.5 && numLoops.lt(System.Int64(1000))) {
+                        distinctValues.add(Core.Structs.Uuid7.TimeNs());
+                        numLoops = numLoops.add(System.Int64(1));
+                    }
+                    sw.stop();
+
+                    var numSamples = distinctValues.Count;
+                    var actualPrecisionNs = 1000000 * sw.timeSpan().getTotalMilliseconds() / numSamples;
+                    var maxPrecisionNs = 1000000 * sw.timeSpan().getTotalMilliseconds() / System.Int64.toNumber(numLoops);
+
+                    if (System.Int64(numSamples).equals(numLoops)) {
+                        return System.String.format("Precision is {0:0}ns with no repeats in {1:N0} loops taking {2}ms", Bridge.box(actualPrecisionNs, System.Double, System.Double.format, System.Double.getHashCode), numLoops, Bridge.box(sw.timeSpan().getTotalMilliseconds(), System.Double, System.Double.format, System.Double.getHashCode));
+                    } else {
+                        return System.String.format("Precision is {0:0}ns rather than {1:0}ns ({2:N0} unique timestamps from {3:N0} loops taking {4}ms)", Bridge.box(actualPrecisionNs, System.Double, System.Double.format, System.Double.getHashCode), Bridge.box(maxPrecisionNs, System.Double, System.Double.format, System.Double.getHashCode), Bridge.box(numSamples, System.Int32), numLoops, Bridge.box(sw.timeSpan().getTotalMilliseconds(), System.Double, System.Double.format, System.Double.getHashCode));
+                    }
+                }
+            }
+        }
+    });
+
     Bridge.define("Core.ViewModels.ConfigEmailVM", {
         props: {
             Server: null,
@@ -9414,7 +9708,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             RefreshTokenExp: null,
             HashPassword: null,
             Recovery: null,
-            TenantCode: null,
             Vendor: null,
             RoleIds: null,
             RoleNames: null,
@@ -9426,6 +9719,8 @@ Bridge.assembly("Core", function ($asm, globals) {
             RegionId: null,
             Additional: null,
             SigninDate: null,
+            TenantCode: null,
+            Env: null,
             ConnKey: null
         },
         ctors: {
@@ -9433,6 +9728,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.AccessTokenExp = new System.DateTimeOffset();
                 this.RefreshTokenExp = new System.DateTimeOffset();
                 this.SigninDate = new System.DateTimeOffset();
+                this.TenantCode = Core.Clients.Client.Tenant;
+                this.Env = Core.Clients.Client.Env;
                 this.ConnKey = Core.Clients.Client.ConnKey;
             }
         }
@@ -9448,497 +9745,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.$initialize();
                 System.Attribute.ctor.call(this);
                 this.Description = description;
-            }
-        }
-    });
-
-    /** @namespace System */
-
-    /**
-     * Represents a globally unique identifier (GUID) with a 
-     shorter string value. Sguid
-     *
-     * @public
-     * @class System.Id
-     */
-    Bridge.define("System.Id", {
-        $kind: "struct",
-        statics: {
-            fields: {
-                /**
-                 * A read-only instance of the ShortGuid class whose value 
-                 is guaranteed to be all zeroes.
-                 *
-                 * @static
-                 * @public
-                 * @readonly
-                 * @memberof System.Id
-                 * @type System.Id
-                 */
-                Empty: null
-            },
-            ctors: {
-                init: function () {
-                    this.Empty = new System.Id();
-                    this.Empty = new System.Id.$ctor1(System.Guid.Empty);
-                }
-            },
-            methods: {
-                /**
-                 * Initialises a new instance of the ShortGuid class
-                 *
-                 * @static
-                 * @public
-                 * @this System.Id
-                 * @memberof System.Id
-                 * @return  {System.Id}
-                 */
-                NewGuid: function () {
-                    return new System.Id.$ctor1(System.Guid.NewGuid());
-                },
-                Gt: function (obj1, obj2) {
-                    return System.Id.op_GreaterThan(System.Id.From(obj1), System.Id.From(obj2));
-                },
-                Ge: function (obj1, obj2) {
-                    return System.Id.op_GreaterThanOrEqual(System.Id.From(obj1), System.Id.From(obj2));
-                },
-                Lt: function (obj1, obj2) {
-                    return System.Id.op_LessThan(System.Id.From(obj1), System.Id.From(obj2));
-                },
-                Le: function (obj1, obj2) {
-                    return System.Id.op_LessThanOrEqual(System.Id.From(obj1), System.Id.From(obj2));
-                },
-                From: function (obj) {
-                    var $t;
-                    if (obj == null) {
-                        throw new System.ArgumentNullException.$ctor1("obj");
-                    }
-                    var id = obj;
-                    var i32;
-                    if (((i32 = Bridge.is(id, System.Int32) ? System.Nullable.getValue(Bridge.cast(Bridge.unbox(id, System.Int32), System.Int32)) : null)) != null) {
-                        return new System.Id.$ctor2(i32);
-                    } else {
-                        var i64;
-                        if (((i64 = Bridge.is(id, System.Int32) ? System.Nullable.getValue(Bridge.cast(Bridge.unbox(id, System.Int32), System.Int32)) : null)) != null) {
-                            return new System.Id.$ctor2(i64);
-                        } else {
-                            var str;
-                            if (((str = Bridge.as(id, System.String))) != null) {
-                                return new System.Id.$ctor4(str);
-                            } else {
-                                var guid = new System.Guid();
-                                if (System.Nullable.liftne(System.Guid.op_Inequality, ((guid = Bridge.is(id, System.Guid) ? System.Nullable.getValue(Bridge.cast(Bridge.unbox(id, System.Guid), System.Guid)) : null)), null)) {
-                                    return new System.Id.$ctor1(guid);
-                                } else {
-                                    id = ($t = Bridge.Reflection.getMembers(Bridge.getType(obj), 16, 284, "Id")) != null ? Bridge.Reflection.midel($t.g, Bridge.unbox(obj))() : null;
-                                    if (id == null) {
-                                        throw new System.InvalidCastException.$ctor1("Object does not contain Id field or Id field is null");
-                                    }
-
-                                    return System.Id.From(id);
-                                }
-                            }
-                        }
-                    }
-                },
-                /**
-                 * Creates a new instance of a Guid using the string value, 
-                 then returns the base64 encoded version of the Guid.
-                 *
-                 * @static
-                 * @public
-                 * @this System.Id
-                 * @memberof System.Id
-                 * @param   {string}    value    An actual Guid string (i.e. not a ShortGuid)
-                 * @return  {string}
-                 */
-                Encode$1: function (value) {
-                    var guid = new System.Guid.$ctor4(value);
-                    return System.Id.Encode(guid);
-                },
-                /**
-                 * Encodes the given Guid as a base64 string that is 22 
-                 characters long.
-                 *
-                 * @static
-                 * @public
-                 * @this System.Id
-                 * @memberof System.Id
-                 * @param   {System.Guid}    guid    The Guid to encode
-                 * @return  {string}
-                 */
-                Encode: function (guid) {
-                    var encoded = System.Convert.toBase64String(guid.ToByteArray(), null, null, null);
-                    encoded = System.String.replaceAll(System.String.replaceAll(encoded, "/", "_"), "+", "-");
-                    return encoded.substr(0, 22);
-                },
-                /**
-                 * Decodes the given base64 string
-                 *
-                 * @static
-                 * @public
-                 * @this System.Id
-                 * @memberof System.Id
-                 * @param   {string}         value    The base64 encoded string of a Guid
-                 * @return  {System.Guid}             A new Guid
-                 */
-                Decode: function (value) {
-                    value = System.String.replaceAll(System.String.replaceAll(value, "_", "/"), "-", "+");
-                    var buffer = System.Convert.fromBase64String((value || "") + "==");
-                    return new System.Guid.$ctor1(buffer);
-                }/**
-                 * Determines if both ShortGuids have the same underlying 
-                 Guid value.
-                 *
-                 * @static
-                 * @public
-                 * @this System.Id
-                 * @memberof System.Id
-                 * @param   {System.Id}    x    
-                 * @param   {System.Id}    y
-                 * @return  {boolean}
-                 */
-                ,
-                op_Equality: function (x, y) {
-                    if (x == null) {
-                        return y == null;
-                    }
-
-                    return System.Nullable.lifteq(System.Guid.op_Equality, x._guidVal, y._guidVal) && Bridge.referenceEquals(x._strVal, y._strVal) && System.Nullable.eq(x._intVal, y._intVal) && System.Nullable.lifteq("equals", x._longVal, y._longVal);
-                }/**
-                 * Determines if both Id have the same underlying of int
-                 Int value.
-                 *
-                 * @static
-                 * @public
-                 * @this System.Id
-                 * @memberof System.Id
-                 * @param   {System.Id}    x    
-                 * @param   {System.Id}    y
-                 * @return  {boolean}
-                 */
-                ,
-                op_LessThan: function (x, y) {
-                    if (x._strVal != null && y._strVal != null) {
-                        return System.String.compare(x._strVal, y._strVal, 2) < 0;
-                    } else if (System.Nullable.hasValue(x._intVal) && System.Nullable.hasValue(y._intVal)) {
-                        return System.Nullable.getValue(x._intVal) < System.Nullable.getValue(y._intVal);
-                    } else if (System.Nullable.hasValue(x._longVal) && System.Nullable.hasValue(y._longVal)) {
-                        return System.Nullable.getValue(x._longVal).lt(System.Nullable.getValue(y._longVal));
-                    }
-                    throw new System.ArithmeticException.$ctor1("Cannot determine what type of underlaying Id data");
-                },
-                op_GreaterThan: function (x, y) {
-                    if (x._strVal != null && y._strVal != null) {
-                        return System.String.compare(x._strVal, y._strVal, 2) > 0;
-                    } else if (System.Nullable.hasValue(x._intVal) && (System.Nullable.hasValue(y._intVal) || System.Nullable.hasValue(y._longVal))) {
-                        return System.Nullable.hasValue(y._intVal) ? System.Nullable.getValue(x._intVal) >= System.Nullable.getValue(y._intVal) : System.Int64(System.Nullable.getValue(x._intVal)).gte(System.Nullable.getValue(y._longVal));
-                    } else if (System.Nullable.hasValue(x._longVal) && (System.Nullable.hasValue(y._intVal) || System.Nullable.hasValue(y._longVal))) {
-                        return System.Nullable.hasValue(y._intVal) ? System.Nullable.getValue(x._longVal).gte(System.Int64(System.Nullable.getValue(y._intVal))) : System.Nullable.getValue(x._longVal).gte(System.Nullable.getValue(y._longVal));
-                    }
-                    throw new System.ArithmeticException.$ctor1("Cannot determine what type of underlaying Id data");
-                }/**
-                 * Determines if both Id have the same underlying of int
-                 Int value.
-                 *
-                 * @static
-                 * @public
-                 * @this System.Id
-                 * @memberof System.Id
-                 * @param   {System.Id}    x    
-                 * @param   {System.Id}    y
-                 * @return  {boolean}
-                 */
-                ,
-                op_LessThanOrEqual: function (x, y) {
-                    if (x._strVal != null && y._strVal != null) {
-                        return System.String.compare(x._strVal, y._strVal, 2) <= 0;
-                    } else if (System.Nullable.hasValue(x._intVal) && (System.Nullable.hasValue(y._intVal) || System.Nullable.hasValue(y._longVal))) {
-                        return System.Nullable.hasValue(y._intVal) ? System.Nullable.getValue(x._intVal) <= System.Nullable.getValue(y._intVal) : System.Int64(System.Nullable.getValue(x._intVal)).lte(System.Nullable.getValue(y._longVal));
-                    } else if (System.Nullable.hasValue(x._longVal) && (System.Nullable.hasValue(y._intVal) || System.Nullable.hasValue(y._longVal))) {
-                        return System.Nullable.hasValue(y._intVal) ? System.Nullable.getValue(x._longVal).lte(System.Int64(System.Nullable.getValue(y._intVal))) : System.Nullable.getValue(x._longVal).lte(System.Nullable.getValue(y._longVal));
-                    }
-                    throw new System.ArithmeticException.$ctor1("Cannot determine what type of underlaying Id data");
-                },
-                op_GreaterThanOrEqual: function (x, y) {
-                    if (x._strVal != null && y._strVal != null) {
-                        return System.String.compare(x._strVal, y._strVal, 2) >= 0;
-                    } else if (System.Nullable.hasValue(x._intVal) && (System.Nullable.hasValue(y._intVal) || System.Nullable.hasValue(y._longVal))) {
-                        return System.Nullable.hasValue(y._intVal) ? System.Nullable.getValue(x._intVal) >= System.Nullable.getValue(y._intVal) : System.Int64(System.Nullable.getValue(x._intVal)).gte(System.Nullable.getValue(y._longVal));
-                    } else if (System.Nullable.hasValue(x._longVal) && (System.Nullable.hasValue(y._intVal) || System.Nullable.hasValue(y._longVal))) {
-                        return System.Nullable.hasValue(y._intVal) ? System.Nullable.getValue(x._longVal).gte(System.Int64(System.Nullable.getValue(y._intVal))) : System.Nullable.getValue(x._longVal).gte(System.Nullable.getValue(y._longVal));
-                    }
-                    throw new System.ArithmeticException.$ctor1("Cannot determine what type of underlaying Id data");
-                }/**
-                 * Determines if both ShortGuids do not have the 
-                 same underlying Guid value.
-                 *
-                 * @static
-                 * @public
-                 * @this System.Id
-                 * @memberof System.Id
-                 * @param   {System.Id}    x    
-                 * @param   {System.Id}    y
-                 * @return  {boolean}
-                 */
-                ,
-                op_Inequality: function (x, y) {
-                    return System.Nullable.liftne(System.Guid.op_Inequality, x._guidVal, y._guidVal) && !Bridge.referenceEquals(x._strVal, y._strVal) && System.Nullable.neq(x._intVal, y._intVal) && System.Nullable.liftne("ne", x._longVal, y._longVal);
-                }/**
-                 * Implicitly converts the ShortGuid to it's string equivilent
-                 *
-                 * @static
-                 * @public
-                 * @this System.Id
-                 * @memberof System.Id
-                 * @param   {System.Id}    shortGuid
-                 * @return  {string}
-                 */
-                ,
-                op_Implicit$7: function (shortGuid) {
-                    return shortGuid._strVal;
-                },
-                op_Implicit$5: function (d) {
-                    var $t;
-                    return ($t = d._intVal, $t != null ? $t : 0);
-                },
-                op_Implicit$6: function (id) {
-                    var $t;
-                    return ($t = id._longVal, $t != null ? $t : System.Int64(0));
-                }/**
-                 * Implicitly converts the ShortGuid to it's Guid equivilent
-                 *
-                 * @static
-                 * @public
-                 * @this System.Id
-                 * @memberof System.Id
-                 * @param   {System.Id}      shortGuid
-                 * @return  {System.Guid}
-                 */
-                ,
-                op_Implicit: function (shortGuid) {
-                    var $t;
-                    return ($t = shortGuid._guidVal, $t != null ? $t : System.Guid.Empty);
-                }/**
-                 * Implicitly converts the string to a ShortGuid
-                 *
-                 * @static
-                 * @public
-                 * @this System.Id
-                 * @memberof System.Id
-                 * @param   {string}       shortGuid
-                 * @return  {System.Id}
-                 */
-                ,
-                op_Implicit$4: function (shortGuid) {
-                    return new System.Id.$ctor4(shortGuid);
-                }/**
-                 * Implicitly converts the Guid to a ShortGuid
-                 *
-                 * @static
-                 * @public
-                 * @this System.Id
-                 * @memberof System.Id
-                 * @param   {System.Guid}    guid
-                 * @return  {System.Id}
-                 */
-                ,
-                op_Implicit$1: function (guid) {
-                    return new System.Id.$ctor1(guid);
-                },
-                op_Implicit$2: function (i32) {
-                    return new System.Id.$ctor2(i32);
-                },
-                op_Implicit$3: function (i64) {
-                    return new System.Id.$ctor3(i64);
-                },
-                getDefaultValue: function () { return new System.Id(); }
-            }
-        },
-        fields: {
-            _guidVal: null,
-            _strVal: null,
-            _intVal: null,
-            _longVal: null
-        },
-        props: {
-            /**
-             * Gets the underlying Guid
-             *
-             * @instance
-             * @public
-             * @readonly
-             * @memberof System.Id
-             * @function GuidVal
-             * @type System.Guid
-             */
-            GuidVal: {
-                get: function () {
-                    var $t;
-                    return ($t = this._guidVal, $t != null ? $t : System.Guid.Empty);
-                }
-            },
-            /**
-             * Gets the underlying base64 encoded string
-             *
-             * @instance
-             * @public
-             * @readonly
-             * @memberof System.Id
-             * @function StrVal
-             * @type string
-             */
-            StrVal: {
-                get: function () {
-                    return this._strVal;
-                }
-            },
-            IntVal: {
-                get: function () {
-                    var $t;
-                    return ($t = this._intVal, $t != null ? $t : 0);
-                }
-            },
-            LongVal: {
-                get: function () {
-                    var $t;
-                    return ($t = this._longVal, $t != null ? $t : System.Int64(0));
-                }
-            }
-        },
-        ctors: {
-            /**
-             * Creates a ShortGuid from a base64 encoded string
-             *
-             * @instance
-             * @public
-             * @this System.Id
-             * @memberof System.Id
-             * @param   {string}    value    The encoded guid as a 
-             base64 string
-             * @return  {void}
-             */
-            $ctor4: function (value) {
-                this.$initialize();
-                this._strVal = value;
-                this._guidVal = System.Id.Decode(value);
-                this._intVal = 0;
-                this._longVal = System.Int64(0);
-            },
-            $ctor2: function (value) {
-                this.$initialize();
-                this._strVal = null;
-                this._guidVal = null;
-                this._intVal = value;
-                this._longVal = System.Int64.lift(null);
-            },
-            $ctor3: function (value) {
-                this.$initialize();
-                this._strVal = null;
-                this._guidVal = null;
-                this._intVal = null;
-                this._longVal = value;
-            },
-            /**
-             * Creates a ShortGuid from a Guid
-             *
-             * @instance
-             * @public
-             * @this System.Id
-             * @memberof System.Id
-             * @param   {System.Guid}    guid    The Guid to encode
-             * @return  {void}
-             */
-            $ctor1: function (guid) {
-                this.$initialize();
-                this._strVal = System.Id.Encode(guid);
-                this._guidVal = guid;
-                this._intVal = null;
-                this._longVal = System.Int64.lift(null);
-            },
-            ctor: function () {
-                this.$initialize();
-            }
-        },
-        methods: {
-            /**
-             * Returns the base64 encoded guid as a string
-             *
-             * @instance
-             * @public
-             * @override
-             * @this System.Id
-             * @memberof System.Id
-             * @return  {string}
-             */
-            toString: function () {
-                var $t, $t1;
-                return ($t = this._strVal, $t != null ? $t : ($t1 = (this._intVal != null ? Bridge.toString(System.Nullable.getValue(this._intVal)) : null), $t1 != null ? $t1 : (System.Nullable.liftne("ne", this._longVal, System.Int64.lift(null)) ? Bridge.toString(System.Nullable.getValue(this._longVal)) : null)));
-            },
-            /**
-             * Returns a value indicating whether this instance and a 
-             specified Object represent the same type and value.
-             *
-             * @instance
-             * @public
-             * @override
-             * @this System.Id
-             * @memberof System.Id
-             * @param   {System.Object}    obj    The object to compare
-             * @return  {boolean}
-             */
-            equals: function (obj) {
-                var $t, $t1, $t2, $t3;
-                if (obj == null) {
-                    return false;
-                } else {
-                    var id = new System.Id();
-                    if (System.Id.op_Inequality(((id = Bridge.is(obj, System.Id) ? System.Nullable.getValue(Bridge.cast(Bridge.unbox(obj, System.Id), System.Id)) : null)), System.Id.op_Implicit$4(null))) {
-                        return System.Id.op_Equality(this, id);
-                    } else {
-                        var guid = new System.Guid();
-                        if (System.Nullable.liftne(System.Guid.op_Inequality, ((guid = Bridge.is(obj, System.Guid) ? System.Nullable.getValue(Bridge.cast(Bridge.unbox(obj, System.Guid), System.Guid)) : null)), null)) {
-                            return ($t = (System.Nullable.liftne(System.Guid.op_Inequality, this._guidVal, null) ? System.Nullable.getValue(this._guidVal).equalsT(guid) : null), $t != null ? $t : false);
-                        } else {
-                            var str;
-                            if (((str = Bridge.as(obj, System.String))) != null) {
-                                return ($t1 = (this._strVal != null ? System.String.equals(this._strVal, str) : null), $t1 != null ? $t1 : false);
-                            } else {
-                                var i32;
-                                if (((i32 = Bridge.is(obj, System.Int32) ? System.Nullable.getValue(Bridge.cast(Bridge.unbox(obj, System.Int32), System.Int32)) : null)) != null) {
-                                    return ($t2 = (this._intVal != null ? System.Nullable.getValue(this._intVal) === i32 : null), $t2 != null ? $t2 : false);
-                                } else {
-                                    var i64;
-                                    if (System.Nullable.liftne("ne", ((i64 = Bridge.is(obj, System.Int64) ? System.Nullable.getValue(Bridge.cast(Bridge.unbox(obj, System.Int64), System.Int64)) : null)), System.Int64.lift(null))) {
-                                        return ($t3 = (System.Nullable.liftne("ne", this._longVal, System.Int64.lift(null)) ? System.Nullable.getValue(this._longVal).equalsT(i64) : null), $t3 != null ? $t3 : false);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                return false;
-            },
-            /**
-             * Returns the HashCode for underlying Guid.
-             *
-             * @instance
-             * @public
-             * @override
-             * @this System.Id
-             * @memberof System.Id
-             * @return  {number}
-             */
-            getHashCode: function () {
-                return this._guidVal.getHashCode();
-            },
-            $clone: function (to) {
-                var s = to || new System.Id();
-                s._guidVal = this._guidVal;
-                s._strVal = this._strVal;
-                s._intVal = this._intVal;
-                s._longVal = this._longVal;
-                return s;
             }
         }
     });
@@ -10998,7 +10804,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         }));
                         return;
                 }
-                com.Id = System.Id.op_Implicit$7(System.Id.NewGuid());
+                com.Id = Core.Structs.Uuid7.Id25();
                 com.Visibility = true;
                 com.Label = "";
                 com.ComponentGroupId = componentGroup.Id;
@@ -13525,7 +13331,7 @@ Bridge.assembly("Core", function ($asm, globals) {
 
 
                 var com = new Core.Models.Component();
-                com.Id = System.Guid.NewGuid().toString();
+                com.Id = Core.Structs.Uuid7.Id25();
                 com.FieldName = "Conditions";
                 com.Column = 4;
                 com.ReferenceId = Core.Extensions.Utils.GetEntity("History").Id;
@@ -13846,7 +13652,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var tcs = new System.Threading.Tasks.TaskCompletionSource();
                 var patch;
                 if (setting == null) {
-                    patch = this.CreateSettingPatch(prefix, System.Id.op_Implicit$7(System.Id.NewGuid()), value);
+                    patch = this.CreateSettingPatch(prefix, Core.Structs.Uuid7.Id25(), value);
                 } else {
                     setting.Value = value;
                     patch = this.CreateSettingPatch(prefix, setting.Id, value, setting.Id);
@@ -16487,7 +16293,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         tcs.setResult(path);
                         Core.Extensions.EventExt.Done$1(System.Int32, Core.Clients.Client.Instance.PatchAsync(($t = new Core.ViewModels.PatchVM(), $t.Table = "FileUpload", $t.Changes = Bridge.fn.bind(this, function (_o1) {
                                 var $t1;
-                                _o1.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = this.Id, $t1.Value = System.Id.op_Implicit$7(System.Id.NewGuid()), $t1));
+                                _o1.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = this.Id, $t1.Value = Core.Structs.Uuid7.Id25(), $t1));
                                 _o1.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = "EntityName", $t1.Value = this.GuiInfo.RefName, $t1));
                                 _o1.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = "RecordId", $t1.Value = this.EntityId, $t1));
                                 _o1.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = "SectionId", $t1.Value = this.GuiInfo.ComponentGroupId, $t1));
@@ -19086,7 +18892,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.GuiInfo.Row = 1;
                 }
                 if (this._textArea == null) {
-                    this._textArea = Bridge.as(Core.MVVM.Html.Take(this.ParentElement).TextArea.Id("RE_" + System.Guid.NewGuid()).GetContext(), HTMLTextAreaElement);
+                    this._textArea = Bridge.as(Core.MVVM.Html.Take(this.ParentElement).TextArea.Id("RE_" + (Core.Structs.Uuid7.Id25() || "")).GetContext(), HTMLTextAreaElement);
                 }
                 System.Threading.Tasks.Task.run(Bridge.fn.bind(this, function () {
                     var $step = 0,
@@ -23092,7 +22898,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 confirm.Render();
                 confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
                     var cloned = Bridge.as(Core.Clients.XHRWrapper.UnboxValue(entity), Core.Models.Component);
-                    cloned.Id = System.Id.op_Implicit$7(System.Id.NewGuid());
+                    cloned.Id = Core.Structs.Uuid7.Id25();
                     var patch = Core.Components.Extensions.ComponentExt.MapToPatch(cloned, "Component");
                     Core.Extensions.EventExt.Done$1(System.Int32, Core.Clients.Client.Instance.PatchAsync(patch), Bridge.fn.bind(this, function (success) {
                         if (success === 0) {
@@ -26995,7 +26801,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             AddFilters: function (section) {
                 var $t, $t1;
-                this._filterGrid = new Core.Components.GridView(($t = new Core.Models.Component(), $t.Id = System.Id.op_Implicit$7(System.Id.NewGuid()), $t.FieldName = "Conditions", $t.Column = 4, $t.ReferenceId = Bridge.toString(this._fieldConditionId), $t.RefName = "FieldCondition", $t.Reference = ($t1 = new Core.Models.Entity(), $t1.Name = "FieldCondition", $t1.Namespace = (Bridge.Reflection.getTypeNamespace(Core.Models.Component) || "") + ".", $t1), $t.LocalRender = true, $t.IgnoreConfirmHardDelete = true, $t.CanAdd = true, $t.Events = System.String.format("{{'DOMContentLoaded': '{0}'}}", ["FilterDomLoaded"]), $t));
+                this._filterGrid = new Core.Components.GridView(($t = new Core.Models.Component(), $t.Id = Core.Structs.Uuid7.Id25(), $t.FieldName = "Conditions", $t.Column = 4, $t.ReferenceId = Bridge.toString(this._fieldConditionId), $t.RefName = "FieldCondition", $t.Reference = ($t1 = new Core.Models.Entity(), $t1.Name = "FieldCondition", $t1.Namespace = (Bridge.Reflection.getTypeNamespace(Core.Models.Component) || "") + ".", $t1), $t.LocalRender = true, $t.IgnoreConfirmHardDelete = true, $t.CanAdd = true, $t.Events = System.String.format("{{'DOMContentLoaded': '{0}'}}", ["FilterDomLoaded"]), $t));
                 this._filterGrid.OnDeleteConfirmed = Bridge.fn.combine(this._filterGrid.OnDeleteConfirmed, Bridge.fn.bind(this, function () {
                     this._filterGrid.GetSelectedRows().ForEach(Bridge.fn.cacheBind(this._filterGrid.RowData, this._filterGrid.RowData.Remove));
                 }));
@@ -27675,6 +27481,8 @@ Bridge.assembly("Core", function ($asm, globals) {
             }
         }
     });
+
+    /** @namespace System */
 
     /**
      * @memberof System

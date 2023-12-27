@@ -125,7 +125,7 @@
     <Compile Include="Models\UserSetting.cs" />
     <Compile Include="Models\Vendor.cs" />
     <Compile Include="Models\VendorBranch.cs" />
-    <Compile Include="Structs\Id.cs" />
+    <Compile Include="Structs\Uuid7.cs" />
     <Compile Include="ViewModels\AdvSearchVM.cs" />
     <Compile Include="Enums\CustomEventType.cs" />
     <Compile Include="Enums\KeyCodeEnum.cs" />

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using PathIO = System.IO.Path;
 using Core.ViewModels;
 using System.Collections.Generic;
+using Core.Structs;
 
 namespace Core.Components
 {
@@ -439,7 +440,7 @@ namespace Core.Components
                     {
                         Table = nameof(FileUpload),
                         Changes = new List<PatchDetail> {
-                                new PatchDetail{ Field = Id, Value = System.Id.NewGuid() },
+                                new PatchDetail{ Field = Id, Value = Uuid7.Id25() },
                                 new PatchDetail{ Field = nameof(FileUpload.EntityName), Value = GuiInfo.RefName },
                                 new PatchDetail{ Field = nameof(FileUpload.RecordId), Value = EntityId },
                                 new PatchDetail{ Field = nameof(FileUpload.SectionId), Value = GuiInfo.ComponentGroupId },

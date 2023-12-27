@@ -6,6 +6,7 @@ using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.Structs;
 using Core.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -962,7 +963,7 @@ namespace Core.Components.Forms
                     };
                     return;
             }
-            com.Id = System.Id.NewGuid();
+            com.Id = Uuid7.Id25();
             com.Visibility = true;
             com.Label = "";
             com.ComponentGroupId = componentGroup.Id;

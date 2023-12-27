@@ -199,7 +199,7 @@ public class UserService
         var roleIds = roles.Select(x => x.Id).Distinct().ToList();
         var roleNames = roles.Select(x => x.RoleName).Distinct().ToList();
         var signinDate = DateTimeOffset.Now;
-        var jit = Guid.NewGuid().ToString();
+        var jit = Uuid7.Id25().ToString();
         List<Claim> claims =
         [
             new(ClaimTypes.GroupSid, user.VendorId.ToString()),
@@ -523,7 +523,7 @@ public class UserService
         await TryInvalidCacheInternal(vm.CacheName, null, vm.CachedConnStr);
         await TryNotifyDeviceInternal(new MQEvent
         {
-            Id = Id.NewGuid(),
+            Id = Uuid7.Id25(),
             Message = vm.ToJson(),
             QueueName = vm.QueueName
         }, vm.CachedConnStr);
@@ -1174,7 +1174,7 @@ public class UserService
 
     public async Task<string> PostFileAsync(IFormFile file, bool reup = false)
     {
-        var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+        var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}{Uuid7.Id25()}{Path.GetExtension(file.FileName)}";
         var path = GetUploadPath(fileName, _host.WebRootPath);
         EnsureDirectoryExist(path);
         path = reup ? IncreaseFileName(path) : path;
@@ -1367,7 +1367,7 @@ public class UserService
         await email.PdfText.ForEachAsync(async pdf =>
         {
             await page.SetContentAsync(pdf);
-            var path = Path.Combine(host.WebRootPath, "download", UserId, Guid.NewGuid() + ".pdf");
+            var path = Path.Combine(host.WebRootPath, "download", UserId, Uuid7.Id25() + ".pdf");
             EnsureDirectoryExist(path);
             await page.PdfAsync(path);
             paths.Add(path);
@@ -1515,7 +1515,7 @@ public class UserService
             && x.Attributes[attr].Value.IndexOf("?v=") < 0;
         if (shouldAdd)
         {
-            x.Attributes[attr].Value += "?v=" + Guid.NewGuid().ToString();
+            x.Attributes[attr].Value += "?v=" + Uuid7.Id25().ToString();
         }
     }
 
@@ -1590,11 +1590,11 @@ public class UserService
         var groups = ds.Length > 2 ? ds[2].Select(x => x.MapTo<ComponentGroup>()).ToList() : [];
         var components = ds.Length > 3 ? ds[3].Select(x => x.MapTo<Component>()).ToList() : [];
 
-        feature.Id = Id.NewGuid().ToString();
+        feature.Id = Uuid7.Id25().ToString();
         var featurePatch = feature.MapToPatch();
         var policyPatches = policies.Select(x =>
         {
-            x.Id = Id.NewGuid().ToString();
+            x.Id = Uuid7.Id25().ToString();
             x.FeatureId = feature.Id;
             return x.MapToPatch();
         }).ToArray();
@@ -1620,7 +1620,7 @@ public class UserService
         }).ToArray();
         var standAloneCom = components.Except(groups.SelectMany(x => x.Component)).SelectForEach(x =>
         {
-            x.Id = Id.NewGuid();
+            x.Id = Uuid7.Id25();
         });
         var comPatches = components.Select(x => x.MapToPatch()).ToArray();
         PatchVM[] patches = [
@@ -1635,11 +1635,11 @@ public class UserService
     private static void CloneComponentToGroup(ComponentGroup group, List<Component> components)
     {
         var com = components.Where(c => c.ComponentGroupId == group.Id).ToList();
-        group.Id = Id.NewGuid().ToString();
+        group.Id = Uuid7.Id25();
         group.Component = com;
         com.ForEach(c =>
         {
-            c.Id = Id.NewGuid().ToString();
+            c.Id = Uuid7.Id25().ToString();
             c.ComponentGroupId = group.Id;
         });
     }
@@ -1651,7 +1651,7 @@ public class UserService
             .Select(x => new MQEvent
             {
                 QueueName = queueName,
-                Id = Id.NewGuid(),
+                Id = Uuid7.Id25(),
                 Message = x.ToJson()
             })
         .ForEachAsync(SendMessageToUser);
@@ -1684,7 +1684,7 @@ public class UserService
         var entity = new MQEvent
         {
             QueueName = queueName,
-            Id = Id.NewGuid(),
+            Id = Uuid7.Id25(),
             Message = task
         };
         await _taskSocketSvc.SendMessageToSocketAsync(socket, entity.ToJson());
@@ -1758,7 +1758,7 @@ public class UserService
             {
                 QueueName = entity.QueueName,
                 Message = rs1,
-                Id = Id.NewGuid(),
+                Id = Uuid7.Id25(),
             };
             await SendMessageToUser(chat);
         }
@@ -1768,7 +1768,7 @@ public class UserService
             {
                 QueueName = entity.QueueName,
                 Message = entity,
-                Id = Id.NewGuid(),
+                Id = Uuid7.Id25(),
             };
             await SendMessageToUser(chat);
         }
@@ -1814,7 +1814,7 @@ public class UserService
         {
             await ws.ConnectAsync(new Uri(url), CancellationToken.None);
             //await Listen(ws);
-            _conn.AddClusterSocket(ws, $"Balancer/{Id.NewGuid()}");
+            _conn.AddClusterSocket(ws, $"Balancer/{Uuid7.Id25()}");
         }
         catch
         {

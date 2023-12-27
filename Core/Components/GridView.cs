@@ -6,6 +6,7 @@ using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.Structs;
 using Core.ViewModels;
 using Newtonsoft.Json;
 using System;
@@ -2569,7 +2570,7 @@ namespace Core.Components
             confirm.YesConfirmed += () =>
             {
                 var cloned = XHRWrapper.UnboxValue(entity) as Component;
-                cloned.Id = System.Id.NewGuid();
+                cloned.Id = Uuid7.Id25();
                 var patch = cloned.MapToPatch(nameof(Component));
                 Client.Instance.PatchAsync(patch).Done(success =>
                 {

@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Core.Enums;
 using Core.ViewModels;
 using Core.Clients;
+using Core.Structs;
 
 namespace Core.Components
 {
@@ -300,7 +301,7 @@ namespace Core.Components
         {
             get
             {
-                return this is EditForm form ? form.Feature.QueueName : GuiInfo?.QueueName;
+                return this is EditForm form ? form.Feature?.QueueName : GuiInfo?.QueueName;
             }
         }
 
@@ -880,7 +881,7 @@ namespace Core.Components
                 details.Add(new PatchDetail
                 {
                     Field = Utils.IdField,
-                    Value = System.Id.NewGuid()
+                    Value = Uuid7.Id25()
                 });
             }
             else

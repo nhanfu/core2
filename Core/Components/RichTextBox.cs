@@ -5,6 +5,7 @@ using Core.Extensions;
 using Core.MVVM;
 using System;
 using System.Threading.Tasks;
+using Core.Structs;
 
 namespace Core.Components
 {
@@ -26,7 +27,7 @@ namespace Core.Components
             }
             if (_textArea is null)
             {
-                _textArea = Html.Take(ParentElement).TextArea.Id("RE_" + Guid.NewGuid()).GetContext() as HTMLTextAreaElement;
+                _textArea = Html.Take(ParentElement).TextArea.Id("RE_" + Uuid7.Id25()).GetContext() as HTMLTextAreaElement;
             }
             Task.Run(async () =>
             {

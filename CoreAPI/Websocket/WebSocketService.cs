@@ -47,7 +47,7 @@ namespace Core.Websocket
 
         public virtual string OnClusterConnected(WebSocket socket, string host, int port)
         {
-            return connManager.AddClusterSocket(socket, $"{host}/{port}/{Id.NewGuid()}");
+            return connManager.AddClusterSocket(socket, $"{host}/{port}/{Uuid7.Id25()}");
         }
 
         public virtual async Task OnDisconnected(WebSocket socket)

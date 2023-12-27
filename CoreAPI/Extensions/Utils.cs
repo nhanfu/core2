@@ -246,19 +246,6 @@ namespace Core.Extensions
             objList.Add(field == "0" ? source : value);
         }
 
-        public static string GenerateRandomToken(int? maxLength = 32)
-        {
-            var builder = new StringBuilder();
-            var random = new Random();
-            char ch;
-            for (int i = 0; i < maxLength; i++)
-            {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-                builder.Append(ch);
-            }
-            return builder.ToString();
-        }
-
         public static int? TryParseInt(this string value)
         {
             var parsed = int.TryParse(value, out var res);

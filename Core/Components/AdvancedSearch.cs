@@ -6,6 +6,7 @@ using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.Structs;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -116,7 +117,7 @@ namespace Core.Components
         {
             _filterGrid = new GridView(new Component
             {
-                Id = System.Id.NewGuid(),
+                Id = Uuid7.Id25(),
                 FieldName = nameof(AdvSearchVM.Conditions),
                 Column = 4,
                 ReferenceId = _fieldConditionId.ToString(),
