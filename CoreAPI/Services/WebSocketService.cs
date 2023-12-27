@@ -1,11 +1,10 @@
 ﻿using Core.Extensions;
-using CoreAPI.Middlewares;
-using CoreAPI.ViewModels;
+using Core.ViewModels;
 using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
 
-namespace Core.Websocket
+namespace Core.Services
 {
     public class FCMWrapper
     {
@@ -35,24 +34,22 @@ namespace Core.Websocket
 
     public class WebSocketService(ConnectionManager connManager, IConfiguration configuration)
     {
-        public const string AddNodeAction = "addNode";
-        public const string RemoveNodeAction = "removeNode";
         private readonly string FCM_API_KEY = configuration["FCM_API_KEY"];
         private readonly string FCM_SENDER_ID = configuration["FCM_SENDER_ID"];
 
-        public virtual string OnClientConnected(WebSocket socket, string userId, List<string> roleIds, string ip)
+        public virtual string OnDeviceConnected(WebSocket socket, string userId, List<string> roleIds, string ip)
         {
             return connManager.AddDeviceSocket(socket, userId, roleIds, ip);
         }
 
-        public virtual string OnClusterConnected(WebSocket socket, string host, int port)
+        public virtual async Task OnDisconnected(WebSocket socket, bool cluster = false)
         {
-            return connManager.AddClusterSocket(socket, $"{host}/{port}/{Uuid7.Id25()}");
+            await connManager.RemoveSocket(connManager.GetId(socket, cluster));
         }
 
-        public virtual async Task OnDisconnected(WebSocket socket)
+        public virtual string OnClusterConnected(WebSocket socket, string deviceKey)
         {
-            await connManager.RemoveSocket(connManager.GetId(socket));
+            return connManager.AddClusterSocket(socket, $"{deviceKey}/{Uuid7.Id25()}");
         }
 
         public async Task SendMessageAsync(WebSocket socket, string message)
@@ -161,7 +158,6 @@ namespace Core.Websocket
                 await socket.SendAsync(Encoding.ASCII.GetBytes(deviceKey), WebSocketMessageType.Text, true, CancellationToken.None);
                 return;
             }
-            var node = (mq.Message as string).TryParse<Node>();
             switch (mq.Action)
             {
                 case "Subscribe":
@@ -171,13 +167,6 @@ namespace Core.Websocket
                 case "Unsubscribe":
                     connManager.UnsubScribeQueue(deviceKey, mq.QueueName);
                     await socket.SendAsync(Encoding.ASCII.GetBytes(mq.Action), WebSocketMessageType.Text, true, CancellationToken.None);
-                    break;
-                case AddNodeAction:
-                    Clusters.Data.Nodes.Add(node);
-                    break;
-                case RemoveNodeAction:
-                    var node2Remove = Clusters.Data.Nodes.FirstOrDefault(x => x.Host == node.Host && x.Port == node.Port && x.Scheme == node.Scheme);
-                    Clusters.Data.Nodes.Remove(node2Remove);
                     break;
             }
         }

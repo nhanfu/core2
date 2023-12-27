@@ -1,35 +1,16 @@
-﻿using Core.Websocket;
+﻿using Core.Middlewares;
+using Core.Services;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Utilities.Net;
-using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
 
 namespace Core.Extensions
 {
     public static class ServerExt
     {
-        public static IApplicationBuilder UseSocketHandler(this IApplicationBuilder app, IServiceProvider provider, string prefix = "/task")
-        {
-            app.Map(prefix, app => app.UseMiddleware<WebSocketManagerMiddleware>(provider.GetKeyedService<WebSocketService>(prefix)));
-            return app;
-        }
-
-        public static IApplicationBuilder UseClusterSocket(this IApplicationBuilder app)
+        public static IApplicationBuilder UseTaskSocket(this IApplicationBuilder app)
         {
             var factory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var provider = factory.CreateScope().ServiceProvider;
-            var conf = provider.GetService<IConfiguration>();
-            var isBalancer = conf.GetSection("Role").Get<string>() == Utils.Balancer;
-            if (isBalancer)
-            {
-                app.UseSocketHandler(provider, "/clusters");
-            }
-            else
-            {
-                app.UseSocketHandler(provider, "/clusters");
-                app.UseSocketHandler(provider, "/task");
-            }
+            app.Map("/task", app => app.UseMiddleware<WebSocketManagerMiddleware>(provider.GetService<WebSocketService>()));
 
             return app;
         }

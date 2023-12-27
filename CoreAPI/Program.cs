@@ -1,7 +1,7 @@
 using Core.Extensions;
 using Core.Services;
-using Core.Websocket;
-using CoreAPI.Middlewares;
+using Core.Middlewares;
+using Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
@@ -77,8 +77,7 @@ services.AddDistributedMemoryCache();
 services.AddHttpContextAccessor();
 
 // the instance created for each request
-services.AddKeyedScoped<WebSocketService>("/clusters");
-services.AddKeyedScoped<WebSocketService>("/task");
+services.AddScoped<WebSocketService>();
 services.AddScoped<UserService>();
 
 var app = builder.Build();
@@ -88,7 +87,7 @@ app.UseAuthentication();
 app.UseWebSockets();
 app.UseMiddleware<GlobalMiddleware>();
 app.UseMiddleware<LoadBalaceMiddleware>();
-app.UseClusterSocket();
+app.UseTaskSocket();
 app.UseResponseCompression();
 app.UseStaticFiles();
 app.UseMvc();

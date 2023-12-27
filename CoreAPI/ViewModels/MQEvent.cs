@@ -1,4 +1,4 @@
-﻿namespace CoreAPI.ViewModels;
+﻿namespace Core.ViewModels;
 public class MQEvent
 {
     public string DeviceKey { get; set; }

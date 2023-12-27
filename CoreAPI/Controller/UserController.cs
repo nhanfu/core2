@@ -2,9 +2,7 @@
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
-using Core.Websocket;
-using CoreAPI.Middlewares;
-using CoreAPI.ViewModels;
+using Core.Middlewares;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

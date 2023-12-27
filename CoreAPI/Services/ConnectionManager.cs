@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Net.WebSockets;
 
-namespace Core.Websocket
+namespace Core.Services
 {
     public class ConnectionManager
     {
@@ -17,7 +17,7 @@ namespace Core.Websocket
 
         public IEnumerable<WebSocket> GetSocketByQueue(string queueName)
         {
-            var hasQueue  = _queues.TryGetValue(queueName, out var deviceIds);
+            var hasQueue = _queues.TryGetValue(queueName, out var deviceIds);
             if (!hasQueue) yield break;
             foreach (var item in deviceIds)
             {
@@ -32,14 +32,9 @@ namespace Core.Websocket
             return _sockets;
         }
 
-        public ConcurrentDictionary<string, WebSocket> GetClusterSockets()
+        public string GetId(WebSocket socket, bool cluster = false)
         {
-            return _clusters;
-        }
-
-        public string GetId(WebSocket socket)
-        {
-            return _sockets.FirstOrDefault(p => p.Value == socket).Key;
+            return cluster ? _clusters.FirstOrDefault(p => p.Value == socket).Key : _sockets.FirstOrDefault(p => p.Value == socket).Key;
         }
 
         public string AddSocket(WebSocket socket, string deviceKey)
@@ -48,17 +43,17 @@ namespace Core.Websocket
             return deviceKey;
         }
 
-        public string AddClusterSocket(WebSocket socket, string clusterKey)
-        {
-            _clusters.TryAdd(clusterKey, socket);
-            return clusterKey;
-        }
-
         public string AddDeviceSocket(WebSocket socket, string userId, List<string> roleIds, string ip)
         {
             var deviceKey = $"{userId}/{roleIds.Combine()}/{ip}/{Uuid7.Id25()}";
             _sockets.TryAdd(deviceKey, socket);
             return deviceKey;
+        }
+
+        public string AddClusterSocket(WebSocket socket, string clusterKey)
+        {
+            _clusters.TryAdd(clusterKey, socket);
+            return clusterKey;
         }
 
         public void SubScribeQueue(string deviceKey, string queueName)

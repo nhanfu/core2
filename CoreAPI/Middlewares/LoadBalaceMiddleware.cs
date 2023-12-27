@@ -1,10 +1,9 @@
 ﻿using Core.Extensions;
 using Core.Services;
-using Core.Websocket;
 using Microsoft.Net.Http.Headers;
 using System.Net.WebSockets;
 
-namespace CoreAPI.Middlewares;
+namespace Core.Middlewares;
 
 public class LoadBalaceMiddleware
 {
@@ -55,13 +54,12 @@ public class LoadBalaceMiddleware
     public async Task Invoke(HttpContext context)
     {
         var role = _conf.GetSection("Role").Get<string>();
-        if (role != Utils.Balancer || context.Request.Headers.TryGetValue(HeaderNames.Connection, out var con) && con == "hub")
+        if (role != Utils.Balancer 
+            || context.Request.Headers.TryGetValue(HeaderNames.Connection, out var con) && con == "hub")
         {
             await _next(context);
             return;
         }
-        //_userSvc = context.RequestServices.GetService<UserService>();
-        //await _userSvc.OpenAPIClustersSocket();
         var options = _defaultOptions;
         int maxRetry = 5;
     Start:

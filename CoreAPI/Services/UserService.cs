@@ -1,11 +1,9 @@
 ﻿using ClosedXML.Excel;
 using Core.Exceptions;
 using Core.Extensions;
+using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
-using Core.Websocket;
-using CoreAPI.Middlewares;
-using CoreAPI.ViewModels;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
@@ -52,9 +50,8 @@ public class UserService
     public List<string> RoleIds { get; set; }
     public List<string> RoleNames { get; set; }
 
-    public UserService(IHttpContextAccessor ctx, IConfiguration conf,
-        IDistributedCache cache, IWebHostEnvironment host, IHttpClientFactory httpClientFactory,
-        [FromKeyedServices("/task")] WebSocketService taskSocket, ConnectionManager conn)
+    public UserService(IHttpContextAccessor ctx, IConfiguration conf, IDistributedCache cache, IWebHostEnvironment host, 
+        IHttpClientFactory httpClientFactory, WebSocketService taskSocket)
     {
         _cfg = conf ?? throw new ArgumentNullException(nameof(conf));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache)); ;
@@ -62,7 +59,6 @@ public class UserService
         _ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _taskSocketSvc = taskSocket ?? throw new ArgumentNullException(nameof(taskSocket));
-        _conn = conn ?? throw new ArgumentNullException(nameof(conn));
         _request = _ctx.HttpContext.Request;
         ExtractMeta();
     }

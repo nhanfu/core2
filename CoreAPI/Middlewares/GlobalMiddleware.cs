@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System.Text;
 using Core.Exceptions;
 
-namespace CoreAPI.Middlewares
+namespace Core.Middlewares
 {
     public class GlobalMiddleware(RequestDelegate next)
     {
