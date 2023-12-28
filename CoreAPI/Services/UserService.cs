@@ -1356,8 +1356,8 @@ public class UserService
             return Enumerable.Empty<string>();
         }
         List<string> paths = [];
-        using var browserFetcher = new BrowserFetcher();
-        await browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
+        using var browserFetcher = new BrowserFetcher() { Browser = SupportedBrowser.Chrome };
+        await browserFetcher.DownloadAsync();
         var browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
         var page = await browser.NewPageAsync();
         await email.PdfText.ForEachAsync(async pdf =>
