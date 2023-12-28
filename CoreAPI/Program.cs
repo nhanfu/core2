@@ -1,5 +1,4 @@
 using Core.Extensions;
-using Core.Services;
 using Core.Middlewares;
 using Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

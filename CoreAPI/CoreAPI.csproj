@@ -8,21 +8,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Remove="wwwroot\js\uuid.js" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <_ContentIncludedByDefault Remove="wwwroot\js\uuid.js" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="ClosedXML" Version="0.104.0-preview2" />
+		<PackageReference Include="Elsa" Version="3.0.0-preview.727" />
 		<PackageReference Include="HtmlAgilityPack.NetCore" Version="1.5.0.1" />
 		<PackageReference Include="MailKit" Version="4.3.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.14" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.0" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.2.37-preview" />
 		<PackageReference Include="PuppeteerSharp" Version="13.0.2" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
@@ -31,10 +22,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="BgService\" />
-		<Folder Include="wwwroot\excel\DongA\U00000204\" />
-		<Folder Include="wwwroot\upload\DongA\U00000001\" />
-		<Folder Include="wwwroot\upload\JFKVINA\U00000001\" />
+		<Folder Include="wwwroot\excel\" />
+		<Folder Include="wwwroot\upload\" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -81,8 +70,6 @@
 		<None Include="wwwroot\js\sweetalert2.js" />
 		<None Include="wwwroot\js\theme1.js" />
 		<None Include="wwwroot\js\tms.newtonsoft.json.js" />
-		<None Include="wwwroot\js\uuid.js" />
-		<None Include="wwwroot\webfonts\Transportation020220230851.xlsx" />
 	</ItemGroup>
 
 </Project>
