@@ -1830,13 +1830,6 @@ namespace Core.Components
                     rowSection.Element.AddClass("new-row");
                 }
             }
-            headers.Where(x => !x.ScriptValidation.IsNullOrWhiteSpace()).ForEach(header =>
-            {
-                if (Utils.IsFunction(header.ScriptValidation, out Function fn))
-                {
-                    fn.Call(this, rowSection);
-                }
-            });
             return rowSection;
         }
 
@@ -2113,13 +2106,6 @@ namespace Core.Components
                         LastListViewItem = rowSection;
                         nextComponent.Focus();
                     }
-                    headers.Where(x => !x.ScriptValidation.IsNullOrWhiteSpace()).ForEach(header =>
-                    {
-                        if (Utils.IsFunction(header.ScriptValidation, out Function fn))
-                        {
-                            fn.Call(this, rowSection);
-                        }
-                    });
                 }
             }
         }
@@ -2571,7 +2557,7 @@ namespace Core.Components
             {
                 var cloned = XHRWrapper.UnboxValue(entity) as Component;
                 cloned.Id = Uuid7.Id25();
-                var patch = cloned.MapToPatch(nameof(Component));
+                var patch = cloned.MapToPatch();
                 Client.Instance.PatchAsync(patch).Done(success =>
                 {
                     if (success == 0)

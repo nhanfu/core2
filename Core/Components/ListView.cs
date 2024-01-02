@@ -838,7 +838,7 @@ namespace Core.Components
 
         public virtual List<object> GetSelectedRows()
         {
-            if (LastListViewItem.GroupRow)
+            if (LastListViewItem?.GroupRow == true)
             {
                 return new List<object>() { LastListViewItem.Entity };
             }
@@ -1353,6 +1353,7 @@ namespace Core.Components
             var target = e.Target as HTMLElement;
             var rawRow = target.Closest(ElementType.tr.ToString());
             var currentRow = this.FirstOrDefault(x => x.Element == rawRow) as ListViewItem;
+            if (currentRow is null) return;
             if (!(currentRow is GroupViewItem) || GuiInfo.GroupReferenceId != null)
             {
                 if (SelectedIds.Count == 1)

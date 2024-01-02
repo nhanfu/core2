@@ -2244,12 +2244,16 @@ Bridge.assembly("Core", function ($asm, globals) {
                     com.FieldText = Bridge.as(raw.FieldText, System.String);
                     return com;
                 },
-                MapToPatch: function (com, table) {
-                    var $t;
-                    var patch = ($t = new Core.ViewModels.PatchVM(), $t.Table = table, $t);
+                MapToPatch: function (T, com, table) {
+                    var $t, $t1;
+                    if (table === void 0) { table = null; }
+                    var patch = ($t = new Core.ViewModels.PatchVM(), $t.Table = ($t1 = table, $t1 != null ? $t1 : Bridge.Reflection.getTypeName(T)), $t.Changes = new (System.Collections.Generic.List$1(Core.ViewModels.PatchDetail)).ctor(), $t);
                     Core.Extensions.Utils.ForEachProp$1(com, function (prop, val) {
-                        var $t1;
-                        patch.Changes.add(($t1 = new Core.ViewModels.PatchDetail(), $t1.Field = prop, $t1.Value = val != null ? Bridge.toString(val) : null, $t1));
+                        var $t2;
+                        if (System.String.startsWith(prop, "$")) {
+                            return;
+                        }
+                        patch.Changes.add(($t2 = new Core.ViewModels.PatchDetail(), $t2.Field = prop, $t2.Value = val != null ? Bridge.toString(val) : null, $t2));
                     });
                     return patch;
                 },
@@ -9462,7 +9466,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                         var c = Core.Structs.Uuid7.alphabet[rem];
                         id25_chars[System.Array.index(pos, id25_chars)] = c;
                     }
-                    return id25_chars.join('');
+                    return id25_chars.join("");
                 },
                 ArrToBigInt: function (arr) {
                     return arr.reduce((acc, val) => (acc << 8n) | BigInt(val), 0n);
@@ -10124,7 +10128,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var tcs = new System.Threading.Tasks.TaskCompletionSource();
                 if (Bridge.staticEquals(predicate, null)) {
                     predicate = function (x) {
-                        return true;
+                        return x.Dirty;
                     };
                 }
                 if (Bridge.staticEquals(ignorePredicate, null)) {
@@ -10813,7 +10817,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.SaveNewComponent(componentGroup, com);
             },
             SaveNewComponent: function (componentGroup, com) {
-                Core.Extensions.EventExt.Done$1(System.Int32, Core.Clients.Client.Instance.PatchAsync(Core.Components.Extensions.ComponentExt.MapToPatch(com, "Component")), Bridge.fn.bind(this, function (x) {
+                Core.Extensions.EventExt.Done$1(System.Int32, Core.Clients.Client.Instance.PatchAsync(Core.Components.Extensions.ComponentExt.MapToPatch(Core.Models.Component, com)), Bridge.fn.bind(this, function (x) {
                     this.UpdateRender(com, componentGroup);
                     Core.Extensions.Toast.Success("T\u1ea1o th\u00e0nh c\u00f4ng!");
                 }));
@@ -12821,7 +12825,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                     }).firstOrDefault(null, null);
             },
             GetSelectedRows: function () {
-                if (this.LastListViewItem.GroupRow) {
+                var $t;
+                if (System.Nullable.eq((($t = this.LastListViewItem) != null ? $t.GroupRow : null), true)) {
                     return Bridge.fn.bind(this, function (_o1) {
                             _o1.add(this.LastListViewItem.Entity);
                             return _o1;
@@ -13405,6 +13410,9 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var currentRow = Bridge.as(Core.Components.Extensions.ComponentExt.FirstOrDefault(this, function (x) {
                     return Bridge.referenceEquals(x.Element, rawRow);
                 }), Core.Components.ListViewItem);
+                if (currentRow == null) {
+                    return;
+                }
                 if (!(Bridge.is(currentRow, Core.Components.GroupViewItem)) || this.GuiInfo.GroupReferenceId != null) {
                     if (this.SelectedIds.Count === 1) {
                         this.ClearSelected();
@@ -15901,7 +15909,7 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             MarkAsRead: function (task) {
                 task.StatusId = Bridge.toString((Core.Enums.TaskStateEnum.Read));
-                Core.Extensions.EventExt.Done$1(System.Int32, Core.Clients.Client.Instance.PatchAsync(Core.Components.Extensions.ComponentExt.MapToPatch(task, "TaskNotification")), Bridge.fn.bind(this, function (x) {
+                Core.Extensions.EventExt.Done$1(System.Int32, Core.Clients.Client.Instance.PatchAsync(Core.Components.Extensions.ComponentExt.MapToPatch(Core.Models.TaskNotification, task)), Bridge.fn.bind(this, function (x) {
                     this.SetBadgeNumber();
                 }));
             },
@@ -22142,14 +22150,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                         Core.Extensions.HtmlElementExtension.AddClass(rowSection.Element, "new-row");
                     }
                 }
-                System.Linq.Enumerable.from(headers, Core.Models.Component).where(function (x) {
-                        return !Core.Extensions.StringExt.IsNullOrWhiteSpace(x.ScriptValidation);
-                    }).forEach(Bridge.fn.bind(this, function (header) {
-                    var fn = { };
-                    if (Core.Extensions.Utils.IsFunction(header.ScriptValidation, fn)) {
-                        fn.v.call(this, rowSection);
-                    }
-                }));
                 return rowSection;
             },
             AddSummaries: function () {
@@ -22485,14 +22485,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                                                     this.LastListViewItem = rowSection;
                                                     nextComponent.Focus();
                                                 }
-                                                System.Linq.Enumerable.from(headers, Core.Models.Component).where(function (x) {
-                                                    return !Core.Extensions.StringExt.IsNullOrWhiteSpace(x.ScriptValidation);
-                                                }).forEach(Bridge.fn.bind(this, function (header) {
-                                                    var fn = { };
-                                                    if (Core.Extensions.Utils.IsFunction(header.ScriptValidation, fn)) {
-                                                        fn.v.call(this, rowSection);
-                                                    }
-                                                }));
                                             }
                                         }
                                         $tcs.setResult(null);
@@ -22899,7 +22891,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 confirm.YesConfirmed = Bridge.fn.combine(confirm.YesConfirmed, Bridge.fn.bind(this, function () {
                     var cloned = Bridge.as(Core.Clients.XHRWrapper.UnboxValue(entity), Core.Models.Component);
                     cloned.Id = Core.Structs.Uuid7.Id25();
-                    var patch = Core.Components.Extensions.ComponentExt.MapToPatch(cloned, "Component");
+                    var patch = Core.Components.Extensions.ComponentExt.MapToPatch(Core.Models.Component, cloned);
                     Core.Extensions.EventExt.Done$1(System.Int32, Core.Clients.Client.Instance.PatchAsync(patch), Bridge.fn.bind(this, function (success) {
                         if (success === 0) {
                             Core.Extensions.Toast.Warning("Clone error");

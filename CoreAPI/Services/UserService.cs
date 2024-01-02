@@ -476,13 +476,14 @@ public class UserService
 
     public async Task<int> SavePatch(PatchVM vm)
     {
-        vm.CachedConnStr = vm.CachedConnStr ?? await GetConnStrFromKey(vm.ConnKey, vm.TenantCode, vm.Env);
+        vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey, vm.TenantCode, vm.Env);
         var canWrite = await HasWritePermission(vm);
         if (!canWrite) throw new ApiException($"Unauthorized access on \"{vm.Table}\"")
         {
             StatusCode = HttpStatusCode.Unauthorized
         };
         var cmd = GetCmd(vm);
+        if (cmd.IsNullOrWhiteSpace()) return 0;
         var result = await RunSqlCmd(vm.CachedConnStr, cmd);
         await TryNotifyChange(vm);
         await AfterPatch(vm);
@@ -659,8 +660,8 @@ public class UserService
                 StatusCode = HttpStatusCode.Unauthorized
             };
         }
-        var sql = patches.Select(GetCmd);
-        return await RunSqlCmd(connStr, sql.Combine(";\n"));
+        var sql = patches.Select(GetCmd).Where(x => x is not null).Combine(";\n");
+        return await RunSqlCmd(connStr, sql);
     }
 
     private static PatchDetail GetIdField(PatchVM x)
@@ -690,6 +691,7 @@ public class UserService
         if (oldId is not null)
         {
             var update = valueFields.Combine(x => x.Value is null ? $"[{x.Field}] = null" : $"[{x.Field}] = N'{x.Value}'");
+            if (update.IsNullOrWhiteSpace()) return null;
             return @$"update [{vm.Table}] set {update}, TenantCode = '{TenantCode ?? vm.TenantCode}', 
                 UpdatedBy = '{UserId ?? 1.ToString()}', UpdatedDate = '{now}' where Id = '{oldId}';";
         }
@@ -698,6 +700,7 @@ public class UserService
             valueFields = valueFields.Where(x => x.Field != "Active").ToArray();
             var fields = valueFields.Combine(x => $"[{x.Field}]");
             var values = valueFields.Combine(x => x.Value is null ? "null" : $"N'{x.Value}'");
+            if (fields.IsNullOrWhiteSpace() || values.IsNullOrWhiteSpace()) return null;
             return @$"insert into [{vm.Table}] ([Id], [TenantCode], [Active], [InsertedBy], [InsertedDate], {fields}) 
                     values ('{idField.Value}', '{TenantCode ?? vm.TenantCode}', 1, '{UserId ?? 1.ToString()}', '{now}', {values});";
         }
@@ -705,6 +708,11 @@ public class UserService
 
     public async Task<int> RunSqlCmd(string connStr, string cmdText)
     {
+        if (cmdText.IsNullOrWhiteSpace()) return 0;
+        if (connStr.IsNullOrWhiteSpace()) throw new ApiException("ConnStr is null")
+        {
+            StatusCode = HttpStatusCode.InternalServerError
+        };
         SqlConnection connection = new(connStr);
         await connection.OpenAsync();
         var transaction = connection.BeginTransaction();

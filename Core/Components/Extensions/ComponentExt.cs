@@ -111,14 +111,16 @@ namespace Core.Components.Extensions
             return com;
         }
 
-        public static PatchVM MapToPatch(this object com, string table)
+        public static PatchVM MapToPatch<T>(this T com, string table = null)
         {
             var patch = new PatchVM
             {
-                Table = table
+                Table = table ?? typeof(T).Name,
+                Changes = new List<PatchDetail>(),
             };
             com.ForEachProp((prop, val) =>
             {
+                if (prop.StartsWith("$")) return;
                 patch.Changes.Add(new PatchDetail
                 {
                     Field = prop,

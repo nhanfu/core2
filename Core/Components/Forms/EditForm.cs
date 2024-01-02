@@ -974,7 +974,7 @@ namespace Core.Components.Forms
 
         private void SaveNewComponent(ComponentGroup componentGroup, Component com)
         {
-            Client.Instance.PatchAsync(com.MapToPatch(nameof(Component))).Done(x =>
+            Client.Instance.PatchAsync(com.MapToPatch()).Done(x =>
             {
                 UpdateRender(com, componentGroup);
                 Toast.Success("Tạo thành công!");

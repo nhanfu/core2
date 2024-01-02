@@ -28,7 +28,6 @@
 
 	<ItemGroup>
 		<None Include="wwwroot\css\app.less" />
-		<None Include="wwwroot\css\css.rar" />
 		<None Include="wwwroot\css\font.less" />
 		<None Include="wwwroot\css\fonts\fa-light-300.woff2" />
 		<None Include="wwwroot\css\fonts\fa-regular-400.woff2" />

@@ -294,7 +294,7 @@ namespace Core.Components.Framework
         private void MarkAsRead(TaskNotification task)
         {
             task.StatusId = ((int)TaskStateEnum.Read).ToString();
-            Client.Instance.PatchAsync(task.MapToPatch(nameof(TaskNotification)))
+            Client.Instance.PatchAsync(task.MapToPatch())
                 .Done(x => SetBadgeNumber());
         }
 
