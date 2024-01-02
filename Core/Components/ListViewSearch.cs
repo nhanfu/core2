@@ -220,12 +220,11 @@ namespace Core.Components
                     ShowLabel = false,
                     ReferenceId = Utils.GetEntity(nameof(Component)).Id,
                     RefName = nameof(Component),
-                    Reference = new Entity { Name = nameof(Component) },
                 })
                 {
-                    ParentElement = Element
+                    ParentElement = Element,
+                    UserInput = null
                 };
-                dateType.UserInput = null;
                 AddChild(dateType);
             }
             Html.Take(Element).Div.ClassName("searching-block")

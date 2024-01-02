@@ -2382,16 +2382,21 @@ Bridge.assembly("Core", function ($asm, globals) {
                             tcs.trySetResult(null);
                         }
                         var feature = Core.Extensions.BridgeExt.CastProp(Core.Models.Feature, ($t2 = ds[System.Array.index(0, ds)])[System.Array.index(0, $t2)]);
-                        var policies = System.Linq.Enumerable.from(ds[System.Array.index(1, ds)], System.Object).select(function (x) {
+                        if (feature == null) {
+                            tcs.trySetResult(null);
+                            return;
+                        }
+                        feature.FeaturePolicy = System.Linq.Enumerable.from(ds[System.Array.index(1, ds)], System.Object).select(function (x) {
                                 return Core.Extensions.BridgeExt.CastProp(Core.Models.FeaturePolicy, x);
                             }).toList(Core.Models.FeaturePolicy);
-                        var groups = System.Linq.Enumerable.from(ds[System.Array.index(2, ds)], System.Object).select(function (x) {
+                        var groups = ds.length > 2 ? System.Linq.Enumerable.from(ds[System.Array.index(2, ds)], System.Object).select(function (x) {
                                 return Core.Extensions.BridgeExt.CastProp(Core.Models.ComponentGroup, x);
-                            }).toList(Core.Models.ComponentGroup);
-                        var components = System.Linq.Enumerable.from(ds[System.Array.index(3, ds)], System.Object).select(function (x) {
-                                return Core.Components.Extensions.ComponentExt.MapToCom(x);
-                            }).toList(Core.Models.Component);
-                        if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.FeaturePolicy, policies) || Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.ComponentGroup, groups) || Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.Component, components)) {
+                            }).toList(Core.Models.ComponentGroup) : null;
+                        feature.ComponentGroup = groups;
+                        var components = ds.length > 3 ? System.Linq.Enumerable.from(ds[System.Array.index(3, ds)], System.Object).select(function (x) {
+                                return Core.Extensions.BridgeExt.CastProp(Core.Models.Component, x);
+                            }).toList(Core.Models.Component) : null;
+                        if (Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.ComponentGroup, groups) || Core.Extensions.IEnumerableExtensions.Nothing(Core.Models.Component, components)) {
                             tcs.trySetResult(null);
                             return;
                         }
@@ -2404,8 +2409,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                             var g = System.Collections.Generic.CollectionExtensions.GetValueOrDefault(System.String, Core.Models.ComponentGroup, groupMap, com.ComponentGroupId);
                             System.Array.add(g.Component, com, Core.Models.Component);
                         });
-                        feature.ComponentGroup = groups;
-                        feature.FeaturePolicy = policies;
                         tcs.trySetResult(feature);
                     });
 
@@ -7570,7 +7573,6 @@ Bridge.assembly("Core", function ($asm, globals) {
             IsPrivate: false,
             IdField: null,
             DescFieldName: null,
-            DescValue: null,
             MonthCount: null,
             IsDoubleLine: null,
             Query: null,
@@ -10128,7 +10130,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var tcs = new System.Threading.Tasks.TaskCompletionSource();
                 if (Bridge.staticEquals(predicate, null)) {
                     predicate = function (x) {
-                        return x.Dirty;
+                        return true;
                     };
                 }
                 if (Bridge.staticEquals(ignorePredicate, null)) {
@@ -10749,7 +10751,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.AddChild(editor);
             },
             CopyComponent: function (arg) {
-                var component = Core.Components.Extensions.ComponentExt.MapToCom(arg);
+                var component = Core.Extensions.BridgeExt.CastProp(Core.Models.Component, arg);
                 this._componentCoppy = component;
             },
             AddComponent: function (arg) {
@@ -13325,7 +13327,6 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this._history.remove();
             },
             ViewHistory: function (ev) {
-                var $t;
                 var currentItem = System.Linq.Enumerable.from(this.GetSelectedRows(), System.Object).lastOrDefault(null, null);
                 Core.Components.Renderer.Escape(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.EditForm.Element).Div, "backdrop").Style$1("align-items: center;"), Bridge.fn.bind(this, function (e) {
                     this.Dispose();
@@ -13341,14 +13342,13 @@ Bridge.assembly("Core", function ($asm, globals) {
                 com.Column = 4;
                 com.ReferenceId = Core.Extensions.Utils.GetEntity("History").Id;
                 com.RefName = "History";
-                com.Reference = ($t = new Core.Models.Entity(), $t.Name = "History", $t.Namespace = (Bridge.Reflection.getTypeNamespace(Core.Models.Component) || "") + ".", $t);
                 com.DataSourceFilter = System.String.format("?$orderby=Id desc&$filter=Active eq true and EntityId eq '{0}' and RecordId eq '{1}'", this.GuiInfo.ReferenceId, currentItem[Core.Components.EditableComponent.IdField]);
                 var _filterGrid = new Core.Components.GridView(com);
                 _filterGrid.GuiInfo.LocalHeader = function (_o1) {
-                        var $t1;
-                        _o1.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((1)), $t1.EntityId = Core.Extensions.Utils.GetEntity("History").Id, $t1.FieldName = "InsertedBy", $t1.ShortDesc = "Ng\u01b0\u1eddi thay \u0111\u1ed5i", $t1.ReferenceId = Core.Extensions.Utils.GetEntity("User").Id, $t1.RefName = "User", $t1.FormatData = "{FullName}", $t1.Active = true, $t1.ComponentType = "SearchEntry", $t1.MaxWidth = "100px", $t1.MinWidth = "100px", $t1));
-                        _o1.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((2)), $t1.EntityId = Core.Extensions.Utils.GetEntity("History").Id, $t1.FieldName = "InsertedDate", $t1.ShortDesc = "Ng\u00e0y thay \u0111\u1ed5i", $t1.Active = true, $t1.FormatData = "{0: dd/MM/yyyy HH:mm}", $t1.ComponentType = "Datepicker", $t1.TextAlign = "left", $t1.MaxWidth = "150px", $t1.MinWidth = "150px", $t1));
-                        _o1.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((4)), $t1.EntityId = Core.Extensions.Utils.GetEntity("History").Id, $t1.FieldName = "TextHistory", $t1.ShortDesc = "D\u1eef li\u1ec7u thay \u0111\u1ed5i", $t1.Active = true, $t1.ComponentType = "Label", $t1.MaxWidth = "700px", $t1.MinWidth = "700px", $t1));
+                        var $t;
+                        _o1.add(($t = new Core.Models.Component(), $t.Id = Bridge.toString((1)), $t.EntityId = Core.Extensions.Utils.GetEntity("History").Id, $t.FieldName = "InsertedBy", $t.ShortDesc = "Ng\u01b0\u1eddi thay \u0111\u1ed5i", $t.ReferenceId = Core.Extensions.Utils.GetEntity("User").Id, $t.RefName = "User", $t.FormatData = "{FullName}", $t.Active = true, $t.ComponentType = "SearchEntry", $t.MaxWidth = "100px", $t.MinWidth = "100px", $t));
+                        _o1.add(($t = new Core.Models.Component(), $t.Id = Bridge.toString((2)), $t.EntityId = Core.Extensions.Utils.GetEntity("History").Id, $t.FieldName = "InsertedDate", $t.ShortDesc = "Ng\u00e0y thay \u0111\u1ed5i", $t.Active = true, $t.FormatData = "{0: dd/MM/yyyy HH:mm}", $t.ComponentType = "Datepicker", $t.TextAlign = "left", $t.MaxWidth = "150px", $t.MinWidth = "150px", $t));
+                        _o1.add(($t = new Core.Models.Component(), $t.Id = Bridge.toString((4)), $t.EntityId = Core.Extensions.Utils.GetEntity("History").Id, $t.FieldName = "TextHistory", $t.ShortDesc = "D\u1eef li\u1ec7u thay \u0111\u1ed5i", $t.Active = true, $t.ComponentType = "Label", $t.MaxWidth = "700px", $t.MinWidth = "700px", $t));
                         return _o1;
                     }(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor());
                 _filterGrid.ParentElement = body;
@@ -16816,7 +16816,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 }
             },
             Render: function () {
-                var $t, $t1, $t2;
+                var $t, $t1;
                 this.ParentListView = Bridge.as(this.Parent, Core.Components.ListView);
                 this.ParentListView.addDataLoaded(Bridge.fn.cacheBind(this, this.ListView_DataLoaded));
                 if (!this.GuiInfo.CanSearch) {
@@ -16848,8 +16848,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 endDate.UserInput = null;
                 this.AddChild(endDate);
                 if (this.ParentListView.GuiInfo.ShowDatetimeField) {
-                    var dateType = ($t = new Core.Components.SearchEntry(($t1 = new Core.Models.Component(), $t1.FieldName = "DateTimeField", $t1.PlainText = "Lo\u1ea1i ng\u00e0y", $t1.FormatData = "{ShortDesc}", $t1.DataSourceFilter = System.String.format("?$filter=Active eq true and ComponentType eq '{0}' and FeatureId eq {1}", "Datepicker", this.EditForm.Feature.Id), $t1.ShowLabel = false, $t1.ReferenceId = Core.Extensions.Utils.GetEntity("Component").Id, $t1.RefName = "Component", $t1.Reference = ($t2 = new Core.Models.Entity(), $t2.Name = "Component", $t2), $t1)), $t.ParentElement = this.Element, $t);
-                    dateType.UserInput = null;
+                    var dateType = ($t = new Core.Components.SearchEntry(($t1 = new Core.Models.Component(), $t1.FieldName = "DateTimeField", $t1.PlainText = "Lo\u1ea1i ng\u00e0y", $t1.FormatData = "{ShortDesc}", $t1.DataSourceFilter = System.String.format("?$filter=Active eq true and ComponentType eq '{0}' and FeatureId eq {1}", "Datepicker", this.EditForm.Feature.Id), $t1.ShowLabel = false, $t1.ReferenceId = Core.Extensions.Utils.GetEntity("Component").Id, $t1.RefName = "Component", $t1)), $t.ParentElement = this.Element, $t.UserInput = null, $t);
                     this.AddChild(dateType);
                 }
                 Core.Components.Renderer.Title(Core.Components.Renderer.Button(Core.Components.Renderer.Title(Core.Components.Renderer.Button(Core.Components.Renderer.Icon(Core.Components.Renderer.Title(Core.Components.Renderer.Button(Core.Components.Renderer.Button(Core.Components.Renderer.ClassName(Core.MVVM.Html.Take(this.Element).Div, "searching-block"), "T\u00ecm ki\u1ebfm", "button secondary small btn-toolbar", "fa fa-search").Event("click", Bridge.fn.bind(this, function () {
@@ -22532,7 +22531,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                 var $t, $t1, $t2;
                 var total = ds.length > 1 && ds[System.Array.index(1, ds)].length > 0 ? Bridge.cast(Bridge.unbox(($t = ds[System.Array.index(1, ds)])[System.Array.index(0, $t)].total, System.Int32), System.Int32, true) : null;
                 var headers = ds.length > 2 ? System.Linq.Enumerable.from(ds[System.Array.index(2, ds)], System.Object).select(function (x) {
-                        return Core.Components.Extensions.ComponentExt.MapToCom(x);
+                        return Core.Extensions.BridgeExt.CastProp(Core.Models.Component, x);
                     }).toList(Core.Models.Component) : null;
                 this.Settings = ds.length > 3 && ds[System.Array.index(3, ds)].length > 0 ? Bridge.unbox(($t1 = ds[System.Array.index(3, ds)])[System.Array.index(0, $t1)]) : null;
                 this.FilterColumns(this.MergeComponent(headers, this.Settings));
@@ -23761,7 +23760,7 @@ Bridge.assembly("Core", function ($asm, globals) {
                     this.Element.parentElement.insertBefore(this.Element, this.Element.parentElement.children[System.Nullable.getValue(index)]);
                 }
                 var func = { };
-                if (Core.Extensions.Utils.IsFunction(this.GuiInfo.FormatEntity, func)) {
+                if (Core.Extensions.Utils.IsFunction(this.GuiInfo.Template, func)) {
                     var formatted = ($t = func.v.call(this, this)) != null ? Bridge.toString($t) : null;
                     this.Element.innerHTML = formatted;
                     this.EditForm.BindingTemplate(this.Element, this);
@@ -25405,8 +25404,8 @@ Bridge.assembly("Core", function ($asm, globals) {
                 this.$initialize();
                 Core.Components.GridView.ctor.call(this, ui);
                 this.GuiInfo.LocalHeader = function (_o1) {
-                        var $t, $t1, $t2;
-                        _o1.add(($t = new Core.Models.Component(), $t.FieldName = "InsertedBy", $t.ComponentType = "Label", $t.ShortDesc = "Ng\u01b0\u1eddi thao t\u00e1c", $t.Description = "Ng\u01b0\u1eddi thao t\u00e1c", $t.ReferenceId = ($t1 = Core.Extensions.Utils.GetEntity("User")) != null ? $t1.Id : null, $t.Reference = ($t2 = new Core.Models.Entity(), $t2.Name = "User", $t2), $t.RefName = "User", $t.FormatData = "{FullName}", $t.Active = true, $t));
+                        var $t, $t1;
+                        _o1.add(($t = new Core.Models.Component(), $t.FieldName = "InsertedBy", $t.ComponentType = "Label", $t.ShortDesc = "Ng\u01b0\u1eddi thao t\u00e1c", $t.Description = "Ng\u01b0\u1eddi thao t\u00e1c", $t.ReferenceId = ($t1 = Core.Extensions.Utils.GetEntity("User")) != null ? $t1.Id : null, $t.RefName = "User", $t.FormatData = "{FullName}", $t.Active = true, $t));
                         _o1.add(($t = new Core.Models.Component(), $t.FieldName = "InsertedDate", $t.ComponentType = "Label", $t.ShortDesc = "Ng\u00e0y thao t\u00e1c", $t.Description = "Ng\u00e0y thao t\u00e1c", $t.Active = true, $t.TextAlign = "left", $t.FormatData = "{0:dd/MM/yyyy HH:mm zz}", $t));
                         _o1.add(($t = new Core.Models.Component(), $t.FieldName = "ReasonOfChange", $t.ComponentType = "Label", $t.ShortDesc = "N\u1ed9i dung", $t.Description = "N\u1ed9i dung", $t.HasFilter = true, $t.Active = true, $t));
                         _o1.add(($t = new Core.Models.Component(), $t.FieldName = "TextHistory", $t.ComponentType = "Label", $t.ChildStyle = Core.Components.CompareGridView.Style, $t.ShortDesc = "Chi ti\u1ebft thay \u0111\u1ed5i", $t.Description = "Chi ti\u1ebft thay \u0111\u1ed5i", $t.HasFilter = true, $t.Active = true, $t));
@@ -26793,30 +26792,30 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             AddFilters: function (section) {
                 var $t, $t1;
-                this._filterGrid = new Core.Components.GridView(($t = new Core.Models.Component(), $t.Id = Core.Structs.Uuid7.Id25(), $t.FieldName = "Conditions", $t.Column = 4, $t.ReferenceId = Bridge.toString(this._fieldConditionId), $t.RefName = "FieldCondition", $t.Reference = ($t1 = new Core.Models.Entity(), $t1.Name = "FieldCondition", $t1.Namespace = (Bridge.Reflection.getTypeNamespace(Core.Models.Component) || "") + ".", $t1), $t.LocalRender = true, $t.IgnoreConfirmHardDelete = true, $t.CanAdd = true, $t.Events = System.String.format("{{'DOMContentLoaded': '{0}'}}", ["FilterDomLoaded"]), $t));
+                this._filterGrid = new Core.Components.GridView(($t = new Core.Models.Component(), $t.Id = Core.Structs.Uuid7.Id25(), $t.FieldName = "Conditions", $t.Column = 4, $t.ReferenceId = Bridge.toString(this._fieldConditionId), $t.RefName = "FieldCondition", $t.LocalRender = true, $t.IgnoreConfirmHardDelete = true, $t.CanAdd = true, $t.Events = System.String.format("{{'DOMContentLoaded': '{0}'}}", ["FilterDomLoaded"]), $t));
                 this._filterGrid.OnDeleteConfirmed = Bridge.fn.combine(this._filterGrid.OnDeleteConfirmed, Bridge.fn.bind(this, function () {
                     this._filterGrid.GetSelectedRows().ForEach(Bridge.fn.cacheBind(this._filterGrid.RowData, this._filterGrid.RowData.Remove));
                 }));
                 this._filterGrid.Header = ($t = Bridge.fn.bind(this, function (_o4) {
-                        var $t2;
-                        _o4.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((1)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "FieldId", $t2.Events = "{'change': 'FieldId_Changed'}", $t2.ShortDesc = "T\u00ean c\u1ed9t", $t2.ReferenceId = this._ComponentId, $t2.RefName = "Component", $t2.FormatData = "ShortDesc", $t2.Active = true, $t2.Editable = true, $t2.ComponentType = "SearchEntry", $t2.MinWidth = "100px", $t2.MaxWidth = "200px", $t2.LocalRender = true, $t2.LocalData = System.Linq.Enumerable.from(this._headers).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object), $t2.LocalHeader = Bridge.fn.bind(this, function (_o1) {
-                                var $t3;
-                                _o1.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._ComponentId, $t3.FieldName = "ShortDesc", $t3.ShortDesc = "T\u00ean c\u1ed9t", $t3.Active = true, $t3));
+                        var $t1;
+                        _o4.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((1)), $t1.EntityId = this._fieldConditionId, $t1.FieldName = "FieldId", $t1.Events = "{'change': 'FieldId_Changed'}", $t1.ShortDesc = "T\u00ean c\u1ed9t", $t1.ReferenceId = this._ComponentId, $t1.RefName = "Component", $t1.FormatData = "ShortDesc", $t1.Active = true, $t1.Editable = true, $t1.ComponentType = "SearchEntry", $t1.MinWidth = "100px", $t1.MaxWidth = "200px", $t1.LocalRender = true, $t1.LocalData = System.Linq.Enumerable.from(this._headers).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object), $t1.LocalHeader = Bridge.fn.bind(this, function (_o1) {
+                                var $t2;
+                                _o1.add(($t2 = new Core.Models.Component(), $t2.EntityId = this._ComponentId, $t2.FieldName = "ShortDesc", $t2.ShortDesc = "T\u00ean c\u1ed9t", $t2.Active = true, $t2));
                                 return _o1;
-                            })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t2.Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]", $t2));
-                        _o4.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((2)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "CompareOperatorId", $t2.ShortDesc = "To\u00e1n t\u1eed", $t2.ReferenceId = this._entityId, $t2.RefName = "Entity", $t2.ComponentType = "SearchEntry", $t2.FormatData = "Description", $t2.Active = true, $t2.Editable = true, $t2.MinWidth = "150px", $t2.LocalRender = true, $t2.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.AdvSearchOperation), $t2.LocalHeader = Bridge.fn.bind(this, function (_o2) {
-                                var $t3;
-                                _o2.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Name", $t3.ShortDesc = "To\u00e1n t\u1eed", $t3.Active = true, $t3));
-                                _o2.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Description", $t3.ShortDesc = "K\u00fd hi\u1ec7u", $t3.Active = true, $t3));
+                            })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t1.Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]", $t1));
+                        _o4.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((2)), $t1.EntityId = this._fieldConditionId, $t1.FieldName = "CompareOperatorId", $t1.ShortDesc = "To\u00e1n t\u1eed", $t1.ReferenceId = this._entityId, $t1.RefName = "Entity", $t1.ComponentType = "SearchEntry", $t1.FormatData = "Description", $t1.Active = true, $t1.Editable = true, $t1.MinWidth = "150px", $t1.LocalRender = true, $t1.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.AdvSearchOperation), $t1.LocalHeader = Bridge.fn.bind(this, function (_o2) {
+                                var $t2;
+                                _o2.add(($t2 = new Core.Models.Component(), $t2.EntityId = this._entityId, $t2.FieldName = "Name", $t2.ShortDesc = "To\u00e1n t\u1eed", $t2.Active = true, $t2));
+                                _o2.add(($t2 = new Core.Models.Component(), $t2.EntityId = this._entityId, $t2.FieldName = "Description", $t2.ShortDesc = "K\u00fd hi\u1ec7u", $t2.Active = true, $t2));
                                 return _o2;
-                            })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t2.Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]", $t2));
-                        _o4.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((3)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "Value", $t2.ShortDesc = "Gi\u00e1 tr\u1ecb", $t2.ReferenceId = this._entityId, $t2.RefName = "Entity", $t2.ComponentType = "Input", $t2.Active = true, $t2.Editable = true, $t2.MinWidth = "450px", $t2.Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]", $t2));
-                        _o4.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((2)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "LogicOperatorId", $t2.ShortDesc = "K\u1ebft h\u1ee3p", $t2.ReferenceId = this._entityId, $t2.RefName = "Entity", $t2.ComponentType = "SearchEntry", $t2.FormatData = "Description", $t2.Active = true, $t2.Editable = true, $t2.DefaultVal = "0", $t2.LocalRender = true, $t2.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.LogicOperation), $t2.LocalHeader = Bridge.fn.bind(this, function (_o3) {
-                                var $t3;
-                                _o3.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Name", $t3.ShortDesc = "K\u1ebft h\u1ee3p", $t3.Active = true, $t3));
-                                _o3.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Description", $t3.ShortDesc = "Mi\u00eau t\u1ea3", $t3.Active = true, $t3));
+                            })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t1.Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]", $t1));
+                        _o4.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((3)), $t1.EntityId = this._fieldConditionId, $t1.FieldName = "Value", $t1.ShortDesc = "Gi\u00e1 tr\u1ecb", $t1.ReferenceId = this._entityId, $t1.RefName = "Entity", $t1.ComponentType = "Input", $t1.Active = true, $t1.Editable = true, $t1.MinWidth = "450px", $t1.Validation = "[{\"Rule\": \"required\", \"Message\": \"{0} is required\"}]", $t1));
+                        _o4.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((2)), $t1.EntityId = this._fieldConditionId, $t1.FieldName = "LogicOperatorId", $t1.ShortDesc = "K\u1ebft h\u1ee3p", $t1.ReferenceId = this._entityId, $t1.RefName = "Entity", $t1.ComponentType = "SearchEntry", $t1.FormatData = "Description", $t1.Active = true, $t1.Editable = true, $t1.DefaultVal = "0", $t1.LocalRender = true, $t1.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.LogicOperation), $t1.LocalHeader = Bridge.fn.bind(this, function (_o3) {
+                                var $t2;
+                                _o3.add(($t2 = new Core.Models.Component(), $t2.EntityId = this._entityId, $t2.FieldName = "Name", $t2.ShortDesc = "K\u1ebft h\u1ee3p", $t2.Active = true, $t2));
+                                _o3.add(($t2 = new Core.Models.Component(), $t2.EntityId = this._entityId, $t2.FieldName = "Description", $t2.ShortDesc = "Mi\u00eau t\u1ea3", $t2.Active = true, $t2));
                                 return _o3;
-                            })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t2));
+                            })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t1));
                         return _o4;
                     })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), this._filterGrid.GuiInfo.LocalHeader = $t, $t);
                 this._filterGrid.RowData.Data = ($t1 = System.Linq.Enumerable.from(this.AdvSearchEntity.Conditions).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object), this._filterGrid.GuiInfo.LocalData = $t1, $t1);
@@ -26837,22 +26836,22 @@ Bridge.assembly("Core", function ($asm, globals) {
             },
             AddOrderByGrid: function (section) {
                 var $t, $t1;
-                this._orderByGrid = new Core.Components.GridView(($t = new Core.Models.Component(), $t.FieldName = "OrderBy", $t.Column = 4, $t.ReferenceId = this._orderById, $t.RefName = "Entity", $t.Reference = ($t1 = new Core.Models.Entity(), $t1.Name = "OrderBy", $t1.Namespace = (Bridge.Reflection.getTypeNamespace(Core.Models.OrderBy) || "") + ".", $t1), $t.CanAdd = true, $t.IgnoreConfirmHardDelete = true, $t.LocalRender = true, $t));
+                this._orderByGrid = new Core.Components.GridView(($t = new Core.Models.Component(), $t.FieldName = "OrderBy", $t.Column = 4, $t.ReferenceId = this._orderById, $t.RefName = "Entity", $t.CanAdd = true, $t.IgnoreConfirmHardDelete = true, $t.LocalRender = true, $t));
                 this._orderByGrid.OnDeleteConfirmed = Bridge.fn.combine(this._orderByGrid.OnDeleteConfirmed, Bridge.fn.bind(this, function () {
                     this._orderByGrid.GetSelectedRows().ForEach(Bridge.fn.cacheBind(this._orderByGrid.RowData, this._orderByGrid.RowData.Remove));
                 }));
                 this._orderByGrid.GuiInfo.LocalHeader = Bridge.fn.bind(this, function (_o3) {
-                        var $t2;
-                        _o3.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((1)), $t2.EntityId = this._fieldConditionId, $t2.FieldName = "FieldId", $t2.Events = "{'change': 'FieldId_Changed'}", $t2.ShortDesc = "T\u00ean c\u1ed9t", $t2.ReferenceId = this._ComponentId, $t2.RefName = "Component", $t2.FormatData = "ShortDesc", $t2.Active = true, $t2.Editable = true, $t2.ComponentType = "SearchEntry", $t2.MinWidth = "100px", $t2.MaxWidth = "200px", $t2.LocalData = System.Linq.Enumerable.from(this._headers).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object), $t2.LocalRender = true, $t2.LocalHeader = Bridge.fn.bind(this, function (_o1) {
-                                var $t3;
-                                _o1.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._ComponentId, $t3.FieldName = "ShortDesc", $t3.ShortDesc = "T\u00ean c\u1ed9t", $t3.Active = true, $t3));
+                        var $t1;
+                        _o3.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((1)), $t1.EntityId = this._fieldConditionId, $t1.FieldName = "FieldId", $t1.Events = "{'change': 'FieldId_Changed'}", $t1.ShortDesc = "T\u00ean c\u1ed9t", $t1.ReferenceId = this._ComponentId, $t1.RefName = "Component", $t1.FormatData = "ShortDesc", $t1.Active = true, $t1.Editable = true, $t1.ComponentType = "SearchEntry", $t1.MinWidth = "100px", $t1.MaxWidth = "200px", $t1.LocalData = System.Linq.Enumerable.from(this._headers).select(function (x) { return Bridge.cast(x, System.Object); }).toList(System.Object), $t1.LocalRender = true, $t1.LocalHeader = Bridge.fn.bind(this, function (_o1) {
+                                var $t2;
+                                _o1.add(($t2 = new Core.Models.Component(), $t2.EntityId = this._ComponentId, $t2.FieldName = "ShortDesc", $t2.ShortDesc = "T\u00ean c\u1ed9t", $t2.Active = true, $t2));
                                 return _o1;
-                            })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t2));
-                        _o3.add(($t2 = new Core.Models.Component(), $t2.Id = Bridge.toString((2)), $t2.EntityId = this._orderById, $t2.FieldName = "OrderbyDirectionId", $t2.ShortDesc = "Th\u1ee9 t\u1ef1", $t2.ReferenceId = this._entityId, $t2.RefName = "Entity", $t2.ComponentType = "SearchEntry", $t2.FormatData = "Description", $t2.Active = true, $t2.Editable = true, $t2.MinWidth = "100px", $t2.MaxWidth = "120px", $t2.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.OrderbyDirection), $t2.LocalHeader = Bridge.fn.bind(this, function (_o2) {
-                                var $t3;
-                                _o2.add(($t3 = new Core.Models.Component(), $t3.EntityId = this._entityId, $t3.FieldName = "Name", $t3.ShortDesc = "Th\u1ee9 t\u1ef1", $t3.Active = true, $t3));
+                            })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t1));
+                        _o3.add(($t1 = new Core.Models.Component(), $t1.Id = Bridge.toString((2)), $t1.EntityId = this._orderById, $t1.FieldName = "OrderbyDirectionId", $t1.ShortDesc = "Th\u1ee9 t\u1ef1", $t1.ReferenceId = this._entityId, $t1.RefName = "Entity", $t1.ComponentType = "SearchEntry", $t1.FormatData = "Description", $t1.Active = true, $t1.Editable = true, $t1.MinWidth = "100px", $t1.MaxWidth = "120px", $t1.LocalData = Core.Extensions.IEnumerableExtensions.ToEntity(Core.Enums.OrderbyDirection), $t1.LocalHeader = Bridge.fn.bind(this, function (_o2) {
+                                var $t2;
+                                _o2.add(($t2 = new Core.Models.Component(), $t2.EntityId = this._entityId, $t2.FieldName = "Name", $t2.ShortDesc = "Th\u1ee9 t\u1ef1", $t2.Active = true, $t2));
                                 return _o2;
-                            })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t2.LocalRender = true, $t2));
+                            })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor()), $t1.LocalRender = true, $t1));
                         return _o3;
                     })(new (System.Collections.Generic.List$1(Core.Models.Component)).ctor());
                 this._orderByGrid.GuiInfo.LocalData = ($t = this.AdvSearchEntity.OrderBy) != null && ($t1 = System.Linq.Enumerable.from($t).select(function (x) { return Bridge.cast(x, System.Object); })) != null ? $t1.toList(System.Object) : null;

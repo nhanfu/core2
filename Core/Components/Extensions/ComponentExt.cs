@@ -291,10 +291,16 @@ namespace Core.Components.Extensions
                     tcs.TrySetResult(null);
                 }
                 var feature = ds[0][0].CastProp<Feature>();
-                var policies = ds[1].Select(x => x.CastProp<FeaturePolicy>()).ToList();
-                var groups = ds[2].Select(x => x.CastProp<ComponentGroup>()).ToList();
-                var components = ds[3].Select(x => x.MapToCom()).ToList();
-                if (policies.Nothing() || groups.Nothing() || components.Nothing())
+                if (feature is null)
+                {
+                    tcs.TrySetResult(null);
+                    return;
+                }
+                feature.FeaturePolicy = ds[1].Select(x => x.CastProp<FeaturePolicy>()).ToList();
+                var groups = ds.Length > 2 ? ds[2].Select(x => x.CastProp<ComponentGroup>()).ToList() : null;
+                feature.ComponentGroup = groups;
+                var components = ds.Length > 3 ? ds[3].Select(x => x.CastProp<Component>()).ToList() : null;
+                if (groups.Nothing() || components.Nothing())
                 {
                     tcs.TrySetResult(null);
                     return;
@@ -305,8 +311,6 @@ namespace Core.Components.Extensions
                     var g = groupMap.GetValueOrDefault(com.ComponentGroupId);
                     g.Component.Add(com);
                 });
-                feature.ComponentGroup = groups;
-                feature.FeaturePolicy = policies;
                 tcs.TrySetResult(feature);
             });
 

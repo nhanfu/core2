@@ -155,7 +155,7 @@ namespace Core.Components
 
                 Element.ParentElement.InsertBefore(Element, Element.ParentElement.Children[index.Value]);
             }
-            if (Utils.IsFunction(GuiInfo.FormatEntity, out Function func))
+            if (Utils.IsFunction(GuiInfo.Template, out Function func))
             {
                 var formatted = func.Call(this, this)?.ToString();
                 Element.InnerHTML = formatted;

@@ -122,8 +122,6 @@ namespace Core.Models
 
         public string DescFieldName { get; set; }
 
-        public string DescValue { get; set; }
-
         public int? MonthCount { get; set; }
 
         public bool? IsDoubleLine { get; set; }

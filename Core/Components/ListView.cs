@@ -1240,7 +1240,6 @@ namespace Core.Components
             com.Column = 4;
             com.ReferenceId = Utils.GetEntity(nameof(Models.History)).Id;
             com.RefName = nameof(Models.History);
-            com.Reference = new Entity { Name = nameof(Models.History), Namespace = typeof(Component).Namespace + "." };
             com.DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and EntityId eq '{GuiInfo.ReferenceId}' and RecordId eq '{currentItem[IdField]}'";
             var _filterGrid = new GridView(com);
             _filterGrid.GuiInfo.LocalHeader = new List<Component>

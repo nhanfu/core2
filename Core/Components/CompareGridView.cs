@@ -22,10 +22,6 @@ namespace Core.Components
                     ShortDesc = "Người thao tác",
                     Description = "Người thao tác",
                     ReferenceId = Utils.GetEntity(nameof(User))?.Id,
-                    Reference = new Entity
-                    {
-                        Name = nameof(User),
-                    },
                     RefName = nameof(User),
                     FormatData = "{" + nameof(User.FullName) + "}",
                     Active = true,

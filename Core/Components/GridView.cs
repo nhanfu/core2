@@ -2145,7 +2145,7 @@ namespace Core.Components
         protected void ProcessMetaData(object[][] ds, int rowCount)
         {
             var total = ds.Length > 1 && ds[1].Length > 0 ? (int?)ds[1][0]["total"] : null;
-            var headers = ds.Length > 2 ? ds[2].Select(x => x.MapToCom()).ToList() : null;
+            var headers = ds.Length > 2 ? ds[2].Select(x => x.CastProp<Component>()).ToList() : null;
             Settings = ds.Length > 3 && ds[3].Length > 0 ? ds[3][0].As<UserSetting>() : null;
             FilterColumns(MergeComponent(headers, Settings));
             RenderTableHeader(Header);
