@@ -9,7 +9,7 @@ namespace Core.Components.Extensions
 {
     public static class ComponentFactory
     {
-        public static EditableComponent GetComponent(Component ui, EditForm form)
+        public static EditableComponent GetComponent(Component ui, EditForm form, HTMLElement ele = null)
         {
             if (ui is null)
             {
@@ -25,30 +25,6 @@ namespace Core.Components.Extensions
             EditableComponent childComponent;
             switch (ui.ComponentType)
             {
-                case "Link":
-                    childComponent = new Link(ui);
-                    break;
-                case "Input":
-                    childComponent = new Textbox(ui);
-                    break;
-                case "Timepicker":
-                    childComponent = new Timepicker(ui);
-                    break;
-                case "Password":
-                    childComponent = new Textbox(ui) { Password = true };
-                    break;
-                case "Label":
-                    childComponent = new CellText(ui);
-                    break;
-                case "Textarea":
-                    childComponent = new Textbox(ui) { MultipleLine = true };
-                    break;
-                case nameof(SearchEntry):
-                    childComponent = ui.Precision != null && ui.Precision >= 2 ? new MultipleSearchEntry(ui) : new SearchEntry(ui);
-                    break;
-                case "Image":
-                    childComponent = new ImageUploader(ui);
-                    break;
                 case nameof(GridView):
                     if (ui.GroupBy.IsNullOrWhiteSpace())
                     {
@@ -72,13 +48,14 @@ namespace Core.Components.Extensions
 
                     break;
                 default:
+                    childComponent = null;
                     var current = typeof(EditableComponent);
-                    var type = Type.GetType(current.Namespace + "." + ui.ComponentType);
-                    if (type is null)
-                    {
-                        return CompositedComponents(ui, form);
-                    }
-                    childComponent = Activator.CreateInstance(type, ui) as EditableComponent;
+                    var fullName = ui.ComponentType.IndexOf(".") >=0 ? ui.ComponentType 
+                        : current.Namespace + "." + ui.ComponentType;
+                    var args = "a, b";
+                    var body = $"return new {fullName}(a, b)";
+                    var typeConstructor = new Function(args, body);
+                    childComponent = typeConstructor.Call(null, ui, ele) as EditableComponent;
                     break;
             }
             childComponent.Id = ui.FieldName + ui.Id.ToString();

@@ -264,13 +264,6 @@ namespace Core.Components.Extensions
         public static Task<Feature> LoadFeature(string connKey, string name, string id = null)
         {
             var tcs = new TaskCompletionSource<Feature>();
-#if RELEASE
-            if (FeatureMap.ContainsKey(featureName))
-            {
-                tcs.SetResult(FeatureMap[featureName]);
-                return tcs.Task;
-            }
-#endif
             var featureTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
             {
                 Value = JSON.Stringify(new SqlViewModel
@@ -300,6 +293,7 @@ namespace Core.Components.Extensions
                 var groups = ds.Length > 2 ? ds[2].Select(x => x.CastProp<ComponentGroup>()).ToList() : null;
                 feature.ComponentGroup = groups;
                 var components = ds.Length > 3 ? ds[3].Select(x => x.CastProp<Component>()).ToList() : null;
+                feature.Component = components;
                 if (groups.Nothing() || components.Nothing())
                 {
                     tcs.TrySetResult(null);
@@ -308,8 +302,9 @@ namespace Core.Components.Extensions
                 var groupMap = groups.DistinctBy(x => x.Id).ToDictionary(x => x.Id);
                 components.ForEach(com =>
                 {
+                    if (com.ComponentGroupId is null) return;
                     var g = groupMap.GetValueOrDefault(com.ComponentGroupId);
-                    g.Component.Add(com);
+                    g?.Component.Add(com);
                 });
                 tcs.TrySetResult(feature);
             });
@@ -441,11 +436,11 @@ namespace Core.Components.Extensions
             {
                 return dpk.Value;
             }
-            else if (com is ImageUploader uploader)
+            else if (com is Image uploader)
             {
                 return uploader.Path;
             }
-            else if (com is CellText cellText)
+            else if (com is Label cellText)
             {
                 return cellText.Element["innerText"];
             }

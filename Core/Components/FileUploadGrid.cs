@@ -31,7 +31,7 @@ namespace Core.Components
                     FieldName = nameof(FileUpload.FilePath),
                     Editable = true,
                     Active = true,
-                    ComponentType = nameof(ImageUploader),
+                    ComponentType = nameof(Image),
                     DataSourceFilter= ui.DataSourceFilter.IsNullOrEmpty() ?  "*.*" : ui.DataSourceFilter,
                     ShortDesc = "File",
                     IsRealtime = GuiInfo.IsRealtime,
@@ -124,7 +124,7 @@ namespace Core.Components
             rowData[nameof(FileUpload.RecordId)] = EntityId;
             rowData[nameof(FileUpload.SectionId)] = GuiInfo.ComponentGroupId;
             rowData[nameof(FileUpload.FieldName)] = FieldName;
-            rowData[nameof(FileUpload.FileName)] = ImageUploader.RemoveGuid(rowData[nameof(FileUpload.FilePath)] as string);
+            rowData[nameof(FileUpload.FileName)] = Image.RemoveGuid(rowData[nameof(FileUpload.FilePath)] as string);
             await RowChangeHandlerGrid(rowData, rowSection, observableArgs);
             rowSection.UpdateView(true);
             SetEntityPath();
@@ -143,7 +143,7 @@ namespace Core.Components
 
         private void SetEntityPath()
         {
-            Entity[FieldName] = AllListViewItem.Combine(x => x.Entity[nameof(FileUpload.FilePath)] as string, ImageUploader.PathSeparator);
+            Entity[FieldName] = AllListViewItem.Combine(x => x.Entity[nameof(FileUpload.FilePath)] as string, Image.PathSeparator);
         }
 
         protected override void SetRowData(List<object> listData)
@@ -170,7 +170,7 @@ namespace Core.Components
                 return listData;
             }
             var separatedFiles = listData.ToDictionaryDistinct(x => x[nameof(FileUpload.FilePath)].As<string>());
-            var existPaths = pathCombined.Split(ImageUploader.PathSeparator);
+            var existPaths = pathCombined.Split(Image.PathSeparator);
             var existFiles = existPaths.Select(x =>
             {
                 var metaData = separatedFiles.GetValueOrDefault(x) as dynamic;
@@ -180,7 +180,7 @@ namespace Core.Components
                     RecordId = EntityId,
                     SectionId = GuiInfo.ComponentGroupId,
                     FieldName = FieldName,
-                    FileName = ImageUploader.RemoveGuid(x),
+                    FileName = Image.RemoveGuid(x),
                     FilePath = x,
                     Id = metaData?.Id ?? 0,
                     InsertedBy = metaData?.InsertedBy ?? 1,

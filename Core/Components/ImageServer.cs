@@ -12,7 +12,7 @@ using Core.ViewModels;
 
 namespace Core.Components
 {
-    public class ImageServer : ImageUploader
+    public class ImageServer : Image
     {
         protected static HTMLElement _backdrop;
         public override string Path

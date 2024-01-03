@@ -186,7 +186,7 @@ namespace Core.Components
                             formattedRows.ForEach(x => tbody.AppendChild(x));
                             return com;
                         }
-                        return EditForm.BindingData(ele, component, parent, isLayout, entity);
+                        return EditForm.BindingCom(ele, component, parent, isLayout, entity);
                     });
                 });
                 if (GuiInfo != null && GuiInfo.Events.HasAnyChar())

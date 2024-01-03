@@ -12,11 +12,11 @@ using Core.ViewModels;
 
 namespace Core.Components
 {
-    public class CellText : EditableComponent
+    public class Label : EditableComponent
     {
         public Dictionary<string, List<object>> RefData { get; set; }
 
-        public CellText(Component ui, HTMLElement ele = null) : base(ui)
+        public Label(Component ui, HTMLElement ele = null) : base(ui)
         {
             GuiInfo = ui;
             Element = ele;

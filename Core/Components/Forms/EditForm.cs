@@ -547,36 +547,23 @@ namespace Core.Components.Forms
                 return;
             }
             Component component = null;
-            foreach (var prop in typeof(Component).GetProperties().Where(x => x.CanRead && x.CanWrite))
+            var id = ele.Dataset[IdField.ToLowerCase()];
+            if (id != null)
             {
-                var value = ele.Dataset[prop.Name.ToLower()];
-                if (value == null)
-                {
-                    continue;
-                }
-                object propVal = null;
-                try
-                {
-                    propVal = prop.PropertyType == typeof(string) ? value : Utils.ChangeType(value, prop.PropertyType);
-                    component = component ?? new Component();
-                    component.SetPropValue(prop.Name, propVal);
-                }
-                catch
-                {
-                    continue;
-                }
+                component = Feature.Component.FirstOrDefault(x => x.Id == id);
             }
-            var newCom = factory?.Invoke(ele, component, parent, isLayout, entity) ?? BindingData(ele, component, parent, isLayout, entity);
+            var newCom = factory?.Invoke(ele, component, parent, isLayout, entity)
+                ?? BindingCom(ele, component, parent, isLayout, entity);
             parent = newCom is Section ? newCom : parent;
             ele.Children.SelectForEach(child => BindingTemplate(child, parent, isLayout, entity, factory, visited));
         }
 
-        private static CellText RenderCellText(HTMLElement ele, object entity, bool isLayout)
+        private static Label RenderCellText(HTMLElement ele, object entity, bool isLayout)
         {
             var text = ele.TextContent?.Trim();
             if (text.HasAnyChar() && text.StartsWith("{") && text.EndsWith("}"))
             {
-                var cellText = new CellText(new Component
+                var cellText = new Label(new Component
                 {
                     FieldName = text.SubStrIndex(1, text.Length - 1)
                 }, ele)
@@ -594,7 +581,7 @@ namespace Core.Components.Forms
             return null;
         }
 
-        public EditableComponent BindingData(HTMLElement ele, Component com, EditableComponent parent, bool isLayout, object entity)
+        public EditableComponent BindingCom(HTMLElement ele, Component com, EditableComponent parent, bool isLayout, object entity)
         {
             EditableComponent child = null;
             if (ele is null)
@@ -614,14 +601,9 @@ namespace Core.Components.Forms
             }
             else if (child is null)
             {
-                var comType = com.ComponentType.IndexOf(".") >= 0 ? com.ComponentType : typeof(EditableComponent).Namespace + "." + com.ComponentType;
-                /*@
-                var typeConstuctor = eval(comType);
-                if (typeConstuctor == null) return null;
-                child = new typeConstuctor(com, ele);
-                 */
+                child = ComponentFactory.GetComponent(com, this, ele);
             }
-            child.ParentElement = child.ParentElement ?? ele.ParentElement;
+            child.ParentElement = child.ParentElement ?? ele;
             child.Entity = entity ?? child.EditForm?.Entity ?? LayoutForm.Entity;
             if (isLayout)
             {

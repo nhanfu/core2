@@ -15,7 +15,7 @@ using Core.Structs;
 
 namespace Core.Components
 {
-    public class ImageUploader : EditableComponent
+    public class Image : EditableComponent
     {
         protected string _path;
         public virtual string Path
@@ -61,7 +61,7 @@ namespace Core.Components
         public string DataSourceFilter { get; set; }
         private string[] _imageSources => _path?.Split(PathSeparator);
 
-        public ImageUploader(Component ui) : base(ui)
+        public Image(Component ui) : base(ui)
         {
             GuiInfo = ui;
             DataSourceFilter = GuiInfo.DataSourceFilter ?? "image/*";

@@ -207,8 +207,8 @@ namespace Core.Components
             var canWrite = CanDo(gridPolicies, x => x.CanWrite);
             var component = ((header.Editable || NotCellText.Contains(header.ComponentType)) && ListViewSection.ListView.CanWrite && canWrite)
                 ? ComponentFactory.GetComponent(header, EditForm)
-                : new CellText(header);
-            if (component is CellText cellText)
+                : new Label(header);
+            if (component is Label cellText)
             {
                 cellText.RefData = ListView.RefData;
             }

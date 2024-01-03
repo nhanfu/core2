@@ -38,10 +38,10 @@ namespace Core.Components
             {
                 SetSeclection = false
             };
-            var startIndex = new CellText(new Component { FieldName = nameof(PaginationOptions.StartIndex) });
-            var endIndex = new CellText(new Component { FieldName = nameof(PaginationOptions.EndIndex) });
-            var total = new CellText(new Component { FieldName = nameof(PaginationOptions.Total), FormatData = "{0:n0}" });
-            var selected = new CellText(new Component { FieldName = nameof(PaginationOptions.Selected), FormatData = "{0:n0}" });
+            var startIndex = new Label(new Component { FieldName = nameof(PaginationOptions.StartIndex) });
+            var endIndex = new Label(new Component { FieldName = nameof(PaginationOptions.EndIndex) });
+            var total = new Label(new Component { FieldName = nameof(PaginationOptions.Total), FormatData = "{0:n0}" });
+            var selected = new Label(new Component { FieldName = nameof(PaginationOptions.Selected), FormatData = "{0:n0}" });
             var pageNum = new Number(new Component { FieldName = nameof(PaginationOptions.PageNumber) }, null)
             {
                 AlwaysValid = true,
