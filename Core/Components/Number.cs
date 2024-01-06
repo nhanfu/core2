@@ -95,7 +95,6 @@ namespace Core.Components
             _input.SetAttribute("autocorrect", "off");
             _input.SetAttribute("spellcheck", "false");
             _input.AddEventListener(EventType.Input, SetValue);
-            _input.AddEventListener(EventType.KeyDown, async (e) => await KeyDownNumber(e));
             _input.AddEventListener(EventType.Change, ChangeSetValue);
             _input.AutoComplete = AutoComplete.Off;
             Value = _value; // set again to render in correct format
@@ -105,62 +104,6 @@ namespace Core.Components
             }
             Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
             DOMContentLoaded?.Invoke();
-        }
-
-        private async Task KeyDownNumber(Event evt)
-        {
-            if (!(Parent is ListViewItem))
-            {
-                return;
-            }
-            var fnKey = evt.KeyCodeEnum() == KeyCodeEnum.V && evt.CtrlOrMetaKey() && evt.ShiftKey();
-            var tcs = new TaskCompletionSource<string>();
-            if (fnKey)
-            {
-                /*@
-                 navigator.clipboard.readText().then(clipText => tcs.setResult(clipText));
-                */
-                var te = await tcs.Task;
-                var checkMulti = te.Contains("\r\n");
-                if (checkMulti)
-                {
-                    var values = te.Split("\r\n").ToList();
-                    _input.Value = values[0];
-                    SetValue();
-                    var current = this.FindClosest<ListViewItem>();
-                    var startNo = current.RowNo;
-                    var varCount = values.Count + startNo;
-                    var gridView = this.FindClosest<VirtualGrid>();
-                    gridView.AutoFocus = true;
-                    foreach (var item in values.Take(values.Count - 1))
-                    {
-                        var upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
-                        if (upItem is null)
-                        {
-                            if (startNo <= varCount)
-                            {
-                                await Task.Delay(1000);
-                                upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
-                            }
-                        }
-                        var updated = upItem.FilterChildren<Number>(x => x.FieldName == FieldName).FirstOrDefault();
-                        updated.Dirty = true;
-                        updated.Value = item.Replace(",", "").Replace(".", "").IsNullOrWhiteSpace() ? default(decimal) : decimal.Parse(item.Replace(",", "").Replace(".", ""));
-                        updated.UpdateView();
-                        updated.PopulateFields();
-                        await updated.DispatchEvent(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
-                        await upItem.ListViewSection.ListView.DispatchEvent(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
-                        if (gridView.GuiInfo.IsRealtime)
-                        {
-                            upItem.PatchUpdateOrCreate();
-                        }
-                        gridView.DataTable.ParentElement.ScrollTop += 26;
-                        startNo++;
-                        await Task.Delay(300);
-                    }
-                    gridView.AutoFocus = false;
-                }
-            }
         }
 
         private bool IsNullable<T>() where T : struct => Utils.IsNullable<T>(Entity.GetType(), FieldName, Entity);

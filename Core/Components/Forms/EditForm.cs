@@ -546,16 +546,42 @@ namespace Core.Components.Forms
             {
                 return;
             }
+            var meta = ResolveMeta(ele);
+            var newCom = factory?.Invoke(ele, meta, parent, isLayout, entity)
+                ?? BindingCom(ele, meta, parent, isLayout, entity);
+            parent = newCom is Section ? newCom : parent;
+            ele.Children.SelectForEach(child => BindingTemplate(child, parent, isLayout, entity, factory, visited));
+        }
+
+        private Component ResolveMeta(HTMLElement ele)
+        {
             Component component = null;
             var id = ele.Dataset[IdField.ToLowerCase()];
             if (id != null)
             {
                 component = Feature.Component.FirstOrDefault(x => x.Id == id);
             }
-            var newCom = factory?.Invoke(ele, component, parent, isLayout, entity)
-                ?? BindingCom(ele, component, parent, isLayout, entity);
-            parent = newCom is Section ? newCom : parent;
-            ele.Children.SelectForEach(child => BindingTemplate(child, parent, isLayout, entity, factory, visited));
+            foreach (var prop in typeof(Component).GetProperties().Where(x => x.CanRead && x.CanWrite))
+            {
+                var value = ele.Dataset[prop.Name.ToLower()];
+                if (value == null)
+                {
+                    continue;
+                }
+                object propVal = null;
+                try
+                {
+                    propVal = prop.PropertyType == typeof(string) ? value : Utils.ChangeType(value, prop.PropertyType);
+                    component = component ?? new Component();
+                    component.SetPropValue(prop.Name, propVal);
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+
+            return component;
         }
 
         private static Label RenderCellText(HTMLElement ele, object entity, bool isLayout)

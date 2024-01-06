@@ -1,14 +1,12 @@
 ﻿using Bridge.Html5;
-using Core.Models;
 using Core.Clients;
 using Core.Components.Extensions;
-using Core.Enums;
 using Core.Extensions;
+using Core.Models;
 using Core.MVVM;
+using Core.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
-using Core.ViewModels;
 
 namespace Core.Components
 {
@@ -95,61 +93,6 @@ namespace Core.Components
             });
         }
 
-        private async Task KeyDownNumber(Event evt)
-        {
-            if (!(Parent is ListViewItem))
-            {
-                return;
-            }
-            var check = evt.KeyCodeEnum() == KeyCodeEnum.V && evt.CtrlOrMetaKey() && evt.ShiftKey();
-            var tcs = new TaskCompletionSource<string>();
-            if (check)
-            {
-                /*@
-                 navigator.clipboard.readText().then(clipText => tcs.setResult(clipText));
-                */
-                var te = await tcs.Task;
-                var checkMulti = te.Contains("\r\n");
-                if (checkMulti)
-                {
-                    var values = te.Split("\r\n").ToList();
-                    Input.Value = values[0];
-                    var current = this.FindClosest<ListViewItem>();
-                    var startNo = current.RowNo;
-                    var varCount = values.Count + startNo;
-                    var gridView = this.FindClosest<VirtualGrid>();
-                    gridView.AutoFocus = true;
-                    foreach (var item in values.Take(values.Count - 1))
-                    {
-                        var upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
-                        if (upItem is null)
-                        {
-                            if (startNo <= varCount)
-                            {
-                                await Task.Delay(1000);
-                                upItem = gridView.AllListViewItem.FirstOrDefault(x => x.RowNo == startNo);
-                            }
-                        }
-                        var updated = upItem.FilterChildren<Textbox>(x => x.FieldName == FieldName).FirstOrDefault();
-                        updated.Dirty = true;
-                        updated.Value = item;
-                        updated.UpdateView();
-                        updated.PopulateFields();
-                        await updated.DispatchEvent(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
-                        await upItem.ListViewSection.ListView.DispatchEvent(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
-                        if (gridView.GuiInfo.IsRealtime)
-                        {
-                            upItem.PatchUpdateOrCreate();
-                        }
-                        gridView.DataTable.ParentElement.ScrollTop += 26;
-                        startNo++;
-                        await Task.Delay(500);
-                    }
-                    gridView.AutoFocus = false;
-                }
-            }
-        }
-
         public override void Render()
         {
             SetDefaultVal();
@@ -188,7 +131,6 @@ namespace Core.Components
 
                 TextArea.OnInput += (e) => PopulateUIChange(EventType.Input);
                 TextArea.OnChange += (e) => PopulateUIChange(EventType.Change);
-                TextArea.AddEventListener(EventType.KeyDown, async (e) => await KeyDownNumber(e));
             }
             else
             {
@@ -206,7 +148,6 @@ namespace Core.Components
                 Input.Name = GuiInfo.DataSourceFilter ?? FieldName;
                 Input.OnInput += (e) => PopulateUIChange(EventType.Input);
                 Input.OnChange += (e) => PopulateUIChange(EventType.Change);
-                Input.AddEventListener(EventType.KeyDown, async (e) => await KeyDownNumber(e));
             }
             if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace())
             {
@@ -241,20 +182,11 @@ namespace Core.Components
                 Text = _text.ToLocaleUpperCase();
             }
             _value = (EditForm != null && EditForm.Feature != null && EditForm.Feature.IgnoreEncode) ? _text : _text.EncodeSpecialChar();
-            if (Entity != null)
-            {
-                Entity.SetComplexPropValue(FieldName, _value);
-            }
+            Entity?.SetComplexPropValue(FieldName, _value);
             Dirty = true;
-            if (UserInput != null)
-            {
-                UserInput.Invoke(new ObservableArgs { NewData = _text, OldData = _oldText, EvType = type });
-            }
+            UserInput?.Invoke(new ObservableArgs { NewData = _text, OldData = _oldText, EvType = type });
             PopulateFields();
-            Task.Run(async () =>
-            {
-                await this.DispatchEvent(GuiInfo.Events, type, Entity);
-            });
+            this.DispatchEvent(GuiInfo.Events, type, Entity).Done();
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)

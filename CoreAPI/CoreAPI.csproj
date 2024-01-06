@@ -54,10 +54,6 @@
 		<None Include="wwwroot\js\bridge.meta.js" />
 		<None Include="wwwroot\js\bridge.meta.min.js" />
 		<None Include="wwwroot\js\bridge.min.js" />
-		<None Include="wwwroot\js\Core.js" />
-		<None Include="wwwroot\js\Core.meta.js" />
-		<None Include="wwwroot\js\Core.meta.min.js" />
-		<None Include="wwwroot\js\Core.min.js" />
 		<None Include="wwwroot\js\fix.js" />
 		<None Include="wwwroot\js\jquery-3.5.1.min.js" />
 		<None Include="wwwroot\js\newtonsoft.json.js" />

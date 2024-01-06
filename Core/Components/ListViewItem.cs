@@ -159,7 +159,15 @@ namespace Core.Components
             {
                 var formatted = func.Call(this, this)?.ToString();
                 Element.InnerHTML = formatted;
-                EditForm.BindingTemplate(Element, this);
+                EditForm.BindingTemplate(Element, this, false, Entity, (ele, meta, parent, isLayout, entity) =>
+                {
+                    var newCom = EditForm.BindingCom(ele, meta, parent, isLayout, entity);
+                    if (newCom != null)
+                    {
+                        newCom.UserInput += (arg) => UserInputHandler(arg, newCom);
+                    }
+                    return newCom;
+                });
             }
             else
             {
@@ -235,37 +243,19 @@ namespace Core.Components
             {
                 component.Element.Style.CssText = header.ChildStyle;
             }
-            component.UserInput += (arg) =>
+            component.UserInput += (arg) => UserInputHandler(arg, component);
+        }
+
+        private void UserInputHandler(ObservableArgs arg, EditableComponent component)
+        {
+            if (component.Disabled)
             {
-                if (component.ComponentType == "Input" || component.ComponentType == nameof(Textbox) || component.ComponentType == "Textarea")
-                {
-                    if (arg.EvType == EventType.Abort || arg.EvType == EventType.Change || arg.EvType == EventType.Blur)
-                    {
-                        if (component.Disabled)
-                        {
-                            return;
-                        }
-                        ListView.RowChangeHandler(component.Entity, this, arg, component).Done(() =>
-                        {
-                            ListView.RealtimeUpdate(this, arg);
-                        });
-                    }
-                }
-                else
-                {
-                    ListView.RowChangeHandler(component.Entity, this, arg, component).Done(() =>
-                    {
-                        if (arg.EvType == EventType.Change)
-                        {
-                            if (component.Disabled)
-                            {
-                                return;
-                            }
-                            ListView.RealtimeUpdate(this, arg);
-                        }
-                    });
-                }
-            };
+                return;
+            }
+            ListView.RowChangeHandler(component.Entity, this, arg, component).Done(() =>
+            {
+                ListView.RealtimeUpdate(this, arg);
+            });
         }
 
         public void PatchUpdateOrCreate()

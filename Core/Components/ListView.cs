@@ -520,6 +520,7 @@ namespace Core.Components
             Paginator.UpdateView();
         }
 
+        private int _realtimeAwait;
         public void RealtimeUpdate(ListViewItem rowData, ObservableArgs arg)
         {
             if (EmptyRow)
@@ -531,29 +532,44 @@ namespace Core.Components
             {
                 return;
             }
-            rowData.PatchUpdateOrCreate();
+            Window.ClearTimeout(_realtimeAwait);
+            _realtimeAwait = Window.SetTimeout(() =>
+            {
+                rowData.PatchUpdateOrCreate();
+            }, 300);
         }
 
-        internal virtual async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
+        internal virtual Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
         {
-            if (rowSection.EmptyRow && Editable)
+            var tcs = new TaskCompletionSource<bool>();
+            if (!rowSection.EmptyRow || !Editable)
             {
-                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
-                RowData.Data.Add(rowData);
-                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
-                Entity.SetComplexPropValue(FieldName, RowData.Data);
-                RowAction(x => x.Entity == rowSection.Entity, x =>
+                this.DispatchEvent(GuiInfo.Events, EventType.Change, rowData).Done(() =>
                 {
-                    x.EmptyRow = false;
-                    x.FilterChildren(child => true).SelectForEach(child =>
-                    {
-                        child.EmptyRow = false;
-                        child.UpdateView(force: true);
-                    });
+                    tcs.TrySetResult(false);
                 });
-                AddNewEmptyRow();
+                return tcs.Task;
             }
-            await this.DispatchEvent(GuiInfo.Events, EventType.Change, rowData);
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreated, rowData).Done(() =>
+            {
+                RowData.Data.Add(rowData);
+                this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreated, rowData).Done(() =>
+                {
+                    Entity.SetComplexPropValue(FieldName, RowData.Data);
+                    RowAction(x => x.Entity == rowSection.Entity, x =>
+                    {
+                        x.EmptyRow = false;
+                        x.FilterChildren(child => true).SelectForEach(child =>
+                        {
+                            child.EmptyRow = false;
+                            child.UpdateView(force: true);
+                        });
+                    });
+                    AddNewEmptyRow();
+                    tcs.TrySetResult(true);
+                });
+            });
+            return tcs.Task;
         }
 
         public virtual void AddNewEmptyRow()
