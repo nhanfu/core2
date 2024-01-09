@@ -84,13 +84,6 @@ namespace Core.Components
             {
                 TextArea = ele as HTMLTextAreaElement;
             }
-            Document.AddEventListener(EventType.VisibilityChange, e =>
-            {
-                if (Dirty)
-                {
-                    PopulateUIChange(EventType.VisibilityChange);
-                }
-            });
         }
 
         public override void Render()
@@ -168,7 +161,17 @@ namespace Core.Components
             DOMContentLoaded?.Invoke();
         }
 
+        int _populateChangeAwait = 0;
         private void PopulateUIChange(EventType type, bool shouldTrim = false)
+        {
+            Window.ClearTimeout(_populateChangeAwait);
+            _populateChangeAwait = Window.SetTimeout(() =>
+            {
+                PopulateUIChangeInternal(type, shouldTrim);
+            }, 300);
+        }
+
+        private void PopulateUIChangeInternal(EventType type, bool shouldTrim = false)
         {
             if (Disabled)
             {

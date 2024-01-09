@@ -524,7 +524,7 @@ namespace Core.Components
         {
         }
 
-        public ListViewSection(Element interactiveEle) : base(interactiveEle)
+        public ListViewSection(HTMLElement ele) : base(ele)
         {
         }
 

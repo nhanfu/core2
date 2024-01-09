@@ -36,7 +36,7 @@ namespace Core.Components
         public Component LastComponentFocus;
         public List<string> DeleteTempIds;
         public AdvSearchVM AdvSearchVM { get; set; }
-        public bool Editable { get; set; }
+        public bool Editable => GuiInfo.CanAdd;
         public ListViewItem LastListViewItem { get; set; }
         public ListViewItem LastShiftViewItem { get; set; }
         public int LastIndex { get; set; }
@@ -220,7 +220,7 @@ namespace Core.Components
         {
             var tcs = new TaskCompletionSource<List<object>>();
             var dsTask = Client.Instance.ComQuery(vm);
-            Client.ExecTask(dsTask, ds =>
+            dsTask.Done(ds =>
             {
                 if (ds.Nothing())
                 {
@@ -234,7 +234,7 @@ namespace Core.Components
                 UpdatePagination(total, rows.Count);
                 tcs.TrySetResult(rows);
                 DataLoaded?.Invoke(ds);
-            }, err => tcs.TrySetException(err));
+            }).Catch(err => tcs.TrySetException(err));
             return tcs.Task;
         }
 
@@ -275,9 +275,14 @@ namespace Core.Components
             }
             ListViewSearch = new ListViewSearch(GuiInfo);
             AddChild(ListViewSearch);
-            Html.Take(Element).Div.ClassName("list-content");
-            MainSection = new ListViewSection(Html.Context);
+            Html.Take(Element).Div.ClassName("list-content").End.Div.ClassName("empty");
+            EmptyRowSection = new ListViewSection(Html.Context) { ParentElement = Element };
+            AddChild(EmptyRowSection);
+
+            MainSection = new ListViewSection(EmptyRowSection.Element.PreviousSibling);
             AddChild(MainSection);
+
+
             Html.Instance.EndOf(".list-content");
             RenderPaginator();
         }
@@ -291,7 +296,7 @@ namespace Core.Components
         public virtual void ActionFilter()
         {
             ClearRowData();
-            Client.ExecTaskNoResult(ReloadData());
+            ReloadData().Done();
         }
 
         public virtual string CalcFilterQuery()
@@ -301,7 +306,7 @@ namespace Core.Components
 
         public void LoadAllData()
         {
-            Client.ExecTask(ReloadData(cacheHeader: GuiInfo.CanCache));
+            ReloadData(cacheHeader: GuiInfo.CanCache).Done();
         }
 
         public void ResetOrder()
@@ -405,6 +410,8 @@ namespace Core.Components
 
         public virtual void RenderContent()
         {
+            MainSection.DisposeChildren();
+            EmptyRowSection.DisposeChildren();
             FormattedRowData = FormattedRowData.Nothing() ? RowData.Data : FormattedRowData;
             if (FormattedRowData.Nothing())
             {
@@ -421,7 +428,6 @@ namespace Core.Components
         protected virtual void Rerender()
         {
             DisposeNoRecord();
-            Editable = GuiInfo.CanAdd && Header.Any(x => x.Active && !x.Hidden && x.Editable);
             MainSection.DisposeChildren();
             Html.Take(MainSection.Element).Clear();
             RenderContent();
@@ -520,7 +526,6 @@ namespace Core.Components
             Paginator.UpdateView();
         }
 
-        private int _realtimeAwait;
         public void RealtimeUpdate(ListViewItem rowData, ObservableArgs arg)
         {
             if (EmptyRow)
@@ -532,11 +537,7 @@ namespace Core.Components
             {
                 return;
             }
-            Window.ClearTimeout(_realtimeAwait);
-            _realtimeAwait = Window.SetTimeout(() =>
-            {
-                rowData.PatchUpdateOrCreate();
-            }, 300);
+            rowData.PatchUpdateOrCreate();
         }
 
         internal virtual Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
@@ -553,19 +554,20 @@ namespace Core.Components
             this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreated, rowData).Done(() =>
             {
                 RowData.Data.Add(rowData);
+                Entity.SetComplexPropValue(FieldName, RowData.Data);
+                RowAction(x => x.Entity == rowSection.Entity, x =>
+                {
+                    x.EmptyRow = false;
+                    x.FilterChildren(child => true).SelectForEach(child =>
+                    {
+                        child.EmptyRow = false;
+                        child.UpdateView(force: true);
+                    });
+                });
+                EmptyRowSection.Children.Clear();
+                AddNewEmptyRow();
                 this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreated, rowData).Done(() =>
                 {
-                    Entity.SetComplexPropValue(FieldName, RowData.Data);
-                    RowAction(x => x.Entity == rowSection.Entity, x =>
-                    {
-                        x.EmptyRow = false;
-                        x.FilterChildren(child => true).SelectForEach(child =>
-                        {
-                            child.EmptyRow = false;
-                            child.UpdateView(force: true);
-                        });
-                    });
-                    AddNewEmptyRow();
                     tcs.TrySetResult(true);
                 });
             });
@@ -574,7 +576,38 @@ namespace Core.Components
 
         public virtual void AddNewEmptyRow()
         {
-            // not to add empty row into list view
+            if (Disabled || !Editable || EmptyRowSection?.Children.HasElement() == true)
+            {
+                return;
+            }
+            var emptyRowData = new object();
+            if (!GuiInfo.DefaultVal.IsNullOrWhiteSpace() && Utils.IsFunction(GuiInfo.DefaultVal, out var fn))
+            {
+                var dfObj = fn.Call(this, this);
+                dfObj.ForEachProp(x =>
+                {
+                    emptyRowData[x] = dfObj[x];
+                });
+            }
+            emptyRowData[IdField] = null;
+            var rowSection = RenderRowData(Header, emptyRowData, EmptyRowSection, null, true);
+            emptyRowData.ForEachProp((field, value) =>
+            {
+                rowSection.PatchModel.Add(new PatchDetail
+                {
+                    Field = field,
+                    Value = value?.ToString()
+                });
+            });
+            if (!GuiInfo.TopEmpty)
+            {
+                MainSection.Element.InsertBefore(MainSection.Element, EmptyRowSection.Element);
+            }
+            else
+            {
+                MainSection.Element.AppendChild(EmptyRowSection.Element.FirstElementChild);
+            }
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterEmptyRowCreated, emptyRow).Done();
         }
 
         public void NoRecordFound()
@@ -590,7 +623,7 @@ namespace Core.Components
             };
             AddChild(_noRecord);
             _noRecord.Element.AddClass("no-records");
-            Html.Take(_noRecord.Element).IHtml("Không tìm thấy dữ liệu");
+            Html.Take(_noRecord.Element).IHtml("No record found");
             DomLoaded();
         }
 
@@ -618,84 +651,6 @@ namespace Core.Components
             {
                 header.LocalData = remoteData;
             }
-        }
-
-        protected void SyncMasterData(IEnumerable<object> rows = null, List<Component> headers = null)
-        {
-            rows = rows ?? RowData.Data;
-            headers = headers ?? Header;
-            foreach (var header in headers.Where(x => x.ReferenceId.HasAnyChar()))
-            {
-                if (header.FieldName.IsNullOrWhiteSpace() || header.FieldName.Length <= 2)
-                {
-                    continue;
-                }
-
-                var containId = header.FieldName.Substr(header.FieldName.Length - 2) == IdField;
-                if (!containId)
-                {
-                    continue;
-                }
-
-                foreach (var row in rows)
-                {
-                    var objField = header.FieldName.Substr(0, header.FieldName.Length - 2);
-                    var propType = Utils.GetEntity(header.ReferenceId)?.Name;
-                    if (propType is null)
-                    {
-                        continue;
-                    }
-
-                    var propVal = Utils.GetPropValue(row, objField);
-                    var found = RefData.GetValueOrDefault(propType)?.FirstOrDefault(source =>
-                    {
-                        return source[IdField].As<int?>() == Utils.GetPropValue(row, header.FieldName).As<int?>();
-                    });
-                    if (found != null)
-                    {
-                        row.SetComplexPropValue(objField, found);
-                    }
-                    else if (propVal != null && found == null)
-                    {
-                        var source = RefData.GetValueOrDefault(propType);
-                        source?.Add(propVal);
-                    }
-                }
-            }
-        }
-
-        private Component FormatDataSourceByEntity(Component currentHeader, IEnumerable<Component> allHeaders, IEnumerable<object> entities)
-        {
-            var entityIds = allHeaders
-                .Where(x => x.RefName == currentHeader.RefName)
-                .SelectMany(x => GetEntityIds(x, entities)).Distinct();
-            if (entityIds.Nothing())
-            {
-                return null;
-            }
-
-            currentHeader.DataSourceOptimized = entityIds.Where(x => x.HasAnyChar())
-                .OrderBy(x => x).Select(x => $"'{x}'").Combine();
-            return currentHeader;
-        }
-
-        private EnumerableInstance<string> GetEntityIds(Component header, IEnumerable<object> entities)
-        {
-            if (entities.Nothing())
-            {
-                return Enumerable.Empty<string>();
-            }
-
-            return entities.Select(x =>
-            {
-                var id = x.GetPropValue(header.FieldName)?.ToString();
-                if (StringExt.IsNullOrEmpty(id))
-                {
-                    return null;
-                }
-
-                return id;
-            }).Where(id => id != null);
         }
 
         public void DeactivateSelected(object ev = null)
@@ -734,7 +689,7 @@ namespace Core.Components
             }
             var deletedItems = GetSelectedRows().ToList();
             var confirm = new ConfirmDialog();
-            confirm.Title = $"Bạn có chắc xóa {deletedItems.Count} dòng dữ liêu không!";
+            confirm.Title = $"Bạn có chắc xóa {deletedItems.Count} dòng dữ liệu không!";
             confirm.Render();
             confirm.YesConfirmed += () =>
             {
@@ -1235,6 +1190,7 @@ namespace Core.Components
             _history.Remove();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0017:Simplify object initialization", Justification = "<Pending>")]
         protected void ViewHistory(object ev)
         {
             var currentItem = GetSelectedRows().LastOrDefault();
@@ -1248,9 +1204,7 @@ namespace Core.Components
                 .EndOf(".popup-title")
                 .Div.ClassName("popup-body scroll-content");
             var body = Html.Context;
-#pragma warning disable IDE0017 // Simplify object initialization
             var com = new Component();
-#pragma warning restore IDE0017 // Simplify object initialization
             com.Id = Uuid7.Id25();
             com.FieldName = nameof(AdvSearchVM.Conditions);
             com.Column = 4;
@@ -1409,6 +1363,7 @@ namespace Core.Components
             return tcs.Task;
         }
         public bool _hasLoadRef { get; set; }
+        public ListViewSection EmptyRowSection { get; set; }
         protected Function _preQueryFn;
         internal string FeatureId;
         protected bool _hasLoadUserSetting;

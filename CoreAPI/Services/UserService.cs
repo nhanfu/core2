@@ -839,18 +839,16 @@ public class UserService
 
             }
         }
-        string connStr = null;
         if (com is null)
         {
             var query = @$"select top 1 * from Component 
             where Id = '{vm.ComId}' and (Annonymous = 1 or IsPrivate = 0 and '{TenantCode}' != '' or TenantCode = '{TenantCode}')";
-            connStr = vm.CachedConnStr ?? await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
-            vm.CachedConnStr = connStr;
-            com = await ReadDsAs<Component>(query, connStr);
+            vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
+            com = await ReadDsAs<Component>(query, vm.CachedConnStr);
             if (com is null) return null;
             await _cache.SetStringAsync(comKey, JsonConvert.SerializeObject(com), Utils.CacheTTL);
         }
-        var readPermission = await GetEntityPerm("Component", vm.ComId, connStr, x => x.CanRead);
+        var readPermission = await GetEntityPerm("Component", vm.ComId, vm.CachedConnStr, x => x.CanRead);
         var hasPerm = com.Annonymous || !com.IsPrivate && UserId != null || readPermission.Length != 0;
         if (!hasPerm)
             throw new ApiException("Access denied")

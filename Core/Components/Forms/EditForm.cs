@@ -260,7 +260,7 @@ namespace Core.Components.Forms
             var tcs = new TaskCompletionSource<bool>();
             if (predicate == null)
             {
-                predicate = (EditableComponent x) => true;
+                predicate = (EditableComponent x) => x.Children.Nothing();
             }
             if (ignorePredicate == null)
             {
@@ -284,7 +284,7 @@ namespace Core.Components.Forms
                     var invalidCom = res.Where(x => !x.IsValid).ToArray();
                     invalidCom.ForEach(x => { x.Disabled = false; });
                     invalidCom.FirstOrDefault().Focus();
-                    var message = string.Join("<br />", invalidCom.SelectMany(x => x.ValidationResult.Values));
+                    var message = string.Join(Utils.BreakLine, invalidCom.SelectMany(x => x.ValidationResult.Values));
                     Toast.Warning(message);
                 }
                 tcs.TrySetResult(false);

@@ -59,7 +59,6 @@ namespace Core.Components
 
         private void NoRowData(List<object> list)
         {
-            Editable = GuiInfo.CanAdd && Header.Any(x => !x.Hidden && x.Editable);
             if (Editable)
             {
                 AddNewEmptyRow();

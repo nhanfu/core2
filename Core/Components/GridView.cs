@@ -21,7 +21,6 @@ namespace Core.Components
 {
     public class GridView : ListView
     {
-        public ListViewSection EmptyRowSection { get; set; }
         private const string SummaryClass = "summary";
         private const int CellCountNoSticky = 50;
         public List<HTMLElement> _summarys = new List<HTMLElement>();
@@ -69,7 +68,6 @@ namespace Core.Components
         {
             LoadRerender = true;
             DisposeNoRecord();
-            Editable = GuiInfo.CanAdd && Header.Any(x => !x.Hidden && x.Editable);
             Header = Header.Where(x => !x.Hidden).ToList();
             RenderTableHeader(Header);
             if (Editable)
@@ -1563,10 +1561,7 @@ namespace Core.Components
             {
                 DataTable.InsertBefore(EmptyRowSection.Element, MainSection.Element);
             }
-            Task.Run(async () =>
-            {
-                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterEmptyRowCreated, emptyRow);
-            });
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterEmptyRowCreated, emptyRow).Done();
         }
 
         protected override List<Component> FilterColumns(List<Component> Component)
@@ -2063,7 +2058,6 @@ namespace Core.Components
                 {
                     Entity.SetComplexPropValue(FieldName, RowData.Data);
                 }
-                rowSection.UpdateView(true);
                 MoveEmptyRow(rowSection);
                 EmptyRowSection.Children.Clear();
                 AddNewEmptyRow();
@@ -2281,7 +2275,7 @@ namespace Core.Components
         {
             var tcs = new TaskCompletionSource<List<object>>();
             var dsTask = Client.Instance.ComQuery(vm);
-            Client.ExecTask(dsTask, ds =>
+            dsTask.Done(ds =>
             {
                 if (ds.Nothing())
                 {
@@ -2299,7 +2293,7 @@ namespace Core.Components
                 SetRowData(rows);
                 UpdatePagination(total, rows.Count);
                 tcs.TrySetResult(rows);
-            });
+            }).Catch(err => tcs.TrySetException(err));
             return tcs.Task;
         }
 

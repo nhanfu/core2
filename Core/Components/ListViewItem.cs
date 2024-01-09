@@ -254,7 +254,11 @@ namespace Core.Components
             }
             ListView.RowChangeHandler(component.Entity, this, arg, component).Done(() =>
             {
-                ListView.RealtimeUpdate(this, arg);
+                ValidateAsync().Done(isvalid =>
+                {
+                    if (!isvalid) return;
+                    ListView.RealtimeUpdate(this, arg);
+                });
             });
         }
 
@@ -483,7 +487,26 @@ namespace Core.Components
         }
 
         public override bool Show { get => base.Show; set => Toggle(value); }
-        public const string CmdUrl = "Cmd";
+        public bool ShowMessage { get; set; } = true;
+
+        public override Task<bool> ValidateAsync()
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            var allValid = FilterChildren(x => x.Children.Nothing(), x => x.AlwaysValid).ForEachAsync(x => x.ValidateAsync());
+            allValid.Done((validities) =>
+            {
+                var res = validities.ToArray();
+                var allOk = res.All(x => x.IsValid);
+                tcs.TrySetResult(allOk);
+                if (!allOk && ShowMessage)
+                {
+                    var message = validities.Where(x => !x.IsValid)
+                        .Combine(x => x.ValidationResult.Values.Combine(Utils.BreakLine), Utils.BreakLine);
+                    Toast.Warning(message);
+                }
+            });
+            return tcs.Task;
+        }
     }
 
     public class GroupViewItem : ListViewItem

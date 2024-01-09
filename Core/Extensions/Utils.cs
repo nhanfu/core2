@@ -19,6 +19,7 @@ namespace Core.Extensions
         public const string FeatureField = "f";
         public const string QuestionMark = "?";
         public const string Amp = "&";
+        public const string BreakLine = "<br />";
         public const string ApplicationJson = "application/json";
         public const string Authorization = "Authorization";
         public const string SelfVendorId = "65";

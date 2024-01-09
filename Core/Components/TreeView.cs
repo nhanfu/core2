@@ -20,7 +20,6 @@ namespace Core.Components
         protected override void Rerender()
         {
             DisposeNoRecord();
-            Editable = GuiInfo.CanAdd && Header.Any(x => !x.Hidden && x.Editable);
             Header = Header.Where(x => !x.Hidden).ToList();
             MainSection.Element.AddClass("overflow");
             var firstData = FormattedRowData = FormattedRowData.Nothing() ? RowData.Data : FormattedRowData;
