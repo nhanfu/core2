@@ -19,7 +19,6 @@ namespace Core.Clients
         public static string ModelNamespace;
         private readonly string _nameSpace;
         private bool _config;
-        public string NameSpace => _nameSpace.IsNullOrEmpty() ? ModelNamespace : _nameSpace;
         public static string Host => Window.Instance["Host"] != null ? Window.Instance["Host"].ToString() : Window.Location.Host;
         public static string Origin => Window.Instance["OriginLocation"] != null ? Window.Instance["OriginLocation"].ToString() : (Window.Location.Origin + "/");
         public static string Prefix => Origin + "api";
@@ -31,6 +30,7 @@ namespace Core.Clients
         private static Dictionary<string, Entity> entities;
         private static Token token;
         public static int GuidLength = 36;
+        public static bool IsPortal = Utils.HeadChildren.startup?.content as string == "portal";
         public static string ConnKey = Utils.HeadChildren.connKey?.content as string ?? "default";
         public static string Tenant = Utils.HeadChildren.tenant?.content as string ?? "System";
         public static string Env = Utils.HeadChildren.env?.content as string ?? "test";

@@ -373,5 +373,4 @@ FodyWeavers.xsd
 /CoreAPI/wwwroot/js/bridge.min.js
 /CoreAPI/wwwroot/js/Core.js
 /CoreAPI/wwwroot/js/Core.min.js
-/CoreAPI/wwwroot/css/main.min.css
-/CoreAPI/wwwroot/css/main.css
+/CoreAPI/wwwroot/css/*.css

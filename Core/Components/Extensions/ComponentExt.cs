@@ -239,10 +239,9 @@ namespace Core.Components.Extensions
             return com.OpenTab(com.GetHashCode().ToString(), featureName, factory, true, anonymous);
         }
 
-        public static Task<EditForm> InitFeatureByName(string connKey, string hash, bool portal = true)
+        public static Task<EditForm> InitFeatureByName(string connKey, string featureName, bool portal = true)
         {
             var tcs = new TaskCompletionSource<EditForm>();
-            var featureName = hash.Replace("-", " ").Replace("#", string.Empty);
             LoadFeature(connKey, featureName).Done(feature =>
             {
                 if (feature is null)
@@ -250,11 +249,17 @@ namespace Core.Components.Extensions
                     return;
                 }
 
-                var type = Type.GetType(feature.ViewClass);
-                var instance = type is null ? new EditForm(string.Empty) : Activator.CreateInstance(type) as EditForm;
-                instance.Feature = feature;
-                instance.Id = feature.Name;
+                EditForm instance = null;
+                instance = new TabEditor(feature.EntityName);
+                if (!feature.Script.IsNullOrWhiteSpace())
+                {
+                    AssignMethods(feature, instance);
+                }
                 EditForm.Portal = portal;
+                instance.Name = feature.Name;
+                instance.Id = feature.Name + feature.Id;
+                instance.Icon = feature.Icon;
+                instance.Feature = feature;
                 instance.Render();
                 tcs.SetResult(instance);
             });
@@ -270,7 +275,7 @@ namespace Core.Components.Extensions
                 {
                     ComId = "Feature",
                     Action = "GetFeature",
-                    ConnKey = Client.ConnKey,
+                    ConnKey = connKey ?? Client.ConnKey,
                     Params = JSON.Stringify(new { Name = name, Id = id })
                 }),
                 Url = Utils.UserSvc,

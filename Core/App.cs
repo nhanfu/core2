@@ -1,8 +1,15 @@
 ﻿using Bridge.Html5;
 using Core.Clients;
 using Core.Components;
+using Core.Components.Extensions;
+using Core.Components.Forms;
 using Core.Components.Framework;
+using Core.Extensions;
 using Core.Models;
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Core
 {
@@ -24,8 +31,33 @@ namespace Core
         {
             Client.ModelNamespace = typeof(User).Namespace + ".";
             Spinner.Init();
-            LoginBL.Instance.Render();
+            if (Client.IsPortal) InitPortal();
+            else LoginBL.Instance.Render();
             AlterDeviceScreen();
+        }
+
+        private static void InitPortal()
+        {
+            LoginBL.Instance.SignedInHandler += (x) => Window.Location.Reload();
+            LoadByFromUrl();
+            EditForm.NotificationClient = new WebSocketClient("task");
+            Window.AddEventListener(EventType.PopState, () =>
+            {
+                LoadByFromUrl();
+                NotificationBL.Instance.Render();
+            });
+        }
+
+        private static void LoadByFromUrl()
+        {
+            var builder = new StringBuilder();
+            var feature = Window.Location.Href.Split(Utils.Slash).LastOrDefault();
+            for (int i = 0; i < feature.Length; i++)
+            {
+                if (feature[i] == '?' || feature[i] == '#') break;
+                builder.Append(feature[i]);
+            }
+            ComponentExt.InitFeatureByName(Client.ConnKey, builder.ToString(), true).Done();
         }
 
         private static void AlterDeviceScreen()

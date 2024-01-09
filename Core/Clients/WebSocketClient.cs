@@ -18,7 +18,7 @@ namespace Core.Clients
                 Console.WriteLine("Socket opened", e);
             };
 
-            _socket.OnClose += e =>
+            _socket.OnClose += (CloseEvent e) =>
             {
                 Console.WriteLine("Socket closed", e);
             };
