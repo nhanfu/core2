@@ -301,7 +301,7 @@ namespace Core.Components
                 ui.Label = ui.Label ?? string.Empty;
                 if (ui.ShowLabel)
                 {
-                    html.TData.Visibility(ui.Visibility).Label.IText(ui.Label)
+                    html.TData.Visibility(ui.Visibility).Div.IText(ui.Label)
                         .TextAlign(column == 0 ? Enums.TextAlign.left : Enums.TextAlign.right);
                     if (Client.CheckHasRole(RoleEnum.System))
                     {
@@ -449,7 +449,7 @@ namespace Core.Components
                 HTMLElement label = null;
                 if (ui.ShowLabel)
                 {
-                    html.Label.IText(ui.Label).TextAlign(column == 0 ? Enums.TextAlign.left : Enums.TextAlign.right).Render();
+                    html.Div.IText(ui.Label).TextAlign(column == 0 ? Enums.TextAlign.left : Enums.TextAlign.right).Render();
                     label = Html.Context;
                     html.End.Render();
                 }

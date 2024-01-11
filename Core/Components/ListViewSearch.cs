@@ -228,22 +228,18 @@ namespace Core.Components
                 AddChild(dateType);
             }
             Html.Take(Element).Div.ClassName("searching-block")
-                .Button("Tìm kiếm", className: "button secondary small btn-toolbar", icon: "fa fa-search")
+                .Icon("fa fa-search")
                     .Event(EventType.Click, () =>
                     {
                         ParentListView.ClearSelected();
                         ParentListView.ReloadData().Done();
                     }).End
-                .Button(className: "button secondary small btn-toolbar right", icon: "fa fa-cog")
+                .Icon("fa fa-cog")
                     .Title("Nâng cao")
-                    .Icon("fa fa-chevron-down").End
                     .Event(EventType.Click, AdvancedOptions).End
-                .Button(className: "btnSearch button secondary small btn-toolbar right", icon: "fa fa-undo")
+                .Icon("fa fa-undo")
                     .Title("Làm mới")
                     .Event(EventType.Click, RefershListView).End
-                .Button(className: "btn btn-secondary btn-sm", icon: "fal fa-compress-wide")
-                    .Title("Phóng to")
-                    .Event(EventType.Click, FullScreen).End
                     .Render();
             if (GuiInfo.ShowHotKey && ParentGridView != null)
             {

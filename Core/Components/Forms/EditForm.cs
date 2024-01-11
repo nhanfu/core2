@@ -101,6 +101,7 @@ namespace Core.Components.Forms
         public string ReasonOfChange { get; set; }
         public static bool Portal { get; internal set; }
         public bool Config { get; set; }
+        public bool Popup { get; set; }
 
         public EditForm(string entity) : base(null)
         {
@@ -485,7 +486,7 @@ namespace Core.Components.Forms
         private HTMLElement RenderTemplate(Feature layout, Feature feature)
         {
             HTMLElement entryPoint = Document.GetElementById(SpecialEntryPoint) ?? Document.GetElementById("template") ?? Element;
-            if (ParentForm != null && Portal)
+            if (ParentForm != null && Portal && !Popup)
             {
                 ParentForm.Element = null;
                 ParentForm.Dispose();

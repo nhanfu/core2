@@ -35,7 +35,6 @@
 		<None Include="wwwroot\css\fonts\LineIcons.svg" />
 		<None Include="wwwroot\css\main.less" />
 		<None Include="wwwroot\css\mixin.less" />
-		<None Include="wwwroot\css\stylelaunch.less" />
 		<None Include="wwwroot\css\webfonts\fa-brands-400.svg" />
 		<None Include="wwwroot\css\webfonts\fa-brands-400.woff2" />
 		<None Include="wwwroot\css\webfonts\fa-light-300.svg" />

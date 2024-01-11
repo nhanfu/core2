@@ -1113,7 +1113,7 @@ namespace Core.Components
 
         public void ClearRowData()
         {
-            RowData?.Data?.Clear();
+            if (RowData?.Data is IList list && list != null) list.Clear();
             RowAction(x => !x.EmptyRow, x => x.Dispose());
             MainSection.Element.InnerHTML = null;
             if (Entity is null || Parent is SearchEntry)

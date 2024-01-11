@@ -22,7 +22,6 @@ namespace Core.Components.Forms
         public static EditableComponent FindTab(string id) => Tabs.FirstOrDefault(x => x.Id == id);
         public Dictionary<string, List<object>> DataSearchEntry = new Dictionary<string, List<object>>();
         private HTMLElement _li;
-        public bool Popup { get; set; }
         public bool ChildForm { get; set; }
         public static bool ShowTabText { get; set; }
         private List<Button> _hotKeyComponents;
@@ -64,10 +63,6 @@ namespace Core.Components.Forms
             html.Li.ClassName("nav-item").Title(TabTitle)
             .A.ClassName("nav-link pl-lg-2 pr-lg-2 pl-xl-3 pr-xl-3")
             .Event(EventType.Click, Focus).Event(EventType.MouseUp, Close);
-            if (!Icon.IsNullOrWhiteSpace())
-            {
-                html.Icon(Icon).End.Render();
-            }
             html.Icon("fa fal fa-compress-wide").Event(EventType.Click, (e) =>
             {
                 FullScreen();
@@ -76,11 +71,7 @@ namespace Core.Components.Forms
             {
                 e.StopPropagation();
                 DirtyCheckAndCancel();
-            }).End.Render();
-            if (ShowTabText)
-            {
-                html.Span.ClassName("title").IText(TabTitle).End.Render();
-            }
+            }).End.Span.ClassName("title").IText(TabTitle).End.Render();
 
             _li = Html.Context.ParentElement;
             IconElement = _li.FirstElementChild;
