@@ -21,7 +21,7 @@ namespace Core
             {
                 LangSelect.Culture = "vi";
             }
-            Client.ExecTask(LangSelect.Translate(), (x) =>
+            LangSelect.Translate().Done((x) =>
             {
                 InitApp();
             });
@@ -52,12 +52,21 @@ namespace Core
         {
             var builder = new StringBuilder();
             var feature = Window.Location.Href.Split(Utils.Slash).LastOrDefault();
-            for (int i = 0; i < feature.Length; i++)
+            string fName;
+            if (feature.IsNullOrWhiteSpace())
             {
-                if (feature[i] == '?' || feature[i] == '#') break;
-                builder.Append(feature[i]);
+                fName = "index";
             }
-            ComponentExt.InitFeatureByName(Client.ConnKey, builder.ToString(), true).Done();
+            else
+            {
+                for (int i = 0; i < feature.Length; i++)
+                {
+                    if (feature[i] == '?' || feature[i] == '#') break;
+                    builder.Append(feature[i]);
+                }
+                fName = builder.ToString();
+            }
+            ComponentExt.InitFeatureByName(Client.ConnKey, fName, true).Done();
         }
 
         private static void AlterDeviceScreen()

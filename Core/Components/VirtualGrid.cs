@@ -64,7 +64,7 @@ namespace Core.Components
                 start = 0;
             }
             var sql = GetSql(start, viewPortCount + viewPortCount * cacheAhead * 2, cacheMeta: true, count: false);
-            Client.ExecTask(Client.Instance.ComQuery(sql), ds =>
+            Client.Instance.ComQuery(sql).Done(ds =>
             {
                 if (ds.Nothing())
                 {
@@ -76,7 +76,7 @@ namespace Core.Components
                 CacheData.SelectForEach((x, index) => x[RowNo] = start + index + 1);
                 _waitingLoad = false;
                 tcs.TrySetResult(true);
-            }, e => tcs.TrySetException(e));
+            }).Catch(e => tcs.TrySetException(e));
             return tcs.Task;
         }
 
@@ -207,7 +207,7 @@ namespace Core.Components
             if (_waitingLoad)
             {
                 Window.ClearTimeout(_renderPrepareCacheAwaiter);
-                _renderPrepareCacheAwaiter = Window.SetTimeout(() => Client.ExecTask(PrepareCache(_skip)), 7000);
+                _renderPrepareCacheAwaiter = Window.SetTimeout(() => PrepareCache(_skip).Done(), 7000);
             }
             if (_renderingViewPort || !VirtualScroll)
             {

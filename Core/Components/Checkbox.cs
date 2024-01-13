@@ -72,7 +72,7 @@ namespace Core.Components
             }
             PopulateFields();
             CascadeField();
-            Client.ExecTaskNoResult(this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity));
+            this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done();
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)

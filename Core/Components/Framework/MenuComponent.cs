@@ -313,7 +313,7 @@ namespace Core.Components.Framework
         private void EditFeature(object ev)
         {
             var feature = ev as Feature;
-            var editor = new FeatureBL()
+            var editor = new FeatureDetailBL()
             {
                 Entity = feature,
                 ParentElement = Document.Body,

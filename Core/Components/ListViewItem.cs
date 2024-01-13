@@ -292,7 +292,7 @@ namespace Core.Components
                 Dirty = false;
                 EmptyRow = false;
             }
-            Client.ExecTaskNoResult(this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this));
+            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this).Done();
         }
 
         public PatchVM GetPatchEntity()
@@ -333,7 +333,7 @@ namespace Core.Components
         {
             e.StopPropagation();
             ListViewSection.ListView.DblClick?.Invoke(Entity);
-            Client.ExecTaskNoResult(this.DispatchEvent(GuiInfo.Events, EventType.DblClick, Entity));
+            this.DispatchEvent(GuiInfo.Events, EventType.DblClick, Entity).Done();
         }
 
         protected virtual void RowItemClick(Event e)
@@ -349,7 +349,7 @@ namespace Core.Components
                 ListViewSection.ListView.RowClick?.Invoke(Entity);
             }
             ListViewSection.ListView.LastListViewItem = this;
-            Client.ExecTaskNoResult(this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity));
+            this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity).Done();
         }
 
         private void HotKeySelectRow(bool ctrl, bool shift, bool focusing)

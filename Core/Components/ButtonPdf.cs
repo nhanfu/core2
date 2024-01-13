@@ -155,7 +155,7 @@ namespace Core.Components
         public void GeneratePdf(string format)
         {
             var task = Client.LoadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
-            Client.ExecTaskNoResult(task, PdfLibLoaded);
+            task.Done(PdfLibLoaded);
         }
 
         private void PdfLibLoaded()

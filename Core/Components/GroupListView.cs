@@ -121,12 +121,12 @@ namespace Core.Components
 
         private void DispatchClick(object row)
         {
-            Client.ExecTaskNoResult(this.DispatchEvent(GuiInfo.GroupEvent, EventType.Click, row));
+            this.DispatchEvent(GuiInfo.GroupEvent, EventType.Click, row).Done();
         }
 
         private void DispatchDblClick(object row)
         {
-            Client.ExecTaskNoResult(this.DispatchEvent(GuiInfo.GroupEvent, EventType.DblClick, row));
+            this.DispatchEvent(GuiInfo.GroupEvent, EventType.DblClick, row).Done();
         }
 
         private void ToggleGroupRow(ListViewItem groupSection, Event e)

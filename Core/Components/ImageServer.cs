@@ -246,8 +246,7 @@ namespace Core.Components
             {
                 Path = null;
             }
-            var dispatchTask = this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity);
-            Client.ExecTaskNoResult(dispatchTask, () =>
+            this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done(() =>
             {
                 UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName });
                 Dirty = true;

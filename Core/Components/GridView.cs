@@ -446,7 +446,7 @@ namespace Core.Components
             Spinner.AppendTo(DataTable);
             var dropdowns = CellSelected.Where(x => (!x.Value.IsNullOrWhiteSpace() || !x.ValueText.IsNullOrWhiteSpace()) && x.ComponentType == nameof(SearchEntry) || x.FieldName.Contains(".")).ToList();
             var groups = CellSelected.Where(x => x.FieldName.Contains(".")).ToList();
-            Client.ExecTask(FilterDropdownIds(dropdowns), data =>
+            FilterDropdownIds(dropdowns).Done(data =>
             {
                 var index = 0;
                 var lisToast = new List<string>();
@@ -503,7 +503,7 @@ namespace Core.Components
                     return Task.FromResult(new string[] { x.Value });
                 }
             }).ToArray();
-            Client.ExecTask(Task.WhenAll(dataTask), ds =>
+            Task.WhenAll(dataTask).Done(ds =>
             {
                 tcs.TrySetResult(ds);
             });
@@ -1273,7 +1273,7 @@ namespace Core.Components
                 }
             }
             LocalStorage.SetItem("OrderBy" + GuiInfo.Id, AdvSearchVM.OrderBy);
-            Client.ExecTaskNoResult(ReloadData());
+            ReloadData().Done();
         }
 
         private void AlterExistSort(EditableComponent th, OrderBy existSort)

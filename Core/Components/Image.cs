@@ -368,13 +368,12 @@ namespace Core.Components
             }
             var oldVal = _path;
             var task = UploadAllFiles(files);
-            Client.ExecTaskNoResult(task, () =>
+            task.Done(() =>
             {
                 Dirty = true;
                 _input.Value = string.Empty;
                 UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName, EvType = EventType.Change });
-                var dispatch = this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity);
-                Client.ExecTaskNoResult(dispatch);
+                this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done();
             });
         }
 

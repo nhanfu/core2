@@ -1,5 +1,6 @@
 using Bridge.Html5;
 using Core.Clients;
+using Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -652,7 +653,7 @@ namespace Core.MVVM
         {
             Context.AddEventListener(type, (Event e) =>
             {
-                Client.ExecTaskNoResult(action(e));
+                action(e).Done();
             });
             return this;
         }

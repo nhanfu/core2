@@ -5,11 +5,11 @@ using Core.Models;
 
 namespace Core.Components.Framework
 {
-    public class FeatureBL : PopupEditor
+    public class FeatureBL : TabEditor
     {
         public FeatureBL() : base(nameof(Feature))
         {
-            Name = "Feature management";
+            Name = "Feature-management";
             Title = "Feature";
             Icon = "icons/config.png";
             Config = true;

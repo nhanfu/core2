@@ -164,7 +164,7 @@ namespace Core.Components.Framework
         {
             e.PreventDefault();
             var task = Client.Instance.PostAsync<bool>(Client.Token, "/user/signOut");
-            Client.ExecTask(task, (res) =>
+            task.Done(res =>
             {
                 Client.SignOutEventHandler?.Invoke();
                 Client.Token = null;
@@ -176,15 +176,14 @@ namespace Core.Components.Framework
         private void ViewProfile(Event e)
         {
             e.PreventDefault();
-            var task = this.OpenTab(id: "User" + Client.Token.UserId,
+            this.OpenTab(id: "User" + Client.Token.UserId,
                 featureName: "UserProfile",
                 factory: () =>
                 {
                     var type = Type.GetType("Core.Fw.User.UserProfileBL");
                     var instance = Activator.CreateInstance(type) as TabEditor;
                     return instance;
-                });
-            Client.ExecTask(task);
+                }).Done();
             Dispose();
         }
 
@@ -270,8 +269,8 @@ namespace Core.Components.Framework
         public void MarkAllAsRead(Event e)
         {
             e.PreventDefault();
-            var allReadTask = Client.Instance.PostAsync<bool>(null, nameof(TaskNotification) + "/MarkAllAsRead");
-            Client.ExecTask(allReadTask, res =>
+            Client.Instance.PostAsync<bool>(null, nameof(TaskNotification) + "/MarkAllAsRead")
+            .Done(res =>
             {
                 ToggleBageCount(Notifications.Data.Count(x => x.StatusId == ((int)TaskStateEnum.UnreadStatus).ToString()));
                 foreach (var task in _task.QuerySelectorAll(".task-unread"))

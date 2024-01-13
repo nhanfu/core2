@@ -362,7 +362,7 @@ namespace Core.Components
                 IsRawString = true,
                 Method = HttpMethod.POST
             });
-            Client.ExecTask(pathTask, path =>
+            pathTask.Done(path =>
             {
                 Client.Download($"/excel/Download/{path}");
                 Toast.Success("Xuất file thành công");

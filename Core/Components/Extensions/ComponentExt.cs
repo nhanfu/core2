@@ -282,7 +282,7 @@ namespace Core.Components.Extensions
                 IsRawString = true,
                 Method = HttpMethod.POST
             });
-            Client.ExecTask(featureTask, ds =>
+            featureTask.Done(ds =>
             {
                 if (ds.Nothing() || ds[0].Nothing())
                 {

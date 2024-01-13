@@ -138,7 +138,7 @@ namespace Core.Components
                 Method = Enums.HttpMethod.POST,
                 AllowAnonymous = annonymous
             });
-            Client.ExecTask(dictionaryTask, items =>
+            dictionaryTask.Done(items =>
             {
                 DictionaryLoaded(items[0].Select(x => x.As<Dictionary>()).ToArray());
                 tcs.TrySetResult(true);
