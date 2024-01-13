@@ -9,6 +9,7 @@ using Core.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -113,14 +114,20 @@ namespace Core.Components.Extensions
 
         public static PatchVM MapToPatch<T>(this T com, string table = null)
         {
+            var type = typeof(T);
             var patch = new PatchVM
             {
-                Table = table ?? typeof(T).Name,
+                Table = table ?? type.Name,
                 Changes = new List<PatchDetail>(),
             };
             com.ForEachProp((prop, val) =>
             {
                 if (prop.StartsWith("$")) return;
+                var attributes = type.GetProperty(prop).GetCustomAttributes(typeof(IgnoreDbAttribute), false) as IgnoreDbAttribute[];
+                if (attributes.HasElement())
+                {
+                    return;
+                }
                 patch.Changes.Add(new PatchDetail
                 {
                     Field = prop,

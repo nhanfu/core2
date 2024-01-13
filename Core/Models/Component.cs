@@ -1,4 +1,5 @@
 ﻿using Core.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -248,29 +249,36 @@ namespace Core.Models
 
         public bool DisplayNone { get; set; }
 
-        public string Signed { get; set; }
-
         public string FieldText { get; set; }
 
         public string OrderBy { get; set; }
-
-        public TextAlign? TextAlignEnum { get; set; }
-        public bool IsPivot { get; set; }
-        public int PostOrder { get; set; }
-        public List<object> LocalData { get; set; }
-        public List<Component> LocalHeader { get; set; }
-        public bool StatusBar { get; set; }
-        public bool SimpleText { get; set; }
-        public string DataSourceOptimized { get; set; }
-        public bool LocalRender { get; set; }
-        public bool IgnoreConfirmHardDelete { get; set; }
-        public string ActId { get; set; }
         public string QueueName { get; set; }
         public string ConnKey { get; set; }
         public bool ShouldSaveText { get; set; }
         public string CacheName { get; set; }
 
+        [IgnoreDb]
+        public TextAlign? TextAlignEnum { get; set; }
+        [IgnoreDb]
+        public bool IsPivot { get; set; }
+        [IgnoreDb]
+        public int PostOrder { get; set; }
+        [IgnoreDb]
+        public List<object> LocalData { get; set; }
+        [IgnoreDb]
+        public List<Component> LocalHeader { get; set; }
+        [IgnoreDb]
+        public bool StatusBar { get; set; }
+        [IgnoreDb]
+        public bool SimpleText { get; set; }
+        [IgnoreDb]
+        public bool LocalRender { get; set; }
+        [IgnoreDb]
+        public bool IgnoreConfirmHardDelete { get; set; }
+
+        [IgnoreDb]
         public virtual ComponentGroup ComponentGroup { get; set; }
+        [IgnoreDb]
         public virtual Entity Reference { get; set; }
     }
 }

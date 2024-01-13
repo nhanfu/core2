@@ -23,11 +23,4 @@ namespace Core.ViewModels
         public string ConnKey { get; internal set; } = Client.ConnKey;
         public string Table { get; set; }
     }
-
-    public class SignedCom
-    {
-        public string CmdId { get; set; }
-        public string Query { get; set; }
-        public string Signed { get; set; }
-    }
 }

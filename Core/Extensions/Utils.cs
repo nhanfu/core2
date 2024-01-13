@@ -41,6 +41,7 @@ namespace Core.Extensions
         public const string OwnerRoleIds = "OwnerRoleIds";
         public const string ComQuery = "/user/comQuery";
         public const string PatchSvc = "/v2/user";
+        public const string PatchesSvc = "user/SavePatches";
         public const string UserSvc = "/user/svc";
         public const string DeactivateSvc = "/user/Deactivate";
         public const string ExportExcel = "/user/excel";
@@ -120,6 +121,7 @@ namespace Core.Extensions
         }
 
         public static string ToJson<T>(this T value) => JsonConvert.SerializeObject(value);
+        public static T Clone<T>(this T value) => JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(value));
 
         public static object EncodeProperties(this object value)
         {
@@ -438,17 +440,41 @@ namespace Core.Extensions
         public static void ForEachProp(this object obj, Action<string, object> action)
         {
             if (obj is null || action is null) return;
+            var hashSet = new HashSet<string>();
             /*@
-            Object.keys(obj).forEach(x => action(x, obj[x]));
+            Object.keys(obj).forEach(x => { 
+                if (hashSet.contains(x.Name)) return;
+                hashSet.add(x.Name);
+                action(x, obj[x]);
+            });
             */
+            var props = obj.GetType().GetProperties();
+            props.ForEach(x =>
+            {
+                if (hashSet.Contains(x.Name)) return;
+                hashSet.Add(x.Name);
+                action(x.Name, x.GetValue(obj));
+            });
         }
 
         public static void ForEachProp(this object obj, Action<string> action)
         {
             if (obj is null || action is null) return;
+            var hashSet = new HashSet<string>();
             /*@
-            Object.keys(obj).forEach(x => action(key));
+            Object.keys(obj).forEach(x => { 
+                if (hashSet.contains(x.Name)) return;
+                hashSet.add(x.Name);
+                action(x, obj[x]);
+            });
             */
+            var props = obj.GetType().GetProperties();
+            props.ForEach(x =>
+            {
+                if (hashSet.Contains(x.Name)) return;
+                hashSet.Add(x.Name);
+                action(x.Name);
+            });
         }
 
         public static DateTime LastDayOfMonth(DateTime? time = null)

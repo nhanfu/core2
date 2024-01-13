@@ -52,7 +52,6 @@ namespace Core.Models
         public string Gallery { get; set; }
         public bool DeleteTemp { get; set; }
         public bool CustomNextCell { get; set; }
-        public bool Signed { get; set; }
         public bool IsPortal { get; set; }
         public string QueueName { get; set; }
         public string CacheName { get; set; }

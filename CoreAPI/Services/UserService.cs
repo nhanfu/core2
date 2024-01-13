@@ -517,7 +517,7 @@ public class UserService
 
     public async Task TryNotifyChange(PatchVM vm)
     {
-        await TryInvalidCacheInternal(vm.CacheName, null, vm.CachedConnStr);
+        await TryInvalidCacheInternal(vm.CacheName, vm.CachedConnStr);
         await TryNotifyDeviceInternal(new MQEvent
         {
             Id = Uuid7.Id25(),
@@ -540,7 +540,7 @@ public class UserService
         }
     }
 
-    private Task NotifyOtherClusters(Cluster[] clusters, string path, string json)
+    private Task<HttpResponseMessage[]> NotifyOtherClusters(Cluster[] clusters, string path, string json)
     {
         var request = _ctx.HttpContext.Request;
         var client = _httpClientFactory.CreateClient();
@@ -586,14 +586,15 @@ public class UserService
         return clusters;
     }
 
-    public async Task TryInvalidCacheInternal(string key, string value, string connStr)
+    public async Task TryInvalidCacheInternal(string key, string connStr)
     {
         if (key.IsNullOrWhiteSpace()) return;
         await _cache.RemoveAsync(key);
         var clusters = await GetClusters(role: "API", connStr);
         try
         {
-            await NotifyOtherClusters(clusters, nameof(SetStringToStorage), new { key, value }.ToJson());
+            var mqEvent = new MQEvent{ Action = "ClearCache", Message = key}.ToJson();
+            await NotifyOtherClusters(clusters, "api/cluster/action", mqEvent);
         }
         catch
         {
@@ -608,12 +609,6 @@ public class UserService
             if (clusters[i].Host != host || clusters[i].Port != port) res.Add(clusters[i]);
         }
         return [.. res];
-    }
-
-    public async Task SetStringToStorage(string key, string value)
-    {
-        if (value is null) await _cache.RemoveAsync(key);
-        else await _cache.SetStringAsync(key, value);
     }
 
     private async Task<bool> HasWritePermission(PatchVM vm)

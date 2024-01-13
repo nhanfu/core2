@@ -299,7 +299,12 @@ namespace Core.Components
         {
             var shouldGetAll = EntityId is null;
             var dirtyPatch = Children
-                .Where(child => child is EditableComponent editable && (shouldGetAll || editable.Dirty))
+                .Where(child =>
+                {
+                    return child is EditableComponent editable && !(child is Button)
+                        && (shouldGetAll || editable.Dirty) && child.GuiInfo != null
+                        && child.GuiInfo.FieldName.HasNonSpaceChar();
+                })
                 .SelectMany(child =>
                 {
                     if (child[nameof(PatchDetail)] is Func<PatchDetail[]> fn)

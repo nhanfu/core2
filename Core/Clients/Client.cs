@@ -435,6 +435,20 @@ namespace Core.Clients
             });
         }
 
+        public Task<int> PatchAsync(List<PatchVM> value, Action<XMLHttpRequest> errHandler = null, bool annonymous = false)
+        {
+            return SubmitAsync<int>(new XHRWrapper
+            {
+                Value = JSON.Stringify(value),
+                IsRawString = true,
+                Url = Utils.PatchesSvc,
+                Headers = new Dictionary<string, string> { { "Content-type", "application/json" } },
+                Method = HttpMethod.PATCH,
+                AllowAnonymous = annonymous,
+                ErrorHandler = errHandler
+            });
+        }
+
         public Task<T> PostFilesAsync<T>(File file, string url = string.Empty, Action<object> progressHandler = null)
         {
             var formData = new FormData();

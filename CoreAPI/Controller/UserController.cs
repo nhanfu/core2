@@ -5,11 +5,12 @@ using Core.ViewModels;
 using Core.Middlewares;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Core.Extensions;
 
 namespace Core.Controllers;
 
 [Authorize]
-public class UserController(UserService _userSvc) : ControllerBase
+public class UserController(UserService _userSvc, WebSocketService socketSvc) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("api/{tenant}/[Controller]/SignIn")]
@@ -73,6 +74,13 @@ public class UserController(UserService _userSvc) : ControllerBase
     {
         patch.ByPassPerm = false;
         return _userSvc.SavePatch(patch);
+    }
+
+    [HttpPatch("api/[Controller]/SavePatches", Order = 0)]
+    public Task<int> SavePatches([FromBody] PatchVM[] patches)
+    {
+        patches.Action(x => x.ByPassPerm = false);
+        return _userSvc.SavePatches(patches);
     }
 
     [HttpDelete("api/[Controller]/Deactivate", Order = 0)]
@@ -145,9 +153,6 @@ public class UserController(UserService _userSvc) : ControllerBase
         return _userSvc.GetUserActive();
     }
 
-    [HttpPost("SetStringToStorage")]
-    public Task SetStringToStorage([FromBody] string key, [FromBody] string value) => _userSvc.SetStringToStorage(key, value);
-
     [HttpPost("NotifyDevice")]
     public Task<bool> NotifyDevice([FromBody] MQEvent e)
     {
@@ -165,5 +170,11 @@ public class UserController(UserService _userSvc) : ControllerBase
     public Task RemoveCluster([FromBody] Node e)
     {
         return _userSvc.RemoveCluster(e);
+    }
+
+    [HttpPost("api/cluster/action")]
+    public Task ClusterAction([FromBody] MQEvent e)
+    {
+        return socketSvc.MQAction(e);
     }
 }

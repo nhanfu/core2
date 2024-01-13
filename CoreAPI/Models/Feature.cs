@@ -78,7 +78,6 @@
         public string Gallery { get; set; }
         public bool DeleteTemp { get; set; }
         public bool CustomNextCell { get; set; }
-        public string Signed { get; set; }
         public bool IsPortal { get; set; }
         public string ConnKey { get; set; }
         public virtual ICollection<ComponentGroup> ComponentGroup { get; set; } = new List<ComponentGroup>();

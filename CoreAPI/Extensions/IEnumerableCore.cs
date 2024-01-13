@@ -57,6 +57,19 @@ namespace Core.Extensions
             return source;
         }
 
+        public static void Action<T>(this IEnumerable<T> source, Action<T> action)
+        {
+            if (source.Nothing() || action is null)
+            {
+                return;
+            }
+
+            foreach (var item in source)
+            {
+                action(item);
+            }
+        }
+
         public static bool Nothing<T>(this IEnumerable<T> source)
         {
             return source == null || !source.Any();

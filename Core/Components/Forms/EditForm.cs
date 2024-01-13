@@ -172,8 +172,11 @@ namespace Core.Components.Forms
         {
             var tcs = new TaskCompletionSource<bool>();
             var pathModel = GetPatchEntity();
+            EntityId = pathModel.EntityId;
+            var details = UpdateIndependantGridView() ?? new List<PatchVM>();
+            details.Insert(0, pathModel);
             BeforeSaved?.Invoke();
-            Client.Instance.PatchAsync(pathModel).Done(rs =>
+            Client.Instance.PatchAsync(details).Done(rs =>
             {
                 if (rs == 0)
                 {
@@ -181,8 +184,6 @@ namespace Core.Components.Forms
                     tcs.TrySetResult(false);
                     return;
                 }
-                EntityId = pathModel.EntityId;
-                UpdateIndependantGridView();
                 if (Feature.DeleteTemp)
                 {
                     DeleteGridView();
@@ -216,19 +217,15 @@ namespace Core.Components.Forms
                 .ToArray();
         }
 
-        private void UpdateIndependantGridView()
+        private List<PatchVM> UpdateIndependantGridView()
         {
             var dirtyGrid = GetDirtyGrid();
             if (dirtyGrid.Nothing())
             {
-                return;
+                return null;
             }
             var id = EntityId;
-            dirtyGrid.ForEach(x =>
-            {
-                x.UpdatedRows.ForEach(row => row.SetPropValue(x.GuiInfo.IdField, id));
-                x.BatchUpdate();
-            });
+            return dirtyGrid.SelectMany(x => x.GetPatches()).ToList();
         }
 
         private void DeleteGridView()

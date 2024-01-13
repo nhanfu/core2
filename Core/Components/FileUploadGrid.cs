@@ -135,10 +135,10 @@ namespace Core.Components
             Dirty = true;
         }
 
-        public override void BatchUpdate(bool updateView = false)
+        public override List<PatchVM> GetPatches(bool updateView = false)
         {
             UpdatedRows.ForEach(row => row[nameof(FileUpload.RecordId)] = EntityId);
-            base.BatchUpdate(updateView);
+            return base.GetPatches(updateView);
         }
 
         private void SetEntityPath()

@@ -1608,20 +1608,22 @@ namespace Core.Components
             return AllListViewItem.Where(x => x.Entity[IdField] == row[IdField]);
         }
 
-        public virtual void BatchUpdate(bool updateView = false)
+        public virtual List<PatchVM> GetPatches(bool updateView = false)
         {
             if (!Dirty)
             {
-                return;
+                return null;
             }
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforePatchCreate, Entity, null, this)
-            .Done(() =>
+            if (GuiInfo.IdField != null)
             {
-                foreach (var item in UpdatedListItems)
-                {
-                    item.PatchUpdateOrCreate();
-                }
-            });
+                UpdatedRows.ForEach(row => row[GuiInfo.IdField] = EntityId);
+            }
+            var res = new List<PatchVM>();
+            foreach (var item in UpdatedListItems)
+            {
+                res.Add(item.GetPatchEntity());
+            }
+            return res;
         }
 
         internal int GetRowCountByHeight(double scrollTop)

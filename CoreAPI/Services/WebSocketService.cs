@@ -1,5 +1,6 @@
 ﻿using Core.Extensions;
 using Core.ViewModels;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
@@ -32,7 +33,7 @@ namespace Core.Services
         public string ClickAction { get; set; }
     }
 
-    public class WebSocketService(ConnectionManager connManager, IConfiguration configuration)
+    public class WebSocketService(ConnectionManager connManager, IConfiguration configuration, IDistributedCache cache)
     {
         private readonly string FCM_API_KEY = configuration["FCM_API_KEY"];
         private readonly string FCM_SENDER_ID = configuration["FCM_SENDER_ID"];
@@ -158,15 +159,22 @@ namespace Core.Services
                 await socket.SendAsync(Encoding.ASCII.GetBytes(deviceKey), WebSocketMessageType.Text, true, CancellationToken.None);
                 return;
             }
+            mq.DeviceKey = deviceKey;
+            await MQAction(mq);
+        }
+
+        public async Task MQAction(MQEvent mq)
+        {
             switch (mq.Action)
             {
+                case "ClearCache":
+                    await cache.RemoveAsync(mq.Message);
+                    break;
                 case "Subscribe":
-                    connManager.SubScribeQueue(deviceKey, mq.QueueName);
-                    await socket.SendAsync(Encoding.ASCII.GetBytes(mq.Action), WebSocketMessageType.Text, true, CancellationToken.None);
+                    connManager.SubScribeQueue(mq.DeviceKey, mq.QueueName);
                     break;
                 case "Unsubscribe":
-                    connManager.UnsubScribeQueue(deviceKey, mq.QueueName);
-                    await socket.SendAsync(Encoding.ASCII.GetBytes(mq.Action), WebSocketMessageType.Text, true, CancellationToken.None);
+                    connManager.UnsubScribeQueue(mq.DeviceKey, mq.QueueName);
                     break;
             }
         }

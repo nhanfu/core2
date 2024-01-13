@@ -242,8 +242,6 @@
 
         public bool DisplayNone { get; set; }
         
-        public string Signed { get; set; }
-
         public string FieldText { get; set; }
         
         public string OrderBy { get; set; }

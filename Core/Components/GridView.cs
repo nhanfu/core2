@@ -2549,7 +2549,7 @@ namespace Core.Components
             confirm.Render();
             confirm.YesConfirmed += () =>
             {
-                var cloned = XHRWrapper.UnboxValue(entity) as Component;
+                var cloned = entity.Clone();
                 cloned.Id = Uuid7.Id25();
                 var patch = cloned.MapToPatch();
                 Client.Instance.PatchAsync(patch).Done(success =>

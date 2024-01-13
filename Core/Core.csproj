@@ -119,6 +119,7 @@
     <Compile Include="Models\Feature.cs" />
     <Compile Include="Models\FeaturePolicy.cs" />
     <Compile Include="Models\History.cs" />
+    <Compile Include="Models\IgnoreDbAttribute.cs" />
     <Compile Include="Models\Images.cs" />
     <Compile Include="Models\OdataResult.cs" />
     <Compile Include="Models\TaskNotification.cs" />
