@@ -471,7 +471,7 @@ namespace Core.Components.Framework
             }
             ComponentExt.LoadFeature(Client.ConnKey, feature.Name).Done(f =>
             {
-                if (f is null) return;
+                if (f is null || f.Component.Nothing()) return;
                 EditForm instance = null;
                 instance = new TabEditor(f.EntityName);
                 if (!f.Script.IsNullOrWhiteSpace())

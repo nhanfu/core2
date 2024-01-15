@@ -14,7 +14,6 @@ namespace Core.Components.Framework
             Id = "EditComponent_" + Id;
             Entity = new Component();
             PopulateDirty = false;
-            Config = true;
             DOMContentLoaded += AlterPosition;
         }
 

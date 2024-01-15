@@ -100,7 +100,6 @@ namespace Core.Components.Forms
         public static EditForm LayoutForm { get; set; }
         public string ReasonOfChange { get; set; }
         public static bool Portal { get; internal set; }
-        public bool Config { get; set; }
         public bool Popup { get; set; }
 
         public EditForm(string entity) : base(null)
@@ -410,7 +409,7 @@ namespace Core.Components.Forms
                 LayoutLoaded(feature, entity, loadedCallback: loadedCallback);
                 return;
             }
-            ComponentExt.LoadFeature(null, feature.LayoutId)
+            ComponentExt.LoadFeature(Client.ConnKey, null, id: feature.LayoutId)
             .Done(layout =>
             {
                 LayoutLoaded(feature, entity, layout, loadedCallback);

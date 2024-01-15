@@ -308,7 +308,7 @@ namespace Core.Components.Extensions
                 feature.Component = components;
                 if (groups.Nothing() || components.Nothing())
                 {
-                    tcs.TrySetResult(null);
+                    tcs.TrySetResult(feature);
                     return;
                 }
                 var groupMap = groups.DistinctBy(x => x.Id).ToDictionary(x => x.Id);

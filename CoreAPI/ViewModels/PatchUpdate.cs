@@ -1,4 +1,5 @@
 ﻿using Core.Extensions;
+using System.Text.Json.Serialization;
 
 namespace Core.ViewModels
 {
@@ -14,6 +15,7 @@ namespace Core.ViewModels
         public string TenantCode { get; set; }
         public string Env { get; set; }
         public string ConnKey { get; set; } = Utils.ConnKey;
+        [JsonIgnore]
         public string CachedConnStr { get; internal set; }
         public List<PatchDetail> Changes { get; set; } = [];
         public PatchDetail Id => Changes.FirstOrDefault(x => x.Field == Utils.IdField);

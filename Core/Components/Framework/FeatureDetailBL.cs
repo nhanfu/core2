@@ -15,7 +15,6 @@ namespace Core.Components.Framework
             Title = "Feature";
             PopulateDirty = false;
             Entity = new Feature();
-            Config = true;
         }
 
         public void EditGridColumn(object arg)

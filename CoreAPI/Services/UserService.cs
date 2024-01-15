@@ -501,6 +501,9 @@ public class UserService
             });
             throw;
         }
+        await TryNotifyChange(vm, "HardDelete");
+        await AfterActionSvc(vm, "AfterDelete");
+
         return true;
     }
 
@@ -516,18 +519,18 @@ public class UserService
         if (cmd.IsNullOrWhiteSpace()) return 0;
         var result = await RunSqlCmd(vm.CachedConnStr, cmd);
         await TryNotifyChange(vm);
-        await AfterPatch(vm);
+        await AfterActionSvc(vm, "AfterPatch");
         return result;
     }
 
-    private async Task AfterPatch(PatchVM vm)
+    private async Task AfterActionSvc(PatchVM vm, string action)
     {
         var sql = new SqlViewModel
         {
             CachedConnStr = vm.CachedConnStr,
             QueueName = vm.QueueName,
             ComId = vm.Table,
-            Action = "AfterPatch",
+            Action = action,
         };
         var sv = await GetService(sql);
         if (sv is not null)
@@ -545,12 +548,13 @@ public class UserService
         }
     }
 
-    public async Task TryNotifyChange(PatchVM vm)
+    public async Task TryNotifyChange(PatchVM vm, string action = null)
     {
         await TryInvalidCacheInternal(vm.CacheName, vm.CachedConnStr);
         await TryNotifyDeviceInternal(new MQEvent
         {
             Id = Uuid7.Id25(),
+            Action = action,
             Message = vm.ToJson(),
             QueueName = vm.QueueName
         }, vm.CachedConnStr);
@@ -1774,7 +1778,7 @@ public class UserService
         foreach (var rule in languageRules)
         {
             var language = rule.Language;
-            var regex = new System.Text.RegularExpressions.Regex(rule.Regex);
+            var regex = new Regex(rule.Regex);
             var replacement = rule.Replacement;
             text = regex.Replace(text, replacement);
         }
