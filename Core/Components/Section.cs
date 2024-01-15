@@ -227,7 +227,7 @@ namespace Core.Components
             if (!string.IsNullOrEmpty(groupInfo.Label))
             {
                 Html.Instance.Label.ClassName("header").IText(groupInfo.Label);
-                if (Client.CheckHasRole(RoleEnum.System))
+                if (Client.SystemRole)
                 {
                     Html.Instance.Attr("contenteditable", "true");
                     Html.Instance.Event(EventType.Input, (e) => ChangeComponentGroupLabel(e, groupInfo));
@@ -303,7 +303,7 @@ namespace Core.Components
                 {
                     html.TData.Visibility(ui.Visibility).Div.IText(ui.Label)
                         .TextAlign(column == 0 ? Enums.TextAlign.left : Enums.TextAlign.right);
-                    if (Client.CheckHasRole(RoleEnum.System))
+                    if (Client.SystemRole)
                     {
                         Html.Instance.Attr("contenteditable", "true");
                         Html.Instance.Event(EventType.Input, (e) => ChangeLabel(e, ui));

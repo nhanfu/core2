@@ -2220,7 +2220,7 @@ namespace Core.Components
                 {
                     Html.Instance.Attr("title", header.Description);
                 }
-                if (Client.CheckHasRole(RoleEnum.System))
+                if (Client.SystemRole)
                 {
                     Html.Instance.Attr("contenteditable", "true");
                     Html.Instance.Event(EventType.Input, (e) => ChangeHeader(e, header));

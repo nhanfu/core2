@@ -7,47 +7,68 @@ namespace Core.Clients
 {
     public class WebSocketClient
     {
-        private readonly WebSocket _socket;
-        private string deviceKey;
+        private readonly WebSocket socket;
+        public string deviceKey;
         public WebSocketClient(string url)
         {
-            var wsUri = $"wss://{Client.Host}/{url}?access_token=" + Client.Token.AccessToken;
-            _socket = new WebSocket(wsUri);
-            _socket.OnOpen += e =>
+            var wsUri = $"wss://{Client.Host}/{url}?access_token=" + Client.Token?.AccessToken;
+            /*@
+            if (typeof(ReconnectingWebSocket) !== 'undefined') {
+                this.socket = new ReconnectingWebSocket(wsUri);
+                this.socket.onopen = Bridge.fn.combine(this.socket.onopen, function (e) {
+                    System.Console.WriteLine(System.String.format("Socket opened", e));
+                });
+
+                this.socket.onclose = Bridge.fn.combine(this.socket.onclose, function (e) {
+                    System.Console.WriteLine(System.String.format("Socket closed", e));
+                });
+
+                this.socket.onerror = Bridge.fn.combine(this.socket.onerror, function (e) {
+                    System.Console.WriteLine(e);
+                });
+
+                this.socket.onmessage = Bridge.fn.combine(this.socket.onmessage, Bridge.fn.cacheBind(this, this.SocketMessageEvent));
+                this.socket.binaryType = "arraybuffer";
+                return;
+            }
+            */
+            socket = new WebSocket(wsUri);
+            socket.OnOpen += e =>
             {
                 Console.WriteLine("Socket opened", e);
             };
 
-            _socket.OnClose += (CloseEvent e) =>
+            socket.OnClose += (CloseEvent e) =>
             {
                 Console.WriteLine("Socket closed", e);
             };
 
-            _socket.OnError += (e) =>
+            socket.OnError += (e) =>
             {
                 Console.WriteLine(e);
             };
 
-            _socket.OnMessage += e =>
+            socket.OnMessage += SocketMessageEvent;
+            socket.BinaryType = WebSocket.DataType.ArrayBuffer;
+        }
+
+        private void SocketMessageEvent(MessageEvent e)
+        {
+            var responseStr = e.Data.ToString();
+            var objRs = responseStr.Parse<MQEvent>();
+            if (objRs is null)
             {
-                var responseStr = e.Data.ToString();
-                var objRs = responseStr.Parse<MQEvent>();
-                if (objRs is null)
-                {
-                    deviceKey = responseStr;
-                    return;
-                }
-                var queueName = objRs.QueueName;
-                Window.DispatchEvent(new CustomEvent(objRs.QueueName, new CustomEventInit() { Detail = objRs }));
-            };
-            _socket.BinaryType = WebSocket.DataType.ArrayBuffer;
+                deviceKey = responseStr;
+                return;
+            }
+            Window.DispatchEvent(new CustomEvent(objRs.QueueName, new CustomEventInit() { Detail = objRs }));
         }
 
         public void Send(string message)
         {
-            _socket.Send(message);
+            socket.Send(message);
         }
 
-        public void Close() => _socket.Close();
+        public void Close() => socket.Close();
     }
 }

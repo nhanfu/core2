@@ -495,13 +495,16 @@ namespace Core.Components.Forms
             if (layout != null)
             {
                 var root = Document.GetElementById("template");
-                Html.Take(root).InnerHTML(layout.Template);
-                var style = Document.CreateElement(ElementType.style.ToString());
-                style.AppendChild(new Text(layout.StyleSheet));
-                root.AppendChild(style);
-                BindingTemplate(root, this, isLayout: true);
-                entryPoint = root.FilterElement(x => x.Id == SpecialEntryPoint).FirstOrDefault();
-                ResetEntryPoint(entryPoint);
+                if (root != null)
+                {
+                    Html.Take(root).InnerHTML(layout.Template);
+                    var style = Document.CreateElement(ElementType.style.ToString());
+                    style.AppendChild(new Text(layout.StyleSheet));
+                    root.AppendChild(style);
+                    BindingTemplate(root, this, isLayout: true);
+                    entryPoint = root.FilterElement(x => x.Id == SpecialEntryPoint).FirstOrDefault();
+                    ResetEntryPoint(entryPoint);
+                }
             }
             else
             {

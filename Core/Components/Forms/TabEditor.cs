@@ -60,21 +60,24 @@ namespace Core.Components.Forms
                 return;
             }
             var html = Html.Take("#tabs");
-            html.Li.ClassName("nav-item").Title(TabTitle)
-            .A.ClassName("nav-link pl-lg-2 pr-lg-2 pl-xl-3 pr-xl-3")
-            .Event(EventType.Click, Focus).Event(EventType.MouseUp, Close);
-            html.Icon("fa fal fa-compress-wide").Event(EventType.Click, (e) =>
+            if (Html.Context != null)
             {
-                FullScreen();
-            }).End.Render();
-            html.Icon("fa fa-times").Event(EventType.Click, (e) =>
-            {
-                e.StopPropagation();
-                DirtyCheckAndCancel();
-            }).End.Span.ClassName("title").IText(TabTitle).End.Render();
+                html.Li.ClassName("nav-item").Title(TabTitle)
+                .A.ClassName("nav-link pl-lg-2 pr-lg-2 pl-xl-3 pr-xl-3")
+                .Event(EventType.Click, Focus).Event(EventType.MouseUp, Close);
+                html.Icon("fa fal fa-compress-wide").Event(EventType.Click, (e) =>
+                {
+                    FullScreen();
+                }).End.Render();
+                html.Icon("fa fa-times").Event(EventType.Click, (e) =>
+                {
+                    e.StopPropagation();
+                    DirtyCheckAndCancel();
+                }).End.Span.ClassName("title").IText(TabTitle).End.Render();
 
-            _li = Html.Context.ParentElement;
-            IconElement = _li.FirstElementChild;
+                _li = Html.Context.ParentElement;
+                IconElement = _li.FirstElementChild;
+            }
             Html.Take(TabContainer).TabIndex(-1).Trigger(EventType.Focus).Div.Event(EventType.KeyDown, HotKeyHandler).Render();
             Element = Html.Context;
             ParentElement = TabContainer;
@@ -87,11 +90,16 @@ namespace Core.Components.Forms
         private void FullScreen()
         {
             var elem = Element as dynamic;
-            if (elem.requestFullscreen) {
+            if (elem.requestFullscreen)
+            {
                 elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) { 
+            }
+            else if (elem.webkitRequestFullscreen)
+            {
                 elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) {
+            }
+            else if (elem.msRequestFullscreen)
+            {
                 elem.msRequestFullscreen();
             }
         }
