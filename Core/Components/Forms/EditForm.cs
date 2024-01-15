@@ -238,17 +238,21 @@ namespace Core.Components.Forms
             foreach (var item in dirtyGrid)
             {
                 Client.Instance.HardDeleteAsync(item.DeleteTempIds.ToArray(), item.GuiInfo.RefName, item.ConnKey)
-                .Done(ids =>
+                .Done(deleteSuccess =>
                 {
-                    if (ids.HasElement())
-                    {
-                        item.DeleteTempIds.Intersect(ids).ToArray()
-                            .ForEach(x => item.DeleteTempIds.Remove(x));
-                    }
-                    else
+                    if (!deleteSuccess)
                     {
                         Toast.Warning("Lỗi xóa chi tiết vui lòng kiểm tra lại");
+                        return;
                     }
+                    item.RowAction(x =>
+                    {
+                        if (item.DeleteTempIds.Contains(x.EntityId))
+                        {
+                            x.Dispose();
+                        }
+                    });
+                    item.DeleteTempIds.Clear();
                 });
             }
         }
@@ -651,7 +655,7 @@ namespace Core.Components.Forms
                 return Task.FromResult(null as object);
             }
             var tcs = new TaskCompletionSource<object>();
-            Client.Instance.GetByIdAsync(EntityName, Feature.ConnKey ?? Client.ConnKey, EntityId).Done(ds =>
+            Client.Instance.GetByIdAsync(EntityName, Feature?.ConnKey ?? Client.ConnKey, EntityId).Done(ds =>
             {
                 if (ds.Nothing()) tcs.TrySetResult(null);
                 else tcs.TrySetResult(ds[0]);
@@ -1249,18 +1253,16 @@ namespace Core.Components.Forms
             confirm.YesConfirmed += () =>
             {
                 Client.Instance.HardDeleteAsync(new string[] { EntityId }, Feature.EntityName, Feature.ConnKey)
-                .Done(ids =>
+                .Done(success =>
                 {
-                    if (ids.HasElement())
-                    {
-                        Toast.Success("Delete data succeeded");
-                        ParentForm.UpdateView(true);
-                        Dispose();
-                    }
-                    else
+                    if (!success)
                     {
                         Toast.Warning("An error occurs while deleting data");
+                        return;
                     }
+                    Toast.Success("Delete data succeeded");
+                    ParentForm.UpdateView(true);
+                    Dispose();
                 });
             };
         }

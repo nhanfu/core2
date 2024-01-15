@@ -2579,18 +2579,16 @@ namespace Core.Components
             {
                 var ids = new string[] { entity.Id };
                 Client.Instance.HardDeleteAsync(ids, nameof(Component), ConnKey)
-                .Done(delIds =>
+                .Done(success =>
                 {
-                    if (delIds.HasElement())
-                    {
-                        Toast.Success("Delete success");
-                        Header.Remove(entity);
-                        Rerender();
-                    }
-                    else
+                    if (!success)
                     {
                         Toast.Warning("delete error");
+                        return;
                     }
+                    Toast.Success("Delete success");
+                    Header.Remove(entity);
+                    Rerender();
                 });
             };
         }

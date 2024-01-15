@@ -69,6 +69,13 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc) : 
         return _userSvc.ExportExcel(vm);
     }
 
+    [HttpPost("api/[Controller]/del", Order = 0)]
+    public Task<bool> HardDeleteAsync([FromBody] PatchVM patch)
+    {
+        patch.ByPassPerm = false;
+        return _userSvc.HardDelete(patch);
+    }
+
     [HttpPatch("api/v2/[Controller]", Order = 0)]
     public Task<int> PatchAsync([FromBody] PatchVM patch)
     {

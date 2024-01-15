@@ -43,6 +43,7 @@ namespace Core.Extensions
         public const string PatchSvc = "/v2/user";
         public const string PatchesSvc = "user/SavePatches";
         public const string UserSvc = "/user/svc";
+        public const string DeleteSvc = "/user/del";
         public const string DeactivateSvc = "/user/Deactivate";
         public const string ExportExcel = "/user/excel";
         public const string FileSvc = "/user/file";

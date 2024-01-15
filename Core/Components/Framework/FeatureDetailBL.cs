@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Core.Components.Framework
 {
-    public class FeatureDetailBL : PopupEditor
+    public class FeatureDetailBL : TabEditor
     {
         private Feature FeatureEntity => Entity.CastProp<Feature>();
 
@@ -16,12 +16,6 @@ namespace Core.Components.Framework
             PopulateDirty = false;
             Entity = new Feature();
             Config = true;
-            DOMContentLoaded += AlterPosition;
-        }
-
-        private void AlterPosition()
-        {
-            Element.ParentElement.AddClass("properties");
         }
 
         public void EditGridColumn(object arg)

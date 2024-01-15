@@ -10,6 +10,7 @@ namespace Core.ViewModels
         public string QueueName { get; set; }
         public string CacheName { get; set; }
         public string Table { get; set; }
+        public string[] DeletedIds { get; set; }
         public string TenantCode { get; set; }
         public string Env { get; set; }
         public string ConnKey { get; set; } = Utils.ConnKey;

@@ -772,13 +772,13 @@ namespace Core.Components
             }
             var tcs = new TaskCompletionSource<List<object>>();
             Client.Instance.HardDeleteAsync(ids.ToArray(), GuiInfo.RefName, ConnKey)
-            .Done(delSuccessIds =>
+            .Done(sucess =>
             {
-                if (delSuccessIds.HasElement())
+                if (sucess)
                 {
-                    var allDeleted = delSuccessIds.Length == ids.Count ? string.Empty : " partially";
-                    Toast.Success($"Delete data{allDeleted} success");
-                    AllListViewItem.Where(x => x.Selected && delSuccessIds.Contains(x.EntityId))
+                    Toast.Success("Delete data success");
+                    AllListViewItem
+                        .Where(x => x.Selected && ids.Contains(x.EntityId))
                         .ToArray().ForEach(x => x.Dispose());
                     tcs.TrySetResult(deleted);
                     return;

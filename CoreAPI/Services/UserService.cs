@@ -50,7 +50,7 @@ public class UserService
     public List<string> RoleIds { get; set; }
     public List<string> RoleNames { get; set; }
 
-    public UserService(IHttpContextAccessor ctx, IConfiguration conf, IDistributedCache cache, IWebHostEnvironment host, 
+    public UserService(IHttpContextAccessor ctx, IConfiguration conf, IDistributedCache cache, IWebHostEnvironment host,
         IHttpClientFactory httpClientFactory, WebSocketService taskSocket)
     {
         _cfg = conf ?? throw new ArgumentNullException(nameof(conf));
@@ -474,6 +474,36 @@ public class UserService
 
     public static string RemoveWhiteSpace(string val) => val.Replace(" ", "");
 
+    public async Task<bool> HardDelete(PatchVM vm)
+    {
+        vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey, vm.TenantCode, vm.Env);
+        var unthorizedDeletedIds = await UnauthorizedDeleteRecords(vm);
+        if (unthorizedDeletedIds.HasNonSpaceChar())
+        {
+            throw new ApiException($"Unauthorized to delete on \"{vm.Table}\" records {unthorizedDeletedIds}")
+            {
+                StatusCode = HttpStatusCode.Unauthorized
+            };
+        }
+        var cmd = $"delete from [{vm.Table}] where Id in ({vm.DeletedIds.CombineStrings()})";
+        try
+        {
+            await RunSqlCmd(vm.CachedConnStr, cmd);
+        }
+        catch
+        {
+            await RunUserSvc(new SqlViewModel
+            {
+                ComId = vm.Table,
+                Action = "HardDelete",
+                Ids = vm.DeletedIds,
+                ConnKey = vm.ConnKey,
+            });
+            throw;
+        }
+        return true;
+    }
+
     public async Task<int> SavePatch(PatchVM vm)
     {
         vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey, vm.TenantCode, vm.Env);
@@ -593,7 +623,7 @@ public class UserService
         var clusters = await GetClusters(role: "API", connStr);
         try
         {
-            var mqEvent = new MQEvent{ Action = "ClearCache", Message = key}.ToJson();
+            var mqEvent = new MQEvent { Action = "ClearCache", Message = key }.ToJson();
             await NotifyOtherClusters(clusters, "api/cluster/action", mqEvent);
         }
         catch
@@ -631,6 +661,22 @@ public class UserService
             writePerm = isOwner || allRights.Any(x => x.CanWriteAll);
         }
         return writePerm;
+    }
+
+    private async Task<string> UnauthorizedDeleteRecords(PatchVM vm)
+    {
+        if (vm.ByPassPerm) return null;
+        var allRights = vm.ByPassPerm ? [] : await GetEntityPerm(vm.Table, recordId: null, vm.CachedConnStr);
+        var idField = vm.DeletedIds;
+
+        var origin = @$"select t.* from [{vm.Table}] as t where t.Id in ({vm.DeletedIds.CombineStrings()})";
+        var ds = await ReadDataSet(origin, vm.CachedConnStr);
+        var originRows = ds.Length > 0 && ds[0].Length > 0 ? ds[0] : null;
+        return originRows.WhereNot(x =>
+        {
+            var isOwner = Utils.IsOwner(x, UserId, RoleIds);
+            return isOwner || allRights.Any(x => x.CanDeleteAll);
+        }).Select(x => x.GetValueOrDefault(Utils.IdField)).Combine();
     }
 
     public async Task<int> SavePatches(PatchVM[] patches)
@@ -916,7 +962,7 @@ public class UserService
             }
         }
         var query = @$"select * from Services
-                where (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') 
+                where Active = 1 and (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') 
                 and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
         var sv = await ReadDsAs<Models.Services>(query, vm.CachedConnStr);
         if (sv is null) return null;

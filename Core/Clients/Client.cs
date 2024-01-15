@@ -495,18 +495,17 @@ namespace Core.Clients
             });
         }
 
-        public Task<string[]> HardDeleteAsync(string[] ids, string table, string connKey = null)
+        public Task<bool> HardDeleteAsync(string[] ids, string table, string connKey = null)
         {
-            var vm = new SqlViewModel
+            var vm = new PatchVM
             {
-                ComId = table,
-                Action = "HardDelete",
-                Ids = ids,
+                Table = table,
+                DeletedIds = ids,
                 ConnKey = connKey ?? ConnKey
             };
-            return SubmitAsync<string[]>(new XHRWrapper
+            return SubmitAsync<bool>(new XHRWrapper
             {
-                Url = Utils.UserSvc,
+                Url = Utils.DeleteSvc,
                 Value = JSON.Stringify(vm),
                 Method = HttpMethod.POST,
                 IsRawString = true,

@@ -70,6 +70,19 @@ namespace Core.Extensions
             }
         }
 
+        public static IEnumerable<T> WhereNot<T>(this IEnumerable<T> source, Predicate<T> predicate)
+        {
+            if (source.Nothing() || predicate is null)
+            {
+                yield break;
+            }
+
+            foreach (var item in source)
+            {
+                if (!predicate(item)) yield return item;
+            }
+        }
+
         public static bool Nothing<T>(this IEnumerable<T> source)
         {
             return source == null || !source.Any();
