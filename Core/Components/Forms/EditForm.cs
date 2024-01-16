@@ -146,7 +146,7 @@ namespace Core.Components.Forms
                     Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
                 };
                 return new PatchDetail[] { patch };
-            }).ToList();
+            }).DistinctBy(x => x.Field).ToList();
             AddIdToPatch(details);
             return new PatchVM { Changes = details, Table = Feature.EntityName, QueueName = QueueName, CacheName = CacheName };
         }

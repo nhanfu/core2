@@ -608,7 +608,7 @@ namespace Core.Components
             }
         }
 
-        public PatchDetail[] PatchUpdateDetail()
+        public PatchDetail[] PatchDetail()
         {
             var res = new List<PatchDetail>
             {

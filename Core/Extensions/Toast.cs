@@ -12,20 +12,26 @@ namespace Core.Extensions
         public object[] Params { get; set; }
     }
 
+
     public static class Toast
     {
         public static void Create(ToastOptions options)
         {
             /*@
-            if (typeof(PNotify) !== 'undefined') {
-                 new PNotify({
-                            title: options.Message,
-                            delay: options.Timeout,
-                            type: options.ClassName,
-                        });
+            if (typeof(Swal) !== 'undefined') {
+                var Toast = Swal.mixin({
+                  toast: true,
+                  position: 'top-end',
+                  showConfirmButton: false,
+                  timer: options.Timeout
+                }); 
+                Toast.fire({
+                    icon: options.ClassName,
+                    title: options.Message
+                });
                 return;
             }
-             */
+            */
             Html.Take(Document.Body).Div.ClassName("toast").ClassName(options.ClassName).IHtml(options.Message, options.Params);
             var toast = Html.Context;
 

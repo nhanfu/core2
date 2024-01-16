@@ -321,7 +321,7 @@ namespace Core.Components
                         Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
                     };
                     return new PatchDetail[] { patch };
-                }).ToList();
+                }).DistinctBy(x => x.Field).ToList();
             AddIdToPatch(dirtyPatch);
             PatchModel.AddRange(dirtyPatch);
             return new PatchVM

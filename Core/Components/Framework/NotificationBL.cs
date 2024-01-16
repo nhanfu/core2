@@ -154,7 +154,7 @@ namespace Core.Components.Framework
                 .Div.ClassName("dropdown-menu dropdown-menu-right notClose mt-0 border-0").Style("border-top-left-radius: 0;border-top-right-radius: 0")
                     .A.ClassName("dropdown-item").Event(EventType.Click, ViewProfile).I.ClassName("far fa-user").End.Text("Account (" + CurrentUser.TenantCode + ": " + CurrentUser.FullName + ")").EndOf(ElementType.a);
             html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
-            var langSelect = new LangSelect(new Core.Models.Component(), html.GetContext());
+            var langSelect = new LangSelect(new Component(), html.GetContext());
             langSelect.Render();
             html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
             html.A.Event(EventType.Click, SignOut).ClassName("dropdown-item").I.ClassName("far fa-power-off").End.Text("Logout").EndOf(ElementType.a);
