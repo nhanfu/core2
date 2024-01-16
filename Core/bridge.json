@@ -71,6 +71,6 @@
   // Set to "Trace" for full logging.
   // Default is "None".
   "logging": {
-    "level": "None"
+    "level": "Trace"
   }
 }

@@ -3,6 +3,7 @@ using Core.Components.Extensions;
 using Core.Enums;
 using Core.Extensions;
 using Core.MVVM;
+using Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,7 @@ namespace Core.Components.Forms
                 RenderTab();
             }
             Focus();
+            SetTabStates();
         }
 
         private string TabTitle => Feature?.Label ?? Title;
@@ -82,9 +84,23 @@ namespace Core.Components.Forms
             Element = Html.Context;
             ParentElement = TabContainer;
             Tabs.Add(this);
-            var tabIds = Tabs.Select(x => x.Name).ToList();
-            Window.LocalStorage.SetItem("tabs", tabIds.Combine());
             base.Render();
+        }
+
+        static int stateAwait = 0;
+        private static void SetTabStates()
+        {
+            Window.ClearTimeout(stateAwait);
+            stateAwait = Window.SetTimeout(() =>
+            {
+                var tabStates = Tabs.Select(x => new TabState
+                {
+                    Name = x.Name,
+                    Entity = x.Entity,
+                    Href = x.Href
+                }).DistinctBy(x => x.Href).ToArray();
+                Window.LocalStorage.SetItem("tabs", tabStates.ToJson());
+            });
         }
 
         private void FullScreen()
@@ -354,9 +370,9 @@ namespace Core.Components.Forms
             if (Feature != null && Feature.Name != null && !Popup && !ChildForm)
             {
                 var ns = (Document.Instance as dynamic).head.children.baseUri;
-                var newPath = System.IO.Path.Combine(ns?.content ?? Window.Location.Origin,
-                    Feature.Name.Replace(" ", "-") + $"{(Entity?[IdField] == null ? "" : $"?Id={Entity[IdField]}")}");
-                Window.History.PushState(null, LangSelect.Get(TabTitle), newPath);
+                Href = System.IO.Path.Combine(ns?.content ?? Window.Location.Origin,
+                    Feature.Name.Replace(" ", "-") + $"{(EntityId == null ? "" : $"?Id={EntityId}")}");
+                Window.History.PushState(null, LangSelect.Get(TabTitle), Href);
             }
             Document.Title = LangSelect.Get(TabTitle);
             this.FindActiveComponent<EditableComponent>(x => x?.GuiInfo?.Focus == true).FirstOrDefault()?.Focus();
@@ -385,6 +401,8 @@ namespace Core.Components.Forms
                 }
             }
         }
+
+        public string Href { get; private set; }
 
         public void Close(Event e)
         {
@@ -441,8 +459,7 @@ namespace Core.Components.Forms
                 ParentForm = null;
             }
             Tabs.Remove(this);
-            var tabIds = Tabs.Select(x => x.Name).ToList();
-            Window.LocalStorage.SetItem("tabs", tabIds.Combine());
+            SetTabStates();
         }
 
         protected override void RemoveDOM()

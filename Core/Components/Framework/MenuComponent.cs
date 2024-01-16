@@ -7,6 +7,7 @@ using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,12 +89,12 @@ namespace Core.Components.Framework
             var roles = string.Join("\\", Client.Token.RoleIds);
             startup.Done(res =>
             {
-                var features = res.Length > 0 ? res[0].Select(x => x.CastProp<Feature>()).ToArray() : null;
-                var startApps = res.Length > 1 ? res[1].Select(x => x.CastProp<UserSetting>()).ToArray() : null;
-                var entities = res.Length > 2 ? res[2].Select(x => x.CastProp<Entity>()).ToArray() : null;
-                var tasks = res.Length > 3 ? res[3].Select(x => x.CastProp<TaskNotification>()).ToList() : null;
+                var features = res.Length > 0 ? res[0].Select(x => x.CastProp<Feature>()).ToArray() : new Feature[] { };
+                var settings = res.Length > 1 ? res[1].Select(x => x.CastProp<UserSetting>()).ToArray() : new UserSetting[] { };
+                var entities = res.Length > 2 ? res[2].Select(x => x.CastProp<Entity>()).ToArray() : new Entity[] { };
+                var tasks = res.Length > 3 ? res[3].Select(x => x.CastProp<TaskNotification>()).ToList() : new List<TaskNotification>();
                 SetTask(tasks);
-                GetFeatureCb(features, startApps, entities);
+                GetFeatureCb(features, settings, entities);
             });
         }
 
@@ -122,23 +123,37 @@ namespace Core.Components.Framework
             return startup;
         }
 
-        private void GetFeatureCb(Feature[] feature, UserSetting[] startApp, Entity[] entities)
+        private void GetFeatureCb(Feature[] features, UserSetting[] settings, Entity[] entities)
         {
+            if (features.Nothing() || settings.Nothing() || entities.Nothing()) return;
             Client.Entities = entities.ToDictionary(x => x.Id);
-            var startApps = startApp.Combine(x => x.Value).Split(",").Select(x => x).Distinct();
-            _feature = feature;
+            var startApps = settings.Where(x => x.Name == "Startup").Combine(x => x.Value)
+                .Split(",").Select(x => x).Distinct().ToArray();
+            _feature = features;
             BuildFeatureTree();
             Html.Take("#menu");
             RenderKeyMenuItems(_feature);
-            var featureParam = Window.Location.PathName.SubStrIndex(Window.Location.PathName.LastIndexOf("/") + 1);
-            if (!featureParam.IsNullOrWhiteSpace())
+            var shouldOpenClosedTabs = settings.FirstOrDefault(x => x.Name == "OpenClosedTabs")?.Value?.TryParse<bool>() ?? false;
+            if (shouldOpenClosedTabs)
             {
-                var currentFeature = feature.FirstOrDefault(x => x.Name == featureParam);
-                OpenFeature(currentFeature);
+                var previousTabs = Window.LocalStorage.GetItem("tabs") as string ?? string.Empty;
+                var tabStates = JsonConvert.DeserializeObject<TabState[]>(previousTabs);
+                var previousTabNames = tabStates.Select(x => x.Name).ToArray();
+                var startFeatures = features.Where(x => startApps.Contains(x.Id) || startApps.Contains(x.Name) || x.StartUp)
+                    .Where(x => !previousTabNames.Contains(x.Name)).ToArray();
+                startFeatures.ForEach(OpenFeature);
+                tabStates.ForEach(OpenFeature);
             }
             else
             {
-                feature.Where(x => startApps.Contains(x.Id) || x.StartUp).ForEach(OpenFeature);
+                var featureName = App.GetFeatureNameFromUrl();
+                if (!featureName.IsNullOrWhiteSpace())
+                {
+                    var currentFeature = features.FirstOrDefault(x => x.Name == featureName);
+                    OpenFeature(currentFeature);
+                }
+                features.Where(x => (startApps.Contains(x.Id) || startApps.Contains(x.Name) || x.StartUp) && x.Name != featureName)
+                    .ForEach(OpenFeature);
             }
             DOMContentLoaded?.Invoke();
             _btnBack = Document.GetElementById("btnBack");
@@ -343,7 +358,8 @@ namespace Core.Components.Framework
                     Url = Utils.UserSvc,
                     Method = HttpMethod.POST,
                     Value = JSON.Stringify(sql)
-                }).Done(x => {
+                }).Done(x =>
+                {
                     ReloadMenu(feature.ParentId);
                 });
             };
@@ -454,6 +470,32 @@ namespace Core.Components.Framework
                 li.AddClass(ActiveClass);
                 li.ParentElement.AddClass(ActiveClass);
             }
+        }
+
+        public static void OpenFeature(TabState state)
+        {
+            if (state is null)
+            {
+                return;
+            }
+            ComponentExt.LoadFeature(Client.ConnKey, state.Name).Done(f =>
+            {
+                if (f is null || f.Component.Nothing()) return;
+                EditForm instance = null;
+                instance = new TabEditor(f.EntityName)
+                {
+                    Entity = state.Entity
+                };
+                if (!f.Script.IsNullOrWhiteSpace())
+                {
+                    ComponentExt.AssignMethods(f, instance);
+                }
+                instance.Name = f.Name;
+                instance.Id = f.Name + f.Id;
+                instance.Icon = f.Icon;
+                instance.Feature = f;
+                instance.Render();
+            });
         }
 
         public static void OpenFeature(Feature feature)

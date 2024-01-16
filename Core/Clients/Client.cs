@@ -30,6 +30,7 @@ namespace Core.Clients
         private static Dictionary<string, Entity> entities;
         private static Token token;
         public static int GuidLength = 36;
+        public static string BaseUri = Utils.HeadChildren.baseUri?.content as string;
         public static bool IsPortal = Utils.HeadChildren.startup?.content as string == "portal";
         public static string ConnKey = Utils.HeadChildren.connKey?.content as string ?? "default";
         public static string Tenant = Utils.HeadChildren.tenant?.content as string ?? "System";

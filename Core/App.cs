@@ -6,7 +6,6 @@ using Core.Components.Forms;
 using Core.Components.Framework;
 using Core.Extensions;
 using Core.Models;
-using System.Linq;
 using System.Text;
 
 namespace Core
@@ -48,23 +47,31 @@ namespace Core
 
         private static void LoadByFromUrl()
         {
+            var fName = GetFeatureNameFromUrl() ?? "index";
+            ComponentExt.InitFeatureByName(Client.ConnKey, fName, true).Done();
+        }
+
+        public static string GetFeatureNameFromUrl()
+        {
             var builder = new StringBuilder();
-            var feature = Window.Location.Href.Split(Utils.Slash).LastOrDefault();
+            var feature = Window.Location.PathName.Replace(Client.BaseUri, string.Empty);
+            if (feature.StartsWith(Utils.Slash))
+            {
+                feature = feature.Substring(1);
+            }
             string fName;
             if (feature.IsNullOrWhiteSpace())
             {
-                fName = "index";
+                return null;
             }
-            else
+            for (int i = 0; i < feature.Length; i++)
             {
-                for (int i = 0; i < feature.Length; i++)
-                {
-                    if (feature[i] == '?' || feature[i] == '#') break;
-                    builder.Append(feature[i]);
-                }
-                fName = builder.ToString();
+                if (feature[i] == '?' || feature[i] == '#') break;
+                builder.Append(feature[i]);
             }
-            ComponentExt.InitFeatureByName(Client.ConnKey, fName, true).Done();
+            fName = builder.ToString();
+
+            return fName;
         }
 
         private static void AlterDeviceScreen()

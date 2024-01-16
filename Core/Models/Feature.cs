@@ -16,7 +16,7 @@ namespace Core.Models
         public string Name { get; set; }
         public string Label { get; set; }
         public string ParentId { get; set; }
-        public string Order { get; set; }
+        public int? Order { get; set; }
         public string ClassName { get; set; }
         public string Style { get; set; }
         public string StyleSheet { get; set; }
