@@ -12,7 +12,7 @@ namespace Core.Components
     {
         public Link(Component ui, HTMLElement ele = null) : base(ui)
         {
-            GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
+            Meta = ui ?? throw new ArgumentNullException(nameof(ui));
             Element = ele;
         }
 
@@ -20,7 +20,7 @@ namespace Core.Components
         {
             if (Element == null)
             {
-                Element = Html.Take(ParentElement).A.IText(GuiInfo.PlainText ?? GuiInfo.Label).GetContext();
+                Element = Html.Take(ParentElement).A.IText(Meta.PlainText ?? Meta.Label).GetContext();
             }
             Element.AddEventListener(EventType.Click, (e) => DispatchClick(e));
             DOMContentLoaded?.Invoke();
@@ -34,9 +34,9 @@ namespace Core.Components
         private void DispatchClick(Event e)
         {
             e.PreventDefault();
-            if (GuiInfo.Events.HasAnyChar() && GuiInfo.Events.ToLower().Contains("click"))
+            if (Meta.Events.HasAnyChar() && Meta.Events.ToLower().Contains("click"))
             {
-                this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity).Done();
+                this.DispatchEvent(Meta.Events, EventType.Click, Entity).Done();
                 return;
             }
             var a = Element as HTMLAnchorElement;

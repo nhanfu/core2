@@ -24,7 +24,7 @@ namespace Core.Components
         public bool HiddenButton { get; set; }
         public PdfReport(Component ui, HTMLElement ele = null) : base(ui)
         {
-            GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
+            Meta = ui ?? throw new ArgumentNullException(nameof(ui));
             Element = ele;
         }
 
@@ -47,7 +47,7 @@ namespace Core.Components
             }
             Element.Style.Display = Display.None;
             var html = Html.Take(Element);
-            if (GuiInfo.Precision == 2)
+            if (Meta.Precision == 2)
             {
                 html.Div.ClassName("printable").Style("page-break-before: always;");
                 _rptContent = html.GetContext();
@@ -57,7 +57,7 @@ namespace Core.Components
                 html.Div.ClassName("container-rpt");
                 html.Div.ClassName("menuBar")
                 .Div.ClassName("printBtn")
-                    .Button.ClassName("btn btn-success mr-1 fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement, printPreview: true, component: GuiInfo)).End
+                    .Button.ClassName("btn btn-success mr-1 fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(Element.QuerySelector(".printable") as HTMLElement, printPreview: true, component: Meta)).End
                     .Button.ClassName("btn btn-success mr-1").Text("a4").Event(EventType.Click, async () => await GeneratePdf("a4")).End
                     .Button.ClassName("btn btn-success mr-1").Text("a5").Event(EventType.Click, async () => await GeneratePdf("a5")).End
                     .Button.ClassName("btn btn-success mr-1 fa fa-file-excel").Event(EventType.Click, () =>
@@ -67,7 +67,7 @@ namespace Core.Components
                             ConfirmDialog.RenderConfirm("Excel data not found in the report");
                             return;
                         }
-                        ExcelExt.ExportTableToExcel(null, GuiInfo.Label ?? FieldName, table);
+                        ExcelExt.ExportTableToExcel(null, Meta.Label ?? FieldName, table);
                     }).End.Render();
                 if (Client.SystemRole)
                 {
@@ -85,7 +85,7 @@ namespace Core.Components
         {
             await Client.LoadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
             var element = Element.ParentElement.QuerySelector(".printable") as HTMLElement;
-            if (GuiInfo.Precision == 2)
+            if (Meta.Precision == 2)
             {
                 element = Element.ParentElement.QuerySelector(".print-group") as HTMLElement;
             }
@@ -126,14 +126,14 @@ namespace Core.Components
             }
             DisposeChildren();
             string template;
-            if (GuiInfo.Template.HasAnyChar())
+            if (Meta.Template.HasAnyChar())
             {
-                template = GuiInfo.Template;
+                template = Meta.Template;
                 TemplateLoaded(template);
             }
             else
             {
-                ComponentExt.LoadFeature(ConnKey, GuiInfo.RefClass, GuiInfo.RefClass)
+                ComponentExt.LoadFeature(ConnKey, Meta.RefClass, Meta.RefClass)
                 .Done(ft =>
                 {
                     template = ft.Template;
@@ -161,7 +161,7 @@ namespace Core.Components
                 var dsCount = 0;
                 _rptContent.Children.SelectForEach(child =>
                 {
-                    EditForm.BindingTemplate(child, this, false, dataSet, factory: (ele, component, parent, isLayout, entity) =>
+                    EditForm.BindingTemplate(child, this, dataSet, factory: (ele, component, parent, entity) =>
                     {
                         if (ele is HTMLTableElement table)
                         {
@@ -186,12 +186,12 @@ namespace Core.Components
                             formattedRows.ForEach(x => tbody.AppendChild(x));
                             return com;
                         }
-                        return EditForm.BindingCom(ele, component, parent, isLayout, entity);
+                        return EditForm.BindingCom(ele, component, parent, entity);
                     });
                 });
-                if (GuiInfo != null && GuiInfo.Events.HasAnyChar())
+                if (Meta != null && Meta.Events.HasAnyChar())
                 {
-                    this.DispatchEvent(GuiInfo.Events, EventType.DOMContentLoaded, Entity).Done();
+                    this.DispatchEvent(Meta.Events, EventType.DOMContentLoaded, Entity).Done();
                 }
             });
         }
@@ -278,10 +278,10 @@ namespace Core.Components
                 return Task.FromResult(res);
             }
             var tcs = new TaskCompletionSource<object>();
-            var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var fn);
+            var isFn = Utils.IsFunction(Meta.PreQuery, out var fn);
             var sql = new SqlViewModel
             {
-                ComId = GuiInfo.Id,
+                ComId = Meta.Id,
                 Params = isFn ? JSON.Stringify(fn.Call(null, this)) : null,
                 ConnKey = ConnKey
             };
@@ -342,7 +342,7 @@ namespace Core.Components
 	            }
             }
             */
-            if (Utils.IsFunction(GuiInfo.FormatEntity, out var formatter))
+            if (Utils.IsFunction(Meta.FormatEntity, out var formatter))
             {
                 return formatter.Call(null, res, this);
             }

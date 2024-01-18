@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Models
 {
-    public class IgnoreDbAttribute : Attribute
+    public class DbIgnoreAttribute : Attribute
     {
     }
 }

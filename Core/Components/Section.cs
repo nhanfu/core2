@@ -23,6 +23,10 @@ namespace Core.Components
 
         public ComponentGroup ComponentGroup { get; set; }
 
+        public Section() : base(null)
+        {
+        }
+
         public Section(ElementType elementType) : base(null)
         {
             this.elementType = elementType;
@@ -35,7 +39,7 @@ namespace Core.Components
 
         public override void Render()
         {
-            if (elementType is null)
+            if (Element != null)
             {
                 var tag = Element.TagName.ToLowerCase();
                 var parsed = Enum.TryParse(tag, out ElementType type);
@@ -44,12 +48,11 @@ namespace Core.Components
                     elementType = type;
                 }
             }
-            else
+            else if (elementType != null)
             {
                 Html.Take(ParentElement).Add(elementType.Value);
                 Element = Html.Context;
             }
-            Element.Id = Id;
             if (ComponentGroup is null)
             {
                 return;

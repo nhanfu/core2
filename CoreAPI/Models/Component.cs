@@ -190,8 +190,6 @@
 
         public string GroupReferenceName { get; set; }
 
-        public string JoinTable { get; set; }
-
         public string GroupName { get; set; }
 
         public string ShortDesc { get; set; }

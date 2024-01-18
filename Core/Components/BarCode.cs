@@ -13,14 +13,14 @@ namespace Core.Components
         public BarCode(Component ui, HTMLElement ele) : base(ui)
         {
             ParentElement = ele;
-            GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
+            Meta = ui ?? throw new ArgumentNullException(nameof(ui));
         }
 
         public string Value { get; set; }
 
         public override void Render()
         {
-            Html.Take(ParentElement).Clear().Div.Style($"width:{GuiInfo.Width}px;margin:auto").Id("barcode" + GuiInfo.Id);
+            Html.Take(ParentElement).Clear().Div.Style($"width:{Meta.Width}px;margin:auto").Id("barcode" + Meta.Id);
             Element = Html.Context;
             Value = Entity.GetPropValue(FieldName)?.ToString();
             Task.Run(async () =>

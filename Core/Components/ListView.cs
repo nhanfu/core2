@@ -36,7 +36,7 @@ namespace Core.Components
         public Component LastComponentFocus;
         public List<string> DeleteTempIds;
         public AdvSearchVM AdvSearchVM { get; set; }
-        public bool Editable => GuiInfo.CanAdd;
+        public bool Editable => Meta.CanAdd;
         public ListViewItem LastListViewItem { get; set; }
         public ListViewItem LastShiftViewItem { get; set; }
         public int LastIndex { get; set; }
@@ -52,7 +52,7 @@ namespace Core.Components
         {
             get
             {
-                return GetFormattedDataSource(this, DataSourceFilter ?? GuiInfo.DataSourceFilter);
+                return GetFormattedDataSource(this, DataSourceFilter ?? Meta.DataSourceFilter);
             }
         }
 
@@ -99,7 +99,7 @@ namespace Core.Components
         public ListView(Component ui, HTMLElement ele = null) : base(ui)
         {
             DeleteTempIds = new List<string>();
-            GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
+            Meta = ui ?? throw new ArgumentNullException(nameof(ui));
             Id = ui.Id?.ToString();
             Name = ui.FieldName;
             Header = new List<Component>();
@@ -108,22 +108,21 @@ namespace Core.Components
             AdvSearchVM = new AdvSearchVM
             {
                 ActiveState = ActiveStateEnum.Yes,
-                OrderBy = LocalStorage.GetItem<List<OrderBy>>("OrderBy" + GuiInfo.Id) ?? new List<OrderBy>()
+                OrderBy = LocalStorage.GetItem<List<OrderBy>>("OrderBy" + Meta.Id) ?? new List<OrderBy>()
             };
             DataSourceFilter = ui.DataSourceFilter;
-            StopChildrenHistory = true;
             _hasLoadRef = false;
             if (ele != null)
             {
                 Resolve(ui, ele);
             }
 
-            _rowHeight = GuiInfo.BodyItemHeight ?? 26;
-            _theadTable = GuiInfo.HeaderHeight ?? 40;
-            _tfooterTable = GuiInfo.FooterHeight ?? 35;
-            _scrollTable = GuiInfo.ScrollHeight ?? 10;
-            Window.AddEventListener(GuiInfo.QueueName, RealtimeUpdateListViewItem);
-            Utils.IsFunction(GuiInfo.PreQuery, out _preQueryFn);
+            _rowHeight = Meta.BodyItemHeight ?? 26;
+            _theadTable = Meta.HeaderHeight ?? 40;
+            _tfooterTable = Meta.FooterHeight ?? 35;
+            _scrollTable = Meta.ScrollHeight ?? 10;
+            Window.AddEventListener(Meta.QueueName, RealtimeUpdateListViewItem);
+            Utils.IsFunction(Meta.PreQuery, out _preQueryFn);
         }
 
         internal void RealtimeUpdateListViewItem(dynamic mqEvent)
@@ -135,7 +134,7 @@ namespace Core.Components
             listViewItem.Entity.CopyPropFrom(updatedData);
             var arr = listViewItem.FilterChildren<EditableComponent>(x => !x.Dirty || x.GetValueText().IsNullOrWhiteSpace()).Select(x => x.FieldName).ToArray();
             listViewItem.UpdateView(false, arr);
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem).Done();
+            this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem).Done();
         }
 
         public void Resolve(Component com, HTMLElement ele = null)
@@ -167,16 +166,21 @@ namespace Core.Components
 
         public virtual Task<List<object>> ReloadData(bool cacheHeader = false, int? skip = null, int? pageSize = null)
         {
-            if (GuiInfo.LocalRender && GuiInfo.LocalData != null)
+            if (Meta.LocalQuery.HasNonSpaceChar())
             {
-                SetRowData(GuiInfo.LocalData);
-                return Task.FromResult(GuiInfo.LocalData);
+                Meta.LocalData = JsonConvert.DeserializeObject<List<object>>(Meta.LocalQuery);
+                Meta.LocalRender = true;
+            }
+            if (Meta.LocalRender && Meta.LocalData != null)
+            {
+                SetRowData(Meta.LocalData);
+                return Task.FromResult(Meta.LocalData);
             }
             if (Paginator != null)
             {
-                Paginator.Options.PageSize = Paginator.Options.PageSize == 0 ? (GuiInfo.Row ?? 12) : Paginator.Options.PageSize;
+                Paginator.Options.PageSize = Paginator.Options.PageSize == 0 ? (Meta.Row ?? 12) : Paginator.Options.PageSize;
             }
-            pageSize = pageSize ?? Paginator?.Options?.PageSize ?? GuiInfo.Row ?? 12;
+            pageSize = pageSize ?? Paginator?.Options?.PageSize ?? Meta.Row ?? 12;
             skip = skip ?? Paginator?.Options?.PageIndex * pageSize ?? 0;
             return SqlReader(skip, pageSize, cacheHeader);
         }
@@ -201,9 +205,9 @@ namespace Core.Components
                 .Where(x => !x.IsNullOrWhiteSpace()).Combine(" and ");
             var data = new SqlViewModel
             {
-                ComId = GuiInfo.Id,
+                ComId = Meta.Id,
                 Params = submitEntity != null ? JSON.Stringify(submitEntity) : null,
-                OrderBy = orderBy ?? (GuiInfo.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : GuiInfo.OrderBy),
+                OrderBy = orderBy ?? (Meta.OrderBy.IsNullOrWhiteSpace() ? "ds.Id asc\n" : Meta.OrderBy),
                 Where = finalCon,
                 Count = count,
                 SkipXQuery = cacheMeta,
@@ -232,6 +236,10 @@ namespace Core.Components
                 Spinner.Hide();
                 SetRowData(rows);
                 UpdatePagination(total, rows.Count);
+                if (Utils.IsFunction(Meta.FormatEntity, out var formatter))
+                {
+                    rows = formatter.Call(null, rows, this) as List<object>;
+                }
                 tcs.TrySetResult(rows);
                 DataLoaded?.Invoke(ds);
             }).Catch(err => tcs.TrySetException(err));
@@ -241,39 +249,47 @@ namespace Core.Components
         public override void Render()
         {
             var feature = EditForm.Feature;
-            var gridPolicies = EditForm.GetElementPolicies(GuiInfo.Id, Utils.ComponentId);
+            var gridPolicies = EditForm.GetElementPolicies(Meta.Id, Utils.ComponentId);
             CanWrite = CanDo(gridPolicies, x => x.CanWrite);
             Html.Take(ParentElement).DataAttr("name", FieldName);
             AddSections();
             SetRowDataIfExists();
             EditForm.ResizeListView();
-            if (GuiInfo.LocalRender) LocalRender();
+            if (Meta.LocalRender) LocalRender();
             else LoadAllData();
         }
 
         private void LocalRender()
         {
-            Header = GuiInfo.LocalHeader;
-            if (GuiInfo.LocalRender)
+            Header = Meta.LocalHeader;
+            if (Meta.LocalRender)
             {
                 Rerender();
             }
             else
             {
-                RowData.Data = GuiInfo.LocalData;
+                RowData.Data = Meta.LocalData;
             }
         }
 
         internal virtual void AddSections()
         {
+            if (Meta.LiteGrid)
+            {
+                Element = ParentElement;
+                Element.InnerHTML = null;
+                MainSection = new ListViewSection(ParentElement);
+                AddChild(MainSection);
+                return;
+            }
             Html.Take(ParentElement).Div.ClassName("grid-wrapper")
                 .ClassName(Editable ? "editable" : string.Empty);
             Element = Html.Context;
-            if (GuiInfo.CanSearch)
+            if (Meta.CanSearch)
             {
                 Html.Instance.Div.ClassName("grid-toolbar search").End.Render();
             }
-            ListViewSearch = new ListViewSearch(GuiInfo);
+            ListViewSearch = new ListViewSearch(Meta);
             AddChild(ListViewSearch);
             Html.Take(Element).Div.ClassName("list-content").End.Div.ClassName("empty");
             EmptyRowSection = new ListViewSection(Html.Context) { ParentElement = Element };
@@ -306,7 +322,7 @@ namespace Core.Components
 
         public void LoadAllData()
         {
-            ReloadData(cacheHeader: GuiInfo.CanCache).Done();
+            ReloadData(cacheHeader: Meta.CanCache).Done();
         }
 
         public void ResetOrder()
@@ -322,10 +338,10 @@ namespace Core.Components
         protected virtual List<Component> FilterColumns(List<Component> Component)
         {
             if (Component.Nothing()) return Component;
-            var specificComponent = Component.Any(x => x.ComponentId == GuiInfo.Id);
+            var specificComponent = Component.Any(x => x.ComponentId == Meta.Id);
             if (specificComponent)
             {
-                Component = Component.Where(x => x.ComponentId == GuiInfo.Id).ToList();
+                Component = Component.Where(x => x.ComponentId == Meta.Id).ToList();
             }
             else
             {
@@ -358,7 +374,7 @@ namespace Core.Components
 
         internal void RenderPaginator()
         {
-            if (GuiInfo.LocalRender)
+            if (Meta.LocalRender || Meta.LiteGrid)
             {
                 if (Paginator != null)
                 {
@@ -366,9 +382,9 @@ namespace Core.Components
                 }
                 return;
             }
-            if (GuiInfo.Row is null || GuiInfo.Row == 0)
+            if (Meta.Row is null || Meta.Row == 0)
             {
-                GuiInfo.Row = 20;
+                Meta.Row = 20;
             }
 
             if (Paginator is null)
@@ -376,7 +392,7 @@ namespace Core.Components
                 Paginator = new Paginator(new PaginationOptions
                 {
                     Total = 0,
-                    PageSize = GuiInfo.Row ?? 20,
+                    PageSize = Meta.Row ?? 20,
                     CurrentPageCount = RowData.Data.Count(),
                 });
                 AddChild(Paginator);
@@ -385,16 +401,15 @@ namespace Core.Components
 
         public virtual ListViewItem RenderRowData(List<Component> headers, object row, Section section, int? index = null, bool emptyRow = false)
         {
-            var rowSection = new ListViewItem(ElementType.div)
-            {
-                EmptyRow = emptyRow,
-                Entity = row,
-                ParentElement = section.Element,
-                PreQueryFn = _preQueryFn,
-                ListView = this,
-                ListViewSection = section as ListViewSection,
-                GuiInfo = GuiInfo,
-            };
+            var rowSection = Meta.LiteGrid ? new ListViewItem() : new ListViewItem(ElementType.div);
+            rowSection.EmptyRow = emptyRow;
+            rowSection.Entity = row;
+            rowSection.ParentElement = section.Element;
+            rowSection.PreQueryFn = _preQueryFn;
+            rowSection.ListView = this;
+            rowSection.ListViewSection = section as ListViewSection;
+            rowSection.Meta = Meta;
+            rowSection.EditForm = EditForm;
             if (section is ListViewSection parent)
             {
                 rowSection.ListViewSection = parent;
@@ -411,7 +426,7 @@ namespace Core.Components
         public virtual void RenderContent()
         {
             MainSection.DisposeChildren();
-            EmptyRowSection.DisposeChildren();
+            EmptyRowSection?.DisposeChildren();
             FormattedRowData = FormattedRowData.Nothing() ? RowData.Data : FormattedRowData;
             if (FormattedRowData.Nothing())
             {
@@ -455,7 +470,7 @@ namespace Core.Components
 
         protected void DomLoaded()
         {
-            if (!GuiInfo.LocalRender)
+            if (!Meta.LocalRender)
             {
                 Header.ForEach(x => x.LocalData = null);
             }
@@ -533,7 +548,7 @@ namespace Core.Components
                 EmptyRow = false;
                 return;
             }
-            if (!GuiInfo.IsRealtime || arg is null)
+            if (!Meta.IsRealtime || arg is null)
             {
                 return;
             }
@@ -545,13 +560,13 @@ namespace Core.Components
             var tcs = new TaskCompletionSource<bool>();
             if (!rowSection.EmptyRow || !Editable)
             {
-                this.DispatchEvent(GuiInfo.Events, EventType.Change, rowData).Done(() =>
+                this.DispatchEvent(Meta.Events, EventType.Change, rowData).Done(() =>
                 {
                     tcs.TrySetResult(false);
                 });
                 return tcs.Task;
             }
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreated, rowData).Done(() =>
+            this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforeCreated, rowData).Done(() =>
             {
                 RowData.Data.Add(rowData);
                 Entity.SetComplexPropValue(FieldName, RowData.Data);
@@ -566,7 +581,7 @@ namespace Core.Components
                 });
                 EmptyRowSection.Children.Clear();
                 AddNewEmptyRow();
-                this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreated, rowData).Done(() =>
+                this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterCreated, rowData).Done(() =>
                 {
                     tcs.TrySetResult(true);
                 });
@@ -576,12 +591,12 @@ namespace Core.Components
 
         public virtual void AddNewEmptyRow()
         {
-            if (Disabled || !Editable || EmptyRowSection?.Children.HasElement() == true)
+            if (Meta.LiteGrid || Disabled || !Editable || EmptyRowSection?.Children.HasElement() == true)
             {
                 return;
             }
             var emptyRowData = new object();
-            if (!GuiInfo.DefaultVal.IsNullOrWhiteSpace() && Utils.IsFunction(GuiInfo.DefaultVal, out var fn))
+            if (!Meta.DefaultVal.IsNullOrWhiteSpace() && Utils.IsFunction(Meta.DefaultVal, out var fn))
             {
                 var dfObj = fn.Call(this, this);
                 dfObj.ForEachProp(x =>
@@ -599,7 +614,7 @@ namespace Core.Components
                     Value = value?.ToString()
                 });
             });
-            if (!GuiInfo.TopEmpty)
+            if (!Meta.TopEmpty)
             {
                 MainSection.Element.InsertBefore(MainSection.Element, EmptyRowSection.Element);
             }
@@ -607,7 +622,7 @@ namespace Core.Components
             {
                 MainSection.Element.AppendChild(EmptyRowSection.Element.FirstElementChild);
             }
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterEmptyRowCreated, emptyRow).Done();
+            this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterEmptyRowCreated, emptyRow).Done();
         }
 
         public void NoRecordFound()
@@ -665,7 +680,7 @@ namespace Core.Components
                 confirm.Dispose();
                 Deactivate().Done(() =>
                 {
-                    this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.Deactivated, Entity).Done();
+                    this.DispatchCustomEvent(Meta.Events, CustomEventType.Deactivated, Entity).Done();
                 });
             };
         }
@@ -682,7 +697,7 @@ namespace Core.Components
 
         protected virtual void HardDeleteSelected(object e = null)
         {
-            if (GuiInfo.IgnoreConfirmHardDelete && OnDeleteConfirmed != null)
+            if (Meta.IgnoreConfirmHardDelete && OnDeleteConfirmed != null)
             {
                 OnDeleteConfirmed.Invoke();
                 return;
@@ -704,12 +719,12 @@ namespace Core.Components
                 {
                     deletedItems = GetFocusedRows();
                 }
-                this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems).Done(() =>
+                this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforeDeleted, deletedItems).Done(() =>
                 {
                     HardDeleteConfirmed(deletedItems).Done(res =>
                     {
                         DOMContentLoaded?.Invoke();
-                        this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems).Done();
+                        this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterDeleted, deletedItems).Done();
                     });
                 });
             };
@@ -718,10 +733,10 @@ namespace Core.Components
         public virtual Task<string[]> Deactivate()
         {
             var tcs = new TaskCompletionSource<string[]>();
-            var entity = GuiInfo.RefName;
+            var entity = Meta.RefName;
             var selected = GetSelectedRows();
             var ids = selected.Select(x => x[IdField] as string).ToArray();
-            Client.Instance.DeactivateAsync(ids, GuiInfo.RefName, ConnKey)
+            Client.Instance.DeactivateAsync(ids, Meta.RefName, ConnKey)
             .Done(deacvitedIds =>
             {
                 if (deacvitedIds.HasElement())
@@ -743,7 +758,7 @@ namespace Core.Components
 
         public virtual Task<List<object>> HardDeleteConfirmed(List<object> deleted)
         {
-            var entity = GuiInfo.RefName;
+            var entity = Meta.RefName;
             var ids = deleted.Select(x => x[IdField]?.ToString()).Where(x => x != null).ToList();
             var deletes = deleted.Where(x => x[IdField] != null).ToList();
             var removeRow = deleted.Where(x => x[IdField] == null).ToList();
@@ -771,7 +786,7 @@ namespace Core.Components
                 return Task.FromResult(deleted);
             }
             var tcs = new TaskCompletionSource<List<object>>();
-            Client.Instance.HardDeleteAsync(ids.ToArray(), GuiInfo.RefName, ConnKey)
+            Client.Instance.HardDeleteAsync(ids.ToArray(), Meta.RefName, ConnKey)
             .Done(sucess =>
             {
                 if (sucess)
@@ -822,7 +837,7 @@ namespace Core.Components
         public virtual Task<List<object>> GetRealTimeSelectedRows()
         {
             var tcs = new TaskCompletionSource<List<object>>();
-            Client.Instance.GetByIdAsync(GuiInfo.RefName, ConnKey ?? Client.ConnKey, SelectedIds.ToArray())
+            Client.Instance.GetByIdAsync(Meta.RefName, ConnKey ?? Client.ConnKey, SelectedIds.ToArray())
                 .Done(res =>
                 {
                     tcs.TrySetResult(res?.ToList());
@@ -843,13 +858,13 @@ namespace Core.Components
             }
 
             Toast.Success("Đang Sao chép liệu !");
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforePasted, _originRows, _copiedRows).Done(() =>
+            this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforePasted, _originRows, _copiedRows).Done(() =>
             {
                 var index = AllListViewItem.IndexOf(x => x.Selected);
                 AddRowsNo(_copiedRows, index).Done(list =>
                 {
                     base.Focus();
-                    if (GuiInfo.IsRealtime)
+                    if (Meta.IsRealtime)
                     {
                         foreach (var item in list)
                         {
@@ -863,7 +878,7 @@ namespace Core.Components
                     {
                         Toast.Success("Sao chép dữ liệu thành công !");
                     }
-                    this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterPasted, _originRows, _copiedRows).Done();
+                    this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterPasted, _originRows, _copiedRows).Done();
                 });
             });
         }
@@ -906,13 +921,13 @@ namespace Core.Components
             }
 
             Toast.Success("Đang Sao chép liệu !");
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows)
+            this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforePasted, originalRows, copiedRows)
             .Done(() =>
             {
                 var index = AllListViewItem.IndexOf(x => x.Selected);
                 if (addRow)
                 {
-                    if (GuiInfo.TopEmpty)
+                    if (Meta.TopEmpty)
                     {
                         index = 0;
                     }
@@ -932,12 +947,12 @@ namespace Core.Components
         {
             list.ForEach(x => x.Dirty = true);
             base.Focus();
-            ComponentExt.DispatchCustomEvent(this, GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows)
+            ComponentExt.DispatchCustomEvent(this, Meta.Events, CustomEventType.AfterPasted, originalRows, copiedRows)
             .Done(() =>
             {
                 RenderIndex();
                 ClearSelected();
-                if (GuiInfo.IsRealtime)
+                if (Meta.IsRealtime)
                 {
                     foreach (var item in list)
                     {
@@ -993,11 +1008,11 @@ namespace Core.Components
             {
                 RowData.Data.Add(rowData);
             }
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreated, rowData).Done(() =>
+            this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforeCreated, rowData).Done(() =>
             {
                 var row = RenderRowData(Header, rowData, MainSection, index);
                 tcs.TrySetResult(row);
-                this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreated, rowData).Done();
+                this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterCreated, rowData).Done();
             });
             return tcs.Task;
         }
@@ -1027,7 +1042,7 @@ namespace Core.Components
                 }
                 indextemp++;
             });
-            await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows);
+            await this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforeCreatedList, rows);
             var listItem = new List<ListViewItem>();
             indextemp = index;
             await rows.AsEnumerable().Reverse().ForEachAsync(async data =>
@@ -1035,7 +1050,7 @@ namespace Core.Components
                 listItem.Add(await AddRow(data, indextemp, false));
                 indextemp++;
             });
-            await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreatedList, rows);
+            await this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterCreatedList, rows);
             AddNewEmptyRow();
             return listItem;
         }
@@ -1060,7 +1075,7 @@ namespace Core.Components
                 indextemp++;
             });
             var tcs = new TaskCompletionSource<ListViewItem[]>();
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreatedList, rows)
+            this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforeCreatedList, rows)
             .Done(() =>
             {
                 var tasks = rows.SelectForEach((data, innerIndex) =>
@@ -1070,7 +1085,7 @@ namespace Core.Components
                 Task.WhenAll(tasks).Done((result) =>
                 {
                     AddNewEmptyRow();
-                    this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreatedList, rows).Done();
+                    this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterCreatedList, rows).Done();
                     tcs.TrySetResult(result);
                 });
             });
@@ -1169,7 +1184,7 @@ namespace Core.Components
             }
             else
             {
-                ValidationResult.TryAdd(ValidationRule.Required, string.Format(requiredRule.Message, LangSelect.Get(GuiInfo.Label), Entity));
+                ValidationResult.TryAdd(ValidationRule.Required, string.Format(requiredRule.Message, LangSelect.Get(Meta.Label), Entity));
                 return false;
             }
         }
@@ -1181,7 +1196,7 @@ namespace Core.Components
             (Window.Instance as dynamic).navigator.clipboard.writeText(JSON.Stringify(_copiedRows));
             Task.Run(async () =>
             {
-                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCopied, _originRows, _copiedRows);
+                await this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterCopied, _originRows, _copiedRows);
             });
         }
 
@@ -1210,9 +1225,9 @@ namespace Core.Components
             com.Column = 4;
             com.ReferenceId = Utils.GetEntity(nameof(Models.History)).Id;
             com.RefName = nameof(Models.History);
-            com.DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and EntityId eq '{GuiInfo.ReferenceId}' and RecordId eq '{currentItem[IdField]}'";
+            com.DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and EntityId eq '{Meta.ReferenceId}' and RecordId eq '{currentItem[IdField]}'";
             var _filterGrid = new GridView(com);
-            _filterGrid.GuiInfo.LocalHeader = new List<Component>
+            _filterGrid.Meta.LocalHeader = new List<Component>
             {
                      new Component
                     {
@@ -1263,7 +1278,7 @@ namespace Core.Components
                 .Select(x => x[IdField]?.ToString()).ToArray();
             var security = new SecurityBL
             {
-                Entity = new SecurityVM { RecordIds = selectedRowIds, EntityId = GuiInfo.ReferenceId },
+                Entity = new SecurityVM { RecordIds = selectedRowIds, EntityId = Meta.ReferenceId },
                 ParentElement = TabEditor.Element
             };
             TabEditor.AddChild(security);
@@ -1300,8 +1315,8 @@ namespace Core.Components
                 return;
             }
             var ctxMenu = ContextMenu.Instance;
-            var gridPolicies = EditForm.GetElementPolicies(GuiInfo.Id, Utils.ComponentId);
-            var canWrite = GuiInfo.CanAdd && CanWrite;
+            var gridPolicies = EditForm.GetElementPolicies(Meta.Id, Utils.ComponentId);
+            var canWrite = Meta.CanAdd && CanWrite;
             RenderViewMenu().Done(() =>
             {
                 RenderCopyPasteMenu(canWrite);
@@ -1323,7 +1338,7 @@ namespace Core.Components
             var rawRow = target.Closest(ElementType.tr.ToString());
             var currentRow = this.FirstOrDefault(x => x.Element == rawRow) as ListViewItem;
             if (currentRow is null) return;
-            if (!(currentRow is GroupViewItem) || GuiInfo.GroupReferenceId != null)
+            if (!(currentRow is GroupViewItem) || Meta.GroupReferenceId != null)
             {
                 if (SelectedIds.Count == 1)
                 {
@@ -1338,7 +1353,7 @@ namespace Core.Components
         public Task RenderViewMenu()
         {
             var tcs = new TaskCompletionSource<object>();
-            Client.Instance.GetByIdAsync(nameof(EntityRef), GuiInfo.ConnKey, GuiInfo.Id)
+            Client.Instance.GetByIdAsync(nameof(EntityRef), Meta.ConnKey, Meta.Id)
             .Done(targetRef =>
             {
                 if (targetRef.Nothing())
@@ -1399,7 +1414,7 @@ namespace Core.Components
                 instance.Render();
                 instance.DOMContentLoaded += () =>
                 {
-                    var gridView1 = instance.FilterChildren<GridView>().FirstOrDefault(x => x.GuiInfo.Id == e.TargetComId);
+                    var gridView1 = instance.FilterChildren<GridView>().FirstOrDefault(x => x.Meta.Id == e.TargetComId);
                     gridView1.DOMContentLoaded += () =>
                     {
                         if (_hasLoadRef)
@@ -1415,7 +1430,7 @@ namespace Core.Components
 
         private void Filter(TabEditor fe, EntityRef e)
         {
-            var gridView1 = fe.FilterChildren<GridView>().FirstOrDefault(x => x.GuiInfo.Id == e.TargetComId);
+            var gridView1 = fe.FilterChildren<GridView>().FirstOrDefault(x => x.Meta.Id == e.TargetComId);
             if (gridView1 is null)
             {
                 return;
@@ -1479,13 +1494,13 @@ namespace Core.Components
         {
             var noPolicyRows = selectedRows.Where(x =>
             {
-                var hasPolicy = RecordPolicy.Any(f => f.EntityId == GuiInfo.ReferenceId && f.RecordId == x[IdField]?.ToString());
+                var hasPolicy = RecordPolicy.Any(f => f.EntityId == Meta.ReferenceId && f.RecordId == x[IdField]?.ToString());
                 var loaded = x[PermissionLoaded].As<bool?>();
                 return !(hasPolicy || loaded == true);
             });
             var noPolicyRowIds = noPolicyRows.Select(x => x[IdField].As<string>()).ToArray();
             var tcs = new TaskCompletionSource<object>();
-            LoadRecordPolicy(ConnKey, GuiInfo.RefName, noPolicyRowIds).Done(rowPolicy =>
+            LoadRecordPolicy(ConnKey, Meta.RefName, noPolicyRowIds).Done(rowPolicy =>
             {
                 rowPolicy.ForEach(RecordPolicy.Add);
                 noPolicyRows.ForEach(x => x[PermissionLoaded] = true);
@@ -1614,9 +1629,9 @@ namespace Core.Components
             {
                 return null;
             }
-            if (GuiInfo.IdField != null)
+            if (Meta.IdField != null)
             {
-                UpdatedRows.ForEach(row => row[GuiInfo.IdField] = EntityId);
+                UpdatedRows.ForEach(row => row[Meta.IdField] = EntityId);
             }
             var res = new List<PatchVM>();
             foreach (var item in UpdatedListItems)
@@ -1649,7 +1664,7 @@ namespace Core.Components
                 {
                     ComId = "UserSetting",
                     Action = "GetByComId",
-                    Params = JSON.Stringify(new { ComId = GuiInfo.Id, Prefix = prefix })
+                    Params = JSON.Stringify(new { ComId = Meta.Id, Prefix = prefix })
                 },
                 Method = HttpMethod.POST
             });
@@ -1681,7 +1696,7 @@ namespace Core.Components
             var patch = new PatchVM
             {
                 Changes = new List<PatchDetail> {
-                    new PatchDetail { Field = nameof(UserSetting.Name), Value = $"{prefix}-{GuiInfo.Id}" },
+                    new PatchDetail { Field = nameof(UserSetting.Name), Value = $"{prefix}-{Meta.Id}" },
                     new PatchDetail { Field = nameof(UserSetting.UserId), Value = Client.Token.UserId },
                     new PatchDetail { Field = nameof(UserSetting.Value), Value = value },
                 },

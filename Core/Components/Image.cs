@@ -63,8 +63,8 @@ namespace Core.Components
 
         public Image(Component ui) : base(ui)
         {
-            GuiInfo = ui;
-            DataSourceFilter = GuiInfo.DataSourceFilter ?? "image/*";
+            Meta = ui;
+            DataSourceFilter = Meta.DataSourceFilter ?? "image/*";
         }
 
         public override void Render()
@@ -84,12 +84,12 @@ namespace Core.Components
             var isImage = PathIO.IsImage(path);
             if (isImage)
             {
-                Html.Instance.Div.ClassName("file-upload").Img.ClassName("image").Style(GuiInfo.ChildStyle).Src((path.Contains("http") ? "" : Client.Origin) + path.DecodeSpecialChar()).Render();
+                Html.Instance.Div.ClassName("file-upload").Img.ClassName("image").Style(Meta.ChildStyle).Src((path.Contains("http") ? "" : Client.Origin) + path.DecodeSpecialChar()).Render();
             }
             else
             {
                 Html.Instance.Span.ClassName(thumbText.Contains("pdf") ? "fal fa-file-pdf" : "fal fa-file").Title(thumbText.DecodeSpecialChar())
-                    .Style(GuiInfo.ChildStyle).Href((path.Contains("http") ? "" : Client.Origin) + path.DecodeSpecialChar()).Render();
+                    .Style(Meta.ChildStyle).Href((path.Contains("http") ? "" : Client.Origin) + path.DecodeSpecialChar()).Render();
             }
             Html.Instance.End.Render();
             Html.Instance.Div.ClassName("middle d-flex")
@@ -306,7 +306,7 @@ namespace Core.Components
 
         private void RenderUploadForm()
         {
-            var isMultiple = GuiInfo.Precision == 0;
+            var isMultiple = Meta.Precision == 0;
             Html.Take(ParentElement)
                 .ClassName("choose-files")
                 .Input.Type("file").Attr("name", "files")
@@ -349,7 +349,7 @@ namespace Core.Components
                     Path = string.Join(PathSeparator, newPath);
                     Dirty = true;
                     UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName, EvType = EventType.Change });
-                    this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done();
+                    this.DispatchEvent(Meta.Events, EventType.Change, Entity).Done();
                 });
             });
         }
@@ -373,7 +373,7 @@ namespace Core.Components
                 Dirty = true;
                 _input.Value = string.Empty;
                 UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName, EvType = EventType.Change });
-                this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done();
+                this.DispatchEvent(Meta.Events, EventType.Change, Entity).Done();
             });
         }
 
@@ -419,7 +419,7 @@ namespace Core.Components
         protected Task<string> UploadFile(File file)
         {
             var tcs = new TaskCompletionSource<string>();
-            if (GuiInfo.IsRealtime || !file.Type.Match("image.*").HasElement())
+            if (Meta.IsRealtime || !file.Type.Match("image.*").HasElement())
             {
                 Client.Instance.PostFilesAsync<string>(file, Utils.FileSvc).Done(path =>
                 {
@@ -440,9 +440,9 @@ namespace Core.Components
                         Table = nameof(FileUpload),
                         Changes = new List<PatchDetail> {
                                 new PatchDetail{ Field = Id, Value = Uuid7.Id25() },
-                                new PatchDetail{ Field = nameof(FileUpload.EntityName), Value = GuiInfo.RefName },
+                                new PatchDetail{ Field = nameof(FileUpload.EntityName), Value = Meta.RefName },
                                 new PatchDetail{ Field = nameof(FileUpload.RecordId), Value = EntityId },
-                                new PatchDetail{ Field = nameof(FileUpload.SectionId), Value = GuiInfo.ComponentGroupId },
+                                new PatchDetail{ Field = nameof(FileUpload.SectionId), Value = Meta.ComponentGroupId },
                                 new PatchDetail{ Field = nameof(FileUpload.FieldName), Value = FieldName },
                                 new PatchDetail{ Field = nameof(FileUpload.FileName), Value = file.Name },
                                 new PatchDetail{ Field = nameof(FileUpload.FilePath), Value = path },
@@ -463,7 +463,7 @@ namespace Core.Components
             {
                 return;
             }
-            if (GuiInfo.Precision == 0)
+            if (Meta.Precision == 0)
             {
                 var paths = Path + PathSeparator + string.Join(PathSeparator, allPath);
                 allPath = paths.Trim().Split(PathSeparator).Distinct().ToArray();

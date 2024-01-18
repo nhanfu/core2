@@ -14,7 +14,7 @@ namespace Core.Components
 
         public Button(Component ui, HTMLElement ele = null) : base(ui)
         {
-            GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
+            Meta = ui ?? throw new ArgumentNullException(nameof(ui));
             ButtonEle = ele;
         }
 
@@ -23,20 +23,20 @@ namespace Core.Components
             var html = Html.Instance;
             if (ButtonEle is null)
             {
-                Html.Take(ParentElement).Button.ClassName("btn" + GuiInfo.Id).Render();
+                Html.Take(ParentElement).Button.ClassName("btn" + Meta.Id).Render();
                 Element = ButtonEle = Html.Context;
             }
             else
             {
                 Element = ButtonEle;
             }
-            Html.Take(Element).ClassName(GuiInfo.ClassName)
-                .Event(EventType.Click, DispatchClick).Style(GuiInfo.Style);
-            if (!string.IsNullOrEmpty(GuiInfo.Icon))
+            Html.Take(Element).ClassName(Meta.ClassName)
+                .Event(EventType.Click, DispatchClick).Style(Meta.Style);
+            if (!string.IsNullOrEmpty(Meta.Icon))
             {
-                html.Icon(GuiInfo.Icon).End.Text(" ").Render();
+                html.Icon(Meta.Icon).End.Text(" ").Render();
             }
-            html.Span.ClassName("caption").IText(GuiInfo.Label ?? string.Empty);
+            html.Span.ClassName("caption").IText(Meta.Label ?? string.Empty);
             _textEle = Html.Context as HTMLSpanElement;
             Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
             DOMContentLoaded?.Invoke();
@@ -52,7 +52,7 @@ namespace Core.Components
             try
             {
                 Spinner.AppendTo(Element);
-                this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity, this).Done();
+                this.DispatchEvent(Meta.Events, EventType.Click, Entity, this).Done();
             }
             finally
             {
@@ -63,7 +63,7 @@ namespace Core.Components
 
         public override string GetValueText()
         {
-            if (Entity is null || GuiInfo is null)
+            if (Entity is null || Meta is null)
             {
                 return _textEle.TextContent;
             }

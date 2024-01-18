@@ -23,7 +23,7 @@ namespace Core.Components
 
         public Checkbox(Component ui, HTMLElement ele = null) : base(ui)
         {
-            GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
+            Meta = ui ?? throw new ArgumentNullException(nameof(ui));
             ParentElement = ele;
         }
 
@@ -33,7 +33,7 @@ namespace Core.Components
             _input = Html.Context.PreviousElementSibling as HTMLInputElement;
             Element = _input.ParentElement;
             Html.Take(_input).Event(EventType.Input, UserChange);
-            SetDisableUI(!GuiInfo.Editable);
+            SetDisableUI(!Meta.Editable);
             SetDefaultVal();
             Value = (bool?)Utils.GetPropValue(Entity, FieldName);
             Entity.SetComplexPropValue(FieldName, _value);
@@ -72,7 +72,7 @@ namespace Core.Components
             }
             PopulateFields();
             CascadeField();
-            this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done();
+            this.DispatchEvent(Meta.Events, EventType.Change, Entity).Done();
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)

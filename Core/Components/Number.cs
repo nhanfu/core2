@@ -29,7 +29,7 @@ namespace Core.Components
                 if (_value != null)
                 {
                     _value = Convert.ToDecimal(_value);
-                    var precision = Convert.ToInt32(GuiInfo.Precision ?? 0);
+                    var precision = Convert.ToInt32(Meta.Precision ?? 0);
                     _value = decimal.Round(_value.Value, precision, MidpointRounding.Ceil);
                     var dotCount = _input.Value.Where(x => x == ',').Count();
                     var selectionEnd = _input.SelectionEnd;
@@ -56,9 +56,9 @@ namespace Core.Components
                 }
                 Entity.SetComplexPropValue(FieldName, _value);
                 PopulateFields();
-                if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace())
+                if (!Meta.ChildStyle.IsNullOrWhiteSpace())
                 {
-                    if (Utils.IsFunction(GuiInfo.ChildStyle, out var fn))
+                    if (Utils.IsFunction(Meta.ChildStyle, out var fn))
                     {
                         fn.Call(this, Entity, _input).ToString();
                     }
@@ -98,7 +98,7 @@ namespace Core.Components
             _input.AddEventListener(EventType.Change, ChangeSetValue);
             _input.AutoComplete = AutoComplete.Off;
             Value = _value; // set again to render in correct format
-            if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace() && Utils.IsFunction(GuiInfo.ChildStyle, out var fn))
+            if (!Meta.ChildStyle.IsNullOrWhiteSpace() && Utils.IsFunction(Meta.ChildStyle, out var fn))
             {
                 Window.SetTimeout(() => fn.Call(this, Entity, _input).ToString(), 100);
             }
@@ -134,7 +134,7 @@ namespace Core.Components
             Value = value;
             UserInput?.Invoke(new ObservableArgs { NewData = value, OldData = oldVal, EvType = EventType.Change });
             PopulateFields();
-            this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity, value, oldVal).Done();
+            this.DispatchEvent(Meta.Events, EventType.Change, Entity, value, oldVal).Done();
         }
 
         private void SetValue()
@@ -161,7 +161,7 @@ namespace Core.Components
             var oldVal = _value;
             Value = value;
             UserInput?.Invoke(new ObservableArgs { NewData = value, OldData = oldVal, EvType = EventType.Input });
-            this.DispatchEvent(GuiInfo.Events, EventType.Input, Entity, value, oldVal).Done();
+            this.DispatchEvent(Meta.Events, EventType.Input, Entity, value, oldVal).Done();
         }
 
         private decimal? GetDecimalValue()

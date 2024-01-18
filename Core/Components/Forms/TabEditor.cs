@@ -268,10 +268,10 @@ namespace Core.Components.Forms
             }
 
             _hotKeyComponents = _hotKeyComponents
-               ?? this.FilterChildren(x => x is Button && !x.GuiInfo.HotKey.IsNullOrWhiteSpace()).Cast<Button>().ToList();
+               ?? this.FilterChildren(x => x is Button && !x.Meta.HotKey.IsNullOrWhiteSpace()).Cast<Button>().ToList();
             foreach (var com in _hotKeyComponents)
             {
-                var parts = com.GuiInfo.HotKey.Split(",");
+                var parts = com.Meta.HotKey.Split(",");
                 if (parts.Nothing())
                 {
                     continue;
@@ -345,7 +345,7 @@ namespace Core.Components.Forms
             {
                 // trigger search gridview
                 var listView = this.FindActiveComponent<ListView>().FirstOrDefault();
-                if (listView is null || !listView.GuiInfo.CanSearch)
+                if (listView is null || !listView.Meta.CanSearch)
                 {
                     return true;
                 }
@@ -375,7 +375,7 @@ namespace Core.Components.Forms
                 Window.History.PushState(null, LangSelect.Get(TabTitle), Href);
             }
             Document.Title = LangSelect.Get(TabTitle);
-            this.FindActiveComponent<EditableComponent>(x => x?.GuiInfo?.Focus == true).FirstOrDefault()?.Focus();
+            this.FindActiveComponent<EditableComponent>(x => x?.Meta?.Focus == true).FirstOrDefault()?.Focus();
         }
 
         public override bool Show

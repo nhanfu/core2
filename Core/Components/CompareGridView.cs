@@ -13,7 +13,7 @@ namespace Core.Components
 
         public CompareGridView(Component ui) : base(ui)
         {
-            GuiInfo.LocalHeader = new List<Component>
+            Meta.LocalHeader = new List<Component>
             {
                 new Component
                 {

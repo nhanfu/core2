@@ -63,7 +63,7 @@ namespace Core.Components
         {
             PopulateDirty = false;
             AlwaysValid = true;
-            GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
+            Meta = ui ?? throw new ArgumentNullException(nameof(ui));
             DateTimeField = ui.DateTimeField ?? nameof(Component.InsertedDate);
             Entity = new ListViewSearchVM();
         }
@@ -109,7 +109,7 @@ namespace Core.Components
             {
                 child.UserInput += (changes) =>
                 {
-                    var condition = ParentListView.AdvSearchVM.Conditions.FirstOrDefault(x => x.FieldId == child.GuiInfo.Id);
+                    var condition = ParentListView.AdvSearchVM.Conditions.FirstOrDefault(x => x.FieldId == child.Meta.Id);
                     condition.Value = child.GetValue(simple: true)?.ToString();
                 };
             });
@@ -123,14 +123,14 @@ namespace Core.Components
         {
             ParentListView = Parent as ListView;
             ParentListView.DataLoaded += ListView_DataLoaded;
-            if (!GuiInfo.CanSearch)
+            if (!Meta.CanSearch)
             {
                 return;
             }
             Html.Take(Parent.Element.FirstElementChild).TabIndex(-1).Event(EventType.KeyPress, EnterSearch);
             Element = Html.Context;
             RenderImportBtn();
-            if (GuiInfo.ComponentType == nameof(GridView) || GuiInfo.ComponentType == nameof(TreeView) || !GuiInfo.IsRealtime)
+            if (Meta.ComponentType == nameof(GridView) || Meta.ComponentType == nameof(TreeView) || !Meta.IsRealtime)
             {
                 var txtSearch = new Textbox(new Component
                 {
@@ -146,7 +146,7 @@ namespace Core.Components
                 };
                 AddChild(txtSearch);
             }
-            if (GuiInfo.ComponentType != nameof(ListView) && GuiInfo.ComponentType != nameof(TreeView))
+            if (Meta.ComponentType != nameof(ListView) && Meta.ComponentType != nameof(TreeView))
             {
                 var txtFullTextSearch = new Textbox(new Component
                 {
@@ -165,7 +165,7 @@ namespace Core.Components
                 _fullTextSearch.AddEventListener(EventType.Input, ParentGridView.SearchDisplayRows);
             }
 
-            if (GuiInfo.UpperCase)
+            if (Meta.UpperCase)
             {
                 var txtScan = new Textbox(new Component
                 {
@@ -209,7 +209,7 @@ namespace Core.Components
             };
             endDate.UserInput = null;
             AddChild(endDate);
-            if (ParentListView.GuiInfo.ShowDatetimeField)
+            if (ParentListView.Meta.ShowDatetimeField)
             {
                 var dateType = new SearchEntry(new Component
                 {
@@ -241,26 +241,26 @@ namespace Core.Components
                     .Title("Làm mới")
                     .Event(EventType.Click, RefershListView).End
                     .Render();
-            if (GuiInfo.ShowHotKey && ParentGridView != null)
+            if (Meta.ShowHotKey && ParentGridView != null)
             {
                 Html.Take(Element).Div.ClassName("hotkey-block")
                 .Button("F1", className: "btn btn-light btn-sm").Event(EventType.Click, ParentGridView.ToggleAll)
                     .Attr("title", "Bỏ chọn tất cả").End
                 .Button("F2", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
                 {
-                    var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                    var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.Meta.Id == ParentGridView.LastComponentFocus.Id);
                     ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.ToString()), KeyCodeEnum.F2);
                 })
                     .Attr("title", "Lọc loại trừ").End
                 .Button("F3", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
                 {
-                    var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                    var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.Meta.Id == ParentGridView.LastComponentFocus.Id);
                     ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.ToString()), KeyCodeEnum.F3);
                 })
                     .Attr("title", "Cộng tổng dòng được chọn").End
                 .Button("F4", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
                 {
-                    var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                    var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.Meta.Id == ParentGridView.LastComponentFocus.Id);
                     ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.ToString()), KeyCodeEnum.F4);
                 })
                     .Attr("title", "Lọc tiếp theo các phép tính (Chứa: Bằng; Lớn hơn; Nhỏ hơn; Lớn hơn hoặc bằng;...)").End
@@ -271,25 +271,25 @@ namespace Core.Components
                     .Attr("title", "Quay lại lần lọc trước").End
                 .Button("F8", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
                 {
-                    var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                    var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.Meta.Id == ParentGridView.LastComponentFocus.Id);
                     ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.ToString()), KeyCodeEnum.F8);
                 })
                     .Attr("title", "Xóa/ Vô hiệu hóa dòng hiện thời hoặc các dòng đánh dấu").End
                 .Button("F9", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
                 {
-                    var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                    var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.Meta.Id == ParentGridView.LastComponentFocus.Id);
                     ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.ToString()), KeyCodeEnum.F9);
                 })
                     .Attr("title", "Lọc tại chỗ theo giá trị ô hiện thời").End
                 .Button("F10", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
                 {
-                    var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                    var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.Meta.Id == ParentGridView.LastComponentFocus.Id);
                     ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.ToString()), KeyCodeEnum.F10);
                 })
                     .Attr("title", "Gộp theo cột hiện thời(thống kê lại số nội dung trong cột)").End
                 .Button("F11", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
                     {
-                        var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == ParentGridView.LastComponentFocus.Id);
+                        var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.Meta.Id == ParentGridView.LastComponentFocus.Id);
                         ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.ToString()), KeyCodeEnum.F11);
                     })
                     .Attr("title", "Sắp xếp thứ tự tăng dần, giảm dần. (Shift+F11 để sort nhiều cấp)").End.Render();
@@ -331,7 +331,7 @@ namespace Core.Components
             var fileName = files.FirstOrDefault().Name;
             var uploadForm = _uploader.ParentElement as HTMLFormElement;
             var formData = new FormData(uploadForm);
-            var meta = ParentListView.GuiInfo;
+            var meta = ParentListView.Meta;
             Client.Instance.SubmitAsync<bool>(new XHRWrapper
             {
                 FormData = formData,
@@ -350,7 +350,7 @@ namespace Core.Components
         private void AdvancedOptions(Event e)
         {
             var buttonRect = e.Target.As<HTMLElement>().GetBoundingClientRect();
-            var show = LocalStorage.GetItem<bool?>("Show" + GuiInfo.Id) is null ? false : LocalStorage.GetItem<bool?>("Show" + GuiInfo.Id);
+            var show = LocalStorage.GetItem<bool?>("Show" + Meta.Id) is null ? false : LocalStorage.GetItem<bool?>("Show" + Meta.Id);
             var ctxMenu = ContextMenu.Instance;
             ctxMenu.Top = buttonRect.Bottom;
             ctxMenu.Left = buttonRect.Left;
@@ -491,7 +491,7 @@ namespace Core.Components
                     oldStartDate.Condition = $"ds.[{DateTimeField}] >= '{EntityVM.StartDate.Value:yyyy-MM-dd}'";
                 }
                 EntityVM.StartDate = EntityVM.StartDate.Value.Date;
-                LocalStorage.SetItem("FromDate" + ParentListView.GuiInfo.Id, EntityVM.StartDate.Value.ToString("yyyy/MM/dd"));
+                LocalStorage.SetItem("FromDate" + ParentListView.Meta.Id, EntityVM.StartDate.Value.ToString("yyyy/MM/dd"));
             }
             else if (EntityVM.StartDate is null)
             {
@@ -500,7 +500,7 @@ namespace Core.Components
                 {
                     ParentListView.Wheres.Remove(check);
                 }
-                LocalStorage.RemoveItem("FromDate" + ParentListView.GuiInfo.Id);
+                LocalStorage.RemoveItem("FromDate" + ParentListView.Meta.Id);
             }
             if (!parentGrid && EntityVM.EndDate != null)
             {
@@ -522,7 +522,7 @@ namespace Core.Components
                 {
                     oldEndDate.Condition = $"ds.[{DateTimeField}] < '{endDate:yyyy-MM-dd}'";
                 }
-                LocalStorage.SetItem("ToDate" + ParentListView.GuiInfo.Id, EntityVM.EndDate.Value.ToString("MM/dd/yyyy"));
+                LocalStorage.SetItem("ToDate" + ParentListView.Meta.Id, EntityVM.EndDate.Value.ToString("MM/dd/yyyy"));
             }
             else if (EntityVM.EndDate is null)
             {
@@ -531,9 +531,9 @@ namespace Core.Components
                 {
                     ParentListView.Wheres.Remove(check1);
                 }
-                LocalStorage.RemoveItem("ToDate" + ParentListView.GuiInfo.Id);
+                LocalStorage.RemoveItem("ToDate" + ParentListView.Meta.Id);
             }
-            if ((EntityVM.EndDate != null || EntityVM.StartDate != null) && ParentListView.GuiInfo.ShowNull)
+            if ((EntityVM.EndDate != null || EntityVM.StartDate != null) && ParentListView.Meta.ShowNull)
             {
                 finalFilter += $" or ds.{DateTimeField} = null";
             }
@@ -550,7 +550,7 @@ namespace Core.Components
             {
                 return;
             }
-            listView.DataSourceFilter = listView.GuiInfo.DataSourceFilter;
+            listView.DataSourceFilter = listView.Meta.DataSourceFilter;
             listView.ClearSelected();
             listView.CellSelected.Clear();
             listView.AdvSearchVM.Conditions.Clear();

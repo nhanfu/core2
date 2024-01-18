@@ -31,7 +31,7 @@ namespace Core.Components
             fromIndex = 0;
             var tcs = new TaskCompletionSource<ListViewItem>();
             DisposeNoRecord();
-            var keys = GuiInfo.GroupBy.Split(",");
+            var keys = Meta.GroupBy.Split(",");
             item[_groupKey] = string.Join(" ", keys.Select(key => item.GetPropValue(key)?.ToString()));
             var groupKey = item[_groupKey];
             var existGroup = AllListViewItem
@@ -92,11 +92,11 @@ namespace Core.Components
                 GroupRow = true,
                 PreQueryFn = _preQueryFn,
                 ListView = this,
-                GuiInfo = GuiInfo
+                Meta = Meta
             };
             listViewSection.AddChild(groupSection);
             var first = groupRow.Children.FirstOrDefault();
-            var groupText = Utils.FormatEntity(GuiInfo.GroupFormat, null, first, x => "N/A", x => "N/A");
+            var groupText = Utils.FormatEntity(Meta.GroupFormat, null, first, x => "N/A", x => "N/A");
             Html.Take(groupSection.Element).Event(EventType.Click, DispatchClick, first)
                     .Event(EventType.DblClick, DispatchDblClick, first)
                     .Icon("fa fa-chevron-right").Event(EventType.Click, ToggleGroupRow, groupSection).End
@@ -121,12 +121,12 @@ namespace Core.Components
 
         private void DispatchClick(object row)
         {
-            this.DispatchEvent(GuiInfo.GroupEvent, EventType.Click, row).Done();
+            this.DispatchEvent(Meta.GroupEvent, EventType.Click, row).Done();
         }
 
         private void DispatchDblClick(object row)
         {
-            this.DispatchEvent(GuiInfo.GroupEvent, EventType.DblClick, row).Done();
+            this.DispatchEvent(Meta.GroupEvent, EventType.DblClick, row).Done();
         }
 
         private void ToggleGroupRow(ListViewItem groupSection, Event e)

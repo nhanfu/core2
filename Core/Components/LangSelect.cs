@@ -54,7 +54,7 @@ namespace Core.Components
 
         public override void Render()
         {
-            if (GuiInfo != null && !GuiInfo.FormatData.IsNullOrEmpty() && Utils.IsFunction(GuiInfo.FormatData, out var fn))
+            if (Meta != null && !Meta.FormatData.IsNullOrEmpty() && Utils.IsFunction(Meta.FormatData, out var fn))
             {
                 Html.Take(ParentElement);
                 fn.Call(null, this);

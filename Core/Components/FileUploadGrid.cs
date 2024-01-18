@@ -15,7 +15,7 @@ namespace Core.Components
     {
         public FileUploadGrid(Component ui) : base(ui)
         {
-            GuiInfo = ui;
+            Meta = ui;
             ui.LocalHeader = new List<Component>
             {
                 new Component
@@ -34,7 +34,7 @@ namespace Core.Components
                     ComponentType = nameof(Image),
                     DataSourceFilter= ui.DataSourceFilter.IsNullOrEmpty() ?  "*.*" : ui.DataSourceFilter,
                     ShortDesc = "File",
-                    IsRealtime = GuiInfo.IsRealtime,
+                    IsRealtime = Meta.IsRealtime,
                     Precision = 1,
                     Order = 1
                 },
@@ -84,8 +84,8 @@ namespace Core.Components
         public override void Render()
         {
             RowData._data = new List<object>();
-            GuiInfo.DataSourceFilter = $"?$filter=EntityName eq '{GuiInfo.IdField}' and RecordId eq {Entity[IdField]} and FieldName eq '{FieldName}' and SectionId eq {GuiInfo.ComponentGroupId} and RecordId ne 0";
-            DataSourceFilter = GuiInfo.DataSourceFilter;
+            Meta.DataSourceFilter = $"?$filter=EntityName eq '{Meta.IdField}' and RecordId eq {Entity[IdField]} and FieldName eq '{FieldName}' and SectionId eq {Meta.ComponentGroupId} and RecordId ne 0";
+            DataSourceFilter = Meta.DataSourceFilter;
             base.Render();
             Paginator.Show = false;
         }
@@ -120,15 +120,15 @@ namespace Core.Components
                 rowData[nameof(FileUpload.UpdatedBy)] = Client.Token.UserId;
                 rowData[nameof(FileUpload.UpdatedDate)] = DateTime.Now;
             }
-            rowData[nameof(FileUpload.EntityName)] = GuiInfo.IdField;
+            rowData[nameof(FileUpload.EntityName)] = Meta.IdField;
             rowData[nameof(FileUpload.RecordId)] = EntityId;
-            rowData[nameof(FileUpload.SectionId)] = GuiInfo.ComponentGroupId;
+            rowData[nameof(FileUpload.SectionId)] = Meta.ComponentGroupId;
             rowData[nameof(FileUpload.FieldName)] = FieldName;
             rowData[nameof(FileUpload.FileName)] = Image.RemoveGuid(rowData[nameof(FileUpload.FilePath)] as string);
             await RowChangeHandlerGrid(rowData, rowSection, observableArgs);
             rowSection.UpdateView(true);
             SetEntityPath();
-            if (GuiInfo.IsRealtime && EntityId != null)
+            if (Meta.IsRealtime && EntityId != null)
             {
                 RealtimeUpdate(rowSection, observableArgs);
             }
@@ -176,9 +176,9 @@ namespace Core.Components
                 var metaData = separatedFiles.GetValueOrDefault(x) as dynamic;
                 return new FileUpload
                 {
-                    EntityName = GuiInfo.IdField,
+                    EntityName = Meta.IdField,
                     RecordId = EntityId,
-                    SectionId = GuiInfo.ComponentGroupId,
+                    SectionId = Meta.ComponentGroupId,
                     FieldName = FieldName,
                     FileName = Image.RemoveGuid(x),
                     FilePath = x,

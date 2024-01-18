@@ -55,7 +55,7 @@ namespace Core.Components
             });
             Entity = ParentListView.AdvSearchVM;
             var fieldMap = HeaderForAdvSearch();
-            var orderby = ParentListView.GuiInfo.OrderBy;
+            var orderby = ParentListView.Meta.OrderBy;
             ParentListView.AdvSearchVM.OrderBy = orderby.IsNullOrWhiteSpace() ? ParentListView.AdvSearchVM.OrderBy :
             orderby.Split(",").Select(x =>
             {
@@ -131,7 +131,7 @@ namespace Core.Components
             {
                 _filterGrid.GetSelectedRows().ForEach(_filterGrid.RowData.Remove);
             };
-            _filterGrid.Header = _filterGrid.GuiInfo.LocalHeader = new List<Component>
+            _filterGrid.Header = _filterGrid.Meta.LocalHeader = new List<Component>
             {
                 new Component
                 {
@@ -244,7 +244,7 @@ namespace Core.Components
                     }
                 },
             };
-            _filterGrid.RowData.Data = _filterGrid.GuiInfo.LocalData = AdvSearchEntity.Conditions.Cast<object>().ToList();
+            _filterGrid.RowData.Data = _filterGrid.Meta.LocalData = AdvSearchEntity.Conditions.Cast<object>().ToList();
             _filterGrid.ParentElement = section.Element;
             section.AddChild(_filterGrid);
             _filterGrid.Element.AddEventListener(EventType.KeyDown, ToggleIndent);
@@ -281,7 +281,7 @@ namespace Core.Components
             {
                 _orderByGrid.GetSelectedRows().ForEach(_orderByGrid.RowData.Remove);
             };
-            _orderByGrid.GuiInfo.LocalHeader = new List<Component>
+            _orderByGrid.Meta.LocalHeader = new List<Component>
             {
                 new Component
                 {
@@ -340,7 +340,7 @@ namespace Core.Components
                     LocalRender = true,
                 },
             };
-            _orderByGrid.GuiInfo.LocalData = AdvSearchEntity.OrderBy?.Cast<object>()?.ToList();
+            _orderByGrid.Meta.LocalData = AdvSearchEntity.OrderBy?.Cast<object>()?.ToList();
             _orderByGrid.ParentElement = section.Element;
             section.AddChild(_orderByGrid);
         }
@@ -485,9 +485,9 @@ namespace Core.Components
                 component.Entity[nameof(FieldCondition.Value)] = e.NewData;
             };
             condition.LogicOperatorId = condition.LogicOperatorId ?? LogicOperation.And;
-            _filterGrid.FirstOrDefault(x => x.GuiInfo != null && x.Entity == condition
+            _filterGrid.FirstOrDefault(x => x.Meta != null && x.Entity == condition
                 && x.FieldName == nameof(FieldCondition.LogicOperatorId))?.UpdateView();
-            condition.CompareOperatorId = (AdvSearchOperation?)compareCell.GuiInfo.LocalData.Cast<Entity>().FirstOrDefault()?.Id?.TryParseInt();
+            condition.CompareOperatorId = (AdvSearchOperation?)compareCell.Meta.LocalData.Cast<Entity>().FirstOrDefault()?.Id?.TryParseInt();
             compareCell.Value = ((int?)condition.CompareOperatorId)?.ToString();
             compareCell.UpdateView();
             component.Entity = condition;
@@ -505,7 +505,7 @@ namespace Core.Components
             com.CopyPropFrom(comInfo);
             com.ComponentType = nameof(Textbox);
             component = new Textbox(comInfo);
-            compareCell.GuiInfo.LocalData = OperatorFactory(ComponentTypeTypeEnum.Textbox).Cast<object>().ToList();
+            compareCell.Meta.LocalData = OperatorFactory(ComponentTypeTypeEnum.Textbox).Cast<object>().ToList();
             return component;
         }
 
@@ -535,7 +535,7 @@ namespace Core.Components
             EditableComponent component;
             comInfo.ComponentType = nameof(Number);
             component = new Number(comInfo);
-            compareCell.GuiInfo.LocalData = OperatorFactory(ComponentTypeTypeEnum.Number).Cast<object>().ToList();
+            compareCell.Meta.LocalData = OperatorFactory(ComponentTypeTypeEnum.Number).Cast<object>().ToList();
             return component;
         }
 
@@ -550,7 +550,7 @@ namespace Core.Components
             comInfo.LocalData = IEnumerableExtensions.ToEntity<ActiveStateEnum>();
             comInfo.LocalHeader = GetBooleanSearchHeader();
             component = new MultipleSearchEntry(comInfo);
-            compareCell.GuiInfo.LocalData = OperatorFactory(ComponentTypeTypeEnum.SearchEntry).Cast<object>().ToList();
+            compareCell.Meta.LocalData = OperatorFactory(ComponentTypeTypeEnum.SearchEntry).Cast<object>().ToList();
             return component;
         }
 
@@ -575,7 +575,7 @@ namespace Core.Components
 
         private EditableComponent SetSearchId(SearchEntry compareCell, Component field)
         {
-            compareCell.GuiInfo.LocalData = OperatorFactory(ComponentTypeTypeEnum.SearchEntry).Cast<object>().ToList();
+            compareCell.Meta.LocalData = OperatorFactory(ComponentTypeTypeEnum.SearchEntry).Cast<object>().ToList();
             compareCell.Value = ((int)AdvSearchOperation.In).ToString();
 
             var comInfo = new Component();
@@ -593,7 +593,7 @@ namespace Core.Components
             com.ComponentType = nameof(Datepicker);
             com.Precision = 7; // add time picker
             component = new Datepicker(com);
-            compareCell.GuiInfo.LocalData =
+            compareCell.Meta.LocalData =
                 IEnumerableExtensions.ToEntity<AdvSearchOperation>()
                 .Cast<Entity>().Where(x => int.Parse(x.Id) < (int)AdvSearchOperation.Contains)
                 .Cast<object>().ToList();

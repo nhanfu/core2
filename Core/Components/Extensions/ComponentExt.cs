@@ -9,7 +9,6 @@ using Core.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -123,7 +122,7 @@ namespace Core.Components.Extensions
             com.ForEachProp((prop, val) =>
             {
                 if (prop.StartsWith("$")) return;
-                var attributes = type.GetProperty(prop).GetCustomAttributes(typeof(IgnoreDbAttribute), false) as IgnoreDbAttribute[];
+                var attributes = type.GetProperty(prop).GetCustomAttributes(typeof(DbIgnoreAttribute), false) as DbIgnoreAttribute[];
                 if (attributes.HasElement())
                 {
                     return;
@@ -481,7 +480,7 @@ namespace Core.Components.Extensions
             var search = component.FirstOrDefault(x => x.Name == name && x is SearchEntry) as SearchEntry;
             if (search != null)
             {
-                search.GuiInfo.DataSourceFilter = DataSourceFilter;
+                search.Meta.DataSourceFilter = DataSourceFilter;
             }
         }
 

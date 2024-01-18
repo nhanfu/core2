@@ -23,7 +23,6 @@ namespace Core.Components
         public const string FocusedClass = "focus";
         public const string HoveringClass = "hovering";
         public ListViewItem GroupSection { get; set; }
-        public PatchVM lastpathModel { get; set; }
         public ListViewSection ListViewSection { get; internal set; }
         public ListView ListView { get; internal set; }
         public Function PreQueryFn { get; set; }
@@ -111,20 +110,27 @@ namespace Core.Components
         public bool GroupRow { get; internal set; }
         public ListViewItem(ElementType elementType = ElementType.tr) : base(elementType)
         {
-            StopChildrenHistory = true;
+        }
+
+        public ListViewItem() : base()
+        {
         }
 
         public override void Render()
         {
             ListViewSection = ListViewSection ?? this.FindClosest<ListViewSection>();
             ListView = ListView ?? this.FindClosest<ListView>();
-            GuiInfo = ListView.GuiInfo;
+            Meta = ListView.Meta;
             base.Render();
             if (_selected)
             {
                 Element.AddClass(SelectedClass);
             }
+        }
 
+        private void BindingEvents()
+        {
+            if (Element is null) return;
             Html.Take(Element)
                 .Event(EventType.Click, RowItemClick)
                 .Event(EventType.DblClick, RowDblClick)
@@ -155,13 +161,14 @@ namespace Core.Components
 
                 Element.ParentElement.InsertBefore(Element, Element.ParentElement.Children[index.Value]);
             }
-            if (Utils.IsFunction(GuiInfo.Template, out Function func))
+            if (Utils.IsFunction(Meta.Template, out Function func))
             {
                 var formatted = func.Call(this, this)?.ToString();
-                Element.InnerHTML = formatted;
-                EditForm.BindingTemplate(Element, this, false, Entity, (ele, meta, parent, isLayout, entity) =>
+                ListView.Element.InnerHTML += formatted;
+                Element = ListView.Element.LastElementChild;
+                EditForm.BindingTemplate(Element, this, Entity, (ele, meta, parent, entity) =>
                 {
-                    var newCom = EditForm.BindingCom(ele, meta, parent, isLayout, entity);
+                    var newCom = EditForm.BindingCom(ele, meta, parent, entity);
                     if (newCom != null)
                     {
                         newCom.UserInput += (arg) => UserInputHandler(arg, newCom);
@@ -176,8 +183,7 @@ namespace Core.Components
                     RenderTableCell(row, header, Element);
                 });
             }
-            var id = row[IdField].As<int?>();
-            Dirty = (!id.HasValue || id <= 0) && !emptyRow;
+            BindingEvents();
         }
 
         public List<PatchDetail> PatchModel = new List<PatchDetail>();
@@ -269,10 +275,9 @@ namespace Core.Components
                 return;
             }
             var patchModel = GetPatchEntity();
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforePatchUpdate, Entity, patchModel, this)
+            this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforePatchUpdate, Entity, patchModel, this)
             .Done(() =>
             {
-                lastpathModel = patchModel;
                 Client.Instance.PatchAsync(patchModel).Done(success =>
                 {
                     PatchUpdateCb(success > 0, patchModel);
@@ -292,7 +297,7 @@ namespace Core.Components
                 Dirty = false;
                 EmptyRow = false;
             }
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this).Done();
+            this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this).Done();
         }
 
         public PatchVM GetPatchEntity()
@@ -302,8 +307,8 @@ namespace Core.Components
                 .Where(child =>
                 {
                     return child is EditableComponent editable && !(child is Button)
-                        && (shouldGetAll || editable.Dirty) && child.GuiInfo != null
-                        && child.GuiInfo.FieldName.HasNonSpaceChar();
+                        && (shouldGetAll || editable.Dirty) && child.Meta != null
+                        && child.Meta.FieldName.HasNonSpaceChar();
                 })
                 .SelectMany(child =>
                 {
@@ -329,7 +334,7 @@ namespace Core.Components
                 CacheName = CacheName,
                 QueueName = QueueName,
                 Changes = dirtyPatch,
-                Table = ListView.GuiInfo.RefName,
+                Table = ListView.Meta.RefName,
                 ConnKey = ListView.ConnKey ?? Client.ConnKey,
             };
         }
@@ -338,7 +343,7 @@ namespace Core.Components
         {
             e.StopPropagation();
             ListViewSection.ListView.DblClick?.Invoke(Entity);
-            this.DispatchEvent(GuiInfo.Events, EventType.DblClick, Entity).Done();
+            this.DispatchEvent(Meta.Events, EventType.DblClick, Entity).Done();
         }
 
         protected virtual void RowItemClick(Event e)
@@ -354,7 +359,7 @@ namespace Core.Components
                 ListViewSection.ListView.RowClick?.Invoke(Entity);
             }
             ListViewSection.ListView.LastListViewItem = this;
-            this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity).Done();
+            this.DispatchEvent(Meta.Events, EventType.Click, Entity).Done();
         }
 
         private void HotKeySelectRow(bool ctrl, bool shift, bool focusing)
@@ -476,19 +481,19 @@ namespace Core.Components
 
         protected virtual void RowFocusOut()
         {
-            Task.Run(async () => await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.RowFocusOut, Entity));
+            Task.Run(async () => await this.DispatchCustomEvent(Meta.Events, CustomEventType.RowFocusOut, Entity));
         }
 
         internal void MouseEnter()
         {
             Element.AddClass(HoveringClass);
-            Task.Run(async () => await this.DispatchCustomEvent(ListViewSection.ListView.GuiInfo.Events, CustomEventType.RowMouseEnter, Entity));
+            Task.Run(async () => await this.DispatchCustomEvent(ListViewSection.ListView.Meta.Events, CustomEventType.RowMouseEnter, Entity));
         }
 
         internal void MouseLeave()
         {
             Element.RemoveClass(HoveringClass);
-            Task.Run(async () => await this.DispatchCustomEvent(ListViewSection.ListView.GuiInfo.Events, CustomEventType.RowMouseLeave, Entity));
+            Task.Run(async () => await this.DispatchCustomEvent(ListViewSection.ListView.Meta.Events, CustomEventType.RowMouseLeave, Entity));
         }
 
         public override bool Show { get => base.Show; set => Toggle(value); }

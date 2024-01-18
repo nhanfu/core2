@@ -74,7 +74,7 @@ namespace Core.Components
             fromIndex = 0;
             var tcs = new TaskCompletionSource<ListViewItem>();
             DisposeNoRecord();
-            var keys = GuiInfo.GroupBy.Split(",");
+            var keys = Meta.GroupBy.Split(",");
             item[_groupKey] = string.Join(" ", keys.Select(key => item.GetPropValue(key)?.ToString()));
             var groupKey = item[_groupKey];
             var existGroup = AllListViewItem
@@ -130,19 +130,19 @@ namespace Core.Components
             section.AddChild(groupSection);
             groupSection.Element.TabIndex = -1;
             string groupText;
-            if (Utils.IsFunction(GuiInfo.GroupFormat, out var fn))
+            if (Utils.IsFunction(Meta.GroupFormat, out var fn))
             {
                 groupText = fn.Call(this, this, first).ToString();
             }
             else
             {
-                groupText = Utils.FormatEntity(GuiInfo.GroupFormat, null, first, Utils.EmptyFormat, Utils.EmptyFormat);
+                groupText = Utils.FormatEntity(Meta.GroupFormat, null, first, Utils.EmptyFormat, Utils.EmptyFormat);
             }
-            if (GuiInfo.GroupReferenceId != null)
+            if (Meta.GroupReferenceId != null)
             {
-                var val = first.GetPropValue(GuiInfo.GroupBy.Substr(0, GuiInfo.GroupBy.Length - 2));
+                var val = first.GetPropValue(Meta.GroupBy.Substr(0, Meta.GroupBy.Length - 2));
                 groupSection.Entity = val;
-                groupSection.Entity.SetPropValue("ModelName", GuiInfo.RefName);
+                groupSection.Entity.SetPropValue("ModelName", Meta.RefName);
                 headers.Where(x => !x.Hidden).ForEach(header =>
                 {
                     Html.Instance.TData.TabIndex(-1)
@@ -181,12 +181,12 @@ namespace Core.Components
 
         private void DispatchClick(object row)
         {
-            this.DispatchEvent(GuiInfo.GroupEvent, EventType.Click, row).Done();
+            this.DispatchEvent(Meta.GroupEvent, EventType.Click, row).Done();
         }
 
         private void DispatchDblClick(object row)
         {
-            this.DispatchEvent(GuiInfo.GroupEvent, EventType.DblClick, row).Done();
+            this.DispatchEvent(Meta.GroupEvent, EventType.DblClick, row).Done();
         }
 
         public override void ToggleAll()

@@ -18,7 +18,7 @@ namespace Core.Components
 
         public Label(Component ui, HTMLElement ele = null) : base(ui)
         {
-            GuiInfo = ui;
+            Meta = ui;
             Element = ele;
         }
 
@@ -32,8 +32,8 @@ namespace Core.Components
             {
                 RenderNewEle(cellText, cellData, isBool);
             }
-            if (!GuiInfo.Query.IsNullOrWhiteSpace()
-                && Utils.IsFunction(GuiInfo.FormatEntity, out var formatter))
+            if (!Meta.Query.IsNullOrWhiteSpace()
+                && Utils.IsFunction(Meta.FormatEntity, out var formatter))
             {
                 RenderCellText(formatter);
                 return;
@@ -51,7 +51,7 @@ namespace Core.Components
         {
             if (isBool)
             {
-                if (GuiInfo.SimpleText)
+                if (Meta.SimpleText)
                 {
                     Element.InnerHTML = (bool?)cellData == true ? "☑" : "☐";
                 }
@@ -67,10 +67,10 @@ namespace Core.Components
 
         private void RenderNewEle(string cellText, object cellData, bool isBool)
         {
-            Html.Take(ParentElement).TextAlign(CalcTextAlign(GuiInfo, cellData));
+            Html.Take(ParentElement).TextAlign(CalcTextAlign(Meta, cellData));
             if (isBool)
             {
-                if (GuiInfo.SimpleText)
+                if (Meta.SimpleText)
                 {
                     Html.Instance.Text((bool?)cellData == true ? "☑" : "☐");
                     Html.Context.Style.FontSize = "1.2rem";
@@ -104,7 +104,7 @@ namespace Core.Components
         private string CalcCellText(object cellData)
         {
             string cellText = null;
-            if (GuiInfo.IsPivot)
+            if (Meta.IsPivot)
             {
                 var fields = FieldName.Split(".");
                 if (fields.Length < 3)
@@ -119,11 +119,11 @@ namespace Core.Components
 
                 var restPivotField = string.Join(".", fields.Skip(1).Take(fields.Length - 2));
                 var row = listData.FirstOrDefault(x => x.GetPropValue(restPivotField)?.ToString() == fields.Last().ToString());
-                cellText = row == null ? string.Empty : Utils.FormatEntity(GuiInfo.FormatEntity, row);
+                cellText = row == null ? string.Empty : Utils.FormatEntity(Meta.FormatEntity, row);
             }
             else
             {
-                cellText = Utils.GetCellText(GuiInfo, cellData, Entity, EmptyRow);
+                cellText = Utils.GetCellText(Meta, cellData, Entity, EmptyRow);
             }
             if (cellText is null || cellText == "null")
             {
@@ -134,16 +134,16 @@ namespace Core.Components
 
         private void RenderCellText(Function formatter)
         {
-            if (GuiInfo.Query.IsNullOrEmpty() || formatter is null)
+            if (Meta.Query.IsNullOrEmpty() || formatter is null)
             {
                 return;
             }
-            var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var fn);
+            var isFn = Utils.IsFunction(Meta.PreQuery, out var fn);
             var entity = isFn ? fn.Call(this, this).ToString() : string.Empty;
             var submit = new SqlViewModel
             {
                 Params = JSON.Stringify(entity),
-                ComId = GuiInfo.Id
+                ComId = Meta.Id
             };
             Client.Instance.SubmitAsync<object[]>(new XHRWrapper
             {
@@ -164,7 +164,7 @@ namespace Core.Components
 
         private void LabelClickHandler(Event e)
         {
-            this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity).Done();
+            this.DispatchEvent(Meta.Events, EventType.Click, Entity).Done();
         }
 
         public static TextAlign CalcTextAlign(Component header, object cellData)

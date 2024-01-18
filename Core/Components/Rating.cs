@@ -35,17 +35,17 @@ namespace Core.Components
 
         private void SetSelected(int? value)
         {
-            if (value is null || value <= 0 || value > GuiInfo.Precision)
+            if (value is null || value <= 0 || value > Meta.Precision)
             {
                 return;
             }
-            InputList[GuiInfo.Precision.Value - value.Value].Checked = true;
+            InputList[Meta.Precision.Value - value.Value].Checked = true;
         }
 
         public Rating(Component ui, HTMLElement ele = null) : base(ui)
         {
-            GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
-            GuiInfo.Precision = GuiInfo.Precision ?? 5;
+            Meta = ui ?? throw new ArgumentNullException(nameof(ui));
+            Meta.Precision = Meta.Precision ?? 5;
             ParentElement = ele;
         }
 
@@ -53,12 +53,12 @@ namespace Core.Components
         {
             Html.Take(ParentElement).Div.ClassName("rate");
             Element = Html.Context;
-            var radioGroup = FieldName + GuiInfo.Id + GetHashCode();
-            for (var item = GuiInfo.Precision; item >= 1; item--)
+            var radioGroup = FieldName + Meta.Id + GetHashCode();
+            for (var item = Meta.Precision; item >= 1; item--)
             {
                 var radioId = $"{radioGroup}_{item}";
                 Html.Take(Element).Input.Attr("type", "radio").Id(radioId).Attr("name", radioGroup)
-                    .Value(item.ToString()).Event(EventType.Change, DispatchChange).Style(GuiInfo.Style);
+                    .Value(item.ToString()).Event(EventType.Change, DispatchChange).Style(Meta.Style);
                 InputList.Add(Html.Context.As<HTMLInputElement>());
                 Html.Take(Element).Label.Attr("for", radioId).Text($"{item} stars");
             }
@@ -90,7 +90,7 @@ namespace Core.Components
             }
             Task.Run(async () =>
             {
-                await this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity);
+                await this.DispatchEvent(Meta.Events, EventType.Click, Entity);
             });
         }
 

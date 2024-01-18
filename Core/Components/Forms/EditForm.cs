@@ -117,7 +117,6 @@ namespace Core.Components.Forms
                 Entity = Activator.CreateInstance(entityType);
             }
             Window.AddEventListener(EventType.Resize, ResizeHandler);
-            LayoutForm = LayoutForm ?? new EditForm(null);
         }
 
         public PatchVM GetPatchEntity()
@@ -126,10 +125,10 @@ namespace Core.Components.Forms
             var details = FilterChildren(child =>
             {
                 return child is EditableComponent editable && !(child is Button)
-                    && (shouldGetAll || editable.Dirty) && child.GuiInfo != null
-                    && child.GuiInfo.FieldName.HasNonSpaceChar();
+                    && (shouldGetAll || editable.Dirty) && child.Meta != null
+                    && child.Meta.FieldName.HasNonSpaceChar();
             }, x => x is ListView || x.AlwaysValid || !x.PopulateDirty)
-            .DistinctBy(x => x.GuiInfo.Id)
+            .DistinctBy(x => x.Meta.Id)
             .SelectMany(child =>
             {
                 if (child[nameof(PatchDetail)] is Func<PatchDetail[]> fn)
@@ -203,7 +202,7 @@ namespace Core.Components.Forms
         private ListView[] GetDirtyGrid()
         {
             return ListViews
-                .Where(x => x.GuiInfo.IdField.HasAnyChar() && x.GuiInfo.CanAdd)
+                .Where(x => x.Meta.IdField.HasAnyChar() && x.Meta.CanAdd)
                 .Where(x => x.FilterChildren<EditableComponent>(com => com._dirty, com => !com.PopulateDirty).Any())
                 .ToArray();
         }
@@ -211,7 +210,7 @@ namespace Core.Components.Forms
         private ListView[] GetDeleteGrid()
         {
             return ListViews
-                .Where(x => x.GuiInfo.Id.HasAnyChar())
+                .Where(x => x.Meta.Id.HasAnyChar())
                 .Where(x => x.DeleteTempIds.Any())
                 .ToArray();
         }
@@ -236,7 +235,7 @@ namespace Core.Components.Forms
             }
             foreach (var item in dirtyGrid)
             {
-                Client.Instance.HardDeleteAsync(item.DeleteTempIds.ToArray(), item.GuiInfo.RefName, item.ConnKey)
+                Client.Instance.HardDeleteAsync(item.DeleteTempIds.ToArray(), item.Meta.RefName, item.ConnKey)
                 .Done(deleteSuccess =>
                 {
                     if (!deleteSuccess)
@@ -494,6 +493,7 @@ namespace Core.Components.Forms
             }
             if (layout != null)
             {
+                LayoutForm = new EditForm(null) { Feature = layout, Element = Document.Body };
                 var root = Document.GetElementById("template");
                 if (root != null)
                 {
@@ -501,7 +501,7 @@ namespace Core.Components.Forms
                     var style = Document.CreateElement(ElementType.style.ToString());
                     style.AppendChild(new Text(layout.StyleSheet));
                     root.AppendChild(style);
-                    BindingTemplate(root, this, isLayout: true);
+                    BindingTemplate(root, this);
                     entryPoint = root.FilterElement(x => x.Id == SpecialEntryPoint).FirstOrDefault();
                     ResetEntryPoint(entryPoint);
                 }
@@ -534,8 +534,8 @@ namespace Core.Components.Forms
             }
         }
 
-        public void BindingTemplate(HTMLElement ele, EditableComponent parent, bool isLayout = false, object entity = null,
-            Func<HTMLElement, Component, EditableComponent, bool, object, EditableComponent> factory = null, HashSet<HTMLElement> visited = null)
+        public void BindingTemplate(HTMLElement ele, EditableComponent parent, object entity = null,
+            Func<HTMLElement, Component, EditableComponent, object, EditableComponent> factory = null, HashSet<HTMLElement> visited = null)
         {
             if (visited is null)
             {
@@ -546,24 +546,41 @@ namespace Core.Components.Forms
                 return;
             }
             visited.Add(ele);
-            if (ele.Children.Length == 0 && RenderCellText(ele, entity, isLayout) != null)
+            if (ele.Children.Length == 0 && RenderCellText(ele, entity) != null)
             {
                 return;
             }
             var meta = ResolveMeta(ele);
-            var newCom = factory?.Invoke(ele, meta, parent, isLayout, entity)
-                ?? BindingCom(ele, meta, parent, isLayout, entity);
+            var newCom = factory?.Invoke(ele, meta, parent, entity)
+                ?? BindingCom(ele, meta, parent, entity);
             parent = newCom is Section ? newCom : parent;
-            ele.Children.SelectForEach(child => BindingTemplate(child, parent, isLayout, entity, factory, visited));
+            ele.Children.SelectForEach(child => BindingTemplate(child, parent, entity, factory, visited));
         }
 
+        private Component[] _allCom;
+        private Component[] AllCom
+        {
+            get
+            {
+                if (_allCom != null) return _allCom;
+                if (LayoutForm is null)
+                {
+                    _allCom = Feature.Component.ToArray();
+                }
+                else
+                {
+                    _allCom = Feature.Component.Concat(LayoutForm.Feature.Component).ToArray();
+                }
+                return _allCom;
+            }
+        }
         private Component ResolveMeta(HTMLElement ele)
         {
             Component component = null;
             var id = ele.Dataset[IdField.ToLowerCase()];
             if (id != null)
             {
-                component = Feature.Component.FirstOrDefault(x => x.Id == id);
+                component = AllCom.FirstOrDefault(x => x.Id == id);
             }
             foreach (var prop in typeof(Component).GetProperties().Where(x => x.CanRead && x.CanWrite))
             {
@@ -588,7 +605,7 @@ namespace Core.Components.Forms
             return component;
         }
 
-        private static Label RenderCellText(HTMLElement ele, object entity, bool isLayout)
+        private static Label RenderCellText(HTMLElement ele, object entity)
         {
             var text = ele.TextContent?.Trim();
             if (text.HasAnyChar() && text.StartsWith("{") && text.EndsWith("}"))
@@ -598,7 +615,7 @@ namespace Core.Components.Forms
                     FieldName = text.SubStrIndex(1, text.Length - 1)
                 }, ele)
                 { Entity = entity };
-                if (isLayout && LayoutForm != null)
+                if (LayoutForm != null)
                 {
                     LayoutForm.AddChild(cellText);
                 }
@@ -611,7 +628,7 @@ namespace Core.Components.Forms
             return null;
         }
 
-        public EditableComponent BindingCom(HTMLElement ele, Component com, EditableComponent parent, bool isLayout, object entity)
+        public EditableComponent BindingCom(HTMLElement ele, Component com, EditableComponent parent, object entity)
         {
             EditableComponent child = null;
             if (ele is null)
@@ -626,7 +643,7 @@ namespace Core.Components.Forms
             {
                 child = new Section(ele)
                 {
-                    GuiInfo = com,
+                    Meta = com,
                 };
             }
             else if (child is null)
@@ -635,7 +652,7 @@ namespace Core.Components.Forms
             }
             child.ParentElement = child.ParentElement ?? ele;
             child.Entity = entity ?? child.EditForm?.Entity ?? LayoutForm.Entity;
-            if (isLayout)
+            if (LayoutForm != null)
             {
                 child.EditForm = parent as EditForm;
                 child.Render();
@@ -1157,7 +1174,7 @@ namespace Core.Components.Forms
 
         public override void Focus()
         {
-            var ele = this.FirstOrDefault(x => x.GuiInfo != null && x.GuiInfo.Focus);
+            var ele = this.FirstOrDefault(x => x.Meta != null && x.Meta.Focus);
             if (ele is null)
             {
                 Element.Focus();

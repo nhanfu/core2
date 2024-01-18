@@ -61,9 +61,9 @@ namespace Core.Components
 
         public Datepicker(Component ui, HTMLElement ele = null) : base(ui)
         {
-            GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
-            InitFormat = GuiInfo.FormatData.HasAnyChar() ? GuiInfo.FormatData.Replace("{0:", string.Empty).Replace("}", string.Empty)
-                : (GuiInfo.Precision == 7 ? "dd/MM/yyyy - HH:mm" : "dd/MM/yyyy");
+            Meta = ui ?? throw new ArgumentNullException(nameof(ui));
+            InitFormat = Meta.FormatData.HasAnyChar() ? Meta.FormatData.Replace("{0:", string.Empty).Replace("}", string.Empty)
+                : (Meta.Precision == 7 ? "dd/MM/yyyy - HH:mm" : "dd/MM/yyyy");
             _currentFormat = InitFormat;
             if (ele != null)
             {
@@ -120,13 +120,13 @@ namespace Core.Components
                         _simpleNoEvent = false;
                         return;
                     }
-                    if (!GuiInfo.FocusSearch)
+                    if (!Meta.FocusSearch)
                     {
                         RenderCalendar();
                     }
                 })
                 .Event(EventType.Change, () => ParseDate())
-                .PlaceHolder(GuiInfo.PlainText);
+                .PlaceHolder(Meta.PlainText);
             Input.AutoComplete = AutoComplete.Off;
             Input.Name = FieldName;
             Input.ParentElement.AddEventListener(EventType.FocusOut, CloseCalendar);
@@ -331,7 +331,7 @@ namespace Core.Components
                     runner = runner.AddDays(1);
                 }
             }
-            if (GuiInfo.Precision == 7)
+            if (Meta.Precision == 7)
             {
                 Html.Instance.EndOf(".calendar-content").Div.ClassName("time-picker")
                     .Div.ClassName("hour").Icon("fa fa-chevron-up").Event(EventType.Click, () => IncreaseTime(1)).End
@@ -387,7 +387,7 @@ namespace Core.Components
             if (_someday == DateTime.MinValue && OldValue != null)
             {
                 DateTime dateTime = DateTime.Parse(OldValue);
-                _someday = GuiInfo.Precision == 7 ? dateTime : DateTime.Now;
+                _someday = Meta.Precision == 7 ? dateTime : DateTime.Now;
             }
             _someday = _someday.AddMinutes(-_someday.Minute).AddMinutes(newMinute);
             var innerTime = _someday;
@@ -409,7 +409,7 @@ namespace Core.Components
             if (_someday == DateTime.MinValue && OldValue != null)
             {
                 DateTime dateTime = DateTime.Parse(OldValue);
-                _someday = GuiInfo.Precision == 7 ? dateTime : DateTime.Now;
+                _someday = Meta.Precision == 7 ? dateTime : DateTime.Now;
             }
 
             _someday = _someday.AddHours(-_someday.Hour).AddHours(newHour);
@@ -468,7 +468,7 @@ namespace Core.Components
             }
             Task.Run(async () =>
             {
-                await this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity);
+                await this.DispatchEvent(Meta.Events, EventType.Change, Entity);
             });
         }
 

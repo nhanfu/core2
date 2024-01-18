@@ -57,8 +57,8 @@ namespace Core.Components
 
         public ImageServer(Component ui) : base(ui)
         {
-            GuiInfo = ui;
-            DataSourceFilter = GuiInfo.DataSourceFilter ?? "image/*";
+            Meta = ui;
+            DataSourceFilter = Meta.DataSourceFilter ?? "image/*";
         }
 
         public override void Render()
@@ -81,7 +81,7 @@ namespace Core.Components
             Html.Instance.End.Render();
             if (!path.IsNullOrWhiteSpace())
             {
-                Html.Instance.Img.Event(EventType.Click, OpenForm).ClassName("thumb").Style(GuiInfo.ChildStyle).Src(path).Render();
+                Html.Instance.Img.Event(EventType.Click, OpenForm).ClassName("thumb").Style(Meta.ChildStyle).Src(path).Render();
             }
             return Html.Context.ParentElement;
         }
@@ -162,15 +162,15 @@ namespace Core.Components
             Element = Html.Take(ParentElement).ClassName("uploader").Div.GetContext();
             if (_plus is null)
             {
-                if (GuiInfo.Precision > 0)
+                if (Meta.Precision > 0)
                 {
-                    Html.Instance.I.Event(EventType.Click, OpenForm).ClassName("fal fa-plus mt-3").Style(GuiInfo.ChildStyle).End.Render();
+                    Html.Instance.I.Event(EventType.Click, OpenForm).ClassName("fal fa-plus mt-3").Style(Meta.ChildStyle).End.Render();
                 }
                 else
                 {
                     if (Path.IsNullOrWhiteSpace())
                     {
-                        Html.Instance.I.Event(EventType.Click, OpenForm).ClassName("fal fa-plus mt-3").Style(GuiInfo.ChildStyle).End.Render();
+                        Html.Instance.I.Event(EventType.Click, OpenForm).ClassName("fal fa-plus mt-3").Style(Meta.ChildStyle).End.Render();
                     }
                 }
                 _plus = Html.Context;
@@ -207,10 +207,10 @@ namespace Core.Components
                 .Div.ClassName(" list-group")
                     .Div.ClassName("row").Id("previewContainer");
 
-            var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var fn);
+            var isFn = Utils.IsFunction(Meta.PreQuery, out var fn);
             var loadImageTask = Client.Instance.ComQuery(new SqlViewModel
             {
-                ComId = GuiInfo.Id,
+                ComId = Meta.Id,
                 Params = isFn ? JSON.Stringify(fn.Call(null, this)) : null
             })
             .Done(ds =>
@@ -237,7 +237,7 @@ namespace Core.Components
             }
 
             var oldVal = _path;
-            if (GuiInfo.Precision > 1)
+            if (Meta.Precision > 1)
             {
                 var newPath = _path.Replace(removedPath, string.Empty).Split(pathSeparator).Where(x => x.HasAnyChar()).ToList();
                 Path = string.Join(pathSeparator, newPath);
@@ -246,7 +246,7 @@ namespace Core.Components
             {
                 Path = null;
             }
-            this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done(() =>
+            this.DispatchEvent(Meta.Events, EventType.Change, Entity).Done(() =>
             {
                 UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName });
                 Dirty = true;
@@ -267,7 +267,7 @@ namespace Core.Components
                 Dirty = true;
                 _input.Value = string.Empty;
                 UserInput?.Invoke(new ObservableArgs { NewData = _path, OldData = oldVal, FieldName = FieldName });
-                this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done();
+                this.DispatchEvent(Meta.Events, EventType.Change, Entity).Done();
             });
         }
 
@@ -323,7 +323,7 @@ namespace Core.Components
 
         private void ChooseImage(string img)
         {
-            if (GuiInfo.Precision > 1)
+            if (Meta.Precision > 1)
             {
                 Path += $"{pathSeparator}{img}";
             }
@@ -334,7 +334,7 @@ namespace Core.Components
             }
             Dirty = true;
             UserInput?.Invoke(new ObservableArgs { NewData = _path, FieldName = FieldName, EvType = EventType.Change });
-            this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done();
+            this.DispatchEvent(Meta.Events, EventType.Change, Entity).Done();
         }
 
         private void OpenNativeFileDialog(Event e)

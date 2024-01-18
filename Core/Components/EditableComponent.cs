@@ -29,22 +29,22 @@ namespace Core.Components
         public string Id { get; set; }
         public string FieldName
         {
-            get => GuiInfo?.FieldName; set
+            get => Meta?.FieldName; set
             {
-                if (GuiInfo != null) GuiInfo.FieldName = value;
+                if (Meta != null) Meta.FieldName = value;
             }
         }
         public string Label
         {
-            get => GuiInfo?.Label; set
+            get => Meta?.Label; set
             {
-                if (GuiInfo != null) GuiInfo.Label = value;
+                if (Meta != null) Meta.Label = value;
             }
         }
         public string ComponentType { get; set; }
         public string Name { get; set; }
         public EditableComponent Parent { get; set; }
-        public Component GuiInfo { get; set; }
+        public Component Meta { get; set; }
         public List<EditableComponent> Children { get; set; } = new List<EditableComponent>();
         public EditableComponent FirstChild => Children.FirstOrDefault();
         /// <summary>
@@ -54,8 +54,8 @@ namespace Core.Components
         public virtual HTMLElement Element { get; set; }
         public event Action Disposed;
         public Action DOMContentLoaded { get; set; }
-        public string ConnKey => GuiInfo != null && GuiInfo.ConnKey.IsNullOrWhiteSpace()
-            ? Client.ConnKey : GuiInfo.ConnKey;
+        public string ConnKey => Meta != null && Meta.ConnKey.IsNullOrWhiteSpace()
+            ? Client.ConnKey : Meta.ConnKey;
         public string EntityId
         {
             get => Entity?[IdField]?.ToString();
@@ -114,17 +114,17 @@ namespace Core.Components
                         if (td != null && td.NextElementSibling is null)
                         {
                             e.PreventDefault();
-                            var nextElement = listViewItem.Children.FirstOrDefault(x => x.GuiInfo.Editable);
+                            var nextElement = listViewItem.Children.FirstOrDefault(x => x.Meta.Editable);
                             if (nextElement is null)
                             {
-                                nextElement = listViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id.HasAnyChar());
+                                nextElement = listViewItem.Children.FirstOrDefault(x => x.Meta.Id.HasAnyChar());
                             }
                             FocusElement(nextElement);
                             return;
                         }
                         if (e.ShiftKey())
                         {
-                            if (this is Label && GuiInfo.ComponentType != null && !GuiInfo.Editable && td != null && td.PreviousElementSibling != null)
+                            if (this is Label && Meta.ComponentType != null && !Meta.Editable && td != null && td.PreviousElementSibling != null)
                             {
                                 e.PreventDefault();
                                 var nextElement = listViewItem.Children.FirstOrDefault(x => x.Element.Closest("td") == td.PreviousElementSibling);
@@ -134,7 +134,7 @@ namespace Core.Components
                         }
                         else
                         {
-                            if (this is Label && GuiInfo.ComponentType != null && !GuiInfo.Editable && td != null && td.NextElementSibling != null)
+                            if (this is Label && Meta.ComponentType != null && !Meta.Editable && td != null && td.NextElementSibling != null)
                             {
                                 e.PreventDefault();
                                 var nextElement = listViewItem.Children.FirstOrDefault(x => x.Element.Closest("td") == td.NextElementSibling);
@@ -155,7 +155,7 @@ namespace Core.Components
                             }
                         }
                         var td = Element.Closest("td");
-                        if (GuiInfo.ComponentType != null && td != null && td.PreviousElementSibling != null)
+                        if (Meta.ComponentType != null && td != null && td.PreviousElementSibling != null)
                         {
                             if (e.ShiftKey())
                             {
@@ -209,7 +209,7 @@ namespace Core.Components
             if (!_show)
             {
                 Element.Style.Display = "none";
-                if (GuiInfo != null && GuiInfo.ShowLabel && Parent is Section && FieldName != null)
+                if (Meta != null && Meta.ShowLabel && Parent is Section && FieldName != null)
                 {
                     Element.ParentElement.Style.Display = "none";
                     Element.ParentElement.PreviousElementSibling.Style.Display = "none";
@@ -218,7 +218,7 @@ namespace Core.Components
             else
             {
                 Element.Style.Display = "";
-                if (GuiInfo != null && GuiInfo.ShowLabel && Parent is Section && FieldName != null)
+                if (Meta != null && Meta.ShowLabel && Parent is Section && FieldName != null)
                 {
                     Element.ParentElement.Style.Display = "";
                     Element.ParentElement.PreviousElementSibling.Style.Display = "";
@@ -247,7 +247,6 @@ namespace Core.Components
         public string OldValue { get; internal set; }
         public Dictionary<string, string> ValidationResult { get; set; }
         public string ClassName { get => Element.ClassName; set => Element.ClassName = value; }
-        protected bool StopChildrenHistory { get; set; }
         public Dictionary<string, ValidationRule> ValidationRules { get; set; }
         public virtual bool Disabled
         {
@@ -288,7 +287,7 @@ namespace Core.Components
         {
             get
             {
-                string fn = this is EditForm form ? form.Feature.CacheName : GuiInfo?.CacheName;
+                string fn = this is EditForm form ? form.Feature.CacheName : Meta?.CacheName;
                 if (fn.IsNullOrWhiteSpace()) return null;
                 if (Utils.IsFunction(fn, out var cacheNameFn))
                 {
@@ -302,16 +301,16 @@ namespace Core.Components
         {
             get
             {
-                return this is EditForm form ? form.Feature?.QueueName : GuiInfo?.QueueName;
+                return this is EditForm form ? form.Feature?.QueueName : Meta?.QueueName;
             }
         }
 
         public EditableComponent(Component guiInfo)
         {
-            GuiInfo = guiInfo;
-            if (GuiInfo != null && !GuiInfo.Validation.IsNullOrWhiteSpace())
+            Meta = guiInfo;
+            if (Meta != null && !Meta.Validation.IsNullOrWhiteSpace())
             {
-                var rules = JsonConvert.DeserializeObject<List<ValidationRule>>(GuiInfo.Validation);
+                var rules = JsonConvert.DeserializeObject<List<ValidationRule>>(Meta.Validation);
                 if (rules.HasElement())
                 {
                     ValidationRules = rules.ToDictionary(x => x.Rule);
@@ -328,9 +327,9 @@ namespace Core.Components
             {
                 SetRequired();
                 SendQueueAction("Subscribe");
-                if (GuiInfo != null && GuiInfo.Events.HasAnyChar())
+                if (Meta != null && Meta.Events.HasAnyChar())
                 {
-                    this.DispatchEvent(GuiInfo.Events, EventType.DOMContentLoaded, Entity).Done();
+                    this.DispatchEvent(Meta.Events, EventType.DOMContentLoaded, Entity).Done();
                 }
             };
         }
@@ -387,8 +386,8 @@ namespace Core.Components
 
             Html.Take(child.ParentElement);
             child.Render();
-            child.ToggleShow(showExp ?? (child.GuiInfo is null ? "" : child.GuiInfo.ShowExp));
-            child.ToggleDisabled(disabledExp ?? (child.GuiInfo is null ? "" : child.GuiInfo.DisabledExp));
+            child.ToggleShow(showExp ?? (child.Meta is null ? "" : child.Meta.ShowExp));
+            child.ToggleDisabled(disabledExp ?? (child.Meta is null ? "" : child.Meta.DisabledExp));
         }
 
         public void RemoveChild(EditableComponent child)
@@ -453,8 +452,8 @@ namespace Core.Components
             {
                 EmptyRow = false;
             }
-            ToggleShow(GuiInfo?.ShowExp);
-            ToggleDisabled(GuiInfo?.DisabledExp);
+            ToggleShow(Meta?.ShowExp);
+            ToggleDisabled(Meta?.DisabledExp);
             if (dirty.HasValue)
             {
                 _setDirty = dirty.Value;
@@ -513,7 +512,7 @@ namespace Core.Components
         protected void SetDefaultVal()
         {
             var id = Entity?[IdField].As<int?>();
-            if (Entity is null || (id != null && id > 0) || GuiInfo.DefaultVal.IsNullOrWhiteSpace())
+            if (Entity is null || (id != null && id > 0) || Meta.DefaultVal.IsNullOrWhiteSpace())
             {
                 return;
             }
@@ -536,7 +535,7 @@ namespace Core.Components
         {
             try
             {
-                var obj = Window.Eval<object>(GuiInfo.DefaultVal);
+                var obj = Window.Eval<object>(Meta.DefaultVal);
                 Entity[FieldName] = obj is Function ? (obj as Function).Call(this, this) : obj;
             }
             catch
@@ -703,12 +702,12 @@ namespace Core.Components
             var (hasField, fieldVal) = Entity.GetComplexProp(field);
             if (hasField)
             {
-                label = Parent.FirstOrDefault(x => x.Name == field)?.GuiInfo?.Label;
+                label = Parent.FirstOrDefault(x => x.Name == field)?.Meta?.Label;
                 ruleValue = fieldVal.As<K>();
             }
             if (!validPredicate(value, ruleValue))
             {
-                ValidationResult.TryAdd(ruleType, string.Format(rule.Message, LangSelect.Get(GuiInfo.Label), label));
+                ValidationResult.TryAdd(ruleType, string.Format(rule.Message, LangSelect.Get(Meta.Label), label));
                 return true;
             }
             else
@@ -737,7 +736,7 @@ namespace Core.Components
             if (EqualityComparer<T>.Default.Equals(Value, default(T)) || Value.ToString().IsNullOrWhiteSpace())
             {
                 Element.RemoveAttribute("readonly");
-                ValidationResult.TryAdd(ValidationRule.Required, string.Format(requiredRule.Message, LangSelect.Get(GuiInfo.Label), Entity));
+                ValidationResult.TryAdd(ValidationRule.Required, string.Format(requiredRule.Message, LangSelect.Get(Meta.Label), Entity));
                 return false;
             }
             else
@@ -767,14 +766,14 @@ namespace Core.Components
 
         protected void CascadeField()
         {
-            if (GuiInfo.CascadeField.IsNullOrEmpty())
+            if (Meta.CascadeField.IsNullOrEmpty())
             {
                 return;
             }
 
             var gridRow = this.FindClosest<ListViewItem>() as EditableComponent;
             var root = gridRow ?? this.FindClosest<EditForm>();
-            var cascadeFields = GuiInfo.CascadeField.Split(",").Where(x => x.HasAnyChar()).Select(x => x.Trim());
+            var cascadeFields = Meta.CascadeField.Split(",").Where(x => x.HasAnyChar()).Select(x => x.Trim());
             if (cascadeFields.Nothing())
             {
                 return;
@@ -788,7 +787,7 @@ namespace Core.Components
                      if (x is SearchEntry com && com != null)
                      {
                          com.Value = null;
-                         com.GuiInfo?.LocalData?.Clear();
+                         com.Meta?.LocalData?.Clear();
                      }
                      else
                      {
@@ -822,14 +821,14 @@ namespace Core.Components
 
         public virtual void PopulateFields(object entity = null)
         {
-            if (Entity == null || GuiInfo.PopulateField.IsNullOrEmpty())
+            if (Entity == null || Meta.PopulateField.IsNullOrEmpty())
             {
                 return;
             }
 
             var gridRow = this.FindClosest<ListViewItem>() as EditableComponent;
             var root = gridRow ?? EditForm;
-            var isFunc = Utils.IsFunction(GuiInfo.PopulateField, out Function func);
+            var isFunc = Utils.IsFunction(Meta.PopulateField, out Function func);
             if (isFunc)
             {
                 try
@@ -843,7 +842,7 @@ namespace Core.Components
                 return;
             }
 
-            var populatedFields = GuiInfo.PopulateField.Split(",").Where(x => x.HasAnyChar()).Select(x => x.Trim());
+            var populatedFields = Meta.PopulateField.Split(",").Where(x => x.HasAnyChar()).Select(x => x.Trim());
             if (entity is null || populatedFields.Nothing())
             {
                 return;

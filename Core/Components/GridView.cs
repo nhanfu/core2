@@ -45,7 +45,7 @@ namespace Core.Components
 
         protected virtual void DOMContentLoadedHandler()
         {
-            if (GuiInfo.IsSumary)
+            if (Meta.IsSumary)
             {
                 AddSummaries();
             }
@@ -54,9 +54,9 @@ namespace Core.Components
 
         private void PopulateFields()
         {
-            if (!GuiInfo.PopulateField.IsNullOrWhiteSpace())
+            if (!Meta.PopulateField.IsNullOrWhiteSpace())
             {
-                var fields = GuiInfo.PopulateField.Split(",");
+                var fields = Meta.PopulateField.Split(",");
                 if (fields.Length > 0)
                 {
                     EditForm.UpdateView(true, componentNames: fields);
@@ -88,7 +88,7 @@ namespace Core.Components
         private void StickyColumn(EditableComponent rows, string top = null)
         {
             var shouldStickEle = new string[] { "th", "td" };
-            var frozen = rows.FilterChildren<EditableComponent>(predicate: x => x.GuiInfo != null && x.GuiInfo.Frozen, ignorePredicate: x => x is ListViewSearch).ToArray();
+            var frozen = rows.FilterChildren<EditableComponent>(predicate: x => x.Meta != null && x.Meta.Frozen, ignorePredicate: x => x is ListViewSearch).ToArray();
             frozen.ForEach(x =>
             {
                 HTMLElement cell = x.Element;
@@ -115,9 +115,9 @@ namespace Core.Components
                 return;
             }
             var html = Html.Take(ParentElement);
-            var id = "collapse" + GuiInfo.Id;
-            var idtb = "tb" + GuiInfo.Id;
-            if (GuiInfo.IsCollapsible)
+            var id = "collapse" + Meta.Id;
+            var idtb = "tb" + Meta.Id;
+            if (Meta.IsCollapsible)
             {
                 html.Div.ClassName("card mb-0")
                     .Div.ClassName("card-header")
@@ -126,25 +126,25 @@ namespace Core.Components
                     .ClassName("btn btn-primary")
                     .DataAttr("toggle", "collapse").Href("#" + id)
                     .Attr("aria-expanded", "false")
-                    .Attr("aria-controls", id).Text(GuiInfo.Label).EndOf(".card");
+                    .Attr("aria-controls", id).Text(Meta.Label).EndOf(".card");
             }
-            html.Div.Event(EventType.KeyDown, (e) => HotKeyF6Handler(e, e.KeyCodeEnum())).ClassName("grid-wrapper " + (GuiInfo.IsCollapsible ? "collapse multi-collapse" : "")).Id(id)
+            html.Div.Event(EventType.KeyDown, (e) => HotKeyF6Handler(e, e.KeyCodeEnum())).ClassName("grid-wrapper " + (Meta.IsCollapsible ? "collapse multi-collapse" : "")).Id(id)
             .ClassName(Editable ? "editable" : string.Empty);
             Element = Html.Context;
-            if (GuiInfo.CanSearch)
+            if (Meta.CanSearch)
             {
                 Html.Instance.Div.ClassName("grid-toolbar search").End.Render();
             }
-            ListViewSearch = new ListViewSearch(GuiInfo)
+            ListViewSearch = new ListViewSearch(Meta)
             {
                 Entity = new ListViewSearchVM()
             };
-            if (GuiInfo.DefaultAddStart.HasValue)
+            if (Meta.DefaultAddStart.HasValue)
             {
-                var pre = Convert.ToDouble(GuiInfo.DefaultAddStart.Value);
+                var pre = Convert.ToDouble(Meta.DefaultAddStart.Value);
                 ListViewSearch.EntityVM.StartDate = DateTime.Now.AddDays(pre);
             }
-            var lFrom = Window.LocalStorage.GetItem("FromDate" + GuiInfo.Id);
+            var lFrom = Window.LocalStorage.GetItem("FromDate" + Meta.Id);
             if (lFrom != null)
             {
                 ListViewSearch.EntityVM.StartDate = DateTime.Parse(lFrom.ToString());
@@ -155,17 +155,17 @@ namespace Core.Components
             }
             else
             {
-                if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.AddDate)
+                if (Meta.ComponentType == nameof(VirtualGrid) && Meta.AddDate)
                 {
                     ListViewSearch.EntityVM.StartDate = DateTime.Now.AddMonths(-2);
                 }
             }
-            if (GuiInfo.DefaultAddEnd.HasValue)
+            if (Meta.DefaultAddEnd.HasValue)
             {
-                var pre = Convert.ToDouble(GuiInfo.DefaultAddEnd.Value);
+                var pre = Convert.ToDouble(Meta.DefaultAddEnd.Value);
                 ListViewSearch.EntityVM.EndDate = DateTime.Now.AddDays(pre);
             }
-            var lTo = Window.LocalStorage.GetItem("ToDate" + GuiInfo.Id);
+            var lTo = Window.LocalStorage.GetItem("ToDate" + Meta.Id);
             if (lTo != null)
             {
                 ListViewSearch.EntityVM.EndDate = DateTime.Parse(lTo.ToString());
@@ -262,7 +262,7 @@ namespace Core.Components
 
         protected void ThHotKeyHandler(Event e, Component header)
         {
-            if (GuiInfo.Focus)
+            if (Meta.Focus)
             {
                 return;
             }
@@ -352,7 +352,7 @@ namespace Core.Components
             }
             var header = Header.FirstOrDefault(x => x.FieldName == hotKeyModel.FieldName);
             var subFilter = string.Empty;
-            var lastFilter = Window.LocalStorage.GetItem("LastSearch" + GuiInfo.Id + header.Id);
+            var lastFilter = Window.LocalStorage.GetItem("LastSearch" + Meta.Id + header.Id);
             if (lastFilter != null)
             {
                 subFilter = lastFilter.ToString();
@@ -384,7 +384,7 @@ namespace Core.Components
                     valueText = confirmDialog.Textbox.Text.Trim().EncodeSpecialChar();
                     value = confirmDialog.Textbox.Text.Trim().EncodeSpecialChar();
                 }
-                Window.LocalStorage.SetItem("LastSearch" + GuiInfo.Id + header.Id, value);
+                Window.LocalStorage.SetItem("LastSearch" + Meta.Id + header.Id, value);
                 if (CellSelected.Any(x => x.FieldName == hotKeyModel.FieldName && x.Operator == (int)OperatorEnum.In) && !hotKeyModel.Shift)
                 {
                     CellSelected.FirstOrDefault(x => x.FieldName == hotKeyModel.FieldName && x.Operator == (int)OperatorEnum.In).Value = value;
@@ -455,11 +455,11 @@ namespace Core.Components
                     index = BuildCondition(cell, data, index, lisToast);
                 });
                 Spinner.Hide();
-                if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.CanSearch)
+                if (Meta.ComponentType == nameof(VirtualGrid) && Meta.CanSearch)
                 {
                     HeaderSection.Element.Focus();
                 }
-                if (GuiInfo.ComponentType == nameof(SearchEntry))
+                if (Meta.ComponentType == nameof(SearchEntry))
                 {
                     var search = Parent as SearchEntry;
                     search?._input.Focus();
@@ -743,14 +743,14 @@ namespace Core.Components
 
         private void NoCellSelected()
         {
-            var dataSourceFilter = GuiInfo.DataSourceFilter;
+            var dataSourceFilter = Meta.DataSourceFilter;
             MainSection.DisposeChildren();
             ApplyFilter();
-            if (GuiInfo.ComponentType == nameof(VirtualGrid) && GuiInfo.CanSearch)
+            if (Meta.ComponentType == nameof(VirtualGrid) && Meta.CanSearch)
             {
                 HeaderSection.Element.Focus();
             }
-            if (GuiInfo.ComponentType == nameof(SearchEntry))
+            if (Meta.ComponentType == nameof(SearchEntry))
             {
                 var search = Parent as SearchEntry;
                 search?._input.Focus();
@@ -761,7 +761,7 @@ namespace Core.Components
         {
             var tb = DataTable as HTMLTableElement;
             HTMLCollection rows;
-            if (GuiInfo.TopEmpty)
+            if (Meta.TopEmpty)
             {
                 rows = tb.TBodies.LastOrDefault().Children;
             }
@@ -955,7 +955,7 @@ namespace Core.Components
                     return;
                 }
                 fieldName = com.FieldName;
-                switch (com.GuiInfo.ComponentType)
+                switch (com.Meta.ComponentType)
                 {
                     case nameof(SearchEntry):
                         value = focusedRow.Entity.GetPropValue(header.FieldName)?.ToString().EncodeSpecialChar();
@@ -976,7 +976,7 @@ namespace Core.Components
                 }
                 else
                 {
-                    if (!com.GuiInfo.Editable)
+                    if (!com.Meta.Editable)
                     {
                         text = com.GetValueTextAct() is null ? null : com.GetValueTextAct().ToString().DecodeSpecialChar();
                     }
@@ -1014,7 +1014,7 @@ namespace Core.Components
                     var upItemUp = AllListViewItem.Where(x => !x.GroupRow).FirstOrDefault(x => x.RowNo == (currentItemUp.RowNo - 1));
                     if (upItemUp is null)
                     {
-                        if (GuiInfo.CanAdd)
+                        if (Meta.CanAdd)
                         {
                             upItemUp = EmptyRowSection.FirstChild as ListViewItem;
                         }
@@ -1034,7 +1034,7 @@ namespace Core.Components
                     var upItemDown = AllListViewItem.Where(x => !x.GroupRow).FirstOrDefault(x => x.RowNo == (currentItemDown.RowNo + 1));
                     if (upItemDown is null)
                     {
-                        if (GuiInfo.CanAdd)
+                        if (Meta.CanAdd)
                         {
                             upItemDown = EmptyRowSection.FirstChild as ListViewItem;
                         }
@@ -1046,7 +1046,7 @@ namespace Core.Components
                     CoppyValue(e, com, fieldName, currentItemDown, upItemDown);
                     break;
                 case KeyCodeEnum.LeftArrow:
-                    if (!GuiInfo.IsRealtime)
+                    if (!Meta.IsRealtime)
                     {
                         return;
                     }
@@ -1060,7 +1060,7 @@ namespace Core.Components
                     }
                     upItemLeft.ParentElement?.Focus();
                     upItemLeft.Focus();
-                    if (upItemLeft.GuiInfo.Editable && !upItemLeft.Disabled)
+                    if (upItemLeft.Meta.Editable && !upItemLeft.Disabled)
                     {
                         if (upItemLeft.Element is HTMLInputElement html)
                         {
@@ -1070,7 +1070,7 @@ namespace Core.Components
                     }
                     break;
                 case KeyCodeEnum.RightArrow:
-                    if (!GuiInfo.IsRealtime)
+                    if (!Meta.IsRealtime)
                     {
                         return;
                     }
@@ -1088,7 +1088,7 @@ namespace Core.Components
                     }
                     upItemRight.ParentElement?.Focus();
                     upItemRight.Focus();
-                    if (upItemRight.GuiInfo.Editable && !upItemRight.Disabled)
+                    if (upItemRight.Meta.Editable && !upItemRight.Disabled)
                     {
                         if (upItemRight.Element is HTMLInputElement html)
                         {
@@ -1155,21 +1155,21 @@ namespace Core.Components
                         updated.Dirty = true;
                         Task.Run(async () =>
                         {
-                            if (updated.GuiInfo.ComponentType == nameof(SearchEntry))
+                            if (updated.Meta.ComponentType == nameof(SearchEntry))
                             {
                                 updated.UpdateView();
                                 var dropdown = com as SearchEntry;
                                 updated.PopulateFields(dropdown.Matched);
-                                await updated.DispatchEvent(updated.GuiInfo.Events, EventType.Change, currentItemD.Entity, dropdown.Matched);
+                                await updated.DispatchEvent(updated.Meta.Events, EventType.Change, currentItemD.Entity, dropdown.Matched);
                             }
                             else
                             {
                                 updated.UpdateView();
                                 updated.PopulateFields();
-                                await updated.DispatchEvent(updated.GuiInfo.Events, EventType.Change, currentItemD.Entity);
+                                await updated.DispatchEvent(updated.Meta.Events, EventType.Change, currentItemD.Entity);
                             }
-                            await currentItemD.ListViewSection.ListView.DispatchEvent(upItemD.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItemD.Entity);
-                            if (GuiInfo.IsRealtime)
+                            await currentItemD.ListViewSection.ListView.DispatchEvent(upItemD.ListViewSection.ListView.Meta.Events, EventType.Change, upItemD.Entity);
+                            if (Meta.IsRealtime)
                             {
                                 currentItemD.PatchUpdateOrCreate();
                             }
@@ -1193,7 +1193,7 @@ namespace Core.Components
                 Toast.Warning("Vui lòng chọn dòng cần xóa");
                 return;
             }
-            var gridPolicies = EditForm.GetElementPolicies(GuiInfo.Id, Utils.ComponentId);
+            var gridPolicies = EditForm.GetElementPolicies(Meta.Id, Utils.ComponentId);
             var isOwner = selectedRows.All(x => Utils.IsOwner(x, false));
             var canDelete = CanDo(gridPolicies, x => x.CanDelete && isOwner || x.CanDeleteAll);
             if (canDelete)
@@ -1219,7 +1219,7 @@ namespace Core.Components
                 new ContextMenuItem { Icon = "fal fa-hourglass-end", Text = "Phải trái", Click = FilterInSelected,
                         Parameter = new HotKeyModel { Operator=(int)OperatorEnum.Rl,OperatorText= "Phải trái", Value = value, FieldName = fieldName, ValueText = text, Shift = e.ShiftKey() }}
             };
-            if (com.GuiInfo.ComponentType == nameof(Number) || com.GuiInfo.ComponentType == nameof(Datepicker))
+            if (com.Meta.ComponentType == nameof(Number) || com.Meta.ComponentType == nameof(Datepicker))
             {
                 menu.MenuItems.AddRange(new List<ContextMenuItem>
                 {
@@ -1238,19 +1238,19 @@ namespace Core.Components
 
         private void ProcessSort(Event e, EditableComponent com)
         {
-            if (com.GuiInfo.ComponentType == "Button")
+            if (com.Meta.ComponentType == "Button")
             {
                 return;
             }
-            var th = HeaderSection.Children.FirstOrDefault(x => x.GuiInfo.Id == com.GuiInfo.Id);
+            var th = HeaderSection.Children.FirstOrDefault(x => x.Meta.Id == com.Meta.Id);
             th.Element.RemoveClass("desc");
             th.Element.RemoveClass("asc");
-            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.GuiInfo.FieldText : com.FieldName;
+            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.Meta.FieldText : com.FieldName;
             var sort = new OrderBy
             {
                 FieldName = fieldName,
                 OrderbyDirectionId = OrderbyDirection.ASC,
-                ComId = com.GuiInfo.Id,
+                ComId = com.Meta.Id,
             };
             if (AdvSearchVM.OrderBy.Nothing())
             {
@@ -1272,7 +1272,7 @@ namespace Core.Components
                     AdvSearchVM.OrderBy.Add(sort);
                 }
             }
-            LocalStorage.SetItem("OrderBy" + GuiInfo.Id, AdvSearchVM.OrderBy);
+            LocalStorage.SetItem("OrderBy" + Meta.Id, AdvSearchVM.OrderBy);
             ReloadData().Done();
         }
 
@@ -1316,7 +1316,7 @@ namespace Core.Components
                     {
 
                         var lastElement = _summarys.LastOrDefault();
-                        if (GuiInfo.FilterLocal)
+                        if (Meta.FilterLocal)
                         {
                             if (lastElement.InnerHTML == string.Empty)
                             {
@@ -1421,7 +1421,7 @@ namespace Core.Components
                 case KeyCodeEnum.U:
                     if (e.CtrlOrMetaKey())
                     {
-                        if (Disabled || !GuiInfo.CanAdd)
+                        if (Disabled || !Meta.CanAdd)
                         {
                             return;
                         }
@@ -1441,7 +1441,7 @@ namespace Core.Components
             {
                 return;
             }
-            var com = LastListViewItem.Children.FirstOrDefault(x => x.GuiInfo.Id == LastComponentFocus?.Id);
+            var com = LastListViewItem.Children.FirstOrDefault(x => x.Meta.Id == LastComponentFocus?.Id);
             if (com is null)
             {
                 return;
@@ -1471,13 +1471,13 @@ namespace Core.Components
             {
                 return;
             }
-            var nextcom = upItem.FilterChildren(x => x.GuiInfo.Id == com.GuiInfo.Id).FirstOrDefault();
+            var nextcom = upItem.FilterChildren(x => x.Meta.Id == com.Meta.Id).FirstOrDefault();
             if (nextcom != null)
             {
-                LastComponentFocus = nextcom.GuiInfo;
+                LastComponentFocus = nextcom.Meta;
                 nextcom.ParentElement?.Focus();
                 nextcom.Focus();
-                if (nextcom.GuiInfo.Editable && !nextcom.Disabled)
+                if (nextcom.Meta.Editable && !nextcom.Disabled)
                 {
                     if (nextcom.Element is HTMLInputElement html)
                     {
@@ -1490,28 +1490,28 @@ namespace Core.Components
                 {
                     upItem.Entity.SetComplexPropValue(fieldName, com.GetValue());
                     var updated = upItem.FilterChildren(x => x.FieldName == nextcom.FieldName).FirstOrDefault();
-                    if (updated.Disabled || !updated.GuiInfo.Editable)
+                    if (updated.Disabled || !updated.Meta.Editable)
                     {
                         return;
                     }
                     updated.Dirty = true;
                     Task.Run(async () =>
                     {
-                        if (updated.GuiInfo.ComponentType == nameof(SearchEntry))
+                        if (updated.Meta.ComponentType == nameof(SearchEntry))
                         {
                             updated.UpdateView();
                             var dropdown = com as SearchEntry;
                             updated.PopulateFields(dropdown.Matched);
-                            await updated.DispatchEvent(updated.GuiInfo.Events, EventType.Change, upItem.Entity, dropdown.Matched);
+                            await updated.DispatchEvent(updated.Meta.Events, EventType.Change, upItem.Entity, dropdown.Matched);
                         }
                         else
                         {
                             updated.UpdateView();
                             updated.PopulateFields();
-                            await updated.DispatchEvent(updated.GuiInfo.Events, EventType.Change, upItem.Entity);
+                            await updated.DispatchEvent(updated.Meta.Events, EventType.Change, upItem.Entity);
                         }
-                        await upItem.ListViewSection.ListView.DispatchEvent(upItem.ListViewSection.ListView.GuiInfo.Events, EventType.Change, upItem.Entity);
-                        if (GuiInfo.IsRealtime)
+                        await upItem.ListViewSection.ListView.DispatchEvent(upItem.ListViewSection.ListView.Meta.Events, EventType.Change, upItem.Entity);
+                        if (Meta.IsRealtime)
                         {
                             upItem.PatchUpdateOrCreate();
                         }
@@ -1535,7 +1535,7 @@ namespace Core.Components
                 return;
             }
             var emptyRowData = new object();
-            if (!GuiInfo.DefaultVal.IsNullOrWhiteSpace() && Utils.IsFunction(GuiInfo.DefaultVal, out var fn))
+            if (!Meta.DefaultVal.IsNullOrWhiteSpace() && Utils.IsFunction(Meta.DefaultVal, out var fn))
             {
                 var dfObj = fn.Call(this, this);
                 dfObj.ForEachProp(x =>
@@ -1553,7 +1553,7 @@ namespace Core.Components
                     Value = value?.ToString()
                 });
             });
-            if (!GuiInfo.TopEmpty)
+            if (!Meta.TopEmpty)
             {
                 DataTable.InsertBefore(MainSection.Element, EmptyRowSection.Element);
             }
@@ -1561,16 +1561,16 @@ namespace Core.Components
             {
                 DataTable.InsertBefore(EmptyRowSection.Element, MainSection.Element);
             }
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterEmptyRowCreated, emptyRow).Done();
+            this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterEmptyRowCreated, emptyRow).Done();
         }
 
         protected override List<Component> FilterColumns(List<Component> Component)
         {
             if (Component.Nothing()) return Component;
-            var specificComponent = Component.Any(x => x.ComponentId == GuiInfo.Id);
+            var specificComponent = Component.Any(x => x.ComponentId == Meta.Id);
             if (specificComponent)
             {
-                Component = Component.Where(x => x.ComponentId == GuiInfo.Id).ToList();
+                Component = Component.Where(x => x.ComponentId == Meta.Id).ToList();
             }
             else
             {
@@ -1665,7 +1665,7 @@ namespace Core.Components
                 return;
             }
             var viewPort = GetViewPortItem();
-            FormattedRowData = GuiInfo.LocalRender ? GuiInfo.LocalData : RowData.Data;
+            FormattedRowData = Meta.LocalRender ? Meta.LocalData : RowData.Data;
             if (FormattedRowData.Nothing())
             {
                 MainSection.DisposeChildren();
@@ -1702,14 +1702,14 @@ namespace Core.Components
             if (EntityFocusId != null && LastComponentFocus != null)
             {
                 var element = MainSection.Children.Flattern(x => x.Children)
-                    .FirstOrDefault(x => x.Entity[IdField].ToString() == EntityFocusId && x.GuiInfo.Id == LastComponentFocus.Id);
+                    .FirstOrDefault(x => x.Entity[IdField].ToString() == EntityFocusId && x.Meta.Id == LastComponentFocus.Id);
                 if (element != null)
                 {
                     var lastListView = AllListViewItem.FirstOrDefault(x => x.Entity[IdField].ToString() == EntityFocusId);
                     lastListView.Focused = true;
                     element.ParentElement.AddClass("cell-selected");
                     LastListViewItem = lastListView;
-                    LastComponentFocus = element.GuiInfo;
+                    LastComponentFocus = element.Meta;
                     LastElementFocus = element.Element;
                 }
                 else
@@ -1780,7 +1780,7 @@ namespace Core.Components
                 ParentElement = tbody,
                 PreQueryFn = _preQueryFn,
                 ListView = this,
-                GuiInfo = GuiInfo
+                Meta = Meta
             };
             section.AddChild(rowSection, index);
             var id = row[IdField].As<int>();
@@ -1814,7 +1814,7 @@ namespace Core.Components
             {
                 rowSection.SetDisabled(false, "btnEdit");
             }
-            if (GuiInfo.ComponentType != nameof(FileUploadGrid))
+            if (Meta.ComponentType != nameof(FileUploadGrid))
             {
                 if (row["Id"].As<int?>() > 0)
                 {
@@ -1855,7 +1855,7 @@ namespace Core.Components
             }
 
             Toast.Success("Đang Sao chép liệu !");
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforePasted, originalRows, copiedRows).Done(() =>
+            this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforePasted, originalRows, copiedRows).Done(() =>
             {
                 var index = GetStartIndex(ev, addRow);
                 base.AddRowsNo(copiedRows, index).Done(list =>
@@ -1872,7 +1872,7 @@ namespace Core.Components
             {
                 if (ev.KeyCodeEnum() == KeyCodeEnum.U && ev.CtrlOrMetaKey())
                 {
-                    if (GuiInfo.TopEmpty)
+                    if (Meta.TopEmpty)
                     {
                         index = 0;
                     }
@@ -1888,10 +1888,10 @@ namespace Core.Components
 
         private void RowsAdded(ListViewItem[] list, List<object> originalRows, List<object> copiedRows)
         {
-            var lastChild = list.FirstOrDefault().FilterChildren<EditableComponent>(x => x.GuiInfo.Editable).FirstOrDefault();
+            var lastChild = list.FirstOrDefault().FilterChildren<EditableComponent>(x => x.Meta.Editable).FirstOrDefault();
             lastChild?.Focus();
             RenderIndex();
-            if (GuiInfo.IsSumary)
+            if (Meta.IsSumary)
             {
                 AddSummaries();
             }
@@ -1901,7 +1901,7 @@ namespace Core.Components
                 item.Selected = true;
             }
             LastListViewItem = list.FirstOrDefault();
-            if (GuiInfo.IsRealtime)
+            if (Meta.IsRealtime)
             {
                 foreach (var item in list)
                 {
@@ -1914,7 +1914,7 @@ namespace Core.Components
             {
                 Toast.Success("Sao chép dữ liệu thành công !");
             }
-            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterPasted, originalRows, copiedRows).Done();
+            this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterPasted, originalRows, copiedRows).Done();
         }
 
         private void RenderSummaryRow(Component sum, List<Component> headers, HTMLTableSectionElement footer, int count)
@@ -2041,9 +2041,9 @@ namespace Core.Components
             var com = new List<string>() { nameof(SearchEntry) };
             if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
-                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreated, rowData, this);
+                await this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforeCreated, rowData, this);
                 object rs;
-                if (GuiInfo.IsRealtime)
+                if (Meta.IsRealtime)
                 {
                     var entity = rowData;
                     rowSection.PatchUpdateOrCreate();
@@ -2054,14 +2054,14 @@ namespace Core.Components
                     rs = rowSection.Entity;
                     Dirty = true;
                 }
-                if (GuiInfo.ComponentType != nameof(VirtualGrid))
+                if (Meta.ComponentType != nameof(VirtualGrid))
                 {
                     Entity.SetComplexPropValue(FieldName, RowData.Data);
                 }
                 MoveEmptyRow(rowSection);
                 EmptyRowSection.Children.Clear();
                 AddNewEmptyRow();
-                if (!com.Contains(component?.GuiInfo.ComponentType))
+                if (!com.Contains(component?.Meta.ComponentType))
                 {
                     ClearSelected();
                     rowSection.Selected = true;
@@ -2069,18 +2069,18 @@ namespace Core.Components
                     LastListViewItem = rowSection;
                     LastElementFocus.Focus();
                 }
-                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
+                await this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterCreated, rowData);
             }
             if (component != null && component.ComponentType == nameof(GridView))
             {
-                await this.DispatchEvent(component.GuiInfo.Events, observableArgs.EvType, rowData, rowSection);
+                await this.DispatchEvent(component.Meta.Events, observableArgs.EvType, rowData, rowSection);
             }
-            await this.DispatchEvent(GuiInfo.Events, observableArgs.EvType, rowData, rowSection);
+            await this.DispatchEvent(Meta.Events, observableArgs.EvType, rowData, rowSection);
             if (observableArgs.EvType == EventType.Change)
             {
                 PopulateFields();
                 RenderIndex();
-                if (GuiInfo.IsSumary)
+                if (Meta.IsSumary)
                 {
                     AddSummaries();
                 }
@@ -2110,7 +2110,7 @@ namespace Core.Components
             {
                 return;
             }
-            if (GuiInfo.TopEmpty)
+            if (Meta.TopEmpty)
             {
                 RowData.Data.Insert(0, rowSection.Entity);
                 if (!MainSection.Children.Contains(EmptyRowSection.FirstChild))
@@ -2128,7 +2128,7 @@ namespace Core.Components
                     MainSection.Children.Add(EmptyRowSection.FirstChild);
                 }
             }
-            if (GuiInfo.IsRealtime)
+            if (Meta.IsRealtime)
             {
                 rowSection.Element.RemoveClass("new-row");
             }
@@ -2185,7 +2185,7 @@ namespace Core.Components
                     .Event(EventType.ContextMenu, HeaderContextMenu, header)
                     .Event(EventType.FocusOut, (e) => FocusOutHeader(e, header))
                     .Event(EventType.KeyDown, (e) => ThHotKeyHandler(e, header));
-                HeaderSection.AddChild(new Section(Html.Context) { GuiInfo = header });
+                HeaderSection.AddChild(new Section(Html.Context) { Meta = header });
                 if (anyGroup && string.IsNullOrEmpty(header.GroupName))
                 {
                     Html.Instance.RowSpan(2);
@@ -2240,12 +2240,12 @@ namespace Core.Components
                             .TextAlign(header.TextAlignEnum)
                             .Event(EventType.ContextMenu, HeaderContextMenu, header)
                             .InnerHTML(header.ShortDesc);
-                        HeaderSection.AddChild(new Section(Html.Context.ParentElement) { GuiInfo = header });
+                        HeaderSection.AddChild(new Section(Html.Context.ParentElement) { Meta = header });
                     }
                 });
             }
-            HeaderSection.Children = HeaderSection.Children.OrderBy(x => x.GuiInfo.PostOrder).ToList();
-            if (!GuiInfo.Focus)
+            HeaderSection.Children = HeaderSection.Children.OrderBy(x => x.Meta.PostOrder).ToList();
+            if (!Meta.Focus)
             {
                 ColumnResizeHandler();
             }
@@ -2360,7 +2360,7 @@ namespace Core.Components
 
         protected virtual void ChangeFieldOrder(Component header, Event e)
         {
-            if (GuiInfo.CanCache || header.ShortDesc.IsNullOrWhiteSpace())
+            if (Meta.CanCache || header.ShortDesc.IsNullOrWhiteSpace())
             {
                 return;
             }
@@ -2464,7 +2464,7 @@ namespace Core.Components
                     new ContextMenuItem { Icon = "fal fa-wrench", Text = "Tùy chọn cột dữ liệu", Click = editForm.ComponentProperties, Parameter = header },
                     new ContextMenuItem { Icon = "fal fa-clone", Text = "Clone cột", Click = CloneHeader, Parameter = header },
                     new ContextMenuItem { Icon = "fal fa-trash-alt", Text = "Xóa cột", Click = RemoveHeader, Parameter = header },
-                    new ContextMenuItem { Icon = "fal fa-cog", Text = "Tùy chọn bảng dữ liệu", Click = editForm.ComponentProperties, Parameter = GuiInfo },
+                    new ContextMenuItem { Icon = "fal fa-cog", Text = "Tùy chọn bảng dữ liệu", Click = editForm.ComponentProperties, Parameter = Meta },
                     new ContextMenuItem { Icon = "fal fa-cogs", Text = "Tùy chọn vùng dữ liệu", Click = editForm.SectionProperties, Parameter = section.ComponentGroup },
                     new ContextMenuItem { Icon = "fal fa-folder-open", Text = "Thiết lập chung", Click = editForm.FeatureProperties, Parameter = editForm.Feature },
                 });
@@ -2502,8 +2502,8 @@ namespace Core.Components
         private string GetHeaderSettings()
         {
             var headerElement = HeaderSection.Children
-                .Where(x => x.GuiInfo?.Id != null)
-                .ToDictionary(x => x.GuiInfo.Id);
+                .Where(x => x.Meta?.Id != null)
+                .ToDictionary(x => x.Meta.Id);
             var columns = Header.Where(x => x.Id != null).Select(x =>
             {
                 var match = headerElement.GetValueOrDefault(x.Id);
@@ -2563,6 +2563,9 @@ namespace Core.Components
                     Header = Header.OrderByDescending(x => x.Frozen).ThenByDescending(header => header.ComponentType == "Button").ThenBy(x => x.Order).ToList();
                     Rerender();
                     Toast.Success("Clone success");
+                }).Catch(e =>
+                {
+                    Toast.Warning("Clone header NOT success");
                 });
             };
         }
@@ -2611,7 +2614,7 @@ namespace Core.Components
             base.HardDeleteConfirmed(deleted).Done((res) =>
             {
                 RenderIndex();
-                if (GuiInfo.IsSumary)
+                if (Meta.IsSumary)
                 {
                     AddSummaries();
                 }
@@ -2625,7 +2628,7 @@ namespace Core.Components
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
-            if (!Editable && !GuiInfo.CanCache)
+            if (!Editable && !Meta.CanCache)
             {
                 if (force)
                 {
@@ -2644,7 +2647,7 @@ namespace Core.Components
             await Task.Delay(CellCountNoSticky);
             if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
-                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeCreated, rowData);
+                await this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforeCreated, rowData);
                 rowSection.EmptyRow = false;
                 MoveEmptyRow(rowSection);
                 var headers = Header.Where(y => y.Editable).ToList();
@@ -2659,12 +2662,12 @@ namespace Core.Components
                 EmptyRowSection.Children.Clear();
                 AddNewEmptyRow();
                 Entity.SetComplexPropValue(FieldName, RowData.Data);
-                await this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterCreated, rowData);
+                await this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterCreated, rowData);
             }
             AddSummaries();
             PopulateFields();
             RenderIndex();
-            await this.DispatchEvent(GuiInfo.Events, EventType.Change, rowData);
+            await this.DispatchEvent(Meta.Events, EventType.Change, rowData);
         }
 
         internal int GetViewPortItem()
@@ -2682,7 +2685,7 @@ namespace Core.Components
             {
                 mainSectionHeight -= _tfooterTable;
             }
-            if (GuiInfo.CanAdd)
+            if (Meta.CanAdd)
             {
                 mainSectionHeight -= _rowHeight;
             }

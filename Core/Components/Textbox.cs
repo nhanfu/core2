@@ -33,18 +33,18 @@ namespace Core.Components
                 }
 
                 var text = (EditForm.Feature != null && EditForm.Feature.IgnoreEncode) ? _value?.ToString() : _value?.ToString().DecodeSpecialChar();
-                if (GuiInfo.FormatData.HasAnyChar())
+                if (Meta.FormatData.HasAnyChar())
                 {
-                    text = Utils.FormatEntity(GuiInfo.FormatData, Entity?.GetPropValue(FieldName));
+                    text = Utils.FormatEntity(Meta.FormatData, Entity?.GetPropValue(FieldName));
                 }
 
-                if (GuiInfo.FormatEntity.HasAnyChar())
+                if (Meta.FormatEntity.HasAnyChar())
                 {
-                    text = Utils.FormatEntity(GuiInfo.FormatEntity, null, Entity, Utils.EmptyFormat, Utils.EmptyFormat);
+                    text = Utils.FormatEntity(Meta.FormatEntity, null, Entity, Utils.EmptyFormat, Utils.EmptyFormat);
                 }
-                if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace())
+                if (!Meta.ChildStyle.IsNullOrWhiteSpace())
                 {
-                    if (Utils.IsFunction(GuiInfo.ChildStyle, out var fn))
+                    if (Utils.IsFunction(Meta.ChildStyle, out var fn))
                     {
                         fn.Call(this, Entity, Element).ToString();
                     }
@@ -95,21 +95,21 @@ namespace Core.Components
                 Entity?.SetComplexPropValue(FieldName, str_val.DecodeSpecialChar().EncodeSpecialChar());
             }
             var text = val?.ToString();
-            if (GuiInfo.FormatData.HasAnyChar())
+            if (Meta.FormatData.HasAnyChar())
             {
-                text = Utils.FormatEntity(GuiInfo.FormatData, val);
+                text = Utils.FormatEntity(Meta.FormatData, val);
             }
 
-            if (GuiInfo.FormatEntity.HasAnyChar())
+            if (Meta.FormatEntity.HasAnyChar())
             {
-                text = Utils.FormatEntity(GuiInfo.FormatEntity, Entity);
+                text = Utils.FormatEntity(Meta.FormatEntity, Entity);
             }
             _text = EditForm != null && EditForm.Feature != null && EditForm.Feature.IgnoreEncode ? text : text.DecodeSpecialChar();
             if (MultipleLine || TextArea != null)
             {
                 if (TextArea is null)
                 {
-                    Html.Take(ParentElement).TextArea.Value(_text).PlaceHolder(GuiInfo.PlainText);
+                    Html.Take(ParentElement).TextArea.Value(_text).PlaceHolder(Meta.PlainText);
                     Element = TextArea = Html.Context as HTMLTextAreaElement;
                 }
                 else
@@ -117,9 +117,9 @@ namespace Core.Components
                     Element = TextArea;
                     TextArea.Value = _text;
                 }
-                if (GuiInfo.Row > 0)
+                if (Meta.Row > 0)
                 {
-                    Html.Instance.Attr("rows", GuiInfo.Row ?? 1);
+                    Html.Instance.Attr("rows", Meta.Row ?? 1);
                 }
 
                 TextArea.OnInput += (e) => PopulateUIChange(EventType.Input);
@@ -129,7 +129,7 @@ namespace Core.Components
             {
                 if (Input is null)
                 {
-                    Html.Take(ParentElement).Input.Value(_text).PlaceHolder(GuiInfo.PlainText);
+                    Html.Take(ParentElement).Input.Value(_text).PlaceHolder(Meta.PlainText);
                     Element = Input = Html.Context as HTMLInputElement;
                 }
                 else
@@ -138,13 +138,13 @@ namespace Core.Components
                     Input.Value = _text;
                 }
                 Input.AutoComplete = AutoComplete.Off;
-                Input.Name = GuiInfo.DataSourceFilter ?? FieldName;
+                Input.Name = Meta.DataSourceFilter ?? FieldName;
                 Input.OnInput += (e) => PopulateUIChange(EventType.Input);
                 Input.OnChange += (e) => PopulateUIChange(EventType.Change);
             }
-            if (!GuiInfo.ChildStyle.IsNullOrWhiteSpace())
+            if (!Meta.ChildStyle.IsNullOrWhiteSpace())
             {
-                if (Utils.IsFunction(GuiInfo.ChildStyle, out var fn))
+                if (Utils.IsFunction(Meta.ChildStyle, out var fn))
                 {
                     fn.Call(this, Entity, Element).ToString();
                 }
@@ -153,9 +153,9 @@ namespace Core.Components
             {
                 Html.Instance.Style("text-security: disc;-webkit-text-security: disc;-moz-text-security: disc;");
             }
-            if (!GuiInfo.ShowLabel)
+            if (!Meta.ShowLabel)
             {
-                Html.Instance.PlaceHolder(GuiInfo.PlainText);
+                Html.Instance.PlaceHolder(Meta.PlainText);
             }
             Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
             DOMContentLoaded?.Invoke();
@@ -180,7 +180,7 @@ namespace Core.Components
             _oldText = _text;
             _text = Input?.Value ?? TextArea.Value;
             _text = Password ? _text : shouldTrim ? _text?.Trim() : _text;
-            if (GuiInfo.UpperCase && _text != null)
+            if (Meta.UpperCase && _text != null)
             {
                 Text = _text.ToLocaleUpperCase();
             }
@@ -189,7 +189,7 @@ namespace Core.Components
             Dirty = true;
             UserInput?.Invoke(new ObservableArgs { NewData = _text, OldData = _oldText, EvType = type });
             PopulateFields();
-            this.DispatchEvent(GuiInfo.Events, type, Entity).Done();
+            this.DispatchEvent(Meta.Events, type, Entity).Done();
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
@@ -233,11 +233,11 @@ namespace Core.Components
             {
                 return Task.FromResult(true);
             }
-            var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var fn);
-            var table = GuiInfo.RefName.HasNonSpaceChar() ? GuiInfo.RefName : EditForm.Feature.EntityName;
+            var isFn = Utils.IsFunction(Meta.PreQuery, out var fn);
+            var table = Meta.RefName.HasNonSpaceChar() ? Meta.RefName : EditForm.Feature.EntityName;
             var sql = new SqlViewModel
             {
-                ComId = GuiInfo.Id,
+                ComId = Meta.Id,
                 Params = isFn ? JSON.Stringify(fn.Call(null, this)) : null,
                 ConnKey = ConnKey
             };
@@ -247,7 +247,7 @@ namespace Core.Components
                 var exists = ds.Length > 0 && ds[0].Length > 0;
                 if (exists)
                 {
-                    ValidationResult.TryAdd(ValidationRule.Unique, string.Format(rule.Message, LangSelect.Get(GuiInfo.Label), _text));
+                    ValidationResult.TryAdd(ValidationRule.Unique, string.Format(rule.Message, LangSelect.Get(Meta.Label), _text));
                 }
                 else
                 {

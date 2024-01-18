@@ -17,7 +17,7 @@ namespace Core.Components
 {
     public class SearchEntry : EditableComponent
     {
-        protected string FieldText => GuiInfo.FieldText;
+        protected string FieldText => Meta.FieldText;
         private const string SEntryClass = "search-entry";
         private string _value;
 
@@ -55,8 +55,8 @@ namespace Core.Components
         {
             DataSource = ui.DataSourceFilter;
             DeserializeLocalData(ui);
-            GuiInfo.ComponentGroup = null;
-            GuiInfo.Row = GuiInfo.Row ?? 20;
+            Meta.ComponentGroup = null;
+            Meta.Row = Meta.Row ?? 20;
             RowData = new ObservableList<object>();
             Element = ele;
         }
@@ -67,8 +67,8 @@ namespace Core.Components
             {
                 return;
             }
-            GuiInfo.LocalData = JsonConvert.DeserializeObject<List<object>>(ui.LocalQuery);
-            GuiInfo.LocalRender = true;
+            Meta.LocalData = JsonConvert.DeserializeObject<List<object>>(ui.LocalQuery);
+            Meta.LocalRender = true;
         }
 
         public override void Render()
@@ -105,7 +105,7 @@ namespace Core.Components
                 }
             }
             _input.AutoComplete = AutoComplete.Off;
-            Html.Take(_input).PlaceHolder(GuiInfo.PlainText).Attr("name", FieldName)
+            Html.Take(_input).PlaceHolder(Meta.PlainText).Attr("name", FieldName)
                 .Event(EventType.ContextMenu, () => _contextMenu = true)
                 .Event(EventType.Focus, FocusIn)
                 .Event(EventType.Blur, DiposeGvWrapper)
@@ -117,7 +117,7 @@ namespace Core.Components
 
         private void SEClickOpenRef()
         {
-            if (Disabled && !GuiInfo.FocusSearch)
+            if (Disabled && !Meta.FocusSearch)
             {
                 OpenRefDetail();
             }
@@ -180,7 +180,7 @@ namespace Core.Components
 
         private void EnterKeydownHandler(KeyCodeEnum? code)
         {
-            if (GuiInfo.HideGrid)
+            if (Meta.HideGrid)
             {
                 Search(term: _input.Value, timeout: 0, search: true);
                 return;
@@ -223,7 +223,7 @@ namespace Core.Components
                 _contextMenu = false;
                 return;
             }
-            if (Disabled || GuiInfo.FocusSearch)
+            if (Disabled || Meta.FocusSearch)
             {
                 return;
             }
@@ -266,9 +266,9 @@ namespace Core.Components
         {
             var title = LangSelect.Get("Tạo mới dữ liệu ");
             Html.Take(Element.ParentElement).Div.ClassName("search-icons");
-            var div = Html.Instance.Icon("fa fa-info-circle").Title(LangSelect.Get("Thông tin chi tiết ") + LangSelect.Get(GuiInfo.Label).ToLower())
+            var div = Html.Instance.Icon("fa fa-info-circle").Title(LangSelect.Get("Thông tin chi tiết ") + LangSelect.Get(Meta.Label).ToLower())
                 .Event(EventType.Click, OpenRefDetail).End
-                .Icon("fa fa-plus").Title($"{title} {LangSelect.Get(GuiInfo.Label).ToLower()}").Event(EventType.Click, OpenRefDetail).End.GetContext();
+                .Icon("fa fa-plus").Title($"{title} {LangSelect.Get(Meta.Label).ToLower()}").Event(EventType.Click, OpenRefDetail).End.GetContext();
             if (Element.NextElementSibling != null)
             {
                 Element.ParentElement.InsertBefore(div, Element.NextElementSibling);
@@ -281,31 +281,31 @@ namespace Core.Components
 
         private void OpenRefDetail()
         {
-            if (GuiInfo.RefClass.IsNullOrEmpty() || Matched is null)
+            if (Meta.RefClass.IsNullOrEmpty() || Matched is null)
             {
                 return;
             }
 
-            ComponentExt.LoadFeature(ConnKey, GuiInfo.RefClass).Done(FeatureLoaded);
+            ComponentExt.LoadFeature(ConnKey, Meta.RefClass).Done(FeatureLoaded);
         }
 
         private void FeatureLoaded(Feature feature)
         {
-            var instance = Activator.CreateInstance(Type.GetType(GuiInfo.RefClass)) as TabEditor;
+            var instance = Activator.CreateInstance(Type.GetType(Meta.RefClass)) as TabEditor;
             instance.Id = feature.Name;
             instance.ParentForm = TabEditor;
             instance.ParentElement = TabEditor.Element;
             TabEditor.AddChild(instance);
             string res;
-            if (!GuiInfo.Template.IsNullOrWhiteSpace())
+            if (!Meta.Template.IsNullOrWhiteSpace())
             {
-                if (Utils.IsFunction(GuiInfo.Template, out var fn))
+                if (Utils.IsFunction(Meta.Template, out var fn))
                 {
                     res = fn.Call(this, Matched, Entity).ToString();
                 }
                 else
                 {
-                    res = Utils.FormatEntity(GuiInfo.Template, null, Matched, Utils.EmptyFormat, Utils.EmptyFormat);
+                    res = Utils.FormatEntity(Meta.Template, null, Matched, Utils.EmptyFormat, Utils.EmptyFormat);
                 }
                 var entity = JsonConvert.DeserializeObject<object>(res);
                 instance.Entity = entity;
@@ -353,14 +353,14 @@ namespace Core.Components
             if (UserInput != null)
             {
                 CascadeAndPopulate();
-                this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity, currentItem.Entity, Matched).Done();
+                this.DispatchEvent(Meta.Events, EventType.Change, Entity, currentItem.Entity, Matched).Done();
                 UserInput.Invoke(new ObservableArgs { NewData = _value, OldData = oldValue, EvType = EventType.Change });
             }
         }
 
         private void Search(string term = null, bool changeEvent = true, int timeout = 500, bool delete = false, bool search = false)
         {
-            if (GuiInfo.HideGrid && !search)
+            if (Meta.HideGrid && !search)
             {
                 return;
             }
@@ -409,13 +409,13 @@ namespace Core.Components
                 _isRendering = false;
                 return;
             }
-            if (GuiInfo.GroupBy.IsNullOrWhiteSpace())
+            if (Meta.GroupBy.IsNullOrWhiteSpace())
             {
-                _gv = new GridView(GuiInfo);
+                _gv = new GridView(Meta);
             }
             else
             {
-                _gv = new GroupGridView(GuiInfo);
+                _gv = new GroupGridView(Meta);
             }
             _gv.FeatureId = "null";
             RenderRootResult();
@@ -425,7 +425,7 @@ namespace Core.Components
                 _gv.RowData.Data = new List<object>();
             }
             _gv.EditForm = EditForm;
-            _gv.GuiInfo = GuiInfo;
+            _gv.Meta = Meta;
             _gv.ParentElement = _rootResult;
             _gv.Entity = Entity;
             _gv.Parent = this;
@@ -458,9 +458,9 @@ namespace Core.Components
                 _gv.HeaderSection.Element.AddEventListener(EventType.FocusIn, () => Window.ClearTimeout(_waitForDispose));
                 _gv.HeaderSection.Element.AddEventListener(EventType.FocusOut, DiposeGvWrapper);
             }
-            if (GuiInfo.LocalHeader is null)
+            if (Meta.LocalHeader is null)
             {
-                GuiInfo.LocalHeader = new List<Component>(_gv.Header.Where(x => x.Id != null));
+                Meta.LocalHeader = new List<Component>(_gv.Header.Where(x => x.Id != null));
             }
         }
 
@@ -507,7 +507,7 @@ namespace Core.Components
             _gv.Element.Style["inset"] = null;
             RenderRootResult();
             _rootResult.AppendChild(_gv.Element);
-            if (!GuiInfo.HideGrid)
+            if (!Meta.HideGrid)
             {
                 _gv.Show = true;
             }
@@ -520,7 +520,7 @@ namespace Core.Components
                 _gv.Element.Style.MaxWidth = "100%";
                 _gv.Element.Style.MinWidth = "calc(100% - 2rem)";
             }
-            if (GuiInfo.HideGrid)
+            if (Meta.HideGrid)
             {
                 EntrySelected(_gv?.RowData.Data[0]);
             }
@@ -531,7 +531,7 @@ namespace Core.Components
         {
             Window.ClearTimeout(_waitForDispose);
             Window.ClearTimeout(_waitForInput);
-            if (!GuiInfo.IsPivot)
+            if (!Meta.IsPivot)
             {
                 _input.Focus();
             }
@@ -549,7 +549,7 @@ namespace Core.Components
                 Entity?.SetComplexPropValue(FieldName, null);
                 Dirty = true;
                 CascadeAndPopulate();
-                this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity, Matched, oldMatch).Done();
+                this.DispatchEvent(Meta.Events, EventType.Change, Entity, Matched, oldMatch).Done();
                 UserInput?.Invoke(new ObservableArgs { NewData = null, OldData = oldValue, EvType = EventType.Change });
             }
             if (delete && _input.Value.IsNullOrEmpty())
@@ -573,8 +573,8 @@ namespace Core.Components
                 _input.Value = null;
                 return true;
             }
-            Matched = GuiInfo.LocalData.HasElement()
-                ? GuiInfo.LocalData.FirstOrDefault(x => x[IdField] as string == _value)
+            Matched = Meta.LocalData.HasElement()
+                ? Meta.LocalData.FirstOrDefault(x => x[IdField] as string == _value)
                 : RowData.Data.FirstOrDefault(x => x[IdField] as string == Value);
 
             SetMatchedValue();
@@ -591,7 +591,7 @@ namespace Core.Components
         {
             OriginalText = Entity.GetPropValue(FieldText) as string;
             _input.Value = EmptyRow ? string.Empty : GetMatchedText(Matched);
-            Entity.SetPropValue(GuiInfo.FieldText, _input.Value);
+            Entity.SetPropValue(Meta.FieldText, _input.Value);
             UpdateValue();
         }
 
@@ -620,15 +620,15 @@ namespace Core.Components
                     OldVal = OldValue
                 }
             };
-            if (GuiInfo.ShouldSaveText)
+            if (Meta.ShouldSaveText)
             {
                 res.Add(new PatchDetail
                 {
                     Label = Label + "(text)",
-                    Field = GuiInfo.FieldText,
+                    Field = Meta.FieldText,
                     Value = _input.Value,
                     OldVal = OriginalText,
-                    JustHistory = !GuiInfo.ShouldSaveText
+                    JustHistory = !Meta.ShouldSaveText
                 });
             }
             return res.ToArray();
@@ -640,7 +640,7 @@ namespace Core.Components
             {
                 return string.Empty;
             }
-            var res = matched.GetPropValue(GuiInfo.FormatData) ?? Entity.GetPropValue(GuiInfo.FieldText);
+            var res = matched.GetPropValue(Meta.FormatData) ?? Entity.GetPropValue(Meta.FieldText);
             return (res as string).DecodeSpecialChar();
         }
 
@@ -687,7 +687,7 @@ namespace Core.Components
                 _gv.Show = false;
             }
             CascadeAndPopulate();
-            this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity, rowData, oldMatch).Done(() =>
+            this.DispatchEvent(Meta.Events, EventType.Change, Entity, rowData, oldMatch).Done(() =>
             {
                 UserInput?.Invoke(new ObservableArgs { NewData = _value, OldData = oldValue, EvType = EventType.Change });
                 DiposeGvWrapper();
@@ -704,7 +704,7 @@ namespace Core.Components
                 UpdateValue();
                 return;
             }
-            var txt = Entity[GuiInfo.FieldText] as string;
+            var txt = Entity[Meta.FieldText] as string;
             _input.Value = txt;
             ProcessLocalMatch();
         }

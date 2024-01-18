@@ -27,7 +27,6 @@ namespace Core.Components
             Entity = paginator ?? throw new ArgumentNullException(nameof(paginator));
             PopulateDirty = false;
             AlwaysValid = true;
-            StopChildrenHistory = true;
         }
 
         public override void Render()

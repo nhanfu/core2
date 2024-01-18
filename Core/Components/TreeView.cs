@@ -59,10 +59,10 @@ namespace Core.Components
 
         private async Task RenderRow(IEnumerable<Component> headers, EditableComponent node, object row, HTMLElement ul)
         {
-            var isFn = Utils.IsFunction(GuiInfo.PreQuery, out var fn);
+            var isFn = Utils.IsFunction(Meta.PreQuery, out var fn);
             var data = await Client.Instance.ComQuery(new SqlViewModel
             {
-                ComId = GuiInfo.Id,
+                ComId = Meta.Id,
                 Params = isFn ? JSON.Stringify(fn.Call(null, this)) : null
             }).Done(ds =>
             {

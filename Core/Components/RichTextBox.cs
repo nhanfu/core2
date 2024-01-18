@@ -21,9 +21,9 @@ namespace Core.Components
 
         public override void Render()
         {
-            if (GuiInfo.Row <= 0)
+            if (Meta.Row <= 0)
             {
-                GuiInfo.Row = 1;
+                Meta.Row = 1;
             }
             if (_textArea is null)
             {

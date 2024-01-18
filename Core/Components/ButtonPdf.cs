@@ -25,35 +25,35 @@ namespace Core.Components
 
         private async Task DispatchClickAsync()
         {
-            await this.DispatchEvent(GuiInfo.Events, EventType.Click, Entity, GuiInfo);
+            await this.DispatchEvent(Meta.Events, EventType.Click, Entity, Meta);
             Html.Take(Document.Body).Div.ClassName("backdrop")
                 .Style("align-items: center;").Escape((e) => Dispose());
             _preview = Html.Context;
             Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;")
-                .Div.ClassName("popup-title").InnerHTML(GuiInfo.PlainText)
+                .Div.ClassName("popup-title").InnerHTML(Meta.PlainText)
                 .Div.ClassName("icon-box").Span.ClassName("fa fa-times")
                     .Event(EventType.Click, ClosePreview)
                 .EndOf(".popup-title")
                 .Div.ClassName("popup-body scroll-content");
-            if (GuiInfo.Precision == 2)
+            if (Meta.Precision == 2)
             {
                 Html.Instance.Div.ClassName("container-rpt");
                 Html.Instance.Div.ClassName("menuBar")
                 .Div.ClassName("printBtn")
-                    .Button.ClassName("btn btn-success mr-1 fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(_preview.QuerySelector(".print-group") as HTMLElement, printPreview: true, component: GuiInfo)).End
+                    .Button.ClassName("btn btn-success mr-1 fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(_preview.QuerySelector(".print-group") as HTMLElement, printPreview: true, component: Meta)).End
                     .Button.ClassName("btn btn-success mr-1").Text("a4").Event(EventType.Click, () => GeneratePdf("a4")).End
                     .Button.ClassName("btn btn-success mr-1").Text("a5").Event(EventType.Click, () => GeneratePdf("a5")).End
                     .Render();
                 Html.Instance.EndOf(".menuBar").Div.ClassName("print-group");
             }
             var body = Html.Context;
-            _pdfReport = new PdfReport(GuiInfo)
+            _pdfReport = new PdfReport(Meta)
             {
                 ParentElement = body,
             };
-            if (GuiInfo.FocusSearch)
+            if (Meta.FocusSearch)
             {
-                if (GuiInfo.Precision == 2)
+                if (Meta.Precision == 2)
                 {
                     var parentGridView = TabEditor.FindActiveComponent<GridView>().FirstOrDefault();
                     var selectedData = parentGridView.CacheData;
@@ -65,7 +65,7 @@ namespace Core.Components
                     foreach (var item in selectedRow)
                     {
                         await Task.Delay(200);
-                        var js = new PdfReport(GuiInfo)
+                        var js = new PdfReport(Meta)
                         {
                             ParentElement = body,
                             Selected = item
@@ -83,13 +83,13 @@ namespace Core.Components
                         printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
                         printWindow.AddEventListener(EventType.AfterPrint, async e =>
                         {
-                            await this.DispatchEvent(GuiInfo.Events, EventType.AfterPrint, selectedRow);
+                            await this.DispatchEvent(Meta.Events, EventType.AfterPrint, selectedRow);
                         });
                         printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
-                        if (!GuiInfo.Style.IsNullOrWhiteSpace())
+                        if (!Meta.Style.IsNullOrWhiteSpace())
                         {
                             var style = Document.CreateElement(MVVM.ElementType.style.ToString()) as HTMLStyleElement;
-                            style.AppendChild(new Text(GuiInfo.Style));
+                            style.AppendChild(new Text(Meta.Style));
                             printWindow.Document.Head.AppendChild(style);
                         }
                         _pdfReport.Dispose();
@@ -110,12 +110,12 @@ namespace Core.Components
                         printWindow.AddEventListener(EventType.KeyUp, e => printWindow.Close());
                         printWindow.AddEventListener(EventType.AfterPrint, async e =>
                         {
-                            await this.DispatchEvent(GuiInfo.Events, EventType.AfterPrint, EditForm);
+                            await this.DispatchEvent(Meta.Events, EventType.AfterPrint, EditForm);
                         });
-                        if (!GuiInfo.Style.IsNullOrWhiteSpace())
+                        if (!Meta.Style.IsNullOrWhiteSpace())
                         {
                             var style = Document.CreateElement(MVVM.ElementType.style.ToString()) as HTMLStyleElement;
-                            style.AppendChild(new Text(GuiInfo.Style));
+                            style.AppendChild(new Text(Meta.Style));
                             printWindow.Document.Head.AppendChild(style);
                         }
                         _pdfReport.Dispose();
@@ -125,7 +125,7 @@ namespace Core.Components
             }
             else
             {
-                if (GuiInfo.Precision == 2)
+                if (Meta.Precision == 2)
                 {
                     var parentGridView = TabEditor.FindActiveComponent<GridView>().FirstOrDefault();
                     var selectedData = parentGridView.CacheData;
@@ -137,7 +137,7 @@ namespace Core.Components
                     foreach (var item in selectedRow)
                     {
                         await Task.Delay(200);
-                        var js = new PdfReport(GuiInfo)
+                        var js = new PdfReport(Meta)
                         {
                             ParentElement = body,
                             Selected = item

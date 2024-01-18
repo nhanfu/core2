@@ -92,7 +92,7 @@ namespace Core.Components
             var actualSkip = skip ?? GetRowCountByHeight(scrollTop);
             if (viewPortCount <= 0)
             {
-                viewPortCount = GuiInfo.Row ?? 20;
+                viewPortCount = Meta.Row ?? 20;
             }
             List<object> rows;
             if (firstLoad)
@@ -196,7 +196,7 @@ namespace Core.Components
         public override Task<List<object>> ReloadData(bool cacheHeader = false, int? skip = null, int? pageSize = null)
         {
             DisposeNoRecord();
-            VirtualScroll = GuiInfo.GroupBy.Nothing() && GuiInfo.VirtualScroll && Element.Style.Display.ToString() != Display.None.ToString();
+            VirtualScroll = Meta.GroupBy.Nothing() && Meta.VirtualScroll && Element.Style.Display.ToString() != Display.None.ToString();
             _lastScrollTop = -1;
             RenderViewPort(firstLoad: !cacheHeader, skip: skip);
             return Task.FromResult(FormattedRowData);
@@ -281,7 +281,7 @@ namespace Core.Components
 
         protected override void HardDeleteSelected(object e = null)
         {
-            if (GuiInfo.IgnoreConfirmHardDelete && OnDeleteConfirmed != null)
+            if (Meta.IgnoreConfirmHardDelete && OnDeleteConfirmed != null)
             {
                 OnDeleteConfirmed.Invoke();
                 return;
@@ -304,13 +304,13 @@ namespace Core.Components
                     {
                         deletedItems = GetFocusedRows();
                     }
-                    this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.BeforeDeleted, deletedItems)
+                    this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforeDeleted, deletedItems)
                     .Done(() =>
                     {
                         HardDeleteConfirmed(deletedItems).Done(success =>
                         {
                             DOMContentLoaded?.Invoke();
-                            this.DispatchCustomEvent(GuiInfo.Events, CustomEventType.AfterDeleted, deletedItems).Done();
+                            this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterDeleted, deletedItems).Done();
                         });
                     });
                 };

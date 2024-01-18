@@ -353,8 +353,8 @@ namespace Core.Components
                 var ids = selectedIds.CombineStrings();
                 sql.Where = $"Id in ({ids})";
             }
-            sql.Params = ParentListView.GuiInfo.Label ?? ParentListView.GuiInfo.RefName;
-            sql.Table = ParentListView.GuiInfo.RefName;
+            sql.Params = ParentListView.Meta.Label ?? ParentListView.Meta.RefName;
+            sql.Table = ParentListView.Meta.RefName;
             var pathTask = Client.Instance.SubmitAsync<string>(new XHRWrapper
             {
                 Value = JSON.Stringify(sql),

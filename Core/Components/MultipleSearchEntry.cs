@@ -137,7 +137,7 @@ namespace Core.Components
             }
             Client.Instance.ComQuery(new SqlViewModel
             {
-                ComId = GuiInfo.Id,
+                ComId = Meta.Id,
 
             }).Done(ds => {
                 MatchedItems = ds.Length > 0 ? ds[0].ToList() : MatchedItems;
@@ -147,10 +147,10 @@ namespace Core.Components
 
         protected override bool ProcessLocalMatch()
         {
-            var isLocalMatched = _gv != null && RowData.Data.HasElement() || GuiInfo.LocalData != null;
+            var isLocalMatched = _gv != null && RowData.Data.HasElement() || Meta.LocalData != null;
             if (isLocalMatched)
             {
-                var rows = GuiInfo.LocalData.Nothing() ? RowData.Data : GuiInfo.LocalData;
+                var rows = Meta.LocalData.Nothing() ? RowData.Data : Meta.LocalData;
                 MatchedItems = rows.Where(x => _listValues.Contains(x[IdField]?.ToString())).ToList();
             }
             if (MatchedItems.HasElement() && MatchedItems.Count == _listValues.Count)
@@ -214,7 +214,7 @@ namespace Core.Components
                 FindMatchText();
                 UserInput?.Invoke(new ObservableArgs { NewData = ListValues, OldData = oldList, EvType = EventType.Change });
                 tag.Remove();
-                this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity, ListValues, oldList).Done();
+                this.DispatchEvent(Meta.Events, EventType.Change, Entity, ListValues, oldList).Done();
             }).End.Render();
         }
 
@@ -247,7 +247,7 @@ namespace Core.Components
             FindMatchText();
             _input.Focus();
             UserInput?.Invoke(new ObservableArgs { NewData = ListValues, OldData = ListValues, NewMatch = rowData, EvType = EventType.Change });
-            this.DispatchEvent(GuiInfo.Events, EventType.Change, Entity).Done();
+            this.DispatchEvent(Meta.Events, EventType.Change, Entity).Done();
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)

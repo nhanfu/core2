@@ -16,7 +16,7 @@ namespace Core.Components
 
         public Chart(Component ui) : base(ui)
         {
-            GuiInfo = ui ?? throw new ArgumentNullException(nameof(ui));
+            Meta = ui ?? throw new ArgumentNullException(nameof(ui));
         }
 
         public override void Render()
@@ -48,16 +48,16 @@ namespace Core.Components
         private async Task RenderChart()
         {
             AddElement();
-            var isFn = Utils.IsFunction(GuiInfo.Query, out var fn);
-            var dataSourceFilter = isFn ? fn.Call(this, Entity, this).ToString() : Utils.FormatEntity(GuiInfo.Query, Entity);
+            var isFn = Utils.IsFunction(Meta.Query, out var fn);
+            var dataSourceFilter = isFn ? fn.Call(this, Entity, this).ToString() : Utils.FormatEntity(Meta.Query, Entity);
             if (Data is null)
             {
-                var isPreQueryFn = Utils.IsFunction(GuiInfo.PreQuery, out var _preQuery);
+                var isPreQueryFn = Utils.IsFunction(Meta.PreQuery, out var _preQuery);
                 var submitEntity = isPreQueryFn ? _preQuery.Call(null, this) : null;
                 var entity = JSON.Stringify(new SqlViewModel
                 {
                     Params = isPreQueryFn ? JSON.Stringify(submitEntity) : null,
-                    ComId = GuiInfo.Id,
+                    ComId = Meta.Id,
                 });
                 Data = await Client.Instance.SubmitAsync<object[]>(new XHRWrapper
                 {
@@ -67,10 +67,10 @@ namespace Core.Components
                     Method = Enums.HttpMethod.POST
                 });
             }
-            var type = GuiInfo.ClassName ?? "pie";
-            var text = GuiInfo.PlainText;
+            var type = Meta.ClassName ?? "pie";
+            var text = Meta.PlainText;
             object options = null;
-            if (GuiInfo.FormatData.IsNullOrEmpty())
+            if (Meta.FormatData.IsNullOrEmpty())
             {
                 /*@
                 options = {
@@ -98,10 +98,10 @@ namespace Core.Components
             }
             else
             {
-                options = JSON.Parse(GuiInfo.FormatData);
+                options = JSON.Parse(Meta.FormatData);
             }
-            var isFotmatDataFn = Utils.IsFunction(GuiInfo.FormatEntity, out var function);
-            if (!isFotmatDataFn && !GuiInfo.GroupBy.IsNullOrEmpty())
+            var isFotmatDataFn = Utils.IsFunction(Meta.FormatEntity, out var function);
+            if (!isFotmatDataFn && !Meta.GroupBy.IsNullOrEmpty())
             {
                 options["data"] = Data.Select(data =>
                 {
