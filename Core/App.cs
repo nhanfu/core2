@@ -12,6 +12,9 @@ namespace Core
 {
     public static class App
     {
+        public const string DefaultFeature = "index";
+        public static bool FeatureLoaded;
+
         public static void Main()
         {
             if (LangSelect.Culture == null)
@@ -37,18 +40,19 @@ namespace Core
         {
             LoginBL.Instance.SignedInHandler += (x) => Window.Location.Reload();
             LoadByFromUrl();
+            NotificationBL.Instance.Render();
             EditForm.NotificationClient = new WebSocketClient("task");
-            Window.AddEventListener(EventType.PopState, () =>
+            Window.AddEventListener(EventType.PopState, (e) =>
             {
                 LoadByFromUrl();
-                NotificationBL.Instance.Render();
             });
         }
 
-        private static void LoadByFromUrl()
+        private static string LoadByFromUrl()
         {
-            var fName = GetFeatureNameFromUrl() ?? "index";
+            var fName = GetFeatureNameFromUrl() ?? DefaultFeature;
             ComponentExt.InitFeatureByName(Client.ConnKey, fName, true).Done();
+            return fName;
         }
 
         public static string GetFeatureNameFromUrl()

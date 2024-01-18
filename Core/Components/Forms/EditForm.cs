@@ -396,9 +396,7 @@ namespace Core.Components.Forms
         {
             var featureTask = Feature != null ? Task.FromResult(Feature)
                 : ComponentExt.LoadFeature(FeatureConnKey, Name);
-            var entityTask = LoadEntity();
-            Task.WhenAll(featureTask, entityTask).Done(() =>
-                FeatureLoaded(featureTask.Result, entityTask.Result, callback));
+            LoadEntity().Done(x => featureTask.Done(f => FeatureLoaded(f, x, callback)));
         }
 
         private void FeatureLoaded(Feature feature, object entity, Action loadedCallback = null)
@@ -574,6 +572,9 @@ namespace Core.Components.Forms
                 return _allCom;
             }
         }
+        public string FeatureName => Name ?? Feature?.Name;
+
+        public string Href { get; set; }
         private Component ResolveMeta(HTMLElement ele)
         {
             Component component = null;
@@ -669,15 +670,21 @@ namespace Core.Components.Forms
 
         protected virtual Task<object> LoadEntity()
         {
-            if (!ShouldLoadEntity || EntityId.IsNullOrWhiteSpace())
+            var urlFeature = App.GetFeatureNameFromUrl();
+            var urlId = urlFeature == FeatureName ?  Utils.GetUrlParam(Utils.IdField) : EntityId;
+            if (!ShouldLoadEntity || urlId.IsNullOrWhiteSpace())
             {
                 return Task.FromResult(null as object);
             }
             var tcs = new TaskCompletionSource<object>();
-            Client.Instance.GetByIdAsync(EntityName, Feature?.ConnKey ?? Client.ConnKey, EntityId).Done(ds =>
+            Client.Instance.GetByIdAsync(EntityName, Feature?.ConnKey ?? Client.ConnKey, urlId).Done(ds =>
             {
                 if (ds.Nothing()) tcs.TrySetResult(null);
-                else tcs.TrySetResult(ds[0]);
+                else
+                {
+                    Entity = ds[0];
+                    tcs.TrySetResult(ds[0]);
+                }
             });
             return tcs.Task;
         }

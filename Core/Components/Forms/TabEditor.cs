@@ -1,4 +1,5 @@
 ﻿using Bridge.Html5;
+using Core.Clients;
 using Core.Components.Extensions;
 using Core.Enums;
 using Core.Extensions;
@@ -17,13 +18,13 @@ namespace Core.Components.Forms
         protected HTMLElement _backdrop;
         protected HTMLElement _backdropGridView;
         protected HTMLElement _tab;
+        private static readonly HTMLElement TabWrapper = Document.GetElementById("tabs");
         public static HTMLElement TabContainer = Document.GetElementById("tab-content");
         public static List<TabEditor> Tabs = new List<TabEditor>();
         public static TabEditor ActiveTab => Tabs.FirstOrDefault(x => x.Show);
         public static EditableComponent FindTab(string id) => Tabs.FirstOrDefault(x => x.Id == id);
         public Dictionary<string, List<object>> DataSearchEntry = new Dictionary<string, List<object>>();
         private HTMLElement _li;
-        public bool ChildForm { get; set; }
         public static bool ShowTabText { get; set; }
         private List<Button> _hotKeyComponents;
 
@@ -35,7 +36,7 @@ namespace Core.Components.Forms
 
         public override void Render()
         {
-            if (ParentElement is null && !ChildForm)
+            if (ParentElement is null)
             {
                 ParentElement = TabEditor?.Element ?? TabContainer;
             }
@@ -54,14 +55,7 @@ namespace Core.Components.Forms
         private string TabTitle => Feature?.Label ?? Title;
         private void RenderTab()
         {
-            if (ChildForm)
-            {
-                Html.Take(ParentElement).Div.Render();
-                Element = Html.Context;
-                base.Render();
-                return;
-            }
-            var html = Html.Take("#tabs");
+            var html = Html.Take(TabWrapper);
             if (Html.Context != null)
             {
                 html.Li.ClassName("nav-item").Title(TabTitle)
@@ -358,20 +352,14 @@ namespace Core.Components.Forms
 
         public override void Focus()
         {
-            if (!Popup && !ChildForm)
+            if (!Popup)
             {
                 Tabs.ForEach(x => x.Show = false);
             }
-
-            if (!ChildForm)
+            Show = true;
+            if (FeatureName.HasNonSpaceChar() && App.FeatureLoaded)
             {
-                Show = true;
-            }
-            if (Feature != null && Feature.Name != null && !Popup && !ChildForm)
-            {
-                var ns = (Document.Instance as dynamic).head.children.baseUri;
-                Href = System.IO.Path.Combine(ns?.content ?? Window.Location.Origin,
-                    Feature.Name.Replace(" ", "-") + $"{(EntityId == null ? "" : $"?Id={EntityId}")}");
+                Href = System.IO.Path.Combine(Client.BaseUri, FeatureName + $"{(EntityId == null ? "" : $"?Id={EntityId}")}");
                 Window.History.PushState(null, LangSelect.Get(TabTitle), Href);
             }
             Document.Title = LangSelect.Get(TabTitle);
@@ -401,8 +389,6 @@ namespace Core.Components.Forms
                 }
             }
         }
-
-        public string Href { get; private set; }
 
         public void Close(Event e)
         {

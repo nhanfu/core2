@@ -152,9 +152,10 @@ namespace Core.Extensions
             return value;
         }
 
+        static readonly Dictionary<string, URLSearchParams> _cacheSearch = new Dictionary<string, URLSearchParams>();
         public static string GetUrlParam(string key = FeatureField, string origin = null)
         {
-            var search = new URLSearchParams(origin ?? Window.Location.Search);
+            var search = _cacheSearch.GetValueOrDefault(FeatureField) ?? new URLSearchParams(origin ?? Window.Location.Search);
             var val = search.Get(key);
             return val;
         }

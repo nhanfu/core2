@@ -133,41 +133,53 @@ namespace Core.Components.Framework
             BuildFeatureTree();
             Html.Take("#menu");
             RenderKeyMenuItems(_feature);
+            var urlFeatureName = App.GetFeatureNameFromUrl() ?? string.Empty;
+            var tasks = new List<Task<bool>>() { OpenUrlFeature(urlFeatureName) };
             var shouldOpenClosedTabs = settings.FirstOrDefault(x => x.Name == "OpenClosedTabs")?.Value?.TryParse<bool>() ?? false;
             if (shouldOpenClosedTabs)
             {
                 var previousTabs = Window.LocalStorage.GetItem("tabs") as string ?? string.Empty;
-                var tabStates = JsonConvert.DeserializeObject<TabState[]>(previousTabs);
+                var tabStates = JsonConvert.DeserializeObject<TabState[]>(previousTabs)
+                    .Where(x => x.Name != urlFeatureName).ToArray();
                 var previousTabNames = tabStates.Select(x => x.Name).ToArray();
-                var startFeatures = features.Where(x => startApps.Contains(x.Id) || startApps.Contains(x.Name) || x.StartUp)
-                    .Where(x => !previousTabNames.Contains(x.Name)).ToArray();
-                startFeatures.ForEach(OpenFeature);
-                tabStates.ForEach(OpenFeature);
+                var startFeatures = features
+                    .Where(x => startApps.Contains(x.Id) || startApps.Contains(x.Name) || x.StartUp)
+                    .Where(x => !previousTabNames.Contains(x.Name) && x.Name != urlFeatureName).ToArray();
+                tasks.AddRange(startFeatures.Select(OpenFeature).Concat(tabStates.Select(OpenFeature)));
             }
             else
             {
-                var featureName = App.GetFeatureNameFromUrl();
-                if (!featureName.IsNullOrWhiteSpace())
-                {
-                    var currentFeature = features.FirstOrDefault(x => x.Name == featureName);
-                    OpenFeature(currentFeature);
-                }
-                features.Where(x => (startApps.Contains(x.Id) || startApps.Contains(x.Name) || x.StartUp) && x.Name != featureName)
-                    .ForEach(OpenFeature);
+                tasks.AddRange(features
+                    .Where(x => startApps.Contains(x.Id) || startApps.Contains(x.Name) || x.StartUp)
+                    .Where(x => x.Name != urlFeatureName).Select(OpenFeature));
             }
-            DOMContentLoaded?.Invoke();
-            _btnBack = Document.GetElementById("btnBack");
-            _btnToggle = Document.GetElementsByClassName("sidebar-toggle").ToArray();
-            if (_btnBack is null)
+            Task.WhenAll(tasks).Done(x =>
             {
-                return;
+                App.FeatureLoaded = true;
+                DOMContentLoaded?.Invoke();
+                _btnBack = Document.GetElementById("btnBack");
+                _btnToggle = Document.GetElementsByClassName("sidebar-toggle").ToArray();
+                if (_btnBack is null)
+                {
+                    return;
+                }
+
+                _btnBack.AddEventListener(EventType.Click, RoutingHandler);
+                _btnToggle.ForEach(btn =>
+                {
+                    btn.AddEventListener(EventType.Click, () => Show = !Show);
+                });
+            });
+        }
+
+        private static Task<bool> OpenUrlFeature(string featureName)
+        {
+            if (featureName.IsNullOrWhiteSpace())
+            {
+                return Task.FromResult(true);
             }
 
-            _btnBack.AddEventListener(EventType.Click, RoutingHandler);
-            _btnToggle.ForEach(btn =>
-            {
-                btn.AddEventListener(EventType.Click, () => Show = !Show);
-            });
+            return OpenFeature(new TabState { Name = featureName });
         }
 
         private static DateTime _lastTimeBackPress;
@@ -472,12 +484,13 @@ namespace Core.Components.Framework
             }
         }
 
-        public static void OpenFeature(TabState state)
+        public static Task<bool> OpenFeature(TabState state)
         {
             if (state is null)
             {
-                return;
+                return Task.FromResult(true);
             }
+            var tcs = new TaskCompletionSource<bool>();
             ComponentExt.LoadFeature(Client.ConnKey, state.Name).Done(f =>
             {
                 if (f is null || f.Component.Nothing()) return;
@@ -495,22 +508,25 @@ namespace Core.Components.Framework
                 instance.Icon = f.Icon;
                 instance.Feature = f;
                 instance.Render();
+                tcs.TrySetResult(true);
             });
+            return tcs.Task;
         }
 
-        public static void OpenFeature(Feature feature)
+        public static Task<bool> OpenFeature(Feature feature)
         {
             if (feature is null)
             {
-                return;
+                return Task.FromResult(true);
             }
             var id = feature.Name + feature.Id;
             var exists = TabEditor.Tabs.FirstOrDefault(x => x.Id == id);
             if (exists != null)
             {
                 exists.Focus();
-                return;
+                return Task.FromResult(true);
             }
+            var tcs = new TaskCompletionSource<bool>();
             ComponentExt.LoadFeature(Client.ConnKey, feature.Name).Done(f =>
             {
                 if (f is null || f.Component.Nothing()) return;
@@ -526,7 +542,9 @@ namespace Core.Components.Framework
                 instance.Icon = f.Icon;
                 instance.Feature = f;
                 instance.Render();
+                tcs.TrySetResult(true);
             });
+            return tcs.Task;
         }
 
         protected override void RemoveDOM()
