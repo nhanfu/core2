@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
+using Direction = Core.MVVM.Direction;
 
 namespace Core.Components
 {

@@ -145,7 +145,6 @@
     <Compile Include="MVVM\ObservableList.cs" />
     <Compile Include="MVVM\SelectListItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Components\Renderer.cs" />
     <Compile Include="ViewModels\ConfigEmailVM.cs" />
     <Compile Include="ViewModels\TabState.cs" />
     <Compile Include="ViewModels\EmailVM.cs" />

@@ -1,5 +1,6 @@
 using Bridge.Html5;
 using Core.Clients;
+using Core.Components;
 using Core.Extensions;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,16 @@ using System.Threading.Tasks;
 
 namespace Core.MVVM
 {
+    public enum Direction
+    {
+        top, right, bottom, left
+    }
+
+    public enum PositionEnum
+    {
+        absolute, @fixed, inherit, initial, relative, @static, sticky, unset
+    }
+
     public class Html
     {
         private static Html _instance;
@@ -434,6 +445,7 @@ namespace Core.MVVM
 
         public Html Add(ElementType type)
         {
+            if (Context is null) return this;
             var ele = Document.CreateElement(type.ToString());
             Context.AppendChild(ele);
             Context = ele;
@@ -947,6 +959,267 @@ namespace Core.MVVM
                 ele.Style.Display = arg.NewData ? string.Empty : Bridge.Html5.Display.None.ToString();
             };
             return this;
+        }
+
+        public Html TabIndex(int tabIndex)
+        {
+            return Attr("tabindex", tabIndex.ToString());
+        }
+
+        public Html ClassName(string className)
+        {
+            if (string.IsNullOrEmpty(className))
+            {
+                return this;
+            }
+            var ctx = Context;
+            var translated = LangSelect.Get(className);
+            MarkLangProp(Context, className, nameof(HTMLElement.ClassName));
+            var res = ctx.ClassName + " " + translated;
+            ctx.ClassName = res.Trim();
+            return this;
+        }
+
+        public Html Button2(string text = string.Empty, string className = "button info small", string icon = string.Empty)
+        {
+            Button.Render();
+            if (!string.IsNullOrEmpty(icon))
+            {
+                Span.ClassName(icon).End.Text(" ").Render();
+            }
+            return ClassName(className).IText(text);
+        }
+
+        public Html PlaceHolder(string langKey)
+        {
+            if (langKey.IsNullOrWhiteSpace())
+            {
+                return this;
+            }
+            MarkLangProp(Context, langKey, "placeholder");
+
+            return Attr("placeholder", LangSelect.Get(langKey));
+        }
+
+        public void MarkLangProp(Node ctx, string langKey, string propName, params object[] parameters)
+        {
+            ctx[LangSelect.LangKey + propName] = langKey;
+            if (parameters.HasElement())
+            {
+                ctx[LangSelect.LangParam + propName] = parameters;
+            }
+
+            var prop = ctx[LangSelect.LangProp];
+            var newProp = prop == null ? propName : string.Concat(prop, ",", propName);
+            ctx[LangSelect.LangProp] = newProp.Split(",").Distinct().Combine();
+        }
+
+        public Html Title(string langKey)
+        {
+            if (langKey.IsNullOrWhiteSpace())
+            {
+                return this;
+            }
+            MarkLangProp(Context, langKey, "title");
+            return Attr("title", LangSelect.Get(langKey));
+        }
+
+        public Html Position(PositionEnum position)
+        {
+            return Style($"position: {position.GetEnumDescription()}");
+        }
+
+        /// <summary>
+        /// Render icon inside span, non auto-closing
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="icon"></param>
+        /// <returns></returns>
+        public Html Icon(string icon)
+        {
+            var isIconClass = icon.Contains("mif") || icon.Contains("fa") || icon.Contains("fa-");
+            Span.ClassName("icon");
+            if (isIconClass)
+            {
+                ClassName(icon).Render();
+            }
+            else
+            {
+                Style($"background-image: url({Client.Origin + icon});").ClassName("iconBg").Render();
+            }
+
+            return this;
+        }
+
+        public Html Escape(Action<Event> action)
+        {
+            var div = Context;
+            div.TabIndex = -1;
+            div.Focus();
+            div.AddEventListener(EventType.KeyDown, (e) =>
+            {
+                if (e["keyCode"].As<int?>() == 27)
+                {
+                    var parent = div.ParentElement;
+                    e.StopPropagation();
+                    action(e);
+                    parent.Focus();
+                }
+            });
+            return this;
+        }
+
+        public Html IconForSpan(string iconClass)
+        {
+            if (iconClass.IsNullOrWhiteSpace())
+            {
+                return this;
+            }
+
+            iconClass = iconClass.Trim();
+            var span = Context;
+            ClassName("icon");
+            var isIconClass = iconClass.Contains("mif") || iconClass.Contains("fa") || iconClass.Contains("fa-");
+            if (isIconClass)
+            {
+                span.AddClass(iconClass);
+            }
+            else
+            {
+                span.AddClass("iconBg");
+                span.Style["background-image"] = "url(" + iconClass + ")";
+            }
+            return this;
+        }
+
+        public Html Floating(double top, double left)
+        {
+            return Position(PositionEnum.@fixed)
+                .Position(Direction.top, top)
+                .Position(Direction.left, left);
+        }
+
+        public Html IHtml(string langKey, params object[] parameters)
+        {
+            if (string.IsNullOrEmpty(langKey))
+            {
+                return this;
+            }
+            var ctx = Context;
+            var translated = LangSelect.Get(langKey);
+            MarkLangProp(ctx, langKey, nameof(HTMLElement.InnerHTML), parameters);
+            ctx.InnerHTML = translated;
+            return this;
+        }
+
+        public Html IText(string langKey, params object[] parameters)
+        {
+            if (string.IsNullOrEmpty(langKey))
+            {
+                return this;
+            }
+            var translated = LangSelect.Get(langKey);
+            var textNode = new Text(parameters.HasElement() ? string.Format(translated, parameters) : translated);
+            MarkLangProp(textNode, langKey, "TextContent", parameters);
+            GetContext().AppendChild(textNode);
+            return this;
+        }
+
+        public Html ColSpan(int colSpan)
+        {
+            return Attr("colspan", colSpan.ToString());
+        }
+
+        public Html RowSpan(int colSpan)
+        {
+            return Attr("rowspan", colSpan.ToString());
+        }
+
+        public Html SmallCheckbox(bool value = false)
+        {
+            Label.ClassName("checkbox input-small transition-on style2")
+                .Input.Attr("type", "checkbox").Type("checkbox").End
+                .Span.ClassName("check myCheckbox");
+            var chk = Context.PreviousElementSibling as HTMLInputElement;
+            chk.Checked = value;
+            return this;
+        }
+
+        public Html Disabled(bool disabled)
+        {
+            if (disabled == false)
+            {
+                Context.RemoveAttribute("disabled");
+                return this;
+            }
+            return Attr("disabled", "disabled");
+        }
+
+        public Html Margin(Direction direction, double margin, string unit = "px")
+        {
+            return Style($"margin-{direction} : {margin}{unit}");
+        }
+
+        public Html MarginRem(Direction direction, double margin)
+        {
+            return Style($"margin-{direction} : {margin}rem");
+        }
+
+        public Html Padding(Direction direction, double padding, string unit = "px")
+        {
+            return Style($"padding-{direction} : {padding}{unit}");
+        }
+
+        public Html Width(string width)
+        {
+            return Style($"width: {width}");
+        }
+
+        /// <summary>
+        /// Set sticky position to the Html Context
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="zIndex">Default is 1</param>
+        /// <param name="top">Set top to 0 if it's aligned top with previous element</param>
+        /// <param name="left">Set top to 0 if it's aligned left with previous element</param>
+        /// <returns></returns>
+        public Html Sticky(string top = null, string left = null)
+        {
+            var context = Context;
+            if (context is null)
+            {
+                return this;
+            }
+            if (context.PreviousElementSibling != null && context.GetType() == context.PreviousElementSibling.GetType())
+            {
+                if (left == 0.ToString())
+                {
+                    left = context.OffsetLeft + Utils.Pixel;
+                }
+                else if (top == 0.ToString())
+                {
+                    top = context.OffsetTop + Utils.Pixel;
+                }
+            }
+            if (top != null)
+            {
+                Style($"top: {top};");
+            }
+            if (left != null)
+            {
+                Style($"left: {left};");
+            }
+            return Style("position: sticky; z-index: 1;");
+        }
+
+        public Html TextAlign(Enums.TextAlign? alignment = Enums.TextAlign.unset)
+        {
+            return Style("text-align: " + alignment.ToString());
+        }
+
+        public Html Position(Direction direction, double value)
+        {
+            return Style($"{direction.GetEnumDescription()}: {value}px");
         }
     }
 }

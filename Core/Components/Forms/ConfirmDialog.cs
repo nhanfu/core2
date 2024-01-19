@@ -3,6 +3,7 @@ using Core.Enums;
 using Core.Extensions;
 using Core.MVVM;
 using System;
+using Direction = Core.MVVM.Direction;
 
 namespace Core.Components.Forms
 {
@@ -95,7 +96,7 @@ namespace Core.Components.Forms
                     Html.Instance.EndOf(".datetime-picker");
                 }
             }
-            Html.Instance.Button(YesText, "button info small", "fa fa-check")
+            Html.Instance.Button2(YesText, "button info small", "fa fa-check")
                     .Event(EventType.Click, async () =>
                     {
                         var isValid = await IsFormValid();
@@ -121,7 +122,7 @@ namespace Core.Components.Forms
             Html.Instance.End.Render();
             if (!IgnoreNoButton)
             {
-                Html.Instance.Button(NoText, "button alert small", "mif-exit")
+                Html.Instance.Button2(NoText, "button alert small", "mif-exit")
                     .MarginRem(Direction.left, 1)
                     .Event(EventType.Click, () =>
                     {
@@ -139,7 +140,7 @@ namespace Core.Components.Forms
 
             if (!IgnoreCancelButton)
             {
-                Html.Instance.Button(CancelText, "button info small", "fa fa-times")
+                Html.Instance.Button2(CancelText, "button info small", "fa fa-times")
                     .MarginRem(Direction.left, 1)
                     .Event(EventType.Click, () =>
                     {

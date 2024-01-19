@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
+using Position = Core.MVVM.PositionEnum;
 
 namespace Core.Components
 {
@@ -29,6 +30,8 @@ namespace Core.Components
         protected static IEnumerable<object> _copiedRows;
         public Action<object> RowClick;
         public Action<object> DblClick;
+        public FeaturePolicy[] Policies { get; set; }
+
         public bool CanWrite;
         protected Section _noRecord;
         public Action BodyContextMenuShow;
@@ -249,8 +252,8 @@ namespace Core.Components
         public override void Render()
         {
             var feature = EditForm.Feature;
-            var gridPolicies = EditForm.GetElementPolicies(Meta.Id, Utils.ComponentId);
-            CanWrite = CanDo(gridPolicies, x => x.CanWrite);
+            Policies = EditForm.GetElementPolicies(Meta.Id);
+            CanWrite = CanDo(Policies, x => x.CanWrite || x.CanWriteAll);
             Html.Take(ParentElement).DataAttr("name", FieldName);
             AddSections();
             SetRowDataIfExists();
@@ -1310,18 +1313,12 @@ namespace Core.Components
             }
             SetSelected(e);
             var selectedRows = GetSelectedRows();
-            if (selectedRows.Nothing())
-            {
-                return;
-            }
             var ctxMenu = ContextMenu.Instance;
-            var gridPolicies = EditForm.GetElementPolicies(Meta.Id, Utils.ComponentId);
-            var canWrite = Meta.CanAdd && CanWrite;
-            RenderViewMenu().Done(() =>
+            RenderRelatedDataMenu().Done(() =>
             {
-                RenderCopyPasteMenu(canWrite);
-                RenderEditMenu(selectedRows, gridPolicies);
-                RenderShareMenu(selectedRows, gridPolicies).Done(() =>
+                RenderCopyPasteMenu(CanWrite);
+                RenderEditMenu(CanWrite);
+                RenderShareMenu(selectedRows).Done(() =>
                 {
                     ctxMenu.Top = e.Top();
                     ctxMenu.Left = e.Left();
@@ -1350,7 +1347,7 @@ namespace Core.Components
             }
         }
 
-        public Task RenderViewMenu()
+        public Task RenderRelatedDataMenu()
         {
             var tcs = new TaskCompletionSource<object>();
             Client.Instance.GetByIdAsync(nameof(EntityRef), Meta.ConnKey, Meta.Id)
@@ -1465,33 +1462,45 @@ namespace Core.Components
 
         public virtual void RenderCopyPasteMenu(bool canWrite)
         {
-            //
+            if (canWrite)
+            {
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-copy", Text = "Copy", Click = CopySelected });
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-clone", Text = "Copy & Dán", Click = (e) => DuplicateSelected(null, false) });
+            }
+            if (canWrite && _copiedRows.HasElement())
+            {
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fal fa-paste", Text = "Dán", Click = PasteSelected });
+            }
         }
 
-        private void RenderEditMenu(List<object> selectedRows, IEnumerable<FeaturePolicy> gridPolicies)
+        private void RenderEditMenu(bool canWrite)
         {
-            ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
-            {
-                Icon = "fal fa-history",
-                Text = "Xem lịch sử",
-                Click = ViewHistory,
-            });
-            ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
-            {
-                Icon = "mif-unlink",
-                Text = "Hủy (không xóa)",
-                Click = DeactivateSelected,
-            });
-            ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
-            {
-                Icon = "fa fa-trash",
-                Text = "Xóa dữ liệu",
-                Click = HardDeleteSelected,
-            });
+            if (canWrite)
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
+                {
+                    Icon = "fal fa-history",
+                    Text = "Xem lịch sử",
+                    Click = ViewHistory,
+                });
+            if (Policies.Any(x => x.CanDeactivate || x.CanDeactivate))
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
+                {
+                    Icon = "mif-unlink",
+                    Text = "Hủy (không xóa)",
+                    Click = DeactivateSelected,
+                });
+            if (Policies.Any(x => x.CanDelete || x.CanDeleteAll))
+                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
+                {
+                    Icon = "fa fa-trash",
+                    Text = "Xóa dữ liệu",
+                    Click = HardDeleteSelected,
+                });
         }
 
-        private Task RenderShareMenu(List<object> selectedRows, IEnumerable<FeaturePolicy> gridPolicies)
+        private Task RenderShareMenu(List<object> selectedRows)
         {
+            if (selectedRows.Nothing()) return Task.FromResult(true);
             var noPolicyRows = selectedRows.Where(x =>
             {
                 var hasPolicy = RecordPolicy.Any(f => f.EntityId == Meta.ReferenceId && f.RecordId == x[IdField]?.ToString());
@@ -1510,7 +1519,7 @@ namespace Core.Components
                     x[IsOwner] = isOwner;
                     return isOwner;
                 }).Select(x => x[IdField].As<string>()).ToList();
-                var canShare = CanDo(gridPolicies, x => x.CanShare) && ownedRecords.Any();
+                var canShare = CanDo(Policies, x => x.CanShare) && ownedRecords.Any();
                 if (!canShare)
                 {
                     tcs.TrySetResult(null);

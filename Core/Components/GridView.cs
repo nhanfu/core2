@@ -16,6 +16,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 using TextAlign = Core.Enums.TextAlign;
+using Position = Core.MVVM.PositionEnum;
+using Direction = Core.MVVM.Direction;
 
 namespace Core.Components
 {
@@ -1447,19 +1449,6 @@ namespace Core.Components
                 return;
             }
             ActionKeyHandler(e, LastComponentFocus, LastListViewItem, com, com.Element.Closest(ElementType.td.ToString()), keyCode);
-        }
-
-        public override void RenderCopyPasteMenu(bool canWrite)
-        {
-            if (canWrite)
-            {
-                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-copy", Text = "Copy", Click = CopySelected });
-                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fa fa-clone", Text = "Copy & Dán", Click = (e) => DuplicateSelected(null, false) });
-            }
-            if (canWrite && _copiedRows.HasElement())
-            {
-                ContextMenu.Instance.MenuItems.Add(new ContextMenuItem { Icon = "fal fa-paste", Text = "Dán", Click = PasteSelected });
-            }
         }
 
         private void CoppyValue(Event e, EditableComponent com, string fieldName, ListViewItem currentItem, ListViewItem upItem)

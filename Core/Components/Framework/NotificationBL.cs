@@ -123,15 +123,18 @@ namespace Core.Components.Framework
             }
         }
 
+        private static readonly HTMLElement NotiRoot = Document.GetElementById("notification-list");
+        private static readonly HTMLElement ProfileRoot = Document.GetElementById(".profile-info1");
+
         public override void Render()
         {
-            Html.Take("#notification-list").Clear();
+            Html.Take(NotiRoot).Clear();
             Html.Take("#user-active").Clear();
             SetBadgeNumber();
             CurrentUser = Client.Token;
             CurrentUser.Avatar = (CurrentUser.Avatar.Contains("://") ? "" : Client.Origin) + (CurrentUser.Avatar.IsNullOrWhiteSpace() ? "./image/chinese.jfif" : CurrentUser.Avatar);
             RenderNotification();
-            RenderProfile(".profile-info1");
+            RenderProfile(ProfileRoot);
             var xhr = new XHRWrapper 
             {
                 Url = $"/GetUserActive",
@@ -145,11 +148,12 @@ namespace Core.Components.Framework
             .Catch(Console.WriteLine);
         }
 
-        public void RenderProfile(string classname)
+        public void RenderProfile(HTMLElement profileRoot)
         {
+            if (profileRoot is null) return;
             var isSave = Window.LocalStorage.GetItem("isSave");
-            Html.Take(classname).Clear();
-            var html = Html.Take(classname);
+            Html.Take(profileRoot).Clear();
+            var html = Html.Take(profileRoot);
             html.A.ClassName("navbar-nav-link d-flex align-items-center dropdown-toggle").DataAttr("toggle", "dropdown").Span.ClassName("text-truncate").Text(CurrentUser.TenantCode + ": " + CurrentUser.FullName).EndOf(ElementType.a)
                 .Div.ClassName("dropdown-menu dropdown-menu-right notClose mt-0 border-0").Style("border-top-left-radius: 0;border-top-right-radius: 0")
                     .A.ClassName("dropdown-item").Event(EventType.Click, ViewProfile).I.ClassName("far fa-user").End.Text("Account (" + CurrentUser.TenantCode + ": " + CurrentUser.FullName + ")").EndOf(ElementType.a);
@@ -189,7 +193,8 @@ namespace Core.Components.Framework
 
         private void RenderNotification()
         {
-            var html = Html.Take("#notification-list").A.ClassName("navbar-nav-link").DataAttr("toggle", "dropdown").I.ClassName("far fa-bell fa-lg").EndOf(ElementType.i);
+            if (NotiRoot is null) return;
+            var html = Html.Take(NotiRoot).A.ClassName("navbar-nav-link").DataAttr("toggle", "dropdown").I.ClassName("far fa-bell fa-lg").EndOf(ElementType.i);
             if (_countNtf.Data != string.Empty)
             {
                 html.Span.ClassName("badge badge-pill bg-warning-400 ml-auto ml-md-0").Text(_countNtf);

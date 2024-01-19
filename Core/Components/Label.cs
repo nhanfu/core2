@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TextAlign = Core.Enums.TextAlign;
 using Core.ViewModels;
+using Direction = Core.MVVM.Direction;
 
 namespace Core.Components
 {

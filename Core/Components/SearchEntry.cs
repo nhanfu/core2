@@ -90,7 +90,7 @@ namespace Core.Components
         {
             if (Element == null)
             {
-                Element = _input = Html.Take(ParentElement).Div.Position(Position.relative).ClassName(SEntryClass).Input.GetContext() as HTMLInputElement;
+                Element = _input = Html.Take(ParentElement).Div.Position(PositionEnum.relative).ClassName(SEntryClass).Input.GetContext() as HTMLInputElement;
                 _parentInput = _input.ParentElement;
             }
             else
@@ -677,7 +677,6 @@ namespace Core.Components
             if (Entity != null && FieldName.HasAnyChar())
             {
                 Entity.SetComplexPropValue(FieldName, _value);
-                Entity.SetComplexPropValue(FieldName.Substr(0, FieldName.Length - 2), rowData);
             }
             Dirty = true;
             Matched = rowData;

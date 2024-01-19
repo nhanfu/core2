@@ -17,6 +17,7 @@ namespace Core.Models
         public DateTimeOffset? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
         public bool CanDeactivate { get; set; }
+        public bool CanDeactivateAll { get; set; }
         public string LockDeleteAfterCreated { get; set; }
         public string LockUpdateAfterCreated { get; set; }
         public string EntityId { get; set; }
@@ -25,5 +26,8 @@ namespace Core.Models
         public bool CanShare { get; set; }
         public string Desc { get; set; }
         public bool CanWriteAll { get; set; }
+        public string EntityName { get; set; }
+        public bool CanWriteMeta { get; set; }
+        public bool CanWriteMetaAll { get; set; }
     }
 }

@@ -825,7 +825,8 @@ namespace Core.Components.Forms
 
         public virtual void SysConfigMenu(Event e, Component component, ComponentGroup group)
         {
-            if (!Client.SystemRole)
+            var metaPermission = Policies.Any(x => x.CanWriteMeta || x.CanWriteMetaAll);
+            if (!metaPermission)
             {
                 return;
             }
@@ -886,40 +887,56 @@ namespace Core.Components.Forms
             AddChild(confirmDialog);
         }
 
-        public FeaturePolicy[] GetElementPolicies(string[] recordIds, string entityId = Utils.ComponentGroupId) // Default of component group
+        public FeaturePolicy[] GetElementPolicies(string[] recordIds, string entityName) // Default of component group
         {
-            var hasHidden = Feature.FeaturePolicy
+            var hasHidden = Policies
                     .Where(x => x.RoleId.HasAnyChar() || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
-                    .Where(x => x.EntityId == entityId && recordIds.Contains(x.RecordId))
+                    .Where(x => x.EntityName == entityName && recordIds.Contains(x.RecordId))
                     .ToArray();
             return hasHidden;
         }
 
-        public FeaturePolicy[] GetGridPolicies(string[] recordIds, string entityId = Utils.ComponentGroupId) // Default of component group
+        public FeaturePolicy[] GetGridPolicies(string[] recordIds, string entityName = nameof(Component)) // Default of component group
         {
-            var hasHidden = Feature.FeaturePolicy
+            var hasHidden = Policies
                     .Where(x => x.RoleId.HasAnyChar() || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
-                    .Where(x => x.EntityId == entityId && recordIds.Contains(x.RecordId))
+                    .Where(x => x.EntityName == entityName && recordIds.Contains(x.RecordId))
                     .ToArray();
             return hasHidden;
         }
 
-        public FeaturePolicy[] GetElementPolicies(string recordId, string entityId = Utils.ComponentId) // Default of component
+        public FeaturePolicy[] GetElementPolicies(string recordId, string entityName = nameof(Component)) // Default of component
         {
-            var hasHidden = Feature.FeaturePolicy
+            var hasHidden = Policies
                     .Where(x => x.RoleId.HasAnyChar() || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
-                    .Where(x => x.EntityId == entityId && recordId == x.RecordId)
+                    .Where(x => x.EntityName == entityName && recordId == x.RecordId)
                     .ToArray();
             return hasHidden;
         }
 
-        public FeaturePolicy[] GetGridPolicies(string recordId, string entityId = Utils.ComponentId) // Default of component
+        public FeaturePolicy[] GetGridPolicies(string recordId, string entityName = nameof(Component)) // Default of component
         {
-            var hasHidden = Feature.FeaturePolicy
-                    .Where(x => x.RoleId.HasAnyChar() || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
-                    .Where(x => x.EntityId == entityId && recordId == x.RecordId)
+            var hasHidden = Policies.Where(x => x.RoleId.HasAnyChar() || (x.UserId.HasAnyChar() && Client.Token.UserId == x.UserId))
+                    .Where(x => x.EntityId == entityName && recordId == x.RecordId)
                     .ToArray();
             return hasHidden;
+        }
+
+        private static FeaturePolicy[] _policies;
+        private ICollection<FeaturePolicy> Policies
+        {
+            get
+            {
+                if (_policies != null) return _policies;
+                if (LayoutForm?.Feature?.FeaturePolicy != null && LayoutForm.Feature.FeaturePolicy.Nothing())
+                {
+                    _policies = Feature.FeaturePolicy.ToArray();
+                } else
+                {
+                    _policies = Feature.FeaturePolicy.Concat(LayoutForm.Feature.FeaturePolicy).ToArray();
+                }
+                return _policies;
+            }
         }
 
         public void ComponentProperties(object arg)
