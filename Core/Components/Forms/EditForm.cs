@@ -671,7 +671,7 @@ namespace Core.Components.Forms
         protected virtual Task<object> LoadEntity()
         {
             var urlFeature = App.GetFeatureNameFromUrl();
-            var urlId = urlFeature == FeatureName ?  Utils.GetUrlParam(Utils.IdField) : EntityId;
+            var urlId = urlFeature == FeatureName ? Utils.GetUrlParam(Utils.IdField) : EntityId;
             if (!ShouldLoadEntity || urlId.IsNullOrWhiteSpace())
             {
                 return Task.FromResult(null as object);
@@ -928,10 +928,11 @@ namespace Core.Components.Forms
             get
             {
                 if (_policies != null) return _policies;
-                if (LayoutForm?.Feature?.FeaturePolicy != null && LayoutForm.Feature.FeaturePolicy.Nothing())
+                if (LayoutForm?.Feature?.FeaturePolicy is null)
                 {
                     _policies = Feature.FeaturePolicy.ToArray();
-                } else
+                }
+                else
                 {
                     _policies = Feature.FeaturePolicy.Concat(LayoutForm.Feature.FeaturePolicy).ToArray();
                 }

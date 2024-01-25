@@ -1,19 +1,18 @@
 ﻿using Bridge.Html5;
-using Core.Models;
+using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
+using Core.Enums;
 using Core.Extensions;
+using Core.Models;
 using Core.MVVM;
+using Core.Structs;
+using Core.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Core.Enums;
-using Core.ViewModels;
-using Core.Clients;
-using Core.Structs;
-using Core.Components.Framework;
 
 namespace Core.Components
 {
@@ -917,6 +916,36 @@ namespace Core.Components
         protected virtual void QueueHandler(CustomEvent e)
         {
             Console.WriteLine(e.Detail.ToJson());
+        }
+
+        protected Dictionary<string, Action<ObservableArgs>> _events = new Dictionary<string, Action<ObservableArgs>>();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
+        public void addEventListener(string name, Action<ObservableArgs> handler)
+        {
+            if (handler is null) throw new ArgumentNullException(nameof(handler));
+            var handlers = _events.GetValueOrDefault(name);
+            var isNull = handlers is null;
+            if (isNull)
+            {
+                _events.TryAdd(name, handler);
+            }
+            else
+            {
+                handlers += handler;
+                _events[name] = handlers;
+            }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
+        public void removeEventListener(string name, Action<ObservableArgs> handler)
+        {
+            if (handler is null) throw new ArgumentNullException(nameof(handler));
+            var handlers = _events.GetValueOrDefault(name);
+            var isNull = handlers is null;
+            if (isNull)
+            {
+                _events.Remove(name);
+            }
         }
     }
 }

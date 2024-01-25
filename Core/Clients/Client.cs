@@ -531,10 +531,10 @@ namespace Core.Clients
             }
             var script = Document.CreateElement(ElementType.Script.ToString()).As<HTMLScriptElement>();
             script.Src = src;
-            script.OnLoad += (Event<HTMLScriptElement> e) =>
+            script.AddEventListener(EventType.Load, e =>
             {
                 tcs.SetResult(true);
-            };
+            });
             script.OnError += (string message, string url, int lineNumber, int columnNumber, object error) =>
             {
                 tcs.SetResult(true);
@@ -556,10 +556,10 @@ namespace Core.Clients
             }
             var link = Document.CreateElement(ElementType.Style.ToString()).As<HTMLLinkElement>();
             link.Href = src;
-            link.OnLoad += (Event<HTMLLinkElement> e) =>
+            link.AddEventListener(EventType.Load, e =>
             {
                 tcs.SetResult(true);
-            };
+            });
             link.OnError += (string message, string url, int lineNumber, int columnNumber, object error) =>
             {
                 tcs.SetResult(true);

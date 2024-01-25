@@ -7,6 +7,7 @@ namespace Core.MVVM
     public class ObservableArgs
     {
         public EventType EvType { get; set; }
+        public object Com { get; set; }
         public object NewData { get; set; }
         public object OldData { get; set; }
         public object NewMatch { get; set; }

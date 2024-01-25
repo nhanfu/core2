@@ -71,7 +71,16 @@ namespace Core.Extensions
 
         public static void CopyPropFrom(this object target, object source, params string[] ignoreFields)
         {
+            if (source is null || target is null) return;
             CopyPropFromInternal(target, source, new HashSet<int>(), 0, 0, ignoreFields);
+            var targetProps = target.GetType().GetProperties().ToDictionary(x => x.Name);
+            source.ForEachProp(prop =>
+            {
+                if (!targetProps.ContainsKey(prop))
+                {
+                    target[prop] = source[prop];
+                }
+            });
         }
 
         public static void CopyPropFromInternal(this object target, object source, HashSet<int> visited, int currentLevel = 0, int maxLevel = 0, params string[] ignoreFields)
