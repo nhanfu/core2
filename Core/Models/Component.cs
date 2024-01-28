@@ -131,7 +131,6 @@ namespace Core.Models
         public string ConnKey { get; set; }
         public bool ShouldSaveText { get; set; }
         public string CacheName { get; set; }
-        public string Lang { get; set; }
 
         [DbIgnore]
         public TextAlign? TextAlignEnum { get; set; }

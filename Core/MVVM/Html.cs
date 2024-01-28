@@ -77,6 +77,14 @@ namespace Core.MVVM
             }
         }
 
+        public Html Iframe
+        {
+            get
+            {
+                return Add(ElementType.iframe);
+            }
+        }
+
         public Html Link
         {
             get
@@ -441,6 +449,15 @@ namespace Core.MVVM
         public void Render()
         {
             // Method intentionally left empty.
+        }
+
+        public Html Add(string type)
+        {
+            if (Context is null) return this;
+            var ele = Document.CreateElement(type);
+            Context.AppendChild(ele);
+            Context = ele;
+            return this;
         }
 
         public Html Add(ElementType type)
