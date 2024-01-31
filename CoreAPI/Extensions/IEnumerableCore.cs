@@ -52,7 +52,7 @@ namespace Core.Extensions
                 return source;
             }
 
-            var tasks = source.Select(action);
+            var tasks = source.Select(action).Where(x => x is not null);
             await Task.WhenAll(tasks);
             return source;
         }

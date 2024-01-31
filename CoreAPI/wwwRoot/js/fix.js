@@ -108,7 +108,10 @@ function initCodeEditor(com) {
             value: com.Entity[com.Meta.FieldName],
             language: com.Meta.Lang ?? 'javascript',
             theme: 'vs-light',
-            automaticLayout: true
+            automaticLayout: true,
+            minimap: {
+                enabled: false,
+            }
         });
         // hook event from UI
         editor.getModel().onDidChangeContent(() => {

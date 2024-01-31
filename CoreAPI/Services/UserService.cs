@@ -501,7 +501,8 @@ public class UserService
             });
             throw;
         }
-        await TryNotifyChange(vm, "HardDelete");
+        var keys = vm.DeletedIds.Select(x => vm.Table + x).ToArray();
+        await TryNotifyChanges("HardDelete", keys, vm);
         await AfterActionSvc(vm, "AfterDelete");
 
         return true;
@@ -518,7 +519,8 @@ public class UserService
         var cmd = GetCmd(vm);
         if (cmd.IsNullOrWhiteSpace()) return 0;
         var result = await RunSqlCmd(vm.CachedConnStr, cmd);
-        await TryNotifyChange(vm);
+        if (result == 0) return result;
+        await TryNotifyChanges("Patch", null, vm);
         await AfterActionSvc(vm, "AfterPatch");
         return result;
     }
@@ -548,23 +550,34 @@ public class UserService
         }
     }
 
-    public async Task TryNotifyChange(PatchVM vm, string action = null)
+    public async Task TryNotifyChanges(string action, string[] keys, params PatchVM[] patches)
     {
-        await TryInvalidCacheInternal(vm.CacheName, vm.CachedConnStr);
-        await TryNotifyDeviceInternal(new MQEvent
+        if (patches.Nothing()) return;
+        keys ??= patches.Select(vm =>
         {
-            Id = Uuid7.Id25(),
-            Action = action,
-            Message = vm.ToJson(),
-            QueueName = vm.QueueName
-        }, vm.CachedConnStr);
+            if (vm.CacheName.IsNullOrWhiteSpace())
+            {
+                var id = vm.Id.OldVal ?? vm.Id.Value;
+                vm.CacheName = $"{vm.Table}{id}";
+            }
+            return vm.CacheName;
+        }).ToArray();
+        await TryInvalidCacheInternal(keys);
+        await patches.ForEachAsync(vm =>
+            vm.QueueName.IsNullOrWhiteSpace() ? null : TryNotifyDeviceInternal(new MQEvent
+            {
+                Id = Uuid7.Id25(),
+                Action = action,
+                Message = vm.ToJson(),
+                QueueName = vm.QueueName
+            }));
     }
 
-    public async Task TryNotifyDeviceInternal(MQEvent e, string connStr)
+    public async Task TryNotifyDeviceInternal(MQEvent e)
     {
         if (e is null || e.QueueName.IsNullOrWhiteSpace()) return;
         await NotifyDevice(e);
-        var clusters = await GetClusters(role: "API", connStr);
+        var clusters = await GetClusters(role: "API");
         try
         {
             await NotifyOtherClusters(clusters, nameof(NotifyDevice), e.ToJson());
@@ -605,7 +618,7 @@ public class UserService
         }
     }
 
-    private async Task<Cluster[]> GetClusters(string role, string connStr)
+    private async Task<Cluster[]> GetClusters(string role)
     {
         Cluster[] clusters = null;
         var cachedCluster = await _cache.GetStringAsync(UserServiceHelpers.APIClusterKey);
@@ -615,19 +628,19 @@ public class UserService
         }
         if (clusters is not null) return clusters;
         var clusterQuery = $"select * from Cluster where ClusterRole = '{role}'";
-        clusters = await ReadDsAsArr<Cluster>(clusterQuery, connStr);
+        clusters = await ReadDsAsArr<Cluster>(clusterQuery, DefaultConnStr());
         await _cache.SetStringAsync(UserServiceHelpers.APIClusterKey, clusters.ToJson());
         return clusters;
     }
 
-    public async Task TryInvalidCacheInternal(string key, string connStr)
+    public async Task TryInvalidCacheInternal(params string[] keys)
     {
-        if (key.IsNullOrWhiteSpace()) return;
-        await _cache.RemoveAsync(key);
-        var clusters = await GetClusters(role: "API", connStr);
+        if (keys.Nothing()) return;
+        await Task.WhenAll(keys.Select(key => _cache.RemoveAsync(key)));
+        var clusters = await GetClusters(role: "API");
         try
         {
-            var mqEvent = new MQEvent { Action = "ClearCache", Message = key }.ToJson();
+            var mqEvent = new MQEvent { Action = "ClearCache", Message = keys }.ToJson();
             await NotifyOtherClusters(clusters, "api/cluster/action", mqEvent);
         }
         catch
@@ -691,7 +704,7 @@ public class UserService
             where Active = 1 and (CanWrite = 1 or CanWriteAll = 1) and EntityName in ({tables.CombineStrings()}) and RoleId in ({RoleIds.CombineStrings()})"];
         rightQuery.AddRange(patches.Select(x =>
         {
-            var idField = GetIdField(x);
+            var idField = x.Id;
             return $"select * from {x.Table} where Id = '{idField.OldVal}'";
         }));
         var ds = await ReadDataSet(rightQuery.Combine(Utils.SemiColon), connStr);
@@ -706,12 +719,14 @@ public class UserService
             };
         }
         var sql = patches.Select(GetCmd).Where(x => x is not null).Combine(";\n");
-        return await RunSqlCmd(connStr, sql);
-    }
-
-    private static PatchDetail GetIdField(PatchVM x)
-    {
-        return x.Changes.FirstOrDefault(x => x.Field == UserServiceHelpers.IdField);
+        var result = await RunSqlCmd(connStr, sql);
+        await TryNotifyChanges("Patch", null, patches);
+        await patches.ForEachAsync(vm =>
+        {
+            vm.CachedConnStr ??= connStr;
+            return AfterActionSvc(vm, "AfterPatch");
+        });
+        return result;
     }
 
     public string GetCmd(PatchVM vm)
@@ -729,7 +744,7 @@ public class UserService
             x.OldVal = x.OldVal?.Replace("'", "''");
             return !x.JustHistory && !UserServiceHelpers.SystemFields.Contains(x.Field);
         }).ToList();
-        var idField = GetIdField(vm);
+        var idField = vm.Id;
         var valueFields = vm.Changes.Where(x => !UserServiceHelpers.SystemFields.Contains(x.Field.ToLower())).ToArray();
         var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
         var oldId = idField?.OldVal;
@@ -954,7 +969,7 @@ public class UserService
             {
                 StatusCode = HttpStatusCode.BadRequest
             };
-        var key = $"{nameof(Services)}_{vm.ComId}_{vm.Action}_{vm.SvcId}";
+        var key = $"{nameof(Services)}{vm.SvcId}_{vm.ComId}_{vm.Action}";
         var cacheSv = await _cache.GetStringAsync(key);
         if (cacheSv != null)
         {
