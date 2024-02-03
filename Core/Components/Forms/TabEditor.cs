@@ -82,8 +82,9 @@ namespace Core.Components.Forms
         }
 
         static int stateAwait = 0;
-        private static void SetTabStates()
+        private void SetTabStates()
         {
+            if (Popup) return;
             Window.ClearTimeout(stateAwait);
             stateAwait = Window.SetTimeout(() =>
             {
@@ -355,13 +356,13 @@ namespace Core.Components.Forms
             if (!Popup)
             {
                 Tabs.ForEach(x => x.Show = false);
+                if (FeatureName.HasNonSpaceChar() && App.FeatureLoaded)
+                {
+                    Href = System.IO.Path.Combine(Client.BaseUri, FeatureName + $"{(EntityId == null ? "" : $"?Id={EntityId}")}");
+                    Window.History.PushState(null, LangSelect.Get(TabTitle), Href);
+                }
             }
             Show = true;
-            if (FeatureName.HasNonSpaceChar() && App.FeatureLoaded)
-            {
-                Href = System.IO.Path.Combine(Client.BaseUri, FeatureName + $"{(EntityId == null ? "" : $"?Id={EntityId}")}");
-                Window.History.PushState(null, LangSelect.Get(TabTitle), Href);
-            }
             Document.Title = LangSelect.Get(TabTitle);
             this.FindActiveComponent<EditableComponent>(x => x?.Meta?.Focus == true).FirstOrDefault()?.Focus();
         }

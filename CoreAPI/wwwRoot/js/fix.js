@@ -277,7 +277,7 @@ function initCkEditor(com) {
             'CaseChange'
         ]
     }).then(editor => {
-        editor.setData(com.Entity == null ? '' : com.Entity[com.FieldName]);
+        editor.setData(com.Entity == null ? '' : (com.Entity[com.FieldName] ?? ''));
         editor.on('mode', function () {
             if (this.mode == 'source') {
                 var editable = editor.editable();
