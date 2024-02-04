@@ -13,7 +13,6 @@ namespace Core.Models
         public int? Order { get; set; }
         public string ComponentType { get; set; }
         public string ComponentGroupId { get; set; }
-        public string DataSourceFilter { get; set; }
         public string ReferenceId { get; set; }
         public string FormatData { get; set; }
         public string FormatEntity { get; set; }

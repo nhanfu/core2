@@ -138,7 +138,7 @@ namespace Core.Components
                     Input.Value = _text;
                 }
                 Input.AutoComplete = AutoComplete.Off;
-                Input.Name = Meta.DataSourceFilter ?? FieldName;
+                Input.Name = FieldName;
                 Input.OnInput += (e) => PopulateUIChange(EventType.Input);
                 Input.OnChange += (e) => PopulateUIChange(EventType.Change);
             }

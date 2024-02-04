@@ -58,13 +58,13 @@ namespace Core.Components
         private HTMLDivElement _gallerys;
 
         public event Action FileUploaded;
-        public string DataSourceFilter { get; set; }
+        public string DataSource { get; set; }
         private string[] _imageSources => _path?.Split(PathSeparator);
 
         public Image(Component ui) : base(ui)
         {
             Meta = ui;
-            DataSourceFilter = Meta.DataSourceFilter ?? "image/*";
+            DataSource = Meta.Template ?? "image/*";
         }
 
         public override void Render()
@@ -311,7 +311,7 @@ namespace Core.Components
                 .ClassName("choose-files")
                 .Input.Type("file").Attr("name", "files")
                 .ClassName("d-none")
-                .Attr("accept", DataSourceFilter)
+                .Attr("accept", DataSource)
                 .Event(EventType.Change, UploadSelectedImages).Render();
             Element = _input = Html.Context as HTMLInputElement;
             if (isMultiple)

@@ -51,40 +51,12 @@ namespace Core.Components
         public List<object> FormattedRowData { get; set; }
         internal bool VirtualScroll { get; set; }
         public List<object> CacheData { get; set; } = new List<object>();
-        public string FormattedDataSource
-        {
-            get
-            {
-                return GetFormattedDataSource(this, DataSourceFilter ?? Meta.DataSourceFilter);
-            }
-        }
-
-        public static string GetFormattedDataSource(EditableComponent com, string dataSourceFilter)
-        {
-            if (Utils.IsFunction(dataSourceFilter, out Function fn))
-            {
-                return fn.Call(com, com, com.EditForm).ToString();
-            }
-            var editForm = com.FindClosest<EditForm>();
-            if (editForm is null)
-            {
-                return Utils.FormatEntity(dataSourceFilter, com.Entity);
-            }
-
-            var pre = Utils.FormatEntity(dataSourceFilter, editForm.Entity);
-            var checkContain = pre.Contains(nameof(EditForm) + ".")
-                || pre.Contains(nameof(TabEditor) + ".")
-                || pre.Contains(nameof(Entity) + ".");
-            return Utils.FormatEntity(pre, null, checkContain ? com : com.Entity, notFoundHandler: x => "null");
-        }
-
         public int SelectedIndex { get; set; } = -1;
         public ListViewSection HeaderSection { get; set; }
         public ListViewSection MainSection { get; set; }
         public ListViewSection FooterSection { get; set; }
         public Dictionary<string, List<object>> RefData { get; set; }
         private static List<object> _originRows;
-        public string DataSourceFilter { get; set; }
         public Action OnDeleteConfirmed { get; set; }
         public IEnumerable<ListViewItem> AllListViewItem => MainSection.Children.Cast<ListViewItem>();
         public List<object> UpdatedRows => AllListViewItem.OrderBy(x => x.RowNo).Where(x => x.Dirty).Select(x => x.Entity).Distinct().ToList();
@@ -113,7 +85,6 @@ namespace Core.Components
                 ActiveState = ActiveStateEnum.Yes,
                 OrderBy = LocalStorage.GetItem<List<OrderBy>>("OrderBy" + Meta.Id) ?? new List<OrderBy>()
             };
-            DataSourceFilter = ui.DataSourceFilter;
             _hasLoadRef = false;
             if (ele != null)
             {
@@ -1228,49 +1199,48 @@ namespace Core.Components
             com.Column = 4;
             com.ReferenceId = Utils.GetEntity(nameof(Models.History)).Id;
             com.RefName = nameof(Models.History);
-            com.DataSourceFilter = $"?$orderby=Id desc&$filter=Active eq true and EntityId eq '{Meta.ReferenceId}' and RecordId eq '{currentItem[IdField]}'";
             var _filterGrid = new GridView(com);
             _filterGrid.Meta.LocalHeader = new List<Component>
             {
-                     new Component
-                    {
-                        Id = 1 .ToString(),
-                        EntityId = Utils.GetEntity(nameof(Models.History)).Id,
-                        FieldName = nameof(Models.History.InsertedBy),
-                        ShortDesc = "Người thay đổi",
-                        ReferenceId=Utils.GetEntity(nameof(User)).Id,
-                        RefName=nameof(User),
-                        FormatData="{FullName}",
-                        Active = true,
-                        ComponentType = nameof(SearchEntry),
-                        MaxWidth = "100px",
-                        MinWidth = "100px",
-                    },
-                     new Component
-                    {
-                        Id = 2 .ToString(),
-                        EntityId = Utils.GetEntity(nameof(Models.History)).Id,
-                        FieldName = nameof(Models.History.InsertedDate),
-                        ShortDesc = "Ngày thay đổi",
-                        Active = true,
-                        FormatData = "{0: dd/MM/yyyy HH:mm}",
-                        ComponentType = "Datepicker",
-                        TextAlign="left",
-                        MaxWidth = "150px",
-                        MinWidth = "150px",
-                    },
-                    new Component
-                    {
-                        Id = 4 .ToString(),
-                        EntityId = Utils.GetEntity(nameof(Models.History)).Id,
-                        FieldName = nameof(Models.History.TextHistory),
-                        ShortDesc = "Dữ liệu thay đổi",
-                        Active = true,
-                        ComponentType = "Label",
-                        MaxWidth = "700px",
-                        MinWidth = "700px",
-                    }
-                };
+                new Component
+                {
+                    Id = 1 .ToString(),
+                    EntityId = Utils.GetEntity(nameof(Models.History)).Id,
+                    FieldName = nameof(Models.History.InsertedBy),
+                    ShortDesc = "Người thay đổi",
+                    ReferenceId=Utils.GetEntity(nameof(User)).Id,
+                    RefName=nameof(User),
+                    FormatData="{FullName}",
+                    Active = true,
+                    ComponentType = nameof(SearchEntry),
+                    MaxWidth = "100px",
+                    MinWidth = "100px",
+                },
+                new Component
+                {
+                    Id = 2 .ToString(),
+                    EntityId = Utils.GetEntity(nameof(Models.History)).Id,
+                    FieldName = nameof(Models.History.InsertedDate),
+                    ShortDesc = "Ngày thay đổi",
+                    Active = true,
+                    FormatData = "{0: dd/MM/yyyy HH:mm}",
+                    ComponentType = "Datepicker",
+                    TextAlign="left",
+                    MaxWidth = "150px",
+                    MinWidth = "150px",
+                },
+                new Component
+                {
+                    Id = 4 .ToString(),
+                    EntityId = Utils.GetEntity(nameof(Models.History)).Id,
+                    FieldName = nameof(Models.History.TextHistory),
+                    ShortDesc = "Dữ liệu thay đổi",
+                    Active = true,
+                    ComponentType = "Label",
+                    MaxWidth = "700px",
+                    MinWidth = "700px",
+                }
+            };
             _filterGrid.ParentElement = body;
             Parent.AddChild(_filterGrid);
         }

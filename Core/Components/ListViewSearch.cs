@@ -216,7 +216,6 @@ namespace Core.Components
                     FieldName = nameof(Component.DateTimeField),
                     PlainText = "Loại ngày",
                     FormatData = "{ShortDesc}",
-                    DataSourceFilter = $"?$filter=Active eq true and ComponentType eq '{nameof(Datepicker)}' and FeatureId eq {EditForm.Feature.Id}",
                     ShowLabel = false,
                     ReferenceId = Utils.GetEntity(nameof(Component)).Id,
                     RefName = nameof(Component),
@@ -550,7 +549,6 @@ namespace Core.Components
             {
                 return;
             }
-            listView.DataSourceFilter = listView.Meta.DataSourceFilter;
             listView.ClearSelected();
             listView.CellSelected.Clear();
             listView.AdvSearchVM.Conditions.Clear();

@@ -14,8 +14,6 @@
 
         public string ComponentGroupId { get; set; }
 
-        public string DataSourceFilter { get; set; }
-
         public string ReferenceId { get; set; }
 
         public string FormatData { get; set; }

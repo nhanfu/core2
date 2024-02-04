@@ -32,7 +32,6 @@ namespace Core.Components
                     Editable = true,
                     Active = true,
                     ComponentType = nameof(Image),
-                    DataSourceFilter= ui.DataSourceFilter.IsNullOrEmpty() ?  "*.*" : ui.DataSourceFilter,
                     ShortDesc = "File",
                     IsRealtime = Meta.IsRealtime,
                     Precision = 1,
@@ -42,10 +41,8 @@ namespace Core.Components
                 {
                     FieldName = nameof(FileUpload.InsertedBy),
                     Active = true,
-                    RefName = nameof(User),
-                    ReferenceId = Utils.GetEntity(nameof(User))?.Id,
-                    FormatData = "{" + nameof(User.FullName) + "}",
                     ComponentType = "Label",
+                    FieldText = "InsertedUserName",
                     ShortDesc = "Created by",
                     Order = 3
                 },
@@ -61,10 +58,8 @@ namespace Core.Components
                 {
                     FieldName = nameof(FileUpload.UpdatedBy),
                     Active = true,
-                    RefName = nameof(User),
-                    ReferenceId = Utils.GetEntity(nameof(User))?.Id,
-                    FormatData = "{" + nameof(User.FullName) + "}",
                     ComponentType = "Label",
+                    FieldText = "UpdatedUserName",
                     ShortDesc = "Updated by",
                     Order = 5
                 },
@@ -84,8 +79,6 @@ namespace Core.Components
         public override void Render()
         {
             RowData._data = new List<object>();
-            Meta.DataSourceFilter = $"?$filter=EntityName eq '{Meta.IdField}' and RecordId eq {Entity[IdField]} and FieldName eq '{FieldName}' and SectionId eq {Meta.ComponentGroupId} and RecordId ne 0";
-            DataSourceFilter = Meta.DataSourceFilter;
             base.Render();
             Paginator.Show = false;
         }

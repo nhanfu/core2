@@ -43,17 +43,13 @@ namespace Core.Components
         protected int _waitForDispose;
         private bool _contextMenu;
         public ObservableList<object> RowData;
-        private string dataSourceFilter;
         private HTMLElement _rootResult;
         private HTMLElement _parentInput;
         private HTMLElement _backdrop;
-
-        public string DataSource { get => dataSourceFilter; set => dataSourceFilter = value.DecodeSpecialChar(); }
         public object Matched { get; set; }
 
         public SearchEntry(Component ui, HTMLElement ele = null) : base(ui)
         {
-            DataSource = ui.DataSourceFilter;
             DeserializeLocalData(ui);
             Meta.ComponentGroup = null;
             Meta.Row = Meta.Row ?? 20;
@@ -642,23 +638,6 @@ namespace Core.Components
             }
             var res = matched.GetPropValue(Meta.FormatData) ?? Entity.GetPropValue(Meta.FieldText);
             return (res as string).DecodeSpecialChar();
-        }
-
-        public string FormattedDataSource
-        {
-            get
-            {
-                if (Utils.IsFunction(DataSource, out Function fn))
-                {
-                    return fn.Call(this, this, EditForm).ToString();
-                }
-                var dataSourceFilter = DataSource.HasAnyChar() ? DataSource : string.Empty;
-                var checkContain = dataSourceFilter.Contains(nameof(EditForm) + ".")
-                    || dataSourceFilter.Contains(nameof(TabEditor) + ".")
-                    || dataSourceFilter.Contains(nameof(Entity) + ".");
-                var DataSourceFilter = Utils.FormatEntity(dataSourceFilter, null, checkContain ? this : Entity, notFoundHandler: x => "null");
-                return DataSourceFilter;
-            }
         }
 
         protected virtual void EntrySelected(object rowData)

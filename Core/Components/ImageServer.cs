@@ -58,7 +58,7 @@ namespace Core.Components
         public ImageServer(Component ui) : base(ui)
         {
             Meta = ui;
-            DataSourceFilter = Meta.DataSourceFilter ?? "image/*";
+            DataSource = Meta.Template ?? "image/*";
         }
 
         public override void Render()
@@ -195,7 +195,7 @@ namespace Core.Components
                 .Div.ClassName("popup-body");
             Html.Instance
                 .Input.Type("file").Attr("multiple", "multiple").Attr("name", "imagefiles").ClassName("d-none")
-                .Attr("accept", DataSourceFilter)
+                .Attr("accept", DataSource)
                 .Event(EventType.Change, (e) => UploadSelectedImages(e));
             _input = Html.Context as HTMLInputElement;
             Html.Instance.End.Div.ClassName("col-md-12").Style("padding: 20px 5%;")

@@ -48,7 +48,6 @@ namespace Core.Models
         public string Properties { get; set; }
         public string Template { get; set; }
         public string LayoutId { get; set; }
-        public string DataSourceFilter { get; set; }
         public string Gallery { get; set; }
         public bool DeleteTemp { get; set; }
         public bool CustomNextCell { get; set; }

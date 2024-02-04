@@ -745,7 +745,6 @@ namespace Core.Components
 
         private void NoCellSelected()
         {
-            var dataSourceFilter = Meta.DataSourceFilter;
             MainSection.DisposeChildren();
             ApplyFilter();
             if (Meta.ComponentType == nameof(VirtualGrid) && Meta.CanSearch)
@@ -2344,75 +2343,6 @@ namespace Core.Components
             SwapHeader(index, index + 1);
             ResetOrder();
             UpdateHeader();
-        }
-
-
-        protected virtual void ChangeFieldOrder(Component header, Event e)
-        {
-            if (Meta.CanCache || header.ShortDesc.IsNullOrWhiteSpace())
-            {
-                return;
-            }
-
-            var sortFields = GetSortedFields();
-            if (!sortFields.ContainsKey(header.FieldName))
-            {
-                sortFields.Add(header.FieldName, false);
-            }
-            var target = e.Target.As<HTMLElement>();
-            var th = Html.Take(target).Closest(ElementType.th).GetContext();
-            var sortEle = th.QuerySelector(".fa");
-            if (sortEle is null)
-            {
-                Html.Take(target).Icon("fa fa-sort-amount-up-alt").End.Render();
-            }
-            else if (sortEle.HasClass("fa-sort-amount-down-alt"))
-            {
-                sortFields.Remove(header.FieldName);
-                sortEle.RemoveClass("fa-sort-amount-down-alt");
-            }
-            else if (sortEle.HasClass("fa-sort-amount-up-alt"))
-            {
-                sortFields[header.FieldName] = true;
-                sortEle.ReplaceClass("fa-sort-amount-up-alt", "fa-sort-amount-down-alt");
-            }
-            var orderPart = string.Join(",", sortFields.Select(x => x.Key + (x.Value ? " desc" : "")));
-            DataSourceFilter = OdataExt.ApplyClause(DataSourceFilter, orderPart, OdataExt.OrderByKeyword);
-            UpdateView();
-        }
-
-        private Dictionary<string, bool> GetSortedFields()
-        {
-            Dictionary<string, bool> fieldSorts = new Dictionary<string, bool> { };
-            if (DataSourceFilter.IsNullOrWhiteSpace())
-            {
-                return fieldSorts;
-            }
-
-            DataSourceFilter = DataSourceFilter.Replace(new RegExp(@"\s+"), " ");
-            var orderClause = OdataExt.GetClausePart(DataSourceFilter, OdataExt.OrderByKeyword);
-            if (orderClause.IsNullOrWhiteSpace())
-            {
-                return fieldSorts;
-            }
-
-            fieldSorts = orderClause.Split(",").Select(x =>
-            {
-                if (x.IsNullOrWhiteSpace())
-                {
-                    return null;
-                }
-
-                var sortedField = x.Split(" ");
-                if (sortedField.Length < 1)
-                {
-                    return null;
-                }
-
-                return new { Field = sortedField[0], Desc = sortedField.Length == 2 && sortedField[1].ToLower() == "desc" };
-            }).Where(x => x != null).DistinctBy(x => x.Field).ToDictionary(x => x.Field, x => x.Desc);
-
-            return fieldSorts;
         }
 
         public virtual void ToggleAll()
