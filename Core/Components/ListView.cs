@@ -266,10 +266,10 @@ namespace Core.Components
             ListViewSearch = new ListViewSearch(Meta);
             AddChild(ListViewSearch);
             Html.Take(Element).Div.ClassName("list-content").End.Div.ClassName("empty");
-            EmptyRowSection = new ListViewSection(Html.Context) { ParentElement = Element };
-            AddChild(EmptyRowSection);
+            EmptySection = new ListViewSection(Html.Context) { ParentElement = Element };
+            AddChild(EmptySection);
 
-            MainSection = new ListViewSection(EmptyRowSection.Element.PreviousSibling);
+            MainSection = new ListViewSection(EmptySection.Element.PreviousSibling);
             AddChild(MainSection);
 
 
@@ -366,7 +366,7 @@ namespace Core.Components
                 Paginator = new Paginator(new PaginationOptions
                 {
                     Total = 0,
-                    PageSize = Meta.Row ?? 20,
+                    PageSize = Meta.Row ?? 50,
                     CurrentPageCount = RowData.Data.Count(),
                 });
                 AddChild(Paginator);
@@ -400,7 +400,7 @@ namespace Core.Components
         public virtual void RenderContent()
         {
             MainSection.DisposeChildren();
-            EmptyRowSection?.DisposeChildren();
+            EmptySection?.DisposeChildren();
             FormattedRowData = FormattedRowData.Nothing() ? RowData.Data : FormattedRowData;
             if (FormattedRowData.Nothing())
             {
@@ -437,6 +437,9 @@ namespace Core.Components
             else
             {
                 DisposeNoRecord();
+            }
+            if (Editable)
+            {
                 MainSection.Element.AddEventListener(EventType.ContextMenu, BodyContextMenuHandler);
             }
             Spinner.Hide();
@@ -553,7 +556,7 @@ namespace Core.Components
                         child.UpdateView(force: true);
                     });
                 });
-                EmptyRowSection.Children.Clear();
+                EmptySection.Children.Clear();
                 AddNewEmptyRow();
                 this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterCreated, rowData).Done(() =>
                 {
@@ -565,7 +568,7 @@ namespace Core.Components
 
         public virtual void AddNewEmptyRow()
         {
-            if (Meta.LiteGrid || Disabled || !Editable || EmptyRowSection?.Children.HasElement() == true)
+            if (Meta.LiteGrid || Disabled || !Editable || EmptySection?.Children.HasElement() == true)
             {
                 return;
             }
@@ -579,7 +582,7 @@ namespace Core.Components
                 });
             }
             emptyRowData[IdField] = null;
-            var rowSection = RenderRowData(Header, emptyRowData, EmptyRowSection, null, true);
+            var rowSection = RenderRowData(Header, emptyRowData, EmptySection, null, true);
             emptyRowData.ForEachProp((field, value) =>
             {
                 rowSection.PatchModel.Add(new PatchDetail
@@ -590,11 +593,11 @@ namespace Core.Components
             });
             if (!Meta.TopEmpty)
             {
-                MainSection.Element.InsertBefore(MainSection.Element, EmptyRowSection.Element);
+                MainSection.Element.InsertBefore(MainSection.Element, EmptySection.Element);
             }
             else
             {
-                MainSection.Element.AppendChild(EmptyRowSection.Element.FirstElementChild);
+                MainSection.Element.AppendChild(EmptySection.Element.FirstElementChild);
             }
             this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterEmptyRowCreated, emptyRow).Done();
         }
@@ -1345,7 +1348,7 @@ namespace Core.Components
             return tcs.Task;
         }
         public bool _hasLoadRef { get; set; }
-        public ListViewSection EmptyRowSection { get; set; }
+        public ListViewSection EmptySection { get; set; }
         protected Function _preQueryFn;
         internal string FeatureId;
         protected bool _hasLoadUserSetting;

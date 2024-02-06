@@ -69,7 +69,6 @@ namespace Core.Components
         protected override void Rerender()
         {
             LoadRerender = true;
-            DisposeNoRecord();
             Header = Header.Where(x => !x.Hidden).ToList();
             RenderTableHeader(Header);
             if (Editable)
@@ -78,11 +77,18 @@ namespace Core.Components
             }
             RenderContent();
             StickyColumn(this);
-            MainSection?.Element?.AddEventListener(EventType.ContextMenu, BodyContextMenuHandler);
             if (!Editable && RowData.Data.Nothing())
             {
                 NoRecordFound();
-                return;
+            }
+            else
+            {
+                DisposeNoRecord();
+            }
+            if (Editable)
+            {
+                MainSection.Element.AddEventListener(EventType.ContextMenu, BodyContextMenuHandler);
+                EmptySection.Element.AddEventListener(EventType.ContextMenu, BodyContextMenuHandler);
             }
             RenderIndex();
         }
@@ -182,10 +188,10 @@ namespace Core.Components
             MainSection = new ListViewSection(FooterSection.Element.PreviousElementSibling) { ParentElement = DataTable };
             AddChild(MainSection);
 
-            EmptyRowSection = new ListViewSection(MainSection.Element.PreviousElementSibling) { ParentElement = DataTable };
-            AddChild(EmptyRowSection);
+            EmptySection = new ListViewSection(MainSection.Element.PreviousElementSibling) { ParentElement = DataTable };
+            AddChild(EmptySection);
 
-            HeaderSection = new ListViewSection(EmptyRowSection.Element.PreviousElementSibling) { ParentElement = DataTable };
+            HeaderSection = new ListViewSection(EmptySection.Element.PreviousElementSibling) { ParentElement = DataTable };
             AddChild(HeaderSection);
             Html.Instance.EndOf(".table-wrapper");
             RenderPaginator();
@@ -1017,7 +1023,7 @@ namespace Core.Components
                     {
                         if (Meta.CanAdd)
                         {
-                            upItemUp = EmptyRowSection.FirstChild as ListViewItem;
+                            upItemUp = EmptySection.FirstChild as ListViewItem;
                         }
                         else
                         {
@@ -1037,7 +1043,7 @@ namespace Core.Components
                     {
                         if (Meta.CanAdd)
                         {
-                            upItemDown = EmptyRowSection.FirstChild as ListViewItem;
+                            upItemDown = EmptySection.FirstChild as ListViewItem;
                         }
                         else
                         {
@@ -1518,7 +1524,7 @@ namespace Core.Components
 
         public override void AddNewEmptyRow()
         {
-            if (Disabled || !Editable || EmptyRowSection?.Children.HasElement() == true)
+            if (Disabled || !Editable || EmptySection?.Children.HasElement() == true)
             {
                 return;
             }
@@ -1532,7 +1538,7 @@ namespace Core.Components
                 });
             }
             emptyRowData[IdField] = null;
-            var rowSection = RenderRowData(Header, emptyRowData, EmptyRowSection, null, true);
+            var rowSection = RenderRowData(Header, emptyRowData, EmptySection, null, true);
             emptyRowData.ForEachProp((field, value) =>
             {
                 rowSection.PatchModel.Add(new PatchDetail
@@ -1543,11 +1549,11 @@ namespace Core.Components
             });
             if (!Meta.TopEmpty)
             {
-                DataTable.InsertBefore(MainSection.Element, EmptyRowSection.Element);
+                DataTable.InsertBefore(MainSection.Element, EmptySection.Element);
             }
             else
             {
-                DataTable.InsertBefore(EmptyRowSection.Element, MainSection.Element);
+                DataTable.InsertBefore(EmptySection.Element, MainSection.Element);
             }
             this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterEmptyRowCreated, emptyRow).Done();
         }
@@ -1931,7 +1937,13 @@ namespace Core.Components
 
         protected override void SetRowData(List<object> listData)
         {
-            RowData._data.Clear();
+            try
+            {
+                RowData._data.Clear();
+            }
+            catch (Exception)
+            {
+            }
             var hasElement = listData.HasElement();
             if (hasElement)
             {
@@ -2047,7 +2059,7 @@ namespace Core.Components
                     Entity.SetComplexPropValue(FieldName, RowData.Data);
                 }
                 MoveEmptyRow(rowSection);
-                EmptyRowSection.Children.Clear();
+                EmptySection.Children.Clear();
                 AddNewEmptyRow();
                 if (!com.Contains(component?.Meta.ComponentType))
                 {
@@ -2101,19 +2113,19 @@ namespace Core.Components
             if (Meta.TopEmpty)
             {
                 RowData.Data.Insert(0, rowSection.Entity);
-                if (!MainSection.Children.Contains(EmptyRowSection.FirstChild))
+                if (!MainSection.Children.Contains(EmptySection.FirstChild))
                 {
-                    MainSection.Children.Insert(0, EmptyRowSection.FirstChild);
+                    MainSection.Children.Insert(0, EmptySection.FirstChild);
                 }
-                MainSection.Element.Prepend(EmptyRowSection.Element.FirstElementChild);
+                MainSection.Element.Prepend(EmptySection.Element.FirstElementChild);
             }
             else
             {
                 RowData.Data.Add(rowSection.Entity);
-                MainSection.Element.AppendChild(EmptyRowSection.Element.FirstElementChild);
-                if (!MainSection.Children.Contains(EmptyRowSection.FirstChild))
+                MainSection.Element.AppendChild(EmptySection.Element.FirstElementChild);
+                if (!MainSection.Children.Contains(EmptySection.FirstChild))
                 {
-                    MainSection.Children.Add(EmptyRowSection.FirstChild);
+                    MainSection.Children.Add(EmptySection.FirstChild);
                 }
             }
             if (Meta.IsRealtime)
@@ -2170,6 +2182,7 @@ namespace Core.Components
                     .DataAttr("id", header.Id).Width(header.AutoFit ? "auto" : header.Width)
                     .Style($"{header.Style};min-width: {header.MinWidth}; max-width: {header.MaxWidth}")
                     .TextAlign(TextAlign.center)
+                    .Event(EventType.DblClick, EditForm.ComponentProperties, header)
                     .Event(EventType.ContextMenu, HeaderContextMenu, header)
                     .Event(EventType.FocusOut, (e) => FocusOutHeader(e, header))
                     .Event(EventType.KeyDown, (e) => ThHotKeyHandler(e, header));
@@ -2578,7 +2591,7 @@ namespace Core.Components
                     var nextComponent = rowSection.Children.Where(y => y.FieldName == nextGrid.FieldName).FirstOrDefault();
                     nextComponent.Focus();
                 }
-                EmptyRowSection.Children.Clear();
+                EmptySection.Children.Clear();
                 AddNewEmptyRow();
                 Entity.SetComplexPropValue(FieldName, RowData.Data);
                 await this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterCreated, rowData);

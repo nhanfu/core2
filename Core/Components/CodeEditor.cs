@@ -18,18 +18,6 @@ namespace Core.Components
             Element = ele;
         }
 
-        private bool _hasLoadScript;
-        private Task<bool> LoadScript()
-        {
-            if (_hasLoadScript) return Task.FromResult(true);
-            _hasLoadScript = true;
-            var tcs = new TaskCompletionSource<bool>();
-            Client.LoadScript("https://unpkg.com/monaco-editor@latest/min/vs/loader.js")
-                .Done(() => tcs.TrySetResult(true))
-                .Catch(err => tcs.TrySetException(err));
-            return tcs.Task;
-        }
-
         public override void Render()
         {
             if (Element is null)
@@ -37,13 +25,9 @@ namespace Core.Components
                 Html.Take(ParentElement).Div.Id(Uuid7.Id25());
                 Element = Html.Context;
             }
-            LoadScript().Done(() =>
-            {
-                var self = this;
-                /*@
-                self.editor = initCodeEditor(self);
-                 */
-            });
+            /*@
+            this.editor = initCodeEditor(this);
+            */
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)

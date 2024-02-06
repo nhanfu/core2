@@ -104,7 +104,7 @@ function initCodeEditor(com) {
         { type: com.Meta?.Template ?? 'text/javascript' }));
 
     require(["vs/editor/editor.main"], function () {
-        let editor = monaco.editor.create(document.getElementById(com.Element.id), {
+        let editor = monaco.editor.create(com.Element, {
             value: com.Entity[com.Meta.FieldName],
             language: com.Meta.Lang ?? 'javascript',
             theme: 'vs-light',

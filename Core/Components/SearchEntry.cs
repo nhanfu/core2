@@ -52,7 +52,7 @@ namespace Core.Components
         {
             DeserializeLocalData(ui);
             Meta.ComponentGroup = null;
-            Meta.Row = Meta.Row ?? 20;
+            Meta.Row = Meta.Row ?? 50;
             RowData = new ObservableList<object>();
             Element = ele;
         }

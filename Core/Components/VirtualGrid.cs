@@ -93,7 +93,7 @@ namespace Core.Components
             var actualSkip = skip ?? GetRowCountByHeight(scrollTop);
             if (viewPortCount <= 0)
             {
-                viewPortCount = Meta.Row ?? 20;
+                viewPortCount = Meta.Row ?? 50;
             }
             List<object> rows;
             if (firstLoad)
