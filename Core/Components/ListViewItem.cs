@@ -222,15 +222,6 @@ namespace Core.Components
             var component = ((header.Editable || NotCellText.Contains(header.ComponentType)) && ListViewSection.ListView.CanWrite && canWrite)
                 ? ComponentFactory.GetComponent(header, EditForm)
                 : new Label(header);
-            if (component is Label cellText)
-            {
-                cellText.RefData = ListView.RefData;
-            }
-            if (header.ReferenceId.HasAnyChar())
-            {
-                var source = header.LocalData ?? (ListView.RefData.Nothing() ? null : ListView.RefData.GetValueOrDefault(header.RefName));
-                header.LocalData = source;
-            }
             if (component is SearchEntry searchEntry && !(component is MultipleSearchEntry))
             {
                 var matched = header.LocalData?.FirstOrDefault(x => (string)x[IdField] == rowData?.GetPropValue(header.FieldName)?.ToString());

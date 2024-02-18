@@ -30,7 +30,8 @@ namespace Core.Components
         protected static IEnumerable<object> _copiedRows;
         public Action<object> RowClick;
         public Action<object> DblClick;
-        public FeaturePolicy[] Policies { get; set; }
+        public FeaturePolicy[] GeneralPolicies { get; set; }
+        public FeaturePolicy[] GridPolicies { get; set; }
 
         public bool CanWrite;
         protected Section _noRecord;
@@ -55,7 +56,6 @@ namespace Core.Components
         public ListViewSection HeaderSection { get; set; }
         public ListViewSection MainSection { get; set; }
         public ListViewSection FooterSection { get; set; }
-        public Dictionary<string, List<object>> RefData { get; set; }
         private static List<object> _originRows;
         public Action OnDeleteConfirmed { get; set; }
         public IEnumerable<ListViewItem> AllListViewItem => MainSection.Children.Cast<ListViewItem>();
@@ -79,7 +79,6 @@ namespace Core.Components
             Name = ui.FieldName;
             Header = new List<Component>();
             RowData = new ObservableList<object>();
-            RefData = new Dictionary<string, List<object>>();
             AdvSearchVM = new AdvSearchVM
             {
                 ActiveState = ActiveStateEnum.Yes,
@@ -223,8 +222,9 @@ namespace Core.Components
         public override void Render()
         {
             var feature = EditForm.Feature;
-            Policies = EditForm.GetElementPolicies(Meta.Id);
-            CanWrite = CanDo(Policies, x => x.CanWrite || x.CanWriteAll);
+            GridPolicies = EditForm.GetElementPolicies(Meta.Id);
+            GeneralPolicies = EditForm.Feature.FeaturePolicy.Where(x => x.RecordId.IsNullOrWhiteSpace()).ToArray();
+            CanWrite = CanDo(x => x.CanWrite || x.CanWriteAll);
             Html.Take(ParentElement).DataAttr("name", FieldName);
             AddSections();
             SetRowDataIfExists();
@@ -624,25 +624,6 @@ namespace Core.Components
             e.PreventDefault();
             e.StopPropagation();
             TbodyContextMenu(e);
-        }
-
-        protected void SetRemoteSource(List<object> remoteData, string typeName, Component header)
-        {
-            var localSource = RefData.GetValueOrDefault(typeName);
-            if (localSource is null)
-            {
-                RefData.Add(typeName, remoteData);
-            }
-            else
-            {
-                remoteData.AddRange(localSource);
-                localSource.Clear();
-                localSource.AddRange(remoteData.DistinctBy(x => x[IdField].As<int>()));
-            }
-            if (header != null)
-            {
-                header.LocalData = remoteData;
-            }
         }
 
         public void DeactivateSelected(object ev = null)
@@ -1260,19 +1241,10 @@ namespace Core.Components
             TabEditor.AddChild(security);
         }
 
-        internal bool CanDo(IEnumerable<FeaturePolicy> gridPolicies, Func<FeaturePolicy, bool> permissionPredicate)
+        internal bool CanDo(Func<FeaturePolicy, bool> predicate)
         {
-            var featurePolicy = EditForm.Feature.FeaturePolicy.Where(x => x.EntityId == null).Any(permissionPredicate);
-            if (!featurePolicy)
-            {
-                return false;
-            }
-            var Component = gridPolicies.Any();
-            if (!Component)
-            {
-                return true;
-            }
-            return gridPolicies.Any(permissionPredicate);
+            var hasPermission = GridPolicies.Any(predicate);
+            return hasPermission || GeneralPolicies.Any(predicate);
         }
 
         protected List<FeaturePolicy> RecordPolicy = new List<FeaturePolicy>();
@@ -1455,14 +1427,14 @@ namespace Core.Components
                     Text = "Xem lịch sử",
                     Click = ViewHistory,
                 });
-            if (Policies.Any(x => x.CanDeactivate || x.CanDeactivate))
+            if (CanDo(x => x.CanDeactivate || x.CanDeactivate))
                 ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
                 {
                     Icon = "mif-unlink",
                     Text = "Hủy (không xóa)",
                     Click = DeactivateSelected,
                 });
-            if (Policies.Any(x => x.CanDelete || x.CanDeleteAll))
+            if (CanDo(x => x.CanDelete || x.CanDeleteAll))
                 ContextMenu.Instance.MenuItems.Add(new ContextMenuItem
                 {
                     Icon = "fa fa-trash",
@@ -1492,7 +1464,7 @@ namespace Core.Components
                     x[IsOwner] = isOwner;
                     return isOwner;
                 }).Select(x => x[IdField].As<string>()).ToList();
-                var canShare = CanDo(Policies, x => x.CanShare) && ownedRecords.Any();
+                var canShare = CanDo(x => x.CanShare || x.CanShareAll) && ownedRecords.Any();
                 if (!canShare)
                 {
                     tcs.TrySetResult(null);

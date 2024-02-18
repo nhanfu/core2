@@ -24,6 +24,7 @@ namespace Core.Models
         public string RecordId { get; set; }
         public string UserId { get; set; }
         public bool CanShare { get; set; }
+        public bool CanShareAll { get; set; }
         public string Desc { get; set; }
         public bool CanWriteAll { get; set; }
         public string EntityName { get; set; }

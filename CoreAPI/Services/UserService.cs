@@ -859,6 +859,7 @@ public class UserService
 
     private async Task<Dictionary<string, object>[][]> GetResultFromQuery(SqlViewModel vm, string decryptedConnStr, SqlQueryResult jsRes)
     {
+        if (jsRes.Query.IsNullOrWhiteSpace()) throw new ArgumentNullException(nameof(jsRes.Query));
         var select = vm.Select.HasAnyChar() ? $"select {vm.Select}" : string.Empty;
         var where = vm.Where.HasAnyChar() ? $"where {vm.Where}" : string.Empty;
         var groupBy = vm.GroupBy.HasAnyChar() ? $"group by {vm.GroupBy}" : string.Empty;

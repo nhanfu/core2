@@ -152,8 +152,8 @@ namespace Core.Components
                 {
                     FieldName = nameof(ListViewSearchVM.FullTextSearch),
                     Visibility = true,
-                    Label = "Lọc hiển thị",
-                    PlainText = "Lọc hiển thị",
+                    Label = "Inline search",
+                    PlainText = "Inline search",
                     ShowLabel = false,
                 })
                 {
@@ -187,8 +187,8 @@ namespace Core.Components
             {
                 FieldName = nameof(ListViewSearchVM.StartDate),
                 Visibility = true,
-                Label = "Từ ngày",
-                PlainText = "Từ ngày",
+                Label = "From date",
+                PlainText = "From date",
                 ShowLabel = false,
             })
             {
@@ -200,8 +200,8 @@ namespace Core.Components
             {
                 FieldName = nameof(ListViewSearchVM.EndDate),
                 Visibility = true,
-                Label = "Đến ngày",
-                PlainText = "Đến ngày",
+                Label = "To date",
+                PlainText = "To date",
                 ShowLabel = false,
             })
             {
@@ -234,29 +234,29 @@ namespace Core.Components
                         ParentListView.ReloadData().Done();
                     }).End
                 .Icon("fa fa-cog")
-                    .Title("Nâng cao")
+                    .Title("Advance")
                     .Event(EventType.Click, AdvancedOptions).End
                 .Icon("fa fa-undo")
-                    .Title("Làm mới")
+                    .Title("Refresh")
                     .Event(EventType.Click, RefershListView).End
                     .Render();
             if (Meta.ShowHotKey && ParentGridView != null)
             {
                 Html.Take(Element).Div.ClassName("hotkey-block")
                 .Button2("F1", className: "btn btn-light btn-sm").Event(EventType.Click, ParentGridView.ToggleAll)
-                    .Attr("title", "Bỏ chọn tất cả").End
+                    .Attr("title", "Uncheck all").End
                 .Button2("F2", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
                 {
                     var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.Meta.Id == ParentGridView.LastComponentFocus.Id);
                     ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.ToString()), KeyCodeEnum.F2);
                 })
-                    .Attr("title", "Lọc loại trừ").End
+                    .Attr("title", "Filter except").End
                 .Button2("F3", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
                 {
                     var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.Meta.Id == ParentGridView.LastComponentFocus.Id);
                     ParentGridView.ActionKeyHandler(e, ParentGridView.LastComponentFocus, ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.ToString()), KeyCodeEnum.F3);
                 })
-                    .Attr("title", "Cộng tổng dòng được chọn").End
+                    .Attr("title", "Summary selected").End
                 .Button2("F4", className: "btn btn-light btn-sm").Event(EventType.Click, (e) =>
                 {
                     var com = ParentListView.LastListViewItem.Children.FirstOrDefault(x => x.Meta.Id == ParentGridView.LastComponentFocus.Id);

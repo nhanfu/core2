@@ -1200,9 +1200,8 @@ namespace Core.Components
                 Toast.Warning("Vui lòng chọn dòng cần xóa");
                 return;
             }
-            var gridPolicies = EditForm.GetElementPolicies(Meta.Id, Utils.ComponentId);
             var isOwner = selectedRows.All(x => Utils.IsOwner(x, false));
-            var canDelete = CanDo(gridPolicies, x => x.CanDelete && isOwner || x.CanDeleteAll);
+            var canDelete = CanDo(x => x.CanDelete && isOwner || x.CanDeleteAll);
             if (canDelete)
             {
                 HardDeleteSelected(null);
@@ -1937,17 +1936,18 @@ namespace Core.Components
 
         protected override void SetRowData(List<object> listData)
         {
-            try
+            if (RowData._data is null || RowData._data.GetType() == typeof(string))
+            {
+                RowData._data = listData;
+            }
+            else
             {
                 RowData._data.Clear();
-            }
-            catch (Exception)
-            {
-            }
-            var hasElement = listData.HasElement();
-            if (hasElement)
-            {
-                listData.ForEach(RowData._data.Add); // Not to use AddRange because the _data is not always List
+                var hasElement = listData.HasElement();
+                if (hasElement)
+                {
+                    listData.ForEach(RowData._data.Add); // Not to use AddRange because the _data is not always List
+                }
             }
             RenderContent();
             if (Entity != null && ShouldSetEntity)
@@ -2058,9 +2058,12 @@ namespace Core.Components
                 {
                     Entity.SetComplexPropValue(FieldName, RowData.Data);
                 }
-                MoveEmptyRow(rowSection);
-                EmptySection.Children.Clear();
-                AddNewEmptyRow();
+                if (rowSection.EmptyRow)
+                {
+                    MoveEmptyRow(rowSection);
+                    EmptySection.Children.Clear();
+                    AddNewEmptyRow();
+                }
                 if (!com.Contains(component?.Meta.ComponentType))
                 {
                     ClearSelected();
