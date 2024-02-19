@@ -161,9 +161,9 @@ namespace Core.Components
 
                 Element.ParentElement.InsertBefore(Element, Element.ParentElement.Children[index.Value]);
             }
-            if (Utils.IsFunction(Meta.Template, out Function func))
+            if (Utils.IsFunction(Meta.Renderer, out Function func, shouldAddReturn: false))
             {
-                func.Call(this, this);
+                func.Call(this, this, headers);
             }
             else
             {
@@ -177,45 +177,15 @@ namespace Core.Components
 
         public List<PatchDetail> PatchModel = new List<PatchDetail>();
 
-        private bool CanDo(IEnumerable<FeaturePolicy> gridPolicies, Func<FeaturePolicy, bool> permissionPredicate)
-        {
-            var grid = gridPolicies.FirstOrDefault(x => x.UserId == Client.Token.UserId);
-            if (grid != null)
-            {
-                return grid.CanWrite;
-            }
-            else
-            {
-                var featurePolicy = EditForm.Feature.FeaturePolicy.Where(x => x.EntityId == null).Any(permissionPredicate);
-                if (!featurePolicy)
-                {
-                    return false;
-                }
-                var Component = gridPolicies.Any();
-                if (!Component)
-                {
-                    return true;
-                }
-                return gridPolicies.Any(permissionPredicate);
-            }
-        }
-
         internal virtual void RenderTableCell(object rowData, Component header, HTMLElement cellWrapper = null)
         {
             if (string.IsNullOrEmpty(header.FieldName))
             {
                 return;
             }
-            var gridPolicies = EditForm.GetGridPolicies(header.Id, Utils.ComponentId);
-            var canWrite = CanDo(gridPolicies, x => x.CanWrite);
-            var component = ((header.Editable || NotCellText.Contains(header.ComponentType)) && ListViewSection.ListView.CanWrite && canWrite)
+            var component = ((header.Editable || NotCellText.Contains(header.ComponentType)) && ListViewSection.ListView.CanWrite)
                 ? ComponentFactory.GetComponent(header, EditForm)
                 : new Label(header);
-            if (component is SearchEntry searchEntry && !(component is MultipleSearchEntry))
-            {
-                var matched = header.LocalData?.FirstOrDefault(x => (string)x[IdField] == rowData?.GetPropValue(header.FieldName)?.ToString());
-                searchEntry.Matched = matched;
-            }
             component.Id = header.Id;
             component.Name = header.FieldName;
             component.Entity = rowData;

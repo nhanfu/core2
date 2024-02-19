@@ -71,6 +71,7 @@ namespace Core.Models
         public bool TopEmpty { get; set; }
         public bool IsCollapsible { get; set; }
         public string Template { get; set; }
+        public string Renderer { get; set; }
         public string PreQuery { get; set; }
         public string DisabledExp { get; set; }
         public bool FocusSearch { get; set; }

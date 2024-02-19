@@ -286,13 +286,13 @@ namespace Core.Components
         {
             get
             {
-                string fn = this is EditForm form ? form.Feature.CacheName : Meta?.CacheName;
-                if (fn.IsNullOrWhiteSpace()) return null;
-                if (Utils.IsFunction(fn, out var cacheNameFn))
+                string exp = this is EditForm form ? form.Feature?.CacheName : Meta?.CacheName;
+                if (exp.IsNullOrWhiteSpace()) return null;
+                if (Utils.IsFunction(exp, out var cacheNameFn))
                 {
                     return cacheNameFn.Call(null, this) as string;
                 }
-                return null;
+                return exp;
             }
         }
 

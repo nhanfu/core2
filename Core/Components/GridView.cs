@@ -901,8 +901,8 @@ namespace Core.Components
                 for (var j = 0; j < cells.Length; j++)
                 {
                     var htmlElement = cells[j] as HTMLElement;
-                    var cellText = string.Empty;
                     var input = htmlElement.QuerySelector("input:first-child");
+                    string cellText;
                     if (input != null)
                     {
                         cellText = input.GetPropValue("value").ToString();
@@ -911,7 +911,7 @@ namespace Core.Components
                     {
                         cellText = cells[j].TextContent is null ? "" : cells[j].TextContent;
                     }
-                    if (cellText.DecodeSpecialChar().ToLowerCase().IndexOf(ListViewSearch.EntityVM.FullTextSearch.ToLowerCase().DecodeSpecialChar()) > -1)
+                    if (cellText.DecodeSpecialChar().ToLowerCase().IndexOf(ListViewSearch.EntityVM.FullTextSearch?.ToLowerCase().DecodeSpecialChar()) > -1)
                     {
                         found = true;
                         break;

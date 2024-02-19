@@ -47,6 +47,7 @@ namespace Core.Extensions
         public const string DeactivateSvc = "/user/Deactivate";
         public const string ExportExcel = "/user/excel";
         public const string FileSvc = "/user/file";
+        public const string Return = "return ";
         public static dynamic HeadChildren = (Document.Instance as dynamic).head.children;
 
         public const string GOOGLE_MAP = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCr_2PaKJplCyvwN4q78lBkX3UBpfZ_HsY";
@@ -401,12 +402,6 @@ namespace Core.Extensions
             }
         }
 
-        public static bool CompareIdField(object entity, object cellData)
-        {
-            var idVal = entity.GetPropValue(IdField);
-            return idVal is long idLong && idLong == (long)cellData || idVal is int idInt && idInt == (int)cellData;
-        }
-
         public static string GetFormattedRow(string exp, object row)
         {
             var isFunc = IsFunction(exp, out Function func);
@@ -417,19 +412,21 @@ namespace Core.Extensions
             return func.Call(null, row)?.ToString();
         }
 
-        public static bool IsFunction(string exp, out Function obj)
+        public static bool IsFunction(string exp, out Function obj, bool shouldAddReturn = true)
         {
-            obj = null;
+            if (exp.IsNullOrWhiteSpace())
+            {
+                obj = null;
+                return false;
+            }
             try
             {
-                obj = Window.Eval<Function>(exp);
-                if (obj != null && obj is Function)
-                {
-                    return true;
-                }
+                var fn = new Function(shouldAddReturn ? Return + exp : exp);
+                obj = fn?.Call(null) as Function;
             }
             catch
             {
+                obj = null;
                 return false;
             }
             return obj != null;
