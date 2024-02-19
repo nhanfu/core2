@@ -191,7 +191,7 @@ namespace Core.Components
             {
                 return;
             }
-            var idAttr = item[IdField].ToString();
+            var idAttr = item[IdField] as string;
             var exist = Element.ParentElement.QuerySelector($"span[data-id='{idAttr}']");
             if (exist != null)
             {
@@ -204,7 +204,7 @@ namespace Core.Components
             {
                 var oldList = ListValues.ToList();
                 MatchedItems.Remove(item);
-                var id = item[IdField]?.ToString();
+                var id = item[IdField] as string;
                 while (ListValues.Contains(id))
                 {
                     ListValues.Remove(id);
@@ -226,7 +226,7 @@ namespace Core.Components
                 return;
             }
 
-            var id = rowData[IdField]?.ToString();
+            var id = rowData[IdField] as string;
             if (ListValues is null)
             {
                 ListValues = new List<string>();
@@ -239,7 +239,7 @@ namespace Core.Components
             else
             {
                 ListValues.Remove(id);
-                var exist = MatchedItems.FirstOrDefault(x => x[IdField]?.ToString() == id);
+                var exist = MatchedItems.FirstOrDefault(x => x[IdField] as string == id);
                 MatchedItems.Remove(exist);
             }
             ListValues = ListValues;

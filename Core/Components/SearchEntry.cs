@@ -652,7 +652,7 @@ namespace Core.Components
             var oldMatch = Matched;
             Matched = rowData;
             var oldValue = _value;
-            _value = rowData[IdField]?.ToString();
+            _value = rowData[IdField] as string;
             if (Entity != null && FieldName.HasAnyChar())
             {
                 Entity.SetComplexPropValue(FieldName, _value);

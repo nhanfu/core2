@@ -2,6 +2,8 @@
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using System.Collections.Generic;
+using System.Linq;
 using ElementType = Core.MVVM.ElementType;
 
 namespace Core.Components
@@ -12,9 +14,22 @@ namespace Core.Components
         {
         }
 
-        public override void Render()
+        internal override void RenderRowData(List<Component> headers, object row, int? index = null, bool emptyRow = false)
         {
-            base.Render();
+            if (index.HasValue)
+            {
+                if (index >= Element.ParentElement.Children.Count() || index < 0)
+                {
+                    index = 0;
+                }
+
+                Element.ParentElement.InsertBefore(Element, Element.ParentElement.Children[index.Value]);
+            }
+            headers.Where(x => !x.Hidden).ForEach(header =>
+            {
+                RenderTableCell(row, header, null);
+            });
+            BindingEvents();
         }
 
         internal override void RenderTableCell(object rowData, Component header, HTMLElement cellWrapper = null)
@@ -30,7 +45,7 @@ namespace Core.Components
             {
                 return;
             }
-            base.RenderTableCell(rowData, header, cellWrapper ?? Html.Context);
+            base.RenderTableCell(rowData, header, Html.Context);
             Html.Instance.EndOf(ElementType.td);
         }
 

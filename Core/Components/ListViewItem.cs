@@ -128,7 +128,7 @@ namespace Core.Components
             }
         }
 
-        private void BindingEvents()
+        protected void BindingEvents()
         {
             if (Element is null) return;
             Html.Take(Element)
@@ -150,7 +150,7 @@ namespace Core.Components
                 .Event(EventType.MouseLeave, MouseLeave);
         }
 
-        internal void RenderRowData(List<Component> headers, object row, int? index = null, bool emptyRow = false)
+        internal virtual void RenderRowData(List<Component> headers, object row, int? index = null, bool emptyRow = false)
         {
             if (index.HasValue)
             {
@@ -163,18 +163,7 @@ namespace Core.Components
             }
             if (Utils.IsFunction(Meta.Template, out Function func))
             {
-                var formatted = func.Call(this, this)?.ToString();
-                ListView.Element.InnerHTML += formatted;
-                Element = ListView.Element.LastElementChild;
-                EditForm.BindingTemplate(Element, this, Entity, (ele, meta, parent, entity) =>
-                {
-                    var newCom = EditForm.BindingCom(ele, meta, parent, entity);
-                    if (newCom != null)
-                    {
-                        newCom.UserInput += (arg) => UserInputHandler(arg, newCom);
-                    }
-                    return newCom;
-                });
+                func.Call(this, this);
             }
             else
             {

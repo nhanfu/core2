@@ -48,8 +48,6 @@ namespace Core.Components
         private async Task RenderChart()
         {
             AddElement();
-            var isFn = Utils.IsFunction(Meta.Query, out var fn);
-            var dataSourceFilter = isFn ? fn.Call(this, Entity, this).ToString() : Utils.FormatEntity(Meta.Query, Entity);
             if (Data is null)
             {
                 var isPreQueryFn = Utils.IsFunction(Meta.PreQuery, out var _preQuery);

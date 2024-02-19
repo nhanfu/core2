@@ -1776,11 +1776,6 @@ namespace Core.Components
                 Meta = Meta
             };
             section.AddChild(rowSection, index);
-            var id = row[IdField].As<int>();
-            if (id <= 0 && !emptyRow)
-            {
-                rowSection.Dirty = true;
-            }
             var tr = Html.Context as HTMLTableRowElement;
             tr.TabIndex = -1;
             if (index.HasValue)
@@ -1792,13 +1787,7 @@ namespace Core.Components
 
                 tr.ParentElement.InsertBefore(tr, tr.ParentElement.Children[index.Value]);
             }
-            if (headers.HasElement())
-            {
-                headers.ForEach(header =>
-                {
-                    rowSection.RenderTableCell(row, header);
-                });
-            }
+            rowSection.RenderRowData(headers, row, index, emptyRow);
             if (emptyRow)
             {
                 Children.ForEach(x => x.AlwaysLogHistory = true);
@@ -1809,7 +1798,7 @@ namespace Core.Components
             }
             if (Meta.ComponentType != nameof(FileUploadGrid))
             {
-                if (row["Id"].As<int?>() > 0)
+                if (row[Utils.IdField] != null)
                 {
                     rowSection.Element.RemoveClass("new-row");
                 }

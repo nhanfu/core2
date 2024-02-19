@@ -420,10 +420,6 @@ namespace Core.Extensions
         public static bool IsFunction(string exp, out Function obj)
         {
             obj = null;
-            if (exp.IsNullOrEmpty() || !exp.Contains("=>"))
-            {
-                return false;
-            }
             try
             {
                 obj = Window.Eval<Function>(exp);
