@@ -45,27 +45,6 @@ namespace Core.Components
             */
         }
 
-        public void ImageUploadHandler(object fileWrapper, Action<string> success)
-        {
-            var file = fileWrapper["blob"].As<Func<File>>().Invoke();
-            var reader = new FileReader();
-            reader.OnLoad += async (Event e) =>
-            {
-                var uploader = new Image(new Component());
-                var path = await uploader.UploadBase64Image(e.Target["result"].ToString(), file.Name);
-                if (success != null)
-                {
-                    success.Invoke(path);
-                    string content = null;
-                    /*@
-                    content = this.editor.setContent(text);
-                    */
-                    Entity.SetComplexPropValue(FieldName, content);
-                }
-            };
-            reader.ReadAsDataURL(file);
-        }
-
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
         {
             var handler = _events.GetValueOrDefault(nameof(UpdateView));

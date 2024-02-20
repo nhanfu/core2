@@ -278,23 +278,75 @@ function initCkEditor(com) {
         ]
     }).then(editor => {
         editor.setData(com.Entity == null ? '' : (com.Entity[com.FieldName] ?? ''));
-        editor.on('mode', function () {
-            if (this.mode == 'source') {
-                var editable = editor.editable();
-                editable.attachListener(editable, 'input', function () {
-                    com.Entity[com.FieldName] = editor.getData();
-                    com.Dirty = true;
-                });
-            }
-            else {
-                editable.attachListener(editable, 'change', function () {
-                    com.Entity[com.FieldName] = editor.getData();
-                    com.Dirty = true;
-                });
-            }
+        editor.model.document.on('change:data', () => {
+            com.Entity[com.FieldName] = editor.getData();
+            com.Dirty = true;
         });
+        editor.plugins.get('FileRepository').createUploadAdapter = function (loader) {
+            return new MyUploadAdapter(loader, editor);
+        };
         com.addEventListener('UpdateView', () => {
             editor.setHtml(com.Entity == null ? null : com.Entity[com.FieldName]);
         });
     });
+}
+
+class MyUploadAdapter {
+    constructor(loader, editor) {
+        this.loader = loader;
+        this.editor = editor;
+    }
+
+    upload() {
+        return this.loader.file
+            .then(file => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+
+                reader.onload = () => {
+                    this._sendRequest(reader.result, file, resolve, reject);
+                };
+
+                reader.readAsDataURL(file);
+            }));
+    };
+
+    _sendRequest(base64, file, resolve, reject) {
+        var $step = 0,
+            $task1,
+            $taskResult1,
+            $jumpFromFinally,
+            uploader,
+            path,
+            content,
+            $asyncBody = Bridge.fn.bind(this, function () {
+                for (; ;) {
+                    $step = System.Array.min([0, 1], $step);
+                    switch ($step) {
+                        case 0: {
+                            uploader = new Core.Components.ImageUploader(new Core.Models.Component());
+                            $task1 = uploader.UploadBase64Image(Bridge.toString(base64), file.name);
+                            $step = 1;
+                            if ($task1.isCompleted()) {
+                                continue;
+                            }
+                            $task1.continue($asyncBody);
+                            return;
+                        }
+                        case 1: {
+                            $taskResult1 = $task1.getAwaitedResult();
+                            path = $taskResult1;
+                            resolve({
+                                default: path
+                            });
+                            return;
+                        }
+                        default: {
+                            return;
+                        }
+                    }
+                }
+            }, arguments);
+
+        $asyncBody();
+    }
 }
