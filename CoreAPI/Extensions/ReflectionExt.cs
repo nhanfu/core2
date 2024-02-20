@@ -182,12 +182,13 @@ namespace Core.Extensions
             return null;
         }
 
-        public static T MapTo<T>(this Dictionary<string, object> keyVal) where T : class 
+        public static T MapTo<T>(this Dictionary<string, object> keyVal) where T : class
         {
             if (keyVal is null) return null;
             var instance = (T)Activator.CreateInstance(typeof(T));
             var props = typeof(T).GetProperties();
-            foreach (var key in keyVal.Keys) {
+            foreach (var key in keyVal.Keys)
+            {
                 var prop = props.FirstOrDefault(x => x.Name == key);
                 if (prop is null || !prop.CanWrite) continue;
                 // var converter = TypeDescriptor.GetConverter(prop.PropertyType);
@@ -213,7 +214,7 @@ namespace Core.Extensions
                 patch.Changes.Add(new PatchDetail
                 {
                     Field = prop.Name,
-                    Value = val?.ToString()
+                    Value = val is DateTimeOffset time ? time.ToISOFormat() : val?.ToString()
                 });
             });
             return patch;
