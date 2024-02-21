@@ -161,6 +161,7 @@ namespace Core.Components.Framework
             var langSelect = new LangSelect(new Component(), html.GetContext());
             langSelect.Render();
             html.Div.ClassName("dropdown-divider").EndOf(ElementType.div);
+            html.A.Event(EventType.Click, DarkOrLightModeSwitcher).ClassName("dropdown-item").I.ClassName("far fa-moon-cloud").End.Text("Dark/Light Mode").EndOf(ElementType.a);
             html.A.Event(EventType.Click, SignOut).ClassName("dropdown-item").I.ClassName("far fa-power-off").End.Text("Logout").EndOf(ElementType.a);
         }
 
@@ -175,6 +176,13 @@ namespace Core.Components.Framework
                 EditForm.NotificationClient?.Close();
                 Window.SetTimeout(() => Window.Location.Reload(), 1000);
             });
+        }
+
+        private void DarkOrLightModeSwitcher(Event e)
+        {
+            e.PreventDefault();
+            var htmlElement = Document.DocumentElement;
+            htmlElement.Style["filter"] = htmlElement.Style["filter"].ToString().Contains("(1)") ? "invert(0)" : "invert(1)";
         }
 
         private void ViewProfile(Event e)
