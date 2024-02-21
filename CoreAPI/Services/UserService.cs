@@ -742,7 +742,7 @@ public class UserService
             x.Field = RemoveWhiteSpace(x.Field);
             x.Value = x.Value?.Replace("'", "''");
             x.OldVal = x.OldVal?.Replace("'", "''");
-            return !x.JustHistory && !UserServiceHelpers.SystemFields.Contains(x.Field);
+            return !UserServiceHelpers.SystemFields.Contains(x.Field);
         }).ToList();
         var idField = vm.Id;
         var valueFields = vm.Changes.Where(x => !UserServiceHelpers.SystemFields.Contains(x.Field.ToLower())).ToArray();
