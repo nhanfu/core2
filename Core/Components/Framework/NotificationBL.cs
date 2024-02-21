@@ -124,7 +124,7 @@ namespace Core.Components.Framework
         }
 
         private static readonly HTMLElement NotiRoot = Document.GetElementById("notification-list");
-        private static readonly HTMLElement ProfileRoot = Document.GetElementById(".profile-info1");
+        private static readonly HTMLElement ProfileRoot = Document.GetElementById("profile-info1");
 
         public override void Render()
         {
