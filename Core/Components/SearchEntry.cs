@@ -20,6 +20,8 @@ namespace Core.Components
         protected string FieldText => Meta.FieldText;
         private const string SEntryClass = "search-entry";
         private string _value;
+        private readonly string DisplayField;
+        private readonly string DisplayDetail;
 
         public string Value
         {
@@ -55,6 +57,12 @@ namespace Core.Components
             Meta.Row = Meta.Row ?? 50;
             RowData = new ObservableList<object>();
             Element = ele;
+            if (Meta.FieldText.HasNonSpaceChar())
+            {
+                var arr = Meta.FieldText.Split('.');
+                Meta.DisplayField = arr[0];
+                Meta.DisplayDetail = arr.Last();
+            }
         }
 
         private void DeserializeLocalData(Component ui)
@@ -413,7 +421,6 @@ namespace Core.Components
             {
                 _gv = new GroupGridView(Meta);
             }
-            _gv.FeatureId = "null";
             RenderRootResult();
             ParentElement = _rootResult;
             if (this is MultipleSearchEntry)
@@ -585,14 +592,27 @@ namespace Core.Components
 
         public virtual void SetMatchedValue()
         {
-            OriginalText = Entity.GetPropValue(FieldText) as string;
+            string origin = null;
+            var displayObj = Entity.GetPropValue(Meta.DisplayField);
+            var isString = displayObj is string;
+            if (isString && Meta.DisplayField != Meta.DisplayDetail)
+            {
+                displayObj = JSON.Parse(displayObj as string);
+                origin = displayObj.GetPropValue(Meta.DisplayDetail) as string;
+            }
+            else if (!isString)
+            {
+                origin = displayObj as string;
+            }
+            Entity.SetPropValue(Meta.DisplayField, displayObj);
+            OriginalText = origin;
             _input.Value = EmptyRow ? string.Empty : GetMatchedText(Matched);
-            Entity.SetPropValue(Meta.FieldText, _input.Value);
+            if (displayObj != null && !(displayObj is string))
+            {
+                displayObj.SetPropValue(Meta.DisplayDetail, _input.Value);
+            }
             UpdateValue();
         }
-
-        protected object GetEntityField(string field) => Utils.GetPropValue(Entity, field);
-
 
         private void UpdateValue()
         {
@@ -616,15 +636,17 @@ namespace Core.Components
                     OldVal = OldValue
                 }
             };
-            if (Meta.ShouldSaveText)
+            if (Meta.FieldText.HasNonSpaceChar())
             {
+                var display = Entity.GetPropValue(DisplayField) ?? new object();
+                display[Meta.DisplayDetail] = _input.Value;
                 res.Add(new PatchDetail
                 {
                     Label = Label + "(text)",
-                    Field = Meta.FieldText,
-                    Value = _input.Value,
+                    Field = Meta.DisplayField,
+                    Value = JSON.Stringify(display),
+                    HistoryValue = _input.Value,
                     OldVal = OriginalText,
-                    JustHistory = !Meta.ShouldSaveText
                 });
             }
             return res.ToArray();
@@ -682,7 +704,7 @@ namespace Core.Components
                 UpdateValue();
                 return;
             }
-            var txt = Entity[Meta.FieldText] as string;
+            var txt = Entity.GetPropValue(Meta.FieldText) as string;
             _input.Value = txt;
             ProcessLocalMatch();
         }

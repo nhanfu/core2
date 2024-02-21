@@ -1,4 +1,5 @@
 ﻿using Core.Enums;
+using Core.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -131,6 +132,8 @@ namespace Core.Models
         public string ConnKey { get; set; }
         public bool ShouldSaveText { get; set; }
         public string CacheName { get; set; }
+        public string DisplayField { get; set; }
+        public string DisplayDetail { get; set; }
 
         [DbIgnore]
         public TextAlign? TextAlignEnum { get; set; }

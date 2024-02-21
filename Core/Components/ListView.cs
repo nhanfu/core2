@@ -1322,7 +1322,6 @@ namespace Core.Components
         public bool _hasLoadRef { get; set; }
         public ListViewSection EmptySection { get; set; }
         protected Function _preQueryFn;
-        internal string FeatureId;
         protected bool _hasLoadUserSetting;
 
         private void OpenFeature(EntityRef e)

@@ -104,13 +104,6 @@ namespace Core.Components.Extensions
             return InvokeEvent(com, events, eventTypeName, parameters);
         }
 
-        public static Component MapToCom(this object raw)
-        {
-            var com = raw.CastProp<Component>();
-            com.FieldText = raw["FieldText"] as string;
-            return com;
-        }
-
         public static PatchVM MapToPatch<T>(this T com, string table = null)
         {
             var type = typeof(T);
@@ -144,7 +137,8 @@ namespace Core.Components.Extensions
             }
 
             searchTerm = searchTerm.Trim();
-            var fieldName = com.ComponentType == nameof(SearchEntry) ? com.FieldText : com.FieldName;
+            var fieldName = com.DisplayField.HasNonSpaceChar() 
+                ? $"JSON_VALUE(ds.[{com.DisplayField}], '$.{com.DisplayDetail}')" : $"ds.[{com.FieldName}]";
             if (fieldName.IsNullOrWhiteSpace()) return string.Empty;
             if (com.ComponentType == "Datepicker")
             {
@@ -152,7 +146,7 @@ namespace Core.Components.Extensions
                 if (parsedDate)
                 {
                     var dateStr = date.ToString("yyyy/MM/dd");
-                    return $"cast(ds.{fieldName} as date) = cast('{dateStr}' as date)";
+                    return $"cast({fieldName} as date) = cast('{dateStr}' as date)";
                 }
 
                 return string.Empty;
@@ -165,7 +159,7 @@ namespace Core.Components.Extensions
                     return string.Empty;
                 }
 
-                return $"ds.{fieldName} = {val}";
+                return $"{fieldName} = {val}";
             }
             else if (com.ComponentType == "Number")
             {
@@ -175,9 +169,9 @@ namespace Core.Components.Extensions
                     return string.Empty;
                 }
 
-                return $"ds.{fieldName} = {searchNumber}";
+                return $"{fieldName} = {searchNumber}";
             }
-            return com.FilterTemplate.HasAnyChar() ? string.Format(com.FilterTemplate, searchTerm) : $"charindex(N'{searchTerm}', ds.{fieldName}) >= 1";
+            return com.FilterTemplate.HasAnyChar() ? string.Format(com.FilterTemplate, searchTerm) : $"charindex(N'{searchTerm}', {fieldName}) >= 1";
         }
 
         public static TabEditor OpenTab(this EditableComponent com, string id, Func<TabEditor> factory)
