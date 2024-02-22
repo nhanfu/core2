@@ -44,6 +44,7 @@ namespace Core.Components
 
         public Rating(Component ui, HTMLElement ele = null) : base(ui)
         {
+            DefaultValue = 0;
             Meta = ui ?? throw new ArgumentNullException(nameof(ui));
             Meta.Precision = Meta.Precision ?? 5;
             ParentElement = ele;

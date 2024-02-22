@@ -48,13 +48,7 @@ namespace Core.Components.Forms
         public string RoleIds { get; private set; }
         public string CostCenterId { get; private set; }
         public string RoleNames { get; private set; }
-
-        public bool ShouldUpdateParentForm { get; set; }
-        public DateTime Now => DateTime.Now;
         public string FeatureConnKey => Feature?.ConnKey ?? Client.ConnKey;
-        public Action<bool> AfterSaved;
-        public Func<bool> BeforeSaved;
-        public bool IsEditMode => Entity != null && Entity[IdField].As<int>() > 0;
         public static WebSocketClient NotificationClient;
         protected ListView _currentListView;
         protected Component _componentCoppy;
@@ -64,8 +58,6 @@ namespace Core.Components.Forms
         public bool IsLock { get; private set; }
 
         public HashSet<ListView> ListViews { get; set; } = new HashSet<ListView>();
-
-        public Vendor UserVendor => Client.Token?.Vendor;
         public bool ShouldLoadEntity { get; set; }
         public Feature Feature { get; set; }
         public virtual string Icon
@@ -98,7 +90,6 @@ namespace Core.Components.Forms
         public EditableComponent OpenFrom { get; set; }
         public EditForm ParentForm { get; set; }
         public static EditForm LayoutForm { get; set; }
-        public string ReasonOfChange { get; set; }
         public static bool Portal { get; internal set; }
         public bool Popup { get; set; }
 
@@ -179,6 +170,7 @@ namespace Core.Components.Forms
                 if (rs == 0)
                 {
                     Toast.Warning("Dữ liệu của bạn chưa được lưu vui lòng nhập lại!");
+                    AfterSaved?.Invoke(false);
                     tcs.TrySetResult(false);
                     return;
                 }

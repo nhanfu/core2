@@ -15,6 +15,7 @@ namespace Core.Components
 
         public RichTextBox(Component ui, HTMLElement ele = null) : base(ui)
         {
+            DefaultValue = string.Empty;
             if (Meta.Row <= 0)
             {
                 Meta.Row = 1;

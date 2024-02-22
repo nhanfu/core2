@@ -76,6 +76,7 @@ namespace Core.Components
         }
         public Textbox(Component ui, HTMLElement ele = null) : base(ui)
         {
+            DefaultValue = string.Empty;
             if (ele is HTMLInputElement)
             {
                 Input = ele as HTMLInputElement;

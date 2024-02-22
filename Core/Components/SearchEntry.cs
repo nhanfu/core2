@@ -52,6 +52,7 @@ namespace Core.Components
 
         public SearchEntry(Component ui, HTMLElement ele = null) : base(ui)
         {
+            DefaultValue = string.Empty;
             DeserializeLocalData(ui);
             Meta.ComponentGroup = null;
             Meta.Row = Meta.Row ?? 50;

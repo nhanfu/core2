@@ -303,6 +303,7 @@ namespace Core.Components
                 return this is EditForm form ? form.Feature?.QueueName : Meta?.QueueName;
             }
         }
+        public object DefaultValue { get; set; }
 
         public EditableComponent(Component guiInfo)
         {
@@ -510,9 +511,13 @@ namespace Core.Components
 
         protected void SetDefaultVal()
         {
-            var id = Entity?[IdField].As<int?>();
-            if (Entity is null || (id != null && id > 0) || Meta.DefaultVal.IsNullOrWhiteSpace())
+            if (Entity is null || EntityId != null)
             {
+                return;
+            }
+            if (Meta.DefaultVal.IsNullOrWhiteSpace())
+            {
+                Entity[FieldName] = DefaultValue;
                 return;
             }
             var old = Entity[FieldName];
@@ -919,6 +924,9 @@ namespace Core.Components
         }
 
         protected Dictionary<string, Action<ObservableArgs>> _events = new Dictionary<string, Action<ObservableArgs>>();
+        public Action<bool> AfterSaved;
+
+        public Func<bool> BeforeSaved;
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
         public void addEventListener(string name, Action<ObservableArgs> handler)
         {

@@ -53,18 +53,18 @@ namespace Core.Components
         internal const int GuidLength = 36;
         private HTMLInputElement _input;
         private static HTMLElement _preview;
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "<Pending>")]
         private bool _disabledDelete;
         private HTMLDivElement _gallerys;
 
         public event Action FileUploaded;
         public string DataSource { get; set; }
-        private string[] _imageSources => _path?.Split(PathSeparator);
+        private string[] ImageSources => _path?.Split(PathSeparator);
 
         public Image(Component ui) : base(ui)
         {
             Meta = ui;
             DataSource = Meta.Template ?? "image/*";
+            DefaultValue = string.Empty;
         }
 
         public override void Render()
@@ -253,34 +253,34 @@ namespace Core.Components
 
         protected string MoveLeft(string path, HTMLImageElement img)
         {
-            var index = Array.IndexOf(_imageSources, path);
+            var index = Array.IndexOf(ImageSources, path);
             if (index == 0)
             {
-                index = _imageSources.Length - 1;
+                index = ImageSources.Length - 1;
             }
             else
             {
                 index--;
             }
 
-            img.Src = (path.Contains("http") ? "" : Client.Origin) + _imageSources[index];
-            return _imageSources[index];
+            img.Src = (path.Contains("http") ? "" : Client.Origin) + ImageSources[index];
+            return ImageSources[index];
         }
 
         protected string MoveRight(string path, HTMLImageElement img)
         {
-            var index = Array.IndexOf(_imageSources, path);
+            var index = Array.IndexOf(ImageSources, path);
             if (index == 0)
             {
-                index = _imageSources.Length - 1;
+                index = ImageSources.Length - 1;
             }
             else
             {
                 index--;
             }
 
-            img.Src = (path.Contains("http") ? "" : Client.Origin) + _imageSources[index];
-            return _imageSources[index];
+            img.Src = (path.Contains("http") ? "" : Client.Origin) + ImageSources[index];
+            return ImageSources[index];
         }
 
         public void OpenFileDialog(Event e)
@@ -482,11 +482,11 @@ namespace Core.Components
 
         public override string GetValueText()
         {
-            if (_imageSources.Nothing())
+            if (ImageSources.Nothing())
             {
                 return null;
             }
-            return _imageSources.Select(path =>
+            return ImageSources.Select(path =>
             {
                 var label = RemoveGuid(path);
                 return $"<a target=\"_blank\" href=\"{path}\">{label}</a>";

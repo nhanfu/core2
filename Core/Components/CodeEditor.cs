@@ -1,11 +1,8 @@
 ﻿using Bridge.Html5;
-using Core.Clients;
-using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
 using Core.Structs;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Core.Components
 {
@@ -16,6 +13,7 @@ namespace Core.Components
         public CodeEditor(Component ui, HTMLElement ele = null) : base(ui)
         {
             Element = ele;
+            DefaultValue = string.Empty;
         }
 
         public override void Render()

@@ -116,6 +116,12 @@ namespace Core.Components
         {
         }
 
+        protected void SaveEvent()
+        {
+            AfterSaved += AfterSaveHandler;
+            EditForm.AfterSaved += AfterSaveHandler;
+        }
+
         public override void Render()
         {
             ListViewSection = ListViewSection ?? this.FindClosest<ListViewSection>();
@@ -125,6 +131,15 @@ namespace Core.Components
             if (_selected)
             {
                 Element.AddClass(SelectedClass);
+            }
+            SaveEvent();
+        }
+
+        private void AfterSaveHandler(bool success)
+        {
+            if (!success)
+            {
+                EntityId = null;
             }
         }
 
@@ -247,6 +262,7 @@ namespace Core.Components
                 Dirty = false;
                 EmptyRow = false;
             }
+            AfterSaved?.Invoke(success);
             this.DispatchCustomEvent(Meta.Events, CustomEventType.AfterPatchUpdate, Entity, patchModel, this).Done();
         }
 

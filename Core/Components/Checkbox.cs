@@ -1,5 +1,4 @@
 ﻿using Bridge.Html5;
-using Core.Clients;
 using Core.Components.Extensions;
 using Core.Extensions;
 using Core.Models;
@@ -25,6 +24,7 @@ namespace Core.Components
         {
             Meta = ui ?? throw new ArgumentNullException(nameof(ui));
             ParentElement = ele;
+            DefaultValue = false;
         }
 
         public override void Render()

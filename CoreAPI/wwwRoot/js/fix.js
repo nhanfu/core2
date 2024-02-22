@@ -128,6 +128,7 @@ function initCodeEditor(com) {
 }
 
 function initCkEditor(com) {
+    if (com == null || typeof (CKEDITOR) === 'undefined') return;
     CKEDITOR.ClassicEditor.create(com.Element, {
         // https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/toolbar.html#extended-toolbar-configuration-format
         toolbar: {

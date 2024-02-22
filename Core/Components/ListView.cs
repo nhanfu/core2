@@ -158,13 +158,13 @@ namespace Core.Components
             return SqlReader(skip, pageSize, cacheHeader);
         }
 
-        public Task<List<object>> SqlReader(int? skip, int? pageSize, bool cacheHeader = false)
+        public Task<List<object>> SqlReader(decimal? skip, decimal? pageSize, bool cacheHeader = false)
         {
             var sql = GetSql(skip, pageSize, cacheHeader);
             return CustomQuery(sql);
         }
 
-        public SqlViewModel GetSql(int? skip = null, int? pageSize = null, bool cacheMeta = false, bool count = true)
+        public SqlViewModel GetSql(decimal? skip = null, decimal? pageSize = null, bool cacheMeta = false, bool count = true)
         {
             var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
             var orderBy = AdvSearchVM.OrderBy.HasElement() ? AdvSearchVM.OrderBy.Combine(x =>
@@ -188,6 +188,7 @@ namespace Core.Components
             };
             if (skip.HasValue && pageSize.HasValue)
             {
+                pageSize = pageSize == 0 ? 50m : pageSize;
                 data.Paging = $"offset {skip} rows\nfetch next {pageSize} rows only";
             }
             return data;
@@ -1582,7 +1583,7 @@ namespace Core.Components
             {
                 return null;
             }
-            if (Meta.IdField != null)
+            if (Meta.IdField != null && Meta.IdField != IdField)
             {
                 UpdatedRows.ForEach(row => row[Meta.IdField] = EntityId);
             }

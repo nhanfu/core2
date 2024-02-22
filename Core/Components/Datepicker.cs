@@ -18,7 +18,7 @@ namespace Core.Components
         private bool _simpleNoEvent;
         public HTMLInputElement Input { get; set; }
         public string InitFormat = "";
-        private string _currentFormat;
+        private readonly string _currentFormat;
         private static HTMLElement _calendar;
         private static int _renderAwaiter;
         private static int _closeAwaiter;
@@ -61,6 +61,7 @@ namespace Core.Components
 
         public Datepicker(Component ui, HTMLElement ele = null) : base(ui)
         {
+            DefaultValue = DateTime.MinValue;
             Meta = ui ?? throw new ArgumentNullException(nameof(ui));
             InitFormat = Meta.FormatData.HasAnyChar() ? Meta.FormatData.Replace("{0:", string.Empty).Replace("}", string.Empty)
                 : (Meta.Precision == 7 ? "dd/MM/yyyy - HH:mm" : "dd/MM/yyyy");

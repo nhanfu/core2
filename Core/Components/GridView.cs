@@ -2049,6 +2049,7 @@ namespace Core.Components
                 }
                 if (rowSection.EmptyRow)
                 {
+                    rowSection.EmptyRow = false;
                     MoveEmptyRow(rowSection);
                     EmptySection.Children.Clear();
                     AddNewEmptyRow();

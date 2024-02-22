@@ -14,6 +14,7 @@ namespace Core.Components
         {
             ParentElement = ele;
             Meta = ui ?? throw new ArgumentNullException(nameof(ui));
+            DefaultValue = string.Empty;
         }
 
         public string Value { get; set; }
