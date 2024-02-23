@@ -6,6 +6,7 @@ using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
+using Core.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Core.Components
 {
     public class ListViewSearchVM
     {
+        public string Id { get; set; } = Uuid7.Id25();
         public string SearchTerm { get; set; }
         public string FullTextSearch { get; set; }
         public string ScanTerm { get; set; }

@@ -515,36 +515,13 @@ namespace Core.Components
             {
                 return;
             }
-            if (Meta.DefaultVal.IsNullOrWhiteSpace())
+            if (Utils.IsFunction(Meta.DefaultVal, out var fn))
             {
-                Entity[FieldName] = DefaultValue;
-                return;
+                fn.Call(this, this);
             }
-            var old = Entity[FieldName];
-            var type = Entity.GetType().GetProperty(FieldName);
-            if (type is null)
+            else if (Entity.GetPropValue(FieldName) == null)
             {
-                TrySetDFValue();
-                return;
-            }
-            var defaultVal = Activator.CreateInstance(type.PropertyType);
-            if (!defaultVal.Equals(old) && (type.PropertyType != typeof(string) || !(old is null)))
-            {
-                return;
-            }
-            TrySetDFValue();
-        }
-
-        private void TrySetDFValue()
-        {
-            try
-            {
-                var obj = Window.Eval<object>(Meta.DefaultVal);
-                Entity[FieldName] = obj is Function ? (obj as Function).Call(this, this) : obj;
-            }
-            catch
-            {
-
+                Entity.SetPropValue(FieldName, DefaultValue);
             }
         }
 

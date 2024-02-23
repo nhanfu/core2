@@ -67,6 +67,7 @@ namespace Core.Components
 
         public Number(Component ui, HTMLElement ele = null) : base(ui)
         {
+            DefaultValue = 0;
             _input = ele as HTMLInputElement;
         }
 

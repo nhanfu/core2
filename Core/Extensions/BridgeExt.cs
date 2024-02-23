@@ -125,7 +125,8 @@ namespace Core.Extensions
                 return (false, null);
             }
 
-            return (res.HasOwnProperty(lastField) || res.GetType().GetProperty(lastField) != null, res[lastField]);
+            var hasProp = res.HasOwnProperty(lastField) || res.GetType().GetProperty(lastField) != null;
+            return (hasProp, res[lastField]);
         }
 
         /// <summary>
