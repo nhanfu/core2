@@ -1,0 +1,49 @@
+﻿button {
+    cursor: pointer;
+}
+
+.floating-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    box-shadow: 0px 0px 22px #E0E0E0;
+    border-width: 1px;
+    border-style: solid;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    width: 40px;
+    height: 40px;
+    background-color: #E8E8E8;
+    z-index: 1000;
+}
+
+.feature-task {
+    position: absolute;
+    top: 30rem;
+    right: -20px;
+}
+
+.context-menu {
+    ul {
+        margin: 0;
+        padding: 0 !important;
+
+        li:first-child {
+            border-top: 1px solid #ccc;
+        }
+
+        li {
+            button {
+                border: 0;
+                white-space: nowrap;
+            }
+        }
+    }
+}
+
+.printable {
+    overflow: auto;
+}

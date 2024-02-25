@@ -1,0 +1,132 @@
+﻿@import "base";
+
+.group, .result-wrapper {
+    input {
+
+
+        &[type="date"] {
+            & + .button-group {
+                display: none;
+            }
+        }
+
+        &.input {
+            border-radius: @lightRadius;
+            font-size: 1rem;
+        }
+
+        &.input-dash {
+            border: 0;
+            border-bottom: 1px dashed;
+            outline: 0;
+            box-shadow: none;
+            background: transparent;
+            border-radius: 0;
+        }
+
+        &[type="tel"] {
+            text-align: right;
+        }
+
+        &:not([type="checkbox"]) {
+            transition: all 0.1s;
+            border: 1px solid @inputBorderColor;
+            border-radius: @lightRadius;
+            outline: 0;
+            height: 32px;
+            padding-left: 5px;
+            padding-right: 5px;
+            color: #1d1d1d;
+            font-size: 1rem;
+            font-weight: 400;
+            width: 100%;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Roboto", "Ubuntu", "Helvetica Neue", sans-serif;
+
+            &:focus {
+                border: 1px solid #166ee1;
+            }
+
+            &:hover {
+                box-shadow: 0 0 0 3px rgba(228, 228, 228, 0.45);
+            }
+
+            &[type=password] {
+                height: 2rem;
+            }
+        }
+    }
+
+    input[readonly] {
+        color: #007bff !important;
+    }
+
+    textarea {
+        border-radius: @radius;
+        resize: vertical;
+
+        &:focus {
+            border: 1px solid #166ee1;
+        }
+
+        &:hover {
+            box-shadow: 0 0 0 3px rgba(228, 228, 228, 0.45);
+        }
+    }
+
+    .multiple {
+        display: flex;
+        flex-flow: row wrap;
+        border: 1px solid @inputBorderColor;
+        border-radius: @lightRadius;
+        min-width: 300px;
+
+        input[readonly] {
+            display: none;
+        }
+
+        input {
+            border: 0;
+            width: auto;
+            max-width: 90px;
+            outline: 0;
+            background: transparent;
+
+            &:focus, &:hover {
+                box-shadow: none;
+            }
+        }
+
+        > span {
+            background: #eff6fc;
+            border-radius: 4px;
+            padding-left: 0.7rem;
+            height: 28px;
+            margin-left: 4px;
+            margin-top: 2px;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+
+            button {
+                border: 0;
+                outline: 0;
+                background: #eff6fc;
+                color: #5692bf;
+                cursor: pointer;
+                line-height: 2;
+                width: 2rem;
+                right: 0;
+                margin-right: 0;
+                top: 0;
+
+
+
+                &:hover {
+                    color: #106EBE;
+                    background-color: #C7E0F4;
+                }
+            }
+        }
+    }
+}

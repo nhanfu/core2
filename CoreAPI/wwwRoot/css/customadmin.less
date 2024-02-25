@@ -8,6 +8,8 @@
 
 .searching-block button {
     border: none !important;
+    min-width: 31px;
+    height: 31px;
 }
 
 .searching-block .button.small {
@@ -19,18 +21,6 @@
     outline-color: #607d8b;
     background-color: #607d8b;
     color: #fff;
-}
-
-.searching-block .fa-search,
-.searching-block .fa-cog,
-.searching-block .fa-chevron-down,
-.searching-block .fa-undo {
-    border-radius: 8px;
-    padding: 8px 6px;
-}
-
-.searching-block .icon:hover {
-    background: #eee;
 }
 
 .ribbon-group button {
@@ -53,7 +43,7 @@
 
 
 label:not(.form-check-label):not(.custom-file-label) {
-    font-weight: 500;
+    color: inherit;
 }
 
 .nav-link {
@@ -81,7 +71,7 @@ textarea {
 
 .panel .header {
     position: absolute;
-    top: -0.8rem !important;
+    top: -0.94rem !important;
     left: auto;
     right: auto;
     bottom: auto;
@@ -2650,7 +2640,7 @@ textarea {
 }
 
 .datetime-picker input {
-    padding-right: 2rem;
+    width: 88%;
 }
 
 .datetime-picker .btn-group {
@@ -2749,8 +2739,7 @@ textarea {
 
 .calendar-header {
     padding: 1rem;
-    background-color: #004d6f;
-    color: #ffffff;
+    background-color: #d5d8e0;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -3272,18 +3261,19 @@ textarea {
 }
 
 .checkbox .check::before {
+    border-radius: 5px;
     position: absolute;
     vertical-align: middle;
     font-size: 0;
     content: "";
-    height: 10px;
-    width: 10px;
+    height: 14px;
+    width: 14px;
     background-color: #1075bb;
     color: transparent;
     border-bottom: 2px solid;
-    border-color: #ffffff;
-    left: 50%;
-    top: 50%;
+    border-color: #fff;
+    left: 38%;
+    top: 29%;
     margin-left: -5px;
     margin-top: -4px;
     display: none;
@@ -3415,45 +3405,6 @@ textarea {
     transition: all 0.3s ease-in-out;
 }
 
-.spinner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    border: 0;
-    z-index: 10000;
-    width: 80px;
-    height: 80px;
-}
-
-.spinner:after {
-    content: " ";
-    display: block;
-    border-radius: 50%;
-    width: 0;
-    height: 0;
-    margin: 8px;
-    box-sizing: border-box;
-    border: 32px solid #fff;
-    border-color: #366EB9 transparent #366EB9 transparent;
-    animation: lds-hourglass 1.2s infinite;
-}
-
-@keyframes spinner {
-    0% {
-        transform: rotate(0);
-        animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
-    }
-
-    50% {
-        transform: rotate(900deg);
-        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    }
-
-    100% {
-        transform: rotate(1800deg);
-    }
-}
-
 .nav-sidebar hr {
     border-color: #c5c5c5;
     width: 100% !important;
@@ -3461,10 +3412,6 @@ textarea {
     top: 0;
     margin: auto !important;
     position: absolute !important;
-}
-
-.datetime-picker {
-    position: relative
 }
 
 .resizer {
@@ -3949,7 +3896,7 @@ body > .ui-pnotify-modal-overlay {
         z-index: 1000;
         display: none;
         float: left;
-        min-width: 10rem;
+        min-width: 24rem;
         padding: 0.5rem 0;
         margin: 0.125rem 0 0;
         font-size: 1rem;
@@ -3990,6 +3937,10 @@ body > .ui-pnotify-modal-overlay {
         border: 0;
     }
 
+    .dropdown-item > .far, .fal {
+        padding-right: 5px !important;
+    }
+
     .dropdown-item:focus, .dropdown-item:hover {
         color: #16181b;
         text-decoration: none;
@@ -3999,7 +3950,7 @@ body > .ui-pnotify-modal-overlay {
     .dropdown-item:active {
         color: #fff;
         text-decoration: none;
-        background-color: #007bff;
+        background-color: #2b928b;
     }
 
     .dropdown-item:disabled {
@@ -4268,18 +4219,12 @@ body > .ui-pnotify-modal-overlay {
     opacity: 1;
 }
 
-.text {
-    background-color: #04AA6D;
-    color: white;
-    font-size: 16px;
-    padding: 16px 32px;
-}
-
 .lang-select {
-    display: inline-flex;
+    margin: 0;
+    padding: 5px;
 
     li {
-        margin-right: 5px;
+        margin-left: 1rem;
     }
 }
 
@@ -4333,4 +4278,8 @@ button {
         color: #fff !important;
         background-color: #4caf50 !important;
     }
+}
+
+.control-sidebar .done .text {
+    font-style: italic;
 }

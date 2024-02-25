@@ -1,0 +1,57 @@
+﻿.table-wrapper .non-frozen {
+    border-left: 1px solid #bfbfbf !important;
+}
+
+.header, .grid-toolbar {
+    display: none !important;
+}
+
+    .grid-toolbar.paging {
+        display: none !important;
+    }
+
+.preview .grid-toolbar {
+    display: none !important;
+}
+
+.preview .no-records {
+    display: none !important;
+}
+
+.table.frozen {
+    display: none !important;
+}
+
+.table-wrapper table:last-child {
+    border-left: 1px solid #cecece;
+}
+
+.table-header > table > thead {
+    display: none !important;
+}
+
+.table-wrapper .frozen > tbody {
+    display: none !important;
+}
+
+.customerDetailDebtBL td, .customerDetailDebtBL th,
+.cordinationResult td, .cordinationResult th,
+.vendorDebtReportBL td, .vendorDebtDetailBL th {
+    border: 1px solid rgb(40, 148, 141);
+    padding: 8px;
+}
+
+.section-print {
+    display: flex;
+    bottom: 39px;
+}
+
+.customerDetailDebtBL .stickyHeader > thead,
+.cordinationResult .stickyHeader > thead,
+.vendorDebtReportBL .stickyHeader > thead {
+    position: -webkit-sticky;
+    position: sticky;
+    top: -7px;
+    background: #eee;
+    z-index: 1
+}

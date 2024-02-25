@@ -11,36 +11,36 @@
 @info: #30abe6;
 @infoDark: #1891cb;
 @bgTab: #4a9dc5;
-@bgButtonBar: #fdfdfe;
+@bgButtonBar: #e8eff2;
 @grayLight: #e5e5e5;
 @grayNormal: #cecece;
-@grayDark: #bfbfbf;
+@grayDark: #cacaca;
 @light: #f9f9f9;
 @tableSelected: #d5d5d5;
 @theadBg: #f7f8f9;
 @tabBg: #f7fbff;
 @theadColor: #444;
 @theadFilter: #737373;
-@tableHover: #66ff663b;
+@tableHover: hsla(0,0%,0%,0.08);
 @edit-icon: #3a5c6d;
 @ctxMenuBorder: #d2d2d2;
-@radius: 2px;
+@radius: 6px;
 @lightRadius: 3px;
 @warmBgColor: #fbfbfb;
 @containerBgColor: #f2f2f2;
 @mainTabBgColor: #fffffe;
 @sideBarBgColor: #d7d7d7;
-@taskBarHeight: 52px;
-@disabled: #6e6e6e;
+@taskBarHeight: 39px;
+@disabled: #fafafa;
 @scrollRail: #b8b8b8;
 @orange: #fa6800;
 @buttonBarGrayLight: #f5f6f7;
-@selectedRow: #e2dcea;
+@selectedRow: #ececec;
 @greenLogoOrigin: #61b755;
-@greenLogo: #2b938c;
+@greenLogo: hsla(0,0%,0%,.65);
 @greenlogoLight: #3dac6e;
 @inputBorderColor: #d9d9d9;
-@activeTab: #f8f8f8;
+@activeTab: #d5d8e0;
 @devider: #747272;
 @appbar: #fff;
 @require: #fffdc4;
@@ -49,11 +49,10 @@
 @iPhoneBottompPadding: 10px;
 @ribbon: #f8fafb;
 @panelBorder: #d5dadc;
-@panelBg: #f3f7f8;
 @groupBorder: 2px solid #ddd;
 @sidebarWidth: 44px;
-@buttonHeight: 3rem;
-@greenDefault: #2b938c;
+@buttonHeight: 2.3rem;
+@greenDefault: #888b91;
 
 .hide {
     display: none;
@@ -157,16 +156,15 @@
         border-top-right-radius: 5px;
         border-bottom: 0;
         top: -1.6rem !important;
-        padding: 0.3rem 0.8rem !important;
-        border: 1px solid @panelBorder;
+        padding: 0.3rem 0.9rem !important;
         left: 50% !important;
         transform: translateX(-50%);
     }
 
     .grid-wrapper {
-        .box-shadow;
         grid-gap: 0 !important;
-        border: 1px solid @panelBorder;
+        border-top: 1px solid #272a432e;
+        border-left: 1px solid #272a432e;
     }
 
     .ui-layout > tbody > tr > td {
@@ -175,6 +173,15 @@
 
     .grid-wrapper {
         height: 100%;
+    }
+
+    .header {
+        background-color: #fff;
+        color: hsla(0,0%,0%,.65);
+        z-index: 1000;
+        border-top: 1px solid #272a432e;
+        border-right: 1px solid #272a432e;
+        border-left: 1px solid #272a432e;
     }
 }
 
@@ -269,31 +276,20 @@
     font-weight: 500;
 }
 
-textarea[required], input[required] {
-    background-color: @require;
-}
-
-textarea[disabled], input[disabled], textarea[readonly], input[readonly] {
-    color: @disabled;
-    background-color: #ebebe4;
-    cursor: not-allowed;
-}
-
-div[required] input {
-    background-color: @require;
-}
-
-div[disabled]:not([enable]) input[readonly] {
-    color: @disabled;
-    background-color: #ebebe4;
+.is-invalid {
+    border-color: #ffc107 !important;
+    padding-right: 2.25rem !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23ffc107' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 }
 
 .box-shadow {
-    box-shadow: rgba(39, 42, 67, 0.2) 0px 1.5px 4px;
-    background-color: white;
+    box-shadow: 0px 1.5px 4px #272a431c, 0px 0px 3px 0.25px #272a432e;
     grid-gap: 1rem;
+    padding: 0.8rem;
 }
-
 // Tweak these to change the style of the toggle
 @toggle-background-color-on: #94ce96;
 @toggle-background-color-off: white;
@@ -417,12 +413,6 @@ div[disabled]:not([enable]) input[readonly] {
     background-color: @bgColor !important;
 }
 
-b {
-    font-weight: 500;
-}
-i {
-    font-style: italic;
-}
 .text-small {
     font-size: 0.9rem;
     font-style: italic;
