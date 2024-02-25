@@ -69,8 +69,7 @@ namespace Core.Components.Forms
                 {
                     e.StopPropagation();
                     DirtyCheckAndCancel();
-                }).End.Span.ClassName("title").IText(TabTitle).End.Render();
-
+                }).End.Span.ClassName(Feature?.Icon ?? string.Empty).End.Span.ClassName("title").IText(TabTitle).End.Render();
                 _li = Html.Context.ParentElement;
                 IconElement = _li.FirstElementChild;
             }

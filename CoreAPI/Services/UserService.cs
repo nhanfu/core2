@@ -1613,13 +1613,13 @@ public class UserService
         var htmlMimeType = Utils.GetMimeType("html");
         var key = $"{tenant}_{env}_{area}";
         var cache = await _cache.GetStringAsync(key);
-        if (cache != null)
+        if (cache != null && cache != "null")
         {
             var pageCached = JsonConvert.DeserializeObject<TenantPage>(cache);
             await WriteTemplateAsync(response, pageCached, env, tenant);
             return;
         }
-        var envQuery = $"select * from TenantEnv where TenantCode = '{tenant}' and Env = '{env}'";
+        var envQuery = $"select * from TenantEnv where TenantCode = '{tenant}' and Env = '{env}'  and ConnKey = 'default'";
         var connStr = DefaultConnStr();
         var tnEnv = await ReadDsAs<TenantEnv>(envQuery, connStr);
         if (tnEnv is null)

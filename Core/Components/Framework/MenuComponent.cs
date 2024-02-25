@@ -23,9 +23,24 @@ namespace Core.Components.Framework
         public const string ASIDE_WIDTH = "44px";
         private static MenuComponent _instance;
         private bool _hasRender;
+        private HTMLElement _elementMain;
+        private HTMLElement _elementMenu;
+        private HTMLElement _elementBrandLink;
+        private HTMLElement _elementMainHeader;
+        private HTMLElement _elementMainSidebar;
+        private HTMLElement _elementExpand;
         private MenuComponent() : base(null)
         {
-
+            _elementMain = Document.QuerySelector("#tab-content") as HTMLElement;
+            _elementMenu = Document.QuerySelector("aside") as HTMLElement;
+            _elementBrandLink = Document.QuerySelector(".brand-link") as HTMLElement;
+            _elementMainHeader = Document.QuerySelector(".main-header") as HTMLElement;
+            _elementMainSidebar = Document.QuerySelector(".main-sidebar") as HTMLElement;
+            var widthMenu = LocalStorage.GetItem<string>("menu-width") ?? "202px";
+            _elementMain.Style.MarginLeft = widthMenu;
+            _elementBrandLink.Style.Width = widthMenu;
+            _elementMainHeader.Style.MarginLeft = widthMenu;
+            _elementMainSidebar.Style.Width = widthMenu;
         }
         public static MenuComponent Instance
         {
@@ -133,6 +148,8 @@ namespace Core.Components.Framework
             BuildFeatureTree();
             Html.Take("#menu");
             RenderKeyMenuItems(_feature);
+            var main = Document.QuerySelector("aside") as HTMLElement;
+            CreateResizableTable(main);
             var urlFeatureName = App.GetFeatureNameFromUrl() ?? string.Empty;
             var tasks = new List<Task<bool>>() { OpenUrlFeature(urlFeatureName) };
             var shouldOpenClosedTabs = settings.FirstOrDefault(x => x.Name == "OpenClosedTabs")?.Value?.TryParse<bool>() ?? false;
@@ -170,6 +187,110 @@ namespace Core.Components.Framework
                     btn.AddEventListener(EventType.Click, () => Show = !Show);
                 });
             });
+        }
+
+        private void CreateResizableTable(HTMLElement col)
+        {
+            var resizer = Document.CreateElement("div");
+            resizer.AddClass("resizer");
+            col.AppendChild(resizer);
+            var button = Document.CreateElement("button");
+            button.AddClass("resizer-button");
+            button.AddEventListener(EventType.Click, () =>
+            {
+                if (int.Parse(_elementBrandLink.Style.Width.Replace("px", "")) < 100)
+                {
+                    _elementMain.Style.MarginLeft = "202px";
+                    _elementBrandLink.Style.Width = "202px";
+                    _elementMainHeader.Style.MarginLeft = "202px";
+                    _elementMainSidebar.Style.Width = "202px";
+                    col.Style.Width = "202px";
+                    col.Style.MinWidth = "202px";
+                    col.Style.MaxWidth = "202px";
+                    _elementExpand.ReplaceClass("fa-arrow-circle-right", "fa-arrow-circle-left");
+                }
+                else
+                {
+                    _elementMain.Style.MarginLeft = "45px";
+                    _elementBrandLink.Style.Width = "45px";
+                    _elementMainHeader.Style.MarginLeft = "45px";
+                    _elementMainSidebar.Style.Width = "45px";
+                    col.Style.Width = "45px";
+                    col.Style.MinWidth = "45px";
+                    col.Style.MaxWidth = "45px";
+                    _elementExpand.ReplaceClass("fa-arrow-circle-left", "fa-arrow-circle-right");
+                }
+            });
+            _elementExpand = Document.CreateElement("i");
+            if (int.Parse(_elementBrandLink.Style.Width.Replace("px", "")) < 100)
+            {
+                _elementExpand.AddClass("fal fa-arrow-circle-right");
+            }
+            else
+            {
+                _elementExpand.AddClass("fal fa-arrow-circle-left");
+            }
+            button.AppendChild(_elementExpand);
+            col.AppendChild(button);
+            CreateResizableColumn(col, resizer);
+        }
+
+        private double x = 0;
+        private double w = 0;
+
+        private void CreateResizableColumn(HTMLElement col, HTMLElement resizer)
+        {
+            x = 0;
+            w = 0;
+            resizer.AddEventListener("mousedown", (e) => MouseDownHandler(e, col, resizer));
+        }
+
+        private Action<MouseEvent> mouseMoveHandler;
+        private Action<MouseEvent> mouseUpHandler;
+
+        private void MouseDownHandler(object e, HTMLElement col, HTMLElement resizer)
+        {
+            var mouse = e as MouseEvent;
+            mouse.PreventDefault();
+            x = mouse.ClientX;
+            var styles = Window.GetComputedStyle(col);
+            w = double.Parse((styles.Width.Replace("px", "") == "") ? "0" : styles.Width.Replace("px", ""));
+            mouseMoveHandler = (a) => MouseMoveHandler(a, col, resizer);
+            mouseUpHandler = (a) => MouseUpHandler(a, col, resizer);
+            Document.AddEventListener("mousemove", mouseMoveHandler);
+            Document.AddEventListener("mouseup", mouseUpHandler);
+            resizer.AddClass("resizing");
+        }
+
+        private void MouseMoveHandler(object e, HTMLElement col, HTMLElement resizer)
+        {
+            var mouse = e as MouseEvent;
+            mouse.PreventDefault();
+            var dx = mouse.ClientX - x;
+            col.Style.Width = $"{w + dx}px";
+            col.Style.MinWidth = $"{w + dx}px";
+            col.Style.MaxWidth = $"{w + dx}px";
+            _elementMain.Style.MarginLeft = $"{w + dx}px";
+            _elementBrandLink.Style.Width = $"{w + dx}px";
+            _elementMainHeader.Style.MarginLeft = $"{w + dx}px";
+            if (w + dx < 100)
+            {
+                _elementExpand.ReplaceClass("fa-arrow-circle-left", "fa-arrow-circle-right");
+            }
+            else
+            {
+                _elementExpand.ReplaceClass("fa-arrow-circle-right", "fa-arrow-circle-left");
+            }
+            Window.LocalStorage.SetItem("menu-width", $"{w + dx}px");
+        }
+
+        private void MouseUpHandler(object e, HTMLElement col, HTMLElement resizer)
+        {
+            var mouse = e as MouseEvent;
+            mouse.PreventDefault();
+            resizer.RemoveClass("resizing");
+            Document.RemoveEventListener("mousemove", mouseMoveHandler);
+            Document.RemoveEventListener("mouseup", mouseUpHandler);
         }
 
         private static Task<bool> OpenUrlFeature(string featureName)
