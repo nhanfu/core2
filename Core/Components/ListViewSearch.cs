@@ -229,16 +229,16 @@ namespace Core.Components
                 AddChild(dateType);
             }
             Html.Take(Element).Div.ClassName("searching-block")
-                .Icon("fa fa-search")
+                .Icon("btn fa fa-search")
                     .Event(EventType.Click, () =>
                     {
                         ParentListView.ClearSelected();
                         ParentListView.ReloadData().Done();
                     }).End
-                .Icon("fa fa-cog")
+                .Icon("btn fa fa-cog")
                     .Title("Advance")
                     .Event(EventType.Click, AdvancedOptions).End
-                .Icon("fa fa-undo")
+                .Icon("btn fa fa-undo")
                     .Title("Refresh")
                     .Event(EventType.Click, RefershListView).End
                     .Render();
