@@ -292,8 +292,8 @@ namespace Core.Components
             var now = DateTime.Now;
             var firstDayOfMonth = new DateTime(_someday.Year, _someday.Month, 1);
             var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
-            var firstOutsideDayOfMonth = firstDayOfMonth.AddDays(-(int)firstDayOfMonth.DayOfWeek + 1);
-            var lastOutsideDayOfMonth = lastDayOfMonth.AddDays(6 - (int)lastDayOfMonth.DayOfWeek + 1);
+            var firstOutsideDayOfMonth = firstDayOfMonth.AddDays(-((int)firstDayOfMonth.DayOfWeek + 1) - 5);
+            var lastOutsideDayOfMonth = lastDayOfMonth.AddDays(6 - ((int)lastDayOfMonth.DayOfWeek + 1));
             if ((lastOutsideDayOfMonth - firstOutsideDayOfMonth).Days / 7 < 5)
             {
                 lastOutsideDayOfMonth = lastOutsideDayOfMonth.AddDays(7);
