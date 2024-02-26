@@ -443,14 +443,7 @@ namespace Core.Components.Forms
                     Action = "GetByFeatureId",
                     Params = JSON.Stringify(new { id = Feature.Id })
                 };
-                var xhr = new XHRWrapper
-                {
-                    Url = Utils.UserSvc,
-                    Method = HttpMethod.POST,
-                    IsRawString = true,
-                    Value = JSON.Stringify(sql)
-                };
-                var intro = await Client.Instance.SubmitAsync<dynamic[]>(xhr);
+                var intro = await Client.Instance.UserSvc<dynamic[]>(sql);
                 var script = @"(x) => {
                                 introJs().setOptions({
                                   steps: [
@@ -465,7 +458,7 @@ namespace Core.Components.Forms
                                   }";
                 }
                 script += @"]}).start();}";
-                if (Utils.IsFunction(script, out Function fn))
+                if (Utils.IsFunction(script, out Function fn, false))
                 {
                     fn.Call(this, this);
                 }
@@ -868,13 +861,7 @@ namespace Core.Components.Forms
                     Action = "Clone",
                     Ids = new string[] { feature.Id }
                 };
-                Client.Instance.SubmitAsync<bool>(new XHRWrapper
-                {
-                    IsRawString = true,
-                    Url = Utils.UserSvc,
-                    Method = HttpMethod.POST,
-                    Value = JSON.Stringify(sql)
-                }).Done();
+                Client.Instance.UserSvc<bool>(sql).Done();
             };
             AddChild(confirmDialog);
         }

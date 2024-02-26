@@ -12,8 +12,8 @@ namespace Core.Components
 {
     public class ButtonPdf : Button
     {
-        public HTMLElement _preview { get; set; }
-        public PdfReport _pdfReport { get; set; }
+        public HTMLElement Preview { get; set; }
+        public PdfReport PdfReport { get; set; }
         public ButtonPdf(Component ui, HTMLElement ele = null) : base(ui, ele)
         {
         }
@@ -28,7 +28,7 @@ namespace Core.Components
             await this.DispatchEvent(Meta.Events, EventType.Click, Entity, Meta);
             Html.Take(Document.Body).Div.ClassName("backdrop")
                 .Style("align-items: center;").Escape((e) => Dispose());
-            _preview = Html.Context;
+            Preview = Html.Context;
             Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;")
                 .Div.ClassName("popup-title").InnerHTML(Meta.PlainText)
                 .Div.ClassName("icon-box").Span.ClassName("fa fa-times")
@@ -40,14 +40,14 @@ namespace Core.Components
                 Html.Instance.Div.ClassName("container-rpt");
                 Html.Instance.Div.ClassName("menuBar")
                 .Div.ClassName("printBtn")
-                    .Button.ClassName("btn btn-success mr-1 fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(_preview.QuerySelector(".print-group") as HTMLElement, printPreview: true, component: Meta)).End
+                    .Button.ClassName("btn btn-success mr-1 fa fa-print").Event(EventType.Click, () => EditForm.PrintSection(Preview.QuerySelector(".print-group") as HTMLElement, printPreview: true, component: Meta)).End
                     .Button.ClassName("btn btn-success mr-1").Text("a4").Event(EventType.Click, () => GeneratePdf("a4")).End
                     .Button.ClassName("btn btn-success mr-1").Text("a5").Event(EventType.Click, () => GeneratePdf("a5")).End
                     .Render();
                 Html.Instance.EndOf(".menuBar").Div.ClassName("print-group");
             }
             var body = Html.Context;
-            _pdfReport = new PdfReport(Meta)
+            PdfReport = new PdfReport(Meta)
             {
                 ParentElement = body,
             };
@@ -74,7 +74,7 @@ namespace Core.Components
                     }
                     Window.SetTimeout(() =>
                     {
-                        var ele = _preview.QuerySelectorAll(".print-group").Cast<HTMLElement>().ToList();
+                        var ele = Preview.QuerySelectorAll(".print-group").Cast<HTMLElement>().ToList();
                         var printWindow = Window.Open("", "_blank");
                         printWindow.Document.Close();
                         printWindow.Document.Body.InnerHTML = ele.Select(x => x.OuterHTML).Combine("</br>");
@@ -92,18 +92,18 @@ namespace Core.Components
                             style.AppendChild(new Text(Meta.Style));
                             printWindow.Document.Head.AppendChild(style);
                         }
-                        _pdfReport.Dispose();
-                        _preview.Remove();
+                        PdfReport.Dispose();
+                        Preview.Remove();
                     }, 2000);
                 }
                 else
                 {
-                    Parent.AddChild(_pdfReport);
+                    Parent.AddChild(PdfReport);
                     var printWindow = Window.Open("", "_blank");
                     printWindow.Document.Close();
                     Window.SetTimeout(() =>
                     {
-                        printWindow.Document.Body.InnerHTML = _pdfReport.Element.QuerySelector(".printable").OuterHTML;
+                        printWindow.Document.Body.InnerHTML = PdfReport.Element.QuerySelector(".printable").OuterHTML;
                         printWindow.Print();
                         printWindow.AddEventListener(EventType.MouseMove, e => printWindow.Close());
                         printWindow.AddEventListener(EventType.Click, e => printWindow.Close());
@@ -118,8 +118,8 @@ namespace Core.Components
                             style.AppendChild(new Text(Meta.Style));
                             printWindow.Document.Head.AppendChild(style);
                         }
-                        _pdfReport.Dispose();
-                        _preview.Remove();
+                        PdfReport.Dispose();
+                        Preview.Remove();
                     }, 2000);
                 }
             }
@@ -147,7 +147,7 @@ namespace Core.Components
                 }
                 else
                 {
-                    Parent.AddChild(_pdfReport);
+                    Parent.AddChild(PdfReport);
                 }
             }
         }
@@ -160,7 +160,7 @@ namespace Core.Components
 
         private void PdfLibLoaded()
         {
-            var element = _preview.QuerySelector(".print-group") as HTMLElement;
+            var element = Preview.QuerySelector(".print-group") as HTMLElement;
             var printEl = element;
             var first = printEl.QuerySelectorAll(".printable").FirstOrDefault() as HTMLElement;
             first.Style.PageBreakBefore = null;
@@ -193,7 +193,7 @@ namespace Core.Components
 
         private void ClosePreview()
         {
-            _preview.Remove();
+            Preview.Remove();
         }
     }
 }

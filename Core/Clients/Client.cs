@@ -135,6 +135,23 @@ namespace Core.Clients
             EntityName = entityName;
         }
 
+        public Task<T> UserSvc<T>(SqlViewModel vm, bool annonymous = false)
+        {
+            return SubmitAsync<T>(new XHRWrapper
+            {
+                Value = JSON.Stringify(vm),
+                Url = Utils.UserSvc,
+                IsRawString = true,
+                Method = HttpMethod.POST,
+                AllowAnonymous = annonymous
+            });
+        }
+
+        public Task<object[][]> UserSvc(SqlViewModel vm, bool annonymous = false)
+        {
+            return UserSvc<object[][]>(vm, annonymous);
+        }
+
         public Task<object[][]> ComQuery(SqlViewModel vm)
         {
             return SubmitAsync<object[][]>(new XHRWrapper
@@ -394,17 +411,7 @@ namespace Core.Clients
                 Action = "ById",
                 ConnKey = connKey ?? ConnKey
             };
-            SubmitAsync<object[][]>(new XHRWrapper
-            {
-                Value = JSON.Stringify(vm),
-                IsRawString = true,
-                Method = HttpMethod.POST,
-                Url = Utils.UserSvc,
-                Headers = new Dictionary<string, string>
-                {
-                    { "content-type", "application/json" }
-                }
-            }).Done(ds =>
+            UserSvc(vm).Done(ds =>
             {
                 tcs.TrySetResult(ds.Length > 0 ? ds[0] : null);
             });

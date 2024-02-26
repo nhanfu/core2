@@ -960,7 +960,8 @@ public class UserService
         {
             return jsRes.Result;
         }
-        return await GetResultFromQuery(vm, sv.Annonymous ? sv.ConnKey : vm.CachedConnStr, jsRes);
+        var svConnStr = sv.Annonymous ? sv.ConnKey : await GetConnStrFromKey(sv.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
+        return await GetResultFromQuery(vm, svConnStr, jsRes);
     }
 
     private async Task<Models.Services> GetService(SqlViewModel vm)
@@ -1619,7 +1620,7 @@ public class UserService
             await WriteTemplateAsync(response, pageCached, env, tenant);
             return;
         }
-        var envQuery = $"select * from TenantEnv where TenantCode = '{tenant}' and Env = '{env}'  and ConnKey = 'default'";
+        var envQuery = $"select * from TenantEnv where TenantCode = '{tenant}' and Env = '{env}' and ConnKey = 'default'";
         var connStr = DefaultConnStr();
         var tnEnv = await ReadDsAs<TenantEnv>(envQuery, connStr);
         if (tnEnv is null)

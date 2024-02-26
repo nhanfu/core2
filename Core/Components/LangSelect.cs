@@ -130,15 +130,7 @@ namespace Core.Components
                 Action = "GetAll",
                 AnnonymousTenant = Client.Tenant
             };
-            var dictionaryTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
-            {
-                Value = JSON.Stringify(vm),
-                IsRawString = true,
-                Url = Utils.UserSvc,
-                Method = Enums.HttpMethod.POST,
-                AllowAnonymous = annonymous
-            });
-            dictionaryTask.Done(items =>
+            var dictionaryTask = Client.Instance.UserSvc(vm, annonymous).Done(items =>
             {
                 DictionaryLoaded(items[0].Select(x => x.As<Dictionary>()).ToArray());
                 tcs.TrySetResult(true);

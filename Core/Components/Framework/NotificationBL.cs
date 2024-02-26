@@ -259,12 +259,7 @@ namespace Core.Components.Framework
                 ConnKey = Client.ConnKey,
                 Params = JSON.Stringify(new { Date = lastSeenDateStr })
             };
-            var xhr = new XHRWrapper
-            {
-                Method = HttpMethod.POST, IsRawString = true, Url = Utils.UserSvc,
-                Value = JSON.Stringify(sql)
-            };
-            Client.Instance.SubmitAsync<object[][]>(xhr).Done(ds =>
+            Client.Instance.UserSvc(sql).Done(ds =>
             {
                 var olderItems = ds.Length > 0 ? ds[0].Select(x => x.CastProp<TaskNotification>()).ToArray() : null;
                 if (olderItems.Nothing()) 

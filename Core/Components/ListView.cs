@@ -155,18 +155,13 @@ namespace Core.Components
             }
             pageSize = pageSize ?? Paginator?.Options?.PageSize ?? Meta.Row ?? 12;
             skip = skip ?? Paginator?.Options?.PageIndex * pageSize ?? 0;
-            return SqlReader(skip, pageSize, cacheHeader);
-        }
-
-        public Task<List<object>> SqlReader(decimal? skip, decimal? pageSize, bool cacheHeader = false)
-        {
             var sql = GetSql(skip, pageSize, cacheHeader);
             return CustomQuery(sql);
         }
 
         public SqlViewModel GetSql(decimal? skip = null, decimal? pageSize = null, bool cacheMeta = false, bool count = true)
         {
-            var submitEntity = _preQueryFn != null ? _preQueryFn.Call(null, this) : null;
+            var submitEntity = _preQueryFn?.Call(null, this);
             var orderBy = AdvSearchVM.OrderBy.HasElement() ? AdvSearchVM.OrderBy.Combine(x =>
             {
                 var sortDirection = x.OrderbyDirectionId == OrderbyDirection.ASC ? "asc" : "desc";
@@ -1495,14 +1490,7 @@ namespace Core.Components
                 ConnKey = connKey,
                 Params = JSON.Stringify(new { ids, table = entity })
             };
-            var xhr = new XHRWrapper
-            {
-                Method = HttpMethod.POST,
-                Url = Utils.UserSvc,
-                IsRawString = true,
-                Value = JSON.Stringify(sql)
-            };
-            return Client.Instance.SubmitAsync<FeaturePolicy[]>(xhr);
+            return Client.Instance.UserSvc<FeaturePolicy[]>(sql);
         }
 
         public void MoveDown()
@@ -1611,16 +1599,11 @@ namespace Core.Components
 
         public Task<object[][]> GetUserSetting(string prefix)
         {
-            return Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+            return Client.Instance.UserSvc(new SqlViewModel
             {
-                Url = Utils.UserSvc,
-                Value = new SqlViewModel
-                {
-                    ComId = "UserSetting",
-                    Action = "GetByComId",
-                    Params = JSON.Stringify(new { ComId = Meta.Id, Prefix = prefix })
-                },
-                Method = HttpMethod.POST
+                ComId = "UserSetting",
+                Action = "GetByComId",
+                Params = JSON.Stringify(new { ComId = Meta.Id, Prefix = prefix })
             });
         }
 

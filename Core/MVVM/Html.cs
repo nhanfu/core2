@@ -5,7 +5,6 @@ using Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Core.MVVM
 {
@@ -485,15 +484,6 @@ namespace Core.MVVM
             return this;
         }
 
-        public Html Style(object style)
-        {
-            foreach (var key in GetOwnPropertyNames(style))
-            {
-                Context["style"][key] = style[key];
-            }
-            return this;
-        }
-
         public Html Clear()
         {
             if (Context != null)
@@ -501,20 +491,6 @@ namespace Core.MVVM
                 Context.TextContent = string.Empty;
                 Context.InnerHTML = string.Empty;
             }
-            return this;
-        }
-
-        public Html If(bool condition, Action doif, Action doelse = null)
-        {
-            if (condition)
-            {
-                doif();
-            }
-            else
-            {
-                doelse();
-            }
-
             return this;
         }
 
@@ -583,21 +559,9 @@ namespace Core.MVVM
             return this;
         }
 
-        public Html DataAttr(string attr, object obj)
-        {
-            Context.SetAttribute("data-" + attr, obj.ToString());
-            return this;
-        }
-
         public Html Type(string val)
         {
             Context.SetAttribute("type", val);
-            return this;
-        }
-
-        public Html Type(InputType type)
-        {
-            Context.SetAttribute("type", type.ToString());
             return this;
         }
 
@@ -646,17 +610,6 @@ namespace Core.MVVM
             return this;
         }
 
-        public Html Number(Observable<int> val)
-        {
-            var text = new Text(string.Format("{0:n0}", val.Data));
-            val.Changed += (arg) =>
-            {
-                text.TextContent = string.Format("{0:n0}", arg.NewData);
-            };
-            Context.AppendChild(text);
-            return this;
-        }
-
         public Html Event(EventType type, Action action)
         {
             Context.AddEventListener(type, action);
@@ -674,15 +627,6 @@ namespace Core.MVVM
             Context.AddEventListener(type, (e) =>
             {
                 action(e, model);
-            });
-            return this;
-        }
-
-        public Html AsyncEvent(EventType type, Func<Event, Task> action)
-        {
-            Context.AddEventListener(type, (Event e) =>
-            {
-                action(e).Done();
             });
             return this;
         }
@@ -718,29 +662,6 @@ namespace Core.MVVM
         }
 
         public Html ForEach<T>(IEnumerable<T> list, Action<T, int> renderer)
-        {
-            if (list == null)
-            {
-                throw new ArgumentNullException(nameof(list));
-            }
-
-            var element = Context;
-
-            var length = list.Count();
-            var index = -1;
-            var enumerator = list.GetEnumerator();
-
-            while (++index < length)
-            {
-                Context = element;
-                enumerator.MoveNext();
-                renderer.Call(element, enumerator.Current, index);
-            }
-            Context = element;
-            return this;
-        }
-
-        public Html ForEach<T>(IEnumerable<T> list, Action<T> renderer)
         {
             if (list == null)
             {
@@ -874,74 +795,6 @@ namespace Core.MVVM
             }
         }
 
-        public Html Dropdown<T>(List<T> list, T selectedItem, string displayField = null, string valueField = null)
-        {
-            if (Context.NodeName.ToLowerCase() != "select")
-            {
-                Select.Render();
-            }
-            var select = Context as HTMLSelectElement;
-            list.ForEach((T model) =>
-            {
-                var text = displayField == null ? model.ToString() : model[displayField]?.ToString();
-                var value = valueField == null ? model.ToString() : model[valueField]?.ToString();
-                Option.Text(text).Value(value).End.Render();
-            });
-            select.SelectedIndex = GetSelectedIndex(list, selectedItem, valueField);
-            return this;
-        }
-
-        public Html Dropdown<T>(ObservableList<T> list, Observable<T> selectedItem, string displayField, string valueField)
-        {
-            if (Context.NodeName.ToLowerCase() != "select")
-            {
-                Select.Render();
-            }
-            var select = Context as HTMLSelectElement;
-            ForEach(list, (T model, int index) =>
-            {
-                var text = model[displayField]?.ToString();
-                var value = model[valueField]?.ToString();
-                Option.Text(text).Value(value).End.Render();
-            });
-            select.SelectedIndex = GetSelectedIndex(list.Data.ToList(), selectedItem.Data, valueField);
-            list.ListChanged += (realList) =>
-            {
-                select.SelectedIndex = GetSelectedIndex(realList.ListData.ToList(), selectedItem.Data, valueField);
-            };
-            Event(EventType.Change, () =>
-            {
-                var selectedObj = list.Data[select.SelectedIndex];
-                selectedItem.Data = selectedObj;
-            });
-            selectedItem.Changed += (val) =>
-            {
-                select.SelectedIndex = GetSelectedIndex(list.Data.ToList(), val.NewData, valueField);
-            };
-
-            return this;
-        }
-
-        private int GetSelectedIndex<T>(List<T> list, T item, string valueField)
-        {
-            if (item == null)
-            {
-                return -1;
-            }
-
-            var arr = list.ToArray();
-            var index = Array.IndexOf(arr, item);
-            if (valueField != "")
-            {
-                var selectedItem = Array.Find(arr, x =>
-                {
-                    return x[valueField] == item[valueField];
-                });
-                index = Array.IndexOf(arr, selectedItem);
-            }
-            return index;
-        }
-
         public Html Visibility(bool visible)
         {
             var ele = Context;
@@ -949,32 +802,10 @@ namespace Core.MVVM
             return this;
         }
 
-        public Html Visibility(Observable<bool> visible)
-        {
-            var ele = Context;
-            ele.Style.Visibility = visible.Data ? "" : Bridge.Html5.Visibility.Hidden.ToString();
-            visible.Changed += (arg) =>
-            {
-                ele.Style.Visibility = arg.NewData ? "" : Bridge.Html5.Visibility.Hidden.ToString();
-            };
-            return this;
-        }
-
         public Html Display(bool shouldShow)
         {
             var ele = Context;
             ele.Style.Display = shouldShow ? string.Empty : Bridge.Html5.Display.None.ToString();
-            return this;
-        }
-
-        public Html Display(Observable<bool> shouldShow)
-        {
-            var ele = Context;
-            ele.Style.Display = shouldShow.Data ? string.Empty : Bridge.Html5.Display.None.ToString();
-            shouldShow.Changed += (arg) =>
-            {
-                ele.Style.Display = arg.NewData ? string.Empty : Bridge.Html5.Display.None.ToString();
-            };
             return this;
         }
 

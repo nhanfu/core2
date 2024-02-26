@@ -278,7 +278,7 @@ namespace Core.Components
                 return Task.FromResult(res);
             }
             var tcs = new TaskCompletionSource<object>();
-            var isFn = Utils.IsFunction(Meta.PreQuery, out var fn);
+            var isFn = Utils.IsFunction(Meta.PreQuery, out var fn, false);
             var sql = new SqlViewModel
             {
                 ComId = Meta.Id,

@@ -137,7 +137,7 @@ namespace Core.Components.Extensions
             }
 
             searchTerm = searchTerm.Trim();
-            var fieldName = com.DisplayField.HasNonSpaceChar() 
+            var fieldName = com.DisplayField.HasNonSpaceChar()
                 ? $"JSON_VALUE(ds.[{com.DisplayField}], '$.{com.DisplayDetail}')" : $"ds.[{com.FieldName}]";
             if (fieldName.IsNullOrWhiteSpace()) return string.Empty;
             if (com.ComponentType == "Datepicker")
@@ -269,24 +269,19 @@ namespace Core.Components.Extensions
         public static Task<Feature> LoadFeature(string connKey, string name, string id = null)
         {
             var tcs = new TaskCompletionSource<Feature>();
-            var featureTask = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
+            var featureTask = Client.Instance.UserSvc(new SqlViewModel
             {
-                Value = JSON.Stringify(new SqlViewModel
-                {
-                    ComId = "Feature",
-                    Action = "GetFeature",
-                    ConnKey = connKey ?? Client.ConnKey,
-                    Params = JSON.Stringify(new { Name = name, Id = id })
-                }),
-                Url = Utils.UserSvc,
-                IsRawString = true,
-                Method = HttpMethod.POST
+                ComId = "Feature",
+                Action = "GetFeature",
+                ConnKey = connKey ?? Client.ConnKey,
+                Params = JSON.Stringify(new { Name = name, Id = id })
             });
             featureTask.Done(ds =>
             {
                 if (ds.Nothing() || ds[0].Nothing())
                 {
                     tcs.TrySetResult(null);
+                    return;
                 }
                 var feature = ds[0][0].CastProp<Feature>();
                 if (feature is null)

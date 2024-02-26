@@ -123,17 +123,10 @@ namespace Core.Components.Framework
         {
             var doc = Document.Instance as dynamic;
             var meta = doc.head.children.startupSvc;
-            var submitEntity = new SqlViewModel
+            var startup = Client.Instance.UserSvc(new SqlViewModel
             {
                 SvcId = meta.content,
                 OrderBy = "ds.[Order] asc",
-            };
-            var startup = Client.Instance.SubmitAsync<object[][]>(new XHRWrapper
-            {
-                Value = JSON.Stringify(submitEntity),
-                Url = Utils.UserSvc,
-                IsRawString = true,
-                Method = HttpMethod.POST
             });
             return startup;
         }
@@ -485,13 +478,7 @@ namespace Core.Components.Framework
                     Action = "Clone",
                     Ids = new string[] { feature.Id }
                 };
-                Client.Instance.SubmitAsync<bool>(new XHRWrapper
-                {
-                    IsRawString = true,
-                    Url = Utils.UserSvc,
-                    Method = HttpMethod.POST,
-                    Value = JSON.Stringify(sql)
-                }).Done(x =>
+                Client.Instance.UserSvc<bool>(sql).Done(x =>
                 {
                     ReloadMenu(feature.ParentId);
                 });
