@@ -833,7 +833,12 @@ namespace Core.Components.Forms
             var ctxMenu = ContextMenu.Instance;
             ctxMenu.Top = e.Top();
             ctxMenu.Left = e.Left();
-            ctxMenu.MenuItems = new List<ContextMenuItem>
+            ctxMenu.MenuItems = new List<ContextMenuItem>();
+            if (component != null && component.ComponentType.Contains("View"))
+            {
+                ctxMenu.MenuItems.Add(new ContextMenuItem { Icon = "fal fa-tasks", Text = "Header Manage", Click = HeaderMamage, Parameter = component });
+            }
+            ctxMenu.MenuItems.AddRange(new List<ContextMenuItem>
             {
                     component is null ? null : new ContextMenuItem { Icon = "fal fa-cog", Text = "Tùy chọn dữ liệu", Click = ComponentProperties, Parameter = component },
                     component is null ? null : new ContextMenuItem { Icon = "fal fa-clone", Text = "Sao chép", Click = CopyComponent, Parameter = component },
@@ -841,8 +846,20 @@ namespace Core.Components.Forms
                     new ContextMenuItem { Icon = "fal fa-cogs", Text = "Tùy chọn vùng dữ liệu", Click = SectionProperties, Parameter = group },
                     new ContextMenuItem { Icon = "fal fa-folder-open", Text = "Thiết lập chung", Click = FeatureProperties },
                     new ContextMenuItem { Icon = "fal fa-clone", Text = "Clone feature", Click = CloneFeature, Parameter = Feature },
-            };
+            });
             ctxMenu.Render();
+        }
+
+        private void HeaderMamage(object arg)
+        {
+            var editor = new HeaderManageBL()
+            {
+                Entity = arg,
+                ParentElement = Element,
+                OpenFrom = this.FindClosest<EditForm>(),
+            };
+            editor["FeatureComponent"] = Feature;
+            AddChild(editor);
         }
 
         public void CloneFeature(object ev)

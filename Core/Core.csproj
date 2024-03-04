@@ -41,6 +41,7 @@
     <Compile Include="Clients\LocalStorage.cs" />
     <Compile Include="Components\ExportCustomData.cs" />
     <Compile Include="Components\ButtonPdf.cs" />
+    <Compile Include="Components\Framework\HeaderManageBL.cs" />
     <Compile Include="Components\Framework\LoginBL.cs" />
     <Compile Include="Components\Framework\MenuComponent.cs" />
     <Compile Include="Components\Framework\NotificationBL.cs" />
