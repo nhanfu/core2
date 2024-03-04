@@ -685,5 +685,21 @@ namespace Core.Components.Extensions
             document.body.removeChild(a);
              */
         }
+
+        public static void FullScreen(dynamic elem)
+        {
+            if (elem.requestFullscreen)
+            {
+                elem.requestFullscreen();
+            }
+            else if (elem.webkitRequestFullscreen)
+            {
+                elem.webkitRequestFullscreen();
+            }
+            else if (elem.msRequestFullscreen)
+            {
+                elem.msRequestFullscreen();
+            }
+        }
     }
 }

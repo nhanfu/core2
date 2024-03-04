@@ -132,9 +132,12 @@ namespace Core.Models
         public string ConnKey { get; set; }
         public bool ShouldSaveText { get; set; }
         public string CacheName { get; set; }
-        public string DisplayField { get; set; }
-        public string DisplayDetail { get; set; }
+        public string Lang { get; set; }
 
+        [DbIgnore]
+        public string DisplayField { get; set; }
+        [DbIgnore]
+        public string DisplayDetail { get; set; }
         [DbIgnore]
         public TextAlign? TextAlignEnum { get; set; }
         [DbIgnore]

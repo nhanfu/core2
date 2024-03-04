@@ -500,14 +500,6 @@ namespace Core.MVVM
             var checkbox = Context as HTMLInputElement;
             checkbox.SetAttribute("type", "checkbox");
             checkbox.Checked = value ?? false;
-            Event(EventType.Change, (e) =>
-            {
-                value = (e.Target as HTMLInputElement).Checked;
-            });
-            Event(EventType.Click, (e) =>
-            {
-                value = (e.Target as HTMLInputElement).Checked;
-            });
             return this;
         }
 
@@ -515,24 +507,6 @@ namespace Core.MVVM
         {
             var input = Context;
             input["value"] = val;
-            return this;
-        }
-
-        public Html Value<T>(Observable<T> val)
-        {
-            var input = Context;
-            if (input != null)
-            {
-                input["value"] = val.Data?.ToString();
-                Event(EventType.Input, (e) =>
-                {
-                    SetObservableValue(val, input["value"]?.ToString());
-                });
-                val.Changed += (arg) =>
-                {
-                    input["value"] = arg.NewData != null ? arg.NewData.ToString() : string.Empty;
-                };
-            }
             return this;
         }
 

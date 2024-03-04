@@ -1560,15 +1560,6 @@ namespace Core.Components
         protected override List<Component> FilterColumns(List<Component> Component)
         {
             if (Component.Nothing()) return Component;
-            var specificComponent = Component.Any(x => x.ComponentId == Meta.Id);
-            if (specificComponent)
-            {
-                Component = Component.Where(x => x.ComponentId == Meta.Id).ToList();
-            }
-            else
-            {
-                Component = Component.Where(x => x.ComponentId == null).ToList();
-            }
 
             var permission = EditForm.GetGridPolicies(Component.Select(x => x.Id).ToArray(), Utils.ComponentId);
             var headers = Component.Where(x => !x.Hidden)

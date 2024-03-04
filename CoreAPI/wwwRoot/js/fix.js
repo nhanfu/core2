@@ -119,11 +119,16 @@ function initCodeEditor(com) {
             com.Dirty = true;
         });
     });
+    com.Element.classList.add('code-editor');
     com.Element.style.resize = 'both';
     com.Element.style.border = '1px solid #dde';
     // register change event from UI
     com.addEventListener('UpdateView', () => {
         editor.setValue(com.Entity[com.Meta.FieldName]);
+    });
+    Core.MVVM.Html.Take(com.Element).Icon('fa fal fa-compress-wide')
+    .Event('click', () => {
+        Core.Components.Extensions.ComponentExt.FullScreen(com.Element);
     });
 }
 

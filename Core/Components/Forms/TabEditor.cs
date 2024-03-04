@@ -63,7 +63,7 @@ namespace Core.Components.Forms
                 .Event(EventType.Click, Focus).Event(EventType.MouseUp, Close);
                 html.Icon("fa fal fa-compress-wide").Event(EventType.Click, (e) =>
                 {
-                    FullScreen();
+                    ComponentExt.FullScreen(Element);
                 }).End.Render();
                 html.Icon("fa fa-times").Event(EventType.Click, (e) =>
                 {
@@ -95,23 +95,6 @@ namespace Core.Components.Forms
                 }).DistinctBy(x => x.Href).ToArray();
                 Window.LocalStorage.SetItem("tabs", tabStates.ToJson());
             });
-        }
-
-        private void FullScreen()
-        {
-            var elem = Element as dynamic;
-            if (elem.requestFullscreen)
-            {
-                elem.requestFullscreen();
-            }
-            else if (elem.webkitRequestFullscreen)
-            {
-                elem.webkitRequestFullscreen();
-            }
-            else if (elem.msRequestFullscreen)
-            {
-                elem.msRequestFullscreen();
-            }
         }
 
         public void RenderPopup()
