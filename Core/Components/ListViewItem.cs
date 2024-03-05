@@ -7,9 +7,11 @@ using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
 using Core.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 
@@ -284,16 +286,55 @@ namespace Core.Components
                     }
                     var value = Utils.GetPropValue(child.Entity, child.FieldName);
                     var propType = child.Entity.GetType().GetComplexPropType(child.FieldName, child.Entity);
+                    var actValue = string.Empty;
+                    switch (child.ComponentType)
+                    {
+                        case nameof(Datepicker):
+                            actValue = value.ToString().DateConverter();
+                            break;
+                        case nameof(Checkbox):
+                            actValue = Convert.ToBoolean(value) ? "1" : "0";
+                            break;
+                        default:
+                            actValue = !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim();
+                            break;
+                    }
+                    if (actValue.IsNullOrWhiteSpace())
+                    {
+                        actValue = null;
+                    }
                     var patch = new PatchDetail
                     {
                         Label = child.Label,
                         Field = child.FieldName,
                         OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
-                        Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
+                        Value = actValue,
                     };
-                    return new PatchDetail[] { patch };
+                    var listDetail = new PatchDetail[] { patch };
+                    return listDetail;
                 }).DistinctBy(x => x.Field).ToList();
+            if (!ListView.Meta.DefaultVal.IsNullOrWhiteSpace() && Utils.IsFunction(ListView.Meta.DefaultVal, out var fnDetail))
+            {
+                var dfObj = fnDetail.Call(this, EditForm);
+                var patchDetail = JsonConvert.DeserializeObject<PatchDetail>(dfObj.ToString());
+                var defaultValue = dirtyPatch.FirstOrDefault(x => x.Field == patchDetail.Field);
+                if (defaultValue != null)
+                {
+                    defaultValue.Value = patchDetail.Value;
+                }
+                else
+                {
+                    dirtyPatch.Add(patchDetail);
+                }
+            }
             AddIdToPatch(dirtyPatch);
+            dirtyPatch.ForEach(x =>
+            {
+                if (x.Value.IsNullOrWhiteSpace())
+                {
+                    x.Value = null;
+                }
+            });
             PatchModel.AddRange(dirtyPatch);
             return new PatchVM
             {

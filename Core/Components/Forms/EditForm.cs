@@ -8,6 +8,7 @@ using Core.Models;
 using Core.MVVM;
 using Core.Structs;
 using Core.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,7 +136,8 @@ namespace Core.Components.Forms
                     OldVal = (child.OldValue != null && propType.IsDate()) ? child.OldValue.ToString().DateConverter() : child.OldValue?.ToString(),
                     Value = (value != null && propType.IsDate()) ? value.ToString().DateConverter() : !EditForm.Feature.IgnoreEncode ? value?.ToString().Trim().EncodeSpecialChar() : value?.ToString().Trim(),
                 };
-                return new PatchDetail[] { patch };
+                var listDetail = new PatchDetail[] { patch };
+                return listDetail;
             }).DistinctBy(x => x.Field).ToList();
             AddIdToPatch(details);
             return new PatchVM { Changes = details, Table = Feature.EntityName, QueueName = QueueName, CacheName = CacheName };

@@ -1546,6 +1546,7 @@ namespace Core.Components
                     Value = value?.ToString()
                 });
             });
+            StickyColumn(rowSection);
             if (!Meta.TopEmpty)
             {
                 DataTable.InsertBefore(MainSection.Element, EmptySection.Element);
