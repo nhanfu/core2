@@ -825,6 +825,7 @@ namespace Core.MVVM
 
         public void MarkLangProp(Node ctx, string langKey, string propName, params object[] parameters)
         {
+            if (ctx is null) return;
             ctx[LangSelect.LangKey + propName] = langKey;
             if (parameters.HasElement())
             {

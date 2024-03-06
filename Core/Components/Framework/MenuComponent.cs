@@ -480,7 +480,15 @@ namespace Core.Components.Framework
                 };
                 Client.Instance.UserSvc<bool>(sql).Done(x =>
                 {
-                    ReloadMenu(feature.ParentId);
+                    if (x)
+                    {
+                        Toast.Success("Clone feature success");
+                        ReloadMenu(feature.ParentId);
+                    }
+                    else
+                    {
+                        Toast.Warning("Clone feature not success");
+                    }
                 });
             };
             AddChild(confirmDialog);

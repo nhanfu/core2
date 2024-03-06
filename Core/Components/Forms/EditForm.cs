@@ -810,8 +810,10 @@ namespace Core.Components.Forms
             return res ?? 0;
         }
 
-        public virtual void SysConfigMenu(Event e, Component component, ComponentGroup group)
+        public EditableComponent CtxCom;
+        public virtual void SysConfigMenu(Event e, Component component, ComponentGroup group, EditableComponent ctx)
         {
+            CtxCom = ctx;
             var metaPermission = Policies.Any(x => x.CanWriteMeta || x.CanWriteMetaAll);
             if (!metaPermission)
             {
@@ -858,7 +860,7 @@ namespace Core.Components.Forms
             {
                 Entity = arg,
                 ParentElement = Element,
-                OpenFrom = this.FindClosest<EditForm>(),
+                OpenFrom = CtxCom,
             };
             editor["FeatureComponent"] = Feature;
             AddChild(editor);

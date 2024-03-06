@@ -238,7 +238,7 @@ namespace Core.Components
                 }
                 Html.Instance.End.Render();
             }
-            Html.Instance.ClassName(groupInfo.ClassName).Event(EventType.ContextMenu, (e) => parent.EditForm.SysConfigMenu(e, null, groupInfo));
+            Html.Instance.ClassName(groupInfo.ClassName).Event(EventType.ContextMenu, (e) => parent.EditForm.SysConfigMenu(e, null, groupInfo, null));
             if (!groupInfo.ClassName.Contains("ribbon"))
             {
                 Html.Instance.ClassName("panel").ClassName("group");
@@ -360,7 +360,7 @@ namespace Core.Components
 
                     if (Client.SystemRole)
                     {
-                        childComponent.Element.AddEventListener(EventType.ContextMenu.ToString(), (e) => EditForm.SysConfigMenu(e, ui, group));
+                        childComponent.Element.AddEventListener(EventType.ContextMenu.ToString(), (e) => EditForm.SysConfigMenu(e, ui, group, childComponent));
                     }
                 }
                 if (ui.Focus)
@@ -488,7 +488,7 @@ namespace Core.Components
 
                     if (Client.SystemRole)
                     {
-                        childComponent.Element.AddEventListener(EventType.ContextMenu.ToString(), (e) => EditForm.SysConfigMenu(e, ui, group));
+                        childComponent.Element.AddEventListener(EventType.ContextMenu.ToString(), (e) => EditForm.SysConfigMenu(e, ui, group, childComponent));
                     }
                 }
                 if (ui.Focus)

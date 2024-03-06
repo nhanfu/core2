@@ -323,7 +323,7 @@ public class UserService
         return await GetUserToken(updatedUser, roles, login, token.RefreshToken);
     }
 
-    private async Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
+    public async Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(connKey);
         tenantCode = TenantCode ?? tenantCode;
@@ -698,17 +698,13 @@ public class UserService
 
     public async Task<int> SavePatches(PatchVM[] patches)
     {
+        ArgumentNullException.ThrowIfNull(patches);
+        patches = patches.Where(x => x.Id is not null).ToArray();
         var connStr = patches[0].CachedConnStr ?? await GetConnStrFromKey(patches[0].ConnKey);
         var tables = patches.Select(x => x.Table);
-        List<string> rightQuery = [@$"select * from FeaturePolicy 
-            where Active = 1 and (CanWrite = 1 or CanWriteAll = 1) and EntityName in ({tables.CombineStrings()}) and RoleId in ({RoleIds.CombineStrings()})"];
-        rightQuery.AddRange(patches.Select(x =>
-        {
-            var idField = x.Id;
-            return $"select * from {x.Table} where Id = '{idField.OldVal}'";
-        }));
-        var ds = await ReadDataSet(rightQuery.Combine(Utils.SemiColon), connStr);
-        var permissions = ds.Length > 0 && ds[0].Length > 0 ? ds[0].Select(x => x.MapTo<FeaturePolicy>()).ToArray() : [];
+        string rightQuery = @$"select * from FeaturePolicy 
+            where Active = 1 and (CanWrite = 1 or CanWriteAll = 1) and EntityName in ({tables.CombineStrings()}) and RoleId in ({RoleIds.CombineStrings()})";
+        var permissions = await ReadDsAsArr<FeaturePolicy>(rightQuery, connStr);
         permissions = permissions.DistinctBy(x => x.EntityName).ToArray();
         var lackPerTables = patches.Select(x => x.Table).Except(permissions.Select(x => x.EntityName)).ToArray();
         if (lackPerTables.Length > 0)
@@ -735,6 +731,11 @@ public class UserService
         {
             throw new ApiException("Table name and change details can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
         }
+        if (vm.Id is null)
+        {
+            throw new ApiException("Id cannot be null") { StatusCode = HttpStatusCode.BadRequest };
+        }
+
         vm.Table = RemoveWhiteSpace(vm.Table);
         vm.Changes = vm.Changes.Where(x =>
         {
@@ -1662,6 +1663,7 @@ public class UserService
             x.FeatureId = feature.Id;
             return x.MapToPatch();
         }).ToArray();
+        groups.Action(x => x.FeatureId = feature.Id);
         var groupMap = groups.DistinctBy(x => x.Id).ToDictionary(x => x.Id);
         var visited = new HashSet<ComponentGroup>();
         var comVisited = new HashSet<Component>();
@@ -1682,13 +1684,17 @@ public class UserService
             if (notVisited) CloneComponentToGroup(group, components);
             return group.MapToPatch();
         }).ToArray();
-        var standAloneCom = components.Except(groups.SelectMany(x => x.Component)).SelectForEach(x =>
+        var standAlonePatches = components.Except(groups.SelectMany(x => x.Component))
+        .Select(x =>
         {
             x.Id = Uuid7.Id25();
+            x.FeatureId = feature.Id;
+            return x.MapToPatch(table: nameof(Component));
         });
+        components.Action(x => { if (x.Id.IsNullOrWhiteSpace()) x.Id = Uuid7.Id25(); });
         var comPatches = components.Select(x => x.MapToPatch()).ToArray();
         PatchVM[] patches = [
-            featurePatch, ..policyPatches, ..groupPatches, ..comPatches
+            featurePatch, ..policyPatches, ..groupPatches, ..comPatches, ..standAlonePatches,
         ];
         patches.SelectForEach(x => x.CachedConnStr = connStr);
         await SavePatches(patches);
@@ -1705,6 +1711,7 @@ public class UserService
         {
             c.Id = Uuid7.Id25().ToString();
             c.ComponentGroupId = group.Id;
+            c.FeatureId = group.FeatureId;
         });
     }
 
