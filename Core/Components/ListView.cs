@@ -514,20 +514,6 @@ namespace Core.Components
             Paginator.UpdateView();
         }
 
-        public void RealtimeUpdate(ListViewItem rowData, ObservableArgs arg)
-        {
-            if (EmptyRow)
-            {
-                EmptyRow = false;
-                return;
-            }
-            if (!Meta.IsRealtime || arg is null)
-            {
-                return;
-            }
-            rowData.PatchUpdateOrCreate();
-        }
-
         internal virtual Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
         {
             var tcs = new TaskCompletionSource<bool>();
@@ -768,12 +754,12 @@ namespace Core.Components
 
         public List<object> GetFocusedRows()
         {
-            return AllListViewItem.Where(x => x.Focused).Select(x => x.Entity).ToList();
+            return AllListViewItem.Where(x => x.Focused()).Select(x => x.Entity).ToList();
         }
 
         public ListViewItem GetItemFocus()
         {
-            return AllListViewItem.Where(x => x.Focused).FirstOrDefault();
+            return AllListViewItem.Where(x => x.Focused()).FirstOrDefault();
         }
 
         public virtual List<object> GetSelectedRows()
@@ -820,13 +806,12 @@ namespace Core.Components
                     base.Focus();
                     if (Meta.IsRealtime)
                     {
-                        foreach (var item in list)
+                        Task.WhenAll(list.Select(x => x.PatchUpdateOrCreate())).Done(XHRWrapper =>
                         {
-                            item.PatchUpdateOrCreate();
-                        }
-                        Toast.Success("Sao chép dữ liệu thành công !");
-                        base.Dirty = false;
-                        ClearSelected();
+                            Toast.Success("Sao chép dữ liệu thành công !");
+                            base.Dirty = false;
+                            ClearSelected();
+                        });
                     }
                     else
                     {
@@ -908,11 +893,10 @@ namespace Core.Components
                 ClearSelected();
                 if (Meta.IsRealtime)
                 {
-                    foreach (var item in list)
+                    Task.WhenAll(list.Select(x => x.PatchUpdateOrCreate())).Done(x =>
                     {
-                        item.PatchUpdateOrCreate();
-                        item.Dirty = false;
-                    }
+                        list.Action(item => item.Dirty = false);
+                    });
                 }
                 Toast.Success("Sao chép dữ liệu thành công !");
             });

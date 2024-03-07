@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 
@@ -54,30 +53,25 @@ namespace Core.Components
             }
         }
 
-        public virtual bool Focused
+        public Action<bool> FocusEvent;
+        public virtual bool Focused(bool? value = null, bool triggerEvent = true)
         {
-            get => _focused;
-            set
+            if (value == null) return _focused;
+            _focused = value.Value;
+            var id = Entity[IdField] as string;
+            if (_focused)
             {
-                _focused = value;
-                if (value)
-                {
-                    Element.AddClass(FocusedClass);
-                }
-                else
-                {
-                    Element.RemoveClass(FocusedClass);
-                }
-                var id = Entity[IdField].As<string>();
-                if (value)
-                {
-                    ListViewSection.ListView.FocusId = id;
-                }
-                else
-                {
-                    ListViewSection.ListView.FocusId = null;
-                }
+                Element.AddClass(FocusedClass);
+                ListViewSection.ListView.FocusId = id;
             }
+            else
+            {
+                Element.RemoveClass(FocusedClass);
+                ListViewSection.ListView.FocusId = null;
+            }
+            if (triggerEvent) FocusEvent?.Invoke(_focused);
+
+            return _focused;
         }
 
         private void SetSelected(bool value)
@@ -118,10 +112,19 @@ namespace Core.Components
         {
         }
 
+        private int _focusAwaiter;
         protected void SaveEvent()
         {
             AfterSaved += AfterSaveHandler;
             EditForm.AfterSaved += AfterSaveHandler;
+            FocusEvent += (focus) =>
+            {
+                Window.ClearTimeout(_focusAwaiter);
+                _focusAwaiter = Window.SetTimeout(() =>
+                {
+                    if (!focus && Dirty && Meta.IsRealtime) PatchUpdateOrCreate().Done();
+                }, 100);
+            };
         }
 
         public override void Render()
@@ -155,12 +158,13 @@ namespace Core.Components
                 {
                     ListView.AllListViewItem.SelectForEach(x =>
                     {
-                        if (x.Focused)
+                        if (x._focused)
                         {
-                            x.Focused = false;
+                            x._focused = false;
                         }
                     });
-                    Focused = true;
+                    _focused = true;
+                    FocusEvent?.Invoke(true);
                 })
                 .Event(EventType.FocusOut, RowFocusOut)
                 .Event(EventType.MouseEnter, MouseEnter)
@@ -225,31 +229,32 @@ namespace Core.Components
             {
                 return;
             }
-            ListView.RowChangeHandler(component.Entity, this, arg, component).Done(() =>
-            {
-                ValidateAsync().Done(isvalid =>
-                {
-                    if (!isvalid) return;
-                    ListView.RealtimeUpdate(this, arg);
-                });
-            });
+            ListView.RowChangeHandler(component.Entity, this, arg, component).Done();
         }
 
-        public void PatchUpdateOrCreate()
+        public Task<bool> PatchUpdateOrCreate(bool showMessage = true)
         {
             if (!Dirty)
             {
-                return;
+                return Task.FromResult(false);
             }
+            var tcs = new TaskCompletionSource<bool>();
             var patchModel = GetPatchEntity();
             this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforePatchUpdate, Entity, patchModel, this)
             .Done(() =>
             {
-                Client.Instance.PatchAsync(patchModel).Done(success =>
+                ShowMessage = showMessage;
+                ValidateAsync().Done(isValid =>
                 {
-                    PatchUpdateCb(success > 0, patchModel);
+                    if (IsValid)
+                        Client.Instance.PatchAsync(patchModel).Done(success =>
+                        {
+                            PatchUpdateCb(success > 0, patchModel);
+                            tcs.TrySetResult(success > 0);
+                        });
                 });
             });
+            return tcs.Task;
         }
 
         private void PatchUpdateCb(bool success, PatchVM patchModel)
@@ -260,6 +265,7 @@ namespace Core.Components
             }
             else
             {
+                Toast.Success("Save data success");
                 EntityId = patchModel.EntityId;
                 Dirty = false;
                 EmptyRow = false;
@@ -488,6 +494,7 @@ namespace Core.Components
 
         protected virtual void RowFocusOut()
         {
+            Focused(false);
             Task.Run(async () => await this.DispatchCustomEvent(Meta.Events, CustomEventType.RowFocusOut, Entity));
         }
 

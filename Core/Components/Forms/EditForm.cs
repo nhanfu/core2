@@ -679,9 +679,8 @@ namespace Core.Components.Forms
         private void LockUpdate()
         {
             var generalRule = Feature.FeaturePolicy.Where(x => x.RecordId.IsNullOrEmpty()).ToArray();
-            if (!Feature.IsPublic &&
-                (generalRule.All(x => !x.CanWrite)
-                || !Utils.IsOwner(Entity) && generalRule.All(x => !x.CanWriteAll)))
+            var noPermission = (!Feature.IsPublic || !Utils.IsOwner(Entity)) && generalRule.All(x => !x.CanWrite && !x.CanWriteAll);
+            if (noPermission)
             {
                 LockUpdateButCancel();
             }
@@ -690,7 +689,7 @@ namespace Core.Components.Forms
         protected virtual void LockUpdateButCancel()
         {
             Disabled = true;
-            this.SetDisabled(false, BtnCancel, BtnPrint);
+            this.SetDisabled(false, BtnCancel);
         }
 
         private void SetFeatureProperties(Feature feature)

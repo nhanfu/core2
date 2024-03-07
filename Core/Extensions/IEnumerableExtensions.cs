@@ -9,6 +9,19 @@ namespace Core.Extensions
 {
     public static class IEnumerableExtensions
     {
+        public static void Action<T>(this IEnumerable<T> source, Action<T> action)
+        {
+            if (source.Nothing() || action is null)
+            {
+                return;
+            }
+
+            foreach (var item in source)
+            {
+                action(item);
+            }
+        }
+
         public static IEnumerable<T> SelectForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
             if (source.Nothing() || action is null)

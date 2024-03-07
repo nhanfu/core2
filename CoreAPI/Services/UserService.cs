@@ -512,7 +512,7 @@ public class UserService
     {
         vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey, vm.TenantCode, vm.Env);
         var canWrite = await HasWritePermission(vm);
-        if (!canWrite) throw new ApiException($"Unauthorized access on \"{vm.Table}\"")
+        if (!canWrite) throw new ApiException($"Unauthorized to write on \"{vm.Table}\"")
         {
             StatusCode = HttpStatusCode.Unauthorized
         };

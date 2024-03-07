@@ -121,9 +121,9 @@ namespace Core.Components
             await RowChangeHandlerGrid(rowData, rowSection, observableArgs);
             rowSection.UpdateView(true);
             SetEntityPath();
-            if (Meta.IsRealtime && EntityId != null)
+            if (!rowSection.Focused() && Meta.IsRealtime && EntityId != null)
             {
-                RealtimeUpdate(rowSection, observableArgs);
+                await rowSection.PatchUpdateOrCreate();
             }
             Dirty = true;
         }

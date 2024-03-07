@@ -138,7 +138,7 @@ namespace Core.Components
             RowData.Data.Clear();
             rows.ForEach(RowData.Data.Add);
             Entity?.SetComplexPropValue(FieldName, rows);
-            RowAction(x => x.Focused = false);
+            RowAction(x => x.Focused(false));
             if (IsSmallUp)
             {
                 SetFocusingCom();

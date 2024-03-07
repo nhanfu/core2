@@ -437,8 +437,8 @@ namespace Core.Extensions
             if (obj is null || action is null) return;
             var hashSet = new HashSet<string>();
             /*@
-            Object.keys(obj).forEach(x => { 
-                if (hashSet.contains(x.Name)) return;
+            Object.keys(obj).forEach(x => {
+                if (x == null || hashSet.contains(x.Name)) return;
                 hashSet.add(x.Name);
                 action(x, obj[x]);
             });

@@ -12,7 +12,6 @@ public class LoadBalaceMiddleware
     private readonly RequestDelegate _next;
     private readonly IConfiguration _conf;
     private readonly HttpClient _httpClient;
-    private UserService _userSvc;
     private readonly ProxyOptions _defaultOptions;
     private static Clusters Balancer => Clusters.Data;
     private static readonly string[] NotForwardedWebSocketHeaders = ["Connection", "Host", "Upgrade", "Sec-WebSocket-Key", "Sec-WebSocket-Version"];

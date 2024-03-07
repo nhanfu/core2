@@ -876,7 +876,7 @@ namespace Core.Components
             }
             if (LastListViewItem != null && LastElementFocus != null)
             {
-                LastListViewItem.Focused = true;
+                LastListViewItem.Focused(true);
                 LastElementFocus.Focus();
             }
         }
@@ -985,11 +985,11 @@ namespace Core.Components
                 {
                     if (!com.Meta.Editable)
                     {
-                        text = com.GetValueTextAct() is null ? null : com.GetValueTextAct().ToString().DecodeSpecialChar();
+                        text = com.GetValueTextAct()?.ToString().DecodeSpecialChar();
                     }
                     else
                     {
-                        text = com.GetValueText() is null ? null : com.GetValueText().ToString().DecodeSpecialChar();
+                        text = com.GetValueText()?.ToString().DecodeSpecialChar();
                     }
                 }
             }
@@ -1014,7 +1014,7 @@ namespace Core.Components
                     break;
                 case KeyCodeEnum.UpArrow:
                     var currentItemUp = GetItemFocus();
-                    if (currentItemUp.RowNo == 0)
+                    if (currentItemUp.RowNo == 0 && !e.CtrlOrMetaKey())
                     {
                         return;
                     }
@@ -1034,7 +1034,7 @@ namespace Core.Components
                     break;
                 case KeyCodeEnum.DownArrow:
                     var currentItemDown = GetItemFocus();
-                    if (currentItemDown is null)
+                    if (currentItemDown is null && !e.CtrlOrMetaKey())
                     {
                         return;
                     }
@@ -1053,7 +1053,7 @@ namespace Core.Components
                     CoppyValue(e, com, fieldName, currentItemDown, upItemDown);
                     break;
                 case KeyCodeEnum.LeftArrow:
-                    if (!Meta.IsRealtime)
+                    if (!Meta.IsRealtime && !e.CtrlOrMetaKey())
                     {
                         return;
                     }
@@ -1077,7 +1077,7 @@ namespace Core.Components
                     }
                     break;
                 case KeyCodeEnum.RightArrow:
-                    if (!Meta.IsRealtime)
+                    if (!Meta.IsRealtime && !e.CtrlOrMetaKey())
                     {
                         return;
                     }
@@ -1107,16 +1107,13 @@ namespace Core.Components
                 case KeyCodeEnum.Home:
                     var lastSelected = GetSelectedRows().LastOrDefault();
                     var currentItemHome = AllListViewItem.FirstOrDefault();
-                    if (currentItemHome != null)
-                    {
-                        currentItemHome.Focused = false;
-                    }
+                    currentItemHome?.Focused(false);
                     DataTable.ParentElement.ScrollTop = 0;
                     RenderViewPort();
                     var upItemHome = AllListViewItem.FirstOrDefault();
                     if (upItemHome != null)
                     {
-                        upItemHome.Focused = true;
+                        upItemHome.Focused(true);
                         var upComponent = upItemHome.FirstOrDefault(x => x.FieldName == fieldName);
                         var tdup = upComponent.Element.Closest(ElementType.td.ToString());
                         upItemHome.Focus();
@@ -1128,14 +1125,14 @@ namespace Core.Components
                     var currentItemEnd = AllListViewItem.FirstOrDefault(x => x.Entity == lastSelectedEnd);
                     if (currentItemEnd != null)
                     {
-                        currentItemEnd.Focused = false;
+                        currentItemEnd.Focused(false);
                     }
                     DataTable.ParentElement.ScrollTop = DataTable.ParentElement.ScrollHeight;
                     RenderViewPort();
                     var upItemEnd = AllListViewItem.LastOrDefault();
                     if (upItemEnd != null)
                     {
-                        upItemEnd.Focused = true;
+                        upItemEnd.Focused(true);
                         var upComponent = upItemEnd.FirstOrDefault(x => x.FieldName == fieldName);
                         var tdup = upComponent.Element.Closest(ElementType.td.ToString());
                         upItemEnd.Focus();
@@ -1145,43 +1142,6 @@ namespace Core.Components
                 case KeyCodeEnum.Insert:
                     var currentItemInsert = GetItemFocus();
                     currentItemInsert.Selected = !currentItemInsert.Selected;
-                    break;
-                case KeyCodeEnum.D:
-                    if (e.CtrlOrMetaKey())
-                    {
-                        e.StopPropagation();
-                        e.PreventDefault();
-                        var currentItemD = GetItemFocus();
-                        if (currentItemD.RowNo == 0)
-                        {
-                            return;
-                        }
-                        var upItemD = AllListViewItem.FirstOrDefault(x => x.RowNo == (currentItemD.RowNo - 1));
-                        currentItemD.Entity.SetComplexPropValue(fieldName, upItemD.Entity.GetPropValue(com.FieldName));
-                        var updated = currentItemD.FilterChildren(x => x.FieldName == com.FieldName).FirstOrDefault();
-                        updated.Dirty = true;
-                        Task.Run(async () =>
-                        {
-                            if (updated.Meta.ComponentType == nameof(SearchEntry))
-                            {
-                                updated.UpdateView();
-                                var dropdown = com as SearchEntry;
-                                updated.PopulateFields(dropdown.Matched);
-                                await updated.DispatchEvent(updated.Meta.Events, EventType.Change, currentItemD.Entity, dropdown.Matched);
-                            }
-                            else
-                            {
-                                updated.UpdateView();
-                                updated.PopulateFields();
-                                await updated.DispatchEvent(updated.Meta.Events, EventType.Change, currentItemD.Entity);
-                            }
-                            await currentItemD.ListViewSection.ListView.DispatchEvent(upItemD.ListViewSection.ListView.Meta.Events, EventType.Change, upItemD.Entity);
-                            if (Meta.IsRealtime)
-                            {
-                                currentItemD.PatchUpdateOrCreate();
-                            }
-                        });
-                    }
                     break;
                 default:
                     break;
@@ -1458,8 +1418,8 @@ namespace Core.Components
         private void CoppyValue(Event e, EditableComponent com, string fieldName, ListViewItem currentItem, ListViewItem upItem)
         {
             LastListViewItem = upItem;
-            currentItem.Focused = false;
-            upItem.Focused = true;
+            currentItem.Focused(false);
+            upItem.Focused(true);
             if (fieldName.IsNullOrWhiteSpace())
             {
                 return;
@@ -1506,7 +1466,7 @@ namespace Core.Components
                         await upItem.ListViewSection.ListView.DispatchEvent(upItem.ListViewSection.ListView.Meta.Events, EventType.Change, upItem.Entity);
                         if (Meta.IsRealtime)
                         {
-                            upItem.PatchUpdateOrCreate();
+                            await upItem.PatchUpdateOrCreate();
                         }
                     });
                 }
@@ -1691,7 +1651,7 @@ namespace Core.Components
                 if (element != null)
                 {
                     var lastListView = AllListViewItem.FirstOrDefault(x => x.Entity[IdField].ToString() == EntityFocusId);
-                    lastListView.Focused = true;
+                    lastListView.Focused(true);
                     element.ParentElement.AddClass("cell-selected");
                     LastListViewItem = lastListView;
                     LastComponentFocus = element.Meta;
@@ -1877,12 +1837,11 @@ namespace Core.Components
             LastListViewItem = list.FirstOrDefault();
             if (Meta.IsRealtime)
             {
-                foreach (var item in list)
+                Task.WhenAll(list.Select(x => x.PatchUpdateOrCreate())).Done(x =>
                 {
-                    item.PatchUpdateOrCreate();
-                }
-                Toast.Success("Sao chép dữ liệu thành công !");
-                base.Dirty = false;
+                    Toast.Success("Sao chép dữ liệu thành công !");
+                    base.Dirty = false;
+                });
             }
             else
             {
@@ -2018,17 +1977,15 @@ namespace Core.Components
 
         internal override async Task RowChangeHandler(object rowData, ListViewItem rowSection, ObservableArgs observableArgs, EditableComponent component = null)
         {
-            await Task.Delay(50);
             var com = new List<string>() { nameof(SearchEntry) };
             if (rowSection.EmptyRow && observableArgs.EvType == EventType.Change)
             {
                 await this.DispatchCustomEvent(Meta.Events, CustomEventType.BeforeCreated, rowData, this);
                 object rs;
-                if (Meta.IsRealtime)
+                if (Meta.IsRealtime && !rowSection.Focused())
                 {
                     var entity = rowData;
-                    rowSection.PatchUpdateOrCreate();
-                    Dirty = false;
+                    await rowSection.PatchUpdateOrCreate();
                 }
                 else
                 {
