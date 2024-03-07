@@ -18,6 +18,7 @@ namespace Core.Components.Forms
         protected HTMLElement _backdrop;
         protected HTMLElement _backdropGridView;
         protected HTMLElement _tab;
+        public static Element Chrome = Document.QuerySelector(".chrome-tabs");
         private static readonly HTMLElement TabWrapper = Document.GetElementById("tabs");
         public static HTMLElement TabContainer = Document.GetElementById("tab-content");
         public static List<TabEditor> Tabs = new List<TabEditor>();
@@ -55,23 +56,41 @@ namespace Core.Components.Forms
         private string TabTitle => Feature?.Label ?? Title;
         private void RenderTab()
         {
-            var html = Html.Take(TabWrapper);
-            if (Html.Context != null)
+            if (Chrome != null)
             {
-                html.Li.ClassName("nav-item").Title(TabTitle)
-                .A.ClassName("nav-link pl-lg-2 pr-lg-2 pl-xl-3 pr-xl-3")
-                .Event(EventType.Click, Focus).Event(EventType.MouseUp, Close);
-                html.Icon("fa fal fa-compress-wide").Event(EventType.Click, (e) =>
+                /*@
+                 if (typeof(ChromeTabs) === 'undefined') {
+                            chromeTabs = new ChromeTabs()
+                            var el = document.querySelector('.chrome-tabs')
+                            chromeTabs.init(el);
+                 }
+                 this._li = chromeTabs.addTab({
+                      title: this.TabTitle,
+                      favicon: this.Icon,
+                      content: this,
+                    })
+                 */
+            }
+            else
+            {
+                var html = Html.Take(TabWrapper);
+                if (Html.Context != null)
                 {
-                    ComponentExt.FullScreen(Element);
-                }).End.Render();
-                html.Icon("fa fa-times").Event(EventType.Click, (e) =>
-                {
-                    e.StopPropagation();
-                    DirtyCheckAndCancel();
-                }).End.Span.ClassName(Feature?.Icon ?? string.Empty).End.Span.ClassName("title").IText(TabTitle).End.Render();
-                _li = Html.Context.ParentElement;
-                IconElement = _li.FirstElementChild;
+                    html.Li.ClassName("nav-item").Title(TabTitle)
+                    .A.ClassName("nav-link pl-lg-2 pr-lg-2 pl-xl-3 pr-xl-3")
+                    .Event(EventType.Click, Focus).Event(EventType.MouseUp, Close);
+                    html.Icon("fa fal fa-compress-wide").Event(EventType.Click, (e) =>
+                    {
+                        ComponentExt.FullScreen(Element);
+                    }).End.Render();
+                    html.Icon("fa fa-times").Event(EventType.Click, (e) =>
+                    {
+                        e.StopPropagation();
+                        DirtyCheckAndCancel();
+                    }).End.Span.ClassName(Feature?.Icon ?? string.Empty).End.Span.ClassName("title").IText(TabTitle).End.Render();
+                    _li = Html.Context.ParentElement;
+                    IconElement = _li.FirstElementChild;
+                }
             }
             Html.Take(TabContainer).TabIndex(-1).Trigger(EventType.Focus).Div.Event(EventType.KeyDown, HotKeyHandler).Render();
             Element = Html.Context;
@@ -362,13 +381,28 @@ namespace Core.Components.Forms
 
                 if (value)
                 {
-                    _li.AddClass(ActiveClass);
-                    _li.QuerySelector(ElementType.a.ToString()).AddClass(ActiveClass);
+                    if (Chrome != null)
+                    {
+                        /*@
+                         chromeTabs.setCurrentTab(this._li);
+                         */
+                    }
+                    else
+                    {
+                        _li.AddClass(ActiveClass);
+                        _li.QuerySelector(ElementType.a.ToString()).AddClass(ActiveClass);
+                    }
                 }
                 else
                 {
-                    _li.RemoveClass(ActiveClass);
-                    _li.QuerySelector(ElementType.a.ToString()).RemoveClass(ActiveClass);
+                    if (Chrome != null)
+                    {
+                    }
+                    else
+                    {
+                        _li.RemoveClass(ActiveClass);
+                        _li.QuerySelector(ElementType.a.ToString()).RemoveClass(ActiveClass);
+                    }
                 }
             }
         }
@@ -401,11 +435,7 @@ namespace Core.Components.Forms
 
             if (!Popup && _li != null)
             {
-                _li.Remove();
                 DisposeTab();
-            }
-            else
-            {
             }
             var firstGridView = Parent.FindActiveComponent<GridView>().FirstOrDefault();
             if (firstGridView != null && firstGridView.LastListViewItem != null && firstGridView.LastElementFocus != null)
@@ -420,7 +450,10 @@ namespace Core.Components.Forms
         {
             if (ParentForm is null)
             {
-                Tabs.LastOrDefault(x => x != this)?.Focus();
+                if (Chrome is null)
+                {
+                    Tabs.LastOrDefault(x => x != this)?.Focus();
+                }
             }
             else
             {
