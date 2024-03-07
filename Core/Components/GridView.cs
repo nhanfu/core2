@@ -1523,7 +1523,7 @@ namespace Core.Components
             if (Component.Nothing()) return Component;
 
             var permission = EditForm.GetGridPolicies(Component.Select(x => x.Id).ToArray(), Utils.ComponentId);
-            var headers = Component.Where(x => !x.Hidden)
+            var headers = Component.Where(x => !x.Hidden && x.Id != Meta.Id)
                 .Where(header => !header.IsPrivate || permission.Where(x => x.RecordId == header.Id).HasElementAndAll(policy => policy.CanRead))
                 .Select(CalcTextAlign).OrderByDescending(x => x.Frozen).ThenByDescending(header => header.ComponentType == "Button")
                 .ThenBy(x => x.Order).ToList();

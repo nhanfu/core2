@@ -355,7 +355,7 @@ public class UserService
             var map = new { UserId, RoleIds, TenantCode, Env, CenterIds, BranchId, VendorId };
             engine.SetValue("claims", JsonConvert.SerializeObject(map));
         }
-        engine.SetValue("args", vm.Params);
+        engine.SetValue("args", vm.Params ?? "{}");
         engine.SetValue("sv", this);
         engine.SetValue("vm", vm);
 
