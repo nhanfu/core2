@@ -1612,7 +1612,6 @@ public class UserService
             await response.WriteAsync("File not found");
             return;
         }
-        var htmlMimeType = Utils.GetMimeType("html");
         var key = $"{tenant}_{env}_{area}";
         var cache = await _cache.GetStringAsync(key);
         if (cache != null && cache != "null")
@@ -1626,7 +1625,7 @@ public class UserService
         var tnEnv = await ReadDsAs<TenantEnv>(envQuery, connStr);
         if (tnEnv is null)
         {
-            await WriteDefaultFile(UserServiceHelpers.NotFoundFile, htmlMimeType, HttpStatusCode.NotFound);
+            await WriteDefaultFile(UserServiceHelpers.NotFoundFile, Utils.GetMimeType("html"), HttpStatusCode.NotFound);
             return;
         }
         var pageQuery = $"select * from TenantPage where TenantEnvId = '{tnEnv.Id}' and Area = '{area}'";
