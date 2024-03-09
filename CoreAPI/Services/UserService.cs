@@ -753,7 +753,7 @@ public class UserService
         {
             var update = valueFields.Combine(x => x.Value is null ? $"[{x.Field}] = null" : $"[{x.Field}] = N'{x.Value}'");
             if (update.IsNullOrWhiteSpace()) return null;
-            return @$"update [{vm.Table}] set {update}, TenantCode = '{TenantCode ?? vm.TenantCode}', 
+            return @$"update [{vm.Table}] set {update}, 
                 UpdatedBy = '{UserId ?? 1.ToString()}', UpdatedDate = '{now}' where Id = '{oldId}';";
         }
         else
@@ -762,8 +762,8 @@ public class UserService
             var fields = valueFields.Combine(x => $"[{x.Field}]");
             var values = valueFields.Combine(x => x.Value is null ? "null" : $"N'{x.Value}'");
             if (fields.IsNullOrWhiteSpace() || values.IsNullOrWhiteSpace()) return null;
-            return @$"insert into [{vm.Table}] ([Id], [TenantCode], [Active], [InsertedBy], [InsertedDate], {fields}) 
-                    values ('{idField.Value}', '{TenantCode ?? vm.TenantCode}', 1, '{UserId ?? 1.ToString()}', '{now}', {values});";
+            return @$"insert into [{vm.Table}] ([Id], [Active], [InsertedBy], [InsertedDate], {fields})
+                    values ('{idField.Value}', 1, '{UserId ?? 1.ToString()}', '{now}', {values});";
         }
     }
 

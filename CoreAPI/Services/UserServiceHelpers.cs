@@ -29,8 +29,7 @@ internal static class UserServiceHelpers
     ];
     public static readonly string[] SystemFields = new string[]
     {
-        IdField, nameof(User.TenantCode), nameof(User.InsertedBy),
-        nameof(User.InsertedDate), nameof(User.UpdatedBy), nameof(User.UpdatedDate)
+        IdField, nameof(User.InsertedBy), nameof(User.InsertedDate), nameof(User.UpdatedBy), nameof(User.UpdatedDate)
     }.Select(x => x.ToLower()).ToArray();
     public static int Port;
 
