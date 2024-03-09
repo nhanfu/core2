@@ -12,7 +12,7 @@ namespace Core
 {
     public static class App
     {
-        public const string DefaultFeature = "index";
+        public static string DefaultFeature = Utils.HeadChildren.layout?.content as string ?? "index";
         public static bool FeatureLoaded;
 
         public static void Main()
