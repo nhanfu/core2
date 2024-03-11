@@ -75,7 +75,7 @@ namespace Core.Components
         {
             if (_hasRender) return;
             _hasRender = true;
-            BasicSearch = ParentListView.Header.Where(x => x.BasicSearch).OrderByDescending(x => x.Order).ToArray();
+            BasicSearch = ParentListView.Header.Where(x => x.Active && !x.Hidden).OrderByDescending(x => x.Order).ToArray();
             if (BasicSearch.Nothing())
             {
                 return;

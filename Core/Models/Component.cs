@@ -117,7 +117,6 @@ namespace Core.Models
         public string DatabaseName { get; set; }
         public string Summary { get; set; }
         public int? SummaryColSpan { get; set; }
-        public bool BasicSearch { get; set; }
         public bool IsExport { get; set; }
         public int? OrderExport { get; set; }
         public string ShowExp { get; set; }

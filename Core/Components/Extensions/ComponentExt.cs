@@ -131,7 +131,7 @@ namespace Core.Components.Extensions
 
         public static string MapToFilterOperator(this Component com, string searchTerm)
         {
-            if (searchTerm.IsNullOrWhiteSpace() || !com.HasFilter || com.FieldName.IsNullOrEmpty())
+            if (searchTerm.IsNullOrWhiteSpace() || com.FieldName.IsNullOrEmpty())
             {
                 return string.Empty;
             }

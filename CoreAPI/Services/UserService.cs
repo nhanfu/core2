@@ -172,11 +172,11 @@ public class UserService
         declare @username varchar(100) = '{login.UserName}';
         declare @tenant varchar(100) = '{login.CompanyName}';
             select u.* from [User] u 
-            join Vendor v on u.VendorId = v.Id
+            join [Vendor] v on u.VendorId = v.Id
             where u.Active = 1 and u.Username = @username and v.Code = @tenant;
         select r.* from [User] u 
-            join Vendor v on u.VendorId = v.Id
-            left join UserRole ur on u.Id = ur.UserId
+            join [Vendor] v on u.VendorId = v.Id
+            left join [UserRole] ur on u.Id = ur.UserId
             left join [Role] r on ur.RoleId = r.Id
             where u.Active = 1 and u.Username = @username and v.Code = @tenant"
         ;
@@ -331,7 +331,7 @@ public class UserService
         var key = $"{tenantCode}_{connKey}_{env}";
         var conStr = await _cache.GetStringAsync(key);
         if (conStr != null) return conStr;
-        var query = $"select * from TenantEnv where TenantCode = '{tenantCode}' and ConnKey = '{connKey}' and Env = '{env}'";
+        var query = $"select * from [TenantEnv] where TenantCode = '{tenantCode}' and ConnKey = '{connKey}' and Env = '{env}'";
         var tenantEnv = await ReadDsAs<TenantEnv>(query, _cfg.GetConnectionString(Utils.ConnKey))
             ?? throw new ApiException($"Tenant environment NOT found {key}");
         await _cache.SetStringAsync(key, tenantEnv.ConnStr, Utils.CacheTTL);
@@ -627,7 +627,7 @@ public class UserService
             clusters = cachedCluster.TryParse<Cluster[]>();
         }
         if (clusters is not null) return clusters;
-        var clusterQuery = $"select * from Cluster where ClusterRole = '{role}'";
+        var clusterQuery = $"select * from [Cluster] where ClusterRole = '{role}'";
         clusters = await ReadDsAsArr<Cluster>(clusterQuery, DefaultConnStr());
         await _cache.SetStringAsync(UserServiceHelpers.APIClusterKey, clusters.ToJson());
         return clusters;
@@ -702,7 +702,7 @@ public class UserService
         patches = patches.Where(x => x.Id is not null).ToArray();
         var connStr = patches[0].CachedConnStr ?? await GetConnStrFromKey(patches[0].ConnKey);
         var tables = patches.Select(x => x.Table);
-        string rightQuery = @$"select * from FeaturePolicy 
+        string rightQuery = @$"select * from [FeaturePolicy] 
             where Active = 1 and (CanWrite = 1 or CanWriteAll = 1) and EntityName in ({tables.CombineStrings()}) and RoleId in ({RoleIds.CombineStrings()})";
         var permissions = await ReadDsAsArr<FeaturePolicy>(rightQuery, connStr);
         permissions = permissions.DistinctBy(x => x.EntityName).ToArray();
@@ -817,7 +817,7 @@ public class UserService
         var allRights = await GetEntityPerm(vm.Table, null, vm.CachedConnStr);
         var canDeactivateAll = allRights.Any(x => x.CanDeactivateAll);
         var canDeactivateSelf = allRights.Any(x => x.CanDeactivate);
-        var query = $"select * from {vm.Table} where Id in ({vm.Ids.CombineStrings()})";
+        var query = $"select * from [{vm.Table}] where Id in ({vm.Ids.CombineStrings()})";
         var ds = await ReadDataSet(query, vm.CachedConnStr);
         var rows = ds.Length > 0 ? ds[0] : null;
         if (rows.Nothing()) return null;
@@ -903,7 +903,7 @@ public class UserService
         }
         if (com is null)
         {
-            var query = @$"select top 1 * from Component 
+            var query = @$"select top 1 * from [Component] 
             where Id = '{vm.ComId}' and (Annonymous = 1 or IsPrivate = 0 and '{TenantCode}' != '' or TenantCode = '{TenantCode}')";
             vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
             com = await ReadDsAs<Component>(query, vm.CachedConnStr);
@@ -936,7 +936,7 @@ public class UserService
         }
         else
         {
-            var q = @$"select * from FeaturePolicy 
+            var q = @$"select * from [FeaturePolicy] 
             where Active = 1 and EntityName = '{entityName}'
             and (RecordId = '{recordId}' or '{recordId}' = '') and RoleId in ({RoleIds.CombineStrings()})";
             if (pre != null) q += $" and {permissionName} = 1";
@@ -983,7 +983,7 @@ public class UserService
                 return res;
             }
         }
-        var query = @$"select * from Services
+        var query = @$"select * from [Services]
                 where Active = 1 and (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') 
                 and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
         var sv = await ReadDsAs<Models.Services>(query, vm.CachedConnStr);
@@ -1451,7 +1451,7 @@ public class UserService
 
     public async Task SendMail(EmailVM email, string connStr, string webRoot = null)
     {
-        var query = $"select * from MasterData m join MasterData p on m.ParentId = p.Id where p.Name = 'ConfigEmail'";
+        var query = $"select * from [MasterData] m join [MasterData] p on m.ParentId = p.Id where p.Name = 'ConfigEmail'";
         var config = await ReadDsAsArr<MasterData>(query, connStr);
         var fromName = config.FirstOrDefault(x => x.Name == "FromName")?.Description;
         var fromAddress = email.FromAddress ?? config.FirstOrDefault(x => x.Name == "FromAddress")?.Description;
@@ -1483,7 +1483,7 @@ public class UserService
         var principal = Utils.GetPrincipalFromAccessToken(token.AccessToken, _cfg);
         var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
         var ipAddress = GetRemoteIpAddress(_ctx.HttpContext);
-        var query = $"select * from UserLogin where Id = '{sessionId}'";
+        var query = $"select * from [UserLogin] where Id = '{sessionId}'";
         var connStr = await GetConnStrFromKey(token.ConnKey);
         var userLogin = await ReadDsAs<UserLogin>(query, connStr);
         if (userLogin is null) return true;
@@ -1509,7 +1509,7 @@ public class UserService
             throw new ApiException($"The account {login.UserName} has been locked for a while! Please contact your administrator to unlock.");
         }
         // Send mail
-        var emailTemplate = await ReadDsAs<MasterData>($"select * from MasterData where Name = 'ForgotPassEmail'", login.CachedConnStr)
+        var emailTemplate = await ReadDsAs<MasterData>($"select * from [MasterData] where Name = 'ForgotPassEmail'", login.CachedConnStr)
             ?? throw new InvalidOperationException("Cannot find recovery email template!");
         var oneClickLink = GenerateRandomToken();
         user.Recover = oneClickLink;
@@ -1620,7 +1620,7 @@ public class UserService
             await WriteTemplateAsync(response, pageCached, env, tenant);
             return;
         }
-        var envQuery = $"select * from TenantEnv where TenantCode = '{tenant}' and Env = '{env}' and ConnKey = 'default'";
+        var envQuery = $"select * from [TenantEnv] where TenantCode = '{tenant}' and Env = '{env}' and ConnKey = 'default'";
         var connStr = DefaultConnStr();
         var tnEnv = await ReadDsAs<TenantEnv>(envQuery, connStr);
         if (tnEnv is null)
@@ -1628,7 +1628,7 @@ public class UserService
             await WriteDefaultFile(UserServiceHelpers.NotFoundFile, Utils.GetMimeType("html"), HttpStatusCode.NotFound);
             return;
         }
-        var pageQuery = $"select * from TenantPage where TenantEnvId = '{tnEnv.Id}' and Area = '{area}'";
+        var pageQuery = $"select * from [TenantPage] where TenantEnvId = '{tnEnv.Id}' and Area = '{area}'";
         var page = await ReadDsAs<TenantPage>(pageQuery, connStr);
         await _cache.SetStringAsync(key, JsonConvert.SerializeObject(page), Utils.CacheTTL);
         await WriteTemplateAsync(response, page, env: env, tenant: tenant);
@@ -1642,10 +1642,10 @@ public class UserService
         }
         var connStr = vm.CachedConnStr ?? await GetConnStrFromKey(vm.ConnKey);
         var id = vm.Ids.Combine();
-        var query = @$"select * from Feature where Id = '{id}';
-            select * from FeaturePolicy where FeatureId = '{id}';
-            select * from ComponentGroup where FeatureId = '{id}';
-            select * from Component c left join ComponentGroup g on c.ComponentGroupId = g.Id
+        var query = @$"select * from [Feature] where Id = '{id}';
+            select * from [FeaturePolicy] where FeatureId = '{id}';
+            select * from [ComponentGroup] where FeatureId = '{id}';
+            select * from [Component] c left join ComponentGroup g on c.ComponentGroupId = g.Id
             where g.FeatureId = '{id}' or c.FeatureId = '{id}'";
         var ds = await ReadDataSet(query, connStr);
         if (ds.Length == 0 || ds[0].Length == 0) return false;
@@ -1909,7 +1909,7 @@ public class UserService
     internal async Task RemoveCluster(Node node)
     {
         EnsureSystemRole();
-        var delCmd = $"delete from Cluster where Id = '{node.Id}'";
+        var delCmd = $"delete from [Cluster] where Id = '{node.Id}'";
         await RunSqlCmd(DefaultConnStr(), delCmd);
         var node2Remove = Clusters.Data.Nodes.FirstOrDefault(x => x.Host == node.Host && x.Port == node.Port && x.Scheme == node.Scheme);
         Clusters.Data.Nodes.Remove(node2Remove);
