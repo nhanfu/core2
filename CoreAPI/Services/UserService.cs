@@ -5,6 +5,7 @@ using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
 using HtmlAgilityPack;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -416,6 +417,83 @@ public class UserService
         return ds[0].Select(x => x.MapTo<T>()).ToArray();
     }
 
+    public void StreamDs(string query, string connInfo)
+    {
+        var sideEffect = HasSideEffect(query);
+        if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
+        var syncIOFeature = _ctx.HttpContext.Features.Get<IHttpBodyControlFeature>();
+        if (syncIOFeature != null)
+        {
+            syncIOFeature.AllowSynchronousIO = true;
+        }
+
+        var connStr = connInfo;
+        var con = new SqlConnection(connStr);
+        var sqlCmd = new SqlCommand(query, con)
+        {
+            CommandType = CommandType.Text
+        };
+        SqlDataReader reader = null;
+        var responseStream = _ctx.HttpContext.Response.Body;
+        _ctx.HttpContext.Response.ContentType = Utils.ApplicationJson;
+        try
+        {
+            con.Open();
+            reader = sqlCmd.ExecuteReader();
+            responseStream.Write("[".ToByteSpan());
+            while (true)
+            {
+                responseStream.Write("[".ToByteSpan());
+                while (reader.Read())
+                {
+                    responseStream.Write("{".ToByteSpan());
+                    for (var i = 0; i < reader.FieldCount; i++)
+                    {
+                        var val = reader[i];
+                        var isLastField = i == reader.FieldCount - 1;
+                        var strBuilder = new StringBuilder();
+                        var finalVal = val == DBNull.Value ? null : val;
+                        strBuilder.Append('"').Append(reader.GetName(i)).Append("\": ");
+                        if (finalVal is null)
+                        {
+                            strBuilder.Append("null");
+                        }
+                        else
+                        {
+                            strBuilder.Append('"').Append(finalVal.ToString().Replace("\"", "\\\"")).Append('"');
+                        }
+                        if (!isLastField) strBuilder.Append(',');
+                        responseStream.Write(strBuilder.ToString().ToByteSpan());
+                    }
+                    responseStream.Write("},".ToByteSpan());
+                }
+                var next = reader.NextResult();
+                if (!next)
+                {
+                    responseStream.Write("]".ToByteSpan());
+                    break;
+                }
+            }
+            responseStream.Write("]".ToByteSpan());
+            responseStream.Flush();
+            responseStream.Close();
+        }
+        catch (Exception e)
+        {
+            var message = $"{e.Message} {query}";
+            throw new ApiException(message, e)
+            {
+                StatusCode = HttpStatusCode.InternalServerError,
+            };
+        }
+        finally
+        {
+            reader?.Dispose();
+            sqlCmd.Dispose();
+            con.Dispose();
+        }
+    }
+
     public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo)
     {
         var sideEffect = HasSideEffect(query);
@@ -437,7 +515,7 @@ public class UserService
                 var table = new List<Dictionary<string, object>>();
                 while (await reader.ReadAsync())
                 {
-                    table.Add(Read(reader));
+                    table.Add(ReadSqlRecord(reader));
                 }
                 tables.Add([.. table]);
                 var next = await reader.NextResultAsync();
@@ -461,7 +539,7 @@ public class UserService
         }
     }
 
-    protected static Dictionary<string, object> Read(IDataRecord reader)
+    protected static Dictionary<string, object> ReadSqlRecord(IDataRecord reader)
     {
         var row = new Dictionary<string, object>();
         for (var i = 0; i < reader.FieldCount; i++)
@@ -855,12 +933,12 @@ public class UserService
         {
             return jsRes.Result;
         }
-        return await GetResultFromQuery(vm, vm.CachedConnStr, jsRes);
+        return await ReadDataSet(GetFinalQuery(vm, jsRes), vm.CachedConnStr);
     }
 
-    private async Task<Dictionary<string, object>[][]> GetResultFromQuery(SqlViewModel vm, string decryptedConnStr, SqlQueryResult jsRes)
+    private static string GetFinalQuery(SqlViewModel vm, SqlQueryResult jsRes)
     {
-        if (jsRes.Query.IsNullOrWhiteSpace()) throw new ArgumentNullException(nameof(jsRes.Query));
+        ArgumentException.ThrowIfNullOrWhiteSpace(jsRes.Query);
         var select = vm.Select.HasAnyChar() ? $"select {vm.Select}" : string.Empty;
         var where = vm.Where.HasAnyChar() ? $"where {vm.Where}" : string.Empty;
         var groupBy = vm.GroupBy.HasAnyChar() ? $"group by {vm.GroupBy}" : string.Empty;
@@ -882,7 +960,8 @@ public class UserService
                 {vm.Paging};
                 {countQuery}
                 {xQuery}";
-        return await ReadDataSet(finalQuery, decryptedConnStr);
+
+        return finalQuery;
     }
 
     private async Task<Component> GetComponent(SqlViewModel vm)
@@ -962,7 +1041,7 @@ public class UserService
             return jsRes.Result;
         }
         var svConnStr = sv.Annonymous ? sv.ConnKey : await GetConnStrFromKey(sv.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        return await GetResultFromQuery(vm, svConnStr, jsRes);
+        return await ReadDataSet(GetFinalQuery(vm, jsRes), svConnStr);
     }
 
     private async Task<Models.Services> GetService(SqlViewModel vm)

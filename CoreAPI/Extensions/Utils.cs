@@ -55,7 +55,7 @@ namespace Core.Extensions
 
             return principal;
         }
-        
+
         public readonly static Dictionary<string, char> ReverseSpecialChar = SpecialChar.ToDictionary(x => x.Value, x => x.Key);
         public static string EncodeSpecialChar(this string str)
         {
@@ -100,8 +100,8 @@ namespace Core.Extensions
 
         public static DistributedCacheEntryOptions CacheTTL = new()
         {
-            #if DEBUG
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+#if DEBUG
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
 #else
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
 #endif
@@ -278,12 +278,15 @@ namespace Core.Extensions
             return requestBody;
         }
 
+        public static ReadOnlySpan<byte> ToByteSpan(this string str)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(str);
+            return new ReadOnlySpan<byte>(bytes);
+        }
+
         public static string GetMimeType(string extension)
         {
-            if (extension == null)
-            {
-                throw new ArgumentNullException("extension");
-            }
+            ArgumentException.ThrowIfNullOrEmpty(extension);
 
             if (extension.StartsWith("."))
             {
