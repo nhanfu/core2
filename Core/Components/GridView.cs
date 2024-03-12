@@ -1774,7 +1774,6 @@ namespace Core.Components
             var count = sums.DistinctBy(x => x.Summary).Count();
             sums.ForEach(header =>
             {
-                AddNewEmptyRow();
                 RenderSummaryRow(header, Header, FooterSection.Element as HTMLTableSectionElement, count);
             });
         }
