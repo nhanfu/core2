@@ -446,33 +446,12 @@ public class UserService
                 responseStream.Write("[".ToByteSpan());
                 while (reader.Read())
                 {
-                    responseStream.Write("{".ToByteSpan());
-                    for (var i = 0; i < reader.FieldCount; i++)
-                    {
-                        var val = reader[i];
-                        var isLastField = i == reader.FieldCount - 1;
-                        var strBuilder = new StringBuilder();
-                        var finalVal = val == DBNull.Value ? null : val;
-                        strBuilder.Append('"').Append(reader.GetName(i)).Append("\": ");
-                        if (finalVal is null)
-                        {
-                            strBuilder.Append("null");
-                        }
-                        else
-                        {
-                            strBuilder.Append('"').Append(finalVal.ToString().Replace("\"", "\\\"")).Append('"');
-                        }
-                        if (!isLastField) strBuilder.Append(',');
-                        responseStream.Write(strBuilder.ToString().ToByteSpan());
-                    }
-                    responseStream.Write("},".ToByteSpan());
+                    responseStream.Write(ReadSqlRecord(reader).ToJson().ToByteSpan());
+                    responseStream.Write(",".ToByteSpan());
                 }
+                responseStream.Write("],".ToByteSpan());
                 var next = reader.NextResult();
-                if (!next)
-                {
-                    responseStream.Write("]".ToByteSpan());
-                    break;
-                }
+                if (!next) break;
             }
             responseStream.Write("]".ToByteSpan());
             responseStream.Flush();
@@ -933,7 +912,13 @@ public class UserService
         {
             return jsRes.Result;
         }
-        return await ReadDataSet(GetFinalQuery(vm, jsRes), vm.CachedConnStr);
+        var query = GetFinalQuery(vm, jsRes);
+        if (!vm.IsStream)
+        {
+            return await ReadDataSet(query, vm.CachedConnStr);
+        }
+        StreamDs(query, vm.CachedConnStr);
+        return Task.FromResult<object>(null);
     }
 
     private static string GetFinalQuery(SqlViewModel vm, SqlQueryResult jsRes)
@@ -1041,7 +1026,13 @@ public class UserService
             return jsRes.Result;
         }
         var svConnStr = sv.Annonymous ? sv.ConnKey : await GetConnStrFromKey(sv.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        return await ReadDataSet(GetFinalQuery(vm, jsRes), svConnStr);
+        var query = GetFinalQuery(vm, jsRes);
+        if (!vm.IsStream)
+        {
+            return await ReadDataSet(query, vm.CachedConnStr);
+        }
+        StreamDs(query, svConnStr);
+        return Task.FromResult<object>(null);
     }
 
     private async Task<Models.Services> GetService(SqlViewModel vm)

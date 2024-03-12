@@ -6,6 +6,7 @@ namespace Core.ViewModels
 {
     public class SqlViewModel
     {
+        public bool IsStream { get; set; }
         public string SvcId { get; set; }
         public string ComId { get; set; }
         public string Action { get; set; }
