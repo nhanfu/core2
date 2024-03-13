@@ -470,7 +470,8 @@ namespace Core.Components
             var finalFilter = string.Empty;
             if (finalFilter.IsNullOrEmpty())
             {
-                var operators = headers.Where(x => x.FieldName.HasNonSpaceChar())
+                var operators = headers
+                    .Where(x => x.FieldName.HasNonSpaceChar() && !x.ComponentType.Contains(nameof(Button)))
                     .Select(x => x.MapToFilterOperator(searchTerm)).Where(x => x.HasAnyChar());
                 finalFilter = string.Join(" or ", operators);
             }

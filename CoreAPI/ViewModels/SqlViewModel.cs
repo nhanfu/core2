@@ -6,7 +6,6 @@ namespace Core.ViewModels
 {
     public class SqlViewModel
     {
-        public bool IsStream { get; set; }
         public string SvcId { get; set; }
         public string ComId { get; set; }
         public string Action { get; set; }
@@ -36,6 +35,11 @@ namespace Core.ViewModels
     {
         public object Result { get; set; }
         public string Query { get; set; }
+        public string QueryConnKey { get; set; }
         public string XQuery { get; set; }
+        public string XQueryConnKey { get; set; }
+        internal string DataQuery { get; set; }
+        internal string MetaQuery { get; set; }
+        internal bool SameContext { get; set; }
     }
 }

@@ -475,13 +475,16 @@ public class UserService
 
     public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(query);
+        ArgumentException.ThrowIfNullOrWhiteSpace(connInfo);
         var sideEffect = HasSideEffect(query);
         if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
-        var connStr = connInfo;
-        var con = new SqlConnection(connStr);
-        var sqlCmd = new SqlCommand(query, con)
+        var con = new SqlConnection(connInfo);
+        var sqlCmd = new SqlCommand
         {
-            CommandType = CommandType.Text
+            CommandType = CommandType.Text,
+            CommandText = query,
+            Connection = con
         };
         SqlDataReader reader = null;
         var tables = new List<Dictionary<string, object>[]>();
@@ -912,16 +915,16 @@ public class UserService
         {
             return jsRes.Result;
         }
-        var query = GetFinalQuery(vm, jsRes);
-        if (!vm.IsStream)
-        {
-            return await ReadDataSet(query, vm.CachedConnStr);
-        }
-        StreamDs(query, vm.CachedConnStr);
-        return Task.FromResult<object>(null);
+        CalcFinalQuery(vm, jsRes);
+        var dataConn = jsRes.QueryConnKey.IsNullOrWhiteSpace() ? vm.CachedConnStr : await GetConnStrFromKey(jsRes.QueryConnKey);
+        var metaConn = jsRes.XQueryConnKey.IsNullOrWhiteSpace() ? vm.CachedConnStr : await GetConnStrFromKey(jsRes.XQueryConnKey);
+        var data = await ReadDataSet(jsRes.DataQuery, dataConn);
+        if (jsRes.SameContext || vm.SkipXQuery) return data;
+        var meta = await ReadDataSet(jsRes.MetaQuery, metaConn);
+        return data.Concat(meta);
     }
 
-    private static string GetFinalQuery(SqlViewModel vm, SqlQueryResult jsRes)
+    private static void CalcFinalQuery(SqlViewModel vm, SqlQueryResult jsRes)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(jsRes.Query);
         var select = vm.Select.HasAnyChar() ? $"select {vm.Select}" : string.Empty;
@@ -936,17 +939,17 @@ public class UserService
                 {where}
                 {groupBy}
                 {having};" : string.Empty;
-        var finalQuery = @$"{select}
+        var dataQuery = @$"{select}
                 from ({jsRes.Query}) as ds
                 {where}
                 {groupBy}
                 {having}
                 {orderBy}
                 {vm.Paging};
-                {countQuery}
-                {xQuery}";
-
-        return finalQuery;
+                {countQuery}";
+        jsRes.SameContext = jsRes.QueryConnKey == jsRes.XQueryConnKey;
+        jsRes.DataQuery = jsRes.SameContext ? $"{dataQuery}\n{xQuery}" : dataQuery;
+        jsRes.MetaQuery = jsRes.SameContext ? string.Empty : xQuery;
     }
 
     private async Task<Component> GetComponent(SqlViewModel vm)
@@ -1026,13 +1029,8 @@ public class UserService
             return jsRes.Result;
         }
         var svConnStr = sv.Annonymous ? sv.ConnKey : await GetConnStrFromKey(sv.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        var query = GetFinalQuery(vm, jsRes);
-        if (!vm.IsStream)
-        {
-            return await ReadDataSet(query, vm.CachedConnStr);
-        }
-        StreamDs(query, svConnStr);
-        return Task.FromResult<object>(null);
+        CalcFinalQuery(vm, jsRes);
+        return await ReadDataSet(jsRes.DataQuery, svConnStr);
     }
 
     private async Task<Models.Services> GetService(SqlViewModel vm)
