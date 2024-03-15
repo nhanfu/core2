@@ -142,8 +142,8 @@ namespace Core.Components.Extensions
             if (fieldName.IsNullOrWhiteSpace()) return string.Empty;
             if (com.ComponentType == "Datepicker")
             {
-                var parsedDate = DateTimeOffset.TryParse(searchTerm, out var date);
-                if (parsedDate)
+                var (parsed, date, format) = Datepicker.TryParseDateTime(searchTerm);
+                if (parsed)
                 {
                     var dateStr = date.ToString("yyyy/MM/dd");
                     return $"cast({fieldName} as date) = cast('{dateStr}' as date)";

@@ -339,10 +339,12 @@ namespace Core.Components
                 Url = $"/user/importCsv?table={meta.RefName}&comId={meta.Id}&connKey={meta.MetaConn}",
                 Method = HttpMethod.POST,
                 ResponseMimeType = Utils.GetMimeType("csv")
-            }).Done(success => {
+            }).Done(success =>
+            {
                 Toast.Success("Import excel success");
                 _uploader.Value = string.Empty;
-            }).Catch(error => {
+            }).Catch(error =>
+            {
                 Toast.Warning(error.Message);
                 _uploader.Value = string.Empty;
             });
@@ -430,8 +432,10 @@ namespace Core.Components
         {
             get
             {
-                if (_export is null) { 
-                    _export = new ExportCustomData(ParentListView) {
+                if (_export is null)
+                {
+                    _export = new ExportCustomData(ParentListView)
+                    {
                         ParentElement = TabEditor.Element
                     };
                     _export.Disposed += () => _export = null;
@@ -447,7 +451,8 @@ namespace Core.Components
 
         private void ExportSelectedData(object arg)
         {
-            if (ParentListView.SelectedIds.Nothing()) {
+            if (ParentListView.SelectedIds.Nothing())
+            {
                 Toast.Warning("Select at least 1 one to export excel");
                 return;
             }
@@ -465,16 +470,14 @@ namespace Core.Components
             {
                 DateTimeField = ParentListView.Header.FirstOrDefault(x => x.Id == EntityVM.DateTimeField).FieldName;
             }
-            var headers = ParentListView.Header.Where(x => x != null).ToList();
             var searchTerm = EntityVM.SearchTerm?.Trim().EncodeSpecialChar() ?? string.Empty;
-            var finalFilter = string.Empty;
-            if (finalFilter.IsNullOrEmpty())
-            {
-                var operators = headers
-                    .Where(x => x.FieldName.HasNonSpaceChar() && !x.ComponentType.Contains(nameof(Button)))
-                    .Select(x => x.MapToFilterOperator(searchTerm)).Where(x => x.HasAnyChar());
-                finalFilter = string.Join(" or ", operators);
-            }
+            var headers = ParentListView.Header
+                .Where(x => x != null && x.FieldName.HasNonSpaceChar() && !x.ComponentType.Contains(nameof(Button)))
+                .ToArray();
+            var operators = headers
+                .Select(x => x.MapToFilterOperator(searchTerm)).Where(x => x.HasAnyChar())
+                .ToArray();
+            var finalFilter = string.Join(" or ", operators);
             var basicsAddDate = ParentListView.Header?.Where(x => x.AddDate)?.Select(x => x.Id)?.ToArray();
             var parentGrid = basicsAddDate != null && basicsAddDate.Any() && ParentGridView.AdvSearchVM.Conditions.Any(x => basicsAddDate.Contains(x.FieldId) && !x.Value.IsNullOrWhiteSpace());
             if (!parentGrid && EntityVM.StartDate != null)
