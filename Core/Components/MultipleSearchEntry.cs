@@ -137,6 +137,8 @@ namespace Core.Components
             }
             Client.Instance.ComQuery(new SqlViewModel
             {
+                MetaConn = MetaConn,
+                DataConn = DataConn,
                 ComId = Meta.Id,
 
             }).Done(ds => {

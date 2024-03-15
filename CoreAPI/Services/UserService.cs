@@ -760,13 +760,14 @@ public class UserService
 
     public async Task<int> SavePatches(PatchVM[] patches)
     {
-        ArgumentNullException.ThrowIfNull(patches);
+        if (patches.Nothing()) throw new ArgumentException($"{nameof(patches)} is null or empty");
         patches = patches.Where(x => x.Id is not null).ToArray();
-        var connStr = patches[0].CachedDataConn ?? await GetConnStrFromKey(patches[0].MetaConn);
+        patches[0].CachedDataConn ??= await GetConnStrFromKey(patches[0].DataConn);
+        patches[0].CachedMetaConn ??= await GetConnStrFromKey(patches[0].MetaConn);
         var tables = patches.Select(x => x.Table);
         string rightQuery = @$"select * from [FeaturePolicy] 
             where Active = 1 and (CanWrite = 1 or CanWriteAll = 1) and EntityName in ({tables.CombineStrings()}) and RoleId in ({RoleIds.CombineStrings()})";
-        var permissions = await ReadDsAsArr<FeaturePolicy>(rightQuery, connStr);
+        var permissions = await ReadDsAsArr<FeaturePolicy>(rightQuery, patches[0].CachedMetaConn);
         permissions = permissions.DistinctBy(x => x.EntityName).ToArray();
         var lackPerTables = patches.Select(x => x.Table).Except(permissions.Select(x => x.EntityName)).ToArray();
         if (lackPerTables.Length > 0)
@@ -777,11 +778,12 @@ public class UserService
             };
         }
         var sql = patches.Select(GetCmd).Where(x => x is not null).Combine(";\n");
-        var result = await RunSqlCmd(connStr, sql);
+        var result = await RunSqlCmd(patches[0].CachedDataConn, sql);
         await TryNotifyChanges("Patch", null, patches);
         await patches.ForEachAsync(vm =>
         {
-            vm.CachedDataConn ??= connStr;
+            vm.CachedDataConn ??= patches[0].CachedDataConn;
+            vm.CachedMetaConn ??= patches[0].CachedMetaConn;
             return AfterActionSvc(vm, "AfterPatch");
         });
         return result;
@@ -948,7 +950,9 @@ public class UserService
                 {orderBy}
                 {vm.Paging};
                 {countQuery}";
-        jsRes.SameContext = vm.DataConn == vm.MetaConn;
+        jsRes.DataConn ??= vm.DataConn;
+        jsRes.MetaConn ??= vm.MetaConn;
+        jsRes.SameContext = jsRes.DataConn == jsRes.MetaConn;
         jsRes.DataQuery = jsRes.SameContext ? $"{dataQuery}\n{xQuery}" : dataQuery;
         jsRes.MetaQuery = jsRes.SameContext ? string.Empty : xQuery;
     }
@@ -1030,9 +1034,11 @@ public class UserService
         {
             return jsRes.Result;
         }
-        var svConnStr = sv.Annonymous ? sv.ConnKey : await GetConnStrFromKey(sv.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
         CalcFinalQuery(vm, jsRes);
-        return await ReadDataSet(jsRes.DataQuery, svConnStr ?? vm.CachedDataConn);
+        var data = await ReadDataSet(jsRes.DataQuery, vm.CachedDataConn);
+        if (jsRes.SameContext || vm.SkipXQuery) return data;
+        var meta = await ReadDataSet(jsRes.MetaQuery, vm.CachedMetaConn);
+        return data.Concat(meta);
     }
 
     private async Task<Models.Services> GetService(SqlViewModel vm)

@@ -143,6 +143,8 @@ namespace Core.Components
             var entity = isFn ? fn.Call(this, this).ToString() : string.Empty;
             var submit = new SqlViewModel
             {
+                MetaConn = MetaConn,
+                DataConn = DataConn,
                 Params = JSON.Stringify(entity),
                 ComId = Meta.Id
             };

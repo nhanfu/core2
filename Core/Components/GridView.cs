@@ -504,6 +504,8 @@ namespace Core.Components
                     {
                         ComId = header.Id,
                         Where = sqlFilter,
+                        MetaConn = MetaConn,
+                        DataConn = DataConn,
                     });
                 }
                 else

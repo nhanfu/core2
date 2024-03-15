@@ -676,7 +676,7 @@ namespace Core.Components
             var entity = Meta.RefName;
             var selected = GetSelectedRows();
             var ids = selected.Select(x => x[IdField] as string).ToArray();
-            Client.Instance.DeactivateAsync(ids, Meta.RefName, MetaConn)
+            Client.Instance.DeactivateAsync(ids, Meta.RefName, DataConn)
             .Done(deacvitedIds =>
             {
                 if (deacvitedIds.HasElement())
@@ -1586,6 +1586,8 @@ namespace Core.Components
         {
             return Client.Instance.UserSvc(new SqlViewModel
             {
+                MetaConn = MetaConn,
+                DataConn = DataConn,
                 ComId = "UserSetting",
                 Action = "GetByComId",
                 Params = JSON.Stringify(new { ComId = Meta.Id, Prefix = prefix })

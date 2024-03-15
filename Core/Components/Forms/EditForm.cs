@@ -443,7 +443,9 @@ namespace Core.Components.Forms
                 {
                     ComId = "Intro",
                     Action = "GetByFeatureId",
-                    Params = JSON.Stringify(new { id = Feature.Id })
+                    Params = JSON.Stringify(new { id = Feature.Id }),
+                    MetaConn = MetaConn,
+                    DataConn = DataConn,
                 };
                 var intro = await Client.Instance.UserSvc<dynamic[]>(sql);
                 var script = @"(x) => {
@@ -879,7 +881,9 @@ namespace Core.Components.Forms
                 {
                     ComId = "Feature",
                     Action = "Clone",
-                    Ids = new string[] { feature.Id }
+                    Ids = new string[] { feature.Id },
+                    MetaConn = MetaConn,
+                    DataConn = DataConn,
                 };
                 Client.Instance.UserSvc<bool>(sql).Done();
             };

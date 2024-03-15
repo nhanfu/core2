@@ -33,7 +33,7 @@ namespace Core.Clients
         public static string BaseUri = Utils.HeadChildren.baseUri?.content as string ?? Window.Location.Origin;
         public static bool IsPortal = Utils.HeadChildren.startup?.content as string == "portal";
         public static string MetaConn = Utils.HeadChildren.metaKey?.content as string ?? "default";
-        public static string DataConn = Utils.HeadChildren.dataConn?.content as string ?? "default";
+        public static string DataConn = Utils.HeadChildren.dataConn?.content as string ?? "bl";
         public static string Tenant = Utils.HeadChildren.tenant?.content as string ?? "System";
         public static string Env = Utils.HeadChildren.env?.content as string ?? "test";
         public static string FileFTP => Utils.HeadChildren.file?.content as string ?? "/user";

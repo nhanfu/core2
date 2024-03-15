@@ -53,8 +53,8 @@ namespace Core.Components
         public virtual HTMLElement Element { get; set; }
         public event Action Disposed;
         public Action DOMContentLoaded { get; set; }
-        public virtual string MetaConn => Meta != null && Meta.MetaConn.IsNullOrWhiteSpace() ? Client.MetaConn : Meta.MetaConn;
-        public virtual string DataConn => Meta != null && Meta.DataConn.IsNullOrWhiteSpace() ? Client.DataConn : Meta.DataConn;
+        public virtual string MetaConn => Meta != null && Meta.MetaConn.IsNullOrWhiteSpace() ? Client.MetaConn : Meta?.MetaConn;
+        public virtual string DataConn => Meta != null && Meta.DataConn.IsNullOrWhiteSpace() ? Client.DataConn : Meta?.DataConn;
         public string EntityId
         {
             get => Entity?[IdField]?.ToString();

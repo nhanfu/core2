@@ -16,8 +16,6 @@ public partial class Services
 
     public string Env { get; set; }
 
-    public string ConnKey { get; set; }
-
     public string RoleIds { get; set; }
 
     public bool IsPublicInTenant { get; set; }

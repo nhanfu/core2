@@ -274,7 +274,7 @@ namespace Core.Components.Extensions
                 ComId = "Feature",
                 Action = "GetFeature",
                 MetaConn = Client.MetaConn,
-                DataConn = Client.DataConn,
+                DataConn = Client.MetaConn,
                 Params = JSON.Stringify(new { Name = name, Id = id })
             });
             featureTask.Done(ds =>
@@ -290,7 +290,7 @@ namespace Core.Components.Extensions
                     tcs.TrySetResult(null);
                     return;
                 }
-                feature.FeaturePolicy = ds[1].Select(x => x.CastProp<FeaturePolicy>()).ToList();
+                feature.FeaturePolicy = ds.Length > 1 ? ds[1].Select(x => x.CastProp<FeaturePolicy>()).ToList() : feature.FeaturePolicy;
                 var groups = ds.Length > 2 ? ds[2].Select(x => x.CastProp<ComponentGroup>()).ToList() : null;
                 feature.ComponentGroup = groups;
                 var components = ds.Length > 3 ? ds[3].Select(x => x.CastProp<Component>()).ToList() : null;

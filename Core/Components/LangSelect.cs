@@ -126,6 +126,8 @@ namespace Core.Components
             var tcs = new TaskCompletionSource<bool>();
             var vm = new SqlViewModel
             {
+                DataConn = Client.MetaConn,
+                MetaConn = Client.MetaConn,
                 ComId = "Dictionary",
                 Action = "GetAll",
                 AnnonymousTenant = Client.Tenant

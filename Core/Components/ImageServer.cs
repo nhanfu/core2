@@ -210,6 +210,8 @@ namespace Core.Components
             var isFn = Utils.IsFunction(Meta.PreQuery, out var fn);
             var loadImageTask = Client.Instance.ComQuery(new SqlViewModel
             {
+                MetaConn = MetaConn,
+                DataConn = DataConn,
                 ComId = Meta.Id,
                 Params = isFn ? JSON.Stringify(fn.Call(null, this)) : null
             })

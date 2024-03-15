@@ -38,9 +38,9 @@ namespace Core.ViewModels
     {
         public object Result { get; set; }
         public string Query { get; set; }
-        public string QueryConnKey { get; set; }
+        public string DataConn { get; set; }
         public string XQuery { get; set; }
-        public string XQueryConnKey { get; set; }
+        public string MetaConn { get; set; }
         internal string DataQuery { get; set; }
         internal string MetaQuery { get; set; }
         internal bool SameContext { get; set; }

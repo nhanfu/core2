@@ -119,7 +119,7 @@ namespace Core.Components.Framework
             NotificationBL.Notifications.Data = tasks;
         }
 
-        private static Task<object[][]> BoostrapTask()
+        private Task<object[][]> BoostrapTask()
         {
             var doc = Document.Instance as dynamic;
             var meta = doc.head.children.startupSvc;
@@ -127,6 +127,8 @@ namespace Core.Components.Framework
             {
                 SvcId = meta.content,
                 OrderBy = "ds.[Order] asc",
+                DataConn = DataConn,
+                MetaConn = MetaConn,
             });
             return startup;
         }
@@ -476,7 +478,9 @@ namespace Core.Components.Framework
                 {
                     ComId = "Feature",
                     Action = "Clone",
-                    Ids = new string[] { feature.Id }
+                    Ids = new string[] { feature.Id },
+                    MetaConn = MetaConn,
+                    DataConn = DataConn,
                 };
                 Client.Instance.UserSvc<bool>(sql).Done(x =>
                 {

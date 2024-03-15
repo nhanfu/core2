@@ -56,6 +56,8 @@ namespace Core.Components
                 {
                     Params = isPreQueryFn ? JSON.Stringify(submitEntity) : null,
                     ComId = Meta.Id,
+                    MetaConn = MetaConn,
+                    DataConn = DataConn,
                 });
                 Data = await Client.Instance.SubmitAsync<object[]>(new XHRWrapper
                 {
