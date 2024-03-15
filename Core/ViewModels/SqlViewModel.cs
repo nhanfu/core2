@@ -20,7 +20,8 @@ namespace Core.ViewModels
         public bool Count { get; set; }
         public string[] FieldName { get; set; }
         public bool SkipXQuery { get; set; }
-        public string ConnKey { get; set; } = Client.ConnKey;
+        public string MetaConn { get; set; } = Client.MetaConn;
+        public string DataConn { get; set; } = Client.DataConn;
         public string Table { get; set; }
     }
 }

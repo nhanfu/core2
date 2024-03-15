@@ -32,7 +32,8 @@ namespace Core.Clients
         public static int GuidLength = 36;
         public static string BaseUri = Utils.HeadChildren.baseUri?.content as string ?? Window.Location.Origin;
         public static bool IsPortal = Utils.HeadChildren.startup?.content as string == "portal";
-        public static string ConnKey = Utils.HeadChildren.connKey?.content as string ?? "default";
+        public static string MetaConn = Utils.HeadChildren.metaKey?.content as string ?? "default";
+        public static string DataConn = Utils.HeadChildren.dataConn?.content as string ?? "default";
         public static string Tenant = Utils.HeadChildren.tenant?.content as string ?? "System";
         public static string Env = Utils.HeadChildren.env?.content as string ?? "test";
         public static string FileFTP => Utils.HeadChildren.file?.content as string ?? "/user";
@@ -409,7 +410,8 @@ namespace Core.Clients
                 Params = JSON.Stringify(new { Table = table, Ids = ids }),
                 ComId = "Entity",
                 Action = "ById",
-                ConnKey = connKey ?? ConnKey
+                MetaConn = MetaConn,
+                DataConn = connKey ?? DataConn
             };
             UserSvc(vm).Done(ds =>
             {
@@ -488,7 +490,8 @@ namespace Core.Clients
             {
                 Ids = ids,
                 Params = table,
-                ConnKey = connKey ?? ConnKey
+                MetaConn = MetaConn,
+                DataConn = connKey ?? DataConn
             };
             return SubmitAsync<string[]>(new XHRWrapper
             {
@@ -509,7 +512,7 @@ namespace Core.Clients
             {
                 Table = table,
                 DeletedIds = ids,
-                ConnKey = connKey ?? ConnKey
+                MetaConn = connKey ?? MetaConn
             };
             return SubmitAsync<bool>(new XHRWrapper
             {

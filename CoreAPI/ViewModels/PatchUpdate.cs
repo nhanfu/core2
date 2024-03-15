@@ -14,9 +14,11 @@ namespace Core.ViewModels
         public string[] DeletedIds { get; set; }
         public string TenantCode { get; set; }
         public string Env { get; set; }
-        public string ConnKey { get; set; } = Utils.ConnKey;
+        public string MetaConn { get; set; } = Utils.ConnKey;
+        public string DataConn { get; set; } = Utils.ConnKey;
         [JsonIgnore]
-        public string CachedConnStr { get; internal set; }
+        public string CachedDataConn { get; internal set; }
+        public string CachedMetaConn { get; internal set; }
         public List<PatchDetail> Changes { get; set; } = [];
         public PatchDetail Id => Changes.FirstOrDefault(x => x.Field == Utils.IdField);
     }

@@ -246,12 +246,12 @@ namespace Core.Components
                 ShowMessage = showMessage;
                 ValidateAsync().Done(isValid =>
                 {
-                    if (IsValid)
-                        Client.Instance.PatchAsync(patchModel).Done(success =>
-                        {
-                            PatchUpdateCb(success > 0, patchModel);
-                            tcs.TrySetResult(success > 0);
-                        });
+                    if (!IsValid) return;
+                    Client.Instance.PatchAsync(patchModel).Done(success =>
+                    {
+                        PatchUpdateCb(success > 0, patchModel);
+                        tcs.TrySetResult(success > 0);
+                    });
                 });
             });
             return tcs.Task;
@@ -348,7 +348,8 @@ namespace Core.Components
                 QueueName = QueueName,
                 Changes = dirtyPatch,
                 Table = ListView.Meta.RefName,
-                ConnKey = ListView.ConnKey ?? Client.ConnKey,
+                MetaConn = ListView.MetaConn,
+                DataConn = ListView.DataConn,
             };
         }
 

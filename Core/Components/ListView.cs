@@ -70,7 +70,6 @@ namespace Core.Components
         protected UserSetting Settings { get; set; }
 
         public event Action<object[][]> DataLoaded;
-
         public ListView(Component ui, HTMLElement ele = null) : base(ui)
         {
             DeleteTempIds = new List<string>();
@@ -179,7 +178,8 @@ namespace Core.Components
                 Where = finalCon,
                 Count = count,
                 SkipXQuery = cacheMeta,
-                ConnKey = ConnKey
+                MetaConn = MetaConn,
+                DataConn = DataConn,
             };
             if (skip.HasValue && pageSize.HasValue)
             {
@@ -676,7 +676,7 @@ namespace Core.Components
             var entity = Meta.RefName;
             var selected = GetSelectedRows();
             var ids = selected.Select(x => x[IdField] as string).ToArray();
-            Client.Instance.DeactivateAsync(ids, Meta.RefName, ConnKey)
+            Client.Instance.DeactivateAsync(ids, Meta.RefName, MetaConn)
             .Done(deacvitedIds =>
             {
                 if (deacvitedIds.HasElement())
@@ -726,7 +726,7 @@ namespace Core.Components
                 return Task.FromResult(deleted);
             }
             var tcs = new TaskCompletionSource<List<object>>();
-            Client.Instance.HardDeleteAsync(ids.ToArray(), Meta.RefName, ConnKey)
+            Client.Instance.HardDeleteAsync(ids.ToArray(), Meta.RefName, MetaConn)
             .Done(sucess =>
             {
                 if (sucess)
@@ -777,7 +777,7 @@ namespace Core.Components
         public virtual Task<List<object>> GetRealTimeSelectedRows()
         {
             var tcs = new TaskCompletionSource<List<object>>();
-            Client.Instance.GetByIdAsync(Meta.RefName, ConnKey ?? Client.ConnKey, SelectedIds.ToArray())
+            Client.Instance.GetByIdAsync(Meta.RefName, DataConn ?? Client.DataConn, SelectedIds.ToArray())
                 .Done(res =>
                 {
                     tcs.TrySetResult(res?.ToList());
@@ -1275,7 +1275,7 @@ namespace Core.Components
         public Task RenderRelatedDataMenu()
         {
             var tcs = new TaskCompletionSource<object>();
-            Client.Instance.GetByIdAsync(nameof(EntityRef), Meta.ConnKey, Meta.Id)
+            Client.Instance.GetByIdAsync(nameof(EntityRef), DataConn, Meta.Id)
             .Done(targetRef =>
             {
                 if (targetRef.Nothing())
@@ -1315,7 +1315,7 @@ namespace Core.Components
                 return;
             }
             _hasLoadRef = false;
-            ComponentExt.LoadFeature(ConnKey, e.ViewClass).Done(currentFeature =>
+            ComponentExt.LoadFeature(e.ViewClass).Done(currentFeature =>
             {
                 var id = currentFeature.Name + currentFeature.Id;
                 Type type;
@@ -1433,7 +1433,7 @@ namespace Core.Components
             });
             var noPolicyRowIds = noPolicyRows.Select(x => x[IdField].As<string>()).ToArray();
             var tcs = new TaskCompletionSource<object>();
-            LoadRecordPolicy(ConnKey, Meta.RefName, noPolicyRowIds).Done(rowPolicy =>
+            LoadRecordPolicy(Meta.RefName, noPolicyRowIds).Done(rowPolicy =>
             {
                 rowPolicy.ForEach(RecordPolicy.Add);
                 noPolicyRows.ForEach(x => x[PermissionLoaded] = true);
@@ -1460,7 +1460,7 @@ namespace Core.Components
             return tcs.Task;
         }
 
-        public static Task<FeaturePolicy[]> LoadRecordPolicy(string connKey, string entity, string[] ids)
+        public Task<FeaturePolicy[]> LoadRecordPolicy(string entity, string[] ids)
         {
             if (ids.Nothing() || ids.All(x => x == null))
             {
@@ -1471,7 +1471,8 @@ namespace Core.Components
                 ComId = "Policy",
                 Action = "GetById",
                 Table = nameof(FeaturePolicy),
-                ConnKey = connKey,
+                MetaConn = MetaConn,
+                DataConn = DataConn,
                 Params = JSON.Stringify(new { ids, table = entity })
             };
             return Client.Instance.UserSvc<FeaturePolicy[]>(sql);
@@ -1622,7 +1623,7 @@ namespace Core.Components
                     new PatchDetail { Field = nameof(UserSetting.Value), Value = value },
                 },
                 Table = nameof(UserSetting),
-                ConnKey = ConnKey ?? Client.ConnKey
+                MetaConn = MetaConn ?? Client.MetaConn
             };
             patch.Changes.Add(new PatchDetail { Field = IdField, Value = newId, OldVal = oldId });
             return patch;

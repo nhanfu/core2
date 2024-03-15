@@ -24,7 +24,8 @@ namespace Core.Components
                 ComId = "Workflow",
                 Action = "GetAll",
                 Params = submitEntity != null ? JSON.Stringify(submitEntity) : null,
-                ConnKey = ConnKey
+                MetaConn = MetaConn,
+                DataConn = DataConn,
             };
             Html.Take(ParentElement).Div.ClassName("ddl").Style("position:relative;z-index:1;")
                 .Button.Event(EventType.Click, x => Show = !Show).ClassName("dropbtn").IText(Meta.Label)

@@ -26,9 +26,12 @@ namespace Core.ViewModels
         public bool Count { get; set; }
         public string[] FieldName { get; set; }
         public bool SkipXQuery { get; set; }
-        public string ConnKey { get; set; } = Utils.ConnKey;
+        public string DataConn { get; set; } = Utils.ConnKey;
+        public string MetaConn { get; set; } = Utils.ConnKey;
         [JsonIgnore]
-        public string CachedConnStr { get; internal set; }
+        public string CachedDataConn { get; internal set; }
+        [JsonIgnore]
+        public string CachedMetaConn { get; internal set; }
     }
 
     public class SqlQueryResult

@@ -504,6 +504,7 @@ namespace Core.Components.Framework
             AddChild(editor);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0017:Simplify object initialization", Justification = "<Pending>")]
         private void Deactivate(object ev)
         {
             var feature = ev as Feature;
@@ -512,7 +513,7 @@ namespace Core.Components.Framework
             confirmDialog.YesConfirmed += () =>
             {
                 Client.Instance
-                    .DeactivateAsync(new string[] { feature.Id }, nameof(Feature), Client.ConnKey)
+                    .DeactivateAsync(new string[] { feature.Id }, nameof(Feature), Client.MetaConn)
                     .Done();
             };
             AddChild(confirmDialog);
@@ -607,7 +608,7 @@ namespace Core.Components.Framework
                 return Task.FromResult(true);
             }
             var tcs = new TaskCompletionSource<bool>();
-            ComponentExt.LoadFeature(Client.ConnKey, state.Name).Done(f =>
+            ComponentExt.LoadFeature(state.Name).Done(f =>
             {
                 if (f is null || f.Component.Nothing()) return;
                 EditForm instance = null;
@@ -643,7 +644,7 @@ namespace Core.Components.Framework
                 return Task.FromResult(true);
             }
             var tcs = new TaskCompletionSource<bool>();
-            ComponentExt.LoadFeature(Client.ConnKey, feature.Name).Done(f =>
+            ComponentExt.LoadFeature(feature.Name).Done(f =>
             {
                 if (f is null || f.Component.Nothing()) return;
                 EditForm instance = null;

@@ -133,7 +133,7 @@ namespace Core.Components
             }
             else
             {
-                ComponentExt.LoadFeature(ConnKey, Meta.RefClass, Meta.RefClass)
+                ComponentExt.LoadFeature(Meta.RefClass, Meta.RefClass)
                 .Done(ft =>
                 {
                     template = ft.Template;
@@ -283,7 +283,8 @@ namespace Core.Components
             {
                 ComId = Meta.Id,
                 Params = isFn ? JSON.Stringify(fn.Call(null, this)) : null,
-                ConnKey = ConnKey
+                MetaConn = MetaConn,
+                DataConn = DataConn,
             };
             Client.Instance.ComQuery(sql).Done(ds =>
             {

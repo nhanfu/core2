@@ -49,7 +49,7 @@ namespace Core.Components.Forms
         public string RoleIds { get; private set; }
         public string CostCenterId { get; private set; }
         public string RoleNames { get; private set; }
-        public string FeatureConnKey => Feature?.ConnKey ?? Client.ConnKey;
+        public string FeatureConnKey => Feature?.ConnKey ?? Client.MetaConn;
         public static WebSocketClient NotificationClient;
         protected ListView _currentListView;
         protected Component _componentCoppy;
@@ -229,7 +229,7 @@ namespace Core.Components.Forms
             }
             foreach (var item in dirtyGrid)
             {
-                Client.Instance.HardDeleteAsync(item.DeleteTempIds.ToArray(), item.Meta.RefName, item.ConnKey)
+                Client.Instance.HardDeleteAsync(item.DeleteTempIds.ToArray(), item.Meta.RefName, item.MetaConn)
                 .Done(deleteSuccess =>
                 {
                     if (!deleteSuccess)
@@ -389,7 +389,7 @@ namespace Core.Components.Forms
         protected virtual void LoadFeatureAndRender(Action callback = null)
         {
             var featureTask = Feature != null ? Task.FromResult(Feature)
-                : ComponentExt.LoadFeature(FeatureConnKey, Name);
+                : ComponentExt.LoadFeature(Name);
             LoadEntity().Done(x => featureTask.Done(f => FeatureLoaded(f, x, callback)));
         }
 
@@ -400,7 +400,7 @@ namespace Core.Components.Forms
                 LayoutLoaded(feature, entity, loadedCallback: loadedCallback);
                 return;
             }
-            ComponentExt.LoadFeature(Client.ConnKey, null, id: feature.LayoutId)
+            ComponentExt.LoadFeature(null, id: feature.LayoutId)
             .Done(layout =>
             {
                 LayoutLoaded(feature, entity, layout, loadedCallback);
@@ -664,7 +664,7 @@ namespace Core.Components.Forms
                 return Task.FromResult(null as object);
             }
             var tcs = new TaskCompletionSource<object>();
-            Client.Instance.GetByIdAsync(EntityName, Feature?.ConnKey ?? Client.ConnKey, urlId).Done(ds =>
+            Client.Instance.GetByIdAsync(EntityName, DataConn, urlId).Done(ds =>
             {
                 if (ds.Nothing()) tcs.TrySetResult(null);
                 else

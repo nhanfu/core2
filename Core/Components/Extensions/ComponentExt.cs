@@ -196,7 +196,7 @@ namespace Core.Components.Extensions
                 tcs.TrySetResult(exists);
                 return tcs.Task;
             }
-            LoadFeature(Client.ConnKey, featureName).Done(feature =>
+            LoadFeature(featureName).Done(feature =>
             {
                 var tab = factory.Invoke();
                 tab.Popup = popup;
@@ -239,10 +239,10 @@ namespace Core.Components.Extensions
             return com.OpenTab(com.GetHashCode().ToString(), featureName, factory, true, anonymous);
         }
 
-        public static Task<EditForm> InitFeatureByName(string connKey, string featureName, bool portal = true)
+        public static Task<EditForm> InitFeatureByName(string featureName, bool portal = true)
         {
             var tcs = new TaskCompletionSource<EditForm>();
-            LoadFeature(connKey, featureName).Done(feature =>
+            LoadFeature(featureName).Done(feature =>
             {
                 if (feature is null)
                 {
@@ -266,14 +266,15 @@ namespace Core.Components.Extensions
             return tcs.Task;
         }
 
-        public static Task<Feature> LoadFeature(string connKey, string name, string id = null)
+        public static Task<Feature> LoadFeature(string name, string id = null)
         {
             var tcs = new TaskCompletionSource<Feature>();
             var featureTask = Client.Instance.UserSvc(new SqlViewModel
             {
                 ComId = "Feature",
                 Action = "GetFeature",
-                ConnKey = connKey ?? Client.ConnKey,
+                MetaConn = Client.MetaConn,
+                DataConn = Client.DataConn,
                 Params = JSON.Stringify(new { Name = name, Id = id })
             });
             featureTask.Done(ds =>

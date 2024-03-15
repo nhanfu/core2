@@ -154,7 +154,7 @@ public class UserService
         await SavePatch(new PatchVM
         {
             Table = nameof(User),
-            CachedConnStr = login.CachedConnStr,
+            CachedDataConn = login.CachedConnStr,
             Changes = changes
         });
         if (!matchPassword)
@@ -236,7 +236,7 @@ public class UserService
             SignInDate = signinDate,
         };
         var patch = userLogin.MapToPatch();
-        patch.CachedConnStr = login.CachedConnStr;
+        patch.CachedDataConn = login.CachedConnStr;
         await SavePatch(patch);
         return res;
     }
@@ -536,7 +536,7 @@ public class UserService
 
     public async Task<bool> HardDelete(PatchVM vm)
     {
-        vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey, vm.TenantCode, vm.Env);
+        vm.CachedDataConn ??= await GetConnStrFromKey(vm.MetaConn, vm.TenantCode, vm.Env);
         var unthorizedDeletedIds = await UnauthorizedDeleteRecords(vm);
         if (unthorizedDeletedIds.HasNonSpaceChar())
         {
@@ -548,7 +548,7 @@ public class UserService
         var cmd = $"delete from [{vm.Table}] where Id in ({vm.DeletedIds.CombineStrings()})";
         try
         {
-            await RunSqlCmd(vm.CachedConnStr, cmd);
+            await RunSqlCmd(vm.CachedDataConn, cmd);
         }
         catch
         {
@@ -557,7 +557,7 @@ public class UserService
                 ComId = vm.Table,
                 Action = "HardDelete",
                 Ids = vm.DeletedIds,
-                ConnKey = vm.ConnKey,
+                DataConn = vm.MetaConn,
             });
             throw;
         }
@@ -570,7 +570,8 @@ public class UserService
 
     public async Task<int> SavePatch(PatchVM vm)
     {
-        vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey, vm.TenantCode, vm.Env);
+        vm.CachedDataConn ??= await GetConnStrFromKey(vm.DataConn, vm.TenantCode, vm.Env);
+        vm.CachedMetaConn ??= await GetConnStrFromKey(vm.MetaConn, vm.TenantCode, vm.Env);
         var canWrite = await HasWritePermission(vm);
         if (!canWrite) throw new ApiException($"Unauthorized to write on \"{vm.Table}\"")
         {
@@ -578,7 +579,7 @@ public class UserService
         };
         var cmd = GetCmd(vm);
         if (cmd.IsNullOrWhiteSpace()) return 0;
-        var result = await RunSqlCmd(vm.CachedConnStr, cmd);
+        var result = await RunSqlCmd(vm.CachedDataConn, cmd);
         if (result == 0) return result;
         await TryNotifyChanges("Patch", null, vm);
         await AfterActionSvc(vm, "AfterPatch");
@@ -589,7 +590,8 @@ public class UserService
     {
         var sql = new SqlViewModel
         {
-            CachedConnStr = vm.CachedConnStr,
+            CachedDataConn = vm.CachedDataConn,
+            CachedMetaConn = vm.CachedMetaConn,
             QueueName = vm.QueueName,
             ComId = vm.Table,
             Action = action,
@@ -722,7 +724,7 @@ public class UserService
     {
         if (vm.ByPassPerm) return true;
         bool writePerm = false;
-        var allRights = vm.ByPassPerm ? [] : await GetEntityPerm(vm.Table, recordId: null, vm.CachedConnStr);
+        var allRights = vm.ByPassPerm ? [] : await GetEntityPerm(vm.Table, recordId: null, vm.CachedMetaConn);
         var idField = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
         var oldId = idField?.OldVal;
         if (oldId is null)
@@ -732,7 +734,7 @@ public class UserService
         else
         {
             var origin = @$"select t.* from [{vm.Table}] as t where t.Id = '{oldId}'";
-            var ds = await ReadDataSet(origin, vm.CachedConnStr);
+            var ds = await ReadDataSet(origin, vm.CachedDataConn);
             var originRow = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0] : null;
             var isOwner = Utils.IsOwner(originRow, UserId, RoleIds);
             writePerm = isOwner || allRights.Any(x => x.CanWriteAll);
@@ -743,11 +745,11 @@ public class UserService
     private async Task<string> UnauthorizedDeleteRecords(PatchVM vm)
     {
         if (vm.ByPassPerm) return null;
-        var allRights = vm.ByPassPerm ? [] : await GetEntityPerm(vm.Table, recordId: null, vm.CachedConnStr);
+        var allRights = vm.ByPassPerm ? [] : await GetEntityPerm(vm.Table, recordId: null, vm.CachedDataConn);
         var idField = vm.DeletedIds;
 
         var origin = @$"select t.* from [{vm.Table}] as t where t.Id in ({vm.DeletedIds.CombineStrings()})";
-        var ds = await ReadDataSet(origin, vm.CachedConnStr);
+        var ds = await ReadDataSet(origin, vm.CachedDataConn);
         var originRows = ds.Length > 0 && ds[0].Length > 0 ? ds[0] : null;
         return originRows.WhereNot(x =>
         {
@@ -760,7 +762,7 @@ public class UserService
     {
         ArgumentNullException.ThrowIfNull(patches);
         patches = patches.Where(x => x.Id is not null).ToArray();
-        var connStr = patches[0].CachedConnStr ?? await GetConnStrFromKey(patches[0].ConnKey);
+        var connStr = patches[0].CachedDataConn ?? await GetConnStrFromKey(patches[0].MetaConn);
         var tables = patches.Select(x => x.Table);
         string rightQuery = @$"select * from [FeaturePolicy] 
             where Active = 1 and (CanWrite = 1 or CanWriteAll = 1) and EntityName in ({tables.CombineStrings()}) and RoleId in ({RoleIds.CombineStrings()})";
@@ -779,7 +781,7 @@ public class UserService
         await TryNotifyChanges("Patch", null, patches);
         await patches.ForEachAsync(vm =>
         {
-            vm.CachedConnStr ??= connStr;
+            vm.CachedDataConn ??= connStr;
             return AfterActionSvc(vm, "AfterPatch");
         });
         return result;
@@ -873,12 +875,12 @@ public class UserService
 
     public async Task<string[]> DeactivateAsync(SqlViewModel vm)
     {
-        vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey ?? "default");
-        var allRights = await GetEntityPerm(vm.Table, null, vm.CachedConnStr);
+        vm.CachedDataConn ??= await GetConnStrFromKey(vm.DataConn ?? "default");
+        var allRights = await GetEntityPerm(vm.Table, null, vm.CachedDataConn);
         var canDeactivateAll = allRights.Any(x => x.CanDeactivateAll);
         var canDeactivateSelf = allRights.Any(x => x.CanDeactivate);
         var query = $"select * from [{vm.Table}] where Id in ({vm.Ids.CombineStrings()})";
-        var ds = await ReadDataSet(query, vm.CachedConnStr);
+        var ds = await ReadDataSet(query, vm.CachedDataConn);
         var rows = ds.Length > 0 ? ds[0] : null;
         if (rows.Nothing()) return null;
         var canDeactivateRows = rows.Where(x =>
@@ -887,13 +889,14 @@ public class UserService
         }).Select(x => x.GetValueOrDefault(Utils.IdField)?.ToString()).ToArray();
         if (canDeactivateRows.Nothing()) return null;
         var deactivateCmd = $"update {vm.Table} set Active = 0 where Id in ({canDeactivateRows.CombineStrings()})";
-        await RunSqlCmd(vm.CachedConnStr, deactivateCmd);
+        await RunSqlCmd(vm.CachedDataConn, deactivateCmd);
         return canDeactivateRows;
     }
 
     public async Task<object> ComQuery(SqlViewModel vm)
     {
-        vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
+        vm.CachedDataConn ??= await GetConnStrFromKey(vm.DataConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
+        vm.CachedMetaConn ??= await GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
         var com = await GetComponent(vm);
         var anyInvalid = UserServiceHelpers.FobiddenTerms.Any(term =>
         {
@@ -916,11 +919,9 @@ public class UserService
             return jsRes.Result;
         }
         CalcFinalQuery(vm, jsRes);
-        var dataConn = jsRes.QueryConnKey.IsNullOrWhiteSpace() ? vm.CachedConnStr : await GetConnStrFromKey(jsRes.QueryConnKey);
-        var metaConn = jsRes.XQueryConnKey.IsNullOrWhiteSpace() ? vm.CachedConnStr : await GetConnStrFromKey(jsRes.XQueryConnKey);
-        var data = await ReadDataSet(jsRes.DataQuery, dataConn);
+        var data = await ReadDataSet(jsRes.DataQuery, vm.CachedDataConn);
         if (jsRes.SameContext || vm.SkipXQuery) return data;
-        var meta = await ReadDataSet(jsRes.MetaQuery, metaConn);
+        var meta = await ReadDataSet(jsRes.MetaQuery, vm.CachedMetaConn);
         return data.Concat(meta);
     }
 
@@ -947,7 +948,7 @@ public class UserService
                 {orderBy}
                 {vm.Paging};
                 {countQuery}";
-        jsRes.SameContext = jsRes.QueryConnKey == jsRes.XQueryConnKey;
+        jsRes.SameContext = vm.DataConn == vm.MetaConn;
         jsRes.DataQuery = jsRes.SameContext ? $"{dataQuery}\n{xQuery}" : dataQuery;
         jsRes.MetaQuery = jsRes.SameContext ? string.Empty : xQuery;
     }
@@ -972,12 +973,12 @@ public class UserService
         {
             var query = @$"select top 1 * from [Component] 
             where Id = '{vm.ComId}' and (Annonymous = 1 or IsPrivate = 0 and '{TenantCode}' != '' or TenantCode = '{TenantCode}')";
-            vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
-            com = await ReadDsAs<Component>(query, vm.CachedConnStr);
+            vm.CachedMetaConn ??= await GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
+            com = await ReadDsAs<Component>(query, vm.CachedMetaConn);
             if (com is null) return null;
             await _cache.SetStringAsync(comKey, JsonConvert.SerializeObject(com), Utils.CacheTTL);
         }
-        var readPermission = await GetEntityPerm("Component", vm.ComId, vm.CachedConnStr, x => x.CanRead);
+        var readPermission = await GetEntityPerm("Component", vm.ComId, vm.CachedMetaConn, x => x.CanRead);
         var hasPerm = com.Annonymous || !com.IsPrivate && UserId != null || readPermission.Length != 0;
         if (!hasPerm)
             throw new ApiException("Access denied")
@@ -1016,7 +1017,8 @@ public class UserService
 
     public async Task<object> RunUserSvc(SqlViewModel vm)
     {
-        vm.CachedConnStr = await GetConnStrFromKey(vm.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
+        vm.CachedDataConn = await GetConnStrFromKey(vm.DataConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
+        vm.CachedMetaConn = await GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
         var sv = await GetService(vm)
             ?? throw new ApiException($"Service Id - \"{vm.SvcId}\", ComId \"{vm.ComId}\" - Action \"{vm.Action}\" NOT found")
             {
@@ -1030,7 +1032,7 @@ public class UserService
         }
         var svConnStr = sv.Annonymous ? sv.ConnKey : await GetConnStrFromKey(sv.ConnKey, vm.AnnonymousTenant, vm.AnnonymousEnv);
         CalcFinalQuery(vm, jsRes);
-        return await ReadDataSet(jsRes.DataQuery, svConnStr);
+        return await ReadDataSet(jsRes.DataQuery, svConnStr ?? vm.CachedDataConn);
     }
 
     private async Task<Models.Services> GetService(SqlViewModel vm)
@@ -1054,7 +1056,7 @@ public class UserService
         var query = @$"select * from [Services]
                 where Active = 1 and (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') 
                 and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
-        var sv = await ReadDsAs<Models.Services>(query, vm.CachedConnStr);
+        var sv = await ReadDsAs<Models.Services>(query, vm.CachedMetaConn);
         if (sv is null) return null;
         await _cache.SetStringAsync(key, sv.ToJson(), Utils.CacheTTL);
         EnsureSvPermission(sv);
@@ -1335,7 +1337,7 @@ public class UserService
         var com = await GetComponent(new SqlViewModel
         {
             ComId = comId,
-            ConnKey = connKey
+            DataConn = connKey
         });
         var connStr = await GetConnStrFromKey(com.ConnKey);
         var tableRights = await GetEntityPerm(table, recordId: null, connStr);
@@ -1583,7 +1585,7 @@ public class UserService
         user.Recover = oneClickLink;
         await SavePatch(new PatchVM
         {
-            CachedConnStr = login.CachedConnStr,
+            CachedDataConn = login.CachedConnStr,
             Table = nameof(User),
             Changes = [new PatchDetail { Field = nameof(User.Recover), Value = oneClickLink }],
         });
@@ -1599,8 +1601,9 @@ public class UserService
 
     public async Task<string> ResendUser(SqlViewModel vm)
     {
-        vm.CachedConnStr ??= await GetConnStrFromKey(vm.ConnKey);
-        var user = await ReadDsAs<User>($"select * from [User] where Id in ({vm.Ids.CombineStrings()})", vm.CachedConnStr);
+        vm.CachedMetaConn ??= await GetConnStrFromKey(vm.MetaConn);
+        vm.CachedDataConn ??= await GetConnStrFromKey(vm.DataConn);
+        var user = await ReadDsAs<User>($"select * from [User] where Id in ({vm.Ids.CombineStrings()})", vm.CachedMetaConn);
         user.Salt = GenerateRandomToken();
         var randomPassword = GenerateRandomToken(10);
         user.Password = GetHash(Utils.SHA256, randomPassword + user.Salt);
@@ -1612,7 +1615,8 @@ public class UserService
         ];
         await SavePatch(new PatchVM
         {
-            CachedConnStr = vm.CachedConnStr,
+            CachedDataConn = vm.CachedDataConn,
+            CachedMetaConn = vm.CachedMetaConn,
             Table = nameof(User),
             Changes = changes,
         });
@@ -1708,14 +1712,14 @@ public class UserService
         {
             return false;
         }
-        var connStr = vm.CachedConnStr ?? await GetConnStrFromKey(vm.ConnKey);
+        vm.CachedMetaConn ??= await GetConnStrFromKey(vm.MetaConn);
         var id = vm.Ids.Combine();
         var query = @$"select * from [Feature] where Id = '{id}';
             select * from [FeaturePolicy] where FeatureId = '{id}';
             select * from [ComponentGroup] where FeatureId = '{id}';
             select * from [Component] c left join ComponentGroup g on c.ComponentGroupId = g.Id
             where g.FeatureId = '{id}' or c.FeatureId = '{id}'";
-        var ds = await ReadDataSet(query, connStr);
+        var ds = await ReadDataSet(query, vm.CachedMetaConn);
         if (ds.Length == 0 || ds[0].Length == 0) return false;
         var feature = ds[0][0].MapTo<Feature>();
         var policies = ds.Length > 1 ? ds[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : [];
@@ -1763,7 +1767,7 @@ public class UserService
         PatchVM[] patches = [
             featurePatch, ..policyPatches, ..groupPatches, ..comPatches, ..standAlonePatches,
         ];
-        patches.SelectForEach(x => x.CachedConnStr = connStr);
+        patches.SelectForEach(x => x.CachedMetaConn = vm.CachedMetaConn);
         await SavePatches(patches);
 
         return true;

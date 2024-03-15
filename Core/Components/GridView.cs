@@ -2454,7 +2454,7 @@ namespace Core.Components
             confirm.YesConfirmed += () =>
             {
                 var ids = new string[] { entity.Id };
-                Client.Instance.HardDeleteAsync(ids, nameof(Component), ConnKey)
+                Client.Instance.HardDeleteAsync(ids, nameof(Component), MetaConn)
                 .Done(success =>
                 {
                     if (!success)

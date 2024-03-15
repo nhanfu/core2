@@ -291,7 +291,7 @@ namespace Core.Components
                 return;
             }
 
-            ComponentExt.LoadFeature(ConnKey, Meta.RefClass).Done(FeatureLoaded);
+            ComponentExt.LoadFeature(Meta.RefClass).Done(FeatureLoaded);
         }
 
         private void FeatureLoaded(Feature feature)

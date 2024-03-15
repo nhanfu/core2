@@ -5,7 +5,7 @@ namespace Core.ViewModels
 {
     public class EmailVM
     {
-        public string ConnKey { get; set; } = Client.ConnKey;
+        public string ConnKey { get; set; } = Client.MetaConn;
         public string FromAddress { get; set; }
         public List<string> ToAddresses { get; set; }
         public List<string> CC { get; set; }

@@ -36,7 +36,7 @@ namespace Core.ViewModels
         public DateTimeOffset SigninDate { get; set; }
         public string TenantCode { get; set; } = Client.Tenant;
         public string Env { get; set; } = Client.Env;
-        public string ConnKey { get; set; } = Client.ConnKey;
+        public string ConnKey { get; set; } = Client.MetaConn;
     }
 
     [Serializable]

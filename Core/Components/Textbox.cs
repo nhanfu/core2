@@ -240,7 +240,8 @@ namespace Core.Components
             {
                 ComId = Meta.Id,
                 Params = isFn ? JSON.Stringify(fn.Call(null, this)) : null,
-                ConnKey = ConnKey
+                MetaConn = MetaConn,
+                DataConn = DataConn,
             };
             var tcs = new TaskCompletionSource<object>();
             Client.Instance.ComQuery(sql).Done(ds =>

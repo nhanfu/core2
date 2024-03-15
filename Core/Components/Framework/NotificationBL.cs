@@ -256,7 +256,8 @@ namespace Core.Components.Framework
             {
                 ComId = "Task",
                 Action = "SeeMore",
-                ConnKey = Client.ConnKey,
+                MetaConn = Client.MetaConn,
+                DataConn = Client.DataConn,
                 Params = JSON.Stringify(new { Date = lastSeenDateStr })
             };
             Client.Instance.UserSvc(sql).Done(ds =>

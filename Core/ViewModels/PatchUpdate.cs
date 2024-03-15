@@ -12,7 +12,8 @@ namespace Core.ViewModels
         public string[] DeletedIds { get; set; }
         public string QueueName { get; set; }
         public string CacheName { get; set; }
-        public string ConnKey { get; set; }
+        public string MetaConn { get; set; }
+        public string DataConn { get; set; }
         public List<PatchDetail> Changes { get; set; }
         public string EntityId => Changes?.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
     }

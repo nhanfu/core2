@@ -51,7 +51,7 @@ namespace Core
         private static string LoadByFromUrl()
         {
             var fName = GetFeatureNameFromUrl() ?? DefaultFeature;
-            ComponentExt.InitFeatureByName(Client.ConnKey, fName, true).Done();
+            ComponentExt.InitFeatureByName(fName, true).Done();
             return fName;
         }
 

@@ -128,7 +128,8 @@ namespace Core.Models
         public string FieldText { get; set; }
         public string OrderBy { get; set; }
         public string QueueName { get; set; }
-        public string ConnKey { get; set; }
+        public string MetaConn { get; set; }
+        public string DataConn { get; set; }
         public bool ShouldSaveText { get; set; }
         public string CacheName { get; set; }
         public string Lang { get; set; }
