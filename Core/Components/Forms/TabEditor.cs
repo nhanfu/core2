@@ -208,11 +208,6 @@ namespace Core.Components.Forms
             TriggerMatchHotKey(e, keyCode, shiftKey, ctrlKey, altKey);
         }
 
-        private void DisposeTabView()
-        {
-            _tab.Hide();
-        }
-
         private void TriggerMatchHotKey(Event e, KeyCodeEnum? keyCode, bool shiftKey, bool ctrlKey, bool altKey)
         {
             if (keyCode == null)
