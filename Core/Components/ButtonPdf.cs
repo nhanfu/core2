@@ -25,9 +25,8 @@ namespace Core.Components
 
         private async Task DispatchClickAsync()
         {
-            await this.DispatchEvent(Meta.Events, EventType.Click, Entity, Meta);
-            Html.Take(Document.Body).Div.ClassName("backdrop")
-                .Style("align-items: center;").Escape((e) => Dispose());
+            Html.Take(TabEditor.Element).Div.ClassName("backdrop")
+                .Style("align-items: center;").Escape((e) => Preview.Remove());
             Preview = Html.Context;
             Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;")
                 .Div.ClassName("popup-title").InnerHTML(Meta.PlainText)

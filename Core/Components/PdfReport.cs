@@ -278,13 +278,14 @@ namespace Core.Components
                 return Task.FromResult(res);
             }
             var tcs = new TaskCompletionSource<object>();
-            var isFn = Utils.IsFunction(Meta.PreQuery, out var fn, false);
+            var isFn = Utils.IsFunction(Meta.PreQuery, out var fn);
             var sql = new SqlViewModel
             {
                 ComId = Meta.Id,
                 Params = isFn ? JSON.Stringify(fn.Call(null, this)) : null,
                 MetaConn = MetaConn,
                 DataConn = DataConn,
+                WrapQuery = false
             };
             Client.Instance.ComQuery(sql).Done(ds =>
             {

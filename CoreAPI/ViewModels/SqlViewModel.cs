@@ -24,6 +24,7 @@ namespace Core.ViewModels
         public string OrderBy { get; set; }
         public string Paging { get; set; }
         public bool Count { get; set; }
+        public bool WrapQuery { get; set; } = true;
         public string[] FieldName { get; set; }
         public bool SkipXQuery { get; set; }
         public string DataConn { get; set; } = Utils.ConnKey;

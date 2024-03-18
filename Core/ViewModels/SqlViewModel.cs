@@ -23,5 +23,6 @@ namespace Core.ViewModels
         public string MetaConn { get; set; } = Client.MetaConn;
         public string DataConn { get; set; } = Client.DataConn;
         public string Table { get; set; }
+        public bool WrapQuery { get; set; } = true;
     }
 }

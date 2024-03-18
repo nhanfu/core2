@@ -140,7 +140,7 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc) : 
     }
 
     [AllowAnonymous]
-    [HttpGet("/{tenant}/{area}/{env}/{feature?}")]
+    [HttpGet("/{tenant?}/{area?}/{env?}/{feature?}")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
     public Task Index([FromRoute] string tenant = "system", [FromRoute] string area = "admin", 
         [FromRoute] string env = "test", [FromRoute] string feature = "")

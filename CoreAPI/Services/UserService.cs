@@ -473,13 +473,14 @@ public class UserService
         }
     }
 
-    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo)
+    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo, bool shouldMapToConnStr = false)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(query);
         ArgumentException.ThrowIfNullOrWhiteSpace(connInfo);
         var sideEffect = HasSideEffect(query);
         if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
-        var con = new SqlConnection(connInfo);
+        var connStr = shouldMapToConnStr ? await GetConnStrFromKey(connInfo) : connInfo;
+        var con = new SqlConnection(connStr);
         var sqlCmd = new SqlCommand
         {
             CommandType = CommandType.Text,
@@ -922,7 +923,7 @@ public class UserService
         }
         CalcFinalQuery(vm, jsRes);
         var data = await ReadDataSet(jsRes.DataQuery, vm.CachedDataConn);
-        if (jsRes.SameContext || vm.SkipXQuery) return data;
+        if (jsRes.SameContext || vm.SkipXQuery || jsRes.MetaQuery.IsNullOrWhiteSpace()) return data;
         var meta = await ReadDataSet(jsRes.MetaQuery, vm.CachedMetaConn);
         return data.Concat(meta);
     }
@@ -937,19 +938,21 @@ public class UserService
         var orderBy = vm.OrderBy.HasAnyChar() ? $"order by {vm.OrderBy}" : string.Empty;
         var xQuery = vm.SkipXQuery ? string.Empty : jsRes.XQuery;
         var countQuery = vm.Count ?
-            $@"select count(*) as total from (
-                {jsRes.Query}) as ds 
-                {where}
-                {groupBy}
-                {having};" : string.Empty;
-        var dataQuery = @$"{select}
-                from ({jsRes.Query}) as ds
-                {where}
-                {groupBy}
-                {having}
-                {orderBy}
-                {vm.Paging};
-                {countQuery}";
+$@"select count(*) as total from (
+    {jsRes.Query}
+) as ds 
+{where}
+{groupBy}
+{having};" : string.Empty;
+        var dataQuery = vm.WrapQuery ?
+@$"{select}
+from ({jsRes.Query}) as ds
+{where}
+{groupBy}
+{having}
+{orderBy}
+{vm.Paging};
+{countQuery}" : jsRes.Query;
         jsRes.DataConn ??= vm.DataConn;
         jsRes.MetaConn ??= vm.MetaConn;
         jsRes.SameContext = jsRes.DataConn == jsRes.MetaConn;
