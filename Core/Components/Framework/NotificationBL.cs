@@ -132,6 +132,7 @@ namespace Core.Components.Framework
             Html.Take("#user-active").Clear();
             SetBadgeNumber();
             CurrentUser = Client.Token;
+            if (CurrentUser is null) return;
             CurrentUser.Avatar = (CurrentUser.Avatar.Contains("://") ? "" : Client.Origin) + (CurrentUser.Avatar.IsNullOrWhiteSpace() ? "./image/chinese.jfif" : CurrentUser.Avatar);
             RenderNotification();
             RenderProfile(ProfileRoot);
@@ -142,10 +143,8 @@ namespace Core.Components.Framework
                 ShowError = false
             };
             Client.Instance.SubmitAsync<List<User>>(xhr)
-            .Done(x => {
-                UserActive.Data = x;
-            })
-            .Catch(Console.WriteLine);
+                .Done(x => UserActive.Data = x)
+                .Catch(Console.WriteLine);
         }
 
         public void RenderProfile(HTMLElement profileRoot)

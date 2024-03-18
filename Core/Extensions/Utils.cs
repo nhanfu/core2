@@ -167,6 +167,7 @@ namespace Core.Extensions
             {
                 return defaultOwnership;
             }
+            if (Client.Token is null) return defaultOwnership;
             var ownerUserIds = entity.GetPropValue(OwnerUserIds)?.ToString();
             var isOwnerUser = ownerUserIds.HasNonSpaceChar() && ownerUserIds.Split(Comma).Contains(Client.Token.UserId);
             var ownerRoleIds = entity.GetPropValue(OwnerRoleIds)?.ToString();

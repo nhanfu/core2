@@ -4,7 +4,6 @@ using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
 using System;
-using System.Threading.Tasks;
 
 namespace Core.Components
 {
@@ -24,9 +23,8 @@ namespace Core.Components
             Html.Take(ParentElement).Clear().Div.Style($"width:{Meta.Width}px;margin:auto").Id("barcode" + Meta.Id);
             Element = Html.Context;
             Value = Entity.GetPropValue(FieldName)?.ToString();
-            Task.Run(async () =>
+            Client.LoadScript("/js/qrcode.min.js").Done(() =>
             {
-                await Client.LoadScript("/js/qrcode.min.js");
                 /*@
                  new QRCode("barcode"+this.GuiInfo.Id, {
                     text: value,

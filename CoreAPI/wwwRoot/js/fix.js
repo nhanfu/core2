@@ -92,7 +92,7 @@ function zoom() {
 }
 
 function initCodeEditor(com) {
-    if (typeof (require) === 'undefined') return;
+    if (typeof (require) === 'undefined' || com == null || com.Entity == null) return;
     require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' } });
     window.MonacoEnvironment = { getWorkerUrl: () => proxy };
 

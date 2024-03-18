@@ -916,16 +916,7 @@ public class UserService
             throw new ArgumentException("Parameters must NOT contains sql keywords");
         }
         vm.JsScript = com.Query;
-        var jsRes = await RunJs(vm);
-        if (jsRes.Result != null)
-        {
-            return jsRes.Result;
-        }
-        CalcFinalQuery(vm, jsRes);
-        var data = await ReadDataSet(jsRes.DataQuery, vm.CachedDataConn);
-        if (jsRes.SameContext || vm.SkipXQuery || jsRes.MetaQuery.IsNullOrWhiteSpace()) return data;
-        var meta = await ReadDataSet(jsRes.MetaQuery, vm.CachedMetaConn);
-        return data.Concat(meta);
+        return await RunjsWrap(vm);
     }
 
     private static void CalcFinalQuery(SqlViewModel vm, SqlQueryResult jsRes)
@@ -1032,6 +1023,11 @@ from ({jsRes.Query}) as ds
                 StatusCode = HttpStatusCode.NotFound
             };
         vm.JsScript = sv.Content;
+        return await RunjsWrap(vm);
+    }
+
+    private async Task<object> RunjsWrap(SqlViewModel vm)
+    {
         var jsRes = await RunJs(vm);
         if (jsRes.Result is not null)
         {
@@ -1039,7 +1035,7 @@ from ({jsRes.Query}) as ds
         }
         CalcFinalQuery(vm, jsRes);
         var data = await ReadDataSet(jsRes.DataQuery, vm.CachedDataConn);
-        if (jsRes.SameContext || vm.SkipXQuery) return data;
+        if (jsRes.SameContext || vm.SkipXQuery || jsRes.MetaQuery.IsNullOrWhiteSpace()) return data;
         var meta = await ReadDataSet(jsRes.MetaQuery, vm.CachedMetaConn);
         return data.Concat(meta);
     }

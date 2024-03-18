@@ -932,5 +932,73 @@ namespace Core.Components
                 _events.Remove(name);
             }
         }
+
+        public T FindComponentByName<T>(string name) where T : EditableComponent
+        {
+            return FirstOrDefault(x => x.Name == name && typeof(T).IsAssignableFrom(x.GetType())) as T;
+        }
+
+        public EditableComponent FirstOrDefault(Func<EditableComponent, bool> predicate, Func<EditableComponent, bool> ignorePredicate = null)
+        {
+            if (Children.Nothing())
+            {
+                return null;
+            }
+
+            foreach (var child in Children)
+            {
+                if (ignorePredicate != null && ignorePredicate(child))
+                {
+                    continue;
+                }
+
+                if (predicate(child))
+                {
+                    return child;
+                }
+            }
+            foreach (var child in Children)
+            {
+                if (child.Children.HasElement())
+                {
+                    var res = child.FirstOrDefault(predicate, ignorePredicate);
+                    if (res != null)
+                    {
+                        return res;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public IEnumerable<T> FindActiveComponent<T>(Func<T, bool> predicate = null) where T : EditableComponent
+        {
+            var result = new HashSet<T>();
+            var type = typeof(T);
+            if (Children.Nothing())
+            {
+                return Enumerable.Empty<T>();
+            }
+
+            foreach (var child in Children)
+            {
+                if (type.IsAssignableFrom(child.GetType())
+                    && child.ParentElement != null
+                    && !child.ParentElement.Hidden()
+                    && (predicate == null || predicate(child as T)))
+                {
+                    result.Add(child as T);
+                }
+
+                if (child.Children.Nothing())
+                {
+                    continue;
+                }
+
+                var res = child.FindActiveComponent<T>();
+                res.SelectForEach(x => result.Add(x));
+            }
+            return result.Distinct();
+        }
     }
 }

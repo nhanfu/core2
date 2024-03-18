@@ -23,6 +23,7 @@ namespace Core.Components
             var html = Html.Instance;
             if (ButtonEle is null)
             {
+                if (ParentElement is null) throw new ArgumentNullException(nameof(ParentElement));
                 Html.Take(ParentElement).Button.ClassName("btn" + Meta.Id).Render();
                 Element = ButtonEle = Html.Context;
             }
@@ -52,11 +53,10 @@ namespace Core.Components
             try
             {
                 Spinner.AppendTo(Element);
-                this.DispatchEvent(Meta.Events, EventType.Click, Entity, this).Done();
+                this.DispatchEvent(Meta.Events, EventType.Click, Entity, this).Done(() => Spinner.Hide());
             }
             finally
             {
-                Spinner.Hide();
                 Disabled = false;
             }
         }

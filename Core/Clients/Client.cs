@@ -30,7 +30,7 @@ namespace Core.Clients
         private static Dictionary<string, Entity> entities;
         private static Token token;
         public static int GuidLength = 36;
-        public static string BaseUri = Utils.HeadChildren.baseUri?.content as string ?? Window.Location.Origin;
+        public static string BaseUri = (Utils.HeadChildren.baseUri?.content as string ?? Window.Location.Origin).ToLowerCase();
         public static bool IsPortal = Utils.HeadChildren.startup?.content as string == "portal";
         public static string MetaConn = Utils.HeadChildren.metaKey?.content as string ?? "default";
         public static string DataConn = Utils.HeadChildren.dataConn?.content as string ?? "bl";

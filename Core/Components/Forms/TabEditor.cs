@@ -389,9 +389,9 @@ namespace Core.Components.Forms
             {
                 Parent.Focus();
             }
-            else if (ParentElement != null)
+            else
             {
-                ParentElement.Focus();
+                ParentElement?.Focus();
             }
 
             if (!Popup && _li != null)
@@ -402,12 +402,7 @@ namespace Core.Components.Forms
             else
             {
             }
-            var firstGridView = Parent.FindActiveComponent<GridView>().FirstOrDefault();
-            if (firstGridView != null && firstGridView.LastListViewItem != null && firstGridView.LastElementFocus != null)
-            {
-                firstGridView.LastListViewItem.Focused(true);
-                firstGridView.LastElementFocus.Focus();
-            }
+            OpenFrom?.Focus();
             base.Dispose();
         }
 
