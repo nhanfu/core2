@@ -1,6 +1,7 @@
 using Core.Extensions;
 using Core.Middlewares;
 using Core.Services;
+using CoreAPI.Services.Sql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
@@ -76,6 +77,7 @@ services.AddDistributedMemoryCache();
 services.AddHttpContextAccessor();
 
 // the instance created for each request
+services.AddScoped<ISqlProvider, SqlServerProvider>();
 services.AddScoped<WebSocketService>();
 services.AddScoped<UserService>();
 

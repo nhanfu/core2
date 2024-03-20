@@ -4,12 +4,11 @@ using Core.Extensions;
 using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
+using CoreAPI.Services.Sql;
 using HtmlAgilityPack;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Newtonsoft.Json;
 using PuppeteerSharp;
 using System.Buffers;
@@ -38,7 +37,7 @@ public class UserService
     private readonly IWebHostEnvironment _host;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly WebSocketService _taskSocketSvc;
-    private readonly WebSocketService _clusterSocketSvc;
+    private readonly ISqlProvider _sql;
 
     public string UserId { get; set; }
     public string UserName { get; set; }
@@ -52,7 +51,7 @@ public class UserService
     public List<string> RoleNames { get; set; }
 
     public UserService(IHttpContextAccessor ctx, IConfiguration conf, IDistributedCache cache, IWebHostEnvironment host,
-        IHttpClientFactory httpClientFactory, WebSocketService taskSocket)
+        IHttpClientFactory httpClientFactory, WebSocketService taskSocket, ISqlProvider sql)
     {
         _cfg = conf ?? throw new ArgumentNullException(nameof(conf));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache)); ;
@@ -62,6 +61,10 @@ public class UserService
         _taskSocketSvc = taskSocket ?? throw new ArgumentNullException(nameof(taskSocket));
         _request = _ctx.HttpContext.Request;
         ExtractMeta();
+        _sql = sql;
+        _sql.TenantCode = TenantCode;
+        _sql.Env = Env;
+        _sql.UserId = UserId;
     }
 
     private void ExtractMeta()
@@ -119,7 +122,7 @@ public class UserService
         {
             login.CompanyName = login.CompanyName.Trim();
         }
-        login.CachedConnStr = await GetConnStrFromKey(login.ConnKey, login.CompanyName, login.Env);
+        login.CachedConnStr = await _sql.GetConnStrFromKey(login.ConnKey, login.CompanyName, login.Env);
         var (matchedUser, roles) = await GetUserByLogin(login);
         if (matchedUser is null)
         {
@@ -181,7 +184,7 @@ public class UserService
             left join [Role] r on ur.RoleId = r.Id
             where u.Active = 1 and u.Username = @username and v.Code = @tenant"
         ;
-        var ds = await ReadDataSet(query, login.CachedConnStr);
+        var ds = await _sql.ReadDataSet(query, login.CachedConnStr);
         var userDb = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0].MapTo<User>() : null;
         var roles = ds.Length > 1 && ds[1].Length > 0 ? ds[1].Select(x => x.MapTo<Role>()).ToArray() : null;
         return (userDb, roles);
@@ -305,8 +308,8 @@ public class UserService
             @$"select * from UserLogin 
             where UserId = '{userId}' and RefreshToken = '{token.RefreshToken}'
             and ExpiredDate > '{DateTimeOffset.Now}' order by SignInDate desc";
-        token.CachedConnStr ??= await GetConnStrFromKey(connKey, tenant, env);
-        var userLogin = await ReadDsAs<UserLogin>(query, token.CachedConnStr);
+        token.CachedConnStr ??= await _sql.GetConnStrFromKey(connKey, tenant, env);
+        var userLogin = await _sql.ReadDsAs<UserLogin>(query, token.CachedConnStr);
 
         if (userLogin == null)
         {
@@ -322,21 +325,6 @@ public class UserService
         };
         var (updatedUser, roles) = await GetUserByLogin(login);
         return await GetUserToken(updatedUser, roles, login, token.RefreshToken);
-    }
-
-    public async Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(connKey);
-        tenantCode = TenantCode ?? tenantCode;
-        env = Env ?? env;
-        var key = $"{tenantCode}_{connKey}_{env}";
-        var conStr = await _cache.GetStringAsync(key);
-        if (conStr != null) return conStr;
-        var query = $"select * from [TenantEnv] where TenantCode = '{tenantCode}' and ConnKey = '{connKey}' and Env = '{env}'";
-        var tenantEnv = await ReadDsAs<TenantEnv>(query, _cfg.GetConnectionString(Utils.ConnKey))
-            ?? throw new ApiException($"Tenant environment NOT found {key}");
-        await _cache.SetStringAsync(key, tenantEnv.ConnStr, Utils.CacheTTL);
-        return tenantEnv.ConnStr;
     }
 
     public async Task<SqlQueryResult> RunJs(SqlViewModel vm)
@@ -380,164 +368,9 @@ public class UserService
         return result;
     }
 
-    public bool HasSqlComment(string sql)
-    {
-        TSql110Parser parser = new(true);
-        var fragments = parser.Parse(new StringReader(sql), out var errors);
-
-        return fragments.ScriptTokenStream
-            .Any(x => x.TokenType == TSqlTokenType.MultilineComment || x.TokenType == TSqlTokenType.SingleLineComment);
-    }
-
-    static readonly TSqlTokenType[] SideEffectCmd = [
-            TSqlTokenType.Insert, TSqlTokenType.Update, TSqlTokenType.Delete,
-                TSqlTokenType.Create, TSqlTokenType.Drop, TSqlTokenType.Alter,
-                TSqlTokenType.Truncate, TSqlTokenType.MultilineComment, TSqlTokenType.SingleLineComment
-        ];
-
-    public bool HasSideEffect(string sql, params TSqlTokenType[] allowCmds)
-    {
-        var finalCmd = SideEffectCmd.Except(allowCmds).ToArray();
-        TSql110Parser parser = new(true);
-        var fragments = parser.Parse(new StringReader(sql), out var errors);
-        return fragments.ScriptTokenStream.Any(x => finalCmd.Contains(x.TokenType));
-    }
-
-    public async Task<T> ReadDsAs<T>(string query, string connInfo) where T : class
-    {
-        var ds = await ReadDataSet(query, connInfo);
-        if (ds.Length == 0 || ds[0].Length == 0) return null;
-        return ds[0][0].MapTo<T>();
-    }
-
-    public async Task<T[]> ReadDsAsArr<T>(string query, string connInfo) where T : class
-    {
-        var ds = await ReadDataSet(query, connInfo);
-        if (ds.Length == 0 || ds[0].Length == 0) return [];
-        return ds[0].Select(x => x.MapTo<T>()).ToArray();
-    }
-
-    public void StreamDs(string query, string connInfo)
-    {
-        var sideEffect = HasSideEffect(query);
-        if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
-        var syncIOFeature = _ctx.HttpContext.Features.Get<IHttpBodyControlFeature>();
-        if (syncIOFeature != null)
-        {
-            syncIOFeature.AllowSynchronousIO = true;
-        }
-
-        var connStr = connInfo;
-        var con = new SqlConnection(connStr);
-        var sqlCmd = new SqlCommand(query, con)
-        {
-            CommandType = CommandType.Text
-        };
-        SqlDataReader reader = null;
-        var responseStream = _ctx.HttpContext.Response.Body;
-        _ctx.HttpContext.Response.ContentType = Utils.ApplicationJson;
-        try
-        {
-            con.Open();
-            reader = sqlCmd.ExecuteReader();
-            responseStream.Write("[".ToByteSpan());
-            while (true)
-            {
-                responseStream.Write("[".ToByteSpan());
-                while (reader.Read())
-                {
-                    responseStream.Write(ReadSqlRecord(reader).ToJson().ToByteSpan());
-                    responseStream.Write(",".ToByteSpan());
-                }
-                responseStream.Write("],".ToByteSpan());
-                var next = reader.NextResult();
-                if (!next) break;
-            }
-            responseStream.Write("]".ToByteSpan());
-            responseStream.Flush();
-            responseStream.Close();
-        }
-        catch (Exception e)
-        {
-            var message = $"{e.Message} {query}";
-            throw new ApiException(message, e)
-            {
-                StatusCode = HttpStatusCode.InternalServerError,
-            };
-        }
-        finally
-        {
-            reader?.Dispose();
-            sqlCmd.Dispose();
-            con.Dispose();
-        }
-    }
-
-    public async Task<Dictionary<string, object>[][]> ReadDataSet(string query, string connInfo, bool shouldMapToConnStr = false)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(query);
-        ArgumentException.ThrowIfNullOrWhiteSpace(connInfo);
-        var sideEffect = HasSideEffect(query);
-        if (sideEffect) throw new ApiException("Side effect of query is NOT allowed");
-        var connStr = shouldMapToConnStr ? await GetConnStrFromKey(connInfo) : connInfo;
-        var con = new SqlConnection(connStr);
-        var sqlCmd = new SqlCommand
-        {
-            CommandType = CommandType.Text,
-            CommandText = query,
-            Connection = con
-        };
-        SqlDataReader reader = null;
-        var tables = new List<Dictionary<string, object>[]>();
-        try
-        {
-            await con.OpenAsync();
-            reader = await sqlCmd.ExecuteReaderAsync();
-            while (true)
-            {
-                var table = new List<Dictionary<string, object>>();
-                while (await reader.ReadAsync())
-                {
-                    table.Add(ReadSqlRecord(reader));
-                }
-                tables.Add([.. table]);
-                var next = await reader.NextResultAsync();
-                if (!next) break;
-            }
-            return [.. tables];
-        }
-        catch (Exception e)
-        {
-            var message = $"{e.Message} {query}";
-            throw new ApiException(message, e)
-            {
-                StatusCode = HttpStatusCode.InternalServerError,
-            };
-        }
-        finally
-        {
-            if (reader is not null) await reader.DisposeAsync();
-            await sqlCmd.DisposeAsync();
-            await con.DisposeAsync();
-        }
-    }
-
-    protected static Dictionary<string, object> ReadSqlRecord(IDataRecord reader)
-    {
-        var row = new Dictionary<string, object>();
-        for (var i = 0; i < reader.FieldCount; i++)
-        {
-            var val = reader[i];
-            row[reader.GetName(i)] = val == DBNull.Value ? null : val;
-        }
-        return row;
-    }
-
-    public static string RemoveWhiteSpace(string val) => val.Replace(" ", "");
-
     public async Task<bool> HardDelete(PatchVM vm)
     {
-        vm.CachedDataConn ??= await GetConnStrFromKey(vm.MetaConn, vm.TenantCode, vm.Env);
+        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.TenantCode, vm.Env);
         var unthorizedDeletedIds = await UnauthorizedDeleteRecords(vm);
         if (unthorizedDeletedIds.HasNonSpaceChar())
         {
@@ -549,7 +382,7 @@ public class UserService
         var cmd = $"delete from [{vm.Table}] where Id in ({vm.DeletedIds.CombineStrings()})";
         try
         {
-            await RunSqlCmd(vm.CachedDataConn, cmd);
+            await _sql.RunSqlCmd(vm.CachedDataConn, cmd);
         }
         catch
         {
@@ -571,16 +404,16 @@ public class UserService
 
     public async Task<int> SavePatch(PatchVM vm)
     {
-        vm.CachedDataConn ??= await GetConnStrFromKey(vm.DataConn, vm.TenantCode, vm.Env);
-        vm.CachedMetaConn ??= await GetConnStrFromKey(vm.MetaConn, vm.TenantCode, vm.Env);
+        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn, vm.TenantCode, vm.Env);
+        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.TenantCode, vm.Env);
         var canWrite = await HasWritePermission(vm);
         if (!canWrite) throw new ApiException($"Unauthorized to write on \"{vm.Table}\"")
         {
             StatusCode = HttpStatusCode.Unauthorized
         };
-        var cmd = GetCmd(vm);
+        var cmd = _sql.GetCreateOrUpdateCmd(vm);
         if (cmd.IsNullOrWhiteSpace()) return 0;
-        var result = await RunSqlCmd(vm.CachedDataConn, cmd);
+        var result = await _sql.RunSqlCmd(vm.CachedDataConn, cmd);
         if (result == 0) return result;
         await TryNotifyChanges("Patch", null, vm);
         await AfterActionSvc(vm, "AfterPatch");
@@ -691,7 +524,7 @@ public class UserService
         }
         if (clusters is not null) return clusters;
         var clusterQuery = $"select * from [Cluster] where ClusterRole = '{role}'";
-        clusters = await ReadDsAsArr<Cluster>(clusterQuery, DefaultConnStr());
+        clusters = await _sql.ReadDsAsArr<Cluster>(clusterQuery, DefaultConnStr());
         await _cache.SetStringAsync(UserServiceHelpers.APIClusterKey, clusters.ToJson());
         return clusters;
     }
@@ -735,7 +568,7 @@ public class UserService
         else
         {
             var origin = @$"select t.* from [{vm.Table}] as t where t.Id = '{oldId}'";
-            var ds = await ReadDataSet(origin, vm.CachedDataConn);
+            var ds = await _sql.ReadDataSet(origin, vm.CachedDataConn);
             var originRow = ds.Length > 0 && ds[0].Length > 0 ? ds[0][0] : null;
             var isOwner = Utils.IsOwner(originRow, UserId, RoleIds);
             writePerm = isOwner || allRights.Any(x => x.CanWriteAll);
@@ -750,7 +583,7 @@ public class UserService
         var idField = vm.DeletedIds;
 
         var origin = @$"select t.* from [{vm.Table}] as t where t.Id in ({vm.DeletedIds.CombineStrings()})";
-        var ds = await ReadDataSet(origin, vm.CachedDataConn);
+        var ds = await _sql.ReadDataSet(origin, vm.CachedDataConn);
         var originRows = ds.Length > 0 && ds[0].Length > 0 ? ds[0] : null;
         return originRows.WhereNot(x =>
         {
@@ -763,12 +596,12 @@ public class UserService
     {
         if (patches.Nothing()) throw new ArgumentException($"{nameof(patches)} is null or empty");
         patches = patches.Where(x => x.Id is not null).ToArray();
-        patches[0].CachedDataConn ??= await GetConnStrFromKey(patches[0].DataConn);
-        patches[0].CachedMetaConn ??= await GetConnStrFromKey(patches[0].MetaConn);
+        patches[0].CachedDataConn ??= await _sql.GetConnStrFromKey(patches[0].DataConn);
+        patches[0].CachedMetaConn ??= await _sql.GetConnStrFromKey(patches[0].MetaConn);
         var tables = patches.Select(x => x.Table);
         string rightQuery = @$"select * from [FeaturePolicy] 
             where Active = 1 and (CanWrite = 1 or CanWriteAll = 1) and EntityName in ({tables.CombineStrings()}) and RoleId in ({RoleIds.CombineStrings()})";
-        var permissions = await ReadDsAsArr<FeaturePolicy>(rightQuery, patches[0].CachedMetaConn);
+        var permissions = await _sql.ReadDsAsArr<FeaturePolicy>(rightQuery, patches[0].CachedMetaConn);
         permissions = permissions.DistinctBy(x => x.EntityName).ToArray();
         var lackPerTables = patches.Select(x => x.Table).Except(permissions.Select(x => x.EntityName)).ToArray();
         if (lackPerTables.Length > 0)
@@ -778,8 +611,8 @@ public class UserService
                 StatusCode = HttpStatusCode.Unauthorized
             };
         }
-        var sql = patches.Select(GetCmd).Where(x => x is not null).Combine(";\n");
-        var result = await RunSqlCmd(patches[0].CachedDataConn, sql);
+        var sql = patches.Select(_sql.GetCreateOrUpdateCmd).Where(x => x is not null).Combine(";\n");
+        var result = await _sql.RunSqlCmd(patches[0].CachedDataConn, sql);
         await TryNotifyChanges("Patch", null, patches);
         await patches.ForEachAsync(vm =>
         {
@@ -790,100 +623,14 @@ public class UserService
         return result;
     }
 
-    public string GetCmd(PatchVM vm)
-    {
-        if (vm == null || vm.Table.IsNullOrWhiteSpace() || vm.Changes.Nothing())
-        {
-            throw new ApiException("Table name and change details can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
-        }
-        if (vm.Id is null)
-        {
-            throw new ApiException("Id cannot be null") { StatusCode = HttpStatusCode.BadRequest };
-        }
-
-        vm.Table = RemoveWhiteSpace(vm.Table);
-        vm.Changes = vm.Changes.Where(x =>
-        {
-            if (x.Field.IsNullOrWhiteSpace()) throw new ApiException($"Field name can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
-            x.Field = RemoveWhiteSpace(x.Field);
-            x.Value = x.Value?.Replace("'", "''");
-            x.OldVal = x.OldVal?.Replace("'", "''");
-            return !UserServiceHelpers.SystemFields.Contains(x.Field);
-        }).ToList();
-        var idField = vm.Id;
-        var valueFields = vm.Changes.Where(x => !UserServiceHelpers.SystemFields.Contains(x.Field.ToLower())).ToArray();
-        var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
-        var oldId = idField?.OldVal;
-        if (oldId is not null)
-        {
-            var update = valueFields.Combine(x => x.Value is null ? $"[{x.Field}] = null" : $"[{x.Field}] = N'{x.Value}'");
-            if (update.IsNullOrWhiteSpace()) return null;
-            return @$"update [{vm.Table}] set {update}, 
-                UpdatedBy = '{UserId ?? 1.ToString()}', UpdatedDate = '{now}' where Id = '{oldId}';";
-        }
-        else
-        {
-            valueFields = valueFields.Where(x => x.Field != "Active").ToArray();
-            var fields = valueFields.Combine(x => $"[{x.Field}]");
-            var values = valueFields.Combine(x => x.Value is null ? "null" : $"N'{x.Value}'");
-            if (fields.IsNullOrWhiteSpace() || values.IsNullOrWhiteSpace()) return null;
-            return @$"insert into [{vm.Table}] ([Id], [Active], [InsertedBy], [InsertedDate], {fields})
-                    values ('{idField.Value}', 1, '{UserId ?? 1.ToString()}', '{now}', {values});";
-        }
-    }
-
-    public async Task<int> RunSqlCmd(string connStr, string cmdText)
-    {
-        if (cmdText.IsNullOrWhiteSpace()) return 0;
-        if (connStr.IsNullOrWhiteSpace()) throw new ApiException("ConnStr is null")
-        {
-            StatusCode = HttpStatusCode.InternalServerError
-        };
-        SqlConnection connection = new(connStr);
-        await connection.OpenAsync();
-        var transaction = connection.BeginTransaction();
-        var cmd = new SqlCommand
-        {
-            Transaction = transaction,
-            Connection = connection,
-            CommandText = cmdText
-        };
-        var anyComment = HasSqlComment(cmd.CommandText);
-        if (anyComment) throw new ApiException("Comment is NOT allowed");
-        try
-        {
-            var affected = await cmd.ExecuteNonQueryAsync();
-            await transaction.CommitAsync();
-            return affected;
-        }
-        catch (Exception e)
-        {
-            await transaction.RollbackAsync();
-            var message = "Error occurs";
-#if DEBUG
-            message = $"Error occurs at {connStr} {cmdText}";
-#endif
-            throw new ApiException(message, e)
-            {
-                StatusCode = HttpStatusCode.InternalServerError
-            };
-        }
-        finally
-        {
-            await transaction.DisposeAsync();
-            await cmd.DisposeAsync();
-            await connection.DisposeAsync();
-        }
-    }
-
     public async Task<string[]> DeactivateAsync(SqlViewModel vm)
     {
-        vm.CachedDataConn ??= await GetConnStrFromKey(vm.DataConn ?? "default");
+        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn ?? "default");
         var allRights = await GetEntityPerm(vm.Table, null, vm.CachedDataConn);
         var canDeactivateAll = allRights.Any(x => x.CanDeactivateAll);
         var canDeactivateSelf = allRights.Any(x => x.CanDeactivate);
         var query = $"select * from [{vm.Table}] where Id in ({vm.Ids.CombineStrings()})";
-        var ds = await ReadDataSet(query, vm.CachedDataConn);
+        var ds = await _sql.ReadDataSet(query, vm.CachedDataConn);
         var rows = ds.Length > 0 ? ds[0] : null;
         if (rows.Nothing()) return null;
         var canDeactivateRows = rows.Where(x =>
@@ -892,14 +639,14 @@ public class UserService
         }).Select(x => x.GetValueOrDefault(Utils.IdField)?.ToString()).ToArray();
         if (canDeactivateRows.Nothing()) return null;
         var deactivateCmd = $"update {vm.Table} set Active = 0 where Id in ({canDeactivateRows.CombineStrings()})";
-        await RunSqlCmd(vm.CachedDataConn, deactivateCmd);
+        await _sql.RunSqlCmd(vm.CachedDataConn, deactivateCmd);
         return canDeactivateRows;
     }
 
     public async Task<object> ComQuery(SqlViewModel vm)
     {
-        vm.CachedDataConn ??= await GetConnStrFromKey(vm.DataConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        vm.CachedMetaConn ??= await GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
+        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
+        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
         var com = await GetComponent(vm);
         var anyInvalid = UserServiceHelpers.FobiddenTerms.Any(term =>
         {
@@ -971,8 +718,8 @@ from ({jsRes.Query}) as ds
         {
             var query = @$"select top 1 * from [Component] 
             where Id = '{vm.ComId}' and (Annonymous = 1 or IsPrivate = 0 and '{TenantCode}' != '' or TenantCode = '{TenantCode}')";
-            vm.CachedMetaConn ??= await GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
-            com = await ReadDsAs<Component>(query, vm.CachedMetaConn);
+            vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
+            com = await _sql.ReadDsAs<Component>(query, vm.CachedMetaConn);
             if (com is null) return null;
             await _cache.SetStringAsync(comKey, JsonConvert.SerializeObject(com), Utils.CacheTTL);
         }
@@ -1006,7 +753,7 @@ from ({jsRes.Query}) as ds
             where Active = 1 and EntityName = '{entityName}'
             and (RecordId = '{recordId}' or '{recordId}' = '') and RoleId in ({RoleIds.CombineStrings()})";
             if (pre != null) q += $" and {permissionName} = 1";
-            permissions = await ReadDsAsArr<FeaturePolicy>(q, connStr);
+            permissions = await _sql.ReadDsAsArr<FeaturePolicy>(q, connStr);
             await _cache.SetStringAsync(key, JsonConvert.SerializeObject(permissions), Utils.CacheTTL);
         }
 
@@ -1015,8 +762,8 @@ from ({jsRes.Query}) as ds
 
     public async Task<object> RunUserSvc(SqlViewModel vm)
     {
-        vm.CachedDataConn = await GetConnStrFromKey(vm.DataConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        vm.CachedMetaConn = await GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
+        vm.CachedDataConn = await _sql.GetConnStrFromKey(vm.DataConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
+        vm.CachedMetaConn = await _sql.GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
         var sv = await GetService(vm)
             ?? throw new ApiException($"Service Id - \"{vm.SvcId}\", ComId \"{vm.ComId}\" - Action \"{vm.Action}\" NOT found")
             {
@@ -1034,9 +781,9 @@ from ({jsRes.Query}) as ds
             return jsRes.Result;
         }
         CalcFinalQuery(vm, jsRes);
-        var data = await ReadDataSet(jsRes.DataQuery, vm.CachedDataConn);
+        var data = await _sql.ReadDataSet(jsRes.DataQuery, vm.CachedDataConn);
         if (jsRes.SameContext || vm.SkipXQuery || jsRes.MetaQuery.IsNullOrWhiteSpace()) return data;
-        var meta = await ReadDataSet(jsRes.MetaQuery, vm.CachedMetaConn);
+        var meta = await _sql.ReadDataSet(jsRes.MetaQuery, vm.CachedMetaConn);
         return data.Concat(meta);
     }
 
@@ -1061,7 +808,7 @@ from ({jsRes.Query}) as ds
         var query = @$"select * from [Services]
                 where Active = 1 and (ComId = '{vm.ComId}' and Action = '{vm.Action}' or Id = '{vm.SvcId}') 
                 and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
-        var sv = await ReadDsAs<Models.Services>(query, vm.CachedMetaConn);
+        var sv = await _sql.ReadDsAs<Models.Services>(query, vm.CachedMetaConn);
         if (sv is null) return null;
         await _cache.SetStringAsync(key, sv.ToJson(), Utils.CacheTTL);
         EnsureSvPermission(sv);
@@ -1344,7 +1091,7 @@ from ({jsRes.Query}) as ds
             ComId = comId,
             DataConn = connKey
         });
-        var connStr = await GetConnStrFromKey(com.ConnKey);
+        var connStr = await _sql.GetConnStrFromKey(com.ConnKey);
         var tableRights = await GetEntityPerm(table, recordId: null, connStr);
         if (!tableRights.Any(x => x.CanAdd || x.CanWriteAll))
             throw new UnauthorizedAccessException("Cannot import data due to lack of permission");
@@ -1517,7 +1264,7 @@ from ({jsRes.Query}) as ds
 
     public async Task<bool> EmailAttached(EmailVM email, IWebHostEnvironment host)
     {
-        var connStr = await GetConnStrFromKey(email.ConnKey);
+        var connStr = await _sql.GetConnStrFromKey(email.ConnKey);
         var paths = await GeneratePdf(email, host, absolute: true);
         paths.SelectForEach(email.ServerAttachements.Add);
         await SendMail(email, connStr, host.WebRootPath);
@@ -1527,7 +1274,7 @@ from ({jsRes.Query}) as ds
     public async Task SendMail(EmailVM email, string connStr, string webRoot = null)
     {
         var query = $"select * from [MasterData] m join [MasterData] p on m.ParentId = p.Id where p.Name = 'ConfigEmail'";
-        var config = await ReadDsAsArr<MasterData>(query, connStr);
+        var config = await _sql.ReadDsAsArr<MasterData>(query, connStr);
         var fromName = config.FirstOrDefault(x => x.Name == "FromName")?.Description;
         var fromAddress = email.FromAddress ?? config.FirstOrDefault(x => x.Name == "FromAddress")?.Description;
         var password = config.FirstOrDefault(x => x.Name == "Password")?.Description ?? throw new ApiException("Email server is not authorzied") { StatusCode = HttpStatusCode.InternalServerError };
@@ -1559,8 +1306,8 @@ from ({jsRes.Query}) as ds
         var sessionId = principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
         var ipAddress = GetRemoteIpAddress(_ctx.HttpContext);
         var query = $"select * from [UserLogin] where Id = '{sessionId}'";
-        var connStr = await GetConnStrFromKey(token.ConnKey);
-        var userLogin = await ReadDsAs<UserLogin>(query, connStr);
+        var connStr = await _sql.GetConnStrFromKey(token.ConnKey);
+        var userLogin = await _sql.ReadDsAs<UserLogin>(query, connStr);
         if (userLogin is null) return true;
         await SavePatch(new PatchVM
         {
@@ -1576,15 +1323,15 @@ from ({jsRes.Query}) as ds
 
     public async Task<bool> ForgotPassword(LoginVM login)
     {
-        login.CachedConnStr ??= await GetConnStrFromKey(login.ConnKey, login.CompanyName, login.Env);
-        var user = await ReadDsAs<User>($"select * from [User] where UserName = '{login.UserName}'", login.CachedConnStr);
+        login.CachedConnStr ??= await _sql.GetConnStrFromKey(login.ConnKey, login.CompanyName, login.Env);
+        var user = await _sql.ReadDsAs<User>($"select * from [User] where UserName = '{login.UserName}'", login.CachedConnStr);
         var span = DateTimeOffset.Now - (user.UpdatedDate ?? DateTimeOffset.Now);
         if (user.LoginFailedCount >= UserServiceHelpers.MAX_LOGIN && span.TotalMinutes < 5)
         {
             throw new ApiException($"The account {login.UserName} has been locked for a while! Please contact your administrator to unlock.");
         }
         // Send mail
-        var emailTemplate = await ReadDsAs<MasterData>($"select * from [MasterData] where Name = 'ForgotPassEmail'", login.CachedConnStr)
+        var emailTemplate = await _sql.ReadDsAs<MasterData>($"select * from [MasterData] where Name = 'ForgotPassEmail'", login.CachedConnStr)
             ?? throw new InvalidOperationException("Cannot find recovery email template!");
         var oneClickLink = GenerateRandomToken();
         user.Recover = oneClickLink;
@@ -1606,9 +1353,9 @@ from ({jsRes.Query}) as ds
 
     public async Task<string> ResendUser(SqlViewModel vm)
     {
-        vm.CachedMetaConn ??= await GetConnStrFromKey(vm.MetaConn);
-        vm.CachedDataConn ??= await GetConnStrFromKey(vm.DataConn);
-        var user = await ReadDsAs<User>($"select * from [User] where Id in ({vm.Ids.CombineStrings()})", vm.CachedMetaConn);
+        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn);
+        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn);
+        var user = await _sql.ReadDsAs<User>($"select * from [User] where Id in ({vm.Ids.CombineStrings()})", vm.CachedMetaConn);
         user.Salt = GenerateRandomToken();
         var randomPassword = GenerateRandomToken(10);
         user.Password = GetHash(Utils.SHA256, randomPassword + user.Salt);
@@ -1699,14 +1446,14 @@ from ({jsRes.Query}) as ds
         }
         var envQuery = $"select * from [TenantEnv] where TenantCode = '{tenant}' and Env = '{env}' and ConnKey = 'default'";
         var connStr = DefaultConnStr();
-        var tnEnv = await ReadDsAs<TenantEnv>(envQuery, connStr);
+        var tnEnv = await _sql.ReadDsAs<TenantEnv>(envQuery, connStr);
         if (tnEnv is null)
         {
             await WriteDefaultFile(UserServiceHelpers.NotFoundFile, Utils.GetMimeType("html"), HttpStatusCode.NotFound);
             return;
         }
         var pageQuery = $"select * from [TenantPage] where TenantEnvId = '{tnEnv.Id}' and Area = '{area}'";
-        var page = await ReadDsAs<TenantPage>(pageQuery, connStr);
+        var page = await _sql.ReadDsAs<TenantPage>(pageQuery, connStr);
         await _cache.SetStringAsync(key, JsonConvert.SerializeObject(page), Utils.CacheTTL);
         await WriteTemplateAsync(response, page, env: env, tenant: tenant);
     }
@@ -1717,14 +1464,14 @@ from ({jsRes.Query}) as ds
         {
             return false;
         }
-        vm.CachedMetaConn ??= await GetConnStrFromKey(vm.MetaConn);
+        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn);
         var id = vm.Ids.Combine();
         var query = @$"select * from [Feature] where Id = '{id}';
             select * from [FeaturePolicy] where FeatureId = '{id}';
             select * from [ComponentGroup] where FeatureId = '{id}';
             select * from [Component] c left join ComponentGroup g on c.ComponentGroupId = g.Id
             where g.FeatureId = '{id}' or c.FeatureId = '{id}'";
-        var ds = await ReadDataSet(query, vm.CachedMetaConn);
+        var ds = await _sql.ReadDataSet(query, vm.CachedMetaConn);
         if (ds.Length == 0 || ds[0].Length == 0) return false;
         var feature = ds[0][0].MapTo<Feature>();
         var policies = ds.Length > 1 ? ds[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : [];
@@ -1945,7 +1692,7 @@ from ({jsRes.Query}) as ds
         if (_hasOpenClusterSocket) return;
         _hasOpenClusterSocket = true;
         var clusterQuery = $"select * from [Cluster] where [ClusterRole] = '{role}'";
-        var clusters = await ReadDsAsArr<Cluster>(clusterQuery, _cfg.GetConnectionString(Utils.ConnKey));
+        var clusters = await _sql.ReadDsAsArr<Cluster>(clusterQuery, _cfg.GetConnectionString(Utils.ConnKey));
         if (clusters.Nothing()) return;
         var tasks = clusters.Select(Connect);
         await Task.WhenAll(tasks);
@@ -1973,7 +1720,7 @@ from ({jsRes.Query}) as ds
         EnsureSystemRole();
         var delCmd = @$"insert into Cluster (Id, TenantCode, Host, Env, Port, Scheme, ClusterRole, Active, InsertedDate, InsertedBy) values
             ('{node.Id}', '{TenantCode}', '{node.Host}', '{Env}', '{node.Port}', '{node.Scheme}', '{node.Role}', 1, '{DateTimeOffset.UtcNow}', 1)";
-        await RunSqlCmd(DefaultConnStr(), delCmd);
+        await _sql.RunSqlCmd(DefaultConnStr(), delCmd);
         Clusters.Data.Nodes.Add(node);
     }
 
@@ -1987,7 +1734,7 @@ from ({jsRes.Query}) as ds
     {
         EnsureSystemRole();
         var delCmd = $"delete from [Cluster] where Id = '{node.Id}'";
-        await RunSqlCmd(DefaultConnStr(), delCmd);
+        await _sql.RunSqlCmd(DefaultConnStr(), delCmd);
         var node2Remove = Clusters.Data.Nodes.FirstOrDefault(x => x.Host == node.Host && x.Port == node.Port && x.Scheme == node.Scheme);
         Clusters.Data.Nodes.Remove(node2Remove);
     }

@@ -33,6 +33,8 @@ namespace Core.Extensions
             { '&', "%26" },
         };
 
+        public static string RemoveWhiteSpace(string val) => val.Replace(" ", "");
+
         public static ClaimsPrincipal GetPrincipalFromAccessToken(string accessToken, IConfiguration _configuration)
         {
             var tokenValidationParameters = new TokenValidationParameters
