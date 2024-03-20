@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Clients\LocalStorage.cs" />
+    <Compile Include="Components\DocumentWrite.cs" />
     <Compile Include="Components\ExportCustomData.cs" />
     <Compile Include="Components\ButtonPdf.cs" />
     <Compile Include="Components\Framework\HeaderManageBL.cs" />

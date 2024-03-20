@@ -403,6 +403,86 @@ namespace Core.Extensions
             }
         }
 
+        public static string GetHtmlCode(string format, object[] source, Func<string, string> nullHandler = null, Func<string, string> notFoundHandler = null)
+        {
+            if (format == null)
+            {
+                return null;
+            }
+            if (nullHandler is null)
+            {
+                nullHandler = NullFormatHandler;
+            }
+
+            if (notFoundHandler is null)
+            {
+                notFoundHandler = NotFoundHandler;
+            }
+            if (source is null)
+            {
+                return format;
+            }
+            var formatted = new StringBuilder();
+            var index = 0;
+            var isInGroup = false;
+            var field = new StringBuilder();
+            var objList = new List<object>();
+            for (int i = 0; i < format.Length; i++)
+            {
+                var ch = format[i];
+                switch (ch)
+                {
+                    case '$':
+                        if (format[i + 1] == '{')
+                        {
+                            isInGroup = true;
+                            formatted.Append('{' + index.ToString());
+                        }
+                        else
+                        {
+                            if (isInGroup)
+                            {
+                                field.Append(ch);
+                            }
+                            else
+                            {
+                                formatted.Append(ch);
+                            }
+                        }
+                        break;
+                    case '}':
+                        if (isInGroup)
+                        {
+                            isInGroup = false;
+                            formatted.Append(ch);
+                            index++;
+                            GetValues(source[0], nullHandler, notFoundHandler, field.ToString(), objList);
+                            field.Clear();
+                        }
+                        else
+                        {
+                            formatted.Append(ch);
+                        }
+                        break;
+                    default:
+                        if (isInGroup && ch == '{')
+                        {
+                            break;
+                        }
+                        if (isInGroup)
+                        {
+                            field.Append(ch);
+                        }
+                        else
+                        {
+                            formatted.Append(ch);
+                        }
+                        break;
+                }
+            }
+            return string.Format(null, formatted.ToString(), objList.ToArray());
+        }
+
         public static string GetFormattedRow(string exp, object row)
         {
             var isFunc = IsFunction(exp, out Function func);
