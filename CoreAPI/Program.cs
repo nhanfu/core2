@@ -77,6 +77,8 @@ services.AddDistributedMemoryCache();
 services.AddHttpContextAccessor();
 
 // the instance created for each request
+services.AddScoped<SqlServerProvider>();
+services.AddScoped<DuckDbProvider>();
 services.AddScoped<ISqlProvider, SqlServerProvider>();
 services.AddScoped<WebSocketService>();
 services.AddScoped<UserService>();

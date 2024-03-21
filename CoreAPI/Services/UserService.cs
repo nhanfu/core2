@@ -62,6 +62,11 @@ public class UserService
         _request = _ctx.HttpContext.Request;
         ExtractMeta();
         _sql = sql;
+        SetMetaToSqlProvider(_sql);
+    }
+
+    public void SetMetaToSqlProvider(ISqlProvider _sql)
+    {
         _sql.TenantCode = TenantCode;
         _sql.Env = Env;
         _sql.UserId = UserId;
@@ -1457,6 +1462,10 @@ from ({jsRes.Query}) as ds
         await _cache.SetStringAsync(key, JsonConvert.SerializeObject(page), Utils.CacheTTL);
         await WriteTemplateAsync(response, page, env: env, tenant: tenant);
     }
+
+    public Task<Dictionary<string, object>[][]> ReadDataSet
+        (string query, string connStr, bool shouldMapToConnStr = false)
+        => _sql.ReadDataSet(query, connStr, shouldMapToConnStr);
 
     public async Task<bool> CloneFeature(SqlViewModel vm)
     {
