@@ -163,6 +163,8 @@ public class UserService
         await SavePatch(new PatchVM
         {
             Table = nameof(User),
+            TenantCode = login.CompanyName,
+            Env = login.Env,
             CachedDataConn = login.CachedConnStr,
             Changes = changes
         });
@@ -245,6 +247,8 @@ public class UserService
             SignInDate = signinDate,
         };
         var patch = userLogin.MapToPatch();
+        patch.TenantCode = login.CompanyName;
+        patch.Env = login.Env;
         patch.CachedDataConn = login.CachedConnStr;
         await SavePatch(patch);
         return res;
