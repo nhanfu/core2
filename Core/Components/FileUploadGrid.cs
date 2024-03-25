@@ -22,7 +22,7 @@ namespace Core.Components
                 {
                     FieldName = nameof(FileUpload.FileName),
                     Editable = true,
-                    ShortDesc = "Name",
+                    Label = "Name",
                     ComponentType = "Input",
                     Order = 2
                 },
@@ -32,7 +32,7 @@ namespace Core.Components
                     Editable = true,
                     Active = true,
                     ComponentType = nameof(Image),
-                    ShortDesc = "File",
+                    Label = "File",
                     IsRealtime = Meta.IsRealtime,
                     Precision = 1,
                     Order = 1
@@ -43,7 +43,7 @@ namespace Core.Components
                     Active = true,
                     ComponentType = "Label",
                     FieldText = "InsertedUserName",
-                    ShortDesc = "Created by",
+                    Label = "Created by",
                     Order = 3
                 },
                 new Component
@@ -51,7 +51,7 @@ namespace Core.Components
                     FieldName = nameof(FileUpload.InsertedDate),
                     Active = true,
                     ComponentType = "Label",
-                    ShortDesc = "Created date",
+                    Label = "Created date",
                     Order = 4
                 },
                 new Component
@@ -60,7 +60,7 @@ namespace Core.Components
                     Active = true,
                     ComponentType = "Label",
                     FieldText = "UpdatedUserName",
-                    ShortDesc = "Updated by",
+                    Label = "Updated by",
                     Order = 5
                 },
                 new Component
@@ -68,7 +68,7 @@ namespace Core.Components
                     FieldName = nameof(FileUpload.UpdatedDate),
                     Active = true,
                     ComponentType = "Label",
-                    ShortDesc = "Updated date",
+                    Label = "Updated date",
                     Order = 6
                 },
             };

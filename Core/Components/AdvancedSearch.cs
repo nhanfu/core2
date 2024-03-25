@@ -46,7 +46,7 @@ namespace Core.Components
         public void LocalRender()
         {
             _headers = ParentListView.Header
-                .Where(x => x.Id != null && !x.ShortDesc.IsNullOrWhiteSpace() && x.Active && !x.Hidden).ToList();
+                .Where(x => x.Id != null && !x.Label.IsNullOrWhiteSpace() && x.Active && !x.Hidden).ToList();
             Feature.FeaturePolicy.Add(new FeaturePolicy
             {
                 CanRead = true,
@@ -139,7 +139,7 @@ namespace Core.Components
                     EntityId = _fieldConditionId,
                     FieldName = nameof(FieldCondition.FieldId),
                     Events = "{'change': 'FieldId_Changed'}",
-                    ShortDesc = "Tên cột",
+                    Label = "Tên cột",
                     ReferenceId = _ComponentId,
                     RefName = nameof(Component),
                     FormatData = "ShortDesc",
@@ -156,7 +156,7 @@ namespace Core.Components
                         {
                             EntityId = _ComponentId,
                             FieldName = "ShortDesc",
-                            ShortDesc = "Tên cột",
+                            Label = "Tên cột",
                             Active = true,
                         }
                     },
@@ -167,7 +167,7 @@ namespace Core.Components
                     Id = 2 .ToString(),
                     EntityId = _fieldConditionId,
                     FieldName = nameof(FieldCondition.CompareOperatorId),
-                    ShortDesc = "Toán tử",
+                    Label = "Toán tử",
                     ReferenceId = _entityId,
                     RefName = nameof(Entity),
                     ComponentType = "SearchEntry",
@@ -183,14 +183,14 @@ namespace Core.Components
                         {
                             EntityId = _entityId,
                             FieldName = nameof(Models.Entity.Name),
-                            ShortDesc = "Toán tử",
+                            Label = "Toán tử",
                             Active = true,
                         },
                         new Component
                         {
                             EntityId = _entityId,
                             FieldName = nameof(Models.Entity.Description),
-                            ShortDesc = "Ký hiệu",
+                            Label = "Ký hiệu",
                             Active = true,
                         }
                     },
@@ -201,7 +201,7 @@ namespace Core.Components
                     Id = 3 .ToString(),
                     EntityId = _fieldConditionId,
                     FieldName = nameof(FieldCondition.Value),
-                    ShortDesc = "Giá trị",
+                    Label = "Giá trị",
                     ReferenceId = _entityId,
                     RefName = nameof(Entity),
                     ComponentType = "Input",
@@ -215,7 +215,7 @@ namespace Core.Components
                     Id = 2 .ToString(),
                     EntityId = _fieldConditionId,
                     FieldName = nameof(FieldCondition.LogicOperatorId),
-                    ShortDesc = "Kết hợp",
+                    Label = "Kết hợp",
                     ReferenceId = _entityId,
                     RefName = nameof(Entity),
                     ComponentType = "SearchEntry",
@@ -231,14 +231,14 @@ namespace Core.Components
                         {
                             EntityId = _entityId,
                             FieldName = nameof(Models.Entity.Name),
-                            ShortDesc = "Kết hợp",
+                            Label = "Kết hợp",
                             Active = true,
                         },
                         new Component
                         {
                             EntityId = _entityId,
                             FieldName = nameof(Models.Entity.Description),
-                            ShortDesc = "Miêu tả",
+                            Label = "Miêu tả",
                             Active = true,
                         },
                     }
@@ -262,7 +262,7 @@ namespace Core.Components
         private EnumerableInstance<Component> HeaderForAdvSearch()
         {
             return ParentListView.Header
-                .Where(x => x.Id != null && !x.ShortDesc.IsNullOrWhiteSpace() && x.Active && !x.Hidden);
+                .Where(x => x.Id != null && !x.Label.IsNullOrWhiteSpace() && x.Active && !x.Hidden);
         }
 
         private void AddOrderByGrid(Section section)
@@ -289,7 +289,7 @@ namespace Core.Components
                     EntityId = _fieldConditionId,
                     FieldName = nameof(FieldCondition.FieldId),
                     Events = "{'change': 'FieldId_Changed'}",
-                    ShortDesc = "Tên cột",
+                    Label = "Tên cột",
                     ReferenceId = _ComponentId,
                     RefName = nameof(Component),
                     FormatData = "ShortDesc",
@@ -307,7 +307,7 @@ namespace Core.Components
                         {
                             EntityId = _ComponentId,
                             FieldName = "ShortDesc",
-                            ShortDesc = "Tên cột",
+                            Label = "Tên cột",
                             Active = true,
                         }
                     },
@@ -317,7 +317,7 @@ namespace Core.Components
                     Id = 2 .ToString(),
                     EntityId = _orderById,
                     FieldName = nameof(OrderBy.OrderbyDirectionId),
-                    ShortDesc = "Thứ tự",
+                    Label = "Thứ tự",
                     ReferenceId = _entityId,
                     RefName = nameof(Entity),
                     ComponentType = "SearchEntry",
@@ -333,7 +333,7 @@ namespace Core.Components
                         {
                             EntityId = _entityId,
                             FieldName = nameof(Models.Entity.Name),
-                            ShortDesc = "Thứ tự",
+                            Label = "Thứ tự",
                             Active = true,
                         },
                     },
@@ -561,13 +561,13 @@ namespace Core.Components
                     new Component
                     {
                         FieldName = nameof(Models.Entity.Name),
-                        ShortDesc = "Trạng thái",
+                        Label = "Trạng thái",
                         Active = true,
                     },
                     new Component
                     {
                         FieldName = nameof(Models.Entity.Description),
-                        ShortDesc = "Miêu tả",
+                        Label = "Miêu tả",
                         Active = true,
                     }
                 };

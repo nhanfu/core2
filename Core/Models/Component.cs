@@ -102,7 +102,6 @@ namespace Core.Models
         public string GroupReferenceId { get; set; }
         public string GroupReferenceName { get; set; }
         public string GroupName { get; set; }
-        public string ShortDesc { get; set; }
         public string Description { get; set; }
         public string FeatureId { get; set; }
         public string EntityId { get; set; }

@@ -11,7 +11,9 @@ namespace Core.Clients
         public string deviceKey;
         public WebSocketClient(string url)
         {
-            var wsUri = $"wss://{Client.Host}/{url}?access_token=" + Client.Token?.AccessToken;
+            var token = Client.Token?.AccessToken;
+            if (token == null) return;
+            var wsUri = $"wss://{Client.Host}/{url}?access_token=" + token;
             /*@
             if (typeof(ReconnectingWebSocket) !== 'undefined') {
                 this.socket = new ReconnectingWebSocket(wsUri);

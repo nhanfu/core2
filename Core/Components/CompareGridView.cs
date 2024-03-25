@@ -19,7 +19,7 @@ namespace Core.Components
                 {
                     FieldName = nameof(History.InsertedBy),
                     ComponentType = "Label",
-                    ShortDesc = "Người thao tác",
+                    Label = "Người thao tác",
                     Description = "Người thao tác",
                     ReferenceId = Utils.GetEntity(nameof(User))?.Id,
                     RefName = nameof(User),
@@ -30,7 +30,7 @@ namespace Core.Components
                 {
                     FieldName = nameof(History.InsertedDate),
                     ComponentType = "Label",
-                    ShortDesc = "Ngày thao tác",
+                    Label = "Ngày thao tác",
                     Description = "Ngày thao tác",
                     Active = true,
                     TextAlign = "left",
@@ -40,7 +40,7 @@ namespace Core.Components
                 {
                     FieldName = nameof(History.ReasonOfChange),
                     ComponentType = "Label",
-                    ShortDesc = "Nội dung",
+                    Label = "Nội dung",
                     Description = "Nội dung",
                     HasFilter = true,
                     Active = true,
@@ -50,7 +50,7 @@ namespace Core.Components
                     FieldName = nameof(History.TextHistory),
                     ComponentType = "Label",
                     ChildStyle = Style,
-                    ShortDesc = "Chi tiết thay đổi",
+                    Label = "Chi tiết thay đổi",
                     Description = "Chi tiết thay đổi",
                     HasFilter = true,
                     Active = true,

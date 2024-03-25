@@ -32,7 +32,7 @@ namespace Core.Components
                 LocalRender();
             };
             ParentListView = parent;
-            _headers = ParentListView.Header.Where(x => x.ComponentType != nameof(Button) && !x.ShortDesc.IsNullOrWhiteSpace()).ToList();
+            _headers = ParentListView.Header.Where(x => x.ComponentType != nameof(Button) && !x.Label.IsNullOrWhiteSpace()).ToList();
         }
 
         private void Move()
@@ -293,7 +293,7 @@ namespace Core.Components
             {
                 Html.Instance.TRow.DataAttr("id", item.Id).TData.DataAttr("id", item.Id).Style("padding:0").IText(i.ToString()).End
                     .TData.Style("padding:0").Checkbox(item.IsExport).Event(EventType.Input, (e1) => item.IsExport = e1.Target.Cast<HTMLInputElement>().Checked).End.End
-                    .TData.Style("padding:0").ClassName("text-left").IText(item.ShortDesc).End
+                    .TData.Style("padding:0").ClassName("text-left").IText(item.Label).End
                     .EndOf(ElementType.tr);
                 i++;
             }

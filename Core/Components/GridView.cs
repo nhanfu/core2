@@ -36,7 +36,7 @@ namespace Core.Components
         public static Component ToolbarColumn = new Component
         {
             StatusBar = true,
-            ShortDesc = string.Empty,
+            Label = string.Empty,
             Frozen = true
         };
 
@@ -367,7 +367,7 @@ namespace Core.Components
             }
             var confirmDialog = new ConfirmDialog
             {
-                Content = $"Nhập {header.ShortDesc} cần tìm " + hotKeyModel.OperatorText,
+                Content = $"Nhập {header.Label} cần tìm " + hotKeyModel.OperatorText,
                 NeedAnswer = true,
                 MultipleLine = false,
                 ComType = header.ComponentType == nameof(Datepicker) || header.ComponentType == nameof(Number) ? header.ComponentType : nameof(Textbox),
@@ -403,7 +403,7 @@ namespace Core.Components
                     CellSelected.Add(new CellSelected
                     {
                         FieldName = hotKeyModel.FieldName,
-                        FieldText = header.ShortDesc,
+                        FieldText = header.Label,
                         ComponentType = header.ComponentType,
                         Shift = hotKeyModel.Shift,
                         Value = value,
@@ -555,7 +555,7 @@ namespace Core.Components
                         }
                         index++;
                     }
-                    lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+                    lisToast.Add(hl.Label + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
                 else if (hl.ComponentType == "Input" || hl.ComponentType == nameof(Textbox) || hl.ComponentType == "Textarea")
                 {
@@ -579,7 +579,7 @@ namespace Core.Components
                             where = cell.Operator == (int)OperatorEnum.NotIn ? $" [ds].{cell.FieldName} not like N'%{cell.Value}' or [ds].{cell.FieldName} is null)" : $" [ds].{cell.FieldName} like N'%{cell.Value}'";
                         }
                     }
-                    lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+                    lisToast.Add(hl.Label + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
                 else if (hl.ComponentType == nameof(Number) || (hl.ComponentType == "Label" && hl.FieldName.Contains("Id")))
                 {
@@ -609,7 +609,7 @@ namespace Core.Components
                             advo = cell.Operator == (int)OperatorEnum.Ge ? AdvSearchOperation.GreaterThanOrEqual : AdvSearchOperation.LessThanOrEqual;
                         }
                     }
-                    lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+                    lisToast.Add(hl.Label + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
                 else if (hl.ComponentType == nameof(Checkbox))
                 {
@@ -622,7 +622,7 @@ namespace Core.Components
                     {
                         where = cell.Operator == (int)OperatorEnum.NotIn ? $"[ds].{cell.FieldName} != {(cell.Value == "true" ? "1" : "0")}" : $"[ds].{cell.FieldName} = {(cell.Value == "true" ? "1" : "0")}";
                     }
-                    lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+                    lisToast.Add(hl.Label + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
                 else if (hl.ComponentType == nameof(Datepicker))
                 {
@@ -679,7 +679,7 @@ namespace Core.Components
                             }
                         }
                     }
-                    lisToast.Add(hl.ShortDesc + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+                    lisToast.Add(hl.Label + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
                 }
             }
             var value = ids ?? cell.Value;
@@ -856,7 +856,7 @@ namespace Core.Components
                 CellSelected.Add(new CellSelected
                 {
                     FieldName = hotKeyModel.FieldName,
-                    FieldText = header.ShortDesc,
+                    FieldText = header.Label,
                     ComponentType = header.ComponentType,
                     Value = hotKeyModel.Value,
                     ValueText = hotKeyModel.ValueText,
@@ -1376,7 +1376,7 @@ namespace Core.Components
                         var listString = numbers.Select(x =>
                         {
                             var val = selected.Select(k => k[x.FieldName]).Where(k => k != null).Select(y => Convert.ToDecimal(y)).Sum();
-                            return x.ShortDesc + " : " + (val % 2 > 0 ? val.ToString("N2") : val.ToString("N0"));
+                            return x.Label + " : " + (val % 2 > 0 ? val.ToString("N2") : val.ToString("N0"));
                         });
                         Toast.Success(listString.Combine("</br>"), 6000);
                     });
@@ -2153,7 +2153,7 @@ namespace Core.Components
                 }
                 else if (!header.StatusBar)
                 {
-                    Html.Instance.Event(EventType.Click, (e) => ClickHeader(e, header)).IHtml(header.ShortDesc).Render();
+                    Html.Instance.Event(EventType.Click, (e) => ClickHeader(e, header)).IHtml(header.Label).Render();
                 }
                 if (header.ComponentType == nameof(Number))
                 {
@@ -2174,7 +2174,7 @@ namespace Core.Components
 
             if (anyGroup)
             {
-                Html.Instance.TRow.ForEach(headers, (header, index) =>
+                Html.Instance.TRow.ForEach(headers, (Action<Component, int>)((header, index) =>
                 {
                     if (anyGroup && !string.IsNullOrEmpty(header.GroupName))
                     {
@@ -2183,10 +2183,10 @@ namespace Core.Components
                             .Style($"min-width: {header.MinWidth}; max-width: {header.MaxWidth}")
                             .TextAlign(header.TextAlignEnum)
                             .Event(EventType.ContextMenu, HeaderContextMenu, header)
-                            .InnerHTML(header.ShortDesc);
+                            .InnerHTML((string)header.Label);
                         HeaderSection.AddChild(new Section(Html.Context.ParentElement) { Meta = header });
                     }
-                });
+                }));
             }
             HeaderSection.Children = HeaderSection.Children.OrderBy(x => x.Meta.PostOrder).ToList();
             if (!Meta.Focus)
@@ -2208,7 +2208,7 @@ namespace Core.Components
                     Changes = new List<PatchDetail>
                     {
                         new PatchDetail { Field = nameof(Component.Id), Value = header.Id, OldVal = header.Id },
-                        new PatchDetail { Field = nameof(Component.ShortDesc), Value = html.TextContent.Trim(), OldVal = header.ShortDesc },
+                        new PatchDetail { Field = nameof(Component.Label), Value = html.TextContent.Trim(), OldVal = header.Label },
                     }
                 };
                 Client.Instance.PatchAsync(patchVM);

@@ -81,12 +81,12 @@ namespace Core.Components
                 return;
             }
             Html.Take(Element);
-            var components = BasicSearch.Select(header =>
+            var components = BasicSearch.Select((Func<Component, Component>)(header =>
             {
                 var com = header;
                 var componentType = com.ComponentType.TryParse<ComponentTypeTypeEnum>();
                 com.ShowLabel = false;
-                com.PlainText = header.ShortDesc;
+                com.PlainText = header.Label;
                 com.Visibility = true;
                 com.Column = 1;
                 var compareOpId = (AdvSearchOperation)Components.AdvancedSearch.OperatorFactory(componentType ?? ComponentTypeTypeEnum.Textbox).FirstOrDefault().Id.TryParseInt();
@@ -98,7 +98,7 @@ namespace Core.Components
                     Field = header,
                 });
                 return com;
-            }).ToArray();
+            })).ToArray();
             var sectionInfo = new ComponentGroup
             {
                 Component = components,
