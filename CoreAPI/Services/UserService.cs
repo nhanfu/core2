@@ -6,6 +6,7 @@ using Core.Models;
 using Core.ViewModels;
 using CoreAPI.Services.Sql;
 using HtmlAgilityPack;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -1380,7 +1381,7 @@ from ({jsRes.Query}) as ds
         return randomPassword;
     }
 
-    private static async Task WriteTemplateAsync(HttpResponse reponse, TenantPage page, string env, string tenant)
+    private static async Task WriteTemplateAsync(HttpResponse reponse, Tenant page, string env, string tenant)
     {
         var htmlDoc = new HtmlDocument();
         htmlDoc.LoadHtml(page.Template);
@@ -1445,20 +1446,14 @@ from ({jsRes.Query}) as ds
         var cache = await _cache.GetStringAsync(key);
         if (cache != null && cache != "null")
         {
-            var pageCached = JsonConvert.DeserializeObject<TenantPage>(cache);
+            var pageCached = JsonConvert.DeserializeObject<Tenant>(cache);
             await WriteTemplateAsync(response, pageCached, env, tenant);
             return;
         }
-        var envQuery = $"select * from [TenantEnv] where TenantCode = '{tenant}' and Env = '{env}' and ConnKey = 'default'";
+        var pageQuery = @$"select * from [Tenant] where TenantCode = '{tenant}' and Env = '{env}' and Area = '{area}'";
         var connStr = DefaultConnStr();
-        var tnEnv = await _sql.ReadDsAs<TenantEnv>(envQuery, connStr);
-        if (tnEnv is null)
-        {
-            await WriteDefaultFile(UserServiceHelpers.NotFoundFile, Utils.GetMimeType("html"), HttpStatusCode.NotFound);
-            return;
-        }
-        var pageQuery = $"select * from [TenantPage] where TenantEnvId = '{tnEnv.Id}' and Area = '{area}'";
-        var page = await _sql.ReadDsAs<TenantPage>(pageQuery, connStr);
+        var page = await _sql.ReadDsAs<Tenant>(pageQuery, connStr);
+        if (page is null) throw new ApiException("Page not found") { StatusCode = HttpStatusCode.NotFound };
         await _cache.SetStringAsync(key, JsonConvert.SerializeObject(page), Utils.CacheTTL);
         await WriteTemplateAsync(response, page, env: env, tenant: tenant);
     }
@@ -1747,4 +1742,7 @@ from ({jsRes.Query}) as ds
         var node2Remove = Clusters.Data.Nodes.FirstOrDefault(x => x.Host == node.Host && x.Port == node.Port && x.Scheme == node.Scheme);
         Clusters.Data.Nodes.Remove(node2Remove);
     }
+
+    public Task<string> GetConnStrFromKey(string key, string tenantCode = null, string env = null) 
+        => _sql.GetConnStrFromKey(key, tenantCode, env);
 }

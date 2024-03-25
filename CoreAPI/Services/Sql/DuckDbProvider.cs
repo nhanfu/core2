@@ -30,8 +30,8 @@ namespace CoreAPI.Services.Sql
             var key = $"{tenantCode}_{connKey}_{env}";
             var conStr = await cache.GetStringAsync(key);
             if (conStr != null) return conStr;
-            var query = $"select * from [TenantEnv] where TenantCode = '{tenantCode}' and ConnKey = '{connKey}' and Env = '{env}'";
-            var tenantEnv = await ReadDsAs<TenantEnv>(query, cfg.GetConnectionString(DUCK + Utils.ConnKey))
+            var query = $"select * from [Tenant] where TenantCode = '{tenantCode}' and ConnKey = '{connKey}' and Env = '{env}'";
+            var tenantEnv = await ReadDsAs<Tenant>(query, cfg.GetConnectionString(DUCK + Utils.ConnKey))
                 ?? throw new ApiException($"Tenant environment NOT found {key}");
             await cache.SetStringAsync(key, tenantEnv.ConnStr, Utils.CacheTTL);
             return tenantEnv.ConnStr;
