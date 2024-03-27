@@ -726,7 +726,7 @@ namespace Core.Components
                 return Task.FromResult(deleted);
             }
             var tcs = new TaskCompletionSource<List<object>>();
-            Client.Instance.HardDeleteAsync(ids.ToArray(), Meta.RefName, MetaConn)
+            Client.Instance.HardDeleteAsync(ids.ToArray(), Meta.RefName, DataConn, MetaConn)
             .Done(sucess =>
             {
                 if (sucess)

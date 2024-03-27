@@ -506,12 +506,13 @@ namespace Core.Clients
             });
         }
 
-        public Task<bool> HardDeleteAsync(string[] ids, string table, string connKey = null)
+        public Task<bool> HardDeleteAsync(string[] ids, string table, string dataConn, string connKey = null)
         {
             var vm = new PatchVM
             {
                 Table = table,
                 DeletedIds = ids,
+                DataConn = dataConn ?? DataConn,
                 MetaConn = connKey ?? MetaConn
             };
             return SubmitAsync<bool>(new XHRWrapper

@@ -147,24 +147,9 @@ namespace Core.Components.Framework
             CreateResizableTable(main);
             var urlFeatureName = App.GetFeatureNameFromUrl() ?? string.Empty;
             var tasks = new List<Task<bool>>() { OpenUrlFeature(urlFeatureName) };
-            var shouldOpenClosedTabs = settings.FirstOrDefault(x => x.Name == "OpenClosedTabs")?.Value?.TryParse<bool>() ?? false;
-            if (shouldOpenClosedTabs)
-            {
-                var previousTabs = Window.LocalStorage.GetItem("tabs") as string ?? string.Empty;
-                var tabStates = JsonConvert.DeserializeObject<TabState[]>(previousTabs)
-                    .Where(x => x.Name != urlFeatureName).ToArray();
-                var previousTabNames = tabStates.Select(x => x.Name).ToArray();
-                var startFeatures = features
-                    .Where(x => startApps.Contains(x.Id) || startApps.Contains(x.Name) || x.StartUp)
-                    .Where(x => !previousTabNames.Contains(x.Name) && x.Name != urlFeatureName).ToArray();
-                tasks.AddRange(startFeatures.Select(OpenFeature).Concat(tabStates.Select(OpenFeature)));
-            }
-            else
-            {
-                tasks.AddRange(features
-                    .Where(x => startApps.Contains(x.Id) || startApps.Contains(x.Name) || x.StartUp)
-                    .Where(x => x.Name != urlFeatureName).Select(OpenFeature));
-            }
+            tasks.AddRange(features
+                .Where(x => startApps.Contains(x.Id) || startApps.Contains(x.Name) || x.StartUp)
+                .Where(x => x.Name != urlFeatureName).Select(OpenFeature));
             Task.WhenAll(tasks).Done(x =>
             {
                 App.FeatureLoaded = true;

@@ -58,7 +58,7 @@ namespace Core
         public static string GetFeatureNameFromUrl()
         {
             var builder = new StringBuilder();
-            var feature = Window.Location.PathName.Replace(Client.BaseUri, string.Empty);
+            var feature = Window.Location.PathName.ToLower().Replace(Client.BaseUri.ToLower(), string.Empty);
             if (feature.StartsWith(Utils.Slash))
             {
                 feature = feature.Substring(1);

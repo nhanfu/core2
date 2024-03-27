@@ -27,10 +27,6 @@ internal static class UserServiceHelpers
         new(@"update\s"), new(@"select\s"), new(@"from\s"),new(@"where\s"),
         new(@"group by\s"), new(@"having\s"), new(@"order by\s")
     ];
-    public static readonly string[] SystemFields = new string[]
-    {
-        IdField, nameof(User.InsertedBy), nameof(User.InsertedDate), nameof(User.UpdatedBy), nameof(User.UpdatedDate)
-    }.Select(x => x.ToLower()).ToArray();
     public static int Port;
 
     public static int ParsePort(HttpRequest request)

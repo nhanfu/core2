@@ -6,7 +6,6 @@ using Core.Models;
 using Core.ViewModels;
 using CoreAPI.Services.Sql;
 using HtmlAgilityPack;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -38,7 +37,7 @@ public class UserService
     private readonly IWebHostEnvironment _host;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly WebSocketService _taskSocketSvc;
-    private readonly ISqlProvider _sql;
+    public readonly ISqlProvider _sql;
 
     public string UserId { get; set; }
     public string UserName { get; set; }
@@ -71,6 +70,11 @@ public class UserService
         _sql.TenantCode = TenantCode;
         _sql.Env = Env;
         _sql.UserId = UserId;
+        _sql.SystemFields = new List<string>
+        {
+            UserServiceHelpers.IdField, nameof(User.InsertedBy), nameof(User.InsertedDate), nameof(User.UpdatedBy), nameof(User.UpdatedDate)
+        }.Select(x => x.ToLower()).ToList();
+        if (TenantCode?.ToLower() != "system") _sql.SystemFields.Add("TenantCode");
     }
 
     private void ExtractMeta()
@@ -380,7 +384,8 @@ public class UserService
 
     public async Task<bool> HardDelete(PatchVM vm)
     {
-        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.TenantCode, vm.Env);
+        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn, vm.TenantCode, vm.Env);
+        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.TenantCode, vm.Env);
         var unthorizedDeletedIds = await UnauthorizedDeleteRecords(vm);
         if (unthorizedDeletedIds.HasNonSpaceChar())
         {
@@ -401,7 +406,10 @@ public class UserService
                 ComId = vm.Table,
                 Action = "HardDelete",
                 Ids = vm.DeletedIds,
-                DataConn = vm.MetaConn,
+                DataConn = vm.DataConn,
+                MetaConn = vm.MetaConn,
+                CachedDataConn = vm.CachedDataConn,
+                CachedMetaConn = vm.CachedMetaConn,
             });
             throw;
         }
@@ -527,7 +535,7 @@ public class UserService
     private async Task<Cluster[]> GetClusters(string role)
     {
         Cluster[] clusters = null;
-        var cachedCluster = await _cache.GetStringAsync(UserServiceHelpers.APIClusterKey);
+        var cachedCluster = await GetStringAsync(UserServiceHelpers.APIClusterKey);
         if (cachedCluster is not null)
         {
             clusters = cachedCluster.TryParse<Cluster[]>();
@@ -535,7 +543,7 @@ public class UserService
         if (clusters is not null) return clusters;
         var clusterQuery = $"select * from [Cluster] where ClusterRole = '{role}'";
         clusters = await _sql.ReadDsAsArr<Cluster>(clusterQuery, DefaultConnStr());
-        await _cache.SetStringAsync(UserServiceHelpers.APIClusterKey, clusters.ToJson());
+        await SetStringAsync(UserServiceHelpers.APIClusterKey, clusters.ToJson(), Utils.CacheTTL);
         return clusters;
     }
 
@@ -589,7 +597,7 @@ public class UserService
     private async Task<string> UnauthorizedDeleteRecords(PatchVM vm)
     {
         if (vm.ByPassPerm) return null;
-        var allRights = vm.ByPassPerm ? [] : await GetEntityPerm(vm.Table, recordId: null, vm.CachedDataConn);
+        var allRights = vm.ByPassPerm ? [] : await GetEntityPerm(vm.Table, recordId: null, vm.CachedMetaConn);
         var idField = vm.DeletedIds;
 
         var origin = @$"select t.* from [{vm.Table}] as t where t.Id in ({vm.DeletedIds.CombineStrings()})";
@@ -731,7 +739,7 @@ from ({jsRes.Query}) as ds
             vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
             com = await _sql.ReadDsAs<Component>(query, vm.CachedMetaConn);
             if (com is null) return null;
-            await _cache.SetStringAsync(comKey, JsonConvert.SerializeObject(com), Utils.CacheTTL);
+            await SetStringAsync(comKey, JsonConvert.SerializeObject(com), Utils.CacheTTL);
         }
         var readPermission = await GetEntityPerm("Component", vm.ComId, vm.CachedMetaConn, x => x.CanRead);
         var hasPerm = com.Annonymous || !com.IsPrivate && UserId != null || readPermission.Length != 0;
@@ -751,7 +759,7 @@ from ({jsRes.Query}) as ds
         if (RoleIds.Nothing()) return [];
         var permissionName = ((pre?.Body as MemberExpression)?.Member as PropertyInfo)?.Name;
         var key = entityName + "_" + (permissionName ?? "AllRights");
-        var permissionByComCache = await _cache.GetStringAsync(key);
+        var permissionByComCache = await GetStringAsync(key);
         FeaturePolicy[] permissions;
         if (!permissionByComCache.IsNullOrWhiteSpace())
         {
@@ -764,7 +772,7 @@ from ({jsRes.Query}) as ds
             and (RecordId = '{recordId}' or '{recordId}' = '') and RoleId in ({RoleIds.CombineStrings()})";
             if (pre != null) q += $" and {permissionName} = 1";
             permissions = await _sql.ReadDsAsArr<FeaturePolicy>(q, connStr);
-            await _cache.SetStringAsync(key, JsonConvert.SerializeObject(permissions), Utils.CacheTTL);
+            await SetStringAsync(key, JsonConvert.SerializeObject(permissions), Utils.CacheTTL);
         }
 
         return permissions;
@@ -772,8 +780,8 @@ from ({jsRes.Query}) as ds
 
     public async Task<object> RunUserSvc(SqlViewModel vm)
     {
-        vm.CachedDataConn = await _sql.GetConnStrFromKey(vm.DataConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        vm.CachedMetaConn = await _sql.GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
+        vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
+        vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
         var sv = await GetService(vm)
             ?? throw new ApiException($"Service Id - \"{vm.SvcId}\", ComId \"{vm.ComId}\" - Action \"{vm.Action}\" NOT found")
             {
@@ -804,8 +812,9 @@ from ({jsRes.Query}) as ds
             {
                 StatusCode = HttpStatusCode.BadRequest
             };
-        var key = $"{nameof(Services)}{vm.SvcId}_{vm.ComId}_{vm.Action}";
-        var cacheSv = await _cache.GetStringAsync(key);
+        var tenant = TenantCode ?? vm.AnnonymousTenant;
+        var key = $"{nameof(Services)}{vm.ComId}_{vm.Action}_{tenant}";
+        var cacheSv = await GetStringAsync(key);
         if (cacheSv != null)
         {
             var res = cacheSv.TryParse<Models.Services>();
@@ -820,7 +829,7 @@ from ({jsRes.Query}) as ds
                 and (TenantCode = '{TenantCode}' or Annonymous = 1 and TenantCode = '{vm.AnnonymousTenant}')";
         var sv = await _sql.ReadDsAs<Models.Services>(query, vm.CachedMetaConn);
         if (sv is null) return null;
-        await _cache.SetStringAsync(key, sv.ToJson(), Utils.CacheTTL);
+        await SetStringAsync(key, sv.ToJson(), Utils.CacheTTL);
         EnsureSvPermission(sv);
         return sv;
     }
@@ -1144,7 +1153,7 @@ from ({jsRes.Query}) as ds
     {
         var idField = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
         var oldId = idField?.OldVal;
-        var valueFields = vm.Changes.Where(x => !UserServiceHelpers.SystemFields.Contains(x.Field.ToLower())).ToList();
+        var valueFields = vm.Changes.Where(x => !_sql. SystemFields.Contains(x.Field.ToLower())).ToList();
         var update = valueFields.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
         var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
 
@@ -1447,7 +1456,7 @@ from ({jsRes.Query}) as ds
             return;
         }
         var key = $"{tenant}_{env}_{area}";
-        var cache = await _cache.GetStringAsync(key);
+        var cache = await GetStringAsync(key);
         if (cache != null && cache != "null")
         {
             var pageCached = JsonConvert.DeserializeObject<Tenant>(cache);
@@ -1458,11 +1467,11 @@ from ({jsRes.Query}) as ds
         var connStr = DefaultConnStr();
         var page = await _sql.ReadDsAs<Tenant>(pageQuery, connStr);
         if (page is null) throw new ApiException("Page not found") { StatusCode = HttpStatusCode.NotFound };
-        await _cache.SetStringAsync(key, JsonConvert.SerializeObject(page), Utils.CacheTTL);
+        await SetStringAsync(key, JsonConvert.SerializeObject(page), Utils.CacheTTL);
         await WriteTemplateAsync(response, page, env: env, tenant: tenant);
     }
 
-    public Task<Dictionary<string, object>[][]> ReadDataSet
+    public Task<Dictionary<string, object>[][]> ReadDs
         (string query, string connStr, bool shouldMapToConnStr = false)
         => _sql.ReadDataSet(query, connStr, shouldMapToConnStr);
 
@@ -1747,6 +1756,9 @@ from ({jsRes.Query}) as ds
         Clusters.Data.Nodes.Remove(node2Remove);
     }
 
-    public Task<string> GetConnStrFromKey(string key, string tenantCode = null, string env = null) 
+    public Task<string> GetConnStrFromKey(string key, string tenantCode = null, string env = null)
         => _sql.GetConnStrFromKey(key, tenantCode, env);
+
+    public Task<string> GetStringAsync(string key) => _cache.GetStringAsync(key?.ToUpper());
+    public Task SetStringAsync(string key, string val, DistributedCacheEntryOptions options) => _cache.SetStringAsync(key?.ToUpper(), val, options);
 }

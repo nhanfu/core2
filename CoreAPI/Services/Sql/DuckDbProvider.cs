@@ -14,6 +14,7 @@ namespace CoreAPI.Services.Sql
         public string Env { get; set; }
         public string TenantCode { get; set; }
         public string UserId { get; set; }
+        public List<string> SystemFields { get; set; }
 
         private const string DUCK = "duck_";
         static readonly TSqlTokenType[] SideEffectCmd = [
@@ -58,10 +59,10 @@ namespace CoreAPI.Services.Sql
                 x.Field = Utils.RemoveWhiteSpace(x.Field);
                 x.Value = x.Value?.Replace("'", "''");
                 x.OldVal = x.OldVal?.Replace("'", "''");
-                return !UserServiceHelpers.SystemFields.Contains(x.Field);
+                return !SystemFields.Contains(x.Field);
             }).ToList();
             var idField = vm.Id;
-            var valueFields = vm.Changes.Where(x => !UserServiceHelpers.SystemFields.Contains(x.Field.ToLower())).ToArray();
+            var valueFields = vm.Changes.Where(x => !SystemFields.Contains(x.Field.ToLower())).ToArray();
             var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
             var oldId = idField?.OldVal;
             if (oldId is not null)

@@ -49,7 +49,6 @@ namespace Core.Components.Forms
                 RenderTab();
             }
             Focus();
-            SetTabStates();
         }
 
         private string TabTitle => Feature?.Label ?? Title;
@@ -78,23 +77,6 @@ namespace Core.Components.Forms
             ParentElement = TabContainer;
             Tabs.Add(this);
             base.Render();
-        }
-
-        static int stateAwait = 0;
-        private void SetTabStates()
-        {
-            if (Popup) return;
-            Window.ClearTimeout(stateAwait);
-            stateAwait = Window.SetTimeout(() =>
-            {
-                var tabStates = Tabs.Select(x => new TabState
-                {
-                    Name = x.Name,
-                    Entity = x.Entity,
-                    Href = x.Href
-                }).DistinctBy(x => x.Href).ToArray();
-                Window.LocalStorage.SetItem("tabs", tabStates.ToJson());
-            });
         }
 
         public void RenderPopup()
@@ -418,7 +400,6 @@ namespace Core.Components.Forms
                 ParentForm = null;
             }
             Tabs.Remove(this);
-            SetTabStates();
         }
 
         protected override void RemoveDOM()

@@ -8,6 +8,7 @@ namespace CoreAPI.Services.Sql
         string Env { get; set; }
         string TenantCode { get; set; }
         string UserId { get; set; }
+        public List<string> SystemFields { get; set; }
 
         Task<string> GetConnStrFromKey(string connKey, string tenantCode = null, string env = null);
         string GetCreateOrUpdateCmd(PatchVM vm);

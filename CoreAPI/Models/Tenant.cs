@@ -4,6 +4,7 @@
     {
         public string Id { get; set; }
         public string TenantCode { get; set; }
+        public string SubTenant { get; set; }
         public string  Env { get; set; }
         public string  ConnKey { get; set; }
         public string ConnStr { get; set; }

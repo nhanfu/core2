@@ -20,6 +20,7 @@ namespace Core.Components
         {
             if (Element is null)
             {
+                ParentElement.Style.TextAlign = "unset";
                 Html.Take(ParentElement).Div.Id(Uuid7.Id25());
                 Element = Html.Context;
             }

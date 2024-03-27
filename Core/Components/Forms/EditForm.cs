@@ -228,7 +228,7 @@ namespace Core.Components.Forms
             }
             foreach (var item in dirtyGrid)
             {
-                Client.Instance.HardDeleteAsync(item.DeleteTempIds.ToArray(), item.Meta.RefName, item.MetaConn)
+                Client.Instance.HardDeleteAsync(item.DeleteTempIds.ToArray(), item.Meta.RefName, item.DataConn, item.MetaConn)
                 .Done(deleteSuccess =>
                 {
                     if (!deleteSuccess)
@@ -1298,7 +1298,7 @@ namespace Core.Components.Forms
             confirm.Render();
             confirm.YesConfirmed += () =>
             {
-                Client.Instance.HardDeleteAsync(new string[] { EntityId }, Feature.EntityName, Feature.ConnKey)
+                Client.Instance.HardDeleteAsync(new string[] { EntityId }, Feature.EntityName, DataConn, MetaConn)
                 .Done(success =>
                 {
                     if (!success)
