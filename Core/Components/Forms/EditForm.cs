@@ -389,24 +389,10 @@ namespace Core.Components.Forms
         {
             var featureTask = Feature != null ? Task.FromResult(Feature)
                 : ComponentExt.LoadFeature(Name);
-            LoadEntity().Done(x => featureTask.Done(f => FeatureLoaded(f, x, callback)));
+            LoadEntity().Done(x => featureTask.Done(f => LayoutLoaded(f, x, callback)));
         }
 
-        private void FeatureLoaded(Feature feature, object entity, Action loadedCallback = null)
-        {
-            if (feature.LayoutId is null || InnerEntry != null)
-            {
-                LayoutLoaded(feature, entity, loadedCallback: loadedCallback);
-                return;
-            }
-            ComponentExt.LoadFeature(null, id: feature.LayoutId)
-            .Done(layout =>
-            {
-                LayoutLoaded(feature, entity, layout, loadedCallback);
-            });
-        }
-
-        private void LayoutLoaded(Feature feature, object entity, Feature layout = null, Action loadedCallback = null)
+        private void LayoutLoaded(Feature feature, object entity, Action loadedCallback = null)
         {
             var token = Client.Token;
             Entity.CopyPropFrom(entity);
@@ -418,7 +404,7 @@ namespace Core.Components.Forms
             CostCenterId = token?.CostCenterId;
             RoleNames = token?.RoleNames != null ? string.Join(",", token.RoleNames) : string.Empty;
             var groupTree = BuildTree(feature.ComponentGroup.ToList().OrderBy(x => x.Order).ToList());
-            Element = RenderTemplate(layout, feature);
+            Element = RenderTemplate(feature);
             SetFeatureStyleSheet(feature.StyleSheet);
             RenderTabOrSection(groupTree);
             ResizeHandler();
@@ -468,7 +454,7 @@ namespace Core.Components.Forms
             }
         }
 
-        private HTMLElement RenderTemplate(Feature layout, Feature feature)
+        private HTMLElement RenderTemplate(Feature feature)
         {
             HTMLElement entryPoint = Document.GetElementById(SpecialEntryPoint) ?? Document.GetElementById("template") ?? Element;
             if (ParentForm != null && Portal && !Popup)
@@ -477,25 +463,7 @@ namespace Core.Components.Forms
                 ParentForm.Dispose();
                 ParentForm = null;
             }
-            if (layout != null)
-            {
-                LayoutForm = new EditForm(null) { Feature = layout, Element = Document.Body };
-                var root = Document.GetElementById("template");
-                if (root != null)
-                {
-                    Html.Take(root).InnerHTML(layout.Template);
-                    var style = Document.CreateElement(ElementType.style.ToString());
-                    style.AppendChild(new Text(layout.StyleSheet));
-                    root.AppendChild(style);
-                    BindingTemplate(root, this);
-                    entryPoint = root.FilterElement(x => x.Id == SpecialEntryPoint).FirstOrDefault();
-                    ResetEntryPoint(entryPoint);
-                }
-            }
-            else
-            {
-                entryPoint.InnerHTML = null;
-            }
+            entryPoint.InnerHTML = null;
             if (!feature.Template.HasAnyChar())
             {
                 return entryPoint;

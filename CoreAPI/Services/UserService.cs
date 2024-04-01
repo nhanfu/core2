@@ -1153,7 +1153,7 @@ from ({jsRes.Query}) as ds
     {
         var idField = vm.Changes.FirstOrDefault(x => x.Field == Utils.IdField);
         var oldId = idField?.OldVal;
-        var valueFields = vm.Changes.Where(x => !_sql. SystemFields.Contains(x.Field.ToLower())).ToList();
+        var valueFields = vm.Changes.Where(x => !_sql.SystemFields.Contains(x.Field.ToLower())).ToList();
         var update = valueFields.Select(x => $"[{x.Field}] = @{x.Field.ToLower()}");
         var now = DateTimeOffset.Now.ToString(DateTimeExt.DateFormat);
 
@@ -1441,7 +1441,7 @@ from ({jsRes.Query}) as ds
         await response.WriteAsync(html);
     }
 
-    public async Task Launch(string tenant, string area, string env)
+    public async Task Launch(string tenant, string area, string env, string path)
     {
         if (TenantCode != null && TenantCode != tenant)
         {
@@ -1452,7 +1452,7 @@ from ({jsRes.Query}) as ds
         var ext = Path.GetExtension(request.Path);
         if (!ext.IsNullOrWhiteSpace())
         {
-            await response.WriteAsync("File not found");
+            await GetResource(tenant, path);
             return;
         }
         var key = $"{tenant}_{env}_{area}";
@@ -1465,8 +1465,8 @@ from ({jsRes.Query}) as ds
         }
         var pageQuery = @$"select * from [Tenant] where TenantCode = '{tenant}' and Env = '{env}' and Area = '{area}'";
         var connStr = DefaultConnStr();
-        var page = await _sql.ReadDsAs<Tenant>(pageQuery, connStr);
-        if (page is null) throw new ApiException("Page not found") { StatusCode = HttpStatusCode.NotFound };
+        var page = await _sql.ReadDsAs<Tenant>(pageQuery, connStr)
+            ?? throw new ApiException("Page not found") { StatusCode = HttpStatusCode.NotFound };
         await SetStringAsync(key, JsonConvert.SerializeObject(page), Utils.CacheTTL);
         await WriteTemplateAsync(response, page, env: env, tenant: tenant);
     }
@@ -1761,4 +1761,20 @@ from ({jsRes.Query}) as ds
 
     public Task<string> GetStringAsync(string key) => _cache.GetStringAsync(key?.ToUpper());
     public Task SetStringAsync(string key, string val, DistributedCacheEntryOptions options) => _cache.SetStringAsync(key?.ToUpper(), val, options);
+
+    public async Task GetResource(string tenant, string path)
+    {
+        var query = @$"select [Content], [ContentType] from [Resource] where [Path] = '{path}' and (Active = 1 and TenantCode = '{tenant}' or Annonymous = 1)";
+        var rs = await _sql.ReadDsAs<Resource>(query, DefaultConnStr());
+        var response = _ctx.HttpContext.Response;
+        if (rs is null)
+        {
+            response.StatusCode = (int)HttpStatusCode.NotFound;
+            await response.WriteAsync("File not found");
+            return;
+        }
+        response.Headers.TryAdd(HeaderNames.ContentType, rs.ContentType);
+        response.StatusCode = (int)HttpStatusCode.OK;
+        await response.WriteAsync(rs.Content);
+    }
 }

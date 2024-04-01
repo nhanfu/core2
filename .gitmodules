@@ -1,0 +1,3 @@
+[submodule "CoreAPI/wwwRoot/paper"]
+	path = CoreAPI/wwwRoot/paper
+	url = https://github.com/nhanfu/paper-kit-2.git
