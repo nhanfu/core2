@@ -1,11 +1,11 @@
 ﻿using Core.Exceptions;
+using Core.Extensions;
+using Core.Middlewares;
 using Core.Models;
 using Core.Services;
 using Core.ViewModels;
-using Core.Middlewares;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Core.Extensions;
 using System.Diagnostics;
 using System.Text;
 
@@ -187,58 +187,13 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return socketSvc.MQAction(e);
     }
 
-    public struct Cmd {
-        public string cmd;
-        public string args;
-    }
-
-    [AllowAnonymous]
     [HttpPost("api/[Controller]/cmd")]
     public string Cmdline([FromBody] Cmd cmd)
     {
-        //if (!_userSvc.TenantCode.Equals("System", StringComparison.OrdinalIgnoreCase)
-        //    || !_userSvc.RoleNames.Any(x => x.Equals("System", StringComparison.OrdinalIgnoreCase)))
-        //    throw new UnauthorizedAccessException("Must login with system tenant and system role");
+        if (!_userSvc.TenantCode.Equals("System", StringComparison.OrdinalIgnoreCase)
+            || !_userSvc.RoleNames.Any(x => x.Equals("System", StringComparison.OrdinalIgnoreCase)))
+            throw new UnauthorizedAccessException("Must login with system tenant and system role");
 
-        return CommandOutput(cmd);
+        return _userSvc.CommandOutput(cmd);
     }
-
-    public string CommandOutput(Cmd cmd)
-    {
-        try
-        {
-            ProcessStartInfo procStartInfo = new(cmd.cmd, cmd.args);
-
-            procStartInfo.RedirectStandardError = procStartInfo.RedirectStandardInput = procStartInfo.RedirectStandardOutput = true;
-            procStartInfo.UseShellExecute = false;
-            procStartInfo.CreateNoWindow = true;
-            procStartInfo.WorkingDirectory = env.WebRootPath;
-
-            Process proc = new()
-            {
-                StartInfo = procStartInfo
-            };
-
-            StringBuilder sb = new();
-            proc.OutputDataReceived += delegate (object sender, DataReceivedEventArgs e)
-            {
-                if (e is not null) sb.Append(e.Data);
-            };
-            proc.ErrorDataReceived += delegate (object sender, DataReceivedEventArgs e)
-            {
-                if (e is not null) sb.Append(e.Data);
-            };
-
-            proc.Start();
-            proc.BeginOutputReadLine();
-            proc.BeginErrorReadLine();
-            proc.WaitForExit();
-            return sb.ToString();
-        }
-        catch (Exception objException)
-        {
-            return $"Error in command: {cmd.cmd}, {objException.Message}";
-        }
-    }
-
 }

@@ -5,6 +5,7 @@ using Core.Middlewares;
 using Core.Models;
 using Core.ViewModels;
 using CoreAPI.Services.Sql;
+using Elsa.Workflows.Core.Activities;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +15,7 @@ using PuppeteerSharp;
 using System.Buffers;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
 using System.Net.WebSockets;
@@ -1776,5 +1778,43 @@ from ({jsRes.Query}) as ds
         response.Headers.TryAdd(HeaderNames.ContentType, rs.ContentType);
         response.StatusCode = (int)HttpStatusCode.OK;
         await response.WriteAsync(rs.Content);
+    }
+
+    public string CommandOutput(Cmd cmd)
+    {
+        try
+        {
+            ProcessStartInfo procStartInfo = new(cmd.cmd, cmd.args);
+
+            procStartInfo.RedirectStandardError = procStartInfo.RedirectStandardInput = procStartInfo.RedirectStandardOutput = true;
+            procStartInfo.UseShellExecute = false;
+            procStartInfo.CreateNoWindow = true;
+            procStartInfo.WorkingDirectory = _host.WebRootPath;
+
+            Process proc = new()
+            {
+                StartInfo = procStartInfo
+            };
+
+            StringBuilder sb = new();
+            proc.OutputDataReceived += delegate (object sender, DataReceivedEventArgs e)
+            {
+                if (e is not null) sb.Append(e.Data);
+            };
+            proc.ErrorDataReceived += delegate (object sender, DataReceivedEventArgs e)
+            {
+                if (e is not null) sb.Append(e.Data);
+            };
+
+            proc.Start();
+            proc.BeginOutputReadLine();
+            proc.BeginErrorReadLine();
+            proc.WaitForExit();
+            return sb.ToString();
+        }
+        catch (Exception objException)
+        {
+            return $"Error in command: {cmd.cmd}, {objException.Message}";
+        }
     }
 }
