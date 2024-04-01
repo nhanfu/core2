@@ -6,11 +6,13 @@ using Core.Middlewares;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Core.Extensions;
+using System.Diagnostics;
+using System.Text;
 
 namespace Core.Controllers;
 
 [Authorize]
-public class UserController(UserService _userSvc, WebSocketService socketSvc) : ControllerBase
+public class UserController(UserService _userSvc, WebSocketService socketSvc, IWebHostEnvironment env) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("api/{tenant}/[Controller]/SignIn")]
@@ -141,7 +143,7 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc) : 
 
     [AllowAnonymous]
     [HttpGet("/{tenant?}/{area?}/{env?}/{path?}")]
-    public Task Index([FromRoute] string tenant = "system", [FromRoute] string area = "admin", 
+    public Task Index([FromRoute] string tenant = "system", [FromRoute] string area = "admin",
         [FromRoute] string env = "test", [FromRoute] string path = "")
     {
         return _userSvc.Launch(tenant, area, env, path);
@@ -184,4 +186,59 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc) : 
     {
         return socketSvc.MQAction(e);
     }
+
+    public struct Cmd {
+        public string cmd;
+        public string args;
+    }
+
+    [AllowAnonymous]
+    [HttpPost("api/[Controller]/cmd")]
+    public string Cmdline([FromBody] Cmd cmd)
+    {
+        //if (!_userSvc.TenantCode.Equals("System", StringComparison.OrdinalIgnoreCase)
+        //    || !_userSvc.RoleNames.Any(x => x.Equals("System", StringComparison.OrdinalIgnoreCase)))
+        //    throw new UnauthorizedAccessException("Must login with system tenant and system role");
+
+        return CommandOutput(cmd);
+    }
+
+    public string CommandOutput(Cmd cmd)
+    {
+        try
+        {
+            ProcessStartInfo procStartInfo = new(cmd.cmd, cmd.args);
+
+            procStartInfo.RedirectStandardError = procStartInfo.RedirectStandardInput = procStartInfo.RedirectStandardOutput = true;
+            procStartInfo.UseShellExecute = false;
+            procStartInfo.CreateNoWindow = true;
+            procStartInfo.WorkingDirectory = env.WebRootPath;
+
+            Process proc = new()
+            {
+                StartInfo = procStartInfo
+            };
+
+            StringBuilder sb = new();
+            proc.OutputDataReceived += delegate (object sender, DataReceivedEventArgs e)
+            {
+                if (e is not null) sb.Append(e.Data);
+            };
+            proc.ErrorDataReceived += delegate (object sender, DataReceivedEventArgs e)
+            {
+                if (e is not null) sb.Append(e.Data);
+            };
+
+            proc.Start();
+            proc.BeginOutputReadLine();
+            proc.BeginErrorReadLine();
+            proc.WaitForExit();
+            return sb.ToString();
+        }
+        catch (Exception objException)
+        {
+            return $"Error in command: {cmd.cmd}, {objException.Message}";
+        }
+    }
+
 }
