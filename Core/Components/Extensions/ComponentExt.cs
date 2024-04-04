@@ -86,7 +86,7 @@ namespace Core.Components.Extensions
             task = method.apply(form, parameters);
             if (task === null || task === undefined || task.isCompleted == null) {
                 tcs.setResult(false);
-                return tcs.Task;
+                return tcs.task;
             }
             */
             task.Done(() => tcs.TrySetResult(true)).Catch(e => tcs.TrySetException(e));

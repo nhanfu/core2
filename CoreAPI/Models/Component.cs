@@ -247,6 +247,8 @@
         public string ConnKey { get; set; }
 
         public bool Annonymous { get; set; }
+        public string DelCmd { get; set; }
+        public string DelParam { get; set; }
 
         public virtual ComponentGroup ComponentGroup { get; set; }
 

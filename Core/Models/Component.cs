@@ -132,6 +132,8 @@ namespace Core.Models
         public bool ShouldSaveText { get; set; }
         public string CacheName { get; set; }
         public string Lang { get; set; }
+        public string DelCmd { get; set; }
+        public string DelParam { get; set; }
 
         [DbIgnore]
         public string DisplayField { get; set; }

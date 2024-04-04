@@ -1841,7 +1841,7 @@ namespace Core.Components
                 Task.WhenAll(list.Select(x => x.PatchUpdateOrCreate())).Done(x =>
                 {
                     Toast.Success("Sao chép dữ liệu thành công !");
-                    base.Dirty = false;
+                    Dirty = false;
                 });
             }
             else
