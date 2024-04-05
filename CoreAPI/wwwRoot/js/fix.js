@@ -91,7 +91,7 @@ function zoom() {
     });
 }
 
-function initCodeEditor(com) {
+function initCodeEditor(com, element, fieldname, type) {
     if (typeof (require) === 'undefined' || com == null || com.Entity == null) return;
     require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' } });
     window.MonacoEnvironment = { getWorkerUrl: () => proxy };
@@ -117,6 +117,12 @@ function initCodeEditor(com) {
         editor.getModel().onDidChangeContent(() => {
             com.Entity[com.Meta.FieldName] = editor.getValue();
             com.Dirty = true;
+            if (com.Meta["PlainText"] == "html" || type == "html" || type == "javascript") {
+                com.UpdateViewComponent();
+            }
+            else if (type == "css") {
+                com.styleElement.textContent = newvalue;
+            }
         });
     });
     com.Element.classList.add('code-editor');
@@ -127,9 +133,9 @@ function initCodeEditor(com) {
         editor.setValue(com.Entity[com.Meta.FieldName]);
     });
     Core.MVVM.Html.Take(com.Element).Icon('fa fal fa-compress-wide')
-    .Event('click', () => {
-        Core.Components.Extensions.ComponentExt.FullScreen(com.Element);
-    });
+        .Event('click', () => {
+            Core.Components.Extensions.ComponentExt.FullScreen(com.Element);
+        });
 }
 
 function initCkEditor(com) {

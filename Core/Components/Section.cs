@@ -11,6 +11,7 @@ using Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ElementType = Core.MVVM.ElementType;
 
 namespace Core.Components
@@ -39,7 +40,7 @@ namespace Core.Components
 
         public override void Render()
         {
-            if (Element != null)
+            if (elementType is null)
             {
                 var tag = Element.TagName.ToLowerCase();
                 var parsed = Enum.TryParse(tag, out ElementType type);
@@ -48,13 +49,62 @@ namespace Core.Components
                     elementType = type;
                 }
             }
-            else if (elementType != null)
+            else
             {
                 Html.Take(ParentElement).Add(elementType.Value);
                 Element = Html.Context;
             }
+            Element.Id = Id;
             if (ComponentGroup is null)
             {
+                return;
+            }
+            if (!ComponentGroup.Html.IsNullOrWhiteSpace())
+            {
+                var cssContent = ComponentGroup.Css;
+                var hard = ComponentGroup.Id;
+                var section = ComponentGroup.Name.ToLower() + hard;
+                if (!cssContent.IsNullOrWhiteSpace())
+                {
+                    /*@
+                        const regex = /(?:^|[\s\r\n])\.([a-zA-Z0-9-_]+)/g;
+                        cssContent = cssContent.replace(regex, (match) => {
+                            if (/\d/.test(match) || match.includes("minmax")) {
+                                return match;
+                            } else {
+                                return match.replace(/([.])/, `[${section}]$1`);
+                            }
+                        });
+                     */
+                    if (Document.Head.QuerySelector("#" + section) is null)
+                    {
+                        var style = Document.CreateElement(ElementType.style.ToString()) as HTMLStyleElement;
+                        style.Id = section;
+                        style.AppendChild(new Text(cssContent));
+                        Document.Head.AppendChild(style);
+                    }
+                }
+                var cellText = Utils.GetHtmlCode(ComponentGroup.Html, new object[] { Entity });
+                Element.InnerHTML = cellText;
+                var allComPolicies = ComponentGroup.Id.IsNullOrWhiteSpace() ? EditForm.GetElementPolicies(ComponentGroup.Component.Select(x => x.Id).ToArray(), Utils.ComponentId) : new List<FeaturePolicy>().ToArray();
+                SplitChild(Element.Children, allComPolicies, section);
+                if (!ComponentGroup.Javascript.IsNullOrWhiteSpace())
+                {
+                    try
+                    {
+                        var fn = new Function(ComponentGroup.Javascript);
+                        var obj = fn.Call(null, EditForm);
+                        /*@
+                        for (let prop in obj) this[prop] = obj[prop].bind(this);
+                        if (this.useEffect != null) this.useEffect();
+                        */
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }
+                RenderChildrenSection(ComponentGroup);
                 return;
             }
             if (ComponentGroup.IsDropDown)
@@ -82,6 +132,143 @@ namespace Core.Components
                 RenderComponent(ComponentGroup);
             }
             RenderChildrenSection(ComponentGroup);
+        }
+
+        private void SplitChild(HTMLCollection hTMLElements, FeaturePolicy[] allComPolicies, string section)
+        {
+            foreach (var eleChild in hTMLElements)
+            {
+                eleChild.SetAttribute(section, "");
+                if (eleChild.Dataset["name"] != null)
+                {
+                    var com = new Section(ElementType.div)
+                    {
+                        Element = eleChild
+                    };
+                    var ui = ComponentGroup.Component.FirstOrDefault(x => x.FieldName == eleChild.Dataset["name"]);
+                    eleChild.RemoveAttribute("data-name");
+                    if (ui is null)
+                    {
+                        continue;
+                    }
+                    if (ui.Hidden)
+                    {
+                        continue;
+                    }
+
+                    var comPolicies = allComPolicies.Where(x => x.RecordId == ui.Id).ToArray();
+                    var readPermission = !ui.IsPrivate || comPolicies.HasElementAndAll(x => x.CanRead);
+                    var writePermission = !ui.IsPrivate || comPolicies.HasElementAndAll(x => x.CanWrite);
+                    if (!readPermission)
+                    {
+                        continue;
+                    }
+                    var childComponent = ComponentFactory.GetComponent(ui, EditForm);
+                    if (typeof(ListView).IsAssignableFrom(childComponent.GetType()))
+                    {
+                        EditForm.ListViews.Add(childComponent as ListView);
+                    }
+                    childComponent.ParentElement = eleChild;
+                    AddChild(childComponent);
+                    if (childComponent is EditableComponent editable)
+                    {
+                        editable.Disabled = ui.Disabled || Disabled || !writePermission || EditForm.IsLock || editable.Disabled;
+                    }
+                    if (childComponent.Element != null)
+                    {
+                        if (ui.ChildStyle.HasAnyChar())
+                        {
+                            var current = Html.Context;
+                            Html.Take(childComponent.Element).Style(ui.ChildStyle);
+                            Html.Take(current);
+                        }
+                        if (ui.ClassName.HasAnyChar())
+                        {
+                            childComponent.Element?.AddClass(ui.ClassName);
+                        }
+
+                        if (ui.Row == 1)
+                        {
+                            childComponent.ParentElement.ParentElement.AddClass("inline-label");
+                        }
+
+                        if (Client.SystemRole)
+                        {
+                            childComponent.Element.AddEventListener(EventType.ContextMenu.ToString(), (e) => EditForm.SysConfigMenu(e, ui, ComponentGroup, null));
+                        }
+                    }
+                    if (ui.Focus)
+                    {
+                        childComponent.Focus();
+                    }
+                }
+                if (eleChild.Dataset["click"] != null)
+                {
+                    var eventName = eleChild.Dataset["click"];
+                    eleChild.RemoveAttribute("data-click");
+                    eleChild.AddEventListener(EventType.Click, async () =>
+                    {
+                        object method = null;
+                        /*@
+                        method = this[eventName];
+                        */
+                        using (Task task = null)
+                        {
+                            /*@
+                            var task = method.apply(this.EditForm, [this]);
+                            if (task == null || task.isCompleted == null) {
+                                return;
+                            }
+                            */
+                            try
+                            {
+                                await task;
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                                Console.WriteLine(ex.StackTrace);
+                                throw ex;
+                            }
+                        }
+                    });
+                }
+                if (eleChild.Dataset["change"] != null)
+                {
+                    var eventName = eleChild.Dataset["change"];
+                    eleChild.RemoveAttribute("change");
+                    eleChild.AddEventListener(EventType.Change, async () =>
+                    {
+                        object method = null;
+                        /*@
+                        method = this[eventName];
+                        */
+                        using (Task task = null)
+                        {
+                            /*@
+                            var task = method.apply(this.EditForm, [this]);
+                            if (task == null || task.isCompleted == null) {
+                                return;
+                            }
+                            */
+                            try
+                            {
+                                await task;
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                                Console.WriteLine(ex.StackTrace);
+                                throw ex;
+                            }
+                        }
+                    });
+                }
+                if (!eleChild.Children.Nothing())
+                {
+                    SplitChild(eleChild.Children, allComPolicies, section);
+                }
+            }
         }
 
         private int _waitFocusOut;
@@ -199,9 +386,10 @@ namespace Core.Components
             }
         }
 
-        public static Section RenderSection(EditableComponent parent, ComponentGroup groupInfo)
+        public static Section RenderSection(EditableComponent parent, ComponentGroup groupInfo, object entity = null, EditForm editForm = null)
         {
-            var uiPolicy = parent.EditForm.GetElementPolicies(new string[] { groupInfo.Id }, Utils.ComponentGroupId);
+            var editform = editForm ?? parent.EditForm;
+            var uiPolicy = editform.GetElementPolicies(new string[] { groupInfo.Id }, Utils.ComponentGroupId);
             var readPermission = !groupInfo.IsPrivate || uiPolicy.HasElementAndAll(x => x.CanRead);
             var writePermission = !groupInfo.IsPrivate || uiPolicy.HasElementAndAll(x => x.CanWrite);
             if (!readPermission)
@@ -210,8 +398,8 @@ namespace Core.Components
             }
 
             var width = groupInfo.Width;
-            var outerColumn = parent.EditForm.GetOuterColumn(groupInfo);
-            var parentColumn = parent.EditForm.GetInnerColumn(groupInfo.Parent);
+            var outerColumn = editform.GetOuterColumn(groupInfo);
+            var parentColumn = editform.GetInnerColumn(groupInfo.Parent);
             var hasOuterColumn = outerColumn > 0 && parentColumn > 0;
             if (hasOuterColumn)
             {
@@ -229,11 +417,11 @@ namespace Core.Components
                 {
                     Html.Instance.Attr("contenteditable", "true");
                     Html.Instance.Event(EventType.Input, (e) => ChangeComponentGroupLabel(e, groupInfo));
-                    Html.Instance.Event(EventType.DblClick, (e) => parent.EditForm.SectionProperties(groupInfo));
+                    Html.Instance.Event(EventType.DblClick, (e) => editform.SectionProperties(groupInfo));
                 }
                 Html.Instance.End.Render();
             }
-            Html.Instance.ClassName(groupInfo.ClassName).Event(EventType.ContextMenu, (e) => parent.EditForm.SysConfigMenu(e, null, groupInfo, null));
+            Html.Instance.ClassName(groupInfo.ClassName).Event(EventType.ContextMenu, (e) => editform.SysConfigMenu(e, null, groupInfo, null));
             if (!groupInfo.ClassName.Contains("ribbon"))
             {
                 Html.Instance.ClassName("panel").ClassName("group");
@@ -245,7 +433,7 @@ namespace Core.Components
                 Name = groupInfo.Name,
                 ComponentGroup = groupInfo,
             };
-            section.Disabled = parent.Disabled || groupInfo.Disabled || !writePermission || parent.EditForm.IsLock || section.Disabled;
+            section.Disabled = parent.Disabled || groupInfo.Disabled || !writePermission || editform.IsLock || section.Disabled;
             parent.AddChild(section, null, groupInfo.ShowExp);
             Html.Take(parent.Element);
             section.DOMContentLoaded?.Invoke();

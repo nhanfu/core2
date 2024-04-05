@@ -47,6 +47,8 @@
     <Compile Include="Components\Framework\MenuComponent.cs" />
     <Compile Include="Components\Framework\NotificationBL.cs" />
     <Compile Include="Components\Framework\RegistrationBL.cs" />
+    <Compile Include="Components\LayoutStudioCode.cs" />
+    <Compile Include="Components\StudioCode.cs" />
     <Compile Include="Components\Workflow.cs" />
     <Compile Include="Components\InputLike.cs" />
     <Compile Include="Components\CodeEditor.cs" />
@@ -127,6 +129,7 @@
     <Compile Include="Models\Images.cs" />
     <Compile Include="Models\OdataResult.cs" />
     <Compile Include="Models\TaskNotification.cs" />
+    <Compile Include="Models\Tenant.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserSetting.cs" />
     <Compile Include="Models\Vendor.cs" />

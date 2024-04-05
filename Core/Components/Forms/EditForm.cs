@@ -817,6 +817,7 @@ namespace Core.Components.Forms
                     new ContextMenuItem { Icon = "fal fa-cogs", Text = "Thêm Component", MenuItems = menuItems },
                     new ContextMenuItem { Icon = "fal fa-cogs", Text = "Tùy chọn vùng dữ liệu", Click = SectionProperties, Parameter = group },
                     new ContextMenuItem { Icon = "fal fa-folder-open", Text = "Thiết lập chung", Click = FeatureProperties },
+                    new ContextMenuItem { Icon = "fal fa-folder-open", Text = "Layout", Click = LayoutProperties },
                     new ContextMenuItem { Icon = "fal fa-clone", Text = "Clone feature", Click = CloneFeature, Parameter = Feature },
             });
             ctxMenu.Render();
@@ -1014,6 +1015,19 @@ namespace Core.Components.Forms
         }
 
         public void SectionProperties(object arg)
+        {
+            var group = arg.CastProp<ComponentGroup>();
+            group.InverseParent = null;
+            var editor = new ComponentGroupBL
+            {
+                Entity = group,
+                ParentElement = Element,
+                OpenFrom = this.FindClosest<EditForm>()
+            };
+            AddChild(editor);
+        }
+
+        public void LayoutProperties(object arg)
         {
             var group = arg.CastProp<ComponentGroup>();
             group.InverseParent = null;

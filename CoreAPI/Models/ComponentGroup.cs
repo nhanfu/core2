@@ -94,6 +94,12 @@
 
         public string UpdatedBy { get; set; }
 
+        public string Html { get; set; }
+
+        public string Css { get; set; }
+
+        public string Javascript { get; set; }
+
         public virtual ICollection<Component> Component { get; set; } = new List<Component>();
 
         public virtual Feature Feature { get; set; }
