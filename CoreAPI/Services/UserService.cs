@@ -667,7 +667,9 @@ public class UserService
     {
         vm.CachedDataConn ??= await _sql.GetConnStrFromKey(vm.DataConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
         vm.CachedMetaConn ??= await _sql.GetConnStrFromKey(vm.MetaConn, vm.AnnonymousTenant, vm.AnnonymousEnv);
-        var com = await GetComponent(vm);
+        var com = await GetComponent(vm) ?? throw new ApiException("Component not found or not public to the current user") { 
+            StatusCode = HttpStatusCode.NotFound 
+        };
         var anyInvalid = UserServiceHelpers.FobiddenTerms.Any(term =>
         {
             return vm.Select != null && term.IsMatch(vm.Select.ToLower())
@@ -1816,5 +1818,13 @@ from ({jsRes.Query}) as ds
         {
             return $"Error in command: {cmd.cmd}, {objException.Message}";
         }
+    }
+
+    internal async Task<object> LoadComponent(SqlViewModel vm)
+    {
+        var query =$"select c.* from Component c " +
+            $"join Feature f on c.FeatureId = f.Id " +
+            $"where f.TenantCode = '{vm.AnnonymousTenant}' and f.Env = '{vm.AnnonymousEnv}' and f.Name = '{vm.Action}' and f.IsPublic = 1";
+        return await ReadDs(query, DefaultConnStr());
     }
 }

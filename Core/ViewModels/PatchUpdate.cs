@@ -16,6 +16,16 @@ namespace Core.ViewModels
         public string DataConn { get; set; }
         public List<PatchDetail> Changes { get; set; }
         public string EntityId => Changes?.FirstOrDefault(x => x.Field == Utils.IdField)?.Value;
+        public string OldId
+        {
+            set
+            {
+                if (Changes is null) Changes = new List<PatchDetail> { };
+                var idChange = Changes.FirstOrDefault(x => x.Field == Utils.IdField);
+                if (idChange != null) idChange.OldVal = value;
+                else Changes.Add(new PatchDetail { OldVal = value, Field = Utils.IdField });
+            }
+        }
     }
 
     public class PatchDetail

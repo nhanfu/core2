@@ -65,6 +65,14 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return res;
     }
 
+    [AllowAnonymous]
+    [HttpPost("api/[Controller]/comp")]
+    public async Task<object> LoadComponent([FromBody] SqlViewModel vm)
+    {
+        var res = await _userSvc.LoadComponent(vm);
+        return res;
+    }
+
     [HttpPost("api/[Controller]/excel")]
     public Task<string> ExportExcel([FromBody] SqlViewModel vm)
     {
@@ -135,6 +143,7 @@ public class UserController(UserService _userSvc, WebSocketService socketSvc, IW
         return _userSvc.DeleteFile(path);
     }
 
+    [AllowAnonymous]
     [HttpPost("api/[Controller]/ComQuery")]
     public Task<object> ComQuery([FromBody] SqlViewModel model)
     {

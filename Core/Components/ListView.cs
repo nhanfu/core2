@@ -1636,5 +1636,21 @@ namespace Core.Components
             Window.RemoveEventListener("", RealtimeUpdateListViewItem);
             base.Dispose();
         }
+
+        int updateHeaderAwaiter;
+        public void UpdateHeaders(Component[] components, string[] fields = null)
+        {
+            Window.ClearTimeout(updateHeaderAwaiter);
+            updateHeaderAwaiter = Window.SetTimeout(() =>
+            {
+                var patches = components.Select(meta =>
+                {
+                    var patch =  meta.MapToPatch(fields: fields);
+                    patch.OldId = meta.Id;
+                    return patch;
+                });
+                Client.Instance.PatchAsync(patches.ToList());
+            }, 100);
+        }
     }
 }

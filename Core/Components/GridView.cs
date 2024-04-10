@@ -307,7 +307,7 @@ namespace Core.Components
                 SwapList(index - 1, index);
                 SwapHeader(index, index + 1);
                 ResetOrder();
-                UpdateHeader();
+                UpdateHeaders(GetHeaderSettings(), new string[] { nameof(Component.Order), nameof(Component.FieldName) });
                 th.Focus();
             }
             else if (keyCode == KeyCodeEnum.LeftArrow)
@@ -342,7 +342,7 @@ namespace Core.Components
                 SwapList(index1 - 1, index1 - 2);
                 SwapHeader(index1, index1 - 1);
                 ResetOrder();
-                UpdateHeader();
+                UpdateHeaders(GetHeaderSettings(), new string[] { nameof(Component.Order), nameof(Component.FieldName) });
                 th1.Focus();
             }
         }
@@ -2241,66 +2241,6 @@ namespace Core.Components
             return tcs.Task;
         }
 
-        private void MoveLeft(Component header, Event e)
-        {
-            var current = e.Target as HTMLElement;
-            var th = current.ParentElement;
-            var tr = th.ParentElement.QuerySelectorAll("th");
-            var index = tr.FindItemAndIndex(x => x == th).Item2;
-            /*@
-            th.parentElement.parentElement.parentElement.querySelectorAll('tr').forEach(function(row) {
-                const cells = [].slice.call(row.querySelectorAll('th, td'));
-                if(!cells[0].classList.contains('summary-header')){
-                    var draggingColumnIndex = index;
-                    var endColumnIndex = index - 1;
-                    draggingColumnIndex > endColumnIndex
-                        ? cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
-                              cells[draggingColumnIndex],
-                              cells[endColumnIndex]
-                          )
-                        : cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
-                              cells[draggingColumnIndex],
-                              cells[endColumnIndex].nextSibling
-                          );
-                }
-            });
-            */
-            SwapList(index - 1, index - 2);
-            SwapHeader(index, index - 1);
-            ResetOrder();
-            UpdateHeader();
-        }
-
-        private void MoveRight(Component header, Event e)
-        {
-            var current = e.Target as HTMLElement;
-            var th = current.ParentElement;
-            var tr = th.ParentElement.QuerySelectorAll("th");
-            var index = tr.FindItemAndIndex(x => x == th).Item2;
-            /*@
-            th.parentElement.parentElement.parentElement.querySelectorAll('tr').forEach(function(row) {
-                const cells = [].slice.call(row.querySelectorAll('th, td'));
-                if(!cells[0].classList.contains('summary-header')){
-                    var draggingColumnIndex = index;
-                    var endColumnIndex = index + 1;
-                    draggingColumnIndex > endColumnIndex
-                        ? cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
-                              cells[draggingColumnIndex],
-                              cells[endColumnIndex]
-                          )
-                        : cells[endColumnIndex].parentNode && cells[endColumnIndex].parentNode.insertBefore(
-                              cells[draggingColumnIndex],
-                              cells[endColumnIndex].nextSibling
-                          );
-                }
-            });
-            */
-            SwapList(index - 1, index);
-            SwapHeader(index, index + 1);
-            ResetOrder();
-            UpdateHeader();
-        }
-
         public virtual void ToggleAll()
         {
             var anySelected = AllListViewItem.Any(x => x.Selected);
@@ -2347,20 +2287,6 @@ namespace Core.Components
             menu.Render();
         }
 
-        private int awaiter1;
-        public void UpdateHeader()
-        {
-            var isSave = Window.LocalStorage.GetItem("isSave");
-            if (isSave is null)
-            {
-                Window.ClearTimeout(awaiter1);
-                awaiter1 = Window.SetTimeout(() =>
-                {
-                    UpdateSetting(Settings, "ListView", GetHeaderSettings()).Done();
-                }, 100);
-            }
-        }
-
         private void HideWidth(object arg)
         {
             var entity = arg["header"] as Component;
@@ -2371,14 +2297,16 @@ namespace Core.Components
              e.target.style.maxWidth = "";
              e.target.style.width = "";
              */
-            UpdateSetting(Settings, "ListView", GetHeaderSettings()).Done();
+            UpdateHeaders(GetHeaderSettings());
         }
 
-        private string GetHeaderSettings()
+        private Component[] GetHeaderSettings()
         {
             var headerElement = HeaderSection.Children
                 .Where(x => x.Meta?.Id != null)
                 .ToDictionary(x => x.Meta.Id);
+            var ele = HeaderSection.Element.FirstElementChild.Children.ToArray();
+            HeaderSection.Children.ForEach(x => x.Meta.Order = Array.IndexOf(ele, x.Element));
             var columns = Header.Where(x => x.Id != null).Select(x =>
             {
                 var match = headerElement.GetValueOrDefault(x.Id);
@@ -2388,8 +2316,8 @@ namespace Core.Components
                 x.MinWidth = match.Element.OffsetWidth + "px";
                 return x;
             }).Where(x => x != null).ToArray();
-            var value = JsonConvert.SerializeObject(columns);
-            return value;
+            
+            return columns.OrderBy(x => x.Frozen).ThenBy(x => x.Order).ToArray();
         }
 
         private void ShowWidth(object arg)
@@ -2404,14 +2332,14 @@ namespace Core.Components
              e.target.style.maxWidth = "";
              e.target.style.width = "";
              */
-            UpdateSetting(Settings, "ListView", GetHeaderSettings()).Done();
+            UpdateHeaders(GetHeaderSettings());
         }
 
         private void FrozenColumn(object arg)
         {
             var entity = arg["header"] as Component;
             Header.FirstOrDefault(x => x.Id == entity.Id).Frozen = !entity.Frozen;
-            UpdateSetting(Settings, "ListView", GetHeaderSettings()).Done(x => ReloadData(cacheHeader: false));
+            UpdateHeaders(GetHeaderSettings());
         }
 
         public void CloneHeader(object arg)

@@ -63,4 +63,8 @@
 		<None Include="wwwroot\js\tms.newtonsoft.json.js" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\system\test\lp\js\" />
+	</ItemGroup>
+
 </Project>

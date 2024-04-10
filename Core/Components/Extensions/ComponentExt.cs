@@ -104,7 +104,7 @@ namespace Core.Components.Extensions
             return InvokeEvent(com, events, eventTypeName, parameters);
         }
 
-        public static PatchVM MapToPatch<T>(this T com, string table = null)
+        public static PatchVM MapToPatch<T>(this T com, string table = null, string[] fields = null)
         {
             var type = typeof(T);
             var patch = new PatchVM
@@ -114,7 +114,7 @@ namespace Core.Components.Extensions
             };
             com.ForEachProp((prop, val) =>
             {
-                if (prop.StartsWith("$")) return;
+                if (prop.StartsWith("$") || fields != null && !fields.Contains(prop)) return;
                 var attributes = type.GetProperty(prop).GetCustomAttributes(typeof(DbIgnoreAttribute), false) as DbIgnoreAttribute[];
                 if (attributes.HasElement())
                 {

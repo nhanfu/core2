@@ -37,10 +37,13 @@ namespace Core.Components.Framework
             _elementMainHeader = Document.QuerySelector(".main-header") as HTMLElement;
             _elementMainSidebar = Document.QuerySelector(".main-sidebar") as HTMLElement;
             var widthMenu = LocalStorage.GetItem<string>("menu-width") ?? "202px";
-            _elementMain.Style.MarginLeft = widthMenu;
-            _elementBrandLink.Style.Width = widthMenu;
-            _elementMainHeader.Style.MarginLeft = widthMenu;
-            _elementMainSidebar.Style.Width = widthMenu;
+            if (_elementMain != null)
+            {
+                _elementMain.Style.MarginLeft = widthMenu;
+                _elementBrandLink.Style.Width = widthMenu;
+                _elementMainHeader.Style.MarginLeft = widthMenu;
+                _elementMainSidebar.Style.Width = widthMenu;
+            }
         }
         public static MenuComponent Instance
         {
@@ -123,6 +126,7 @@ namespace Core.Components.Framework
         {
             var doc = Document.Instance as dynamic;
             var meta = doc.head.children.startupSvc;
+            if (meta is null) return Task.FromResult(null as object[][]);
             var startup = Client.Instance.UserSvc(new SqlViewModel
             {
                 SvcId = meta.content,
