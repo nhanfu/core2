@@ -15,8 +15,6 @@ namespace Core.Components
 {
     public class Label : EditableComponent
     {
-        public Dictionary<string, List<object>> RefData { get; set; }
-
         public Label(Component ui, HTMLElement ele = null) : base(ui)
         {
             Meta = ui;

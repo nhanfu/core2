@@ -20,8 +20,6 @@ namespace Core.Components
         protected string FieldText => Meta.FieldText;
         private const string SEntryClass = "search-entry";
         private string _value;
-        private readonly string DisplayField;
-        private readonly string DisplayDetail;
 
         public string Value
         {
@@ -598,8 +596,14 @@ namespace Core.Components
             var isString = displayObj is string;
             if (isString && Meta.DisplayField != Meta.DisplayDetail)
             {
-                displayObj = JSON.Parse(displayObj as string);
-                origin = displayObj.GetPropValue(Meta.DisplayDetail) as string;
+                try
+                {
+                    displayObj = JSON.Parse(displayObj as string);
+                    origin = displayObj.GetPropValue(Meta.DisplayDetail) as string;
+                }
+                catch (Exception)
+                {
+                }
             }
             else if (!isString)
             {
@@ -639,7 +643,7 @@ namespace Core.Components
             };
             if (Meta.FieldText.HasNonSpaceChar())
             {
-                var display = Entity.GetPropValue(DisplayField) ?? new object();
+                var display = Entity.GetPropValue(Meta.DisplayField) ?? new object();
                 display[Meta.DisplayDetail] = _input.Value;
                 res.Add(new PatchDetail
                 {

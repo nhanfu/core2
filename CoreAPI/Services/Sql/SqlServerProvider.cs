@@ -176,13 +176,17 @@ public class SqlServerProvider(IDistributedCache cache, IConfiguration cfg) : IS
         }
 
         vm.Table = Utils.RemoveWhiteSpace(vm.Table);
-        vm.Changes = vm.Changes.Where(x =>
+        vm.Changes = vm.Changes.Where(patch =>
         {
-            if (x.Field.IsNullOrWhiteSpace()) throw new ApiException($"Field name can NOT be empty") { StatusCode = HttpStatusCode.BadRequest };
-            x.Field = Utils.RemoveWhiteSpace(x.Field);
-            x.Value = x.Value?.Replace("'", "''");
-            x.OldVal = x.OldVal?.Replace("'", "''");
-            return !SystemFields.Contains(x.Field);
+            if (patch.Field.IsNullOrWhiteSpace())
+                throw new ApiException($"Field name of the patch can NOT be empty")
+                {
+                    StatusCode = HttpStatusCode.BadRequest
+                };
+            patch.Field = Utils.RemoveWhiteSpace(patch.Field);
+            patch.Value = patch.Value?.Replace("'", "''");
+            patch.OldVal = patch.OldVal?.Replace("'", "''");
+            return !SystemFields.Contains(patch.Field);
         }).ToList();
         var idField = vm.Id;
         var valueFields = vm.Changes.Where(x => !SystemFields.Contains(x.Field.ToLower())).ToArray();
