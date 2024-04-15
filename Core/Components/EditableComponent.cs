@@ -334,7 +334,7 @@ namespace Core.Components
             };
         }
 
-        public void AddChild(EditableComponent child, int? index = null, string showExp = null, string disabledExp = null)
+        public void AddChild<T>(T child, int? index = null, string showExp = null, string disabledExp = null) where T : EditableComponent
         {
             if (child.IsSingleton)
             {

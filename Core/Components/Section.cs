@@ -163,7 +163,7 @@ namespace Core.Components
                     {
                         continue;
                     }
-                    var childComponent = ComponentFactory.GetComponent(ui, EditForm);
+                    var childComponent = ComponentFactory.GetComponent(ui, EditForm) as EditableComponent;
                     if (typeof(ListView).IsAssignableFrom(childComponent.GetType()))
                     {
                         EditForm.ListViews.Add(childComponent as ListView);
@@ -512,8 +512,11 @@ namespace Core.Components
                 {
                     html.Width(ui.Width);
                 }
-
-                var childComponent = ComponentFactory.GetComponent(ui, EditForm);
+                var childCom = ComponentFactory.GetComponent(ui, EditForm);
+                var childComponent = childCom as EditableComponent;
+                /*@
+                if (childComponent.v == null) childComponent = { v: childCom };
+                 */
                 if (typeof(ListView).IsAssignableFrom(childComponent.GetType()))
                 {
                     EditForm.ListViews.Add(childComponent as ListView);
@@ -640,7 +643,7 @@ namespace Core.Components
                     html.End.Render();
                 }
 
-                var childComponent = ComponentFactory.GetComponent(ui, EditForm);
+                var childComponent = ComponentFactory.GetComponent(ui, EditForm) as EditableComponent;
                 if (typeof(ListView).IsAssignableFrom(childComponent.GetType()))
                 {
                     EditForm.ListViews.Add(childComponent as ListView);

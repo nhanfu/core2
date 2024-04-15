@@ -605,7 +605,7 @@ namespace Core.Components.Forms
             }
             else if (child is null)
             {
-                child = ComponentFactory.GetComponent(com, this, ele);
+                child = ComponentFactory.GetComponent(com, this, ele) as EditableComponent;
             }
             child.ParentElement = child.ParentElement ?? ele;
             child.Entity = entity ?? child.EditForm?.Entity ?? LayoutForm.Entity;
@@ -1009,7 +1009,7 @@ namespace Core.Components.Forms
         private void UpdateRender(Component component, ComponentGroup componentGroup)
         {
             var section = this.FindComponentByName<Section>(componentGroup.Name);
-            var childComponent = ComponentFactory.GetComponent(component, EditForm);
+            var childComponent = ComponentFactory.GetComponent(component, EditForm) as EditableComponent;
             childComponent.ParentElement = section.Element;
             section.AddChild(childComponent);
         }

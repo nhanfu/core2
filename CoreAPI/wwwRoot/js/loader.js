@@ -1,22 +1,4 @@
-export const isFunc = (exp, obj, shouldAddReturn) => {
-    if (exp == null) {
-        obj.v = null;
-        return false;
-    }
-    try {
-        var fn = new Function(shouldAddReturn ? "return " + exp : exp);
-        const fnVal = fn.call(null);
-        if (fnVal instanceof Function) {
-            obj.v = fnVal;
-            return true;
-        } else {
-            return false;
-        }
-    } catch ($e1) {
-        obj.v = null;
-        return false;
-    }
-};
+import { IsFunction } from "./core/utils.js";
 
 export const getMetaInfo = (name, root) => {
     const metaTag = root.querySelector(`script[data-${name}]`);
@@ -29,10 +11,10 @@ export const getComName = (root) => {
     return metaTags.map((tag) => tag.getAttribute("data-meta"));
 };
 
-export async function loadData(meta, com) {
+export async function comQuery(meta, com) {
     if (meta.Query == null) return null;
     const o = {};
-    var isFn = isFunc(meta.PreQuery, o);
+    var isFn = IsFunction(meta.PreQuery, o);
     var body = {
         ComId: meta.Id,
         Params: isFn ? JSON.stringify(o.v.call(null, com)) : null,
@@ -75,11 +57,11 @@ export async function resolveComponents(root) {
             const components = res[0];
             components.map(com => {
                 const fnVal = {};
-                const isRendererFn = isFunc(com.Renderer, fnVal);
+                const isRendererFn = IsFunction(com.Renderer, fnVal);
                 if (!isRendererFn) return;
                 const container = meta.find(x => x.dataset.meta == com.FieldName);
                 if (container == null) return;
-                fnVal.v.call(null, container, com, loadData);
+                fnVal.v.call(null, container, com, comQuery);
             });
         }
     } catch (error) {

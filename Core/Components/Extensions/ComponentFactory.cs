@@ -9,7 +9,7 @@ namespace Core.Components.Extensions
 {
     public static class ComponentFactory
     {
-        public static EditableComponent GetComponent(Component ui, EditForm form, HTMLElement ele = null)
+        public static object GetComponent(Component ui, EditForm form, HTMLElement ele = null)
         {
             if (ui is null)
             {
@@ -22,7 +22,7 @@ namespace Core.Components.Extensions
             }
 
             ui.ComponentType = ui.ComponentType.Trim();
-            EditableComponent childComponent;
+            object childComponent;
             switch (ui.ComponentType)
             {
                 case nameof(GridView):
@@ -55,13 +55,13 @@ namespace Core.Components.Extensions
                     var args = "a, b";
                     var body = $"return new {fullName}(a, b)";
                     var typeConstructor = new Function(args, body);
-                    childComponent = typeConstructor.Call(null, ui, ele) as EditableComponent;
+                    childComponent = typeConstructor.Call(null, ui, ele);
                     break;
             }
-            childComponent.Id = ui.FieldName + ui.Id.ToString();
-            childComponent.Name = ui.FieldName;
-            childComponent.ComponentType = ui.ComponentType;
-            childComponent.EditForm = form;
+            childComponent[Utils.IdField] = ui.FieldName + ui.Id.ToString();
+            childComponent["Name"] = ui.FieldName;
+            childComponent["ComponentType"] = ui.ComponentType;
+            childComponent["EditForm"] = form;
             return childComponent;
         }
 
@@ -97,7 +97,7 @@ namespace Core.Components.Extensions
                     childGui.CopyPropFrom(gui);
                     childGui.ComponentType = componentType;
                     childGui.FieldName = field;
-                    section.AddChild(GetComponent(childGui, form));
+                    section.AddChild(GetComponent(childGui, form) as EditableComponent);
                     if (nonChar.Length > index)
                     {
                         section.Element.AppendChild(new Text(nonChar[index].ToString()));

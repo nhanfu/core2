@@ -7,5 +7,19 @@
       "wwwroot/css/main.css",
       "wwwroot/css/style.css"
     ]
+  },
+  {
+    "outputFileName": "wwwRoot/js/all.js",
+    "inputFiles": [
+      "wwwroot/js/tms.bridge.js",
+      "wwwroot/js/newtonsoft.json.js",
+      "wwwroot/js/fix.js",
+      "wwwroot/js/Core.meta.js",
+      "wwwroot/js/Core.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "commentMode": "all"
+    }
   }
 ]

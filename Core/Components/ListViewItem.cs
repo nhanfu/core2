@@ -205,7 +205,7 @@ namespace Core.Components
                 return;
             }
             var component = ((header.Editable || NotCellText.Contains(header.ComponentType)) && ListViewSection.ListView.CanWrite)
-                ? ComponentFactory.GetComponent(header, EditForm)
+                ? ComponentFactory.GetComponent(header, EditForm) as EditableComponent
                 : new Label(header);
             component.Id = header.Id;
             component.Name = header.FieldName;

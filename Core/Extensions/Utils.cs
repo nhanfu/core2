@@ -23,7 +23,6 @@ namespace Core.Extensions
         public const string ApplicationJson = "application/json";
         public const string Authorization = "Authorization";
         public const string SelfVendorId = "65";
-        public const string AutoSaveReason = "Tự động cập nhật";
         public const string IdField = "Id";
         public const string NewLine = "\r\n";
         public const string Indent = "\t";
