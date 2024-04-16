@@ -1,5 +1,5 @@
 ﻿import EditableComponent from './editableComponent.js';
-import { GetPropValue, IsFunction, hasNonSpaceChar, isNoU } from './utils.js';
+import { GetPropValue, Utils, HasNonSpaceChar as HasNonSpaceChar, isNoU as IsNoU } from './utils.js';
 import { HtmlEvent, Direction, HTML, html } from './html.js';
 import { ComponentType, IdField } from './const.js';
 
@@ -17,8 +17,8 @@ class Label extends EditableComponent {
             this.RenderNewEle(cellText, cellData, isBool);
         }
         var formatter = {};
-        if (hasNonSpaceChar(this.Meta.Query)
-            && IsFunction(Meta.FormatEntity, formatter)) {
+        if (HasNonSpaceChar(this.Meta.Query)
+            && Utils.IsFunction(Meta.FormatEntity, formatter)) {
             this.RenderCellText(formatter);
             return;
         }
@@ -64,11 +64,12 @@ class Label extends EditableComponent {
      
     CalcCellText(cellData) {
         var header = this.Meta;
-        var isDate = !isNoU(cellData) && header.ComponentType === ComponentType.Datepicker;
-        var isRef = hasNonSpaceChar(header.FieldText);
+        var isDate = !IsNoU(cellData) && header.ComponentType === ComponentType.Datepicker;
+        /** @type {string} */
+        var fieldText = header.FieldText;
+        var isRef = fieldText.HasNonSpaceChar();
         if (this.EmptyRow) return '';
         if (header.FieldName == IdField && cellData != null) return '';
-        if (cellData == null) return header.PlainText ?? '';
         // if (cellData instanceof Date || isDate) 
         return 'The next big thing';
     }
