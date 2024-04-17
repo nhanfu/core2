@@ -72,7 +72,7 @@ namespace Core.Components
         private bool firstLoad;
         public void UpdateViewComponent()
         {
-            var ComponentGroup = Entity as ComponentGroup;
+            var ComponentGroup = Entity as Component;
             if (!firstLoad || Dirty)
             {
                 firstLoad = true;

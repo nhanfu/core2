@@ -97,7 +97,7 @@ namespace Core.Components
         {
             var section = new Section(ElementType.div)
             {
-                ComponentGroup = new ComponentGroup
+                ComponentGroup = new Component
                 {
                     Column = 4,
                     Label = "Bộ lọc",

@@ -39,7 +39,7 @@ namespace Core.Components
                 jsElement = Html.Instance.GetContext();
                 Html.Instance.End.End.Div.ClassName("editor").Style("display: flex;").Iframe.Width("100%").Render();
                 previewElement = Html.Instance.GetContext() as HTMLIFrameElement;
-                var ComponentGroup = Entity as ComponentGroup;
+                var ComponentGroup = Entity as Component;
                 var hard = ComponentGroup.Id;
                 var section = ComponentGroup.Name.ToLower() + hard;
                 var cssContent = Entity["Css"] is null ? string.Empty : Entity["Css"].ToString();
@@ -86,7 +86,7 @@ namespace Core.Components
         private bool firstLoad;
         public void UpdateViewComponent()
         {
-            var ComponentGroup = Entity as ComponentGroup;
+            var ComponentGroup = Entity as Component;
             var parentSection = EditForm.OpenFrom.FilterChildren<Section>(x => x.ComponentGroup != null && x.ComponentGroup.Id == Entity[IdField].ToString()).FirstOrDefault();
             Html.Take(Element).Clear();
             previewElement.ContentWindow.Document.Body.Style.MaxHeight = "700px";

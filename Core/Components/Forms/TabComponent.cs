@@ -13,7 +13,7 @@ namespace Core.Components.Forms
     public class TabGroup : EditableComponent
     {
         private readonly List<string> ListViewType = new List<string> { nameof(ListView), nameof(GroupListView), nameof(GridView), nameof(GroupGridView) };
-        public ComponentGroup ComponentGroup { get; set; }
+        public Component ComponentGroup { get; set; }
         public HTMLUListElement Ul { get; set; }
         public HTMLDivElement TabContent { get; set; }
         public bool ShouldCountBage { get; private set; }
@@ -31,7 +31,7 @@ namespace Core.Components.Forms
             Element = Ul.ParentElement;
             Html.Instance.End.End.Div.ClassName("tabs-content");
             TabContent = Html.Context as HTMLDivElement;
-            ShouldCountBage = ComponentGroup.InverseParent.All(x => x.Component.HasElement() && ListViewType.Contains(x.Component.First().ComponentType));
+            ShouldCountBage = ComponentGroup.InverseParent.All(x => x.ComponentChildren.HasElement() && ListViewType.Contains(x.ComponentChildren.First().ComponentType));
         }
     }
 
@@ -60,7 +60,7 @@ namespace Core.Components.Forms
             }
         }
 
-        public TabComponent(ComponentGroup group) : base(null)
+        public TabComponent(Component group) : base(null)
         {
             ComponentGroup = group;
             Name = group.Name;

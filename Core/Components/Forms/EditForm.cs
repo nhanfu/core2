@@ -285,10 +285,10 @@ namespace Core.Components.Forms
             return tcs.Task;
         }
 
-        protected List<ComponentGroup> BuildTree(List<ComponentGroup> componentGroup)
+        protected List<Component> BuildTree(List<Component> componentGroup)
         {
             var componentGroupMap = componentGroup.ToDictionary(x => x.Id);
-            ComponentGroup parent;
+            Component parent;
             foreach (var item in componentGroup)
             {
                 if (item.IsVertialTab && Element.ClientWidth < SmallScreen)
@@ -309,7 +309,7 @@ namespace Core.Components.Forms
                 parent = componentGroupMap[item.ParentId];
                 if (parent.InverseParent == null)
                 {
-                    parent.InverseParent = new List<ComponentGroup>();
+                    parent.InverseParent = new List<Component>();
                 }
 
                 if (!parent.InverseParent.Contains(item))
@@ -321,12 +321,12 @@ namespace Core.Components.Forms
             }
             foreach (var item in componentGroup)
             {
-                if (item.Component == null || !item.Component.Any())
+                if (item.ComponentChildren == null || !item.ComponentChildren.Any())
                 {
                     continue;
                 }
 
-                foreach (var ui in item.Component)
+                foreach (var ui in item.ComponentChildren)
                 {
                     ui.ComponentGroup = item;
                 }
@@ -344,7 +344,7 @@ namespace Core.Components.Forms
             return res.ToList();
         }
 
-        private void CalcItemInRow(List<ComponentGroup> componentGroup)
+        private void CalcItemInRow(List<Component> componentGroup)
         {
             var cumulativeColumn = 0;
             var itemInRow = 0;
@@ -693,7 +693,7 @@ namespace Core.Components.Forms
             Element.AppendChild(style);
         }
 
-        public void RenderTabOrSection(IEnumerable<ComponentGroup> componentGroup)
+        public void RenderTabOrSection(IEnumerable<Component> componentGroup)
         {
             foreach (var group in componentGroup.OrderBy(x => x.Order))
             {
@@ -709,7 +709,7 @@ namespace Core.Components.Forms
             }
         }
 
-        public int GetInnerColumn(ComponentGroup group)
+        public int GetInnerColumn(Component group)
         {
             if (group is null)
             {
@@ -746,7 +746,7 @@ namespace Core.Components.Forms
             return res ?? 0;
         }
 
-        internal int GetOuterColumn(ComponentGroup group)
+        internal int GetOuterColumn(Component group)
         {
             var screenWidth = Element.ClientWidth;
             int? res;
@@ -779,7 +779,7 @@ namespace Core.Components.Forms
         }
 
         public EditableComponent CtxCom;
-        public virtual void SysConfigMenu(Event e, Component component, ComponentGroup group, EditableComponent ctx)
+        public virtual void SysConfigMenu(Event e, Component component, Component group, EditableComponent ctx)
         {
             CtxCom = ctx;
             var metaPermission = Policies.Any(x => x.CanWriteMeta || x.CanWriteMetaAll);
@@ -931,10 +931,10 @@ namespace Core.Components.Forms
         public void AddComponent(object arg)
         {
             var action = arg["action"] as string;
-            var componentGroup = arg["group"].CastProp<ComponentGroup>();
+            var componentGroup = arg["group"].CastProp<Component>();
             var com = new Component();
             var childComponent = Feature.ComponentGroup.FirstOrDefault(x => x.Id == componentGroup.Id);
-            var lastOrder = childComponent.Component.Max(x => x.Order);
+            var lastOrder = childComponent.ComponentChildren.Max(x => x.Order);
 
             switch (action)
             {
@@ -997,7 +997,7 @@ namespace Core.Components.Forms
             SaveNewComponent(componentGroup, com);
         }
 
-        private void SaveNewComponent(ComponentGroup componentGroup, Component com)
+        private void SaveNewComponent(Component componentGroup, Component com)
         {
             Client.Instance.PatchAsync(com.MapToPatch()).Done(x =>
             {
@@ -1006,7 +1006,7 @@ namespace Core.Components.Forms
             });
         }
 
-        private void UpdateRender(Component component, ComponentGroup componentGroup)
+        private void UpdateRender(Component component, Component componentGroup)
         {
             var section = this.FindComponentByName<Section>(componentGroup.Name);
             var childComponent = ComponentFactory.GetComponent(component, EditForm) as EditableComponent;
@@ -1016,7 +1016,7 @@ namespace Core.Components.Forms
 
         public void SectionProperties(object arg)
         {
-            var group = arg.CastProp<ComponentGroup>();
+            var group = arg.CastProp<Component>();
             group.InverseParent = null;
             var editor = new ComponentGroupBL
             {
@@ -1029,7 +1029,7 @@ namespace Core.Components.Forms
 
         public void LayoutProperties(object arg)
         {
-            var group = arg.CastProp<ComponentGroup>();
+            var group = arg.CastProp<Component>();
             group.InverseParent = null;
             var editor = new ComponentGroupBL
             {

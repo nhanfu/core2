@@ -99,9 +99,9 @@ namespace Core.Components
                 });
                 return com;
             })).ToArray();
-            var sectionInfo = new ComponentGroup
+            var sectionInfo = new Component
             {
-                Component = components,
+                ComponentChildren = components,
                 Responsive = true,
                 Column = components.Length,
                 ClassName = "wrapper"

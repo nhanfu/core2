@@ -291,7 +291,7 @@ namespace Core.Components.Extensions
                     return;
                 }
                 feature.FeaturePolicy = ds.Length > 1 ? ds[1].Select(x => x.CastProp<FeaturePolicy>()).ToList() : feature.FeaturePolicy;
-                var groups = ds.Length > 2 ? ds[2].Select(x => x.CastProp<ComponentGroup>()).ToList() : null;
+                var groups = ds.Length > 2 ? ds[2].Select(x => x.CastProp<Component>()).ToList() : null;
                 feature.ComponentGroup = groups;
                 var components = ds.Length > 3 ? ds[3].Select(x => x.CastProp<Component>()).ToList() : null;
                 feature.Component = components;
@@ -305,7 +305,7 @@ namespace Core.Components.Extensions
                 {
                     if (com.ComponentGroupId is null) return;
                     var g = groupMap.GetValueOrDefault(com.ComponentGroupId);
-                    g?.Component.Add(com);
+                    g?.ComponentChildren.Add(com);
                 });
                 tcs.TrySetResult(feature);
             });

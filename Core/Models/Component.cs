@@ -134,7 +134,25 @@ namespace Core.Models
         public string Lang { get; set; }
         public string DelCmd { get; set; }
         public string DelParam { get; set; }
-
+        public string Name { get; set; }
+        public bool IsTab { get; set; }
+        public string TabGroup { get; set; }
+        public bool IsVertialTab { get; set; }
+        public bool Responsive { get; set; }
+        public string PolicyId { get; set; }
+        public string ParentId { get; set; }
+        public int? OuterColumn { get; set; }
+        public int? XsOuterColumn { get; set; }
+        public int? SmOuterColumn { get; set; }
+        public int? LgOuterColumn { get; set; }
+        public int? XlOuterColumn { get; set; }
+        public int? XxlOuterColumn { get; set; }
+        public int? BadgeMonth { get; set; }
+        public bool IsDropDown { get; set; }
+        public int? ItemInRow { get; set; }
+        public string Html { get; set; }
+        public string Css { get; set; }
+        public string Javascript { get; set; }
         [DbIgnore]
         public string DisplayField { get; set; }
         [DbIgnore]
@@ -159,8 +177,12 @@ namespace Core.Models
         public bool IgnoreConfirmHardDelete { get; set; }
 
         [DbIgnore]
-        public virtual ComponentGroup ComponentGroup { get; set; }
+        public virtual Component ComponentGroup { get; set; }
         [DbIgnore]
         public virtual Entity Reference { get; set; }
+        public virtual Feature Feature { get; set; }
+        public virtual Component Parent { get; set; }
+        public virtual ICollection<Component> ComponentChildren { get; set; }
+        public virtual ICollection<Component> InverseParent { get; set; }
     }
 }

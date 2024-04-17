@@ -118,7 +118,6 @@
     <Compile Include="Extensions\Utils.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\Component.cs" />
-    <Compile Include="Models\ComponentGroup.cs" />
     <Compile Include="Models\Dictionary.cs" />
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\EntityRef.cs" />

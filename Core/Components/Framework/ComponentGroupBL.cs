@@ -6,8 +6,8 @@ namespace Core.Components.Framework
 {
     public class ComponentGroupBL : PopupEditor
     {
-        private ComponentGroup ComGroupEntity => Entity as ComponentGroup;
-        public ComponentGroupBL() : base(nameof(ComponentGroup))
+        private Component ComGroupEntity => Entity as Component;
+        public ComponentGroupBL() : base(nameof(Component))
         {
             Name = "ComponentGroup";
             Title = "Section properties";

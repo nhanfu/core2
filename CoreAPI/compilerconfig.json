@@ -22,5 +22,49 @@
   {
     "outputFile": "wwwroot/css/adminite.css",
     "inputFile": "wwwroot/css/adminite.less"
+  },
+  {
+    "outputFile": "wwwroot/css/menu.css",
+    "inputFile": "wwwroot/css/menu.less"
+  },
+  {
+    "outputFile": "wwwroot/css/layout.css",
+    "inputFile": "wwwroot/css/layout.less"
+  },
+  {
+    "outputFile": "wwwroot/css/gridview.css",
+    "inputFile": "wwwroot/css/gridview.less"
+  },
+  {
+    "outputFile": "wwwroot/css/image.css",
+    "inputFile": "wwwroot/css/image.less"
+  },
+  {
+    "outputFile": "wwwroot/css/button.css",
+    "inputFile": "wwwroot/css/button.less"
+  },
+  {
+    "outputFile": "wwwroot/css/customadmin.css",
+    "inputFile": "wwwroot/css/customadmin.less"
+  },
+  {
+    "outputFile": "wwwroot/css/section.css",
+    "inputFile": "wwwroot/css/section.less"
+  },
+  {
+    "outputFile": "wwwroot/css/styleadmin.css",
+    "inputFile": "wwwroot/css/styleadmin.less"
+  },
+  {
+    "outputFile": "wwwroot/css/styleprint.css",
+    "inputFile": "wwwroot/css/styleprint.less"
+  },
+  {
+    "outputFile": "wwwroot/css/input.css",
+    "inputFile": "wwwroot/css/input.less"
+  },
+  {
+    "outputFile": "wwwroot/css/base.css",
+    "inputFile": "wwwroot/css/base.less"
   }
 ]

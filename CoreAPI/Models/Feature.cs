@@ -80,7 +80,7 @@
         public bool CustomNextCell { get; set; }
         public bool IsPortal { get; set; }
         public string ConnKey { get; set; }
-        public virtual ICollection<ComponentGroup> ComponentGroup { get; set; } = new List<ComponentGroup>();
+        public virtual ICollection<Component> ComponentGroup { get; set; } = new List<Component>();
         public virtual Entity Entity { get; set; }
         public virtual ICollection<FeaturePolicy> FeaturePolicy { get; set; } = new List<FeaturePolicy>();
         public virtual ICollection<Feature> InverseParent { get; set; } = new List<Feature>();

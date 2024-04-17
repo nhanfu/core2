@@ -22,7 +22,7 @@ namespace Core.Components
         private HTMLElement InnerEle;
         private HTMLElement _chevron;
 
-        public ComponentGroup ComponentGroup { get; set; }
+        public Component ComponentGroup { get; set; }
 
         public Section() : base(null)
         {
@@ -86,7 +86,7 @@ namespace Core.Components
                 }
                 var cellText = Utils.GetHtmlCode(ComponentGroup.Html, new object[] { Entity });
                 Element.InnerHTML = cellText;
-                var allComPolicies = ComponentGroup.Id.IsNullOrWhiteSpace() ? EditForm.GetElementPolicies(ComponentGroup.Component.Select(x => x.Id).ToArray(), Utils.ComponentId) : new List<FeaturePolicy>().ToArray();
+                var allComPolicies = ComponentGroup.Id.IsNullOrWhiteSpace() ? EditForm.GetElementPolicies(ComponentGroup.ComponentChildren.Select(x => x.Id).ToArray(), Utils.ComponentId) : new List<FeaturePolicy>().ToArray();
                 SplitChild(Element.Children, allComPolicies, section);
                 if (!ComponentGroup.Javascript.IsNullOrWhiteSpace())
                 {
@@ -145,7 +145,7 @@ namespace Core.Components
                     {
                         Element = eleChild
                     };
-                    var ui = ComponentGroup.Component.FirstOrDefault(x => x.FieldName == eleChild.Dataset["name"]);
+                    var ui = ComponentGroup.ComponentChildren.FirstOrDefault(x => x.FieldName == eleChild.Dataset["name"]);
                     eleChild.RemoveAttribute("data-name");
                     if (ui is null)
                     {
@@ -306,7 +306,7 @@ namespace Core.Components
             }
         }
 
-        private void RenderChildrenSection(ComponentGroup group)
+        private void RenderChildrenSection(Component group)
         {
             if (group.InverseParent.Nothing())
             {
@@ -327,7 +327,7 @@ namespace Core.Components
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0017:Simplify object initialization", Justification = "<Pending>")]
-        public static void RenderTabGroup(EditableComponent parent, ComponentGroup group)
+        public static void RenderTabGroup(EditableComponent parent, Component group)
         {
             var disabled = parent.Disabled || group.Disabled;
             if (parent.EditForm.TabGroup is null)
@@ -386,7 +386,7 @@ namespace Core.Components
             }
         }
 
-        public static Section RenderSection(EditableComponent parent, ComponentGroup groupInfo, object entity = null, EditForm editForm = null)
+        public static Section RenderSection(EditableComponent parent, Component groupInfo, object entity = null, EditForm editForm = null)
         {
             var editform = editForm ?? parent.EditForm;
             var uiPolicy = editform.GetElementPolicies(new string[] { groupInfo.Id }, Utils.ComponentGroupId);
@@ -458,17 +458,17 @@ namespace Core.Components
             AddChild(editor);
         }
 
-        private void RenderComponent(ComponentGroup group)
+        private void RenderComponent(Component group)
         {
-            if (group.Component.Nothing())
+            if (group.ComponentChildren.Nothing())
             {
                 return;
             }
             var html = Html.Instance;
             html.Table.ClassName("ui-layout").TBody.TRow.Render();
             var column = 0;
-            var allComPolicies = EditForm.GetElementPolicies(group.Component.Select(x => x.Id).ToArray(), Utils.ComponentId);
-            foreach (var ui in group.Component.OrderBy(x => x.Order))
+            var allComPolicies = EditForm.GetElementPolicies(group.ComponentChildren.Select(x => x.Id).ToArray(), Utils.ComponentId);
+            foreach (var ui in group.ComponentChildren.OrderBy(x => x.Order))
             {
                 if (ui.Hidden)
                 {
@@ -594,7 +594,7 @@ namespace Core.Components
         }
 
         private static int _imeout1;
-        private static void ChangeComponentGroupLabel(Event e, ComponentGroup com)
+        private static void ChangeComponentGroupLabel(Event e, Component com)
         {
             Window.ClearTimeout(_imeout1);
             _imeout1 = Window.SetTimeout(() =>
@@ -603,21 +603,21 @@ namespace Core.Components
             }, 1000);
         }
 
-        private void RenderComponentResponsive(ComponentGroup group)
+        private void RenderComponentResponsive(Component group)
         {
-            if (group.Component.Nothing())
+            if (group.ComponentChildren.Nothing())
             {
                 return;
             }
             var html = Html.Instance;
-            var allComPolicies = EditForm.GetElementPolicies(group.Component.Select(x => x.Id).ToArray(), Utils.ComponentId);
+            var allComPolicies = EditForm.GetElementPolicies(group.ComponentChildren.Select(x => x.Id).ToArray(), Utils.ComponentId);
             var innerCol = EditForm.GetInnerColumn(group);
             if (innerCol > 0)
             {
                 Html.Take(Element).ClassName("grid").Style($"grid-template-columns: repeat({innerCol}, 1fr)");
             }
             var column = 0;
-            foreach (var ui in group.Component.OrderBy(x => x.Order))
+            foreach (var ui in group.ComponentChildren.OrderBy(x => x.Order))
             {
                 if (ui.Hidden)
                 {

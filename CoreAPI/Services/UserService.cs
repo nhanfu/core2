@@ -1489,14 +1489,14 @@ from ({jsRes.Query}) as ds
         var id = vm.Ids.Combine();
         var query = @$"select * from [Feature] where Id = '{id}';
             select * from [FeaturePolicy] where FeatureId = '{id}';
-            select * from [ComponentGroup] where FeatureId = '{id}';
+            select * from [Component] where FeatureId = '{id}';
             select * from [Component] c left join ComponentGroup g on c.ComponentGroupId = g.Id
             where g.FeatureId = '{id}' or c.FeatureId = '{id}'";
         var ds = await _sql.ReadDataSet(query, vm.CachedMetaConn);
         if (ds.Length == 0 || ds[0].Length == 0) return false;
         var feature = ds[0][0].MapTo<Feature>();
         var policies = ds.Length > 1 ? ds[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : [];
-        var groups = ds.Length > 2 ? ds[2].Select(x => x.MapTo<ComponentGroup>()).ToList() : [];
+        var groups = ds.Length > 2 ? ds[2].Select(x => x.MapTo<Component>()).ToList() : [];
         var components = ds.Length > 3 ? ds[3].Select(x => x.MapTo<Component>()).ToList() : [];
 
         feature.Id = Uuid7.Id25().ToString();
@@ -1509,7 +1509,7 @@ from ({jsRes.Query}) as ds
         }).ToArray();
         groups.Action(x => x.FeatureId = feature.Id);
         var groupMap = groups.DistinctBy(x => x.Id).ToDictionary(x => x.Id);
-        var visited = new HashSet<ComponentGroup>();
+        var visited = new HashSet<Component>();
         var comVisited = new HashSet<Component>();
         var groupPatches = groups.Select(group =>
         {
@@ -1528,7 +1528,7 @@ from ({jsRes.Query}) as ds
             if (notVisited) CloneComponentToGroup(group, components);
             return group.MapToPatch();
         }).ToArray();
-        var standAlonePatches = components.Except(groups.SelectMany(x => x.Component))
+        var standAlonePatches = components.Except(groups.SelectMany(x => x.ComponentChildren))
         .Select(x =>
         {
             x.Id = Uuid7.Id25();
@@ -1546,11 +1546,11 @@ from ({jsRes.Query}) as ds
         return true;
     }
 
-    private static void CloneComponentToGroup(ComponentGroup group, List<Component> components)
+    private static void CloneComponentToGroup(Component group, List<Component> components)
     {
         var com = components.Where(c => c.ComponentGroupId == group.Id).ToList();
         group.Id = Uuid7.Id25();
-        group.Component = com;
+        group.ComponentChildren = com;
         com.ForEach(c =>
         {
             c.Id = Uuid7.Id25().ToString();

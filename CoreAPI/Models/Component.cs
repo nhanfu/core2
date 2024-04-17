@@ -250,7 +250,53 @@
         public string DelCmd { get; set; }
         public string DelParam { get; set; }
 
-        public virtual ComponentGroup ComponentGroup { get; set; }
+        public string Name { get; set; }
+
+        public bool IsTab { get; set; }
+
+        public string TabGroup { get; set; }
+
+        public bool IsVertialTab { get; set; }
+
+        public bool Responsive { get; set; }
+
+        public string PolicyId { get; set; }
+
+        public string ParentId { get; set; }
+
+        public int? OuterColumn { get; set; }
+
+        public int? XsOuterColumn { get; set; }
+
+        public int? SmOuterColumn { get; set; }
+
+        public int? LgOuterColumn { get; set; }
+
+        public int? XlOuterColumn { get; set; }
+
+        public int? XxlOuterColumn { get; set; }
+
+        public int? BadgeMonth { get; set; }
+
+        public bool IsDropDown { get; set; }
+
+        public bool DefaultCollapsed { get; set; }
+
+        public string Html { get; set; }
+
+        public string Css { get; set; }
+
+        public string Javascript { get; set; }
+
+        public virtual ICollection<Component> ComponentChildren { get; set; } = new List<Component>();
+
+        public virtual Feature Feature { get; set; }
+
+        public virtual ICollection<Component> InverseParent { get; set; } = new List<Component>();
+
+        public virtual Component Parent { get; set; }
+
+        public virtual Component ComponentGroup { get; set; }
 
         public virtual ICollection<EntityRef> EntityRef { get; set; } = new List<EntityRef>();
 
