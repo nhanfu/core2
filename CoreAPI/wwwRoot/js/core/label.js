@@ -1,5 +1,5 @@
 ﻿import EditableComponent from './editableComponent.js';
-import { GetPropValue, Utils, HasNonSpaceChar as HasNonSpaceChar, isNoU as IsNoU } from './utils.js';
+import { GetPropValue, Utils, string } from './utils.js';
 import { HtmlEvent, Direction, HTML, html } from './html.js';
 import { ComponentType, IdField } from './const.js';
 
@@ -17,14 +17,14 @@ class Label extends EditableComponent {
             this.RenderNewEle(cellText, cellData, isBool);
         }
         var formatter = {};
-        if (HasNonSpaceChar(this.Meta.Query)
-            && Utils.IsFunction(Meta.FormatEntity, formatter)) {
+        if (this.Meta.Query?.HasNonSpaceChar()
+            && Utils.IsFunction(this.Meta.FormatEntity, formatter)) {
             this.RenderCellText(formatter);
             return;
         }
         else {
             cellText = this.CalcCellText(cellData);
-            //this.UpdateEle(cellText, cellData, isBool);
+            this.UpdateEle(cellText, cellData, isBool);
         }
     }
     RenderNewEle(cellText, cellData, isBool) {
@@ -32,7 +32,7 @@ class Label extends EditableComponent {
         if (isBool) {
             if (this.Meta.SimpleText) {
                 html.Text(cellData ? '☑' : '☐');
-                HTML.Context.style.fontSize = "1.2rem";
+                html.Context.style.fontSize = "1.2rem";
             } else {
                 html.Padding(Direction.bottom, 0)
                     .SmallCheckbox(GetPropValue(this.Entity, this.FieldName));
@@ -64,14 +64,55 @@ class Label extends EditableComponent {
      
     CalcCellText(cellData) {
         var header = this.Meta;
-        var isDate = !IsNoU(cellData) && header.ComponentType === ComponentType.Datepicker;
         /** @type {string} */
         var fieldText = header.FieldText;
-        var isRef = fieldText.HasNonSpaceChar();
+        var isRef = fieldText?.HasNonSpaceChar();
         if (this.EmptyRow) return '';
-        if (header.FieldName == IdField && cellData != null) return '';
-        // if (cellData instanceof Date || isDate) 
-        return 'The next big thing';
+        if (header.FieldName == IdField && cellData === string.Empty) return '';
+        let fn = {};
+        if (Utils.IsFunction(header.FormatEntity, fn))
+        {
+            return fn.v.call(row, row).ToString();
+        }
+        if (cellData == null)
+        {
+            return header.PlainText ?? string.Empty;
+        }
+        if (isRef)
+        {
+            if (header.FieldText?.IsNullOrWhiteSpace()) return string.Empty;
+            if (header.DisplayField == null) {
+                const parts = header.FieldText.split('.');
+                header.DisplayField = parts[0];
+                header.DisplayDetail = parts[1];
+            }
+            var display = GetPropValue(this.Entity, header.DisplayField);
+            if (display != null && typeof display === 'string') {
+                display = JSON.parse(display);
+            }
+            return GetPropValue(display, header.DisplayDetail);
+        }
+        else
+        {
+            return cellData.toString();
+        }
+    }
+
+    UpdateEle(cellText, cellData, isBool) {
+        if (isBool)
+        {
+            if (this.Meta.SimpleText)
+            {
+                this.Element.InnerHTML = cellData === true ? "☑" : "☐";
+            }
+            else
+            {
+                this.Element.PreviousElementSibling.checked = cellData;
+            }
+            return;
+        }
+        this.Element.innerHTML = cellText;
+        this.Element.setAttribute("title", cellText);
     }
 }
 

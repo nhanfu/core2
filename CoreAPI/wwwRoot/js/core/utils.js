@@ -1,6 +1,6 @@
 export function GetPropValue(obj, path) {
     if (obj == null || path == null) return null;
-    for (var i = 0, path = path.split('.'), len = path.length; i < len; i++) {
+    for (var i = 0, path = path.split('.'), len = path.length; i < len && obj != null; i++) {
         obj = obj[path[i]];
     };
     return obj;
@@ -18,17 +18,25 @@ export function SetPropValue(obj, path, value) {
     o[a[0]] = value
 }
 
-export const Nothing = (arr) => arr == null || arr.length == 0;
 export const isNoU = (o) => o === null || o === undefined;
-export const HasNonSpaceChar = (o) => o !== null && o !== undefined && o.trim() !== '';
-export const IsNullOrWhiteSpace = (o) => o === null || o === undefined || o.trim() === '';
-
+export function HasNonSpaceChar () { return this.trim() !== ''; }
 
 export class Utils {
+    /**
+     * 
+     * @param {String | Function} exp - The expression represent function, or a function
+     * @param {any} obj - output object
+     * @param {boolean} shouldAddReturn - if true then append 'return ' before evaluating
+     * @returns true if the exp is a function, false otherwise
+     */
     static IsFunction(exp, obj, shouldAddReturn) {
         if (exp == null) {
             obj.v = null;
             return false;
+        }
+        if (exp instanceof Function) {
+            obj.v = exp;
+            return true;
         }
         try {
             var fn = new Function(shouldAddReturn ? "return " + exp : exp);
@@ -44,6 +52,10 @@ export class Utils {
             return false;
         }
     }
+}
+
+export const string = {
+    Empty: ''
 }
 
 /**
@@ -83,4 +95,6 @@ Array.prototype.Remove = function(item) {
 
 String.prototype.HasElement = HasElement;
 String.prototype.HasNonSpaceChar = HasNonSpaceChar;
-String.prototype.IsNullOrWhiteSpace = IsNullOrWhiteSpace;
+String.prototype.IsNullOrWhiteSpace = function () { 
+    return this.trim() === ''; 
+};

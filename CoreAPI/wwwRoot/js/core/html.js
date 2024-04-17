@@ -1,15 +1,16 @@
 export class HtmlEvent {
     static click = 'click';
 }
-export class Direction
+export const Direction =
 {
-    static top = 'top';
-    static right = 'right';
-    static bottom = 'bottom';
-    static left = 'left';
+    top: 'top',
+    right: 'right',
+    bottom: 'bottom',
+    left: 'left',
 }
 
 export class HTML {
+    /** @type {HTMLElement} */
     Context;
     Take(ele) {
         if (ele == null) return;

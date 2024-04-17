@@ -204,9 +204,15 @@ namespace Core.Components
             {
                 return;
             }
-            var component = ((header.Editable || NotCellText.Contains(header.ComponentType)) && ListViewSection.ListView.CanWrite)
-                ? ComponentFactory.GetComponent(header, EditForm) as EditableComponent
+            var isCustomCom = header.ComponentType.Contains(Utils.Dot);
+            var isEditable = header.Editable || NotCellText.Contains(header.ComponentType);
+            var com =  isCustomCom || isEditable
+                ? ComponentFactory.GetComponent(header, EditForm)
                 : new Label(header);
+            EditableComponent component = com as EditableComponent;
+            /*@
+             if (component == null) component = com;
+             */
             component.Id = header.Id;
             component.Name = header.FieldName;
             component.Entity = rowData;
