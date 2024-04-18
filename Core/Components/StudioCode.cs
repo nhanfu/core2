@@ -87,7 +87,7 @@ namespace Core.Components
         public void UpdateViewComponent()
         {
             var ComponentGroup = Entity as Component;
-            var parentSection = EditForm.OpenFrom.FilterChildren<Section>(x => x.ComponentGroup != null && x.ComponentGroup.Id == Entity[IdField].ToString()).FirstOrDefault();
+            var parentSection = EditForm.OpenFrom.FilterChildren<Section>(x => x.Meta != null && x.Meta.Id == Entity[IdField].ToString()).FirstOrDefault();
             Html.Take(Element).Clear();
             previewElement.ContentWindow.Document.Body.Style.MaxHeight = "700px";
             previewElement.ContentWindow.Document.Body.Style.Overflow = "scroll";

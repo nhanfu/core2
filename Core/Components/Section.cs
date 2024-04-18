@@ -3,7 +3,6 @@ using Core.Clients;
 using Core.Components.Extensions;
 using Core.Components.Forms;
 using Core.Components.Framework;
-using Core.Enums;
 using Core.Extensions;
 using Core.Models;
 using Core.MVVM;
@@ -21,8 +20,6 @@ namespace Core.Components
         private ElementType? elementType;
         private HTMLElement InnerEle;
         private HTMLElement _chevron;
-
-        public Component ComponentGroup { get; set; }
 
         public Section() : base(null)
         {
@@ -55,15 +52,15 @@ namespace Core.Components
                 Element = Html.Context;
             }
             Element.Id = Id;
-            if (ComponentGroup is null)
+            if (Meta is null)
             {
                 return;
             }
-            if (!ComponentGroup.Html.IsNullOrWhiteSpace())
+            if (!Meta.Html.IsNullOrWhiteSpace())
             {
-                var cssContent = ComponentGroup.Css;
-                var hard = ComponentGroup.Id;
-                var section = ComponentGroup.Name.ToLower() + hard;
+                var cssContent = Meta.Css;
+                var hard = Meta.Id;
+                var section = Meta.Name.ToLower() + hard;
                 if (!cssContent.IsNullOrWhiteSpace())
                 {
                     /*@
@@ -84,15 +81,15 @@ namespace Core.Components
                         Document.Head.AppendChild(style);
                     }
                 }
-                var cellText = Utils.GetHtmlCode(ComponentGroup.Html, new object[] { Entity });
+                var cellText = Utils.GetHtmlCode(Meta.Html, new object[] { Entity });
                 Element.InnerHTML = cellText;
-                var allComPolicies = ComponentGroup.Id.IsNullOrWhiteSpace() ? EditForm.GetElementPolicies(ComponentGroup.ComponentChildren.Select(x => x.Id).ToArray(), Utils.ComponentId) : new List<FeaturePolicy>().ToArray();
+                var allComPolicies = Meta.Id.IsNullOrWhiteSpace() ? EditForm.GetElementPolicies(Meta.Children.Select(x => x.Id).ToArray(), Utils.ComponentId) : new List<FeaturePolicy>().ToArray();
                 SplitChild(Element.Children, allComPolicies, section);
-                if (!ComponentGroup.Javascript.IsNullOrWhiteSpace())
+                if (!Meta.Javascript.IsNullOrWhiteSpace())
                 {
                     try
                     {
-                        var fn = new Function(ComponentGroup.Javascript);
+                        var fn = new Function(Meta.Javascript);
                         var obj = fn.Call(null, EditForm);
                         /*@
                         for (let prop in obj) this[prop] = obj[prop].bind(this);
@@ -104,17 +101,17 @@ namespace Core.Components
                         Console.WriteLine(e.Message);
                     }
                 }
-                RenderChildrenSection(ComponentGroup);
+                RenderChildrenSection(Meta);
                 return;
             }
-            if (ComponentGroup.IsDropDown)
+            if (Meta.IsDropDown)
             {
                 Html.Take(Element).ClassName("dd-wrap").Style("position: relative;").TabIndex(-1)
                     .Event(EventType.FocusOut, HideDetailIfButtonOnly)
-                    .Button.ClassName("btn ribbon").IText(ComponentGroup.Label)
+                    .Button.ClassName("btn ribbon").IText(Meta.Label)
                         .Event(EventType.Click, DropdownBtnClick).Span.Text("▼").EndOf(ElementType.button)
                     .Div.ClassName("dropdown").TabIndex(-1).Render();
-                if (ComponentGroup.IsCollapsible == true)
+                if (Meta.IsCollapsible == true)
                 {
                     Html.Instance.Style("display: none;");
                 }
@@ -123,15 +120,15 @@ namespace Core.Components
 
                 Element = Html.Context;
             }
-            if (ComponentGroup.Responsive && !ComponentGroup.IsTab || ComponentGroup.IsDropDown)
+            if (Meta.Responsive && !Meta.IsTab || Meta.IsDropDown)
             {
-                RenderComponentResponsive(ComponentGroup);
+                RenderComponentResponsive(Meta);
             }
             else
             {
-                RenderComponent(ComponentGroup);
+                RenderComponent(Meta);
             }
-            RenderChildrenSection(ComponentGroup);
+            RenderChildrenSection(Meta);
         }
 
         private void SplitChild(HTMLCollection hTMLElements, FeaturePolicy[] allComPolicies, string section)
@@ -145,7 +142,7 @@ namespace Core.Components
                     {
                         Element = eleChild
                     };
-                    var ui = ComponentGroup.ComponentChildren.FirstOrDefault(x => x.FieldName == eleChild.Dataset["name"]);
+                    var ui = Meta.Children.FirstOrDefault(x => x.FieldName == eleChild.Dataset["name"]);
                     eleChild.RemoveAttribute("data-name");
                     if (ui is null)
                     {
@@ -163,7 +160,12 @@ namespace Core.Components
                     {
                         continue;
                     }
-                    var childComponent = ComponentFactory.GetComponent(ui, EditForm) as EditableComponent;
+                    var component = ComponentFactory.GetComponent(ui, EditForm);
+                    if (component == null) return;
+                    var childComponent = component as EditableComponent;
+                    /*@
+                     if (childComponent == null) childComponent = component;
+                     */
                     if (typeof(ListView).IsAssignableFrom(childComponent.GetType()))
                     {
                         EditForm.ListViews.Add(childComponent as ListView);
@@ -194,7 +196,7 @@ namespace Core.Components
 
                         if (Client.SystemRole)
                         {
-                            childComponent.Element.AddEventListener(EventType.ContextMenu.ToString(), (e) => EditForm.SysConfigMenu(e, ui, ComponentGroup, null));
+                            childComponent.Element.AddEventListener(EventType.ContextMenu.ToString(), (e) => EditForm.SysConfigMenu(e, ui, Meta, null));
                         }
                     }
                     if (ui.Focus)
@@ -308,11 +310,11 @@ namespace Core.Components
 
         private void RenderChildrenSection(Component group)
         {
-            if (group.InverseParent.Nothing())
+            if (group.Children.Nothing())
             {
                 return;
             }
-            foreach (var child in group.InverseParent.OrderBy(x => x.Order))
+            foreach (var child in group.Children.OrderBy(x => x.Order))
             {
                 child.Disabled = group.Disabled;
                 if (child.IsTab)
@@ -344,7 +346,7 @@ namespace Core.Components
                     Parent = parent,
                     ParentElement = parent.Element,
                     Entity = parent.Entity,
-                    ComponentGroup = group,
+                    Meta = group,
                     EditForm = parent.EditForm,
                 };
                 tabG.Disabled = disabled;
@@ -352,7 +354,7 @@ namespace Core.Components
                 {
                     Parent = tabG,
                     Entity = parent.Entity,
-                    ComponentGroup = group,
+                    Meta = group,
                     Name = group.Name,
                     EditForm = parent.EditForm,
                 };
@@ -374,7 +376,7 @@ namespace Core.Components
                     Parent = tabG,
                     ParentElement = tabG.Element,
                     Entity = parent.Entity,
-                    ComponentGroup = group,
+                    Meta = group,
                     Name = group.Name
                 };
                 subTab.Disabled = disabled;
@@ -405,7 +407,7 @@ namespace Core.Components
             {
                 var per = (decimal)outerColumn / parentColumn * 100;
                 per = decimal.Round(per, 2, MidpointRounding.AwayFromZero);
-                var padding = decimal.Round((groupInfo.ItemInRow - 1m) / groupInfo.ItemInRow, 2, MidpointRounding.AwayFromZero);
+                var padding = decimal.Round((groupInfo.ItemInRow.Value - 1m) / groupInfo.ItemInRow.Value, 2, MidpointRounding.AwayFromZero);
                 width = outerColumn == parentColumn ? "100%" : $"calc({per}% - {padding}rem)";
             }
 
@@ -431,7 +433,7 @@ namespace Core.Components
             {
                 Id = groupInfo.Name + groupInfo.Id?.ToString(),
                 Name = groupInfo.Name,
-                ComponentGroup = groupInfo,
+                Meta = groupInfo,
             };
             section.Disabled = parent.Disabled || groupInfo.Disabled || !writePermission || editform.IsLock || section.Disabled;
             parent.AddChild(section, null, groupInfo.ShowExp);
@@ -443,8 +445,8 @@ namespace Core.Components
         public override void PrepareUpdateView(bool force, bool? dirty)
         {
             base.PrepareUpdateView(force, dirty);
-            ToggleShow(ComponentGroup?.ShowExp);
-            ToggleDisabled(ComponentGroup?.DisabledExp);
+            ToggleShow(Meta?.ShowExp);
+            ToggleDisabled(Meta?.DisabledExp);
         }
 
         public void ComponentProperties(object component)
@@ -460,15 +462,15 @@ namespace Core.Components
 
         private void RenderComponent(Component group)
         {
-            if (group.ComponentChildren.Nothing())
+            if (group.Children.Nothing())
             {
                 return;
             }
             var html = Html.Instance;
             html.Table.ClassName("ui-layout").TBody.TRow.Render();
             var column = 0;
-            var allComPolicies = EditForm.GetElementPolicies(group.ComponentChildren.Select(x => x.Id).ToArray(), Utils.ComponentId);
-            foreach (var ui in group.ComponentChildren.OrderBy(x => x.Order))
+            var allComPolicies = EditForm.GetElementPolicies(group.Children.Select(x => x.Id).ToArray(), Utils.ComponentId);
+            foreach (var ui in group.Children.OrderBy(x => x.Order))
             {
                 if (ui.Hidden)
                 {
@@ -513,6 +515,7 @@ namespace Core.Components
                     html.Width(ui.Width);
                 }
                 var childCom = ComponentFactory.GetComponent(ui, EditForm);
+                if (childCom == null) return;
                 var childComponent = childCom as EditableComponent;
                 /*@
                 if (childComponent.v == null) childComponent = { v: childCom };
@@ -599,25 +602,25 @@ namespace Core.Components
             Window.ClearTimeout(_imeout1);
             _imeout1 = Window.SetTimeout(() =>
             {
-                SubmitLabelChanged(nameof(ComponentGroup), com.Id, (e.Target as HTMLElement).TextContent.DecodeSpecialChar());
+                SubmitLabelChanged(nameof(Meta), com.Id, (e.Target as HTMLElement).TextContent.DecodeSpecialChar());
             }, 1000);
         }
 
         private void RenderComponentResponsive(Component group)
         {
-            if (group.ComponentChildren.Nothing())
+            if (group.Children.Nothing())
             {
                 return;
             }
             var html = Html.Instance;
-            var allComPolicies = EditForm.GetElementPolicies(group.ComponentChildren.Select(x => x.Id).ToArray(), Utils.ComponentId);
+            var allComPolicies = EditForm.GetElementPolicies(group.Children.Select(x => x.Id).ToArray(), Utils.ComponentId);
             var innerCol = EditForm.GetInnerColumn(group);
             if (innerCol > 0)
             {
                 Html.Take(Element).ClassName("grid").Style($"grid-template-columns: repeat({innerCol}, 1fr)");
             }
             var column = 0;
-            foreach (var ui in group.ComponentChildren.OrderBy(x => x.Order))
+            foreach (var ui in group.Children.OrderBy(x => x.Order))
             {
                 if (ui.Hidden)
                 {
@@ -643,7 +646,12 @@ namespace Core.Components
                     html.End.Render();
                 }
 
-                var childComponent = ComponentFactory.GetComponent(ui, EditForm) as EditableComponent;
+                var childCom = ComponentFactory.GetComponent(ui, EditForm);
+                if (childCom == null) return;
+                var childComponent = childCom as EditableComponent;
+                /*@
+                if (childComponent.v == null) childComponent = { v: childCom };
+                 */
                 if (typeof(ListView).IsAssignableFrom(childComponent.GetType()))
                 {
                     EditForm.ListViews.Add(childComponent as ListView);

@@ -1,12 +1,13 @@
 import { Action } from "./models/action.js";
 import { Utils, GetPropValue, SetPropValue, isNoU, string } from "./utils.js";
 import { ValidationRule } from "./models/validationRule.js";
+import EventType from "./models/eventType.js";
 
 /**
  * @typedef {import('./models/action.js').Action} Action
  * @typedef {import('./models/component.js').Component} Component
  * @typedef {import('./models/observable.js').default} ObservableArgs
- * @typedef {{ [key :string] : (ValidationRule) }} Validation
+ * @typedef {{ [key: string] : (ValidationRule) }} Validation
  */
 
 /**
@@ -16,6 +17,43 @@ import { ValidationRule } from "./models/validationRule.js";
  * It handles the parent-child relationships, event handling, and disposal of the component.
  */
 export default class EditableComponent {
+    /**
+     * Create instance of component
+     * @param {Component} meta 
+     * @param {HTMLElement} ele 
+     */
+    constructor(meta, ele) {
+        this.Meta = meta;
+        this.Element = ele;
+
+        if (meta != null && meta.Validation != null && meta.Validation.HasAnyChar()) {
+            /** @type {Validation[]} */
+            var rules = JSON.parse(meta.Validation);
+            if (rules.HasElement()) {
+                this.ValidationRules = rules.ToDictionary(x => x.Rule, x => x);
+            }
+        }
+        this.DOMContentLoaded.add(() => {
+            this.SetRequired();
+            this.SendQueueAction("Subscribe");
+            if (meta != null && meta.Events.HasAnyChar()) {
+                this.DispatchEvent(meta.Events, EventType.DOMContentLoaded, Entity).Done();
+            }
+        });
+    }
+    SetRequired() {
+        const ele = this.Element;
+        if (ele == null) return;
+        if (this.ValidationRules.HasElement() && this.ValidationRules.hasOwnProperty(ValidationRule.Required)) {
+            ele.setAttribute(ValidationRule.Required, true);
+        }
+        else {
+            ele.removeAttribute(ValidationRule.Required);
+        }
+    }
+    Validate(rule, value, validPredicate) {
+        
+    }
     /** @type {EditableComponent} EditForm - The root component of all tree node.*/
     EditForm;
     /** @type {EditableComponent} Parent - The parent component of this editable component.*/
@@ -38,7 +76,7 @@ export default class EditableComponent {
     /** @type {Action} Disposed - Handle after dispose event. */
     Disposed = new Action();
     /** @type {Action} Disposed - Handle DOM Content loaded event. */
-    DOMContentLoaded;
+    DOMContentLoaded = new Action();
     /** @type {Action} Handle toggle event. */
     OnToggle = new Action();
     #rootTab;
@@ -61,26 +99,89 @@ export default class EditableComponent {
      */
     set EditForm(editor) {
         this.#editForm = editor;
-    
-    /** @type {Action} */}
+
+        /** @type {Action} */
+    }
     UserInput = new Action();
     get IsSmallUp() { return document.clientWidth > 768 }
     get IsMediumUp() { return document.clientWidth > 992 }
     get IsLargeUp() { return document.clientWidth > 1200 }
     OldValue;
-    ValidationResult;
+    /** @type {{[key: string]: string}} */
+    ValidationResult = {};
     get ClassName() { return this.Element.className; }
     set ClassName(value) { this.Element.className = value; }
     /** @type {Validation} */
     ValidationRules = {};
-    /**
-     * Create instance of component
-     * @param {Component} meta 
-     * @param {HTMLElement} ele 
-     */
-    constructor(meta, ele) {
-        this.Meta = meta;
-        this.Element = ele;
+    #disabled;
+    /** @type {boolean} */
+    get Disabled() {
+        return this.#disabled;
+    }
+    set Disabled(value) {
+        this.#disabled = value;
+        this.SetDisableUI(value);
+        this.Children?.forEach(x => {
+            editable.Disabled = value;
+        });
+    }
+    SetDisableUI(disabled) {
+        const ele = this.Element;
+        if (ele == null) {
+            return;
+        }
+
+        if (disabled) {
+            ele.setAttribute("disabled", "disabled");
+        }
+        else {
+            ele.removeAttribute("disabled");
+            ele.setAttribute("enable", "true");
+        }
+    }
+    _dirty;
+    _setDirty;
+    UpdateDirty(dirty) {
+        if (dirty) {
+            this.SetDirtyInternal();
+        }
+        else {
+            this.ClearDirtyInternal();
+            this.FilterChildren(x => x._dirty).SelectForEach(x => x.ClearDirtyInternal());
+        }
+    }
+    SetDirtyInternal() {
+        this._dirty = this._setDirty;
+        if (!this._setDirty) {
+            this._setDirty = true;
+        }
+    }
+    ClearDirtyInternal() {
+        this._dirty = false;
+    }
+    get Dirty() {
+        return this._dirty && !this.AlwaysValid || this.FilterChildren(x => x._dirty, x => !x.PopulateDirty || x.AlwaysValid).Any();
+    }
+    set Dirty(value) {
+        this.UpdateDirty(value);
+    }
+    /** @type {boolean} */
+    AlwaysValid;
+    get IsValid() {
+        return this.ValidationResult?.Count === 0 || Object.keys(this.ValidationResult).length === 0;
+    }
+    PopulateDirty = true;
+    get CacheName() {
+        var exp = Meta?.CacheName;
+        if (exp.IsNullOrWhiteSpace()) return null;
+        var fn = {};
+        if (Utils.IsFunction(exp, fn)) {
+            return fn.call(null, this);
+        }
+        return exp;
+    }
+    get QueueName() {
+        return this.Meta?.QueueName;
     }
     /** @returns {string} Entity's Id */
     get EntityId() {
@@ -213,6 +314,12 @@ export default class EditableComponent {
             leaves = this.Children.Flattern()?.Where(x => x.Element != null && x.Parent != null && x.Children.Nothing()).ToArray();
         }
     }
+    /**
+     * 
+     * @param {(item: EditableComponent) => boolean} filter 
+     * @param {(item: EditableComponent) => boolean} ignore 
+     * @returns 
+     */
     FilterChildren(filter, ignore) {
         return this.Children.Flattern(x => x.Children.Where(child => {
             return ignore?.call(this, child) !== true && filter?.call(this, child) === true;

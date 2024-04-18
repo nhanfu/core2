@@ -18,7 +18,7 @@ namespace Core.Components.Extensions
 
             if (ui.ComponentType.IsNullOrEmpty())
             {
-                throw new InvalidOperationException($"Component type of {ui.Id} is null.");
+                return null;
             }
 
             ui.ComponentType = ui.ComponentType.Trim();

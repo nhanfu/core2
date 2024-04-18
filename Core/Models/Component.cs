@@ -1,6 +1,4 @@
 ﻿using Core.Enums;
-using Core.Extensions;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -8,6 +6,10 @@ namespace Core.Models
 {
     public partial class Component
     {
+        public Component()
+        {
+            Children = new List<Component>();
+        }
         public string Id { get; set; }
         public string TenantCode { get; set; }
         public string FieldName { get; set; }
@@ -182,7 +184,6 @@ namespace Core.Models
         public virtual Entity Reference { get; set; }
         public virtual Feature Feature { get; set; }
         public virtual Component Parent { get; set; }
-        public virtual ICollection<Component> ComponentChildren { get; set; }
-        public virtual ICollection<Component> InverseParent { get; set; }
+        public virtual ICollection<Component> Children { get; set; }
     }
 }

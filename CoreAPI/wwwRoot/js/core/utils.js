@@ -19,7 +19,7 @@ export function SetPropValue(obj, path, value) {
 }
 
 export const isNoU = (o) => o === null || o === undefined;
-export function HasNonSpaceChar () { return this.trim() !== ''; }
+export function HasNonSpaceChar() { return this.trim() !== ''; }
 
 export class Utils {
     /**
@@ -72,29 +72,47 @@ Array.prototype.Nothing = function () {
 Array.prototype.Flattern = function (getChildren) {
     if (this.Nothing()) return this;
     var firstLevel = this.Select(x => getChildren(x)).Where(x => x != null).SelectMany(x => x);
-    if (firstLevel.Nothing())
-    {
+    if (firstLevel.Nothing()) {
         return this;
     }
     return this.concat(firstLevel.Flattern(getChildren));
 };
+Array.prototype.Any = function (predicate) {
+    if (!predicate) {
+        return this.length > 0;
+    }
+    for (let i = 0; i < this.length; i++) {
+        if (predicate(this[i])) {
+            return true;
+        }
+    }
+};
 Array.prototype.Where = Array.prototype.filter;
 Array.prototype.SelectMany = Array.prototype.flatMap;
+Array.prototype.SelectForEach = Array.prototype.map;
 Array.prototype.Select = Array.prototype.map;
 Array.prototype.HasElement = HasElement;
-Array.prototype.ToArray = function() { return this; }
-Array.prototype.Contains = function(item) {
+Array.prototype.ToArray = function () { return this; }
+Array.prototype.Contains = function (item) {
     return this.indexOf(item) !== -1;
 };
-Array.prototype.Remove = function(item) {
+Array.prototype.Remove = function (item) {
     var index = this.indexOf(item);
     if (index !== -1) {
         this.splice(index, 1);
     }
 };
+Array.prototype.ToDictionary = function (keySelector, valueSelector) {
+    if (valueSelector == null) valueSelector = x => x;
+    return this.reduce((acc, curr) => {
+        acc[keySelector(curr)] = valueSelector(curr);
+        return acc;
+    }, {});
+};
 
 String.prototype.HasElement = HasElement;
+String.prototype.HasAnyChar = HasElement;
 String.prototype.HasNonSpaceChar = HasNonSpaceChar;
-String.prototype.IsNullOrWhiteSpace = function () { 
-    return this.trim() === ''; 
+String.prototype.IsNullOrWhiteSpace = function () {
+    return this.trim() === '';
 };

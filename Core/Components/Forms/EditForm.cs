@@ -307,35 +307,35 @@ namespace Core.Components.Forms
                     continue;
                 }
                 parent = componentGroupMap[item.ParentId];
-                if (parent.InverseParent == null)
+                if (parent.Children == null)
                 {
-                    parent.InverseParent = new List<Component>();
+                    parent.Children = new List<Component>();
                 }
 
-                if (!parent.InverseParent.Contains(item))
+                if (!parent.Children.Contains(item))
                 {
-                    parent.InverseParent.Add(item);
+                    parent.Children.Add(item);
                 }
 
                 item.Parent = parent;
             }
             foreach (var item in componentGroup)
             {
-                if (item.ComponentChildren == null || !item.ComponentChildren.Any())
+                if (item.Children == null || !item.Children.Any())
                 {
                     continue;
                 }
 
-                foreach (var ui in item.ComponentChildren)
+                foreach (var ui in item.Children)
                 {
                     ui.ComponentGroup = item;
                 }
-                if (item.InverseParent != null)
+                if (item.Children != null)
                 {
-                    item.InverseParent = item.InverseParent.OrderBy(x => x.Order).ToList();
+                    item.Children = item.Children.OrderBy(x => x.Order).ToList();
                 }
             }
-            componentGroup.ForEach(x => CalcItemInRow(x.InverseParent.ToList()));
+            componentGroup.ForEach(x => CalcItemInRow(x.Children.ToList()));
             var res = componentGroup.Where(x => x.ParentId is null);
             if (res.Nothing())
             {
@@ -607,6 +607,7 @@ namespace Core.Components.Forms
             {
                 child = ComponentFactory.GetComponent(com, this, ele) as EditableComponent;
             }
+            if (child == null) return null;
             child.ParentElement = child.ParentElement ?? ele;
             child.Entity = entity ?? child.EditForm?.Entity ?? LayoutForm.Entity;
             if (LayoutForm != null)
@@ -934,7 +935,7 @@ namespace Core.Components.Forms
             var componentGroup = arg["group"].CastProp<Component>();
             var com = new Component();
             var childComponent = Feature.ComponentGroup.FirstOrDefault(x => x.Id == componentGroup.Id);
-            var lastOrder = childComponent.ComponentChildren.Max(x => x.Order);
+            var lastOrder = childComponent.Children.Max(x => x.Order);
 
             switch (action)
             {
@@ -1008,8 +1009,9 @@ namespace Core.Components.Forms
 
         private void UpdateRender(Component component, Component componentGroup)
         {
-            var section = this.FindComponentByName<Section>(componentGroup.Name);
+            var section = FindComponentByName<Section>(componentGroup.Name);
             var childComponent = ComponentFactory.GetComponent(component, EditForm) as EditableComponent;
+            if (childComponent == null) return;
             childComponent.ParentElement = section.Element;
             section.AddChild(childComponent);
         }
@@ -1017,7 +1019,7 @@ namespace Core.Components.Forms
         public void SectionProperties(object arg)
         {
             var group = arg.CastProp<Component>();
-            group.InverseParent = null;
+            group.Children = null;
             var editor = new ComponentGroupBL
             {
                 Entity = group,
@@ -1030,7 +1032,7 @@ namespace Core.Components.Forms
         public void LayoutProperties(object arg)
         {
             var group = arg.CastProp<Component>();
-            group.InverseParent = null;
+            group.Children = null;
             var editor = new ComponentGroupBL
             {
                 Entity = group,
@@ -1260,11 +1262,11 @@ namespace Core.Components.Forms
                     return;
                 }
 
-                if (IsLargeUp && tg.ComponentGroup.Responsive && tg.Element.ParentElement.HasClass("tab-horizontal"))
+                if (IsLargeUp && tg.Meta.Responsive && tg.Element.ParentElement.HasClass("tab-horizontal"))
                 {
                     tg.Element.ParentElement.ReplaceClass("tab-horizontal", "tab-vertical");
                 }
-                else if (!IsLargeUp && tg.ComponentGroup.Responsive && tg.Element.ParentElement.HasClass("tab-vertical"))
+                else if (!IsLargeUp && tg.Meta.Responsive && tg.Element.ParentElement.HasClass("tab-vertical"))
                 {
                     tg.Element.ParentElement.ReplaceClass("tab-vertical", "tab-horizontal");
                 }

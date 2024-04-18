@@ -305,7 +305,7 @@ namespace Core.Components.Extensions
                 {
                     if (com.ComponentGroupId is null) return;
                     var g = groupMap.GetValueOrDefault(com.ComponentGroupId);
-                    g?.ComponentChildren.Add(com);
+                    g?.Children.Add(com);
                 });
                 tcs.TrySetResult(feature);
             });

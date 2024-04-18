@@ -13,7 +13,6 @@ namespace Core.Components.Forms
     public class TabGroup : EditableComponent
     {
         private readonly List<string> ListViewType = new List<string> { nameof(ListView), nameof(GroupListView), nameof(GridView), nameof(GroupGridView) };
-        public Component ComponentGroup { get; set; }
         public HTMLUListElement Ul { get; set; }
         public HTMLDivElement TabContent { get; set; }
         public bool ShouldCountBage { get; private set; }
@@ -25,13 +24,13 @@ namespace Core.Components.Forms
         public override void Render()
         {
             Html.Take(ParentElement).Div.ClassName("tab-group")
-                .ClassName(ComponentGroup.IsVertialTab ? "tab-vertical" : "tab-horizontal")
+                .ClassName(Meta.IsVertialTab ? "tab-vertical" : "tab-horizontal")
                 .Div.ClassName("headers-wrapper").Ul.ClassName("nav-config  nav nav-tabs nav-tabs-bottom mb-0");
             Ul = Html.Context as HTMLUListElement;
             Element = Ul.ParentElement;
             Html.Instance.End.End.Div.ClassName("tabs-content");
             TabContent = Html.Context as HTMLDivElement;
-            ShouldCountBage = ComponentGroup.InverseParent.All(x => x.ComponentChildren.HasElement() && ListViewType.Contains(x.ComponentChildren.First().ComponentType));
+            ShouldCountBage = Meta.Children.All(x => x.Children.HasElement() && ListViewType.Contains(x.Children.First().ComponentType));
         }
     }
 
@@ -62,7 +61,7 @@ namespace Core.Components.Forms
 
         public TabComponent(Component group) : base(null)
         {
-            ComponentGroup = group;
+            Meta = group;
             Name = group.Name;
         }
 
@@ -98,8 +97,8 @@ namespace Core.Components.Forms
 
         public override void Render()
         {
-            var policies = EditForm.GetElementPolicies(new string[] { ComponentGroup.Id }, Utils.ComponentGroupId);
-            var readPermission = !ComponentGroup.IsPrivate || policies.HasElementAndAll(x => x.CanRead);
+            var policies = EditForm.GetElementPolicies(new string[] { Meta.Id }, Utils.ComponentGroupId);
+            var readPermission = !Meta.IsPrivate || policies.HasElementAndAll(x => x.CanRead);
             if (!readPermission)
             {
                 return;
@@ -107,8 +106,8 @@ namespace Core.Components.Forms
 
             Html.Take(Parent.As<TabGroup>().Ul).Li
                 .A.ClassName("nav-link tab-default")
-                .I.ClassName(ComponentGroup.Icon ?? string.Empty).End
-                .IText(ComponentGroup.Label ?? ComponentGroup.Name)
+                .I.ClassName(Meta.Icon ?? string.Empty).End
+                .IText(Meta.Label ?? Meta.Name)
                 .Span.ClassName("ml-1 badge badge-warning");
             BadgeElement = Html.Context;
             if (DisplayBadge)
@@ -121,7 +120,7 @@ namespace Core.Components.Forms
             }
 
             _li = Html.Context.ParentElement.ParentElement;
-            Html.Instance.End.Div.ClassName("desc").IText(ComponentGroup.Description ?? string.Empty).End.Render();
+            Html.Instance.End.Div.ClassName("desc").IText(Meta.Description ?? string.Empty).End.Render();
             _li.AddEventListener(EventType.Click, () =>
             {
                 if (HasRendered)
@@ -141,9 +140,9 @@ namespace Core.Components.Forms
             Html.Take(Parent.As<TabGroup>().TabContent).Div.ClassName("tab-content");
             Element = Html.Context;
             var editForm = this.FindClosest<EditForm>();
-            RenderSection(this, ComponentGroup);
+            RenderSection(this, Meta);
             HasRendered = true;
-            this.DispatchEvent(ComponentGroup.Events, EventType.DOMContentLoaded, Entity).Done();
+            this.DispatchEvent(Meta.Events, EventType.DOMContentLoaded, Entity).Done();
         }
 
         public override void Focus()
@@ -154,7 +153,7 @@ namespace Core.Components.Forms
                 .ForEach(x => x.Show = false);
             Show = true;
             EditForm.ResizeListView();
-            this.DispatchEvent(ComponentGroup.Events, EventType.FocusIn, Entity).Done();
+            this.DispatchEvent(Meta.Events, EventType.FocusIn, Entity).Done();
         }
 
         public override bool Show
@@ -172,13 +171,13 @@ namespace Core.Components.Forms
                 {
                     _li.AddClass(ActiveClass);
                     _li.QuerySelector(ElementType.a.ToString()).AddClass(ActiveClass);
-                    this.DispatchEvent(ComponentGroup.Events, EventType.FocusIn, Entity).Done();
+                    this.DispatchEvent(Meta.Events, EventType.FocusIn, Entity).Done();
                 }
                 else
                 {
                     _li.RemoveClass(ActiveClass);
                     _li.QuerySelector(ElementType.a.ToString()).RemoveClass(ActiveClass);
-                    this.DispatchEvent(ComponentGroup.Events, EventType.FocusOut, Entity).Done();
+                    this.DispatchEvent(Meta.Events, EventType.FocusOut, Entity).Done();
                 }
             }
         }

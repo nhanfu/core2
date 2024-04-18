@@ -1,83 +1,83 @@
-export default eventType = {
-    click: 'click',
-    contextmenu: 'contextmenu',
-    dblclick: 'dblclick',
-    mousedown: 'mousedown',
-    mouseenter: 'mouseenter',
-    mouseleave: 'mouseleave',
-    mousemove: 'mousemove',
-    mouseover: 'mouseover',
-    mouseout: 'mouseout',
-    mouseup: 'mouseup',
-    keydown: 'keydown',
-    keypress: 'keypress',
-    keyup: 'keyup',
-    abort: 'abort',
-    beforeunload: 'beforeunload',
-    error: 'error',
-    hashchange: 'hashchange',
-    load: 'load',
-    resize: 'resize',
-    scroll: 'scroll',
-    unload: 'unload',
-    blur: 'blur',
-    change: 'change',
-    input: 'input',
-    focus: 'focus',
-    focusin: 'focusin',
-    focusout: 'focusout',
-    inputting: 'inputting',
-    invalid: 'invalid',
-    reset: 'reset',
-    search: 'search',
-    select: 'select',
-    submit: 'submit',
-    drag: 'drag',
-    dragend: 'dragend',
-    dragenter: 'dragenter',
-    dragleave: 'dragleave',
-    dragover: 'dragover',
-    dragstart: 'dragstart',
-    drop: 'drop',
-    copy: 'copy',
-    cut: 'cut',
-    paste: 'paste',
-    afterprint: 'afterprint',
-    beforeprint: 'beforeprint',
-    canplay: 'canplay',
-    canplaythrough: 'canplaythrough',
-    durationchange: 'durationchange',
-    emptied: 'emptied',
-    ended: 'ended',
-    error: 'error',
-    loadeddata: 'loadeddata',
-    loadedmetadata: 'loadedmetadata',
-    loadstart: 'loadstart',
-    pause: 'pause',
-    play: 'play',
-    playing: 'playing',
-    progress: 'progress',
-    ratechange: 'ratechange',
-    seeked: 'seeked',
-    seeking: 'seeking',
-    stalled: 'stalled',
-    suspend: 'suspend',
-    timeupdate: 'timeupdate',
-    volumechange: 'volumechange',
-    waiting: 'waiting',
-    animationend: 'animationend',
-    animationiteration: 'animationiteration',
-    animationstart: 'animationstart',
-    transitionend: 'transitionend',
-    message: 'message',
-    online: 'online',
-    offline: 'offline',
-    popstate: 'popstate',
-    show: 'show',
-    storage: 'storage',
-    toggle: 'toggle',
-    wheel: 'wheel',
-    compositionend: 'compositionend',
-    compositionstart: 'compositionstart',
-    DOMContentLoaded: 'DOMContentLoaded',
+export default class EventType {
+    static click = 'click';
+    static contextmenu = 'contextmenu';
+    static dblclick = 'dblclick';
+    static mousedown = 'mousedown';
+    static mouseenter = 'mouseenter';
+    static mouseleave = 'mouseleave';
+    static mousemove = 'mousemove';
+    static mouseover = 'mouseover';
+    static mouseout = 'mouseout';
+    static mouseup = 'mouseup';
+    static keydown = 'keydown';
+    static keypress = 'keypress';
+    static keyup = 'keyup';
+    static abort = 'abort';
+    static beforeunload = 'beforeunload';
+    static error = 'error';
+    static hashchange = 'hashchange';
+    static load = 'load';
+    static resize = 'resize';
+    static scroll = 'scroll';
+    static unload = 'unload';
+    static blur = 'blur';
+    static change = 'change';
+    static input = 'input';
+    static focus = 'focus';
+    static focusin = 'focusin';
+    static focusout = 'focusout';
+    static inputting = 'inputting';
+    static invalid = 'invalid';
+    static reset = 'reset';
+    static search = 'search';
+    static select = 'select';
+    static submit = 'submit';
+    static drag = 'drag';
+    static dragend = 'dragend';
+    static dragenter = 'dragenter';
+    static dragleave = 'dragleave';
+    static dragover = 'dragover';
+    static dragstart = 'dragstart';
+    static drop = 'drop';
+    static copy = 'copy';
+    static cut = 'cut';
+    static paste = 'paste';
+    static afterprint = 'afterprint';
+    static beforeprint = 'beforeprint';
+    static canplay = 'canplay';
+    static canplaythrough = 'canplaythrough';
+    static durationchange = 'durationchange';
+    static emptied = 'emptied';
+    static ended = 'ended';
+    static error = 'error';
+    static loadeddata = 'loadeddata';
+    static loadedmetadata = 'loadedmetadata';
+    static loadstart = 'loadstart';
+    static pause = 'pause';
+    static play = 'play';
+    static playing = 'playing';
+    static progress = 'progress';
+    static ratechange = 'ratechange';
+    static seeked = 'seeked';
+    static seeking = 'seeking';
+    static stalled = 'stalled';
+    static suspend = 'suspend';
+    static timeupdate = 'timeupdate';
+    static volumechange = 'volumechange';
+    static waiting = 'waiting';
+    static animationend = 'animationend';
+    static animationiteration = 'animationiteration';
+    static animationstart = 'animationstart';
+    static transitionend = 'transitionend';
+    static message = 'message';
+    static online = 'online';
+    static offline = 'offline';
+    static popstate = 'popstate';
+    static show = 'show';
+    static storage = 'storage';
+    static toggle = 'toggle';
+    static wheel = 'wheel';
+    static compositionend = 'compositionend';
+    static compositionstart = 'compositionstart';
+    static DOMContentLoaded = 'DOMContentLoaded';
 };

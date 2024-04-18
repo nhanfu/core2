@@ -1,4 +1,5 @@
 interface Array<T> {
+  Any(predicate?: (item: T) => boolean): boolean;
   Contains(item: T): boolean;
   /**
    * @returns {Array<T>} the array itself
@@ -17,10 +18,16 @@ interface Array<T> {
   Where(callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any): T[];
   /**
    * @template T, K
-   * @param mapper The function to get inner collection from each element
+   * @param {(item: T) => K} mapper The function to get inner collection from each element
    * @returns {Array<K>} Returns flattened array
    */
   SelectMany(mapper: Function<T, K[]>): Array<K>;
+  /**
+   * @template T, K
+   * @param {(item: T) => K} mapper The function to get inner collection from each element
+   * @returns {Array<K>} Returns flattened array
+   */
+  SelectForEach(mapper: Function<T, K[]>): Array<K>;
   HasElement(): boolean;
   Nothing(): boolean;
   Remove(item: T): void;
@@ -29,9 +36,17 @@ interface Array<T> {
    * @returns {Array<T>} The flatterned array
    */
   Flattern(getChildren: (value: T, index: number, array: T[]) => void, thisArg?: any): T[];
+  /**
+   * @template T, K, L
+   * @param keySelector 
+   * @param {(item: T) => L} valueSelector 
+   * @return {{ [key: K] : L}}
+   */
+  ToDictionary(keySelector: (item: T) => K, valueSelector: (item: T) => L): { [key: K]: L };
 }
 
 interface String {
+  HasAnyChar(): boolean;
   HasElement(): boolean;
   HasNonSpaceChar(): boolean;
   IsNullOrWhiteSpace(): boolean;

@@ -101,7 +101,7 @@ namespace Core.Components
             })).ToArray();
             var sectionInfo = new Component
             {
-                ComponentChildren = components,
+                Children = components,
                 Responsive = true,
                 Column = components.Length,
                 ClassName = "wrapper"

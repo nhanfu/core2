@@ -209,6 +209,7 @@ namespace Core.Components
             var com =  isCustomCom || isEditable
                 ? ComponentFactory.GetComponent(header, EditForm)
                 : new Label(header);
+            if (com == null) return;
             EditableComponent component = com as EditableComponent;
             /*@
              if (component == null) component = com;
