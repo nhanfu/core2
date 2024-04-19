@@ -1,5 +1,6 @@
 ﻿import EditableComponent from './editableComponent.js';
-import { GetPropValue, Utils, string } from './utils.js';
+import { GetPropValue, string } from './utils.js';
+import { Utils } from "./utils/utils.js";
 import { HtmlEvent, Direction, HTML, html } from './html.js';
 import { ComponentType, IdField } from './const.js';
 

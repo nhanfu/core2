@@ -269,5 +269,112 @@ export class Component {
     LocalRender = false;
     IgnoreConfirmHardDelete = false;
     ComponentGroup = null;
-    Reference = null
+    Reference = null;
+    /**
+     * Represents whether the component is a tab.
+     * @type {boolean}
+     */
+    IsTab;
+
+    /**
+     * Represents the group to which the tab belongs.
+     * @type {string}
+     */
+    TabGroup;
+
+    /**
+     * Represents whether the tab is vertical.
+     * @type {boolean}
+     */
+    IsVerticalTab;
+
+    /**
+     * Represents whether the component is responsive.
+     * @type {boolean}
+     */
+    Responsive;
+
+    /**
+     * Represents the policy ID associated with the component.
+     * @type {string}
+     */
+    PolicyId;
+
+    /**
+     * Represents the parent ID of the component.
+     * @type {string}
+     */
+    ParentId;
+
+    /**
+     * Represents the number of outer columns.
+     * @type {number | null}
+     */
+    OuterColumn;
+
+    /**
+     * Represents the number of outer columns for extra small screens.
+     * @type {number | null}
+     */
+    XsOuterColumn;
+
+    /**
+     * Represents the number of outer columns for small screens.
+     * @type {number | null}
+     */
+    SmOuterColumn;
+
+    /**
+     * Represents the number of outer columns for large screens.
+     * @type {number | null}
+     */
+    LgOuterColumn;
+
+    /**
+     * Represents the number of outer columns for extra large screens.
+     * @type {number | null}
+     */
+    XlOuterColumn;
+
+    /**
+     * Represents the number of outer columns for extra extra large screens.
+     * @type {number | null}
+     */
+    XxlOuterColumn;
+
+    /**
+     * Represents the month for which a badge is displayed.
+     * @type {number | null}
+     */
+    BadgeMonth;
+
+    /**
+     * Represents whether the component is a drop-down.
+     * @type {boolean}
+     */
+    IsDropDown;
+
+    /**
+     * Represents the number of items in a row.
+     * @type {number | null}
+     */
+    ItemInRow;
+
+    /**
+     * Represents the HTML content of the component.
+     * @type {string}
+     */
+    Html;
+
+    /**
+     * Represents the CSS styles of the component.
+     * @type {string}
+     */
+    Css;
+
+    /**
+     * Represents the JavaScript code associated with the component.
+     * @type {string}
+     */
+    Javascript;
 };

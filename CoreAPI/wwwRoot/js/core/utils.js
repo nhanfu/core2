@@ -1,3 +1,11 @@
+const SpecialChar = {
+    '+': "%2B",
+    '/': "%2F",
+    '?': "%3F",
+    '#': "%23",
+    '&': "%26"
+};
+
 export function GetPropValue(obj, path) {
     if (obj == null || path == null) return null;
     for (var i = 0, path = path.split('.'), len = path.length; i < len && obj != null; i++) {
@@ -18,44 +26,91 @@ export function SetPropValue(obj, path, value) {
     o[a[0]] = value
 }
 
+export function SetComplexPropValue(obj, path, value) {
+    if (obj == null || path == null) return;
+
+    const hierarchy = path.Split('.');
+    if (hierarchy.Length == 0) return;
+  
+    if (hierarchy.Length == 1)
+    {
+        SetPropValue(obj, path, value);
+        return;
+    }
+    var leaf = obj;
+    for (const i = 0; i < hierarchy.Length - 1; i++)
+    {
+        if (leaf == null)
+        {
+            return;
+        }
+
+        var key = hierarchy[i];
+        leaf = GetPropValue(leaf, key);
+    }
+    if (leaf == null)
+    {
+        return;
+    }
+
+    SetPropValue(leaf, hierarchy[hierarchy.Length - 1].ToString(), value);
+}
+
+export function ReverseSpecialChar() {
+    return Object.entries(SpecialChar)
+        .reduce((obj, [key, value], index) => {
+            obj[value] = index;
+            return obj;
+        }, {});
+}
+
+export function DecodeSpecialChar( str ) {
+    if (str == null) return;
+    const arr = str.split('');
+    var res = '';
+    for (const i = 0; i < arr.Length; i++)
+    {
+        if (arr[i] == '%' && i + 3 <= arr.Length && ReverseSpecialChar().hasOwnProperty(str.slice(i, 3)))
+        {
+            res += (ReverseSpecialChar()[str.slice(i, 3)]);
+            i += 2;
+        }
+        else
+        {
+            res += (arr[i]);
+        }
+    }
+    return res;
+}
+
+export function EncodeSpecialChar( str ) {
+    if (str == null) return;
+    const arr = str.split('');
+    var res = '';   
+    for (const i = 0; i < arr.Length; i++)
+    {
+        if (SpecialChar.hasOwnProperty(arr[i]))
+        {
+            res += (SpecialChar[arr[i]]);
+        }
+        else
+        {
+            res += (arr[i]);
+        }
+    }
+    return res;
+}
+
 export const isNoU = (o) => o === null || o === undefined;
 export function HasNonSpaceChar() { return this.trim() !== ''; }
 
-export class Utils {
-    /**
-     * 
-     * @param {String | Function} exp - The expression represent function, or a function
-     * @param {any} obj - output object
-     * @param {boolean} shouldAddReturn - if true then append 'return ' before evaluating
-     * @returns true if the exp is a function, false otherwise
-     */
-    static IsFunction(exp, obj, shouldAddReturn) {
-        if (exp == null) {
-            obj.v = null;
-            return false;
-        }
-        if (exp instanceof Function) {
-            obj.v = exp;
-            return true;
-        }
-        try {
-            var fn = new Function(shouldAddReturn ? "return " + exp : exp);
-            const fnVal = fn.call(null);
-            if (fnVal instanceof Function) {
-                obj.v = fnVal;
-                return true;
-            } else {
-                return false;
-            }
-        } catch ($e1) {
-            obj.v = null;
-            return false;
-        }
-    }
-}
-
-export const string = {
-    Empty: ''
+export class string {
+    static Empty = '';
+    static Format(template, ...args) {
+        return template.replace(/{(\d+)}/g, (match, index) => {
+          return typeof args[index] != 'undefined' ? args[index] : match;
+        });
+      }
 }
 
 /**
@@ -109,10 +164,19 @@ Array.prototype.ToDictionary = function (keySelector, valueSelector) {
         return acc;
     }, {});
 };
+Array.prototype.FirstOrDefault = function(predicate) {
+    if(!predicate) return this.length > 0 ? this[0] : null;
+    for(let i = 0; i < this.length; i++) {
+        if(predicate(this[i])) return this[i];
+    }
+}
 
 String.prototype.HasElement = HasElement;
 String.prototype.HasAnyChar = HasElement;
 String.prototype.HasNonSpaceChar = HasNonSpaceChar;
 String.prototype.IsNullOrWhiteSpace = function () {
     return this.trim() === '';
+};
+Object.prototype.GetComplexProp = function(path) {
+  return path.split(".").reduce((obj, key) => obj && obj[key], this);
 };
