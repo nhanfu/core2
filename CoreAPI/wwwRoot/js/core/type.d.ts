@@ -43,6 +43,13 @@ interface Array<T> {
    * @return {{ [key: K] : L}}
    */
   ToDictionary(keySelector: (item: T) => K, valueSelector: (item: T) => L): { [key: K]: L };
+  
+  /**
+ * Returns the first element of the array that satisfies the specified condition, or an empty array if no such element is found.
+ * @param filter - A function that tests each element for a condition.
+ * @returns The first element of the array that passes the test implemented by the provided function, or an empty array if no element passes the test.
+ */
+  FirstOrDefault(filter: (item: T, index: number) => boolean): Array<T>;
 }
 
 interface String {

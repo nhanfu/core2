@@ -1,7 +1,10 @@
 import { Action } from "./models/action.js";
-import { Utils, GetPropValue, SetPropValue, isNoU, string } from "./utils.js";
+import { GetPropValue, SetPropValue, isNoU, string } from "./utils.js";
+import { Utils } from "./utils/utils.js";
 import { ValidationRule } from "./models/validationRule.js";
 import EventType from "./models/eventType.js";
+import { ComponentType } from "./const.js";
+import { Uuid7 } from "./models/uuidv7.js";
 
 /**
  * @typedef {import('./models/action.js').Action} Action
@@ -41,19 +44,7 @@ export default class EditableComponent {
             }
         });
     }
-    SetRequired() {
-        const ele = this.Element;
-        if (ele == null) return;
-        if (this.ValidationRules.HasElement() && this.ValidationRules.hasOwnProperty(ValidationRule.Required)) {
-            ele.setAttribute(ValidationRule.Required, true);
-        }
-        else {
-            ele.removeAttribute(ValidationRule.Required);
-        }
-    }
-    Validate(rule, value, validPredicate) {
-        
-    }
+
     /** @type {EditableComponent} EditForm - The root component of all tree node.*/
     EditForm;
     /** @type {EditableComponent} Parent - The parent component of this editable component.*/
@@ -125,40 +116,6 @@ export default class EditableComponent {
             editable.Disabled = value;
         });
     }
-    SetDisableUI(disabled) {
-        const ele = this.Element;
-        if (ele == null) {
-            return;
-        }
-
-        if (disabled) {
-            ele.setAttribute("disabled", "disabled");
-        }
-        else {
-            ele.removeAttribute("disabled");
-            ele.setAttribute("enable", "true");
-        }
-    }
-    _dirty;
-    _setDirty;
-    UpdateDirty(dirty) {
-        if (dirty) {
-            this.SetDirtyInternal();
-        }
-        else {
-            this.ClearDirtyInternal();
-            this.FilterChildren(x => x._dirty).SelectForEach(x => x.ClearDirtyInternal());
-        }
-    }
-    SetDirtyInternal() {
-        this._dirty = this._setDirty;
-        if (!this._setDirty) {
-            this._setDirty = true;
-        }
-    }
-    ClearDirtyInternal() {
-        this._dirty = false;
-    }
     get Dirty() {
         return this._dirty && !this.AlwaysValid || this.FilterChildren(x => x._dirty, x => !x.PopulateDirty || x.AlwaysValid).Any();
     }
@@ -206,6 +163,86 @@ export default class EditableComponent {
     get QueueName() {
         return this.Meta?.QueueName;
     }
+
+    SetRequired() {
+        const ele = this.Element;
+        if (ele == null) return;
+        if (this.ValidationRules.HasElement() && this.ValidationRules.hasOwnProperty(ValidationRule.Required)) {
+            ele.setAttribute(ValidationRule.Required, true);
+        }
+        else {
+            ele.removeAttribute(ValidationRule.Required);
+        }
+    }
+    /**
+     * 
+     * @param {string} ruleType - Example 'required' or 'unique'
+     * @param {any} value - Value to validate
+     * @param {(item: any, rule: any) => boolean} validPredicate 
+     * @returns 
+     */
+    Validate(ruleType, value, validPredicate) {
+        if (!this.ValidationRules.hasOwnProperty(ruleType)) {
+            return true;
+        }
+        let rule = this.ValidationRules[ruleType];
+        if (rule === null || rule.Value1 === null) {
+            return true;
+        }
+        let field = rule.Value1.toString();
+        if (field === "") {
+            return true;
+        }
+        let ruleValue = rule.Value1;
+        let label = ruleValue;
+        let [hasField, fieldVal] = this.Entity.GetComplexProp(field);
+        if (hasField) {
+            label = this.Parent.find(x => x.Name === field)?.Meta?.Label;
+            ruleValue = fieldVal;
+        }
+        if (!validPredicate(value, ruleValue)) {
+            this.ValidationResult[ruleType] = string.Format(rule.Message, this.Meta.Label, label);
+            return true;
+        }
+        else {
+            delete this.ValidationResult[ruleType];
+        }
+        return false;
+    }
+    SetDisableUI(disabled) {
+        const ele = this.Element;
+        if (ele == null) {
+            return;
+        }
+
+        if (disabled) {
+            ele.setAttribute("disabled", "disabled");
+        }
+        else {
+            ele.removeAttribute("disabled");
+            ele.setAttribute("enable", "true");
+        }
+    }
+    _dirty;
+    _setDirty;
+    UpdateDirty(dirty) {
+        if (dirty) {
+            this.SetDirtyInternal();
+        }
+        else {
+            this.ClearDirtyInternal();
+            this.FilterChildren(x => x._dirty).SelectForEach(x => x.ClearDirtyInternal());
+        }
+    }
+    SetDirtyInternal() {
+        this._dirty = this._setDirty;
+        if (!this._setDirty) {
+            this._setDirty = true;
+        }
+    }
+    ClearDirtyInternal() {
+        this._dirty = false;
+    }
     SetDefaultVal() {
         if (this.Entity == null || this.EntityId == null) return;
         var fn = {};
@@ -216,6 +253,144 @@ export default class EditableComponent {
             SetPropValue(this.Entity, this.FieldName, this.DefaultValue);
         }
     }
+    ValidateRequired(value) {
+        if (this.Element === null || Object.keys(this.ValidationRules).length === 0 || this.EmptyRow || this.AlwaysValid) {
+            return true;
+        }
+    
+        if (!this.ValidationRules.hasOwnProperty(ValidationRule.Required)) {
+            this.Element.removeAttribute(ValidationRule.Required);
+            return true;
+        }
+    
+        const requiredRule = this.ValidationRules[ValidationRule.Required];
+        this.Element.setAttribute(ValidationRule.Required, true.toString());
+    
+        if (value === null || value === undefined || value.toString().trim() === "") {
+            this.Element.removeAttribute("readonly");
+            this.ValidationResult[ValidationRule.Required] = requiredRule.Message.replace("{0}", LangSelect.Get(this.Meta.Label)).replace("{1}", this.Entity);
+            return false;
+        } else {
+            delete this.ValidationResult[ValidationRule.Required];
+            return true;
+        }
+    }
+    
+    AddRule(rule) {
+        this.ValidationRules[rule.Rule] = rule;
+        if (rule.Rule === ValidationRule.Required) {
+            this.Element.setAttribute(ValidationRule.Required, true.toString());
+        }
+    }
+    
+    RemoveRule(ruleName) {
+        delete this.ValidationRules[ruleName];
+        if (!Object.keys(this.ValidationRules).includes(ValidationRule.Required)) {
+            this.Element.removeAttribute(ValidationRule.Required);
+        }
+    }
+    
+    CascadeField() {
+        if (this.Meta.CascadeField === null || this.Meta.CascadeField.trim() === "") {
+            return;
+        }
+    
+        const root = this.FindClosest(ComponentType.ListViewItem) ?? this.EditForm;
+        const cascadeFields = this.Meta.CascadeField.split(",").map(field => field.trim()).filter(x => x !== "");
+        if (cascadeFields.length === 0) {
+            return;
+        }
+    
+        cascadeFields.forEach(field => {
+            root.FilterChildren(x => x.Name === field).forEach(target => {
+                if (target instanceof SearchEntry && target !== null) {
+                    target.Value = null;
+                    target.Meta.LocalData = null;
+                } else {
+                    target.UpdateView();
+                }
+            });
+        });
+    }
+
+    GetInvalid() {
+        return this.Children.Flattern(x => x.AlwaysValid ? null : x.Children).Where(x => !x.IsValid);
+    }
+
+    PopulateFields(entity = null) {
+        if (this.Entity === null || this.Meta.PopulateField === null || this.Meta.PopulateField.trim() === "") {
+            return;
+        }
+
+        const gridRow = this.FindClosest(ComponentType.ListViewItem) ?? this.FindClosest(ComponentType.EditForm);
+        const root = gridRow !== null ? gridRow : this.EditForm;
+
+        const isFunc = Utils.IsFunction(this.Meta.PopulateField, Function);
+        if (isFunc) {
+            try {
+                this.Meta.PopulateField.call(null, this, entity);
+            } catch (error) {
+                console.error(error);
+            }
+            root.UpdateViewAwait(true);
+            return;
+        }
+
+        const populatedFields = this.Meta.PopulateField.split(",").map(field => field.trim()).filter(x => x !== "");
+        if (entity === null || populatedFields.length === 0) {
+            return;
+        }
+
+        populatedFields.forEach(field => {
+            root.FilterChildren(x => x.Name === field).forEach(target => {
+                const value = Utils.GetPropValue(entity, field);
+                const oldVal = Utils.GetPropValue(this.Entity, field);
+                const targetType = this.Entity.constructor.GetComplexPropType(field);
+                if (value === oldVal || targetType === null || new targetType() !== oldVal) {
+                    return;
+                }
+                this.Entity.SetComplexPropValue(field, value);
+                target.UpdateView(true, false);
+            });
+        });
+    }
+
+    GetValueTextAct() {
+        return this.Element.textContent;
+    }
+
+    AddIdToPatch(details) {
+        const idFieldIndex = details.findIndex(x => x.Field === Utils.IdField);
+        if (idFieldIndex !== -1) details.splice(idFieldIndex, 1);
+        if (this.EntityId === null) {
+            details.push({ Field: Utils.IdField, Value: Uuid7.Id25() });
+        } else {
+            details.push({ Field: Utils.IdField, Value: this.EntityId, OldVal: this.EntityId });
+        }
+    }
+
+    addEventListener(name, handler) {
+        if (handler === null) throw new Error("Handler cannot be null");
+        const handlers = this._events[name] || null;
+        if (handlers === null) {
+            this._events[name] = handler;
+        } else {
+            this._events[name] += handler;
+        }
+    }
+
+    removeEventListener(name, handler) {
+        if (handler === null) throw new Error("Handler cannot be null");
+        const handlers = this._events[name] || null;
+        if (handlers !== null) {
+            delete this._events[name];
+        }
+    }
+
+    FindComponentByName(name, type) {
+        return this.FirstOrDefault(x => x.Name === name && (type == null || x.Classes.includes(type)));
+    }
+
     /**
      * Find closeset component
      * @param {string} type - Class type name
@@ -268,7 +443,12 @@ export default class EditableComponent {
             Show = shown ?? false;
         }
     }
-    ToggleDisabled() { }
+    ToggleDisabled(disabled) {
+        if (disabled !== null && Utils.IsFunction(disabled)) {
+            let shouldDisabled = disabled(null, this) || false;
+            this.Disabled = shouldDisabled;
+        }
+    }
     Dispose() {
         this.SendQueueAction("Unsubscribe");
         this.DisposeChildren();
@@ -314,6 +494,22 @@ export default class EditableComponent {
             leaves = this.Children.Flattern()?.Where(x => x.Element != null && x.Parent != null && x.Children.Nothing()).ToArray();
         }
     }
+    GetValueText() {
+        if (this.Element === null) {
+            return "";
+        }
+        if (this.Element instanceof HTMLInputElement) {
+            return this.Element.value;
+        }
+        if (this.Element instanceof HTMLTextAreaElement) {
+            return this.Element.value;
+        }
+        return "";
+    }
+
+    ValidateAsync() {
+        return Promise.resolve(true);
+    }
     /**
      * 
      * @param {(item: EditableComponent) => boolean} filter 
@@ -324,5 +520,13 @@ export default class EditableComponent {
         return this.Children.Flattern(x => x.Children.Where(child => {
             return ignore?.call(this, child) !== true && filter?.call(this, child) === true;
         })).Where(filter);
+    }
+    /**
+     * Returns the first element of the collection that satisfies the specified condition, or null if no such element is found.
+     * @param {(item: EditableComponent) => boolean} filter - The condition to check for each element.
+     * @returns {EditableComponent|null} The first element that satisfies the condition, or null if no such element is found.
+     */
+    FirstOrDefault(filter) {
+        return this.Children.Flattern(x => x.Children).FirstOrDefault(filter);
     }
 }

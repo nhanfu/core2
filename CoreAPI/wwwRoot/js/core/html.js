@@ -194,6 +194,14 @@ export class HTML {
         this.Context.PreviousElementSibling.checked = val;
         return this;
     }
+    Attr(name, value) {
+        this.Context.setAttribute(name, value);
+        return this;
+    }
+    DataAttr(name, value) {
+        this.Context.setAttribute('data-'+name, value);
+        return this;
+    }
 }
 
 export const html = new HTML();
