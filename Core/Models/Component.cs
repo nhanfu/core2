@@ -136,7 +136,6 @@ namespace Core.Models
         public string Lang { get; set; }
         public string DelCmd { get; set; }
         public string DelParam { get; set; }
-        public string Name { get; set; }
         public bool IsTab { get; set; }
         public string TabGroup { get; set; }
         public bool IsVertialTab { get; set; }

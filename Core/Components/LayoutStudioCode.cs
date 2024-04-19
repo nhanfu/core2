@@ -79,10 +79,10 @@ namespace Core.Components
                 return;
             }
             previewElement.Src = Window.Location.Href;
-            previewElement.AddEventListener(EventType.Load, () =>
+            previewElement.AddEventListener(EventType.Load, (Action)(() =>
             {
-                var section = ComponentGroup.Name + ComponentGroup.Id;
-                var csstag = previewElement.ContentWindow.Document.Head.QuerySelector("#" + ComponentGroup.Name + ComponentGroup.Id) as HTMLStyleElement;
+                var section = ComponentGroup.FieldName + ComponentGroup.Id;
+                var csstag = previewElement.ContentWindow.Document.Head.QuerySelector((string)("#" + ComponentGroup.FieldName + ComponentGroup.Id)) as HTMLStyleElement;
                 if (csstag is null)
                 {
                     styleElement = Document.CreateElement(ElementType.style.ToString()) as HTMLStyleElement;
@@ -94,7 +94,7 @@ namespace Core.Components
                 {
                     styleElement = csstag;
                 }
-            });
+            }));
         }
 
         public override void UpdateView(bool force = false, bool? dirty = null, params string[] componentNames)
