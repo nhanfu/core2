@@ -41,7 +41,7 @@ namespace Core.Components
                 previewElement = Html.Instance.GetContext() as HTMLIFrameElement;
                 var ComponentGroup = Entity as Component;
                 var hard = ComponentGroup.Id;
-                var section = ComponentGroup.Name.ToLower() + hard;
+                var section = ComponentGroup.FieldName.ToLower() + hard;
                 var cssContent = Entity["Css"] is null ? string.Empty : Entity["Css"].ToString();
                 var iframeDoc = previewElement.ContentWindow.Document;
                 var htmlElementInsideIframe = iframeDoc.DocumentElement;
@@ -63,7 +63,7 @@ namespace Core.Components
                         }
                     });
                  */
-                var csstag = previewElement.ContentWindow.Document.Head.QuerySelector("#" + ComponentGroup.Name + ComponentGroup.Id) as HTMLStyleElement;
+                var csstag = previewElement.ContentWindow.Document.Head.QuerySelector("#" + ComponentGroup.FieldName + ComponentGroup.Id) as HTMLStyleElement;
                 if (csstag is null)
                 {
                     styleElement = Document.CreateElement(ElementType.style.ToString()) as HTMLStyleElement;

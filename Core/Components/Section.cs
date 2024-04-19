@@ -60,7 +60,7 @@ namespace Core.Components
             {
                 var cssContent = Meta.Css;
                 var hard = Meta.Id;
-                var section = Meta.Name.ToLower() + hard;
+                var section = Meta.FieldName.ToLower() + hard;
                 if (!cssContent.IsNullOrWhiteSpace())
                 {
                     /*@
@@ -355,7 +355,7 @@ namespace Core.Components
                     Parent = tabG,
                     Entity = parent.Entity,
                     Meta = group,
-                    Name = group.Name,
+                    Name = group.FieldName,
                     EditForm = parent.EditForm,
                 };
                 subTab.Disabled = disabled;
@@ -377,7 +377,7 @@ namespace Core.Components
                     ParentElement = tabG.Element,
                     Entity = parent.Entity,
                     Meta = group,
-                    Name = group.Name
+                    Name = group.FieldName
                 };
                 subTab.Disabled = disabled;
                 tabG.Children.Add(subTab);
@@ -431,8 +431,8 @@ namespace Core.Components
             Html.Instance.Display(!groupInfo.Hidden).Style(groupInfo.Style ?? string.Empty).Width(width);
             var section = new Section(Html.Context)
             {
-                Id = groupInfo.Name + groupInfo.Id?.ToString(),
-                Name = groupInfo.Name,
+                Id = groupInfo.FieldName + groupInfo.Id?.ToString(),
+                Name = groupInfo.FieldName,
                 Meta = groupInfo,
             };
             section.Disabled = parent.Disabled || groupInfo.Disabled || !writePermission || editform.IsLock || section.Disabled;

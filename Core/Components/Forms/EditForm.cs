@@ -303,7 +303,7 @@ namespace Core.Components.Forms
 
                 if (!componentGroupMap.ContainsKey(item.ParentId))
                 {
-                    Console.WriteLine($"The parent key {item.ParentId} of {item.Name} doesn't exist");
+                    Console.WriteLine($"The parent key {item.ParentId} of {item.FieldName} doesn't exist");
                     continue;
                 }
                 parent = componentGroupMap[item.ParentId];
@@ -1009,7 +1009,7 @@ namespace Core.Components.Forms
 
         private void UpdateRender(Component component, Component componentGroup)
         {
-            var section = FindComponentByName<Section>(componentGroup.Name);
+            var section = FindComponentByName<Section>(componentGroup.FieldName);
             var childComponent = ComponentFactory.GetComponent(component, EditForm) as EditableComponent;
             if (childComponent == null) return;
             childComponent.ParentElement = section.Element;

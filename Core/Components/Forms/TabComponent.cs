@@ -62,7 +62,7 @@ namespace Core.Components.Forms
         public TabComponent(Component group) : base(null)
         {
             Meta = group;
-            Name = group.Name;
+            Name = group.FieldName;
         }
 
         public virtual string Badge
@@ -107,7 +107,7 @@ namespace Core.Components.Forms
             Html.Take(Parent.As<TabGroup>().Ul).Li
                 .A.ClassName("nav-link tab-default")
                 .I.ClassName(Meta.Icon ?? string.Empty).End
-                .IText(Meta.Label ?? Meta.Name)
+                .IText(Meta.Label ?? Meta.FieldName)
                 .Span.ClassName("ml-1 badge badge-warning");
             BadgeElement = Html.Context;
             if (DisplayBadge)
