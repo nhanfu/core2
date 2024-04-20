@@ -18,7 +18,7 @@ namespace Core.Components.Framework
 {
     public partial class MenuComponent : EditableComponent
     {
-        public IEnumerable<Feature> _feature;
+        public IEnumerable<Component> _feature;
         private const string ActiveClass = "active";
         public const string ASIDE_WIDTH = "44px";
         private static MenuComponent _instance;
@@ -68,7 +68,7 @@ namespace Core.Components.Framework
                     var parent = dic[menu.ParentId];
                     if (parent.InverseParent is null)
                     {
-                        parent.InverseParent = new List<Feature>();
+                        parent.InverseParent = new List<Component>();
                     }
                     else
                     {
@@ -83,7 +83,7 @@ namespace Core.Components.Framework
         {
             BoostrapTask().Done(ds =>
             {
-                _feature = ds[0].Select(x => x.CastProp<Feature>()).ToList();
+                _feature = ds[0].Select(x => x.CastProp<Component>()).ToList();
                 BuildFeatureTree();
                 Html.Take(".sidebar-items").Clear();
                 RenderMenuItems(_feature);
@@ -107,7 +107,7 @@ namespace Core.Components.Framework
             var roles = string.Join("\\", Client.Token.RoleIds);
             startup.Done(res =>
             {
-                var features = res.Length > 0 ? res[0].Select(x => x.CastProp<Feature>()).ToArray() : new Feature[] { };
+                var features = res.Length > 0 ? res[0].Select(x => x.CastProp<Component>()).ToArray() : new Component[] { };
                 var settings = res.Length > 1 ? res[1].Select(x => x.CastProp<UserSetting>()).ToArray() : new UserSetting[] { };
                 var entities = res.Length > 2 ? res[2].Select(x => x.CastProp<Entity>()).ToArray() : new Entity[] { };
                 var tasks = res.Length > 3 ? res[3].Select(x => x.CastProp<TaskNotification>()).ToList() : new List<TaskNotification>();
@@ -137,7 +137,7 @@ namespace Core.Components.Framework
             return startup;
         }
 
-        private void GetFeatureCb(Feature[] features, UserSetting[] settings, Entity[] entities)
+        private void GetFeatureCb(Component[] features, UserSetting[] settings, Entity[] entities)
         {
             if (features.Nothing() || settings.Nothing() || entities.Nothing()) return;
             Client.Entities = entities.ToDictionary(x => x.Id);
@@ -351,7 +351,7 @@ namespace Core.Components.Framework
             Element.Style.Left = $"-{ASIDE_WIDTH}";
         }
 
-        private void RenderKeyMenuItems(IEnumerable<Feature> menuItems, bool nested = false)
+        private void RenderKeyMenuItems(IEnumerable<Component> menuItems, bool nested = false)
         {
             Html.Instance.Ul.ClassName("nav nav-pills nav-sidebar flex-column").DataAttr("widget", "treeview").Attr("role", "menu").DataAttr("accordion", "false").ForEach(menuItems, (item, index) =>
             {
@@ -380,7 +380,7 @@ namespace Core.Components.Framework
             });
         }
 
-        private void RenderMenuItems(IEnumerable<Feature> menuItems, bool nested = false)
+        private void RenderMenuItems(IEnumerable<Component> menuItems, bool nested = false)
         {
             Html.Instance.Ul.ClassName("nav nav-treeview").ForEach(menuItems, (item, index) =>
             {
@@ -418,7 +418,7 @@ namespace Core.Components.Framework
         private HTMLElement _btnBack;
         private HTMLElement[] _btnToggle;
 
-        private void FeatureContextMenu(Event e, Feature feature)
+        private void FeatureContextMenu(Event e, Component feature)
         {
             if (!Client.SystemRole)
             {
@@ -432,7 +432,7 @@ namespace Core.Components.Framework
                 ctxMenu.Left = e.Left();
                 ctxMenu.MenuItems = new List<ContextMenuItem>
                 {
-                    new ContextMenuItem { Icon = "fa fa-plus", Text = "New feature", Click = EditFeature, Parameter = new Feature() },
+                    new ContextMenuItem { Icon = "fa fa-plus", Text = "New feature", Click = EditFeature, Parameter = new Component() },
                     new ContextMenuItem { Icon = "mif-unlink", Text = "Deactivate this feature", Click = Deactivate, Parameter = feature },
                     new ContextMenuItem { Icon = "fa fa-clone", Text = "Clone this feature", Click = CloneFeature, Parameter = feature },
                     new ContextMenuItem { Icon = "fa fa-list", Text = "Manage features", Click = FeatureManagement },
@@ -444,7 +444,7 @@ namespace Core.Components.Framework
 
         private void EditFeature(object ev)
         {
-            var feature = ev as Feature;
+            var feature = ev as Component;
             var editor = new FeatureDetailBL()
             {
                 Entity = feature,
@@ -456,7 +456,7 @@ namespace Core.Components.Framework
 
         private void CloneFeature(object ev)
         {
-            var feature = ev as Feature;
+            var feature = ev as Component;
             var confirmDialog = new ConfirmDialog
             {
                 Content = "Bạn có muốn clone feature này?"
@@ -500,19 +500,19 @@ namespace Core.Components.Framework
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0017:Simplify object initialization", Justification = "<Pending>")]
         private void Deactivate(object ev)
         {
-            var feature = ev as Feature;
+            var feature = ev as Component;
             var confirmDialog = new ConfirmDialog();
             confirmDialog.Content = "DO you want to deactivate this feature?";
             confirmDialog.YesConfirmed += () =>
             {
                 Client.Instance
-                    .DeactivateAsync(new string[] { feature.Id }, nameof(Feature), Client.MetaConn)
+                    .DeactivateAsync(new string[] { feature.Id }, nameof(Component), Client.MetaConn)
                     .Done();
             };
             AddChild(confirmDialog);
         }
 
-        private void MenuItemClick(Feature feature, Event e)
+        private void MenuItemClick(Component feature, Event e)
         {
             var a = e.Target as HTMLElement;
             if (!(a is HTMLAnchorElement))
@@ -603,7 +603,7 @@ namespace Core.Components.Framework
             var tcs = new TaskCompletionSource<bool>();
             ComponentExt.LoadFeature(state.Name).Done(f =>
             {
-                if (f is null || f.Component.Nothing()) return;
+                if (f is null || f.ComponentChildren.Nothing()) return;
                 EditForm instance = null;
                 instance = new TabEditor(f.EntityName)
                 {
@@ -623,7 +623,7 @@ namespace Core.Components.Framework
             return tcs.Task;
         }
 
-        public static Task<bool> OpenFeature(Feature feature)
+        public static Task<bool> OpenFeature(Component feature)
         {
             if (feature is null)
             {
@@ -639,7 +639,7 @@ namespace Core.Components.Framework
             var tcs = new TaskCompletionSource<bool>();
             ComponentExt.LoadFeature(feature.Name).Done(f =>
             {
-                if (f is null || f.Component.Nothing()) return;
+                if (f is null || f.ComponentChildren.Nothing()) return;
                 EditForm instance = null;
                 instance = new TabEditor(f.EntityName);
                 if (!f.Script.IsNullOrWhiteSpace())

@@ -1494,7 +1494,7 @@ from ({jsRes.Query}) as ds
             where g.FeatureId = '{id}' or c.FeatureId = '{id}'";
         var ds = await _sql.ReadDataSet(query, vm.CachedMetaConn);
         if (ds.Length == 0 || ds[0].Length == 0) return false;
-        var feature = ds[0][0].MapTo<Feature>();
+        var feature = ds[0][0].MapTo<Component>();
         var policies = ds.Length > 1 ? ds[1].Select(x => x.MapTo<FeaturePolicy>()).ToList() : [];
         var groups = ds.Length > 2 ? ds[2].Select(x => x.MapTo<Component>()).ToList() : [];
         var components = ds.Length > 3 ? ds[3].Select(x => x.MapTo<Component>()).ToList() : [];

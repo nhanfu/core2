@@ -59,7 +59,7 @@ namespace Core.Components.Forms
 
         public HashSet<ListView> ListViews { get; set; } = new HashSet<ListView>();
         public bool ShouldLoadEntity { get; set; }
-        public Feature Feature { get; set; }
+        public Component Feature { get; set; }
         public virtual string Icon
         {
             get => _icon;
@@ -392,7 +392,7 @@ namespace Core.Components.Forms
             LoadEntity().Done(x => featureTask.Done(f => LayoutLoaded(f, x, callback)));
         }
 
-        private void LayoutLoaded(Feature feature, object entity, Action loadedCallback = null)
+        private void LayoutLoaded(Component feature, object entity, Action loadedCallback = null)
         {
             var token = Client.Token;
             Entity.CopyPropFrom(entity);
@@ -403,7 +403,7 @@ namespace Core.Components.Forms
             RoleIds = token?.RoleIds != null ? string.Join(",", token.RoleIds) : string.Empty;
             CostCenterId = token?.CostCenterId;
             RoleNames = token?.RoleNames != null ? string.Join(",", token.RoleNames) : string.Empty;
-            var groupTree = BuildTree(feature.ComponentGroup.ToList().OrderBy(x => x.Order).ToList());
+            var groupTree = BuildTree(feature.ComponentChildren.ToList().OrderBy(x => x.Order).ToList());
             Element = RenderTemplate(feature);
             SetFeatureStyleSheet(feature.StyleSheet);
             RenderTabOrSection(groupTree);
@@ -454,7 +454,7 @@ namespace Core.Components.Forms
             }
         }
 
-        private HTMLElement RenderTemplate(Feature feature)
+        private HTMLElement RenderTemplate(Component feature)
         {
             HTMLElement entryPoint = Document.GetElementById(SpecialEntryPoint) ?? Document.GetElementById("template") ?? Element;
             if (ParentForm != null && Portal && !Popup)
@@ -519,11 +519,11 @@ namespace Core.Components.Forms
                 if (_allCom != null) return _allCom;
                 if (LayoutForm is null)
                 {
-                    _allCom = Feature.Component.ToArray();
+                    _allCom = Feature.ComponentChildren.ToArray();
                 }
                 else
                 {
-                    _allCom = Feature.Component.Concat(LayoutForm.Feature.Component).ToArray();
+                    _allCom = Feature.ComponentChildren.Concat(LayoutForm.Feature.ComponentChildren).ToArray();
                 }
                 return _allCom;
             }
@@ -662,7 +662,7 @@ namespace Core.Components.Forms
             this.SetDisabled(false, BtnCancel);
         }
 
-        private void SetFeatureProperties(Feature feature)
+        private void SetFeatureProperties(Component feature)
         {
             if (feature is null)
             {
@@ -838,7 +838,7 @@ namespace Core.Components.Forms
 
         public void CloneFeature(object ev)
         {
-            var feature = ev as Feature;
+            var feature = ev as Component;
             var confirmDialog = new ConfirmDialog
             {
                 Content = "Bạn có muốn clone feature này?",
@@ -934,7 +934,7 @@ namespace Core.Components.Forms
             var action = arg["action"] as string;
             var componentGroup = arg["group"].CastProp<Component>();
             var com = new Component();
-            var childComponent = Feature.ComponentGroup.FirstOrDefault(x => x.Id == componentGroup.Id);
+            var childComponent = Feature.ComponentChildren.FirstOrDefault(x => x.Id == componentGroup.Id);
             var lastOrder = childComponent.Children.Max(x => x.Order);
 
             switch (action)

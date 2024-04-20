@@ -13,7 +13,7 @@ namespace Core.Components.Framework
             Icon = "icons/config.png";
         }
 
-        public void EditFeature(Feature feature)
+        public void EditFeature(Component feature)
         {
             var id = "Feature_" + feature.Id;
             this.OpenTab(id, () => new FeatureDetailBL

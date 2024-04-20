@@ -30,7 +30,7 @@
         public bool CanWriteMetaAll { get; set; }
         public bool CanDeactivateAll { get; set; }
         public bool CanExport { get; set; }
-        public virtual Feature Feature { get; set; }
+        public virtual Component Feature { get; set; }
         public virtual Role Role { get; set; }
     }
 }

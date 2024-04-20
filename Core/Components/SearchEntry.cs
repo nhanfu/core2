@@ -292,7 +292,7 @@ namespace Core.Components
             ComponentExt.LoadFeature(Meta.RefClass).Done(FeatureLoaded);
         }
 
-        private void FeatureLoaded(Feature feature)
+        private void FeatureLoaded(Component feature)
         {
             var instance = Activator.CreateInstance(Type.GetType(Meta.RefClass)) as TabEditor;
             instance.Id = feature.Name;

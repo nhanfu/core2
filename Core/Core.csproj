@@ -121,7 +121,6 @@
     <Compile Include="Models\Dictionary.cs" />
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\EntityRef.cs" />
-    <Compile Include="Models\Feature.cs" />
     <Compile Include="Models\FeaturePolicy.cs" />
     <Compile Include="Models\History.cs" />
     <Compile Include="Models\DbIgnoreAttribute.cs" />

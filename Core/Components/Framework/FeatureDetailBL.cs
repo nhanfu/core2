@@ -7,14 +7,14 @@ namespace Core.Components.Framework
 {
     public class FeatureDetailBL : TabEditor
     {
-        private Feature FeatureEntity => Entity.CastProp<Feature>();
+        private Component FeatureEntity => Entity.CastProp<Component>();
 
-        public FeatureDetailBL() : base(nameof(Models.Feature))
+        public FeatureDetailBL() : base(nameof(Models.Component))
         {
             Name = "FeatureEditor";
             Title = "Feature";
             PopulateDirty = false;
-            Entity = new Feature();
+            Entity = new Component();
         }
 
         public void EditGridColumn(object arg)

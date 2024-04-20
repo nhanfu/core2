@@ -176,13 +176,42 @@ namespace Core.Models
         public bool LocalRender { get; set; }
         [DbIgnore]
         public bool IgnoreConfirmHardDelete { get; set; }
-
+        public string Name { get; set; }
+        public string StyleSheet { get; set; }
+        public string Script { get; set; }
+        public bool IsDevider { get; set; }
+        public bool IsGroup { get; set; }
+        public bool IsMenu { get; set; }
+        public bool IsPublic { get; set; }
+        public bool StartUp { get; set; }
+        public string ViewClass { get; set; }
+        public bool IsSystem { get; set; }
+        public bool IgnoreEncode { get; set; }
+        public string RequireJS { get; set; }
+        public string GuiInfo { get; set; }
+        public bool IsPermissionInherited { get; set; }
+        public string FeatureGroup { get; set; }
+        public bool InheritParentFeature { get; set; }
+        public string Properties { get; set; }
+        public string LayoutId { get; set; }
+        public string Gallery { get; set; }
+        public bool DeleteTemp { get; set; }
+        public bool CustomNextCell { get; set; }
+        public bool IsPortal { get; set; }
+        public string LayoutName { get; set; }
         [DbIgnore]
         public virtual Component ComponentGroup { get; set; }
         [DbIgnore]
         public virtual Entity Reference { get; set; }
-        public virtual Feature Feature { get; set; }
+        public virtual Component Feature { get; set; }
         public virtual Component Parent { get; set; }
         public virtual ICollection<Component> Children { get; set; }
+        public virtual Entity Entity { get; set; }
+        public virtual Component ParentFeature { get; set; }
+        public string ConnKey { get; set; }
+        public virtual ICollection<Component> ComponentChildren { get; set; }
+        public virtual ICollection<Component> ComponentGroupChildren { get; set; }
+        public virtual ICollection<FeaturePolicy> FeaturePolicy { get; set; }
+        public virtual ICollection<Component> InverseParent { get; set; }
     }
 }

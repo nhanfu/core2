@@ -19,7 +19,7 @@ namespace Core.Components.Extensions
         private const string Auto = "auto";
         private const int StepPx = 10;
 
-        public static Dictionary<string, Feature> FeatureMap { get; internal set; } = new Dictionary<string, Feature>();
+        public static Dictionary<string, Component> FeatureMap { get; internal set; } = new Dictionary<string, Component>();
 
         /// <summary>
         /// This method is used to dispatch UI event to event handler, not from data change
@@ -209,7 +209,7 @@ namespace Core.Components.Extensions
             return tcs.Task;
         }
 
-        public static void AssignMethods(Feature f, object instance)
+        public static void AssignMethods(Component f, object instance)
         {
             var fn = new Function(f.Script);
             var obj = fn.Call(null, f);
@@ -266,9 +266,9 @@ namespace Core.Components.Extensions
             return tcs.Task;
         }
 
-        public static Task<Feature> LoadFeature(string name, string id = null)
+        public static Task<Component> LoadFeature(string name, string id = null)
         {
-            var tcs = new TaskCompletionSource<Feature>();
+            var tcs = new TaskCompletionSource<Component>();
             var featureTask = Client.Instance.UserSvc(new SqlViewModel
             {
                 ComId = "Feature",
@@ -284,7 +284,7 @@ namespace Core.Components.Extensions
                     tcs.TrySetResult(null);
                     return;
                 }
-                var feature = ds[0][0].CastProp<Feature>();
+                var feature = ds[0][0].CastProp<Component>();
                 if (feature is null)
                 {
                     tcs.TrySetResult(null);
@@ -292,9 +292,9 @@ namespace Core.Components.Extensions
                 }
                 feature.FeaturePolicy = ds.Length > 1 ? ds[1].Select(x => x.CastProp<FeaturePolicy>()).ToList() : feature.FeaturePolicy;
                 var groups = ds.Length > 2 ? ds[2].Select(x => x.CastProp<Component>()).ToList() : null;
-                feature.ComponentGroup = groups;
+                feature.ComponentGroupChildren = groups;
                 var components = ds.Length > 3 ? ds[3].Select(x => x.CastProp<Component>()).ToList() : null;
-                feature.Component = components;
+                feature.ComponentChildren = components;
                 if (groups.Nothing() || components.Nothing())
                 {
                     tcs.TrySetResult(feature);

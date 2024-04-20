@@ -6,7 +6,7 @@ namespace Core.Components.Framework
 {
     public class HeaderManageBL : PopupEditor
     {
-        public Feature FeatureComponent { get; set; }
+        public Component FeatureComponent { get; set; }
         public HeaderManageBL() : base(nameof(Component))
         {
             Name = "Header Manage";

@@ -30,7 +30,7 @@
 
         public virtual ICollection<Component> Component { get; set; } = new List<Component>();
 
-        public virtual ICollection<Feature> Feature { get; set; } = new List<Feature>();
+        public virtual ICollection<Component> Feature { get; set; } = new List<Component>();
 
         public virtual ICollection<TaskNotification> TaskNotification { get; set; } = new List<TaskNotification>();
     }
