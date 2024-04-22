@@ -1,4 +1,5 @@
 import { BadGatewayQueue } from "../models/badGatewayQueue.js";
+import { Token } from "../models/token.js";
 import { Utils } from "../utils/utils.js";
 
 export class Client {
@@ -37,14 +38,17 @@ export class Client {
     }
 
     /** @type {Client} */
-    static #_instance;
+    static _instance;
     /** @type {Client} */
     static get Instance() {
-      if(!Client.#_instance) {
+      if(!Client._instance) {
         Client._instance = new Client();
       }
-      return Client.#_instance;
+      return Client._instance;
     }
+
+    /** @type {Token} */
+    static Token;
 
     async UserSvc(vm, annonymous = false) {
         return this.SubmitAsync({
@@ -82,12 +86,16 @@ export class Client {
         });
     }
 
+    /**
+     * 
+     * @param {XHRWrapper} options 
+     * @returns 
+     */
     async SubmitAsync(options) {
-        const { FormData, JsonData, FinalUrl, Method, Headers, AllowAnonymous, ProgressHandler, ErrorHandler, Retry, ShowError, AddTenant } = options;
-        const isNotFormData = FormData === undefined;
+        const isNotFormData = options.FormData === undefined;
         const tcs = new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            if (!Headers && FormData === undefined) {
+            if (!options.Headers && options.FormData === undefined) {
                 options.Headers = {
                     "Content-Type": "application/json"
                 };
@@ -100,20 +108,20 @@ export class Client {
                     ErrorHandler(options, reject, xhr);
                 }
             };
-            if (ProgressHandler !== undefined) {
+            if (options.ProgressHandler !== undefined) {
                 xhr.addEventListener("progress", ProgressHandler);
             }
-            xhr.open(Method, FinalUrl, true);
-            if (!AllowAnonymous) {
+            xhr.open(options.Method, options.FinalUrl ?? options.Url, true);
+            if (!options.AllowAnonymous) {
                 xhr.setRequestHeader("Authorization", "Bearer " + Client.Token?.AccessToken);
             }
-            for (const [key, value] of Object.entries(Headers)) {
+            for (const [key, value] of Object.entries(options.Headers)) {
                 xhr.setRequestHeader(key, value);
             }
             if (isNotFormData) {
-                xhr.send(JsonData);
+                xhr.send(options.JsonData);
             } else {
-                xhr.send(FormData);
+                xhr.send(options.FormData);
             }
         });
         return tcs;

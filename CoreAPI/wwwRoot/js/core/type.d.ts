@@ -57,4 +57,5 @@ interface String {
   HasElement(): boolean;
   HasNonSpaceChar(): boolean;
   IsNullOrWhiteSpace(): boolean;
+  DecodeSpecialChar(): string;
 }

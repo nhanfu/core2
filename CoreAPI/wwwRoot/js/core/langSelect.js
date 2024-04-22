@@ -1,6 +1,6 @@
 import { Client } from "./clients/client.js";
 import EditableComponent from "./editableComponent.js";
-import { html } from "./html.js";
+import { HTML, Html } from "./utils/html.js";
 import { SqlViewModel } from "./models/sqlViewModel.js";
 import { Utils } from "./utils/utils.js";
 
@@ -39,17 +39,17 @@ export class LangSelect extends EditableComponent {
     }
 
     Render() {
-        var fn = {};
-        if (this.Meta?.FormatData != null && !Utils.IsFunction(this.Meta.FormatData, fn)) {
-            this.Html.Take(this.ParentElement);
+        var fn = Utils.IsFunction(this.Meta.FormatData);
+        if (this.Meta?.FormatData != null && fn) {
+            Html.Take(this.ParentElement);
             fn.call(null, this);
             this.Element = this.ParentElement.firstElementChild;
         }
         if (this.Element === null) {
-            html.Take(this.ParentElement).Ul.ClassName("lang-select")
+            Html.Take(this.ParentElement).Ul.ClassName("lang-select")
                 .Li.DataAttr(LangSelect.LangCode, "vi").Attr(LangSelect.Active, true.toString()).Img.Src("./icons/vn.png").EndOf(MVVM.ElementType.li)
                 .Li.DataAttr(LangSelect.LangCode, "en").Img.Src("./icons/eg.png").EndOf(MVVM.ElementType.li);
-            this.Element = this.Html.Context;
+            this.Element = Html.Context;
         }
         this.Travel(this.Element).filter(x => x instanceof HTMLElement).forEach(x => {
             const code = x.dataset[LangSelect.LangCode];
@@ -68,7 +68,7 @@ export class LangSelect extends EditableComponent {
                 LangSelect.SetCultureAndTranslate(code);
             }
         });
-        this.Html.Take(this.ParentElement);
+        Html.Take(this.ParentElement);
     }
 
     static SetCultureAndTranslate(code) {
@@ -85,7 +85,7 @@ export class LangSelect extends EditableComponent {
         }
         const dictionary = LangSelect._dictionaries[LangSelect.Culture];
         if (dictionary === undefined || dictionary === null) {
-            const tempDictionary = LocalStorage.getItem(LangSelect.Culture);
+            const tempDictionary = localStorage.getItem(LangSelect.Culture);
             if (tempDictionary !== null) {
                 LangSelect._dictionaries[LangSelect.Culture] = tempDictionary;
             }
@@ -116,7 +116,7 @@ export class LangSelect extends EditableComponent {
             return acc;
         }, {});
         LangSelect._dictionaries[LangSelect.Culture] = map;
-        LocalStorage.setItem(LangSelect.Culture, map);
+        localStorage.setItem(LangSelect.Culture, map);
         LangSelect.Travel(Document.Instance).forEach(x => {
             const props = x[LangSelect.LangProp];
             if (props === null || props === undefined || props === "") {

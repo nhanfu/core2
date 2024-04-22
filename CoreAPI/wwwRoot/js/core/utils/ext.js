@@ -1,3 +1,5 @@
+import { Utils } from "./utils.js";
+
 const SpecialChar = {
     '+': "%2B",
     '/': "%2F",
@@ -176,6 +178,9 @@ String.prototype.HasAnyChar = HasElement;
 String.prototype.HasNonSpaceChar = HasNonSpaceChar;
 String.prototype.IsNullOrWhiteSpace = function () {
     return this.trim() === '';
+};
+String.prototype.DecodeSpecialChar = function () {
+    return Utils.DecodeSpecialChar(this);
 };
 Object.prototype.GetComplexProp = function(path) {
   return path.split(".").reduce((obj, key) => obj && obj[key], this);

@@ -1,113 +1,42 @@
-﻿import EditableComponent from './editableComponent.js';
-import { GetPropValue, string } from './utils.js';
+﻿import { Client } from "./clients/client.js";
+import EditableComponent from "./editableComponent.js";
+import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
-import { HtmlEvent, Direction, HTML, html } from './html.js';
-import { ComponentType, IdField } from './const.js';
 
-class Label extends EditableComponent {
-    constructor(meta, ele) {
-        super(meta, ele);
+/**
+ * @typedef {import("./editableComponent").Component} Component
+ */
+export class Label extends EditableComponent {
+    constructor(ui, ele = null) {
+        super(ui, ele);
     }
 
     Render() {
         this.SetDefaultVal();
-        const cellData = GetPropValue(this.Entity, this.FieldName);
-        const isBool = cellData instanceof Boolean;
-        var cellText = null;
-        if (this.Element == null) {
+        const cellData = Utils.GetPropValue(this.Entity, this.FieldName);
+        const isBool = cellData !== null && typeof cellData === "boolean";
+        let cellText = '';
+
+        if (!this.Element) {
             this.RenderNewEle(cellText, cellData, isBool);
         }
-        var formatter = {};
-        if (this.Meta.Query?.HasNonSpaceChar()
-            && Utils.IsFunction(this.Meta.FormatEntity, formatter)) {
-            this.RenderCellText(formatter);
+        var formatter = Utils.IsFunction(this.Meta.Renderer);
+        if (this.Meta.PreQuery) {
+            this.QueryCellText(formatter);
             return;
-        }
-        else {
-            cellText = this.CalcCellText(cellData);
-            this.UpdateEle(cellText, cellData, isBool);
-        }
-    }
-    RenderNewEle(cellText, cellData, isBool) {
-        html.Take(this.ParentElement).Style(this.CalcTextAlign(this.Meta, cellData));
-        if (isBool) {
-            if (this.Meta.SimpleText) {
-                html.Text(cellData ? '☑' : '☐');
-                html.Context.style.fontSize = "1.2rem";
-            } else {
-                html.Padding(Direction.bottom, 0)
-                    .SmallCheckbox(GetPropValue(this.Entity, this.FieldName));
-                html.Context.PreviousElementSibling.disabled = true;
-            }
         } else {
-            var containDiv = cellText?.subStr(0, 5)?.includes('<div>');
-            if (containDiv) {
-                html.Div.Render();
-            } else {
-                html.Span.Render();
-            }
-            html.Event(HtmlEvent.click, this.LabelClickHandler).ClassName("cell-text").InnerHTML(cellText);
+            let finalCellText = this.CalcCellText(cellData, formatter);
+            if (finalCellText) this.UpdateEle(finalCellText, cellData, isBool);
         }
-        this.Element = html.Context;
-        html.End.Render();
-    }
-
-    LabelClickHandler(e) {
-
-    }
-
-    CalcTextAlign(header, cellData) {
-        if (header.ComponentType == 'Number') return 'right';
-        if (header.RefName != null) return 'left';
-        if (cellData instanceof Boolean) return 'center';
-        return 'center';
-    }
-     
-    CalcCellText(cellData) {
-        var header = this.Meta;
-        /** @type {string} */
-        var fieldText = header.FieldText;
-        var isRef = fieldText?.HasNonSpaceChar();
-        if (this.EmptyRow) return '';
-        if (header.FieldName == IdField && cellData === string.Empty) return '';
-        let fn = {};
-        if (Utils.IsFunction(header.FormatEntity, fn))
-        {
-            return fn.v.call(row, row).ToString();
-        }
-        if (cellData == null)
-        {
-            return header.PlainText ?? string.Empty;
-        }
-        if (isRef)
-        {
-            if (header.FieldText?.IsNullOrWhiteSpace()) return string.Empty;
-            if (header.DisplayField == null) {
-                const parts = header.FieldText.split('.');
-                header.DisplayField = parts[0];
-                header.DisplayDetail = parts[1];
-            }
-            var display = GetPropValue(this.Entity, header.DisplayField);
-            if (display != null && typeof display === 'string') {
-                display = JSON.parse(display);
-            }
-            return GetPropValue(display, header.DisplayDetail);
-        }
-        else
-        {
-            return cellData.toString();
-        }
+        this.Element.closest("td")?.addEventListener("keydown", this.ListViewItemTab);
+        this.Element.parentElement.tabIndex = -1;
     }
 
     UpdateEle(cellText, cellData, isBool) {
-        if (isBool)
-        {
-            if (this.Meta.SimpleText)
-            {
-                this.Element.InnerHTML = cellData === true ? "☑" : "☐";
-            }
-            else
-            {
+        if (isBool) {
+            if (this.Meta.SimpleText) {
+                this.Element.innerHTML = cellData === true ? "☑" : "☐";
+            } else {
                 this.Element.PreviousElementSibling.checked = cellData;
             }
             return;
@@ -115,9 +44,109 @@ class Label extends EditableComponent {
         this.Element.innerHTML = cellText;
         this.Element.setAttribute("title", cellText);
     }
+
+    RenderNewEle(cellText, cellData, isBool) {
+        Html.Take(this.ParentElement).TextAlign(this.CalcTextAlign(this.Meta, cellData));
+        if (isBool) {
+            if (this.Meta.SimpleText) {
+                Html.Instance.Text(cellData === true ? "☑" : "☐");
+                Html.Context.Style.FontSize = "1.2rem";
+            } else {
+                Html.Instance.Padding(Direction.bottom, 0)
+                    .SmallCheckbox(cellData);
+                Html.Context.previousElementSibling.disabled = true;
+            }
+        } else {
+            const containDiv = cellText.substring(0, 4) === "<div>";
+            if (containDiv) {
+                Html.Instance.Div.Render();
+            } else {
+                Html.Instance.Span.Render();
+            }
+            Html.Instance.Event("click", this.LabelClickHandler).ClassName("cell-text").InnerHTML(cellText);
+        }
+        this.Element = Html.Context;
+        Html.Instance.End.Render();
+    }
+
+    CalcCellText(cellData, formatter) {
+        let cellText = null;
+        if (this.Meta.IsPivot) {
+            const fields = this.FieldName.split(".");
+            if (fields.length < 3) {
+                return cellText;
+            }
+            const listData = Utils.GetPropValue(this.Entity, fields[0]);
+            const restPivotField = fields.slice(1, -1).join(".");
+            const row = listData.find(x => x.GetPropValue(restPivotField).toString() === fields.at(-1).toString());
+            cellText = row ? Utils.FormatEntity(this.Meta.FormatEntity, row) : "";
+        } else {
+            cellText = Utils.GetCellText(this.Meta, cellData, this.Entity, this.EmptyRow);
+        }
+        if (cellText === null || cellText === "null") {
+            cellText = "N/A";
+        }
+        return formatter ? formatter.call(this, this, cellText) : cellText;
+    }
+
+    QueryCellText(formatter) {
+        if (this.Meta.PreQuery?.IsNullOrEmpty() || formatter === null) {
+            return;
+        }
+        const fn = Utils.IsFunction(this.Meta.PreQuery);
+        const entity = fn ? fn.Call(this, this).toString() : "";
+        const submit = {
+            MetaConn: this.MetaConn,
+            DataConn: this.DataConn,
+            Params: JSON.stringify(entity),
+            ComId: this.Meta.Id
+        };
+        Client.Instance.SubmitAsync({Method: "POST", Url: Utils.ComQuery, Value: JSON.stringify(submit)})
+        .then(data => {
+            if (data.Nothing()) {
+                return;
+            }
+            const text = formatter.call(this, this, data).toString();
+            this.UpdateEle(text, null, false);
+        });
+    }
+
+    LabelClickHandler(e) {
+        this.DispatchEvent(this.Meta.Events, "click", this.Entity);
+    }
+
+    /**
+     * 
+     * @param {Component} header 
+     * @param {any} cellData 
+     * @returns {string}
+     */
+    CalcTextAlign(header, cellData) {
+        const textAlign = header.TextAlignEnum;
+        if (textAlign) {
+            return textAlign;
+        }
+        if (header.ReferenceId || cellData === null || typeof cellData === "string") {
+            return "left";
+        }
+        if (typeof cellData === "number") {
+            return "right";
+        }
+        if (typeof cellData === "boolean") {
+            return "center";
+        }
+        return "center";
+    }
+
+    UpdateView(force = false, dirty = null, componentNames) {
+        this.PrepareUpdateView(force, dirty);
+        this.Render();
+    }
+
+    GetValueTextAct() {
+        return this.Element.textContent;
+    }
 }
 
-window.Core2 = window.Core || {};
+window.Core2 = window.Core2 ?? {};
 window.Core2.Label = Label;
-
-export default Label;

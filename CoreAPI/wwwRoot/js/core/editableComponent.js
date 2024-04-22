@@ -1,5 +1,5 @@
 import { Action } from "./models/action.js";
-import { GetPropValue, SetPropValue, isNoU, string } from "./utils.js";
+import { GetPropValue, SetPropValue, isNoU, string } from "./utils/ext.js";
 import { Utils } from "./utils/utils.js";
 import { ValidationRule } from "./models/validationRule.js";
 import EventType from "./models/eventType.js";
@@ -131,8 +131,8 @@ export default class EditableComponent {
     get CacheName() {
         var exp = Meta?.CacheName;
         if (exp.IsNullOrWhiteSpace()) return null;
-        var fn = {};
-        if (Utils.IsFunction(exp, fn)) {
+        var fn = Utils.IsFunction(exp);
+        if (fn) {
             return fn.call(null, this);
         }
         return exp;
@@ -162,6 +162,12 @@ export default class EditableComponent {
     /** @type {string} QueueName - Return meta data queue name. */
     get QueueName() {
         return this.Meta?.QueueName;
+    }
+    get MetaConn() {
+        return this.Meta?.MetaConn;
+    }
+    get DataConn() {
+        return this.Meta?.DataConn;
     }
 
     SetRequired() {
@@ -245,8 +251,8 @@ export default class EditableComponent {
     }
     SetDefaultVal() {
         if (this.Entity == null || this.EntityId == null) return;
-        var fn = {};
-        if (Utils.IsFunction(this.Meta.DefaultVal, fn)) {
+        var fn = Utils.IsFunction(this.Meta.DefaultVal);
+        if (fn) {
             fn.call(this, this);
         }
         else if (GetPropValue(this.Entity, this.FieldName) == null) {
@@ -325,10 +331,10 @@ export default class EditableComponent {
         const gridRow = this.FindClosest(ComponentType.ListViewItem) ?? this.FindClosest(ComponentType.EditForm);
         const root = gridRow !== null ? gridRow : this.EditForm;
 
-        const isFunc = Utils.IsFunction(this.Meta.PopulateField, Function);
-        if (isFunc) {
+        const fn = Utils.IsFunction(this.Meta.PopulateField);
+        if (fn) {
             try {
-                this.Meta.PopulateField.call(null, this, entity);
+                fn.call(null, this, entity);
             } catch (error) {
                 console.error(error);
             }
@@ -437,15 +443,16 @@ export default class EditableComponent {
      * @param {string} showExp 
      */
     ToggleShow(showExp) {
-        var fn = {};
-        if (showExp?.HasAnyChar() && Utils.IsFunction(showExp, fn)) {
+        var fn = Utils.IsFunction(showExp);
+        if (showExp?.HasAnyChar() && fn) {
             var shown = fn.Call(null, this);
             Show = shown ?? false;
         }
     }
     ToggleDisabled(disabled) {
-        if (disabled !== null && Utils.IsFunction(disabled)) {
-            let shouldDisabled = disabled(null, this) || false;
+        var disabledFn = Utils.IsFunction(disabled);
+        if (disabled !== null) {
+            let shouldDisabled = disabledFn(null, this) || false;
             this.Disabled = shouldDisabled;
         }
     }

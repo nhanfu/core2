@@ -12,6 +12,12 @@ export const Direction =
 export class HTML {
     /** @type {HTMLElement} */
     Context;
+    _instance;
+    /** @type {HTML} */
+    get Instance() {
+        if (this._instance == null) this._instance = new HTML();
+        return this._instance;
+    }
     Take(ele) {
         if (ele == null) return;
         if (typeof (ele) === 'string') ele = document.querySelector(ele);
@@ -204,4 +210,4 @@ export class HTML {
     }
 }
 
-export const html = new HTML();
+export const Html = new HTML();

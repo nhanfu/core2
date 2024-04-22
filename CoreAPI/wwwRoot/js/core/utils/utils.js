@@ -1,3 +1,4 @@
+import { Component } from "../models/component.js";
 
 export class Utils {
     static SystemId = "1";
@@ -188,6 +189,14 @@ export class Utils {
         return Utils.GetCellTextInternal(header, cellData, row, emptyRow).DecodeSpecialChar();
     }
 
+    /**
+     * 
+     * @param {Component} header 
+     * @param {any} cellData 
+     * @param {any} row 
+     * @param {boolean} emptyRow 
+     * @returns 
+     */
     static GetCellTextInternal(header, cellData, row, emptyRow = false) {
         const dt = new Date();
         const isDate = cellData && header.ComponentType === 'Datepicker' && !isNaN(Date.parse(cellData));
@@ -200,8 +209,9 @@ export class Utils {
             return '';
         }
         if (!isRef && header.FormatEntity) {
-            if (Utils.IsFunction(header.FormatEntity)) {
-                return header.FormatEntity.call(row, row);
+            var fn = Utils.IsFunction(header.FormatEntity);
+            if (fn) {
+                return fn.call(row, row);
             }
             return Utils.GetFormattedRow(header.FormatEntity, row);
         } else if (cellData === null || cellData === undefined) {
@@ -275,19 +285,6 @@ export class Utils {
         return exp(row, row)?.toString();
     }
 
-    static IsFunction(exp) {
-        if (!exp || typeof exp !== 'string') {
-            return false;
-        }
-
-        try {
-            const fn = new Function(exp);
-            return typeof fn === 'function';
-        } catch (error) {
-            return false;
-        }
-    }
-
     static ForEachProp(obj, action) {
         if (!obj || typeof obj !== 'object' || typeof action !== 'function') return;
         const props = Object.keys(obj);
@@ -304,31 +301,26 @@ export class Utils {
     /**
      *
      * @param {String | Function} exp - The expression represent function, or a function
-     * @param {any} obj - output object
      * @param {boolean} shouldAddReturn - if true then append 'return ' before evaluating
-     * @returns true if the exp is a function, false otherwise
+     * @returns {Function} The function itself or evaluated function
      */
-    static IsFunction(exp, obj, shouldAddReturn) {
+    static IsFunction(exp, shouldAddReturn) {
         if (exp == null) {
-            obj.v = null;
-            return false;
+            return null;
         }
         if (exp instanceof Function) {
-            obj.v = exp;
-            return true;
+            return exp;
         }
         try {
             var fn = new Function(shouldAddReturn ? "return " + exp : exp);
             const fnVal = fn.call(null);
             if (fnVal instanceof Function) {
-                obj.v = fnVal;
-                return true;
+                return fnVal;
             } else {
-                return false;
+                return null;
             }
         } catch ($e1) {
-            obj.v = null;
-            return false;
+            return null;
         }
     }
     

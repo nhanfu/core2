@@ -1,9 +1,8 @@
-import { IsFunction } from "./core/utils.js";
+import { Utils } from "./utils.js";
 
 export const getMetaInfo = (name, root) => {
     const metaTag = root.querySelector(`script[data-${name}]`);
     return metaTag != null ? metaTag.dataset[name] : root.dataset[name];
-    return null;
 };
 
 export const getComName = (root) => {
@@ -14,7 +13,7 @@ export const getComName = (root) => {
 export async function comQuery(meta, com) {
     if (meta.Query == null) return null;
     const o = {};
-    var isFn = IsFunction(meta.PreQuery, o);
+    var isFn = Utils.IsFunction(meta.PreQuery, o);
     var body = {
         ComId: meta.Id,
         Params: isFn ? JSON.stringify(o.v.call(null, com)) : null,
@@ -57,7 +56,7 @@ export async function resolveComponents(root) {
             const components = res[0];
             components.map(com => {
                 const fnVal = {};
-                const isRendererFn = IsFunction(com.Renderer, fnVal);
+                const isRendererFn = Utils.IsFunction(com.Renderer, fnVal);
                 if (!isRendererFn) return;
                 const container = meta.find(x => x.dataset.meta == com.FieldName);
                 if (container == null) return;
