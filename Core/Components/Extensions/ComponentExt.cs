@@ -301,11 +301,12 @@ namespace Core.Components.Extensions
                     return;
                 }
                 var groupMap = groups.DistinctBy(x => x.Id).ToDictionary(x => x.Id);
-                components.ForEach(com =>
+                components.Where(x => x.ComponentType != "Section").ForEach(com =>
                 {
-                    if (com.ComponentGroupId is null) return;
-                    var g = groupMap.GetValueOrDefault(com.ComponentGroupId);
-                    g?.Children.Add(com);
+                    var g = groupMap.GetValueOrDefault(com.ParentId ?? string.Empty)
+                        ?? groupMap.GetValueOrDefault(com.ComponentGroupId ?? string.Empty);
+                    if (g is null) return;
+                    g.Children.Add(com);
                 });
                 tcs.TrySetResult(feature);
             });
