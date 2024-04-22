@@ -323,5 +323,16 @@ export class Utils {
             return null;
         }
     }
+    static FormatEntity(format, source) {
+        if (!format || typeof format !== 'string') {
+            return '';
+        }
+    
+        if (source === null || source === undefined) {
+            return format;
+        }
+    
+        return formatEntity(format, null, source);
+    }
     
 }

@@ -208,6 +208,28 @@ export class HTML {
         this.Context.setAttribute('data-'+name, value);
         return this;
     }
+    PlaceHolder(langKey) {
+        if (!langKey || langKey.trim() === '')
+            {
+                return this;
+            }
+        MarkLangProp(this.Context, langKey, "placeholder");
+        return this.Attr("placeholder", LangSelect.Get(langKey));
+    }
+    MarkLangProp(ctx, langKey, propName, ...parameters) {
+        if (ctx === null) return;
+        ctx[LangSelect.LangKey + propName] = langKey;
+        var newProp = prop === null ? propName : prop + ',' + propName;
+        var splitArray = ctx[LangSelect.LangProp].split(",");
+        var uniqueArray = [];
+        splitArray.forEach(function(item) {
+            if (!uniqueArray.includes(item)) {
+                uniqueArray.push(item);
+            }
+        });
+        var combinedString = uniqueArray.join(",");
+        ctx[LangSelect.LangProp] = combinedString;
+    }
 }
 
 export const Html = new HTML();
