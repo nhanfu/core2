@@ -1,3 +1,11 @@
+var SpecialChar = {
+    '+': "%2B",
+    '/': "%2F",
+    '?': "%3F",
+    '#': "%23",
+    '&': "%26"
+};
+
 export function GetPropValue(obj, path) {
     if (obj == null || path == null) return null;
     for (var i = 0, path = path.split('.'), len = path.length; i < len && obj != null; i++) {
@@ -16,6 +24,81 @@ export function SetPropValue(obj, path, value) {
         o = o[n]
     }
     o[a[0]] = value
+}
+
+export function SetComplexPropValue(obj, path, value) {
+    if (obj == null || path == null) return;
+
+    const hierarchy = path.Split('.');
+    if (hierarchy.Length == 0) return;
+  
+    if (hierarchy.Length == 1)
+    {
+        SetPropValue(obj, path, value);
+        return;
+    }
+    var leaf = obj;
+    for (const i = 0; i < hierarchy.Length - 1; i++)
+    {
+        if (leaf == null)
+        {
+            return;
+        }
+
+        var key = hierarchy[i];
+        leaf = GetPropValue(leaf, key);
+    }
+    if (leaf == null)
+    {
+        return;
+    }
+
+    SetPropValue(leaf, hierarchy[hierarchy.Length - 1].ToString(), value);
+}
+
+export function ReverseSpecialChar() {
+    return Object.entries(SpecialChar)
+        .reduce((obj, [key, value], index) => {
+            obj[value] = index;
+            return obj;
+        }, {});
+}
+
+export function DecodeSpecialChar( str ) {
+    if (str == null) return;
+    const arr = str.split('');
+    var res = '';
+    for (const i = 0; i < arr.Length; i++)
+    {
+        if (arr[i] == '%' && i + 3 <= arr.Length && ReverseSpecialChar().hasOwnProperty(str.slice(i, 3)))
+        {
+            res += (ReverseSpecialChar()[str.slice(i, 3)]);
+            i += 2;
+        }
+        else
+        {
+            res += (arr[i]);
+        }
+    }
+    return res;
+}
+
+export function EncodeSpecialChar( str ) {
+    if (str == null) return;
+    const arr = str.split('');
+    var res = '';   
+    for (const i = 0; i < arr.Length; i++)
+    {
+        if (SpecialChar.hasOwnProperty(arr[i]))
+        {
+            res += (SpecialChar[arr[i]]);
+        }
+        else
+        {
+            res += (arr[i]);
+        }
+    }
+    return res;
 }
 
 export const isNoU = (o) => o === null || o === undefined;

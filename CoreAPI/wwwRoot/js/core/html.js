@@ -194,6 +194,29 @@ export class HTML {
         this.Context.PreviousElementSibling.checked = val;
         return this;
     }
+    Attr(name, value) {
+        this.Context.setAttribute(name, value);
+        return this;
+    }
+    DataAttr(name, value) {
+        this.Context.setAttribute('data-'+name, value);
+        return this;
+    }
+    Value(val) {
+        var input = this.Context;
+        input["value"] = val;
+        return this;
+    }
+    PlaceHolder(langKey) {
+        if (!langKey || langKey.trim() === '')
+            {
+                return this;
+            }
+    }
+    markLangProp(ctx, langKey, propName, ...parameters) {
+        if (!ctx) return;
+        ctx[LangSelect.LangKey + propName] = langKey;
+    }
 }
 
 export const html = new HTML();
