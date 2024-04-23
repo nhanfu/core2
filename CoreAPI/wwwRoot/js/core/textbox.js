@@ -196,6 +196,9 @@ class Textbox extends EditableComponent {
             this.TextArea.ReadOnly = value;
         }
     }
+    sum(a, b) {
+        return a + b;
+      }
 }
 
 window.Core2 = window.Core || {};
