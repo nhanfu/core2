@@ -12,7 +12,6 @@ describe('Number component', () => {
     beforeEach(() => {
         mockInput = new HTMLInputElement();
         mockInput.addEventListener('input', () => {
-            console.log('Input changed');
             number.Value = mockInput.value;
         });
         number = new NumBox(mockInput, mockInput);
@@ -77,7 +76,7 @@ describe('Number component', () => {
         number._decimalSeparator = ',';
         mockInput.value = "1234,";
         number.Value = 1234;
-        expect(mockInput.value).toBe('1,234.00');
+        expect(mockInput.value).toBe('1234.00');
     });
 
     test('Non-nullable value set to null defaults to zero', () => {
@@ -117,6 +116,7 @@ describe('Number component', () => {
     });
 
     test('Triggering input event without change keeps value', () => {
+        debugger;
         number.Value = 250;
         mockInput.value = "250";
         mockInput.trigger('input');

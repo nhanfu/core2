@@ -229,6 +229,7 @@ export default class EditableComponent {
     get DataConn() {
         return this.Meta?.DataConn;
     }
+    get FieldVal() { return this.Entity?.GetComplexProp(this.FieldName); }
 
     SetRequired() {
         const ele = this.Element;

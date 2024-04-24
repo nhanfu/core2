@@ -10,7 +10,7 @@ export class NumBox extends EditableComponent {
         super(ui, ele);
         /** @type {HTMLInputElement} */
         this._input = ele;
-        /** @type {Decimal | String | Number} */
+        /** @type {Decimal} */
         this._value = null;
         this._nullable = false;
         this._isString = false;
@@ -31,8 +31,9 @@ export class NumBox extends EditableComponent {
     set Value(value) {
         const oldValue = this._value;
         this._value = value;
-        if (this._value !== null) {
-            this._value = new Decimal(this._value).toDecimalPlaces(this.Meta.Precision || 0, Decimal.ROUND_HALF_CEIL);
+        var [success, parsedVal] = Utils.TryParseDecimal(value);
+        if (success) {
+            this._value = new Decimal(parsedVal.toFixed(this.Meta.Precision || 0, 7));
             const dotCount = (this._input.value.match(/,/g) || []).length;
             const selectionEnd = this._input.selectionEnd;
             this._input.value = this.EmptyRow ? '' : this._value.toString();
@@ -42,15 +43,16 @@ export class NumBox extends EditableComponent {
                 this._input.selectionEnd = selectionEnd + addedDot;
             }
         } else if (!this._nullable) {
-            this._value = 0;
+            this._value = new Decimal(0);
             this._input.value = this._value.toString();
         } else {
             this._input.value = '';
+            this._value = null;
         }
         if (oldValue == null || this._value == null) {
             this.Dirty = oldValue != this._value;
         } else {
-            this.Dirty = !this._value.eq(oldValue);
+            this.Dirty = !this._value?.eq(oldValue);
         }
         this.Entity.SetComplexPropValue(this.FieldName, this._value?.toString());
         this.PopulateFields();
@@ -148,7 +150,7 @@ export class NumBox extends EditableComponent {
             return null;
         }
 
-        const value = Utils.GetPropValue(this.Entity, this.FieldName);
+        const value = this.FieldVal;
         if (value == null) {
             return null;
         }
@@ -158,7 +160,7 @@ export class NumBox extends EditableComponent {
         }
 
         try {
-            return NumBox(value);
+            return new Decimal(value);
         } catch (e) {
             return null;
         }
