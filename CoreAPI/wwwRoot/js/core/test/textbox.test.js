@@ -16,7 +16,7 @@ jest.mock('../utils/html', () => ({
     Html: {
         Take: jest.fn(() => ({
             TextArea: {
-                Value: jest.fn(), // Mock the Value function
+                Value: jest.fn(),
             }
         })),
         Instance: {
@@ -45,8 +45,6 @@ describe('Textbox Render Function', () => {
         ele = document.createElement('input');
         textboxInstance = new Textbox(meta, ele);
     });
-
-    // Existing test cases...
 
     test('Render function handles missing FormatData and FormatEntity correctly', () => {
         meta.FormatData = null;
@@ -85,5 +83,54 @@ describe('Textbox Render Function', () => {
         meta.ShowLabel = true;
         meta.PlainText = '';
         textboxInstance.Render();
+    });
+});
+
+
+describe('SetDisableUI Function', () => {
+    let meta;
+    let ele;
+    let textboxInstance;
+
+    beforeEach(() => {
+        meta = {
+            PlainText: 'Plain Text',
+            Row: 2, 
+            ChildStyle: 'mockChildStyleFunction', 
+            ShowLabel: false,
+            FormatData: 'mockFormatData', 
+            FormatEntity: 'mockFormatEntity',
+        };
+        ele = document.createElement('input');
+        textboxInstance = new Textbox(meta, ele);
+    });
+
+    test('SetDisableUI function disables input field', () => {
+        textboxInstance.Input = {
+            ReadOnly: false,
+        };
+        textboxInstance.SetDisableUI(true);
+        expect(textboxInstance.Input.ReadOnly).toBe(true);
+    });
+
+    test('SetDisableUI function disables textarea field', () => {
+        textboxInstance.TextArea = {
+            ReadOnly: false,
+        };
+        textboxInstance.SetDisableUI(true);
+        expect(textboxInstance.TextArea.ReadOnly).toBe(true);
+    });
+
+    test('SetDisableUI function does not modify input field if it does not exist', () => {
+        textboxInstance.Input = null; 
+        textboxInstance.SetDisableUI(true);
+        expect(textboxInstance.Input).toBeNull(); 
+    });
+
+    test('SetDisableUI function does not modify textarea field if it does not exist', () => {
+ 
+        textboxInstance.TextArea = null; 
+        textboxInstance.SetDisableUI(true);
+        expect(textboxInstance.TextArea).toBeNull(); 
     });
 });
