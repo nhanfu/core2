@@ -36,15 +36,19 @@ export class NumBox extends EditableComponent {
             this._value = new Decimal(parsedVal.toFixed(this.Meta.Precision || 0, 7));
             const dotCount = (this._input.value.match(/,/g) || []).length;
             const selectionEnd = this._input.selectionEnd;
-            this._input.value = this.EmptyRow ? '' : this._value.toString();
+            this._input.value = this.EmptyRow ? '' : this._value.toFixed(this.Meta.Precision || 0, 7);
             const addedDot = (this._input.value.match(/,/g) || []).length - dotCount;
             if (this.SetSelection) {
                 this._input.selectionStart = selectionEnd + addedDot;
                 this._input.selectionEnd = selectionEnd + addedDot;
             }
         } else if (!this._nullable) {
-            this._value = new Decimal(0);
-            this._input.value = this._value.toString();
+            var [success, parsedVal] = Utils.TryParseDecimal(oldValue);
+            if (!success) {
+                parsedVal = new Decimal(0);
+            }
+            this._value = parsedVal;
+            this._input.value = parsedVal.toFixed(this.Meta.Precision || 0, 7);
         } else {
             this._input.value = '';
             this._value = null;

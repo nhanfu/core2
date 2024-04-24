@@ -5,7 +5,7 @@ export class HTMLInputElement {
     }
     _value = '';
     get value() { return this._value; }
-    set value(val) { return this._value = val; }
+    set value(val) { return this._value = val?.toString(); }
     setAttribute() { }
     /**
      * 
