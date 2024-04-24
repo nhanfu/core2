@@ -3,12 +3,14 @@ import EventType from './models/eventType.js';
 import { Utils } from './utils/utils.js';
 import { ValidationRule } from './models/validationRule.js';
 import { Html } from './utils/html.js';
+import Decimal from './structs/decimal.js';
 
-export class NumberBox extends EditableComponent {
+export class NumBox extends EditableComponent {
     constructor(ui, ele = null) {
         super(ui, ele);
         /** @type {HTMLInputElement} */
-        this._input = ele instanceof HTMLInputElement ? ele : null;
+        this._input = ele;
+        /** @type {Decimal} */
         this._value = null;
         this._nullable = false;
         this._isString = false;
@@ -17,15 +19,20 @@ export class NumberBox extends EditableComponent {
         this.DefaultValue = 0;
     }
 
+    /** @type {Decimal} */
     get Value() {
         return this._value;
     }
 
+    /**
+     * Sets the value of the component
+     * @param {Decimal | String | Number} value - The value to set
+     */
     set Value(value) {
         const oldValue = this._value;
-        this._value = value;
+        this._value = new Decimal(value).toDecimalPlaces(this.Meta.Precision || 0, Decimal.ROUND_HALF_CEIL);
         if (this._value !== null) {
-            this._value = Number(this._value.toFixed(this.Meta.Precision || 0));
+            this._value = new Decimal(this._value).toDecimalPlaces(this.Meta.Precision || 0, Decimal.ROUND_HALF_CEIL);
             const dotCount = (this._input.value.match(/,/g) || []).length;
             const selectionEnd = this._input.selectionEnd;
             this._input.value = this.EmptyRow ? '' : this._value.toLocaleString(undefined, { minimumFractionDigits: this.Meta.Precision || 0 });
@@ -40,7 +47,7 @@ export class NumberBox extends EditableComponent {
         } else {
             this._input.value = '';
         }
-        if (oldValue !== this._value) {
+        if (oldValue.eq(this._value)) {
             this.Dirty = true;
         }
         this.Entity.SetComplexPropValue(this.FieldName, this._value);
@@ -50,8 +57,6 @@ export class NumberBox extends EditableComponent {
             customizeFn.call(this, this);
         }
     }
-
-    // Rest of the methods from previous message...
 
     SetValue() {
         const oldVal = this._value;
@@ -136,30 +141,6 @@ export class NumberBox extends EditableComponent {
         this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity, parsedResult, oldVal).done();
     }
 
-    SetValue() {
-        const oldVal = this._value;
-        this.EmptyRow = false;
-        if (this._input.value.IsNullOrWhiteSpace()) {
-            this.Value = null;
-            return;
-        }
-        this._input.value = this._input.value.trim();
-        if (this._input.value.slice(-1) === '.') {
-            this._input.value = this._input.value.substring(0, this._input.value.length - 1);
-        }
-
-        const text = this._input.value.replace(",", "");
-        const [success, parsedResult] = Utils.TryParseDecimal(text);
-        if (!success) {
-            this.Value = this._value; // Set old value to avoid accept invalid value
-            return;
-        }
-        this._value = parsedResult;
-        this.Value = this._value;
-        this.UserInput?.Invoke({ NewData: this._value, OldData: oldVal, EvType: EventType.Input });
-        this.DispatchEvent(this.Meta.Events, EventType.Input, this.Entity, this._value, oldVal).done();
-    }
-
     GetDecimalValue() {
         if (this.Entity == null) {
             return null;
@@ -175,7 +156,7 @@ export class NumberBox extends EditableComponent {
         }
 
         try {
-            return NumberBox(value);
+            return NumBox(value);
         } catch (e) {
             return null;
         }
