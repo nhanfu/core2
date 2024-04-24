@@ -19,6 +19,7 @@ class Textbox extends EditableComponent {
         this.Text = '';
         this.DefaultValue = '';
         if (ele instanceof HTMLInputElement) {
+        /** @type {HTMLInputElement} */
         this.Input = ele;
         } 
         else if (ele instanceof HTMLTextAreaElement) {
@@ -28,58 +29,60 @@ class Textbox extends EditableComponent {
     Render() {
         this.SetDefaultVal();
         var val = this.Entity && Utils.GetPropValue(this.Entity, this.FieldName);
-        if (!val && typeof val === "string" && this.EditForm != null && this.EditForm.Feature != null && !this.EditForm.Feature.IgnoreEncode) {
+        if (val !== null && val !== undefined && typeof val === "string" && this.EditForm != null && this.EditForm.Feature != null && !this.EditForm.Feature.IgnoreEncode) {
             const ecode = Utils.DecodeSpecialChar(val);
             const Encode = Utils.EncodeSpecialChar(ecode);
             this.Entity && SetComplexPropValue(this.Entity, this.FieldName, Encode);
         }
-        var text = val?.ToString();
-        if (!this.Meta.FormatData)
-            {
-                text = Utils.FormatEntity(this.Meta.FormatData, val);
-            }
-        if (!this.Meta.FormatEntity)
-        {
+        var text = val?.ToString() || '';
+        if (!this.Meta.FormatData) {
+            text = Utils.FormatEntity(this.Meta.FormatData, val);
+        } else if (!this.Meta.FormatEntity) {
             text = Utils.FormatEntity(this.Meta.FormatEntity, this.Entity);
         }
-         this._text = this.EditForm != null && this.EditForm.Feature != null && this.EditForm.Feature.IgnoreEncode ? text : DecodeSpecialChar(text);
-        if (this.MultipleLine || this.TextArea != null)
-        {
-            if (this.TextArea == null)
-            {
-                Html.Take(this.ParentElement).TextArea.Value(_text).PlaceHolder(Meta.PlainText);
+        this._text = this.EditForm != null && this.EditForm.Feature != null && this.EditForm.Feature.IgnoreEncode ? text : Utils.DecodeSpecialChar(text);
+        if (this.MultipleLine || this.TextArea != null) {
+            if (Html.Take && Html.Take(this.ParentElement) && Html.Take(this.ParentElement).TextArea) {
+                Html.Take(this.ParentElement).TextArea.Value(this._text)?.PlaceHolder(this.Meta.PlainText);
                 this.Element = this.TextArea = Html.Context instanceof HTMLTextAreaElement ? Html.Context : null;
-                
-            }
-            else
-            {
+            } else if (this.TextArea) {
                 this.Element = this.TextArea;
                 this.TextArea.Value = this._text;
             }
-            if (this.Meta.Row > 0)
-            {
-                    Html.Instance.Attr("rows", this.Meta.Row ?? 1);
+            if (this.Meta.Row > 0) {
+                Html.Instance.Attr("rows", this.Meta.Row ?? 1);
             }
-            this.TextArea.oninput += (e) => PopulateUIChange(EventType.Input);
-            this.TextArea.onchange += (e) => PopulateUIChange(EventType.Change);
+            if (this.TextArea && (this.MultipleLine || this.TextArea != null)) {
+                if (Html.Take && Html.Take(this.ParentElement) && Html.Take(this.ParentElement).TextArea) {
+                    Html.Take(this.ParentElement).TextArea.Value(this._text)?.PlaceHolder(this.Meta.PlainText);
+                    this.Element = this.TextArea = Html.Context instanceof HTMLTextAreaElement ? Html.Context : null;
+                } else if (this.TextArea) {
+                    this.Element = this.TextArea;
+                    this.TextArea.Value = this._text;
+                }
+                if (this.Meta.Row > 0) {
+                    Html.Instance.Attr("rows", this.Meta.Row ?? 1);
+                }
+                this.TextArea.addEventListener("input", (e) => PopulateUIChange(EventType.Input));
+                this.TextArea.addEventListener("change", (e) => PopulateUIChange(EventType.Change));
+            }
         }
         if (this.Meta.ChildStyle && this.Meta.ChildStyle.trim() !== "") {
-            Utils.IsFunction(Meta.ChildStyle, function(fn) {
+            Utils.IsFunction(this.Meta.ChildStyle, function (fn) {
                 if (fn !== null && typeof fn === 'function') {
                     fn.call(this, Entity, this.Element).toString();
                 }
             });
-            
         }
-        if (this.Password)
-        {
+        if (this.Password) {
             Html.Instance.Style("text-security: disc;-webkit-text-security: disc;-moz-text-security: disc;");
         }
-        if (!this.Meta.ShowLabel) 
-        {
-                Html.Instance.PlaceHolder(Meta.PlainText);
+        if (!this.Meta.ShowLabel) {
+            Html.Instance.PlaceHolder(this.Meta.PlainText);
         }
-        this.Element.Closest("td")?.AddEventListener(EventType.KeyDown, ListViewItemTab);
+        if (this.Element && this.Element.closest("td")) {
+            this.Element.closest("td").addEventListener("keydown", this.ListViewItemTab.bind(this));
+        }
         this.DOMContentLoaded?.Invoke();
     }
     PopulateUIChange(type, shouldTrim = false) {

@@ -230,6 +230,11 @@ export class HTML {
         var combinedString = uniqueArray.join(",");
         ctx[LangSelect.LangProp] = combinedString;
     }
+    Value(val) {
+        const input = this.Context;
+        input.value = val;
+        return this;
+    }
 }
 
 export const Html = new HTML();
