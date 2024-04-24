@@ -4,7 +4,7 @@ import { Utils } from "./utils/utils.js";
 import { ValidationRule } from "./models/validationRule.js";
 import EventType from "./models/eventType.js";
 import { ComponentType } from "./models/componentType.js";
-import { Uuid7 } from "./models/uuidv7.js";
+import { Uuid7 } from "./structs/uuidv7.js";
 
 /**
  * @typedef {import('./models/action.js').Action} Action

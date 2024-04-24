@@ -1,8 +1,21 @@
+/**
+ * Class to generate UUID7 based identifiers.
+ */
 export class Uuid7 {
+
+    /**
+     * Gets the current time in nanoseconds.
+     * @returns {number} The current time in nanoseconds.
+     */
     static TimeNs() {
         return 100 * new Date().getTime();
     }
 
+    /**
+     * Generates a GUID based on the current or specified time.
+     * @param {number|null} asOfNs - The specific nanosecond timestamp to use for GUID generation or null for current time.
+     * @returns {string} A new GUID string.
+     */
     static Guid(asOfNs = null) {
         const maxSeqValue = 0x3FFF;
         let ns;
@@ -77,20 +90,41 @@ export class Uuid7 {
         ].join("");
     }
 
+    /**
+     * Converts a byte into a hex string of specified length.
+     * @param {number} byte - The byte to convert.
+     * @param {number} length - The length of the resulting hex string.
+     * @returns {string} The hex string.
+     */
     static _toHex(byte, length) {
         let hex = byte.toString(16);
         return hex.padStart(length, "0");
     }
 
+    /**
+     * Generates a string representation of a UUID.
+     * @param {number|null} asOfNs - The specific nanosecond timestamp to use, or null to use current time.
+     * @returns {string} A UUID string.
+     */
     static String(asOfNs = null) {
         return this.Guid(asOfNs);
     }
 
+    /**
+     * Generates a 25-character alphanumeric ID from a GUID.
+     * @param {number|null} asOfNs - The specific nanosecond timestamp to use, or null to use current time.
+     * @returns {string} A 25-character ID.
+     */
     static Id25(asOfNs = null) {
         let guid = this.Guid(asOfNs);
         return this.Id25Internal(guid);
     }
 
+    /**
+     * Internal method to convert a GUID into a 25-character alphanumeric ID.
+     * @param {string} guid - The GUID to convert.
+     * @returns {string} A 25-character ID.
+     */
     static Id25Internal(guid) {
         const alphabet = "0123456789abcdefghijkmnopqrstuvwxyz";
         let id25_chars = new Array(25);
@@ -112,10 +146,19 @@ export class Uuid7 {
         return id25_chars.join("");
     }
 
+    /**
+     * Converts an array of bytes to a BigInt.
+     * @param {Uint8Array} arr - The byte array to convert.
+     * @returns {BigInt} The BigInt representation.
+     */
     static ArrToBigInt(arr) {
         return arr.reduce((acc, val) => (acc << 8n) | BigInt(val), 0n);
     }
 
+    /**
+     * Evaluates the precision of the system clock by counting unique nanosecond timestamps.
+     * @returns {string} A message describing the timing precision.
+     */
     static CheckTimingPrecision() {
         let distinctValues = new Set();
         let numLoops = 0;
