@@ -94,7 +94,7 @@ describe('Number component', () => {
 
     test('Setting value triggers Entity property update', () => {
         number.Value = 888;
-        expect(number.Entity.SetComplexPropValue).toHaveBeenCalledWith(number.FieldName, 888);
+        expect(number.Entity.SetComplexPropValue).toHaveBeenCalledWith(number.FieldName, '888');
     });
 
     test('Value change triggers user input event', () => {

@@ -35,7 +35,7 @@ export class NumBox extends EditableComponent {
             this._value = new Decimal(this._value).toDecimalPlaces(this.Meta.Precision || 0, Decimal.ROUND_HALF_CEIL);
             const dotCount = (this._input.value.match(/,/g) || []).length;
             const selectionEnd = this._input.selectionEnd;
-            this._input.value = this.EmptyRow ? '' : this._value.toLocaleString(undefined, { minimumFractionDigits: this.Meta.Precision || 0 });
+            this._input.value = this.EmptyRow ? '' : this._value.toString();
             const addedDot = (this._input.value.match(/,/g) || []).length - dotCount;
             if (this.SetSelection) {
                 this._input.selectionStart = selectionEnd + addedDot;
@@ -47,10 +47,12 @@ export class NumBox extends EditableComponent {
         } else {
             this._input.value = '';
         }
-        if (oldValue !== this._value) {
-            this.Dirty = true;
+        if (oldValue == null || this._value == null) {
+            this.Dirty = oldValue != this._value;
+        } else {
+            this.Dirty = !this._value.eq(oldValue);
         }
-        this.Entity.SetComplexPropValue(this.FieldName, this._value);
+        this.Entity.SetComplexPropValue(this.FieldName, this._value?.toString());
         this.PopulateFields();
         var customizeFn = Utils.IsFunction(this.Meta.Renderer);
         if (customizeFn) {
