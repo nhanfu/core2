@@ -1,124 +1,21 @@
 import { Utils } from "./utils.js";
 
-const SpecialChar = {
-    '+': "%2B",
-    '/': "%2F",
-    '?': "%3F",
-    '#': "%23",
-    '&': "%26"
-};
-
-export function GetPropValue(obj, path) {
-    if (obj == null || path == null) return null;
-    for (var i = 0, path = path.split('.'), len = path.length; i < len && obj != null; i++) {
-        obj = obj[path[i]];
-    };
-    return obj;
-}
-
-export function SetPropValue(obj, path, value) {
-    if (obj == null || path == null) return;
-    var a = path.split('.')
-    var o = obj
-    while (a.length - 1) {
-        var n = a.shift()
-        if (!(n in o)) o[n] = {}
-        o = o[n]
-    }
-    o[a[0]] = value
-}
-
-export function SetComplexPropValue(obj, path, value) {
-    if (obj == null || path == null) return;
-
-    const hierarchy = path.Split('.');
-    if (hierarchy.Length == 0) return;
-  
-    if (hierarchy.Length == 1)
-    {
-        SetPropValue(obj, path, value);
-        return;
-    }
-    var leaf = obj;
-    for (const i = 0; i < hierarchy.Length - 1; i++)
-    {
-        if (leaf == null)
-        {
-            return;
-        }
-
-        var key = hierarchy[i];
-        leaf = GetPropValue(leaf, key);
-    }
-    if (leaf == null)
-    {
-        return;
-    }
-
-    SetPropValue(leaf, hierarchy[hierarchy.Length - 1].ToString(), value);
-}
-
-export function ReverseSpecialChar() {
-    return Object.entries(SpecialChar)
-        .reduce((obj, [key, value], index) => {
-            obj[value] = index;
-            return obj;
-        }, {});
-}
-
-export function DecodeSpecialChar( str ) {
-    if (str == null) return;
-    const arr = str.split('');
-    var res = '';
-    for (const i = 0; i < arr.Length; i++)
-    {
-        if (arr[i] == '%' && i + 3 <= arr.Length && ReverseSpecialChar().hasOwnProperty(str.slice(i, 3)))
-        {
-            res += (ReverseSpecialChar()[str.slice(i, 3)]);
-            i += 2;
-        }
-        else
-        {
-            res += (arr[i]);
-        }
-    }
-    return res;
-}
-
-export function EncodeSpecialChar( str ) {
-    if (str == null) return;
-    const arr = str.split('');
-    var res = '';   
-    for (const i = 0; i < arr.Length; i++)
-    {
-        if (SpecialChar.hasOwnProperty(arr[i]))
-        {
-            res += (SpecialChar[arr[i]]);
-        }
-        else
-        {
-            res += (arr[i]);
-        }
-    }
-    return res;
-}
-
-export const isNoU = (o) => o === null || o === undefined;
 export function HasNonSpaceChar() { return this.trim() !== ''; }
 
 export class string {
     static Empty = '';
+    static Type = 'string';
     static Format(template, ...args) {
         return template.replace(/{(\d+)}/g, (match, index) => {
-          return typeof args[index] != 'undefined' ? args[index] : match;
+            return typeof args[index] != 'undefined' ? args[index] : match;
         });
-      }
+    }
 }
 
 /**
  * @returns true if array contains at least one element
  */
-export function HasElement() {
+function HasElement() {
     return this != null && this.length > 0;
 }
 
@@ -166,10 +63,10 @@ Array.prototype.ToDictionary = function (keySelector, valueSelector) {
         return acc;
     }, {});
 };
-Array.prototype.FirstOrDefault = function(predicate) {
-    if(!predicate) return this.length > 0 ? this[0] : null;
-    for(let i = 0; i < this.length; i++) {
-        if(predicate(this[i])) return this[i];
+Array.prototype.FirstOrDefault = function (predicate) {
+    if (!predicate) return this.length > 0 ? this[0] : null;
+    for (let i = 0; i < this.length; i++) {
+        if (predicate(this[i])) return this[i];
     }
 }
 
@@ -182,6 +79,20 @@ String.prototype.IsNullOrWhiteSpace = function () {
 String.prototype.DecodeSpecialChar = function () {
     return Utils.DecodeSpecialChar(this);
 };
-Object.prototype.GetComplexProp = function(path) {
-  return path.split(".").reduce((obj, key) => obj && obj[key], this);
+Object.prototype.GetComplexProp = function (path) {
+    return path.split(".").reduce((obj, key) => obj && obj[key], this);
 };
+Object.prototype.SetComplexPropValue = function (path, value) {
+    const keys = path.split('.');
+    let obj = this;
+    for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        if (!obj[key]) {
+            obj[key] = {};
+        }
+        obj = obj[key];
+    }
+    obj[keys[keys.length - 1]] = value;
+};
+Promise.prototype.Done = Promise.prototype.then;
+Promise.prototype.done = Promise.prototype.then;

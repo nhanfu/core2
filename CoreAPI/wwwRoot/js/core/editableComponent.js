@@ -1,9 +1,9 @@
 import { Action } from "./models/action.js";
-import { GetPropValue, SetPropValue, isNoU, string } from "./utils/ext.js";
+import { string } from "./utils/ext.js";
 import { Utils } from "./utils/utils.js";
 import { ValidationRule } from "./models/validationRule.js";
 import EventType from "./models/eventType.js";
-import { ComponentType } from "./const.js";
+import { ComponentType } from "./models/componentType.js";
 import { Uuid7 } from "./models/uuidv7.js";
 
 /**
@@ -29,9 +29,9 @@ export default class EditableComponent {
         this.Meta = meta;
         this.Element = ele;
 
-        if (meta != null && meta.Validation != null && meta.Validation.HasAnyChar()) {
+        if (meta?.Validation != null) {
             /** @type {Validation[]} */
-            var rules = JSON.parse(meta.Validation);
+            var rules = typeof meta.Validation === string.Type ? JSON.parse(meta.Validation) : meta.Validation;
             if (rules.HasElement()) {
                 this.ValidationRules = rules.ToDictionary(x => x.Rule, x => x);
             }
@@ -39,10 +39,69 @@ export default class EditableComponent {
         this.DOMContentLoaded.add(() => {
             this.SetRequired();
             this.SendQueueAction("Subscribe");
-            if (meta != null && meta.Events.HasAnyChar()) {
-                this.DispatchEvent(meta.Events, EventType.DOMContentLoaded, Entity).Done();
+            if (meta != null && meta.Events?.HasAnyChar()) {
+                this.DispatchEvent(meta.Events, EventType.DOMContentLoaded, this.Entity).Done();
             }
         });
+    }
+
+    DispatchEvent(events, eventType, ...parameters) {
+        if (!events) {
+            return Promise.resolve(true);
+        }
+        return this.InvokeEvent(events, eventType, ...parameters);
+    }
+
+    InvokeEvent(events, eventTypeName, ...parameters) {
+        let eventObj;
+        try {
+            eventObj = JSON.parse(events);
+        } catch {
+            return Promise.resolve(false);
+        }
+        const eventName = eventObj[eventTypeName];
+        if (!eventName) {
+            return Promise.resolve(false);
+        }
+        const func = Utils.IsFunction(eventName);
+        if (func) {
+            func.call(null, this, this.EditForm);
+            return Promise.resolve(true);
+        }
+
+        let form = this.EditForm;
+        if (!form) {
+            return Promise.resolve(false);
+        }
+        const method = form[eventName];
+        if (!method) {
+            form = this.FindComponentEvent(form, eventName);
+            if (!form) {
+                return Promise.resolve(false);
+            }
+            method = form[eventName];
+        }
+        if (!method) {
+            return Promise.resolve(false);
+        }
+
+        const tcs = new Promise((resolve, reject) => {
+            let task = method.apply(form, parameters);
+            if (!task || task.isCompleted == null) {
+                resolve(false);
+            } else {
+                task.then(() => resolve(true)).catch(e => reject(e));
+            }
+        });
+        return tcs;
+    }
+
+    DispatchCustomEvent(events, eventType, ...parameters) {
+        if (!events) {
+            return Promise.resolve(true);
+        }
+        const eventTypeName = eventType.toString();
+        return this.InvokeEvent(events, eventTypeName, ...parameters);
     }
 
     /** @type {EditableComponent} EditForm - The root component of all tree node.*/
@@ -55,8 +114,8 @@ export default class EditableComponent {
     ParentElement;
     /** @type {HTMLElement} Element - The HTML element representing this editable component. */
     Element;
-    /** @type {Object} Entity - The entity associated with this editable component. */
-    Entity;
+    /** @type {Obj} Entity - The entity associated with this editable component. */
+    Entity = {};
     /** @type {Component} */
     Meta;
     DefaultValue;
@@ -150,14 +209,15 @@ export default class EditableComponent {
     }
     /** @type {boolean} emptyRow - True if the component is in empty row or screen, otherwise false. */
     get EmptyRow() {
-        if (isNoU(this.#emptyRow)) {
+        if (this.#emptyRow == null) {
             this.#emptyRow = this.FindClosest('ListViewItem')?.EmptyRow;
         }
         return this.#emptyRow;
     }
     set EmptyRow(val) {
         this.#emptyRow = val;
-        this.FindClosest('ListViewItem').EmptyRow = val;
+        let row = this.FindClosest('ListViewItem');
+        if (row != null) row.EmptyRow = val;
     }
     /** @type {string} QueueName - Return meta data queue name. */
     get QueueName() {
@@ -173,7 +233,7 @@ export default class EditableComponent {
     SetRequired() {
         const ele = this.Element;
         if (ele == null) return;
-        if (this.ValidationRules.HasElement() && this.ValidationRules.hasOwnProperty(ValidationRule.Required)) {
+        if (this.ValidationRules?.hasOwnProperty(ValidationRule.Required)) {
             ele.setAttribute(ValidationRule.Required, true);
         }
         else {
@@ -255,8 +315,8 @@ export default class EditableComponent {
         if (fn) {
             fn.call(this, this);
         }
-        else if (GetPropValue(this.Entity, this.FieldName) == null) {
-            SetPropValue(this.Entity, this.FieldName, this.DefaultValue);
+        else if (this.Entity.GetComplexProp(this.FieldName) == null) {
+            this.Entity.SetComplexPropValue(this.FieldName, this.DefaultValue);
         }
     }
     ValidateRequired(value) {
@@ -324,7 +384,7 @@ export default class EditableComponent {
     }
 
     PopulateFields(entity = null) {
-        if (this.Entity === null || this.Meta.PopulateField === null || this.Meta.PopulateField.trim() === "") {
+        if (this.Entity == null || this.Meta.PopulateField == null) {
             return;
         }
 
@@ -480,7 +540,7 @@ export default class EditableComponent {
         var queueName = this.QueueName;
         if (queueName?.IsNullOrWhiteSpace()) return;
         const param = { QueueName: queueName, Action: action };
-        this.EditForm.NotificationClient?.Send(JSON.stringify(param));
+        this.EditForm?.NotificationClient?.Send(JSON.stringify(param));
         if (action == "Subscribe")
             window.addEventListener(queueName, this.QueueHandler);
         else

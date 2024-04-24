@@ -1,3 +1,4 @@
+import { Decimal } from '../structs/decimal.js';
 import { Component } from "../models/component.js";
 
 export class Utils {
@@ -56,10 +57,10 @@ export class Utils {
     static DecodeSpecialChar(str) {
         if (!str) return null;
         return str.replace(/%2B/g, '+')
-                  .replace(/%2F/g, '/')
-                  .replace(/%3F/g, '?')
-                  .replace(/%23/g, '#')
-                  .replace(/%26/g, '&');
+            .replace(/%2F/g, '/')
+            .replace(/%3F/g, '?')
+            .replace(/%23/g, '#')
+            .replace(/%26/g, '&');
     }
     static GenerateRandomToken(maxLength = 32) {
         let builder = '';
@@ -80,9 +81,18 @@ export class Utils {
         const parsed = parseInt(value, 10);
         return isNaN(parsed) ? null : parsed;
     }
+    /**
+     * 
+     * @param {string} value - String value to parsed
+     * @returns {[boolean, number?]} - Returns an array with a boolean indicating if the parsing was successful and the parsed decimal value
+     */
     static TryParseDecimal(value) {
-        const parsed = parseFloat(value);
-        return isNaN(parsed) ? null : parsed;
+        try {
+            let res = new Decimal(value);
+            return [true, res];
+        } catch {
+            return [false, null];
+        }
     }
     static Parse(value) {
         try {
@@ -113,7 +123,7 @@ export class Utils {
     }
     static EncodeProperties(value) {
         if (!value || typeof value !== 'object') return value;
-        
+
         Object.keys(value).forEach(prop => {
             if (typeof value[prop] === 'string') {
                 value[prop] = Utils.EncodeSpecialChar(value[prop]);
@@ -125,7 +135,7 @@ export class Utils {
 
     static DecodeProperties(value) {
         if (!value || typeof value !== 'object') return value;
-        
+
         Object.keys(value).forEach(prop => {
             if (typeof value[prop] === 'string') {
                 value[prop] = Utils.DecodeSpecialChar(value[prop]);
@@ -148,10 +158,18 @@ export class Utils {
         return Object.values(Client.Entities).find(entity => entity.Name === name);
     }
 
-    static IsNullable(entityType, fieldName, obj) {
-        const type = Utils.GetComplexPropType(fieldName, obj);
-        return !type || type === typeof(null);
+
+    /**
+    * Checks if a complex property is nullable.
+    * @param {string} fieldName - The property name to check.
+    * @param {Object} obj - The object containing the property.
+    * @returns {boolean} True if the property is nullable, false otherwise.
+    */
+    static IsNullable(fieldName, obj) {
+        const type = Utils.GetPropValue(fieldName, obj);
+        return !type || type === typeof (null);
     }
+
 
     static GetComplexPropType(fieldName, obj) {
         if (!fieldName || !obj || typeof obj !== 'object') return null;
@@ -201,7 +219,7 @@ export class Utils {
         const dt = new Date();
         const isDate = cellData && header.ComponentType === 'Datepicker' && !isNaN(Date.parse(cellData));
         const isRef = header.FieldText && header.FieldText.trim().length > 0 || header.LocalData || header.ReferenceId;
-        
+
         if (emptyRow) {
             return '';
         }
@@ -323,16 +341,4 @@ export class Utils {
             return null;
         }
     }
-    static FormatEntity(format, source) {
-        if (!format || typeof format !== 'string') {
-            return '';
-        }
-    
-        if (source === null || source === undefined) {
-            return format;
-        }
-    
-        return formatEntity(format, null, source);
-    }
-    
 }

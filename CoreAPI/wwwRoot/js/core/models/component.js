@@ -1,3 +1,4 @@
+/** @typedef {import('./validationRule.js').ValidationRule} ValidationRule */
 /**
  * Represents a Component.
  * @class Component
@@ -31,7 +32,7 @@
  * @property {boolean} Disabled
  * @property {boolean} Visibility
  * @property {boolean} Hidden
- * @property {string} Validation
+ * @property {string | ValidationRule[]} Validation
  * @property {boolean} Focus
  * @property {string} Width
  * @property {string} PopulateField
@@ -161,7 +162,8 @@ export class Component {
     Disabled = false;
     Visibility = false;
     Hidden = false;
-    Validation = '';
+    /** @type {String | ValidationRule[]} */
+    Validation;
     Focus = false;
     Width = '';
     PopulateField = '';
@@ -195,7 +197,8 @@ export class Component {
     TopEmpty = false;
     IsCollapsible = false;
     Template = '';
-    Renderer = '';
+    /** @type {String | function} */
+    Renderer;
     PreQuery = '';
     DisabledExp = '';
     FocusSearch = false;

@@ -59,3 +59,13 @@ interface String {
   IsNullOrWhiteSpace(): boolean;
   DecodeSpecialChar(): string;
 }
+
+interface Promise {
+  Done(onSuccess: (value: T) => void, onError: (error: any) => void): Promise<T>;
+  done(onSuccess: (value: T) => void, onError: (error: any) => void): Promise<T>;
+}
+
+interface Obj {
+  GetComplexProp(path: string): any;
+  SetComplexPropValue(path: string, val: any);
+}

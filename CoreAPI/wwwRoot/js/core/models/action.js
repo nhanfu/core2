@@ -15,6 +15,10 @@ export class Action {
      * @param {ObservableArgs} observable 
      */
     Invoke(observable) {
-        this.handler.forEach(h => h(observable));
+        this.handler?.forEach(h => h(observable));
+    }
+
+    invoke(observable) {
+        this.handler?.forEach(h => h(observable));
     }
 }
