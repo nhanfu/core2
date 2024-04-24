@@ -10,7 +10,7 @@ export class NumBox extends EditableComponent {
         super(ui, ele);
         /** @type {HTMLInputElement} */
         this._input = ele;
-        /** @type {Decimal} */
+        /** @type {Decimal | String | Number} */
         this._value = null;
         this._nullable = false;
         this._isString = false;
@@ -30,7 +30,7 @@ export class NumBox extends EditableComponent {
      */
     set Value(value) {
         const oldValue = this._value;
-        this._value = new Decimal(value).toDecimalPlaces(this.Meta.Precision || 0, Decimal.ROUND_HALF_CEIL);
+        this._value = value;
         if (this._value !== null) {
             this._value = new Decimal(this._value).toDecimalPlaces(this.Meta.Precision || 0, Decimal.ROUND_HALF_CEIL);
             const dotCount = (this._input.value.match(/,/g) || []).length;
@@ -47,7 +47,7 @@ export class NumBox extends EditableComponent {
         } else {
             this._input.value = '';
         }
-        if (oldValue.eq(this._value)) {
+        if (oldValue !== this._value) {
             this.Dirty = true;
         }
         this.Entity.SetComplexPropValue(this.FieldName, this._value);
