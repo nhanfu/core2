@@ -1,3 +1,5 @@
+import { Client } from '../clients/client.js';
+import { string } from './ext.js';
 import { LangSelect } from './langSelect.js';
 export class HtmlEvent {
     static click = 'click';
@@ -191,6 +193,24 @@ export class HTML {
         this.Context.appendChild(node);
         return this;
     }
+    /**
+     * Inserts a text node into the current HTML context with language-specific translation.
+     * @param {string} langKey - The key used to fetch the translated text.
+     * @param {...any} parameters - Parameters used for string formatting in the translated text.
+     * @returns {Html} Returns the Html instance for chaining.
+     */
+    IText(langKey, ...parameters) {
+        if (!langKey) {
+            return this;
+        }
+        const translated = LangSelect.Get(langKey);
+        const textContent = parameters.length > 0 ? string.Format(translated, parameters) : translated;
+        const textNode = document.createTextNode(textContent);
+        this.MarkLangProp(textNode, langKey, "TextContent", parameters);
+        this.Context.appendChild(textNode);
+        return this;
+    }
+
     InnerHTML(html) {
         this.Context.innerHTML = html;
         return this;
@@ -252,6 +272,106 @@ export class HTML {
         input.value = val;
         return this;
     }
+    /**
+ * Adds an icon to the HTML element.
+ * @param {string} icon - Icon class or URL to set as background.
+ * @returns {Html} Returns this for chaining.
+ */
+    Icon(icon) {
+        const isIconClass = icon.includes("mif") || icon.includes("fa") || icon.includes("fa-");
+        this.Span.ClassName("icon");
+        if (isIconClass) {
+            this.ClassName(icon).Render();
+        } else {
+            this.Style(`background-image: url(${Client.Origin + icon});`).ClassName("iconBg").Render();
+        }
+        return this;
+    }
+    /**
+     * Sets up an escape key event listener on the current context.
+     * @param {Function} action - Action to execute when the escape key is pressed.
+     * @returns {Html} Returns this for chaining.
+     */
+    Escape(action) {
+        const div = this.Context;
+        div.tabIndex = -1;
+        div.focus();
+        div.addEventListener('keydown', (e) => {
+            if (e.keyCode === 27) { // Escape key
+                const parent = div.parentElement;
+                e.stopPropagation();
+                action(e);
+                parent.focus();
+            }
+        });
+        return this;
+    }
+    /**
+     * Sets an icon for a span element.
+     * @param {string} iconClass - Icon class or URL to set as background.
+     * @returns {Html} Returns this for chaining.
+     */
+    IconForSpan(iconClass) {
+        if (!iconClass || iconClass.trim().length === 0) {
+            return this;
+        }
+        iconClass = iconClass.trim();
+        const span = this.Context;
+        this.ClassName("icon");
+        const isIconClass = iconClass.includes("mif") || iconClass.includes("fa") || iconClass.includes("fa-");
+        if (isIconClass) {
+            span.classList.add(iconClass);
+        } else {
+            span.classList.add("iconBg");
+            span.style.backgroundImage = `url(${iconClass})`;
+        }
+        return this;
+    }
+    /**
+     * Sets the position of the current HTML element to fixed.
+     * @param {number} top - The top position in pixels.
+     * @param {number} left - The left position in pixels.
+     * @returns {Html} Returns this for chaining.
+     */
+    Floating(top, left) {
+        return this.Position(PositionEnum.Fixed)
+            .Position(Direction.Top, top)
+            .Position(Direction.Left, left);
+    }
+    /**
+     * Inserts HTML content into the current context with optional language translation.
+     * @param {string} langKey - Language key for translation.
+     * @param {...any} parameters - Parameters for formatting the translation.
+     * @returns {Html} Returns this for chaining.
+     */
+    IHtml(langKey, ...parameters) {
+        if (!langKey) {
+            return this;
+        }
+        const ctx = this.Context;
+        const translated = LangSelect.Get(langKey);
+        this.MarkLangProp(ctx, langKey, 'innerHTML', parameters);
+        ctx.innerHTML = translated;
+        return this;
+    }
+    /**
+     * Sets the colspan attribute for an HTML table cell.
+     * @param {number} colSpan - The number of columns to span.
+     * @returns {Html} Returns this for chaining.
+     */
+    ColSpan(colSpan) {
+        return this.Attr("colspan", colSpan.toString());
+    }
+
+    /**
+     * Sets the rowspan attribute for an HTML table cell.
+     * @param {number} rowSpan - The number of rows to span.
+     * @returns {Html} Returns this for chaining.
+     */
+    RowSpan(rowSpan) {
+        return this.Attr("rowspan", rowSpan.toString());
+    }
+
 }
 
 export const Html = new HTML();

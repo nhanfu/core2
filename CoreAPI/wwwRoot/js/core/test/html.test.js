@@ -244,5 +244,67 @@ describe('HTML class', () => {
     expect(Html.Context.classList.contains('class1')).toBeTruthy();
     expect(Html.Context.classList.contains('class2')).toBeTruthy();
   });  
-});
 
+  // Testing dynamic form creation and manipulation
+  test('Form method should create a form with specified attributes and content', () => {
+    Html.Form.Attr('action', '/submit').Attr('method', 'post')
+      .Input.Attr('type', 'text').Attr('name', 'firstName').End
+      .Input.Attr('type', 'email').Attr('name', 'email').End
+      .Button.Text('Submit');
+    const form = container.querySelector('form');
+    const inputText = form.querySelector('input[type="text"]');
+    const inputEmail = form.querySelector('input[type="email"]');
+    const button = form.querySelector('button');
+    expect(form.getAttribute('action')).toBe('/submit');
+    expect(form.getAttribute('method')).toBe('post');
+    expect(inputText.getAttribute('name')).toBe('firstName');
+    expect(inputEmail.getAttribute('name')).toBe('email');
+    expect(button.textContent).toBe('Submit');
+  });
+
+  // Testing event handling with parameters
+  test('Event method should handle events with parameterized functions', () => {
+    const mockHandler = jest.fn(x => x);
+    Html.Div.Event('click', () => mockHandler('clicked'));
+    Html.Context.click();
+    expect(mockHandler).toHaveBeenCalledWith('clicked');
+  });
+
+  // Testing complex CSS styling through chaining style updates
+  test('Style method should handle chaining complex styles', () => {
+    Html.Div.Style('background-color: red;').Style('padding: 10px;').Style('margin: 5px;');
+    expect(Html.Context.style.backgroundColor).toBe('red');
+    expect(Html.Context.style.padding).toBe('10px');
+    expect(Html.Context.style.margin).toBe('5px');
+  });
+
+  // Testing addition of list items in an unordered list
+  test('Ul and Li methods should add list items correctly', () => {
+    Html.Ul.Li.Text('Item 1').End.Li.Text('Item 2');
+    const ul = container.querySelector('ul');
+    const lis = ul.querySelectorAll('li');
+    expect(lis.length).toBe(2);
+    expect(lis[0].textContent).toBe('Item 1');
+    expect(lis[1].textContent).toBe('Item 2');
+  });
+
+  // Test handling and setting of multiple data attributes and classes
+  test('DataAttr and ClassName methods should handle multiple data attributes and classes', () => {
+    Html.Div
+      .DataAttr('role', 'navigation')
+      .DataAttr('test', 'dataTest')
+      .ClassName('class1')
+      .ClassName('class2 class3');
+    expect(Html.Context.getAttribute('data-role')).toBe('navigation');
+    expect(Html.Context.getAttribute('data-test')).toBe('dataTest');
+    expect(Html.Context.classList.contains('class1')).toBeTruthy();
+    expect(Html.Context.classList.contains('class2')).toBeTruthy();
+    expect(Html.Context.classList.contains('class3')).toBeTruthy();
+  });
+
+  // Testing the proper functioning of text alignment in more complex scenarios
+  test('TextAlign should set alignment and handle subsequent changes', () => {
+    Html.Div.TextAlign('left').TextAlign('right');
+    expect(Html.Context.style.textAlign).toBe('right');
+  });
+});

@@ -20,7 +20,7 @@ export class Client {
     static BadGatewayRequest = new BadGatewayQueue();
     static UnAuthorizedEventHandler;
     static SignOutEventHandler;
-
+    static get Origin() { return document.head.origin?.content || window.location.origin; }
     _nameSpace;
     _config;
     CustomPrefix = (() => {
