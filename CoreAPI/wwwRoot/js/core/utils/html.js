@@ -1,5 +1,4 @@
-import { Lang } from "../models/componentType.js";
-
+import { LangSelect } from './langSelect.js';
 export class HtmlEvent {
     static click = 'click';
 }
@@ -190,6 +189,7 @@ export class HTML {
         if (text === null || text === undefined) return this;
         var node = new Text(text);
         this.Context.appendChild(node);
+        return this;
     }
     InnerHTML(html) {
         this.Context.innerHTML = html;
@@ -199,10 +199,13 @@ export class HTML {
         this.Label.ClassName("checkbox input-small transition-on style2")
             .Input.Attr("type", "checkbox").Type("checkbox").End
             .Span.ClassName("check myCheckbox");
-        this.Context.PreviousElementSibling.checked = val;
+        this.Context.previousElementSibling.checked = val;
         return this;
     }
-
+    Type(name) {
+        this.Context.type = name;
+        return this;
+    }
     Attr(name, value) {
         this.Context.setAttribute(name, value);
         return this;
@@ -221,19 +224,28 @@ export class HTML {
         return this.Attr("placeholder", LangSelect.Get(langKey));
     }
 
+    /**
+     * Marks a language property on a specified node.
+     * @param {Node} ctx - The context node to which the language properties are added.
+     * @param {string} langKey - The key of the language property.
+     * @param {string} propName - The name of the property to mark.
+     * @param {...any} parameters - Additional parameters associated with the language property.
+     */
     MarkLangProp(ctx, langKey, propName, ...parameters) {
-        if (ctx == null) return;
-        ctx[LangSelect.LangKey + propName] = langKey;
-        var newProp = prop === null ? propName : prop + ',' + propName;
-        var splitArray = ctx[LangSelect.LangProp].split(",");
-        var uniqueArray = [];
-        splitArray.forEach(function (item) {
-            if (!uniqueArray.includes(item)) {
-                uniqueArray.push(item);
-            }
-        });
-        var combinedString = uniqueArray.join(",");
-        ctx[LangSelect.LangProp] = combinedString;
+        if (!ctx) return;
+
+        const langKeyProperty = LangSelect.LangKey + propName;
+        const langParamProperty = LangSelect.LangParam + propName;
+
+        ctx[langKeyProperty] = langKey;
+        if (parameters.length > 0) {
+            ctx[langParamProperty] = parameters;
+        }
+
+        const prop = ctx[LangSelect.LangProp];
+        const newProp = prop ? prop + "," + propName : propName;
+        const propArray = newProp.split(",").filter((value, index, self) => self.indexOf(value) === index);
+        ctx[LangSelect.LangProp] = propArray.join(",");
     }
     Value(val) {
         const input = this.Context;

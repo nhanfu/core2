@@ -2,7 +2,7 @@ import EditableComponent from './editableComponent.js';
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
 import { ValidationRule } from "./models/validationRule.js";
-import { LangSelect } from "./langSelect.js";
+import { LangSelect } from "./utils/langSelect.js";
 import { Client } from "./clients/client.js";
 import EventType from './models/eventType.js';
 import { ComponentType } from './models/componentType.js';

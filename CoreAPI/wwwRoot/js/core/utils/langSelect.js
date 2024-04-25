@@ -1,10 +1,10 @@
-import { Client } from "./clients/client.js";
-import EditableComponent from "./editableComponent.js";
-import { HTML, Html } from "./utils/html.js";
-import { SqlViewModel } from "./models/sqlViewModel.js";
-import { Utils } from "./utils/utils.js";
+import { Client } from "../clients/client.js";
+import EditableComponent from "../editableComponent.js";
+import { Html } from "./html.js";
+import { SqlViewModel } from "../models/sqlViewModel.js";
+import { Utils } from "./utils.js";
 
-export class LangSelect extends EditableComponent {
+export class LangSelect {
     static LangProp = "langprop";
     static LangKey = "langkey";
     static LangParam = "Para";
@@ -31,44 +31,6 @@ export class LangSelect extends EditableComponent {
         }
         LangSelect._culture = value !== null ? value.replace("\"", "") : null;
         localStorage.setItem("Culture", value !== null ? value.replace("\"", "") : null);
-    }
-
-    constructor(com, ele) {
-        super(com);
-        this.ParentElement = ele;
-    }
-
-    Render() {
-        var fn = Utils.IsFunction(this.Meta.FormatData);
-        if (this.Meta?.FormatData != null && fn) {
-            Html.Take(this.ParentElement);
-            fn.call(null, this);
-            this.Element = this.ParentElement.firstElementChild;
-        }
-        if (this.Element === null) {
-            Html.Take(this.ParentElement).Ul.ClassName("lang-select")
-                .Li.DataAttr(LangSelect.LangCode, "vi").Attr(LangSelect.Active, true.toString()).Img.Src("./icons/vn.png").EndOf(MVVM.ElementType.li)
-                .Li.DataAttr(LangSelect.LangCode, "en").Img.Src("./icons/eg.png").EndOf(MVVM.ElementType.li);
-            this.Element = Html.Context;
-        }
-        this.Travel(this.Element).filter(x => x instanceof HTMLElement).forEach(x => {
-            const code = x.dataset[LangSelect.LangCode];
-            if (code === null || code === undefined || code === "") {
-                return;
-            }
-            x.addEventListener("click", (e) => {
-                if (x.getAttribute(LangSelect.Active) === true.toString().toLowerCase()) {
-                    return;
-                }
-                [...this.Element.querySelectorAll("[Active=true]")].forEach(li => li.removeAttribute(LangSelect.Active));
-                x.setAttribute(LangSelect.Active, true.toString().toLowerCase());
-                LangSelect.SetCultureAndTranslate(code);
-            });
-            if (LangSelect.Culture === null && x.getAttribute(LangSelect.Active) === true.toString().toLowerCase()) {
-                LangSelect.SetCultureAndTranslate(code);
-            }
-        });
-        Html.Take(this.ParentElement);
     }
 
     static SetCultureAndTranslate(code) {
