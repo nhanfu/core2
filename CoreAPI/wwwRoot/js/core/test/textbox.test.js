@@ -1,7 +1,7 @@
 import { Component } from '../models/component.js';
+import { ComponentType } from '../models/componentType.js';
 import Textbox from '../textbox';  // Adjust the import path as necessary
 import { Utils } from "../utils/utils.js";
-import { HTMLInputElement } from './HtmlInputElement.js';
 
 // Mock utilities to simplify behavior during tests
 Utils.GetPropValue = jest.fn((entity, fieldName) => entity[fieldName]);
@@ -20,7 +20,8 @@ describe('Textbox', () => {
   let entity;
 
   beforeEach(() => {
-    element = new HTMLInputElement();  // Adjust for specific tests if necessary
+    element = document.createElement(ComponentType.Input);  // Adjust for specific tests if necessary
+    element.type = ComponentType.Input;
     meta = { FieldName: 'testField', PlainText: 'Enter text', FormatData: '', Events: [], ShowLabel: true };
     textbox = new Textbox(meta, element);
     entity = { testField: 'Initial Value' };

@@ -56,11 +56,12 @@ export class Utils {
     }
     static DecodeSpecialChar(str) {
         if (!str) return null;
-        return str.replace(/%2B/g, '+')
-            .replace(/%2F/g, '/')
-            .replace(/%3F/g, '?')
-            .replace(/%23/g, '#')
-            .replace(/%26/g, '&');
+        return str.replaceAll('%2B', '+')  
+          .replaceAll('%2F', '/')
+          .replaceAll('%3F', '?')
+          .replaceAll('%23', '#')
+          .replaceAll('%26', '&');
+
     }
     static GenerateRandomToken(maxLength = 32) {
         let builder = '';

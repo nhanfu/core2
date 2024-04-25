@@ -345,7 +345,7 @@ export default class EditableComponent {
     }
     
     CascadeField() {
-        if (this.Meta.CascadeField === null || this.Meta.CascadeField.trim() === "") {
+        if (!this.Meta.CascadeField) {
             return;
         }
     

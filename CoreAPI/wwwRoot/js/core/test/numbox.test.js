@@ -1,7 +1,7 @@
 // Number.test.js
 
+import { ComponentType } from '../models/componentType';
 import { NumBox } from '../numbox'; // Adjust the import according to your file structure
-import { HTMLInputElement } from './HtmlInputElement';
 
 describe('Number component', () => {
     /** @type {NumBox} */
@@ -10,7 +10,17 @@ describe('Number component', () => {
     let mockInput;
 
     beforeEach(() => {
-        mockInput = new HTMLInputElement();
+        mockInput = document.createElement(ComponentType.Input);
+        mockInput.addEventListener = function(name, action) {
+            mockInput.events = {};
+            mockInput.events[name] = mockInput.events[name] || [];
+            mockInput.events[name].push(action);
+        };
+        mockInput.trigger = function(name) {
+            const actions = mockInput.events[name];
+            actions.forEach(x => x.call(mockInput));
+        }
+        mockInput.type = 'tel';
         mockInput.addEventListener('input', () => {
             number.Value = mockInput.value;
         });
