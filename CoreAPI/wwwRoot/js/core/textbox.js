@@ -4,12 +4,17 @@ import { Utils } from "./utils/utils.js";
 import { ValidationRule } from "./models/validationRule.js";
 import { LangSelect } from "./langSelect.js";
 import { Client } from "./clients/client.js";
+import EventType from './models/eventType.js';
+import { ComponentType } from './models/componentType.js';
+import { string } from './utils/ext.js';
 
 
 class Textbox extends EditableComponent {
     constructor(meta, ele) {
         super(meta, ele);
+        /** @type {HTMLInputElement} */
         this.Input = null;
+        /** @type {HTMLTextAreaElement} */
         this.TextArea = null;
         this.MultipleLine = false;
         this.Password = false;
@@ -18,21 +23,20 @@ class Textbox extends EditableComponent {
         this._text = '';
         this.Text = '';
         this.DefaultValue = '';
-        if (ele instanceof HTMLInputElement) {
-        /** @type {HTMLInputElement} */
-        this.Input = ele;
-        } 
-        else if (ele instanceof HTMLTextAreaElement) {
-        this.TextArea = ele;
+        if (ele?.tagName === ComponentType.Input) {
+            this.Input = ele;
+        }
+        else if (ele.tagName === ComponentType.Textarea) {
+            this.TextArea = ele;
         }
     }
     Render() {
         this.SetDefaultVal();
         var val = this.Entity && Utils.GetPropValue(this.Entity, this.FieldName);
-        if (val !== null && val !== undefined && typeof val === "string" && this.EditForm != null && this.EditForm.Feature != null && !this.EditForm.Feature.IgnoreEncode) {
-            const ecode = Utils.DecodeSpecialChar(val);
-            const Encode = Utils.EncodeSpecialChar(ecode);
-            this.Entity && SetComplexPropValue(this.Entity, this.FieldName, Encode);
+        if (val !== null && val !== undefined && typeof val === string.Type && this.EditForm != null && this.EditForm.Feature != null && !this.EditForm.Feature.IgnoreEncode) {
+            const decode = Utils.DecodeSpecialChar(val);
+            const encode = Utils.EncodeSpecialChar(decode);
+            this.Entity.SetComplexPropValue(this.FieldName, encode);
         }
         var text = val?.ToString() || '';
         if (!this.Meta.FormatData) {
@@ -42,38 +46,31 @@ class Textbox extends EditableComponent {
         }
         this._text = this.EditForm != null && this.EditForm.Feature != null && this.EditForm.Feature.IgnoreEncode ? text : Utils.DecodeSpecialChar(text);
         if (this.MultipleLine || this.TextArea != null) {
-            if (Html.Take && Html.Take(this.ParentElement) && Html.Take(this.ParentElement).TextArea) {
-                Html.Take(this.ParentElement).TextArea.Value(this._text)?.PlaceHolder(this.Meta.PlainText);
-                this.Element = this.TextArea = Html.Context instanceof HTMLTextAreaElement ? Html.Context : null;
+            if (this.TextArea == null) {
+                Html.Take(this.ParentElement).TextArea.Value(this._text).PlaceHolder(this.Meta.PlainText);
+                this.Element = this.TextArea = Html.Context;
             } else if (this.TextArea) {
                 this.Element = this.TextArea;
-                this.TextArea.Value = this._text;
+                this.TextArea.value = this._text;
             }
             if (this.Meta.Row > 0) {
                 Html.Instance.Attr("rows", this.Meta.Row ?? 1);
             }
-            if (this.TextArea && (this.MultipleLine || this.TextArea != null)) {
-                if (Html.Take && Html.Take(this.ParentElement) && Html.Take(this.ParentElement).TextArea) {
-                    Html.Take(this.ParentElement).TextArea.Value(this._text)?.PlaceHolder(this.Meta.PlainText);
-                    this.Element = this.TextArea = Html.Context instanceof HTMLTextAreaElement ? Html.Context : null;
-                } else if (this.TextArea) {
-                    this.Element = this.TextArea;
-                    this.TextArea.Value = this._text;
-                }
-                if (this.Meta.Row > 0) {
-                    Html.Instance.Attr("rows", this.Meta.Row ?? 1);
-                }
-                this.TextArea.addEventListener("input", (e) => PopulateUIChange(EventType.Input));
-                this.TextArea.addEventListener("change", (e) => PopulateUIChange(EventType.Change));
+            this.TextArea.addEventListener("input", (e) => this.PopulateUIChange(EventType.Input).bind(this));
+            this.TextArea.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change).bind(this));
+        }
+        else {
+            if (!this.Input) {
+                Html.Take(this.ParentElement).Input.Value(this._text)?.PlaceHolder(this.Meta.PlainText);
+                this.Element = this.Input = Html.Context;
+            } else {
+                this.Element = this.Input;
+                this.Input.value = this._text;
             }
+            this.Input.addEventListener("input", (e) => this.PopulateUIChange(EventType.Input).bind(this));
+            this.Input.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change).bind(this));
         }
-        if (this.Meta.ChildStyle && this.Meta.ChildStyle.trim() !== "") {
-            Utils.IsFunction(this.Meta.ChildStyle, function (fn) {
-                if (fn !== null && typeof fn === 'function') {
-                    fn.call(this, Entity, this.Element).toString();
-                }
-            });
-        }
+        Utils.IsFunction(this.Meta.Renderer)?.call(this, this);
         if (this.Password) {
             Html.Instance.Style("text-security: disc;-webkit-text-security: disc;-moz-text-security: disc;");
         }
@@ -85,30 +82,28 @@ class Textbox extends EditableComponent {
         }
         this.DOMContentLoaded?.Invoke();
     }
+
     PopulateUIChange(type, shouldTrim = false) {
-        if (this.Disabled)
-            {
-                return;
-            }
+        if (this.Disabled) {
+            return;
+        }
         this._oldText = this._text;
         this._text = this.Input ? this.Input.Value : this.TextArea.Value;
         this._text = this.Password ? this._text : (shouldTrim ? this._text?.trim() : this._text);
-        if (this.Meta.UpperCase && this._text != null)
-            {
-                this.Text = this._text.toLocaleUpperCase();
-            }
-            this._value = (this.EditForm != null && this.EditForm.Feature != null && this.EditForm.Feature.IgnoreEncode) ? this._text : EncodeSpecialChar(this._text);
-            this.Entity && SetComplexPropValue(this.Entity,this.FieldName, this._value);
-            this.Dirty = true;
-            this.UserInput?.Invoke({ NewData: this._text, OldData: this._oldText, EvType: type });
-            this.PopulateFields();
-            this.DispatchEvent(this.Meta.Events, type, this.Entity);
+        if (this.Meta.UpperCase && this._text != null) {
+            this.Text = this._text.toLocaleUpperCase();
+        }
+        this._value = (this.EditForm != null && this.EditForm.Feature != null && this.EditForm.Feature.IgnoreEncode) ? this._text : EncodeSpecialChar(this._text);
+        this.Entity && SetComplexPropValue(this.Entity, this.FieldName, this._value);
+        this.Dirty = true;
+        this.UserInput?.Invoke({ NewData: this._text, OldData: this._oldText, EvType: type });
+        this.PopulateFields();
+        this.DispatchEvent(this.Meta.Events, type, this.Entity);
 
     }
     UpdateView(force = false, dirty = null, ...componentNames) {
-        Value = this.Entity && Utils.GetPropValue(this.Entity,this.FieldName);
-        if (!Dirty)
-        {
+        Value = this.Entity && Utils.GetPropValue(this.Entity, this.FieldName);
+        if (!Dirty) {
             this.DOMContentLoaded?.Invoke();
             this.OldValue = this._text;
         }
@@ -135,18 +130,18 @@ class Textbox extends EditableComponent {
             return true;
         }
         const tcs = new Promise((resolve, reject) => {
-            ValidationResult.Clear();
+            this.ValidationResult.Clear();
             this.Validate(ValidationRule.MinLength, this._text, (value, minLength) => this._text != null && this._text.length >= minLength);
             this.Validate(ValidationRule.CheckLength, this._text, (text, checkLength) => this._text == null || this._text == "" || this._text.length == checkLength);
             this.Validate(ValidationRule.MaxLength, this._text, (text, maxLength) => this._text == null || this._text.length <= maxLength);
             this.Validate(ValidationRule.RegEx, this._text, ValidateRegEx);
-            this.ValidateRegEx(this._text); 
+            this.ValidateRegEx(this._text);
             this.ValidateRequired(this.Text);
             this.ValidateUnique().then(() => {
                 resolve(this.IsValid);
             });
         });
-    
+
         return tcs;
     }
     ValidateUnique() {
@@ -154,13 +149,12 @@ class Textbox extends EditableComponent {
             return Promise.resolve(true);
         }
         var rule = this.ValidationRules[ValidationRule.Unique];
-        if (rule === null || _text.trim() !== "")
-        {
-                return Promise.resolve(true);
+        if (rule === null || _text.trim() !== "") {
+            return Promise.resolve(true);
         }
         var isFn;
         var fn;
-        Utils.IsFunction(Meta.PreQuery, function(result) {
+        Utils.IsFunction(Meta.PreQuery, function (result) {
             isFn = result !== null && typeof result === 'function';
             if (isFn) {
                 fn = result;
@@ -168,34 +162,32 @@ class Textbox extends EditableComponent {
         });
         var table = !this.Meta.RefName ? this.Meta.RefName : this.EditForm.Feature.EntityName;
         const submit = {
-            ComId : this.Meta.Id,
-            Params : isFn ? JSON.Stringify(fn.Call(null, this)) : null,
-            MetaConn : this.MetaConn,
-            DataConn : this.DataConn,
+            ComId: this.Meta.Id,
+            Params: isFn ? JSON.Stringify(fn.Call(null, this)) : null,
+            MetaConn: this.MetaConn,
+            DataConn: this.DataConn,
         };
         var tcs = new Promise((resolve, reject) => {
             Client.Instance.ComQuery(submit)
-            .then(ds => {
-                var exists = ds.length > 0 && ds[0].length > 0;
-                if (exists) {
-                    this.ValidationResult.TryAdd(ValidationRule.Unique, `${rule.Message} ${LangSelect.Get(Meta.Label)} ${this._text}`);
-                } else {
-                    this.ValidationResult.Remove(ValidationRule.Unique);
-                }
-                resolve(true);
-            });
+                .then(ds => {
+                    var exists = ds.length > 0 && ds[0].length > 0;
+                    if (exists) {
+                        this.ValidationResult.TryAdd(ValidationRule.Unique, `${rule.Message} ${LangSelect.Get(Meta.Label)} ${this._text}`);
+                    } else {
+                        this.ValidationResult.Remove(ValidationRule.Unique);
+                    }
+                    resolve(true);
+                });
         });
-        
+
         return tcs;
     }
     SetDisableUI(value) {
-        if (this.Input != null)
-        {
+        if (this.Input != null) {
             this.Input.ReadOnly = value;
         }
 
-        if (this.TextArea != null)
-        {
+        if (this.TextArea != null) {
             this.TextArea.ReadOnly = value;
         }
     }

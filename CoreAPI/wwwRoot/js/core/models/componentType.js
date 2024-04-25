@@ -4,4 +4,6 @@ export class ComponentType {
     static EditForm = 'EditForm';
     static Checkbox = 'Checkbox';
     static Numbox = 'Numbox';
+    static Input = 'INPUT';
+    static Textarea = 'TEXTAREA';
 }
