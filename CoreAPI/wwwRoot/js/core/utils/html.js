@@ -273,10 +273,10 @@ export class HTML {
         return this;
     }
     /**
- * Adds an icon to the HTML element.
- * @param {string} icon - Icon class or URL to set as background.
- * @returns {Html} Returns this for chaining.
- */
+     * Adds an icon to the HTML element.
+     * @param {string} icon - Icon class or URL to set as background.
+     * @returns {Html} Returns this for chaining.
+     */
     Icon(icon) {
         const isIconClass = icon.includes("mif") || icon.includes("fa") || icon.includes("fa-");
         this.Span.ClassName("icon");
@@ -372,6 +372,44 @@ export class HTML {
         return this.Attr("rowspan", rowSpan.toString());
     }
 
+    /**
+     * Ends the current context at the specified element type or selector.
+     * @param {string|ElementType} selector - The selector or element type to end at.
+     * @returns {Html} Returns this for chaining.
+     */
+    EndOf(selector) {
+        if (typeof selector === "object" && selector.toString) { // Assuming ElementType is an object with toString()
+            selector = selector.toString();
+        }
+
+        let result = this.Context;
+        while (result !== null) {
+            if (result.querySelector(selector) !== null) {
+                break;
+            } else {
+                result = result.parentElement;
+            }
+        }
+
+        if (result === null) {
+            throw new Error("Cannot find the element of selector " + selector);
+        }
+
+        this.Context = result;
+        return this;
+    }
+
+    /**
+     * Moves the context to the closest ancestor that matches the specified element type.
+     * @param {ElementType} type - The element type to find the closest ancestor.
+     * @returns {Html} Returns this for chaining.
+     */
+    Closest(type) {
+        if (this.Context && typeof this.Context.closest === 'function') {
+            this.Context = this.Context.closest(type.toString());
+        }
+        return this;
+    }
 }
 
 export const Html = new HTML();
