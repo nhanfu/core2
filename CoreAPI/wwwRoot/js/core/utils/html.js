@@ -171,6 +171,12 @@ export class HTML {
         this.Context.addEventListener(name, handler);
         return this;
     }
+    Trigger(type) {
+        var e = new Event(type);
+        this.Context.dispatchEvent(e);
+        return this;
+    }
+
     ClassName(cls) {
         this.Context.className += (' ' + cls);
         return this;
@@ -228,6 +234,11 @@ export class HTML {
     }
     Attr(name, value) {
         this.Context.setAttribute(name, value);
+        return this;
+    }
+
+    TabIndex(index) {
+        this.Context.setAttribute('tabindex', index.toString());
         return this;
     }
 
