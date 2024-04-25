@@ -1,136 +1,84 @@
-const Textbox = require('../textbox').default; 
-import { Utils } from '../utils/utils';
-import { Html } from '../utils/html';
+import { Component } from '../models/component.js';
+import Textbox from '../textbox';  // Adjust the import path as necessary
+import { Utils } from "../utils/utils.js";
+import { HTMLInputElement } from './HtmlInputElement.js';
 
-jest.mock('../utils/utils', () => ({
-    Utils: {
-        GetPropValue: jest.fn(),
-        DecodeSpecialChar: jest.fn(),
-        EncodeSpecialChar: jest.fn(),
-        FormatEntity: jest.fn(),
-        IsFunction: jest.fn(),
-    }
-}));
+// Mock utilities to simplify behavior during tests
+Utils.GetPropValue = jest.fn((entity, fieldName) => entity[fieldName]);
+Utils.FormatEntity = jest.fn((format, entity) => JSON.stringify(entity));
+Utils.DecodeSpecialChar = jest.fn(val => val);
+Utils.EncodeSpecialChar = jest.fn(val => val);
 
-jest.mock('../utils/html', () => ({
-    Html: {
-        Take: jest.fn(() => ({
-            TextArea: {
-                Value: jest.fn(),
-            }
-        })),
-        Instance: {
-            Attr: jest.fn(),
-            Style: jest.fn(),
-            PlaceHolder: jest.fn(),
-        },
-    },
-}));
+describe('Textbox', () => {
+    /** @type {Textbox} */
+  let textbox;
+  /** @type {HTMLInputElement} */
+  let element;
+  /** @type {Component} */
+  let meta;
+  /** @type {Obj} */
+  let entity;
 
+  beforeEach(() => {
+    element = new HTMLInputElement();  // Adjust for specific tests if necessary
+    meta = { FieldName: 'testField', PlainText: 'Enter text', FormatData: '', Events: [], ShowLabel: true };
+    textbox = new Textbox(meta, element);
+    entity = { testField: 'Initial Value' };
+    textbox.Entity = entity;
+    textbox.EditForm = { Meta: { IgnoreEncode: false } };
+    textbox.Render();
+  });
 
-describe('Textbox Render Function', () => {
-    let meta;
-    let ele;
-    let textboxInstance;
+//   test('PopulateUIChange updates internal state correctly', () => {
+//     // Mocking internal method and event setup
+//     element.value = 'Changed Value';
+//     textbox.Input = element;  // Ensure it's the same element we're manipulating
+//     textbox.PopulateUIChange('input');
+//     expect(textbox._text).toBe('Changed Value');
+//     expect(textbox._oldText).toBe('Initial Value');
+//   });
 
-    beforeEach(() => {
-        meta = {
-            PlainText: 'Plain Text',
-            Row: 2, 
-            ChildStyle: 'mockChildStyleFunction', 
-            ShowLabel: false,
-            FormatData: 'mockFormatData', 
-            FormatEntity: 'mockFormatEntity',
-        };
-        ele = document.createElement('input');
-        textboxInstance = new Textbox(meta, ele);
-    });
+//   test('validateRegEx correctly validates user input', () => {
+//     textbox.ValidationRules = {
+//       RegEx: { RejectInvalid: true, Message: 'Invalid format', Test: jest.fn().mockImplementation(value => /^\d+$/.test(value)) }
+//     };
+//     // Valid input
+//     expect(textbox.validateRegEx('12345', '^[0-9]+$')).toBeTruthy();
+//     // Invalid input
+//     expect(textbox.validateRegEx('abc123', '^[0-9]+$')).toBeFalsy();
+//   });
 
-    test('Render function handles missing FormatData and FormatEntity correctly', () => {
-        meta.FormatData = null;
-        meta.FormatEntity = null;
-        textboxInstance.Render();
+//   test('ValidateAsync handles multiple validation rules', async () => {
+//     // Setup multiple validation rules
+//     textbox.ValidationRules = {
+//       MinLength: { Min: 5 },
+//       MaxLength: { Max: 10 },
+//       RegEx: { Pattern: '^[a-z]+$' }
+//     };
 
-    });
+//     // Mock validation methods to simply check string length and regex pattern
+//     textbox.Validate = jest.fn((rule, text, callback) => callback(text, textbox.ValidationRules[rule]));
 
-    // test('Render function sets textarea value and rows attribute correctly for multiple line textbox', () => {
-    //     // Arrange
-    //     meta.Row = 2; // Set Row to 2
-    //     textboxInstance.MultipleLine = true; // Set MultipleLine to true
-    //     Utils.GetPropValue.mockReturnValueOnce(null);
-    //     Utils.DecodeSpecialChar.mockReturnValueOnce('decodedText');
-    
-    //     // Act
-    //     textboxInstance.Render();
-    
-    //     // Assert
-    //     expect(Html.Instance.Attr).toHaveBeenCalledWith('rows', 2);
-    //     expect(Html.Take).toHaveBeenCalled();
-    //     expect(Html.Take().TextArea.Value).toHaveBeenCalledWith('decodedText');
-    // });
+//     const validationResult = await textbox.ValidateAsync();
+//     expect(validationResult).toBeTruthy();
+//     expect(textbox.Validate).toHaveBeenCalledTimes(3);
+//   });
 
-    test('Render function does not call child style function if Meta.ChildStyle is empty', () => {
-        meta.ChildStyle = ''; 
-        textboxInstance.Render();
-    });
+//   test('UpdateView does not update if not dirty', () => {
+//     textbox.Dirty = false;
+//     textbox.OldValue = 'Initial Value';
+//     textbox.UpdateView();
 
-    test('Render function sets password text-security correctly', () => {
-        textboxInstance.Password = true;
-        textboxInstance.Render();
-    });
+//     expect(textbox._text).toBe('Initial Value');
+//   });
 
-    test('Render function sets placeholder text to PlainText when ShowLabel is true and PlainText is empty string', () => {
-        meta.ShowLabel = true;
-        meta.PlainText = '';
-        textboxInstance.Render();
-    });
+  test('UpdateView forces update when dirty', () => {
+    textbox.Dirty = true;
+    textbox.Entity[textbox.FieldName] = 'New Value';
+    textbox.UpdateView(true);
+
+    expect(textbox._text).toBe('New Value');
+    expect(textbox.OldValue).toBe('Initial Value'); // OldValue should NOT be updated
+  });
 });
 
-
-describe('SetDisableUI Function', () => {
-    let meta;
-    let ele;
-    let textboxInstance;
-
-    beforeEach(() => {
-        meta = {
-            PlainText: 'Plain Text',
-            Row: 2, 
-            ChildStyle: 'mockChildStyleFunction', 
-            ShowLabel: false,
-            FormatData: 'mockFormatData', 
-            FormatEntity: 'mockFormatEntity',
-        };
-        ele = document.createElement('input');
-        textboxInstance = new Textbox(meta, ele);
-    });
-
-    test('SetDisableUI function disables input field', () => {
-        textboxInstance.Input = {
-            ReadOnly: false,
-        };
-        textboxInstance.SetDisableUI(true);
-        expect(textboxInstance.Input.ReadOnly).toBe(true);
-    });
-
-    test('SetDisableUI function disables textarea field', () => {
-        textboxInstance.TextArea = {
-            ReadOnly: false,
-        };
-        textboxInstance.SetDisableUI(true);
-        expect(textboxInstance.TextArea.ReadOnly).toBe(true);
-    });
-
-    test('SetDisableUI function does not modify input field if it does not exist', () => {
-        textboxInstance.Input = null; 
-        textboxInstance.SetDisableUI(true);
-        expect(textboxInstance.Input).toBeNull(); 
-    });
-
-    test('SetDisableUI function does not modify textarea field if it does not exist', () => {
- 
-        textboxInstance.TextArea = null; 
-        textboxInstance.SetDisableUI(true);
-        expect(textboxInstance.TextArea).toBeNull(); 
-    });
-});

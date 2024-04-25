@@ -1,4 +1,3 @@
-import Decimal from "../structs/decimal.js";
 import { Utils } from "./utils.js";
 
 export function HasNonSpaceChar() { return this.trim() !== ''; }

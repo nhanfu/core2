@@ -21,7 +21,6 @@ class Textbox extends EditableComponent {
         this._value = null;
         this._oldText = '';
         this._text = '';
-        this.Text = '';
         this.DefaultValue = '';
         if (ele?.tagName === ComponentType.Input) {
             this.Input = ele;
@@ -30,21 +29,58 @@ class Textbox extends EditableComponent {
             this.TextArea = ele;
         }
     }
+    /** @type {String} */
+    get Text() { return this._text; }
+    set Text(val) { 
+        this._text = val; 
+        if (this.Input) this.Input.value = val;
+        if (this.Textarea) this.Textarea.value = val;
+    }
+
+    get Value() { return this._value; }
+
+    set Value(newValue) {
+        this._value = newValue;
+        if (this._value !== null && typeof this._value === string.Type) {
+            if (this.EditForm && this.EditForm.Meta && !this.EditForm.Meta.IgnoreEncode || !this.EditForm.Meta) {
+                this.Entity.SetComplexPropValue(this.FieldName, Utils.EncodeSpecialChar(Utils.DecodeSpecialChar(this._value)));
+            }
+        }
+        if (this.Entity) {
+            this.Entity.SetComplexPropValue(this.FieldName, this._value);
+        }
+
+        let text = (this.EditForm && this.EditForm.Meta && this.EditForm.Meta.IgnoreEncode) ? this._value : Utils.DecodeSpecialChar(this._value);
+        if (this.Meta.FormatData && Utils.HasAnyChar(this.Meta.FormatData)) {
+            text = Utils.FormatEntity(this.Meta.FormatData, this.Entity.GetPropValue(this.FieldName));
+        }
+
+        if (this.Meta.FormatEntity && Utils.HasAnyChar(this.Meta.FormatEntity)) {
+            text = Utils.FormatEntity(this.Meta.FormatEntity, null, this.Entity, Utils.EmptyFormat, Utils.EmptyFormat);
+        }
+        Utils.IsFunction(this.Meta.Renderer)?.call(this, this);
+        this.Text = text;
+        this.PopulateFields();
+    }
+
     Render() {
         this.SetDefaultVal();
-        var val = this.Entity && Utils.GetPropValue(this.Entity, this.FieldName);
-        if (val !== null && val !== undefined && typeof val === string.Type && this.EditForm != null && this.EditForm.Feature != null && !this.EditForm.Feature.IgnoreEncode) {
+        var val = this.Entity && this.Entity.GetComplexProp(this.FieldName);
+        var shouldEncode = val !== null && val !== undefined && typeof val === string.Type && this.EditForm != null 
+            && this.EditForm.Meta != null && !this.EditForm.Meta.IgnoreEncode;
+        if (shouldEncode) {
             const decode = Utils.DecodeSpecialChar(val);
             const encode = Utils.EncodeSpecialChar(decode);
             this.Entity.SetComplexPropValue(this.FieldName, encode);
         }
-        var text = val?.ToString() || '';
+        var text = val || '';
         if (!this.Meta.FormatData) {
             text = Utils.FormatEntity(this.Meta.FormatData, val);
         } else if (!this.Meta.FormatEntity) {
             text = Utils.FormatEntity(this.Meta.FormatEntity, this.Entity);
         }
-        this._text = this.EditForm != null && this.EditForm.Feature != null && this.EditForm.Feature.IgnoreEncode ? text : Utils.DecodeSpecialChar(text);
+        this._text = this.EditForm != null && this.EditForm.Meta != null && this.EditForm.Meta.IgnoreEncode ? text : Utils.DecodeSpecialChar(text);
+        this.OldValue = this._text;
         if (this.MultipleLine || this.TextArea != null) {
             if (this.TextArea == null) {
                 Html.Take(this.ParentElement).TextArea.Value(this._text).PlaceHolder(this.Meta.PlainText);
@@ -60,7 +96,7 @@ class Textbox extends EditableComponent {
             this.TextArea.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change).bind(this));
         }
         else {
-            if (!this.Input) {
+            if (this.Input == null) {
                 Html.Take(this.ParentElement).Input.Value(this._text)?.PlaceHolder(this.Meta.PlainText);
                 this.Element = this.Input = Html.Context;
             } else {
@@ -93,7 +129,7 @@ class Textbox extends EditableComponent {
         if (this.Meta.UpperCase && this._text != null) {
             this.Text = this._text.toLocaleUpperCase();
         }
-        this._value = (this.EditForm != null && this.EditForm.Feature != null && this.EditForm.Feature.IgnoreEncode) ? this._text : EncodeSpecialChar(this._text);
+        this._value = (this.EditForm != null && this.EditForm.Meta != null && this.EditForm.Meta.IgnoreEncode) ? this._text : EncodeSpecialChar(this._text);
         this.Entity && SetComplexPropValue(this.Entity, this.FieldName, this._value);
         this.Dirty = true;
         this.UserInput?.Invoke({ NewData: this._text, OldData: this._oldText, EvType: type });
@@ -102,8 +138,8 @@ class Textbox extends EditableComponent {
 
     }
     UpdateView(force = false, dirty = null, ...componentNames) {
-        Value = this.Entity && Utils.GetPropValue(this.Entity, this.FieldName);
-        if (!Dirty) {
+        this.Value = this.Entity && Utils.GetPropValue(this.Entity, this.FieldName);
+        if (!this.Dirty) {
             this.DOMContentLoaded?.Invoke();
             this.OldValue = this._text;
         }
@@ -160,7 +196,7 @@ class Textbox extends EditableComponent {
                 fn = result;
             }
         });
-        var table = !this.Meta.RefName ? this.Meta.RefName : this.EditForm.Feature.EntityName;
+        var table = !this.Meta.RefName ? this.Meta.RefName : this.EditForm.Meta.EntityName;
         const submit = {
             ComId: this.Meta.Id,
             Params: isFn ? JSON.Stringify(fn.Call(null, this)) : null,

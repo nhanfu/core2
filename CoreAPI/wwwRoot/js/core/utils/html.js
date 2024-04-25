@@ -1,3 +1,5 @@
+import { Lang } from "../models/componentType.js";
+
 export class HtmlEvent {
     static click = 'click';
 }
@@ -200,29 +202,32 @@ export class HTML {
         this.Context.PreviousElementSibling.checked = val;
         return this;
     }
+
     Attr(name, value) {
         this.Context.setAttribute(name, value);
         return this;
     }
+
     DataAttr(name, value) {
-        this.Context.setAttribute('data-'+name, value);
+        this.Context.setAttribute('data-' + name, value);
         return this;
     }
+
     PlaceHolder(langKey) {
-        if (!langKey || langKey.trim() === '')
-            {
-                return this;
-            }
-        MarkLangProp(this.Context, langKey, "placeholder");
+        if (!langKey || langKey.trim() === '') {
+            return this;
+        }
+        this.MarkLangProp(this.Context, langKey, "placeholder");
         return this.Attr("placeholder", LangSelect.Get(langKey));
     }
+
     MarkLangProp(ctx, langKey, propName, ...parameters) {
-        if (ctx === null) return;
+        if (ctx == null) return;
         ctx[LangSelect.LangKey + propName] = langKey;
         var newProp = prop === null ? propName : prop + ',' + propName;
         var splitArray = ctx[LangSelect.LangProp].split(",");
         var uniqueArray = [];
-        splitArray.forEach(function(item) {
+        splitArray.forEach(function (item) {
             if (!uniqueArray.includes(item)) {
                 uniqueArray.push(item);
             }

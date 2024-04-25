@@ -380,4 +380,10 @@ export class Component {
      * @type {string}
      */
     Javascript;
+    
+    /**
+     * If set to true, then not to encode the entire children
+     * @type {Boolean}
+     */
+    IgnoreEncode;
 };

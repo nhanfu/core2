@@ -39,7 +39,7 @@ export default class EditableComponent {
         this.DOMContentLoaded.add(() => {
             this.SetRequired();
             this.SendQueueAction("Subscribe");
-            if (meta != null && meta.Events?.HasAnyChar()) {
+            if (meta != null && meta.Events) {
                 this.DispatchEvent(meta.Events, EventType.DOMContentLoaded, this.Entity).Done();
             }
         });
@@ -291,24 +291,11 @@ export default class EditableComponent {
         }
     }
     _dirty;
-    _setDirty;
     UpdateDirty(dirty) {
-        if (dirty) {
-            this.SetDirtyInternal();
+        this._dirty = dirty;
+        if (!dirty) {
+            this.Children.Flattern(x => x.Children).Where(x => x._dirty).forEach(x => x._dirty = false);
         }
-        else {
-            this.ClearDirtyInternal();
-            this.FilterChildren(x => x._dirty).SelectForEach(x => x.ClearDirtyInternal());
-        }
-    }
-    SetDirtyInternal() {
-        this._dirty = this._setDirty;
-        if (!this._setDirty) {
-            this._setDirty = true;
-        }
-    }
-    ClearDirtyInternal() {
-        this._dirty = false;
     }
     SetDefaultVal() {
         if (this.Entity == null || this.EntityId == null) return;
