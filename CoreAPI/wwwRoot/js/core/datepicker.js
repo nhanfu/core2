@@ -1,4 +1,5 @@
 import EditableComponent from "./editableComponent.js";
+import ObservableArgs from "./models/observable.js";
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
 
@@ -250,6 +251,7 @@ export class Datepicker extends EditableComponent {
             lastOutsideDayOfMonth.setDate(lastOutsideDayOfMonth.getDate() + 7);
         }
         var runner = new Date(firstOutsideDayOfMonth);
+        const handler = this.SetSelectedDay.bind(this);
         while (runner <= lastOutsideDayOfMonth) {
             for (var day = 0; day <= 6; day++) {
                 if (runner.getDay() === 1) {
@@ -257,7 +259,7 @@ export class Datepicker extends EditableComponent {
                 }
                 // Assuming Html.Instance.Div.ClassName and Html.Instance.Div.Text are functions
                 Html.Div.ClassName("day").Text(runner.getDate().toString())
-                    .Event("click", () => this.SetSelectedDay(runner));
+                    .Event("click", handler, runner);
                 if (runner.getDate() === now.getDate() && runner.getMonth() === now.getMonth() && now.getFullYear() === someday.getFullYear()) {
                     Html.ClassName("showed today");
                 }
@@ -274,7 +276,7 @@ export class Datepicker extends EditableComponent {
                 if (runner.getDay() === 0) {
                     Html.End.Render();
                 }
-                runner.setDate(runner.getDate() + 1);
+                runner = runner.addDays(1);
             }
         }
     }
@@ -302,9 +304,9 @@ export class Datepicker extends EditableComponent {
         }
         let oldVal = this.value;
         this.Value = selected;
-        if (this.UserInput) {
-            this.UserInput({ NewData: this.value, OldData: oldVal, EvType: "change" });
-        }
+        /** @type {ObservableArgs} */
+        var arg = { NewData: this.value, OldData: oldVal, EvType: "change" };
+        this.UserInput?.invoke(arg);
         this.PopulateFields();
         this.CascadeField();
         this.simpleNoEvent = true;
