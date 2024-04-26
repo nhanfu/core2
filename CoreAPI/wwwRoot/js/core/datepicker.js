@@ -8,6 +8,7 @@ export class Datepicker extends EditableComponent {
         "dd/MM/yyyy - HH:mm", "dd/MM/yyyy - HH:m", "dd/MM/yyyy - h:mm",
         "dd/MM/yyyy - HH:", "dd/MM/yyyy - h:", "dd/MM/yyyy - h:m", "dd/MM/yyyy - HH", "dd/MM/yyyy - h", "dd/MM/yyyy", "ddMMyyyy", "d/M/yyyy", "dMyyyy", "dd/MM/yy", "ddMMyy", "d/M", "dM", "dd/MM", "ddMM"
     ];
+    static options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     static calendar = null;
     static renderAwaiter = null;
     static closeAwaiter = null;
@@ -54,12 +55,12 @@ export class Datepicker extends EditableComponent {
         this.value = value;
         if (this.value) {
             const selectionEnd = this.Input.selectionEnd;
-            this.Input.value = this.value !== new Date("0001-01-01T00:00:00Z") ? this.value.toLocaleDateString(this.currentFormat) : "";
+            this.Input.value = this.value !== new Date("0001-01-01T00:00:00Z") ? this.value.toLocaleDateString('en-US', this.options) : "";
             this.Input.selectionStart = selectionEnd;
             this.Input.selectionEnd = selectionEnd;
         } else if (!this.nullable) {
             this.value = new Date();
-            this.Input.value = this.value.toLocaleDateString(this.currentFormat);
+            this.Input.value = this.value.toLocaleDateString('en-US', this.options);
         } else {
             this.Input.value = "";
         }
@@ -79,8 +80,7 @@ export class Datepicker extends EditableComponent {
         this.value = parsed ? parsedVal : null;
         this.nullable = this.FieldVal == null;
         this.Entity.SetComplexPropValue(this.FieldName, this.value);
-        let str = this.value ? this.value.toLocaleDateString(this.InitFormat) : "";
-
+        let str = this.value ? this.value.toLocaleDateString('en-US', this.options) : "";
         Html.Take(this.ParentElement);
         if (!this.Input) {
             Html.Div.ClassName("datetime-picker").TabIndex(-1);
@@ -104,11 +104,10 @@ export class Datepicker extends EditableComponent {
                 this.RenderCalendar();
             }
         }).Event("change", () => this.ParseDate())
-        .PlaceHolder(this.Meta.PlainText).Attr("autocomplete", "off")
-        .Attr('name', this.FieldName)
-        .Event("keydown", (e) => this.KeyDownDateTime(e));
-        this.ParentElement?.addEventListener("focusout", () => this.CloseCalendar());
-
+            .PlaceHolder(this.Meta.PlainText).Attr("autocomplete", "off")
+            .Attr('name', this.FieldName)
+            .Event("keydown", (e) => this.KeyDownDateTime(e));
+        this.Input.parentElement?.addEventListener("focusout", () => this.CloseCalendar());
         Html.End.Div.ClassName("btn-group").Button.TabIndex(-1).Span.ClassName("icon mif-calendar")
             .Event("click", () => {
                 if (this.Input.Disabled) return;
@@ -149,7 +148,7 @@ export class Datepicker extends EditableComponent {
      * Parses the date from the input and sets the component's value.
      */
     ParseDate() {
-        let { parsed, datetime } = Datepicker.TryParseDateTime(this.Input.value);
+        let { parsed, datetime } = this.TryParseDateTime(this.Input.value);
         if (!parsed || !this.Input.value.trim()) {
             if (this.EditForm.Feature.CustomNextCell) {
                 return;
@@ -168,10 +167,10 @@ export class Datepicker extends EditableComponent {
     CloseCalendar() {
         setTimeout(() => {
             this.show = false;
-            if (Datepicker.calendar) {
-                Datepicker.calendar.style.display = "none";
+            if (this.calendar) {
+                this.calendar.style.display = "none";
             }
-            this.Input.value = this.value ? this.value.toLocaleDateString(this.InitFormat) : "";
+            this.Input.value = this.value ? this.value.toLocaleDateString('en-US', this.options) : "";
             this.hour = null;
             this.minute = null;
         }, 250);
@@ -197,13 +196,14 @@ export class Datepicker extends EditableComponent {
     RenderCalendarTask(someday) {
         if (this.Disabled) return;
         this.show = true;
-        clearTimeout(Datepicker.closeAwaiter);
-        if (!Datepicker.calendar) {
-            Html.Take(document.body).Div.ClassName("calendar compact open open-up").TabIndex(-1);
-            Datepicker.calendar = Html.Context; // Assumes Html.Context provides the current element
+        clearTimeout(this.closeAwaiter);
+        if (!this.calendar) {
+            Html.Take(document.body).Div.ClassName("calendar compact open open-up").TabIndex(-1).Trigger("focus");
+            this.calendar = Html.Context; // Assumes Html.Context provides the current element
         } else {
-            Html.Take(Datepicker.calendar).InnerHTML("");
-            Html.Style("display", "block");
+            Html.Take(this.calendar);
+            this.calendar.innerHTML = "";
+            this.calendar.style.display = "block";
         }
 
         Html.Div.ClassName("calendar-header")
@@ -227,8 +227,56 @@ export class Datepicker extends EditableComponent {
                 this.RenderCalendar(new Date(someday.getFullYear() + 1, someday.getMonth(), someday.getDate()));
             }).Span.ClassName("fa fa-chevron-right").End.End
             .End
-            // Additional UI elements such as day and month grids can be added here following the same pattern.
-            .End;
+            .Div.ClassName("week-days")
+            .Span.ClassName("day").IText("Mo").End
+            .Span.ClassName("day").IText("Tu").End
+            .Span.ClassName("day").IText("We").End
+            .Span.ClassName("day").IText("Th").End
+            .Span.ClassName("day").IText("Fr").End
+            .Span.ClassName("day").IText("Sa").End
+            .Span.ClassName("day").IText("Su").End
+            .End
+            .Div.ClassName("days");
+        var now = new Date();
+        var firstDayOfMonth = new Date(someday.getFullYear(), someday.getMonth(), 1);
+        var lastDayOfMonth = new Date(firstDayOfMonth);
+        lastDayOfMonth.setMonth(lastDayOfMonth.getMonth() + 1);
+        lastDayOfMonth.setDate(lastDayOfMonth.getDate() - 1);
+        var firstOutsideDayOfMonth = new Date(firstDayOfMonth);
+        firstOutsideDayOfMonth.setDate(firstOutsideDayOfMonth.getDate() - (firstDayOfMonth.getDay() + 1) - 5);
+        var lastOutsideDayOfMonth = new Date(lastDayOfMonth);
+        lastOutsideDayOfMonth.setDate(lastOutsideDayOfMonth.getDate() + (6 - lastDayOfMonth.getDay() + 1));
+        if ((lastOutsideDayOfMonth - firstOutsideDayOfMonth) / (1000 * 60 * 60 * 24 * 7) < 5) {
+            lastOutsideDayOfMonth.setDate(lastOutsideDayOfMonth.getDate() + 7);
+        }
+        var runner = new Date(firstOutsideDayOfMonth);
+        while (runner <= lastOutsideDayOfMonth) {
+            for (var day = 0; day <= 6; day++) {
+                if (runner.getDay() === 1) {
+                    Html.Div.ClassName("days-row");
+                }
+                // Assuming Html.Instance.Div.ClassName and Html.Instance.Div.Text are functions
+                Html.Div.ClassName("day").Text(runner.getDate().toString())
+                    .Event("click", () => this.SetSelectedDay(runner));
+                if (runner.getDate() === now.getDate() && runner.getMonth() === now.getMonth() && now.getFullYear() === someday.getFullYear()) {
+                    Html.ClassName("showed today");
+                }
+
+                if (this._value !== undefined && runner.getDate() === this._value.getDate() && runner.getMonth() === this._value.getMonth() && runner.getFullYear() === this._value.getFullYear()) {
+                    Html.ClassName("selected");
+                }
+
+                if (runner < firstDayOfMonth || runner > lastDayOfMonth) {
+                    Html.ClassName("outside");
+                }
+
+                Html.End.Render();
+                if (runner.getDay() === 0) {
+                    Html.End.Render();
+                }
+                runner.setDate(runner.getDate() + 1);
+            }
+        }
     }
 
     /**
