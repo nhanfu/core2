@@ -155,7 +155,6 @@ class Textbox extends EditableComponent {
             this.Validate(ValidationRule.CheckLength, this._text, (text, checkLength) => this._text == null || this._text == "" || this._text.length == checkLength);
             this.Validate(ValidationRule.MaxLength, this._text, (text, maxLength) => this._text == null || this._text.length <= maxLength);
             this.Validate(ValidationRule.RegEx, this._text, this.validateRegEx);
-            this.ValidateRegEx(this._text);
             this.ValidateRequired(this.Text);
             this.ValidateUnique().then(() => {
                 resolve(this.IsValid);

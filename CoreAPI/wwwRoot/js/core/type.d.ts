@@ -69,3 +69,12 @@ interface Obj {
   GetComplexProp(path: string): any;
   SetComplexPropValue(path: string, val: any);
 }
+
+interface Date {
+  addSeconds(seconds: Number): Date;
+  addMinutes(seconds: Number): Date;
+  addHours(seconds: Number): Date;
+  addDays(days: Number): Date;
+  addMonths(months: Number): Date;
+  addYears(years: Number): Date;
+}

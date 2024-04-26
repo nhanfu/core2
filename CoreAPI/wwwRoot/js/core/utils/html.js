@@ -167,8 +167,8 @@ export class HTML {
     Render() {
         // Not to do anything here
     }
-    Event(name, handler) {
-        this.Context.addEventListener(name, handler);
+    Event(name, handler, ...args) {
+        this.Context.addEventListener(name, () => handler(...args));
         return this;
     }
     Trigger(type) {

@@ -80,9 +80,11 @@ String.prototype.DecodeSpecialChar = function () {
     return Utils.DecodeSpecialChar(this);
 };
 Object.prototype.GetComplexProp = function (path) {
+    if (path == null) return null;
     return path.split(".").reduce((obj, key) => obj && obj[key], this);
 };
 Object.prototype.SetComplexPropValue = function (path, value) {
+    if (path == null) return;
     const keys = path.split('.');
     let obj = this;
     for (let i = 0; i < keys.length - 1; i++) {
@@ -116,3 +118,33 @@ Object.prototype.Clear = function () {
 };
 Promise.prototype.Done = Promise.prototype.then;
 Promise.prototype.done = Promise.prototype.then;
+Date.prototype.addSeconds = function(seconds) {
+    var date = new Date(this.valueOf());
+    date.setSeconds(date.getSeconds() + seconds);
+    return date;
+};
+Date.prototype.addMinutes = function(minutes) {
+    var date = new Date(this.valueOf());
+    date.setMinutes(date.getMinutes() + minutes);
+    return date;
+};
+Date.prototype.addHours = function(hours) {
+    var date = new Date(this.valueOf());
+    date.setHours(date.getHours() + hours);
+    return date;
+};
+Date.prototype.addDays = function(days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+};
+Date.prototype.addMonths = function(months) {
+    var date = new Date(this.valueOf());
+    date.setMonth(date.getMonth() + months);
+    return date;
+};
+Date.prototype.addYears = function(years) {
+    var date = new Date(this.valueOf());
+    date.setFullYear(date.getFullYear() + years);
+    return date;
+};
