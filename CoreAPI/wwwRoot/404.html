@@ -275,14 +275,21 @@
             <div class="notfound-404">
                 <h1>Oops!</h1>
             </div>
-            <h2 id="test" data-componentType="label" data-fieldName="abc">404 - Page not found</h2>
-            <input id="test2" type="text" placeholder="Search...">
-            <p>The page you are looking for might have been removed had its name changed or is temporarily unavailable.
+            <div id="test" data-componentType="label" data-fieldName="abc">404 - Page not found</div>
+            <p>
+                The page you are looking for might have been removed had its name changed or is temporarily unavailable.
             </p>
             <a href="/">Go To Homepage</a>
         </div>
     </div>
-    <script type="module" src="./js/test404.js"></script>
+    <script type="module" src="./js/core/datepicker.js"></script>
+    <script type="module">
+        import { Datepicker } from './js/core/datepicker.js';
+        var a = new Datepicker({
+            FieldName: 'test',
+        }, document.getElementById('test'));
+        a.Render();
+    </script>
 </body>
 
 </html>
