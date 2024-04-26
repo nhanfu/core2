@@ -1,6 +1,6 @@
 import EditableComponent from "./editableComponent.js";
-import moment from "./structs/moment.js";
 import { Html } from "./utils/html.js";
+import { Utils } from "./utils/utils.js";
 
 export class Datepicker extends EditableComponent {
     static HHmmFormat = "00";
@@ -17,7 +17,7 @@ export class Datepicker extends EditableComponent {
         this.DefaultValue = new Date("0001-01-01T00:00:00Z");
         if (!ui) throw new Error("ui is required");
         this.Meta = ui;
-        this.InitFormat = this.Meta.FormatData.includes("{0:") ? this.Meta.FormatData.replace("{0:", "").replace("}", "") : (this.Meta.Precision === 7 ? "dd/MM/yyyy - HH:mm" : "dd/MM/yyyy");
+        this.InitFormat = this.Meta.FormatData?.includes("{0:") ? this.Meta.FormatData.replace("{0:", "").replace("}", "") : (this.Meta.Precision === 7 ? "dd/MM/yyyy - HH:mm" : "dd/MM/yyyy");
         this.currentFormat = this.InitFormat;
         if (ele != null) {
             if (ele.firstElementChild instanceof HTMLInputElement) {
@@ -77,7 +77,7 @@ export class Datepicker extends EditableComponent {
         let parsedVal = new Date(fieldValue);
         let parsed = fieldValue && parsedVal.toString() !== "Invalid Date";
         this.value = parsed ? parsedVal : null;
-        this.nullable = this.IsNullable('DateTimeOffset') || this.IsNullable('DateTime');
+        this.nullable = this.FieldVal == null;
         this.Entity.SetComplexPropValue(this.FieldName, this.value);
         let str = this.value ? this.value.toLocaleDateString(this.InitFormat) : "";
 
@@ -104,10 +104,10 @@ export class Datepicker extends EditableComponent {
                 this.RenderCalendar();
             }
         }).Event("change", () => this.ParseDate())
-            .PlaceHolder(this.Meta.PlainText).AutoComplete("off")
-            .Name(this.FieldName)
-            .ParentElement.Event("focusout", () => this.CloseCalendar())
-            .AddEventListener("keydown", (e) => this.KeyDownDateTime(e));
+        .PlaceHolder(this.Meta.PlainText).Attr("autocomplete", "off")
+        .Attr('name', this.FieldName)
+        .Event("keydown", (e) => this.KeyDownDateTime(e));
+        this.ParentElement?.addEventListener("focusout", () => this.CloseCalendar());
 
         Html.End.Div.ClassName("btn-group").Button.TabIndex(-1).Span.ClassName("icon mif-calendar")
             .Event("click", () => {
@@ -149,7 +149,7 @@ export class Datepicker extends EditableComponent {
      * Parses the date from the input and sets the component's value.
      */
     ParseDate() {
-        let { parsed, datetime } = this.TryParseDateTime(this.Input.value);
+        let { parsed, datetime } = Datepicker.TryParseDateTime(this.Input.value);
         if (!parsed || !this.Input.value.trim()) {
             if (this.EditForm.Feature.CustomNextCell) {
                 return;
@@ -197,9 +197,9 @@ export class Datepicker extends EditableComponent {
     RenderCalendarTask(someday) {
         if (this.Disabled) return;
         this.show = true;
-        Window.ClearTimeout(Datepicker.closeAwaiter);
+        clearTimeout(Datepicker.closeAwaiter);
         if (!Datepicker.calendar) {
-            Html.Take(Document.Body).Div.ClassName("calendar compact open open-up").TabIndex(-1);
+            Html.Take(document.body).Div.ClassName("calendar compact open open-up").TabIndex(-1);
             Datepicker.calendar = Html.Context; // Assumes Html.Context provides the current element
         } else {
             Html.Take(Datepicker.calendar).InnerHTML("");
@@ -237,12 +237,9 @@ export class Datepicker extends EditableComponent {
      * @returns {{parsed: boolean, datetime: Date | null}}
      */
     static TryParseDateTime(value) {
-        for (let i = 0; i < this.formats.length; i++) {
-            let format = this.formats[i];
-            let dateTime = moment(value, format, true); // Assuming Moment.js is used
-            if (dateTime.isValid()) {
-                return { parsed: true, datetime: dateTime.toDate() };
-            }
+        let dateTime = Date.parse(value); // Assuming Moment.js is used
+        if (isNaN(dateTime) || !isFinite(dateTime)) {
+            return { parsed: true, datetime: new Date(dateTime) };
         }
         return { parsed: false, datetime: null };
     }
