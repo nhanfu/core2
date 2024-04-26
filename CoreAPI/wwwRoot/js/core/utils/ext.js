@@ -94,5 +94,25 @@ Object.prototype.SetComplexPropValue = function (path, value) {
     }
     obj[keys[keys.length - 1]] = value;
 };
+Object.prototype.Nothing = function () {
+    return Object.keys(this).length === 0;
+};
+Object.prototype.Clear = function () {
+    if (this.count > 0) {
+        for (let i = 0; i < this.buckets.length; i++) {
+            this.buckets[i] = -1;
+        }
+
+        if (this.isSimpleKey) {
+            this.simpleBuckets = {};
+        }
+
+        this.entries.fill(null, 0, this.count);
+        this.freeList = -1;
+        this.count = 0;
+        this.freeCount = 0;
+        this.version++;
+    }
+};
 Promise.prototype.Done = Promise.prototype.then;
 Promise.prototype.done = Promise.prototype.then;

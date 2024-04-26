@@ -124,13 +124,13 @@ class Textbox extends EditableComponent {
             return;
         }
         this._oldText = this._text;
-        this._text = this.Input ? this.Input.Value : this.TextArea.Value;
+        this._text = this.Input ? this.Input.value : this.TextArea.value;
         this._text = this.Password ? this._text : (shouldTrim ? this._text?.trim() : this._text);
         if (this.Meta.UpperCase && this._text != null) {
             this.Text = this._text.toLocaleUpperCase();
         }
-        this._value = (this.EditForm != null && this.EditForm.Meta != null && this.EditForm.Meta.IgnoreEncode) ? this._text : EncodeSpecialChar(this._text);
-        this.Entity && SetComplexPropValue(this.Entity, this.FieldName, this._value);
+        this._value = (this.EditForm != null && this.EditForm.Meta != null && this.EditForm.Meta.IgnoreEncode) ? this._text : Utils.EncodeSpecialChar(this._text);
+        this.Entity.SetComplexPropValue(this.FieldName, this._value);
         this.Dirty = true;
         this.UserInput?.Invoke({ NewData: this._text, OldData: this._oldText, EvType: type });
         this.PopulateFields();
@@ -144,23 +144,7 @@ class Textbox extends EditableComponent {
             this.OldValue = this._text;
         }
     }
-    validateRegEx(value, regText) {
-        if (value === null) {
-            return true;
-        }
-        var regEx = new RegExp(regText);
-        var res = regEx.test(value);
-        var rule = this.ValidationRules[ValidationRule.RegEx];
-        if (!res && rule.RejectInvalid) {
-            var end = this.Input.SelectionEnd;
-            this.Text = this._oldText;
-            this._value = this._oldText;
-            this.Input.SelectionStart = end;
-            this.Input.SelectionEnd = end;
-            return regEx.test(this._oldText);
-        }
-        return res;
-    }
+   
     ValidateAsync() {
         if (this.ValidationRules.Nothing()) {
             return true;
@@ -170,8 +154,7 @@ class Textbox extends EditableComponent {
             this.Validate(ValidationRule.MinLength, this._text, (value, minLength) => this._text != null && this._text.length >= minLength);
             this.Validate(ValidationRule.CheckLength, this._text, (text, checkLength) => this._text == null || this._text == "" || this._text.length == checkLength);
             this.Validate(ValidationRule.MaxLength, this._text, (text, maxLength) => this._text == null || this._text.length <= maxLength);
-            this.Validate(ValidationRule.RegEx, this._text, ValidateRegEx);
-            this.ValidateRegEx(this._text);
+            this.Validate(ValidationRule.RegEx, this._text, this.validateRegEx);
             this.ValidateRequired(this.Text);
             this.ValidateUnique().then(() => {
                 resolve(this.IsValid);
@@ -180,12 +163,30 @@ class Textbox extends EditableComponent {
 
         return tcs;
     }
+     validateRegEx(value, regText) {
+        if (value === null) {
+            return true;
+        }
+        var regEx = new RegExp(regText);
+        var res = regEx.test(value);
+        var rule = this.ValidationRules[ValidationRule.RegEx];
+        if (rule && !res && rule.RejectInvalid) {
+            var end = this.Input.SelectionEnd;
+            this.Text = this._oldText;
+            this._value = this._oldText;
+            this.Input.SelectionStart = end;
+            this.Input.SelectionEnd = end;
+            return regEx.test(this._oldText);
+        }
+        return res;
+    }
     ValidateUnique() {
         if (this.ValidationRules.hasOwnProperty(ValidationRule.Unique)) {
             return Promise.resolve(true);
         }
         var rule = this.ValidationRules[ValidationRule.Unique];
-        if (rule === null || _text.trim() !== "") {
+        
+        if (rule === null || this._text.trim() !== "") {
             return Promise.resolve(true);
         }
         var isFn;

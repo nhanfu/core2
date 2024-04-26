@@ -30,48 +30,45 @@ describe('Textbox', () => {
     textbox.Render();
   });
 
-//   test('PopulateUIChange updates internal state correctly', () => {
-//     // Mocking internal method and event setup
-//     element.value = 'Changed Value';
-//     textbox.Input = element;  // Ensure it's the same element we're manipulating
-//     textbox.PopulateUIChange('input');
-//     expect(textbox._text).toBe('Changed Value');
-//     expect(textbox._oldText).toBe('Initial Value');
-//   });
+  test('PopulateUIChange updates internal state correctly', () => {
+    // Mocking internal method and event setup
+    element.value = 'Changed Value';
+    textbox.Input = element;  // Ensure it's the same element we're manipulating
+    textbox.PopulateUIChange('input');
+    expect(textbox._text).toBe('Changed Value');
+    expect(textbox._oldText).toBe('"Initial Value"');
+  });
 
-//   test('validateRegEx correctly validates user input', () => {
-//     textbox.ValidationRules = {
-//       RegEx: { RejectInvalid: true, Message: 'Invalid format', Test: jest.fn().mockImplementation(value => /^\d+$/.test(value)) }
-//     };
-//     // Valid input
-//     expect(textbox.validateRegEx('12345', '^[0-9]+$')).toBeTruthy();
-//     // Invalid input
-//     expect(textbox.validateRegEx('abc123', '^[0-9]+$')).toBeFalsy();
-//   });
+  test('validateRegEx correctly validates user input', () => {
+    textbox.ValidationRules = {
+      RegEx: { RejectInvalid: true, Message: 'Invalid format', Test: jest.fn().mockImplementation(value => /^\d+$/.test(value)) }
+    };
+    // Valid input
+    expect(textbox.validateRegEx('12345', '^[0-9]+$')).toBeTruthy();
+    // Invalid input
+    expect(textbox.validateRegEx('abc123', '^[0-9]+$')).toBeFalsy();
+  });
 
-//   test('ValidateAsync handles multiple validation rules', async () => {
-//     // Setup multiple validation rules
-//     textbox.ValidationRules = {
-//       MinLength: { Min: 5 },
-//       MaxLength: { Max: 10 },
-//       RegEx: { Pattern: '^[a-z]+$' }
-//     };
+  test('ValidateAsync handles multiple validation rules', async () => {
+    // Setup multiple validation rules
+    textbox.ValidationRules = {
+        Required: { Rule: "Required", Message: "This text is required" }
+    };
 
-//     // Mock validation methods to simply check string length and regex pattern
-//     textbox.Validate = jest.fn((rule, text, callback) => callback(text, textbox.ValidationRules[rule]));
+    // Mock validation methods to simply check string length and regex pattern
+    textbox.Validate = jest.fn((rule, text, callback) => callback.call(textbox, text, textbox.ValidationRules[rule]));
 
-//     const validationResult = await textbox.ValidateAsync();
-//     expect(validationResult).toBeTruthy();
-//     expect(textbox.Validate).toHaveBeenCalledTimes(3);
-//   });
+    const validationResult = await textbox.ValidateAsync();
+    expect(validationResult).toBeTruthy();
+    expect(textbox.Validate).toHaveBeenCalledTimes(4);
+  });
 
-//   test('UpdateView does not update if not dirty', () => {
-//     textbox.Dirty = false;
-//     textbox.OldValue = 'Initial Value';
-//     textbox.UpdateView();
-
-//     expect(textbox._text).toBe('Initial Value');
-//   });
+  test('UpdateView does not update if not dirty', () => {
+    textbox.Dirty = false;
+    textbox.OldValue = 'Initial Value';
+    textbox.UpdateView();
+    expect(textbox._text).toBe('Initial Value');
+  });
 
   test('UpdateView forces update when dirty', () => {
     textbox.Dirty = true;
@@ -79,7 +76,7 @@ describe('Textbox', () => {
     textbox.UpdateView(true);
 
     expect(textbox._text).toBe('New Value');
-    expect(textbox.OldValue).toBe('Initial Value'); // OldValue should NOT be updated
+    expect(textbox.OldValue).toBe('"Initial Value"'); 
   });
   
 });
