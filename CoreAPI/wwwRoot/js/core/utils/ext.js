@@ -80,9 +80,11 @@ String.prototype.DecodeSpecialChar = function () {
     return Utils.DecodeSpecialChar(this);
 };
 Object.prototype.GetComplexProp = function (path) {
+    if (path == null) return null;
     return path.split(".").reduce((obj, key) => obj && obj[key], this);
 };
 Object.prototype.SetComplexPropValue = function (path, value) {
+    if (path == null) return;
     const keys = path.split('.');
     let obj = this;
     for (let i = 0; i < keys.length - 1; i++) {
