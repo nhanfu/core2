@@ -1,9 +1,6 @@
 import EditableComponent from "./editableComponent.js";
 import ObservableArgs from "./models/observable.js";
 import { Html } from "./utils/html.js";
-import { Utils } from "./utils/utils.js";
-import EventType from "./models/eventType.js";
-import { string } from "./utils/ext.js";
 
 export class Datepicker extends EditableComponent {
     static HHmmFormat = "00";
@@ -95,7 +92,6 @@ export class Datepicker extends EditableComponent {
             Html.Take(this.Input);
             this.Element = this.Input;
         }
-
         Html.Event("keydown", (e) => {
             if (this.Disabled || !e) return;
             if (e.keyCode === 13) this.ParseDate(); // Enter key
@@ -110,21 +106,22 @@ export class Datepicker extends EditableComponent {
         }).Event("change", () => this.ParseDate())
             .PlaceHolder(this.Meta.PlainText).Attr("autocomplete", "off")
             .Attr('name', this.FieldName)
-            .Event("keydown", (e) => this.KeyDownDateTime(e));
+        this.Input.addEventListener("keydown", (e) => this.KeyDownDateTime(e));
         this.Input.parentElement?.addEventListener("focusout", () => this.CloseCalendar());
-        Html.End.Div.ClassName("btn-group").Button.TabIndex(-1).Span.ClassName("icon mif-calendar")
+        Html.End.Div.ClassName("btn-group").Button.TabIndex(-1).Span.ClassName("fa fa-calendar")
             .Event("click", () => {
                 if (this.Input.Disabled) return;
                 this.show ? this.CloseCalendar() : this.RenderCalendar();
             });
     }
 
+
     /**
      * Handles key down events specifically for managing date and time inputs.
      * @param {Event} e - The event object.
      */
     KeyDownDateTime(e) {
-        if (e.keyCode === 13 && this.value === null && !this.EditForm.Feature.CustomNextCell) {
+        if (e.keyCode === 13 && this.value === null) {
             if (this.Disabled) {
                 return;
             }
@@ -133,9 +130,6 @@ export class Datepicker extends EditableComponent {
             } else {
                 this.RenderCalendar();
             }
-        }
-        if (!(this.Parent instanceof ListViewItem)) {
-            return;
         }
     }
 
