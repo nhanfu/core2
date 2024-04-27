@@ -230,6 +230,10 @@ export default class EditableComponent {
         return this.Meta?.DataConn;
     }
     get FieldVal() { return !this.Entity || !this.FieldName ? null : this.Entity.GetComplexProp(this.FieldName); }
+    set FieldVal(val) {
+        if (this.Entity == null || this.FieldName == null) return;
+        this.Entity.SetComplexPropValue(this.FieldName, val);
+    }
 
     SetRequired() {
         const ele = this.Element;
@@ -311,15 +315,15 @@ export default class EditableComponent {
         if (this.Element === null || Object.keys(this.ValidationRules).length === 0 || this.EmptyRow || this.AlwaysValid) {
             return true;
         }
-    
+
         if (!this.ValidationRules.hasOwnProperty(ValidationRule.Required)) {
             this.Element.removeAttribute(ValidationRule.Required);
             return true;
         }
-    
+
         const requiredRule = this.ValidationRules[ValidationRule.Required];
         this.Element.setAttribute(ValidationRule.Required, true.toString());
-    
+
         if (value === null || value === undefined || value.toString().trim() === "") {
             this.Element.removeAttribute("readonly");
             this.ValidationResult[ValidationRule.Required] = requiredRule.Message.replace("{0}", LangSelect.Get(this.Meta.Label)).replace("{1}", this.Entity);
@@ -329,32 +333,32 @@ export default class EditableComponent {
             return true;
         }
     }
-    
+
     AddRule(rule) {
         this.ValidationRules[rule.Rule] = rule;
         if (rule.Rule === ValidationRule.Required) {
             this.Element.setAttribute(ValidationRule.Required, true.toString());
         }
     }
-    
+
     RemoveRule(ruleName) {
         delete this.ValidationRules[ruleName];
         if (!Object.keys(this.ValidationRules).includes(ValidationRule.Required)) {
             this.Element.removeAttribute(ValidationRule.Required);
         }
     }
-    
+
     CascadeField() {
         if (!this.Meta.CascadeField) {
             return;
         }
-    
+
         const root = this.FindClosest(ComponentType.ListViewItem) ?? this.EditForm;
         const cascadeFields = this.Meta.CascadeField.split(",").map(field => field.trim()).filter(x => x !== "");
         if (cascadeFields.length === 0) {
             return;
         }
-    
+
         cascadeFields.forEach(field => {
             root.FilterChildren(x => x.Name === field).forEach(target => {
                 if (target instanceof SearchEntry && target !== null) {
@@ -423,13 +427,14 @@ export default class EditableComponent {
         }
     }
 
+    _events = {};
     addEventListener(name, handler) {
         if (handler === null) throw new Error("Handler cannot be null");
         const handlers = this._events[name] || null;
-        if (handlers === null) {
-            this._events[name] = handler;
+        if (handlers == null) {
+            this._events[name] = [handler];
         } else {
-            this._events[name] += handler;
+            handlers.push(handler);
         }
     }
 

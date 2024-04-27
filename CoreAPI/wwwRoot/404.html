@@ -24,13 +24,21 @@
 
 <body>
     <div class="datetime-picker" id="test"></div>
-    <script type="module" src="./js/core/datepicker.js"></script>
+    <div class="codeEditor" id="test2" style="height: 200px;"></div>
+    <script src="https://unpkg.com/monaco-editor@0.45.0/min/vs/loader.js"></script>
     <script type="module">
         import { Datepicker } from './js/core/datepicker.js';
+        import { CodeEditor } from './js/core/codeEditor.js';
+
         var a = new Datepicker({
             FieldName: 'test',
         }, document.getElementById('test'));
         a.Render();
+
+        var b = new CodeEditor({
+            FieldName: 'test2',
+        }, document.getElementById('test2'));
+        b.Render();
     </script>
 </body>
 

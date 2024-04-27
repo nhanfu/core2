@@ -1,5 +1,5 @@
-import { ComponentType } from "../models/componentType";
-import { Utils } from "./utils";
+import { ComponentType } from "../models/componentType.js";
+import { Utils } from "./utils.js";
 
 export class ComponentExt {
     static MapToPatch(com, table = null, fields = null) {
