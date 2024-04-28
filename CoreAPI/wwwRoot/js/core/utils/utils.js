@@ -342,4 +342,20 @@ export class Utils {
             return null;
         }
     }
+
+    /**
+     * @param   {string}    path
+     * @return  {string}
+     */
+    static GetFileNameWithoutExtension (path) {
+        if (System.String.isNullOrEmpty(path)) {
+            return "";
+        }
+        var lastSlashIndex = path.lastIndexOf("/");
+        if (lastSlashIndex < 0) {
+            lastSlashIndex = 0;
+        }
+        var lastDotIndex = path.lastIndexOf(".");
+        return path.substring(((lastSlashIndex + 1) | 0), ((((lastDotIndex - 1) | 0) - (lastSlashIndex >= 0 ? lastSlashIndex : 0)) | 0));
+    }
 }
