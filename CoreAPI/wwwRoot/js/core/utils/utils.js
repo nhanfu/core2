@@ -358,4 +358,24 @@ export class Utils {
         var lastDotIndex = path.lastIndexOf(".");
         return path.substring(((lastSlashIndex + 1) | 0), ((((lastDotIndex - 1) | 0) - (lastSlashIndex >= 0 ? lastSlashIndex : 0)) | 0));
     }
+
+    static IsImage(path) {
+        const imgExt = ['png', 'jpg', 'jpeg', 'gif', 'bmp'];
+        const getExtension = (path) => {
+            const extStart = path.lastIndexOf('.') + 1;
+            return path.slice(extStart + 1);
+        };
+        
+        const isImage = imgExt.includes(getExtension(path).toLowerCase());
+        return isImage;
+    }
+    
+    GetExtension(path) {
+        if (!path) {
+            return '';
+        }
+        return path.substring(path.lastIndexOf('.'));
+    }
+    
+
 }

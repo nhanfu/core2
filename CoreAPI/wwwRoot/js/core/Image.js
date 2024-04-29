@@ -9,7 +9,8 @@ import { ComponentType } from './models/componentType.js';
 import { string } from './utils/ext.js';
 import EditableComponent from './editableComponent.js';
 import ObservableArgs from './models/observable.js';
-
+import { Action } from "./models/action.js";
+import "../fix.js";
 class Image extends EditableComponent {
     static PathSeparator = "    ";
     static PNGUrlPrefix = "data:image/png;base64,";
@@ -30,7 +31,7 @@ class Image extends EditableComponent {
         this._gallerys = document.createElement('div');
         this.DataSource = this.Meta.Template || "image/*";
         this.DefaultValue = '';
-        this.fileUploaded = new Event('FileUploaded');
+        this.FileUploaded = new Action();
         this.zoomLevel = 0;
         this.flagZoomIn = 1;
         this.zoomMaxLevel = 3;
@@ -80,6 +81,10 @@ class Image extends EditableComponent {
         }
     }
 
+    get imageSources() {
+        return this.path ? this.path.split(Image.PathSeparator) : null;
+    }
+
     render() {
         this._path = Utils.GetPropValue(this.Entity,this.FieldName)?.toString();
         const paths = this._path ? this._path.split(Image.PathSeparator) : [];
@@ -95,21 +100,21 @@ class Image extends EditableComponent {
         this._gallerys.appendChild(gallery);
     
         const thumbText = this.removeGuid(path);
-        const isImage = this.isImage(path);
+        const isImage = Utils.IsImage(path);
     
         if (isImage) {
             const img = document.createElement('img');
             img.className = "image";
             Object.assign(img.style, this.Meta.ChildStyle); 
-            img.src = (path.includes("http") ? path : Client.Origin + this.decodeSpecialChar(path));
+            img.src = (path.includes("http") ? path : Client.Origin + Utils.DecodeSpecialChar(path));
             gallery.appendChild(img);
             img.addEventListener('click', () => this.preview(path)); 
         } else {
             const link = document.createElement('a');
             link.className = thumbText.includes("pdf") ? "fal fa-file-pdf" : "fal fa-file";
-            link.title = this.decodeSpecialChar(thumbText);
+            link.title = Utils.DecodeSpecialChar(thumbText);
             Object.assign(link.style, this.Meta.ChildStyle);
-            link.href = (path.includes("http") ? path : Client.Origin + this.decodeSpecialChar(path));
+            link.href = (path.includes("http") ? path : Client.Origin + Utils.DecodeSpecialChar(path));
             gallery.appendChild(link);
         }
     
@@ -140,14 +145,14 @@ class Image extends EditableComponent {
     }
 
     preview(path) {
-        if (!this.isImage(this.path)) {
+        if (!Utils.IsImage(path)) {
             console.log("Not an image: Downloading file.");
             window.location.href = path; 
             return;
         }
 
         let img = document.createElement('img');
-        img.src = this.path;
+        img.src = path;
         img.style = "width:100%;"; 
 
         if (this._preview) {
@@ -161,6 +166,7 @@ class Image extends EditableComponent {
             img.remove();
             this._preview = null;
         });
+        zoom();
     }
 
     zoomImage(img) {
@@ -194,9 +200,9 @@ class Image extends EditableComponent {
             return;
         }
     
-        if (keyCode === 37) {  // LeftArrow
+        if (keyCode === 37) { 
             this.moveLeft(path, img);
-        } else if (keyCode === 39) {  // RightArrow
+        } else if (keyCode === 39) {  
             this.moveRight(path, img);
         }
     }
@@ -267,12 +273,30 @@ class Image extends EditableComponent {
         this.ParentElement.appendChild(fileUploadDiv);
     }
 
-    // removeFile(event, removedPath) {
-    //     if (this.disabled) {
-    //         return;
-    //     }
-    //     event.StopPropagation()
-    // }
+    removeFile(event, removedPath) {
+        if (this.disabled) {
+            return;
+        }
+        event.StopPropagation()
+        if (!removedPath || removedPath.trim() === '') {
+            return;
+        }
+        const fileName = Utils.GetFileNameWithoutExtension(this.removeGuid(Utils.DecodeSpecialChar(removedPath))) + Utils.GetExtension(this.removeGuid(Utils.DecodeSpecialChar(removedPath)));
+        const message = `Bạn chắc chắn muốn xóa ${fileName}`;
+        this.ConfirmDialog.renderConfirm(message, () => {
+            Client.Instance.PostAsync(removedPath, Client.FileFTP + "/DeleteFile")
+            .then(success => {
+                const oldVal = this._path;
+                const newPath = this._path.replace(removedPath, '')
+                            .replace(Image.PathSeparator + Image.PathSeparator, '')
+                            .split(Image.PathSeparator).filter(x => x.hasAnyChar()).distinct();
+                this.path = newPath.join(Image.PathSeparator);
+                this.dirty = true;
+                this.UserInput?.Invoke(new ObservableArgs ({ NewData : this._path, OldData : oldVal, FieldName : this.FieldName, EvType : EventType.Change }));
+                this.DispatchEvent(Meta.Events, EventType.Change, this.entity);
+            });
+        });
+    }
 
     uploadSelectedImages(event) {
         event.preventDefault();
@@ -289,10 +313,10 @@ class Image extends EditableComponent {
     
         const oldVal = this._path; 
     
-        // Giả định uploadAllFiles là hàm bạn định nghĩa riêng để tải lên tất cả các tệp
+        
         uploadAllFiles(files).then(() => {
-            this.Dirty = true;  // Giả định dirty là biến trạng thái đã được định nghĩa
-            this._input.value = '';  // Giả định _input là tham chiếu đến input element
+            this.Dirty = true; 
+            this._input.value = '';  
             this.UserInput?.Invoke(new ObservableArgs ({ NewData : this._path, OldData : oldVal, FieldName : this.FieldName, EvType : EventType.Change }));
             dispatchEvent(this.Meta.Events, 'change', this.Entity);  
         }).catch(error => {
@@ -310,19 +334,81 @@ class Image extends EditableComponent {
             });
     }
 
-    // updateView(force = false, dirty = null, ...componentNames) {
-    //     this.path = Utils.GetPropValue(this.Entity, this.fieldName)?.toString();
-    //     this.updateView(force, dirty, ...componentNames);
-    // }
+    updateView(force = false, dirty = null, ...componentNames) {
+        this.path = Utils.GetPropValue(this.Entity, this.fieldName)?.toString();
+        base.updateView(force, dirty, ...componentNames);
+    }
 
-    // isImage(path) {
-    //     return path.match(/\.(jpeg|jpg|gif|png)$/i) != null;
-    // }
+    async uploadFile(file) {
+        if (this.Meta.IsRealtime || !file.type.match("image.*")) {
+            try {
+                const path = await Client.Instance.PostFilesAsync(file, Utils.FileSvc);
+                return path;
+            } catch (error) {
+                console.error("Error posting file:", error);
+                throw error;
+            }
+        } else {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const path = await this.uploadBase64Image(e.target.result, file.name);
+                        resolve(path);
+    
+                        await Client.Instance.PatchAsync({
+                            table: "FileUpload",
+                            changes: [
+                                { field: "Id", value: uuid7.generateId25() },
+                                { field: "EntityName", value: meta.refName },
+                                { field: "RecordId", value: entityId },
+                                { field: "SectionId", value: meta.componentGroupId },
+                                { field: "FieldName", value: fieldName },
+                                { field: "FileName", value: file.name },
+                                { field: "FilePath", value: path }
+                            ]
+                        });
+                    } catch (error) {
+                        console.error("Error in file upload process:", error);
+                        reject(error);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    }
 
-    // decodeSpecialChar(text) {
-    //     return decodeURIComponent(text);
-    // }
-   
+    async uploadAllFiles(filesSelected) {
+        Spinner.AppendTo(this.EditForm.Element);
+        const files = Array.from(filesSelected).map(this.uploadFile());
+        let allPath = await Promise.all(files);
+        if (!allPath.length) {
+            return;
+        }
+        if (this.Meta.Precision === 0) {
+            const paths = this.path + Image.PathSeparator + allPath.join(Image.PathSeparator);
+            allPath = [...new Set(paths.trim().split(Image.PathSeparator))];
+        }
+        const oldVal = this._path;
+        path = allPath.join(Image.PathSeparator);
+        Spinner.Hide();
+        this.FileUploaded?.Invoke(); 
+    }
+
+    openNativeFileDialog(e) {
+        e?.preventDefault();
+        this._input.click();
+    }
+
+    getValueText() {
+        if (!this.imageSources || this.imageSources.length === 0) {
+            return null;
+        }
+        return this.imageSources.map(path => {
+            const label = this.removeGuid(path);
+            return `<a target="_blank" href="${path}">${label}</a>`;
+        }).join(",");
+    }
 }
 
 window.Core2 = window.Core2 || {};
