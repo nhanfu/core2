@@ -301,6 +301,7 @@ export default class EditableComponent {
             this.Children.Flattern(x => x.Children).Where(x => x._dirty).forEach(x => x._dirty = false);
         }
     }
+
     SetDefaultVal() {
         if (this.Entity == null || this.EntityId == null) return;
         var fn = Utils.IsFunction(this.Meta.DefaultVal);
@@ -311,6 +312,7 @@ export default class EditableComponent {
             this.Entity.SetComplexPropValue(this.FieldName, this.DefaultValue);
         }
     }
+
     ValidateRequired(value) {
         if (this.Element === null || Object.keys(this.ValidationRules).length === 0 || this.EmptyRow || this.AlwaysValid) {
             return true;
@@ -502,6 +504,7 @@ export default class EditableComponent {
             Show = shown ?? false;
         }
     }
+
     ToggleDisabled(disabled) {
         var disabledFn = Utils.IsFunction(disabled);
         if (disabled !== null) {
@@ -509,6 +512,44 @@ export default class EditableComponent {
             this.Disabled = shouldDisabled;
         }
     }
+
+    updateView(force = false, dirty = null, ...componentNames) {
+        this.prepareUpdateView(force, dirty);
+        if (!this.Children || this.Children.length === 0) {
+            return;
+        }
+    
+        if (componentNames.length > 0) {
+            const coms = this.FilterChildren(Section, x => componentNames.includes(x.name) && x instanceof Section)
+                .flatMap(x => x.filterChildren(EditableComponent, com => !(com instanceof Section)));
+            const coms2 = this.FilterChildren(EditableComponent, x => componentNames.includes(x.name) && !(x instanceof Section));
+            const shouldUpdate = [...new Set([...coms, ...coms2].filter(x => !(x instanceof Section)))];
+    
+            shouldUpdate.forEach(child => {
+                child.prepareUpdateView(force, dirty);
+                child.updateView(force, dirty, ...componentNames);
+            });
+        } else {
+            const shouldUpdate = this.FilterChildren(EditableComponent, x => !(x instanceof Section));
+    
+            shouldUpdate.forEach(child => {
+                child.prepareUpdateView(force, dirty);
+                child.updateView(force, dirty, ...componentNames);
+            });
+        }
+    }
+
+    prepareUpdateView(force, dirty) {
+        if (force) {
+            this.EmptyRow = false;
+        }
+        this.ToggleShow(this.Meta?.ShowExp);
+        this.ToggleDisabled(this.Meta?.DisabledExp);
+        if (dirty !== undefined) {
+            this._setDirty = dirty;
+        }
+    }
+
     Dispose() {
         this.SendQueueAction("Unsubscribe");
         this.DisposeChildren();
@@ -523,12 +564,14 @@ export default class EditableComponent {
         }
         this.Disposed?.Invoke();
     }
+
     RemoveDOM() {
         if (this.Element != null) {
             this.Element.remove();
             this.Element = null;
         }
     }
+
     SendQueueAction(action) {
         var queueName = this.QueueName;
         if (queueName?.IsNullOrWhiteSpace()) return;
@@ -539,6 +582,7 @@ export default class EditableComponent {
         else
             window.removeEventListener(queueName, this.QueueHandler);
     }
+
     DisposeChildren() {
         if (this.Children.Nothing()) return;
         var leaves = this.Children.Flattern(x => x.Children)
