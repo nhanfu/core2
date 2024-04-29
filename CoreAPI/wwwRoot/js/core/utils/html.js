@@ -27,6 +27,11 @@ export class HTML {
         this.Context = ele;
         return this;
     }
+
+    GetContext() {
+        return this.Context;
+    }
+    
     Add(node) {
         const ele = document.createElement(node);
         this.Context.appendChild(ele);
@@ -181,6 +186,12 @@ export class HTML {
         this.Context.className += (' ' + cls);
         return this;
     }
+
+    Id(id) {
+        this.Context.id = id;
+        return this;
+    }
+
     Style(style) {
         if (style == null) return this;
         this.Context.style.cssText += style;

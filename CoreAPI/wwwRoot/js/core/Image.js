@@ -7,7 +7,6 @@ import { Client } from "./clients/client.js";
 import EventType from './models/eventType.js';
 import { ComponentType } from './models/componentType.js';
 import { string } from './utils/ext.js';
-import EditableComponent from './editableComponent.js';
 import ObservableArgs from './models/observable.js';
 import { Action } from "./models/action.js";
 import "../fix.js";
