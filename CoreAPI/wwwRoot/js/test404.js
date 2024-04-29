@@ -1,23 +1,31 @@
-import { Label } from "./core/label.js";
-import { Component } from "./core/models/component.js";
-import { ValidationRule } from "./core/models/validationRule.js";
-import { NumberBox } from "./core/numbox.js";
-import { Html } from "./core/utils/html.js";
+import { Datepicker } from './core/datepicker.js';
+import { Chart } from './core/chart.js';
+import { Component } from './core/models/component.js';
 
-/** @type {Component} */
-var labelMeta = {
+var a = new Datepicker({
     FieldName: 'test',
-    Renderer: (x) => {
-        Html.Take(x.Element).Div.Text('123');
-    }
-};
-var a = new Label(labelMeta, document.getElementById('test'));
+}, document.getElementById('test'));
 a.Render();
 
 /** @type {Component} */
-var numberMeta = {
+var meta = {
     FieldName: 'test2',
-    Validation: [{ Rule: ValidationRule.Required, Message: 'This is required'}]
+    LocalData: [
+        {
+          "name": "WR1",
+          "y": 417,
+          "startAngle": 25,
+          "toolTipContent": "<b>{name}</b>: {y}",
+          "indexLabelFontSize": 16
+        },
+        {
+          "name": "TV",
+          "y": 577,
+          "startAngle": 25,
+          "toolTipContent": "<b>{name}</b>: {y}",
+          "indexLabelFontSize": 16
+        }
+      ]
 };
-var b = new NumberBox(numberMeta, document.getElementById('test2'));
+var b = new Chart(meta, document.getElementById('test2'));
 b.Render();

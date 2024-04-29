@@ -41,10 +41,10 @@ export class Client {
     static _instance;
     /** @type {Client} */
     static get Instance() {
-      if(!Client._instance) {
-        Client._instance = new Client();
-      }
-      return Client._instance;
+        if (!Client._instance) {
+            Client._instance = new Client();
+        }
+        return Client._instance;
     }
 
     /** @type {Token} */
@@ -286,7 +286,7 @@ export class Client {
     }
 
     static async GetToken(oldToken) {
-        const newToken = await Instance.SubmitAsync({
+        const newToken = await Client.Instance.SubmitAsync({
             NoQueue: true,
             Url: `/user/Refresh?t=${Token.TenantCode || Client.Tenant}`,
             Method: "POST",

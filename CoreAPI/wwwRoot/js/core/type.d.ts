@@ -10,7 +10,7 @@ interface Array<T> {
    * @param {Function<T, K>} mapper - The map function
    * @returns {Array<K>} return the mappped array
    */
-  Select(mapper: Function<T, K>): Array<K>;
+  Select(mapper: (item: T, index: Number) => K): Array<K>;
   /**
    * @param filter The function to filter elements
    * @returns {T[]} Returns filtered array
@@ -50,6 +50,12 @@ interface Array<T> {
  * @returns The first element of the array that passes the test implemented by the provided function, or an empty array if no element passes the test.
  */
   FirstOrDefault(filter: (item: T, index: number) => boolean): Array<T>;
+
+  /**
+   * Grouping array similar to Linq GroupBy
+   * @param keySelector - The key selector
+   */
+  GroupBy(keySelector: (item: T) => K): [][];
 }
 
 interface String {

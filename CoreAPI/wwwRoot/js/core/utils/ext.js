@@ -69,7 +69,26 @@ Array.prototype.FirstOrDefault = function (predicate) {
         if (predicate(this[i])) return this[i];
     }
 }
+Array.prototype.GroupBy = function (keyFunction) {
+    const map = this.reduce((accumulator, item) => {
+        const keyObj = keyFunction(item);
+        const key = JSON.stringify(keyObj);
 
+        if (!accumulator[key]) {
+            accumulator[key] = [];
+            accumulator[key].keyObj = keyObj;
+        }
+        accumulator[key].push(item);
+        return accumulator;
+    }, {});
+    return Object.keys(map).map(key => {
+        const items = map[key];
+        items.Key = map[key].keyObj;
+        return items;
+    });
+};
+
+String.prototype.ToString = String.prototype.toString;
 String.prototype.HasElement = HasElement;
 String.prototype.HasAnyChar = HasElement;
 String.prototype.HasNonSpaceChar = HasNonSpaceChar;
@@ -118,32 +137,32 @@ Object.prototype.Clear = function () {
 };
 Promise.prototype.Done = Promise.prototype.then;
 Promise.prototype.done = Promise.prototype.then;
-Date.prototype.addSeconds = function(seconds) {
+Date.prototype.addSeconds = function (seconds) {
     var date = new Date(this.valueOf());
     date.setSeconds(date.getSeconds() + seconds);
     return date;
 };
-Date.prototype.addMinutes = function(minutes) {
+Date.prototype.addMinutes = function (minutes) {
     var date = new Date(this.valueOf());
     date.setMinutes(date.getMinutes() + minutes);
     return date;
 };
-Date.prototype.addHours = function(hours) {
+Date.prototype.addHours = function (hours) {
     var date = new Date(this.valueOf());
     date.setHours(date.getHours() + hours);
     return date;
 };
-Date.prototype.addDays = function(days) {
+Date.prototype.addDays = function (days) {
     var date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
     return date;
 };
-Date.prototype.addMonths = function(months) {
+Date.prototype.addMonths = function (months) {
     var date = new Date(this.valueOf());
     date.setMonth(date.getMonth() + months);
     return date;
 };
-Date.prototype.addYears = function(years) {
+Date.prototype.addYears = function (years) {
     var date = new Date(this.valueOf());
     date.setFullYear(date.getFullYear() + years);
     return date;
