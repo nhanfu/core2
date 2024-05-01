@@ -41,8 +41,10 @@ class RichTextBox extends EditableComponent {
     }
 
     updateView(force = false, dirty = null, ...componentNames) {
-        // const handler = this._events;
-        handler?.(new ObservableArgs({ com: this, evType: EventType.Change }));
+        const handler = this._events["UpdateView"];
+        if (handler) {
+            handler(new ObservableArgs({ Com: this, EvType: 'Change' }));
+        }
     }
 }
 window.Core2 = window.Core2 || {};
