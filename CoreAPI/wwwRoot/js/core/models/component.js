@@ -130,10 +130,13 @@
  * @property {string} DelParam
  */
 
+import { FeaturePolicy } from './featurePolicy.js';
+
 // Initializing data
 export class Component {
     Id = '';
     TenantCode = '';
+    Name = '';
     FieldName = '';
     Order = null;
     ComponentType = '';
@@ -304,6 +307,18 @@ export class Component {
     PolicyId;
 
     /**
+     * Represents the parent of the component.
+     * @type {Component}
+     */
+    Parent;
+
+    /**
+     * Represents the parent of the component.
+     * @type {Component[]}
+     */
+    Component = [];
+
+    /**
      * Represents the parent ID of the component.
      * @type {string}
      */
@@ -386,4 +401,9 @@ export class Component {
      * @type {Boolean}
      */
     IgnoreEncode;
+    /** @type {FeaturePolicy[]} */
+    FeaturePolicy = [];
+
+    /** @type {Component[]} */
+    Children = [];
 };

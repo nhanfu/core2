@@ -49,13 +49,16 @@ interface Array<T> {
  * @param filter - A function that tests each element for a condition.
  * @returns The first element of the array that passes the test implemented by the provided function, or an empty array if no element passes the test.
  */
-  FirstOrDefault(filter: (item: T, index: number) => boolean): Array<T>;
+  FirstOrDefault(filter: (item: T, index: number) => boolean): T;
 
   /**
    * Grouping array similar to Linq GroupBy
    * @param keySelector - The key selector
    */
   GroupBy(keySelector: (item: T) => K): [][];
+  DistinctBy(keySelector: (item: T) => K): T[];
+  ForEach(action: (item: T) => void): T[];
+  ForEachAsync(promise: (item: T) => Promise): Promise<T[]>;
 }
 
 interface String {
@@ -66,14 +69,16 @@ interface String {
   DecodeSpecialChar(): string;
 }
 
-interface Promise {
+interface Promise<T> {
   Done(onSuccess: (value: T) => void, onError: (error: any) => void): Promise<T>;
   done(onSuccess: (value: T) => void, onError: (error: any) => void): Promise<T>;
 }
 
 interface Obj {
+  CopyPropFrom(obj: Obj): void;
   GetComplexProp(path: string): any;
-  SetComplexPropValue(path: string, val: any);
+  SetComplexPropValue(path: string, val: any): void;
+  SetPropValue(path: string, val: any): void;
 }
 
 interface Date {
@@ -83,4 +88,9 @@ interface Date {
   addDays(days: Number): Date;
   addMonths(months: Number): Date;
   addYears(years: Number): Date;
+}
+
+interface HTMLElement {
+  HasClass(cls: string): boolean;
+  ReplaceClass(cls: string, byCls: string): void;
 }

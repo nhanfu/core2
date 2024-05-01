@@ -1,0 +1,82 @@
+/**
+ * Options for creating a toast notification.
+ * @typedef {Object} ToastOptions
+ * @property {number} Timeout - The duration before the toast disappears.
+ * @property {string} ClassName - CSS class for styling the toast.
+ * @property {string} Message - The message to display in the toast.
+ * @property {Array} Params - Additional parameters for the message.
+ */
+
+/**
+ * Provides functionalities to create different types of toast notifications.
+ */
+export class Toast {
+    /**
+     * Creates a toast notification with specific options.
+     * @param {ToastOptions} options - Options for the toast.
+     */
+    static Create(options) {
+        if (typeof Swal !== 'undefined') {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: options.Timeout
+            });
+            Toast.fire({
+                icon: options.ClassName,
+                title: options.Message
+            });
+            return;
+        }
+
+        const div = document.createElement('div');
+        div.className = `toast ${options.ClassName}`;
+        div.innerHTML = options.Message; // Simplified; adjust if Params need formatting
+        document.body.appendChild(div);
+
+        setTimeout(() => {
+            div.remove();
+        }, options.Timeout);
+    }
+
+    /**
+     * Creates a success toast.
+     * @param {string} message - Message to display.
+     * @param {number} [timeout=2500] - Duration before the toast disappears.
+     * @param {...any} parameters - Additional parameters.
+     */
+    static Success(message, timeout = 2500, ...parameters) {
+        Toast.Create({
+            ClassName: 'success',
+            Timeout: timeout,
+            Message: message,
+            Params: parameters
+        });
+    }
+
+    /**
+     * Creates a warning toast.
+     * @param {string} message - Message to display.
+     */
+    static Warning(message) {
+        Toast.Create({
+            ClassName: 'warning',
+            Timeout: 2500,
+            Message: message
+        });
+    }
+
+    /**
+     * Creates a small toast notification.
+     * @param {string} message - Message to display.
+     * @param {number} [timeout=2500] - Duration before the toast disappears.
+     */
+    static Small(message, timeout = 2500) {
+        Toast.Create({
+            ClassName: 'sm-tran',
+            Timeout: timeout,
+            Message: message
+        });
+    }
+}

@@ -1,5 +1,6 @@
 import { Decimal } from '../structs/decimal.js';
 import { Component } from "../models/component.js";
+import { Client } from '../clients/client.js';
 
 export class Utils {
     static SystemId = "1";
@@ -50,6 +51,7 @@ export class Utils {
         "%23": '#',
         "%26": '&'
     }
+    static get HeadChildren() { return document.head.children; }
     static EncodeSpecialChar(str) {
         if (!str) return null;
         return str.split('').map(ch => Utils.SpecialChar[ch] || ch).join('');
@@ -370,12 +372,37 @@ export class Utils {
         return isImage;
     }
     
-    GetExtension(path) {
+    static GetExtension(path) {
         if (!path) {
             return '';
         }
         return path.substring(path.lastIndexOf('.'));
     }
     
+    static IsOwner(entity, defaultOwnership = true) {
+        const IdField = "Id"; // Define IdField as per your requirements
+        const OwnerUserIds = "OwnerUserIds"; // Define OwnerUserIds as per your requirements
+        const OwnerRoleIds = "OwnerRoleIds"; // Define OwnerRoleIds as per your requirements
+        const InsertedBy = "InsertedBy"; // Define InsertedBy as per your requirements
+        const Comma = ","; // Separator for splitting strings
+        
+        if (!entity || entity[IdField] !== null) {
+            return defaultOwnership;
+        }
+    
+        if (!Client.Token) return defaultOwnership; // Adjust as per your application's context
+    
+        const ownerUserIds = entity[OwnerUserIds]?.toString();
+        const isOwnerUser = ownerUserIds?.trim() !== "" && ownerUserIds.split(Comma).includes(Client.Token.UserId);
+    
+        const ownerRoleIds = entity[OwnerRoleIds]?.toString();
+        const isOwnerRole = ownerRoleIds?.trim() !== "" &&
+            ownerRoleIds.split(Comma).some(entityRole => Client.Token.RoleIds.includes(entityRole));
+    
+        const createdId = entity[InsertedBy]?.toString();
+        const isOwner = (!ownerUserIds && createdId === Client.Token.UserId) || isOwnerRole || isOwnerUser;
+    
+        return isOwner;
+    }
 
 }

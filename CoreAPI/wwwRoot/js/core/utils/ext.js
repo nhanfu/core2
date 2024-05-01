@@ -4,11 +4,15 @@ export function HasNonSpaceChar() { return this.trim() !== ''; }
 
 export class string {
     static Empty = '';
+    static Comma = ',';
     static Type = 'string';
     static Format(template, ...args) {
         return template.replace(/{(\d+)}/g, (match, index) => {
             return typeof args[index] != 'undefined' ? args[index] : match;
         });
+    }
+    static Join(separator, ...str) {
+        str.join(separator)
     }
 }
 
@@ -87,6 +91,10 @@ Array.prototype.GroupBy = function (keyFunction) {
         return items;
     });
 };
+Array.prototype.ForEach = Array.prototype.forEach;
+Array.prototype.DistinctBy = function(keySelector) {
+    return this.GroupBy(keySelector).FirstOrDefault();
+};
 
 String.prototype.ToString = String.prototype.toString;
 String.prototype.HasElement = HasElement;
@@ -115,8 +123,18 @@ Object.prototype.SetComplexPropValue = function (path, value) {
     }
     obj[keys[keys.length - 1]] = value;
 };
+Object.prototype.SetPropValue = Object.prototype.SetComplexPropValue;
 Object.prototype.Nothing = function () {
     return Object.keys(this).length === 0;
+};
+Object.prototype.CopyPropFrom = function (source) {
+    if (source && typeof source === 'object') {
+        for (let key in source) {
+            if (source.hasOwnProperty(key)) {
+                this[key] = source[key];
+            }
+        }
+    }
 };
 Object.prototype.Clear = function () {
     if (this.count > 0) {
@@ -137,6 +155,11 @@ Object.prototype.Clear = function () {
 };
 Promise.prototype.Done = Promise.prototype.then;
 Promise.prototype.done = Promise.prototype.then;
+Promise.prototype.ForEachAsync = async function (map2Promise){
+    var promises = this.map(map2Promise);
+    await Promise.all(promises);
+    return this;
+};
 Date.prototype.addSeconds = function (seconds) {
     var date = new Date(this.valueOf());
     date.setSeconds(date.getSeconds() + seconds);
@@ -166,4 +189,11 @@ Date.prototype.addYears = function (years) {
     var date = new Date(this.valueOf());
     date.setFullYear(date.getFullYear() + years);
     return date;
+};
+HTMLElement.prototype.HasClass = function(str) {
+    return this.classList.contains(str);
+};
+HTMLElement.prototype.ReplaceClass = function(cls, byCls) {
+    this.classList.remove(cls);
+    this.classList.add(byCls);
 };

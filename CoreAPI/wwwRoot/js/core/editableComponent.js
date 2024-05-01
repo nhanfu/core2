@@ -5,6 +5,7 @@ import { ValidationRule } from "./models/validationRule.js";
 import EventType from "./models/eventType.js";
 import { ComponentType } from "./models/componentType.js";
 import { Uuid7 } from "./structs/uuidv7.js";
+import { EditForm } from "./editForm.js";
 
 /**
  * @typedef {import('./models/action.js').Action} Action
@@ -44,6 +45,36 @@ export default class EditableComponent {
             }
         });
     }
+
+    /**
+     * Small screen size.
+     * @type {number}
+     */
+    static SmallScreen = 768;
+
+    /**
+     * Extra small screen size.
+     * @type {number}
+     */
+    static ExSmallScreen = 567;
+
+    /**
+     * Medium screen size.
+     * @type {number}
+     */
+    static MediumScreen = 992;
+
+    /**
+     * Large screen size.
+     * @type {number}
+     */
+    static LargeScreen = 1200;
+
+    /**
+     * Extra large screen size.
+     * @type {number}
+     */
+    static ExLargeScreen = 1452;
 
     DispatchEvent(events, eventType, ...parameters) {
         if (!events) {
@@ -104,7 +135,7 @@ export default class EditableComponent {
         return this.InvokeEvent(events, eventTypeName, ...parameters);
     }
 
-    /** @type {EditableComponent} EditForm - The root component of all tree node.*/
+    /** @type {EditForm} EditForm - The root component of all tree node.*/
     EditForm;
     /** @type {EditableComponent} Parent - The parent component of this editable component.*/
     Parent;
@@ -175,6 +206,7 @@ export default class EditableComponent {
             editable.Disabled = value;
         });
     }
+    /** @type {boolean} */
     get Dirty() {
         return this._dirty && !this.AlwaysValid || this.FilterChildren(x => x._dirty, x => !x.PopulateDirty || x.AlwaysValid).Any();
     }
@@ -229,6 +261,7 @@ export default class EditableComponent {
     get DataConn() {
         return this.Meta?.DataConn;
     }
+    IdField = 'Id';
     get FieldVal() { return !this.Entity || !this.FieldName ? null : this.Entity.GetComplexProp(this.FieldName); }
     set FieldVal(val) {
         if (this.Entity == null || this.FieldName == null) return;
@@ -618,7 +651,7 @@ export default class EditableComponent {
      * 
      * @param {(item: EditableComponent) => boolean} filter 
      * @param {(item: EditableComponent) => boolean} ignore 
-     * @returns 
+     * @returns {EditableComponent[]}
      */
     FilterChildren(filter, ignore) {
         return this.Children.Flattern(x => x.Children.Where(child => {
@@ -632,5 +665,58 @@ export default class EditableComponent {
      */
     FirstOrDefault(filter) {
         return this.Children.Flattern(x => x.Children).FirstOrDefault(filter);
+    }
+
+    AddChild(child, index = null, showExp = null, disabledExp = null) {
+        if (child.IsSingleton) {
+            child.Render();
+            return;
+        }
+        if (!child.ParentElement) {
+            if (child instanceof TabEditor && child.Popup) {
+                child.ParentElement = this.Element || TabEditor.TabContainer;
+            } else if (child instanceof TabEditor) {
+                child.ParentElement = TabEditor.TabContainer;
+            } else {
+                child.ParentElement = Html.Context;
+            }
+        }
+
+        if (!child.Entity) {
+            child.Entity = this.Entity;
+        }
+
+        if (index === null || index >= this.Children.length || index < 0) {
+            this.Children.push(child);
+        } else {
+            this.Children.splice(index, 1, child);
+        }
+
+        if (!child.Parent) {
+            child.Parent = this;
+        }
+
+        Html.Take(child.ParentElement);
+        child.Render();
+        child.ToggleShow(showExp || (child.Meta ? child.Meta.ShowExp : ""));
+        child.ToggleDisabled(disabledExp || (child.Meta ? child.Meta.DisabledExp : ""));
+    }
+
+    RemoveChild(child) {
+        const index = this.Children.indexOf(child);
+        if (index > -1) {
+            this.Children.splice(index, 1);
+        }
+    }
+
+    Focus() {
+        this.Element?.Focus();
+    }
+
+    SetDisabled(disabled, ...name) {
+        if (name == null || name.length == 0) this.Disabled = disabled;
+        else {
+            this.FilterChildren(x => name.includes(x.FieldName)).forEach(x => x.Disabled = disabled);
+        }
     }
 }
