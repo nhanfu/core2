@@ -335,7 +335,7 @@ class Image extends EditableComponent {
 
     updateView(force = false, dirty = null, ...componentNames) {
         this.path = Utils.GetPropValue(this.Entity, this.fieldName)?.toString();
-        base.updateView(force, dirty, ...componentNames);
+        super.updateView(force, dirty, ...componentNames);
     }
 
     async uploadFile(file) {

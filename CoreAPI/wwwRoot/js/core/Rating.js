@@ -1,19 +1,9 @@
 import EditableComponent from './editableComponent.js';
-import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
-import { ValidationRule } from "./models/validationRule.js";
-import { LangSelect } from "./utils/langSelect.js";
-import { Client } from "./clients/client.js";
-import EventType from './models/eventType.js';
-import { ComponentType } from './models/componentType.js';
-import { string } from './utils/ext.js';
 import ObservableArgs from './models/observable.js';
-import { Action } from "./models/action.js";
-import "../fix.js";
-import { Client } from "./clients/client.js";
 import EditableComponent from "./editableComponent.js";
-import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
+import "../fix.js";
 
 
 class Rating extends EditableComponent {
@@ -47,47 +37,61 @@ class Rating extends EditableComponent {
         this.dirty = true;
     }
 
+    get Disabled() {
+        return super.Disabled;
+    }
+
+    set Disabled(value) {
+        super.Disabled = value;
+        this.inputList.forEach(input => {
+            input.Disabled = value;
+        });
+    }
+
     setSelected(value) {
         if (value === null || value <= 0 || value > this.Meta.Precision) {
             return;
         }
-        // Adjust for zero-based index in JavaScript
         this.InputList[this.Meta.Precision - value].checked = true;
     }
 
     render() {
-        const container = document.createElement("div");
-        container.className = "rate";
+        const container = document.createElement('div');
+        container.className = 'rate';
         this.ParentElement.appendChild(container);
-
-        const radioGroupName = `${this.fieldName}_${this.Meta.Id}_${this.hashCode()}`;
-        for (let i = this.Meta.Precision; i >= 1; i--) {
-            const radioId = `${radioGroupName}_${i}`;
-            const input = document.createElement("input");
-            input.type = "radio";
-            input.id = radioId;
-            input.name = radioGroupName;
-            input.value = i;
-            container.appendChild(input);
-            this.InputList.push(input);
-
-            const label = document.createElement("label");
-            label.setAttribute("for", radioId);
-            label.textContent = `${i} stars`;
-            container.appendChild(label);
-
-            input.addEventListener("change", this.dispatchChange.bind(this));
-        }
         this.Element = container;
-
-        this.value = this.getValueFromEntity();
-        this.setSelected(this.value);
+    
+        const radioGroup = `${this.fieldName}_${this.meta.id}_${this.hashCode()}`;
+        for (let item = this.Meta.Precision; item >= 1; item--) {
+            const radioId = `${radioGroup}_${item}`;
+            const input = document.createElement('input');
+            input.setAttribute('type', 'radio');
+            input.id = radioId;
+            input.name = radioGroup;
+            input.value = item.toString();
+            input.style = this.meta.style; 
+            input.addEventListener('change', this.dispatchChange.bind(this));
+    
+            this.inputList.push(input);
+            this.element.appendChild(input);
+    
+            const label = document.createElement('label');
+            label.setAttribute('for', radioId);
+            label.textContent = `${item} stars`;
+            this.Element.appendChild(label);
+        }
+    
+        this._value = Utils.GetPropValue(this.Entity, this.FieldName);
+        this.setSelected(this._value);
+    
         this.DOMContentLoaded?.Invoke();
     }
 
     dispatchChange(event) {
         if (this.Disabled) return;
 
+        if (!inputList.length) return;
+        
         const checkedInput = this.InputList.find(input => input.checked);
         if (!checkedInput) return;
 
@@ -96,18 +100,29 @@ class Rating extends EditableComponent {
         if (this.UserInput) {
             this.UserInput.Invoke(new ObservableArgs ({ newData: this.value, oldData: oldValue }));
         }
-        // Assuming dispatchEvent is defined
         setTimeout(() => {
             this.DispatchEvent(this.Meta.Events, 'click', this.Entity);
         }, 0);
     }
 
-    getValueFromEntity() {
-        return Utils.GetPropValue(this.entity, this.fieldName);
+    updateView(force = false, dirty = null, ...componentNames) {
+        this.value = Utils.GetPropValue(this.Entity, this.FieldName);
+        this.value = (this.value !== undefined && this.value !== null) ? parseInt(this.value) : null;
+    }
+
+    getValueText() {
+        return this._value === null ? "Không đánh giá" : `${this._value} sao`;
+    }
+
+    async validateAsync() {
+        this.ValidationResult.clear();
+        if (this.value === null) return false;
+        const isValid = this.value !== undefined && this.ValidateRequired(this.value);
+        return isValid;
     }
 
     hashCode() {
-        return JSON.stringify(this.meta).split("").reduce((a, b) => {
+        return JSON.stringify(this.Meta).split("").reduce((a, b) => {
             a = ((a << 5) - a) + b.charCodeAt(0);
             return a & a;
         }, 0);
