@@ -4,7 +4,7 @@ import { Component } from "./models/component.js";
 import { CustomEventType } from "./models/customEventType.js";
 import { ActiveStateEnum, AdvSearchVM, MQEvent } from "./models/enum.js";
 import { PaginationOptions, Paginator } from "./paginator.js";
-import { Utils } from "./utils/utils";
+import { Utils } from "./utils/utils.js";
 
 /**
  * Represents a list view component that allows editable features and other interactions like sorting and pagination.

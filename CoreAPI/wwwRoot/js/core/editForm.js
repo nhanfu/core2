@@ -1,5 +1,4 @@
 import EditableComponent from "./editableComponent.js";
-import { ListView } from "./listView.js";
 import { Utils } from "./utils/utils.js";
 import { ComponentExt } from './utils/componentExt.js';
 import EventType from "./models/eventType.js";
@@ -12,7 +11,6 @@ import { SqlViewModel } from "./models/sqlViewModel.js";
 import { PatchVM } from "./models/patch.js";
 import { Message } from "./utils/message.js";
 import { Action } from "./models/action.js";
-import {Label} from './label.js';
 import { StringBuilder } from "./utils/stringBuilder.js";
 import { FeaturePolicy } from "./models/featurePolicy.js";
 import { ComponentFactory } from "./utils/componentFactory.js";
@@ -20,6 +18,8 @@ import { Toast } from "./toast.js";
 
 /**
  * Represents an editable form component.
+ * @typedef {import('./listView.js').ListView} ListView
+ * @typedef {import('./label.js').Label} Label
  */
 export class EditForm extends EditableComponent {
     /** @type {EditForm} */
@@ -115,7 +115,7 @@ export class EditForm extends EditableComponent {
      */
     async SavePatch(entity = null) {
         if (!this.dirty) {
-            Toast.warning(Message.NotDirty);
+            Toast.Warning(Message.NotDirty);
             return false;
         }
         try {
@@ -322,7 +322,7 @@ export class EditForm extends EditableComponent {
             Client.Instance.HardDeleteAsync(grid.DeleteTempIds, grid.Meta.RefName, grid.DataConn, grid.MetaConn)
                 .then(deleteSuccess => {
                     if (!deleteSuccess) {
-                        Toast.warning('Error deleting details, please check again');
+                        Toast.Warning('Error deleting details, please check again');
                         return;
                     }
                     grid.RowAction(row => {

@@ -138,7 +138,7 @@ export class Component {
     TenantCode = '';
     Name = '';
     FieldName = '';
-    Order = null;
+    Order = 0;
     ComponentType = '';
     ComponentGroupId = '';
     ReferenceId = '';

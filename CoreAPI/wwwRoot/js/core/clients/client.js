@@ -167,6 +167,13 @@ export class Client {
         });
     }
 
+    /**
+     * 
+     * @param {any} value 
+     * @param {function} errHandler 
+     * @param {boolean} annonymous 
+     * @returns {Promise<number>} Effected rows in the database
+     */
     async PatchAsync(value, errHandler = null, annonymous = false) {
         return this.SubmitAsync({
             Value: JSON.stringify(value),

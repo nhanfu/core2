@@ -21,8 +21,13 @@ export class HTML {
         if (this._instance == null) this._instance = new HTML();
         return this._instance;
     }
+    /**
+     * 
+     * @param {HTMLElement|string|null|undefined} ele 
+     * @returns 
+     */
     Take(ele) {
-        if (ele == null) return;
+        if (ele == null) return this;
         if (typeof (ele) === 'string') ele = document.querySelector(ele);
         this.Context = ele;
         return this;

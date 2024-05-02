@@ -5,7 +5,6 @@ import { ValidationRule } from "./models/validationRule.js";
 import EventType from "./models/eventType.js";
 import { ComponentType } from "./models/componentType.js";
 import { Uuid7 } from "./structs/uuidv7.js";
-import { EditForm } from "./editForm.js";
 
 /**
  * @typedef {import('./models/action.js').Action} Action
@@ -16,6 +15,7 @@ import { EditForm } from "./editForm.js";
 
 /**
  * Represents an editable component in the application.
+ * @typedef {import('./editForm.js').EditForm} EditForm
  * @class
  * The `EditableComponent` class provides functionality for managing and interacting with editable components in the application.
  * It handles the parent-child relationships, event handling, and disposal of the component.
@@ -23,8 +23,8 @@ import { EditForm } from "./editForm.js";
 export default class EditableComponent {
     /**
      * Create instance of component
-     * @param {Component} meta 
-     * @param {HTMLElement} ele 
+     * @param {Component | null} meta 
+     * @param {HTMLElement | null} ele 
      */
     constructor(meta, ele) {
         this.Meta = meta;

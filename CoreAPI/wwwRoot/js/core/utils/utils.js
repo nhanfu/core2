@@ -325,7 +325,7 @@ export class Utils {
      * @param {boolean} shouldAddReturn - if true then append 'return ' before evaluating
      * @returns {Function} The function itself or evaluated function
      */
-    static IsFunction(exp, shouldAddReturn) {
+    static IsFunction(exp, shouldAddReturn = false) {
         if (exp == null) {
             return null;
         }

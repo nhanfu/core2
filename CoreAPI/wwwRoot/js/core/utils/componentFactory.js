@@ -1,7 +1,7 @@
-import { EditForm } from "../editForm";
-import EditableComponent from "../editableComponent";
-import { Component } from "../models/component";
-import { Utils } from "./utils";
+import { EditForm } from "../editForm.js";
+import EditableComponent from "../editableComponent.js";
+import { Component } from "../models/component.js";
+import { Utils } from "./utils.js";
 
 /**
  * Factory class for creating UI components based on specific configurations.

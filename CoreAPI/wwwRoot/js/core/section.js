@@ -6,16 +6,18 @@ import { ElementType } from './models/elementType.js'
 import { FeaturePolicy } from "./models/featurePolicy.js";
 import { ComponentFactory } from "./utils/componentFactory.js";
 import EventType from "./models/eventType.js";
-import { PatchDetail, PatchVM } from "./models/patch.js";
+import { PatchVM } from "./models/patch.js";
 import { Client } from "./clients/client.js";
+import { Component } from "./models/component.js";
 
 export class Section extends EditableComponent {
     /**
      * 
-     * @param {string} eleType - Element type of the section
-     * @param {HTMLElement} ele 
+     * @param {string | null | undefined} eleType - Element type of the section
+     * @param {HTMLElement | null} ele 
      */
     constructor(eleType, ele) {
+        super(null, ele);
         this.elementType = eleType;
         this.Element = ele;
         this.innerEle = null;
@@ -23,16 +25,14 @@ export class Section extends EditableComponent {
     }
 
     Render() {
-        if (this.elementType === null) {
-            this.elementType = this.Element.tagName.toLowerCase();
+        if (this.elementType == null && this.Element != null) {
+            this.elementType = this.Element?.tagName?.toLowerCase();
         } else {
-            Html.Take(this.ParentElement).Add(this.elementType);
-            this.Element = Html.Context;
+            Html.Take(this.EarentElement).Add(this.elementType);
+            this.Element = Html.EontRxt;
         }
-        this.Element.id = this.Id;
-        if (this.Meta === null) {
-            return;
-        }
+        this.Element.id = this.Meta.Id;
+        if (this.Meta === null) return;
         if (this.Meta.Html.trim() !== "") {
             const cssContent = this.Meta.Css;
             const hard = this.Meta.Id;
@@ -45,21 +45,21 @@ export class Section extends EditableComponent {
                     document.head.appendChild(style);
                 }
             }
-            const cellText = Utils.GetHtmlCode(this.Meta.Html, [this.Entity]);
-            this.Element.innerHTML = cellText;
+            if (this.Element != null) {
+                const cellText = Utils.GetHtmlCode(this.Meta.Html, [this.Entity]) ?? string.Empty;
+                this.Element.innerHTML = cellText;
+            }
             const allComPolicies = this.Meta.Id.trim() === string.Empty
                 ? this.EditForm.GetElementPolicies(this.Meta.Children.map(x => x.Id), Utils.ComponentId)
                 : [];
+            // @ts-ignore
             this.SplitChild(this.Element.children, allComPolicies, section);
             if (this.Meta.Javascript.trim() !== string.Empty) {
                 try {
                     const fn = new Function(this.Meta.Javascript);
-                    const obj = fn.call(null, EditForm);
+                    const obj = fn.call(null, this.EditForm);
                     for (const prop in obj) {
                         this[prop] = obj[prop].bind(this);
-                    }
-                    if (this.useEffect !== null) {
-                        this.useEffect();
                     }
                 } catch (e) {
                     console.log(e.message);
@@ -69,15 +69,15 @@ export class Section extends EditableComponent {
             return;
         }
         if (this.Meta.IsDropDown) {
-            Html.Take(this.Element).ClassName("dd-wrap").Style("position: relative;").TabIndex(-1).Event(EventType.FocusOut, hideDetailIfButtonOnly)
-                .Button.ClassName("btn ribbon").IText(this.Meta.Label).Event(EventType.Click, dropdownBtnClick)
+            Html.Take(this.Element).ClassName("dd-wrap").Style("position: relative;").TabIndex(-1).Event(EventType.FocusOut, this.HideDetailIfButtonOnly)
+                .Button.ClassName("btn ribbon").IText(this.Meta.Label).Event(EventType.Click, this.DropdownBtnClick)
                 .Span.Text("▼").EndOf(ElementType.button).Div.ClassName("dropdown").TabIndex(-1).Render();
             if (this.Meta.IsCollapsible === true) {
                 Html.Instance.Style("display: none;");
             }
             this.innerEle = Html.Context;
-            this._chevron = this.innerEle.previousElementSibling.firstElementChild;
-            this.Element = Html.Context;
+            this._chevron = this.innerEle?.previousElementSibling?.firstElementChild;
+            this.Element = Html.EontRxt;
         }
         if (this.Meta.Responsive && !this.Meta.IsTab || this.Meta.IsDropDown) {
             this.RenderComponentResponsive(this.Meta);
@@ -91,14 +91,14 @@ export class Section extends EditableComponent {
      * 
      * @param {HTMLElement[]} hTMLElements 
      * @param {FeaturePolicy[]} allComPolicies 
-     * @param {Section} section 
+     * @param {string} section 
      * @returns 
      */
     SplitChild(hTMLElements, allComPolicies, section) {
         for (const eleChild of hTMLElements) {
             eleChild.setAttribute(section, "");
             if (eleChild.dataset.name !== undefined) {
-                const com = new Section(ElementType.div);
+                const com = new Section(ElementType.div, null);
                 com.Element = eleChild;
                 const ui = this.Meta.Children.find(x => x.FieldName === eleChild.dataset.name);
                 eleChild.removeAttribute("data-name");
@@ -113,37 +113,38 @@ export class Section extends EditableComponent {
                     continue;
                 }
 
-                const component = ComponentFactory.GetComponent(ui, EditForm);
-                if (!component) return;
-                const childComponent = component instanceof EditableComponent ? component : null;
-                if (childComponent instanceof ListView) {
-                    this.EditForm.ListViews.push(childComponent);
+                const component = ComponentFactory.GetComponent(ui, this.EditForm);
+                if (component == null) return;
+                // @ts-ignore
+                if (component instanceof ListView) {
+                    // @ts-ignore
+                    this.EditForm.ListViews.push(component);
                 }
-                childComponent.ParentElement = eleChild;
-                this.AddChild(childComponent);
-                if (childComponent instanceof EditableComponent) {
-                    childComponent.Disabled = ui.Disabled || Disabled || !writePermission || EditForm.IsLock || childComponent.Disabled;
+                component.ParentElement = eleChild;
+                this.AddChild(component);
+                if (component instanceof EditableComponent) {
+                    component.Disabled = ui.Disabled || this.Disabled || !writePermission || component.Disabled;
                 }
-                if (childComponent.Element) {
+                if (component.Element) {
                     if (ui.ChildStyle) {
                         const current = Html.Context;
-                        Html.Take(childComponent.Element).Style(ui.ChildStyle);
+                        Html.Take(component.Element).Style(ui.ChildStyle);
                         Html.Take(current);
                     }
                     if (ui.ClassName) {
-                        childComponent.Element.classList.add(ui.ClassName);
+                        component.Element.classList.add(ui.ClassName);
                     }
 
                     if (ui.Row === 1) {
-                        childComponent.ParentElement.parentElement.classList.add("inline-label");
+                        component.ParentElement?.parentElement?.classList?.add("inline-label");
                     }
 
                     if (Client.SystemRole) {
-                        childComponent.Element.addEventListener(EventType.ContextMenu, (e) => this.EditForm.SysConfigMenu(e, ui, Meta, null));
+                        component.Element.addEventListener(EventType.ContextMenu, (e) => this.EditForm.SysConfigMenu(e, ui, Meta, null));
                     }
                 }
                 if (ui.Focus) {
-                    childComponent.Focus();
+                    component.Focus();
                 }
             }
             if (eleChild.dataset.click !== undefined) {
@@ -251,25 +252,6 @@ export class Section extends EditableComponent {
     }
 
     /**
-     * Applies styles and classes to child components based on their configuration.
-     * @param {EditableComponent} component - The component to style.
-     * @param {Component} ui - The UI configuration object for the component.
-     */
-    ApplyStyles(component, ui) {
-        if (ui.ChildStyle) {
-            component.Element.style.cssText += ui.ChildStyle;
-        }
-        if (ui.ClassName) {
-            component.Element.classList.add(ui.ClassName);
-        }
-
-        if (ui.Row === 1) {
-            component.ParentElement.parentElement.classList.add('inline-label');
-        }
-    }
-
-
-    /**
      * Renders child components according to metadata.
      * @param {Component} group - The group of components to render.
      */
@@ -278,45 +260,13 @@ export class Section extends EditableComponent {
             return;
         }
 
-        group.Children.sort((a, b) => a.order - b.order).forEach(child => {
-            if (child.isTab) {
+        group.Children.sort((a, b) => a.Order - b.Order).forEach(child => {
+            if (child.IsTab) {
                 Section.RenderTabGroup(this, child);
             } else {
                 Section.RenderSection(this, child);
             }
         });
-    }
-
-    /**
-     * Updates the display and enable state of the section based on expressions.
-     * @param {boolean} force - Force the update even if conditions haven't changed.
-     * @param {boolean} [dirty] - Flag indicating if the update is due to a dirty state.
-     */
-    PrepareUpdateView(force, dirty = false) {
-        if (force || dirty) {
-            this.ToggleShow(this.Meta?.ShowExp);
-            this.ToggleDisabled(this.Meta?.DisabledExp);
-        }
-    }
-
-    /**
-     * Toggles the display of the section based on a given expression.
-     * @param {Function} showExp - A function returning a boolean to indicate visibility.
-     */
-    ToggleShow(showExp) {
-        if (showExp && typeof showExp === 'function') {
-            this.Element.style.display = showExp() ? '' : 'none';
-        }
-    }
-
-    /**
-     * Toggles the enabled state of the section based on a given expression.
-     * @param {Function} disabledExp - A function returning a boolean to indicate disabled state.
-     */
-    ToggleDisabled(disabledExp) {
-        if (disabledExp && typeof disabledExp === 'function') {
-            this.Element.disabled = disabledExp();
-        }
     }
 
     /**
@@ -327,20 +277,141 @@ export class Section extends EditableComponent {
     ChangeLabel(event, component) {
         clearTimeout(this._imeout);
         this._imeout = setTimeout(() => {
-            this.SubmitLabelChanged('Component', component.Id, event.target.textContent);
+            // @ts-ignore
+            this.SubmitLabelChanged('Component', component.Id, event?.target?.textContent);
         }, 1000);
     }
 
+    /**
+     * @param {string} table
+     * @param {any} id
+     * @param {any} label
+     */
     SubmitLabelChanged(table, id, label) {
         var patch = new PatchVM();
         patch.Table = table;
         patch.Changes = [
+            // @ts-ignore
             { Field: this.IdField, Value: id },
+            // @ts-ignore
             { Field: 'Label', Value: label },
         ];
-        Client.Instance.PatchAsync(patch).Done();
+        Client.Instance.PatchAsync(patch).then(x => {
+            console.log('patch success');
+        });
     }
 
+    static _imeout1;
 
+    /**
+     * Changes the label of a component group.
+     * @static
+     * @param {Event} e - The event object.
+     * @param {Component} com - The component instance.
+     */
+    static ChangeComponentGroupLabel(e, com) {
+        window.clearTimeout(Section._imeout1);
+        Section._imeout1 = window.setTimeout(() => {
+            SubmitLabelChanged('Meta', com.id, e.target.textContent.decodeSpecialChar());
+        }, 1000);
+    }
 
+    /**
+     * Renders components responsive to the current view.
+     * @param {Component} group - The component group to render.
+     */
+    RenderComponentResponsive(group) {
+        if (!group.Children) {
+            return;
+        }
+
+        const allComPolicies = this.EditForm.GetElementPolicies(group.Children.map(x => x.Id), Utils.ComponentId);
+        const innerCol = this.EditForm.GetInnerColumn(group);
+        
+        if (innerCol > 0) {
+            Html.Take(this.Element).ClassName('grid').Style(`grid-template-columns: repeat(${innerCol}, 1fr)`);
+        }
+
+        let column = 0;
+        group.Children.sort((a, b) => a.Order - b.Order).forEach(ui => column = this.RenderCom(ui, column, allComPolicies));
+    }
+
+    /**
+     * 
+     * @param {Component} ui 
+     * @param {Number} column
+     * @param {FeaturePolicy[]} allComPolicies
+     * @returns 
+     */
+    RenderCom(ui, column, allComPolicies) {
+        if (ui.Hidden) {
+            return;
+        }
+
+        const comPolicies = allComPolicies.filter(x => x.RecordId === ui.Id);
+        const readPermission = !ui.IsPrivate || comPolicies.every(x => x.CanRead);
+        const writePermission = !ui.IsPrivate || comPolicies.every(x => x.CanWrite);
+
+        if (!readPermission) {
+            return;
+        }
+
+        Html.Take(this.Element);
+        const colSpan = ui.Column || 2;
+        ui.Label = ui.Label || '';
+
+        let label = null;
+        if (ui.ShowLabel) {
+            Html.Div.IText(ui.Label).TextAlign(column === 0 ? 'left' : 'right').Render();
+            label = Html.Context;
+            Html.End.Render();
+        }
+
+        const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
+        if (childCom === null) return;
+
+        if (childCom instanceof ListView) {
+            this.EditForm.ListViews.push(childCom);
+        }
+        this.AddChild(childCom);
+        if (childCom instanceof EditableComponent) {
+            childCom.Disabled = ui.disabled || this.disabled || !writePermission || EditForm.isLock || childCom.disabled;
+        }
+
+        if (childCom.Element) {
+            if (ui.ChildStyle) {
+                const current = Html.Context;
+                Html.Take(childCom.Element).Style(ui.ChildStyle);
+                Html.Take(current);
+            }
+            if (ui.ClassName) {
+                childComponent.element.classList.add(ui.ClassName);
+            }
+
+            if (ui.Row === 1) {
+                childComponent.parentElement.parentElement.classList.add('inline-label');
+            }
+
+            if (Client.systemRole) {
+                childComponent.element.addEventListener('contextmenu', e => EditForm.sysConfigMenu(e, ui, group, childComponent));
+            }
+        }
+        if (ui.Focus) {
+            childComponent.focus();
+        }
+
+        if (colSpan <= innerCol) {
+            if (label && label.nextElementSibling && colSpan !== 2) {
+                label.nextElementSibling.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
+            } else if (childComponent.element) {
+                childComponent.element.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
+            }
+            column += colSpan;
+        } else {
+            column = 0;
+        }
+        if (column === innerCol) {
+            column = 0;
+        }
+    }
 }
