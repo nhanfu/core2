@@ -5,8 +5,11 @@ import { ValidationRule } from "./models/validationRule.js";
 import EventType from "./models/eventType.js";
 import { ComponentType } from "./models/componentType.js";
 import { Uuid7 } from "./structs/uuidv7.js";
+import { Html } from "./utils/html.js";
 
 /**
+ * @typedef {import('./editForm.js').EditForm} EditForm
+ * @typedef {import('./tabEditor.js').TabEditor} TabEditor
  * @typedef {import('./models/action.js').Action} Action
  * @typedef {import('./models/component.js').Component} Component
  * @typedef {import('./models/observable.js').default} ObservableArgs
@@ -15,7 +18,6 @@ import { Uuid7 } from "./structs/uuidv7.js";
 
 /**
  * Represents an editable component in the application.
- * @typedef {import('./editForm.js').EditForm} EditForm
  * @class
  * The `EditableComponent` class provides functionality for managing and interacting with editable components in the application.
  * It handles the parent-child relationships, event handling, and disposal of the component.
@@ -161,7 +163,7 @@ export default class EditableComponent {
     /** @type {Action} Handle toggle event. */
     OnToggle = new Action();
     #rootTab;
-    /** @type {EditableComponent} Handle toggle event. */
+    /** @type {TabEditor} Handle toggle event. */
     get TabEditor() {
         if (this.#rootTab != null) return this.#rootTab;
         this.#rootTab = this.FindClosest('TabEditor', x => !x.Popup);
@@ -221,12 +223,9 @@ export default class EditableComponent {
     PopulateDirty = true;
     get CacheName() {
         var exp = Meta?.CacheName;
-        if (exp.IsNullOrWhiteSpace()) return null;
+        if (!exp) return null;
         var fn = Utils.IsFunction(exp);
-        if (fn) {
-            return fn.call(null, this);
-        }
-        return exp;
+        return fn ? fn.call(null, this) : exp;
     }
     get QueueName() {
         return this.Meta?.QueueName;
@@ -501,6 +500,7 @@ export default class EditableComponent {
         }
         return null;
     }
+    /** @type {boolean} */
     #show;
     get Show() {
         return this.#show;
@@ -659,6 +659,17 @@ export default class EditableComponent {
         })).Where(filter);
     }
     /**
+     * 
+     * @param {(ele: HTMLElement) => boolean} predicate 
+     * @returns {EditableComponent[]}
+     */
+    FindActiveComponent(predicate) {
+        const showPredicate = (/** @type {HTMLElement} */ e) => {
+            return !e.Hidden() && predicate(e);
+        }
+        return this.Children.Where(showPredicate).Flattern(x => showPredicate(x) ? x.Children : null);
+    }
+    /**
      * Returns the first element of the collection that satisfies the specified condition, or null if no such element is found.
      * @param {(item: EditableComponent) => boolean} filter - The condition to check for each element.
      * @returns {EditableComponent|null} The first element that satisfies the condition, or null if no such element is found.
@@ -667,16 +678,25 @@ export default class EditableComponent {
         return this.Children.Flattern(x => x.Children).FirstOrDefault(filter);
     }
 
+    static TabContainer = document.getElementById("tab-content");
+    /**
+     * 
+     * @param {EditableComponent} child 
+     * @param {Number} index 
+     * @param {(e: EditableComponent) => boolean | string} showExp 
+     * @param {(e: EditableComponent) => boolean | string} disabledExp 
+     * @returns 
+     */
     AddChild(child, index = null, showExp = null, disabledExp = null) {
         if (child.IsSingleton) {
             child.Render();
             return;
         }
         if (!child.ParentElement) {
-            if (child instanceof TabEditor && child.Popup) {
-                child.ParentElement = this.Element || TabEditor.TabContainer;
-            } else if (child instanceof TabEditor) {
-                child.ParentElement = TabEditor.TabContainer;
+            if (child.Popup) {
+                child.ParentElement = this.Element || EditableComponent.TabContainer;
+            } else if (!child.Popup) {
+                child.ParentElement = EditableComponent.TabContainer;
             } else {
                 child.ParentElement = Html.Context;
             }

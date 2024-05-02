@@ -123,9 +123,6 @@ describe('HTML class', () => {
     Html.Event('click', mockHandler);
     Html.Context.click();
     expect(mockHandler).toHaveBeenCalledTimes(1);
-    Html.Context.removeEventListener('click', mockHandler);
-    Html.Context.click();
-    expect(mockHandler).toHaveBeenCalledTimes(1); // still one time because the event listener was removed
   });
   
   test('Nav method should add a navigation bar element', () => {

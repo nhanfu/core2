@@ -1,103 +1,103 @@
 /**
  * Enumeration for key codes.
  */
-export const KeyCodeEnum = {
-    Backspace: 8,
-    Tab: 9,
-    Enter: 13,
-    Shift: 16,
-    Ctrl: 17,
-    Alt: 18,
-    PauseBreak: 19,
-    CapsLock: 20,
-    Escape: 27,
-    PageUp: 33,
-    PageDown: 34,
-    End: 35,
-    Home: 36,
-    LeftArrow: 37,
-    UpArrow: 38,
-    RightArrow: 39,
-    DownArrow: 40,
-    Insert: 45,
-    Delete: 46,
-    Zero: 48,
-    One: 49,
-    Two: 50,
-    Three: 51,
-    Four: 52,
-    Five: 53,
-    Six: 54,
-    Seven: 55,
-    Eight: 56,
-    Nine: 57,
-    A: 65,
-    B: 66,
-    C: 67,
-    D: 68,
-    E: 69,
-    F: 70,
-    G: 71,
-    H: 72,
-    I: 73,
-    J: 74,
-    K: 75,
-    L: 76,
-    M: 77,
-    N: 78,
-    O: 79,
-    P: 80,
-    Q: 81,
-    R: 82,
-    S: 83,
-    T: 84,
-    U: 85,
-    V: 86,
-    W: 87,
-    X: 88,
-    Y: 89,
-    Z: 90,
-    LeftWindowKey: 91,
-    RightWindowKey: 92,
-    SelectKey: 93,
-    Numpad0: 96,
-    Numpad1: 97,
-    Numpad2: 98,
-    Numpad3: 99,
-    Numpad4: 100,
-    Numpad5: 101,
-    Numpad6: 102,
-    Numpad7: 103,
-    Numpad8: 104,
-    Numpad9: 105,
-    Multiply: 106,
-    Add: 107,
-    Subtract: 109,
-    DecimalPoint: 110,
-    Divide: 111,
-    F1: 112,
-    F2: 113,
-    F3: 114,
-    F4: 115,
-    F5: 116,
-    F6: 117,
-    F7: 118,
-    F8: 119,
-    F9: 120,
-    F10: 121,
-    F11: 122,
-    F12: 123,
-    NumLock: 144,
-    ScrollLock: 145,
-    SemiColon: 186,
-    EqualSign: 187,
-    Comma: 188,
-    Dash: 189,
-    Period: 190,
-    ForwardSlash: 191,
-    GraveAccent: 192,
-    OpenBracket: 219,
-    BackSlash: 220,
-    CloseBraket: 221,
-    SingleQuote: 222
+export class KeyCodeEnum {
+    static Backspace = 8;
+    static Tab = 9;
+    static Enter = 13;
+    static Shift = 16;
+    static Ctrl = 17;
+    static Alt = 18;
+    static PauseBreak = 19;
+    static CapsLock = 20;
+    static Escape = 27;
+    static PageUp = 33;
+    static PageDown = 34;
+    static End = 35;
+    static Home = 36;
+    static LeftArrow = 37;
+    static UpArrow = 38;
+    static RightArrow = 39;
+    static DownArrow = 40;
+    static Insert = 45;
+    static Delete = 46;
+    static Zero = 48;
+    static One = 49;
+    static Two = 50;
+    static Three = 51;
+    static Four = 52;
+    static Five = 53;
+    static Six = 54;
+    static Seven = 55;
+    static Eight = 56;
+    static Nine = 57;
+    static A = 65;
+    static B = 66;
+    static C = 67;
+    static D = 68;
+    static E = 69;
+    static F = 70;
+    static G = 71;
+    static H = 72;
+    static I = 73;
+    static J = 74;
+    static K = 75;
+    static L = 76;
+    static M = 77;
+    static N = 78;
+    static O = 79;
+    static P = 80;
+    static Q = 81;
+    static R = 82;
+    static S = 83;
+    static T = 84;
+    static U = 85;
+    static V = 86;
+    static W = 87;
+    static X = 88;
+    static Y = 89;
+    static Z = 90;
+    static LeftWindowKey = 91;
+    static RightWindowKey = 92;
+    static SelectKey = 93;
+    static Numpad0 = 96;
+    static Numpad1 = 97;
+    static Numpad2 = 98;
+    static Numpad3 = 99;
+    static Numpad4 = 100;
+    static Numpad5 = 101;
+    static Numpad6 = 102;
+    static Numpad7 = 103;
+    static Numpad8 = 104;
+    static Numpad9 = 105;
+    static Multiply = 106;
+    static Add = 107;
+    static Subtract = 109;
+    static DecimalPoint = 110;
+    static Divide = 111;
+    static F1 = 112;
+    static F2 = 113;
+    static F3 = 114;
+    static F4 = 115;
+    static F5 = 116;
+    static F6 = 117;
+    static F7 = 118;
+    static F8 = 119;
+    static F9 = 120;
+    static F10 = 121;
+    static F11 = 122;
+    static F12 = 123;
+    static NumLock = 144;
+    static ScrollLock = 145;
+    static SemiColon = 186;
+    static EqualSign = 187;
+    static Comma = 188;
+    static Dash = 189;
+    static Period = 190;
+    static ForwardSlash = 191;
+    static GraveAccent = 192;
+    static OpenBracket = 219;
+    static BackSlash = 220;
+    static CloseBraket = 221;
+    static SingleQuote = 222
 };

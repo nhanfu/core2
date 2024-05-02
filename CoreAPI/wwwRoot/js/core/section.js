@@ -29,19 +29,19 @@ export class Section extends EditableComponent {
         if (this.elementType == null && this.Element != null) {
             this.elementType = this.Element?.tagName?.toLowerCase();
         } else {
-            Html.Take(this.EarentElement).Add(this.elementType);
-            this.Element = Html.EontRxt;
+            Html.Take(this.ParentElement).Add(this.elementType);
+            this.Element = Html.Context;
         }
-        this.Element.id = this.Meta.Id;
         if (this.Meta === null) return;
-        if (this.Meta.Html.trim() !== "") {
+        this.Element.id = this.Meta.Id;
+        if (this.Meta.Html) {
             const cssContent = this.Meta.Css;
             const hard = this.Meta.Id;
-            const section = (this.Meta.FieldName.toLowerCase() + hard).toLowerCase();
-            if (cssContent.trim() !== "") {
+            const section = (this.Meta.FieldName?.toLowerCase() ?? string.Empty) + hard;
+            if (cssContent) {
                 if (!document.head.querySelector("#" + section)) {
                     const style = document.createElement("style");
-                    style.id = section;
+                    style.id = section?.toLowerCase();
                     style.appendChild(document.createTextNode(cssContent));
                     document.head.appendChild(style);
                 }
@@ -50,12 +50,12 @@ export class Section extends EditableComponent {
                 const cellText = Utils.GetHtmlCode(this.Meta.Html, [this.Entity]) ?? string.Empty;
                 this.Element.innerHTML = cellText;
             }
-            const allComPolicies = this.Meta.Id.trim() === string.Empty
-                ? this.EditForm.GetElementPolicies(this.Meta.Children.map(x => x.Id), Utils.ComponentId)
+            const allComPolicies = !this.Meta.Id && this.EditForm
+                ? this.EditForm.GetElementPolicies(this.Meta.Children.map(x => x.Id).concat([...this.Meta.Id]), Utils.ComponentId)
                 : [];
             // @ts-ignore
             this.SplitChild(this.Element.children, allComPolicies, section);
-            if (this.Meta.Javascript.trim() !== string.Empty) {
+            if (this.Meta.Javascript) {
                 try {
                     const fn = new Function(this.Meta.Javascript);
                     const obj = fn.call(null, this.EditForm);

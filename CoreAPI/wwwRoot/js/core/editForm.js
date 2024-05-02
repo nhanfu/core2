@@ -6,8 +6,6 @@ import { Html } from "./utils/html.js";
 import { Client } from "./clients/client.js";
 import { string } from "./utils/ext.js";
 import { Component } from "./models/component.js";
-import { KeyCodeEnum } from "./models/keycode.js";
-import { SqlViewModel } from "./models/sqlViewModel.js";
 import { PatchVM } from "./models/patch.js";
 import { Message } from "./utils/message.js";
 import { Action } from "./models/action.js";

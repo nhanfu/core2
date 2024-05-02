@@ -1,5 +1,6 @@
 import { Datepicker } from '../datepicker'; // Adjust the path according to your project structure
 import { Component } from '../models/component';
+import * as a from '../utils/ext.js';
 
 describe('Datepicker', () => {
     /** @type {Datepicker} */
@@ -15,7 +16,7 @@ describe('Datepicker', () => {
         meta = { FormatData: '', Precision: 7, FormatEntity: (/** @type {Date} */ val) => { 
             var month = val.getMonth() + 1;
             var day = val.getDate();
-            return `${day < 10 ? '0' + day : day}/${month < 10 ? '0' + month : month}/${val.getFullYear()}`} 
+            return `${day.leadingDigit()}/${month.leadingDigit()}/${val.getFullYear()}`} 
         };
         datepicker = new Datepicker(meta, container);
     });

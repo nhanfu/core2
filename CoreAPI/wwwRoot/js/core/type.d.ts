@@ -1,3 +1,5 @@
+import { OutOfViewPort } from "./utils/outOfViewPort.js";
+
 interface Array<T> {
   Any(predicate?: (item: T) => boolean): boolean;
   Contains(item: T): boolean;
@@ -88,9 +90,123 @@ interface Date {
   addDays(days: Number): Date;
   addMonths(months: Number): Date;
   addYears(years: Number): Date;
+  format(str: string): string;
 }
 
 interface HTMLElement {
   HasClass(cls: string): boolean;
   ReplaceClass(cls: string, byCls: string): void;
+  /**
+     * Finds the closest parent that matches the given selector.
+     * @param selector CSS selector to match parents against.
+     * @returns The closest matching element or null if none found.
+     */
+  Closest(selector: string): HTMLElement | null;
+
+  /**
+   * Inserts a node at the beginning of the current element.
+   * @param child Element to prepend.
+   */
+  Prepend(child: HTMLElement): void;
+
+  /**
+   * Calculates the full height of an element, including margins.
+   * @returns The total height in pixels.
+   */
+  GetFullHeight(): number;
+
+  /**
+   * Sets the display style to empty, effectively showing the element.
+   */
+  Show(): void;
+
+  /**
+   * Gets the computed style of the element.
+   * @returns The computed style of the element.
+   */
+  GetComputedStyle(): CSSStyleDeclaration;
+
+  /**
+   * Sets the display style to 'none', hiding the element.
+   */
+  Hide(): void;
+
+  /**
+   * Checks if the element is hidden.
+   * @returns True if the element is hidden; otherwise, false.
+   */
+  Hidden(): boolean;
+
+  /**
+   * Determines if the element is outside the viewport.
+   * @returns An object indicating which sides are out of the viewport.
+   */
+  OutOfViewport(): OutOfViewPort;
+
+  /**
+   * Filters child elements based on a predicate.
+   * @param predicate A function to test each element.
+   * @returns An array of HTMLElements that match the predicate.
+   */
+  FilterElement(predicate: (element: HTMLElement) => boolean): HTMLElement[];
+}
+
+interface Number {
+  leadingDigit(): string;
+}
+
+interface Event {
+  /**
+   * Gets the top position (Y-coordinate) of the event.
+   * @returns The Y-coordinate as a number.
+   */
+  Top(): number;
+
+  /**
+   * Gets the left position (X-coordinate) of the event.
+   * @returns The X-coordinate as a number.
+   */
+  Left(): number;
+
+  /**
+   * Gets the keyCode from the event, returning -1 if undefined.
+   * @returns The keyCode as a number, or -1 if undefined.
+   */
+  KeyCode(): number;
+
+  /**
+   * Attempts to parse keyCode to an enum value.
+   * @returns The parsed KeyCodeEnum value or null if parsing fails or keyCode is undefined.
+   */
+  KeyCodeEnum(): KeyCodeEnum | null;
+
+  /**
+   * Checks if the Shift key was pressed during the event.
+   * @returns True if the Shift key was pressed, false otherwise.
+   */
+  ShiftKey(): boolean;
+
+  /**
+   * Detects if the user pressed the Ctrl or Command key while the event occurs.
+   * @returns True if the Ctrl or Meta key was pressed, false otherwise.
+   */
+  CtrlOrMetaKey(): boolean;
+
+  /**
+   * Checks if the Alt key was pressed during the event.
+   * @returns True if the Alt key was pressed, false otherwise.
+   */
+  AltKey(): boolean;
+
+  /**
+   * Gets the checked status from the target element of the event, assuming the target is a checkbox input element.
+   * @returns True if the target element is checked, false otherwise.
+   */
+  GetChecked(): boolean;
+
+  /**
+   * Gets the input text from the target element of the event, assuming the target is an input element.
+   * @returns The value of the input text if the target is an input element, an empty string otherwise.
+   */
+  GetInputText(): string;
 }
