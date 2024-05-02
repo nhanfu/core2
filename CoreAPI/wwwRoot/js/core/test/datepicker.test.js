@@ -12,7 +12,11 @@ describe('Datepicker', () => {
     beforeEach(() => {
         document.body.innerHTML = `<div id="test-container"></div>`;
         container = document.getElementById('test-container');
-        meta = { FormatData: '', Precision: 7 };
+        meta = { FormatData: '', Precision: 7, FormatEntity: (/** @type {Date} */ val) => { 
+            var month = val.getMonth() + 1;
+            var day = val.getDate();
+            return `${day < 10 ? '0' + day : day}/${month < 10 ? '0' + month : month}/${val.getFullYear()}`} 
+        };
         datepicker = new Datepicker(meta, container);
     });
 
@@ -28,14 +32,14 @@ describe('Datepicker', () => {
 
     test('should render input element within the container', () => {
         datepicker.Render();
-        expect(container.querySelector('input')).toBeInTheDocument();
+        expect(container.querySelector('input') != null).toBe(true);
     });
 
     test('should set value correctly', () => {
         const testDate = new Date(2023, 3, 26); // April 26, 2023
         datepicker.Value = testDate;
         expect(datepicker.Value).toEqual(testDate);
-        expect(datepicker.Input.value).toBe(testDate.toLocaleDateString(datepicker.InitFormat));
+        expect(datepicker.Input.value).toBe('26/04/2023');
     });
 
     test('should handle disabled state correctly', () => {
@@ -46,8 +50,8 @@ describe('Datepicker', () => {
 
     test('should remove DOM elements when RemoveDOM is called', () => {
         datepicker.Render();
-        datepicker.RemoveDOM();
-        expect(container).toBeEmptyDOMElement();
+        datepicker.Dispose();
+        expect(container.children.length).toBe(0);
     });
 
     // Additional tests can include user interaction simulations, time adjustments, etc.

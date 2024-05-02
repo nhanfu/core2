@@ -9,6 +9,7 @@ import EventType from "./models/eventType.js";
 import { PatchVM } from "./models/patch.js";
 import { Client } from "./clients/client.js";
 import { Component } from "./models/component.js";
+import { ListView } from "./listView.js";
 
 export class Section extends EditableComponent {
     /**
@@ -200,8 +201,8 @@ export class Section extends EditableComponent {
     }
 
     /**
- * Renders the dropdown elements and handles their interactions.
- */
+     * Renders the dropdown elements and handles their interactions.
+     */
     RenderDropDown() {
         const button = document.createElement('button');
         button.className = 'btn ribbon';
@@ -327,7 +328,7 @@ export class Section extends EditableComponent {
 
         const allComPolicies = this.EditForm.GetElementPolicies(group.Children.map(x => x.Id), Utils.ComponentId);
         const innerCol = this.EditForm.GetInnerColumn(group);
-        
+
         if (innerCol > 0) {
             Html.Take(this.Element).ClassName('grid').Style(`grid-template-columns: repeat(${innerCol}, 1fr)`);
         }
@@ -375,7 +376,7 @@ export class Section extends EditableComponent {
         }
         this.AddChild(childCom);
         if (childCom instanceof EditableComponent) {
-            childCom.Disabled = ui.disabled || this.disabled || !writePermission || EditForm.isLock || childCom.disabled;
+            childCom.Disabled = ui.Disabled || this.Disabled || !writePermission || this.EditForm.IsLock || childCom.Disabled;
         }
 
         if (childCom.Element) {
@@ -414,4 +415,105 @@ export class Section extends EditableComponent {
             column = 0;
         }
     }
+
+    /**
+ * Renders a component within a group, setting up the necessary HTML structure.
+ * @param {Component} group - The component group to render.
+ */
+    RenderComponent(group) {
+        if (!group.Children) {
+            return;
+        }
+        Html.Table.ClassName("ui-layout").TBody.TRow.Render();
+        let column = 0;
+        const AllComPolicies = EditForm.GetElementPolicies(group.Children.map(x => x.Id), Utils.ComponentId);
+        group.Children.sort((a, b) => a.Order - b.Order).forEach(ui => {
+            if (ui.Hidden) {
+                return;
+            }
+
+            const ComPolicies = AllComPolicies.filter(x => x.RecordId === ui.Id);
+            const ReadPermission = !ui.IsPrivate || ComPolicies.every(x => x.CanRead);
+            const WritePermission = !ui.IsPrivate || ComPolicies.every(x => x.CanWrite);
+            if (!ReadPermission) {
+                return;
+            }
+
+            const ColSpan = ui.Column || 2;
+            ui.Label = ui.Label || '';
+            if (ui.ShowLabel) {
+                Html.TData.Visibility(ui.Visibility).Div.IText(ui.Label)
+                    .TextAlign(column === 0 ? 'left' : 'right');
+                if (Client.SystemRole) {
+                    Html.Attr("contenteditable", "true");
+                    Html.Event("input", e => this.ChangeLabel(e, ui));
+                    Html.Event("dblclick", e => this.ComponentProperties(ui));
+                }
+                Html.EndOf("td").TData.Visibility(ui.Visibility).ColSpan(ColSpan - 1).Render();
+            } else {
+                Html.TData.Visibility(ui.Visibility).ColSpan(ColSpan).ClassName("text-left")
+                    .Style("padding-left: 0;").Render();
+            }
+
+            if (ui.Style.hasAnyChar()) {
+                Html.Style(ui.Style);
+            }
+
+            if (ui.Width.hasAnyChar()) {
+                Html.Width(ui.Width);
+            }
+            const childCom = ComponentFactory.GetComponent(ui, EditForm);
+            if (childCom === null) return;
+
+            if (childCom instanceof ListView) {
+                this.EditForm.ListViews.push(childCom);
+            }
+            this.AddChild(childCom);
+            if (childCom instanceof EditableComponent) {
+                childCom.Disabled = ui.Disabled || this.Disabled || !WritePermission || EditForm.IsLock || childCom.Disabled;
+            }
+            if (childCom.Element) {
+                if (ui.ChildStyle) {
+                    const Current = Html.Context;
+                    Html.Take(childCom.Element).Style(ui.ChildStyle);
+                    Html.Take(Current);
+                }
+                if (ui.ClassName) {
+                    childCom.Element.classList.add(ui.ClassName);
+                }
+
+                if (ui.Row === 1) {
+                    childCom.ParentElement.ParentElement.classList.add("inline-label");
+                }
+
+                if (Client.SystemRole) {
+                    childCom.Element.addEventListener("contextmenu", e => EditForm.SysConfigMenu(e, ui, group, childCom));
+                }
+            }
+            if (ui.Focus) {
+                childCom.Focus();
+            }
+
+            Html.EndOf("td");
+            if (ui.Offset != null && ui.Offset > 0) {
+                Html.TData.ColSpan(ui.Offset).End.Render();
+                column += ui.Offset;
+            }
+            column += ColSpan;
+            if (column === EditForm.GetInnerColumn(group)) {
+                column = 0;
+                Html.EndOf("tr").TRow.Render();
+            }
+        });
+    }
+}
+
+export class ListViewSection extends ListView {
+    /** @type {ListView} */
+    ListView;
+    Render()
+        {
+            this.ListView = this.Parent;
+            base.Render();
+        }
 }

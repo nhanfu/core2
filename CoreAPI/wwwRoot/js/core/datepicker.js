@@ -1,6 +1,8 @@
 import EditableComponent from "./editableComponent.js";
 import ObservableArgs from "./models/observable.js";
+import { string } from "./utils/ext.js";
 import { Html } from "./utils/html.js";
+import { Utils } from "./utils/utils.js";
 
 export class Datepicker extends EditableComponent {
     static HHmmFormat = "00";
@@ -8,7 +10,7 @@ export class Datepicker extends EditableComponent {
         "dd/MM/yyyy - HH:mm", "dd/MM/yyyy - HH:m", "dd/MM/yyyy - h:mm",
         "dd/MM/yyyy - HH:", "dd/MM/yyyy - h:", "dd/MM/yyyy - h:m", "dd/MM/yyyy - HH", "dd/MM/yyyy - h", "dd/MM/yyyy", "ddMMyyyy", "d/M/yyyy", "dMyyyy", "dd/MM/yy", "ddMMyy", "d/M", "dM", "dd/MM", "ddMM"
     ];
-    static options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    static options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' };
     static calendar = null;
     static renderAwaiter = null;
     static closeAwaiter = null;
@@ -56,12 +58,17 @@ export class Datepicker extends EditableComponent {
         this.value = value;
         if (this.value) {
             const selectionEnd = this.Input.selectionEnd;
-            this.Input.value = this.value !== new Date("0001-01-01T00:00:00Z") ? this.value.toLocaleDateString('en-US', this.options) : "";
+            var isFn = Utils.IsFunction(this.Meta.FormatEntity);
+            if (isFn) this.Input.value = isFn.call(this, value, this);
+            else {
+                this.Input.value = this.value.getTime() !== new Date("0001-01-01T00:00:00Z").getTime()
+                    ? this.value.toLocaleDateString('en-US', Datepicker.options) : "";
+            }
             this.Input.selectionStart = selectionEnd;
             this.Input.selectionEnd = selectionEnd;
         } else if (!this.nullable) {
             this.value = new Date();
-            this.Input.value = this.value.toLocaleDateString('en-US', this.options);
+            this.Input.value = this.value.toLocaleDateString('en-US', Datepicker.options);
         } else {
             this.Input.value = "";
         }
@@ -416,12 +423,11 @@ export class Datepicker extends EditableComponent {
     }
 
     /**
- * Removes the datepicker and its elements from the DOM.
- */
+     * Removes the datepicker and its elements from the DOM.
+     */
     RemoveDOM() {
-        if (this.Element && this.Element.parentElement) {
-            this.Element.parentElement.removeChild(this.Element);
-        }
+        if (!this.Element?.parentElement) return;
+        this.Element.parentElement.innerHTML = string.Empty;
         this.Element = null;
     }
 
