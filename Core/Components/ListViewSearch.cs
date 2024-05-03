@@ -565,3 +565,4 @@ namespace Core.Components
         public override bool Disabled { get => false; set => _disabled = false; }
     }
 }
+

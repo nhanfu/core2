@@ -1,6 +1,4 @@
-
-
-class Spinner {
+export class Spinner {
     /** @type {Spinner} */
     static _instance = null;
     /** @type {HTMLElement} */
@@ -11,7 +9,8 @@ class Spinner {
     constructor() {
        
     }
-    static init() {
+
+    static Init() {
         if (this._instance !== null) {
             return;
         }
@@ -38,7 +37,7 @@ class Spinner {
         this._backdrop.style.display = "none";
     }
 
-    static appendTo(node, lockScreen = true, autoHide = true, timeout = 7000) {
+    static AppendTo(node, lockScreen = true, autoHide = true, timeout = 7000) {
         if (!this._span) {
             return;
         }
@@ -62,7 +61,7 @@ class Spinner {
         this._hiddenAwaiter = window.setTimeout(() => this.hide(), timeout);
     }
 
-    static hide() {
+    static Hide() {
         if (this._span) {
             this._span.style.display = "none";
             this._backdrop.style.display = "none";

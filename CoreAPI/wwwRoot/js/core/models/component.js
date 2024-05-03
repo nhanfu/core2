@@ -194,6 +194,7 @@ export class Component {
     MonthCount = null;
     IsDoubleLine = null;
     Query = '';
+    /** @type {String | any[]} */
     LocalQuery = '';
     IsRealtime = false;
     RefName = '';

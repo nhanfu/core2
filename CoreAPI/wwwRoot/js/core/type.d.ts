@@ -61,6 +61,12 @@ interface Array<T> {
   DistinctBy(keySelector: (item: T) => K): T[];
   ForEach(action: (item: T) => void): T[];
   ForEachAsync(promise: (item: T) => Promise): Promise<T[]>;
+  /**
+   * Combine items into string
+   * @param mapper 
+   * @param joinner 
+   */
+  Combine(mapper: (item: T) => string, separator: string): string;
 }
 
 interface String {

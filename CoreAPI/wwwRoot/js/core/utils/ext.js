@@ -97,6 +97,14 @@ Array.prototype.ForEach = Array.prototype.forEach;
 Array.prototype.DistinctBy = function(keySelector) {
     return this.GroupBy(keySelector).FirstOrDefault();
 };
+Array.prototype.ForEachAsync = async function (map2Promise){
+    var promises = this.map(map2Promise);
+    await Promise.all(promises);
+    return this;
+};
+Array.prototype.Combine = function (mapper, separator) {
+    return this.map(mapper).join(separator);
+};
 
 String.prototype.ToString = String.prototype.toString;
 String.prototype.HasElement = HasElement;
@@ -157,11 +165,6 @@ Object.prototype.Clear = function () {
 };
 Promise.prototype.Done = Promise.prototype.then;
 Promise.prototype.done = Promise.prototype.then;
-Promise.prototype.ForEachAsync = async function (map2Promise){
-    var promises = this.map(map2Promise);
-    await Promise.all(promises);
-    return this;
-};
 Date.prototype.addSeconds = function (seconds) {
     var date = new Date(this.valueOf());
     date.setSeconds(date.getSeconds() + seconds);
