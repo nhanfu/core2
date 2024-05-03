@@ -547,33 +547,33 @@ export default class EditableComponent {
         }
     }
 
-    updateView(force = false, dirty = null, ...componentNames) {
-        this.prepareUpdateView(force, dirty);
+    UpdateView(force = false, dirty = null, ...componentNames) {
+        this.PrepareUpdateView(force, dirty);
         if (!this.Children || this.Children.length === 0) {
             return;
         }
     
         if (componentNames.length > 0) {
             const coms = this.FilterChildren(Section, x => componentNames.includes(x.name) && x instanceof Section)
-                .flatMap(x => x.filterChildren(EditableComponent, com => !(com instanceof Section)));
+                .flatMap(x => x.FilterChildren(EditableComponent, com => !(com instanceof Section)));
             const coms2 = this.FilterChildren(EditableComponent, x => componentNames.includes(x.name) && !(x instanceof Section));
             const shouldUpdate = [...new Set([...coms, ...coms2].filter(x => !(x instanceof Section)))];
     
             shouldUpdate.forEach(child => {
-                child.prepareUpdateView(force, dirty);
-                child.updateView(force, dirty, ...componentNames);
+                child.PrepareUpdateView(force, dirty);
+                child.UpdateView(force, dirty, ...componentNames);
             });
         } else {
             const shouldUpdate = this.FilterChildren(EditableComponent, x => !(x instanceof Section));
     
             shouldUpdate.forEach(child => {
-                child.prepareUpdateView(force, dirty);
-                child.updateView(force, dirty, ...componentNames);
+                child.PrepareUpdateView(force, dirty);
+                child.UpdateView(force, dirty, ...componentNames);
             });
         }
     }
 
-    prepareUpdateView(force, dirty) {
+    PrepareUpdateView(force, dirty) {
         if (force) {
             this.EmptyRow = false;
         }
