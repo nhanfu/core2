@@ -215,6 +215,23 @@ export class HTML {
         this.Context.appendChild(node);
         return this;
     }
+
+    Button2(text = '', className = 'button info small', icon = '') {
+        Button.Render();
+        if (icon !== '') {
+            Span.ClassName(icon).End.Text(' ').Render();
+        }
+        return ClassName(className).IText(text);
+    }
+
+    Margin(direction, margin, unit = "px") {
+        return Style(`margin-${direction} : ${margin}${unit}`);
+    }
+
+    MarginRem(direction, margin) {
+        return Style(`margin-${direction} : ${margin}rem`);
+    }
+    
     /**
      * Inserts a text node into the current HTML context with language-specific translation.
      * @param {string} langKey - The key used to fetch the translated text.
@@ -270,6 +287,7 @@ export class HTML {
         this.MarkLangProp(this.Context, langKey, "placeholder");
         return this.Attr("placeholder", LangSelect.Get(langKey));
     }
+   
 
     /**
      * Marks a language property on a specified node.

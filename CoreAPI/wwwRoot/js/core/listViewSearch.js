@@ -1,6 +1,13 @@
 
 import { LogicOperation } from './models/enum.js';
 import { Section } from './section.js';
+import EditableComponent from './editableComponent.js';
+import { Html } from "./utils/html.js";
+import { Utils } from "./utils/utils.js";
+import { Client } from "./clients/client.js";
+import EventType from './models/eventType.js';
+import "../fix.js";
+import { Uuid7 } from './structs/uuidv7.js';
 /**
  * @typedef {import('./models/component').Component} Component
  * @typedef {import('./listView').ListView} ListView

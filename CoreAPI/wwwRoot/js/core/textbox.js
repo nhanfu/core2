@@ -232,5 +232,3 @@ export class Textbox extends EditableComponent {
 
 window.Core2 = window.Core || {};
 window.Core2.Textbox = Textbox;
-
-export default Textbox;
