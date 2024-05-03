@@ -564,7 +564,7 @@ export default class EditableComponent {
                 child.UpdateView(force, dirty, ...componentNames);
             });
         } else {
-            const shouldUpdate = this.FilterChildren(EditableComponent, x => !(x instanceof Section));
+            const shouldUpdate = this.FilterChildren(x => !(x instanceof Section));
     
             shouldUpdate.forEach(child => {
                 child.PrepareUpdateView(force, dirty);

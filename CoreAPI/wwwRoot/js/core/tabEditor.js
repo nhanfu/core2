@@ -1,5 +1,6 @@
 import { Client } from "./clients/client.js";
 import { EditForm } from "./editForm.js";
+import { ElementType } from "./models/elementType.js";
 import EventType from "./models/eventType.js";
 import { KeyCodeEnum } from "./models/keycode.js";
 import { Html } from "./utils/html.js";
@@ -44,10 +45,10 @@ export class TabEditor extends EditForm {
 
         if (value) {
             this._li.classList.add(TabEditor.ActiveClass);
-            this._li.querySelector(ElementTypes.a.toString()).classList.add(TabEditor.ActiveClass);
+            this._li.querySelector(ElementType.a).classList.add(TabEditor.ActiveClass);
         } else {
             this._li.classList.remove(TabEditor.ActiveClass);
-            this._li.querySelector(ElementTypes.a.toString()).classList.remove(TabEditor.ActiveClass);
+            this._li.querySelector(ElementType.a).classList.remove(TabEditor.ActiveClass);
         }
     }
 

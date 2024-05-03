@@ -105,6 +105,10 @@ Array.prototype.ForEachAsync = async function (map2Promise){
 Array.prototype.Combine = function (mapper, separator) {
     return this.map(mapper).join(separator);
 };
+Array.prototype.Clear = function () {
+    while (this.length) this.pop();
+};
+Array.prototype.AddRange = Array.prototype.push;
 
 String.prototype.ToString = String.prototype.toString;
 String.prototype.HasElement = HasElement;
@@ -115,6 +119,11 @@ String.prototype.IsNullOrWhiteSpace = function () {
 };
 String.prototype.DecodeSpecialChar = function () {
     return Utils.DecodeSpecialChar(this);
+};
+Object.prototype.ToEntity = function() {
+    Object.keys(this).map((key, index) => {
+        return { Id: index + 1, Name: key, Value: this[key] };
+    });
 };
 Object.prototype.GetComplexProp = function (path) {
     if (path == null) return null;

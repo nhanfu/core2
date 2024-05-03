@@ -254,6 +254,142 @@ export class Section extends EditableComponent {
     }
 
     /**
+     * Renders a section based on the provided editable component and group information.
+     * @param {EditableComponent} Parent - The parent component.
+     * @param {Component} GroupInfo - The group info component.
+     * @param {Object} Entity - Optional entity parameter.
+     * @param {EditForm} EditForm - Optional edit form.
+     * @returns {Section} - The rendered section, or null if not permitted.
+     */
+    static RenderSection(Parent, GroupInfo, Entity = null, EditForm = null) {
+        const EditForm = EditForm || Parent.EditForm;
+        const UIPolicy = EditForm.GetElementPolicies([GroupInfo.Id], Utils.ComponentGroupId);
+        const ReadPermission = !GroupInfo.IsPrivate || UIPolicy.HasElementAndAll(x => x.CanRead);
+        const WritePermission = !GroupInfo.IsPrivate || UIPolicy.HasElementAndAll(x => x.CanWrite);
+        if (!ReadPermission) {
+            return null;
+        }
+
+        let Width = GroupInfo.Width;
+        const OuterColumn = EditForm.GetOuterColumn(GroupInfo);
+        const ParentColumn = EditForm.GetInnerColumn(GroupInfo.Parent);
+        const HasOuterColumn = OuterColumn > 0 && ParentColumn > 0;
+        if (HasOuterColumn) {
+            const Per = (OuterColumn / ParentColumn * 100).toFixed(2);
+            const Padding = ((GroupInfo.ItemInRow - 1) / GroupInfo.ItemInRow).toFixed(2);
+            Width = OuterColumn === ParentColumn ? "100%" : `calc(${Per}% - ${Padding}rem)`;
+        }
+
+        Html.Take(Parent.Element).Div.Render();
+        if (GroupInfo.Label) {
+            Html.Instance.Label.ClassName("header").IText(GroupInfo.Label);
+            if (Client.SystemRole) {
+                Html.Instance.Attr("contenteditable", "true");
+                Html.Instance.Event("input", e => this.ChangeComponentGroupLabel(e, GroupInfo));
+                Html.Instance.Event("dblclick", e => EditForm.SectionProperties(GroupInfo));
+            }
+            Html.Instance.End.Render();
+        }
+        Html.Instance.ClassName(GroupInfo.ClassName).Event("contextmenu", e => EditForm.SysConfigMenu(e, null, GroupInfo, null));
+        if (!GroupInfo.ClassName.includes("ribbon")) {
+            Html.Instance.ClassName("panel").ClassName("group");
+        }
+        Html.Instance.Display(!GroupInfo.Hidden).Style(GroupInfo.Style || "").Width(Width);
+        const section = new section(Html.Context);
+        section.Id = GroupInfo.FieldName + GroupInfo.Id,
+        section.Name = GroupInfo.FieldName;
+        section.Meta = GroupInfo;
+        section.Disabled = Parent.Disabled || GroupInfo.Disabled || !WritePermission || EditForm.IsLock || section.Disabled;
+        Parent.AddChild(section, null, GroupInfo.ShowExp);
+        Html.Take(Parent.Element);
+        section.DOMContentLoaded?.Invoke();
+        return section;
+    }
+
+
+    /**
+     * Renders a tab group within a parent editable component.
+     * @param {EditableComponent} Parent - The parent component.
+     * @param {Component} Group - The group of components to be rendered as tabs.
+     */
+    static RenderTabGroup(Parent, Group) {
+        const Disabled = Parent.Disabled || Group.Disabled;
+        if (!Parent.EditForm.TabGroup) {
+            Parent.EditForm.TabGroup = [];
+        }
+
+        let TabG = Parent.EditForm.TabGroup.find(x => x.Name === Group.TabGroup);
+        if (!TabG) {
+            TabG = {
+                Name: Group.TabGroup,
+                Parent: Parent,
+                ParentElement: Parent.Element,
+                Entity: Parent.Entity,
+                Meta: Group,
+                EditForm: Parent.EditForm,
+                Children: [],
+                Disabled: Disabled,
+                Render() {
+                    // Define render logic for TabGroup
+                }
+            };
+            const SubTab = {
+                Parent: TabG,
+                Entity: Parent.Entity,
+                Meta: Group,
+                Name: Group.FieldName,
+                EditForm: Parent.EditForm,
+                Disabled: Disabled,
+                Render() {
+                    // Define render logic for SubTab
+                },
+                RenderTabContent() {
+                    // Logic to render tab content
+                },
+                Focus() {
+                    // Logic to focus the tab
+                },
+                ToggleShow(ShowExp) {
+                    // Logic to toggle show based on expression
+                },
+                ToggleDisabled(DisabledExp) {
+                    // Logic to toggle disable based on expression
+                }
+            };
+            TabG.Children.push(SubTab);
+            Parent.EditForm.TabGroup.push(TabG);
+            Parent.Children.push(TabG);
+            TabG.Render();
+            SubTab.Render();
+            SubTab.RenderTabContent();
+            SubTab.Focus();
+            SubTab.ToggleShow(Group.ShowExp);
+            SubTab.ToggleDisabled(Group.DisabledExp);
+        } else {
+            const SubTab = {
+                Parent: TabG,
+                ParentElement: TabG.Element,
+                Entity: Parent.Entity,
+                Meta: Group,
+                Name: Group.FieldName,
+                Disabled: Disabled,
+                Render() {
+                    // Define render logic for SubTab
+                },
+                ToggleDisabled(DisabledExp) {
+                    // Logic to toggle disable based on expression
+                }
+            };
+            TabG.Children.push(SubTab);
+            SubTab.Render();
+            //SubTab.RenderTabContent();
+            SubTab.ToggleDisabled(Group.DisabledExp);
+            TabG.Children[0].Focus(); // Assuming FirstChild is at index 0
+        }
+    }
+
+
+    /**
      * Renders child components according to metadata.
      * @param {Component} group - The group of components to render.
      */
@@ -512,9 +648,8 @@ export class Section extends EditableComponent {
 export class ListViewSection extends ListView {
     /** @type {ListView} */
     ListView;
-    Render()
-        {
-            this.ListView = this.Parent;
-            base.Render();
-        }
+    Render() {
+        this.ListView = this.Parent;
+        base.Render();
+    }
 }

@@ -14,6 +14,7 @@ import './utils/ext.js';
 import { string } from "./utils/ext.js";
 import { Client } from "./clients/client.js";
 import { Spinner } from "./spinner.js";
+import { PatchDetail } from "./models/patch.js";
 
 /**
  * Represents a list view component that allows editable features and other interactions like sorting and pagination.
@@ -34,6 +35,7 @@ export class ListView extends EditableComponent {
         this.Meta = ui;
         this.Id = ui.Id?.toString();
         this.Name = ui.FieldName;
+        /** @type {Component[]} */
         this.Header = [];
         this.RowData = new ObservableList();
         /** @type {AdvSearchVM} */
@@ -134,8 +136,8 @@ export class ListView extends EditableComponent {
      */
     async ReloadData(cacheHeader = false, skip = null, pageSize = null) {
         if (this.Meta.LocalQuery) {
-            this.Meta.LocalData = typeof this.Meta.LocalQuery === string.Type 
-                ? JSON.parse(this.Meta.LocalQuery) 
+            this.Meta.LocalData = typeof this.Meta.LocalQuery === string.Type
+                ? JSON.parse(this.Meta.LocalQuery)
                 : this.Meta.LocalQuery;
             this.Meta.LocalRender = true;
         }
@@ -406,7 +408,8 @@ export class ListView extends EditableComponent {
             return;
         }
         let emptyRowData = {};
-        if (!this.Meta.DefaultVal.IsNullOrWhiteSpace() && Utils.IsFunction(this.Meta.DefaultVal, out let fn)) {
+        let fn = Utils.IsFunction(this.Meta.DefaultVal);
+        if (!this.Meta.DefaultVal && fn) {
             let dfObj = fn.call(this, this);
             Object.keys(dfObj).forEach(key => {
                 emptyRowData[key] = dfObj[key];
@@ -454,21 +457,6 @@ export class ListView extends EditableComponent {
     }
 
     /**
-     * Calculates the text alignment for a header component.
-     * @param {Component} header The header component.
-     * @returns {Component} The header component with the text alignment property set.
-     */
-    CalcTextAlign(header) {
-        if (header.TextAlign.HasAnyChar()) {
-            let parsed = Enum.TryParse(header.TextAlign, out let textAlign);
-            if (parsed) {
-                header.TextAlignEnum = textAlign;
-            }
-        }
-        return header;
-    }
-
-    /**
      * Renders the paginator component if necessary based on the configuration and data.
      */
     RenderPaginator() {
@@ -502,15 +490,16 @@ export class ListView extends EditableComponent {
     }
 
     /**
- * Adds a new empty row to the ListView.
- */
+     * Adds a new empty row to the ListView.
+     */
     AddNewEmptyRow() {
         if (this.Meta.LiteGrid || this.Disabled || !this.Editable || (this.EmptySection?.Children.HasElement() === true)) {
             return;
         }
         let emptyRowData = {};
-        if (!this.Meta.DefaultVal.IsNullOrWhiteSpace() && Utils.IsFunction(this.Meta.DefaultVal, out let fn)) {
-            let dfObj = fn.call(this, this);
+        if (this.Meta.DefaultVal) {
+            const fn = Utils.IsFunction(this.Meta.DefaultVal);
+            let dfObj = fn ? fn.call(this, this) : null;
             Object.keys(dfObj).forEach(key => {
                 emptyRowData[key] = dfObj[key];
             });
@@ -533,11 +522,11 @@ export class ListView extends EditableComponent {
 
     /**
      * Filters and sorts the header components based on their properties.
-     * @param {List<Component>} components The list of components to filter.
-     * @returns {List<Component>} The filtered and sorted list of header components.
+     * @param {Component[]} components The list of components to filter.
+     * @returns {Component[]} The filtered and sorted list of header components.
      */
     FilterColumns(components) {
-        if (components.Nothing()) return components;
+        if (components.length === 0) return components;
         let specificComponent = components.Any(x => x.ComponentId === this.Meta.Id);
         if (specificComponent) {
             components = components.Where(x => x.ComponentId === this.Meta.Id).ToList();
@@ -548,27 +537,12 @@ export class ListView extends EditableComponent {
         let permission = this.EditForm.GetGridPolicies(components.Select(x => x.Id).ToArray(), Utils.ComponentId);
         let headers = components
             .Where(header => !header.IsPrivate || permission.Where(x => x.RecordId === header.Id).HasElementAndAll(policy => policy.CanRead))
-            .Select(this.CalcTextAlign).OrderByDescending(x => x.Frozen).ThenBy(x => x.Order).ToList();
+            .OrderByDescending(x => x.Frozen).ThenBy(x => x.Order).ToList();
         this.OrderHeaderGroup(headers);
         this.Header.Clear();
-        this.Header.AddRange(headers);
-        this.Header = this.Header.Where(x => x != null).ToList();
+        this.Header.AddRange(...headers);
+        this.Header = this.Header.Where(x => x != null);
         return this.Header;
-    }
-
-    /**
-     * Calculates the text alignment for a header component.
-     * @param {Component} header The header component.
-     * @returns {Component} The header component with the text alignment property set.
-     */
-    CalcTextAlign(header) {
-        if (header.TextAlign) {
-            let parsed = Enum.TryParse(header.TextAlign, out let textAlign);
-            if (parsed) {
-                header.TextAlignEnum = textAlign;
-            }
-        }
-        return header;
     }
 
     /**

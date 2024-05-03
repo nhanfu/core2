@@ -270,6 +270,7 @@ export class Component {
     IsPivot = false;
     PostOrder = 0;
     LocalData = [];
+    /** @type {Component[]} */
     LocalHeader = [];
     StatusBar = false;
     SimpleText = false;

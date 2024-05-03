@@ -9,7 +9,7 @@ import { ComponentType } from './models/componentType.js';
 import { string } from './utils/ext.js';
 
 
-class Textbox extends EditableComponent {
+export class Textbox extends EditableComponent {
     constructor(meta, ele) {
         super(meta, ele);
         /** @type {HTMLInputElement} */
