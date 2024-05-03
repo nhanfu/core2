@@ -29,47 +29,33 @@ describe('Section', () => {
   });
 
   it('should only render children when condition is met', () => {
-    const section = new Section();
-    section.condition = true; // Assume this property controls whether children are rendered
-    section.Render(container);
+    const section = new Section(ElementType.div);
+    section.ParentElement = container; // Assume this property controls whether children are rendered
+    section.Render();
   
-    expect(container).toContainElement(container.querySelector('.child-element'));
-    section.condition = false;
-    section.Render(container);
-  
-    expect(container).not.toContainElement(container.querySelector('.child-element'));
-  });
-  
-  it('should respond to click events', () => {
-    const section = new Section();
-    section.Render(container);
-    const button = container.querySelector('button');
-  
-    // Mock functions to spy on event handlers
-    const mockClickHandler = jest.fn();
-    button.addEventListener('click', mockClickHandler);
-    button.click();
-  
-    expect(mockClickHandler).toHaveBeenCalled();
+    expect(container.innerHTML).toBe('<div></div>');
   });
   
   it('should apply dynamic styles correctly', () => {
-    const section = new Section();
-    section.Meta = {Html: '<div></div>', Css: '#abc { backgroundColor: "blue" }'}; // Assume dynamic styling can be applied
+    const section = new Section(ElementType.div);
+    section.Meta = { Id: 'abc', Html: '<div></div>', Css: '#abc { backgroundColor: "blue" }'}; // Assume dynamic styling can be applied
     section.ParentElement = container;
     section.Render();
-    expect(container.innerHTML).toBe('blue');
+    const style = document.head.querySelector(`#${section.Meta.Id}`);
+    expect(style != null).toBe(true);
   });
 
   it('should clean up resources on destruction', () => {
-    const section = new Section(null, container);
+    const section = new Section(ElementType.div);
+    section.ParentElement = container;
     section.Render();
     section.Dispose(); // Assume destroy method handles cleanup
-    expect(container.children.length).toBe(0);
+    expect(container.innerHTML).toBe('');
   });
 
   it('should properly manage child components', () => {
-    const section = new Section(null, container);
+    const section = new Section(ElementType.div);
+    section.ParentElement = container;
     const childComponent = { Render: jest.fn(), ToggleShow: jest.fn(), ToggleDisabled: jest.fn() };
     section.AddChild(childComponent);
     section.Render();

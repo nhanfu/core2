@@ -28,20 +28,21 @@ export class Section extends EditableComponent {
     Render() {
         if (this.elementType == null && this.Element != null) {
             this.elementType = this.Element?.tagName?.toLowerCase();
-        } else {
+        } else if (this.ParentElement != null && this.elementType != null) {
             Html.Take(this.ParentElement).Add(this.elementType);
             this.Element = Html.Context;
+        } else {
+            throw 'Element type must be not null and parent element or element must be supplied'
         }
         if (this.Meta === null) return;
         this.Element.id = this.Meta.Id;
         if (this.Meta.Html) {
             const cssContent = this.Meta.Css;
-            const hard = this.Meta.Id;
-            const section = (this.Meta.FieldName?.toLowerCase() ?? string.Empty) + hard;
+            const section = (this.Meta.FieldName?.toLowerCase() ?? string.Empty) + this.Meta.Id;
             if (cssContent) {
                 if (!document.head.querySelector("#" + section)) {
                     const style = document.createElement("style");
-                    style.id = section?.toLowerCase();
+                    style.id = section;
                     style.appendChild(document.createTextNode(cssContent));
                     document.head.appendChild(style);
                 }

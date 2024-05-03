@@ -6,6 +6,7 @@ import EventType from "./models/eventType.js";
 import { ComponentType } from "./models/componentType.js";
 import { Uuid7 } from "./structs/uuidv7.js";
 import { Html } from "./utils/html.js";
+import './utils/ext.js';
 
 /**
  * @typedef {import('./editForm.js').EditForm} EditForm
@@ -679,6 +680,7 @@ export default class EditableComponent {
     }
 
     static TabContainer = document.getElementById("tab-content");
+    Popup = false;
     /**
      * 
      * @param {EditableComponent} child 
