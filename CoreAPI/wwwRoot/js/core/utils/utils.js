@@ -205,6 +205,12 @@ export class Utils {
 
         return current;
     }
+    static SetPropValue(instance, propertyName, value) {
+        if (!propertyName || propertyName.trim() === '') return;
+        if (instance && typeof instance === 'object') {
+            instance[propertyName] = value; 
+        }
+    }
 
     static GetCellText(header, cellData, row, emptyRow = false) {
         return Utils.GetCellTextInternal(header, cellData, row, emptyRow).DecodeSpecialChar();

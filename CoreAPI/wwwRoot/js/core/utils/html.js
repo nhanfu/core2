@@ -332,6 +332,12 @@ export class HTML {
         }
         return this;
     }
+    Position(position)
+        {
+            return Style(`position: {${position}}`);
+        }
+
+    
     /**
      * Sets up an escape key event listener on the current context.
      * @param {Function} action - Action to execute when the escape key is pressed.
