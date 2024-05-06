@@ -652,9 +652,9 @@ export default class EditableComponent {
      * 
      * @param {(item: EditableComponent) => boolean} filter 
      * @param {(item: EditableComponent) => boolean} ignore 
-     * @returns {EditableComponent[]}
+     * @returns {EditableComponent[] | null}
      */
-    FilterChildren(filter, ignore) {
+    FilterChildren(filter, ignore = null) {
         return this.Children.Flattern(x => x.Children.Where(child => {
             return ignore?.call(this, child) !== true && filter?.call(this, child) === true;
         })).Where(filter);

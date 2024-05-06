@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",  // Specify ECMAScript target version
+        "module": "ESNext",  // Specify module code generation
+        "checkJs": true,  // Enable type checking of JavaScript files
+        "noEmit": true,  // Do not emit outputs (no output files from the types)
+        "allowSyntheticDefaultImports": true,  // Allow default imports from modules with no default export
+        "baseUrl": ".",  // Set base directory to resolve non-relative module names
+        "paths": {  // Specify paths for module names
+            "*": ["node_modules/*", "CoreAPI/wwwRoot/js/core/*"]
+        },
+        "experimentalDecorators": true,  // Enables experimental support for decorators
+        "esModuleInterop": true  // Enables emission of interoperability between CommonJS and ES Modules
+    },
+    "include": [
+        "CoreAPI/wwwRoot/js/core/**/*"  // Include all files in the src directory
+    ],
+    "exclude": [
+        "node_modules",  // Exclude the node_modules directory
+        "**/*.spec.js"  // Exclude all spec files
+    ]
+}

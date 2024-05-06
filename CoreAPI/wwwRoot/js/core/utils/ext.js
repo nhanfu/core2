@@ -69,7 +69,7 @@ Array.prototype.ToDictionary = function (keySelector, valueSelector) {
         return acc;
     }, {});
 };
-Array.prototype.FirstOrDefault = function (predicate) {
+Array.prototype.FirstOrDefault = function (predicate = null) {
     if (!predicate) return this.length > 0 ? this[0] : null;
     for (let i = 0; i < this.length; i++) {
         if (predicate(this[i])) return this[i];

@@ -31,7 +31,7 @@ export class ListView extends EditableComponent {
      */
     constructor(ui, ele = null) {
         super(ui);
-        this.DeleteTempIds = new List();
+        this.DeleteTempIds = [];
         this.Meta = ui;
         this.Id = ui.Id?.toString();
         this.Name = ui.FieldName;
@@ -66,7 +66,7 @@ export class ListView extends EditableComponent {
         if (listViewItem === null) return;
         this.CacheData.FirstOrDefault(x => x[this.IdField] === updatedData[this.IdField]).CopyPropFrom(updatedData);
         listViewItem.Entity.CopyPropFrom(updatedData);
-        let arr = listViewItem.FilterChildren(x => !x.Dirty || x.GetValueText()).Select(x => x.FieldName).ToArray();
+        let arr = listViewItem.FilterChildren(x => !x.Dirty || x.GetValueText() != null).Select(x => x.FieldName).ToArray();
         listViewItem.UpdateView(false, arr);
         this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem).Done();
     }
@@ -118,6 +118,13 @@ export class ListView extends EditableComponent {
         }
     }
 
+    Rerender() {
+        this.DisposeNoRecord();
+        this.MainSection.DisposeChildren();
+        Html.Take(this.MainSection.Element).Clear();
+        this.RenderContent();
+    }
+
     /**
      * Evaluates if any policy within the general or grid-specific policies meets the provided condition.
      * @param {(item: FeaturePolicy) => boolean} predicate A function to test each element for a condition.
@@ -132,7 +139,7 @@ export class ListView extends EditableComponent {
      * @param {boolean} [cacheHeader=false] Specifies whether headers should be cached.
      * @param {number} [skip=null] Specifies the number of items to skip (for pagination).
      * @param {number} [pageSize=null] Specifies the size of the page to load.
-     * @returns {Promise<List<object>>} A promise that resolves to the list of reloaded data objects.
+     * @returns {Promise<any[]>} A promise that resolves to the list of reloaded data objects.
      */
     async ReloadData(cacheHeader = false, skip = null, pageSize = null) {
         if (this.Meta.LocalQuery) {

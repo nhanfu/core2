@@ -28,8 +28,8 @@ export class HTML {
      */
     Take(ele) {
         if (ele == null) return this;
-        if (typeof (ele) === 'string') ele = document.querySelector(ele);
-        this.Context = ele;
+        if (typeof (ele) === 'string') this.Context = document.querySelector(ele);
+        else this.Context = ele;
         return this;
     }
 
@@ -460,6 +460,10 @@ export class HTML {
             this.Context = this.Context.closest(type.toString());
         }
         return this;
+    }
+
+    Clear() {
+        this.Context.innerHTML = '';
     }
 }
 
