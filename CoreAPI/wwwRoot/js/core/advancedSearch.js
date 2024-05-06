@@ -15,7 +15,7 @@ import { FeaturePolicy } from "models/featurePolicy.js";
 import { NumBox } from "numbox.js";
 import { Datepicker } from "datepicker.js";
 
-/** @typedef {import("./GridView.js").GridView} GridView */
+/** @typedef {import("./gridView.js").GridView} GridView */
 /** @typedef {import("./listView.js").ListView} ListView */
 
 export class AdvancedSearch extends TabEditor {

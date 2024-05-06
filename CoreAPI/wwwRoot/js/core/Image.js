@@ -1,16 +1,16 @@
 import EditableComponent from './editableComponent.js';
-import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
-import { ValidationRule } from "./models/validationRule.js";
-import { LangSelect } from "./utils/langSelect.js";
-import { Client } from "./clients/client.js";
 import EventType from './models/eventType.js';
-import { ComponentType } from './models/componentType.js';
-import { Str } from './utils/ext.js';
-import ObservableArgs from './models/observable.js';
 import { Action } from "./models/action.js";
 import "./utils/fix.js";
-class Image extends EditableComponent {
+import { Component } from 'models/component.js';
+import { ConfirmDialog } from 'confirmDialog.js';
+import { HttpMethod } from 'models/enum.js';
+import { Uuid7 } from 'structs/uuidv7.js';
+import { Spinner } from 'spinner.js';
+import { Client } from 'clients/client.js';
+
+export class Image extends EditableComponent {
     static PathSeparator = "    ";
     static PNGUrlPrefix = "data:image/png;base64,";
     static JpegUrlPrefix = "data:image/jpeg;base64,";
@@ -139,7 +139,7 @@ class Image extends EditableComponent {
     setCanDeleteImage(canDelete) {
         this._disabledDelete = !canDelete;
         if (canDelete) {
-            this.updateView();
+            this.UpdateView();
         }
     }
 
@@ -152,7 +152,7 @@ class Image extends EditableComponent {
 
         let img = document.createElement('img');
         img.src = path;
-        img.style = "width:100%;"; 
+        img.style.cssText = "width:100%;"; 
 
         if (this._preview) {
             this._preview.remove();
@@ -236,12 +236,12 @@ class Image extends EditableComponent {
             return;
         }
     
-        this.openNativeFileDialog(event);
+        this.OpenNativeFileDialog(event);
     
         // if (typeof navigator.camera === 'undefined') {
         //     this._input.click();
         // } else {
-        //     this.renderImageSourceChooser();
+        //     this.RenderImageSourceChooser();
         // }
     }
 
@@ -282,24 +282,25 @@ class Image extends EditableComponent {
         }
         const fileName = Utils.GetFileNameWithoutExtension(this.removeGuid(Utils.DecodeSpecialChar(removedPath))) + Utils.GetExtension(this.removeGuid(Utils.DecodeSpecialChar(removedPath)));
         const message = `Bạn chắc chắn muốn xóa ${fileName}`;
-        this.ConfirmDialog.renderConfirm(message, () => {
+        ConfirmDialog.RenderConfirm(message, () => {
             Client.Instance.PostAsync(removedPath, Client.FileFTP + "/DeleteFile")
             .then(success => {
                 const oldVal = this._path;
                 const newPath = this._path.replace(removedPath, '')
                             .replace(Image.PathSeparator + Image.PathSeparator, '')
-                            .split(Image.PathSeparator).filter(x => x.hasAnyChar()).distinct();
+                            .split(Image.PathSeparator).filter(x => x != null).Distinct();
                 this.path = newPath.join(Image.PathSeparator);
                 this.dirty = true;
-                this.UserInput?.Invoke(new ObservableArgs ({ NewData : this._path, OldData : oldVal, FieldName : this.FieldName, EvType : EventType.Change }));
-                this.DispatchEvent(Meta.Events, EventType.Change, this.entity);
+                const observable = { NewData : this._path, OldData : oldVal, FieldName : this.FieldName, EvType : EventType.Change };
+                this.UserInput?.Invoke(observable);
+                this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity);
             });
         });
     }
 
     uploadSelectedImages(event) {
         event.preventDefault();
-        if (this.EditForm.isLock) {
+        if (this.EditForm.IsLock) {
             console.log("Edit form is locked.");
             return;
         }
@@ -313,32 +314,42 @@ class Image extends EditableComponent {
         const oldVal = this._path; 
     
         
-        uploadAllFiles(files).then(() => {
+        this.UploadAllFiles(files).then(() => {
             this.Dirty = true; 
             this._input.value = '';  
-            this.UserInput?.Invoke(new ObservableArgs ({ NewData : this._path, OldData : oldVal, FieldName : this.FieldName, EvType : EventType.Change }));
-            dispatchEvent(this.Meta.Events, 'change', this.Entity);  
+            const observable = { NewData : this._path, OldData : oldVal, FieldName : this.FieldName, EvType : EventType.Change };
+            this.UserInput?.Invoke(observable);
+            this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity);  
         }).catch(error => {
             console.error("Failed to upload files:", error);
         });
     }
 
+    /**
+     * @param {string | ArrayBuffer} base64Image
+     * @param {any} fileName
+     */
     uploadBase64Image(base64Image, fileName) {
-        return Client.Instance.SubmitAsync(
-            {
-                Value : base64Image,
-                Url : `/user/image/?name=${fileName}`,
-                IsRawString : true,
-                Method : Enums.HttpMethod.POST
-            });
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const p = {
+            Value : base64Image,
+            Url : `/user/image/?name=${fileName}`,
+            IsRawString : true,
+            Method : HttpMethod.POST
+        };
+        return Client.Instance.SubmitAsync(p);
     }
 
-    updateView(force = false, dirty = null, ...componentNames) {
-        this.path = Utils.GetPropValue(this.Entity, this.fieldName)?.toString();
-        super.updateView(force, dirty, ...componentNames);
+    UpdateView(force = false, dirty = null, ...componentNames) {
+        this.path = Utils.GetPropValue(this.Entity, this.FieldName)?.toString();
+        super.UpdateView(force, dirty, ...componentNames);
     }
 
-    async uploadFile(file) {
+    /**
+     * @param {File} file
+     */
+    async UploadFile(file) {
         if (this.Meta.IsRealtime || !file.type.match("image.*")) {
             try {
                 const path = await Client.Instance.PostFilesAsync(file, Utils.FileSvc);
@@ -358,11 +369,11 @@ class Image extends EditableComponent {
                         await Client.Instance.PatchAsync({
                             table: "FileUpload",
                             changes: [
-                                { field: "Id", value: uuid7.generateId25() },
-                                { field: "EntityName", value: meta.refName },
-                                { field: "RecordId", value: entityId },
-                                { field: "SectionId", value: meta.componentGroupId },
-                                { field: "FieldName", value: fieldName },
+                                { field: "Id", value: Uuid7.Id25() },
+                                { field: "EntityName", value: this.Meta.RefName },
+                                { field: "RecordId", value: this.EntityId },
+                                { field: "SectionId", value: this.Meta.ComponentGroupId },
+                                { field: "FieldName", value: this.FieldName },
                                 { field: "FileName", value: file.name },
                                 { field: "FilePath", value: path }
                             ]
@@ -377,9 +388,12 @@ class Image extends EditableComponent {
         }
     }
 
-    async uploadAllFiles(filesSelected) {
+    /**
+     * @param {Iterable<any> | ArrayLike<any>} filesSelected
+     */
+    async UploadAllFiles(filesSelected) {
         Spinner.AppendTo(this.EditForm.Element);
-        const files = Array.from(filesSelected).map(this.uploadFile());
+        const files = Array.from(filesSelected).map(this.UploadFile);
         let allPath = await Promise.all(files);
         if (!allPath.length) {
             return;
@@ -389,17 +403,17 @@ class Image extends EditableComponent {
             allPath = [...new Set(paths.trim().split(Image.PathSeparator))];
         }
         const oldVal = this._path;
-        path = allPath.join(Image.PathSeparator);
+        this.Path = allPath.join(Image.PathSeparator);
         Spinner.Hide();
         this.FileUploaded?.Invoke(); 
     }
 
-    openNativeFileDialog(e) {
+    OpenNativeFileDialog(e) {
         e?.preventDefault();
         this._input.click();
     }
 
-    getValueText() {
+    GetValueText() {
         if (!this.imageSources || this.imageSources.length === 0) {
             return null;
         }
@@ -409,8 +423,3 @@ class Image extends EditableComponent {
         }).join(",");
     }
 }
-
-window.Core2 = window.Core2 || {};
-window.Core2.Image = Image;
-
-export default Image;

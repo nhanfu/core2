@@ -1,12 +1,17 @@
+import { GridView } from './gridView.js';
 import { Utils } from './utils/utils.js';
 
 export class CompareGridView extends GridView {
+    /**
+     * @param {import("./models/component.js").Component} ui
+     */
     constructor(ui) {
         super(ui);
         this.ContentFieldName = "TextHistory";
         this.ReasonOfChange = "ReasonOfChange";
         this.Style = "white-space: pre-wrap;";
-        this.meta.localHeader = [
+        this.Meta.LocalHeader = [
+            // @ts-ignore
             {
                 FieldName: "InsertedBy",
                 ComponentType: "Label",
@@ -17,6 +22,7 @@ export class CompareGridView extends GridView {
                 FormatData: "{" + "FullName" + "}",
                 Active: true,
             },
+            // @ts-ignore
             {
                 FieldName: "InsertedDate",
                 ComponentType: "Label",
@@ -26,6 +32,7 @@ export class CompareGridView extends GridView {
                 TextAlign: "left",
                 FormatData: "{0:dd/MM/yyyy HH:mm zz}"
             },
+            // @ts-ignore
             {
                 FieldName: "ReasonOfChange",
                 ComponentType: "Label",
@@ -34,6 +41,7 @@ export class CompareGridView extends GridView {
                 HasFilter: true,
                 Active: true,
             },
+            // @ts-ignore
             {
                 FieldName: "TextHistory",
                 ComponentType: "Label",
@@ -46,10 +54,10 @@ export class CompareGridView extends GridView {
         ];
     }
 
-    FilterColumns(Component) {
-        super.FilterColumns(Component);
-        Component.forEach(x => x.Frozen = false);
-        this.header.remove(this.header.find(x => x === this.toolbarColumn));
-        return Component;
+    FilterColumns(component) {
+        super.FilterColumns(component);
+        component.forEach(x => x.Frozen = false);
+        this.Header.Remove(this.Header.find(x => x === GridView.ToolbarColumn));
+        return component;
     }
 }

@@ -1,10 +1,11 @@
 import { Html } from "./utils/html.js";
-import { Textbox, Textbox } from './textbox.js'
+import { Textbox } from './textbox.js'
 import { Datepicker } from './datepicker.js'
-import { CompareGridView } from './CompareGridView.js';
-import EditableComponent from 'editableComponent.js';
-import { Component } from "models/component.js";
-import { Message } from "utils/message.js";
+import EditableComponent from './editableComponent.js';
+import { Component } from "./models/component.js";
+import { Message } from "./utils/message.js";
+import { NumBox } from "./numbox.js";
+import { KeyCodeEnum } from "./models/enum.js";
 
 
 export class ConfirmDialog extends EditableComponent {
@@ -32,8 +33,8 @@ export class ConfirmDialog extends EditableComponent {
         this.IgnoreCancelButton = true;
         this.PopulateDirty = false;
         this.Title = "Xác nhận";
-
     }
+    DisposeAfterYes = true;
 
     Render() {
         let element = Html.Take(this.PElement || document.body);
@@ -50,7 +51,7 @@ export class ConfirmDialog extends EditableComponent {
             .EndOf("popup-title")
             .Div.ClassName("popup-body");
 
-        popupContent.P.IHtml(this.Content).End.Div.Event("keydown", (e) => this.hotKeyHandler(e)).MarginRem("top", 1);
+        popupContent.P.IHtml(this.Content).End.Div.Event("keydown", (e) => this.HotKeyHandler(e)).MarginRem("top", 1);
         if (this.NeedAnswer) {
             if (this.ComType === "Textbox") {
                 const com = new Component();
@@ -64,30 +65,32 @@ export class ConfirmDialog extends EditableComponent {
                 Html.Instance.End.Render();
             }
             if (this.ComType === "Number") {
-                this.Number = new Number(new Component({
-                    plainText: "Nhập số",
-                    fieldName: CompareGridView.ReasonOfChange,
-                    visibility: true,
-                    showLabel: false
-                }));
-                this.AddChild(this.Number);
+                const meta = {
+                    PlainText: "Nhập số",
+                    FieldName: 'ReasonOfChange',
+                    Visibility: true,
+                    ShowLabel: false
+                };
+                const number = new NumBox(meta);
+                this.AddChild(number);
             }
             if (this.ComType === "Datepicker") {
-                this.Datepicker = new Datepicker(new Component({
+                const meta = {
                     plainText: "Chọn ngày",
                     showLabel: false,
-                    fieldName: CompareGridView.ReasonOfChange,
+                    fieldName: 'ReasonOfChange',
                     row: 2,
                     focusSearch: true,
                     visibility: true,
                     precision: this.Precision
-                }));
-                this.AddChild(this.Datepicker);
+                };
+                const datepicker = new Datepicker(meta);
+                this.AddChild(datepicker);
             }
         }
         let yesButton = Html.Instance.Button2(this.YesText, "button info small", "fa fa-check")
             .Event("click", async () => {
-                let isValid = await this.IsFormValid();
+                let isValid = await this.ValidateAsync();
                 if (!isValid) {
                     return;
                 }
@@ -136,28 +139,28 @@ export class ConfirmDialog extends EditableComponent {
         super.Dispose();
     }
 
+    /**
+     * @param {any} content
+     * @param {any} yesConfirm
+     */
     static RenderConfirm(content, yesConfirm, noConfirm = null) {
-        const confirm = new ConfirmDialog({
+        const meta = {
             Content: content,
-        });
+        };
+        const confirm = new ConfirmDialog();
+        confirm.Content = content;
         confirm.Render();
-        confirm.yesConfirmed = yesConfirm;
-        confirm.noConfirmed = noConfirm;
+        confirm.YesConfirmed = yesConfirm;
+        confirm.NoConfirmed = noConfirm;
         return confirm;
     }
 
-    static RenderConfirm(content, textButton = "Đóng") {
-        const dialog = new ConfirmDialog({
-            Content: content,
-        });
-        dialog.YesText = textButton;
-        dialog.IgnoreNoButton = true;
-        dialog.Render();
-        return dialog;
-    }
-
-    hotKeyHandler(e) {
-        if (e.keyCode === 13) {
+    /**
+     * 
+     * @param {Event} e 
+     */
+    HotKeyHandler(e) {
+        if (e.KeyCode() === KeyCodeEnum.Enter) {
             this._yesBtn.click();
         }
     }

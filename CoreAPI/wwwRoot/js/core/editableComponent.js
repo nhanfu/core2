@@ -8,7 +8,6 @@ import { Html } from "./utils/html.js";
 import './utils/ext.js';
 import { Action } from "./models/action.js";
 import { LangSelect } from "./utils/langSelect.js";
-import { ListViewItem } from "listViewItem.js";
 import { KeyCodeEnum } from "./models/enum.js";
 
 /**
@@ -427,6 +426,7 @@ export default class EditableComponent {
             return;
         }
 
+        // @ts-ignore
         const gridRow = this.FindClosest(ListViewItem.prototype) ?? this.FindClosest(ComponentType.EditForm);
         const root = gridRow !== null ? gridRow : this.EditForm;
 
@@ -564,6 +564,7 @@ export default class EditableComponent {
 
     ListViewItemTab(e) {
         const code = e.keyCode;
+        // @ts-ignore
         const listViewItem = this.FindClosest(ListViewItem.prototype);
         if (!listViewItem) {
             return;

@@ -1,4 +1,4 @@
-import { KeyCodeEnum } from "../models/keycode.js";
+import { KeyCodeEnum } from "../models/enum.js";
 import { Utils } from "./utils.js";
 import { OutOfViewPort } from "./outOfViewPort.js";
 import { Entity } from '../models/enum.js';
@@ -115,6 +115,13 @@ Array.prototype.ForEach = Array.prototype.forEach;
  */
 Array.prototype.DistinctBy = function(/** @type {(item: T) => K} */ keySelector) {
     return this.GroupBy(keySelector).FirstOrDefault();
+};
+/**
+ * @template T, K
+ * @returns 
+ */
+Array.prototype.Distinct = function() {
+    return this.GroupBy(x => x).FirstOrDefault();
 };
 Array.prototype.ForEachAsync = async function (/** @type {(value: any, index: number, array: any[]) => any} */ map2Promise){
     var promises = this.map(map2Promise);

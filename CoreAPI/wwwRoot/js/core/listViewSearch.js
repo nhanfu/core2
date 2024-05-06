@@ -11,7 +11,7 @@ import { Uuid7 } from './structs/uuidv7.js';
 /**
  * @typedef {import('./models/component').Component} Component
  * @typedef {import('./listView').ListView} ListView
- * @typedef {import('./gridView').GridView} GridView
+ * @typedef {import('./gridView.js').GridView} GridView
  * @typedef {import('./tabEditor').TabEditor} TabEditor
  * @typedef {import('./datepicker').Datepicker} Datepicker
  * @typedef {import('./searchEntry').SearchEntry} SearchEntry

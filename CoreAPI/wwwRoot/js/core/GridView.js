@@ -30,15 +30,14 @@ export class GridView extends ListView {
         this._waitingLoad = false;
         this._renderPrepareCacheAwaiter = 0;
         this.DataTable = null;
-
-        GridView.ToolbarColumn = {
-            StatusBar: true,
-            Label: '',
-            Frozen: true
-        };
-
         this.DOMContentLoaded = this.DOMContentLoadedHandler.bind(this);
     }
+
+    static ToolbarColumn = {
+        StatusBar: true,
+        Label: '',
+        Frozen: true
+    };
 
     DOMContentLoadedHandler() {
         if (this.Meta.IsSumary) {

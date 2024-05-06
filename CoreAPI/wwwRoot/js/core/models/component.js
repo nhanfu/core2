@@ -182,6 +182,8 @@ export class Component {
     DefaultVal = '';
     DateTimeField = '';
     Active = false;
+    CustomNextCell = false;
+    MultipleLine = false;
     IsPublic = false;
     InsertedDate = new Date();
     InsertedBy = '';

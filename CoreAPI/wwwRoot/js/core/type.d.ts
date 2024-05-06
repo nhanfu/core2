@@ -60,6 +60,7 @@ declare global {
      */
     GroupBy(keySelector: (item: T) => K): [][];
     DistinctBy(keySelector: (item: T) => K): T[];
+    Distinct(): T[];
     /**
      * Performs the specified action for each element in an array.
      * @param callbackfn  A function that accepts up to three arguments. forEach calls the callbackfn function one time for each element in the array.
