@@ -136,6 +136,16 @@ export const KeyCodeEnum = {
     SingleQuote: 222
 };
 
+export const OperatorEnum = {
+    In: 1,
+    NotIn: 2,
+    Gt: 3,
+    Ge: 4,
+    Lt: 5,
+    Le: 6,
+    Lr: 7,
+    Rl: 8
+};
 
 /**
  * Types of UI components.

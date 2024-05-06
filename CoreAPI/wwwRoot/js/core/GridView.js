@@ -1,6 +1,7 @@
 import { ListView } from './listView.js';
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
+import { OperatorEnum, KeyCodeEnum, OrderbyDirection} from './models/enum.js';
 import { ValidationRule } from "./models/validationRule.js";
 import { LangSelect } from "./utils/langSelect.js";
 import { Client } from "./clients/client.js";
@@ -9,8 +10,12 @@ import { ComponentType } from './models/componentType.js';
 import { Str } from './utils/ext.js';
 import ObservableArgs from './models/observable.js';
 import { Action } from "./models/action.js";
-import "./utils/fix.js";
 import { Spinner } from './spinner.js';
+import { Toast } from 'toast.js';
+import { ContextMenu } from 'contextMenu.js';
+import { CustomEventType } from 'models/customEventType.js';
+import "./utils/fix.js";
+
 
 
 export class GridView extends ListView {
@@ -29,7 +34,17 @@ export class GridView extends ListView {
         this.LoadRerender = false;
         this._waitingLoad = false;
         this._renderPrepareCacheAwaiter = 0;
+        /** @type {HTMLElement} */
         this.DataTable = null;
+        this.LastElementFocus = null;
+        this.lastListViewItem = null;
+
+        this.ToolbarColumn = {
+            StatusBar: true,
+            Label: '',
+            Frozen: true
+        };
+
         this.DOMContentLoaded = this.DOMContentLoadedHandler.bind(this);
     }
 
@@ -439,10 +454,10 @@ export class GridView extends ListView {
                 switch (hl.ComponentType) {
                     case 'Number':
                     case 'Label':
-                        where = this.buildNumberCondition(cell, hl, isNull);
+                        where = this.BuildNumberCondition(cell, hl, isNull);
                         break;
                     case 'Checkbox':
-                        where = this.buildCheckboxCondition(cell, hl, isNull);
+                        where = this.BuildCheckboxCondition(cell, hl, isNull);
                         break;
                     case 'Datepicker':
                         where = this.BuildDateCondition(cell, hl, isNull);
@@ -512,5 +527,737 @@ export class GridView extends ListView {
         lisToast.push(`Applied condition ${where} on field ${hl.FieldName}`);
     }
 
+    NoCellSelected() {
+        this.MainSection.DisposeChildren();
+        this.ApplyFilter();
+        if (this.Meta.ComponentType === 'VirtualGrid' && this.Meta.CanSearch) {
+            this.HeaderSection.Element.focus();
+        }
+        if (this.Meta.ComponentType === 'SearchEntry') {
+            const search = this.Parent;
+            if (search && search._input) {
+                search._input.focus();
+            }
+        }
+    }
 
+    ApplyLocal() {
+        const tb = this.DataTable;
+        let rows;
+        if (this.Meta.TopEmpty) {
+            rows = tb.tBodies[tb.tBodies.length - 1].children;
+        } else {
+            rows = tb.tBodies[0].children;
+        }
+        if (!this.CellSelected.length) {
+            Array.from(rows).forEach(row => row.classList.remove("d-none"));
+            return;
+        }
+        const listNone = [];
+        const header = this.Header.findIndex(y => y.FieldName === this.CellSelected[0].FieldName);
+
+        this.CellSelected.forEach(cell => {
+            Array.from(rows).forEach(row => {
+                const cells = row.children;
+                if (!cells[header]) return;
+                const cellText = cells[header].textContent || '';
+                if (cell.Operator === OperatorEnum.In) {
+                    if (!cellText.toLowerCase().includes(cell.ValueText.toLowerCase())) {
+                        if (!listNone.includes(row)) {
+                            listNone.push(row);
+                        }
+                    }
+                } else {
+                    if (cellText.toLowerCase().indexOf(cell.ValueText.toLowerCase()) > -1) {
+                        if (!listNone.includes(row)) {
+                            listNone.push(row);
+                        }
+                    }
+                }
+            });
+        });
+
+        Array.from(rows).forEach(row => {
+            if (listNone.includes(row)) {
+                row.classList.add("d-none");
+            } else {
+                row.classList.remove("d-none");
+                if (!this.LastElementFocus) {
+                    this.LastElementFocus = row.children[header];
+                }
+            }
+        });
+
+        if (this.LastElementFocus) {
+            this.LastElementFocus.focus();
+            this.LastElementFocus = null;
+        }
+    }
+
+    FilterSelected(hotKeyModel) {
+        if (!hotKeyModel.Operator) {
+            return;
+        }
+        if (!this.cellSelected.some(x => x.FieldName === hotKeyModel.FieldName && x.Value === hotKeyModel.Value && x.ValueText === hotKeyModel.ValueText && x.Operator === hotKeyModel.Operator)) {
+            const header = this.header.find(x => x.FieldName === hotKeyModel.FieldName);
+            this.cellSelected.push({
+                FieldName: hotKeyModel.FieldName,
+                FieldText: header ? header.Label : '',
+                ComponentType: header ? header.ComponentType : '',
+                Value: hotKeyModel.Value,
+                ValueText: hotKeyModel.ValueText,
+                Operator: hotKeyModel.Operator,
+                OperatorText: hotKeyModel.OperatorText,
+                IsSearch: hotKeyModel.ActValue,
+            });
+            this._summarys.push(document.createElement('HTMLElement'));
+        }
+        this.ActionFilter();
+    }
+
+    DisposeSumary() {
+        if (this._summarys.length > 0) {
+            const lastSummary = this._summarys[this._summarys.length - 1];
+            lastSummary.remove(); 
+            this._summarys.pop();
+        }
+        if (this.lastListViewItem && this.LastElementFocus) {
+            this.lastListViewItem.Focused(true);
+            this.LastElementFocus.focus();
+        }
+    }
+
+    HiddenSumary() {
+        const lastSummary = this._summarys[this._summarys.length - 1];
+        if (lastSummary) {
+            lastSummary.style.display = 'none'; 
+        }
+    }
+
+    SearchDisplayRows() {
+        const table = this.DataTable;
+        const rows = table.tBodies[table.tBodies.length - 1].children;
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].classList.contains("virtual-row")) {
+                continue;
+            }
+            const cells = rows[i].childNodes;
+            let found = false;
+            for (let j = 0; j < cells.length; j++) {
+                const htmlElement = cells[j];
+                const input = htmlElement.querySelector("input:first-child");
+                let cellText;
+                if (input !== null) {
+                    cellText = input.value;
+                } else {
+                    cellText = cells[j].textContent || "";
+                }
+                if (Utils.DecodeSpecialChar(cellText).toLowerCase().indexOf(Utils.DecodeSpecialChar(this.ListViewSearch.EntityVM.FullTextSearch.toLowerCase())) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                rows[i].classList.remove("d-none");
+            } else {
+                rows[i].classList.add("d-none");
+            }
+        }
+    }
+
+    FocusCell(e, header) {
+        const td = e.target.closest("td");
+
+        // Clearing focus on other cells
+        const table = e.target.closest('table');
+        table.querySelectorAll("tbody tr").forEach(tr => tr.classList.remove("focus"));
+        table.querySelectorAll("tbody td").forEach(td => td.classList.remove("cell-selected"));
+
+        // Adding focus class to the current row and cell
+        td.closest("tr").classList.add("focus");
+        td.classList.add("cell-selected");
+    }
+
+    ActionKeyHandler(e, header, focusedRow, com, el, keyCode) {
+        let fieldName = "";
+        let text = "";
+        let value = "";
+
+        if ([KeyCodeEnum.F4, KeyCodeEnum.F8, KeyCodeEnum.F9, KeyCodeEnum.F10, KeyCodeEnum.F11, KeyCodeEnum.F2, KeyCodeEnum.UpArrow, KeyCodeEnum.DownArrow, KeyCodeEnum.Home, KeyCodeEnum.End, KeyCodeEnum.Insert].includes(keyCode) || (e.ctrlKey || e.metaKey) && keyCode === KeyCodeEnum.D) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!com) {
+                return;
+            }
+            fieldName = com.FieldName;
+            switch (com.Meta.ComponentType) {
+                case "SearchEntry":
+                    value = focusedRow.Entity.GetPropValue(header.FieldName).toString().EncodeSpecialChar();
+                    break;
+                case "Number":
+                    value = focusedRow.Entity.GetPropValue(header.FieldName).toString().replace(",", "");
+                    break;
+                case "Checkbox":
+                    value = com.GetValue().toString().toLowerCase();
+                    break;
+                default:
+                    value = com.GetValue().toString().EncodeSpecialChar();
+                    break;
+            }
+            if (value === null) {
+                text = null;
+            } else {
+                if (!com.Meta.Editable) {
+                    text = com.GetValueTextAct().toString().DecodeSpecialChar();
+                } else {
+                    text = com.GetValueText().toString().DecodeSpecialChar();
+                }
+            }
+        }
+
+        switch (keyCode) {
+            case KeyCodeEnum.F2:
+                this.FilterSelected({ Operator: 2, OperatorText: "Exclude", Value: value, FieldName: fieldName, ValueText: text, ActValue: true });
+                break;
+            case KeyCodeEnum.F4:
+                this.ProcessFilterDetail(e, com, el, fieldName, text, value);
+                break;
+            case KeyCodeEnum.F8:
+                this.ProcessHardDelete();
+                break;
+            case KeyCodeEnum.F9:
+                this.FilterSelected({ Operator: 1, OperatorText: "Contains", Value: value, FieldName: fieldName, ValueText: text, ActValue: true });
+                com.Focus();
+                break;
+            case KeyCodeEnum.F11:
+                this.ProcessSort(e, com);
+                break;
+            case KeyCodeEnum.UpArrow:
+                this.MoveFocusUp(e, com, fieldName);
+                break;
+            case KeyCodeEnum.DownArrow:
+                this.MoveFocusDown(e, com, fieldName);
+                break;
+            case KeyCodeEnum.LeftArrow:
+                this.MoveFocusLeft(e, com);
+                break;
+            case KeyCodeEnum.RightArrow:
+                this.MoveFocusRight(e, com);
+                break;
+            case KeyCodeEnum.Home:
+                this.MoveFocusHome();
+                break;
+            case KeyCodeEnum.End:
+                this.MoveFocusEnd();
+                break;
+            case KeyCodeEnum.Insert:
+                this.ToggleItemSelection();
+                break;
+            default:
+                break;
+        }
+    }
+    
+    MoveFocusUp(e, com, fieldName) {
+        let currentItemUp = this.GetItemFocus();
+        if (currentItemUp.RowNo === 0 && !(e.ctrlKey || e.metaKey)) {
+            return;
+        }
+        let upItemUp = this.AllListViewItem.filter(x => !x.GroupRow).find(x => x.RowNo === currentItemUp.RowNo - 1);
+        if (!upItemUp) {
+            if (this.Meta.CanAdd) {
+                upItemUp = this.EmptySection.FirstChild;
+            } else {
+                return;
+            }
+        }
+        this.CopyValue(e, com, fieldName, currentItemUp, upItemUp);
+    }
+
+    MoveFocusDown(e, com, fieldName) {
+        let currentItemDown = this.GetItemFocus();
+        if (!currentItemDown && !(e.ctrlKey || e.metaKey)) {
+            return;
+        }
+        let downItemDown = this.AllListViewItem.filter(x => !x.GroupRow).find(x => x.RowNo === currentItemDown.RowNo + 1);
+        if (!downItemDown) {
+            if (this.Meta.CanAdd) {
+                downItemDown = this.EmptySection.firstChild;
+            } else {
+                return;
+            }
+        }
+        this.CopyValue(e, com, fieldName, currentItemDown, downItemDown);
+    }
+
+    MoveFocusLeft(e, com) {
+        if (!this.Meta.IsRealtime && !(e.ctrlKey || e.metaKey)) {
+            return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        let currentItemLeft = this.LastListViewItem;
+        let leftItem = currentItemLeft.Children.find(x => x.Element.closest('td') === com.Element.closest('td').previousElementSibling);
+        if (!leftItem || currentItemLeft.Children.length === 0) {
+            return;
+        }
+        leftItem.ParentElement?.focus();
+        leftItem.Focus();
+        if (leftItem.Meta.Editable && !leftItem.Disabled) {
+            if (leftItem.Element instanceof HTMLInputElement) {
+                leftItem.Element.selectionStart = 0;
+                leftItem.Element.selectionEnd = leftItem.GetValueText().length;
+            }
+        }
+    }
+
+    MoveFocusRight(e, com) {
+        if (!this.Meta.IsRealtime && !(e.ctrlKey || e.metaKey)) {
+            return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        let currentItemRight = this.LastListViewItem;
+        let rightItem = currentItemRight.Children.find(x => x.Element.closest('td') === com.element.closest('td').nextElementSibling);
+        if (!rightItem) {
+            return;
+        }
+        rightItem.ParentElement?.focus();
+        rightItem.Focus();
+        if (rightItem.Meta.Editable && !rightItem.Disabled) {
+            if (rightItem.Element instanceof HTMLInputElement) {
+                rightItem.Element.selectionStart = 0;
+                rightItem.Element.selectionEnd = rightItem.GetValueText().length;
+            }
+        }
+    }
+
+    MoveFocusHome() {
+        let firstItem = this.AllListViewItem[0];
+        firstItem?.Focus();
+        this.DataTable.parentElement.scrollTop = 0;
+    }
+
+    MoveFocusEnd() {
+        let lastItem = this.AllListViewItem[this.AllListViewItem.length - 1];
+        lastItem?.Focus();
+        this.DataTable.parentElement.scrollTop = this.DataTable.parentElement.scrollHeight;
+    }
+
+    ToggleItemSelection() {
+        let currentItem = this.GetItemFocus();
+        currentItem.Selected = !currentItem.Selected;
+    }
+
+    ProcessHardDelete() {
+        if (this.Disabled) {
+            return;
+        }
+        const selectedRows = this.GetSelectedRows();
+        if (selectedRows.length === 0) {
+            Toast.Warning("Vui lòng chọn dòng cần xóa");
+            return;
+        }
+        const isOwner = selectedRows.every(x => Utils.IsOwner(x, false));
+        const canDelete = this.CanDo(x => x.CanDelete && isOwner || x.CanDeleteAll);
+        if (canDelete) {
+            this.HardDeleteSelected();
+        }
+    }
+
+    ProcessFilterDetail(e, com, el, fieldName, text, value) {
+        const menu = ContextMenu.Instance;
+        menu.PElement = this.MainSection.Element;
+        menu.Top = el.getBoundingClientRect().top;
+        menu.Left = el.getBoundingClientRect().left;
+        menu.MenuItems = [
+            {
+                Icon: "fal fa-angle-double-right",
+                Text: "Chứa", Click: this.FilterInSelected,
+                Parameter: { Operator: OperatorEnum.In, OperatorText: "Chứa", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
+                Ele: undefined,
+                Style: '',
+                Disabled: false,
+                MenuItems: []
+            },
+            {
+                Icon: "fal fa-not-equal", Text: "Không chứa",
+                Click: this.FilterInSelected,
+                Parameter: { Operator: OperatorEnum.NotIn, OperatorText: "Không chứa", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
+                Ele: undefined,
+                Style: '',
+                Disabled: false,
+                MenuItems: []
+            },
+            {
+                Icon: "fal fa-hourglass-start", Text: "Trái phải", Click: this.FilterInSelected,
+                Parameter: { Operator: OperatorEnum.Lr, OperatorText: "Trái phải", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
+                Ele: undefined,
+                Style: '',
+                Disabled: false,
+                MenuItems: []
+            },
+            {
+                Icon: "fal fa-hourglass-end", Text: "Phải trái", Click: this.FilterInSelected,
+                Parameter: { Operator: OperatorEnum.Rl, OperatorText: "Phải trái", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
+                Ele: undefined,
+                Style: '',
+                Disabled: false,
+                MenuItems: []
+            }
+        ];
+
+        if (com.Meta.ComponentType === "Number" || com.Meta.ComponentType === "Datepicker") {
+            menu.MenuItems.push(
+                {
+                    Icon: "fal fa-greater-than", Text: "Lớn hơn", Click: this.FilterInSelected,
+                    Parameter: { Operator: OperatorEnum.Gt, OperatorText: "Lớn hơn", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
+                    Ele: undefined,
+                    Style: '',
+                    Disabled: false,
+                    MenuItems: []
+                },
+                { Icon: "fal fa-less-than", Text: "Nhỏ hơn", Click: this.FilterInSelected,
+                    Parameter: { Operator: OperatorEnum.Lt, OperatorText: "Nhỏ hơn", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
+                    Ele: undefined,
+                    Style: '',
+                    Disabled: false,
+                    MenuItems: []},
+                { Icon: "fal fa-greater-than-equal", Text: "Lớn hơn bằng", Click: this.FilterInSelected,
+                    Parameter: { Operator: OperatorEnum.Ge, OperatorText: "Lớn hơn bằng", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
+                    Ele: undefined,
+                    Style: '',
+                    Disabled: false,
+                    MenuItems: []},
+                { Icon: "fal fa-less-than-equal", Text: "Nhỏ hơn bằng", Click: this.FilterInSelected,
+                    Parameter: { Operator: OperatorEnum.Le, OperatorText: "Nhỏ hơn bằng", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
+                    Ele: undefined,
+                    Style: '',
+                    Disabled: false,
+                    MenuItems: []}
+            );
+        }
+        menu.Render();
+    }
+
+    ProcessSort(e, com) {
+        if (com.Meta.ComponentType === "Button") {
+            return;
+        }
+        let th = this.HeaderSection.Children.find(x => x.Meta.Id === com.Meta.Id);
+        th.Element.classList.remove("desc", "asc");
+        const fieldName = com.ComponentType === "SearchEntry" ? com.Meta.FieldText : com.FieldName;
+        const sort = {
+            FieldName: fieldName,
+            OrderbyDirectionId: OrderbyDirection.ASC,
+            ComId: com.Meta.Id,
+        };
+        if (!this.AdvSearchVM.OrderBy.length) {
+            this.AdvSearchVM.OrderBy = [sort];
+            th.Element.classList.add("desc");
+        } else {
+            const existSort = this.AdvSearchVM.OrderBy.find(x => x.FieldName === fieldName);
+            if (existSort) {
+                this.AlterExistSort(th, existSort);
+            } else {
+                const shiftKey = e.shiftKey;
+                this.RemoveOtherSorts(shiftKey);
+                th.Element.classList.add("desc");
+                this.AdvSearchVM.OrderBy.push(sort);
+            }
+        }
+        localStorage.setItem("OrderBy" + this.Meta.Id, JSON.stringify(this.AdvSearchVM.OrderBy));
+        this.ReloadData();
+    }
+
+    AlterExistSort(th, existSort) {
+        if (existSort.OrderbyDirectionId === OrderbyDirection.ASC) {
+            existSort.OrderbyDirectionId = OrderbyDirection.DESC;
+            th.Element.classList.replace("asc", "desc");
+        } else {
+            const index = this.AdvSearchVM.OrderBy.indexOf(existSort);
+            if (index !== -1) {
+                this.AdvSearchVM.OrderBy.splice(index, 1);
+            }
+        }
+    }
+
+    RemoveOtherSorts(shiftKey) {
+        if (shiftKey) return;
+        this.HeaderSection.Children.forEach(x => {
+            x.Element.classList.remove("desc");
+            x.Element.classList.remove("asc");
+        });
+        this.AdvSearchVM.OrderBy.length = 0; 
+    }
+
+    CopyValue(e, com, fieldName, currentItem, upItem) {
+        this.LastListViewItem = upItem;
+        currentItem.Focused(false);
+        upItem.Focused(true);
+        if (!fieldName || fieldName.trim() === '') {
+            return;
+        }
+        let nextcom = upItem.FilterChildren(x => x.Meta.Id === com.Meta.Id)[0];
+        if (nextcom) {
+            this.LastComponentFocus = nextcom.Meta;
+            nextcom.ParentElement?.focus();
+            nextcom.Focus();
+            if (nextcom.Meta.Editable && !nextcom.Disabled) {
+                if (nextcom.Element instanceof HTMLInputElement) {
+                    nextcom.Element.selectionStart = 0;
+                    nextcom.Element.selectionEnd = nextcom.GetValueText().length;
+                }
+            }
+            this.LastElementFocus = nextcom.Element;
+            if (e.shiftKey) {
+                upItem.Entity.SetComplexPropValue(fieldName, com.GetValue());
+                let updated = upItem.FilterChildren(x => x.FieldName === nextcom.FieldName)[0];
+                if (updated && (!updated.Disabled || updated.Meta.Editable)) {
+                    updated.Dirty = true;
+                    (async () => {
+                        if (updated.Meta.ComponentType === "SearchEntry") {
+                            updated.UpdateView();
+                            let dropdown = com; 
+                            updated.PopulateFields(dropdown.Matched);
+                            await updated.DispatchEvent(updated.Meta.Events, "change", upItem.Entity, dropdown.Matched);
+                        } else {
+                            updated.UpdateView();
+                            updated.PopulateFields();
+                            await updated.DispatchEvent(updated.Meta.Events, "change", upItem.Entity);
+                        }
+                        await upItem.ListViewSection.ListView.DispatchEvent(upItem.ListViewSection.ListView.Meta.Events, "change", upItem.Entity);
+                        if (this.Meta.IsRealtime) {
+                            await upItem.PatchUpdateOrCreate();
+                        }
+                    })();
+                }
+            }
+        }
+    }
+
+    RenderViewPort(count = true, firstLoad = false, skip = null) {
+        return;
+    }
+
+    HotKeyF6Handler(e, keyCode) {
+        switch (keyCode) {
+            case KeyCodeEnum.F6:
+                e.preventDefault();
+                e.stopPropagation();
+                if (this._summarys.length) {
+                    let lastElement = this._summarys[this._summarys.length - 1];
+                    if (this.Meta.FilterLocal) {
+                        if (lastElement.innerHTML === "") {
+                            this.CellSelected.pop();
+                            this.ActionFilter();
+                            this._summarys.pop();
+                        } else {
+                            if (lastElement.style.display === "none") {
+                                this.CellSelected.pop();
+                                this.ActionFilter();
+                                lastElement.style.display = "";
+                            } else {
+                                this._summarys.pop();
+                                lastElement.remove();
+                            }
+                        }
+                        return;
+                    }
+                    if (lastElement.innerHTML === "") {
+                        this.CellSelected.pop();
+                        this.Wheres.pop();
+                        let last = this.AdvSearchVM.Conditions[this.AdvSearchVM.Conditions.length - 1];
+                        if (last && last.Field.ComponentType === "Input" && !last.Value.trim()) {
+                            this.AdvSearchVM.Conditions.pop();
+                            this.AdvSearchVM.Conditions.pop();
+                        } else {
+                            this.AdvSearchVM.Conditions.pop();
+                        }
+                        this.ActionFilter();
+                        this._summarys.pop();
+                    } else {
+                        if (this._waitingLoad) {
+                            clearTimeout(this._renderPrepareCacheAwaiter);
+                        }
+                        if (lastElement.style.display === "none") {
+                            this.CellSelected.pop();
+                            this.Wheres.pop();
+                            let last = this.AdvSearchVM.Conditions[this.AdvSearchVM.Conditions.length - 1];
+                            if (last && last.Field.ComponentType === "Input" && !last.Value.trim()) {
+                                this.AdvSearchVM.Conditions.pop();
+                                this.AdvSearchVM.Conditions.pop();
+                            } else {
+                                this.AdvSearchVM.Conditions.pop();
+                            }
+                            this.ActionFilter();
+                            lastElement.style.display = "";
+                        } else {
+                            this._summarys.pop();
+                            lastElement.remove();
+                        }
+                    }
+                }
+                break;
+            case KeyCodeEnum.F3:
+                e.preventDefault();
+                e.stopPropagation();
+                this.GetRealTimeSelectedRows().then(selected => {
+                    if (selected.length === 0) {
+                        selected = this.RowData.Data;
+                    }
+                    let numbers = this.Header.filter(x => x.ComponentType === "Number");
+                    if (numbers.length === 0) {
+                        Toast.Warning("Vui lòng cấu hình");
+                        return;
+                    }
+                    let listString = numbers.map(x => {
+                        let val = selected.map(k => k[x.FieldName]).filter(k => k != null).reduce((a, b) => a + parseFloat(b), 0);
+                        return x.Label + " : " + (val % 2 > 0 ? val.toFixed(2) : Math.round(val).toString());
+                    });
+                    Toast.Success(listString.join("</br>"), 6000);
+                });
+                break;
+            case KeyCodeEnum.F1:
+                e.preventDefault();
+                e.stopPropagation();
+                this.ToggleAll();
+                break;
+            case KeyCodeEnum.U:
+                if (e.ctrlKey || e.metaKey) {
+                    if (this.Disabled || !this.Meta.CanAdd) {
+                        return;
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.DuplicateSelected(e, true);
+                }
+                break;
+            default:
+                break;
+        }
+        if (!this.LastListViewItem || !this.LastListViewItem.Children) {
+            return;
+        }
+        let com = this.LastListViewItem.Children.find(x => x.Meta.Id === this.LastComponentFocus?.Id);
+        if (!com) {
+            return;
+        }
+        this.ActionKeyHandler(e, this.LastComponentFocus, this.LastListViewItem, com, com.Element.closest('td'), keyCode);
+    }
+
+    async AddRow(rowData, index = 0, singleAdd = true) {
+        let rowSection = await super.AddRow(rowData, index, singleAdd);
+        this.StickyColumn(rowSection);
+        this.RenderIndex();
+        return rowSection;
+    }
+
+    AddNewEmptyRow() {
+        if (this.Disabled || !this.Editable || (this.EmptySection && this.EmptySection.Children.length > 0)) {
+            return;
+        }
+
+        let emptyRowData = {};
+        if (this.Meta.DefaultVal && Utils.IsFunction(this.Meta.DefaultVal)) {
+            let dfObj = this.Meta.DefaultVal.call(this, this);
+            Object.keys(dfObj).forEach(key => {
+                emptyRowData[key] = dfObj[key];
+            });
+        }
+
+        emptyRowData[this.IdField] = null;
+        let rowSection = this.RenderRowData(this.Header, emptyRowData, this.EmptySection, null, true);
+
+        Object.keys(emptyRowData).forEach(field => {
+            rowSection.PatchModel.push({
+                Field: field,
+                Value: emptyRowData[field]?.toString()
+            });
+        });
+
+        this.StickyColumn(rowSection);
+
+        if (!this.Meta.TopEmpty) {
+            this.DataTable.insertBefore(rowSection.Element, this.MainSection.Element);
+        } else {
+            this.DataTable.insertBefore(rowSection.Element, this.EmptySection.Element);
+        }
+
+        this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterEmptyRowCreated, emptyRowData);
+    }
+
+    FilterColumns(components) {
+        if (!components || components.length === 0) return components;
+
+        const permission = this.EditForm.GetGridPolicies(components.map(x => x.Id), Utils.ComponentId);
+        let headers = components.filter(x => !x.Hidden && x.Id !== this.Meta.Id)
+            .filter(header => !header.IsPrivate || permission.filter(p => p.RecordId === header.Id).some(policy => policy.CanRead))
+            .map(header => this.CalcTextAlign(header))
+            .sort((a, b) => b.Frozen - a.Frozen || (b.ComponentType === "Button") - (a.ComponentType === "Button") || a.Order - b.Order);
+
+        this.OrderHeaderGroup(headers);
+        this.Header = [this.ToolbarColumn, ...headers].filter(x => x !== null);
+        return this.Header;
+    }
+
+    async ApplyFilter() {
+        this.DataTable.parentElement.scrollTop = 0;
+        await this.ReloadData(this.cacheHeader = true);
+    }
+
+    ColumnResizeHandler() {
+        const createResizableTable = (table) => {
+            if (table === null) return;
+            const cols = table.querySelectorAll('th');
+            cols.forEach((col) => {
+                // Add a resizer element to the column
+                const resizer = document.createElement('div');
+                resizer.classList.add('resizer');
+
+                col.appendChild(resizer);
+
+                this.createResizableColumn(col, resizer);
+            });
+        };
+
+        const createResizableColumn = (col, resizer) => {
+            let x = 0;
+            let w = 0;
+
+            const mouseDownHandler = (e) => {
+                e.preventDefault();
+                x = e.clientX;
+
+                const styles = window.getComputedStyle(col);
+                w = parseInt(styles.width, 10);
+
+                document.addEventListener('mousemove', mouseMoveHandler);
+                document.addEventListener('mouseup', mouseUpHandler);
+
+                resizer.classList.add('resizing');
+            };
+
+            const mouseMoveHandler = (e) => {
+                e.preventDefault();
+                const dx = e.clientX - x;
+                col.style.width = `${w + dx}px`;
+                col.style.minWidth = `${w + dx}px`;
+                col.style.maxWidth = `${w + dx}px`;
+            };
+
+            const mouseUpHandler = () => {
+                this.UpdateHeader();
+                resizer.classList.remove('resizing');
+                document.removeEventListener('mousemove', mouseMoveHandler);
+                document.removeEventListener('mouseup', mouseUpHandler);
+            };
+
+            resizer.addEventListener('mousedown', mouseDownHandler);
+        };
+
+        createResizableTable(this.DataTable);
+    }
+
+    
 }
