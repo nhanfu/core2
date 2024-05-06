@@ -1,5 +1,5 @@
 import { Client } from '../clients/client.js';
-import { string } from './ext.js';
+import { Str } from './ext.js';
 import { LangSelect } from './langSelect.js';
 export class HtmlEvent {
     static click = 'click';
@@ -243,7 +243,7 @@ export class HTML {
             return this;
         }
         const translated = LangSelect.Get(langKey);
-        const textContent = parameters.length > 0 ? string.Format(translated, parameters) : translated;
+        const textContent = parameters.length > 0 ? Str.Format(translated, parameters) : translated;
         const textNode = document.createTextNode(textContent);
         this.MarkLangProp(textNode, langKey, "TextContent", parameters);
         this.Context.appendChild(textNode);

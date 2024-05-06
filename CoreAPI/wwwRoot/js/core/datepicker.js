@@ -1,6 +1,6 @@
 import EditableComponent from "./editableComponent.js";
 import ObservableArgs from "./models/observable.js";
-import { string } from "./utils/ext.js";
+import { Str } from "./utils/ext.js";
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
 
@@ -427,7 +427,7 @@ export class Datepicker extends EditableComponent {
      */
     RemoveDOM() {
         if (!this.Element?.parentElement) return;
-        this.Element.parentElement.innerHTML = string.Empty;
+        this.Element.parentElement.innerHTML = Str.Empty;
         this.Element = null;
     }
 

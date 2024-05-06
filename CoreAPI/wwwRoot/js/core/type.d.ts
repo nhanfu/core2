@@ -1,4 +1,5 @@
 import { OutOfViewPort } from "./utils/outOfViewPort.js";
+import { Entity } from "models/enum.js";
 declare global {
   interface Array<T> {
     Any(predicate?: (item: T) => boolean): boolean;
@@ -34,10 +35,10 @@ declare global {
     Nothing(): boolean;
     Remove(item: T): void;
     /**
-     * @param {Function<T>} getChildren - Mapper method to get inner property
-     * @returns {Array<T>} The flatterned array
+     * @param {(value: T) => K[]} getChildren - Mapper method to get inner property
+     * @returns {Array<K>} The flatterned array
      */
-    Flattern(getChildren: (value: T, index: number, array: T[]) => void, thisArg?: any): T[];
+    Flattern(getChildren: (value: T) => K[], thisArg?: any): T[];
     /**
      * @template T, K, L
      * @param keySelector 
@@ -59,14 +60,21 @@ declare global {
      */
     GroupBy(keySelector: (item: T) => K): [][];
     DistinctBy(keySelector: (item: T) => K): T[];
-    ForEach(action: (item: T) => void): T[];
+    /**
+     * Performs the specified action for each element in an array.
+     * @param callbackfn  A function that accepts up to three arguments. forEach calls the callbackfn function one time for each element in the array.
+     * @param thisArg  An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
+     */
+    ForEach(callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any): void;
     ForEachAsync(promise: (item: T) => Promise): Promise<T[]>;
     /**
      * Combine items into string
      * @param mapper 
      * @param joinner 
      */
-    Combine(mapper: (item: T) => string, separator: string): string;
+    Combine(mapper: (item: T) => string, separator: string = ','): string;
+    Clear(): void;
+    AddRange(...items: T[]): void;
   }
 
   interface String {
@@ -82,11 +90,15 @@ declare global {
     done(onSuccess: (value: T) => void = null, onError: (error: any) => void = null): Promise<T>;
   }
 
-  interface Obj {
-    CopyPropFrom(obj: Obj): void;
+  interface Object {
+    Clear(): void;
+    Nothing(): boolean;
+    CopyPropFrom(obj: Object): void;
     GetComplexProp(path: string): any;
     SetComplexPropValue(path: string, val: any): void;
     SetPropValue(path: string, val: any): void;
+    ToEntity(): Entity[];
+    GetFieldNameByVal(val: any): string;
   }
 
   interface Date {
@@ -100,6 +112,8 @@ declare global {
   }
 
   interface HTMLElement {
+    ToggleClass(cls: String): void;
+    RemoveClass(cls: String): void;
     HasClass(cls: string): boolean;
     ReplaceClass(cls: string, byCls: string): void;
     /**
@@ -148,13 +162,6 @@ declare global {
      * @returns An object indicating which sides are out of the viewport.
      */
     OutOfViewport(): OutOfViewPort;
-
-    /**
-     * Filters child elements based on a predicate.
-     * @param predicate A function to test each element.
-     * @returns An array of HTMLElements that match the predicate.
-     */
-    FilterElement(predicate: (element: HTMLElement) => boolean): HTMLElement[];
   }
 
   interface Number {

@@ -366,15 +366,12 @@ export class FieldCondition {
  * Represents the ordering of a field in a query.
  */
 export class OrderBy {
-    /**
-     * Constructs an instance of OrderBy.
-     */
-    constructor() {
-        this.Id = '';
-        this.ComId = '';
-        this.FieldName = '';
-        this.OrderbyDirectionId = null;
-    }
+    /** @type {String | null | undefined} */
+    Id = '';
+    ComId = '';
+    FieldName = '';
+    /** @type {OrderbyDirection | null | undefined} */
+    OrderbyDirectionId = null;
 }
 
 /**
@@ -395,4 +392,21 @@ export class MQEvent {
     }
 }
 
-
+/**
+ * @class Entity
+ * @property {string} Name
+ * @property {string} Description
+ * @property {boolean} Active
+ */
+export class Entity {
+    /** @type {number} Id */
+    Id;
+    /** @type {string} */
+    Name;
+    /** @type {any} */
+    Value;
+    /** @type {any} */
+    Display;
+    /** @type {boolean} */
+    Active;
+}

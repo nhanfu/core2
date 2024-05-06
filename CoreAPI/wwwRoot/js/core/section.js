@@ -1,5 +1,5 @@
 import EditableComponent from "./editableComponent.js";
-import { string } from "./utils/ext.js";
+import { Str } from "./utils/ext.js";
 import { Html } from "./utils/html";
 import { Utils } from "./utils/utils.js";
 import { ElementType } from './models/elementType.js'
@@ -17,7 +17,7 @@ export class Section extends EditableComponent {
      * @param {string | null | undefined} eleType - Element type of the section
      * @param {HTMLElement | null} ele 
      */
-    constructor(eleType, ele) {
+    constructor(eleType, ele = null) {
         super(null, ele);
         this.elementType = eleType;
         this.Element = ele;
@@ -38,7 +38,7 @@ export class Section extends EditableComponent {
         this.Element.id = this.Meta.Id;
         if (this.Meta.Html) {
             const cssContent = this.Meta.Css;
-            const section = (this.Meta.FieldName?.toLowerCase() ?? string.Empty) + this.Meta.Id;
+            const section = (this.Meta.FieldName?.toLowerCase() ?? Str.Empty) + this.Meta.Id;
             if (cssContent) {
                 if (!document.head.querySelector("#" + section)) {
                     const style = document.createElement("style");
@@ -48,7 +48,7 @@ export class Section extends EditableComponent {
                 }
             }
             if (this.Element != null) {
-                const cellText = Utils.GetHtmlCode(this.Meta.Html, [this.Entity]) ?? string.Empty;
+                const cellText = Utils.GetHtmlCode(this.Meta.Html, [this.Entity]) ?? Str.Empty;
                 this.Element.innerHTML = cellText;
             }
             const allComPolicies = !this.Meta.Id && this.EditForm

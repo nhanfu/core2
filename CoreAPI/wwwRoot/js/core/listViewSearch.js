@@ -111,7 +111,7 @@ export class ListViewSearch extends EditableComponent {
      * @param {Component} ui
      */
     constructor(ui) {
-        super(ui);
+        super(ui, null);
         this.PopulateDirty = false;
         this.AlwaysValid = true;
         this.Meta = ui;
@@ -134,7 +134,7 @@ export class ListViewSearch extends EditableComponent {
         Html.Take(this.Element);
         var components = this.BasicSearch.map(header => {
             var com = header;
-            var componentType = com.ComponentType.TryParse(ComponentTypeTypeEnum);
+            var componentType = com.ComponentType;
             com.ShowLabel = false;
             com.PlainText = header.Label;
             com.Visibility = true;

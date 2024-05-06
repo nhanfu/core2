@@ -6,7 +6,7 @@ import { LangSelect } from "./utils/langSelect.js";
 import { Client } from "./clients/client.js";
 import EventType from './models/eventType.js';
 import { ComponentType } from './models/componentType.js';
-import { string } from './utils/ext.js';
+import { Str } from './utils/ext.js';
 
 
 export class Textbox extends EditableComponent {
@@ -41,7 +41,7 @@ export class Textbox extends EditableComponent {
 
     set Value(newValue) {
         this._value = newValue;
-        if (this._value !== null && typeof this._value === string.Type) {
+        if (this._value !== null && typeof this._value === Str.Type) {
             if (this.EditForm && this.EditForm.Meta && !this.EditForm.Meta.IgnoreEncode || !this.EditForm.Meta) {
                 this.Entity.SetComplexPropValue(this.FieldName, Utils.EncodeSpecialChar(Utils.DecodeSpecialChar(this._value)));
             }
@@ -66,7 +66,7 @@ export class Textbox extends EditableComponent {
     Render() {
         this.SetDefaultVal();
         var val = this.Entity && this.Entity.GetComplexProp(this.FieldName);
-        var shouldEncode = val !== null && val !== undefined && typeof val === string.Type && this.EditForm != null 
+        var shouldEncode = val !== null && val !== undefined && typeof val === Str.Type && this.EditForm != null 
             && this.EditForm.Meta != null && !this.EditForm.Meta.IgnoreEncode;
         if (shouldEncode) {
             const decode = Utils.DecodeSpecialChar(val);

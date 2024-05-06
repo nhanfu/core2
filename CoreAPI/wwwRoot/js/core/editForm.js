@@ -4,7 +4,7 @@ import { ComponentExt } from './utils/componentExt.js';
 import EventType from "./models/eventType.js";
 import { Html } from "./utils/html.js";
 import { Client } from "./clients/client.js";
-import { string } from "./utils/ext.js";
+import { Str } from "./utils/ext.js";
 import { Component } from "./models/component.js";
 import { PatchVM } from "./models/patch.js";
 import { Message } from "./utils/message.js";
@@ -251,10 +251,10 @@ export class EditForm extends EditableComponent {
         const token = Client.Token;
         this.currentUserId = token?.UserId;
         this.regionId = token?.RegionId;
-        this.centerIds = token?.CenterIds ? token.CenterIds.join(string.Comma) : string.Empty;
-        this.roleIds = token?.RoleIds ? token.RoleIds.join(string.Comma) : string.Empty;
+        this.centerIds = token?.CenterIds ? token.CenterIds.join(Str.Comma) : Str.Empty;
+        this.roleIds = token?.RoleIds ? token.RoleIds.join(Str.Comma) : Str.Empty;
         this.costCenterId = token?.CostCenterId;
-        this.roleNames = token?.RoleNames ? token.RoleNames.join(string.Comma) : string.Empty;
+        this.roleNames = token?.RoleNames ? token.RoleNames.join(Str.Comma) : Str.Empty;
     }
 
     BeforeSaved = new Action();
@@ -753,7 +753,7 @@ export class EditForm extends EditableComponent {
             this.ParentForm.Dispose();
             this.ParentForm = null;
         }
-        entryPoint.innerHTML = string.Empty;
+        entryPoint.innerHTML = Str.Empty;
         if (feature.Template.HasAnyChar()) {
             entryPoint.innerHTML = feature.Template;
             this.BindingTemplate(entryPoint, this);
@@ -761,7 +761,7 @@ export class EditForm extends EditableComponent {
             this.ResetEntryPoint(innerEntry);
             entryPoint = innerEntry || entryPoint;
             if (entryPoint.style.display === 'none') {
-                entryPoint.style.display = string.Empty;
+                entryPoint.style.display = Str.Empty;
             }
         }
         return entryPoint;
@@ -773,7 +773,7 @@ export class EditForm extends EditableComponent {
      */
     ResetEntryPoint(entryPoint) {
         if (entryPoint) {
-            entryPoint.innerHTML = string.Empty;
+            entryPoint.innerHTML = Str.Empty;
         }
     }
 
@@ -949,7 +949,7 @@ export class EditForm extends EditableComponent {
     Print(selector = ".printable") {
         const printableArea = this.Element.querySelector(selector);
         if (printableArea) {
-            const printWindow = window.open(string.Empty, '_blank');
+            const printWindow = window.open(Str.Empty, '_blank');
             printWindow.document.write(printableArea.innerHTML);
             printWindow.document.close();
             printWindow.focus();

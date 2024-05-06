@@ -1,5 +1,4 @@
-import { Action } from "./models/action.js";
-import { string } from "./utils/ext.js";
+import { Str } from "./utils/ext.js";
 import { Utils } from "./utils/utils.js";
 import { ValidationRule } from "./models/validationRule.js";
 import EventType from "./models/eventType.js";
@@ -7,6 +6,8 @@ import { ComponentType } from "./models/componentType.js";
 import { Uuid7 } from "./structs/uuidv7.js";
 import { Html } from "./utils/html.js";
 import './utils/ext.js';
+import { ListViewItem } from "listViewItem.js";
+import { Section } from "section.js";
 
 /**
  * @typedef {import('./editForm.js').EditForm} EditForm
@@ -27,15 +28,15 @@ export default class EditableComponent {
     /**
      * Create instance of component
      * @param {Component | null} meta 
-     * @param {HTMLElement | null} ele 
+     * @param {HTMLElement | Element | null} ele 
      */
-    constructor(meta, ele) {
+    constructor(meta, ele = null) {
         this.Meta = meta;
         this.Element = ele;
 
         if (meta?.Validation != null) {
             /** @type {Validation[]} */
-            var rules = typeof meta.Validation === string.Type ? JSON.parse(meta.Validation) : meta.Validation;
+            var rules = typeof meta.Validation === Str.Type ? JSON.parse(meta.Validation.toString()) : meta.Validation;
             if (rules.HasElement()) {
                 this.ValidationRules = rules.ToDictionary(x => x.Rule, x => x);
             }
@@ -138,15 +139,13 @@ export default class EditableComponent {
         return this.InvokeEvent(events, eventTypeName, ...parameters);
     }
 
-    /** @type {EditForm} EditForm - The root component of all tree node.*/
-    EditForm;
     /** @type {EditableComponent} Parent - The parent component of this editable component.*/
     Parent;
     /** @type {EditableComponent[]} children - The child components of this editable component.*/
     Children = [];
     /** @type {HTMLElement} ParentElement - The parent element of this editable component. */
     ParentElement;
-    /** @type {HTMLElement} Element - The HTML element representing this editable component. */
+    /** @type {HTMLElement | Element | null} Element - The HTML element representing this editable component. */
     Element;
     /** @type {Obj} Entity - The entity associated with this editable component. */
     Entity = {};
@@ -163,17 +162,20 @@ export default class EditableComponent {
     DOMContentLoaded = new Action();
     /** @type {Action} Handle toggle event. */
     OnToggle = new Action();
+    /** @type {TabEditor} Handle toggle event. */
     #rootTab;
     /** @type {TabEditor} Handle toggle event. */
     get TabEditor() {
         if (this.#rootTab != null) return this.#rootTab;
-        this.#rootTab = this.FindClosest('TabEditor', x => !x.Popup);
+        // @ts-ignore
+        this.#rootTab = this.FindClosest(TabEditor, x => !x.Popup);
     }
     set TabEditor(editor) {
         this.#rootTab = editor;
     }
+    /** @type {EditForm} */
     #editForm;
-    /** @type {EditableComponent} Handle toggle event. */
+    /** @type {EditForm} */
     get EditForm() {
         if (this.#editForm != null) return this.#editForm;
         this.#editForm = this.FindClosest('EditForm', x => !x.Popup);
@@ -305,7 +307,7 @@ export default class EditableComponent {
             ruleValue = fieldVal;
         }
         if (!validPredicate(value, ruleValue)) {
-            this.ValidationResult[ruleType] = string.Format(rule.Message, this.Meta.Label, label);
+            this.ValidationResult[ruleType] = Str.Format(rule.Message, this.Meta.Label, label);
             return true;
         }
         else {
@@ -415,7 +417,7 @@ export default class EditableComponent {
             return;
         }
 
-        const gridRow = this.FindClosest(ComponentType.ListViewItem) ?? this.FindClosest(ComponentType.EditForm);
+        const gridRow = this.FindClosest(ListViewItem.prototype) ?? this.FindClosest(ComponentType.EditForm);
         const root = gridRow !== null ? gridRow : this.EditForm;
 
         const fn = Utils.IsFunction(this.Meta.PopulateField);
@@ -425,7 +427,7 @@ export default class EditableComponent {
             } catch (error) {
                 console.error(error);
             }
-            root.UpdateViewAwait(true);
+            root.UpdateView(true);
             return;
         }
 
@@ -487,14 +489,15 @@ export default class EditableComponent {
 
     /**
      * Find closeset component
-     * @param {string} type - Class type name
-     * @param {(value: EditableComponent, index: number) => boolean} filter - Filter component
+     * @param {any} proto - Class prototype
+     * @param {(value: EditableComponent) => boolean} filter - Filter component
      * @returns {EditableComponent} Returns the closeset EditableComponent of the specified type
      */
-    FindClosest(type, filter) {
+    FindClosest(proto, filter = null) {
+        /** @type {EditableComponent} */
         let found = this;
         while (found != null) {
-            if (found.Classes?.includes(type) || found.Meta?.ComponentType === type) {
+            if (found.constructor.prototype === proto || found.Meta?.ComponentType === proto) {
                 if (filter == null || filter(found)) return found;
             }
             found = found.Parent;
@@ -518,7 +521,7 @@ export default class EditableComponent {
             }
         }
         else {
-            ele.style.display = string.Empty;
+            ele.style.display = Str.Empty;
             if (meta != null && meta.ShowLabel && FieldName != null) {
                 ele.ParentElement.Style.Display = "";
                 ele.ParentElement.PreviousElementSibling.Style.Display = "";
@@ -554,9 +557,9 @@ export default class EditableComponent {
         }
     
         if (componentNames.length > 0) {
-            const coms = this.FilterChildren(Section, x => componentNames.includes(x.name) && x instanceof Section)
-                .flatMap(x => x.FilterChildren(EditableComponent, com => !(com instanceof Section)));
-            const coms2 = this.FilterChildren(EditableComponent, x => componentNames.includes(x.name) && !(x instanceof Section));
+            const coms = this.FilterChildren(x => x instanceof Section && componentNames.includes(x.FieldName))
+                .flatMap(x => x.FilterChildren(com => !(com instanceof Section)));
+            const coms2 = this.FilterChildren(x => componentNames.includes(x.FieldName) && !(x instanceof Section));
             const shouldUpdate = [...new Set([...coms, ...coms2].filter(x => !(x instanceof Section)))];
     
             shouldUpdate.forEach(child => {
@@ -573,6 +576,10 @@ export default class EditableComponent {
         }
     }
 
+    /**
+     * @param {boolean} force
+     * @param {boolean} dirty
+     */
     PrepareUpdateView(force, dirty) {
         if (force) {
             this.EmptyRow = false;
@@ -732,9 +739,14 @@ export default class EditableComponent {
     }
 
     Focus() {
-        this.Element?.Focus();
+        // @ts-ignore
+        this.Element?.focus();
     }
 
+    /**
+     * @param {boolean} disabled
+     * @param {string[]} name
+     */
     SetDisabled(disabled, ...name) {
         if (name == null || name.length == 0) this.Disabled = disabled;
         else {

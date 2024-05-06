@@ -1,30 +1,28 @@
 export class FeaturePolicy {
-    constructor() {
-        this.Id = '';
-        this.FeatureId = '';
-        this.RoleId = '';
-        this.CanRead = false;
-        this.CanWrite = false;
-        this.CanDelete = false;
-        this.CanDeleteAll = false;
-        this.Active = false;
-        this.InsertedDate = new Date();
-        this.InsertedBy = '';
-        this.UpdatedDate = null;
-        this.UpdatedBy = '';
-        this.CanDeactivate = false;
-        this.CanDeactivateAll = false;
-        this.LockDeleteAfterCreated = '';
-        this.LockUpdateAfterCreated = '';
-        this.EntityId = '';
-        this.RecordId = '';
-        this.UserId = '';
-        this.CanShare = false;
-        this.CanShareAll = false;
-        this.Desc = '';
-        this.CanWriteAll = false;
-        this.EntityName = '';
-        this.CanWriteMeta = false;
-        this.CanWriteMetaAll = false;
-    }
+    Id = '';
+    FeatureId = '';
+    RoleId = '';
+    CanRead = false;
+    CanWrite = false;
+    CanDelete = false;
+    CanDeleteAll = false;
+    Active = false;
+    InsertedDate = new Date();
+    InsertedBy = '';
+    UpdatedDate = null;
+    UpdatedBy = '';
+    CanDeactivate = false;
+    CanDeactivateAll = false;
+    LockDeleteAfterCreated = '';
+    LockUpdateAfterCreated = '';
+    EntityId = '';
+    RecordId = '';
+    UserId = '';
+    CanShare = false;
+    CanShareAll = false;
+    Desc = '';
+    CanWriteAll = false;
+    EntityName = '';
+    CanWriteMeta = false;
+    CanWriteMetaAll = false;
 }

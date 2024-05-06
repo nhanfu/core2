@@ -6,7 +6,7 @@ import { LangSelect } from "./utils/langSelect.js";
 import { Client } from "./clients/client.js";
 import EventType from './models/eventType.js';
 import { ComponentType } from './models/componentType.js';
-import { string } from './utils/ext.js';
+import { Str } from './utils/ext.js';
 import ObservableArgs from './models/observable.js';
 import { Action } from "./models/action.js";
 import "../fix.js";
@@ -15,6 +15,9 @@ import { Spinner } from './spinner.js';
 
 export class GridView extends ListView {
 
+    /**
+     * @param {import("./models/component.js").Component} ui
+     */
     constructor(ui) {
         super(ui);
         this.SummaryClass = "summary";

@@ -2,7 +2,7 @@ import EditableComponent from "./editableComponent.js";
 import { Action } from "./models/action.js";
 import { Component } from "./models/component.js";
 import { CustomEventType } from "./models/customEventType.js";
-import { ActiveStateEnum, AdvSearchVM, MQEvent, Where } from "./models/enum.js";
+import { ActiveStateEnum, AdvSearchVM, MQEvent, OrderBy, OrderbyDirection, Where } from "./models/enum.js";
 import { PaginationOptions, Paginator } from "./paginator.js";
 import { Utils } from "./utils/utils.js";
 import { ObservableList } from './models/observableList.js';
@@ -11,10 +11,12 @@ import { Html } from "./utils/html.js";
 import { ContextMenu } from "./contextMenu.js";
 import { FeaturePolicy } from "./models/featurePolicy.js";
 import './utils/ext.js';
-import { string } from "./utils/ext.js";
+import { Str } from "./utils/ext.js";
 import { Client } from "./clients/client.js";
 import { Spinner } from "./spinner.js";
 import { PatchDetail } from "./models/patch.js";
+import { SqlViewModel } from "models/sqlViewModel.js";
+import { ListViewSearch } from "listViewSearch.js";
 
 /**
  * Represents a list view component that allows editable features and other interactions like sorting and pagination.
@@ -22,15 +24,23 @@ import { PatchDetail } from "./models/patch.js";
 export class ListView extends EditableComponent {
     /** @type {EditableComponent} */
     MainSection;
+    /**
+     * @type {OrderBy[]}
+     */
+    OrderBy = [];
+    /**
+     * @type {any[]}
+     */
     CacheData = [];
     DataLoaded = new Action();
+    get Editable() { return this.Meta.CanAdd; }
     /**
      * Constructs an instance of ListView with the specified UI component.
      * @param {Component} ui The UI component associated with this list view.
-     * @param {HTMLElement} [ele] Optional HTML element.
+     * @param {Element} [ele] Optional HTML element.
      */
     constructor(ui, ele = null) {
-        super(ui);
+        super(ui, ele);
         this.DeleteTempIds = [];
         this.Meta = ui;
         this.Id = ui.Id?.toString();
@@ -39,9 +49,11 @@ export class ListView extends EditableComponent {
         this.Header = [];
         this.RowData = new ObservableList();
         /** @type {AdvSearchVM} */
+        // @ts-ignore
         this.AdvSearchVM = {
             ActiveState: ActiveStateEnum.Yes,
-            OrderBy: localStorage.getItem('OrderBy' + this.Meta.Id) ?? new List()
+            // @ts-ignore
+            OrderBy: localStorage.getItem('OrderBy' + this.Meta.Id) ?? []
         };
         this._hasLoadRef = false;
         if (ele !== null) {
@@ -143,8 +155,8 @@ export class ListView extends EditableComponent {
      */
     async ReloadData(cacheHeader = false, skip = null, pageSize = null) {
         if (this.Meta.LocalQuery) {
-            this.Meta.LocalData = typeof this.Meta.LocalQuery === string.Type
-                ? JSON.parse(this.Meta.LocalQuery)
+            this.Meta.LocalData = this.Meta.LocalData ?? typeof this.Meta.LocalQuery === Str.Type
+                ? JSON.parse(this.Meta.LocalQuery.toString())
                 : this.Meta.LocalQuery;
             this.Meta.LocalRender = true;
         }
@@ -164,8 +176,8 @@ export class ListView extends EditableComponent {
     CalcFilterQuery() {
         return this.ListViewSearch.CalcFilterQuery();
     }
-    /** @type {Where} */
-    Wheres;
+    /** @type {Where[]} */
+    Wheres = [];
     /**
      * Gets the SQL for data retrieval based on the current state of the list view.
      * @param {number} [skip=null] Number of records to skip for pagination.
@@ -182,8 +194,10 @@ export class ListView extends EditableComponent {
         }) : null;
         let basicCondition = this.CalcFilterQuery();
         let fnBtnCondition = this.Wheres.Combine(x => `(${x.Condition})`, " and ");
-        let finalCon = [basicCondition, fnBtnCondition].filter(x => !x.IsNullOrWhiteSpace()).Combine(" and ");
-        return {
+        let finalCon = [basicCondition, fnBtnCondition].filter(x => !x.IsNullOrWhiteSpace()).Combine(null, " and ");
+        /** @type {SqlViewModel} */
+        // @ts-ignore
+        const res = {
             ComId: this.Meta.Id,
             Params: submitEntity ? JSON.stringify(submitEntity) : null,
             OrderBy: orderBy || (!this.Meta.OrderBy ? "ds.Id asc" : this.Meta.OrderBy),
@@ -193,6 +207,7 @@ export class ListView extends EditableComponent {
             MetaConn: this.MetaConn,
             DataConn: this.DataConn,
         };
+        return res;
     }
 
     ShouldSetEntity = true;
@@ -216,7 +231,7 @@ export class ListView extends EditableComponent {
     /**
      * Executes a custom SQL query using the provided SQL view model.
      * @param {SqlViewModel} vm The view model containing SQL query details.
-     * @returns {Promise<List<object>>} A promise that resolves to the list of data objects retrieved.
+     * @returns {Promise<any[]>} A promise that resolves to the list of data objects retrieved.
      */
     async CustomQuery(vm) {
         try {
@@ -225,7 +240,7 @@ export class ListView extends EditableComponent {
                 this.SetRowData(null);
                 return null;
             }
-            let total = ds.length > 1 ? ds[1].ToDynamic()[0].total : ds[0].length;
+            let total = ds.length > 1 ? ds[1][0].total : ds[0].length;
             let rows = ds[0];
             Spinner.Hide();
             this.SetRowData(rows);
@@ -258,32 +273,6 @@ export class ListView extends EditableComponent {
     }
 
     /**
-     * Handles the rendering of pagination components within the list view.
-     */
-    RenderPaginator() {
-        if (this.Meta.LocalRender || this.Meta.LiteGrid) {
-            if (this.Paginator) {
-                this.Paginator.Show = false;
-            }
-            return;
-        }
-        if (this.Meta.Row === null || this.Meta.Row === 0) {
-            this.Meta.Row = 20;
-        }
-
-        if (!this.Paginator) {
-            /** @type {PaginationOptions} */
-            const options = {
-                Total: 0,
-                PageSize: this.Meta.Row ?? 50,
-                CurrentPageCount: this.RowData.Data.length,
-            };
-            this.Paginator = new Paginator(options);
-            this.AddChild(this.Paginator);
-        }
-    }
-
-    /**
      * Adds sections to the ListView based on the component configurations.
      */
     AddSections() {
@@ -307,7 +296,7 @@ export class ListView extends EditableComponent {
         this.EmptySection.ParentElement = this.Element;
         this.AddChild(this.EmptySection);
 
-        this.MainSection = new ListViewSection(null, this.EmptySection.Element.previousSibling);
+        this.MainSection = new ListViewSection(null, this.EmptySection.Element.previousElementSibling);
         this.AddChild(this.MainSection);
 
         Html.Instance.EndOf(".list-content");
@@ -478,53 +467,14 @@ export class ListView extends EditableComponent {
         }
 
         if (!this.Paginator) {
+            // @ts-ignore
             this.Paginator = new Paginator({
                 Total: 0,
                 PageSize: this.Meta.Row ?? 50,
-                CurrentPageCount: this.RowData.Data.Count(),
+                CurrentPageCount: this.RowData.Data.length,
             });
             this.AddChild(this.Paginator);
         }
-    }
-
-    /**
-     * Applies a filter to the ListView, reloading data based on the current filter settings.
-     * @returns {Promise} A promise that resolves once the data has been reloaded with the applied filter.
-     */
-    ApplyFilter() {
-        this.ClearRowData();
-        return this.ReloadData(true, 0, true);
-    }
-
-    /**
-     * Adds a new empty row to the ListView.
-     */
-    AddNewEmptyRow() {
-        if (this.Meta.LiteGrid || this.Disabled || !this.Editable || (this.EmptySection?.Children.HasElement() === true)) {
-            return;
-        }
-        let emptyRowData = {};
-        if (this.Meta.DefaultVal) {
-            const fn = Utils.IsFunction(this.Meta.DefaultVal);
-            let dfObj = fn ? fn.call(this, this) : null;
-            Object.keys(dfObj).forEach(key => {
-                emptyRowData[key] = dfObj[key];
-            });
-        }
-        emptyRowData[this.IdField] = null;
-        let rowSection = this.RenderRowData(this.Header, emptyRowData, this.EmptySection, null, true);
-        Object.entries(emptyRowData).forEach(([field, value]) => {
-            rowSection.PatchModel.Add(new PatchDetail({
-                Field: field,
-                Value: value?.toString()
-            }));
-        });
-        if (!this.Meta.TopEmpty) {
-            this.MainSection.Element.insertBefore(this.MainSection.Element, this.EmptySection.Element);
-        } else {
-            this.MainSection.Element.appendChild(this.EmptySection.Element.firstElementChild);
-        }
-        this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterEmptyRowCreated, emptyRowData).Done();
     }
 
     /**
@@ -550,30 +500,6 @@ export class ListView extends EditableComponent {
         this.Header.AddRange(...headers);
         this.Header = this.Header.Where(x => x != null);
         return this.Header;
-    }
-
-    /**
-     * Renders the paginator component if necessary based on the configuration and data.
-     */
-    RenderPaginator() {
-        if (this.Meta.LocalRender || this.Meta.LiteGrid) {
-            if (this.Paginator) {
-                this.Paginator.Show = false;
-            }
-            return;
-        }
-        if (!this.Meta.Row || this.Meta.Row === 0) {
-            this.Meta.Row = 20;
-        }
-
-        if (!this.Paginator) {
-            this.Paginator = new Paginator({
-                Total: 0,
-                PageSize: this.Meta.Row ?? 50,
-                CurrentPageCount: this.RowData.Data.Count(),
-            });
-            this.AddChild(this.Paginator);
-        }
     }
 
     /**

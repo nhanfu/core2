@@ -3,7 +3,7 @@ import EditableComponent from "./editableComponent.js";
 import { Component } from "./models/component.js";
 import { Uuid7 } from "./structs/uuidv7.js";
 import { ComponentExt } from "./utils/componentExt.js";
-import { string } from "./utils/ext.js";
+import { Str } from "./utils/ext.js";
 import { Html } from "./utils/html.js";
 
 /**
@@ -67,7 +67,7 @@ export class CodeEditor extends EditableComponent {
 
     EditorLoaded() {
         this.editor = monaco.editor.create(this.Element, {
-            value: this.FieldVal ?? string.Empty,
+            value: this.FieldVal ?? Str.Empty,
             language: this.Meta.Lang ?? 'javascript',
             theme: this.Meta.Theme ?? 'vs-light',
             automaticLayout: true,
