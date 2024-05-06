@@ -1,11 +1,13 @@
-import {EditForm} from './editForm.js';
 import { Html } from "./utils/html.js";
-import {Textbox }from './textbox.js'
-import {Datepicker} from './datepicker.js'
+import { Textbox, Textbox } from './textbox.js'
+import { Datepicker } from './datepicker.js'
 import { CompareGridView } from './CompareGridView.js';
+import EditableComponent from 'editableComponent.js';
+import { Component } from "models/component.js";
+import { Message } from "utils/message.js";
 
 
-export class ConfirmDialog extends EditForm {
+export class ConfirmDialog extends EditableComponent {
     constructor() {
         super(null);
         this._yesBtn = null;
@@ -16,9 +18,9 @@ export class ConfirmDialog extends EditForm {
         this.Datepicker = null;
         this.Precision = null;
         this.SearchEntry = null;
-        this.YesConfirmed = null; 
+        this.YesConfirmed = null;
         this.NoConfirmed = null;
-        this.Canceled = null; 
+        this.Canceled = null;
         this.IgnoreNoButton = false;
         this.MultipleLine = true;
         this.YesText = "Đồng ý";
@@ -30,7 +32,7 @@ export class ConfirmDialog extends EditForm {
         this.IgnoreCancelButton = true;
         this.PopulateDirty = false;
         this.Title = "Xác nhận";
-        
+
     }
 
     Render() {
@@ -44,21 +46,21 @@ export class ConfirmDialog extends EditForm {
         let popupContent = Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: auto;")
             .Div.ClassName("popup-title").IHtml(this.Title)
             .Div.ClassName("icon-box").Span.ClassName("fa fa-times")
-                .Event("click", () => this.CloseDispose())
+            .Event("click", () => this.CloseDispose())
             .EndOf("popup-title")
             .Div.ClassName("popup-body");
 
         popupContent.P.IHtml(this.Content).End.Div.Event("keydown", (e) => this.hotKeyHandler(e)).MarginRem("top", 1);
         if (this.NeedAnswer) {
             if (this.ComType === "Textbox") {
-                this.Textbox = new Textbox(new Component({
-                    plainText: "Nhập câu trả lời",
-                    showLabel: false,
-                    fieldName: CompareGridView.ReasonOfChange,
-                    row: 2,
-                    multipleLine: this.MultipleLine
-                }));
-                this.AddChild(this.Textbox);
+                const com = new Component();
+                com.PlainText = "Nhập câu trả lời";
+                com.ShowLabel = false;
+                com.FieldName = Message.ReasonOfChange;
+                com.Row = 2;
+                com.MultipleLine = this.MultipleLine;
+                const textbox = new Textbox(com);
+                this.AddChild(textbox);
                 Html.Instance.End.Render();
             }
             if (this.ComType === "Number") {
@@ -104,8 +106,8 @@ export class ConfirmDialog extends EditForm {
 
         if (!this.IgnoreNoButton) {
             Html.Instance.Button2(this.NoText, "button alert small", "mif-exit")
-           .MarginRem("left", 1)
-           .Event("click", () => {
+                .MarginRem("left", 1)
+                .Event("click", () => {
                     try {
                         this.NoConfirmed?.();
                     } catch (ex) {

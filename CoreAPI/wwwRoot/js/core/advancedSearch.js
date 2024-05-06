@@ -2,9 +2,9 @@ import EditableComponent from "./editableComponent.js";
 import { Component } from "./models/component.js";
 import { ComponentType } from "./models/componentType.js";
 import { ElementType } from "./models/elementType.js";
-import { ActiveStateEnum, AdvSearchOperation, FieldCondition, LogicOperation, OperationToSql, OrderBy, OrderbyDirection } from "./models/enum.js";
+import { AdvSearchVM, ActiveStateEnum, AdvSearchOperation, FieldCondition, LogicOperation, OperationToSql, OrderBy, OrderbyDirection } from "./models/enum.js";
 import EventType from "./models/eventType.js";
-import { KeyCodeEnum } from "./models/keycode.js";
+import { KeyCodeEnum } from "./models/enum.js";
 import { Section } from "./section.js";
 import { Uuid7 } from "./structs/uuidv7.js";
 import { TabEditor } from "./tabEditor.js";
@@ -12,13 +12,11 @@ import { Str } from "./utils/ext.js";
 import * as dayjs from './structs/dayjs.min.js';
 import { Textbox } from "./textbox.js";
 import { FeaturePolicy } from "models/featurePolicy.js";
-import { GridView } from "GridView.js";
 import { NumBox } from "numbox.js";
 import { Datepicker } from "datepicker.js";
 
 /** @typedef {import("./GridView.js").GridView} GridView */
 /** @typedef {import("./listView.js").ListView} ListView */
-/** @typedef {import("./models/enum.js").AdvSearchVM} AdvSearchVM */
 
 export class AdvancedSearch extends TabEditor {
     /** @type {ListView} */

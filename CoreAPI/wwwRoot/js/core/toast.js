@@ -1,3 +1,5 @@
+import { Swal } from './libs/sweetalert2.js';
+
 /**
  * Options for creating a toast notification.
  * @typedef {Object} ToastOptions
@@ -59,11 +61,26 @@ export class Toast {
      * Creates a warning toast.
      * @param {string} message - Message to display.
      */
-    static Warning(message) {
+    static Warning(message, ...parameters) {
         Toast.Create({
             ClassName: 'warning',
             Timeout: 2500,
-            Message: message
+            Message: message,
+            Params: parameters
+        });
+    }
+
+    /**
+     * Creates an error toast.
+     * @param {string} message - Message to display.
+     * @param {undefined[]} parameters
+     */
+    static Error(message, ...parameters) {
+        Toast.Create({
+            ClassName: 'error',
+            Timeout: 2500,
+            Message: message,
+            Params: parameters
         });
     }
 
@@ -73,10 +90,11 @@ export class Toast {
      * @param {number} [timeout=2500] - Duration before the toast disappears.
      */
     static Small(message, timeout = 2500) {
+        // @ts-ignore
         Toast.Create({
             ClassName: 'sm-tran',
             Timeout: timeout,
-            Message: message
+            Message: message,
         });
     }
 }

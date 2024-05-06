@@ -162,6 +162,7 @@ export class Component {
     ChildStyle = '';
     HotKey = '';
     RefClass = '';
+    /** @type {String | any} */
     Events = '';
     Disabled = false;
     Visibility = false;
@@ -181,6 +182,7 @@ export class Component {
     DefaultVal = '';
     DateTimeField = '';
     Active = false;
+    IsPublic = false;
     InsertedDate = new Date();
     InsertedBy = '';
     UpdatedDate = null;

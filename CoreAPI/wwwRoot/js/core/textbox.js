@@ -10,6 +10,10 @@ import { Str } from './utils/ext.js';
 
 
 export class Textbox extends EditableComponent {
+    /**
+     * @param {import("./models/component.js").Component} meta
+     * @param {Element} [ele]
+     */
     constructor(meta, ele) {
         super(meta, ele);
         /** @type {HTMLInputElement} */
@@ -31,8 +35,8 @@ export class Textbox extends EditableComponent {
     }
     /** @type {String} */
     get Text() { return this._text; }
-    set Text(val) { 
-        this._text = val; 
+    set Text(val) {
+        this._text = val;
         if (this.Input) this.Input.value = val;
         if (this.Textarea) this.Textarea.value = val;
     }
@@ -66,24 +70,20 @@ export class Textbox extends EditableComponent {
     Render() {
         this.SetDefaultVal();
         var val = this.Entity && this.Entity.GetComplexProp(this.FieldName);
-        var shouldEncode = val !== null && val !== undefined && typeof val === Str.Type && this.EditForm != null 
+        var shouldEncode = val !== null && val !== undefined && typeof val === Str.Type && this.EditForm != null
             && this.EditForm.Meta != null && !this.EditForm.Meta.IgnoreEncode;
         if (shouldEncode) {
             const decode = Utils.DecodeSpecialChar(val);
             const encode = Utils.EncodeSpecialChar(decode);
             this.Entity.SetComplexPropValue(this.FieldName, encode);
         }
-        var text = val || '';
-        if (!this.Meta.FormatData) {
-            text = Utils.FormatEntity(this.Meta.FormatData, val);
-        } else if (!this.Meta.FormatEntity) {
-            text = Utils.FormatEntity(this.Meta.FormatEntity, this.Entity);
-        }
+        var text = Utils.IsFunction(this.Meta.FormatEntity)?.call(null, this);
         this._text = this.EditForm != null && this.EditForm.Meta != null && this.EditForm.Meta.IgnoreEncode ? text : Utils.DecodeSpecialChar(text);
         this.OldValue = this._text;
         if (this.MultipleLine || this.TextArea != null) {
             if (this.TextArea == null) {
                 Html.Take(this.ParentElement).TextArea.Value(this._text).PlaceHolder(this.Meta.PlainText);
+                // @ts-ignore
                 this.Element = this.TextArea = Html.Context;
             } else if (this.TextArea) {
                 this.Element = this.TextArea;
@@ -92,12 +92,13 @@ export class Textbox extends EditableComponent {
             if (this.Meta.Row > 0) {
                 Html.Instance.Attr("rows", this.Meta.Row ?? 1);
             }
-            this.TextArea.addEventListener("input", (e) => this.PopulateUIChange(EventType.Input).bind(this));
-            this.TextArea.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change).bind(this));
+            this.TextArea.addEventListener("input", (e) => this.PopulateUIChange(EventType.Input));
+            this.TextArea.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change));
         }
         else {
             if (this.Input == null) {
                 Html.Take(this.ParentElement).Input.Value(this._text)?.PlaceHolder(this.Meta.PlainText);
+                // @ts-ignore
                 this.Element = this.Input = Html.Context;
             } else {
                 this.Element = this.Input;
@@ -144,17 +145,17 @@ export class Textbox extends EditableComponent {
             this.OldValue = this._text;
         }
     }
-   
+
     ValidateAsync() {
         if (this.ValidationRules.Nothing()) {
-            return true;
+            return Promise.resolve(true);
         }
         const tcs = new Promise((resolve, reject) => {
             this.ValidationResult.Clear();
             this.Validate(ValidationRule.MinLength, this._text, (value, minLength) => this._text != null && this._text.length >= minLength);
             this.Validate(ValidationRule.CheckLength, this._text, (text, checkLength) => this._text == null || this._text == "" || this._text.length == checkLength);
             this.Validate(ValidationRule.MaxLength, this._text, (text, maxLength) => this._text == null || this._text.length <= maxLength);
-            this.Validate(ValidationRule.RegEx, this._text, this.validateRegEx);
+            this.Validate(ValidationRule.RegEx, this._text, this.ValidateRegEx);
             this.ValidateRequired(this.Text);
             this.ValidateUnique().then(() => {
                 resolve(this.IsValid);
@@ -163,7 +164,12 @@ export class Textbox extends EditableComponent {
 
         return tcs;
     }
-     validateRegEx(value, regText) {
+
+    /**
+     * @param {string} value
+     * @param {string | RegExp} regText
+     */
+    ValidateRegEx(value, regText) {
         if (value === null) {
             return true;
         }
@@ -171,36 +177,30 @@ export class Textbox extends EditableComponent {
         var res = regEx.test(value);
         var rule = this.ValidationRules[ValidationRule.RegEx];
         if (rule && !res && rule.RejectInvalid) {
-            var end = this.Input.SelectionEnd;
+            var end = this.Input.selectionEnd;
             this.Text = this._oldText;
             this._value = this._oldText;
-            this.Input.SelectionStart = end;
-            this.Input.SelectionEnd = end;
+            this.Input.selectionStart = end;
+            this.Input.selectionEnd = end;
             return regEx.test(this._oldText);
         }
         return res;
     }
+
     ValidateUnique() {
         if (this.ValidationRules.hasOwnProperty(ValidationRule.Unique)) {
             return Promise.resolve(true);
         }
         var rule = this.ValidationRules[ValidationRule.Unique];
-        
+
         if (rule === null || this._text.trim() !== "") {
             return Promise.resolve(true);
         }
-        var isFn;
-        var fn;
-        Utils.IsFunction(Meta.PreQuery, function (result) {
-            isFn = result !== null && typeof result === 'function';
-            if (isFn) {
-                fn = result;
-            }
-        });
+        const fn = Utils.IsFunction(this.Meta.PreQuery);
         var table = !this.Meta.RefName ? this.Meta.RefName : this.EditForm.Meta.EntityName;
         const submit = {
             ComId: this.Meta.Id,
-            Params: isFn ? JSON.Stringify(fn.Call(null, this)) : null,
+            Params: fn ? JSON.stringify(fn.call(null, this)) : null,
             MetaConn: this.MetaConn,
             DataConn: this.DataConn,
         };
@@ -208,27 +208,28 @@ export class Textbox extends EditableComponent {
             Client.Instance.ComQuery(submit)
                 .then(ds => {
                     var exists = ds.length > 0 && ds[0].length > 0;
+                    return exists;
+                })
+                .then(exists => {
                     if (exists) {
-                        this.ValidationResult.TryAdd(ValidationRule.Unique, `${rule.Message} ${LangSelect.Get(Meta.Label)} ${this._text}`);
+                        this.ValidationResult[ValidationRule.Unique] = `${rule.Message} ${LangSelect.Get(this.Meta.Label)} ${this._text}`;
                     } else {
-                        this.ValidationResult.Remove(ValidationRule.Unique);
+                        delete this.ValidationResult[ValidationRule.Unique];
                     }
                     resolve(true);
-                });
+                })
+                .catch(reject);
         });
 
         return tcs;
     }
     SetDisableUI(value) {
         if (this.Input != null) {
-            this.Input.ReadOnly = value;
+            this.Input.readOnly = value;
         }
 
         if (this.TextArea != null) {
-            this.TextArea.ReadOnly = value;
+            this.TextArea.readOnly = value;
         }
     }
 }
-
-window.Core2 = window.Core || {};
-window.Core2.Textbox = Textbox;

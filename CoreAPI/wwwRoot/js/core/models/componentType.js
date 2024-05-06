@@ -10,5 +10,6 @@ export class ComponentType {
     static Textbox = 'Textbox';
     static Textarea = 'Textarea';
     static SearchEntry = 'SearchEntry';
+    static Section = 'Section';
     static MultipleSearchEntry = 'MultipleSearchEntry';
 }

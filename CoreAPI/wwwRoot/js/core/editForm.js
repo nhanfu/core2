@@ -14,12 +14,15 @@ import { FeaturePolicy } from "./models/featurePolicy.js";
 import { ComponentFactory } from "./utils/componentFactory.js";
 import { Toast } from "./toast.js";
 import { Section } from "./section.js";
+import { Button } from "./button.js";
+import { ListView } from "./listView.js";
+import { Label } from "./label.js";
+import { ComponentType } from "./models/componentType.js";
+import { ConfirmDialog } from "ConfirmDialog.js";
+import { EmailVM } from "./models/emailVM.js";
 
 /**
  * Represents an editable form component.
- * @typedef {import('./listView.js').ListView} ListView
- * @typedef {import('./label.js').Label} Label
- * @typedef {import('./button.js').Button} Button
  */
 export class EditForm extends EditableComponent {
     /** @type {EditForm} */
@@ -42,10 +45,10 @@ export class EditForm extends EditableComponent {
     _allCom = [];
     get AllCom() {
         if (this._allCom !== null) return this._allCom;
-        if (this.LayoutForm === null) {
+        if (EditForm.LayoutForm === null) {
             this._allCom = this.Feature.Component.slice(); // Assuming Feature.Component is an array
         } else {
-            this._allCom = this.Feature.Component.concat(this.LayoutForm.Feature.Component);
+            this._allCom = this.Feature.Component.concat(EditForm.LayoutForm.Meta.Component);
         }
         return this._allCom;
     }
@@ -557,8 +560,8 @@ export class EditForm extends EditableComponent {
             };
             const cellText = new Label(meta, ele);
             cellText.Entity = entity;
-            if (EditableComponent.LayoutForm) {
-                this.LayoutForm.AddChild(cellText);
+            if (EditForm.LayoutForm) {
+                EditForm.LayoutForm.AddChild(cellText);
             } else {
                 cellText.Render();
             }
@@ -584,6 +587,7 @@ export class EditForm extends EditableComponent {
     }
 
     ShouldLoadEntity = false;
+    get EntityName() { return this.Meta.EntityName; }
     /**
      * Loads the entity based on the URL or the given entity ID.
      * @returns {Promise<object>} A promise that resolves to the loaded entity object.
@@ -718,10 +722,10 @@ export class EditForm extends EditableComponent {
      * @param {Event} evt - The keyboard event.
      */
     async KeyDownIntro(evt) {
-        if (evt.keyCode === 72 && evt.ctrlKey || evt.metaKey) { // Ctrl+H or Cmd+H
+        if (evt.KeyCode() === 72 && evt.CtrlOrMetaKey()) { // Ctrl+H or Cmd+H
             evt.preventDefault();
             const scriptUrl = 'https://unpkg.com/intro.js/intro.js';
-            await LoadScript(scriptUrl); // Assuming LoadScript is a defined function to load scripts
+            await Client.LoadScript(scriptUrl);
             const sql = {
                 ComId: 'Intro',
                 Action: 'GetByFeatureId',
@@ -751,7 +755,7 @@ export class EditForm extends EditableComponent {
 
     /**
      * Renders a template based on the feature configuration.
-     * @param {Feature} feature - The feature configuration.
+     * @param {Component} feature - The feature configuration.
      * @returns {HTMLElement} The rendered template element.
      */
     RenderTemplate(feature) {
@@ -767,6 +771,7 @@ export class EditForm extends EditableComponent {
             this.BindingTemplate(entryPoint, this);
             const innerEntry = Array.from(entryPoint.querySelectorAll("[id='inner-entry']")).shift();
             this.ResetEntryPoint(innerEntry);
+            // @ts-ignore
             entryPoint = innerEntry || entryPoint;
             if (entryPoint.style.display === 'none') {
                 entryPoint.style.display = Str.Empty;
@@ -777,33 +782,12 @@ export class EditForm extends EditableComponent {
 
     /**
      * Resets the entry point for rendering.
-     * @param {HTMLElement} entryPoint - The entry point to reset.
+     * @param {Element} entryPoint - The entry point to reset.
      */
     ResetEntryPoint(entryPoint) {
         if (entryPoint) {
             entryPoint.innerHTML = Str.Empty;
         }
-    }
-
-    /**
-     * Renders the cell text for a given element if it matches the pattern.
-     * @param {HTMLElement} ele - The element to check for cell text.
-     * @param {object} entity - The entity to bind to the label.
-     * @returns {Label|undefined} The label component if rendered, undefined otherwise.
-     */
-    RenderCellText(ele, entity) {
-        const text = ele.textContent.trim();
-        if (text.startsWith("{") && text.endsWith("}")) {
-            const fieldName = text.substring(1, text.length - 1);
-            /** @type {Component} */
-            // @ts-ignore
-            const com = { FieldName: fieldName };
-            const label = new Label(com, ele);
-            label.Entity = entity;
-            label.Render();
-            return label;
-        }
-        return null;
     }
 
     /**
@@ -815,12 +799,13 @@ export class EditForm extends EditableComponent {
      * @returns {EditableComponent|undefined} The bound component, or undefined if not applicable.
      */
     BindingCom(ele, com, parent, entity) {
-        if (!ele || !com || com.ComponentType.IsNullOrEmpty()) {
+        if (!ele || !com || !com.ComponentType) {
             return null;
         }
         let child = null;
-        if (com.ComponentType === "Section") {
-            child = new Section(ele);
+        if (com.ComponentType === ComponentType.Section) {
+            child = new Section(null, ele);
+            child.Meta = com;
             child.Meta = com;
         } else {
             child = ComponentFactory.GetComponent(com, this, ele);
@@ -858,75 +843,76 @@ export class EditForm extends EditableComponent {
         }
 
         // Confirm dialog setup assumed
-        const confirm = new ConfirmDialog({
-            Content: "Do you want to save changes before closing?",
-            OnYes: async () => {
-                const success = await this.SavePatch();
-                if (success) {
-                    this.Dispose();
-                    if (closeCallback) closeCallback();
-                }
-            },
-            OnNo: () => {
+        const confirm = new ConfirmDialog();
+        confirm.Content = "Do you want to save changes before closing?";
+        confirm.YesConfirmed = async () => {
+            const success = await this.SavePatch();
+            if (success) {
                 this.Dispose();
                 if (closeCallback) closeCallback();
-            },
-            IgnoreCancel: true
-        });
+            }
+        };
+        confirm.NoConfirmed = () => {
+            this.Dispose();
+            if (closeCallback) closeCallback();
+        };
+        confirm.IgnoreCancelButton = true;
         confirm.Render();
-    }
+}
 
-    /**
-     * Disposes the form, removing it from the DOM and cleaning up resources.
-     */
-    Dispose() {
-        window.removeEventListener('resize', this.ResizeHandler.bind(this));
-        super.Dispose();
-    }
+/**
+ * Disposes the form, removing it from the DOM and cleaning up resources.
+ */
+Dispose() {
+    window.removeEventListener('resize', this.ResizeHandler.bind(this));
+    super.Dispose();
+}
 
     /**
      * Validates the entire form or specific components within it.
      * @param {boolean} showMessage - Whether to show validation messages.
-     * @param {Function|null} predicate - Function to determine which components to validate.
-     * @param {Function|null} ignorePredicate - Function to determine which components to ignore.
+     * @param {(item: EditableComponent) => boolean} predicate - Function to determine which components to validate.
+     * @param {(item: EditableComponent) => boolean} ignorePredicate - Function to determine which components to ignore.
      * @returns {Promise<boolean>} A promise that resolves to the validation status of the form.
      */
     async IsFormValid(showMessage = true, predicate = null, ignorePredicate = null) {
-        predicate = predicate || ((x) => x.Children.length === 0);
-        ignorePredicate = ignorePredicate || ((x) => x.AlwaysValid || x.EmptyRow);
+    predicate = predicate || ((x) => x.Children.length === 0 && !x.Disabled);
+    ignorePredicate = ignorePredicate || ((x) => x.AlwaysValid || x.EmptyRow);
 
-        const validationPromises = this.FilterChildren(predicate, ignorePredicate).map(x => x.ValidateAsync());
-        const results = await Promise.all(validationPromises);
-        const invalidComponents = results.filter(result => !result.IsValid);
+    const validationPromises = this.FilterChildren(predicate, ignorePredicate).map(x => {
+        return { IsValid: x.ValidateAsync(), com: x }
+    });
+    await Promise.all(validationPromises.map(x => x.IsValid));
+    const invalidComponents = validationPromises.filter(result => !result.com.IsValid).map(x => x.com);
 
-        if (invalidComponents.length > 0) {
-            if (showMessage) {
-                invalidComponents.forEach(comp => { comp.Disabled = false; });
-                const firstInvalid = invalidComponents[0];
-                firstInvalid.Focus();
-                const messages = invalidComponents.flatMap(x => x.ValidationResult.Values);
-                Toast.Warning(messages.join("\n"));
-            }
-            return false;
+    if (invalidComponents.length > 0) {
+        if (showMessage) {
+            invalidComponents.forEach(comp => { comp.Disabled = false; });
+            const firstInvalid = invalidComponents[0];
+            firstInvalid.Focus();
+            const messages = invalidComponents.flatMap(x => x.ValidationResult.Values);
+            Toast.Warning(messages.join("\n"));
         }
-        return true;
+        return false;
     }
+    return true;
+}
 
-    /**
-     * Prints the contents of a selected HTML element.
-     * @param {string} selector - The CSS selector to identify the printable area.
-     */
-    Print(selector = ".printable") {
-        const printableArea = this.Element.querySelector(selector);
-        if (printableArea) {
-            const printWindow = window.open(Str.Empty, '_blank');
-            printWindow.document.write(printableArea.innerHTML);
-            printWindow.document.close();
-            printWindow.focus();
-            printWindow.print();
-            printWindow.close();
-        }
+/**
+ * Prints the contents of a selected HTML element.
+ * @param {string} selector - The CSS selector to identify the printable area.
+ */
+Print(selector = ".printable") {
+    const printableArea = this.Element.querySelector(selector);
+    if (printableArea) {
+        const printWindow = window.open(Str.Empty, '_blank');
+        printWindow.document.write(printableArea.innerHTML);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
     }
+}
 
     /**
      * Sends an email with a PDF attachment generated from the selected HTML content.
@@ -935,198 +921,198 @@ export class EditForm extends EditableComponent {
      * @returns {Promise<boolean>} A promise that resolves to the success status of the email operation.
      */
     async EmailPdf(email, pdfSelector = []) {
-        if (!email) throw new Error("EmailVM must not be null.");
+    if (!email) throw new Error("EmailVM must not be null.");
 
-        const pdfContents = pdfSelector.map(selector => {
-            const element = this.Element.querySelector(selector);
-            return this.PrintSection(element, false);
-        });
+    const pdfContents = pdfSelector.map(selector => {
+        const element = this.Element.querySelector(selector);
+        return this.PrintSection(element, false);
+    });
 
-        email.PdfText = email.PdfText.concat(pdfContents);
+    email.PdfText = email.PdfText.concat(pdfContents);
 
-        try {
-            const success = await Client.Instance.PostAsync(email, "/user/EmailAttached");
-            Toast.Success("Email sent successfully!");
-            return success;
-        } catch (error) {
-            Toast.Error("Error while sending email: " + error.message);
-            throw error;
-        }
+    try {
+        const success = await Client.Instance.PostAsync(email, "/user/EmailAttached");
+        Toast.Success("Email sent successfully!");
+        return success;
+    } catch (error) {
+        Toast.Error("Error while sending email: " + error.message);
+        throw error;
     }
+}
 
-    /**
-     * Deletes the entity associated with the form.
-     */
-    Delete() {
-        const confirm = new ConfirmDialog({
-            Content: "Are you sure you want to delete this?",
-            OnYes: async () => {
-                try {
-                    const success = await Client.Instance.HardDeleteAsync([this.EntityId], this.Feature.EntityName, this.DataConn, this.MetaConn);
-                    if (success) {
-                        Toast.Success("Data deleted successfully");
-                        this.ParentForm?.UpdateView();
-                        this.Dispose();
-                    } else {
-                        Toast.Warning("An error occurred while deleting data");
-                    }
-                } catch (error) {
-                    Toast.Warning("An error occurred: " + error.message);
+/**
+ * Deletes the entity associated with the form.
+ */
+Delete() {
+    const confirm = new ConfirmDialog({
+        Content: "Are you sure you want to delete this?",
+        OnYes: async () => {
+            try {
+                const success = await Client.Instance.HardDeleteAsync([this.EntityId], this.Feature.EntityName, this.DataConn, this.MetaConn);
+                if (success) {
+                    Toast.Success("Data deleted successfully");
+                    this.ParentForm?.UpdateView();
+                    this.Dispose();
+                } else {
+                    Toast.Warning("An error occurred while deleting data");
                 }
+            } catch (error) {
+                Toast.Warning("An error occurred: " + error.message);
             }
-        });
-        confirm.Render();
-    }
+        }
+    });
+    confirm.Render();
+}
 
-    /**
-     * Handles the signing in process.
-     */
-    SignIn() {
-        Client.UnAuthorizedEventHandler?.call(null);
-    }
+/**
+ * Handles the signing in process.
+ */
+SignIn() {
+    Client.UnAuthorizedEventHandler?.call(null);
+}
 
-    /**
-     * Handles the signing out process.
-     */
-    SignOut() {
-        const e = window.event;
-        e.preventDefault();
-        Client.Instance.PostAsync(Client.Token, "user/SignOut")
-            .then(success => {
-                Toast.Success("You have successfully signed out!");
-                Client.SignOutEventHandler?.call();
-                Client.Token = null;
-                this.NotificationClient?.Close();
-                window.location.reload();
-            }).catch(error => {
-                Toast.Warning("Error during sign out: " + error.message);
-            });
-    }
-
-    /**
-     * Retrieves security policies for a specific record or set of records.
-     * @param {string|string[]} recordIds - The record ID or IDs to fetch policies for.
-     * @param {string} entityName - The name of the entity.
-     * @returns {FeaturePolicy[]} Array of applicable feature policies.
-     */
-    GetElementPolicies(recordIds, entityName = 'Component') {
-        return Array.isArray(recordIds)
-            ? this.Policies.filter(policy => policy.EntityName === entityName && recordIds.includes(policy.RecordId))
-            : this.Policies.filter(policy => policy.EntityName === entityName && policy.RecordId === recordIds);
-    }
-
-    /**
-     * Updates the properties of a component based on a dialog or other user input.
-     * @param {object} arg - The argument containing information about the component to update.
-     */
-    ComponentProperties(arg) {
-        const component = arg;
-        const editor = new ComponentBL({
-            Entity: component,
-            ParentElement: this.Element,
-            OpenFrom: this.FindClosest(EditForm)
-        });
-        this.AddChild(editor);
-    }
-
-    /**
-     * Dynamically adds a new component to the form based on user actions.
-     * @param {object} arg - Contains details on the action to perform and the group to which the component will be added.
-     */
-    AddComponent(arg) {
-        /** @type {string} */
-        const action = arg.action;
-        /** @type {Component} */
-        const group = arg.group;
-        const com = new Component({
-            ComponentType: action,
-            ComponentGroupId: group.Id,
-            Label: "New Component",
-            Visibility: true,
-            Order: group.Children?.length ? Math.max(...group.Children.map(c => c.Order)) + 1 : 0
-        });
-
-        // Assume an API or service is available to save the new component
-        Client.Instance.PatchAsync(ComponentExt.MapToPatch(com)).then(() => {
-            group.Children.push(com);
-            this.UpdateRender(com, group);
-            Toast.Success("Component added successfully!");
+/**
+ * Handles the signing out process.
+ */
+SignOut() {
+    const e = window.event;
+    e.preventDefault();
+    Client.Instance.PostAsync(Client.Token, "user/SignOut")
+        .then(success => {
+            Toast.Success("You have successfully signed out!");
+            Client.SignOutEventHandler?.call();
+            Client.Token = null;
+            this.NotificationClient?.Close();
+            window.location.reload();
         }).catch(error => {
-            Toast.Error("Error adding component: " + error.message);
+            Toast.Warning("Error during sign out: " + error.message);
         });
-    }
+}
 
-    /**
-     * Updates the rendering of components within the form.
-     * @param {Component} component - The new component to render.
-     * @param {Component} group - The group to which the component belongs.
-     */
-    UpdateRender(component, group) {
-        const section = this.FindComponentByName(group.FieldName);
-        const childComponent = ComponentFactory.GetComponent(component, this);
-        if (childComponent) {
-            childComponent.ParentElement = section.Element;
-            section.AddChild(childComponent);
-        }
-    }
+/**
+ * Retrieves security policies for a specific record or set of records.
+ * @param {string|string[]} recordIds - The record ID or IDs to fetch policies for.
+ * @param {string} entityName - The name of the entity.
+ * @returns {FeaturePolicy[]} Array of applicable feature policies.
+ */
+GetElementPolicies(recordIds, entityName = 'Component') {
+    return Array.isArray(recordIds)
+        ? this.Policies.filter(policy => policy.EntityName === entityName && recordIds.includes(policy.RecordId))
+        : this.Policies.filter(policy => policy.EntityName === entityName && policy.RecordId === recordIds);
+}
 
-    /** @type {EditableComponent} */
-    CtxCom;
-    /** @type {FeaturePolicy[]} */
-    Policies;
-    /**
-     * 
-     * @param {Event} e 
-     * @param {Component} component 
-     * @param {Component} group 
-     * @param {EditableComponent} ctx 
-     * @returns 
-     */
-    SysConfigMenu(e, component, group, ctx) {
-        this.CtxCom = ctx;
-        const metaPermission = this.Policies.some(x => x.CanWriteMeta || x.CanWriteMetaAll);
-        if (!metaPermission) {
-            return;
-        }
-        const menuItems = [
-            { Icon: "fas fa-link mt-2", Text: "Add Link", Click: this.AddComponent, Parameter: { group: group, action: "AddLink" } },
-            { Icon: "fas fa-plus-circle mt-2", Text: "Add Input", Click: this.AddComponent, Parameter: { group: group, action: "AddInput" } },
-            { Icon: "fas fa-plus-circle mt-2", Text: "Add Timepicker", Click: this.AddComponent, Parameter: { group: group, action: "AddTimepicker" } },
-            { Icon: "fas fa-lock mt-2", Text: "Add Password", Click: this.AddComponent, Parameter: { group: group, action: "AddPassword" } },
-            { Icon: "fas fa-plus-circle mt-2", Text: "Add Label", Click: this.AddComponent, Parameter: { group: group, action: "AddLabel" } },
-            { Icon: "fas fa-plus-circle mt-2", Text: "Add Textarea", Click: this.AddComponent, Parameter: { group: group, action: "AddTextarea" } },
-            { Icon: "fas fa-plus-circle mt-2", Text: "Add Dropdown", Click: this.AddComponent, Parameter: { group: group, action: "AddDropdown" } },
-            { Icon: "fas fa-images mt-2", Text: "Add Image", Click: this.AddComponent, Parameter: { group: group, action: "AddImage" } },
-            { Icon: "fas fa-plus-circle mt-2", Text: "Add GridView", Click: this.AddComponent, Parameter: { group: group, action: "AddGridView" } },
-            { Icon: "fas fa-plus-circle mt-2", Text: "Add ListView", Click: this.AddComponent, Parameter: { group: group, action: "AddListView" } },
-        ];
-        e.preventDefault();
-        e.stopPropagation();
-        const ctxMenu = ContextMenu.Instance;
-        ctxMenu.Top = e.Top();
-        ctxMenu.Left = e.Left();
-        ctxMenu.MenuItems = [];
-        if (component !== null && component.ComponentType.includes("View")) {
-            ctxMenu.MenuItems.push({ Icon: "fal fa-tasks", Text: "Header Manage", Click: this.headerMamage, Parameter: component });
-        }
-        ctxMenu.MenuItems.push(
-            component !== null ? { Icon: "fal fa-cog", Text: "Tùy chọn dữ liệu", Click: this.componentProperties, Parameter: component } : null,
-            component !== null ? { Icon: "fal fa-clone", Text: "Sao chép", Click: this.copyComponent, Parameter: component } : null,
-            { Icon: "fal fa-cogs", Text: "Thêm Component", MenuItems: menuItems },
-            { Icon: "fal fa-cogs", Text: "Tùy chọn vùng dữ liệu", Click: this.sectionProperties, Parameter: group },
-            { Icon: "fal fa-folder-open", Text: "Thiết lập chung", Click: this.featureProperties },
-            { Icon: "fal fa-folder-open", Text: "Layout", Click: this.layoutProperties },
-            { Icon: "fal fa-clone", Text: "Clone feature", Click: this.cloneFeature, Parameter: Feature }
-        );
-        ctxMenu.Render();
-    }
+/**
+ * Updates the properties of a component based on a dialog or other user input.
+ * @param {object} arg - The argument containing information about the component to update.
+ */
+ComponentProperties(arg) {
+    const component = arg;
+    const editor = new ComponentBL({
+        Entity: component,
+        ParentElement: this.Element,
+        OpenFrom: this.FindClosest(EditForm)
+    });
+    this.AddChild(editor);
+}
 
-    headerMamage(arg) {
-        const editor = new HeaderManageBL();
-        editor.Entity = arg;
-        editor.ParentElement = Element;
-        editor.OpenFrom = this.CtxCom;
-        editor.FeatureComponent = Feature;
-        this.addChild(editor);
+/**
+ * Dynamically adds a new component to the form based on user actions.
+ * @param {object} arg - Contains details on the action to perform and the group to which the component will be added.
+ */
+AddComponent(arg) {
+    /** @type {string} */
+    const action = arg.action;
+    /** @type {Component} */
+    const group = arg.group;
+    const com = new Component({
+        ComponentType: action,
+        ComponentGroupId: group.Id,
+        Label: "New Component",
+        Visibility: true,
+        Order: group.Children?.length ? Math.max(...group.Children.map(c => c.Order)) + 1 : 0
+    });
+
+    // Assume an API or service is available to save the new component
+    Client.Instance.PatchAsync(ComponentExt.MapToPatch(com)).then(() => {
+        group.Children.push(com);
+        this.UpdateRender(com, group);
+        Toast.Success("Component added successfully!");
+    }).catch(error => {
+        Toast.Error("Error adding component: " + error.message);
+    });
+}
+
+/**
+ * Updates the rendering of components within the form.
+ * @param {Component} component - The new component to render.
+ * @param {Component} group - The group to which the component belongs.
+ */
+UpdateRender(component, group) {
+    const section = this.FindComponentByName(group.FieldName);
+    const childComponent = ComponentFactory.GetComponent(component, this);
+    if (childComponent) {
+        childComponent.ParentElement = section.Element;
+        section.AddChild(childComponent);
     }
+}
+
+/** @type {EditableComponent} */
+CtxCom;
+/** @type {FeaturePolicy[]} */
+Policies;
+/**
+ * 
+ * @param {Event} e 
+ * @param {Component} component 
+ * @param {Component} group 
+ * @param {EditableComponent} ctx 
+ * @returns 
+ */
+SysConfigMenu(e, component, group, ctx) {
+    this.CtxCom = ctx;
+    const metaPermission = this.Policies.some(x => x.CanWriteMeta || x.CanWriteMetaAll);
+    if (!metaPermission) {
+        return;
+    }
+    const menuItems = [
+        { Icon: "fas fa-link mt-2", Text: "Add Link", Click: this.AddComponent, Parameter: { group: group, action: "AddLink" } },
+        { Icon: "fas fa-plus-circle mt-2", Text: "Add Input", Click: this.AddComponent, Parameter: { group: group, action: "AddInput" } },
+        { Icon: "fas fa-plus-circle mt-2", Text: "Add Timepicker", Click: this.AddComponent, Parameter: { group: group, action: "AddTimepicker" } },
+        { Icon: "fas fa-lock mt-2", Text: "Add Password", Click: this.AddComponent, Parameter: { group: group, action: "AddPassword" } },
+        { Icon: "fas fa-plus-circle mt-2", Text: "Add Label", Click: this.AddComponent, Parameter: { group: group, action: "AddLabel" } },
+        { Icon: "fas fa-plus-circle mt-2", Text: "Add Textarea", Click: this.AddComponent, Parameter: { group: group, action: "AddTextarea" } },
+        { Icon: "fas fa-plus-circle mt-2", Text: "Add Dropdown", Click: this.AddComponent, Parameter: { group: group, action: "AddDropdown" } },
+        { Icon: "fas fa-images mt-2", Text: "Add Image", Click: this.AddComponent, Parameter: { group: group, action: "AddImage" } },
+        { Icon: "fas fa-plus-circle mt-2", Text: "Add GridView", Click: this.AddComponent, Parameter: { group: group, action: "AddGridView" } },
+        { Icon: "fas fa-plus-circle mt-2", Text: "Add ListView", Click: this.AddComponent, Parameter: { group: group, action: "AddListView" } },
+    ];
+    e.preventDefault();
+    e.stopPropagation();
+    const ctxMenu = ContextMenu.Instance;
+    ctxMenu.Top = e.Top();
+    ctxMenu.Left = e.Left();
+    ctxMenu.MenuItems = [];
+    if (component !== null && component.ComponentType.includes("View")) {
+        ctxMenu.MenuItems.push({ Icon: "fal fa-tasks", Text: "Header Manage", Click: this.headerMamage, Parameter: component });
+    }
+    ctxMenu.MenuItems.push(
+        component !== null ? { Icon: "fal fa-cog", Text: "Tùy chọn dữ liệu", Click: this.componentProperties, Parameter: component } : null,
+        component !== null ? { Icon: "fal fa-clone", Text: "Sao chép", Click: this.copyComponent, Parameter: component } : null,
+        { Icon: "fal fa-cogs", Text: "Thêm Component", MenuItems: menuItems },
+        { Icon: "fal fa-cogs", Text: "Tùy chọn vùng dữ liệu", Click: this.sectionProperties, Parameter: group },
+        { Icon: "fal fa-folder-open", Text: "Thiết lập chung", Click: this.featureProperties },
+        { Icon: "fal fa-folder-open", Text: "Layout", Click: this.layoutProperties },
+        { Icon: "fal fa-clone", Text: "Clone feature", Click: this.cloneFeature, Parameter: Feature }
+    );
+    ctxMenu.Render();
+}
+
+headerMamage(arg) {
+    const editor = new HeaderManageBL();
+    editor.Entity = arg;
+    editor.ParentElement = Element;
+    editor.OpenFrom = this.CtxCom;
+    editor.FeatureComponent = Feature;
+    this.addChild(editor);
+}
 }

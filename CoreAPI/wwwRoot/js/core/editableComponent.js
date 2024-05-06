@@ -8,6 +8,8 @@ import { Html } from "./utils/html.js";
 import './utils/ext.js';
 import { Action } from "./models/action.js";
 import { LangSelect } from "./utils/langSelect.js";
+import { ListViewItem } from "listViewItem.js";
+import { KeyCodeEnum } from "./models/enum.js";
 
 /**
  * @typedef {import('./editForm.js').EditForm} EditForm
@@ -27,7 +29,7 @@ export default class EditableComponent {
     /**
      * Create instance of component
      * @param {Component | null} meta 
-     * @param {HTMLElement | Element | null} ele 
+     * @param {HTMLElement | null} ele 
      */
     constructor(meta, ele = null) {
         this.Meta = meta;
@@ -404,7 +406,9 @@ export default class EditableComponent {
 
         cascadeFields.forEach(field => {
             root.FilterChildren(x => x.FieldName === field).forEach(target => {
+                // @ts-ignore
                 if (target instanceof SearchEntry && target !== null) {
+                    // @ts-ignore
                     target.Value = null;
                     target.Meta.LocalData = null;
                 } else {
@@ -558,6 +562,73 @@ export default class EditableComponent {
         }
     }
 
+    ListViewItemTab(e) {
+        const code = e.keyCode;
+        const listViewItem = this.FindClosest(ListViewItem.prototype);
+        if (!listViewItem) {
+            return;
+        }
+    
+        switch (code) {
+            case KeyCodeEnum.Tab:
+                const td = e.target.closest('td');
+                if (td && !td.nextElementSibling) {
+                    e.preventDefault();
+                    let nextElement = listViewItem.Children.find(x => x.Meta.Editable) ||
+                                      listViewItem.Children.find(x => x.Meta.Id != null);
+                    nextElement?.Focus();
+                    return;
+                }
+                if (e.shiftKey) {
+                    // @ts-ignore
+                    if (this.constructor.prototype === Label.prototype && this.Meta.ComponentType && !this.Meta.Editable && td && td.previousElementSibling) {
+                        e.preventDefault();
+                        let nextElement = listViewItem.Children.find(x => x.Element.closest('td') === td.previousElementSibling);
+                        nextElement?.Focus();
+                        return;
+                    }
+                } else {
+                    // @ts-ignore
+                    if (this instanceof Label && this.Meta.ComponentType && !this.Meta.Editable && td && td.nextElementSibling) {
+                        e.preventDefault();
+                        let nextElement = listViewItem.Children.find(x => x.Element.closest('td') === td.nextElementSibling);
+                        nextElement?.Focus();
+                        return;
+                    }
+                }
+                break;
+    
+            case KeyCodeEnum.Enter:
+                if (listViewItem && this.EditForm.Feature.CustomNextCell) {
+                    // @ts-ignore
+                    if (this instanceof SearchEntry && this._gv && this._gv.Show) {
+                        return;
+                    }
+                    const td = this.Element.closest('td');
+                    if (this.Meta.ComponentType && td) {
+                        if (e.shiftKey && td.previousElementSibling) {
+                            // @ts-ignore
+                            let nextElement = listViewItem.filterChildren(x => x.Element.closest('td') === td.previousElementSibling).find(x => true);
+                            if (nextElement) {
+                                // @ts-ignore
+                                this.focusElement(nextElement);
+                            }
+                        } else if (td.nextElementSibling) {
+                            // @ts-ignore
+                            let nextElement = listViewItem.filterChildren(x => x.Element.closest('td') === td.nextElementSibling).find(x => true) ||
+                                              listViewItem.Children[0];
+                            // @ts-ignore
+                            this.focusElement(nextElement);
+                        }
+                    }
+                }
+                break;
+    
+            default:
+                break;
+        }
+    }
+
     UpdateView(force = false, dirty = null, ...componentNames) {
         this.PrepareUpdateView(force, dirty);
         if (!this.Children || this.Children.length === 0) {
@@ -565,9 +636,13 @@ export default class EditableComponent {
         }
     
         if (componentNames.length > 0) {
+            // @ts-ignore
             const coms = this.FilterChildren(x => x instanceof Section && componentNames.includes(x.FieldName))
+                // @ts-ignore
                 .flatMap(x => x.FilterChildren(com => !(com instanceof Section)));
+            // @ts-ignore
             const coms2 = this.FilterChildren(x => componentNames.includes(x.FieldName) && !(x instanceof Section));
+            // @ts-ignore
             const shouldUpdate = [...new Set([...coms, ...coms2].filter(x => !(x instanceof Section)))];
     
             shouldUpdate.forEach(child => {
@@ -575,6 +650,7 @@ export default class EditableComponent {
                 child.UpdateView(force, dirty, ...componentNames);
             });
         } else {
+            // @ts-ignore
             const shouldUpdate = this.FilterChildren(x => !(x instanceof Section));
     
             shouldUpdate.forEach(child => {
@@ -625,10 +701,13 @@ export default class EditableComponent {
         var queueName = this.QueueName;
         if (queueName?.IsNullOrWhiteSpace()) return;
         const param = { QueueName: queueName, Action: action };
+        // @ts-ignore
         this.EditForm?.NotificationClient?.Send(JSON.stringify(param));
         if (action == "Subscribe")
+            // @ts-ignore
             window.addEventListener(queueName, this.QueueHandler);
         else
+            // @ts-ignore
             window.removeEventListener(queueName, this.QueueHandler);
     }
 
@@ -644,6 +723,7 @@ export default class EditableComponent {
                     x.Parent.Children.Remove(x);
                 }
             });
+            // @ts-ignore
             leaves = this.Children.Flattern()?.Where(x => x.Element != null && x.Parent != null && x.Children.Nothing()).ToArray();
         }
     }
@@ -683,6 +763,7 @@ export default class EditableComponent {
         const showPredicate = (/** @type {HTMLElement} */ e) => {
             return !e.Hidden() && predicate(e);
         }
+        // @ts-ignore
         return this.Children.Where(showPredicate).Flattern(x => showPredicate(x) ? x.Children : null);
     }
     /**
@@ -705,7 +786,9 @@ export default class EditableComponent {
      * @returns 
      */
     AddChild(child, index = null, showExp = null, disabledExp = null) {
+        // @ts-ignore
         if (child.IsSingleton) {
+            // @ts-ignore
             child.Render();
             return;
         }
@@ -734,7 +817,9 @@ export default class EditableComponent {
         }
 
         Html.Take(child.ParentElement);
+        // @ts-ignore
         child.Render();
+        // @ts-ignore
         child.ToggleShow(showExp || (child.Meta ? child.Meta.ShowExp : ""));
         child.ToggleDisabled(disabledExp || (child.Meta ? child.Meta.DisabledExp : ""));
     }
