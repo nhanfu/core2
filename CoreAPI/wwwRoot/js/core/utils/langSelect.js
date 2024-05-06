@@ -1,8 +1,4 @@
 import { Client } from "../clients/client.js";
-import EditableComponent from "../editableComponent.js";
-import { Html } from "./html.js";
-import { SqlViewModel } from "../models/sqlViewModel.js";
-import { Utils } from "./utils.js";
 
 export class LangSelect {
     static LangProp = "langprop";

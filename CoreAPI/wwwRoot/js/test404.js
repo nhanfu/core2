@@ -1,7 +1,9 @@
 import { Datepicker } from './core/datepicker.js';
 import { Chart } from './core/chart.js';
+import { EditForm } from './core/editForm.js';
 import { Component } from './core/models/component.js';
 
+window.EditForm = EditForm;
 var a = new Datepicker({
     FieldName: 'test',
 }, document.getElementById('test'));

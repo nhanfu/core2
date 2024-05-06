@@ -1,6 +1,6 @@
 import EditableComponent from "./editableComponent.js";
 import { Str } from "./utils/ext.js";
-import { Html } from "./utils/html";
+import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
 import { ElementType } from './models/elementType.js'
 import { FeaturePolicy } from "./models/featurePolicy.js";
@@ -258,12 +258,12 @@ export class Section extends EditableComponent {
      * @param {EditableComponent} Parent - The parent component.
      * @param {Component} GroupInfo - The group info component.
      * @param {Object} Entity - Optional entity parameter.
-     * @param {EditForm} EditForm - Optional edit form.
+     * @param {EditForm} form - Optional edit form.
      * @returns {Section} - The rendered section, or null if not permitted.
      */
-    static RenderSection(Parent, GroupInfo, Entity = null, EditForm = null) {
-        const EditForm = EditForm || Parent.EditForm;
-        const UIPolicy = EditForm.GetElementPolicies([GroupInfo.Id], Utils.ComponentGroupId);
+    static RenderSection(Parent, GroupInfo, Entity = null, form = null) {
+        const EditForm = form || Parent.EditForm;
+        const UIPolicy = form.GetElementPolicies([GroupInfo.Id], Utils.ComponentGroupId);
         const ReadPermission = !GroupInfo.IsPrivate || UIPolicy.HasElementAndAll(x => x.CanRead);
         const WritePermission = !GroupInfo.IsPrivate || UIPolicy.HasElementAndAll(x => x.CanWrite);
         if (!ReadPermission) {
@@ -271,8 +271,8 @@ export class Section extends EditableComponent {
         }
 
         let Width = GroupInfo.Width;
-        const OuterColumn = EditForm.GetOuterColumn(GroupInfo);
-        const ParentColumn = EditForm.GetInnerColumn(GroupInfo.Parent);
+        const OuterColumn = form.GetOuterColumn(GroupInfo);
+        const ParentColumn = form.GetInnerColumn(GroupInfo.Parent);
         const HasOuterColumn = OuterColumn > 0 && ParentColumn > 0;
         if (HasOuterColumn) {
             const Per = (OuterColumn / ParentColumn * 100).toFixed(2);
@@ -286,11 +286,11 @@ export class Section extends EditableComponent {
             if (Client.SystemRole) {
                 Html.Instance.Attr("contenteditable", "true");
                 Html.Instance.Event("input", e => this.ChangeComponentGroupLabel(e, GroupInfo));
-                Html.Instance.Event("dblclick", e => EditForm.SectionProperties(GroupInfo));
+                Html.Instance.Event("dblclick", e => form.SectionProperties(GroupInfo));
             }
             Html.Instance.End.Render();
         }
-        Html.Instance.ClassName(GroupInfo.ClassName).Event("contextmenu", e => EditForm.SysConfigMenu(e, null, GroupInfo, null));
+        Html.Instance.ClassName(GroupInfo.ClassName).Event("contextmenu", e => form.SysConfigMenu(e, null, GroupInfo, null));
         if (!GroupInfo.ClassName.includes("ribbon")) {
             Html.Instance.ClassName("panel").ClassName("group");
         }
@@ -299,7 +299,7 @@ export class Section extends EditableComponent {
         section.Id = GroupInfo.FieldName + GroupInfo.Id,
         section.Name = GroupInfo.FieldName;
         section.Meta = GroupInfo;
-        section.Disabled = Parent.Disabled || GroupInfo.Disabled || !WritePermission || EditForm.IsLock || section.Disabled;
+        section.Disabled = Parent.Disabled || GroupInfo.Disabled || !WritePermission || form.IsLock || section.Disabled;
         Parent.AddChild(section, null, GroupInfo.ShowExp);
         Html.Take(Parent.Element);
         section.DOMContentLoaded?.Invoke();
@@ -318,10 +318,10 @@ export class Section extends EditableComponent {
             Parent.EditForm.TabGroup = [];
         }
 
-        let TabG = Parent.EditForm.TabGroup.find(x => x.Name === Group.TabGroup);
+        let TabG = Parent.EditForm.TabGroup.find(x => x.FieldName === Group.TabGroup);
         if (!TabG) {
             TabG = {
-                Name: Group.TabGroup,
+                FieldName: Group.TabGroup,
                 Parent: Parent,
                 ParentElement: Parent.Element,
                 Entity: Parent.Entity,

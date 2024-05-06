@@ -6,7 +6,7 @@ import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
 import { Client } from "./clients/client.js";
 import EventType from './models/eventType.js';
-import "../fix.js";
+import "./utils/fix.js";
 import { Uuid7 } from './structs/uuidv7.js';
 /**
  * @typedef {import('./models/component').Component} Component

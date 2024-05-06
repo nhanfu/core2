@@ -9,7 +9,7 @@ import { ComponentType } from './models/componentType.js';
 import { Str } from './utils/ext.js';
 import ObservableArgs from './models/observable.js';
 import { Action } from "./models/action.js";
-import "../fix.js";
+import "./utils/fix.js";
 class Image extends EditableComponent {
     static PathSeparator = "    ";
     static PNGUrlPrefix = "data:image/png;base64,";

@@ -6,13 +6,12 @@ import { ComponentType } from "./models/componentType.js";
 import { Uuid7 } from "./structs/uuidv7.js";
 import { Html } from "./utils/html.js";
 import './utils/ext.js';
-import { ListViewItem } from "listViewItem.js";
-import { Section } from "section.js";
+import { Action } from "./models/action.js";
+import { LangSelect } from "./utils/langSelect.js";
 
 /**
  * @typedef {import('./editForm.js').EditForm} EditForm
  * @typedef {import('./tabEditor.js').TabEditor} TabEditor
- * @typedef {import('./models/action.js').Action} Action
  * @typedef {import('./models/component.js').Component} Component
  * @typedef {import('./models/observable.js').default} ObservableArgs
  * @typedef {{ [key: string] : (ValidationRule) }} Validation
@@ -110,13 +109,6 @@ export default class EditableComponent {
         }
         const method = form[eventName];
         if (!method) {
-            form = this.FindComponentEvent(form, eventName);
-            if (!form) {
-                return Promise.resolve(false);
-            }
-            method = form[eventName];
-        }
-        if (!method) {
             return Promise.resolve(false);
         }
 
@@ -131,6 +123,11 @@ export default class EditableComponent {
         return tcs;
     }
 
+    /**
+     * @param {string} events
+     * @param {string} eventType
+     * @param {(any[] | EditableComponent)[]} parameters
+     */
     DispatchCustomEvent(events, eventType, ...parameters) {
         if (!events) {
             return Promise.resolve(true);
@@ -145,12 +142,13 @@ export default class EditableComponent {
     Children = [];
     /** @type {HTMLElement} ParentElement - The parent element of this editable component. */
     ParentElement;
-    /** @type {HTMLElement | Element | null} Element - The HTML element representing this editable component. */
+    /** @type {HTMLElement | null} Element - The HTML element representing this editable component. */
     Element;
-    /** @type {Obj} Entity - The entity associated with this editable component. */
+    /** @type {Object} Entity - The entity associated with this editable component. */
     Entity = {};
     /** @type {Component} */
     Meta;
+    /** @type {any} */
     DefaultValue;
     /** @type {string[]} Classes - Represent hierarchy class of the component instance. */
     Classes = [];
@@ -178,10 +176,11 @@ export default class EditableComponent {
     /** @type {EditForm} */
     get EditForm() {
         if (this.#editForm != null) return this.#editForm;
-        this.#editForm = this.FindClosest('EditForm', x => !x.Popup);
+        // @ts-ignore
+        this.#editForm = this.FindClosest(EditForm.prototype, x => !x.Popup);
     }
     /**
-     * @param {EditableComponent} editor
+     * @param {EditForm} editor
      */
     set EditForm(editor) {
         this.#editForm = editor;
@@ -189,9 +188,10 @@ export default class EditableComponent {
         /** @type {Action} */
     }
     UserInput = new Action();
-    get IsSmallUp() { return document.clientWidth > 768 }
-    get IsMediumUp() { return document.clientWidth > 992 }
-    get IsLargeUp() { return document.clientWidth > 1200 }
+    get IsSmallUp() { return document.body.clientWidth > 768 }
+    get IsMediumUp() { return document.body.clientWidth > 992 }
+    get IsLargeUp() { return document.body.clientWidth > 1200 }
+    /** @type {any} */
     OldValue;
     /** @type {{[key: string]: string}} */
     ValidationResult = {};
@@ -199,6 +199,7 @@ export default class EditableComponent {
     set ClassName(value) { this.Element.className = value; }
     /** @type {Validation} */
     ValidationRules = {};
+    /** @type {boolean} */
     #disabled;
     /** @type {boolean} */
     get Disabled() {
@@ -207,25 +208,30 @@ export default class EditableComponent {
     set Disabled(value) {
         this.#disabled = value;
         this.SetDisableUI(value);
-        this.Children?.forEach(x => {
-            editable.Disabled = value;
+        this.Children.Flattern(x => x.Children).forEach(x => {
+            x.#disabled = value;
+            x.SetDisableUI(value);
         });
     }
     /** @type {boolean} */
+    _dirty;
     get Dirty() {
         return this._dirty && !this.AlwaysValid || this.FilterChildren(x => x._dirty, x => !x.PopulateDirty || x.AlwaysValid).Any();
     }
     set Dirty(value) {
-        this.UpdateDirty(value);
+        this._dirty = value;
+        if (!value) {
+            this.Children.Flattern(x => x.Children).Where(x => x._dirty).forEach(x => x._dirty = false);
+        }
     }
     /** @type {boolean} */
     AlwaysValid;
     get IsValid() {
-        return this.ValidationResult?.Count === 0 || Object.keys(this.ValidationResult).length === 0;
+        return Object.keys(this.ValidationResult).length === 0;
     }
     PopulateDirty = true;
     get CacheName() {
-        var exp = Meta?.CacheName;
+        var exp = this.Meta?.CacheName;
         if (!exp) return null;
         var fn = Utils.IsFunction(exp);
         return fn ? fn.call(null, this) : exp;
@@ -236,6 +242,14 @@ export default class EditableComponent {
     /** @returns {string} Entity's Id */
     get EntityId() {
         return this.Entity?.Id;
+    }
+    set EntityId(value) {
+        if (this.Entity == null) return;
+        this.Entity.Id = value;
+    }
+    /** @returns {string} Meta Label */
+    get Label() {
+        return this.Meta?.Label;
     }
     /** @returns {string} Meta fieldname */
     get FieldName() {
@@ -252,10 +266,6 @@ export default class EditableComponent {
         this.#emptyRow = val;
         let row = this.FindClosest('ListViewItem');
         if (row != null) row.EmptyRow = val;
-    }
-    /** @type {string} QueueName - Return meta data queue name. */
-    get QueueName() {
-        return this.Meta?.QueueName;
     }
     get MetaConn() {
         return this.Meta?.MetaConn;
@@ -274,7 +284,7 @@ export default class EditableComponent {
         const ele = this.Element;
         if (ele == null) return;
         if (this.ValidationRules?.hasOwnProperty(ValidationRule.Required)) {
-            ele.setAttribute(ValidationRule.Required, true);
+            ele.setAttribute(ValidationRule.Required, true .toString());
         }
         else {
             ele.removeAttribute(ValidationRule.Required);
@@ -303,7 +313,7 @@ export default class EditableComponent {
         let label = ruleValue;
         let [hasField, fieldVal] = this.Entity.GetComplexProp(field);
         if (hasField) {
-            label = this.Parent.find(x => x.Name === field)?.Meta?.Label;
+            label = this.Parent.FirstOrDefault(x => x.FieldName === field)?.Meta?.Label;
             ruleValue = fieldVal;
         }
         if (!validPredicate(value, ruleValue)) {
@@ -315,6 +325,9 @@ export default class EditableComponent {
         }
         return false;
     }
+    /**
+     * @param {boolean} [disabled]
+     */
     SetDisableUI(disabled) {
         const ele = this.Element;
         if (ele == null) {
@@ -327,13 +340,6 @@ export default class EditableComponent {
         else {
             ele.removeAttribute("disabled");
             ele.setAttribute("enable", "true");
-        }
-    }
-    _dirty;
-    UpdateDirty(dirty) {
-        this._dirty = dirty;
-        if (!dirty) {
-            this.Children.Flattern(x => x.Children).Where(x => x._dirty).forEach(x => x._dirty = false);
         }
     }
 
@@ -397,7 +403,7 @@ export default class EditableComponent {
         }
 
         cascadeFields.forEach(field => {
-            root.FilterChildren(x => x.Name === field).forEach(target => {
+            root.FilterChildren(x => x.FieldName === field).forEach(target => {
                 if (target instanceof SearchEntry && target !== null) {
                     target.Value = null;
                     target.Meta.LocalData = null;
@@ -437,7 +443,7 @@ export default class EditableComponent {
         }
 
         populatedFields.forEach(field => {
-            root.FilterChildren(x => x.Name === field).forEach(target => {
+            root.FilterChildren(x => x.FieldName === field).forEach(target => {
                 const value = Utils.GetPropValue(entity, field);
                 const oldVal = Utils.GetPropValue(this.Entity, field);
                 const targetType = this.Entity.constructor.GetComplexPropType(field);
@@ -484,7 +490,7 @@ export default class EditableComponent {
     }
 
     FindComponentByName(name, type) {
-        return this.FirstOrDefault(x => x.Name === name && (type == null || x.Classes.includes(type)));
+        return this.FirstOrDefault(x => x.FieldName === name && (type == null || x.Classes.includes(type)));
     }
 
     /**
@@ -514,17 +520,19 @@ export default class EditableComponent {
         const ele = this.Element;
         const meta = this.Meta;
         if (!val) {
-            ele.Style.Display = "none";
-            if (meta != null && meta.ShowLabel && FieldName != null) {
-                ele.ParentElement.style.display = "none";
-                ele.ParentElement.previousElementSibling.style.display = "none";
+            ele.style.display = "none";
+            if (meta != null && meta.ShowLabel && this.FieldName != null) {
+                ele.parentElement.style.display = "none";
+                // @ts-ignore
+                ele.parentElement.previousElementSibling.style.display = "none";
             }
         }
         else {
             ele.style.display = Str.Empty;
-            if (meta != null && meta.ShowLabel && FieldName != null) {
-                ele.ParentElement.Style.Display = "";
-                ele.ParentElement.PreviousElementSibling.Style.Display = "";
+            if (meta != null && meta.ShowLabel && this.FieldName != null) {
+                ele.parentElement.style.display = "";
+                // @ts-ignore
+                ele.parentElement.previousElementSibling.style.display = "";
             }
         }
 
@@ -537,8 +545,8 @@ export default class EditableComponent {
     ToggleShow(showExp) {
         var fn = Utils.IsFunction(showExp);
         if (showExp?.HasAnyChar() && fn) {
-            var shown = fn.Call(null, this);
-            Show = shown ?? false;
+            var shown = fn.call(null, this);
+            this.Show = shown ?? false;
         }
     }
 

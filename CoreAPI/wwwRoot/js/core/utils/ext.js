@@ -1,7 +1,7 @@
 import { KeyCodeEnum } from "../models/keycode.js";
 import { Utils } from "./utils.js";
 import { OutOfViewPort } from "./outOfViewPort.js";
-import { Entity } from "models/enum.js";
+import { Entity } from '../models/enum.js';
 
 export function HasNonSpaceChar() { return this.trim() !== ''; }
 
@@ -429,4 +429,11 @@ HTMLElement.prototype.OutOfViewport = function() {
     outOfViewPort.Any = outOfViewPort.Top || outOfViewPort.Left || outOfViewPort.Bottom || outOfViewPort.Right;
     outOfViewPort.All = outOfViewPort.Top && outOfViewPort.Left && outOfViewPort.Bottom && outOfViewPort.Right;
     return outOfViewPort;
+};
+/** 
+ * @param {(value: Element) => void} callback 
+ * @return {void}
+ */
+HTMLCollection.prototype.forEach = function(callback) {
+    Array.from(this).forEach(callback);
 };

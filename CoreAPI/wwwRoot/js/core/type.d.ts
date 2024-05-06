@@ -21,10 +21,10 @@ declare global {
     Where(callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any): T[];
     /**
      * @template T, K
-     * @param {(item: T) => K} mapper The function to get inner collection from each element
+     * @param {(item: T) => K[]} mapper The function to get inner collection from each element
      * @returns {Array<K>} Returns flattened array
      */
-    SelectMany(mapper: Function<T, K[]>): Array<K>;
+    SelectMany(mapper: (item: T) => K[]): Array<K>;
     /**
      * @template T, K
      * @param {(item: T) => K} mapper The function to get inner collection from each element
@@ -222,5 +222,12 @@ declare global {
      * @returns The value of the input text if the target is an input element, an empty string otherwise.
      */
     GetInputText(): string;
+  }
+
+  interface HTMLCollection {
+    /** 
+     * @param {(value: Element, index: number, array: Element[]) => void} callback 
+     */
+    forEach(action: (item: Element, index: number, array: Element[]) => void): void;
   }
 }

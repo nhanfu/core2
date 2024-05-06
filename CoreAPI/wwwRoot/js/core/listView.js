@@ -15,8 +15,8 @@ import { Str } from "./utils/ext.js";
 import { Client } from "./clients/client.js";
 import { Spinner } from "./spinner.js";
 import { PatchDetail } from "./models/patch.js";
-import { SqlViewModel } from "models/sqlViewModel.js";
-import { ListViewSearch } from "listViewSearch.js";
+import { SqlViewModel } from "./models/sqlViewModel.js";
+import { ListViewSearch } from "./listViewSearch.js";
 
 /**
  * Represents a list view component that allows editable features and other interactions like sorting and pagination.
@@ -44,7 +44,7 @@ export class ListView extends EditableComponent {
         this.DeleteTempIds = [];
         this.Meta = ui;
         this.Id = ui.Id?.toString();
-        this.Name = ui.FieldName;
+        this.FieldName = ui.FieldName;
         /** @type {Component[]} */
         this.Header = [];
         this.RowData = new ObservableList();
@@ -363,10 +363,10 @@ export class ListView extends EditableComponent {
     get AllListViewItem() { return this.MainSection.Children; }
     /**
      * Performs an action on all items that meet the condition specified by predicate.
-     * @param {(item: EditableComponent) => boolean} predicate - The condition to check each ListViewItem.
      * @param {(item: EditableComponent) => void} action - The action to perform on each ListViewItem that meets the condition.
+     * @param {(item: EditableComponent) => boolean} predicate - The condition to check each ListViewItem.
      */
-    RowAction(predicate, action) {
+    RowAction(action, predicate = null) {
         this.AllListViewItem.filter(x => !predicate || predicate(x)).forEach(action);
     }
 

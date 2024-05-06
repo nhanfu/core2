@@ -3,7 +3,7 @@ import { Html } from "./utils/html.js";
 import EventType from './models/eventType.js';
 import EditableComponent from './editableComponent.js';
 import ObservableArgs from './models/observable.js';
-import "../fix.js";
+import "./utils/fix.js";
 import { Uuid7 } from "./structs/uuidv7.js";
 
 

@@ -134,6 +134,7 @@ import { FeaturePolicy } from './featurePolicy.js';
 
 // Initializing data
 export class Component {
+    StyleSheet = '';
     Id = '';
     TenantCode = '';
     Name = '';
@@ -391,6 +392,12 @@ export class Component {
      * @type {string}
      */
     Css;
+
+    /**
+     * Allow tempoprily delete on GridView
+     * @type {boolean}
+     */
+    DeleteTemp;
 
     /**
      * Represents the JavaScript code associated with the component.

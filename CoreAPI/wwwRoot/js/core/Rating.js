@@ -3,7 +3,7 @@ import { Utils } from "./utils/utils.js";
 import ObservableArgs from './models/observable.js';
 import EditableComponent from "./editableComponent.js";
 import { Utils } from "./utils/utils.js";
-import "../fix.js";
+import "./utils/fix.js";
 
 
 class Rating extends EditableComponent {

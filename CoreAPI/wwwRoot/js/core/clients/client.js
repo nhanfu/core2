@@ -9,6 +9,7 @@ export class Client {
     static entities;
     static token;
     static GuidLength = 36;
+    static Host = (document.head.host?.content || window.location.host).toLowerCase();
     static BaseUri = (document.head.baseUri?.content || window.location.origin).toLowerCase();
     static IsPortal = document.head.startup?.content !== "admin";
     static MetaConn = document.head.metaKey?.content || "default";
@@ -129,6 +130,7 @@ export class Client {
 
     async FirstOrDefaultAsync(filter = null, clearCache = false, addTenant = false) {
         const headers = ClearCacheHeader(clearCache);
+        // @ts-ignore
         const res = await this.SubmitAsync({
             Value: null,
             AddTenant: addTenant,
@@ -393,6 +395,11 @@ function ErrorHandler(options, reject, xhr) {
     reject(new Error(exp.Message));
 }
 
+/**
+ * 
+ * @param {boolean} clearCache 
+ * @returns {any}
+ */
 function ClearCacheHeader(clearCache) {
     const headers = {};
     if (clearCache) {

@@ -45,8 +45,8 @@ class XHRWrapper {
     IsRawString = false;
 
     constructor() {
-        /** @type {{[key: string]: string}} */
-        this.Headers = new Map();
+        /** @type {any} */
+        this.Headers = {};
         this.FormData = null;
         this.File = null;
         this.ProgressHandler = null;

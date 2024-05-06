@@ -32,7 +32,7 @@ export class AdvancedSearch extends TabEditor {
      */
     constructor(parent) {
         super("Component");
-        this.Name = "AdvancedSearch";
+        this.FieldName = "AdvancedSearch";
         this.Title = "Tìm kiếm nâng cao";
         this.Icon = "fa fa-search-plus";
         this.Parent = parent;

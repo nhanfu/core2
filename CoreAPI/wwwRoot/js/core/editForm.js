@@ -1,27 +1,29 @@
-import EditableComponent from "./editableComponent.js";
 import { Utils } from "./utils/utils.js";
+import EditableComponent from "./editableComponent.js";
 import { ComponentExt } from './utils/componentExt.js';
 import EventType from "./models/eventType.js";
 import { Html } from "./utils/html.js";
 import { Client } from "./clients/client.js";
 import { Str } from "./utils/ext.js";
 import { Component } from "./models/component.js";
-import { PatchVM } from "./models/patch.js";
+import { PatchDetail, PatchVM } from "./models/patch.js";
 import { Message } from "./utils/message.js";
 import { Action } from "./models/action.js";
 import { StringBuilder } from "./utils/stringBuilder.js";
 import { FeaturePolicy } from "./models/featurePolicy.js";
 import { ComponentFactory } from "./utils/componentFactory.js";
 import { Toast } from "./toast.js";
+import { Section } from "./section.js";
 
 /**
  * Represents an editable form component.
  * @typedef {import('./listView.js').ListView} ListView
  * @typedef {import('./label.js').Label} Label
+ * @typedef {import('./button.js').Button} Button
  */
 export class EditForm extends EditableComponent {
     /** @type {EditForm} */
-    LayoutForm;
+    static LayoutForm;
     /** @type {ListView[]} */
     ListViews = [];
     static ExpiredDate = "ExpiredDate";
@@ -49,7 +51,7 @@ export class EditForm extends EditableComponent {
     }
 
     get FeatureName() {
-        return this.Name || this.Feature?.Name;
+        return this.FieldName || this.Feature?.Name;
     }
 
     // Standard property getter and setter for Href
@@ -71,7 +73,7 @@ export class EditForm extends EditableComponent {
         this.urlSearch = new URLSearchParams(window.location.search);
         this.entity = entity;
         if (entity != null) {
-            window.addEventListener('resize', this.resizeHandler.bind(this));
+            window.addEventListener(EventType.Resize, this.ResizeHandler.bind(this));
         }
     }
 
@@ -84,15 +86,19 @@ export class EditForm extends EditableComponent {
         const details = this.FilterChildren(child => {
             return !(child instanceof Button)
                 && (shouldGetAll || child.Dirty) && child.Meta != null
-                && child.FieldName;
+                && child.FieldName != null;
         }, x => x instanceof ListView || x.AlwaysValid || !x.PopulateDirty);
-        details = details
+        const patches = details
             .DistinctBy(x => x.Meta.Id)
             .SelectMany(child => {
                 if (typeof child['GetPatchDetail'] === 'function') {
                     return child['GetPatchDetail']();
                 }
-                const value = Utils.GetPropValue(child.entity, child.fieldName);
+                const value = Utils.GetPropValue(child.Entity, child.FieldName);
+                /**
+                 * @type {PatchDetail}
+                 */
+                // @ts-ignore
                 const patch = {
                     Label: child.Label,
                     Field: child.FieldName,
@@ -103,7 +109,10 @@ export class EditForm extends EditableComponent {
             })
             .DistinctBy(x => x.Field);
         this.AddIdToPatch(details);
-        return new PatchVM({ Changes: details, Table: this.Meta.EntityName, QueueName: this.QueueName, CacheName: this.CacheName });
+        /** @type {PatchVM} */
+        // @ts-ignore
+        const patchVM = { Changes: patches, Table: this.Meta.EntityName, QueueName: this.QueueName, CacheName: this.CacheName };
+        return patchVM;
     }
 
     /**
@@ -112,7 +121,7 @@ export class EditForm extends EditableComponent {
      * @returns {Promise<boolean>} A promise that resolves with the success status.
      */
     async SavePatch(entity = null) {
-        if (!this.dirty) {
+        if (!this.Dirty) {
             Toast.Warning(Message.NotDirty);
             return false;
         }
@@ -142,16 +151,16 @@ export class EditForm extends EditableComponent {
    * Resizes the ListView based on visibility and responsiveness.
    */
     ResizeListView() {
-        const VisibleListView = this.ListViews.find(lv => !lv.Element.isHidden());
+        const VisibleListView = this.ListViews.find(lv => !lv.Element.Hidden());
         if (!VisibleListView) {
             return;
         }
 
         const allListView = VisibleListView.Parent.Children.filter(x => x instanceof ListView);
-        const responsive = allListView.some(x => x.Name.includes("Mobile"));
+        const responsive = allListView.some(x => x.FieldName.includes("Mobile"));
         allListView.forEach(lv => {
             if (responsive) {
-                lv.Show = this.IsSmallUp ? !lv.Name.includes("Mobile") : lv.Name.includes("Mobile");
+                lv.Show = this.IsSmallUp ? !lv.FieldName.includes("Mobile") : lv.FieldName.includes("Mobile");
                 if (lv.Show) {
                     this._CurrentListView = lv;
                 }
@@ -177,7 +186,7 @@ export class EditForm extends EditableComponent {
             }
 
             if (this.IsLargeUp && tg.Meta.Responsive && tg.Element.parentElement.HasClass("tab-horizontal")) {
-                tg.Element.ParentElement.ReplaceClass("tab-horizontal", "tab-vertical");
+                tg.Element.parentElement.ReplaceClass("tab-horizontal", "tab-vertical");
             } else if (!this.IsLargeUp && tg.Meta.Responsive && tg.Element.parentElement.HasClass("tab-vertical")) {
                 tg.Element.parentElement.ReplaceClass("tab-vertical", "tab-horizontal");
             }
@@ -197,14 +206,6 @@ export class EditForm extends EditableComponent {
         });
     }
 
-    /**
-     * Disposes the form and removes event listeners.
-     */
-    Dispose() {
-        window.removeEventListener('resize', this.resizeHandler.bind(this));
-        super.Dispose();
-    }
-
     Render() {
         if (this.Portal) {
             this.ParentForm = this.ParentForm || this.LastForm;
@@ -215,7 +216,7 @@ export class EditForm extends EditableComponent {
 
     /**
      * Handles the loaded layout and setups the form with loaded features.
-     * @param {Feature} feature - The loaded feature.
+     * @param {Component} feature - The loaded feature.
      * @param {object} entity - The entity data.
      * @param {Function} loadedCallback - Callback function to execute after loading.
      */
@@ -225,7 +226,7 @@ export class EditForm extends EditableComponent {
         this.SetFeatureProperties(feature);
         const groupTree = this.BuildTree(feature.ComponentGroup.sort((a, b) => a.Order - b.Order));
         this.Element = this.RenderTemplate(feature);
-        this.SetFeatureStyleSheet(feature.styleSheet);
+        this.SetFeatureStyleSheet(feature.StyleSheet);
         this.RenderTabOrSection(groupTree);
         this.ResizeHandler();
         this.LockUpdate();
@@ -238,7 +239,7 @@ export class EditForm extends EditableComponent {
      * Initializes DOM events for the form.
      */
     InitDOMEvents() {
-        Html.Take(this.element).TabIndex(-1).Trigger('focus')
+        Html.Take(this.Element).TabIndex(-1).Trigger('focus')
             .Event(EventType.FocusIn, () => this.DispatchFeatureEvent(this.Meta.Events, EventType.FocusIn))
             .Event(EventType.KeyDown, (e) => this.KeyDownIntro(e))
             .Event(EventType.FocusOut, () => this.DispatchFeatureEvent(this.Meta.Events, EventType.FocusOut));
@@ -298,7 +299,7 @@ export class EditForm extends EditableComponent {
         if (!dirtyGrid.length) {
             return null;
         }
-        return dirtyGrid.flatMap(grid => grid.getPatches());
+        return dirtyGrid.flatMap(grid => grid.GetPatches());
     }
 
     /**
@@ -328,7 +329,7 @@ export class EditForm extends EditableComponent {
                             row.Dispose();
                         }
                     });
-                    grid.DeleteTempIds.clear();
+                    grid.DeleteTempIds.Clear();
                 });
         });
     }
@@ -433,40 +434,59 @@ export class EditForm extends EditableComponent {
     }
 
     /**
-     * Renders the template for the feature.
-     * @param {Feature} feature - The feature object.
-     * @returns {HTMLElement} - The rendered template element.
+     * Calculates the appropriate column width based on the component group and screen width.
+     * @param {Component} group - The component group to evaluate.
+     * @returns {number} The number of columns the component should span.
      */
-    RenderTemplate(feature) {
-        let entryPoint = document.getElementById(this.SpecialEntryPoint) || document.getElementById("template") || Element;
-        if (this.ParentForm && this.Portal && !this.Popup) {
-            this.ParentForm.Element = null;
-            this.ParentForm.Dispose();
-            this.ParentForm = null;
+    GetInnerColumn(group) {
+        if (!group) return 0;
+
+        const screenWidth = this.Element.clientWidth;
+        let res;
+
+        if (screenWidth < EditableComponent.ExSmallScreen && group.XsCol > 0) {
+            res = group.XsCol;
+        } else if (screenWidth < EditableComponent.SmallScreen && group.SmCol > 0) {
+            res = group.SmCol;
+        } else if (screenWidth < EditableComponent.MediumScreen && group.Column > 0) {
+            res = group.Column;
+        } else if (screenWidth < EditableComponent.LargeScreen && group.LgCol > 0) {
+            res = group.LgCol;
+        } else if (screenWidth < EditableComponent.ExLargeScreen && group.XlCol > 0) {
+            res = group.XlCol;
+        } else {
+            res = group.XxlCol || group.Column;
         }
-        entryPoint.innerHTML = "";
-        if (!this.Meta.Template.trim()) {
-            return entryPoint;
-        }
-        entryPoint.innerHTML = this.Meta.Template;
-        this.BindingTemplate(entryPoint, this);
-        const innerEntry = entryPoint.querySelector("#inner-entry");
-        this.ResetEntryPoint(innerEntry);
-        const res = innerEntry || entryPoint;
-        if (res.style.display === "none") {
-            res.style.display = "";
-        }
-        return res;
+
+        return res || 0;
     }
 
     /**
-     * Resets the entry point by clearing its inner HTML.
-     * @param {HTMLElement} entryPoint - The entry point element to reset.
+     * Calculates the appropriate outer column width based on the component group and screen width.
+     * @param {Component} group - The component group to evaluate.
+     * @returns {number} The number of columns including the outer margin/padding.
      */
-    ResetEntryPoint(entryPoint) {
-        if (entryPoint) {
-            entryPoint.innerHTML = "";
+    GetOuterColumn(group) {
+        if (!group) return 0;
+
+        const screenWidth = this.Element.clientWidth;
+        let res;
+
+        if (screenWidth < EditableComponent.ExSmallScreen && group.XsOuterColumn > 0) {
+            res = group.XsOuterColumn;
+        } else if (screenWidth < EditableComponent.SmallScreen && group.SmOuterColumn > 0) {
+            res = group.SmOuterColumn;
+        } else if (screenWidth < EditableComponent.MediumScreen && group.OuterColumn > 0) {
+            res = group.OuterColumn;
+        } else if (screenWidth < EditableComponent.LargeScreen && group.LgOuterColumn > 0) {
+            res = group.LgOuterColumn;
+        } else if (screenWidth < EditableComponent.ExLargeScreen && group.XlOuterColumn > 0) {
+            res = group.XlOuterColumn;
+        } else {
+            res = group.XxlOuterColumn || group.OuterColumn;
         }
+
+        return res || 0;
     }
 
     /**
@@ -488,21 +508,8 @@ export class EditForm extends EditableComponent {
         const meta = this.ResolveMeta(ele);
         const newCom = factory ? factory(ele, meta, parent, entity) : this.BindingCom(ele, meta, parent, entity);
         parent = newCom instanceof Section ? newCom : parent;
+        // @ts-ignore
         ele.children.forEach(child => this.BindingTemplate(child, parent, entity, factory, visited));
-    }
-
-    /**
-     * Gets all components belonging to the form.
-     * @returns {Component[]} - Array of all components.
-     */
-    get AllCom() {
-        if (this._allCom) return this._allCom;
-        if (!this.LayoutForm) {
-            this._allCom = this.Meta.Component.slice();
-        } else {
-            this._allCom = this.Meta.Component.concat(this.LayoutForm.Meta.Component);
-        }
-        return this._allCom;
     }
 
     /**
@@ -511,8 +518,8 @@ export class EditForm extends EditableComponent {
      * @returns {Component} - The resolved component.
      */
     ResolveMeta(ele) {
-        /** @type {Obj} */
-        let component = null;
+        /** @type {Component} */
+        let component = new Component();
         const id = ele.dataset[this.IdField.toLowerCase()];
         if (id) {
             component = this.AllCom.find(x => x.Id === id);
@@ -524,7 +531,7 @@ export class EditForm extends EditableComponent {
             }
             let propVal = null;
             try {
-                propVal = typeof Component.prototype[prop] === 'string' ? value : JSON.parse(value);
+                propVal = typeof component[prop] === 'string' ? value : JSON.parse(value);
                 component = component || new Component();
                 component.SetPropValue(prop, propVal);
             } catch {
@@ -538,18 +545,19 @@ export class EditForm extends EditableComponent {
      * Renders the text content of a cell.
      * @param {HTMLElement} ele - The HTML element.
      * @param {object} entity - The entity object.
-     * @returns {} - The rendered label if applicable, otherwise null.
+     * @returns {Label} - The rendered label if applicable, otherwise null.
      */
-    static RenderCellText(ele, entity) {
+    RenderCellText(ele, entity) {
         const text = ele.textContent.trim();
         if (text && text.startsWith("{") && text.endsWith("}")) {
             /** @type {Component} */
+            // @ts-ignore
             const meta = {
                 FieldName: text.slice(1, -1)
             };
             const cellText = new Label(meta, ele);
             cellText.Entity = entity;
-            if (this.LayoutForm) {
+            if (EditableComponent.LayoutForm) {
                 this.LayoutForm.AddChild(cellText);
             } else {
                 cellText.Render();
@@ -778,47 +786,6 @@ export class EditForm extends EditableComponent {
     }
 
     /**
-     * Binds a template to a component structure.
-     * @param {HTMLElement} ele - The element to bind.
-     * @param {EditableComponent} parent - The parent component.
-     * @param {object} entity - The entity associated with the component.
-     * @param {Function} factory - Factory function to create components.
-     * @param {Set<HTMLElement>} visited - Set of visited elements to avoid infinite loops.
-     */
-    BindingTemplate(ele, parent, entity = null, factory = null, visited = new Set()) {
-        if (!ele || visited.has(ele)) return;
-        visited.add(ele);
-        if (ele.children.length === 0 && this.RenderCellText(ele, entity)) return;
-
-        let meta = this.ResolveMeta(ele);
-        let newCom = factory ? factory(ele, meta, parent, entity) : this.BindingCom(ele, meta, parent, entity);
-        parent = newCom instanceof Section ? newCom : parent;
-        Array.from(ele.children).forEach(child => this.BindingTemplate(child, parent, entity, factory, visited));
-    }
-
-    /**
-     * Resolves metadata for a given HTML element based on data attributes.
-     * @param {HTMLElement} ele - The element to resolve metadata for.
-     * @returns {Component} The resolved component metadata.
-     */
-    ResolveMeta(ele) {
-        let component = null;
-        let id = ele.dataset[this.IdField.toLowerCase()];
-        if (id) {
-            component = AllCom.find(x => x.Id === id);
-        }
-        Object.getOwnPropertyNames(Component.prototype).forEach(prop => {
-            const value = ele.dataset[prop.toLowerCase()];
-            if (value) {
-                let propVal = prop.type === String ? value : Utils.ChangeType(value, prop.type);
-                component = component || new Component();
-                component[prop] = propVal;
-            }
-        });
-        return component;
-    }
-
-    /**
      * Renders the cell text for a given element if it matches the pattern.
      * @param {HTMLElement} ele - The element to check for cell text.
      * @param {object} entity - The entity to bind to the label.
@@ -828,7 +795,10 @@ export class EditForm extends EditableComponent {
         const text = ele.textContent.trim();
         if (text.startsWith("{") && text.endsWith("}")) {
             const fieldName = text.substring(1, text.length - 1);
-            const label = new Label(new Component({ FieldName: fieldName }), ele);
+            /** @type {Component} */
+            // @ts-ignore
+            const com = { FieldName: fieldName };
+            const label = new Label(com, ele);
             label.Entity = entity;
             label.Render();
             return label;
@@ -1026,7 +996,7 @@ export class EditForm extends EditableComponent {
                 Toast.Success("You have successfully signed out!");
                 Client.SignOutEventHandler?.call();
                 Client.Token = null;
-                NotificationClient?.Close();
+                this.NotificationClient?.Close();
                 window.location.reload();
             }).catch(error => {
                 Toast.Warning("Error during sign out: " + error.message);
