@@ -37,12 +37,14 @@ export class PaginationOptions {
  */
 export class Paginator extends EditableComponent {
     /** @type {ListView} */
+    // @ts-ignore
     Parent;
     /**
      * Create a paginator.
      * @param {PaginationOptions} paginationOptions - Options for pagination.
      */
     constructor(paginationOptions) {
+        super(null, null);
         if (!paginationOptions) throw new Error("paginationOptions is required");
         this.Options = paginationOptions;
         this.Element = null; // This will be set when render is called
@@ -66,7 +68,6 @@ export class Paginator extends EditableComponent {
         const startIndexLabel = this.CreateLabel('StartIndex');
         const endIndexLabel = this.CreateLabel('EndIndex');
         const totalLabel = this.CreateLabel('Total', "{0:n0}");
-        const pageNumberElement = this.DreateNumberInput('PageNumber');
 
         container.appendChild(pageSizeElement);
         container.appendChild(startIndexLabel);

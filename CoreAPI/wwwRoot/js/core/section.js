@@ -79,7 +79,7 @@ export class Section extends EditableComponent {
             }
             this.innerEle = Html.Context;
             this._chevron = this.innerEle?.previousElementSibling?.firstElementChild;
-            this.Element = Html.EontRxt;
+            this.Element = Html.Context;
         }
         if (this.Meta.Responsive && !this.Meta.IsTab || this.Meta.IsDropDown) {
             this.RenderComponentResponsive(this.Meta);
@@ -592,14 +592,14 @@ export class Section extends EditableComponent {
                     .Style("padding-left: 0;").Render();
             }
 
-            if (ui.Style.hasAnyChar()) {
+            if (ui.Style) {
                 Html.Style(ui.Style);
             }
 
-            if (ui.Width.hasAnyChar()) {
+            if (ui.Width) {
                 Html.Width(ui.Width);
             }
-            const childCom = ComponentFactory.GetComponent(ui, EditForm);
+            const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
             if (childCom === null) return;
 
             if (childCom instanceof ListView) {
@@ -620,11 +620,11 @@ export class Section extends EditableComponent {
                 }
 
                 if (ui.Row === 1) {
-                    childCom.ParentElement.ParentElement.classList.add("inline-label");
+                    childCom.ParentElement.parentElement.classList.add("inline-label");
                 }
 
                 if (Client.SystemRole) {
-                    childCom.Element.addEventListener("contextmenu", e => EditForm.SysConfigMenu(e, ui, group, childCom));
+                    childCom.Element.addEventListener("contextmenu", e => this.EditForm.SysConfigMenu(e, ui, group, childCom));
                 }
             }
             if (ui.Focus) {
@@ -637,7 +637,7 @@ export class Section extends EditableComponent {
                 column += ui.Offset;
             }
             column += ColSpan;
-            if (column === EditForm.GetInnerColumn(group)) {
+            if (column === this.EditForm.GetInnerColumn(group)) {
                 column = 0;
                 Html.EndOf("tr").TRow.Render();
             }
@@ -645,11 +645,12 @@ export class Section extends EditableComponent {
     }
 }
 
-export class ListViewSection extends ListView {
+export class ListViewSection extends Section {
     /** @type {ListView} */
     ListView;
     Render() {
+        // @ts-ignore
         this.ListView = this.Parent;
-        base.Render();
+        super.Render();
     }
 }

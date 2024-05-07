@@ -1,6 +1,9 @@
+import { PositionEnum } from '../models/enum.js';
 import { Client } from '../clients/client.js';
 import { Str } from './ext.js';
 import { LangSelect } from './langSelect.js';
+import { ElementType } from '../models/elementType.js';
+
 export class HtmlEvent {
     static click = 'click';
 }
@@ -15,6 +18,9 @@ export const Direction =
 export class HTML {
     /** @type {HTMLElement} */
     Context;
+    /**
+     * @type {HTML}
+     */
     _instance;
     /** @type {HTML} */
     get Instance() {
@@ -36,7 +42,10 @@ export class HTML {
     GetContext() {
         return this.Context;
     }
-    
+
+    /**
+     * @param {string} node
+     */
     Add(node) {
         const ele = document.createElement(node);
         this.Context.appendChild(ele);
@@ -177,38 +186,73 @@ export class HTML {
     Render() {
         // Not to do anything here
     }
+    /**
+     * @param {string} name
+     * @param {(...args) => any} handler
+     * @param {Date[]} args
+     */
     Event(name, handler, ...args) {
         this.Context.addEventListener(name, () => handler(...args));
         return this;
     }
+    /**
+     * @param {string} type
+     */
     Trigger(type) {
         var e = new Event(type);
         this.Context.dispatchEvent(e);
         return this;
     }
 
+    /**
+     * @param {string} cls
+     */
     ClassName(cls) {
         this.Context.className += (' ' + cls);
         return this;
     }
 
+    /**
+     * @param {string} id
+     */
     Id(id) {
         this.Context.id = id;
         return this;
     }
 
+    /**
+     * @param {string} style
+     */
     Style(style) {
         if (style == null) return this;
         this.Context.style.cssText += style;
         return this;
     }
+    /**
+     * @param {string} width
+     */
+    Width(width) {
+        this.Context.style.width = width;
+        return this;
+    }
+    /**
+     * @param {string} direction
+     * @param {number} number
+     * @param {string} [unit]
+     */
     Padding(direction, number, unit) {
         if (unit == null) unit = 'px';
         return this.Style(`padding-${direction}: ${number}${unit}`);
     }
+    /**
+     * @param {string} alignment
+     */
     TextAlign(alignment) {
         return this.Style("text-align: " + alignment);
     }
+    /**
+     * @param {string} text
+     */
     Text(text) {
         if (text === null || text === undefined) return this;
         var node = new Text(text);
@@ -217,21 +261,29 @@ export class HTML {
     }
 
     Button2(text = '', className = 'button info small', icon = '') {
-        Button.Render();
+        this.Button.Render();
         if (icon !== '') {
-            Span.ClassName(icon).End.Text(' ').Render();
+            this.Span.ClassName(icon).End.Text(' ').Render();
         }
-        return ClassName(className).IText(text);
+        return this.ClassName(className).IText(text);
     }
 
+    /**
+     * @param {any} direction
+     * @param {any} margin
+     */
     Margin(direction, margin, unit = "px") {
-        return Style(`margin-${direction} : ${margin}${unit}`);
+        return this.Style(`margin-${direction} : ${margin}${unit}`);
     }
 
+    /**
+     * @param {string} direction
+     * @param {number} margin
+     */
     MarginRem(direction, margin) {
-        return Style(`margin-${direction} : ${margin}rem`);
+        return this.Style(`margin-${direction} : ${margin}rem`);
     }
-    
+
     /**
      * Inserts a text node into the current HTML context with language-specific translation.
      * @param {string} langKey - The key used to fetch the translated text.
@@ -250,36 +302,61 @@ export class HTML {
         return this;
     }
 
+    /**
+     * @param {string} html
+     */
     InnerHTML(html) {
         this.Context.innerHTML = html;
         return this;
     }
+    /**
+     * @param {boolean} val
+     */
     SmallCheckbox(val) {
         this.Label.ClassName("checkbox input-small transition-on style2")
             .Input.Attr("type", "checkbox").Type("checkbox").End
             .Span.ClassName("check myCheckbox");
+        // @ts-ignore
         this.Context.previousElementSibling.checked = val;
         return this;
     }
+    /**
+     * @param {string} name
+     */
     Type(name) {
+        // @ts-ignore
         this.Context.type = name;
         return this;
     }
+    /**
+     * @param {string} name
+     * @param {string} value
+     */
     Attr(name, value) {
         this.Context.setAttribute(name, value);
         return this;
     }
 
+    /**
+     * @param {number} index
+     */
     TabIndex(index) {
         this.Context.setAttribute('tabindex', index.toString());
         return this;
     }
 
+    /**
+     * @param {string} name
+     * @param {string} value
+     */
     DataAttr(name, value) {
         this.Context.setAttribute('data-' + name, value);
         return this;
     }
 
+    /**
+     * @param {string} langKey
+     */
     PlaceHolder(langKey) {
         if (!langKey || langKey.trim() === '') {
             return this;
@@ -287,7 +364,7 @@ export class HTML {
         this.MarkLangProp(this.Context, langKey, "placeholder");
         return this.Attr("placeholder", LangSelect.Get(langKey));
     }
-   
+
 
     /**
      * Marks a language property on a specified node.
@@ -312,7 +389,12 @@ export class HTML {
         const propArray = newProp.split(",").filter((value, index, self) => self.indexOf(value) === index);
         ctx[LangSelect.LangProp] = propArray.join(",");
     }
+    /**
+     * @param {string} val
+     */
     Value(val) {
+        /** @type {HTMLInputElement} */
+        // @ts-ignore
         const input = this.Context;
         input.value = val;
         return this;
@@ -332,12 +414,18 @@ export class HTML {
         }
         return this;
     }
-    Position(position)
-        {
-            return Style(`position: {${position}}`);
-        }
+    /**
+     * @param {PositionEnum | string} position
+     * @param {string | number} distance
+     * @param {string} unit
+     */
+    Position(position, distance = null, unit = 'px') {
+        if (distance == null)
+            return this.Style(`position: {${position}}`);
+        return this.Style(`position: ${position}; ${position}: ${distance}${unit};`);
+    }
 
-    
+
     /**
      * Sets up an escape key event listener on the current context.
      * @param {Function} action - Action to execute when the escape key is pressed.
@@ -380,8 +468,8 @@ export class HTML {
     }
     /**
      * Sets the position of the current HTML element to fixed.
-     * @param {number} top - The top position in pixels.
-     * @param {number} left - The left position in pixels.
+     * @param {string} top - The top position in pixels.
+     * @param {string} left - The left position in pixels.
      * @returns {Html} Returns this for chaining.
      */
     Floating(top, left) {

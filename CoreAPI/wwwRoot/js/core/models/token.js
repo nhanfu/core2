@@ -57,7 +57,7 @@ export class Token {
 
     /**
      * Vendor information associated with the user.
-     * @type {Vendor|null}
+     * @type {any}
      */
     Vendor = null;
 
@@ -102,11 +102,29 @@ export class Token {
 
     /** @type {string|null} Connection key used for database connections */
     ConnKey = null;
+    
+    SystemRole = false;
 
     constructor() {
         // Default values can be initialized here if different from null or empty.
         this.TenantCode = Client.Tenant; // Assuming Client.Tenant is accessible
         this.Env = Client.Env;          // Assuming Client.Env is accessible
         this.ConnKey = Client.MetaConn; // Assuming Client.MetaConn is accessible
+    }
+
+    /**
+     * @param {string} token
+     */
+    static parse(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        const data = JSON.parse(jsonPayload);
+        const res = new Token();
+        res.CopyPropFrom(data);
+        return res;
     }
 }

@@ -3,7 +3,7 @@ import { Action } from "./models/action.js";
 import { Component } from "./models/component.js";
 import { CustomEventType } from "./models/customEventType.js";
 import { ActiveStateEnum, AdvSearchVM, MQEvent, OrderBy, OrderbyDirection, Where } from "./models/enum.js";
-import { PaginationOptions, Paginator } from "./paginator.js";
+import { Paginator } from "./paginator.js";
 import { Utils } from "./utils/utils.js";
 import { ObservableList } from './models/observableList.js';
 import { ListViewSection } from './section.js';
@@ -37,13 +37,13 @@ export class ListView extends EditableComponent {
     /**
      * Constructs an instance of ListView with the specified UI component.
      * @param {Component} ui The UI component associated with this list view.
-     * @param {Element} [ele] Optional HTML element.
+     * @param {HTMLElement} [ele] Optional HTML element.
      */
     constructor(ui, ele = null) {
         super(ui, ele);
         this.DeleteTempIds = [];
         this.Meta = ui;
-        this.Id = ui.Id?.toString();
+        this.Id = ui.Id;
         this.FieldName = ui.FieldName;
         /** @type {Component[]} */
         this.Header = [];

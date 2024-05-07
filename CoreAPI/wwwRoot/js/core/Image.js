@@ -36,11 +36,11 @@ export class Image extends EditableComponent {
         this.zoomMaxLevel = 3;
     }
 
-    get path() {
+    get Path() {
         return this._path;
     }
 
-    set path(value) {
+    set Path(value) {
         const galleryElements = this.Element.parentElement.querySelectorAll(".gallery");
         galleryElements.forEach(el => el.remove());
         this._path = value;
@@ -58,20 +58,19 @@ export class Image extends EditableComponent {
         }
 
         updatedImages.forEach(x => {
-            this.renderFileThumb(x);
+            this.RenderFileThumb(x);
         });
     }
 
-    get disabled() {
-        return this.disabled;
-    }
-
-    set disabled(value) {
+    /**
+     * @param {boolean} value
+     */
+    set Disabled(value) {
         if (this._input !== null) {
             this._input.disabled = value; 
         }
 
-        this.disabled = value; 
+        this.Disabled = value; 
 
         if (value) {
             this.ParentElement.setAttribute("disabled", ""); 
@@ -80,25 +79,25 @@ export class Image extends EditableComponent {
         }
     }
 
-    get imageSources() {
-        return this.path ? this.path.split(Image.PathSeparator) : null;
+    get ImageSources() {
+        return this.Path ? this.Path.split(Image.PathSeparator) : null;
     }
 
-    render() {
+    Render() {
         this._path = Utils.GetPropValue(this.Entity,this.FieldName)?.toString();
         const paths = this._path ? this._path.split(Image.PathSeparator) : [];
-        this.renderUploadForm();
+        this.RenderUploadForm();
         this.Path = this._path; 
         this.DOMContentLoaded?.invoke();
         this.Element.closest("td")?.addEventListener("keydown", this.ListViewItemTab);
     }
 
-    renderFileThumb(path) {
+    RenderFileThumb(path) {
         const gallery = document.createElement('div');
         gallery.className = "gallery";
         this._gallerys.appendChild(gallery);
     
-        const thumbText = this.removeGuid(path);
+        const thumbText = this.RemoveGuid(path);
         const isImage = Utils.IsImage(path);
     
         if (isImage) {
@@ -107,7 +106,7 @@ export class Image extends EditableComponent {
             Object.assign(img.style, this.Meta.ChildStyle); 
             img.src = (path.includes("http") ? path : Client.Origin + Utils.DecodeSpecialChar(path));
             gallery.appendChild(img);
-            img.addEventListener('click', () => this.preview(path)); 
+            img.addEventListener('click', () => this.Preview(path)); 
         } else {
             const link = document.createElement('a');
             link.className = thumbText.includes("pdf") ? "fal fa-file-pdf" : "fal fa-file";
@@ -117,17 +116,17 @@ export class Image extends EditableComponent {
             gallery.appendChild(link);
         }
     
-        if (!this.disabled) {
+        if (!this.Disabled) {
             const deleteBtn = document.createElement('i');
             deleteBtn.className = "fas fa-trash-alt";
-            deleteBtn.addEventListener('click', () => this.removeFile(path));
+            deleteBtn.addEventListener('click', () => this.RemoveFile(path));
             gallery.appendChild(deleteBtn);
         }
     
         return this._gallerys;
     }
 
-    removeGuid(path) {
+    RemoveGuid(path) {
         let thumbText = path;
         if (path.length > Image.GuidLength) {
             const fileName = Utils.GetFileNameWithoutExtension(path);
@@ -136,14 +135,14 @@ export class Image extends EditableComponent {
         return thumbText;
     }
 
-    setCanDeleteImage(canDelete) {
+    SetCanDeleteImage(canDelete) {
         this._disabledDelete = !canDelete;
         if (canDelete) {
             this.UpdateView();
         }
     }
 
-    preview(path) {
+    Preview(path) {
         if (!Utils.IsImage(path)) {
             console.log("Not an image: Downloading file.");
             window.location.href = path; 
@@ -168,7 +167,7 @@ export class Image extends EditableComponent {
         zoom();
     }
 
-    zoomImage(img) {
+    ZoomImage(img) {
         if (this.flagZoomIn < this.zoomMaxLevel) {
             if (this.zoomLevel === 0 || this.zoomLevel < this.zoomMaxLevel) {
                 img.style.cursor = "zoom-in";
@@ -188,7 +187,7 @@ export class Image extends EditableComponent {
         }
     }
 
-    moveAround(event, path) {
+    MoveAround(event, path) {
         const keyCode = event.keyCode;
         if (![37, 39].includes(keyCode)) {
             return;
@@ -200,26 +199,26 @@ export class Image extends EditableComponent {
         }
     
         if (keyCode === 37) { 
-            this.moveLeft(path, img);
+            this.MoveLeft(path, img);
         } else if (keyCode === 39) {  
-            this.moveRight(path, img);
+            this.MoveRight(path, img);
         }
     }
 
-    moveLeft(path, img) {
-        const imageSources = this.path.split("    ");
+    MoveLeft(path, img) {
+        const imageSources = this.Path.split("    ");
         let index = imageSources.indexOf(path);
         if (index === 0) {
             index = imageSources.length - 1;
         } else {
             index--;
         }
-        img.Src = (this.path.includes("http") ? "" : Client.Origin) + imageSources[index];
+        img.Src = (this.Path.includes("http") ? "" : Client.Origin) + imageSources[index];
         return imageSources[index];
     }
 
-    moveRight(path, img) {
-        const imageSources = this.path.split("    ");
+    MoveRight(path, img) {
+        const imageSources = this.Path.split("    ");
         let index = imageSources.indexOf(path);
         if (index === imageSources.length - 1) {
             index = 0; 
@@ -227,12 +226,12 @@ export class Image extends EditableComponent {
             index++; 
         }
     
-        img.Src = (this.path.includes("http") ? "" : Client.Origin) + imageSources[index];
+        img.Src = (this.Path.includes("http") ? "" : Client.Origin) + imageSources[index];
         return imageSources[index];
     }
 
-    openFileDialog(event) {
-        if (this.disabled) {
+    OpenFileDialog(event) {
+        if (this.Disabled) {
             return;
         }
     
@@ -245,7 +244,7 @@ export class Image extends EditableComponent {
         // }
     }
 
-    renderUploadForm() {
+    RenderUploadForm() {
         // Render form để chọn tệp tin
         const isMultiple = this.Meta.Precision === 0;
         this._input.type = "file";
@@ -255,14 +254,14 @@ export class Image extends EditableComponent {
         if (isMultiple) {
             this._input.multiple = true;
         }
-        this._input.addEventListener('change', this.uploadSelectedImages.bind(this));
+        this._input.addEventListener('change', this.UploadSelectedImages.bind(this));
 
         const fileUploadDiv = document.createElement('div');
         fileUploadDiv.className = "file-upload";
         const fileIcon = document.createElement('i');
         fileIcon.className = "fal fa-file-alt";
         fileUploadDiv.appendChild(fileIcon);
-        fileUploadDiv.addEventListener('click', this.openFileDialog.bind(this));
+        fileUploadDiv.addEventListener('click', this.OpenFileDialog.bind(this));
 
         const galleryDiv = document.createElement('div');
         galleryDiv.className = "gallerys";
@@ -272,15 +271,15 @@ export class Image extends EditableComponent {
         this.ParentElement.appendChild(fileUploadDiv);
     }
 
-    removeFile(event, removedPath) {
-        if (this.disabled) {
+    RemoveFile(event, removedPath) {
+        if (this.Disabled) {
             return;
         }
         event.StopPropagation()
         if (!removedPath || removedPath.trim() === '') {
             return;
         }
-        const fileName = Utils.GetFileNameWithoutExtension(this.removeGuid(Utils.DecodeSpecialChar(removedPath))) + Utils.GetExtension(this.removeGuid(Utils.DecodeSpecialChar(removedPath)));
+        const fileName = Utils.GetFileNameWithoutExtension(this.RemoveGuid(Utils.DecodeSpecialChar(removedPath))) + Utils.GetExtension(this.RemoveGuid(Utils.DecodeSpecialChar(removedPath)));
         const message = `Bạn chắc chắn muốn xóa ${fileName}`;
         ConfirmDialog.RenderConfirm(message, () => {
             Client.Instance.PostAsync(removedPath, Client.FileFTP + "/DeleteFile")
@@ -289,7 +288,7 @@ export class Image extends EditableComponent {
                 const newPath = this._path.replace(removedPath, '')
                             .replace(Image.PathSeparator + Image.PathSeparator, '')
                             .split(Image.PathSeparator).filter(x => x != null).Distinct();
-                this.path = newPath.join(Image.PathSeparator);
+                this.Path = newPath.join(Image.PathSeparator);
                 this.dirty = true;
                 const observable = { NewData : this._path, OldData : oldVal, FieldName : this.FieldName, EvType : EventType.Change };
                 this.UserInput?.Invoke(observable);
@@ -298,7 +297,7 @@ export class Image extends EditableComponent {
         });
     }
 
-    uploadSelectedImages(event) {
+    UploadSelectedImages(event) {
         event.preventDefault();
         if (this.EditForm.IsLock) {
             console.log("Edit form is locked.");
@@ -329,7 +328,7 @@ export class Image extends EditableComponent {
      * @param {string | ArrayBuffer} base64Image
      * @param {any} fileName
      */
-    uploadBase64Image(base64Image, fileName) {
+    UploadBase64Image(base64Image, fileName) {
         /** @type {XHRWrapper} */
         // @ts-ignore
         const p = {
@@ -342,7 +341,7 @@ export class Image extends EditableComponent {
     }
 
     UpdateView(force = false, dirty = null, ...componentNames) {
-        this.path = Utils.GetPropValue(this.Entity, this.FieldName)?.toString();
+        this.Path = Utils.GetPropValue(this.Entity, this.FieldName)?.toString();
         super.UpdateView(force, dirty, ...componentNames);
     }
 
@@ -399,7 +398,7 @@ export class Image extends EditableComponent {
             return;
         }
         if (this.Meta.Precision === 0) {
-            const paths = this.path + Image.PathSeparator + allPath.join(Image.PathSeparator);
+            const paths = this.Path + Image.PathSeparator + allPath.join(Image.PathSeparator);
             allPath = [...new Set(paths.trim().split(Image.PathSeparator))];
         }
         const oldVal = this._path;
@@ -414,11 +413,11 @@ export class Image extends EditableComponent {
     }
 
     GetValueText() {
-        if (!this.imageSources || this.imageSources.length === 0) {
+        if (!this.ImageSources || this.ImageSources.length === 0) {
             return null;
         }
-        return this.imageSources.map(path => {
-            const label = this.removeGuid(path);
+        return this.ImageSources.map(path => {
+            const label = this.RemoveGuid(path);
             return `<a target="_blank" href="${path}">${label}</a>`;
         }).join(",");
     }

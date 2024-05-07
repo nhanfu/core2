@@ -11,12 +11,20 @@ import { LangSelect } from "./utils/langSelect.js";
 import { KeyCodeEnum } from "./models/enum.js";
 
 /**
+ * @typedef {import('./searchEntry.js').SearchEntry} SearchEntry
+ * @typedef {import('./section.js').Section} Section
+ * @typedef {import('./label.js').Label} Label
  * @typedef {import('./editForm.js').EditForm} EditForm
  * @typedef {import('./tabEditor.js').TabEditor} TabEditor
  * @typedef {import('./models/component.js').Component} Component
  * @typedef {import('./models/observable.js').default} ObservableArgs
  * @typedef {{ [key: string] : (ValidationRule) }} Validation
  */
+
+/** @class {@link SearchEntry} */
+let SearchEntry;
+let Section;
+let Label;
 
 /**
  * Represents an editable component in the application.
@@ -48,6 +56,10 @@ export default class EditableComponent {
                 this.DispatchEvent(meta.Events, EventType.DOMContentLoaded, this.Entity).Done();
             }
         });
+        if (!EditableComponent._classesLoaded) {
+            EditableComponent._classesLoaded = true;
+            this.loadClasses().then(() => console.log('Classes loaded'));
+        }
     }
 
     /**
@@ -79,7 +91,19 @@ export default class EditableComponent {
      * @type {number}
      */
     static ExLargeScreen = 1452;
+    static _classesLoaded = false;
 
+    async loadClasses() {
+        SearchEntry = (await import('./searchEntry.js')).SearchEntry;
+        Section = (await import('./section.js')).Section;
+        Label = (await import('./label.js')).Label;
+    }
+
+    /**
+     * @param {any} events
+     * @param {string} eventType
+     * @param {(number | this | this | import("./structs/decimal.js").default)[]} parameters
+     */
     DispatchEvent(events, eventType, ...parameters) {
         if (!events) {
             return Promise.resolve(true);
@@ -285,7 +309,7 @@ export default class EditableComponent {
         const ele = this.Element;
         if (ele == null) return;
         if (this.ValidationRules?.hasOwnProperty(ValidationRule.Required)) {
-            ele.setAttribute(ValidationRule.Required, true .toString());
+            ele.setAttribute(ValidationRule.Required, true.toString());
         }
         else {
             ele.removeAttribute(ValidationRule.Required);
@@ -450,7 +474,7 @@ export default class EditableComponent {
             root.FilterChildren(x => x.FieldName === field).forEach(target => {
                 const value = Utils.GetPropValue(entity, field);
                 const oldVal = Utils.GetPropValue(this.Entity, field);
-                const targetType = this.Entity.constructor.GetComplexPropType(field);
+                const targetType = this.Entity.GetComplexPropType(field);
                 if (value === oldVal || targetType === null || new targetType() !== oldVal) {
                     return;
                 }
@@ -569,14 +593,14 @@ export default class EditableComponent {
         if (!listViewItem) {
             return;
         }
-    
+
         switch (code) {
             case KeyCodeEnum.Tab:
                 const td = e.target.closest('td');
                 if (td && !td.nextElementSibling) {
                     e.preventDefault();
                     let nextElement = listViewItem.Children.find(x => x.Meta.Editable) ||
-                                      listViewItem.Children.find(x => x.Meta.Id != null);
+                        listViewItem.Children.find(x => x.Meta.Id != null);
                     nextElement?.Focus();
                     return;
                 }
@@ -598,7 +622,7 @@ export default class EditableComponent {
                     }
                 }
                 break;
-    
+
             case KeyCodeEnum.Enter:
                 if (listViewItem && this.EditForm.Feature.CustomNextCell) {
                     // @ts-ignore
@@ -617,14 +641,14 @@ export default class EditableComponent {
                         } else if (td.nextElementSibling) {
                             // @ts-ignore
                             let nextElement = listViewItem.filterChildren(x => x.Element.closest('td') === td.nextElementSibling).find(x => true) ||
-                                              listViewItem.Children[0];
+                                listViewItem.Children[0];
                             // @ts-ignore
                             this.focusElement(nextElement);
                         }
                     }
                 }
                 break;
-    
+
             default:
                 break;
         }
@@ -635,7 +659,7 @@ export default class EditableComponent {
         if (!this.Children || this.Children.length === 0) {
             return;
         }
-    
+
         if (componentNames.length > 0) {
             // @ts-ignore
             const coms = this.FilterChildren(x => x instanceof Section && componentNames.includes(x.FieldName))
@@ -645,7 +669,7 @@ export default class EditableComponent {
             const coms2 = this.FilterChildren(x => componentNames.includes(x.FieldName) && !(x instanceof Section));
             // @ts-ignore
             const shouldUpdate = [...new Set([...coms, ...coms2].filter(x => !(x instanceof Section)))];
-    
+
             shouldUpdate.forEach(child => {
                 child.PrepareUpdateView(force, dirty);
                 child.UpdateView(force, dirty, ...componentNames);
@@ -653,7 +677,7 @@ export default class EditableComponent {
         } else {
             // @ts-ignore
             const shouldUpdate = this.FilterChildren(x => !(x instanceof Section));
-    
+
             shouldUpdate.forEach(child => {
                 child.PrepareUpdateView(force, dirty);
                 child.UpdateView(force, dirty, ...componentNames);

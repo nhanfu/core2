@@ -1,6 +1,11 @@
+import { SqlViewModel } from "../models/sqlViewModel.js";
 import { BadGatewayQueue } from "../models/badGatewayQueue.js";
 import { Token } from "../models/token.js";
 import { Utils } from "../utils/utils.js";
+import { PatchVM } from "models/patch.js";
+import { EmailVM } from "models/emailVM.js";
+import { Toast } from "../toast.js";
+import { Path } from "../utils/path.js";
 
 export class Client {
     static EpsilonNow = new Date(Date.now() + (1 * 60 * 1000));
@@ -26,6 +31,7 @@ export class Client {
     _config;
     CustomPrefix = (() => {
         const prefixElement = Array.from(document.head.children).find(x => x instanceof HTMLMetaElement && x.name === "prefix");
+        // @ts-ignore
         return prefixElement?.content;
     })();
 
@@ -50,41 +56,70 @@ export class Client {
 
     /** @type {Token} */
     static Token;
+    /** @type {boolean} */
+    static #systemRole;
+    static get SystemRole() {
+        if (Client.#systemRole == null) {
+            Client.#systemRole = Token.parse(Client.token.AccessToken)?.SystemRole;
+        }
+        return Client.#systemRole;
+    }
 
     async UserSvc(vm, annonymous = false) {
-        return this.SubmitAsync({
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
             Value: JSON.stringify(vm),
             Url: Utils.UserSvc,
             IsRawString: true,
             Method: "POST",
             AllowAnonymous: annonymous
-        });
+        };
+        return this.SubmitAsync(data);
     }
 
     async ComQuery(vm) {
-        return this.SubmitAsync({
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
             Value: JSON.stringify(vm),
             Url: Utils.ComQuery,
             IsRawString: true,
             Method: "POST"
-        });
+        };
+        return this.SubmitAsync(data);
     }
 
-    async GetIds(sqlVm) {
-        return new Promise((resolve, reject) => {
-            sqlVm.Select = "ds.Id";
-            sqlVm.Count = false;
-            sqlVm.SkipXQuery = true;
-            this.SubmitAsync({
-                Url: Utils.ComQuery,
-                Value: JSON.stringify(sqlVm),
-                IsRawString: true,
-                Method: "POST"
-            }).then(ds => {
-                const res = (ds.length === 0 || ds[0].length === 0) ? [] : ds[0].map(x => x.Id);
-                resolve(res);
-            }).catch(reject);
+    /**
+     * Get Id list that satisfied the condition query
+     * @param {SqlViewModel} sqlVm 
+     * @returns {Promise<string[]>} - Id list
+     */
+    GetIds(sqlVm) {
+        let ok, no;
+        const promise = new Promise((resolve, reject) => {
+            ok = resolve;
+            no = reject;
         });
+        sqlVm.Select = "ds.Id";
+        sqlVm.Count = false;
+        sqlVm.SkipXQuery = true;
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
+            Url: Utils.ComQuery,
+            Value: JSON.stringify(sqlVm),
+            IsRawString: true,
+            Method: "POST"
+        };
+        this.SubmitAsync(data).then(ds => {
+            /** @type {string[]} */
+            const res = (ds.length === 0 || ds[0].length === 0) 
+                ? [] 
+                : ds[0]?.map((/** @type {{ Id: string; }} */ x) => x.Id);
+            ok(res);
+        }).catch(no);
+        return promise;
     }
 
     /**
@@ -110,7 +145,7 @@ export class Client {
                 }
             };
             if (options.ProgressHandler !== undefined) {
-                xhr.addEventListener("progress", ProgressHandler);
+                xhr.addEventListener("progress", options.ProgressHandler);
             }
             xhr.open(options.Method, options.FinalUrl ?? options.Url, true);
             if (!options.AllowAnonymous) {
@@ -161,23 +196,28 @@ export class Client {
     }
 
     async PostAsync(value, subUrl = "", annonymous = false) {
-        return this.SubmitAsync({
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
             Value: value,
             Url: subUrl,
             Method: "POST",
             AllowAnonymous: annonymous,
-        });
+        };
+        return this.SubmitAsync(data);
     }
 
     /**
      * 
-     * @param {any} value 
+     * @param {PatchVM} value 
      * @param {function} errHandler 
      * @param {boolean} annonymous 
      * @returns {Promise<number>} Effected rows in the database
      */
     async PatchAsync(value, errHandler = null, annonymous = false) {
-        return this.SubmitAsync({
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
             Value: JSON.stringify(value),
             IsRawString: true,
             Url: Utils.PatchSvc,
@@ -185,22 +225,30 @@ export class Client {
             Method: "PATCH",
             AllowAnonymous: annonymous,
             ErrorHandler: errHandler
-        });
+        };
+        return this.SubmitAsync(data);
     }
 
     async PostFilesAsync(file, url = "", progressHandler = null) {
         const formData = new FormData();
         formData.append("file", file);
-        return this.SubmitAsync({
+        /** @type {XHRWrapper} */
+        // @ts-ignore
+        const data = {
             FormData: formData,
             File: file,
             ProgressHandler: progressHandler,
             Method: "POST",
             Url: url
-        });
+        };
+        return this.SubmitAsync(data);
     }
 
+    /**
+     * @param {EmailVM} email
+     */
     async SendMail(email) {
+        // @ts-ignore
         return this.SubmitAsync({
             Value: email,
             Method: "POST",
@@ -208,6 +256,11 @@ export class Client {
         });
     }
 
+    /**
+     * @param {string[]} ids
+     * @param {string} table
+     * @param {string} connKey
+     */
     async DeactivateAsync(ids, table, connKey) {
         const vm = {
             Ids: ids,
@@ -215,6 +268,7 @@ export class Client {
             MetaConn: Client.MetaConn,
             DataConn: connKey || Client.DataConn
         };
+        // @ts-ignore
         return this.SubmitAsync({
             Url: Utils.DeactivateSvc,
             Value: JSON.stringify(vm),
@@ -233,6 +287,7 @@ export class Client {
             DataConn: dataConn || Client.DataConn,
             MetaConn: connKey || Client.MetaConn
         };
+        // @ts-ignore
         return this.SubmitAsync({
             Url: Utils.DeleteSvc,
             Value: JSON.stringify(vm),
@@ -294,10 +349,14 @@ export class Client {
         }
     }
 
+    /**
+     * @param {Token} oldToken
+     */
     static async GetToken(oldToken) {
+        // @ts-ignore
         const newToken = await Client.Instance.SubmitAsync({
             NoQueue: true,
-            Url: `/user/Refresh?t=${Token.TenantCode || Client.Tenant}`,
+            Url: `/user/Refresh?t=${Client.Token.TenantCode || Client.Tenant}`,
             Method: "POST",
             Value: { AccessToken: oldToken.AccessToken, RefreshToken: oldToken.RefreshToken },
             AllowAnonymous: true,
@@ -312,10 +371,26 @@ export class Client {
         return newToken;
     }
 
+    /**
+     * @param {string} path
+     */
+    static RemoveGuid(path) {
+        const GuidLength = 36;
+        let thumbText = path;
+        if (path.length > GuidLength) {
+            const fileName = Utils.GetFileNameWithoutExtension(path);
+            thumbText = fileName.substring(0, fileName.length - GuidLength) + '.' + path.split('.').pop();
+        }
+        return thumbText;
+    }
+
+    /**
+     * @param {string} path
+     */
     static Download(path) {
-        const removePath = RemoveGuid(path);
+        const removePath = this.RemoveGuid(path);
         const a = document.createElement("a");
-        a.href = path.includes("http") ? path : PathIO.Combine(Origin, path);
+        a.href = path.includes("http") ? path : Path.Combine(Client.Origin, path);
         a.target = "_blank";
         a.setAttribute("download", removePath);
         document.body.appendChild(a);
@@ -324,6 +399,11 @@ export class Client {
     }
 }
 
+/**
+ * @param {XHRWrapper} options
+ * @param {{ (value: any): void; (arg0: number | boolean): void; }} resolve
+ * @param {XMLHttpRequest} xhr
+ */
 function ProcessSuccessRequest(options, resolve, xhr) {
     if (options.Retry) {
         resolve(true);
