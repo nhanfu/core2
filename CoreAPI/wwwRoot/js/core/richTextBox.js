@@ -1,15 +1,14 @@
 import EditableComponent from "./editableComponent";
 import { Html } from "./utils/html.js";
 import EventType from './models/eventType.js';
-import EditableComponent from './editableComponent.js';
 import ObservableArgs from './models/observable.js';
-import "./utils/fix.js";
 import { Uuid7 } from "./structs/uuidv7.js";
+import "./utils/fix.js";
 
 
-class RichTextBox extends EditableComponent {
+export class RichTextBox extends EditableComponent {
      /**
-     * @param {Component} ui
+     * @param {import("./editableComponent").Component} ui
      * @param {HTMLElement} [ele=null] 
      */
     constructor(ui, ele = null) {
@@ -29,25 +28,22 @@ class RichTextBox extends EditableComponent {
                 this.BindingWebComponent();
             }
         
-            this.ParentElement.AppendChild(this.Element);
+            this.ParentElement.appendChild(this.Element);
     }
 
     BindingWebComponent() {
-        this.Element = Html.Take(this.parentElement).Div.Id(Uuid7.Id25()).GetContext();
+        this.Element = Html.Take(this.ParentElement).Div.Id(Uuid7.Id25()).GetContext();
     }
 
-    render() {
+    Render() {
         initCkEditor(this);
     }
 
-    updateView(force = false, dirty = null, ...componentNames) {
+    UpdateView(force = false, dirty = null, ...componentNames) {
         const handler = this._events["UpdateView"];
         if (handler) {
+             // @ts-ignore
             handler(new ObservableArgs({ Com: this, EvType: 'Change' }));
         }
     }
 }
-window.Core2 = window.Core2 || {};
-window.Core2.RichTextBox = RichTextBox;
-
-export default RichTextBox;

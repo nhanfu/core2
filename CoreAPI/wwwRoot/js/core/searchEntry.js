@@ -8,14 +8,11 @@ import ObservableArgs from './models/observable.js';
 import { ObservableList } from './models/observableList.js';
 import { PositionEnum ,KeyCodeEnum} from './models/enum.js';
 import { ComponentExt } from './utils/componentExt.js';
-
 import "./utils/fix.js";
-
-
 
 export class SearchEntry extends EditableComponent {
     /**
-     * @param {Component} ui
+     * @param {import('./editableComponent.js').Component} ui
      * @param {HTMLElement} [ele=null] 
      */
 
@@ -29,7 +26,7 @@ export class SearchEntry extends EditableComponent {
         this.RowData = new ObservableList();
         /** @type {HTMLInputElement} */
         this.Element = ele;
-        /** @type {HTMLInputElement} */
+            /** @type {HTMLInputElement} */
         this._input = null;
         /** @type {HTMLElement} */
         this._rootResult = null;
@@ -73,15 +70,17 @@ export class SearchEntry extends EditableComponent {
 
     RenderInputAndEvents() {
         if (this.Element === null) {
+            // @ts-ignore
             this.Element = this._input = Html.Take(this.ParentElement).Div.Position(PositionEnum.relative).ClassName(this.SEntryClass).Input.GetContext();
-            this._parentInput = this._input.ParentElement;
+            this._parentInput = this._input.parentElement;
         } else {
+            // @ts-ignore
             this._input = this.Element;
-            if (!this._input.ParentElement.HasClass(SEntryClass)) {
+            if (!this._input.parentElement.HasClass(this.SEntryClass)) {
                 let parent = document.createElement('div');
-                parent.classList.add(SEntryClass);
-                this._input.ParentElement.appendChild(parent);
-                this._input.ParentElement.insertBefore(parent, this._input);
+                parent.classList.add(this.SEntryClass);
+                this._input.parentElement.appendChild(parent);
+                this._input.parentElement.insertBefore(parent, this._input);
             }
         }
         this._input.autocomplete = 'off';
@@ -151,7 +150,7 @@ export class SearchEntry extends EditableComponent {
 
     EnterKeydownHandler(code) {
         if (this.Meta.HideGrid) {
-            this.Search(this._input.value, 0, true);
+            this.Search(this._input.value, true, 0, true);
             return;
         }
         if (this.EditForm.Feature.CustomNextCell && (this._gv === null || !this._gv.Show)) {
@@ -160,7 +159,7 @@ export class SearchEntry extends EditableComponent {
         if (this._gv !== null && this._gv.Show) {
             this.EnterKeydownTableStillShow(code);
         } else {
-            this.Search(0);
+            this.Search(null, true, 0);
         }
     }
 
@@ -185,7 +184,7 @@ export class SearchEntry extends EditableComponent {
             return;
         }
 
-        this.Search(false, 0);
+        this.Search(null, false, 0);
     }
 
     FocusOut() {
@@ -215,14 +214,14 @@ export class SearchEntry extends EditableComponent {
 
     RenderIcons() {
         let title = LangSelect.Get('Tạo mới dữ liệu ');
-        Html.Take(this.Element.ParentElement).Div.ClassName('search-icons');
+        Html.Take(this.Element.parentElement).Div.ClassName('search-icons');
         let div = Html.Instance.Icon('fa fa-info-circle').Title(LangSelect.Get('Thông tin chi tiết ') + LangSelect.Get(this.Meta.Label).toLowerCase())
             .Event('click', this.OpenRefDetail.bind(this)).End
             .Icon('fa fa-plus').Title(`${title} ${LangSelect.Get(this.Meta.Label).toLowerCase()}`).Event('click', this.OpenRefDetail.bind(this)).End.GetContext();
         if (this.Element.nextElementSibling !== null) {
-            this.Element.ParentElement.insertBefore(div, this.Element.nextElementSibling);
+            this.Element.parentElement.insertBefore(div, this.Element.nextElementSibling);
         } else {
-            this.Element.ParentElement.appendChild(div);
+            this.Element.parentElement.appendChild(div);
         }
     }
 

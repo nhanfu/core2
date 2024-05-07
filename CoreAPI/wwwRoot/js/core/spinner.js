@@ -31,6 +31,7 @@ export class Spinner {
             this._backdrop = div;
         } else {
             this._span = existing;
+            // @ts-ignore
             this._backdrop = existing.previousElementSibling;
         }
         this._span.style.display = "none";
@@ -58,7 +59,7 @@ export class Spinner {
             return;
         }
         window.clearTimeout(this._hiddenAwaiter);
-        this._hiddenAwaiter = window.setTimeout(() => this.hide(), timeout);
+        this._hiddenAwaiter = window.setTimeout(() => this.Hide(), timeout);
     }
 
     static Hide() {

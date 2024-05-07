@@ -1,26 +1,24 @@
 import EditableComponent from './editableComponent.js';
 import { Utils } from "./utils/utils.js";
 import ObservableArgs from './models/observable.js';
-import EditableComponent from "./editableComponent.js";
-import { Utils } from "./utils/utils.js";
 import "./utils/fix.js";
 
 
-class Rating extends EditableComponent {
+export class Rating extends EditableComponent {
      /**
-     * @param {Component} ui
+     * @param {import('./editableComponent.js').Component} ui
      * @param {HTMLElement} [ele=null] 
      */
     
     constructor(ui, ele = null) {
         super(ui,ele);
-        DefaultValue = 0;
+        this.DefaultValue = 0;
         if (!ui) throw new Error("UI component is required");
         this.ParentElement = ele;
         this.InputList = [];
         this._value = null;
 
-        this.render();
+        this.Render();
     }
 
     get value() {
@@ -32,8 +30,8 @@ class Rating extends EditableComponent {
             return;
         }
         this._value = val;
-        this.setSelected(this._value);
-        this.Entity.setComplexPropValue(this.fieldName, this._value);
+        this.SetSelected(this._value);
+        this.Entity.SetComplexPropValue(this.Name, this._value);
         this.dirty = true;
     }
 
@@ -43,25 +41,25 @@ class Rating extends EditableComponent {
 
     set Disabled(value) {
         super.Disabled = value;
-        this.inputList.forEach(input => {
+        this.InputList.forEach(input => {
             input.Disabled = value;
         });
     }
 
-    setSelected(value) {
+    SetSelected(value) {
         if (value === null || value <= 0 || value > this.Meta.Precision) {
             return;
         }
         this.InputList[this.Meta.Precision - value].checked = true;
     }
 
-    render() {
+    Render() {
         const container = document.createElement('div');
         container.className = 'rate';
         this.ParentElement.appendChild(container);
         this.Element = container;
     
-        const radioGroup = `${this.fieldName}_${this.meta.id}_${this.hashCode()}`;
+        const radioGroup = `${this.Name}_${this.Meta.Id}_${this.HashCode()}`;
         for (let item = this.Meta.Precision; item >= 1; item--) {
             const radioId = `${radioGroup}_${item}`;
             const input = document.createElement('input');
@@ -69,11 +67,12 @@ class Rating extends EditableComponent {
             input.id = radioId;
             input.name = radioGroup;
             input.value = item.toString();
-            input.style = this.meta.style; 
-            input.addEventListener('change', this.dispatchChange.bind(this));
+            // @ts-ignore
+            input.style = this.Meta.Style; 
+            input.addEventListener('change', this.DispatchChange.bind(this));
     
-            this.inputList.push(input);
-            this.element.appendChild(input);
+            this.InputList.push(input);
+            this.Element.appendChild(input);
     
             const label = document.createElement('label');
             label.setAttribute('for', radioId);
@@ -82,15 +81,15 @@ class Rating extends EditableComponent {
         }
     
         this._value = Utils.GetPropValue(this.Entity, this.Name);
-        this.setSelected(this._value);
+        this.SetSelected(this._value);
     
         this.DOMContentLoaded?.Invoke();
     }
 
-    dispatchChange(event) {
+    DispatchChange(event) {
         if (this.Disabled) return;
 
-        if (!inputList.length) return;
+        if (!this.InputList.length) return;
         
         const checkedInput = this.InputList.find(input => input.checked);
         if (!checkedInput) return;
@@ -98,6 +97,7 @@ class Rating extends EditableComponent {
         const oldValue = this.value;
         this.value = parseInt(checkedInput.value);
         if (this.UserInput) {
+            // @ts-ignore
             this.UserInput.Invoke(new ObservableArgs ({ newData: this.value, oldData: oldValue }));
         }
         setTimeout(() => {
@@ -105,31 +105,26 @@ class Rating extends EditableComponent {
         }, 0);
     }
 
-    updateView(force = false, dirty = null, ...componentNames) {
+    UpdateView(force = false, dirty = null, ...componentNames) {
         this.value = Utils.GetPropValue(this.Entity, this.Name);
         this.value = (this.value !== undefined && this.value !== null) ? parseInt(this.value) : null;
     }
 
-    getValueText() {
+    GetValueText() {
         return this._value === null ? "Không đánh giá" : `${this._value} sao`;
     }
 
-    async validateAsync() {
-        this.ValidationResult.clear();
+    async ValidateAsync() {
+        this.ValidationResult.Clear();
         if (this.value === null) return false;
         const isValid = this.value !== undefined && this.ValidateRequired(this.value);
         return isValid;
     }
 
-    hashCode() {
+    HashCode() {
         return JSON.stringify(this.Meta).split("").reduce((a, b) => {
             a = ((a << 5) - a) + b.charCodeAt(0);
             return a & a;
         }, 0);
     }
 }
-
-window.Core2 = window.Core2 || {};
-window.Core2.Rating = Rating;
-
-export default Rating;

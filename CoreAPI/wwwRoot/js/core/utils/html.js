@@ -268,6 +268,16 @@ export class HTML {
         return this.ClassName(className).IText(text);
     }
 
+    Title(langKey)
+        {
+            if (langKey.IsNullOrWhiteSpace())
+            {
+                return this;
+            }
+            this.MarkLangProp(this.Context, langKey, "title");
+            return  this.Attr("title", LangSelect.Get(langKey));
+        }
+
     /**
      * @param {any} direction
      * @param {any} margin

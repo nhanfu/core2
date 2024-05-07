@@ -362,7 +362,7 @@ export class Image extends EditableComponent {
                 const reader = new FileReader();
                 reader.onload = async (e) => {
                     try {
-                        const path = await this.uploadBase64Image(e.target.result, file.name);
+                        const path = await this.UploadBase64Image(e.target.result, file.name);
                         resolve(path);
     
                         await Client.Instance.PatchAsync({
@@ -375,7 +375,18 @@ export class Image extends EditableComponent {
                                 { field: "FieldName", value: this.Name },
                                 { field: "FileName", value: file.name },
                                 { field: "FilePath", value: path }
-                            ]
+                            ],
+                            FeatureId: '',
+                            ComId: '',
+                            Table: '',
+                            DeletedIds: '',
+                            QueueName: '',
+                            CacheName: '',
+                            MetaConn: '',
+                            DataConn: '',
+                            Changes: [],
+                            EntityId: '',
+                            OldId: ''
                         });
                     } catch (error) {
                         console.error("Error in file upload process:", error);
