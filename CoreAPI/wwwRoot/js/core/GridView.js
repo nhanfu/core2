@@ -1,7 +1,7 @@
 import { ListView } from './listView.js';
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
-import { OperatorEnum, KeyCodeEnum, OrderbyDirection} from './models/enum.js';
+import { OperatorEnum, KeyCodeEnum, OrderbyDirection, AdvSearchOperation} from './models/enum.js';
 import { ValidationRule } from "./models/validationRule.js";
 import { LangSelect } from "./utils/langSelect.js";
 import { Client } from "./clients/client.js";
@@ -17,6 +17,7 @@ import { CustomEventType } from 'models/customEventType.js';
 import "./utils/fix.js";
 import { ConfirmDialog } from 'confirmDialog.js';
 import { Uuid7 } from 'structs/uuidv7.js';
+import { ListViewSearch } from 'listViewSearch.js';
 
 
 
@@ -382,7 +383,7 @@ export class GridView extends ListView {
         const data = await this.FilterDropdownIds(dropdowns);
         let lisToast = [];
         this.CellSelected.forEach((cell, index) => {
-            index = this.buildCondition(cell, data, index, lisToast);
+            index = this.BuildCondition(cell, data, index, lisToast);
         });
         Spinner.Hide();
         if (this.Meta.ComponentType === 'VirtualGrid' && this.Meta.CanSearch) {
@@ -394,7 +395,7 @@ export class GridView extends ListView {
                 search.input.focus();
             }
         }
-        Toast.success(lisToast.join("</br>"));
+        Toast.Success(lisToast.join("</br>"));
         this.ApplyFilter();
     }
 
@@ -414,12 +415,12 @@ export class GridView extends ListView {
                         filterOperation = 'NotLike';
                         break;
                 }
-                let sqlFilter = `${filterOperation} ds.[${header.formatData}] ${x.value}`;
+                let sqlFilter = `${filterOperation} ds.[${header.FormatData}] ${x.value}`;
                 return Client.GetInstance().getIds({
                     comId: header.Id,
                     where: sqlFilter,
-                    metaConn: this.metaConn,
-                    dataConn: this.dataConn
+                    metaConn: this.MetaConn,
+                    dataConn: this.DataConn
                 });
             } else {
                 return Promise.resolve([x.value]);
@@ -522,6 +523,7 @@ export class GridView extends ListView {
 
     ProcessConditions(cell, advo, where, value, hl, lisToast) {
         console.log(`Processing condition for field: ${hl.FieldName}, Condition: ${where}`);
+        // @ts-ignore
         this.AdvSearchVM.Conditions.push({
             field: hl.FieldName,
             operation: advo,
@@ -602,9 +604,9 @@ export class GridView extends ListView {
         if (!hotKeyModel.Operator) {
             return;
         }
-        if (!this.cellSelected.some(x => x.FieldName === hotKeyModel.FieldName && x.Value === hotKeyModel.Value && x.ValueText === hotKeyModel.ValueText && x.Operator === hotKeyModel.Operator)) {
-            const header = this.header.find(x => x.FieldName === hotKeyModel.FieldName);
-            this.cellSelected.push({
+        if (!this.CellSelected.some(x => x.FieldName === hotKeyModel.FieldName && x.Value === hotKeyModel.Value && x.ValueText === hotKeyModel.ValueText && x.Operator === hotKeyModel.Operator)) {
+            const header = this.Header.find(x => x.FieldName === hotKeyModel.FieldName);
+            this.CellSelected.push({
                 FieldName: hotKeyModel.FieldName,
                 FieldText: header ? header.Label : '',
                 ComponentType: header ? header.ComponentType : '',
@@ -957,6 +959,7 @@ export class GridView extends ListView {
             ComId: com.Meta.Id,
         };
         if (!this.AdvSearchVM.OrderBy.length) {
+            // @ts-ignore
             this.AdvSearchVM.OrderBy = [sort];
             th.Element.classList.add("desc");
         } else {
@@ -967,6 +970,7 @@ export class GridView extends ListView {
                 const shiftKey = e.shiftKey;
                 this.RemoveOtherSorts(shiftKey);
                 th.Element.classList.add("desc");
+                // @ts-ignore
                 this.AdvSearchVM.OrderBy.push(sort);
             }
         }
@@ -1424,7 +1428,7 @@ export class GridView extends ListView {
         }
 
         const sums = this.Header.filter(x => x.Summary && x.Summary.trim() !== "");
-        const summaryElements = this.MainSection.Element.querySelectorAll(`.${SummaryClass}`);
+        const summaryElements = this.MainSection.Element.querySelectorAll(`.${this.SummaryClass}`);
         summaryElements.forEach(x => x.remove());
         const count = new Set(sums.map(x => x.Summary)).size;
 
@@ -1520,7 +1524,7 @@ export class GridView extends ListView {
         }
         this.RenderContent();
         if (this.Entity != null && this.ShouldSetEntity) {
-            this.Entity.SetComplexPropValue(this.FieldName, this.RowData.Data);
+            this.Entity.SetComplexPropValue(this.Name, this.RowData.Data);
         }
     }
 
@@ -1604,7 +1608,7 @@ export class GridView extends ListView {
                 this.Dirty = true;
             }
             if (this.Meta.ComponentType !== 'VirtualGrid') {
-                this.Entity.SetComplexPropValue(this.FieldName, this.RowData.Data);
+                this.Entity.SetComplexPropValue(this.Name, this.RowData.Data);
             }
             if (rowSection.EmptyRow) {
                 rowSection.EmptyRow = false;
@@ -1733,7 +1737,7 @@ export class GridView extends ListView {
             if (header.Description) {
                 th.title = header.Description;
             }
-            if (this.Client.SystemRole) {
+            if (Client.SystemRole) {
                 th.setAttribute('contenteditable', 'true');
                 th.oninput = e => this.ChangeHeader(e, header);
             }
@@ -1775,6 +1779,7 @@ export class GridView extends ListView {
                     { Field: "Component.Label", Value: html.textContent.trim(), OldVal: header.Label }
                 ]
             };
+             // @ts-ignore
             Client.Instance.PatchAsync(patchVM);
         }, 1000);
     }
@@ -2062,7 +2067,7 @@ export class GridView extends ListView {
             }
             this.EmptySection.Children = [];
             this.AddNewEmptyRow();
-            this.Entity.SetComplexPropValue(this.FieldName, this.RowData.Data);
+            this.Entity.SetComplexPropValue(this.Name, this.RowData.Data);
             await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCreated, rowData);
         }
         this.AddSummaries();

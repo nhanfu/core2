@@ -9,6 +9,8 @@ import { ObservableList } from './models/observableList.js';
 import { PositionEnum ,KeyCodeEnum} from './models/enum.js';
 import { ComponentExt } from './utils/componentExt.js';
 import "./utils/fix.js";
+import { ListViewItem } from 'listViewItem.js';
+import { GridView } from 'gridView.js';
 
 export class SearchEntry extends EditableComponent {
     /**
@@ -240,6 +242,7 @@ export class SearchEntry extends EditableComponent {
         instance.ParentElement = this.TabEditor.Element;
         this.TabEditor.AddChild(instance);
         let res;
+        // @ts-ignore
         if (!this.Meta.Template.trim() !== "") {
             if (Utils.IsFunction(this.Meta.Template)) {
                 Utils.IsFunction(this.Meta.Template)?.call(null, res, this);
@@ -273,10 +276,11 @@ export class SearchEntry extends EditableComponent {
         this.Dirty = true;
         this.Matched = entity;
         if (!(this.Parent instanceof ListViewItem)) {
-            this.Value = entity[IdField]?.toString();
+            this.Value = entity[this.IdField]?.toString();
             this.Dirty = true;
             if (this.UserInput !== null) {
                 this.CascadeAndPopulate();
+                // @ts-ignore
                 this.UserInput.Invoke(new ObservableArgs ({ NewData: this._value, OldData: oldValue, EvType: EventType.Change }));
             }
             return;
@@ -284,6 +288,7 @@ export class SearchEntry extends EditableComponent {
         if (this.UserInput !== null) {
             this.CascadeAndPopulate();
             this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity, this.Parent.Entity, this.Matched);
+            // @ts-ignore
             this.UserInput.Invoke(new ObservableArgs ({ NewData: this._value, OldData: oldValue, EvType: EventType.Change }));
         }
     }
@@ -327,6 +332,7 @@ export class SearchEntry extends EditableComponent {
             this._isRendering = false;
             return;
         }
+        // @ts-ignore
         if (this.Meta.GroupBy.trim() !== ""()) {
             this._gv = new GridView(this.Meta);
         } else {
@@ -376,7 +382,7 @@ export class SearchEntry extends EditableComponent {
         if (this._rootResult !== null) {
             return;
         }
-        if (!IsSmallUp && this._backdrop === null) {
+        if (!this.IsSmallUp && this._backdrop === null) {
             Html.Take(this.TabEditor.TabContainer).Div.ClassName('backdrop');
             this._backdrop = Html.Context;
             Html.Instance.Div.ClassName('popup-content').Style('top: 0;width: 100%;')
@@ -386,7 +392,7 @@ export class SearchEntry extends EditableComponent {
             .End.End.Div.ClassName('popup-body scroll-content');
             this._rootResult = Html.Context;
             this._rootResult.appendChild(this._input);
-        } else if (IsSmallUp) {
+        } else if (this.IsSmallUp) {
             this._rootResult = document.createElement('div');
             this._rootResult.classList.add('result-wrapper');
             this.SearchResultEle.appendChild(this._rootResult);
@@ -415,7 +421,7 @@ export class SearchEntry extends EditableComponent {
         if (!this.Meta.HideGrid) {
             this._gv.Show = true;
         }
-        if (IsSmallUp) {
+        if (this.IsSmallUp) {
             this._gv.Element.AlterPosition(this._input);
         } else {
             this._gv.Element.style.maxWidth = '100%';
@@ -446,6 +452,7 @@ export class SearchEntry extends EditableComponent {
             this.Dirty = true;
             this.CascadeAndPopulate();
             this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity, this.Matched, oldMatch).Done();
+            // @ts-ignore
             this.UserInput?.Invoke(new ObservableArgs ({ NewData: null, OldData: oldValue, EvType: EventType.Change }));
         }
         if (deleteFlag && !this._input.value) {
@@ -468,8 +475,8 @@ export class SearchEntry extends EditableComponent {
             return true;
         }
         this.Matched = this.Meta.LocalData.HasElement()
-            ? this.Meta.LocalData.find(x => x[IdField] === this._value)
-            : this.RowData.Data.find(x => x[IdField] === this.Value);
+            ? this.Meta.LocalData.find(x => x[this.IdField] === this._value)
+            : this.RowData.Data.find(x => x[this.IdField] === this.Value);
 
         this.SetMatchedValue();
         return true;
@@ -550,7 +557,7 @@ export class SearchEntry extends EditableComponent {
         let oldMatch = this.Matched;
         this.Matched = rowData;
         let oldValue = this._value;
-        this._value = rowData[IdField];
+        this._value = rowData[this.IdField];
         if (this.Entity !== null && this.Name.HasAnyChar()) {
             this.Entity.SetComplexPropValue(this.Name, this._value);
         }
@@ -562,6 +569,7 @@ export class SearchEntry extends EditableComponent {
         }
         this.CascadeAndPopulate();
         this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity, rowData, oldMatch).Done(() => {
+            // @ts-ignore
             this.UserInput?.Invoke(new ObservableArgs ({ NewData: this._value, OldData: oldValue, EvType: EventType.Change }));
             this.DiposeGvWrapper();
         });
@@ -598,8 +606,8 @@ export class SearchEntry extends EditableComponent {
     }
 
     RemoveDOM() {
-        if (this._input !== null && this._input.ParentElement !== null) {
-            this._input.ParentElement.remove();
+        if (this._input !== null && this._input.parentElement !== null) {
+            this._input.parentElement.remove();
         }
     }
 }
