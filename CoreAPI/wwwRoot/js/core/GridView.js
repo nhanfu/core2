@@ -15,6 +15,8 @@ import { Toast } from 'toast.js';
 import { ContextMenu } from 'contextMenu.js';
 import { CustomEventType } from 'models/customEventType.js';
 import "./utils/fix.js";
+import { ConfirmDialog } from 'confirmDialog.js';
+import { Uuid7 } from 'structs/uuidv7.js';
 
 
 
@@ -38,7 +40,9 @@ export class GridView extends ListView {
         this.DataTable = null;
         this.LastElementFocus = null;
         this.lastListViewItem = null;
-
+        this._hasFirstLoad = false;
+        this._renderIndexAwaiter = 0;
+        this._lastScrollTop = 0;
         this.ToolbarColumn = {
             StatusBar: true,
             Label: '',
@@ -782,7 +786,7 @@ export class GridView extends ListView {
         let downItemDown = this.AllListViewItem.filter(x => !x.GroupRow).find(x => x.RowNo === currentItemDown.RowNo + 1);
         if (!downItemDown) {
             if (this.Meta.CanAdd) {
-                downItemDown = this.EmptySection.firstChild;
+                downItemDown = this.EmptySection.FirstChild;
             } else {
                 return;
             }
@@ -1217,7 +1221,7 @@ export class GridView extends ListView {
 
                 col.appendChild(resizer);
 
-                this.createResizableColumn(col, resizer);
+                createResizableColumn(col, resizer);
             });
         };
 
@@ -1259,5 +1263,831 @@ export class GridView extends ListView {
         createResizableTable(this.DataTable);
     }
 
+    RenderContent() {
+        if (!this.LoadRerender) {
+            this.Rerender();
+        }
+        this.AddSections();
+        if (!this._hasFirstLoad && this.VirtualScroll) {
+            this._hasFirstLoad = true;
+            return;
+        }
+        let viewPort = this.GetViewPortItem();
+        this.FormattedRowData = this.Meta.LocalRender ? this.Meta.LocalData : this.RowData.Data;
+        if (!this.FormattedRowData || this.FormattedRowData.length === 0) {
+            this.MainSection.DisposeChildren();
+            this.DomLoaded();
+            return;
+        }
+        this.DisposeNoRecord();
+        if (this.VirtualScroll && this.FormattedRowData.length > viewPort) {
+            this.FormattedRowData = this.FormattedRowData.slice(0, viewPort);
+        }
+        if (this.MainSection.Children.length > 0) {
+            this.UpdateExistRowsWrapper(false, 0, viewPort);
+            return;
+        }
+        this.MainSection.Show = false;
+        this.FormattedRowData.forEach(rowData => {
+            Html.Take(this.MainSection.Element);
+            this.RenderRowData(this.Header, rowData, this.MainSection);
+        });
+        this.MainSection.Show = true;
+        this.ContentRendered();
+        this.DomLoaded();
+    }
+
+    SetFocusingCom() {
+        if (this.AutoFocus) {
+            return;
+        }
+        if (this.EntityFocusId != null && this.LastComponentFocus != null) {
+            let element = this.MainSection.Children.flatMap(x => x.Children)
+                .find(x => x.Entity[this.IdField].toString() === this.EntityFocusId && x.Meta.Id === this.LastComponentFocus.Id);
+            if (element) {
+                let lastListView = this.AllListViewItem.find(x => x.Entity[this.IdField].toString() === this.EntityFocusId);
+                if (lastListView) {
+                    lastListView.Focused(true);
+                    element.ParentElement.classList.add("cell-selected");
+                    this.LastListViewItem = lastListView;
+                    this.LastComponentFocus = element.Meta;
+                    this.LastElementFocus = element.Element;
+                }
+            } else {
+                this.HeaderSection.Element.focus();
+            }
+        } else {
+            this.HeaderSection.Element.focus();
+        }
+    }
+
+    UpdateExistRowsWrapper(dirty, skip, viewPort) {
+        if (!this._hasFirstLoad) {
+            this._hasFirstLoad = true;
+            return;
+        }
+        this.UpdateExistRows(dirty);
+        this.RenderIndex();
+        this.DomLoaded();
+    }
+
+    UpdateExistRows(dirty) {
+        const updatedData = this.FormattedRowData.slice();
+        const dataSections = this.AllListViewItem.slice(0, updatedData.length);
+
+        dataSections.forEach((child, index) => {
+            child.Entity = updatedData[index];
+            this.FlattenChildren(child).forEach(x => {
+                x.Entity = updatedData[index];
+            });
+            child.UpdateView();
+        });
+
+        const shouldAddRow = this.AllListViewItem.length <= updatedData.length;
+        if (shouldAddRow) {
+            updatedData.slice(dataSections.length).forEach(newRow => {
+                // @ts-ignore
+                const rs = this.RenderRowData(this.Header, newRow, this.MainSection);
+                this.StickyColumn(rs);
+            });
+        } else {
+            this.MainSection.Children.slice(updatedData.length).forEach(x => x.Dispose());
+        }
+
+        if (dirty !== undefined) {
+            this.Dirty = dirty;
+        }
+        this.RenderIndex();
+    }
+
+    FlattenChildren(component) {
+        const allChildren = [];
+        const stack = [component];
+        while (stack.length) {
+            const current = stack.pop();
+            if (current.Children) {
+                allChildren.push(...current.Children);
+                current.Children.forEach(child => stack.push(child));
+            }
+        }
+        return allChildren;
+    }
+
+    RenderRowData(headers, row, section, index = null, emptyRow = false) {
+        const tbody = section.element;
+        const rowSection = new GridViewItem('tr', {
+            EmptyRow: emptyRow,
+            Entity: row,
+            ParentElement: tbody,
+            PreQueryFn: this._preQueryFn,
+            ListView: this,
+            Meta: this.Meta
+        });
+        section.AddChild(rowSection, index);
+
+        const tr = document.createElement('tr');
+        tr.tabIndex = -1;
+
+        if (index !== null) {
+            if (index >= tbody.children.length || index < 0) {
+                index = 0;
+            }
+            tbody.insertBefore(tr, tbody.children[index]);
+        } else {
+            tbody.appendChild(tr);
+        }
+
+        rowSection.RenderRowData(headers, row, index, emptyRow);
+
+        if (emptyRow) {
+            this.Children.forEach(x => x.AlwaysLogHistory = true);
+        }
+
+        if (this.Disabled) {
+            rowSection.SetDisabled(false, "btnEdit");
+        }
+
+        if (this.Meta.ComponentType !== 'FileUploadGrid') {
+            if (row[Utils.IdField] != null) {
+                tr.classList.remove("new-row");
+            } else {
+                tr.classList.add("new-row");
+            }
+        }
+
+        return rowSection;
+    }
+
+    AddSummaries() {
+        if (this.Header.every(x => !x.Summary || x.Summary.trim() === "")) {
+            return;
+        }
+
+        const sums = this.Header.filter(x => x.Summary && x.Summary.trim() !== "");
+        const summaryElements = this.MainSection.Element.querySelectorAll(`.${SummaryClass}`);
+        summaryElements.forEach(x => x.remove());
+        const count = new Set(sums.map(x => x.Summary)).size;
+
+        sums.forEach(header => {
+            this.RenderSummaryRow(header, this.Header, this.FooterSection.Element, count);
+        });
+    }
+
+    // @ts-ignore
+        DuplicateSelected(ev, addRow = false) {
+        const originalRows = this.GetSelectedRows();
+        const copiedRows = this.CloneRows(originalRows);
+        if (!copiedRows.length || !this.CanWrite) {
+            return;
+        }
+
+        Toast.Success("Đang Sao chép liệu !");
+        this.DispatchCustomEvent(this.Meta.Events, CustomEventType.BeforePasted, originalRows, copiedRows).then(() => {
+            const index = this.GetStartIndex(ev, addRow);
+            this.AddRowsNo(copiedRows, index).then(list => {
+                this.RowsAdded(list, originalRows, copiedRows);
+            });
+        });
+    }
+
+    GetStartIndex(ev, addRow) {
+        let index = this.AllListViewItem.findIndex(x => x.Selected);
+        if (addRow) {
+            if (ev.keyCode === KeyCodeEnum.U && (ev.ctrlKey || ev.metaKey)) {
+                if (this.Meta.TopEmpty) {
+                    index = 0;
+                } else {
+                    index = this.AllListViewItem[this.AllListViewItem.length - 1].RowNo;
+                }
+            }
+        }
+        return index;
+    }
+
+    RowsAdded(list, originalRows, copiedRows) {
+        const lastChild = list[0] ? list[0].FilterChildren(x => x.Meta.Editable)[0] : null;
+        if (lastChild) {
+            lastChild.Focus();
+        }
+        this.RenderIndex();
+        if (this.Meta.IsSumary) {
+            this.AddSummaries();
+        }
+        this.ClearSelected();
+        list.forEach(item => {
+            item.Selected = true;
+        });
+        this.LastListViewItem = list[0] || null;
+        if (this.Meta.IsRealtime) {
+            Promise.all(list.map(x => x.PatchUpdateOrCreate())).then(() => {
+                Toast.Success("Sao chép dữ liệu thành công!");
+                this.Dirty = false;
+            });
+        } else {
+            Toast.Success("Sao chép dữ liệu thành công!");
+        }
+        this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterPasted, originalRows, copiedRows);
+    }
+
+    RenderSummaryRow(sum, headers, footer, count) {
+        let tr = this.CreateSummaryTableRow(sum, footer, count);
+        if (!tr) {
+            return;
+        }
     
+        const hasSummaryClass = tr.classList.contains("summary");
+        const colSpan = sum.SummaryColSpan || 0;
+        tr.classList.add("summary");
+        if (!hasSummaryClass && headers.includes(sum)) {
+            this.ResetSummaryRow(tr, colSpan);
+        }
+        if (!headers.includes(sum)) {
+            this.ClearSummaryContent(tr);
+            return;
+        }
+        this.SetSummaryHeaderText(sum, tr);
+        this.CalcSumCol(sum, headers, tr, colSpan);
+    }
+
+    SetRowData(listData) {
+        if (this.RowData._data === null || typeof this.RowData._data === "string") {
+            this.RowData._data = listData;
+        } else {
+            this.RowData._data.length = 0; // Clear existing data
+            if (listData.length > 0) {
+                listData.forEach(item => this.RowData._data.push(item)); // Add new data
+            }
+        }
+        this.RenderContent();
+        if (this.Entity != null && this.ShouldSetEntity) {
+            this.Entity.SetComplexPropValue(this.FieldName, this.RowData.Data);
+        }
+    }
+
+    SetSummaryHeaderText(sum, tr) {
+        if (!sum.Summary || sum.Summary.trim() === '') {
+            return;
+        }
+
+        let cell = tr.cells[0];
+        cell.colSpan = sum.SummaryColSpan;
+        cell.textContent = sum.Summary;
+        cell.classList.add('summary-header');
+    }
+
+    CreateSummaryTableRow(sum, footer, count) {
+        if (!footer) {
+            return null;
+        }
+
+        let summaryText = sum.Summary;
+        let summaryRows = Array.from(footer.rows).filter(row => row.classList.contains('summary-header'));
+        let existingSummaryRow = Array.from(summaryRows).reverse()
+            .find(row => Array.from(row.cells).some(cell => cell.textContent === summaryText));
+
+        if (!existingSummaryRow) {
+            existingSummaryRow = summaryRows[summaryRows.length - 1];  // Gets the last summary row
+        }
+
+        if (summaryRows.length >= count) {
+            return existingSummaryRow;
+        }
+
+        if (!this.MainSection.FirstChild) {
+            return null;
+        }
+
+        let result = this.MainSection.FirstChild.cloneNode(true);  // Cloning the first row
+        footer.appendChild(result);
+        Array.from(result.children).forEach(child => child.innerHTML = '');  // Clearing cell contents
+        return result;
+    }
+
+    CalcSumCol(header, headers, tr, colSpan) {
+        const index = headers.indexOf(header);
+        const cellVal = tr.cells[index - colSpan + 1];
+        const format = header.FormatData ? header.FormatData : "{0:n0}";
+        const isNumber = this.RowData.Data.some(x => typeof x[header.FieldName] === 'number');
+        const sum = this.RowData.Data.reduce((acc, x) => {
+            const val = x[header.FieldName];
+            return acc + (val ? parseFloat(val) : 0);
+        }, 0);
+        cellVal.textContent = Utils.FormatEntity(format, isNumber ? sum : this.RowData.Data.length);
+    }
+
+    ResetSummaryRow(tr, colSpan) {
+        for (let i = 1; i < colSpan; i++) {
+            if (tr.cells[0]) {
+                tr.cells[0].remove();
+            }
+        }
+        this.ClearSummaryContent(tr);
+    }
+
+    ClearSummaryContent(tr) {
+        Array.from(tr.cells).forEach(cell => {
+            cell.innerHTML = '';
+        });
+    }
+
+    // @ts-ignore
+    async RowChangeHandler(rowData, rowSection, observableArgs, component = null) {
+        const com = ['SearchEntry'];
+        if (rowSection.EmptyRow && observableArgs.EvType === EventType.Change) {
+            await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.BeforeCreated, rowData, this);
+            let rs;
+            if (this.Meta.IsRealtime && !rowSection.Focused()) {
+                var entity = rowData;
+                await rowSection.PatchUpdateOrCreate();
+            } else {
+                rs = rowSection.Entity;
+                this.Dirty = true;
+            }
+            if (this.Meta.ComponentType !== 'VirtualGrid') {
+                this.Entity.SetComplexPropValue(this.FieldName, this.RowData.Data);
+            }
+            if (rowSection.EmptyRow) {
+                rowSection.EmptyRow = false;
+                this.MoveEmptyRow(rowSection);
+                this.EmptySection.Children.Clear();
+                this.AddNewEmptyRow();
+            }
+            if (!com.includes(component?.Meta.ComponentType)) {
+                this.ClearSelected();
+                rowSection.Selected = true;
+                rowSection.Focus();
+                this.LastListViewItem = rowSection;
+                this.LastElementFocus.Focus();
+            }
+            await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCreated, rowData);
+        }
+        if (component && component.ComponentType === 'GridView') {
+            await this.DispatchEvent(component.Meta.Events, observableArgs.EvType, rowData, rowSection);
+        }
+        await this.DispatchEvent(this.Meta.Events, observableArgs.EvType, rowData, rowSection);
+        if (observableArgs.EvType === EventType.Change) {
+            this.PopulateFields();
+            this.RenderIndex();
+            if (this.Meta.IsSumary) {
+                this.AddSummaries();
+            }
+            this.LastListViewItem = rowSection;
+            let headers = this.Header.filter(y => y.Editable);
+            let currentComponent = headers.find(y => y.FieldName === component?.FieldName);
+            if (com.includes(currentComponent?.ComponentType) && rowData[currentComponent.FieldName] != null) {
+                let index = headers.indexOf(currentComponent);
+                if (headers.length > index + 1) {
+                    let nextGrid = headers[index + 1];
+                    let nextComponent = rowSection.Children.find(y => y?.FieldName === nextGrid.FieldName);
+                    this.ClearSelected();
+                    rowSection.Selected = true;
+                    rowSection.Focus();
+                    this.LastListViewItem = rowSection;
+                    nextComponent.Focus();
+                }
+            }
+        }
+    }
+
+    MoveEmptyRow(rowSection) {
+        if (this.RowData.Data.includes(rowSection.Entity)) {
+            return;
+        }
+        if (this.Meta.TopEmpty) {
+            this.RowData.Data.unshift(rowSection.Entity);
+            if (!this.MainSection.Children.includes(this.EmptySection.FirstChild)) {
+                this.MainSection.Children.unshift(this.EmptySection.FirstChild);
+            }
+            this.MainSection.Element.prepend(this.EmptySection.Element.firstElementChild);
+        } else {
+            this.RowData.Data.push(rowSection.Entity);
+            this.MainSection.Element.appendChild(this.EmptySection.Element.firstElementChild);
+            if (!this.MainSection.Children.includes(this.EmptySection.FirstChild)) {
+                this.MainSection.Children.push(this.EmptySection.FirstChild);
+            }
+        }
+        if (this.Meta.IsRealtime) {
+            rowSection.Element.classList.remove("new-row");
+        }
+        rowSection.Parent = this.MainSection;
+        rowSection.ListViewSection = this.MainSection;
+    }
+    ProcessMetaData(ds, rowCount) {
+        // const total = ds.length > 1 && ds[1].length > 0 ? ds[1][0]["total"] : null;
+        // const headers = ds.length > 2 ? ds[2].map(x => this.CastProp(x)) : null;
+        // this.Settings = ds.length > 3 && ds[3].length > 0 ? this.As(ds[3][0], UserSetting) : null;
+        // this.FilterColumns(this.MergeComponent(headers, this.Settings));
+        // this.RenderTableHeader(this.Header);
+        // if (this.Paginator !== null) {
+        //     this.Paginator.Options.Total = total ?? rowCount;
+        // }
+    }
+
+    RenderTableHeader(headers) {
+        if (!headers || headers.length === 0) {
+            headers = this.Header;
+        }
+        if (!this.HeaderSection.Element) {
+            this.AddSections();
+        }
+        headers.forEach((x, index) => x.PostOrder = index);
+        this.HeaderSection.DisposeChildren();
+        const anyGroup = headers.some(x => x.GroupName);
+        
+        const headerRow = document.createElement('tr');
+        headers.forEach((header, index) => {
+            if (anyGroup && header.GroupName) {
+                if (header !== headers.find(x => x.GroupName === header.GroupName)) {
+                    return;
+                }
+                const th = document.createElement('th');
+                th.setAttribute('colspan', headers.filter(x => x.GroupName === header.GroupName).length.toString());
+                th.innerHTML = header.GroupName;
+                headerRow.appendChild(th);
+                return;
+            }
+            const th = document.createElement('th');
+            th.tabIndex = -1;
+            th.dataset.field = header.FieldName;
+            th.dataset.id = header.Id;
+            th.style.width = header.AutoFit ? 'auto' : header.Width;
+            th.style.minWidth = header.MinWidth;
+            th.style.maxWidth = header.MaxWidth;
+            th.style.textAlign = header.TextAlignEnum || 'center';
+            th.innerHTML = header.Label;
+            th.ondblclick = () => this.EditForm.ComponentProperties(header);
+            th.oncontextmenu = e => this.HeaderContextMenu(e, header);
+            th.onfocusout = e => this.FocusOutHeader(e, header);
+            th.onkeydown = e => this.ThHotKeyHandler(e, header);
+            if (header.StatusBar) {
+                const icon = document.createElement('i');
+                icon.className = 'fa fa-edit';
+                icon.onclick = () => this.ToggleAll();
+                th.appendChild(icon);
+            }
+            if (header.Icon) {
+                const icon = document.createElement('i');
+                icon.className = header.Icon;
+                th.appendChild(icon);
+            }
+            if (header.Description) {
+                th.title = header.Description;
+            }
+            if (this.Client.SystemRole) {
+                th.setAttribute('contenteditable', 'true');
+                th.oninput = e => this.ChangeHeader(e, header);
+            }
+            headerRow.appendChild(th);
+        });
+        this.HeaderSection.Element.appendChild(headerRow);
+
+        if (anyGroup) {
+            const groupRow = document.createElement('tr');
+            headers.forEach(header => {
+                if (header.GroupName) {
+                    const th = document.createElement('th');
+                    th.dataset.field = header.FieldName;
+                    th.style.width = header.Width;
+                    th.style.minWidth = header.MinWidth;
+                    th.style.maxWidth = header.MaxWidth;
+                    th.style.textAlign = header.TextAlignEnum || 'center';
+                    th.innerHTML = header.Label;
+                    th.oncontextmenu = e => this.HeaderContextMenu(e, header);
+                    groupRow.appendChild(th);
+                }
+            });
+            this.HeaderSection.Element.appendChild(groupRow);
+        }
+        this.HeaderSection.Children.sort((a, b) => a.Meta.PostOrder - b.Meta.PostOrder);
+        if (!this.Meta.Focus) {
+            this.ColumnResizeHandler();
+        }
+    }
+
+    ChangeHeader(e, header) {
+        clearTimeout(this._imeout);
+        this._imeout = setTimeout(() => {
+            let html = e.target;
+            let patchVM = {
+                Table: "Component",
+                Changes: [
+                    { Field: "Component.Id", Value: header.Id, OldVal: header.Id },
+                    { Field: "Component.Label", Value: html.textContent.trim(), OldVal: header.Label }
+                ]
+            };
+            Client.Instance.PatchAsync(patchVM);
+        }, 1000);
+    }
+
+    async CustomQuery(vm) {
+        try {
+            const ds = await Client.Instance.ComQuery(vm);
+            if (!ds || ds.length === 0) {
+                this.SetRowData(null);
+                return null;
+            }
+            let total = ds.length > 1 ? ds[1][0].total : ds[0].length;
+            if (ds.length >= 3) {
+                this.ProcessMetaData(ds, total);
+            }
+            let rows = [...ds[0]];
+            this.ClearRowData();
+            this.SetRowData(rows);
+            this.UpdatePagination(total, rows.length);
+            return rows;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    }
+
+    ToggleAll() {
+        let anySelected = this.AllListViewItem.some(x => x.Selected);
+        if (anySelected) {
+            this.ClearSelected();
+            return;
+        }
+        this.RowAction(x => {
+            if (x.EmptyRow) return;
+            x.Selected = true;
+        });
+    }
+
+    HeaderContextMenu(e, header) {
+        e.preventDefault();
+        e.stopPropagation();
+        const editForm = this.FindClosest('EditForm');
+        const section = this.FindClosest('Section');
+        const menu = ContextMenu.Instance;
+        menu.Top = e.clientY; // Adjusted for typical web usage
+        menu.Left = e.clientX; // Adjusted for typical web usage
+
+        menu.MenuItems = [
+            {
+                Icon: "fal fa-eye", Text: "Hiện tiêu đề", Click: () => this.ShowWidth(header, e),
+                Ele: undefined,
+                Style: '',
+                Disabled: false,
+                Parameter: undefined,
+                MenuItems: []
+            },
+            {
+                Icon: "fal fa-eye-slash", Text: "Ẩn tiêu đề", Click: () => this.HideWidth(header, e),
+                Ele: undefined,
+                Style: '',
+                Disabled: false,
+                Parameter: undefined,
+                MenuItems: []
+            },
+            {
+                Icon: header.Frozen ? "fal fa-snowflakes" : "fal fa-snowflake", Text: header.Frozen ? "Hủy định cột" : "Cố định cột", Click: () => this.FrozenColumn(header, e),
+                Ele: undefined,
+                Style: '',
+                Disabled: false,
+                Parameter: undefined,
+                MenuItems: []
+            },
+        ];
+
+        if (Client.SystemRole) {
+            menu.MenuItems.push(
+                {
+                    Icon: "fal fa-wrench", Text: "Tùy chọn cột dữ liệu", Click: () => editForm.ComponentProperties(header),
+                    Ele: undefined,
+                    Style: '',
+                    Disabled: false,
+                    Parameter: undefined,
+                    MenuItems: []
+                },
+                {   Icon: "fal fa-clone", Text: "Clone cột", Click: () => this.CloneHeader(header),
+                    Ele: undefined,
+                    Style: '',
+                    Disabled: false,
+                    Parameter: undefined,
+                    MenuItems: [] 
+                },
+                {   Icon: "fal fa-trash-alt", Text: "Xóa cột", Click: () => this.RemoveHeader(header),
+                    Ele: undefined,
+                    Style: '',
+                    Disabled: false,
+                    Parameter: undefined,
+                    MenuItems: [] 
+                 },
+                {   Icon: "fal fa-cog", Text: "Tùy chọn bảng dữ liệu", Click: () => editForm.ComponentProperties(this.Meta),
+                    Ele: undefined,
+                    Style: '',
+                    Disabled: false,
+                    Parameter: undefined,
+                    MenuItems: [] 
+                 },
+                {   Icon: "fal fa-cogs", Text: "Tùy chọn vùng dữ liệu", Click: () => editForm.SectionProperties(section.Meta),
+                    Ele: undefined,
+                    Style: '',
+                    Disabled: false,
+                    Parameter: undefined,
+                    MenuItems: [] 
+                },
+                {   Icon: "fal fa-folder-open", Text: "Thiết lập chung", Click: () => editForm.FeatureProperties(editForm.Feature),
+                    Ele: undefined,
+                    Style: '',
+                    Disabled: false,
+                    Parameter: undefined,
+                    MenuItems: [] 
+                }
+            );
+        }
+        menu.Render();
+    }
+
+    HideWidth(header, e) {
+        const targetElement = e.target.closest('th');
+        if (targetElement) {
+            targetElement.style.minWidth = "";
+            targetElement.style.maxWidth = "";
+            targetElement.style.width = "";
+        }
+        this.UpdateHeaders(this.GetHeaderSettings());
+    }
+
+    GetHeaderSettings() {
+        const headerElement = {};
+        this.HeaderSection.Children.filter(x => x.Meta?.Id != null).forEach(x => {
+            headerElement[x.Meta.Id] = x;
+        });
+
+        const ele = Array.from(this.HeaderSection.Element.firstElementChild.children);
+        this.HeaderSection.Children.forEach(x => {
+            x.Meta.Order = ele.indexOf(x.Element);
+        });
+
+        const columns = this.Header.filter(x => x.Id != null).map(x => {
+            const match = headerElement[x.Id];
+            if (!match) return null;
+            x.Width = `${match.Element.offsetWidth}px`;
+            x.MaxWidth = `${match.Element.offsetWidth}px`;
+            x.MinWidth = `${match.Element.offsetWidth}px`;
+            return x;
+        }).filter(x => x != null);
+
+        // @ts-ignore
+        return columns.sort((a, b) => (a.Frozen - b.Frozen) || (a.Order - b.Order));
+    }
+
+    ShowWidth(arg) {
+        const entity = arg.header;
+        const e = arg.events;
+        if (e.target.firstChild && !e.target.firstChild.length) {
+            e.target.prepend(document.createTextNode(entity.ShortDesc));
+        }
+        e.target.style.minWidth = "";
+        e.target.style.maxWidth = "";
+        e.target.style.width = "";
+
+        this.UpdateHeaders(this.GetHeaderSettings());
+    }
+
+    FrozenColumn(arg) {
+        const entity = arg.header;
+        const header = this.Header.find(x => x.Id === entity.Id);
+        if (header) {
+            header.Frozen = !header.Frozen;
+        }
+        this.UpdateHeaders(this.GetHeaderSettings());
+    }
+
+    CloneHeader(arg) {
+        {
+            var entity = arg;
+            var confirm = new ConfirmDialog
+            confirm.Content = "Bạn có chắc chắn muốn clone cột này không?";
+            confirm.Render();
+            confirm.YesConfirmed += () =>
+            {
+                var cloned = entity.Clone();
+                cloned.Id = Uuid7.Id25();
+                var patch = cloned.MapToPatch();
+                Client.Instance.PatchAsync(patch).then(success =>
+                {
+                    if (success == 0)
+                    {
+                        Toast.Warning("Clone error");
+                        return;
+                    }
+                    this.Header.push(cloned);
+                    // @ts-ignore
+                    this.Header = this.Header.sort((a, b) => b.Frozen - a.Frozen || b.ComponentType === "Button" - a.ComponentType === "Button" || a.Order - b.Order);
+                    this.Rerender();
+                    Toast.Success("Clone success");
+                }).catch(e =>
+                {
+                    Toast.Warning("Clone header NOT success");
+                });
+            };
+        }
+    }
+
+    RemoveHeader(arg) {
+        var entity = arg;
+        var confirm = new ConfirmDialog
+        confirm.Content = "Bạn có chắc chắn muốn clone cột này không?";
+        confirm.Render();
+        confirm.YesConfirmed += () =>
+        {
+            const ids = [entity.Id];
+            Client.Instance.HardDeleteAsync(ids, 'Component', this.MetaConn, this.MetaConn)
+            .then(success =>
+            {
+                if (!success)
+                {
+                    Toast.Warning("delete error");
+                    return;
+                }
+                Toast.Success("Delete success");
+                this.Header.Remove(entity);
+                this.Rerender();
+            });
+        };
+    }
+
+    RemoveRowById(id) {
+        super.RemoveRowById(id);
+        this.RenderIndex();
+    }
+
+    RemoveRow(row)
+    {
+        super.RemoveRow(row);
+        this.RenderIndex();
+    }
+
+    HardDeleteConfirmed(deleted) {
+        return new Promise((resolve, reject) => {
+            super.HardDeleteConfirmed(deleted).then(res => {
+                this.RenderIndex();
+                if (this.Meta.IsSumary) {
+                    this.AddSummaries();
+                }
+                resolve(res);
+            }).catch(err => reject(err));
+        });
+    }
+
+    UpdateView(force = false, dirty = null, componentNames = []) {
+        if (!this.Editable && !this.Meta.CanCache) {
+            if (force) {
+                this.DisposeNoRecord();
+                this.ListViewSearch.RefreshListView();
+            }
+        } else {
+            // @ts-ignore
+            this.RowAction(row => !row.EmptyRow, row => row.UpdateView(force, dirty, componentNames));
+        }
+    }
+
+    async RowChangeHandlerGrid(rowData, rowSection, observableArgs, component = null) {
+        await new Promise(resolve => setTimeout(resolve, this.CellCountNoSticky));
+        if (rowSection.EmptyRow && observableArgs.EvType === EventType.Change) {
+            await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.BeforeCreated, rowData);
+            rowSection.EmptyRow = false;
+            this.MoveEmptyRow(rowSection);
+            const headers = this.Header.filter(y => y.Editable);
+            const currentComponent = headers.find(y => y.FieldName === component.FieldName);
+            const index = headers.indexOf(currentComponent);
+            if (headers.length > index + 1) {
+                const nextGrid = headers[index + 1];
+                const nextComponent = rowSection.Children.find(y => y.FieldName === nextGrid.FieldName);
+                if (nextComponent) {
+                    nextComponent.Focus();
+                }
+            }
+            this.EmptySection.Children = [];
+            this.AddNewEmptyRow();
+            this.Entity.SetComplexPropValue(this.FieldName, this.RowData.Data);
+            await this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCreated, rowData);
+        }
+        this.AddSummaries();
+        this.PopulateFields();
+        this.RenderIndex();
+        await this.DispatchEvent(this.Meta.Events, EventType.Change, rowData);
+    }
+
+    GetViewPortItem() {
+        if (!this.Element || !this.Element.classList.contains('sticky')) {
+            return this.RowData.Data.length;
+        }
+        let mainSectionHeight = this.Element.clientHeight
+            - (this.HeaderSection.Element ? this.HeaderSection.Element.clientHeight : 0)
+            - this.Paginator.Element.clientHeight
+            - this._theadTable;
+
+        this.Header = this.Header.filter(x => x != null);
+
+        if (this.Header.some(x => x.Summary && x.Summary.trim() !== "")) {
+            mainSectionHeight -= this._tfooterTable;
+        }
+        if (this.Meta.CanAdd) {
+            mainSectionHeight -= this._rowHeight;
+        }
+        return this.GetRowCountByHeight(mainSectionHeight);
+    }
 }
