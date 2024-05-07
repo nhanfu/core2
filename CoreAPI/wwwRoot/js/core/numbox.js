@@ -58,7 +58,7 @@ export class NumBox extends EditableComponent {
         } else {
             this.Dirty = !this._value?.eq(oldValue);
         }
-        this.Entity.SetComplexPropValue(this.FieldName, this._value?.toString());
+        this.Entity.SetComplexPropValue(this.Name, this._value?.toString());
         this.PopulateFields();
         var customizeFn = Utils.IsFunction(this.Meta.Renderer);
         if (customizeFn) {
@@ -93,11 +93,11 @@ export class NumBox extends EditableComponent {
     Render() {
         this.SetDefaultVal();
         if (this.Entity != null) {
-            const fieldVal = Utils.GetPropValue(this.Entity, this.FieldName);
+            const fieldVal = Utils.GetPropValue(this.Entity, this.Name);
             this._isString = typeof fieldVal === 'string';
             this._nullable = this.IsNullable();
             this._value = this.GetDecimalValue();
-            this.Entity.SetComplexPropValue(this.FieldName, this._value);
+            this.Entity.SetComplexPropValue(this.Name, this._value);
         }
         if (this._input === null) {
             Html.Take(this.ParentElement).Input.Render();
@@ -120,7 +120,7 @@ export class NumBox extends EditableComponent {
     }
 
     IsNullable() {
-        const val = this.Entity.GetComplexProp(this.FieldName);
+        const val = this.Entity.GetComplexProp(this.Name);
         return val === null || val === undefined;
     }
 

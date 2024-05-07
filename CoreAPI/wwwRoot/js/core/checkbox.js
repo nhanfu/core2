@@ -42,8 +42,8 @@ export class Checkbox extends EditableComponent {
         Html.Take(this._input).Event('input', this.UserChange.bind(this));
         this.SetDisableUI(!this.Meta.Editable);
         this.SetDefaultVal();
-        this.Value = Utils.GetPropValue(this.Entity, this.FieldName);
-        this.Entity.SetComplexPropValue(this.FieldName, this._value);
+        this.Value = Utils.GetPropValue(this.Entity, this.Name);
+        this.Entity.SetComplexPropValue(this.Name, this._value);
         this.Element.closest('td')?.addEventListener('keydown', this.ListViewItemTab.bind(this));
         this.DOMContentLoaded?.invoke();
     }
@@ -77,7 +77,7 @@ export class Checkbox extends EditableComponent {
         const oldVal = this._value;
         this._value = check;
         if (this.Entity) {
-            this.Entity.SetComplexPropValue(this.FieldName, check);
+            this.Entity.SetComplexPropValue(this.Name, check);
         }
         this.Dirty = true;
         /** @type {ObservableArgs} */
@@ -100,7 +100,7 @@ export class Checkbox extends EditableComponent {
      * @param {...string} componentNames - Additional component names to update.
      */
     UpdateView(force = false, dirty = null, ...componentNames) {
-        const val = this.Entity?.GetComplexProp(this.FieldName);
+        const val = this.Entity?.GetComplexProp(this.Name);
         this.Value = val;
         if (!this.Dirty) {
             this.OldValue = this._input.value;

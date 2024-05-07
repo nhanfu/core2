@@ -81,7 +81,7 @@ class Rating extends EditableComponent {
             this.Element.appendChild(label);
         }
     
-        this._value = Utils.GetPropValue(this.Entity, this.FieldName);
+        this._value = Utils.GetPropValue(this.Entity, this.Name);
         this.setSelected(this._value);
     
         this.DOMContentLoaded?.Invoke();
@@ -106,7 +106,7 @@ class Rating extends EditableComponent {
     }
 
     updateView(force = false, dirty = null, ...componentNames) {
-        this.value = Utils.GetPropValue(this.Entity, this.FieldName);
+        this.value = Utils.GetPropValue(this.Entity, this.Name);
         this.value = (this.value !== undefined && this.value !== null) ? parseInt(this.value) : null;
     }
 

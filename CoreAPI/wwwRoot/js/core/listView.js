@@ -17,12 +17,13 @@ import { Spinner } from "./spinner.js";
 import { PatchDetail } from "./models/patch.js";
 import { SqlViewModel } from "./models/sqlViewModel.js";
 import { ListViewSearch } from "./listViewSearch.js";
+import { ListViewItem } from "listViewItem.js";
 
 /**
  * Represents a list view component that allows editable features and other interactions like sorting and pagination.
  */
 export class ListView extends EditableComponent {
-    /** @type {EditableComponent} */
+    /** @type {ListViewSection} */
     MainSection;
     /**
      * @type {OrderBy[]}
@@ -33,6 +34,11 @@ export class ListView extends EditableComponent {
      */
     CacheData = [];
     DataLoaded = new Action();
+    DblClick = new Action();
+    RowClick = new Action();
+    VirtualScroll = false;
+    /** @type {string} */
+    FocusId;
     get Editable() { return this.Meta.CanAdd; }
     /**
      * Constructs an instance of ListView with the specified UI component.
@@ -44,7 +50,7 @@ export class ListView extends EditableComponent {
         this.DeleteTempIds = [];
         this.Meta = ui;
         this.Id = ui.Id;
-        this.FieldName = ui.FieldName;
+        this.Name = ui.FieldName;
         /** @type {Component[]} */
         this.Header = [];
         this.RowData = new ObservableList();
@@ -66,6 +72,10 @@ export class ListView extends EditableComponent {
         this._scrollTable = this.Meta.ScrollHeight ?? 10;
         window.addEventListener(this.QueueName, this.RealtimeUpdateListViewItem.bind(this));
         this._preQueryFn = Utils.IsFunction(this.Meta.PreQuery);
+        /** @type {ListViewItem} */
+        this.LastShiftViewItem = undefined;
+        /** @type {number} */
+        this.LastIndex = undefined;
     }
 
     /**
@@ -78,7 +88,7 @@ export class ListView extends EditableComponent {
         if (listViewItem === null) return;
         this.CacheData.FirstOrDefault(x => x[this.IdField] === updatedData[this.IdField]).CopyPropFrom(updatedData);
         listViewItem.Entity.CopyPropFrom(updatedData);
-        let arr = listViewItem.FilterChildren(x => !x.Dirty || x.GetValueText() != null).Select(x => x.FieldName).ToArray();
+        let arr = listViewItem.FilterChildren(x => !x.Dirty || x.GetValueText() != null).Select(x => x.Name).ToArray();
         listViewItem.UpdateView(false, arr);
         this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterWebsocket, updatedData, listViewItem).Done();
     }
@@ -106,7 +116,7 @@ export class ListView extends EditableComponent {
         this.GridPolicies = this.EditForm.GetElementPolicies(this.Meta.Id);
         this.GeneralPolicies = this.EditForm.Feature.FeaturePolicy.Where(x => x.RecordId);
         this.CanWrite = this.CanDo(x => x.CanWrite || x.CanWriteAll);
-        Html.Take(this.ParentElement).DataAttr('name', this.FieldName);
+        Html.Take(this.ParentElement).DataAttr('name', this.Name);
         this.AddSections();
         this.SetRowDataIfExists();
         this.EditForm.ResizeListView();
@@ -224,7 +234,7 @@ export class ListView extends EditableComponent {
         this.RenderContent(); // Assuming renderContent is a method defined in this class
 
         if (this.Entity !== null && this.ShouldSetEntity) { // Assuming shouldSetEntity is a property
-            this.Entity.SetComplexPropValue(this.FieldName, this.RowData.Data); // Assuming setComplexPropValue is a method
+            this.Entity.SetComplexPropValue(this.Name, this.RowData.Data); // Assuming setComplexPropValue is a method
         }
     }
 
@@ -296,6 +306,7 @@ export class ListView extends EditableComponent {
         this.EmptySection.ParentElement = this.Element;
         this.AddChild(this.EmptySection);
 
+        // @ts-ignore
         this.MainSection = new ListViewSection(null, this.EmptySection.Element.previousElementSibling);
         this.AddChild(this.MainSection);
 
@@ -350,16 +361,18 @@ export class ListView extends EditableComponent {
      */
     ClearRowData() {
         this.RowData.Clear();
-        this.RowAction(x => !x.EmptyRow, x => x.Dispose());
+        this.RowAction(x => x.Dispose(), x => !x.EmptyRow);
         this.MainSection.Element.innerHTML = null;
         if (this.Entity == null || this.Parent instanceof SearchEntry) {
             return;
         }
         if (this.ShouldSetEntity) {
-            this.Entity?.SetComplexPropValue(this.FieldName, this.RowData.Data);
+            this.Entity?.SetComplexPropValue(this.Name, this.RowData.Data);
         }
     }
 
+    /** @type {ListViewItem[]} */
+    // @ts-ignore
     get AllListViewItem() { return this.MainSection.Children; }
     /**
      * Performs an action on all items that meet the condition specified by predicate.
@@ -374,7 +387,7 @@ export class ListView extends EditableComponent {
      * Sets row data if the entity exists and it is not an empty string.
      */
     SetRowDataIfExists() {
-        const value = Utils.GetPropValue(this.Entity, this.FieldName);
+        const value = Utils.GetPropValue(this.Entity, this.Name);
         if (this.Entity != null && Array.isArray(value)) {
             this.RowData._data = value;
         }
@@ -983,7 +996,7 @@ export class ListView extends EditableComponent {
             } else {
                 this.DispatchCustomEvent(this.Meta.Events, CustomEventType.BeforeCreated, rowData).then(() => {
                     this.RowData.Data.push(rowData);
-                    this.Entity.SetComplexPropValue(this.FieldName, this.RowData.Data);
+                    this.Entity.SetComplexPropValue(this.Name, this.RowData.Data);
                     rowSection.FilterChildren(child => true).forEach(child => {
                         child.EmptyRow = false;
                         child.UpdateView(true);

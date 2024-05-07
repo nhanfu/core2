@@ -73,7 +73,7 @@ export class Button extends EditableComponent {
      * @returns {string} The text value of the component.
      */
     GetValueText() {
-        if (!this.Entity || !this.FieldName) {
+        if (!this.Entity || !this.Name) {
             return this._textEle.textContent;
         }
         return this.FieldVal?.toString();

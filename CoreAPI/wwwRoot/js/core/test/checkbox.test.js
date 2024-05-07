@@ -64,7 +64,7 @@ describe('Checkbox', () => {
     });
 
     test('UpdateView should refresh the value from the entity', () => {
-        checkbox.Entity[checkbox.FieldName] = true;
+        checkbox.Entity[checkbox.Name] = true;
         //checkbox.Render();
         checkbox.UpdateView();
         expect(checkbox._input.checked).toBe(true);

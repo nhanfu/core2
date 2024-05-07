@@ -13,7 +13,7 @@ export class Label extends EditableComponent {
 
     Render() {
         this.SetDefaultVal();
-        const cellData = Utils.GetPropValue(this.Entity, this.FieldName);
+        const cellData = Utils.GetPropValue(this.Entity, this.Name);
         const isBool = cellData !== null && typeof cellData === "boolean";
         let cellText = '';
 
@@ -72,7 +72,7 @@ export class Label extends EditableComponent {
     CalcCellText(cellData, formatter) {
         let cellText = null;
         if (this.Meta.IsPivot) {
-            const fields = this.FieldName.split(".");
+            const fields = this.Name.split(".");
             if (fields.length < 3) {
                 return cellText;
             }

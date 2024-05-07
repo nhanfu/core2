@@ -72,7 +72,7 @@ export class Datepicker extends EditableComponent {
         } else {
             this.Input.value = "";
         }
-        this.Entity.SetComplexPropValue(this.FieldName, this.value);
+        this.Entity.SetComplexPropValue(this.Name, this.value);
         this.Dirty = true;
     }
 
@@ -82,12 +82,12 @@ export class Datepicker extends EditableComponent {
     Render() {
         this.SetDefaultVal();
         let fieldValue = this.FieldVal;
-        this.Entity.SetComplexPropValue(this.FieldName, this.value);
+        this.Entity.SetComplexPropValue(this.Name, this.value);
         let parsedVal = new Date(fieldValue);
         let parsed = fieldValue && parsedVal.toString() !== "Invalid Date";
         this.value = parsed ? parsedVal : null;
         this.nullable = this.FieldVal == null;
-        this.Entity.SetComplexPropValue(this.FieldName, this.value);
+        this.Entity.SetComplexPropValue(this.Name, this.value);
         let str = this.value ? this.value.toLocaleDateString('en-US', this.options) : "";
         Html.Take(this.ParentElement);
         if (!this.Input) {
@@ -112,7 +112,7 @@ export class Datepicker extends EditableComponent {
             }
         }).Event("change", () => this.ParseDate())
             .PlaceHolder(this.Meta.PlainText).Attr("autocomplete", "off")
-            .Attr('name', this.FieldName)
+            .Attr('name', this.Name)
         this.Input.addEventListener("keydown", (e) => this.KeyDownDateTime(e));
         this.Input.parentElement?.addEventListener("focusout", () => this.CloseCalendar());
         Html.End.Div.ClassName("btn-group").Button.TabIndex(-1).Span.ClassName("fa fa-calendar")
@@ -146,7 +146,7 @@ export class Datepicker extends EditableComponent {
      * @returns {boolean} Whether the type is nullable.
      */
     IsNullable(type) {
-        return this.Entity === null || this.Utils.IsNullable(type, this.Entity.GetType(), this.FieldName, this.Entity);
+        return this.Entity === null || this.Utils.IsNullable(type, this.Entity.GetType(), this.Name, this.Entity);
     }
 
     /**

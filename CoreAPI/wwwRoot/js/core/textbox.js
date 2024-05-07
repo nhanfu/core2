@@ -47,16 +47,16 @@ export class Textbox extends EditableComponent {
         this._value = newValue;
         if (this._value !== null && typeof this._value === Str.Type) {
             if (this.EditForm && this.EditForm.Meta && !this.EditForm.Meta.IgnoreEncode || !this.EditForm.Meta) {
-                this.Entity.SetComplexPropValue(this.FieldName, Utils.EncodeSpecialChar(Utils.DecodeSpecialChar(this._value)));
+                this.Entity.SetComplexPropValue(this.Name, Utils.EncodeSpecialChar(Utils.DecodeSpecialChar(this._value)));
             }
         }
         if (this.Entity) {
-            this.Entity.SetComplexPropValue(this.FieldName, this._value);
+            this.Entity.SetComplexPropValue(this.Name, this._value);
         }
 
         let text = (this.EditForm && this.EditForm.Meta && this.EditForm.Meta.IgnoreEncode) ? this._value : Utils.DecodeSpecialChar(this._value);
         if (this.Meta.FormatData && Utils.HasAnyChar(this.Meta.FormatData)) {
-            text = Utils.FormatEntity(this.Meta.FormatData, this.Entity.GetPropValue(this.FieldName));
+            text = Utils.FormatEntity(this.Meta.FormatData, this.Entity.GetPropValue(this.Name));
         }
 
         if (this.Meta.FormatEntity && Utils.HasAnyChar(this.Meta.FormatEntity)) {
@@ -69,13 +69,13 @@ export class Textbox extends EditableComponent {
 
     Render() {
         this.SetDefaultVal();
-        var val = this.Entity && this.Entity.GetComplexProp(this.FieldName);
+        var val = this.Entity && this.Entity.GetComplexProp(this.Name);
         var shouldEncode = val !== null && val !== undefined && typeof val === Str.Type && this.EditForm != null
             && this.EditForm.Meta != null && !this.EditForm.Meta.IgnoreEncode;
         if (shouldEncode) {
             const decode = Utils.DecodeSpecialChar(val);
             const encode = Utils.EncodeSpecialChar(decode);
-            this.Entity.SetComplexPropValue(this.FieldName, encode);
+            this.Entity.SetComplexPropValue(this.Name, encode);
         }
         var text = Utils.IsFunction(this.Meta.FormatEntity)?.call(null, this);
         this._text = this.EditForm != null && this.EditForm.Meta != null && this.EditForm.Meta.IgnoreEncode ? text : Utils.DecodeSpecialChar(text);
@@ -131,7 +131,7 @@ export class Textbox extends EditableComponent {
             this.Text = this._text.toLocaleUpperCase();
         }
         this._value = (this.EditForm != null && this.EditForm.Meta != null && this.EditForm.Meta.IgnoreEncode) ? this._text : Utils.EncodeSpecialChar(this._text);
-        this.Entity.SetComplexPropValue(this.FieldName, this._value);
+        this.Entity.SetComplexPropValue(this.Name, this._value);
         this.Dirty = true;
         this.UserInput?.Invoke({ NewData: this._text, OldData: this._oldText, EvType: type });
         this.PopulateFields();
@@ -139,7 +139,7 @@ export class Textbox extends EditableComponent {
 
     }
     UpdateView(force = false, dirty = null, ...componentNames) {
-        this.Value = this.Entity && Utils.GetPropValue(this.Entity, this.FieldName);
+        this.Value = this.Entity && Utils.GetPropValue(this.Entity, this.Name);
         if (!this.Dirty) {
             this.DOMContentLoaded?.Invoke();
             this.OldValue = this._text;

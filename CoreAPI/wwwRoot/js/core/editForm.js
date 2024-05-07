@@ -55,7 +55,7 @@ export class EditForm extends EditableComponent {
     }
 
     get FeatureName() {
-        return this.FieldName || this.Feature?.Name;
+        return this.Name || this.Feature?.Name;
     }
 
     // Standard property getter and setter for Href
@@ -90,7 +90,7 @@ export class EditForm extends EditableComponent {
         const details = this.FilterChildren(child => {
             return !(child instanceof Button)
                 && (shouldGetAll || child.Dirty) && child.Meta != null
-                && child.FieldName != null;
+                && child.Name != null;
         }, x => x instanceof ListView || x.AlwaysValid || !x.PopulateDirty);
         const patches = details
             .DistinctBy(x => x.Meta.Id)
@@ -98,14 +98,14 @@ export class EditForm extends EditableComponent {
                 if (typeof child['GetPatchDetail'] === 'function') {
                     return child['GetPatchDetail']();
                 }
-                const value = Utils.GetPropValue(child.Entity, child.FieldName);
+                const value = Utils.GetPropValue(child.Entity, child.Name);
                 /**
                  * @type {PatchDetail}
                  */
                 // @ts-ignore
                 const patch = {
                     Label: child.Label,
-                    Field: child.FieldName,
+                    Field: child.Name,
                     OldVal: (child.OldValue != null) ? child.OldValue.toString() : child.OldValue?.toString(),
                     Value: (value != null) ? value.toString() : !this.EditForm.Meta.IgnoreEncode ? Utils.EncodeSpecialChar(value?.toString().trim()) : value?.toString().trim(),
                 };
@@ -161,10 +161,10 @@ export class EditForm extends EditableComponent {
         }
 
         const allListView = VisibleListView.Parent.Children.filter(x => x instanceof ListView);
-        const responsive = allListView.some(x => x.FieldName.includes("Mobile"));
+        const responsive = allListView.some(x => x.Name.includes("Mobile"));
         allListView.forEach(lv => {
             if (responsive) {
-                lv.Show = this.IsSmallUp ? !lv.FieldName.includes("Mobile") : lv.FieldName.includes("Mobile");
+                lv.Show = this.IsSmallUp ? !lv.Name.includes("Mobile") : lv.Name.includes("Mobile");
                 if (lv.Show) {
                     this._CurrentListView = lv;
                 }

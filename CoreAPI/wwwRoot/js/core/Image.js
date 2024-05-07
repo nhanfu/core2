@@ -45,7 +45,7 @@ export class Image extends EditableComponent {
         galleryElements.forEach(el => el.remove());
         this._path = value;
         if (this.Entity) {
-            this.Entity.setComplexPropValue(this.FieldName, this._path);
+            this.Entity.setComplexPropValue(this.Name, this._path);
         }
 
         if (!this._path || this._path.trim() === '') {
@@ -84,7 +84,7 @@ export class Image extends EditableComponent {
     }
 
     Render() {
-        this._path = Utils.GetPropValue(this.Entity,this.FieldName)?.toString();
+        this._path = Utils.GetPropValue(this.Entity,this.Name)?.toString();
         const paths = this._path ? this._path.split(Image.PathSeparator) : [];
         this.RenderUploadForm();
         this.Path = this._path; 
@@ -290,7 +290,7 @@ export class Image extends EditableComponent {
                             .split(Image.PathSeparator).filter(x => x != null).Distinct();
                 this.Path = newPath.join(Image.PathSeparator);
                 this.dirty = true;
-                const observable = { NewData : this._path, OldData : oldVal, FieldName : this.FieldName, EvType : EventType.Change };
+                const observable = { NewData : this._path, OldData : oldVal, FieldName : this.Name, EvType : EventType.Change };
                 this.UserInput?.Invoke(observable);
                 this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity);
             });
@@ -316,7 +316,7 @@ export class Image extends EditableComponent {
         this.UploadAllFiles(files).then(() => {
             this.Dirty = true; 
             this._input.value = '';  
-            const observable = { NewData : this._path, OldData : oldVal, FieldName : this.FieldName, EvType : EventType.Change };
+            const observable = { NewData : this._path, OldData : oldVal, FieldName : this.Name, EvType : EventType.Change };
             this.UserInput?.Invoke(observable);
             this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity);  
         }).catch(error => {
@@ -341,7 +341,7 @@ export class Image extends EditableComponent {
     }
 
     UpdateView(force = false, dirty = null, ...componentNames) {
-        this.Path = Utils.GetPropValue(this.Entity, this.FieldName)?.toString();
+        this.Path = Utils.GetPropValue(this.Entity, this.Name)?.toString();
         super.UpdateView(force, dirty, ...componentNames);
     }
 
@@ -372,7 +372,7 @@ export class Image extends EditableComponent {
                                 { field: "EntityName", value: this.Meta.RefName },
                                 { field: "RecordId", value: this.EntityId },
                                 { field: "SectionId", value: this.Meta.ComponentGroupId },
-                                { field: "FieldName", value: this.FieldName },
+                                { field: "FieldName", value: this.Name },
                                 { field: "FileName", value: file.name },
                                 { field: "FilePath", value: path }
                             ]

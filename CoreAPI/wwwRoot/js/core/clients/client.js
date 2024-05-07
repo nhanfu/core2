@@ -2,8 +2,8 @@ import { SqlViewModel } from "../models/sqlViewModel.js";
 import { BadGatewayQueue } from "../models/badGatewayQueue.js";
 import { Token } from "../models/token.js";
 import { Utils } from "../utils/utils.js";
-import { PatchVM } from "models/patch.js";
-import { EmailVM } from "models/emailVM.js";
+import { PatchVM } from "../models/patch.js";
+import { EmailVM } from "../models/emailVM.js";
 import { Toast } from "../toast.js";
 import { Path } from "../utils/path.js";
 

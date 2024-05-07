@@ -14,7 +14,7 @@ import { ListView } from "./listView.js";
 export class Section extends EditableComponent {
     /**
      * 
-     * @param {string | null | undefined} eleType - Element type of the section
+     * @param {ElementType | string | null | undefined} eleType - Element type of the section
      * @param {HTMLElement | null} ele 
      */
     constructor(eleType, ele = null) {
@@ -201,6 +201,10 @@ export class Section extends EditableComponent {
         }
     }
 
+    _chevron;
+    get Chevron() { return this._chevron; }
+    set Chevron(value) { this._chevron = value; }
+
     /**
      * Renders the dropdown elements and handles their interactions.
      */
@@ -318,10 +322,10 @@ export class Section extends EditableComponent {
             Parent.EditForm.TabGroup = [];
         }
 
-        let TabG = Parent.EditForm.TabGroup.find(x => x.FieldName === Group.TabGroup);
+        let TabG = Parent.EditForm.TabGroup.find(x => x.Name === Group.TabGroup);
         if (!TabG) {
             TabG = {
-                FieldName: Group.TabGroup,
+                Name: Group.TabGroup,
                 Parent: Parent,
                 ParentElement: Parent.Element,
                 Entity: Parent.Entity,

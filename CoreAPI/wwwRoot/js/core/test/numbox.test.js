@@ -104,7 +104,7 @@ describe('Number component', () => {
 
     test('Setting value triggers Entity property update', () => {
         number.Value = 888;
-        expect(number.Entity.SetComplexPropValue).toHaveBeenCalledWith(number.FieldName, '888');
+        expect(number.Entity.SetComplexPropValue).toHaveBeenCalledWith(number.Name, '888');
     });
 
     test('Setting value to same does not mark as dirty', () => {

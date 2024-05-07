@@ -60,7 +60,7 @@ export class SearchEntry extends EditableComponent {
 
     Render() {
         this.SetDefaultVal();
-        let entityVal = Utils.GetPropValue(this.Entity, this.FieldName);
+        let entityVal = Utils.GetPropValue(this.Entity, this.Name);
         if (typeof entityVal === 'string') {
             this._value = entityVal;
         }
@@ -85,7 +85,7 @@ export class SearchEntry extends EditableComponent {
             }
         }
         this._input.autocomplete = 'off';
-        Html.Take(this._input).PlaceHolder(this.Meta.PlainText).Attr('name', this.FieldName)
+        Html.Take(this._input).PlaceHolder(this.Meta.PlainText).Attr('name', this.Name)
             .Event('contextmenu', () => this._contextMenu = true)
             .Event('focus', this.FocusIn.bind(this))
             .Event('blur', this.DiposeGvWrapper.bind(this))
@@ -443,7 +443,7 @@ export class SearchEntry extends EditableComponent {
         this._value = null;
         this._input.value = '';
         if (oldMatch !== this.Matched) {
-            this.Entity?.SetComplexPropValue(this.FieldName, null);
+            this.Entity?.SetComplexPropValue(this.Name, null);
             this.Dirty = true;
             this.CascadeAndPopulate();
             this.DispatchEvent(this.Meta.Events, EventType.Change, this.Entity, this.Matched, oldMatch).Done();
@@ -514,7 +514,7 @@ export class SearchEntry extends EditableComponent {
         let res = [
             {
                 Label: this.Label + '(value)',
-                Field: this.FieldName,
+                Field: this.Name,
                 Value: this._value,
                 OldVal: this.OldValue
             }
@@ -552,8 +552,8 @@ export class SearchEntry extends EditableComponent {
         this.Matched = rowData;
         let oldValue = this._value;
         this._value = rowData[IdField];
-        if (this.Entity !== null && this.FieldName.HasAnyChar()) {
-            this.Entity.SetComplexPropValue(this.FieldName, this._value);
+        if (this.Entity !== null && this.Name.HasAnyChar()) {
+            this.Entity.SetComplexPropValue(this.Name, this._value);
         }
         this.Dirty = true;
         this.Matched = rowData;
@@ -569,7 +569,7 @@ export class SearchEntry extends EditableComponent {
     }
 
     UpdateView(force = false, dirty = null, ...componentNames) {
-        this._value = Utils.GetPropValue(this.Entity, this.FieldName);
+        this._value = Utils.GetPropValue(this.Entity, this.Name);
         if (this._value === null) {
             this.Matched = null;
             this._input.value = null;

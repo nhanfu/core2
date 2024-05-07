@@ -9,8 +9,10 @@ import './utils/ext.js';
 import { Action } from "./models/action.js";
 import { LangSelect } from "./utils/langSelect.js";
 import { KeyCodeEnum } from "./models/enum.js";
+import { Component } from "./models/component.js";
 
 /**
+ * @typedef {import('./listViewItem.js').ListViewItem} ListViewItem
  * @typedef {import('./searchEntry.js').SearchEntry} SearchEntry
  * @typedef {import('./section.js').Section} Section
  * @typedef {import('./label.js').Label} Label
@@ -25,6 +27,8 @@ import { KeyCodeEnum } from "./models/enum.js";
 let SearchEntry;
 let Section;
 let Label;
+/** @class {@link ListViewItem} */
+let ListViewItem;
 
 /**
  * Represents an editable component in the application.
@@ -151,7 +155,7 @@ export default class EditableComponent {
     /**
      * @param {string} events
      * @param {string} eventType
-     * @param {(any[] | EditableComponent)[]} parameters
+     * @param {any[]} parameters
      */
     DispatchCustomEvent(events, eventType, ...parameters) {
         if (!events) {
@@ -277,8 +281,29 @@ export default class EditableComponent {
         return this.Meta?.Label;
     }
     /** @returns {string} Meta fieldname */
-    get FieldName() {
+    get Name() {
         return this.Meta?.FieldName;
+    }
+    set Name(val) {
+        if (this.Meta == null)
+            this.Meta = new Component();
+        this.Meta.FieldName = val;
+    }
+    get Id() {
+        return this.Meta?.Id;
+    }
+    set Id(val) {
+        if (this.Meta == null)
+            this.Meta = new Component();
+        this.Meta.Id = val;
+    }
+    get ComponentType() {
+        return this.Meta?.ComponentType;
+    }
+    set ComponentType(val) {
+        if (this.Meta == null)
+            this.Meta = new Component();
+        this.Meta.ComponentType = val;
     }
     /** @type {boolean} emptyRow - True if the component is in empty row or screen, otherwise false. */
     get EmptyRow() {
@@ -289,8 +314,6 @@ export default class EditableComponent {
     }
     set EmptyRow(val) {
         this.#emptyRow = val;
-        let row = this.FindClosest('ListViewItem');
-        if (row != null) row.EmptyRow = val;
     }
     get MetaConn() {
         return this.Meta?.MetaConn;
@@ -299,11 +322,13 @@ export default class EditableComponent {
         return this.Meta?.DataConn;
     }
     IdField = 'Id';
-    get FieldVal() { return !this.Entity || !this.FieldName ? null : this.Entity.GetComplexProp(this.FieldName); }
+    get FieldVal() { return !this.Entity || !this.Name ? null : this.Entity.GetComplexProp(this.Name); }
     set FieldVal(val) {
-        if (this.Entity == null || this.FieldName == null) return;
-        this.Entity.SetComplexPropValue(this.FieldName, val);
+        if (this.Entity == null || this.Name == null) return;
+        this.Entity.SetComplexPropValue(this.Name, val);
     }
+    AfterSaved = new Action();
+    BeforeSaved = new Action();
 
     SetRequired() {
         const ele = this.Element;
@@ -338,7 +363,7 @@ export default class EditableComponent {
         let label = ruleValue;
         let [hasField, fieldVal] = this.Entity.GetComplexProp(field);
         if (hasField) {
-            label = this.Parent.FirstOrDefault(x => x.FieldName === field)?.Meta?.Label;
+            label = this.Parent.FirstOrDefault(x => x.Name === field)?.Meta?.Label;
             ruleValue = fieldVal;
         }
         if (!validPredicate(value, ruleValue)) {
@@ -374,8 +399,8 @@ export default class EditableComponent {
         if (fn) {
             fn.call(this, this);
         }
-        else if (this.Entity.GetComplexProp(this.FieldName) == null) {
-            this.Entity.SetComplexPropValue(this.FieldName, this.DefaultValue);
+        else if (this.Entity.GetComplexProp(this.Name) == null) {
+            this.Entity.SetComplexPropValue(this.Name, this.DefaultValue);
         }
     }
 
@@ -428,7 +453,7 @@ export default class EditableComponent {
         }
 
         cascadeFields.forEach(field => {
-            root.FilterChildren(x => x.FieldName === field).forEach(target => {
+            root.FilterChildren(x => x.Name === field).forEach(target => {
                 // @ts-ignore
                 if (target instanceof SearchEntry && target !== null) {
                     // @ts-ignore
@@ -471,7 +496,7 @@ export default class EditableComponent {
         }
 
         populatedFields.forEach(field => {
-            root.FilterChildren(x => x.FieldName === field).forEach(target => {
+            root.FilterChildren(x => x.Name === field).forEach(target => {
                 const value = Utils.GetPropValue(entity, field);
                 const oldVal = Utils.GetPropValue(this.Entity, field);
                 const targetType = this.Entity.GetComplexPropType(field);
@@ -518,20 +543,20 @@ export default class EditableComponent {
     }
 
     FindComponentByName(name, type) {
-        return this.FirstOrDefault(x => x.FieldName === name && (type == null || x.Classes.includes(type)));
+        return this.FirstOrDefault(x => x.Name === name && (type == null || x.Classes.includes(type)));
     }
 
     /**
      * Find closeset component
-     * @param {any} proto - Class prototype
+     * @param {any} ClassRef - Class prototype
      * @param {(value: EditableComponent) => boolean} filter - Filter component
      * @returns {EditableComponent} Returns the closeset EditableComponent of the specified type
      */
-    FindClosest(proto, filter = null) {
+    FindClosest(ClassRef, filter = null) {
         /** @type {EditableComponent} */
         let found = this;
         while (found != null) {
-            if (found.constructor.prototype === proto || found.Meta?.ComponentType === proto) {
+            if (found instanceof ClassRef) {
                 if (filter == null || filter(found)) return found;
             }
             found = found.Parent;
@@ -549,7 +574,7 @@ export default class EditableComponent {
         const meta = this.Meta;
         if (!val) {
             ele.style.display = "none";
-            if (meta != null && meta.ShowLabel && this.FieldName != null) {
+            if (meta != null && meta.ShowLabel && this.Name != null) {
                 ele.parentElement.style.display = "none";
                 // @ts-ignore
                 ele.parentElement.previousElementSibling.style.display = "none";
@@ -557,7 +582,7 @@ export default class EditableComponent {
         }
         else {
             ele.style.display = Str.Empty;
-            if (meta != null && meta.ShowLabel && this.FieldName != null) {
+            if (meta != null && meta.ShowLabel && this.Name != null) {
                 ele.parentElement.style.display = "";
                 // @ts-ignore
                 ele.parentElement.previousElementSibling.style.display = "";
@@ -662,11 +687,11 @@ export default class EditableComponent {
 
         if (componentNames.length > 0) {
             // @ts-ignore
-            const coms = this.FilterChildren(x => x instanceof Section && componentNames.includes(x.FieldName))
+            const coms = this.FilterChildren(x => x instanceof Section && componentNames.includes(x.Name))
                 // @ts-ignore
                 .flatMap(x => x.FilterChildren(com => !(com instanceof Section)));
             // @ts-ignore
-            const coms2 = this.FilterChildren(x => componentNames.includes(x.FieldName) && !(x instanceof Section));
+            const coms2 = this.FilterChildren(x => componentNames.includes(x.Name) && !(x instanceof Section));
             // @ts-ignore
             const shouldUpdate = [...new Set([...coms, ...coms2].filter(x => !(x instanceof Section)))];
 
@@ -774,9 +799,10 @@ export default class EditableComponent {
      * @param {(item: EditableComponent) => boolean} ignore 
      * @returns {EditableComponent[] | null}
      */
-    FilterChildren(filter, ignore = null) {
+    FilterChildren(filter = null, ignore = null) {
         return this.Children.Flattern(x => x.Children.Where(child => {
-            return ignore?.call(this, child) !== true && filter?.call(this, child) === true;
+            return ignore?.call(this, child) !== true && 
+                (filter == null || filter?.call(this, child) === true);
         })).Where(filter);
     }
     /**
@@ -868,7 +894,7 @@ export default class EditableComponent {
     SetDisabled(disabled, ...name) {
         if (name == null || name.length == 0) this.Disabled = disabled;
         else {
-            this.FilterChildren(x => name.includes(x.FieldName)).forEach(x => x.Disabled = disabled);
+            this.FilterChildren(x => name.includes(x.Name)).forEach(x => x.Disabled = disabled);
         }
     }
 }

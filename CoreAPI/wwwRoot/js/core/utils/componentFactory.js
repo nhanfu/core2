@@ -42,7 +42,7 @@ export class ComponentFactory {
                 break;
         }
         childComponent[Utils.IdField] = `${ui.FieldName}${ui.Id.toString()}`;
-        childComponent.FieldName = ui.FieldName;
+        childComponent.Name = ui.FieldName;
         childComponent.ComponentType = ui.ComponentType;
         childComponent.EditForm = form;
         return childComponent;

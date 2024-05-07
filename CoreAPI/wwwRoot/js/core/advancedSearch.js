@@ -30,7 +30,7 @@ export class AdvancedSearch extends TabEditor {
      */
     constructor(parent) {
         super("Component");
-        this.FieldName = "AdvancedSearch";
+        this.Name = "AdvancedSearch";
         this.Title = "Tìm kiếm nâng cao";
         this.Icon = "fa fa-search-plus";
         this.Parent = parent;
@@ -421,7 +421,7 @@ export class AdvancedSearch extends TabEditor {
         condition.OriginFieldName = field.FieldName;
         condition.Field = field;
 
-        var cell = this._filterGrid.FirstOrDefault(x => x.Entity == condition && x.FieldName == "Value");
+        var cell = this._filterGrid.FirstOrDefault(x => x.Entity == condition && x.Name == "Value");
         /** @type {EditableComponent} */
         // @ts-ignore
         var compareCell = this._filterGrid.find(x => x.Entity == condition
@@ -461,7 +461,7 @@ export class AdvancedSearch extends TabEditor {
         };
         condition.LogicOperatorId = condition.LogicOperatorId || LogicOperation.And;
         this._filterGrid.FirstOrDefault(x => x.Meta != null && x.Entity == condition
-            && x.FieldName == "LogicOperatorId")?.UpdateView();
+            && x.Name == "LogicOperatorId")?.UpdateView();
         condition.CompareOperatorId = compareCell.Meta.LocalData.find(x => x.Id == condition.CompareOperatorId)?.Id;
         // @ts-ignore
         compareCell.Value = condition.CompareOperatorId;
