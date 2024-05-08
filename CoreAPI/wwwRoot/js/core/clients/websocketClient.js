@@ -1,5 +1,5 @@
 import { Client } from "./client.js";
-import ReconnectingWebSocket from './reconnecting-websocket.js'
+import { ReconnectingWebSocket } from './reconnecting-websocket.js'
 export class WebSocketClient {
     /**
      * @param {string} url

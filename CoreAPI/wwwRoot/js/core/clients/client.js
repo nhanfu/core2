@@ -176,6 +176,11 @@ export class Client {
         return res?.Value?.[0];
     }
 
+    /**
+     * @param {string} table
+     * @param {string} connKey
+     * @param {string[]} ids
+     */
     async GetByIdAsync(table, connKey, ...ids) {
         if (!table || ids.length === 0) {
             return null;
@@ -209,7 +214,7 @@ export class Client {
 
     /**
      * 
-     * @param {PatchVM} value 
+     * @param {PatchVM | PatchVM[]} value 
      * @param {function} errHandler 
      * @param {boolean} annonymous 
      * @returns {Promise<number>} Effected rows in the database

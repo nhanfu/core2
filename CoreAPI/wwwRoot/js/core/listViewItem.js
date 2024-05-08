@@ -11,7 +11,7 @@ import ObservableArgs from "./models/observable.js";
 import EditableComponent from "./editableComponent.js";
 import { CustomEventType } from "./models/customEventType.js";
 import { Client } from "./clients/client.js";
-import { PatchVM } from "./models/patch.js";
+import { PatchDetail, PatchVM } from "./models/patch.js";
 import { Toast } from "./toast.js";
 import { Button } from "./button.js";
 import { Textbox } from "./textbox.js";
@@ -42,6 +42,7 @@ export class ListViewItem extends Section {
         this.FocusEvent = null;
         this.GroupRow = false;
         this._focusAwaiter = 0;
+        /** @type {PatchDetail[]} */
         this.PatchModel = [];
         this.ShowMessage = true;
     }
@@ -322,7 +323,7 @@ export class ListViewItem extends Section {
                     actValue = null;
                 }
                 const patch = {
-                    Label: child.Label,
+                    Label: child.ComLabel,
                     Field: child.Name,
                     OldVal: child.OldValue !== null && child.ComponentType.includes(ComponentType.Datepicker)
                         ? child.OldValue?.toString().DateConverter()

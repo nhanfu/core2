@@ -1,11 +1,14 @@
+import { WebSocketClient } from "./clients/websocketClient.js";
 import { Client } from "./clients/client.js";
 import EventType from "./models/eventType.js";
 import { ComponentExt } from "./utils/componentExt.js";
 import { LangSelect } from "./utils/langSelect.js";
 import { StringBuilder } from "./utils/stringBuilder.js";
 import { Utils } from "./utils/utils.js";
+import { EditForm } from "./editForm.js";
+import { Spinner } from "./spinner.js";
 
-class App {
+export class App {
     static DefaultFeature = Utils.HeadChildren.layout?.content || "index";
     static FeatureLoaded = false;
 

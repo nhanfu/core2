@@ -20,6 +20,12 @@ import { Label } from "./label.js";
 import { ComponentType } from "./models/componentType.js";
 import { ConfirmDialog } from "./confirmDialog.js";
 import { EmailVM } from "./models/emailVM.js";
+import { WebSocketClient } from "./clients/websocketClient.js";
+import { ContextMenu } from "./contextMenu.js";
+import { SqlViewModel } from "./models/sqlViewModel.js";
+import { ComponentGroupBL } from "./forms/componentGroupBL.js";
+import { FeatureDetailBL } from "./forms/featureDetailBL.js";
+import { SecurityBL } from "./forms/securityBL.js";
 
 /**
  * Represents an editable form component.
@@ -27,6 +33,8 @@ import { EmailVM } from "./models/emailVM.js";
 export class EditForm extends EditableComponent {
     /** @type {EditForm} */
     static LayoutForm;
+    /** @type {EditForm} */
+    OpenFrom;
     /** @type {ListView[]} */
     ListViews = [];
     static ExpiredDate = "ExpiredDate";
@@ -70,9 +78,9 @@ export class EditForm extends EditableComponent {
 
     /**
      * Constructor for EditForm.
-     * @param {string} entity - The entity associated with this form.
+     * @param {string | null} entity - The entity associated with this form.
      */
-    constructor(entity) {
+    constructor(entity = null) {
         super(null);
         this.urlSearch = new URLSearchParams(window.location.search);
         this.entity = entity;
@@ -104,7 +112,7 @@ export class EditForm extends EditableComponent {
                  */
                 // @ts-ignore
                 const patch = {
-                    Label: child.Label,
+                    Label: child.ComLabel,
                     Field: child.Name,
                     OldVal: (child.OldValue != null) ? child.OldValue.toString() : child.OldValue?.toString(),
                     Value: (value != null) ? value.toString() : !this.EditForm.Meta.IgnoreEncode ? Utils.EncodeSpecialChar(value?.toString().trim()) : value?.toString().trim(),
@@ -1005,28 +1013,39 @@ export class EditForm extends EditableComponent {
         return ele.innerHTML;
     }
 
+    /** @type {FeaturePolicy[]} */
+    Policies = [];
+    /**
+     * @param {string | any[]} recordIds
+     */
+    GetGridPolicies(recordIds, entityName = "Component") {
+        const hasHidden = this.Policies
+            .filter(x => x.RoleId || (x.UserId && Client.Token.UserId == x.UserId))
+            .filter(x => x.EntityName == entityName && recordIds.includes(x.RecordId));
+        return hasHidden;
+    }
+
 
     /**
      * Deletes the entity associated with the form.
      */
     Delete() {
-        const confirm = new ConfirmDialog({
-            Content: "Are you sure you want to delete this?",
-            OnYes: async () => {
-                try {
-                    const success = await Client.Instance.HardDeleteAsync([this.EntityId], this.Feature.EntityName, this.DataConn, this.MetaConn);
-                    if (success) {
-                        Toast.Success("Data deleted successfully");
-                        this.ParentForm?.UpdateView();
-                        this.Dispose();
-                    } else {
-                        Toast.Warning("An error occurred while deleting data");
-                    }
-                } catch (error) {
-                    Toast.Warning("An error occurred: " + error.message);
+        const confirm = new ConfirmDialog();
+        confirm.Content = "Are you sure you want to delete this?";
+        confirm.YesConfirmed = async () => {
+            try {
+                const success = await Client.Instance.HardDeleteAsync([this.EntityId], this.Feature.EntityName, this.DataConn, this.MetaConn);
+                if (success) {
+                    Toast.Success("Data deleted successfully");
+                    this.ParentForm?.UpdateView();
+                    this.Dispose();
+                } else {
+                    Toast.Warning("An error occurred while deleting data");
                 }
+            } catch (error) {
+                Toast.Warning("An error occurred: " + error.message);
             }
-        });
+        };
         confirm.Render();
     }
 
@@ -1037,6 +1056,8 @@ export class EditForm extends EditableComponent {
         Client.UnAuthorizedEventHandler?.call(null);
     }
 
+    /** @type {WebSocketClient} */
+    static NotificationClient;
     /**
      * Handles the signing out process.
      */
@@ -1048,7 +1069,7 @@ export class EditForm extends EditableComponent {
                 Toast.Success("You have successfully signed out!");
                 Client.SignOutEventHandler?.call();
                 Client.Token = null;
-                this.NotificationClient?.Close();
+                EditForm.NotificationClient?.Close();
                 window.location.reload();
             }).catch(error => {
                 Toast.Warning("Error during sign out: " + error.message);
@@ -1067,17 +1088,28 @@ export class EditForm extends EditableComponent {
             : this.Policies.filter(policy => policy.EntityName === entityName && policy.RecordId === recordIds);
     }
 
+    _componentCoppy;
+    /**
+     * Copies a component for later use.
+     * @param {object} arg - The component to copy.
+     */
+    CopyComponent(arg) {
+        this._componentCoppy = new Component();
+        this._componentCoppy.CopyPropFrom(arg);
+    }
+
     /**
      * Updates the properties of a component based on a dialog or other user input.
      * @param {object} arg - The argument containing information about the component to update.
      */
-    ComponentProperties(arg) {
+    async ComponentProperties(arg) {
+        const md = await import('./forms/componentBL.js');
         const component = arg;
-        const editor = new ComponentBL({
-            Entity: component,
-            ParentElement: this.Element,
-            OpenFrom: this.FindClosest(EditForm)
-        });
+        const editor = new md.ComponentBL();
+        editor.Entity = component;
+        editor.ParentElement = this.Element;
+        // @ts-ignore
+        editor.OpenFrom = this.FindClosest(x => x instanceof EditForm)
         this.AddChild(editor);
     }
 
@@ -1090,16 +1122,20 @@ export class EditForm extends EditableComponent {
         const action = arg.action;
         /** @type {Component} */
         const group = arg.group;
-        const com = new Component({
+        /** @type {Component} */
+        // @ts-ignore
+        const com = {
             ComponentType: action,
             ComponentGroupId: group.Id,
             Label: "New Component",
             Visibility: true,
             Order: group.Children?.length ? Math.max(...group.Children.map(c => c.Order)) + 1 : 0
-        });
+        };
 
+        const data = ComponentExt.MapToPatch(com, 'Component');
         // Assume an API or service is available to save the new component
-        Client.Instance.PatchAsync(ComponentExt.MapToPatch(com)).then(() => {
+        // @ts-ignore
+        Client.Instance.PatchAsync(data).then(() => {
             group.Children.push(com);
             this.UpdateRender(com, group);
             Toast.Success("Component added successfully!");
@@ -1124,8 +1160,6 @@ export class EditForm extends EditableComponent {
 
     /** @type {EditableComponent} */
     CtxCom;
-    /** @type {FeaturePolicy[]} */
-    Policies;
     /**
      * 
      * @param {Event} e 
@@ -1159,26 +1193,90 @@ export class EditForm extends EditableComponent {
         ctxMenu.Left = e.Left();
         ctxMenu.MenuItems = [];
         if (component !== null && component.ComponentType.includes("View")) {
+            // @ts-ignore
             ctxMenu.MenuItems.push({ Icon: "fal fa-tasks", Text: "Header Manage", Click: this.headerMamage, Parameter: component });
         }
         ctxMenu.MenuItems.push(
-            component !== null ? { Icon: "fal fa-cog", Text: "Tùy chọn dữ liệu", Click: this.componentProperties, Parameter: component } : null,
-            component !== null ? { Icon: "fal fa-clone", Text: "Sao chép", Click: this.copyComponent, Parameter: component } : null,
+            // @ts-ignore
+            component !== null ? { Icon: "fal fa-cog", Text: "Tùy chọn dữ liệu", Click: this.ComponentProperties, Parameter: component } : null,
+            component !== null ? { Icon: "fal fa-clone", Text: "Sao chép", Click: this.CopyComponent, Parameter: component } : null,
             { Icon: "fal fa-cogs", Text: "Thêm Component", MenuItems: menuItems },
-            { Icon: "fal fa-cogs", Text: "Tùy chọn vùng dữ liệu", Click: this.sectionProperties, Parameter: group },
-            { Icon: "fal fa-folder-open", Text: "Thiết lập chung", Click: this.featureProperties },
-            { Icon: "fal fa-folder-open", Text: "Layout", Click: this.layoutProperties },
-            { Icon: "fal fa-clone", Text: "Clone feature", Click: this.cloneFeature, Parameter: Feature }
+            { Icon: "fal fa-cogs", Text: "Tùy chọn vùng dữ liệu", Click: this.SectionProperties, Parameter: group },
+            { Icon: "fal fa-folder-open", Text: "Thiết lập chung", Click: this.FeatureProperties },
+            { Icon: "fal fa-folder-open", Text: "Layout", Click: this.LayoutProperties },
+            { Icon: "fal fa-clone", Text: "Clone feature", Click: this.CloneFeature, Parameter: this.Feature }
         );
         ctxMenu.Render();
     }
 
-    headerMamage(arg) {
+    SectionProperties(group) {
+        group.Children = null;
+        const editor = new ComponentGroupBL();
+        editor.Entity = group;
+        editor.ParentElement = this.Element;
+        // @ts-ignore
+        editor.OpenFrom = this.FindClosest(x => x instanceof EditForm);
+        this.AddChild(editor);
+    }
+
+    LayoutProperties(group) {
+        group.Children = null;
+        const editor = new ComponentGroupBL();
+        editor.Entity = group;
+        editor.ParentElement = this.Element;
+        // @ts-ignore
+        editor.OpenFrom = this.FindClosest(x => x instanceof EditForm)
+        this.AddChild(editor);
+    }
+
+    FeatureProperties(arg) {
+        const editor = new FeatureDetailBL();
+        editor.Entity = this.Feature;
+        editor.ParentElement = this.FindClosest(x => x instanceof EditForm)?.Element;
+        // @ts-ignore
+        editor.OpenFrom = this.FindClosest(x => x instanceof EditForm);
+        this.AddChild(editor);
+    }
+
+    SecurityRecord(arg) {
+        const security = new SecurityBL();
+        security.Entity = arg;
+        security.ParentElement = this.Element;
+        this.TabEditor.AddChild(security);
+    }
+
+    HeaderManage(arg) {
         const editor = new HeaderManageBL();
         editor.Entity = arg;
-        editor.ParentElement = Element;
+        editor.ParentElement = this.Element;
         editor.OpenFrom = this.CtxCom;
-        editor.FeatureComponent = Feature;
-        this.addChild(editor);
+        editor.FeatureComponent = this.Feature;
+        this.AddChild(editor);
+    }
+
+    /**
+     * Clones a feature by prompting the user for confirmation and then executing a clone operation.
+     * @param {Object} ev - The event object which should contain a feature to clone.
+     */
+    CloneFeature(ev) {
+        const feature = ev;
+        const confirmDialog = new ConfirmDialog();
+        confirmDialog.Content = "Do you want to clone this feature?",
+        confirmDialog.Title = "Confirm";
+
+        confirmDialog.YesConfirmed = () => {
+            /** @type {SqlViewModel} */
+            // @ts-ignore
+            const sql = {
+                ComId: "Feature",
+                Action: "Clone",
+                Ids: [feature.Id],
+                MetaConn: this.MetaConn,
+                DataConn: this.DataConn
+            };
+            Client.Instance.UserSvc(sql).Done();
+        };
+
+        this.AddChild(confirmDialog);
     }
 }

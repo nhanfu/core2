@@ -3,7 +3,6 @@
         "target": "ESNext",  // Specify ECMAScript target version
         "module": "ESNext",  // Specify module code generation
         "checkJs": true,  // Enable type checking of JavaScript files
-        "suppressExcessPropertyErrors": true,
         "noEmit": true,  // Do not emit outputs (no output files from the types)
         "strictNullChecks": false,
         "allowSyntheticDefaultImports": true,  // Allow default imports from modules with no default export

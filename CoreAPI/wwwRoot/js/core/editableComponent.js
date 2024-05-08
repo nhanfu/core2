@@ -18,17 +18,9 @@ import { Component } from "./models/component.js";
  * @typedef {import('./label.js').Label} Label
  * @typedef {import('./editForm.js').EditForm} EditForm
  * @typedef {import('./tabEditor.js').TabEditor} TabEditor
- * @typedef {import('./models/component.js').Component} Component
  * @typedef {import('./models/observable.js').default} ObservableArgs
  * @typedef {{ [key: string] : (ValidationRule) }} Validation
  */
-
-/** @class {@link SearchEntry} */
-let SearchEntry;
-let Section;
-let Label;
-/** @class {@link ListViewItem} */
-let ListViewItem;
 
 /**
  * Represents an editable component in the application.
@@ -37,6 +29,15 @@ let ListViewItem;
  * It handles the parent-child relationships, event handling, and disposal of the component.
  */
 export default class EditableComponent {
+
+    /** @see SearchEntry */
+    static SearchEntry;
+    /** @see Section */
+    static Section;
+    /** @see Label */
+    static Label;
+    /** @see ListViewItem */
+    static ListViewItem;
     /**
      * Create instance of component
      * @param {Component | null} meta 
@@ -98,9 +99,10 @@ export default class EditableComponent {
     static _classesLoaded = false;
 
     async loadClasses() {
-        SearchEntry = (await import('./searchEntry.js')).SearchEntry;
-        Section = (await import('./section.js')).Section;
-        Label = (await import('./label.js')).Label;
+        EditableComponent.SearchEntry = (await import('./searchEntry.js')).SearchEntry;
+        EditableComponent.Section = (await import('./section.js')).Section;
+        EditableComponent.Label = (await import('./label.js')).Label;
+        EditableComponent.ListViewItem = (await import('./listViewItem.js')).ListViewItem;
     }
 
     /**
@@ -277,7 +279,7 @@ export default class EditableComponent {
         this.Entity.Id = value;
     }
     /** @returns {string} Meta Label */
-    get Label() {
+    get ComLabel() {
         return this.Meta?.Label;
     }
     /** @returns {string} Meta fieldname */
@@ -548,17 +550,14 @@ export default class EditableComponent {
 
     /**
      * Find closeset component
-     * @param {any} ClassRef - Class prototype
      * @param {(value: EditableComponent) => boolean} filter - Filter component
      * @returns {EditableComponent} Returns the closeset EditableComponent of the specified type
      */
-    FindClosest(ClassRef, filter = null) {
+    FindClosest(filter = null) {
         /** @type {EditableComponent} */
         let found = this;
         while (found != null) {
-            if (found instanceof ClassRef) {
-                if (filter == null || filter(found)) return found;
-            }
+            if (filter == null || filter(found)) return found;
             found = found.Parent;
         }
         return null;
@@ -817,6 +816,7 @@ export default class EditableComponent {
         // @ts-ignore
         return this.Children.Where(showPredicate).Flattern(x => showPredicate(x) ? x.Children : null);
     }
+    get FirstChild() { return this.Children.FirstOrDefault(); }
     /**
      * Returns the first element of the collection that satisfies the specified condition, or null if no such element is found.
      * @param {(item: EditableComponent) => boolean} filter - The condition to check for each element.

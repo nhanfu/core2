@@ -92,13 +92,12 @@
  * - The maximum time in milliseconds to wait for a connection to succeed before closing and retrying. Accepts integer. Default: 2000.
  *
  */
+let ws;
 (function (global, factory) {
     if (typeof define === 'function' && define.amd) {
         define([], factory);
     } else if (typeof module !== 'undefined' && module.exports){
         module.exports = factory();
-    } else {
-        global.ReconnectingWebSocket = factory();
     }
 })(this, function () {
 
@@ -360,6 +359,8 @@
     ReconnectingWebSocket.OPEN = WebSocket.OPEN;
     ReconnectingWebSocket.CLOSING = WebSocket.CLOSING;
     ReconnectingWebSocket.CLOSED = WebSocket.CLOSED;
-
+    ws = ReconnectingWebSocket;
     return ReconnectingWebSocket;
 });
+
+export { ws as ReconnectingWebSocket }

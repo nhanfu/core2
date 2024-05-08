@@ -14,13 +14,20 @@ import './utils/ext.js';
 import { Str } from "./utils/ext.js";
 import { Client } from "./clients/client.js";
 import { Spinner } from "./spinner.js";
-import { PatchDetail } from "./models/patch.js";
+import { PatchVM } from "./models/patch.js";
 import { SqlViewModel } from "./models/sqlViewModel.js";
 import { ListViewSearch } from "./listViewSearch.js";
-import { ListViewItem } from "listViewItem.js";
+import { ListViewItem } from "./listViewItem.js";
+import { Toast } from "./toast.js";
+import EventType from "./models/eventType.js";
+import { Uuid7 } from "./structs/uuidv7.js";
+import { SecurityBL } from "./forms/securityBL.js";
+import { ConfirmDialog } from "./confirmDialog.js";
+import ObservableArgs from "./models/observable.js";
 
 /**
  * Represents a list view component that allows editable features and other interactions like sorting and pagination.
+ * @typedef {import('./searchEntry.js').SearchEntry} SearchEntry
  */
 export class ListView extends EditableComponent {
     /** @type {ListViewSection} */
@@ -76,6 +83,7 @@ export class ListView extends EditableComponent {
         this.LastShiftViewItem = undefined;
         /** @type {number} */
         this.LastIndex = undefined;
+
     }
 
     /**
@@ -405,7 +413,7 @@ export class ListView extends EditableComponent {
                 this.ListViewSearch.RefreshListView();
             }
         } else {
-            this.RowAction(row => !row.EmptyRow, row => row.UpdateView(force, dirty, componentNames));
+            this.RowAction(row => row.UpdateView(force, dirty, componentNames), row => !row.EmptyRow);
         }
     }
 
@@ -427,10 +435,11 @@ export class ListView extends EditableComponent {
         emptyRowData[this.IdField] = null;
         let rowSection = this.RenderRowData(this.Header, emptyRowData, this.EmptySection, null, true);
         Object.entries(emptyRowData).forEach(([field, value]) => {
-            rowSection.PatchModel.Add(new PatchDetail({
+            // @ts-ignore
+            rowSection.PatchModel.push({
                 Field: field,
                 Value: value?.toString()
-            }));
+            });
         });
         if (!this.Meta.TopEmpty) {
             this.MainSection.Element.insertBefore(this.MainSection.Element, this.EmptySection.Element);
@@ -438,31 +447,6 @@ export class ListView extends EditableComponent {
             this.MainSection.Element.appendChild(this.EmptySection.Element.firstElementChild);
         }
         this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterEmptyRowCreated, emptyRowData).Done();
-    }
-
-    /**
-     * Filters and sorts the header components based on their properties.
-     * @param {List<Component>} components The list of components to filter.
-     * @returns {List<Component>} The filtered and sorted list of header components.
-     */
-    FilterColumns(components) {
-        if (components.Nothing()) return components;
-        let specificComponent = components.Any(x => x.ComponentId === this.Meta.Id);
-        if (specificComponent) {
-            components = components.Where(x => x.ComponentId === this.Meta.Id).ToList();
-        } else {
-            components = components.Where(x => x.ComponentId == null).ToList();
-        }
-
-        let permission = this.EditForm.GetGridPolicies(components.Select(x => x.Id).ToArray(), Utils.ComponentId);
-        let headers = components
-            .Where(header => !header.IsPrivate || permission.Where(x => x.RecordId === header.Id).HasElementAndAll(policy => policy.CanRead))
-            .OrderByDescending(x => x.Frozen).ThenBy(x => x.Order).ToList();
-        this.OrderHeaderGroup(headers);
-        this.Header.Clear();
-        this.Header.AddRange(headers);
-        this.Header = this.Header.Where(x => x != null).ToList();
-        return this.Header;
     }
 
     /**
@@ -490,6 +474,42 @@ export class ListView extends EditableComponent {
         }
     }
 
+    get UpdatedRows() {
+        return this.AllListViewItem.OrderBy(x => x.RowNo).Where(x => x.Dirty).Select(x => x.Entity).Distinct();
+    };
+
+    get UpdatedListItems() {
+        return this.AllListViewItem.OrderBy(x => x.RowNo).Where(x => x.Dirty);
+    };
+
+    /**
+     * Retrieves a list of patches if there are updates, optionally updating the view.
+     * @param {boolean} [updateView=false] - Indicates whether the view should be updated.
+     * @returns {PatchVM[] | null} An array of PatchVM instances or null if no updates are dirty.
+     */
+    GetPatches(updateView = false) {
+        if (!this.Dirty) {
+            return null;
+        }
+
+        if (this.Meta.IdField !== null && this.Meta.IdField !== this.IdField) {
+            this.UpdatedRows.forEach(row => {
+                row[this.Meta.IdField] = this.EntityId;
+            });
+        }
+
+        const res = [];
+        this.UpdatedListItems.forEach(item => {
+            res.push(item.GetPatchEntity());
+        });
+
+        if (updateView) {
+            this.UpdateView();
+        }
+
+        return res;
+    }
+
     /**
      * Filters and sorts the header components based on their properties.
      * @param {Component[]} components The list of components to filter.
@@ -499,15 +519,17 @@ export class ListView extends EditableComponent {
         if (components.length === 0) return components;
         let specificComponent = components.Any(x => x.ComponentId === this.Meta.Id);
         if (specificComponent) {
-            components = components.Where(x => x.ComponentId === this.Meta.Id).ToList();
+            components = components.Where(x => x.ComponentId === this.Meta.Id);
         } else {
-            components = components.Where(x => x.ComponentId == null).ToList();
+            components = components.Where(x => x.ComponentId == null);
         }
 
         let permission = this.EditForm.GetGridPolicies(components.Select(x => x.Id).ToArray(), Utils.ComponentId);
         let headers = components
-            .Where(header => !header.IsPrivate || permission.Where(x => x.RecordId === header.Id).HasElementAndAll(policy => policy.CanRead))
-            .OrderByDescending(x => x.Frozen).ThenBy(x => x.Order).ToList();
+            .Where(header => !header.IsPrivate || permission
+                .Where(x => x.RecordId === header.Id)
+                .All(policy => policy.CanRead))
+            .OrderBy(x => x.Frozen, x => x.Order, false);
         this.OrderHeaderGroup(headers);
         this.Header.Clear();
         this.Header.AddRange(...headers);
@@ -521,9 +543,18 @@ export class ListView extends EditableComponent {
      */
     ApplyFilter() {
         this.ClearRowData();
-        return this.ReloadData(true, 0, true);
+        return this.ReloadData(true, 0);
     }
 
+    GetSelectedRows() {
+        if (this.LastListViewItem?.GroupRow === true) {
+            return [this.LastListViewItem.Entity];
+        } else {
+            return this.MainSection.Children.filter(x => x instanceof ListViewItem && x.Selected).map(x => x.Entity);
+        }
+    }
+
+    BodyContextMenuShow = new Action();
     /**
      * Handles the context menu for the body of the list view, showing additional options.
      * @param {Event} e The event object associated with the context menu action.
@@ -531,7 +562,7 @@ export class ListView extends EditableComponent {
     BodyContextMenuHandler(e) {
         e.preventDefault();
         e.stopPropagation();
-        this.BodyContextMenuShow?.();
+        this.BodyContextMenuShow?.invoke();
         if (this.Disabled) {
             return;
         }
@@ -551,12 +582,32 @@ export class ListView extends EditableComponent {
         });
     }
 
+    async RenderRelatedDataMenu() {
+        const targetRef = await Client.Instance.GetByIdAsync('EntityRef', this.DataConn, this.Meta.Id);
+        if (targetRef.Nothing()) {
+            return;
+        }
+        const menuItems = targetRef.Select(x => ({
+            Text: x.MenuText,
+            Click: (arg) => OpenFeature(x),
+        })).ToList();
+        // @ts-ignore
+        ContextMenu.Instance.MenuItems.push({
+            Icon: "fa fal fa-ellipsis-h",
+            Text: "Dữ liệu liên quan",
+            MenuItems: menuItems
+        });
+    }
+
     /**
      * Sets the row as selected based on the event target.
      * @param {Event} e The event object.
      */
     SetSelected(e) {
-        let target = e.target.closest('tr');
+        // @ts-ignore
+        let target = e.targetv.closest('tr');
+        /** @type {ListViewItem} */
+        // @ts-ignore
         let currentRow = this.MainSection.Children.find(x => x.Element === target);
         if (currentRow) {
             if (!currentRow.GroupRow || this.Meta.GroupReferenceId) {
@@ -568,23 +619,6 @@ export class ListView extends EditableComponent {
                 this.SelectedIndex = currentRow.ListViewSection.Children.indexOf(currentRow);
             }
         }
-    }
-
-    /**
-     * Clears all selections within the ListView.
-     * @param {...string[]} ids Specific IDs to clear, if provided.
-     */
-    ClearSelected(...ids) {
-        let shouldClear = ids.length ? this.SelectedIds.filter(id => ids.includes(id)) : [...this.SelectedIds];
-        shouldClear.forEach(id => {
-            this.SelectedIds.splice(this.SelectedIds.indexOf(id), 1);
-            this.MainSection.Children.forEach(child => {
-                if (child.Selected && child.EntityId === id) {
-                    child.Selected = false;
-                }
-            });
-        });
-        this.LastListViewItem = null;
     }
 
     /**
@@ -611,145 +645,52 @@ export class ListView extends EditableComponent {
         }
     }
 
+    /** @type {any[]} */
+    _copiedRows;
+
     /**
-     * Renders menus related to the data linked with the selected rows, such as copy, paste, and editing options.
-     * @param {boolean} canWrite Indicates whether the user has write permissions.
-     */
-    RenderCopyPasteMenu(canWrite) {
-        if (canWrite) {
-            ContextMenu.Instance.MenuItems.push({
-                Icon: "fa fa-copy",
-                Text: "Copy",
-                Click: () => this.CopySelected()
-            });
-            ContextMenu.Instance.MenuItems.push({
-                Icon: "fa fa-clone",
-                Text: "Copy & Paste",
-                Click: () => this.DuplicateSelected(null, false)
-            });
-        }
-        if (canWrite && this._copiedRows && this._copiedRows.length > 0) {
-            ContextMenu.Instance.MenuItems.push({
-                Icon: "fa fa-paste",
-                Text: "Paste",
-                Click: () => this.PasteSelected()
-            });
-        }
+    * Copies the selected rows.
+    * @param {object} ev The event object.
+    */
+    CopySelected(ev) {
+        this._originRows = this.GetSelectedRows();
+        const txt = JSON.stringify(this._originRows);
+        this._copiedRows = JSON.parse(txt);
+        window.navigator.clipboard.writeText(txt);
+        this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCopied, this._originRows, this._copiedRows);
     }
 
     /**
-     * Renders edit menu options based on user permissions.
-     * @param {boolean} canWrite Indicates whether the user has write permissions.
-     */
-    RenderEditMenu(canWrite) {
-        if (canWrite) {
-            ContextMenu.Instance.MenuItems.push({
-                Icon: "fa fa-history",
-                Text: "View History",
-                Click: () => this.ViewHistory()
-            });
+    * Pastes the copied rows.
+    * @param {object} ev The event object.
+    */
+    async PasteSelected(ev) {
+        var clipBoard = await window.navigator.clipboard.readText();
+        if (!clipBoard && this._copiedRows.Nothing()) {
+            this._copiedRows = JSON.parse(clipBoard);
         }
-        if (this.CanDo(x => x.CanDeactivate || x.CanDeactivateAll)) {
-            ContextMenu.Instance.MenuItems.push({
-                Icon: "mif-unlink",
-                Text: "Deactivate (without deleting)",
-                Click: () => this.DeactivateSelected()
-            });
-        }
-        if (this.CanDo(x => x.CanDelete || x.CanDeleteAll)) {
-            ContextMenu.Instance.MenuItems.push({
-                Icon: "fa fa-trash",
-                Text: "Delete Data",
-                Click: () => this.HardDeleteSelected()
-            });
-        }
-    }
-
-    /**
- * Handles the context menu for the body of the list view, showing additional options.
- * @param {Event} e The event object associated with the context menu action.
- */
-    BodyContextMenuHandler(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.BodyContextMenuShow?.();
-        if (this.Disabled) {
+        if (this._copiedRows.Nothing()) {
             return;
         }
-        this.SetSelected(e);
-        const selectedRows = this.GetSelectedRows();
-        let ctxMenu = ContextMenu.Instance;
-        this.RenderRelatedDataMenu().then(() => {
-            this.RenderCopyPasteMenu(this.CanWrite);
-            this.RenderEditMenu(this.CanWrite);
-            this.RenderShareMenu(selectedRows).then(() => {
-                ctxMenu.Top = e.clientY;
-                ctxMenu.Left = e.clientX;
-                ctxMenu.Render();
-                this.Element.appendChild(ctxMenu.Element);
-                ctxMenu.Element.style.position = "absolute";
+
+        Toast.Success("Copying...");
+        this.DispatchCustomEvent(this.Meta.Events, CustomEventType.BeforePasted, this._originRows, this._copiedRows).Done(() => {
+            var index = this.AllListViewItem.IndexOf(x => x.Selected);
+            this.AddRowsNo(this._copiedRows, index).Done(list => {
+                super.Focus();
+                if (this.Meta.IsRealtime) {
+                    Promise.all(list.Select(x => x.PatchUpdateOrCreate())).Done(() => {
+                        Toast.Success("Data pasted successfully !");
+                        super.Dirty = false;
+                        this.ClearSelected();
+                    });
+                }
+                else {
+                    Toast.Success("Data pasted successfully !");
+                }
+                this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterPasted, this._originRows, this._copiedRows).Done();
             });
         });
-    }
-
-    /**
-     * Sets the row as selected based on the event target.
-     * @param {Event} e The event object.
-     */
-    SetSelected(e) {
-        let target = e.target.closest('tr');
-        let currentRow = this.MainSection.Children.find(x => x.Element === target);
-        if (currentRow) {
-            if (!currentRow.GroupRow || this.Meta.GroupReferenceId) {
-                if (this.SelectedIds.length === 1) {
-                    this.ClearSelected();
-                }
-                currentRow.Selected = true;
-                this.LastListViewItem = currentRow;
-                this.SelectedIndex = currentRow.ListViewSection.Children.indexOf(currentRow);
-            }
-        }
-    }
-
-    /**
-     * Clears all selections within the ListView.
-     * @param {...string[]} ids Specific IDs to clear, if provided.
-     */
-    ClearSelected(...ids) {
-        let shouldClear = ids.length ? this.SelectedIds.filter(id => ids.includes(id)) : [...this.SelectedIds];
-        shouldClear.forEach(id => {
-            this.SelectedIds.splice(this.SelectedIds.indexOf(id), 1);
-            this.MainSection.Children.forEach(child => {
-                if (child.Selected && child.EntityId === id) {
-                    child.Selected = false;
-                }
-            });
-        });
-        this.LastListViewItem = null;
-    }
-
-    /**
-     * Renders the pagination details and handles the data loading process.
-     */
-    LoadAllData() {
-        this.ReloadData(true).then(() => {
-            this.RenderContent();
-        });
-    }
-
-    /**
-     * Filters the columns based on the header configuration and applies sort order.
-     */
-    OrderHeaderGroup(headers) {
-        for (let i = 0; i < headers.length - 1; i++) {
-            for (let j = i + 1; j < headers.length; j++) {
-                if (headers[i].GroupName && headers[i].GroupName === headers[j].GroupName && headers[i + 1].GroupName !== headers[j].GroupName) {
-                    let temp = headers[i + 1];
-                    headers[i + 1] = headers[j];
-                    headers[j] = temp;
-                }
-            }
-        }
     }
 
     /**
@@ -758,11 +699,13 @@ export class ListView extends EditableComponent {
      */
     RenderCopyPasteMenu(canWrite) {
         if (canWrite) {
+            // @ts-ignore
             ContextMenu.Instance.MenuItems.push({
                 Icon: "fa fa-copy",
                 Text: "Copy",
                 Click: () => this.CopySelected()
             });
+            // @ts-ignore
             ContextMenu.Instance.MenuItems.push({
                 Icon: "fa fa-clone",
                 Text: "Copy & Paste",
@@ -770,6 +713,7 @@ export class ListView extends EditableComponent {
             });
         }
         if (canWrite && this._copiedRows && this._copiedRows.length > 0) {
+            // @ts-ignore
             ContextMenu.Instance.MenuItems.push({
                 Icon: "fa fa-paste",
                 Text: "Paste",
@@ -784,13 +728,15 @@ export class ListView extends EditableComponent {
      */
     RenderEditMenu(canWrite) {
         if (canWrite) {
+            // @ts-ignore
             ContextMenu.Instance.MenuItems.push({
                 Icon: "fa fa-history",
                 Text: "View History",
-                Click: () => this.ViewHistory()
+                Click: async () => await this.ViewHistory()
             });
         }
         if (this.CanDo(x => x.CanDeactivate || x.CanDeactivateAll)) {
+            // @ts-ignore
             ContextMenu.Instance.MenuItems.push({
                 Icon: "mif-unlink",
                 Text: "Deactivate (without deleting)",
@@ -798,6 +744,7 @@ export class ListView extends EditableComponent {
             });
         }
         if (this.CanDo(x => x.CanDelete || x.CanDeleteAll)) {
+            // @ts-ignore
             ContextMenu.Instance.MenuItems.push({
                 Icon: "fa fa-trash",
                 Text: "Delete Data",
@@ -806,20 +753,89 @@ export class ListView extends EditableComponent {
         }
     }
 
+    /**
+     * Renders the view history popup for the selected row.
+     * @param {object} currentItem The currently selected row item.
+     */
+    async ViewHistory(currentItem) {
+        const selectedRows = this.GetSelectedRows();
+        currentItem = selectedRows.LastOrDefault();
+        Html.Take(this.EditForm.Element).Div.ClassName("backdrop")
+            .Style("align-items: center;").Escape((e) => this.Dispose());
+        this._history = Html.Context;
+        Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;")
+            .Div.ClassName("popup-title").InnerHTML("Xem lịch sử")
+            .Div.ClassName("icon-box").Span.ClassName("fa fa-times")
+            .Event(EventType.Click, () => this._history.remove())
+            .EndOf(".popup-title")
+            .Div.ClassName("popup-body scroll-content");
+        const body = Html.Context;
+        const com = new Component();
+        com.Id = Uuid7.Id25();
+        com.FieldName = 'Conditions';
+        com.Column = 4;
+        com.RefName = 'History';
+        const md = await import('./gridView.js');
+        const _filterGrid = new md.GridView(com);
+        _filterGrid.Meta.LocalHeader = [
+            // @ts-ignore
+            {
+                Id: 1 .toString(),
+                FieldName: 'InsertedBy',
+                Label: "User create",
+                RefName: 'User',
+                FormatData: "FullName",
+                Active: true,
+                ComponentType: 'SearchEntry',
+                MaxWidth: "100px",
+                MinWidth: "100px",
+            },
+            // @ts-ignore
+            {
+                Id: '2',
+                FieldName: 'InsertedDate',
+                Label: "Created date",
+                Active: true,
+                FormatData: "{0:dd/MM/yyyy HH:mm}",
+                ComponentType: "Datepicker",
+                TextAlign: "left",
+                MaxWidth: "150px",
+                MinWidth: "150px",
+            },
+            // @ts-ignore
+            {
+                Id: '4',
+                FieldName: 'TextHistory',
+                Label: "Dữ liệu thay đổi",
+                Active: true,
+                ComponentType: "Label",
+                MaxWidth: "700px",
+                MinWidth: "700px",
+            }
+        ];
+        _filterGrid.ParentElement = body;
+        this.TabEditor.AddChild(_filterGrid);
+    }
+
+    /** @type {FeaturePolicy[]} */
+    RecordPolicy = [];
+    static IsOwner = '__IsOwner';
     /**
      * Renders sharing menu options based on user permissions and selected rows.
      * @param {Array<object>} selectedRows Array of selected rows.
      * @returns {Promise} A promise that resolves once the sharing menu is rendered.
      */
     async RenderShareMenu(selectedRows) {
+        const PermissionLoaded = "PermissionLoaded";
         if (selectedRows.length === 0) return;
         const noPolicyRows = selectedRows.filter(x => !x[PermissionLoaded]);
-        const noPolicyRowIds = noPolicyRows.map(x => x[IdField].toString());
+        const noPolicyRowIds = noPolicyRows.map(x => x[this.IdField].toString());
         const rowPolicy = await this.LoadRecordPolicy(this.Meta.RefName, noPolicyRowIds);
         rowPolicy.forEach(policy => this.RecordPolicy.push(policy));
         noPolicyRows.forEach(row => row[PermissionLoaded] = true);
-        const canShare = this.CanDo(x => x.CanShare || x.CanShareAll) && selectedRows.some(x => x[IsOwner]);
+        const canShare = this.CanDo(x => x.CanShare || x.CanShareAll) && selectedRows.some(x => x[ListView.IsOwner]);
         if (canShare) {
+            // @ts-ignore
             ContextMenu.Instance.MenuItems.push({
                 Icon: "mif-security",
                 Text: "Security & Permissions",
@@ -827,6 +843,22 @@ export class ListView extends EditableComponent {
             });
         }
     }
+
+    /**
+    * Handles security for selected rows.
+    */
+    async SecurityRows() {
+        const selectedRowIds = this.GetSelectedRows()
+            .filter(x => x[ListView.IsOwner] === true)
+            .map(x => x[this.IdField]?.toString());
+        // @ts-ignore
+        const security = new SecurityBL({
+            Entity: { RecordIds: selectedRowIds, EntityId: this.Meta.ReferenceId },
+            ParentElement: this.TabEditor.Element
+        });
+        this.TabEditor.AddChild(security);
+    }
+
 
     /**
      * Loads record-specific policies for permissions handling.
@@ -841,7 +873,7 @@ export class ListView extends EditableComponent {
         const sql = {
             ComId: "Policy",
             Action: "GetById",
-            Table: nameof(FeaturePolicy),
+            Table: 'FeaturePolicy',
             MetaConn: this.MetaConn,
             DataConn: this.DataConn,
             Params: JSON.stringify({ ids, table: entity })
@@ -853,9 +885,8 @@ export class ListView extends EditableComponent {
      * Handles the event for selected row deactivation.
      */
     async DeactivateSelected() {
-        const confirmDialog = new ConfirmDialog({
-            Content: "Are you sure you want to deactivate?"
-        });
+        const confirmDialog = new ConfirmDialog();
+        confirmDialog.Content = "Are you sure you want to deactivate?"
         confirmDialog.Render();
         confirmDialog.YesConfirmed += async () => {
             confirmDialog.Dispose();
@@ -869,7 +900,7 @@ export class ListView extends EditableComponent {
      * @returns {Promise<Array<string>>} A promise that resolves to an array of deactivated IDs.
      */
     async Deactivate() {
-        const ids = this.GetSelectedRows().map(x => x[IdField].toString());
+        const ids = this.GetSelectedRows().map(x => x[this.IdField].toString());
         const deactivatedIds = await Client.Instance.DeactivateAsync(ids, this.Meta.RefName, this.DataConn);
         if (deactivatedIds.length > 0) {
             Toast.Success("Data deactivated successfully");
@@ -883,9 +914,8 @@ export class ListView extends EditableComponent {
      * Handles deleting selected rows after confirming the action.
      */
     async HardDeleteSelected() {
-        const confirmDialog = new ConfirmDialog({
-            Title: "Are you sure you want to delete the selected rows?"
-        });
+        const confirmDialog = new ConfirmDialog();
+        confirmDialog.Title = "Are you sure you want to delete the selected rows?";
         confirmDialog.Render();
         confirmDialog.YesConfirmed += async () => {
             const deletedItems = this.GetSelectedRows();
@@ -900,7 +930,7 @@ export class ListView extends EditableComponent {
      * @returns {Promise<Array<object>>} A promise that resolves to the array of deleted items.
      */
     async HardDeleteConfirmed(deletedItems) {
-        const ids = deletedItems.map(x => x[IdField]?.toString()).filter(x => x != null);
+        const ids = deletedItems.map(x => x[this.IdField]?.toString()).filter(x => x != null);
         const result = await Client.Instance.HardDeleteAsync(ids, this.Meta.RefName, this.DataConn);
         if (result) {
             Toast.Success("Data deleted successfully");
@@ -935,16 +965,18 @@ export class ListView extends EditableComponent {
      * @param {number} index The index at which to insert the new rows.
      * @returns {Promise<Array<ListViewItem>>} A promise that resolves to an array of added ListViewItem instances.
      */
-    async AddRowsNo(rows, index = 0) {
+    AddRowsNo(rows, index = 0) {
+        let ok, err;
+        let promise = new Promise((a, b) => { ok = a; err = b; });
         this.DispatchCustomEvent(this.Meta.Events, CustomEventType.BeforeCreatedList, rows).then(() => {
             const tasks = rows.map((data, i) => this.AddRow(data, index + i, false));
             Promise.all(tasks).then(results => {
                 this.AddNewEmptyRow();
-                this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCreatedList, rows).then(() => {
-                    return results;
-                });
-            });
+                ok(results);
+                this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCreatedList, rows).then();
+            }).catch(err);
         });
+        return promise;
     }
 
     /**
@@ -954,7 +986,7 @@ export class ListView extends EditableComponent {
         if (this.MainSection.Children.length === 0) {
             return;
         }
-        this.MainSection.Children.forEach((row, rowIndex) => {
+        this.AllListViewItem.forEach((row, rowIndex) => {
             if (row.Children.length === 0 || row.FirstChild === null || row.FirstChild.Element === null) {
                 return;
             }
@@ -987,7 +1019,7 @@ export class ListView extends EditableComponent {
      * @param {EditableComponent} [component=null] Optional component that might be affected by the row change.
      * @returns {Promise<boolean>} A promise that resolves to a boolean indicating success or failure of the event handling.
      */
-    async RowChangeHandler(rowData, rowSection, observableArgs, component = null) {
+    RowChangeHandler(rowData, rowSection, observableArgs, component = null) {
         const tcs = new Promise((resolve, reject) => {
             if (!rowSection.EmptyRow || !this.Editable) {
                 this.DispatchEvent(this.Meta.Events, EventType.Change, rowData).then(() => {
@@ -1001,7 +1033,7 @@ export class ListView extends EditableComponent {
                         child.EmptyRow = false;
                         child.UpdateView(true);
                     });
-                    this.EmptySection.Children.clear();
+                    this.EmptySection.Children.Clear();
                     this.AddNewEmptyRow();
                     this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterCreated, rowData).then(() => {
                         resolve(true);
@@ -1067,7 +1099,7 @@ export class ListView extends EditableComponent {
      */
     ClearSelected() {
         this.SelectedIds.forEach(id => {
-            const row = this.MainSection.Children.find(x => x.Entity[this.IdField] === id);
+            const row = this.AllListViewItem.find(x => x.Entity[this.IdField] === id);
             if (row) {
                 row.Selected = false;
             }
@@ -1083,7 +1115,7 @@ export class ListView extends EditableComponent {
      * @param {Array<string>} fields Specific fields to update, if provided.
      */
     UpdateRow(rowData, force = false, fields = []) {
-        const row = this.MainSection.Children.find(x => x.Entity === rowData);
+        const row = this.AllListViewItem.find(x => x.Entity === rowData);
         if (row) {
             row.UpdateView(force, fields);
         }

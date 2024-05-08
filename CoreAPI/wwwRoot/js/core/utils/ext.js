@@ -113,17 +113,17 @@ Array.prototype.ForEach = Array.prototype.forEach;
  * @param {(item: T) => K} keySelector 
  * @returns 
  */
-Array.prototype.DistinctBy = function(/** @type {(item: T) => K} */ keySelector) {
+Array.prototype.DistinctBy = function (/** @type {(item: T) => K} */ keySelector) {
     return this.GroupBy(keySelector).FirstOrDefault();
 };
 /**
  * @template T, K
  * @returns 
  */
-Array.prototype.Distinct = function() {
+Array.prototype.Distinct = function () {
     return this.GroupBy(x => x).FirstOrDefault();
 };
-Array.prototype.ForEachAsync = async function (/** @type {(value: any, index: number, array: any[]) => any} */ map2Promise){
+Array.prototype.ForEachAsync = async function (/** @type {(value: any, index: number, array: any[]) => any} */ map2Promise) {
     var promises = this.map(map2Promise);
     await Promise.all(promises);
     return this;
@@ -132,12 +132,36 @@ Array.prototype.Clear = function () {
     while (this.length) this.pop();
 };
 Array.prototype.AddRange = Array.prototype.push;
-Array.prototype.Combine = function(/** @type {(value: any, index: number, array: any[]) => any} */ mapper = null, /** @type {string} */ separator = ',') {
+Array.prototype.Combine = function (/** @type {(value: any, index: number, array: any[]) => any} */ mapper = null, /** @type {string} */ separator = ',') {
     if (mapper) {
         return this.map(mapper).join(separator);
     } else {
         return this.join(separator);
     }
+};
+/**
+ * @template T
+ * @param {(item: T) => any} keySelector 
+ * @param {(item: T) => any} keySelector2 
+ * @param {boolean} asc1 
+ * @param {boolean} asc2 
+ * @returns {T[]}
+ */
+Array.prototype.OrderBy = function (keySelector, keySelector2, asc1 = true, asc2 = true) {
+    return this.slice().sort((a, b) => {
+        const ra = keySelector(a);
+        const rb = keySelector(b);
+        if (ra != rb) return ra > rb ? (asc1 ? 1 : -1) : (asc1 ? -1 : 1);
+        const ra2 = keySelector2(a);
+        const rb2 = keySelector2(b);
+        return ra2 > rb2 ? (asc2 ? 1 : -1) : (asc2 ? -1 : 1);
+    });
+};
+Array.prototype.All = Array.prototype.every;
+Array.prototype.IndexOf = Array.prototype.findIndex;
+Array.prototype.LastOrDefault = function (predicate = null) {
+    if (predicate) return this.findLast(predicate);
+    return this.length > 0 ? this[this.length - 1] : null;
 };
 
 String.prototype.HasElement = HasElement;
@@ -150,14 +174,14 @@ String.prototype.DecodeSpecialChar = function () {
     return Utils.DecodeSpecialChar(this);
 };
 
-Object.prototype.GetFieldNameByVal = function(/** @type {any} */ value) {
+Object.prototype.GetFieldNameByVal = function (/** @type {any} */ value) {
     for (const [key, val] of Object.entries(this)) {
         if (val === value) {
             return key;
         }
     }
 }
-Object.prototype.ToEntity = function() {
+Object.prototype.ToEntity = function () {
     return Object.keys(this).map((key, index) => {
         /** @type {Entity} */
         // @ts-ignore
@@ -234,14 +258,14 @@ Date.prototype.addYears = function (/** @type {number} */ years) {
     date.setFullYear(date.getFullYear() + years);
     return date;
 };
-HTMLElement.prototype.HasClass = function(/** @type {string} */ str) {
+HTMLElement.prototype.HasClass = function (/** @type {string} */ str) {
     return this.classList.contains(str);
 };
-HTMLElement.prototype.ReplaceClass = function(/** @type {string} */ cls, /** @type {string} */ byCls) {
+HTMLElement.prototype.ReplaceClass = function (/** @type {string} */ cls, /** @type {string} */ byCls) {
     this.classList.remove(cls);
     this.classList.add(byCls);
 };
-Number.prototype.leadingDigit = function() {
+Number.prototype.leadingDigit = function () {
     // @ts-ignore
     return this < 10 ? '0' + this : '' + this;
 }
@@ -253,7 +277,7 @@ Number.prototype.leadingDigit = function() {
  * Gets the top position (Y-coordinate) of the event.
  * @returns {number} The Y-coordinate.
  */
-Event.prototype.Top = function() {
+Event.prototype.Top = function () {
     // @ts-ignore
     return this.clientY;
 };
@@ -262,7 +286,7 @@ Event.prototype.Top = function() {
  * Gets the left position (X-coordinate) of the event.
  * @returns {number} The X-coordinate.
  */
-Event.prototype.Left = function() {
+Event.prototype.Left = function () {
     // @ts-ignore
     return parseFloat(this.clientX);
 };
@@ -271,7 +295,7 @@ Event.prototype.Left = function() {
  * Gets the keyCode from the event.
  * @returns {number} The keyCode or -1 if undefined.
  */
-Event.prototype.KeyCode = function() {
+Event.prototype.KeyCode = function () {
     // @ts-ignore
     return this.keyCode ?? -1;
 };
@@ -280,7 +304,7 @@ Event.prototype.KeyCode = function() {
  * Attempts to parse keyCode to an enum value.
  * @returns {KeyCodeEnum|null} Parsed KeyCodeEnum or null if unable to parse.
  */
-Event.prototype.KeyCodeEnum = function() {
+Event.prototype.KeyCodeEnum = function () {
     // @ts-ignore
     if (this.keyCode == null) {
         return null;
@@ -296,7 +320,7 @@ Event.prototype.KeyCodeEnum = function() {
  * Checks if the Shift key was pressed during the event.
  * @returns {boolean} True if Shift key was pressed.
  */
-Event.prototype.ShiftKey = function() {
+Event.prototype.ShiftKey = function () {
     // @ts-ignore
     return this.shiftKey;
 };
@@ -305,7 +329,7 @@ Event.prototype.ShiftKey = function() {
  * Detects if the user pressed Ctrl or Command key while the event occurs.
  * @returns {boolean} True if Ctrl or Meta key was pressed.
  */
-Event.prototype.CtrlOrMetaKey = function() {
+Event.prototype.CtrlOrMetaKey = function () {
     // @ts-ignore
     return this.ctrlKey || this.metaKey;
 };
@@ -314,7 +338,7 @@ Event.prototype.CtrlOrMetaKey = function() {
  * Checks if the Alt key was pressed during the event.
  * @returns {boolean} True if Alt key was pressed.
  */
-Event.prototype.AltKey = function() {
+Event.prototype.AltKey = function () {
     // @ts-ignore
     return this.altKey;
 };
@@ -323,11 +347,11 @@ Event.prototype.AltKey = function() {
  * Gets the checked status from the target element of the event, assuming the target is an input element.
  * @returns {boolean} Checked status.
  */
-Event.prototype.GetChecked = function() {
+Event.prototype.GetChecked = function () {
     // @ts-ignore
     if (this.target && this.target.type === "checkbox") {
-    // @ts-ignore
-    return this.target.checked;
+        // @ts-ignore
+        return this.target.checked;
     }
     return false;
 };
@@ -336,10 +360,10 @@ Event.prototype.GetChecked = function() {
  * Gets the input text from the target element of the event, assuming the target is an input element.
  * @returns {string} Input text value.
  */
-Event.prototype.GetInputText = function() {
+Event.prototype.GetInputText = function () {
     // @ts-ignore
     if (this.target && typeof this.target.value === "string") {
-    // @ts-ignore
+        // @ts-ignore
         return this.target.value;
     }
     return "";
@@ -349,7 +373,7 @@ Event.prototype.GetInputText = function() {
  * Calculates the full height of an element, including margins.
  * @returns {number} The total height in pixels.
  */
-HTMLElement.prototype.GetFullHeight = function() {
+HTMLElement.prototype.GetFullHeight = function () {
     if (!this) {
         return 0;
     }
@@ -363,7 +387,7 @@ HTMLElement.prototype.GetFullHeight = function() {
  * Removes a class from the element.
  * @param {string} className - The class name to remove.
  */
-HTMLElement.prototype.RemoveClass = function(className) {
+HTMLElement.prototype.RemoveClass = function (className) {
     if (!this || !className) {
         return;
     }
@@ -374,7 +398,7 @@ HTMLElement.prototype.RemoveClass = function(className) {
  * Toggles a class on the element based on its presence.
  * @param {string} className - The class to toggle.
  */
-HTMLElement.prototype.ToggleClass = function(className) {
+HTMLElement.prototype.ToggleClass = function (className) {
     if (!this || !className) {
         return;
     }
@@ -384,7 +408,7 @@ HTMLElement.prototype.ToggleClass = function(className) {
 /**
  * Sets the display style to empty, effectively showing the element.
  */
-HTMLElement.prototype.Show = function() {
+HTMLElement.prototype.Show = function () {
     if (!this) {
         return;
     }
@@ -395,14 +419,14 @@ HTMLElement.prototype.Show = function() {
  * Gets the computed style of the element.
  * @returns {CSSStyleDeclaration} The computed style of the element.
  */
-HTMLElement.prototype.GetComputedStyle = function() {
+HTMLElement.prototype.GetComputedStyle = function () {
     return window.getComputedStyle(this);
 };
 
 /**
  * Sets the display style to 'none', hiding the element.
  */
-HTMLElement.prototype.Hide = function() {
+HTMLElement.prototype.Hide = function () {
     if (!this) {
         return;
     }
@@ -413,7 +437,7 @@ HTMLElement.prototype.Hide = function() {
  * Checks if the element is hidden.
  * @returns {boolean} True if the element is hidden; otherwise, false.
  */
-HTMLElement.prototype.Hidden = function() {
+HTMLElement.prototype.Hidden = function () {
     if (!this) {
         return true;
     }
@@ -426,7 +450,7 @@ HTMLElement.prototype.Hidden = function() {
  * Determines if the element is outside the viewport.
  * @returns {OutOfViewPort} An object indicating which sides are out of the viewport.
  */
-HTMLElement.prototype.OutOfViewport = function() {
+HTMLElement.prototype.OutOfViewport = function () {
     const bounding = this.getBoundingClientRect();
     const outOfViewPort = new OutOfViewPort();
     outOfViewPort.Top = bounding.top < 0;
@@ -441,6 +465,6 @@ HTMLElement.prototype.OutOfViewport = function() {
  * @param {(value: Element) => void} callback 
  * @return {void}
  */
-HTMLCollection.prototype.forEach = function(callback) {
+HTMLCollection.prototype.forEach = function (callback) {
     Array.from(this).forEach(callback);
 };

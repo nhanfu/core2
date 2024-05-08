@@ -14,7 +14,7 @@ import { GridView } from 'gridView.js';
 
 export class SearchEntry extends EditableComponent {
     /**
-     * @param {import('./editableComponent.js').Component} ui
+     * @param {import('./models/component.js').Component} ui
      * @param {HTMLElement} [ele=null] 
      */
 
@@ -519,7 +519,7 @@ export class SearchEntry extends EditableComponent {
     PatchDetail() {
         let res = [
             {
-                Label: this.Label + '(value)',
+                Label: this.ComLabel + '(value)',
                 Field: this.Name,
                 Value: this._value,
                 OldVal: this.OldValue
@@ -529,7 +529,7 @@ export class SearchEntry extends EditableComponent {
             let display = Utils.GetPropValue(this.Entity, this.Meta.DisplayField) ?? {};
             display[this.Meta.DisplayDetail] = this._input.value;
             res.push({
-                Label: this.Label + '(text)',
+                Label: this.ComLabel + '(text)',
                 Field: this.Meta.DisplayField,
                 Value: JSON.stringify(display),
                 HistoryValue: this._input.value,

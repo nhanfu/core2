@@ -76,6 +76,10 @@ declare global {
     Combine(mapper: (item: T) => string, separator: string = ','): string;
     Clear(): void;
     AddRange(...items: T[]): void;
+    OrderBy(keySelector: (item: T) => K, keySelector2: (item: T) => K = null, asc1: boolean = true, asc2: boolean = true): T[];
+    All(keySelector: (item: T) => boolean): boolean;
+    IndexOf(keySelector: (item: T) => K): number;
+    LastOrDefault(predicate: (item: T) => boolean = null): K;
   }
 
   interface String {

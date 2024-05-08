@@ -9,7 +9,6 @@ import EventType from "./models/eventType.js";
 import { PatchVM } from "./models/patch.js";
 import { Client } from "./clients/client.js";
 import { Component } from "./models/component.js";
-import { ListView } from "./listView.js";
 
 export class Section extends EditableComponent {
     /**

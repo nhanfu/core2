@@ -2,7 +2,7 @@ import { Client } from "./clients/client.js";
 import { EditForm } from "./editForm.js";
 import { ElementType } from "./models/elementType.js";
 import EventType from "./models/eventType.js";
-import { KeyCodeEnum } from "./models/keycode.js";
+import { KeyCodeEnum } from "./models/enum.js";
 import { Html } from "./utils/html.js";
 import { LangSelect } from "./utils/langSelect.js";
 

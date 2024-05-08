@@ -1,19 +1,16 @@
+import { Datepicker } from "../datepicker.js";
 import { ComponentType } from "../models/componentType.js";
 import { Utils } from "./utils.js";
+import { EditForm } from "../editForm.js";
 
 export class ComponentExt {
     static MapToPatch(com, table = null, fields = null) {
-        const type = typeof com;
         const patch = {
-            Table: table ?? type.name,
+            Table: table,
             Changes: [],
         };
         Utils.ForEachProp(com, (prop, val) => {
             if (prop.startsWith("$") || (fields && !fields.includes(prop))) return;
-            const attributes = Object.getOwnPropertyDescriptors(type.prototype).filter(x => x.name === prop);
-            if (Utils.HasElement(attributes)) {
-                return;
-            }
             patch.Changes.push({
                 Field: prop,
                 Value: val?.toString()
@@ -32,9 +29,9 @@ export class ComponentExt {
         if (!fieldName) return '';
 
         if (component.ComponentType === ComponentType.Datepicker) {
-            const { parsed, date } = Datepicker.TryParseDateTime(searchTerm);
+            const { parsed, datetime } = Datepicker.TryParseDateTime(searchTerm);
             if (parsed) {
-                const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '/');
+                const dateStr = datetime.toISOString().slice(0, 10).replace(/-/g, '/');
                 return `cast(${fieldName} as date) = cast('${dateStr}' as date)`;
             }
             return '';
@@ -58,7 +55,7 @@ export class ComponentExt {
                     reject(new Error('Feature not found'));
                     return;
                 }
-                const instance = new EditableComponent(); // Assuming it creates an instance of the required type
+                const instance = new EditForm(); // Assuming it creates an instance of the required type
                 instance.Feature = feature;
                 instance.Name = feature.Name;
                 instance.Id = feature.Name + feature.Id;
