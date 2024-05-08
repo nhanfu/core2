@@ -2,11 +2,11 @@ import EditableComponent from "./editableComponent.js";
 import { Action } from "./models/action.js";
 import { Component } from "./models/component.js";
 import { CustomEventType } from "./models/customEventType.js";
-import { ActiveStateEnum, AdvSearchVM, MQEvent, OrderBy, OrderbyDirection, Where } from "./models/enum.js";
+import { ActiveStateEnum, AdvSearchVM, MQEvent, OperatorEnum, OrderBy, OrderbyDirection, Where } from "./models/enum.js";
 import { Paginator } from "./paginator.js";
 import { Utils } from "./utils/utils.js";
 import { ObservableList } from './models/observableList.js';
-import { ListViewSection } from './section.js';
+import { ListViewSection, Section } from './section.js';
 import { Html } from "./utils/html.js";
 import { ContextMenu } from "./contextMenu.js";
 import { FeaturePolicy } from "./models/featurePolicy.js";
@@ -21,13 +21,17 @@ import { ListViewItem } from "./listViewItem.js";
 import { Toast } from "./toast.js";
 import EventType from "./models/eventType.js";
 import { Uuid7 } from "./structs/uuidv7.js";
-import { SecurityBL } from "./forms/securityBL.js";
 import { ConfirmDialog } from "./confirmDialog.js";
 import ObservableArgs from "./models/observable.js";
+import { ElementType } from "./models/elementType.js";
+import { ComponentExt } from "./utils/componentExt.js";
+import { EntityRef } from "./models/entityRef.js";
 
 /**
  * Represents a list view component that allows editable features and other interactions like sorting and pagination.
  * @typedef {import('./searchEntry.js').SearchEntry} SearchEntry
+ * @typedef {import('./tabEditor.js').TabEditor} TabEditor
+ * @typedef {import('./gridView.js').GridView} GridView
  */
 export class ListView extends EditableComponent {
     /** @type {ListViewSection} */
@@ -371,7 +375,7 @@ export class ListView extends EditableComponent {
         this.RowData.Clear();
         this.RowAction(x => x.Dispose(), x => !x.EmptyRow);
         this.MainSection.Element.innerHTML = null;
-        if (this.Entity == null || this.Parent instanceof SearchEntry) {
+        if (this.Entity == null || this.Parent instanceof EditableComponent.SearchMd.SearchEntry) {
             return;
         }
         if (this.ShouldSetEntity) {
@@ -573,8 +577,8 @@ export class ListView extends EditableComponent {
             this.RenderCopyPasteMenu(this.CanWrite);
             this.RenderEditMenu(this.CanWrite);
             this.RenderShareMenu(selectedRows).then(() => {
-                ctxMenu.Top = e.clientY;
-                ctxMenu.Left = e.clientX;
+                ctxMenu.Top = e.Top();
+                ctxMenu.Left = e.Left();
                 ctxMenu.Render();
                 this.Element.appendChild(ctxMenu.Element);
                 ctxMenu.Element.style.position = "absolute";
@@ -583,19 +587,112 @@ export class ListView extends EditableComponent {
     }
 
     async RenderRelatedDataMenu() {
-        const targetRef = await Client.Instance.GetByIdAsync('EntityRef', this.DataConn, this.Meta.Id);
+        const targetRef = await Client.Instance.GetByIdAsync('EntityRef', this.DataConn, [this.Meta.Id]);
         if (targetRef.Nothing()) {
             return;
         }
         const menuItems = targetRef.Select(x => ({
             Text: x.MenuText,
-            Click: (arg) => OpenFeature(x),
+            Click: (arg) => this.OpenFeature(x),
         })).ToList();
         // @ts-ignore
         ContextMenu.Instance.MenuItems.push({
             Icon: "fa fal fa-ellipsis-h",
             Text: "Dữ liệu liên quan",
             MenuItems: menuItems
+        });
+    }
+
+    /**
+     * 
+     * @param {EntityRef} meta 
+     * @returns 
+     */
+    async OpenFeature(meta) {
+        /** @type {TabEditor[]} */
+        const tabs = EditableComponent.TabEditorMd.TabEditor.Tabs;
+        let tab = tabs.find(tab => tab.Name === meta.ViewClass);
+        if (tab) {
+            tab.Focus();
+            this.Filter(tab, meta);
+            this.HasLoadRef = true;
+            return;
+        }
+        this.HasLoadRef = false;
+        const md = await import('./tabEditor.js');
+        const feature = await ComponentExt.LoadFeature(meta.ViewClass);
+        const Id = feature.Name + feature.Id;
+        tab = new md.TabEditor(feature.EntityName);
+        tab.Name = feature.Name;
+        tab.Id = Id;
+        tab.Icon = feature.Icon;
+        tab.Feature = tab.Meta = feature;
+        tab.Render();
+        tab.DOMContentLoaded.add(() => {
+            const grdiView = tab.FilterChildren(x => x instanceof EditableComponent.SearchMd.SearchEntry)
+                .find(X => X.Meta.Id === meta.TargetComId);
+            grdiView.DOMContentLoaded.add(() => {
+                if (this.HasLoadRef) {
+                    return;
+                }
+                this.Filter(tab, meta);
+                this.HasLoadRef = true;
+            });
+        });
+    }
+
+    /** @type {EditableComponent[]} */
+    CellSelected = [];
+    /**
+     * Applies filtering logic to the ListView based on the EntityRef.
+     * It finds a specific GridView based on EntityRef, clears its conditions and dates,
+     * and then updates it with new selected conditions.
+     *
+     * @param {TabEditor} tab - The TabEditor instance.
+     * @param {EntityRef} entityRef - The EntityRef containing filtering criteria.
+     */
+    Filter(tab, entityRef) {
+        /** @type {GridView} */
+        // @ts-ignore
+        let gridView1 = tab.FilterChildren(x => x instanceof EditableComponent.GridViewMd.GridView).find(X => X.Meta.Id === entityRef.TargetComId);
+        if (!gridView1) {
+            return;
+        }
+
+        gridView1.CellSelected = [];
+        gridView1.AdvSearchVM.Conditions = [];
+        gridView1.ListViewSearch.EntityVM.StartDate = null;
+        gridView1.ListViewSearch.EntityVM.EndDate = null;
+
+        this.GetRealTimeSelectedRows().then(Selecteds => {
+            let Com = gridView1.Header.find(X => X.FieldName === entityRef.TargetFieldName);
+            if (!Com) return;
+
+            let CellSelecteds = Selecteds.map(Selected => ({
+                FieldName: entityRef.TargetFieldName,
+                FieldText: Com.Label,
+                ComponentType: Com.ComponentType,
+                Value: Selected.GetPropValue(entityRef.FieldName).toString(),
+                ValueText: Selected.GetPropValue(entityRef.FieldName).toString(),
+                Operator: OperatorEnum.In,  // Assuming OperatorEnum is predefined
+                OperatorText: "Contains",
+                Logic: 'Or',
+                IsSearch: true,
+                Group: true
+            }));
+
+            gridView1.CellSelected.push(...CellSelecteds);
+            gridView1.ActionFilter();
+        });
+    }
+
+    GetRealTimeSelectedRows() {
+        return new Promise((resolve, reject) => {
+            Client.Instance.GetByIdAsync(this.Meta.RefName, this.DataConn ?? Client.DataConn, this.SelectedIds)
+                .Done(res => {
+                    resolve(res?.toList() || []);
+                })
+                .catch(reject);
         });
     }
 
@@ -848,14 +945,14 @@ export class ListView extends EditableComponent {
     * Handles security for selected rows.
     */
     async SecurityRows() {
+        const md = await import('./forms/securityBL.js');
         const selectedRowIds = this.GetSelectedRows()
             .filter(x => x[ListView.IsOwner] === true)
             .map(x => x[this.IdField]?.toString());
         // @ts-ignore
-        const security = new SecurityBL({
-            Entity: { RecordIds: selectedRowIds, EntityId: this.Meta.ReferenceId },
-            ParentElement: this.TabEditor.Element
-        });
+        const security = new md.SecurityBL();
+        security.Entity = { RecordIds: selectedRowIds, EntityId: this.Meta.ReferenceId };
+        security.ParentElement = this.TabEditor.Element;
         this.TabEditor.AddChild(security);
     }
 
@@ -878,6 +975,7 @@ export class ListView extends EditableComponent {
             DataConn: this.DataConn,
             Params: JSON.stringify({ ids, table: entity })
         };
+        // @ts-ignore
         return await Client.Instance.UserSvc(sql);
     }
 
@@ -1104,6 +1202,7 @@ export class ListView extends EditableComponent {
                 row.Selected = false;
             }
         });
+        /** @type {string[]} */
         this.SelectedIds = [];
         this.LastListViewItem = null;
     }
@@ -1119,6 +1218,13 @@ export class ListView extends EditableComponent {
         if (row) {
             row.UpdateView(force, fields);
         }
+    }
+
+    DomLoaded() {
+        if (!this.Meta.LocalRender) {
+            this.Header.ForEach(x => x.LocalData = null);
+        }
+        this.DOMContentLoaded?.Invoke();
     }
 
     /**
@@ -1148,12 +1254,11 @@ export class ListView extends EditableComponent {
             this.MainSection.Children.forEach(child => child.Dispose());
         }
         this.DisposeNoRecord();
-        this._noRecord = new Section('div', {
-            parentElement: this.Element
-        });
+        this._noRecord = new Section(ElementType.div);
+        this._noRecord.ParentElement = this.Element;
         this.AddChild(this._noRecord);
-        this._noRecord.Element.addClass('no-records');
-        Html.Take(this._noRecord.Element).innerHTML('No record found');
+        this._noRecord.Element.AddClass('no-records');
+        Html.Take(this._noRecord.Element).InnerHTML('No record found');
         this.DomLoaded();
     }
 

@@ -6,7 +6,7 @@ import "./utils/fix.js";
 
 export class Rating extends EditableComponent {
      /**
-     * @param {import('./editableComponent.js').Component} ui
+     * @param {import('./models/component.js').Component} ui
      * @param {HTMLElement} [ele=null] 
      */
     

@@ -23,9 +23,6 @@ import { EmailVM } from "./models/emailVM.js";
 import { WebSocketClient } from "./clients/websocketClient.js";
 import { ContextMenu } from "./contextMenu.js";
 import { SqlViewModel } from "./models/sqlViewModel.js";
-import { ComponentGroupBL } from "./forms/componentGroupBL.js";
-import { FeatureDetailBL } from "./forms/featureDetailBL.js";
-import { SecurityBL } from "./forms/securityBL.js";
 
 /**
  * Represents an editable form component.
@@ -33,7 +30,7 @@ import { SecurityBL } from "./forms/securityBL.js";
 export class EditForm extends EditableComponent {
     /** @type {EditForm} */
     static LayoutForm;
-    /** @type {EditForm} */
+    /** @type {EditableComponent} */
     OpenFrom;
     /** @type {ListView[]} */
     ListViews = [];
@@ -608,7 +605,7 @@ export class EditForm extends EditableComponent {
             return null;
         }
         try {
-            const ds = await Client.Instance.GetByIdAsync(this.EntityName, this.DataConn, urlId);
+            const ds = await Client.Instance.GetByIdAsync(this.EntityName, this.DataConn, [urlId]);
             if (!ds) {
                 return null;
             }
@@ -743,6 +740,7 @@ export class EditForm extends EditableComponent {
                 DataConn: this.DataConn
             };
             try {
+                // @ts-ignore
                 const intro = await Client.Instance.UserSvc(sql);
                 let script = `(x) => {
                     introJs().setOptions({
@@ -1209,9 +1207,12 @@ export class EditForm extends EditableComponent {
         ctxMenu.Render();
     }
 
-    SectionProperties(group) {
+    /** @type {import('./forms/componentGroupBL.js')} */
+    comGroupMd;
+    async SectionProperties(group) {
+        this.comGroupMd = await import('./forms/componentGroupBL.js');
         group.Children = null;
-        const editor = new ComponentGroupBL();
+        const editor = new this.comGroupMd.ComponentGroupBL();
         editor.Entity = group;
         editor.ParentElement = this.Element;
         // @ts-ignore
@@ -1219,9 +1220,10 @@ export class EditForm extends EditableComponent {
         this.AddChild(editor);
     }
 
-    LayoutProperties(group) {
+    async LayoutProperties(group) {
+        this.comGroupMd = await import('./forms/componentGroupBL.js');
         group.Children = null;
-        const editor = new ComponentGroupBL();
+        const editor = new this.comGroupMd.ComponentGroupBL();
         editor.Entity = group;
         editor.ParentElement = this.Element;
         // @ts-ignore
@@ -1229,8 +1231,9 @@ export class EditForm extends EditableComponent {
         this.AddChild(editor);
     }
 
-    FeatureProperties(arg) {
-        const editor = new FeatureDetailBL();
+    async FeatureProperties(arg) {
+        const md = await import('./forms/featureDetailBL.js');
+        const editor = new md.FeatureDetailBL();
         editor.Entity = this.Feature;
         editor.ParentElement = this.FindClosest(x => x instanceof EditForm)?.Element;
         // @ts-ignore
@@ -1238,15 +1241,20 @@ export class EditForm extends EditableComponent {
         this.AddChild(editor);
     }
 
-    SecurityRecord(arg) {
-        const security = new SecurityBL();
+    async SecurityRecord(arg) {
+        const md = await import('./forms/securityBL.js');
+        const security = new md.SecurityBL();
         security.Entity = arg;
         security.ParentElement = this.Element;
         this.TabEditor.AddChild(security);
     }
 
-    HeaderManage(arg) {
-        const editor = new HeaderManageBL();
+    /**
+     * @param {any} arg
+     */
+    async HeaderManage(arg) {
+        const md = await import('./forms/headerManagerBL.js');
+        const editor = new md.HeaderManageBL();
         editor.Entity = arg;
         editor.ParentElement = this.Element;
         editor.OpenFrom = this.CtxCom;

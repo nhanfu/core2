@@ -2,6 +2,9 @@ import { Datepicker } from "../datepicker.js";
 import { ComponentType } from "../models/componentType.js";
 import { Utils } from "./utils.js";
 import { EditForm } from "../editForm.js";
+import { Component } from "../models/component.js";
+import { Client } from "../clients/client.js";
+import { SqlViewModel } from "../models/sqlViewModel.js";
 
 export class ComponentExt {
     static MapToPatch(com, table = null, fields = null) {
@@ -70,22 +73,63 @@ export class ComponentExt {
         });
     }
 
-    // Load feature data from a mock service or similar data source
+    /**
+ * Loads a feature by name and optionally by ID, returning a promise that resolves to the feature.
+ * 
+ * @param {string} name - The name of the feature to load.
+ * @param {string} [id=null] - The optional ID of the feature.
+ * @returns {Promise<Component>} A promise that resolves to the loaded Feature object or null if not found.
+ */
     static LoadFeature(name, id = null) {
         return new Promise((resolve, reject) => {
-            // Simulate an API call to fetch feature data
-            setTimeout(() => {
-                // Mock data representing what might be returned from an API
-                const feature = {
-                    Name: name,
-                    Id: id || 'default-id',
-                    Script: 'function modify(){ console.log("Feature modified"); }',
-                    EntityName: 'FeatureEntity'
-                };
+            // @ts-ignore
+            const featureTask = Client.Instance.UserSvc({
+                ComId: "Feature",
+                Action: "GetFeature",
+                MetaConn: Client.MetaConn,
+                DataConn: Client.MetaConn,
+                Params: JSON.stringify({ Name: name, Id: id })
+            });
+
+            featureTask.then(ds => {
+                if (!ds || !ds[0]) {
+                    resolve(null);
+                    return;
+                }
+                const feature = ds[0][0];
+                if (!feature) {
+                    resolve(null);
+                    return;
+                }
+
+                feature.FeaturePolicy = ds.length > 1 ? ds[1] : null;
+                const groups = ds.length > 2 ? ds[2] : null;
+                feature.ComponentGroup = groups;
+                const components = ds.length > 3 ? ds[3] : null;
+                feature.Component = components;
+
+                if (!groups || !components) {
+                    resolve(feature);
+                    return;
+                }
+
+                const groupMap = groups.reduce((acc, group) => {
+                    acc[group.Id] = group;
+                    return acc;
+                }, {});
+
+                components.filter(x => x.ComponentType !== "Section").forEach(com => {
+                    const g = groupMap[com.ParentId] || groupMap[com.ComponentGroupId];
+                    if (!g) return;
+                    if (!g.Children) g.Children = [];
+                    g.Children.push(com);
+                });
+
                 resolve(feature);
-            }, 100);
+            }).catch(err => reject(err));
         });
     }
+
 
     // Assign methods to an instance based on a feature's script
     static AssignMethods(feature, instance) {

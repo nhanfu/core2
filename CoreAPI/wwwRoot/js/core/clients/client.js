@@ -65,6 +65,9 @@ export class Client {
         return Client.#systemRole;
     }
 
+    /**
+     * @param {SqlViewModel} vm
+     */
     async UserSvc(vm, annonymous = false) {
         /** @type {XHRWrapper} */
         // @ts-ignore
@@ -181,7 +184,7 @@ export class Client {
      * @param {string} connKey
      * @param {string[]} ids
      */
-    async GetByIdAsync(table, connKey, ...ids) {
+    async GetByIdAsync(table, connKey, ids) {
         if (!table || ids.length === 0) {
             return null;
         }
@@ -193,6 +196,7 @@ export class Client {
                 MetaConn: Client.MetaConn,
                 DataConn: connKey || Client.DataConn
             };
+            // @ts-ignore
             this.UserSvc(vm).then(ds => {
                 resolve(ds.length > 0 ? ds[0] : null);
             });

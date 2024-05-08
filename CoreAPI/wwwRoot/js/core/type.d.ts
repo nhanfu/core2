@@ -118,6 +118,7 @@ declare global {
 
   interface HTMLElement {
     ToggleClass(cls: String): void;
+    AddClass(cls: String): void;
     RemoveClass(cls: String): void;
     HasClass(cls: string): boolean;
     ReplaceClass(cls: string, byCls: string): void;

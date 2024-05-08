@@ -268,15 +268,13 @@ export class HTML {
         return this.ClassName(className).IText(text);
     }
 
-    Title(langKey)
-        {
-            if (langKey.IsNullOrWhiteSpace())
-            {
-                return this;
-            }
-            this.MarkLangProp(this.Context, langKey, "title");
-            return  this.Attr("title", LangSelect.Get(langKey));
+    Title(langKey) {
+        if (langKey.IsNullOrWhiteSpace()) {
+            return this;
         }
+        this.MarkLangProp(this.Context, langKey, "title");
+        return this.Attr("title", LangSelect.Get(langKey));
+    }
 
     /**
      * @param {any} direction
@@ -562,6 +560,37 @@ export class HTML {
 
     Clear() {
         this.Context.innerHTML = '';
+    }
+
+    /**
+     * Sets the sticky position to the HTML context.
+     * @param {string} [top=null] - Set top to '0px' if it's aligned top with previous element.
+     * @param {string} [left=null] - Set left to '0px' if it's aligned left with previous element.
+     * @returns {HTML} Returns the instance of the class for chaining.
+     */
+    Sticky(top = null, left = null) {
+        const ctx = this.Context;
+        if (!ctx) {
+            return this;
+        }
+
+        if (ctx.previousElementSibling && ctx.tagName === ctx.previousElementSibling.tagName) {
+            if (left === '0') {
+                left = `${ctx.offsetLeft}px`;
+            } else if (top === '0') {
+                top = `${ctx.offsetTop}px`;
+            }
+        }
+
+        if (top !== null) {
+            this.Style(`top: ${top};`);
+        }
+
+        if (left !== null) {
+            this.Style(`left: ${left};`);
+        }
+
+        return this.Style("position: sticky; z-index: 1;");
     }
 }
 

@@ -12,6 +12,7 @@ import { KeyCodeEnum } from "./models/enum.js";
 import { Component } from "./models/component.js";
 
 /**
+ * @typedef {import('./gridView.js').GridView} GridView
  * @typedef {import('./listViewItem.js').ListViewItem} ListViewItem
  * @typedef {import('./searchEntry.js').SearchEntry} SearchEntry
  * @typedef {import('./section.js').Section} Section
@@ -30,14 +31,20 @@ import { Component } from "./models/component.js";
  */
 export default class EditableComponent {
 
-    /** @see SearchEntry */
-    static SearchEntry;
-    /** @see Section */
-    static Section;
-    /** @see Label */
-    static Label;
-    /** @see ListViewItem */
-    static ListViewItem;
+    /** @type {import('./searchEntry.js')} */
+    static SearchMd;
+    /** @type {import('./section.js')} */
+    static SectionMd;
+    /** @type {import('./label.js')} */
+    static LabelMd;
+    /** @type {import('./listViewItem.js')} */
+    static ListViewItemMd;
+    /** @type {import('./tabEditor.js')} */
+    static TabEditorMd;
+    /** @type {import('./gridView.js')} */
+    static GridViewMd;
+    /** @type {import('./editForm.js')} */
+    static EditFormMd;
     /**
      * Create instance of component
      * @param {Component | null} meta 
@@ -99,10 +106,13 @@ export default class EditableComponent {
     static _classesLoaded = false;
 
     async loadClasses() {
-        EditableComponent.SearchEntry = (await import('./searchEntry.js')).SearchEntry;
-        EditableComponent.Section = (await import('./section.js')).Section;
-        EditableComponent.Label = (await import('./label.js')).Label;
-        EditableComponent.ListViewItem = (await import('./listViewItem.js')).ListViewItem;
+        EditableComponent.SearchMd = await import('./searchEntry.js');
+        EditableComponent.SectionMd = (await import('./section.js'));
+        EditableComponent.LabelMd = (await import('./label.js'));
+        EditableComponent.ListViewItemMd = (await import('./listViewItem.js'));
+        EditableComponent.GridViewMd = (await import('./gridView.js'));
+        EditableComponent.EditFormMd = (await import('./editForm.js'));
+        EditableComponent.TabEditorMd = (await import('./tabEditor.js'));
     }
 
     /**
@@ -310,7 +320,7 @@ export default class EditableComponent {
     /** @type {boolean} emptyRow - True if the component is in empty row or screen, otherwise false. */
     get EmptyRow() {
         if (this.#emptyRow == null) {
-            this.#emptyRow = this.FindClosest('ListViewItem')?.EmptyRow;
+            this.#emptyRow = this.FindClosest(x => x instanceof EditableComponent.ListViewItemMd.ListViewItem)?.EmptyRow;
         }
         return this.#emptyRow;
     }
@@ -448,7 +458,7 @@ export default class EditableComponent {
             return;
         }
 
-        const root = this.FindClosest(ComponentType.ListViewItem) ?? this.EditForm;
+        const root = this.FindClosest(x => x instanceof EditableComponent.ListViewItemMd.ListViewItem) ?? this.EditForm;
         const cascadeFields = this.Meta.CascadeField.split(",").map(field => field.trim()).filter(x => x !== "");
         if (cascadeFields.length === 0) {
             return;

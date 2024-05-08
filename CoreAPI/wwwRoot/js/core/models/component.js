@@ -419,4 +419,6 @@ export class Component {
 
     /** @type {Component[]} */
     Children = [];
+    /** @type {string} */
+    ViewClass = '';
 };

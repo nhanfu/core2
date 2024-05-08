@@ -11,13 +11,13 @@ import { Str } from './utils/ext.js';
 import ObservableArgs from './models/observable.js';
 import { Action } from "./models/action.js";
 import { Spinner } from './spinner.js';
-import { Toast } from 'toast.js';
-import { ContextMenu } from 'contextMenu.js';
-import { CustomEventType } from 'models/customEventType.js';
+import { Toast } from './toast.js';
+import { ContextMenu } from './contextMenu.js';
+import { CustomEventType } from './models/customEventType.js';
 import "./utils/fix.js";
-import { ConfirmDialog } from 'confirmDialog.js';
-import { Uuid7 } from 'structs/uuidv7.js';
-import { ListViewSearch } from 'listViewSearch.js';
+import { ConfirmDialog } from './confirmDialog.js';
+import { Uuid7 } from './structs/uuidv7.js';
+import { ListViewSearch } from './listViewSearch.js';
 
 
 

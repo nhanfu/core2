@@ -384,6 +384,17 @@ HTMLElement.prototype.GetFullHeight = function () {
 };
 
 /**
+ * Add a class to the element.
+ * @param {string} className - The class name to add.
+ */
+HTMLElement.prototype.AddClass = function (className) {
+    if (!this || !className) {
+        return;
+    }
+    this.classList.add(className);
+};
+
+/**
  * Removes a class from the element.
  * @param {string} className - The class name to remove.
  */
