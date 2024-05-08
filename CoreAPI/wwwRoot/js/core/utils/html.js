@@ -3,6 +3,7 @@ import { Client } from '../clients/client.js';
 import { Str } from './ext.js';
 import { LangSelect } from './langSelect.js';
 import { ElementType } from '../models/elementType.js';
+import { Utils } from './utils.js';
 
 export class HtmlEvent {
     static click = 'click';
@@ -235,6 +236,27 @@ export class HTML {
         this.Context.style.width = width;
         return this;
     }
+    
+    Sticky(top = null, left = null) {
+        let context = this.Context;
+        if (context === null) {
+            return this;
+        }
+        if (context.previousElementSibling !== null && context.constructor === context.previousElementSibling.constructor) {
+            if (left === '0') {
+                left = context.offsetLeft + Utils.Pixel;
+            } else if (top === '0') {
+                top = context.offsetTop + Utils.Pixel;
+            }
+        }
+        if (top !== null) {
+            this.Style(`top: ${top};`);
+        }
+        if (left !== null) {
+            this.Style(`left: ${left};`);
+        }
+        return this.Style('position: sticky; z-index: 1;');
+    }
     /**
      * @param {string} direction
      * @param {number} number
@@ -344,6 +366,12 @@ export class HTML {
         this.Context.setAttribute(name, value);
         return this;
     }
+
+    Href(value)
+        {
+            this.Context.setAttribute("href", value);
+            return this;
+        }
 
     /**
      * @param {number} index

@@ -11,13 +11,17 @@ import { Str } from './utils/ext.js';
 import ObservableArgs from './models/observable.js';
 import { Action } from "./models/action.js";
 import { Spinner } from './spinner.js';
-import { Toast } from './toast.js';
-import { ContextMenu } from './contextMenu.js';
-import { CustomEventType } from './models/customEventType.js';
 import "./utils/fix.js";
-import { ConfirmDialog } from './confirmDialog.js';
-import { Uuid7 } from './structs/uuidv7.js';
-import { ListViewSearch } from './listViewSearch.js';
+import { Toast } from 'toast.js';
+import { ContextMenu } from 'contextMenu.js';
+import { CustomEventType } from 'models/customEventType.js';
+import { ConfirmDialog } from 'confirmDialog.js';
+import { Uuid7 } from 'structs/uuidv7.js';
+import { ListViewSearch, ListViewSearchVM } from 'listViewSearch.js';
+import "./utils/fix.js";
+import { ListViewSection } from 'section.js';
+import { GridViewItem } from 'gridViewItem.js';
+import { EditForm } from 'editForm.js';
 
 
 
@@ -125,7 +129,8 @@ export class GridView extends ListView {
                 .Div.ClassName("card-header")
                 .H5.ClassName("mb-0")
                 .A.ClassName("btn btn-primary")
-                .DataAttr("toggle", "collapse").Href("#" + id)
+                .DataAttr("toggle", "collapse")
+                .Href("#" + id)
                 .Attr("aria-expanded", "false")
                 .Attr("aria-controls", id).Text(this.Meta.Label).EndOf(".card");
         }
@@ -196,7 +201,9 @@ export class GridView extends ListView {
                     return;
                 }
                 const cells = Array.from(row.querySelectorAll('th, td'));
+                // @ts-ignore
                 cells[index].style.removeProperty("background-color");
+                // @ts-ignore
                 cells[index].style.removeProperty("color");
             });
         }
@@ -214,7 +221,9 @@ export class GridView extends ListView {
                 return;
             }
             const cells = Array.from(row.querySelectorAll('th, td'));
+            // @ts-ignore
             cells[index].style.backgroundColor = "#cbdcc2";
+            // @ts-ignore
             cells[index].style.color = "#000";
         });
     }
@@ -228,7 +237,9 @@ export class GridView extends ListView {
                     return;
                 }
                 const cells = Array.from(row.querySelectorAll('th, td'));
+                // @ts-ignore
                 cells[index].style.removeProperty("background-color");
+                // @ts-ignore
                 cells[index].style.removeProperty("color");
             });
         }
@@ -416,11 +427,12 @@ export class GridView extends ListView {
                         break;
                 }
                 let sqlFilter = `${filterOperation} ds.[${header.FormatData}] ${x.value}`;
-                return Client.GetInstance().getIds({
-                    comId: header.Id,
-                    where: sqlFilter,
-                    metaConn: this.MetaConn,
-                    dataConn: this.DataConn
+                // @ts-ignore
+                return Client.Instance.GetIds({
+                    ComId: header.Id,
+                    Where: sqlFilter,
+                    MetaConn: this.MetaConn,
+                    DataConn: this.DataConn
                 });
             } else {
                 return Promise.resolve([x.value]);
@@ -541,7 +553,7 @@ export class GridView extends ListView {
         }
         if (this.Meta.ComponentType === 'SearchEntry') {
             const search = this.Parent;
-            if (search && search._input) {
+            if (search && Search._input) {
                 search._input.focus();
             }
         }
@@ -772,6 +784,7 @@ export class GridView extends ListView {
         let upItemUp = this.AllListViewItem.filter(x => !x.GroupRow).find(x => x.RowNo === currentItemUp.RowNo - 1);
         if (!upItemUp) {
             if (this.Meta.CanAdd) {
+                // @ts-ignore
                 upItemUp = this.EmptySection.FirstChild;
             } else {
                 return;
@@ -788,6 +801,7 @@ export class GridView extends ListView {
         let downItemDown = this.AllListViewItem.filter(x => !x.GroupRow).find(x => x.RowNo === currentItemDown.RowNo + 1);
         if (!downItemDown) {
             if (this.Meta.CanAdd) {
+                // @ts-ignore
                 downItemDown = this.EmptySection.FirstChild;
             } else {
                 return;
@@ -877,70 +891,49 @@ export class GridView extends ListView {
         menu.Top = el.getBoundingClientRect().top;
         menu.Left = el.getBoundingClientRect().left;
         menu.MenuItems = [
+            // @ts-ignore
             {
                 Icon: "fal fa-angle-double-right",
                 Text: "Chứa", Click: this.FilterInSelected,
-                Parameter: { Operator: OperatorEnum.In, OperatorText: "Chứa", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
-                Ele: undefined,
-                Style: '',
-                Disabled: false,
-                MenuItems: []
+                Parameter: { Operator: OperatorEnum.In, OperatorText: "Chứa", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey }
             },
+            // @ts-ignore
             {
                 Icon: "fal fa-not-equal", Text: "Không chứa",
                 Click: this.FilterInSelected,
-                Parameter: { Operator: OperatorEnum.NotIn, OperatorText: "Không chứa", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
-                Ele: undefined,
-                Style: '',
-                Disabled: false,
-                MenuItems: []
+                Parameter: { Operator: OperatorEnum.NotIn, OperatorText: "Không chứa", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey }
             },
+            // @ts-ignore
             {
                 Icon: "fal fa-hourglass-start", Text: "Trái phải", Click: this.FilterInSelected,
-                Parameter: { Operator: OperatorEnum.Lr, OperatorText: "Trái phải", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
-                Ele: undefined,
-                Style: '',
-                Disabled: false,
-                MenuItems: []
+                Parameter: { Operator: OperatorEnum.Lr, OperatorText: "Trái phải", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey }
             },
+            // @ts-ignore
             {
                 Icon: "fal fa-hourglass-end", Text: "Phải trái", Click: this.FilterInSelected,
-                Parameter: { Operator: OperatorEnum.Rl, OperatorText: "Phải trái", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
-                Ele: undefined,
-                Style: '',
-                Disabled: false,
-                MenuItems: []
+                Parameter: { Operator: OperatorEnum.Rl, OperatorText: "Phải trái", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey }
             }
         ];
 
         if (com.Meta.ComponentType === "Number" || com.Meta.ComponentType === "Datepicker") {
             menu.MenuItems.push(
+                // @ts-ignore
                 {
                     Icon: "fal fa-greater-than", Text: "Lớn hơn", Click: this.FilterInSelected,
                     Parameter: { Operator: OperatorEnum.Gt, OperatorText: "Lớn hơn", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
-                    Ele: undefined,
-                    Style: '',
-                    Disabled: false,
-                    MenuItems: []
                 },
-                { Icon: "fal fa-less-than", Text: "Nhỏ hơn", Click: this.FilterInSelected,
+                { 
+                    Icon: "fal fa-less-than", Text: "Nhỏ hơn", Click: this.FilterInSelected,
                     Parameter: { Operator: OperatorEnum.Lt, OperatorText: "Nhỏ hơn", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
-                    Ele: undefined,
-                    Style: '',
-                    Disabled: false,
-                    MenuItems: []},
-                { Icon: "fal fa-greater-than-equal", Text: "Lớn hơn bằng", Click: this.FilterInSelected,
+                },
+                { 
+                    Icon: "fal fa-greater-than-equal", Text: "Lớn hơn bằng", Click: this.FilterInSelected,
                     Parameter: { Operator: OperatorEnum.Ge, OperatorText: "Lớn hơn bằng", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
-                    Ele: undefined,
-                    Style: '',
-                    Disabled: false,
-                    MenuItems: []},
-                { Icon: "fal fa-less-than-equal", Text: "Nhỏ hơn bằng", Click: this.FilterInSelected,
+                },
+                { 
+                    Icon: "fal fa-less-than-equal", Text: "Nhỏ hơn bằng", Click: this.FilterInSelected,
                     Parameter: { Operator: OperatorEnum.Le, OperatorText: "Nhỏ hơn bằng", Value: value, FieldName: fieldName, ValueText: text, Shift: e.shiftKey },
-                    Ele: undefined,
-                    Style: '',
-                    Disabled: false,
-                    MenuItems: []}
+                }
             );
         }
         menu.Render();
@@ -1178,6 +1171,7 @@ export class GridView extends ListView {
         let rowSection = this.RenderRowData(this.Header, emptyRowData, this.EmptySection, null, true);
 
         Object.keys(emptyRowData).forEach(field => {
+            // @ts-ignore
             rowSection.PatchModel.push({
                 Field: field,
                 Value: emptyRowData[field]?.toString()
@@ -1379,6 +1373,7 @@ export class GridView extends ListView {
 
     RenderRowData(headers, row, section, index = null, emptyRow = false) {
         const tbody = section.element;
+        // @ts-ignore
         const rowSection = new GridViewItem('tr', {
             EmptyRow: emptyRow,
             Entity: row,
@@ -1561,7 +1556,7 @@ export class GridView extends ListView {
             return null;
         }
 
-        let result = this.MainSection.FirstChild.cloneNode(true);  // Cloning the first row
+        let result = this.MainSection.FirstChild.CloneNode(true);  // Cloning the first row
         footer.appendChild(result);
         Array.from(result.children).forEach(child => child.innerHTML = '');  // Clearing cell contents
         return result;
@@ -1821,84 +1816,30 @@ export class GridView extends ListView {
     HeaderContextMenu(e, header) {
         e.preventDefault();
         e.stopPropagation();
-        const editForm = this.FindClosest('EditForm');
-        const section = this.FindClosest('Section');
+         
+        const editForm = this.FindClosest();
+        const section = this.FindClosest();
         const menu = ContextMenu.Instance;
         menu.Top = e.clientY; // Adjusted for typical web usage
         menu.Left = e.clientX; // Adjusted for typical web usage
-
         menu.MenuItems = [
-            {
-                Icon: "fal fa-eye", Text: "Hiện tiêu đề", Click: () => this.ShowWidth(header, e),
-                Ele: undefined,
-                Style: '',
-                Disabled: false,
-                Parameter: undefined,
-                MenuItems: []
-            },
-            {
-                Icon: "fal fa-eye-slash", Text: "Ẩn tiêu đề", Click: () => this.HideWidth(header, e),
-                Ele: undefined,
-                Style: '',
-                Disabled: false,
-                Parameter: undefined,
-                MenuItems: []
-            },
-            {
-                Icon: header.Frozen ? "fal fa-snowflakes" : "fal fa-snowflake", Text: header.Frozen ? "Hủy định cột" : "Cố định cột", Click: () => this.FrozenColumn(header, e),
-                Ele: undefined,
-                Style: '',
-                Disabled: false,
-                Parameter: undefined,
-                MenuItems: []
-            },
+            // @ts-ignore
+            {Icon: "fal fa-eye", Text: "Hiện tiêu đề", Click: () => this.ShowWidth(header, e)},
+            // @ts-ignore
+            {Icon: "fal fa-eye-slash", Text: "Ẩn tiêu đề", Click: () => this.HideWidth(header, e),},
+            // @ts-ignore
+            {Icon: header.Frozen ? "fal fa-snowflakes" : "fal fa-snowflake", Text: header.Frozen ? "Hủy định cột" : "Cố định cột", Click: () => this.FrozenColumn(header, e)},
         ];
 
         if (Client.SystemRole) {
             menu.MenuItems.push(
-                {
-                    Icon: "fal fa-wrench", Text: "Tùy chọn cột dữ liệu", Click: () => editForm.ComponentProperties(header),
-                    Ele: undefined,
-                    Style: '',
-                    Disabled: false,
-                    Parameter: undefined,
-                    MenuItems: []
-                },
-                {   Icon: "fal fa-clone", Text: "Clone cột", Click: () => this.CloneHeader(header),
-                    Ele: undefined,
-                    Style: '',
-                    Disabled: false,
-                    Parameter: undefined,
-                    MenuItems: [] 
-                },
-                {   Icon: "fal fa-trash-alt", Text: "Xóa cột", Click: () => this.RemoveHeader(header),
-                    Ele: undefined,
-                    Style: '',
-                    Disabled: false,
-                    Parameter: undefined,
-                    MenuItems: [] 
-                 },
-                {   Icon: "fal fa-cog", Text: "Tùy chọn bảng dữ liệu", Click: () => editForm.ComponentProperties(this.Meta),
-                    Ele: undefined,
-                    Style: '',
-                    Disabled: false,
-                    Parameter: undefined,
-                    MenuItems: [] 
-                 },
-                {   Icon: "fal fa-cogs", Text: "Tùy chọn vùng dữ liệu", Click: () => editForm.SectionProperties(section.Meta),
-                    Ele: undefined,
-                    Style: '',
-                    Disabled: false,
-                    Parameter: undefined,
-                    MenuItems: [] 
-                },
-                {   Icon: "fal fa-folder-open", Text: "Thiết lập chung", Click: () => editForm.FeatureProperties(editForm.Feature),
-                    Ele: undefined,
-                    Style: '',
-                    Disabled: false,
-                    Parameter: undefined,
-                    MenuItems: [] 
-                }
+                // @ts-ignore
+                {Icon: "fal fa-wrench", Text: "Tùy chọn cột dữ liệu", Click: () => this.EditForm.ComponentProperties(header),},
+                {Icon: "fal fa-clone", Text: "Clone cột", Click: () => this.CloneHeader(header),},
+                {Icon: "fal fa-trash-alt", Text: "Xóa cột", Click: () => this.RemoveHeader(header),},
+                {Icon: "fal fa-cog", Text: "Tùy chọn bảng dữ liệu", Click: () => this.EditForm.ComponentProperties(this.Meta),},
+                {Icon: "fal fa-cogs", Text: "Tùy chọn vùng dữ liệu", Click: () => this.EditForm.SectionProperties(section.Meta),},
+                {Icon: "fal fa-folder-open", Text: "Thiết lập chung", Click: () => this.EditForm.FeatureProperties(this.EditForm.Feature),}
             );
         }
         menu.Render();

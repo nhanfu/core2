@@ -53,7 +53,7 @@ export default class EditableComponent {
     constructor(meta, ele = null) {
         this.Meta = meta;
         this.Element = ele;
-
+        this.AlwaysLogHistory = false;
         if (meta?.Validation != null) {
             /** @type {Validation[]} */
             var rules = typeof meta.Validation === Str.Type ? JSON.parse(meta.Validation.toString()) : meta.Validation;

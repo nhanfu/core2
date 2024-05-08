@@ -10,7 +10,6 @@ import { ListViewSection, Section } from './section.js';
 import { Html } from "./utils/html.js";
 import { ContextMenu } from "./contextMenu.js";
 import { FeaturePolicy } from "./models/featurePolicy.js";
-import './utils/ext.js';
 import { Str } from "./utils/ext.js";
 import { Client } from "./clients/client.js";
 import { Spinner } from "./spinner.js";
@@ -26,6 +25,7 @@ import ObservableArgs from "./models/observable.js";
 import { ElementType } from "./models/elementType.js";
 import { ComponentExt } from "./utils/componentExt.js";
 import { EntityRef } from "./models/entityRef.js";
+import './utils/ext.js';
 
 /**
  * Represents a list view component that allows editable features and other interactions like sorting and pagination.
@@ -87,6 +87,7 @@ export class ListView extends EditableComponent {
         this.LastShiftViewItem = undefined;
         /** @type {number} */
         this.LastIndex = undefined;
+        this.EntityFocusId = "";
 
     }
 
@@ -686,16 +687,6 @@ export class ListView extends EditableComponent {
         });
     }
 
-    GetRealTimeSelectedRows() {
-        return new Promise((resolve, reject) => {
-            Client.Instance.GetByIdAsync(this.Meta.RefName, this.DataConn ?? Client.DataConn, this.SelectedIds)
-                .Done(res => {
-                    resolve(res?.toList() || []);
-                })
-                .catch(reject);
-        });
-    }
-
     /**
      * Sets the row as selected based on the event target.
      * @param {Event} e The event object.
@@ -1271,4 +1262,49 @@ export class ListView extends EditableComponent {
             this._noRecord = null;
         }
     }
+
+    UpdateHeaders(components, fields = null) {
+        window.clearTimeout(this.updateHeaderAwaiter);
+        this.updateHeaderAwaiter = window.setTimeout(() => {
+            const patches = components.map(meta => {
+                const patch = meta.MapToPatch({ fields: fields });
+                patch.OldId = meta.Id;
+                return patch;
+            });
+            Client.Instance.PatchAsync(patches);
+        }, 100);
+    }
+
+     GetItemFocus() {
+        return this.AllListViewItem.Where(x => x.Focused()).FirstOrDefault();
+    }
+
+    GetRealTimeSelectedRows() {
+        return new Promise((resolve, reject) => {
+            // @ts-ignore
+            Client.Instance.GetByIdAsync(this.Meta.RefName, this.DataConn || Client.DataConn, this.SelectedIds.ToArray())
+                .then(res => {
+                    resolve(res ? res.slice() : []);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    GetRowCountByHeight(scrollTop) {
+        return (scrollTop / this._rowHeight >= 0) ? 
+               Math.floor(scrollTop / this._rowHeight) : 
+               Math.ceil(scrollTop / this._rowHeight);
+    }
+
+    RemoveRow(row)
+        {
+            if (row === null)
+            {
+                return;
+            }
+            this.RowData.Data.Remove(row);
+            this.MainSection.FirstOrDefault(x => x.Entity == row)?.Dispose();
+        }
 }

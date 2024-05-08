@@ -32,7 +32,7 @@ import { Uuid7 } from './structs/uuidv7.js';
 /**
  * @class
  */
-class ListViewSearchVM {
+export class ListViewSearchVM {
     constructor() {
         this.Id = Uuid7.Id25();
         this.SearchTerm = '';
