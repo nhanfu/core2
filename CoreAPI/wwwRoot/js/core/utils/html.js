@@ -588,6 +588,7 @@ export class HTML {
 
     Clear() {
         this.Context.innerHTML = '';
+        return this;
     }
 
     /**
@@ -619,6 +620,13 @@ export class HTML {
         }
 
         return this.Style("position: sticky; z-index: 1;");
+    }
+
+    ForEach(array, callback) {
+        for (let index = 0; index < array.length; index++) {
+            callback(array[index], index);
+        }
+        return this;
     }
 }
 

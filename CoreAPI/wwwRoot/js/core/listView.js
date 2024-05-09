@@ -2,7 +2,7 @@ import EditableComponent from "./editableComponent.js";
 import { Action } from "./models/action.js";
 import { Component } from "./models/component.js";
 import { CustomEventType } from "./models/customEventType.js";
-import { ActiveStateEnum, AdvSearchVM, MQEvent, OperatorEnum, OrderBy, OrderbyDirection, Where } from "./models/enum.js";
+import { ActiveStateEnum, AdvSearchVM, CellSelected, MQEvent, OperatorEnum, OrderBy, OrderbyDirection, Where } from "./models/enum.js";
 import { Paginator } from "./paginator.js";
 import { Utils } from "./utils/utils.js";
 import { ObservableList } from './models/observableList.js';
@@ -642,7 +642,8 @@ export class ListView extends EditableComponent {
         });
     }
 
-    /** @type {EditableComponent[]} */
+    // /** @type {EditableComponent[]} */
+    /** @type {CellSelected[]} */
     CellSelected = [];
     /**
      * Applies filtering logic to the ListView based on the EntityRef.
@@ -1306,5 +1307,15 @@ export class ListView extends EditableComponent {
             }
             this.RowData.Data.Remove(row);
             this.MainSection.FirstOrDefault(x => x.Entity == row)?.Dispose();
+        }
+
+        CalcTextAlign(header) {
+            if (header.TextAlign && header.TextAlign.length > 0) {
+                const parsed = Object.values(header.TextAlign).includes(header.textAlign);
+                if (parsed) {
+                    header.textAlignEnum = header.textAlign;
+                }
+            }
+            return header;
         }
 }

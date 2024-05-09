@@ -1,7 +1,7 @@
 import { ListView } from './listView.js';
-import { Html } from "./utils/html.js";
+import { Direction, Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
-import { OperatorEnum, KeyCodeEnum, OrderbyDirection, AdvSearchOperation} from './models/enum.js';
+import { OperatorEnum, KeyCodeEnum, OrderbyDirection, AdvSearchOperation, LogicOperation, OrderBy} from './models/enum.js';
 import { ValidationRule } from "./models/validationRule.js";
 import { LangSelect } from "./utils/langSelect.js";
 import { Client } from "./clients/client.js";
@@ -19,9 +19,13 @@ import { ConfirmDialog } from 'confirmDialog.js';
 import { Uuid7 } from 'structs/uuidv7.js';
 import { ListViewSearch, ListViewSearchVM } from 'listViewSearch.js';
 import "./utils/fix.js";
-import { ListViewSection } from 'section.js';
+import { ListViewSection, Section } from 'section.js';
 import { GridViewItem } from 'gridViewItem.js';
 import { EditForm } from 'editForm.js';
+import { ListViewItem } from 'listViewItem.js';
+import { HotKeyModel } from 'models/hotKeyModel.js';
+import { SearchEntry } from 'searchEntry.js';
+import { ElementType } from 'models/elementType.js';
 
 
 
@@ -310,52 +314,47 @@ export class GridView extends ListView {
         }
     }
 
-    async FilterInSelected(e) {
-        const hotKeyModel = this.AsHotKeyModel(e);
+    FilterInSelected(e) {
+    /** @type {HotKeyModel} */
+        let hotKeyModel = e;
         if (this._waitingLoad) {
-            clearTimeout(this._renderPrepareCacheAwaiter);
+            window.clearTimeout(this._renderPrepareCacheAwaiter);
         }
-
-        if (!hotKeyModel.Operator) {
+        if (hotKeyModel.Operator === null) {
             return;
         }
-
-        const header = this.Header.find(x => x.FieldName === hotKeyModel.FieldName);
-        if (!header) return;
-
-        const lastFilterKey = `LastSearch${this.Meta.Id}${header.Id}`;
-        let subFilter = window.localStorage.getItem(lastFilterKey) || '';
-
-        const inputType = header.ComponentType === 'Datepicker' ? 'date' :
-                          header.ComponentType === 'Number' ? 'number' : 'text';
-
-        const result = await Swal.fire({
-            title: `Enter ${header.Label} to search ${hotKeyModel.OperatorText}`,
-            input: inputType,
-            inputValue: subFilter,
-            inputAttributes: {
-                autocapitalize: 'off',
-                autocorrect: 'off'
-            },
-            showCancelButton: true,
-            preConfirm: (value) => {
-                if (!value) {
-                    Swal.showValidationMessage(`You need to write something!`);
-                }
-                return value;
-            }
+        let header = this.Header.find(x => x.Name === hotKeyModel.FieldName);
+        let subFilter = '';
+        let lastFilter = window.localStorage.getItem("LastSearch" + this.Meta.Id + header.Id);
+        if (lastFilter !== null) {
+            subFilter = lastFilter.toString();
+        }
+        // @ts-ignore
+        let confirmDialog = new ConfirmDialog({
+            Content: `Nhập ${header.Label} cần tìm ` + hotKeyModel.OperatorText,
+            NeedAnswer: true,
+            MultipleLine: false,
+            ComType: header.ComponentType === "Datepicker" || header.ComponentType === "Number" ? header.ComponentType : "Textbox",
+            Precision: header.Precision,
+            PElement: this.MainSection.Element
         });
-
-        if (result.value) {
-            const value = result.value.trim();
-            const valueText = value; 
-            window.localStorage.setItem(lastFilterKey, value);
-
-            // Update or add to CellSelected
-            const cellIndex = this.CellSelected.findIndex(x => x.FieldName === hotKeyModel.FieldName && x.Operator === OperatorEnum.In);
-            if (cellIndex !== -1 && !hotKeyModel.Shift) {
-                this.CellSelected[cellIndex].Value = value;
-                this.CellSelected[cellIndex].ValueText = valueText;
+        confirmDialog.YesConfirmed = () => {
+            let value = null;
+            let valueText = null;
+            if (header.ComponentType === "Datepicker") {
+                valueText = value = confirmDialog.Datepicker.Value.toString();
+            } else if (header.ComponentType === "Number") {
+                valueText = confirmDialog.Number.GetValueText();
+                value = confirmDialog.Number.Value.toString();
+            } else {
+                valueText = confirmDialog.Textbox.Text.trim().EncodeSpecialChar();
+                value = confirmDialog.Textbox.Text.trim().EncodeSpecialChar();
+            }
+            window.localStorage.setItem("LastSearch" + this.Meta.Id + header.Id, value);
+            if (this.CellSelected.some(x => x.FieldName === hotKeyModel.FieldName && x.Operator === OperatorEnum.In) && !hotKeyModel.Shift) {
+                let cell = this.CellSelected.find(x => x.FieldName === hotKeyModel.FieldName && x.Operator === OperatorEnum.In);
+                cell.Value = value;
+                cell.ValueText = valueText;
             } else {
                 this.CellSelected.push({
                     FieldName: hotKeyModel.FieldName,
@@ -366,48 +365,66 @@ export class GridView extends ListView {
                     ValueText: valueText,
                     Operator: hotKeyModel.Operator,
                     OperatorText: hotKeyModel.OperatorText,
+                    Logic: undefined,
+                    IsSearch: false,
+                    Group: false
                 });
             }
+            this._summarys.push(new HTMLElement());
+            confirmDialog.Textbox.Text = null;
             this.ActionFilter();
+        };
+        confirmDialog.Entity = { ReasonOfChange: "" };
+        confirmDialog.Render();
+        if (!subFilter.IsNullOrWhiteSpace()) {
+            if (header.ComponentType === "Datepicker") {
+                confirmDialog.Datepicker.Value = new Date(subFilter);
+                let input = confirmDialog.Datepicker.Element;
+                input.selectionStart = 0;
+                input.selectionEnd = subFilter.length;
+            } else if (header.ComponentType === "Number") {
+                confirmDialog.Number.Value = parseFloat(subFilter);
+                let input = confirmDialog.Number.Element;
+                input.selectionStart = 0;
+                input.selectionEnd = subFilter.length;
+            } else {
+                confirmDialog.Textbox.Text = subFilter;
+                let input = confirmDialog.Textbox.Element;
+                input.selectionStart = 0;
+                input.selectionEnd = subFilter.length;
+            }
         }
     }
 
-    AsHotKeyModel(e) {
-        return {
-            FieldName: e.FieldName,
-            OperatorText: e.operatorText,
-            Operator: e.operator,
-            Shift: e.shiftKey,
-            ActValue: e.actValue,
-            Value: e.value,
-            ValueText: e.valueText,
-        };
-    }
-
-    async ActionFilter() {
-        if (this.CellSelected.length === 0) {
+    ActionFilter() {
+        if (this.CellSelected.Nothing()) {
             this.NoCellSelected();
             return;
         }
         Spinner.AppendTo(this.DataTable);
-        const dropdowns = this.CellSelected.filter(x => (x.value || x.valueText) && (x.componentType === 'SearchEntry' || x.FieldName.includes(".")));
-        const data = await this.FilterDropdownIds(dropdowns);
-        let lisToast = [];
-        this.CellSelected.forEach((cell, index) => {
-            index = this.BuildCondition(cell, data, index, lisToast);
-        });
-        Spinner.Hide();
-        if (this.Meta.ComponentType === 'VirtualGrid' && this.Meta.CanSearch) {
-            this.HeaderSection.Element.focus();
-        }
-        if (this.Meta.ComponentType === 'SearchEntry') {
-            const search = this.Parent;
-            if (search && search.input) {
-                search.input.focus();
+        const dropdowns = this.CellSelected.filter(x => (!x.Value.IsNullOrWhiteSpace() || !x.ValueText.IsNullOrWhiteSpace()) && x.ComponentType === 'SearchEntry' || x.FieldName.includes('.'));
+        const groups = this.CellSelected.filter(x => x.FieldName.includes('.'));
+        this.FilterDropdownIds(dropdowns).done(data => {
+            let index = 0;
+            const lisToast = [];
+            this.CellSelected.forEach(cell => {
+                index = this.BuildCondition(cell, data, index, lisToast);
+            });
+            Spinner.Hide();
+            if (this.Meta.ComponentType === 'VirtualGrid' && this.Meta.CanSearch) {
+                this.HeaderSection.Element.focus();
             }
-        }
-        Toast.Success(lisToast.join("</br>"));
-        this.ApplyFilter();
+            if (this.Meta.ComponentType === 'SearchEntry') {
+                if (this.Parent instanceof SearchEntry) {
+                    const search = this.Parent;
+                    if (search._input) {
+                        search._input.focus();
+                    }
+                }
+            }
+            Toast.Success(lisToast.join("</br>"));
+            this.ApplyFilter();
+        });
     }
 
     async FilterDropdownIds(dropdowns) {
@@ -443,106 +460,161 @@ export class GridView extends ListView {
 
     BuildCondition(cell, data, index, lisToast) {
         let where = '';
-        const hl = this.Header.find(y => y.FieldName === cell.FieldName);
+        let hl = this.Header.find(y => y.FieldName === cell.FieldName);
         let ids = null;
-        const isNull = !cell.Value || cell.Value.trim() === '';
+        let isNull = !cell.Value.trim();
         let advo = cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotIn : AdvSearchOperation.In;
-
         if (hl.FieldName === this.IdField) {
             where = cell.Operator === OperatorEnum.NotIn ? `[ds].${cell.FieldName} not in (${cell.Value})` : `[ds].${cell.FieldName} in (${cell.Value})`;
-            lisToast.push(`${cell.FieldText} <span class='text-danger'>${cell.OperatorText}</span> ${cell.ValueText}`);
+            lisToast.push(cell.FieldText + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
         } else {
-            if (hl.ComponentType === 'SearchEntry' && hl.FormatData.trim() !== '') {
+            if (hl.ComponentType === 'SearchEntry' && hl.FormatData.trim()) {
                 if (isNull) {
                     advo = cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
                     where = cell.Operator === OperatorEnum.NotIn ? `[ds].${cell.FieldName} is not null` : `[ds].${cell.FieldName} is null`;
                 } else {
-                    const idArr = data[index];
-                    if (idArr && idArr.length > 0) {
-                        ids = idArr.join();
+                    let idArr = data[index];
+                    if (idArr.length) {
+                        ids = idArr.join(',');
                         where = cell.Operator === OperatorEnum.NotIn ? `[ds].${cell.FieldName} not in (${ids})` : `[ds].${cell.FieldName} in (${ids})`;
                     } else {
                         where = cell.Operator === OperatorEnum.NotIn ? `[ds].${cell.FieldName} != ${cell.Value}` : `[ds].${cell.FieldName} = ${cell.Value}`;
                     }
                     index++;
                 }
-                lisToast.push(`${hl.Label} <span class='text-danger'>${cell.OperatorText}</span> ${cell.ValueText}`);
-            } else {
-                switch (hl.ComponentType) {
-                    case 'Number':
-                    case 'Label':
-                        where = this.BuildNumberCondition(cell, hl, isNull);
-                        break;
-                    case 'Checkbox':
-                        where = this.BuildCheckboxCondition(cell, hl, isNull);
-                        break;
-                    case 'Datepicker':
-                        where = this.BuildDateCondition(cell, hl, isNull);
-                        break;
-                    default:
-                        where = this.BuildDefaultCondition(cell, hl, isNull);
-                        break;
+                lisToast.push(hl.Label + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+            } else if (['Input', 'Textbox', 'Textarea'].includes(hl.ComponentType)) {
+                if (isNull) {
+                    advo = cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                    where = cell.Operator === OperatorEnum.NotIn ? `([ds].${cell.FieldName} is not null and [ds].${cell.FieldName} != '')` : `([ds].${cell.FieldName} is null or [ds].${cell.FieldName} = '')`;
+                } else {
+                    advo = cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotLike : AdvSearchOperation.Like;
+                    where = cell.Operator === OperatorEnum.NotIn ? `(CHARINDEX(N'${cell.Value}', [ds].${cell.FieldName}) = 0 or [ds].${cell.FieldName} is null)` : `CHARINDEX(N'${cell.Value}', [ds].${cell.FieldName}) > 0`;
+                    if (cell.Operator === OperatorEnum.Lr) {
+                        advo = cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotStartWith : AdvSearchOperation.StartWith;
+                        where = cell.Operator === OperatorEnum.NotIn ? ` [ds].${cell.FieldName} not like N'${cell.Value}%' or [ds].${cell.FieldName} is null)` : ` [ds].${cell.FieldName} like N'${cell.Value}%'`;
+                    }
+                    if (cell.Operator === OperatorEnum.Rl) {
+                        advo = cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotEndWidth : AdvSearchOperation.EndWidth;
+                        where = cell.Operator === OperatorEnum.NotIn ? ` [ds].${cell.FieldName} not like N'%${cell.Value}' or [ds].${cell.FieldName} is null)` : ` [ds].${cell.FieldName} like N'%${cell.Value}'`;
+                    }
                 }
-                lisToast.push(`${hl.Label} <span class='text-danger'>${cell.OperatorText}</span> ${cell.ValueText}`);
+                lisToast.push(hl.Label + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+            } else if (hl.ComponentType === 'Number' || (hl.ComponentType === 'Label' && hl.FieldName.includes('Id'))) {
+                if (cell.Operator === OperatorEnum.NotIn || cell.Operator === OperatorEnum.In) {
+                    if (isNull) {
+                        advo = cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                        where = cell.Operator === OperatorEnum.NotIn ? `[ds].${cell.FieldName} is not null` : `[ds].${cell.FieldName} is null`;
+                    } else {
+                        advo = cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal;
+                        where = cell.Operator === OperatorEnum.NotIn ? `[ds].${cell.FieldName} != ${cell.Value.replace(",", "")}` : `[ds].${cell.FieldName} = ${cell.Value.replace(",", "")}`;
+                    }
+                } else {
+                    if (cell.Operator === OperatorEnum.Gt || cell.Operator === OperatorEnum.Lt) {
+                        where = cell.Operator === OperatorEnum.Gt ? `[ds].${cell.FieldName} > ${cell.Value}` : `[ds].${cell.FieldName} < ${cell.Value}`;
+                        advo = cell.Operator === OperatorEnum.Gt ? AdvSearchOperation.GreaterThan : AdvSearchOperation.LessThan;
+                    } else if (cell.Operator === OperatorEnum.Ge || cell.Operator === OperatorEnum.Le) {
+                        where = cell.Operator === OperatorEnum.Ge ? `[ds].${cell.FieldName} >= ${cell.Value}` : `[ds].${cell.FieldName} <= ${cell.Value}`;
+                        advo = cell.Operator === OperatorEnum.Ge ? AdvSearchOperation.GreaterThanOrEqual : AdvSearchOperation.LessThanOrEqual;
+                    }
+                }
+                lisToast.push(hl.Label + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+            } else if (hl.ComponentType === 'Checkbox') {
+                if (isNull) {
+                    advo = cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                    where = cell.Operator === OperatorEnum.NotIn ? `[ds].${cell.FieldName} is not null` : `[ds].${cell.FieldName} is null`;
+                } else {
+                    where = cell.Operator === OperatorEnum.NotIn ? `[ds].${cell.FieldName} != ${(cell.Value === "true" ? "1" : "0")}` : `[ds].${cell.FieldName} = ${(cell.Value === "true" ? "1" : "0")}`;
+                }
+                lisToast.push(hl.Label + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
+            } else if (hl.ComponentType === 'Datepicker') {
+                cell.Value = decodeURIComponent(cell.Value);
+                cell.ValueText = decodeURIComponent(cell.Value);
+                if (cell.Operator === OperatorEnum.NotIn || cell.Operator === OperatorEnum.In) {
+                    if (isNull) {
+                        where = cell.Operator === OperatorEnum.NotIn ? `[ds].${cell.FieldName} is not null` : `[ds].${cell.FieldName} is null`;
+                        advo = cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull;
+                    } else {
+                        try {
+                            let va = new Date(cell.Value);
+                            where = cell.Operator === OperatorEnum.NotIn ? `[ds].${cell.FieldName} != '${va.toISOString().split('T')[0]}'` : `[ds].${cell.FieldName} = '${va.toISOString().split('T')[0]}'`;
+                            advo = cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotEqualDatime : AdvSearchOperation.EqualDatime;
+                        } catch {
+                            let va = new Date(cell.Value);
+                            where = cell.Operator === OperatorEnum.NotIn ? `[ds].${cell.FieldName} != '${va.toISOString().split('T')[0]}'` : `[ds].${cell.FieldName} = '${va.toISOString().split('T')[0]}'`;
+                            advo = cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotEqualDatime : AdvSearchOperation.EqualDatime;
+                        }
+                    }
+                } else {
+                    if (!isNull) {
+                        let va = new Date(cell.Value);
+                        if (cell.Operator === OperatorEnum.Gt || cell.Operator === OperatorEnum.Lt) {
+                            where = cell.Operator === OperatorEnum.Gt ? `[ds].${cell.FieldName} > '${va.toISOString()}'` : `[ds].${cell.FieldName} < '${va.toISOString()}'`;
+                            advo = cell.Operator === OperatorEnum.Gt ? AdvSearchOperation.GreaterThanDatime : AdvSearchOperation.LessThanDatime;
+                        } else if (cell.Operator === OperatorEnum.Ge || cell.Operator === OperatorEnum.Le) {
+                            where = cell.Operator === OperatorEnum.Ge ? `[ds].${cell.FieldName} >= '${va.toISOString()}'` : `[ds].${cell.FieldName} <= '${va.toISOString()}'`;
+                            advo = cell.Operator === OperatorEnum.Ge ? AdvSearchOperation.GreaterEqualDatime : AdvSearchOperation.LessEqualDatime;
+                        }
+                    }
+                }
+                lisToast.push(hl.Label + " <span class='text-danger'>" + cell.OperatorText + "</span> " + cell.ValueText);
             }
         }
-        const value = ids || cell.Value;
-        this.ProcessConditions(cell, advo, where, value, hl, lisToast);
+        let value = ids || cell.Value;
+        if (this.AdvSearchVM.Conditions.some(x => x.Field.FieldName === cell.FieldName && x.CompareOperatorId === advo && (x.CompareOperatorId === AdvSearchOperation.Like || x.CompareOperatorId === AdvSearchOperation.In || x.CompareOperatorId === AdvSearchOperation.EqualDatime)) && !cell.Shift && !cell.Group) {
+            let condition = this.AdvSearchVM.Conditions.find(x => x.Field.FieldName === cell.FieldName && x.CompareOperatorId === advo);
+            condition.Value = value.trim() ? value : cell.ValueText;
+            this.Wheres.find(x => x.Condition.includes(`[ds].${cell.FieldName}`)).Condition = where;
+        } else {
+            if (!this.AdvSearchVM.Conditions.some(x => x.Field.FieldName === cell.FieldName && x.CompareOperatorId === advo && x.Value === cell.Value)) {
+                if (cell.ComponentType === 'Input' && !cell.Value.trim()) {
+                    // @ts-ignore
+                    this.AdvSearchVM.Conditions.push({
+                        Field: hl,
+                        CompareOperatorId: cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotEqualNull : AdvSearchOperation.EqualNull,
+                        LogicOperatorId: cell.Operator === OperatorEnum.NotIn ? LogicOperation.And : LogicOperation.Or,
+                        Value: null,
+                        Group: true
+                    });
+                    // @ts-ignore
+                    this.AdvSearchVM.Conditions.push({
+                        Field: hl,
+                        CompareOperatorId: cell.Operator === OperatorEnum.NotIn ? AdvSearchOperation.NotEqual : AdvSearchOperation.Equal,
+                        LogicOperatorId: cell.Operator === OperatorEnum.NotIn ? LogicOperation.And : LogicOperation.Or,
+                        Value: '',
+                        Group: true
+                    });
+                } else {
+                    if (hl.FieldName.includes(".")) {
+                        let format = hl.FieldName.split(".")[0] + "Id";
+                        hl.FieldName = format;
+                        // @ts-ignore
+                        this.AdvSearchVM.Conditions.push({
+                            Field: hl,
+                            CompareOperatorId: advo,
+                            LogicOperatorId: cell.Logic || LogicOperation.And,
+                            Value: value.trim() ? value : cell.ValueText,
+                            Group: cell.Group
+                        });
+                    } else {
+                        // @ts-ignore
+                        this.AdvSearchVM.Conditions.push({
+                            Field: hl,
+                            CompareOperatorId: advo,
+                            LogicOperatorId: cell.Logic || LogicOperation.And,
+                            Value: value.trim() ? value : cell.ValueText,
+                            Group: cell.Group
+                        });
+                    }
+                }
+                this.Wheres.push({
+                    Condition: where,
+                    Group: cell.Group
+                });
+            }
+        }
+    
         return index;
-    }
-
-    BuildDateCondition(cell, hl, isNull) {
-        let where = '';
-        if (!isNull) {
-            const dateValue = new Date(cell.Value).toISOString().split('T')[0]; 
-            switch (cell.Operator) {
-                case OperatorEnum.NotIn:
-                    where = `[ds].${hl.FieldName} != '${dateValue}'`;
-                    break;
-                case OperatorEnum.In:
-                    where = `[ds].${hl.FieldName} = '${dateValue}'`;
-                    break;
-                case OperatorEnum.Gt:
-                    where = `[ds].${hl.FieldName} > '${dateValue}'`;
-                    break;
-                case OperatorEnum.Lt:
-                    where = `[ds].${hl.FieldName} < '${dateValue}'`;
-                    break;
-                case OperatorEnum.Ge:
-                    where = `[ds].${hl.FieldName} >= '${dateValue}'`;
-                    break;
-                case OperatorEnum.Le:
-                    where = `[ds].${hl.FieldName} <= '${dateValue}'`;
-                    break;
-                default:
-                    where = `[ds].${hl.FieldName} = '${dateValue}'`;
-            }
-        } else {
-            where = cell.Operator === OperatorEnum.NotIn ? `[ds].${hl.FieldName} is not null` : `[ds].${hl.FieldName} is null`;
-        }
-        return where;
-    }
-
-    BuildDefaultCondition(cell, hl, isNull) {
-        let where = '';
-        if (isNull) {
-            where = cell.Operator === OperatorEnum.NotIn ? `[ds].${hl.FieldName} is not null` : `[ds].${hl.FieldName} is null`;
-        } else {
-            where = cell.Operator === OperatorEnum.NotIn ? `[ds].${hl.FieldName} != '${cell.Value}'` : `[ds].${hl.FieldName} = '${cell.Value}'`;
-        }
-        return where;
-    }
-
-    ProcessConditions(cell, advo, where, value, hl, lisToast) {
-        console.log(`Processing condition for field: ${hl.FieldName}, Condition: ${where}`);
-        // @ts-ignore
-        this.AdvSearchVM.Conditions.push({
-            field: hl.FieldName,
-            operation: advo,
-            condition: where,
-            value: value
-        });
-        lisToast.push(`Applied condition ${where} on field ${hl.FieldName}`);
     }
 
     NoCellSelected() {
@@ -552,61 +624,69 @@ export class GridView extends ListView {
             this.HeaderSection.Element.focus();
         }
         if (this.Meta.ComponentType === 'SearchEntry') {
-            const search = this.Parent;
-            if (search && Search._input) {
-                search._input.focus();
+            if (this.Parent instanceof SearchEntry) {
+                const search = this.Parent;
+                if (search._input) {
+                    search._input.focus();
+                }
             }
         }
     }
 
-    ApplyLocal() {
-        const tb = this.DataTable;
-        let rows;
-        if (this.Meta.TopEmpty) {
-            rows = tb.tBodies[tb.tBodies.length - 1].children;
-        } else {
-            rows = tb.tBodies[0].children;
-        }
-        if (!this.CellSelected.length) {
-            Array.from(rows).forEach(row => row.classList.remove("d-none"));
+    ApplyLocal(DataTable) {
+        if (!(DataTable instanceof HTMLTableElement)) {
+            console.error("Invalid DataTable: not an HTMLTableElement");
             return;
         }
-        const listNone = [];
-        const header = this.Header.findIndex(y => y.FieldName === this.CellSelected[0].FieldName);
-
+    
+        var rows;
+        if (this.Meta.TopEmpty) {
+            rows = DataTable.tBodies[DataTable.tBodies.length - 1].children;
+        } else {
+            rows = DataTable.tBodies[0].children;
+        }
+        if (this.CellSelected.Nothing()) {
+            for (var i = 0; i < rows.length; i++) {
+                rows[i].classList.remove("d-none");
+            }
+            return;
+        }
+        this.LastElementFocus = null;
+        var listNone = [];
+        var header = this.Header.findIndex(y => y.FieldName === this.CellSelected[0].FieldName);
         this.CellSelected.forEach(cell => {
-            Array.from(rows).forEach(row => {
-                const cells = row.children;
-                if (!cells[header]) return;
-                const cellText = cells[header].textContent || '';
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].children;
+                if (cells[header] === undefined) {
+                    continue;
+                }
+                var cellText = cells[header].textContent || '';
                 if (cell.Operator === OperatorEnum.In) {
-                    if (!cellText.toLowerCase().includes(cell.ValueText.toLowerCase())) {
-                        if (!listNone.includes(row)) {
-                            listNone.push(row);
+                    if (cellText.toLowerCase().indexOf(cell.ValueText.toLowerCase()) === -1) {
+                        if (!listNone.some(x => x === rows[i])) {
+                            listNone.push(rows[i]);
                         }
                     }
                 } else {
-                    if (cellText.toLowerCase().indexOf(cell.ValueText.toLowerCase()) > -1) {
-                        if (!listNone.includes(row)) {
-                            listNone.push(row);
+                    if (cellText.toLowerCase().indexOf(cell.ValueText.toLowerCase()) !== -1) {
+                        if (!listNone.some(x => x === rows[i])) {
+                            listNone.push(rows[i]);
                         }
                     }
                 }
-            });
-        });
-
-        Array.from(rows).forEach(row => {
-            if (listNone.includes(row)) {
-                row.classList.add("d-none");
-            } else {
-                row.classList.remove("d-none");
-                if (!this.LastElementFocus) {
-                    this.LastElementFocus = row.children[header];
-                }
             }
         });
-
-        if (this.LastElementFocus) {
+        for (var i = 0; i < rows.length; i++) {
+            if (listNone.some(x => x === rows[i])) {
+                rows[i].classList.add("d-none");
+            } else {
+                if (this.LastElementFocus === null) {
+                    this.LastElementFocus = rows[i].children[header];
+                }
+                rows[i].classList.remove("d-none");
+            }
+        }
+        if (this.LastElementFocus !== null) {
             this.LastElementFocus.focus();
             this.LastElementFocus = null;
         }
@@ -618,6 +698,7 @@ export class GridView extends ListView {
         }
         if (!this.CellSelected.some(x => x.FieldName === hotKeyModel.FieldName && x.Value === hotKeyModel.Value && x.ValueText === hotKeyModel.ValueText && x.Operator === hotKeyModel.Operator)) {
             const header = this.Header.find(x => x.FieldName === hotKeyModel.FieldName);
+            // @ts-ignore
             this.CellSelected.push({
                 FieldName: hotKeyModel.FieldName,
                 FieldText: header ? header.Label : '',
@@ -653,7 +734,11 @@ export class GridView extends ListView {
     }
 
     SearchDisplayRows() {
-        const table = this.DataTable;
+        if (!(this.DataTable instanceof HTMLTableElement)) {
+            console.error("Invalid DataTable: not an HTMLTableElement");
+            return;
+        }
+        const table = this.DataTable ;
         const rows = table.tBodies[table.tBodies.length - 1].children;
         for (let i = 0; i < rows.length; i++) {
             if (rows[i].classList.contains("virtual-row")) {
@@ -663,10 +748,13 @@ export class GridView extends ListView {
             let found = false;
             for (let j = 0; j < cells.length; j++) {
                 const htmlElement = cells[j];
+                if (!(htmlElement instanceof HTMLElement)) {
+                    continue;
+                }
                 const input = htmlElement.querySelector("input:first-child");
                 let cellText;
                 if (input !== null) {
-                    cellText = input.value;
+                    cellText =  String(Utils.GetPropValue(input, "value"));
                 } else {
                     cellText = cells[j].textContent || "";
                 }
@@ -1158,49 +1246,46 @@ export class GridView extends ListView {
         if (this.Disabled || !this.Editable || (this.EmptySection && this.EmptySection.Children.length > 0)) {
             return;
         }
-
         let emptyRowData = {};
-        if (this.Meta.DefaultVal && Utils.IsFunction(this.Meta.DefaultVal)) {
-            let dfObj = this.Meta.DefaultVal.call(this, this);
+        if (typeof this.Meta.DefaultVal === 'string' && Utils.IsFunction(this.Meta.DefaultVal)) {
+            let dfObj = eval(`(${this.Meta.DefaultVal})(this)`);
             Object.keys(dfObj).forEach(key => {
                 emptyRowData[key] = dfObj[key];
             });
         }
-
         emptyRowData[this.IdField] = null;
         let rowSection = this.RenderRowData(this.Header, emptyRowData, this.EmptySection, null, true);
-
-        Object.keys(emptyRowData).forEach(field => {
+        Object.entries(emptyRowData).forEach(([field, value]) => {
             // @ts-ignore
             rowSection.PatchModel.push({
                 Field: field,
-                Value: emptyRowData[field]?.toString()
+                Value: value ? value.toString() : ""
             });
         });
-
         this.StickyColumn(rowSection);
-
         if (!this.Meta.TopEmpty) {
-            this.DataTable.insertBefore(rowSection.Element, this.MainSection.Element);
+            this.DataTable.insertBefore(this.MainSection.Element, this.EmptySection.Element);
         } else {
-            this.DataTable.insertBefore(rowSection.Element, this.EmptySection.Element);
+            this.DataTable.insertBefore(this.EmptySection.Element, this.MainSection.Element);
         }
-
-        this.DispatchCustomEvent(this.Meta.Events, CustomEventType.AfterEmptyRowCreated, emptyRowData);
+        this.DispatchCustomEvent(this.Meta.Events, 'AfterEmptyRowCreated', emptyRowData);
     }
 
     FilterColumns(components) {
         if (!components || components.length === 0) return components;
-
-        const permission = this.EditForm.GetGridPolicies(components.map(x => x.Id), Utils.ComponentId);
-        let headers = components.filter(x => !x.Hidden && x.Id !== this.Meta.Id)
-            .filter(header => !header.IsPrivate || permission.filter(p => p.RecordId === header.Id).some(policy => policy.CanRead))
-            .map(header => this.CalcTextAlign(header))
-            .sort((a, b) => b.Frozen - a.Frozen || (b.ComponentType === "Button") - (a.ComponentType === "Button") || a.Order - b.Order);
-
+    
+        const permission = this.EditForm.GetGridPolicies(components.map(x => x.id), Utils.ComponentId);
+        const headers = components.filter(x => !x.hidden && x.id !== this.Meta.Id)
+            .filter(header => !header.isPrivate || permission.filter(x => x.RecordId === header.id)
+            .every(policy => policy.CanRead))
+            .map(this.CalcTextAlign)
+            .sort((a, b) => b.frozen - a.frozen || (b.componentType === "Button" ? 1 : 0) - (a.componentType === "Button" ? 1 : 0) || a.order - b.order);
         this.OrderHeaderGroup(headers);
-        this.Header = [this.ToolbarColumn, ...headers].filter(x => x !== null);
-        return this.Header;
+        this.header = [];
+        this.header.push(this.ToolbarColumn);
+        this.header.push(...headers);
+        this.header = this.header.filter(x => x !== null);
+        return this.header;
     }
 
     async ApplyFilter() {
@@ -1435,7 +1520,11 @@ export class GridView extends ListView {
     // @ts-ignore
         DuplicateSelected(ev, addRow = false) {
         const originalRows = this.GetSelectedRows();
-        const copiedRows = this.CloneRows(originalRows);
+        let copiedRows = originalRows.map(x => {
+            let res = XHRWrapper.UnboxValue(x); 
+            res[this.IdField] = null; 
+            return res;
+        });
         if (!copiedRows.length || !this.CanWrite) {
             return;
         }
@@ -1545,7 +1634,7 @@ export class GridView extends ListView {
             .find(row => Array.from(row.cells).some(cell => cell.textContent === summaryText));
 
         if (!existingSummaryRow) {
-            existingSummaryRow = summaryRows[summaryRows.length - 1];  // Gets the last summary row
+            existingSummaryRow = summaryRows[summaryRows.length - 1];  
         }
 
         if (summaryRows.length >= count) {
@@ -1556,9 +1645,12 @@ export class GridView extends ListView {
             return null;
         }
 
-        let result = this.MainSection.FirstChild.CloneNode(true);  // Cloning the first row
+        let result = this.MainSection.FirstChild.Element.cloneNode(true); 
         footer.appendChild(result);
-        Array.from(result.children).forEach(child => child.innerHTML = '');  // Clearing cell contents
+        if (result instanceof Element) {
+            footer.appendChild(result);
+            Array.from(result.children).forEach(child => child.innerHTML = '');  
+        }  
         return result;
     }
 
@@ -1682,86 +1774,178 @@ export class GridView extends ListView {
         // }
     }
 
+    // RenderTableHeader(headers) {
+    //     if (!headers || headers.length === 0) {
+    //         headers = this.Header;
+    //     }
+    //     if (this.HeaderSection.Element === null) {
+    //         this.AddSections();
+    //     }
+    //     headers.forEach((x, index) => x.PostOrder = index);
+    //     this.HeaderSection.DisposeChildren();
+    //     const anyGroup = headers.some(x => x.GroupName && x.GroupName.length > 0);
+    //     Html.Take(this.HeaderSection.Element).Clear().TRow.ForEach(headers, (header, index) => {
+    //         if (anyGroup && header.GroupName && header.GroupName.length > 0) {
+    //             if (header !== headers.find(x => x.GroupName === header.GroupName)) {
+    //                 return;
+    //             }
+    
+    //             Html.Instance.Th.Render();
+    //             Html.Instance.ColSpan(headers.filter(x => x.GroupName === header.GroupName).length);
+    //             Html.Instance.IHtml(header.GroupName).Render();
+    //             return;
+    //         }
+    //         Html.Instance.Th
+    //             .TabIndex(-1)
+    //             .DataAttr("field", header.FieldName)
+    //             .DataAttr("id", header.Id)
+    //             .Width(header.AutoFit ? "auto" : header.Width)
+    //             .Style(`${header.Style};min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
+    //             .TextAlign('center')
+    //             .Event('dblclick', this.EditForm.ComponentProperties, header)
+    //             .Event('contextmenu', this.HeaderContextMenu, header)
+    //             .Event('focusout', e => this.FocusOutHeader(e, header))
+    //             .Event('keydown', e => this.ThHotKeyHandler(e, header));
+    //             // @ts-ignore
+    //             this.HeaderSection.AddChild(new Section(Html.Context, { Meta: header }));
+    //         if (anyGroup && !header.GroupName) {
+    //             Html.Instance.RowSpan(2);
+    //         }
+    //         if (!anyGroup && this.Header.some(x => x.GroupName && x.GroupName.length > 0)) {
+    //             Html.Instance.ClassName("header-group");
+    //         }
+    //         if (header.StatusBar) {
+    //             Html.Instance.Icon("fa fa-edit").Event('click', this.ToggleAll).End.Render();
+    //         }
+    //         const orderBy = this.AdvSearchVM.OrderBy && this.AdvSearchVM.OrderBy.find(x => x.ComId === header.Id);
+    //         if (orderBy) {
+    //             Html.Instance.ClassName(OrderBy.OrderbyDirectionId === 'ASC' ? "asc" : "desc").Render();
+    //         }
+    //         if (header.Icon && header.Icon.trim() !== "") {
+    //             Html.Instance.Icon(header.Icon).Margin('right', 0).End.Render();
+    //         } else if (!header.StatusBar) {
+    //             Html.Instance.Event('click', e => ClickHeader(e, header)).IHtml(header.Label).Render();
+    //         }
+    //         if (header.ComponentType === 'Number') {
+    //             Html.Instance.Div.End.Render();
+    //             Html.Instance.Span.Style("display: block;").End.Render();
+    //         }
+    //         if (header.Description !== null) {
+    //             Html.Instance.Attr("title", header.Description);
+    //         }
+    //         if (Client.SystemRole) {
+    //             Html.Instance.Attr("contenteditable", "true");
+    //             Html.Instance.Event('input', e => ChangeHeader(e, header));
+    //         }
+    //         Html.Instance.EndOf('th');
+    //     }).EndOf('tr').Render();
+    
+    //     if (anyGroup) {
+    //         Html.Instance.TRow.ForEach(headers, (header, index) => {
+    //             if (anyGroup && header.GroupName && header.GroupName.length > 0) {
+    //                 Html.Instance.Th
+    //                     .DataAttr("field", header.FieldName)
+    //                     .Width(header.Width)
+    //                     .Style(`min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
+    //                     .TextAlign(header.TextAlignEnum)
+    //                     .Event('contextmenu', this.HeaderContextMenu, header)
+    //                     .InnerHTML(header.Label);
+    //                     this.HeaderSection.AddChild(new Section(Html.Context.parentElement, { Meta: header }));
+    //             }
+    //         });
+    //     }
+    //     this.HeaderSection.Children = this.HeaderSection.Children.sort((a, b) => a.Meta.PostOrder - b.Meta.PostOrder);
+    //     if (!this.Meta.Focus) {
+    //         this.ColumnResizeHandler();
+    //     }
+    // }
+
     RenderTableHeader(headers) {
-        if (!headers || headers.length === 0) {
+        if (!headers) {
             headers = this.Header;
         }
-        if (!this.HeaderSection.Element) {
+        if (this.HeaderSection.Element === null) {
             this.AddSections();
         }
         headers.forEach((x, index) => x.PostOrder = index);
         this.HeaderSection.DisposeChildren();
-        const anyGroup = headers.some(x => x.GroupName);
-        
-        const headerRow = document.createElement('tr');
-        headers.forEach((header, index) => {
-            if (anyGroup && header.GroupName) {
+        const anyGroup = headers.some(x => x.GroupName !== "");
+        Html.Take(this.HeaderSection.Element).Clear().TRow.ForEach(headers, (header, index) => {
+            if (anyGroup && header.GroupName !== "") {
                 if (header !== headers.find(x => x.GroupName === header.GroupName)) {
                     return;
                 }
-                const th = document.createElement('th');
-                th.setAttribute('colspan', headers.filter(x => x.GroupName === header.GroupName).length.toString());
-                th.innerHTML = header.GroupName;
-                headerRow.appendChild(th);
+    
+                Html.Instance.Th.Render();
+                Html.Instance.ColSpan(headers.filter(x => x.GroupName === header.GroupName).length);
+                Html.Instance.IHtml(header.GroupName).Render();
                 return;
             }
-            const th = document.createElement('th');
-            th.tabIndex = -1;
-            th.dataset.field = header.FieldName;
-            th.dataset.id = header.Id;
-            th.style.width = header.AutoFit ? 'auto' : header.Width;
-            th.style.minWidth = header.MinWidth;
-            th.style.maxWidth = header.MaxWidth;
-            th.style.textAlign = header.TextAlignEnum || 'center';
-            th.innerHTML = header.Label;
-            th.ondblclick = () => this.EditForm.ComponentProperties(header);
-            th.oncontextmenu = e => this.HeaderContextMenu(e, header);
-            th.onfocusout = e => this.FocusOutHeader(e, header);
-            th.onkeydown = e => this.ThHotKeyHandler(e, header);
+            Html.Instance.Th
+                .TabIndex(-1)
+                .DataAttr("field", header.FieldName)
+                .DataAttr("id", header.Id).Width(header.AutoFit ? "auto" : header.Width)
+                .Style(`${header.Style};min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
+                .TextAlign('center')
+                .Event(EventType.DblClick, this.EditForm.ComponentProperties, header)
+                .Event(EventType.ContextMenu, this.HeaderContextMenu, header)
+                .Event(EventType.FocusOut, e => this.FocusOutHeader(e, header))
+                .Event(EventType.KeyDown, e => this.ThHotKeyHandler(e, header));
+            // @ts-ignore
+            this.HeaderSection.AddChild(new Section(Html.Context.parentElement, { Meta: header }));
+            if (anyGroup && header.GroupName === "") {
+                Html.Instance.RowSpan(2);
+            }
+            if (!anyGroup && this.Header.some(x => x.GroupName && x.GroupName.length)) {
+                Html.Instance.ClassName("header-group");
+            }
             if (header.StatusBar) {
-                const icon = document.createElement('i');
-                icon.className = 'fa fa-edit';
-                icon.onclick = () => this.ToggleAll();
-                th.appendChild(icon);
+                Html.Instance.Icon("fa fa-edit").Event(EventType.Click, this.ToggleAll).End.Render();
+            }
+            const orderBy = this.AdvSearchVM.OrderBy?.find(x => x.ComId === header.Id);
+            if (orderBy) {
+                Html.Instance.ClassName(orderBy.OrderbyDirectionId === OrderbyDirection.ASC ? "asc" : "desc").Render();
             }
             if (header.Icon) {
-                const icon = document.createElement('i');
-                icon.className = header.Icon;
-                th.appendChild(icon);
+                Html.Instance.Icon(header.Icon).Margin(Direction.Right, 0).End.Render();
+            } else if (!header.StatusBar) {
+                Html.Instance.Event(EventType.Click, e => this.ClickHeader(e, header)).IHtml(header.Label).Render();
+            }
+            if (header.ComponentType === "Number") {
+                Html.Instance.Div.End.Render();
+                Html.Instance.Span.Style("display: block;").End.Render();
             }
             if (header.Description) {
-                th.title = header.Description;
+                Html.Instance.Attr("title", header.Description);
             }
             if (Client.SystemRole) {
-                th.setAttribute('contenteditable', 'true');
-                th.oninput = e => this.ChangeHeader(e, header);
+                Html.Instance.Attr("contenteditable", "true");
+                Html.Instance.Event(EventType.Input, e => this.ChangeHeader(e, header));
             }
-            headerRow.appendChild(th);
-        });
-        this.HeaderSection.Element.appendChild(headerRow);
-
+            Html.Instance.EndOf(ElementType.th);
+        }).EndOf(ElementType.tr).Render();
+    
         if (anyGroup) {
-            const groupRow = document.createElement('tr');
-            headers.forEach(header => {
-                if (header.GroupName) {
-                    const th = document.createElement('th');
-                    th.dataset.field = header.FieldName;
-                    th.style.width = header.Width;
-                    th.style.minWidth = header.MinWidth;
-                    th.style.maxWidth = header.MaxWidth;
-                    th.style.textAlign = header.TextAlignEnum || 'center';
-                    th.innerHTML = header.Label;
-                    th.oncontextmenu = e => this.HeaderContextMenu(e, header);
-                    groupRow.appendChild(th);
+            Html.Instance.TRow.ForEach(headers, (header, index) => {
+                if (anyGroup && header.GroupName !== "") {
+                    Html.Instance.Th
+                        .DataAttr("field", header.FieldName).Width(header.Width)
+                        .Style(`min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
+                        .TextAlign(header.TextAlignEnum)
+                        .Event(EventType.ContextMenu, this.HeaderContextMenu, header)
+                        .InnerHTML(header.Label);
+                    // @ts-ignore
+                    this.HeaderSection.AddChild(new Section(Html.Context.parentElement),{ Meta: header });
                 }
             });
-            this.HeaderSection.Element.appendChild(groupRow);
         }
-        this.HeaderSection.Children.sort((a, b) => a.Meta.PostOrder - b.Meta.PostOrder);
+        this.HeaderSection.Children = this.HeaderSection.Children.sort((a, b) => a.Meta.PostOrder - b.Meta.PostOrder);
         if (!this.Meta.Focus) {
             this.ColumnResizeHandler();
         }
     }
+    
+
 
     ChangeHeader(e, header) {
         clearTimeout(this._imeout);
@@ -1802,12 +1986,12 @@ export class GridView extends ListView {
     }
 
     ToggleAll() {
-        let anySelected = this.AllListViewItem.some(x => x.Selected);
+        const anySelected = this.AllListViewItem.some(x => x.Selected);
         if (anySelected) {
             this.ClearSelected();
             return;
         }
-        this.RowAction(x => {
+        this.AllListViewItem.forEach(x => {
             if (x.EmptyRow) return;
             x.Selected = true;
         });

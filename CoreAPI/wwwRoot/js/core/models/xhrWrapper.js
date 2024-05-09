@@ -63,4 +63,27 @@ class XHRWrapper {
         }
         return JSON.stringify(this.Value);
     }
+
+    static UnboxValue(val) {
+        if (val === null) return null;
+        let res = {};
+        for (let key in val) {
+            if (key === null || key[0] === '$') continue;
+            let item = val[key];
+            if (item !== null && item !== undefined) {
+                const type = typeof item;
+                let isSimple = (type === 'number' || type === 'boolean' || type === 'string') ||
+                    (item instanceof Date) || 
+                    (typeof item === 'object' && Object.prototype.toString.call(item) === '[object Date]') || 
+                    (item.constructor.name === 'Date') || 
+                    (type === 'object' && (item.toString() === '[object Date]')) || 
+                    (!isNaN(parseFloat(item)) && isFinite(item));
+    
+                if (isSimple) {
+                    res[key] = item;
+                }
+            }
+        }
+        return res;
+    }
 }

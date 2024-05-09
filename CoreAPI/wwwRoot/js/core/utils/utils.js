@@ -205,6 +205,20 @@ export class Utils {
 
         return current;
     }
+
+    static FormatEntity(format, source) {
+        if (!format) { 
+            return '';
+        }
+    
+        if (source === null) {
+            return format;
+        }
+    
+        // @ts-ignore
+        return this.FormatEntity(format, null, source); 
+    }
+
     static SetPropValue(instance, propertyName, value) {
         if (!propertyName || propertyName.trim() === '') return;
         if (instance && typeof instance === 'object') {
