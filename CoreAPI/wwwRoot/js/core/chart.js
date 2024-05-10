@@ -3,6 +3,7 @@ import { CanvasJS } from "./libs/canvasjs.min.js";
 import { Utils } from "./utils/utils.js";
 import { Html } from "./utils/html.js";
 import { Client } from "./clients/client.js";
+import { Component } from "models/component.js";
 
 /**
  * Represents a Chart component that can be rendered and updated.
@@ -32,6 +33,7 @@ export class Chart extends EditableComponent {
      */
     AddElement() {
         if (!this.Element) {
+            // @ts-ignore
             this.Element = Html.Take(this.ParentElement).Div().ClassName("chart-wrapper").GetContext();
         }
     }
@@ -51,14 +53,15 @@ export class Chart extends EditableComponent {
         this.AddElement();
         if (!this.Data || this.Data.length == 0) {
             const queryFn = Utils.IsFunction(this.Meta.PreQuery);
-            const submitEntity = queryFn?.Call(null, this);
+            const submitEntity = queryFn?.call(null, this);
             const entity = JSON.stringify({
-                Params: queryFn ? JSON.Stringify(submitEntity) : null,
+                Params: queryFn ? JSON.stringify(submitEntity) : null,
                 ComId: this.Meta.Id,
                 MetaConn: this.Meta.MetaConn,
                 DataConn: this.Meta.DataConn,
             });
-            this.Data = this.Meta.LocalData ?? await Client.SubmitAsync({
+            // @ts-ignore
+            this.Data = this.Meta.LocalData ?? await Client.Instance.SubmitAsync({
                 Url: Utils.ComQuery,
                 IsRawString: true,
                 Value: entity,
@@ -91,26 +94,23 @@ export class Chart extends EditableComponent {
                 }
             };
         } else {
-            options = JSON.Parse(this.Meta.FormatData);
+            options = JSON.parse(this.Meta.FormatData);
         }
         var formatter = Utils.IsFunction(this.Meta.FormatEntity);
         if (formatter) {
             options.Data = formatter.call(this, this.Data);
         } else if (!this.Meta.GroupBy) {
-            options.Data = this.Data.Select(data => {
-                data.type = data.type ?? type;
-                return data;
-            })
-                .GroupBy(x => {
-                    return {
-                        type: x.type, name: x.name, axisYType: x.axisYType
-                    };
-                })
-                .Select(x => {
-                    return {
-                        type: x.Key.type, toolTipContent: x.FirstOrDefault().toolTipContent, axisYType: x.Key.axisYType, dataPoints: x.ToArray()
-                    };
-                });
+            options.data = this.Data.reduce((acc, item) => {
+                const key = `${item.type || type}|${item.name || ''}|${item.axisYType || ''}`;
+                if (!acc[key]) acc[key] = { type: item.type || type, name: item.name, axisYType: item.axisYType, dataPoints: [] };
+                acc[key].dataPoints.push({ y: item.y, label: item.label });
+                return acc;
+            }, {});
+            options.data = Object.values(options.data).map(group => ({
+                type: group.type,
+                toolTipContent: "{label} {y}",
+                dataPoints: group.dataPoints
+            }));
         } else {
             options.data = [{
                 type: type,
@@ -118,6 +118,7 @@ export class Chart extends EditableComponent {
                 dataPoints: this.Data
             }];
         }
+        // @ts-ignore
         const chart = new CanvasJS.Chart(this.Element, options);
         chart.render();
     }

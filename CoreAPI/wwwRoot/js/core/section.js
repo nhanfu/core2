@@ -9,6 +9,7 @@ import EventType from "./models/eventType.js";
 import { PatchVM } from "./models/patch.js";
 import { Client } from "./clients/client.js";
 import { Component } from "./models/component.js";
+import { ListView } from "listView.js";
 
 export class Section extends EditableComponent {
     /**
@@ -28,7 +29,7 @@ export class Section extends EditableComponent {
         if (this.elementType == null && this.Element != null) {
             this.elementType = this.Element?.tagName?.toLowerCase();
         } else if (this.ParentElement != null && this.elementType != null) {
-            Html.Take(this.ParentElement).Add(this.elementType);
+            Html.Take(this.ParentElement).Add(this.elementType.value);
             this.Element = Html.Context;
         } else {
             throw 'Element type must be not null and parent element or element must be supplied'
@@ -188,12 +189,12 @@ export class Section extends EditableComponent {
             }
         }
 
-        this.element.innerHTML = Utils.getHtmlCode(this.Meta.Html, [this.entity]);
+        this.Element.innerHTML = Utils.GetHtmlCode(this.Meta.Html, [this.Entity]);
 
         if (this.Meta.Javascript) {
             try {
-                const fn = new Function('editForm', this.Meta.javascript);
-                fn.call(this, this.editForm);
+                const fn = new Function('editForm', this.Meta.Javascript);
+                fn.call(this, this.EditForm);
             } catch (e) {
                 console.error('Error executing JavaScript:', e);
             }
@@ -298,11 +299,12 @@ export class Section extends EditableComponent {
             Html.Instance.ClassName("panel").ClassName("group");
         }
         Html.Instance.Display(!GroupInfo.Hidden).Style(GroupInfo.Style || "").Width(Width);
-        const section = new section(Html.Context);
+        const section = new Section(Html.Context);
         section.Id = GroupInfo.FieldName + GroupInfo.Id,
         section.Name = GroupInfo.FieldName;
         section.Meta = GroupInfo;
         section.Disabled = Parent.Disabled || GroupInfo.Disabled || !WritePermission || form.IsLock || section.Disabled;
+        // @ts-ignore
         Parent.AddChild(section, null, GroupInfo.ShowExp);
         Html.Take(Parent.Element);
         section.DOMContentLoaded?.Invoke();
@@ -323,7 +325,7 @@ export class Section extends EditableComponent {
 
         let TabG = Parent.EditForm.TabGroup.find(x => x.Name === Group.TabGroup);
         if (!TabG) {
-            TabG = {
+            this.TabG = {
                 Name: Group.TabGroup,
                 Parent: Parent,
                 ParentElement: Parent.Element,
@@ -359,6 +361,7 @@ export class Section extends EditableComponent {
                     // Logic to toggle disable based on expression
                 }
             };
+            // @ts-ignore
             TabG.Children.push(SubTab);
             Parent.EditForm.TabGroup.push(TabG);
             Parent.Children.push(TabG);
@@ -383,6 +386,7 @@ export class Section extends EditableComponent {
                     // Logic to toggle disable based on expression
                 }
             };
+            // @ts-ignore
             TabG.Children.push(SubTab);
             SubTab.Render();
             //SubTab.RenderTabContent();
@@ -453,7 +457,7 @@ export class Section extends EditableComponent {
     static ChangeComponentGroupLabel(e, com) {
         window.clearTimeout(Section._imeout1);
         Section._imeout1 = window.setTimeout(() => {
-            SubmitLabelChanged('Meta', com.id, e.target.textContent.decodeSpecialChar());
+            this.SubmitLabelChanged('Meta', com.Id, e.target.textContent.decodeSpecialChar());
         }, 1000);
     }
 
@@ -474,7 +478,7 @@ export class Section extends EditableComponent {
         }
 
         let column = 0;
-        group.Children.sort((a, b) => a.Order - b.Order).forEach(ui => column = this.RenderCom(ui, column, allComPolicies));
+        group.Children.sort((a, b) => a.Order - b.Order).forEach(ui => this.column = this.RenderCom(ui, column, allComPolicies));
     }
 
     /**
@@ -533,7 +537,7 @@ export class Section extends EditableComponent {
                 childComponent.parentElement.parentElement.classList.add('inline-label');
             }
 
-            if (Client.systemRole) {
+            if (Client.SystemRole) {
                 childComponent.element.addEventListener('contextmenu', e => EditForm.sysConfigMenu(e, ui, group, childComponent));
             }
         }

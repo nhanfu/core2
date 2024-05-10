@@ -1318,4 +1318,34 @@ export class ListView extends EditableComponent {
             }
             return header;
         }
+
+        MergeComponent(sysSetting, userSetting) {
+            if (!userSetting) return sysSetting;
+            const column = JSON.parse(userSetting.value);
+            if (!column || column.length === 0) {
+                return sysSetting;
+            }
+            const userSettings = column.reduce((acc, current) => {
+                acc[current.id] = current;
+                return acc;
+            }, {});
+        
+            sysSetting.forEach(component => {
+                const current = userSettings[component.id];
+                if (current) {
+                    component.width = current.width;
+                    component.maxWidth = current.maxWidth;
+                    component.minWidth = current.minWidth;
+                    component.order = current.order;
+                    component.frozen = current.frozen;
+                }
+            });
+            return sysSetting;
+        }
+
+         ActionFilter()
+        {
+            this.ClearRowData();
+            this.ReloadData().Done();
+        }
 }

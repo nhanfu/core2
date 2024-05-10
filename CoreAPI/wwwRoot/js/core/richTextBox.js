@@ -3,12 +3,14 @@ import { Html } from "./utils/html.js";
 import EventType from './models/eventType.js';
 import ObservableArgs from './models/observable.js';
 import { Uuid7 } from "./structs/uuidv7.js";
+import { Component } from "models/component.js";
+
 import "./utils/fix.js";
 
 
 export class RichTextBox extends EditableComponent {
      /**
-     * @param {import("./editableComponent").Component} ui
+     * @param {Component} ui
      * @param {HTMLElement} [ele=null] 
      */
     constructor(ui, ele = null) {

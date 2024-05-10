@@ -366,27 +366,23 @@ export class Image extends EditableComponent {
                         resolve(path);
     
                         await Client.Instance.PatchAsync({
-                            table: "FileUpload",
-                            changes: [
-                                { field: "Id", value: Uuid7.Id25() },
-                                { field: "EntityName", value: this.Meta.RefName },
-                                { field: "RecordId", value: this.EntityId },
-                                { field: "SectionId", value: this.Meta.ComponentGroupId },
-                                { field: "FieldName", value: this.Name },
-                                { field: "FileName", value: file.name },
-                                { field: "FilePath", value: path }
+                            Table: "FileUpload",
+                            Changes: [
+                                // @ts-ignore
+                                { Field: "Id", Value: Uuid7.Id25() },
+                                // @ts-ignore
+                                { Field: "EntityName", Value: this.Meta.RefName },
+                                // @ts-ignore
+                                { Field: "RecordId", Value: this.EntityId },
+                                // @ts-ignore
+                                { Field: "SectionId", Value: this.Meta.ComponentGroupId },
+                                // @ts-ignore
+                                { Field: "FieldName", Value: this.Name },
+                                // @ts-ignore
+                                { Field: "FileName", Value: file.name },
+                                // @ts-ignore
+                                { Field: "FilePath", Value: path }
                             ],
-                            FeatureId: '',
-                            ComId: '',
-                            Table: '',
-                            DeletedIds: '',
-                            QueueName: '',
-                            CacheName: '',
-                            MetaConn: '',
-                            DataConn: '',
-                            Changes: [],
-                            EntityId: '',
-                            OldId: ''
                         });
                     } catch (error) {
                         console.error("Error in file upload process:", error);

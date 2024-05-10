@@ -237,26 +237,6 @@ export class HTML {
         return this;
     }
     
-    Sticky(top = null, left = null) {
-        let context = this.Context;
-        if (context === null) {
-            return this;
-        }
-        if (context.previousElementSibling !== null && context.constructor === context.previousElementSibling.constructor) {
-            if (left === '0') {
-                left = context.offsetLeft + Utils.Pixel;
-            } else if (top === '0') {
-                top = context.offsetTop + Utils.Pixel;
-            }
-        }
-        if (top !== null) {
-            this.Style(`top: ${top};`);
-        }
-        if (left !== null) {
-            this.Style(`left: ${left};`);
-        }
-        return this.Style('position: sticky; z-index: 1;');
-    }
     /**
      * @param {string} direction
      * @param {number} number
@@ -626,6 +606,12 @@ export class HTML {
         for (let index = 0; index < array.length; index++) {
             callback(array[index], index);
         }
+        return this;
+    }
+
+    Display(shouldShow) {
+        const ele = this.Context;
+        ele.style.display = shouldShow ? '' : 'none';
         return this;
     }
 }

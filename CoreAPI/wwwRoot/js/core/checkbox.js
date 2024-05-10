@@ -4,6 +4,7 @@ import EventType from "./models/eventType.js";
 import ObservableArgs from "./models/observable.js";
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
+import { Component } from "models/component.js";
 
 /**
  * Represents a Checkbox component.
@@ -25,8 +26,7 @@ export class Checkbox extends EditableComponent {
         super(ui);
         if (!ui) throw new Error("ui is required");
         this.Meta = ui;
-        if (ele.tagName === ComponentType.Input) this.Element = this._input = ele;
-        else this.ParentElement = ele;
+        this.ParentElement = ele;
         this.DefaultValue = false;
     }
 
@@ -36,7 +36,8 @@ export class Checkbox extends EditableComponent {
     Render() {
         if (this.ParentElement != null && this.Element == null) {
             Html.Take(this.ParentElement).TabIndex(-1).SmallCheckbox(this._value ?? false);
-            this._input = Html.Context.PreviousElementSibling;
+            // @ts-ignore
+            this._input = Html.Context.previousElementSibling;
         }
         this.Element = this._input.parentElement ?? this._input;
         Html.Take(this._input).Event('input', this.UserChange.bind(this));
@@ -80,8 +81,8 @@ export class Checkbox extends EditableComponent {
             this.Entity.SetComplexPropValue(this.Name, check);
         }
         this.Dirty = true;
-        /** @type {ObservableArgs} */
-        var arg = { NewData: this._value, OldData: oldVal, EvType: EventType.Change };
+        // @ts-ignore
+        var arg = new ObservableArgs({ NewData: this._value, OldData: oldVal, EvType: EventType.Change });
         this.UserInput?.invoke(arg);
         this.PopulateFields();
         this.CascadeField();

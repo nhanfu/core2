@@ -1,31 +1,22 @@
-import { ListView } from './listView.js';
-import { Direction, Html } from "./utils/html.js";
-import { Utils } from "./utils/utils.js";
-import { OperatorEnum, KeyCodeEnum, OrderbyDirection, AdvSearchOperation, LogicOperation, OrderBy} from './models/enum.js';
-import { ValidationRule } from "./models/validationRule.js";
-import { LangSelect } from "./utils/langSelect.js";
-import { Client } from "./clients/client.js";
-import EventType from './models/eventType.js';
-import { ComponentType } from './models/componentType.js';
-import { Str } from './utils/ext.js';
-import ObservableArgs from './models/observable.js';
-import { Action } from "./models/action.js";
-import { Spinner } from './spinner.js';
 import "./utils/fix.js";
 import { Toast } from 'toast.js';
-import { ContextMenu } from 'contextMenu.js';
-import { CustomEventType } from 'models/customEventType.js';
-import { ConfirmDialog } from 'confirmDialog.js';
+import { Spinner } from './spinner.js';
+import { Utils } from "./utils/utils.js";
+import { ListView } from './listView.js';
 import { Uuid7 } from 'structs/uuidv7.js';
-import { ListViewSearch, ListViewSearchVM } from 'listViewSearch.js';
-import "./utils/fix.js";
-import { ListViewSection, Section } from 'section.js';
-import { GridViewItem } from 'gridViewItem.js';
-import { EditForm } from 'editForm.js';
-import { ListViewItem } from 'listViewItem.js';
-import { HotKeyModel } from 'models/hotKeyModel.js';
+import { ContextMenu } from 'contextMenu.js';
+import { Client } from "./clients/client.js";
 import { SearchEntry } from 'searchEntry.js';
+import EventType from './models/eventType.js';
+import { GridViewItem } from 'gridViewItem.js';
+import { ConfirmDialog } from 'confirmDialog.js';
+import { Direction, Html } from "./utils/html.js";
 import { ElementType } from 'models/elementType.js';
+import { HotKeyModel } from 'models/hotKeyModel.js';
+import { ListViewSection, Section } from 'section.js';
+import { CustomEventType } from 'models/customEventType.js';
+import { ListViewSearch, ListViewSearchVM } from 'listViewSearch.js';
+import { OperatorEnum, KeyCodeEnum, OrderbyDirection, AdvSearchOperation, LogicOperation} from './models/enum.js';
 
 
 
@@ -1334,7 +1325,7 @@ export class GridView extends ListView {
             };
 
             const mouseUpHandler = () => {
-                this.UpdateHeader();
+                // this.UpdateHeader();
                 resizer.classList.remove('resizing');
                 document.removeEventListener('mousemove', mouseMoveHandler);
                 document.removeEventListener('mouseup', mouseUpHandler);
@@ -1763,102 +1754,17 @@ export class GridView extends ListView {
         rowSection.Parent = this.MainSection;
         rowSection.ListViewSection = this.MainSection;
     }
+    
     ProcessMetaData(ds, rowCount) {
-        // const total = ds.length > 1 && ds[1].length > 0 ? ds[1][0]["total"] : null;
-        // const headers = ds.length > 2 ? ds[2].map(x => this.CastProp(x)) : null;
-        // this.Settings = ds.length > 3 && ds[3].length > 0 ? this.As(ds[3][0], UserSetting) : null;
-        // this.FilterColumns(this.MergeComponent(headers, this.Settings));
-        // this.RenderTableHeader(this.Header);
-        // if (this.Paginator !== null) {
-        //     this.Paginator.Options.Total = total ?? rowCount;
-        // }
+        let total = ds.length > 1 && ds[1].length > 0 ? ds[1][0]["total"] : null;
+        let headers = ds.length > 2 ? ds[2].map(x => Utils.CastProp(x , "Component")) : null;
+        this.Settings = ds.length > 3 && ds[3].length > 0 ? Utils.As(ds[3][0], "UserSetting") : null;
+        this.FilterColumns(this.MergeComponent(headers, this.Settings));
+        this.RenderTableHeader(this.Header);
+        if (this.Paginator != null) {
+            this.Paginator.Options.Total = total !== null ? total : rowCount;
+        }
     }
-
-    // RenderTableHeader(headers) {
-    //     if (!headers || headers.length === 0) {
-    //         headers = this.Header;
-    //     }
-    //     if (this.HeaderSection.Element === null) {
-    //         this.AddSections();
-    //     }
-    //     headers.forEach((x, index) => x.PostOrder = index);
-    //     this.HeaderSection.DisposeChildren();
-    //     const anyGroup = headers.some(x => x.GroupName && x.GroupName.length > 0);
-    //     Html.Take(this.HeaderSection.Element).Clear().TRow.ForEach(headers, (header, index) => {
-    //         if (anyGroup && header.GroupName && header.GroupName.length > 0) {
-    //             if (header !== headers.find(x => x.GroupName === header.GroupName)) {
-    //                 return;
-    //             }
-    
-    //             Html.Instance.Th.Render();
-    //             Html.Instance.ColSpan(headers.filter(x => x.GroupName === header.GroupName).length);
-    //             Html.Instance.IHtml(header.GroupName).Render();
-    //             return;
-    //         }
-    //         Html.Instance.Th
-    //             .TabIndex(-1)
-    //             .DataAttr("field", header.FieldName)
-    //             .DataAttr("id", header.Id)
-    //             .Width(header.AutoFit ? "auto" : header.Width)
-    //             .Style(`${header.Style};min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
-    //             .TextAlign('center')
-    //             .Event('dblclick', this.EditForm.ComponentProperties, header)
-    //             .Event('contextmenu', this.HeaderContextMenu, header)
-    //             .Event('focusout', e => this.FocusOutHeader(e, header))
-    //             .Event('keydown', e => this.ThHotKeyHandler(e, header));
-    //             // @ts-ignore
-    //             this.HeaderSection.AddChild(new Section(Html.Context, { Meta: header }));
-    //         if (anyGroup && !header.GroupName) {
-    //             Html.Instance.RowSpan(2);
-    //         }
-    //         if (!anyGroup && this.Header.some(x => x.GroupName && x.GroupName.length > 0)) {
-    //             Html.Instance.ClassName("header-group");
-    //         }
-    //         if (header.StatusBar) {
-    //             Html.Instance.Icon("fa fa-edit").Event('click', this.ToggleAll).End.Render();
-    //         }
-    //         const orderBy = this.AdvSearchVM.OrderBy && this.AdvSearchVM.OrderBy.find(x => x.ComId === header.Id);
-    //         if (orderBy) {
-    //             Html.Instance.ClassName(OrderBy.OrderbyDirectionId === 'ASC' ? "asc" : "desc").Render();
-    //         }
-    //         if (header.Icon && header.Icon.trim() !== "") {
-    //             Html.Instance.Icon(header.Icon).Margin('right', 0).End.Render();
-    //         } else if (!header.StatusBar) {
-    //             Html.Instance.Event('click', e => ClickHeader(e, header)).IHtml(header.Label).Render();
-    //         }
-    //         if (header.ComponentType === 'Number') {
-    //             Html.Instance.Div.End.Render();
-    //             Html.Instance.Span.Style("display: block;").End.Render();
-    //         }
-    //         if (header.Description !== null) {
-    //             Html.Instance.Attr("title", header.Description);
-    //         }
-    //         if (Client.SystemRole) {
-    //             Html.Instance.Attr("contenteditable", "true");
-    //             Html.Instance.Event('input', e => ChangeHeader(e, header));
-    //         }
-    //         Html.Instance.EndOf('th');
-    //     }).EndOf('tr').Render();
-    
-    //     if (anyGroup) {
-    //         Html.Instance.TRow.ForEach(headers, (header, index) => {
-    //             if (anyGroup && header.GroupName && header.GroupName.length > 0) {
-    //                 Html.Instance.Th
-    //                     .DataAttr("field", header.FieldName)
-    //                     .Width(header.Width)
-    //                     .Style(`min-width: ${header.MinWidth}; max-width: ${header.MaxWidth}`)
-    //                     .TextAlign(header.TextAlignEnum)
-    //                     .Event('contextmenu', this.HeaderContextMenu, header)
-    //                     .InnerHTML(header.Label);
-    //                     this.HeaderSection.AddChild(new Section(Html.Context.parentElement, { Meta: header }));
-    //             }
-    //         });
-    //     }
-    //     this.HeaderSection.Children = this.HeaderSection.Children.sort((a, b) => a.Meta.PostOrder - b.Meta.PostOrder);
-    //     if (!this.Meta.Focus) {
-    //         this.ColumnResizeHandler();
-    //     }
-    // }
 
     RenderTableHeader(headers) {
         if (!headers) {

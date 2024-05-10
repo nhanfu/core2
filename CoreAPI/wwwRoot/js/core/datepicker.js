@@ -1,3 +1,4 @@
+import { Component } from "models/component.js";
 import EditableComponent from "./editableComponent.js";
 import ObservableArgs from "./models/observable.js";
 import { Str } from "./utils/ext.js";

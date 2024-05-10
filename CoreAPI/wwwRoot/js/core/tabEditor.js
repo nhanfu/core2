@@ -5,6 +5,10 @@ import EventType from "./models/eventType.js";
 import { KeyCodeEnum } from "./models/enum.js";
 import { Html } from "./utils/html.js";
 import { LangSelect } from "./utils/langSelect.js";
+import { ComponentExt } from "utils/componentExt.js";
+import { GridView } from "gridView.js";
+import { ListView } from "listView.js";
+import { App } from "app.js";
 
 /**
  * Represents a tab editor component, which can manage multiple tabs and their content.
@@ -81,13 +85,14 @@ export class TabEditor extends EditForm {
                 .A.ClassName("nav-link pl-lg-2 pr-lg-2 pl-xl-3 pr-xl-3")
                 .Event(EventType.Click, () => this.Focus()).Event(EventType.MouseUp, (e) => this.Close(e));
             html.Icon("fa fal fa-compress-wide").Event(EventType.Click, (e) => {
-                ComponentExt.fullScreen(this.Element);
+                ComponentExt.FullScreen(this.Element);
             }).End.Render();
             html.Icon("fa fa-times").Event(EventType.Click, (e) => {
                 e.stopPropagation();
                 this.DirtyCheckAndCancel();
             }).End.Span.ClassName(this.Feature?.Icon ?? "").End.Span.ClassName("title").IText(this.TabTitle).End.Render();
             this._li = Html.Context.parentElement;
+            // @ts-ignore
             this.IconElement = this._li.firstElementChild;
         }
         Html.Take(TabEditor.TabContainer).TabIndex(-1).Trigger(EventType.Focus).Div.Event(EventType.KeyDown, (e) => this.HotKeyHandler(e)).Render();
@@ -101,7 +106,7 @@ export class TabEditor extends EditForm {
      * Renders the popup part of the editor.
      */
     RenderPopup() {
-        if (this.Parent instanceof GridVieW) {
+        if (this.Parent instanceof GridView) {
             Html.Take(this.ParentElement ?? this.Parent?.Element ?? TabEditor.TabContainer)
                 .Div.ClassName("backdrop-gridview").TabIndex(-1).Trigger(EventType.Focus).Event(EventType.KeyDown, (e) => this.HotKeyHandler(e));
             this._backdropGridView = Html.Context;
@@ -111,17 +116,17 @@ export class TabEditor extends EditForm {
             Html.Instance.End.Span.IText(this.Title);
             this.TitleElement = Html.Context;
             Html.Instance.End.Div.ClassName("icon-box").Span.ClassName("fa fa-times")
-                .Event(EventType.Click, () => this.dispose())
+                .Event(EventType.Click, () => this.Dispose())
                 .EndOf(".popup-title")
                 .Div.ClassName("popup-body");
             this.Element = Html.Context;
-            super.render();
+            super.Render();
             if (this._backdropGridView.OutOfViewport().Top) {
                 this._backdropGridView.scrollIntoView(true);
             }
         } else {
             Html.Take(this.ParentElement ?? this.Parent?.Element ?? TabEditor.TabContainer)
-                .Div.ClassName("backdrop").TabIndex(-1).Trigger(EventType.Focus).Event(EventType.KeyDown, (e) => this.hotKeyHandler(e));
+                .Div.ClassName("backdrop").TabIndex(-1).Trigger(EventType.Focus).Event(EventType.KeyDown, (e) => this.HotKeyHandler(e));
             this._backdrop = Html.Context;
             Html
                 .Div.ClassName("popup-content").Div.ClassName("popup-title").Span.IconForSpan(this.Icon);
@@ -129,11 +134,11 @@ export class TabEditor extends EditForm {
             Html.Instance.End.Span.IText(this.Title);
             this.TitleElement = Html.Context;
             Html.Instance.End.Div.ClassName("icon-box").Span.ClassName("fa fa-times")
-                .Event(EventType.Click, () => this.dispose())
+                .Event(EventType.Click, () => this.Dispose())
                 .EndOf(".popup-title")
                 .Div.ClassName("popup-body");
             this.Element = Html.Context;
-            super.render();
+            super.Render();
             if (this._backdrop.OutOfViewport().Top) {
                 this._backdrop.scrollIntoView(true);
             }
@@ -147,15 +152,17 @@ export class TabEditor extends EditForm {
     HotKeyHandler(e) {
         const keyCode = e.KeyCodeEnum();
         if (keyCode === KeyCodeEnum.F6) {
-            let gridView = this.FindActiveComponent(x => x instanceof GridVieW).FirstOrDefault();
-            if (gridView && !gridView.allListViewItem.some(x => x.Selected)) {
-                if (gridView.AllListViewItem.length) {
-                    gridView.AllListViewItem[0].Focus();
-                } else {
-                    gridView.ListViewSearch.Focus();
+            let gridView = this.FindActiveComponent(x => x instanceof GridView).FirstOrDefault();
+            if(gridView instanceof GridView){
+                if (gridView && !gridView.AllListViewItem.some(x => x.Selected)) {
+                    if (gridView.AllListViewItem.length) {
+                        gridView.AllListViewItem[0].Focus();
+                    } else {
+                        gridView.ListViewSearch.Focus();
+                    }
                 }
+                return;
             }
-            return;
         }
         if (e.AltKey() && keyCode === KeyCodeEnum.GraveAccent) {
             if (TabEditor.Tabs.length <= 1) {
@@ -185,9 +192,10 @@ export class TabEditor extends EditForm {
         this.TriggerMatchHotKey(e, keyCode, shiftKey, ctrlKey, altKey);
     }
 
+    
+
     /**
      * Checks if the default hotkeys are triggered.
-     * @param {KeyCodeEnum} keyCode - The key code of the event.
      * @param {boolean} shiftKey - Indicates if the Shift key is pressed.
      * @param {boolean} ctrlKey - Indicates if the Control key is pressed.
      * @param {boolean} altKey - Indicates if the Alt key is pressed.
@@ -197,6 +205,7 @@ export class TabEditor extends EditForm {
         if (!keyCode) {
             return false;
         }
+        // @ts-ignore
         if (keyCode === KeyCodeEnum.Escape && !shiftKey && !ctrlKey && !altKey) {
             this.DirtyCheckAndCancel();
             return true;
@@ -208,18 +217,19 @@ export class TabEditor extends EditForm {
                 return false;
             }
 
-            TabEditor.Tabs[index]?.focus();
+            TabEditor.Tabs[index]?.Focus();
             return true;
         }
         if (ctrlKey && shiftKey && keyCode === KeyCodeEnum.F) {
             // Trigger search in the grid view
             let listView = this.FindActiveComponent(x => x instanceof ListView).FirstOrDefault();
-            if (!listView || !listView.Meta.CanSearch) {
+            if(listView instanceof ListView) {
+                if (!listView || !listView.Meta.CanSearch) {
+                    return true;
+                }
+                listView.ListViewSearch.AdvancedSearch(null);
                 return true;
             }
-
-            listView.ListViewSearch.AdvancedSearch(null);
-            return true;
         }
         return false;
     }
@@ -230,7 +240,7 @@ export class TabEditor extends EditForm {
     Focus() {
         if (!this.Popup) {
             TabEditor.Tabs.forEach(x => x.Show = false);
-            if (this.FeatureName && App.featureLoaded) {
+            if (this.FeatureName && App.FeatureLoaded) {
                 this.Href = Client.BaseUri + '/' + this.FeatureName + (this.EntityId ? `?Id=${this.EntityId}` : '');
                 window.history.pushState(null, LangSelect.Get(this.TabTitle), this.Href);
             }
@@ -240,15 +250,11 @@ export class TabEditor extends EditForm {
         this.FindActiveComponent(x => x?.Meta?.Focus).FirstOrDefault()?.Focus();
     }
 
-    /**
-     * Closes the tab editor on specific mouse events.
-     * @param {Event} e - The event object.
-     */
-    Close(e) {
-        const which = e.which;
-        const button = e.button;
-        if (which === 2 || button === 1) {
-            e.preventDefault();
+    Close(event) {
+        const intWhich = parseInt(event["which"]?.toString());
+        const intButton = parseInt(event["button"]?.toString());
+        if (intWhich === 2 || intButton === 1) {
+            event.preventDefault();
             this.DirtyCheckAndCancel();
         }
     }
@@ -281,7 +287,7 @@ export class TabEditor extends EditForm {
         if (!this.ParentForm) {
             const lastTab = TabEditor.Tabs.filter(x => x !== this).pop();
             if (lastTab) {
-                lastTab.focus();
+                lastTab.Focus();
             }
         } else {
             this.ParentForm.focus();

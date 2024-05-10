@@ -1,12 +1,15 @@
-﻿import { Client } from "./clients/client.js";
+﻿import { Component } from "models/component.js";
+import { Client } from "./clients/client.js";
 import EditableComponent from "./editableComponent.js";
-import { Html } from "./utils/html.js";
+import { Direction, Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
 
-/**
- * @typedef {import("./editableComponent").Component} Component
- */
+
 export class Label extends EditableComponent {
+    /**
+     * @param {Component} ui
+     * @param {HTMLElement} [ele=null] 
+*/
     constructor(ui, ele = null) {
         super(ui, ele);
     }
@@ -37,7 +40,9 @@ export class Label extends EditableComponent {
             if (this.Meta.SimpleText) {
                 this.Element.innerHTML = cellData === true ? "☑" : "☐";
             } else {
-                this.Element.PreviousElementSibling.checked = cellData;
+                if (this.Element.previousElementSibling instanceof HTMLInputElement) {
+                    this.Element.previousElementSibling.checked = cellData;
+                }
             }
             return;
         }
@@ -50,11 +55,13 @@ export class Label extends EditableComponent {
         if (isBool) {
             if (this.Meta.SimpleText) {
                 Html.Instance.Text(cellData === true ? "☑" : "☐");
-                Html.Context.Style.FontSize = "1.2rem";
+                Html.Context.style.fontSize = "1.2rem";
             } else {
                 Html.Instance.Padding(Direction.bottom, 0)
                     .SmallCheckbox(cellData);
-                Html.Context.previousElementSibling.disabled = true;
+                    if (Html.Context.previousElementSibling instanceof HTMLInputElement) {
+                        Html.Context.previousElementSibling.disabled = true;
+                    }
             }
         } else {
             const containDiv = cellText.substring(0, 4) === "<div>";
@@ -90,17 +97,18 @@ export class Label extends EditableComponent {
     }
 
     QueryCellText(formatter) {
-        if (this.Meta.PreQuery?.IsNullOrEmpty() || formatter === null) {
+        if (!this.Meta.PreQuery || formatter === null) {
             return;
         }
         const fn = Utils.IsFunction(this.Meta.PreQuery);
-        const entity = fn ? fn.Call(this, this).toString() : "";
+        const entity = fn ? fn.call(this, this).toString() : "";
         const submit = {
             MetaConn: this.MetaConn,
             DataConn: this.DataConn,
             Params: JSON.stringify(entity),
             ComId: this.Meta.Id
         };
+        // @ts-ignore
         Client.Instance.SubmitAsync({Method: "POST", Url: Utils.ComQuery, Value: JSON.stringify(submit)})
         .then(data => {
             if (data.Nothing()) {
@@ -147,6 +155,3 @@ export class Label extends EditableComponent {
         return this.Element.textContent;
     }
 }
-
-window.Core2 = window.Core2 ?? {};
-window.Core2.Label = Label;

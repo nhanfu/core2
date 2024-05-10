@@ -1,4 +1,6 @@
 import EditableComponent from "./editableComponent.js";
+// @ts-ignore
+import { ListView } from "./listView.js";
 /**
  * @typedef {import('./listView.js').ListView} ListView
  */
@@ -152,6 +154,8 @@ export class Paginator extends EditableComponent {
      */
     ReloadListView() {
         // This method should trigger a refresh of the parent list view, dependent on specific implementation.
-        this.Parent.ActionFilter();
+        if (this.Parent instanceof ListView) {
+            this.Parent.ActionFilter();
+        }
     }
 }

@@ -32,6 +32,7 @@ import { Uuid7 } from './structs/uuidv7.js';
 /**
  * @class
  */
+// @ts-ignore
 export class ListViewSearchVM {
     constructor() {
         this.Id = Uuid7.Id25();
@@ -549,6 +550,5 @@ export class ListViewSearch extends EditableComponent {
     set Disabled(value) {
         // Components are never disabled, ignore the input.
     }
-
 }
 

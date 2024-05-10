@@ -425,4 +425,30 @@ export class Utils {
         return isOwner;
     }
 
+    static CastProp(obj, type) {
+        if (obj === null || obj === undefined) {
+            return null;
+        }
+    
+        const res = new type();
+        this.CopyPropsFrom(obj, res); 
+        return res;
+    }
+    
+    static CopyPropsFrom(source, target) {
+        for (let key in source) {
+            if (source.hasOwnProperty(key)) {
+                target[key] = source[key];
+            }
+        }
+    }
+
+    static As(obj, type) {
+        if (obj instanceof type) {
+            return obj;
+        } else {
+            return null;
+        }
+    }
+
 }

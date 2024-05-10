@@ -30,6 +30,7 @@ export class QRCode extends EditableComponent {
             .Clear()
             .Div.Style(`width:${this.Meta.Width}px;margin:auto`)
             .Id("barcode" + this.Meta.Id);
+        // @ts-ignore
         this.Element = ctx;
         this.Value = this.FieldVal;
         new QR("barcode" + this.Meta.Id, {
