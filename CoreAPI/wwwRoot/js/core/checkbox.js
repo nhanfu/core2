@@ -4,6 +4,7 @@ import EventType from "./models/eventType.js";
 import ObservableArgs from "./models/observable.js";
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
+import { ElementType } from "models/elementType.js";
 
 /**
  * Represents a Checkbox component.
@@ -25,16 +26,13 @@ export class Checkbox extends EditableComponent {
         super(ui);
         if (!ui) throw new Error("ui is required");
         this.Meta = ui;
-<<<<<<< Updated upstream
         this.ParentElement = ele;
-=======
         if (ele.tagName === ElementType.input) {
             this.Element = ele;
             // @ts-ignore
             this._input = ele;
         }
         else this.ParentElement = ele;
->>>>>>> Stashed changes
         this.DefaultValue = false;
     }
 
@@ -89,14 +87,11 @@ export class Checkbox extends EditableComponent {
             this.Entity.SetComplexPropValue(this.Name, check);
         }
         this.Dirty = true;
-<<<<<<< Updated upstream
         // @ts-ignore
         var arg = new ObservableArgs({ NewData: this._value, OldData: oldVal, EvType: EventType.Change });
-=======
         /** @type {ObservableArgs} */
         // @ts-ignore
         var arg = { NewData: this._value, OldData: oldVal, EvType: EventType.Change };
->>>>>>> Stashed changes
         this.UserInput?.invoke(arg);
         this.PopulateFields();
         this.CascadeField();

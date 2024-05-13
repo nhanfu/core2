@@ -1,6 +1,10 @@
+import { GridView } from "gridView.js";
 import { Button } from "./button.js";
 import { Html } from "./utils/html.js";
 import { html2pdf } from './utils/html2pdf.js'
+import { Client } from "clients/client.js";
+import { Component } from "models/component.js";
+import { PdfReport } from "pdfReport.js";
 
 export class ButtonPdf extends Button {
     /**
@@ -17,6 +21,7 @@ export class ButtonPdf extends Button {
     /**
      * Dispatches the click event.
      */
+    // @ts-ignore
     DispatchClick() {
         setTimeout(() => this.DispatchClickAsync(), 0);
     }
@@ -25,7 +30,7 @@ export class ButtonPdf extends Button {
      * Asynchronously handles the click dispatch.
      */
     async DispatchClickAsync() {
-        Html.Take(TabEditor.Element).Div.ClassName("backdrop")
+        Html.Take(this.TabEditor.Element).Div.ClassName("backdrop")
             .Style("align-items: center;").Escape((e) => this.Preview.remove());
         this.Preview = Html.Context;
         Html.Instance.Div.ClassName("popup-content confirm-dialog").Style("top: 0;")
@@ -38,49 +43,55 @@ export class ButtonPdf extends Button {
             Html.Instance.Div.ClassName("container-rpt");
             Html.Instance.Div.ClassName("menuBar")
                 .Div.ClassName("printBtn")
-                .Button.ClassName("btn btn-success mr-1 fa fa-print").Event("click", () => EditForm.PrintSection(this.Preview.querySelector(".print-group"), true, this.Meta)).End
+                // @ts-ignore
+                .Button.ClassName("btn btn-success mr-1 fa fa-print").Event("click", () => this.EditForm.PrintSection(this.Preview.querySelector(".print-group"), true, this.Meta)).End
                 .Button.ClassName("btn btn-success mr-1").Text("a4").Event("click", () => this.GeneratePdf("a4")).End
                 .Button.ClassName("btn btn-success mr-1").Text("a5").Event("click", () => this.GeneratePdf("a5")).End
                 .Render();
             Html.Instance.EndOf(".menuBar").Div.ClassName("print-group");
         }
         let body = Html.Context;
-        this.PdfReport = new PdfRepor(this.Meta);
+        this.PdfReport = new PdfReport(this.Meta);
         this.PdfReport.ParentElement = body;
         if (this.Meta.FocusSearch) {
             if (this.Meta.Precision === 2) {
-                let parentGridView = TabEditor.FindActiveComponent("GridView").FirstOrDefault();
-                let selectedData = parentGridView.CacheData;
-                if (!selectedData) {
-                    selectedData = parentGridView.RowData.Data;
-                }
-                let selectedRow = selectedData.filter(x => parentGridView.SelectedIds.includes(x["Id"].toString()));
-                for (let item of selectedRow) {
-                    let js = new PdfReport(this.Meta);
-                    js.ParentElement = body;
-                    js.Selected = item;
-                    this.Parent.AddChild(js);
-                }
-                setTimeout(() => {
-                    let ele = Array.from(this.Preview.querySelectorAll(".print-group"));
-                    let printWindow = window.open("", "_blank");
-                    printWindow.document.close();
-                    printWindow.document.body.innerHTML = ele.map(x => x.outerHTML).join("</br>");
-                    printWindow.print();
-                    printWindow.addEventListener("mousemove", e => printWindow.close());
-                    printWindow.addEventListener("click", e => printWindow.close());
-                    printWindow.addEventListener("keyup", e => printWindow.close());
-                    printWindow.addEventListener("afterprint", async e => {
-                        await this.DispatchEvent(this.Meta.Events, "afterprint", selectedRow);
-                    });
-                    if (this.Meta.Style) {
-                        let style = document.createElement("style");
-                        style.appendChild(document.createTextNode(this.Meta.Style));
-                        printWindow.document.head.appendChild(style);
+                // @ts-ignore
+                let parentGridView = this.TabEditor.FindActiveComponent(x => x instanceof GridView).FirstOrDefault();
+                if(parentGridView instanceof GridView){
+                    let selectedData = parentGridView.CacheData;
+                    if (!selectedData) {
+                        selectedData = parentGridView.RowData.Data;
                     }
-                    this.PdfReport.Dispose();
-                    this.Preview.remove();
-                }, 2000);
+                    let selectedRow = selectedData.filter(x => parentGridView.SelectedIds.includes(x["Id"].toString()));
+                    for (let item of selectedRow) {
+                        let js = new PdfReport(this.Meta);
+                        js.ParentElement = body;
+                        js.Selected = item;
+                        this.Parent.AddChild(js);
+                    }
+                    setTimeout(() => {
+                        let ele = Array.from(this.Preview.querySelectorAll(".print-group"));
+                        let printWindow = window.open("", "_blank");
+                        printWindow.document.close();
+                        printWindow.document.body.innerHTML = ele.map(x => x.outerHTML).join("</br>");
+                        printWindow.print();
+                        printWindow.addEventListener("mousemove", e => printWindow.close());
+                        printWindow.addEventListener("click", e => printWindow.close());
+                        printWindow.addEventListener("keyup", e => printWindow.close());
+                        printWindow.addEventListener("afterprint", async e => {
+                            // @ts-ignore
+                            await this.DispatchEvent(this.Meta.Events, "afterprint", selectedRow);
+                        });
+                        if (this.Meta.Style) {
+                            let style = document.createElement("style");
+                            style.appendChild(document.createTextNode(this.Meta.Style));
+                            printWindow.document.head.appendChild(style);
+                        }
+                        this.PdfReport.Dispose();
+                        this.Preview.remove();
+                    }, 2000);
+                }
+                
             } else {
                 this.Parent.AddChild(this.PdfReport);
                 let printWindow = window.open("", "_blank");
@@ -92,7 +103,8 @@ export class ButtonPdf extends Button {
                     printWindow.addEventListener("click", e => printWindow.close());
                     printWindow.addEventListener("keyup", e => printWindow.close());
                     printWindow.addEventListener("afterprint", async e => {
-                        await this.DispatchEvent(this.Meta.Events, "afterprint", EditForm);
+                        // @ts-ignore
+                        await this.DispatchEvent(this.Meta.Events, "afterprint", this.EditForm);
                     });
                     if (this.Meta.Style) {
                         let style = document.createElement("style");
@@ -105,17 +117,19 @@ export class ButtonPdf extends Button {
             }
         } else {
             if (this.Meta.Precision === 2) {
-                let parentGridView = TabEditor.FindActiveComponent("GridView").FirstOrDefault();
-                let selectedData = parentGridView.CacheData;
-                if (!selectedData) {
-                    selectedData = parentGridView.RowData.Data;
-                }
-                let selectedRow = selectedData.filter(x => parentGridView.SelectedIds.includes(x["Id"].toString()));
-                for (let item of selectedRow) {
-                    let js = new PdfReport(this.Meta);
-                    js.ParentElement = body;
-                    js.Selected = item;
-                    this.Parent.AddChild(js);
+                let parentGridView = this.TabEditor.FindActiveComponent(x => x instanceof GridView).FirstOrDefault();
+                if(parentGridView instanceof GridView){
+                    let selectedData = parentGridView.CacheData;
+                    if (!selectedData) {
+                        selectedData = parentGridView.RowData.Data;
+                    }
+                    let selectedRow = selectedData.filter(x => parentGridView.SelectedIds.includes(x["Id"].toString()));
+                    for (let item of selectedRow) {
+                        let js = new PdfReport(this.Meta);
+                        js.ParentElement = body;
+                        js.Selected = item;
+                        this.Parent.AddChild(js);
+                    }
                 }
             } else {
                 this.Parent.AddChild(this.PdfReport);
@@ -126,31 +140,39 @@ export class ButtonPdf extends Button {
     /**
      * Called when the PDF library is loaded.
      */
-    GeneratePdf() {
+    GeneratePdf(format) {
+        let task = Client.LoadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
+        task.Done(() => this.PdfLibLoaded(format));
+    }
+    
+    PdfLibLoaded(format) {
         let element = this.Preview.querySelector(".print-group");
-        let printEl = element;
-        let first = printEl.querySelector(".printable");
-        first.Style.PageBreakBefore = null;
+        let first = element.querySelector(".printable");
+        if (first instanceof HTMLElement) { 
+            first.style.pageBreakBefore = "auto";
+        }
         const openPdfInNewWindow = (pdf) => {
             const blob = pdf.output('blob');
-            var isMobile = typeof cordova !== 'undefined';
+            let isMobile = window['Cordova'] != null;
             if (!isMobile) {
                 window.open(window.URL.createObjectURL(blob));
                 return;
             }
-            var isAndroid = window.device.platform == "Android";
+            let isAndroid = window['device']?.platform === "Android";
             if (isAndroid) {
                 window.location.href = window.URL.createObjectURL(blob);
                 return;
             }
-            cordova.InAppBrowser.open(window.URL.createObjectURL(blob), "_system");
+            if (window['cordova']) { 
+                window['cordova'].InAppBrowser.open(window.URL.createObjectURL(blob), "_system");
+            }
         };
-        html2pdf(printEl, {
-            filename: this.GuiInfo.PlainText,
+        // @ts-ignore
+        html2pdf().from(element).set({
             jsPDF: { format: format },
             image: { type: 'jpeg', quality: 0.98 },
-            pdfCallback: openPdfInNewWindow,
-        });
+            pdfCallback: openPdfInNewWindow
+        }).save();
     }
 
     /**

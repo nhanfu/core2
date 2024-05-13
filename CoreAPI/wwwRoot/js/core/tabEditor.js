@@ -9,6 +9,8 @@ import { ComponentExt } from "utils/componentExt.js";
 import { GridView } from "gridView.js";
 import { ListView } from "listView.js";
 import { App } from "app.js";
+import { Button } from "button.js";
+import EditableComponent from "editableComponent.js";
 
 /**
  * Represents a tab editor component, which can manage multiple tabs and their content.
@@ -145,6 +147,54 @@ export class TabEditor extends EditForm {
         }
     }
 
+    TriggerMatchHotKey(e, keyCode, shiftKey, ctrlKey, altKey) {
+        if (keyCode == null) {
+            return;
+        }
+        let patternList = [];
+        if (shiftKey) {
+            patternList.push(KeyCodeEnum.Shift);
+        }
+    
+        if (ctrlKey) {
+            patternList.push(KeyCodeEnum.Ctrl);
+        }
+    
+        if (altKey) {
+            patternList.push(KeyCodeEnum.Alt);
+        }
+    
+        if (keyCode < KeyCodeEnum.Shift) {
+            patternList.unshift(keyCode);
+        } else if (keyCode > KeyCodeEnum.Alt) {
+            patternList.push(keyCode);
+        }
+    
+        this._hotKeyComponents = this._hotKeyComponents
+            || this.FilterChildren(x => x instanceof Button && x.Meta.HotKey.trim() !== '').map(x => x);
+        this._hotKeyComponents.forEach(com => {
+            let parts = com.Meta.HotKey.split(",");
+            if (parts.length === 0) {
+                return;
+            }
+    
+            let lastPart = parts[parts.length - 1];
+            let configKeys = lastPart.split("-").map(x => {
+                let key = KeyCodeEnum[x.trim()];
+                return key ? key : null;
+            }).filter(x => x != null).sort((a, b) => a - b);
+            let isMatch = JSON.stringify(patternList) === JSON.stringify(configKeys);
+            if (!isMatch) {
+                return;
+            }
+    
+            e.preventDefault();
+            e.stopPropagation();
+            com.Element?.click();
+            return;
+        });
+    }
+
     /**
      * Handles hotkey events for the editor.
      * @param {Event} e - The event object.
@@ -247,7 +297,7 @@ export class TabEditor extends EditForm {
         }
         this.Show = true;
         document.title = LangSelect.Get(this.TabTitle);
-        this.FindActiveComponent(x => x?.Meta?.Focus).FirstOrDefault()?.Focus();
+        this.FindActiveComponent(x => x instanceof EditableComponent && x?.Meta?.Focus == true && x.Meta.Focus).FirstOrDefault()?.Focus();
     }
 
     Close(event) {

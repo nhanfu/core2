@@ -8,6 +8,8 @@ import { Client } from "./clients/client.js";
 import EventType from './models/eventType.js';
 import "./utils/fix.js";
 import { Uuid7 } from './structs/uuidv7.js';
+import { AdvancedSearch } from 'advancedSearch.js';
+import { ListView } from './listView';
 /**
  * @typedef {import('./models/component').Component} Component
  * @typedef {import('./listView').ListView} ListView
@@ -549,6 +551,20 @@ export class ListViewSearch extends EditableComponent {
 
     set Disabled(value) {
         // Components are never disabled, ignore the input.
+    }
+
+    AdvancedSearch(arg)
+    {
+        this.TabEditor.OpenPopup("AdvancedSearch", () =>
+        {
+            // @ts-ignore
+            var editor = new AdvancedSearch(this.ParentListView)
+            {
+                this.ParentListView = this.Parent instanceof ListView,
+                this.ParentElement = this.TabEditor.Element
+            };
+            return editor;
+        }).Done();
     }
 }
 

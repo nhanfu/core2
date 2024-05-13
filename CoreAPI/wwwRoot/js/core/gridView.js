@@ -105,8 +105,10 @@ export class GridView extends ListView {
                 cell = x.Element.closest("td");
             }
             if (top && top.HasAnyChar()) {
+                // @ts-ignore
                 Html.Take(cell).Sticky({ top });
             } else {
+                // @ts-ignore
                 Html.Take(cell).Sticky({ left: "0" });
             }
         });

@@ -236,4 +236,8 @@ declare global {
      */
     forEach(action: (item: Element, index: number, array: Element[]) => void): void;
   }
+
+  interface Navigator {
+    msSaveOrOpenBlob?: (blob: Blob, defaultName?: string) => boolean;
+}
 }

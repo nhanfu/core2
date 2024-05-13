@@ -88,7 +88,8 @@ export class ListView extends EditableComponent {
         /** @type {number} */
         this.LastIndex = undefined;
         this.EntityFocusId = "";
-
+        this.LastElementFocus = null;
+        this.LastComponentFocus = null;
     }
 
     /**

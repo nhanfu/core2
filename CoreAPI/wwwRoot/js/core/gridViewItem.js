@@ -39,7 +39,7 @@ export class GridViewItem extends ListViewItem {
     
     FocusCell(e, header) {
         if (this.ListViewSection.ListView.LastElementFocus) {
-            this.ListViewSection.ListView.LastElementFocus.closest(ElementType.td.toString()).classList.remove("cell-selected");
+            this.ListViewSection.ListView.LastElementFocus?.Closest(ElementType.td.toString()).RemoveClass("cell-selected");
         }
     
         let td = e.target;
