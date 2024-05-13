@@ -1,4 +1,4 @@
-import { Spinner } from "spinner.js";
+import { Spinner } from "./spinner.js";
 import EditableComponent from "./editableComponent.js";
 import { Component } from "./models/component.js";
 import { Html } from "./utils/html.js";

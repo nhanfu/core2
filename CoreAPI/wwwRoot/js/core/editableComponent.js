@@ -39,6 +39,8 @@ export default class EditableComponent {
     static LabelMd;
     /** @type {import('./listViewItem.js')} */
     static ListViewItemMd;
+    /** @type {import('./listView.js')} */
+    static ListViewMd;
     /** @type {import('./tabEditor.js')} */
     static TabEditorMd;
     /** @type {import('./gridView.js')} */
@@ -68,8 +70,8 @@ export default class EditableComponent {
                 this.DispatchEvent(meta.Events, EventType.DOMContentLoaded, this.Entity).Done();
             }
         });
-        if (!EditableComponent._classesLoaded) {
-            EditableComponent._classesLoaded = true;
+        if (!EditableComponent._moduleLoaded) {
+            EditableComponent._moduleLoaded = true;
             this.loadClasses().then(() => console.log('Classes loaded'));
         }
     }
@@ -103,16 +105,17 @@ export default class EditableComponent {
      * @type {number}
      */
     static ExLargeScreen = 1452;
-    static _classesLoaded = false;
+    static _moduleLoaded = false;
 
     async loadClasses() {
         EditableComponent.SearchMd = await import('./searchEntry.js');
-        EditableComponent.SectionMd = (await import('./section.js'));
-        EditableComponent.LabelMd = (await import('./label.js'));
-        EditableComponent.ListViewItemMd = (await import('./listViewItem.js'));
-        EditableComponent.GridViewMd = (await import('./gridView.js'));
-        EditableComponent.EditFormMd = (await import('./editForm.js'));
-        EditableComponent.TabEditorMd = (await import('./tabEditor.js'));
+        EditableComponent.SectionMd = await import('./section.js');
+        EditableComponent.LabelMd = await import('./label.js');
+        EditableComponent.ListViewMd = await import('./listView.js');
+        EditableComponent.ListViewItemMd = await import('./listViewItem.js');
+        EditableComponent.GridViewMd = await import('./gridView.js');
+        EditableComponent.EditFormMd = await import('./editForm.js');
+        EditableComponent.TabEditorMd = await import('./tabEditor.js');
     }
 
     /**
@@ -216,17 +219,18 @@ export default class EditableComponent {
     #editForm;
     /** @type {EditForm} */
     get EditForm() {
-        if (this.#editForm != null) return this.#editForm;
-        // @ts-ignore
-        this.#editForm = this.FindClosest(EditForm.prototype, x => !x.Popup);
+        if (this.#editForm == null) {
+            // @ts-ignore
+            this.#editForm = this.FindClosest(x => EditableComponent.EditFormMd != null
+                && x instanceof EditableComponent.EditFormMd.EditForm);
+        }
+        return this.#editForm;
     }
     /**
      * @param {EditForm} editor
      */
     set EditForm(editor) {
         this.#editForm = editor;
-
-        /** @type {Action} */
     }
     UserInput = new Action();
     get IsSmallUp() { return document.body.clientWidth > 768 }
@@ -810,7 +814,7 @@ export default class EditableComponent {
      */
     FilterChildren(filter = null, ignore = null) {
         return this.Children.Flattern(x => x.Children.Where(child => {
-            return ignore?.call(this, child) !== true && 
+            return ignore?.call(this, child) !== true &&
                 (filter == null || filter?.call(this, child) === true);
         })).Where(filter);
     }

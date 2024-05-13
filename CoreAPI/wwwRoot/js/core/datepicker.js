@@ -1,9 +1,10 @@
-import { Component } from "models/component.js";
+import { Component } from "./models/component.js";
 import EditableComponent from "./editableComponent.js";
 import ObservableArgs from "./models/observable.js";
 import { Str } from "./utils/ext.js";
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
+import { KeyCodeEnum } from "./models/enum.js";
 
 export class Datepicker extends EditableComponent {
     static HHmmFormat = "00";
@@ -89,7 +90,7 @@ export class Datepicker extends EditableComponent {
         this.value = parsed ? parsedVal : null;
         this.nullable = this.FieldVal == null;
         this.Entity.SetComplexPropValue(this.Name, this.value);
-        let str = this.value ? this.value.toLocaleDateString('en-US', this.options) : "";
+        let str = this.value ? this.value.toLocaleDateString('en-US', Datepicker.options) : "";
         Html.Take(this.ParentElement);
         if (!this.Input) {
             Html.Div.ClassName("datetime-picker").TabIndex(-1);
@@ -129,7 +130,7 @@ export class Datepicker extends EditableComponent {
      * @param {Event} e - The event object.
      */
     KeyDownDateTime(e) {
-        if (e.keyCode === 13 && this.value === null) {
+        if (e.KeyCodeEnum() === KeyCodeEnum.Enter && this.value === null) {
             if (this.Disabled) {
                 return;
             }
@@ -147,15 +148,15 @@ export class Datepicker extends EditableComponent {
      * @returns {boolean} Whether the type is nullable.
      */
     IsNullable(type) {
-        return this.Entity === null || this.Utils.IsNullable(type, this.Entity.GetType(), this.Name, this.Entity);
+        return this.Entity === null || Utils.IsNullable(this.Name, this.Entity);
     }
 
     /**
      * Parses the date from the input and sets the component's value.
      */
     ParseDate() {
-        let { parsed, datetime } = this.TryParseDateTime(this.Input.value);
-        if (!parsed || !this.Input.value.trim()) {
+        let datetime = new Date(this.Input.value);
+        if (!datetime || !this.Input.value.trim()) {
             if (this.EditForm.Feature.CustomNextCell) {
                 return;
             }

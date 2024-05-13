@@ -353,13 +353,13 @@ export class AdvancedSearch extends TabEditor {
             map[row.Id] = row;
             return map;
         }, {});
-        this._filterGrid.RowAction(row => idMap.hasOwnProperty(row.Entity.Id), row => {
+        this._filterGrid.RowAction(row => {
             var fieldCondition = row.Entity;
             fieldCondition.Level += reducing ? -1 : 1;
             Array.from(row.Element.querySelectorAll("td")).forEach(td => {
                 td.style.paddingLeft = fieldCondition.Level + "rem";
             });
-        });
+        }, row => idMap.hasOwnProperty(row.Entity.Id));
     }
 
     DirtyCheckAndCancel() {

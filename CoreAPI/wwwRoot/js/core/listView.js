@@ -193,7 +193,7 @@ export class ListView extends EditableComponent {
         pageSize = pageSize ?? this.Paginator?.Options?.PageSize ?? this.Meta.Row ?? 12;
         skip = skip ?? this.Paginator?.Options?.PageIndex * pageSize ?? 0;
         let sql = this.GetSql(skip, pageSize, cacheHeader);
-        return this.CustomQuery(sql);
+        return await this.CustomQuery(sql);
     }
 
     CalcFilterQuery() {

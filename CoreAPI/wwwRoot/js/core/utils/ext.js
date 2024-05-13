@@ -306,14 +306,7 @@ Event.prototype.KeyCode = function () {
  */
 Event.prototype.KeyCodeEnum = function () {
     // @ts-ignore
-    if (this.keyCode == null) {
-        return null;
-    }
-    // @ts-ignore
-    const keyCodeStr = this.keyCode.toString();
-    // Assuming KeyCodeEnum is defined globally
-    const res = KeyCodeEnum[keyCodeStr];
-    return res ? res : null;
+    return this.keyCode ?? -1;
 };
 
 /**

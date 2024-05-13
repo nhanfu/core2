@@ -1,4 +1,6 @@
+import { SqlViewModel } from "../models/sqlViewModel.js";
 import { Client } from "../clients/client.js";
+import { Str } from "./ext.js";
 
 export class LangSelect {
     static LangProp = "langprop";
@@ -75,7 +77,7 @@ export class LangSelect {
         }, {});
         LangSelect._dictionaries[LangSelect.Culture] = map;
         localStorage.setItem(LangSelect.Culture, map);
-        LangSelect.Travel(Document.Instance).forEach(x => {
+        LangSelect.Travel(document).forEach(x => {
             const props = x[LangSelect.LangProp];
             if (props === null || props === undefined || props === "") {
                 return;
@@ -85,7 +87,7 @@ export class LangSelect {
                 const parameters = x[LangSelect.LangParam + propName];
                 const translated = map[template] !== undefined ? map[template] : template;
                 if (parameters !== undefined && parameters !== null && parameters.length > 0) {
-                    x[propName] = String.prototype.format.call(translated, parameters);
+                    x[propName] = Str.Format(translated, parameters);
                 }
                 else {
                     x[propName] = translated;
