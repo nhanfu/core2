@@ -1451,8 +1451,8 @@ export class GridView extends ListView {
 
     RenderRowData(headers, row, section, index = null, emptyRow = false) {
         const tbody = section.element;
-        // @ts-ignore
-        const rowSection = new GridViewItem('tr', {
+        const rowSection = new GridViewItem({
+            type: ElementType.tr,
             EmptyRow: emptyRow,
             Entity: row,
             ParentElement: tbody,

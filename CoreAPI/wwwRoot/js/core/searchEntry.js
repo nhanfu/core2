@@ -11,6 +11,10 @@ import { ComponentExt } from './utils/componentExt.js';
 import "./utils/fix.js";
 import { ListViewItem } from 'listViewItem.js';
 import { GridView } from 'gridView.js';
+import { ListView } from 'listView.js';
+import { TabEditor } from 'tabEditor.js';
+import { MultipleSearchEntry } from 'multipleSearchEntry.js';
+import { GroupGridView } from 'groupGridView.js';
 
 export class SearchEntry extends EditableComponent {
     /**
@@ -50,7 +54,7 @@ export class SearchEntry extends EditableComponent {
     }
 
     DeserializeLocalData(ui) {
-        if (ui.LocalQuery.trim() !== ""()) {
+        if (ui.LocalQuery.trim() !== "") {
             return;
         }
         this.Meta.LocalData = JSON.parse(ui.LocalQuery);
@@ -66,7 +70,8 @@ export class SearchEntry extends EditableComponent {
         this.RenderInputAndEvents();
         this.RenderIcons();
         this.FindMatchText();
-        this.SearchResultEle = this.FindClosest('ListView')?.Element ?? document.body;
+        // @ts-ignore
+        this.SearchResultEle = this.FindClosest(ListView)?.Element ?? document.body;
         this.Element.Closest('td')?.addEventListener('keydown', this.ListViewItemTab.bind(this));
     }
 
@@ -247,7 +252,7 @@ export class SearchEntry extends EditableComponent {
             if (Utils.IsFunction(this.Meta.Template)) {
                 Utils.IsFunction(this.Meta.Template)?.call(null, res, this);
             } else {
-                res = Utils.FormatEntity(this.Meta.Template, null, this.Matched, Utils.EmptyFormat, Utils.EmptyFormat);
+                res = Utils.FormatEntity2(this.Meta.Template, null, this.Matched, Utils.EmptyFormat, Utils.EmptyFormat);
             }
             let entity = JSON.parse(res);
             instance.Entity = entity;
@@ -374,7 +379,7 @@ export class SearchEntry extends EditableComponent {
             this._gv.HeaderSection.Element.addEventListener('focusout', this.DiposeGvWrapper.bind(this));
         }
         if (this.Meta.LocalHeader === null) {
-            this.Meta.LocalHeader = new List(this._gv.Header.filter(x => x.Id !== null));
+            this.Meta.LocalHeader = Array.from(this._gv.header.filter(x => x.id != null));
         }
     }
 
@@ -383,7 +388,7 @@ export class SearchEntry extends EditableComponent {
             return;
         }
         if (!this.IsSmallUp && this._backdrop === null) {
-            Html.Take(this.TabEditor.TabContainer).Div.ClassName('backdrop');
+            Html.Take(TabEditor.TabContainer).Div.ClassName('backdrop');
             this._backdrop = Html.Context;
             Html.Instance.Div.ClassName('popup-content').Style('top: 0;width: 100%;')
             .Div.ClassName('popup-title').Span.IconForSpan('fa fal fa-search').End
@@ -414,7 +419,11 @@ export class SearchEntry extends EditableComponent {
     GridResultDomLoaded() {
         this.FocusBackWithoutEvent();
         this._gv.SelectedIndex = -1;
-        this._gv.RowAction(x => x.Selected = false);
+        this._gv.RowAction(x => {
+            if (x instanceof ListViewItem) {
+                x.Selected = false;
+            }
+        });
         this._gv.Element.style.inset = null;
         this.RenderRootResult();
         this._rootResult.appendChild(this._gv.Element);
@@ -422,7 +431,7 @@ export class SearchEntry extends EditableComponent {
             this._gv.Show = true;
         }
         if (this.IsSmallUp) {
-            this._gv.Element.AlterPosition(this._input);
+            ComponentExt.AlterPosition(this._gv.Element, this._input);
         } else {
             this._gv.Element.style.maxWidth = '100%';
             this._gv.Element.style.minWidth = 'calc(100% - 2rem)';

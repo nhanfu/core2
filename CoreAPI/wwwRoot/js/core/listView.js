@@ -1349,4 +1349,31 @@ export class ListView extends EditableComponent {
             this.ClearRowData();
             this.ReloadData().Done();
         }
+
+        MoveUp() {
+            this.ClearSelected();
+            if (this.SelectedIndex <= 0 || this.SelectedIndex === this.AllListViewItem.length) {
+                this.SelectedIndex = this.AllListViewItem.length - 1;
+            }
+            this.RowAction(x => {
+                if (x instanceof ListViewItem) {
+                    x.Selected = true;
+                }
+            // @ts-ignore
+            }, true);
+        }
+
+        MoveDown() {
+            this.ClearSelected();
+            if (this.SelectedIndex === -1 || this.SelectedIndex === this.AllListViewItem.length) {
+                this.SelectedIndex = 0;
+            }
+            this.RowAction(x => {
+                if (x instanceof ListViewItem) {
+                    x.Selected = true;
+                }
+            // @ts-ignore
+            }, false);
+        }
+        
 }

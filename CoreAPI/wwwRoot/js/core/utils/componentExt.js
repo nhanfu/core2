@@ -156,7 +156,7 @@ export class ComponentExt {
     }
 
     // Alter position of HTMLElement relative to parent
-    static AlterPosition(element, parentElement) {
+     AlterPosition(element, parentElement) {
         if (!element || !parentElement) {
             return;
         }

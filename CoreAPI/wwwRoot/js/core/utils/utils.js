@@ -1,6 +1,7 @@
 import { Decimal } from '../structs/decimal.js';
 import { Component } from "../models/component.js";
 import { Client } from '../clients/client.js';
+import { Str } from './ext.js';
 
 export class Utils {
     static SystemId = "1";
@@ -216,8 +217,72 @@ export class Utils {
         }
     
         // @ts-ignore
-        return this.FormatEntity(format, null, source); 
+        return this.FormatEntity2(format, null, source); 
     }
+    
+    static NullFormatHandler = x => "null";
+    static NotFoundHandler = x => "{" + x + "}";
+    static EmptyFormat = x => "";
+
+    static FormatEntity2(format, provider, source, nullHandler = null, notFoundHandler = null) {
+    if (format === null) {
+        return null;
+    }
+
+    if (source === null) {
+        return format;
+    }
+
+    nullHandler = nullHandler || this.NullFormatHandler;
+    notFoundHandler = notFoundHandler || this.NotFoundHandler;
+
+    let formatted = [];
+    let index = 0;
+    let isInGroup = false;
+    let beforeColon = false;
+    let field = [];
+    let objList = [];
+    for (let i = 0; i < format.length; i++) {
+        const ch = format[i];
+        switch (ch) {
+            case '{':
+                isInGroup = true;
+                beforeColon = true;
+                formatted.push(ch + index.toString());
+                break;
+            case ':':
+                if (isInGroup && !beforeColon) {
+                    formatted.push(ch);
+                } else if (isInGroup) {
+                    beforeColon = false;
+                    formatted.push(ch);
+                    this.GetValues(source, nullHandler, notFoundHandler, field.join(''), objList);
+                    field = [];
+                } else {
+                    formatted.push(ch);
+                }
+                break;
+            case '}':
+                if (isInGroup) {
+                    isInGroup = false;
+                    formatted.push(ch);
+                    index++;
+                    this.GetValues(source, nullHandler, notFoundHandler, field.join(''), objList);
+                    field = [];
+                }
+                break;
+            default:
+                if (isInGroup && beforeColon) {
+                    field.push(ch);
+                } else {
+                    formatted.push(ch);
+                }
+                break;
+        }
+    }
+    return Str.Format(provider, formatted.toString(), objList.ToArray());
+
+}
 
     static SetPropValue(instance, propertyName, value) {
         if (!propertyName || propertyName.trim() === '') return;
@@ -228,6 +293,23 @@ export class Utils {
 
     static GetCellText(header, cellData, row, emptyRow = false) {
         return Utils.GetCellTextInternal(header, cellData, row, emptyRow).DecodeSpecialChar();
+    }
+
+    static GetValues(source, nullHandler, notFoundHandler, field, objList) {
+        if (field === null || field === undefined || field === "") {
+            return;
+        }
+    
+        // @ts-ignore
+        const { hasKey, value } = this.GetComplexProp(source, field);
+        let newValue = value;
+        if (value === null && hasKey) {
+            newValue = nullHandler(field);
+        } else if (value === null && !hasKey) {
+            newValue = notFoundHandler(field);
+        }
+    
+        objList.push(field === "0" ? source : newValue);
     }
 
     /**
