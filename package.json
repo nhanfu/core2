@@ -9,5 +9,8 @@
   },
   "scripts": {
     "test": "jest"
+  },
+  "dependencies": {
+    "sweetalert2": "^11.11.0"
   }
 }

@@ -1,4 +1,4 @@
-import * as Swal from './libs/sweetalert2.js';
+import Swal from 'sweetalert2';
 
 /**
  * Options for creating a toast notification.
@@ -25,6 +25,7 @@ export class Toast {
                 showConfirmButton: false,
                 timer: options.Timeout
             });
+            // @ts-ignore
             Toast.fire({
                 icon: options.ClassName,
                 title: options.Message
