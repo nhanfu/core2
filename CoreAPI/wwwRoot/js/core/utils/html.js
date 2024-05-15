@@ -614,6 +614,12 @@ export class HTML {
         ele.style.display = shouldShow ? '' : 'none';
         return this;
     }
+
+    Visibility(visible) {
+        var ele = this.Context;
+        ele.style.visibility = visible ? "" : "hidden";
+        return this;
+    }
 }
 
 export const Html = new HTML();

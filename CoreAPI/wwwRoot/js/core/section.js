@@ -10,6 +10,8 @@ import { PatchVM } from "./models/patch.js";
 import { Client } from "./clients/client.js";
 import { Component } from "./models/component.js";
 import { ListView } from "listView.js";
+import { ComponentBL } from "forms/componentBL.js";
+import { EditForm } from "editForm.js";
 
 export class Section extends EditableComponent {
     /**
@@ -29,8 +31,11 @@ export class Section extends EditableComponent {
         if (this.elementType == null && this.Element != null) {
             this.elementType = this.Element?.tagName?.toLowerCase();
         } else if (this.ParentElement != null && this.elementType != null) {
-            Html.Take(this.ParentElement).Add(this.elementType.value);
-            this.Element = Html.Context;
+            if (typeof this.elementType !== 'string' && 'value' in this.elementType) {
+                const valueAsString = String(this.elementType.value); 
+                Html.Take(this.ParentElement).Add(valueAsString);
+                this.Element = Html.Context;;
+            }
         } else {
             throw 'Element type must be not null and parent element or element must be supplied'
         }
@@ -142,7 +147,7 @@ export class Section extends EditableComponent {
                     }
 
                     if (Client.SystemRole) {
-                        component.Element.addEventListener(EventType.ContextMenu, (e) => this.EditForm.SysConfigMenu(e, ui, Meta, null));
+                        component.Element.addEventListener(EventType.ContextMenu, (e) => this.EditForm.SysConfigMenu(e, ui, this.Meta, null));
                     }
                 }
                 if (ui.Focus) {
@@ -257,6 +262,14 @@ export class Section extends EditableComponent {
         }
     }
 
+    static HasElementAndAll(source, predicate) {
+        if (source === null || source.length === 0) {
+            return false;
+        }
+    
+        return source.every(predicate);
+    }
+
     /**
      * Renders a section based on the provided editable component and group information.
      * @param {EditableComponent} Parent - The parent component.
@@ -265,11 +278,12 @@ export class Section extends EditableComponent {
      * @param {EditForm} form - Optional edit form.
      * @returns {Section} - The rendered section, or null if not permitted.
      */
+    // @ts-ignore
     static RenderSection(Parent, GroupInfo, Entity = null, form = null) {
         const EditForm = form || Parent.EditForm;
         const UIPolicy = form.GetElementPolicies([GroupInfo.Id], Utils.ComponentGroupId);
-        const ReadPermission = !GroupInfo.IsPrivate || UIPolicy.HasElementAndAll(x => x.CanRead);
-        const WritePermission = !GroupInfo.IsPrivate || UIPolicy.HasElementAndAll(x => x.CanWrite);
+        const ReadPermission = !GroupInfo.IsPrivate || this.HasElementAndAll(UIPolicy, x => x.CanRead);
+        const WritePermission = !GroupInfo.IsPrivate || this.HasElementAndAll(UIPolicy, x => x.CanWrite);
         if (!ReadPermission) {
             return null;
         }
@@ -446,6 +460,18 @@ export class Section extends EditableComponent {
         });
     }
 
+    static SubmitLabelChanged(table, id, label) {
+        var patch = {
+            Table: table,
+            Changes: [
+                { Field: "IdField", Value: id },
+                { Field: "Component.Label", Value: label }
+            ]
+        };
+        // @ts-ignore
+        Client.Instance.PatchAsync(patch).Done();
+    }
+
     static _imeout1;
 
     /**
@@ -457,7 +483,7 @@ export class Section extends EditableComponent {
     static ChangeComponentGroupLabel(e, com) {
         window.clearTimeout(Section._imeout1);
         Section._imeout1 = window.setTimeout(() => {
-            this.SubmitLabelChanged('Meta', com.Id, e.target.textContent.decodeSpecialChar());
+            this.SubmitLabelChanged('Meta', com.Id, Utils.DecodeSpecialChar(e.target instanceof HTMLElement && e.target.textContent));
         }, 1000);
     }
 
@@ -465,7 +491,95 @@ export class Section extends EditableComponent {
      * Renders components responsive to the current view.
      * @param {Component} group - The component group to render.
      */
+
     RenderComponentResponsive(group) {
+        if (group.Children.Nothing()) {
+            return;
+        }
+        const html = Html.Instance;
+        const allComPolicies = this.EditForm.GetElementPolicies(group.Children.map(x => x.Id), Utils.ComponentId);
+        const innerCol = this.EditForm.GetInnerColumn(group);
+        if (innerCol > 0) {
+            Html.Take(this.Element).ClassName("grid").Style(`grid-template-columns: repeat(${innerCol}, 1fr)`);
+        }
+        let column = 0;
+        group.Children.sort((a, b) => a.Order - b.Order).forEach(ui => {
+            if (ui.Hidden) {
+                return;
+            }
+    
+            const comPolicies = allComPolicies.filter(x => x.RecordId === ui.Id);
+            const readPermission = !ui.IsPrivate || comPolicies.every(x => x.CanRead);
+            const writePermission = !ui.IsPrivate || comPolicies.every(x => x.CanWrite);
+            if (!readPermission) {
+                return;
+            }
+    
+            Html.Take(this.Element);
+            const colSpan = ui.Column || 2;
+            ui.Label = ui.Label || '';
+            let label = null;
+            if (ui.ShowLabel) {
+                html.Div.IText(ui.Label).TextAlign(column === 0 ? 'left' : 'right').Render();
+                label = Html.Context;
+                html.End.Render();
+            }
+    
+            const childCom = ComponentFactory.GetComponent(ui, this.EditForm);
+            if (childCom === null) return;
+            let childComponent = childCom instanceof EditableComponent ? childCom : { v: childCom };
+
+            if (childComponent instanceof ListView) {
+                this.EditForm.ListViews.push(childComponent);
+                this.AddChild(childComponent);
+            }
+            if (childComponent instanceof EditableComponent) {
+                childComponent.Disabled = ui.Disabled || this.Disabled || !writePermission || this.EditForm.IsLock || childComponent.Disabled;
+                this.AddChild(childComponent);
+                if (childComponent.Element != null) {
+                    if (ui.ChildStyle.HasAnyChar()) {
+                        const current = Html.Context;
+                        Html.Take(childComponent.Element).Style(ui.ChildStyle);
+                        Html.Take(current);
+                    }
+                    if (ui.ClassName.HasAnyChar()) {
+                        childComponent.Element.AddClass(ui.ClassName);
+                    }
+        
+                    if (ui.Row === 1) {
+                        childComponent.ParentElement.parentElement.AddClass("inline-label");
+                    }
+        
+                    if (Client.SystemRole) {
+                        // @ts-ignore
+                        childComponent.Element.AddEventListener("ContextMenu", (e) => this.EditForm.SysConfigMenu(e, ui, group, childComponent));
+                    }
+                    if (ui.Focus) {
+                        childComponent.Focus();
+                    }
+            
+                }
+                if (colSpan <= innerCol) {
+                    if (label !== null && label.nextElementSibling !== null && colSpan !== 2) {
+                        if(label.nextElementSibling instanceof HTMLElement) {
+                            label.nextElementSibling.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
+    
+                        }
+                    } else if (childComponent.Element !== null) {
+                        childComponent.Element.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
+                    }
+                    column += colSpan;
+                } else {
+                    column = 0;
+                }
+                if (column === innerCol) {
+                    column = 0;
+                }
+            }
+        });
+    }
+
+    RenderComponentResponsive1(group) {
         if (!group.Children) {
             return;
         }
@@ -492,11 +606,10 @@ export class Section extends EditableComponent {
         if (ui.Hidden) {
             return;
         }
-
         const comPolicies = allComPolicies.filter(x => x.RecordId === ui.Id);
         const readPermission = !ui.IsPrivate || comPolicies.every(x => x.CanRead);
         const writePermission = !ui.IsPrivate || comPolicies.every(x => x.CanWrite);
-
+        var innerCol = this.EditForm.GetInnerColumn(ui);
         if (!readPermission) {
             return;
         }
@@ -530,26 +643,28 @@ export class Section extends EditableComponent {
                 Html.Take(current);
             }
             if (ui.ClassName) {
-                childComponent.element.classList.add(ui.ClassName);
+                childCom.Element.classList.add(ui.ClassName);
             }
 
             if (ui.Row === 1) {
-                childComponent.parentElement.parentElement.classList.add('inline-label');
+                childCom.ParentElement.parentElement.classList.add('inline-label');
             }
 
             if (Client.SystemRole) {
-                childComponent.element.addEventListener('contextmenu', e => EditForm.sysConfigMenu(e, ui, group, childComponent));
+                childCom.Element.addEventListener('contextmenu', e => this.EditForm.SysConfigMenu(e, ui,  ui, childCom));
             }
         }
         if (ui.Focus) {
-            childComponent.focus();
+            childCom.Focus();
         }
 
         if (colSpan <= innerCol) {
             if (label && label.nextElementSibling && colSpan !== 2) {
-                label.nextElementSibling.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
-            } else if (childComponent.element) {
-                childComponent.element.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
+                if(label.nextElementSibling instanceof HTMLElement) {
+                    label.nextElementSibling.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
+                }
+            } else if (childCom.Element) {
+                childCom.Element.style.gridColumn = `${column + 2}/${column + colSpan + 1}`;
             }
             column += colSpan;
         } else {
@@ -558,6 +673,16 @@ export class Section extends EditableComponent {
         if (column === innerCol) {
             column = 0;
         }
+    }
+
+    ComponentProperties(component) {
+        // @ts-ignore
+        var editor = new ComponentBL({
+            Entity: component,
+            ParentElement: this.Element,
+            OpenFrom: this.FindClosest(editForm => editForm instanceof EditForm),
+        });
+        this.AddChild(editor);
     }
 
     /**
@@ -570,7 +695,7 @@ export class Section extends EditableComponent {
         }
         Html.Table.ClassName("ui-layout").TBody.TRow.Render();
         let column = 0;
-        const AllComPolicies = EditForm.GetElementPolicies(group.Children.map(x => x.Id), Utils.ComponentId);
+        const AllComPolicies = this.EditForm.GetElementPolicies(group.Children.map(x => x.Id), Utils.ComponentId);
         group.Children.sort((a, b) => a.Order - b.Order).forEach(ui => {
             if (ui.Hidden) {
                 return;
@@ -614,7 +739,7 @@ export class Section extends EditableComponent {
             }
             this.AddChild(childCom);
             if (childCom instanceof EditableComponent) {
-                childCom.Disabled = ui.Disabled || this.Disabled || !WritePermission || EditForm.IsLock || childCom.Disabled;
+                childCom.Disabled = ui.Disabled || this.Disabled || !WritePermission || this.EditForm.IsLock || childCom.Disabled;
             }
             if (childCom.Element) {
                 if (ui.ChildStyle) {

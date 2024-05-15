@@ -7,38 +7,42 @@ import { Client } from "./clients/client.js";
 import EventType from './models/eventType.js';
 import { ComponentType } from './models/componentType.js';
 import { Str } from './utils/ext.js';
+import { Component } from 'models/component.js';
 
 
 export class Textbox extends EditableComponent {
     /**
-     * @param {import("./models/component.js").Component} meta
+     * @param {Component} ui
      * @param {Element} [ele]
      */
-    constructor(meta, ele) {
-        super(meta, ele);
-        /** @type {HTMLInputElement} */
-        this.Input = null;
-        /** @type {HTMLTextAreaElement} */
-        this.TextArea = null;
-        this.MultipleLine = false;
-        this.Password = false;
-        this._value = null;
-        this._oldText = '';
-        this._text = '';
-        this.DefaultValue = '';
-        if (ele?.tagName === ComponentType.Input) {
+    constructor(ui, ele) {
+        super(ui);
+        this.DefaultValue = "";
+        if (ele instanceof HTMLInputElement) {
             this.Input = ele;
-        }
-        else if (ele.tagName === ComponentType.Textarea) {
+        } else if (ele instanceof HTMLTextAreaElement) {
             this.TextArea = ele;
         }
+        this._value = null;
+        this.MultipleLine = false;
+        this.Password = false;
+        this._text = "";
+        this._oldText = "";
     }
     /** @type {String} */
-    get Text() { return this._text; }
-    set Text(val) {
-        this._text = val;
-        if (this.Input) this.Input.value = val;
-        if (this.Textarea) this.Textarea.value = val;
+    get Text() {
+        return this._text;
+    }
+
+    set Text(value) {
+        this._text = value;
+        if (this.Input != null) {
+            this.Input.value = this._text;
+        }
+
+        if (this.TextArea != null) {
+            this.TextArea.value = this._text;
+        }
     }
 
     get Value() { return this._value; }
@@ -55,12 +59,12 @@ export class Textbox extends EditableComponent {
         }
 
         let text = (this.EditForm && this.EditForm.Meta && this.EditForm.Meta.IgnoreEncode) ? this._value : Utils.DecodeSpecialChar(this._value);
-        if (this.Meta.FormatData && Utils.HasAnyChar(this.Meta.FormatData)) {
+        if (this.Meta.FormatData && this.Meta.FormatData.HasAnyChar()) {
             text = Utils.FormatEntity(this.Meta.FormatData, this.Entity.GetPropValue(this.Name));
         }
 
-        if (this.Meta.FormatEntity && Utils.HasAnyChar(this.Meta.FormatEntity)) {
-            text = Utils.FormatEntity(this.Meta.FormatEntity, null, this.Entity, Utils.EmptyFormat, Utils.EmptyFormat);
+        if (this.Meta.FormatEntity && this.Meta.FormatEntity.HasAnyChar()) {
+            text = Utils.FormatEntity2(this.Meta.FormatEntity, null, this.Entity, Utils.EmptyFormat, Utils.EmptyFormat);
         }
         Utils.IsFunction(this.Meta.Renderer)?.call(this, this);
         this.Text = text;
@@ -104,8 +108,8 @@ export class Textbox extends EditableComponent {
                 this.Element = this.Input;
                 this.Input.value = this._text;
             }
-            this.Input.addEventListener("input", (e) => this.PopulateUIChange(EventType.Input).bind(this));
-            this.Input.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change).bind(this));
+            this.Input.addEventListener("input", (e) => this.PopulateUIChange(EventType.Input));
+            this.Input.addEventListener("change", (e) => this.PopulateUIChange(EventType.Change));
         }
         Utils.IsFunction(this.Meta.Renderer)?.call(this, this);
         if (this.Password) {
