@@ -1,3 +1,4 @@
+import { Html } from "utils/html.js";
 import EditableComponent from "./editableComponent.js";
 
 /**
@@ -100,6 +101,7 @@ export class ContextMenu extends EditableComponent {
      */
     static get Instance() {
         if (!this._instance) {
+            // @ts-ignore
             this._instance = new ContextMenu();
             this._instance.MenuItems = [];
         }
@@ -148,14 +150,16 @@ export class ContextMenu extends EditableComponent {
                 continue;
             }
             const li = document.createElement('li');
-            li.style = item.Style;
-            item.Ele = li;
-            if (i === 0 && level === 0 && (!items[i].MenuItems || items[i].MenuItems.length === 0)) {
-                this._selectedIndex = i;
-                this.SetSelectedItem(li);
-            }
+
+            Html.Instance.Li.Style(item.Style).Render();
+                item.Ele = Html.Context;
+                if (i == 0 && level == 0 && (items[i].MenuItems == null || items[i].MenuItems.Nothing()))
+                {
+                    this._selectedIndex = i;
+                    this.SetSelectedItem(Html.Context);
+                }
             if (item.Disabled) {
-                li.disabled = true;
+                li.classList.add('disabled');
             } else {
                 li.addEventListener('click', (e) => this.MenuItemClickHandler(e, item));
             }
@@ -207,7 +211,7 @@ export class ContextMenu extends EditableComponent {
             return;
         }
         const children = this._selectedItem ? this._selectedItem.parentElement.children : this.Element.children;
-        const code = e.keyCode;
+        const code = e.KeyCode();
         switch (code) {
             case 27:
                 this.Dispose();
@@ -242,7 +246,7 @@ export class ContextMenu extends EditableComponent {
                 this.SetSelectedItem(children[this._selectedIndex]);
                 break;
             case 13:
-                if (!this._selectedItem) {
+                if (!this._selectedItem && this.Element.firstElementChild instanceof HTMLElement) {
                     this.SetSelectedItem(this.Element.firstElementChild);
                 }
                 this.MenuItemClickHandler(e, this.MenuItems.find(x => x.Ele === this._selectedItem));
@@ -257,15 +261,15 @@ export class ContextMenu extends EditableComponent {
         this.Floating(this.Top, this.Left);
         const clientRect = this.Element.getBoundingClientRect();
         const outOfViewPort = this.Element.OutOfViewport();
-        if (outOfViewPort.bottom) {
+        if (outOfViewPort.Bottom) {
             this.Element.style.top = `${this.Top - clientRect.height}px`;
         }
-        if (outOfViewPort.right) {
+        if (outOfViewPort.Right) {
             this.Element.style.left = `${this.Left - clientRect.width}px`;
             this.Element.style.top = `${this.Top}px`;
         }
         const updatedOutOfViewPort = this.Element.OutOfViewport();
-        if (updatedOutOfViewPort.bottom) {
+        if (updatedOutOfViewPort.Bottom) {
             this.Element.style.top = `${this.Top - clientRect.height}px`;
             this.Element.style.top = `${this.Top - clientRect.height - this.Element.clientHeight}px`;
         }

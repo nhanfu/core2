@@ -5,6 +5,9 @@ import { Uuid7 } from "./structs/uuidv7.js";
 import { ComponentExt } from "./utils/componentExt.js";
 import { Str } from "./utils/ext.js";
 import { Html } from "./utils/html.js";
+import "./utils/fix.js";
+import ObservableArgs from "models/observable.js";
+import EventType from "models/eventType.js";
 
 /**
  * Represents a code editor component.
@@ -31,10 +34,7 @@ export class CodeEditor extends EditableComponent {
             Html.Take(this.ParentElement).Div.Id(Uuid7.Id25());
             this.Element = Html.Context;
         }
-        this.Config().then(() => {
-            if (typeof (require) === 'undefined') return;
-            require(["vs/editor/editor.main"], this.EditorLoaded.bind(this));
-        });
+            this.editor = initCodeEditor(this);
     }
 
     /**
@@ -43,59 +43,11 @@ export class CodeEditor extends EditableComponent {
      * @param {boolean|null} [dirty=null] - Whether the view is considered dirty.
      * @param {string[]} componentNames - Names of the components to update.
      */
-    UpdateView(force = false, dirty = null, ...componentNames) {
-        this.editor.setValue(this.FieldVal);
-    }
-
-    static _hasConfig;
-    async Config() {
-        await Client.LoadScript('https://unpkg.com/monaco-editor@0.45.0/min/vs/loader.js');
-        if (typeof (require) === 'undefined') return;
-        if (CodeEditor._hasConfig) return;
-        CodeEditor._hasConfig = true;
-        
-        require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@0.8.3/min/vs' } });
-        window.MonacoEnvironment = { getWorkerUrl: () => proxy };
-
-        let proxy = URL.createObjectURL(new Blob([`
-            self.MonacoEnvironment = {
-                baseUrl: 'https://unpkg.com/monaco-editor@0.8.3/min/'
-            };
-            importScripts('https://unpkg.com/monaco-editor@0.8.3/min/vs/base/worker/workerMain.js');
-            `], { type: 'text/javascript' }));
-    }
-
-    EditorLoaded() {
-        this.editor = monaco.editor.create(this.Element, {
-            value: this.FieldVal ?? Str.Empty,
-            language: this.Meta.Lang ?? 'javascript',
-            theme: this.Meta.Theme ?? 'vs-light',
-            automaticLayout: true,
-            minimap: {
-                enabled: false,
-            }
-        });
-
-        this.editor.getModel().onDidChangeContent(() => {
-            this.FieldVal = this.editor.getValue();
-            this.Dirty = true;
-            if (this.Meta.Lang === "html" || this.Meta.Lang === "javascript") {
-                this.UpdateViewComponent();
-            }
-            else if (this.Meta.Lang == "css") {
-                this.styleElement.textContent = newvalue;
-            }
-        });
-        this.Element.classList.add('code-editor');
-        this.Element.style.resize = 'both';
-        this.Element.style.border = '1px solid #dde';
-        // register change event from UI
-        this.addEventListener('UpdateView', () => {
-            this.editor.setValue(this.FieldVal);
-        });
-        Html.Take(this.Element).Icon('fa fal fa-compress-wide')
-            .Event('click', () => {
-                ComponentExt.FullScreen(this.Element);
-            });
+    updateView(force = false, dirty = null, ...componentNames) {
+        const handler = this._events?.[this.constructor.name]; 
+            const args = new ObservableArgs();
+            args.Com = this;
+            args.EvType = 'Change';
+            handler(args);
     }
 }

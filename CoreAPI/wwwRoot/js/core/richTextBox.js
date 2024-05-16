@@ -44,8 +44,10 @@ export class RichTextBox extends EditableComponent {
     UpdateView(force = false, dirty = null, ...componentNames) {
         const handler = this._events["UpdateView"];
         if (handler) {
-             // @ts-ignore
-            handler(new ObservableArgs({ Com: this, EvType: 'Change' }));
+            const args = new ObservableArgs();
+            args.Com = this;
+            args.EvType = 'Change';
+            handler(args);
         }
     }
 }
