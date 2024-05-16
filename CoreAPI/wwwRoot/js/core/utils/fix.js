@@ -7,6 +7,7 @@ function zoom() {
 
     image.addEventListener("mousewheel", function (e) {
         e.preventDefault();
+    // @ts-ignore
         scale += e.deltaY > 0 ? -SCALE_FACTOR : SCALE_FACTOR;
         scale = Math.min(Math.max(1, scale), 6);
         this.style.transform = `scale(${scale})`;
@@ -14,7 +15,9 @@ function zoom() {
     image.addEventListener('mousemove', function (e) {
         e.preventDefault();
         const { left, top, width, height } = this.getBoundingClientRect();
+    // @ts-ignore
         const x = (e.clientX - left) / width * 100;
+    // @ts-ignore
         const y = (e.clientY - top) / height * 100;
         this.style.transformOrigin = `${x}% ${y}%`;
     });
@@ -26,55 +29,10 @@ function zoom() {
     });
 }
 
-function initCodeEditor(com, element, fieldname, type) {
-    if (typeof (require) === 'undefined' || com == null || com.Entity == null) return;
-    require.config({ paths: { 'vs': 'https://unpkg.com/monaco-editor@latest/min/vs' } });
-    window.MonacoEnvironment = { getWorkerUrl: () => proxy };
-
-    let proxy = URL.createObjectURL(new Blob([`
-	    self.MonacoEnvironment = {
-		    baseUrl: 'https://unpkg.com/monaco-editor@latest/min/'
-	    };
-	    importScripts('https://unpkg.com/monaco-editor@latest/min/vs/base/worker/workerMain.js');`],
-        { type: com.Meta?.Template ?? 'text/javascript' }));
-
-    require(["vs/editor/editor.main"], function () {
-        let editor = monaco.editor.create(com.Element, {
-            value: com.Entity[com.Meta.FieldName],
-            language: com.Meta.Lang ?? 'javascript',
-            theme: 'vs-light',
-            automaticLayout: true,
-            minimap: {
-                enabled: false,
-            }
-        });
-        // hook event from UI
-        editor.getModel().onDidChangeContent(() => {
-            com.Entity[com.Meta.FieldName] = editor.getValue();
-            com.Dirty = true;
-            if (com.Meta["PlainText"] == "html" || type == "html" || type == "javascript") {
-                com.UpdateViewComponent();
-            }
-            else if (type == "css") {
-                com.styleElement.textContent = newvalue;
-            }
-        });
-    });
-    com.Element.classList.add('code-editor');
-    com.Element.style.resize = 'both';
-    com.Element.style.border = '1px solid #dde';
-    // register change event from UI
-    com.addEventListener('UpdateView', () => {
-        editor.setValue(com.Entity[com.Meta.FieldName]);
-    });
-    Core.MVVM.Html.Take(com.Element).Icon('fa fal fa-compress-wide')
-        .Event('click', () => {
-            Core.Components.Extensions.ComponentExt.FullScreen(com.Element);
-        });
-}
-
 function initCkEditor(com) {
+    // @ts-ignore
     if (com == null || typeof (CKEDITOR) === 'undefined') return;
+    // @ts-ignore
     CKEDITOR.ClassicEditor.create(com.Element, {
         // https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/toolbar.html#extended-toolbar-configuration-format
         toolbar: {

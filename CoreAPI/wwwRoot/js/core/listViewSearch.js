@@ -1,5 +1,4 @@
-
-import { LogicOperation } from './models/enum.js';
+import { HttpMethod, KeyCodeEnum, LogicOperation, OperatorEnum } from './models/enum.js';
 import { Section } from './section.js';
 import EditableComponent from './editableComponent.js';
 import { Html } from "./utils/html.js";
@@ -8,8 +7,14 @@ import { Client } from "./clients/client.js";
 import EventType from './models/eventType.js';
 import "./utils/fix.js";
 import { Uuid7 } from './structs/uuidv7.js';
-import { AdvancedSearch } from 'advancedSearch.js';
-import { ListView } from './listView';
+import { AdvancedSearch } from './advancedSearch.js';
+import { ComponentType } from './models/componentType.js';
+import { Textbox } from './textbox.js';
+import { ElementType } from './models/elementType.js';
+import { Toast } from './toast.js';
+import { ContextMenu } from './contextMenu.js';
+import { ComponentExt } from 'utils/componentExt.js';
+
 /**
  * @typedef {import('./models/component').Component} Component
  * @typedef {import('./listView').ListView} ListView
@@ -17,18 +22,6 @@ import { ListView } from './listView';
  * @typedef {import('./tabEditor').TabEditor} TabEditor
  * @typedef {import('./datepicker').Datepicker} Datepicker
  * @typedef {import('./searchEntry').SearchEntry} SearchEntry
- * @typedef {import('./exportCustomData').ExportCustomData} ExportCustomData
- */
-
-/**
- * @typedef {Object} ListViewSearchVM
- * @property {string} Id
- * @property {string} SearchTerm
- * @property {string} FullTextSearch
- * @property {string} ScanTerm
- * @property {Date|null} StartDate
- * @property {string} DateTimeField
- * @property {Date|null} EndDate
  */
 
 /**
@@ -53,7 +46,11 @@ export class ListViewSearchVM {
  */
 export class ListViewSearch extends EditableComponent {
     /** @type {ListView} */
+    // @ts-ignore
     Parent;
+
+    /** @type {GridView} */
+    ParentGridView;
     /**
      * @type {HTMLInputElement}
      * @private
@@ -86,18 +83,6 @@ export class ListViewSearch extends EditableComponent {
     set DateTimeField(value) {
         this._dateTimeField = value;
     }
-
-    /**
-     * @type {ListView}
-     * @private
-     */
-    _parentListView;
-
-    /**
-     * @type {GridView}
-     * @private
-     */
-    _parentGridView;
 
     /**
      * @type {Component[]}
@@ -142,7 +127,8 @@ export class ListViewSearch extends EditableComponent {
             com.PlainText = header.Label;
             com.Visibility = true;
             com.Column = 1;
-            var compareOpId = Components.AdvancedSearch.OperatorFactory(componentType ?? ComponentTypeTypeEnum.Textbox)[0].Id.TryParseInt();
+            var compareOpId = AdvancedSearch.OperatorFactory(componentType ?? ComponentType.Textbox)[0].Id;
+            // @ts-ignore
             this.Parent.AdvSearchVM.Conditions.push({
                 FieldId: com.Id,
                 CompareOperatorId: compareOpId,
@@ -157,55 +143,63 @@ export class ListViewSearch extends EditableComponent {
             Column: components.length,
             ClassName: 'wrapper'
         };
+        // @ts-ignore
         var _basicSearchGroup = Section.RenderSection(this, sectionInfo);
         _basicSearchGroup.Children.forEach(child => {
-            child.UserInput += changes => {
+            child.UserInput.add(changes => {
                 var condition = this.Parent.AdvSearchVM.Conditions.find(x => x.FieldId === child.Meta.Id);
-                condition.Value = child.GetValue(true)?.toString();
-            };
+                condition.Value = child.FieldVal?.toString();
+            });
         });
-        while (_basicSearchGroup.Element.Children.length > 0) {
-            Element.InsertBefore(_basicSearchGroup.Element.FirstChild, Element.FirstChild);
+        while (_basicSearchGroup.Element.children.length > 0) {
+            this.Element.insertBefore(_basicSearchGroup.Element.firstChild, this.Element.firstChild);
         }
     }
 
     Render() {
-        this.Parent.DataLoaded += this.ListView_DataLoaded;
+        this.Parent.DataLoaded.add(this.ListView_DataLoaded.bind(this));
         if (!this.Meta.CanSearch) {
             return;
         }
-        Html.Take(Parent.Element.FirstElementChild).TabIndex(-1).Event(EventType.KeyPress, this.EnterSearch);
+        // @ts-ignore
+        Html.Take(this.Parent.Element.firstChild).TabIndex(-1).Event(EventType.KeyPress, this.EnterSearch);
         this.Element = Html.Context;
         this.RenderImportBtn();
         if (this.Meta.ComponentType === 'GridView' || this.Meta.ComponentType === 'TreeView' || !this.Meta.IsRealtime) {
-            var txtSearch = new Textbox(new Component({
+            // @ts-ignore
+            var txtSearch = new Textbox({
                 FieldName: 'ListViewSearchVM.SearchTerm',
                 Visibility: true,
                 Label: 'Tìm kiếm',
                 PlainText: 'Tìm kiếm',
                 ShowLabel: false,
-            }));
+            });
             txtSearch.ParentElement = this.Element;
             txtSearch.UserInput = null;
             this.AddChild(txtSearch);
         }
         if (this.Meta.ComponentType !== 'ListView' && this.Meta.ComponentType !== 'TreeView') {
-            var txtFullTextSearch = new Textbox(new Component({
+            // @ts-ignore
+            var txtFullTextSearch = new Textbox({
                 FieldName: 'ListViewSearchVM.FullTextSearch',
                 Visibility: true,
                 Label: 'Inline search',
                 PlainText: 'Inline search',
                 ShowLabel: false,
-            }));
+            });
             txtFullTextSearch.ParentElement = this.Element;
             txtFullTextSearch.UserInput = null;
             this.AddChild(txtFullTextSearch);
             this._fullTextSearch = txtFullTextSearch.Input;
-            this._fullTextSearch.AddEventListener(EventType.Input, this.ParentGridView.SearchDisplayRows);
+            /** @type {GridView} */
+            // @ts-ignore
+            const gridView = this.Parent;
+            this._fullTextSearch.addEventListener(EventType.Input, gridView.SearchDisplayRows.bind(gridView));
         }
 
         if (this.Meta.UpperCase) {
-            var txtScan = new Textbox(new Component({
+            // @ts-ignore
+            var txtScan = new EditableComponent.TextboxMd.Textbox({
                 FieldName: 'ListViewSearchVM.ScanTerm',
                 Visibility: true,
                 Label: 'Scan',
@@ -213,40 +207,41 @@ export class ListViewSearch extends EditableComponent {
                 ShowLabel: false,
                 Focus: true,
                 Events: "{'input':'ScanGridView'}"
-            }));
+            });
             txtScan.ParentElement = this.Element;
             txtScan.UserInput = null;
             this.AddChild(txtScan);
         }
-        var startDate = new Datepicker(new Component({
+        var startDate = new EditableComponent.DatepickerMd.Datepicker({
             FieldName: 'ListViewSearchVM.StartDate',
             Visibility: true,
             Label: 'From date',
             PlainText: 'From date',
             ShowLabel: false,
-        }));
+        });
         startDate.ParentElement = this.Element;
         startDate.UserInput = null;
         this.AddChild(startDate);
-        var endDate = new Datepicker(new Component({
+        var endDate = new EditableComponent.DatepickerMd.Datepicker({
             FieldName: 'ListViewSearchVM.EndDate',
             Visibility: true,
             Label: 'To date',
             PlainText: 'To date',
             ShowLabel: false,
-        }));
+        });
         endDate.ParentElement = this.Element;
         endDate.UserInput = null;
         this.AddChild(endDate);
         if (this.Parent.Meta.ShowDatetimeField) {
-            var dateType = new SearchEntry(new Component({
+            // @ts-ignore
+            var dateType = new EditableComponent.SearchMd.SearchEntry({
                 FieldName: 'Component.DateTimeField',
                 PlainText: 'Loại ngày',
                 FormatData: '{ShortDesc}',
                 ShowLabel: false,
                 ReferenceId: Utils.GetEntity('Component').Id,
                 RefName: 'Component',
-            }));
+            });
             dateType.ParentElement = this.Element;
             dateType.UserInput = null;
             this.AddChild(dateType);
@@ -262,52 +257,70 @@ export class ListViewSearch extends EditableComponent {
             .Event(EventType.Click, this.AdvancedOptions).End
             .Icon('btn fa fa-undo')
             .Title('Refresh')
-            .Event(EventType.Click, this.RefershListView).End
+            .Event(EventType.Click, this.RefreshListView.bind(this)).End
             .Render();
         if (this.Meta.ShowHotKey && this.ParentGridView != null) {
             Html.Take(this.Element).Div.ClassName('hotkey-block')
-                .Button2('F1', { className: 'btn btn-light btn-sm' }).Event(EventType.Click, this.ParentGridView.ToggleAll)
+                .Button2('F1', "btn btn-light btn-sm").Event(EventType.Click, this.ParentGridView.ToggleAll)
                 .Attr('title', 'Uncheck all').End
-                .Button2('F2', { className: 'btn btn-light btn-sm' }).Event(EventType.Click, (e) => {
+                .Button2('F2', "btn btn-light btn-sm").Event(EventType.Click, (e) => {
                     var com = this.Parent.LastListViewItem.Children.find(x => x.Meta.Id === this.ParentGridView.LastComponentFocus.Id);
-                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.toString()), KeyCodeEnum.F2);
+                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(ElementType.td.toString()), KeyCodeEnum.F2);
                 })
                 .Attr('title', 'Filter except').End
-                .Button2('F3', { className: 'btn btn-light btn-sm' }).Event(EventType.Click, (e) => {
+                .Button2('F3', "btn btn-light btn-sm").Event(EventType.Click, (e) => {
                     var com = this.Parent.LastListViewItem.Children.find(x => x.Meta.Id === this.ParentGridView.LastComponentFocus.Id);
-                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.toString()), KeyCodeEnum.F3);
+                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(ElementType.td.toString()), KeyCodeEnum.F3);
                 })
                 .Attr('title', 'Summary selected').End
-                .Button2('F4', { className: 'btn btn-light btn-sm' }).Event(EventType.Click, (e) => {
+                .Button2('F4', "btn btn-light btn-sm").Event(EventType.Click, (e) => {
                     var com = this.Parent.LastListViewItem.Children.find(x => x.Meta.Id === this.ParentGridView.LastComponentFocus.Id);
-                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.toString()), KeyCodeEnum.F4);
+                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(ElementType.td.toString()), KeyCodeEnum.F4);
                 })
                 .Attr('title', 'Lọc tiếp theo các phép tính (Chứa: Bằng; Lớn hơn; Nhỏ hơn; Lớn hơn hoặc bằng;...)').End
-                .Button2('F6', { className: 'btn btn-light btn-sm' }).Event(EventType.Click, (e) => {
+                .Button2('F6', "btn btn-light btn-sm").Event(EventType.Click, (e) => {
                     this.ParentGridView.HotKeyF6Handler(e, KeyCodeEnum.F6);
                 })
                 .Attr('title', 'Quay lại lần lọc trước').End
-                .Button2('F8', { className: 'btn btn-light btn-sm' }).Event(EventType.Click, (e) => {
+                .Button2('F8', "btn btn-light btn-sm").Event(EventType.Click, (e) => {
                     var com = this.Parent.LastListViewItem.Children.find(x => x.Meta.Id === this.ParentGridView.LastComponentFocus.Id);
-                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.toString()), KeyCodeEnum.F8);
+                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(ElementType.td.toString()), KeyCodeEnum.F8);
                 })
                 .Attr('title', 'Xóa/ Vô hiệu hóa dòng hiện thời hoặc các dòng đánh dấu').End
-                .Button2('F9', { className: 'btn btn-light btn-sm' }).Event(EventType.Click, (e) => {
+                .Button2('F9', "btn btn-light btn-sm").Event(EventType.Click, (e) => {
                     var com = this.Parent.LastListViewItem.Children.find(x => x.Meta.Id === this.ParentGridView.LastComponentFocus.Id);
-                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.toString()), KeyCodeEnum.F9);
+                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(ElementType.td.toString()), KeyCodeEnum.F9);
                 })
                 .Attr('title', 'Lọc tại chỗ theo giá trị ô hiện thời').End
-                .Button2('F10', { className: 'btn btn-light btn-sm' }).Event(EventType.Click, (e) => {
+                .Button2('F10', "btn btn-light btn-sm").Event(EventType.Click, (e) => {
                     var com = this.Parent.LastListViewItem.Children.find(x => x.Meta.Id === this.ParentGridView.LastComponentFocus.Id);
-                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.toString()), KeyCodeEnum.F10);
+                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(ElementType.td.toString()), KeyCodeEnum.F10);
                 })
                 .Attr('title', 'Gộp theo cột hiện thời(thống kê lại số nội dung trong cột)').End
-                .Button2('F11', { className: 'btn btn-light btn-sm' }).Event(EventType.Click, (e) => {
+                .Button2('F11', "btn btn-light btn-sm").Event(EventType.Click, (e) => {
                     var com = this.Parent.LastListViewItem.Children.find(x => x.Meta.Id === this.ParentGridView.LastComponentFocus.Id);
-                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(MVVM.ElementType.td.toString()), KeyCodeEnum.F11);
+                    this.ParentGridView.ActionKeyHandler(e, this.ParentGridView.LastComponentFocus, this.ParentGridView.LastListViewItem, com, com.Element.Closest(ElementType.td.toString()), KeyCodeEnum.F11);
                 })
                 .Attr('title', 'Sắp xếp thứ tự tăng dần, giảm dần. (Shift+F11 để sort nhiều cấp)').End.Render();
         }
+    }
+
+    RefreshListView() {
+        this.EntityVM.SearchTerm = '';
+        this.EntityVM.StartDate = null;
+        this.EntityVM.EndDate = null;
+        this.UpdateView();
+
+        if (!(this.Parent)) {
+            return;
+        }
+
+        const listView = this.Parent;
+        listView.ClearSelected();
+        listView.CellSelected.Clear();
+        listView.AdvSearchVM.Conditions.Clear();
+        listView.Wheres.Clear();
+        listView.ApplyFilter();
     }
 
     FullScreen() {
@@ -338,26 +351,30 @@ export class ListViewSearch extends EditableComponent {
      * @param {Event} e
      */
     UploadCsv(e) {
-        var files = e.Target['files'];
+        /** @type {File[]} */
+        var files = e.target['files'];
         if (!files || files.length === 0) {
             return;
         }
 
-        var fileName = files[0].Name;
-        var uploadForm = this._uploader.ParentElement;
+        var fileName = files[0].name;
+        /** @type {HTMLFormElement} */
+        // @ts-ignore
+        var uploadForm = this._uploader.parentElement;
         var formData = new FormData(uploadForm);
         var meta = this.Parent.Meta;
-        Client.Instance.SubmitAsync(new XHRWrapper({
+        // @ts-ignore
+        Client.Instance.SubmitAsync({
             FormData: formData,
             Url: `/user/importCsv?table=${meta.RefName}&comId=${meta.Id}&connKey=${meta.MetaConn}`,
             Method: HttpMethod.POST,
             ResponseMimeType: Utils.GetMimeType('csv')
-        })).Done(success => {
+        }).Done(success => {
             Toast.Success('Import excel success');
-            this._uploader.Value = '';
-        }).Catch(error => {
+            this._uploader.value = '';
+        }).catch(error => {
             Toast.Warning(error.Message);
-            this._uploader.Value = '';
+            this._uploader.value = '';
         });
     }
 
@@ -365,17 +382,26 @@ export class ListViewSearch extends EditableComponent {
      * @param {Event} e
      */
     AdvancedOptions(e) {
-        var buttonRect = e.Target.As().GetBoundingClientRect();
-        var show = LocalStorage.GetItem(`Show${this.Meta.Id}`) ?? false;
+        /** @type {HTMLElement} */
+        // @ts-ignore
+        const ele = e.target;
+        var buttonRect = ele.getBoundingClientRect();
+        var show = localStorage.getItem(`Show${this.Meta.Id}`) ?? false;
         var ctxMenu = ContextMenu.Instance;
-        ctxMenu.Top = buttonRect.Bottom;
-        ctxMenu.Left = buttonRect.Left;
+        ctxMenu.Top = buttonRect.bottom;
+        ctxMenu.Left = buttonRect.left;
         ctxMenu.MenuItems = [
+            // @ts-ignore
             { Icon: 'fa fa-search-plus mr-1', Text: 'Advanced search', Click: this.AdvancedSearch },
+            // @ts-ignore
             { Icon: 'fa fa-search mr-1', Text: 'Show selected only', Click: this.FilterSelected },
+            // @ts-ignore
             { Icon: 'fa fa-download mr-1', Text: 'Import csv', Click: obj => this._uploader.Click() },
+            // @ts-ignore
             { Icon: 'fa fa-download mr-1', Text: 'Export all', Click: this.ExportAllData },
+            // @ts-ignore
             { Icon: 'fa fal fa-ballot-check mr-1', Text: 'Export selected', Click: this.ExportSelectedData },
+            // @ts-ignore
             { Icon: 'fa fa-download mr-1', Text: 'Customize export', Click: this.ExportCustomData },
         ];
         ctxMenu.Render();
@@ -383,9 +409,10 @@ export class ListViewSearch extends EditableComponent {
 
     RenderImportBtn() {
         Html.Take(this.Element).Form.Attr('method', 'POST').Attr('enctype', 'multipart/form-data')
-            .Display(false).Input.Type('file').Id(`id_${this.GetHashCode()}`).Attr('name', 'files').Attr('accept', '.csv');
+            .Display(false).Input.Type('file').Id(`id_${Uuid7.Id25()}`).Attr('name', 'files').Attr('accept', '.csv');
+        // @ts-ignore
         this._uploader = Html.Context;
-        this._uploader.AddEventListener(EventType.Change.toString(), ev => this.UploadCsv(ev));
+        this._uploader.addEventListener(EventType.Change, (/** @type {Event} */ ev) => this.UploadCsv(ev));
         Html.Instance.End.End.Render();
     }
 
@@ -402,6 +429,7 @@ export class ListViewSearch extends EditableComponent {
             this.Parent.CellSelected.find(x => x.FieldName === this.IdField).Value = selectedIds.join();
             this.Parent.CellSelected.find(x => x.FieldName === this.IdField).ValueText = selectedIds.join();
         } else {
+            // @ts-ignore
             this.Parent.CellSelected.push({
                 FieldName: this.IdField,
                 FieldText: 'Mã',
@@ -421,7 +449,7 @@ export class ListViewSearch extends EditableComponent {
      * @param {object} arg
      */
     ExportCustomData(arg) {
-        TabEditor.OpenPopup('Export CustomData', () => this.Exporter).Done();
+        this.TabEditor.OpenPopup('Export CustomData', () => this.Exporter).Done();
     }
 
     /**
@@ -430,7 +458,7 @@ export class ListViewSearch extends EditableComponent {
     get Exporter() {
         if (!this._export) {
             this._export = new ExportCustomData(this.Parent);
-            this._export.ParentElement = TabEditor.Element;
+            this._export.ParentElement = this.TabEditor.Element;
             this._export.Disposed += () => this._export = null;
         }
         return this._export;
@@ -470,9 +498,9 @@ export class ListViewSearch extends EditableComponent {
             this.DateTimeField = this.Parent.Header.find(x => x.Id === this.EntityVM.DateTimeField).FieldName;
         }
 
-        const searchTerm = this.EntityVM.SearchTerm.trim().EncodeSpecialChar() || '';
+        const searchTerm = Utils.EncodeSpecialChar(this.EntityVM.SearchTerm.trim()) || '';
         const headers = this.Parent.Header.filter(x => x && x.FieldName.HasNonSpaceChar() && !x.ComponentType.includes("Button"));
-        const operators = headers.map(x => x.MapToFilterOperator(searchTerm)).filter(x => x.HasAnyChar());
+        const operators = headers.map(x => ComponentExt.MapToFilterOperator(x, searchTerm)).filter(x => x.HasAnyChar());
         let finalFilter = operators.join(" or ");
 
         const basicsAddDate = this.Parent.Header.filter(x => x.AddDate).map(x => x.Id);
@@ -486,13 +514,13 @@ export class ListViewSearch extends EditableComponent {
             } else {
                 oldStartDate.Condition = startDateCondition;
             }
-            LocalStorage.SetItem("FromDate" + this.Parent.Meta.Id, this.EntityVM.StartDate.toISOString().slice(0, 10));
+            localStorage.setItem("FromDate" + this.Parent.Meta.Id, this.EntityVM.StartDate.toISOString().slice(0, 10));
         } else if (!this.EntityVM.StartDate) {
             const startDateIndex = this.Parent.Wheres.findIndex(x => x.Condition.includes(`ds.[${this.DateTimeField}] >=`));
             if (startDateIndex !== -1) {
                 this.Parent.Wheres.splice(startDateIndex, 1);
             }
-            LocalStorage.RemoveItem("FromDate" + this.Parent.Meta.Id);
+            localStorage.removeItem("FromDate" + this.Parent.Meta.Id);
         }
 
         if (!parentGrid && this.EntityVM.EndDate) {
@@ -507,38 +535,19 @@ export class ListViewSearch extends EditableComponent {
             } else {
                 oldEndDate.Condition = endDateCondition;
             }
-            LocalStorage.SetItem("ToDate" + this.Parent.Meta.Id, endDate.toISOString().slice(0, 10));
+            localStorage.setItem("ToDate" + this.Parent.Meta.Id, endDate.toISOString().slice(0, 10));
         } else if (!this.EntityVM.EndDate) {
             const endDateIndex = this.Parent.Wheres.findIndex(x => x.Condition.includes(`ds.[${this.DateTimeField}] <`));
             if (endDateIndex !== -1) {
                 this.Parent.Wheres.splice(endDateIndex, 1);
             }
-            LocalStorage.RemoveItem("ToDate" + this.Parent.Meta.Id);
+            localStorage.removeItem("ToDate" + this.Parent.Meta.Id);
         }
 
         if ((this.EntityVM.EndDate || this.EntityVM.StartDate) && this.Parent.Meta.ShowNull) {
             finalFilter += ` or ds.${this.DateTimeField} is null`;
         }
         return finalFilter;
-    }
-
-    /**
-     * Refreshes the list view, clearing all filters and selections.
-     */
-    RefreshListView() {
-        this.EntityVM.SearchTerm = '';
-        this.EntityVM.StartDate = null;
-        this.EntityVM.EndDate = null;
-        this.UpdateView();
-        if (!(this.Parent instanceof ListView)) {
-            return;
-        }
-        const listView = this.Parent;
-        listView.ClearSelected();
-        listView.CellSelected = [];
-        listView.AdvSearchVM.Conditions = [];
-        listView.Wheres = [];
-        listView.ApplyFilter().Done();
     }
 
     /**
@@ -553,16 +562,12 @@ export class ListViewSearch extends EditableComponent {
         // Components are never disabled, ignore the input.
     }
 
-    AdvancedSearch(arg)
-    {
-        this.TabEditor.OpenPopup("AdvancedSearch", () =>
-        {
+    AdvancedSearch(arg) {
+        this.TabEditor.OpenPopup("AdvancedSearch", () => {
             // @ts-ignore
-            var editor = new AdvancedSearch(this.ParentListView)
-            {
-                this.ParentListView = this.Parent instanceof ListView,
-                this.ParentElement = this.TabEditor.Element
-            };
+            var editor = new AdvancedSearch(this.ParentListView);
+            editor.Parent = this.Parent,
+            editor.ParentElement = this.TabEditor.Element
             return editor;
         }).Done();
     }

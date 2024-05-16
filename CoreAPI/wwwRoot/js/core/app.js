@@ -9,6 +9,7 @@ import { EditForm } from "./editForm.js";
 import { Spinner } from "./spinner.js";
 
 export class App {
+    // @ts-ignore
     static DefaultFeature = Utils.HeadChildren.layout?.content || "index";
     static FeatureLoaded = false;
 
@@ -103,6 +104,7 @@ export class App {
      * @returns {boolean} True if mobile, false otherwise.
      */
     static IsMobile() {
+        // @ts-ignore
         return typeof cordova !== 'undefined';
     }
 }

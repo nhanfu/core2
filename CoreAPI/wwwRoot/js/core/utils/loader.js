@@ -1,3 +1,4 @@
+import { Component } from "../models/component.js";
 import { Utils } from "./utils.js";
 
 export const getMetaInfo = (name, root) => {
@@ -12,11 +13,10 @@ export const getComName = (root) => {
 
 export async function comQuery(meta, com) {
     if (meta.Query == null) return null;
-    const o = {};
-    var isFn = Utils.IsFunction(meta.PreQuery, o);
+    var fn = Utils.IsFunction(meta.PreQuery);
     var body = {
         ComId: meta.Id,
-        Params: isFn ? JSON.stringify(o.v.call(null, com)) : null,
+        Params: fn ? JSON.stringify(fn.call(null, com)) : null,
         AnnonymousTenant: meta.TenantCode ?? 'system',
         AnnonymousEnv: meta.Env ?? 'test',
         MetaConn: 'default',
@@ -54,13 +54,12 @@ export async function resolveComponents(root) {
         if (response.ok) {
             const res = await response.json();
             const components = res[0];
-            components.map(com => {
-                const fnVal = {};
-                const isRendererFn = Utils.IsFunction(com.Renderer, fnVal);
+            components.map((/** @type {Component} */ com) => {
+                const isRendererFn = Utils.IsFunction(com.Renderer);
                 if (!isRendererFn) return;
                 const container = meta.find(x => x.dataset.meta == com.FieldName);
                 if (container == null) return;
-                fnVal.v.call(null, container, com, comQuery);
+                isRendererFn.call(null, container, com, comQuery);
             });
         }
     } catch (error) {

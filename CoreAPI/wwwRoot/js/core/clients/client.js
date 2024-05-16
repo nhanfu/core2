@@ -14,18 +14,28 @@ export class Client {
     static entities;
     static token;
     static GuidLength = 36;
+    // @ts-ignore
     static Host = (document.head.host?.content || window.location.host).toLowerCase();
+    // @ts-ignore
     static BaseUri = (document.head.baseUri?.content || window.location.origin).toLowerCase();
+    // @ts-ignore
     static IsPortal = document.head.startup?.content !== "admin";
+    // @ts-ignore
     static MetaConn = document.head.metaKey?.content || "default";
+    // @ts-ignore
     static DataConn = document.head.dataConn?.content || "bl";
+    // @ts-ignore
     static Tenant = document.head.tenant?.content || "System";
+    // @ts-ignore
     static Env = document.head.env?.content || "test";
+    // @ts-ignore
     static FileFTP = document.head.file?.content || "/user";
+    // @ts-ignore
     static Config = document.head.config?.content || "";
     static BadGatewayRequest = new BadGatewayQueue();
     static UnAuthorizedEventHandler;
     static SignOutEventHandler;
+    // @ts-ignore
     static get Origin() { return document.head.origin?.content || window.location.origin; }
     _nameSpace;
     _config;

@@ -182,6 +182,7 @@ export class Component {
     DefaultVal = '';
     DateTimeField = '';
     Active = false;
+    Theme = '';
     CustomNextCell = false;
     MultipleLine = false;
     IsPublic = false;

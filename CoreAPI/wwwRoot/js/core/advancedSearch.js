@@ -2,7 +2,7 @@ import EditableComponent from "./editableComponent.js";
 import { Component } from "./models/component.js";
 import { ComponentType } from "./models/componentType.js";
 import { ElementType } from "./models/elementType.js";
-import { AdvSearchVM, ActiveStateEnum, AdvSearchOperation, FieldCondition, LogicOperation, OperationToSql, OrderBy, OrderbyDirection } from "./models/enum.js";
+import { AdvSearchVM, ActiveStateEnum, AdvSearchOperation, FieldCondition, LogicOperation, OperationToSql, OrderBy, OrderbyDirection, Entity } from "./models/enum.js";
 import EventType from "./models/eventType.js";
 import { KeyCodeEnum } from "./models/enum.js";
 import { Section } from "./section.js";
@@ -481,7 +481,7 @@ export class AdvancedSearch extends TabEditor {
     /**
      * 
      * @param {string} componentType 
-     * @returns {any[]}
+     * @returns {Entity[]}
      */
     static OperatorFactory(componentType) {
         // @ts-ignore

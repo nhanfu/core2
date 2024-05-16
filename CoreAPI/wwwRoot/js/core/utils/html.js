@@ -539,6 +539,7 @@ export class HTML {
 
         let result = this.Context;
         while (result !== null) {
+            // @ts-ignore
             if (result.querySelector(selector) !== null) {
                 break;
             } else {

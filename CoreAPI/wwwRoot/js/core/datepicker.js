@@ -16,6 +16,8 @@ export class Datepicker extends EditableComponent {
     static calendar = null;
     static renderAwaiter = null;
     static closeAwaiter = null;
+    /** @type {Date} */
+    _value;
 
     constructor(ui, ele = null) {
         super(ui);
@@ -177,7 +179,7 @@ export class Datepicker extends EditableComponent {
             if (this.calendar) {
                 this.calendar.style.display = "none";
             }
-            this.Input.value = this.value ? this.value.toLocaleDateString('en-US', this.options) : "";
+            this.Input.value = this.value ? this.value.toLocaleDateString('en-US', Datepicker.options) : "";
             this.hour = null;
             this.minute = null;
         }, 250);
@@ -196,6 +198,7 @@ export class Datepicker extends EditableComponent {
         }, 100);
     }
 
+    static _closeAwaiter;
     /**
      * Detailed rendering logic for the calendar, handling navigation and selection of dates.
      * @param {Date} someday - The date to render in the calendar.
@@ -203,7 +206,7 @@ export class Datepicker extends EditableComponent {
     RenderCalendarTask(someday) {
         if (this.Disabled) return;
         this.show = true;
-        clearTimeout(this.closeAwaiter);
+        clearTimeout(Datepicker._closeAwaiter);
         if (!this.calendar) {
             Html.Take(document.body).Div.ClassName("calendar compact open open-up").TabIndex(-1).Trigger("focus");
             this.calendar = Html.Context; // Assumes Html.Context provides the current element
@@ -253,7 +256,7 @@ export class Datepicker extends EditableComponent {
         firstOutsideDayOfMonth.setDate(firstOutsideDayOfMonth.getDate() - (firstDayOfMonth.getDay() + 1) - 5);
         var lastOutsideDayOfMonth = new Date(lastDayOfMonth);
         lastOutsideDayOfMonth.setDate(lastOutsideDayOfMonth.getDate() + (6 - lastDayOfMonth.getDay() + 1));
-        if ((lastOutsideDayOfMonth - firstOutsideDayOfMonth) / (1000 * 60 * 60 * 24 * 7) < 5) {
+        if ((lastOutsideDayOfMonth.getTime() - firstOutsideDayOfMonth.getTime()) / (1000 * 60 * 60 * 24 * 7) < 5) {
             lastOutsideDayOfMonth.setDate(lastOutsideDayOfMonth.getDate() + 7);
         }
         var runner = new Date(firstOutsideDayOfMonth);
@@ -311,6 +314,7 @@ export class Datepicker extends EditableComponent {
         let oldVal = this.value;
         this.Value = selected;
         /** @type {ObservableArgs} */
+        // @ts-ignore
         var arg = { NewData: this.value, OldData: oldVal, EvType: "change" };
         this.UserInput?.invoke(arg);
         this.PopulateFields();
@@ -382,9 +386,9 @@ export class Datepicker extends EditableComponent {
      * @param {Event} e - The event object.
      */
     ChangeHourMinuteHotKey(e) {
-        if (e.keyCode === 38) { // Arrow Up
+        if (e.KeyCode() === KeyCodeEnum.UpArrow) { // Arrow Up
             this.IncreaseTime(1, e.target === this.minute);
-        } else if (e.keyCode === 40) { // Arrow Down
+        } else if (e.KeyCode() === KeyCodeEnum.DownArrow) { // Arrow Down
             this.IncreaseTime(-1, e.target === this.minute);
         }
     }
@@ -402,7 +406,6 @@ export class Datepicker extends EditableComponent {
         rules.forEach(rule => {
             isValid = isValid && this.Validate(rule, this.value);
         });
-        this.IsValid = isValid;
         return Promise.resolve(isValid);
     }
 

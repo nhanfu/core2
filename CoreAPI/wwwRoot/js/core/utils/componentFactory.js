@@ -1,7 +1,10 @@
+import { GridView } from "../gridView.js";
 import { EditForm } from "../editForm.js";
 import EditableComponent from "../editableComponent.js";
 import { Component } from "../models/component.js";
 import { Utils } from "./utils.js";
+import { GroupGridView } from "groupGridView.js";
+import { ListView } from "listView.js";
 
 /**
  * Factory class for creating UI components based on specific configurations.

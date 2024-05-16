@@ -47,6 +47,10 @@ export default class EditableComponent {
     static GridViewMd;
     /** @type {import('./editForm.js')} */
     static EditFormMd;
+    /** @type {import('./textbox.js')} */
+    static TextboxMd;
+    /** @type {import('./datepicker.js')} */
+    static DatepickerMd;
     /**
      * Create instance of component
      * @param {Component | null} meta 

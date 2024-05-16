@@ -19,6 +19,7 @@ export class Toast {
      */
     static Create(options) {
         if (typeof Swal !== 'undefined') {
+            // @ts-ignore
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',

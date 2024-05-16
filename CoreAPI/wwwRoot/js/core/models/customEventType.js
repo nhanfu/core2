@@ -31,14 +31,3 @@ export const TypeEntityAction = {
     Message: 3,
     MessageCountBadge: 4,
 };
-
-export const OperatorEnum = {
-    In: 1,
-    NotIn: 2,
-    Gt: 3,
-    Ge: 4,
-    Lt: 5,
-    Le: 6,
-    Lr: 7,
-    Rl: 8,
-};

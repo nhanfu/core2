@@ -465,10 +465,10 @@ HTMLElement.prototype.OutOfViewport = function () {
     outOfViewPort.All = outOfViewPort.Top && outOfViewPort.Left && outOfViewPort.Bottom && outOfViewPort.Right;
     return outOfViewPort;
 };
+
 /** 
- * @param {(value: Element) => void} callback 
- * @return {void}
- */
+* @param {(value: Element, index: number, array: Element[]) => void} callback 
+*/
 HTMLCollection.prototype.forEach = function (callback) {
     Array.from(this).forEach(callback);
 };
