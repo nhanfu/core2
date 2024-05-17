@@ -1375,5 +1375,16 @@ export class ListView extends EditableComponent {
             // @ts-ignore
             }, false);
         }
+
+        GetUserSetting(prefix) {
+            // @ts-ignore
+            return Client.Instance.UserSvc({
+                MetaConn: this.MetaConn,
+                DataConn: this.DataConn,
+                ComId: "UserSetting",
+                Action: "GetByComId",
+                Params: JSON.stringify({ ComId: this.Meta.Id, Prefix: prefix })
+            });
+        }
         
 }

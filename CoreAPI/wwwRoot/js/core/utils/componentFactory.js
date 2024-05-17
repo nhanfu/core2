@@ -5,6 +5,7 @@ import { Component } from "../models/component.js";
 import { Utils } from "./utils.js";
 import { GroupGridView } from "groupGridView.js";
 import { ListView } from "listView.js";
+import { GroupListView } from "groupListView.js";
 
 /**
  * Factory class for creating UI components based on specific configurations.

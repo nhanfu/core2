@@ -5,6 +5,9 @@ import { EditForm } from "../editForm.js";
 import { Component } from "../models/component.js";
 import { Client } from "../clients/client.js";
 import { SqlViewModel } from "../models/sqlViewModel.js";
+import { TabEditor } from "tabEditor.js";
+import { ListViewItem } from "listViewItem.js";
+import EditableComponent from "editableComponent.js";
 
 export class ComponentExt {
     static MapToPatch(com, table = null, fields = null) {
@@ -201,4 +204,92 @@ export class ComponentExt {
             element.msRequestFullscreen();
         }
     }
+
+    static FindClosest(component, Type) {
+        if (component instanceof Type) {
+            return component;
+        }
+    
+        while (component.Parent != null) {
+            component = component.Parent;
+            if (component instanceof Type) {
+                return component;
+            }
+        }
+        return null;
+    }
+
+    static OpenTabOrPopup(com, tab) {
+        let parentTab;
+        if (com instanceof EditForm) {
+            parentTab = com;
+        } else if (com instanceof EditableComponent) {
+            parentTab = com.EditForm || this.FindClosest(com , EditForm);
+        }
+        if (tab instanceof TabEditor) {
+            if (tab.Popup) {
+                com.AddChild(tab);
+            } else {
+                tab.Render();
+            }
+        
+            tab.ParentForm = parentTab;
+            tab.OpenFrom = parentTab instanceof EditForm && parentTab?.FilterChildren(x => x.Entity === tab.Entity)?.[0];
+        }
+    }
+    
+    OpenTabOrPopup(com, tab) {
+        let parentTab;
+        if (com instanceof EditForm) {
+            parentTab = com;
+        } else {
+            parentTab = com.EditForm || com.FindClosest(EditForm);
+        }
+    
+        if (tab.Popup) {
+            com.AddChild(tab);
+        } else {
+            tab.Render();
+        }
+    
+        tab.ParentForm = parentTab;
+        tab.OpenFrom = parentTab?.FilterChildren(x => x.Entity === tab.Entity)?.[0];
+    }
+
+    static OpenTab(com, id, featureName, factory, popup = false, anonymous = false) {
+        return new Promise((resolve, reject) => {
+            if (!popup && TabEditor.FindTab(id)) {
+                const Exists = TabEditor.FindTab(id);
+                Exists.Focus();
+                resolve(Exists);
+                return;
+            }
+            this.LoadFeature(featureName).then(Feature => {
+                const Tab = factory();
+                Tab.Popup = popup;
+                Tab.Name = featureName;
+                Tab.Id = id;
+                Tab.Feature = Feature;
+                this.AssignMethods(Feature, Tab);
+                this.OpenTabOrPopup(com, Tab);
+                resolve(Tab);
+            });
+        });
+    }
+
+    static OpenPopup (com , featureName, factory, anonymous = false, child = false) {
+        const hashCode = () => {
+            let hash = 0;
+            let str = JSON.stringify(com); 
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash |= 0; 
+            }
+            return hash;
+        };
+        return this.OpenTab(com, hashCode().toString(), featureName, factory, true, anonymous);
+    };
+
+    
 }

@@ -1,3 +1,4 @@
+import { GroupRowData } from "groupGridView";
 import { GroupViewItem } from "groupViewItem";
 import { ListView } from "listView";
 import { ListViewItem } from "listViewItem";
@@ -29,7 +30,9 @@ export class GroupListView extends ListView {
             const existGroup = this.AllListViewItem.find(group => group.GroupRow && group.Entity.As('GroupRowData').Key === groupKey); 
     
             if (existGroup === null) {
-                const groupData = { Key: groupKey, Children: [item] };
+                const groupData = new GroupRowData();
+                groupData.Key = groupKey;
+                groupData.Children.push(item); 
                 this.FormattedRowData.push(groupData);
                 const rowSection = this.RenderRowData(this.Header, groupData, this.MainSection, this.MainSection.Children.length);
                 if (singleAdd) {

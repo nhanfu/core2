@@ -14,6 +14,7 @@ import { ElementType } from './models/elementType.js';
 import { Toast } from './toast.js';
 import { ContextMenu } from './contextMenu.js';
 import { ComponentExt } from 'utils/componentExt.js';
+import { ExportCustomData } from 'exportCustomData.js';
 
 /**
  * @typedef {import('./models/component').Component} Component
@@ -84,6 +85,16 @@ export class ListViewSearch extends EditableComponent {
         this._dateTimeField = value;
     }
 
+    
+    get TabEditor() {
+        return this.Parent.TabEditor || this.Parent.EditForm instanceof this.TabEditor ? this.Parent.EditForm : null;
+    }
+
+    set TabEditor(value) {
+        // @ts-ignore
+        this.Parent.TabEditor = value;
+    }
+
     /**
      * @type {Component[]}
      */
@@ -106,7 +117,6 @@ export class ListViewSearch extends EditableComponent {
         this.DateTimeField = ui.DateTimeField ?? 'Component.InsertedDate';
         this.Entity = new ListViewSearchVM();
     }
-
     /**
      * @param {Event[][]} basicSearchHeader
      */
@@ -458,6 +468,7 @@ export class ListViewSearch extends EditableComponent {
         if (!this._export) {
             this._export = new ExportCustomData(this.Parent);
             this._export.ParentElement = this.TabEditor.Element;
+            // @ts-ignore
             this._export.Disposed += () => this._export = null;
         }
         return this._export;
@@ -562,7 +573,7 @@ export class ListViewSearch extends EditableComponent {
     }
 
     AdvancedSearch(arg) {
-        this.TabEditor.OpenPopup("AdvancedSearch", () => {
+        ComponentExt.OpenPopup(this.TabEditor,"AdvancedSearch", () => {
             // @ts-ignore
             var editor = new AdvancedSearch(this.ParentListView);
             editor.Parent = this.Parent,

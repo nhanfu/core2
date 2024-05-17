@@ -6,7 +6,7 @@ import EventType from "./models/eventType.js";
 import { Html } from "./utils/html.js";
 import { Utils } from "./utils/utils.js";
 
-class GroupRowData {
+export class GroupRowData {
     constructor() {
         this.Key = null;
         this.Children = [];

@@ -347,11 +347,15 @@ export class HTML {
         return this;
     }
 
-    Href(value)
-        {
+    Href(value) {
             this.Context.setAttribute("href", value);
             return this;
         }
+
+    Src(value) {
+            this.Context.setAttribute("src", value);
+            return this;
+    }
 
     /**
      * @param {number} index
@@ -569,6 +573,16 @@ export class HTML {
 
     Clear() {
         this.Context.innerHTML = '';
+        return this;
+    }
+
+    Checkbox(value) {
+        this.Add(ElementType.input);
+        var checkbox = this.Context;
+        if(checkbox instanceof HTMLInputElement) {
+            checkbox.setAttribute("type", "checkbox");
+            checkbox.checked = value ?? false;
+        }
         return this;
     }
 
