@@ -322,7 +322,7 @@ export class HTML {
     /**
      * @param {boolean} val
      */
-    SmallCheckbox(val) {
+    SmallCheckbox(val = false) {
         this.Label.ClassName("checkbox input-small transition-on style2")
             .Input.Attr("type", "checkbox").Type("checkbox").End
             .Span.ClassName("check myCheckbox");
