@@ -6,8 +6,11 @@ import { PatchVM } from "../models/patch.js";
 import { EmailVM } from "../models/emailVM.js";
 import { Toast } from "../toast.js";
 import { Path } from "../utils/path.js";
+import { Entity } from "models/enum.js";
 
 export class Client {
+    /** @type {Entity[]} */
+    static Entities = [];
     static EpsilonNow = new Date(Date.now() + (1 * 60 * 1000));
     static ErrorMessage = "Hệ thống đang cập nhật vui lòng chờ trong 30s!";
     static ModelNamespace;

@@ -239,7 +239,6 @@ export class ListViewSearch extends EditableComponent {
                 PlainText: 'Loại ngày',
                 FormatData: '{ShortDesc}',
                 ShowLabel: false,
-                ReferenceId: Utils.GetEntity('Component').Id,
                 RefName: 'Component',
             });
             dateType.ParentElement = this.Element;

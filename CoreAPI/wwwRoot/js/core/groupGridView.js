@@ -1,11 +1,10 @@
-import EditableComponent from "editableComponent";
-import { GridView } from "gridView";
-import { GroupViewItem } from "groupViewItem";
-import { ListViewItem } from "listViewItem";
-import { ElementType } from "models/elementType";
-import EventType from "models/eventType";
-import { Html } from "utils/html";
-import { Utils } from "utils/utils";
+import { GridView } from "./gridView.js";
+import { GroupViewItem } from "./groupViewItem.js";
+import { ListViewItem } from "./listViewItem.js";
+import { ElementType } from "./models/elementType.js";
+import EventType from "./models/eventType.js";
+import { Html } from "./utils/html.js";
+import { Utils } from "./utils/utils.js";
 
 class GroupRowData {
     constructor() {
