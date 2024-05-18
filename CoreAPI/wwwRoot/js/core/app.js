@@ -7,7 +7,8 @@ import { StringBuilder } from "./utils/stringBuilder.js";
 import { Utils } from "./utils/utils.js";
 import { EditForm } from "./editForm.js";
 import { Spinner } from "./spinner.js";
-
+import { LoginBL } from "components/framework/loginBL.js";
+import { NotificationBL } from "components/framework/notificationBL.js";
 export class App {
     // @ts-ignore
     static DefaultFeature = Utils.HeadChildren.layout?.content || "index";
