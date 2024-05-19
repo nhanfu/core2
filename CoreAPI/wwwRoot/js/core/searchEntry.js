@@ -12,12 +12,11 @@ import "./utils/fix.js";
 import { ListViewItem } from './listViewItem.js';
 import { GridView } from './gridView.js';
 import { ListView } from './listView.js';
-import { TabEditor } from './tabEditor.js';
-import { MultipleSearchEntry } from './multipleSearchEntry.js';
 import { GroupGridView } from './groupGridView.js';
 
 export class SearchEntry extends EditableComponent {
     IsSearchEntry = true;
+    IsMultiple = false;
     /**
      * @param {import('./models/component.js').Component} ui
      * @param {HTMLElement} [ele=null] 
@@ -346,7 +345,7 @@ export class SearchEntry extends EditableComponent {
         }
         this.RenderRootResult();
         this.ParentElement = this._rootResult;
-        if (this instanceof MultipleSearchEntry) {
+        if (this.IsMultiple) {
             this._gv.RowData.Data = [];
         }
         this._gv.EditForm = this.EditForm;
@@ -389,7 +388,7 @@ export class SearchEntry extends EditableComponent {
             return;
         }
         if (!this.IsSmallUp && this._backdrop === null) {
-            Html.Take(TabEditor.TabContainer).Div.ClassName('backdrop');
+            Html.Take(EditableComponent.TabContainer).Div.ClassName('backdrop');
             this._backdrop = Html.Context;
             Html.Instance.Div.ClassName('popup-content').Style('top: 0;width: 100%;')
             .Div.ClassName('popup-title').Span.IconForSpan('fa fal fa-search').End
@@ -468,7 +467,7 @@ export class SearchEntry extends EditableComponent {
         if (deleteFlag && !this._input.value) {
             return;
         }
-        if (this instanceof MultipleSearchEntry) {
+        if (this.IsMultiple) {
             this._isRendering = false;
         }
         this.TriggerSearch(null);

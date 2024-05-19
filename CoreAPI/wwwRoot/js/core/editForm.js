@@ -13,7 +13,6 @@ import { StringBuilder } from "./utils/stringBuilder.js";
 import { FeaturePolicy } from "./models/featurePolicy.js";
 import { ComponentFactory } from "./utils/componentFactory.js";
 import { Toast } from "./toast.js";
-import { Section } from "./section.js";
 import { Button } from "./button.js";
 import { ListView } from "./listView.js";
 import { Label } from "./label.js";
@@ -205,11 +204,14 @@ export class EditForm extends EditableComponent {
         });
     }
 
+    /** @type {import('./section.js')} */
+    SectionMd;
     /**
      * Loads and renders features based on the current entity setup.
      * @param {Function} callback - Optional callback to run after loading and rendering.
      */
-    LoadFeatureAndRender(callback = null) {
+    async LoadFeatureAndRender(callback = null) {
+        this.SectionMd = this.SectionMd || await import('./section.js');
         const featureTask = this.Meta ? Promise.resolve(this.Meta) : ComponentExt.LoadFeature(this.Meta.Name ?? this.Meta.FieldName);
         this.LoadEntity().then(entity => {
             featureTask.then(feature => {
@@ -519,7 +521,7 @@ export class EditForm extends EditableComponent {
         }
         const meta = this.ResolveMeta(ele);
         const newCom = factory ? factory(ele, meta, parent, entity) : this.BindingCom(ele, meta, parent, entity);
-        parent = newCom instanceof Section ? newCom : parent;
+        parent = newCom instanceof this.SectionMd.Section ? newCom : parent;
         // @ts-ignore
         ele.children.forEach(child => this.BindingTemplate(child, parent, entity, factory, visited));
     }
@@ -706,9 +708,9 @@ export class EditForm extends EditableComponent {
         componentGroup.sort((a, b) => a.Order - b.Order).forEach(group => {
             group.Disabled = this.Disabled || group.Disabled;
             if (group.IsTab) {
-                Section.RenderTabGroup(this, group);
+                this.SectionMd.Section.RenderTabGroup(this, group);
             } else {
-                Section.RenderSection(this, group);
+                this.SectionMd.Section.RenderSection(this, group);
             }
         });
     }
@@ -814,7 +816,7 @@ export class EditForm extends EditableComponent {
         }
         let child = null;
         if (com.ComponentType === ComponentType.Section) {
-            child = new Section(null, ele);
+            child = new this.SectionMd.Section(null, ele);
             child.Meta = com;
             child.Meta = com;
         } else {

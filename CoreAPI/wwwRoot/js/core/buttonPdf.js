@@ -3,8 +3,8 @@ import { Button } from "./button.js";
 import { Html } from "./utils/html.js";
 import { html2pdf } from './libs/html2pdf.js'
 import { Client } from "clients/client.js";
-import { Component } from "models/component.js";
-import { PdfReport } from "pdfReport.js";
+import { Component } from "./models/component.js";
+import { PdfReport } from "./pdfReport.js";
 
 export class ButtonPdf extends Button {
     /**

@@ -4,6 +4,7 @@ export class MultipleSearchEntry extends SearchEntry {
     static MultipleClass = "multiple";
     _isStringSource = false;
     _toggleButton = null;
+    IsMultiple = true;
 
     constructor(ui) {
         super(ui);

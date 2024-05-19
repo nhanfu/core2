@@ -13,7 +13,6 @@ import { ElementType } from './models/elementType.js';
 import { Toast } from './toast.js';
 import { ContextMenu } from './contextMenu.js';
 import { ComponentExt } from './utils/componentExt.js';
-import { ExportCustomData } from './exportCustomData.js';
 
 /**
  * @typedef {import('./models/component').Component} Component
@@ -453,13 +452,15 @@ export class ListViewSearch extends EditableComponent {
      * @param {object} arg
      */
     ExportCustomData(arg) {
-        this.TabEditor.OpenPopup('Export CustomData', () => this.Exporter).Done();
+        this.TabEditor.OpenPopup('Export CustomData', () => this.Exporter()).Done();
     }
 
     /**
-     * @returns {ExportCustomData}
+     * @typedef {import('./exportCustomData.js').ExportCustomData} ExportCustomData
+     * @returns {Promise<ExportCustomData>}
      */
-    get Exporter() {
+    async Exporter() {
+        const { ExportCustomData } = await import('./exportCustomData.js');
         if (!this._export) {
             this._export = new ExportCustomData(this.Parent);
             this._export.ParentElement = this.TabEditor.Element;
@@ -472,19 +473,21 @@ export class ListViewSearch extends EditableComponent {
     /**
      * @param {object} arg
      */
-    ExportAllData(arg) {
-        this.Exporter.Export();
+    async ExportAllData(arg) {
+        const exporter = await this.Exporter();
+        exporter.Export();
     }
 
     /**
      * @param {object} arg
      */
-    ExportSelectedData(arg) {
+    async ExportSelectedData(arg) {
         if (!this.Parent.SelectedIds || this.Parent.SelectedIds.length === 0) {
             Toast.Warning('Select at least 1 one to export excel');
             return;
         }
-        this.Exporter.Export(this.Parent.SelectedIds);
+        const exporter = await this.Exporter();
+        exporter.Export(this.Parent.SelectedIds);
     }
 
     /**
@@ -572,7 +575,7 @@ export class ListViewSearch extends EditableComponent {
             // @ts-ignore
             var editor = new AdvancedSearch(this.ParentListView);
             editor.Parent = this.Parent,
-                editor.ParentElement = this.TabEditor.Element
+            editor.ParentElement = this.TabEditor.Element
             return editor;
         }).Done();
     }

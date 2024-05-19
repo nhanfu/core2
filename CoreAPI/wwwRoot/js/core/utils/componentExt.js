@@ -302,7 +302,7 @@ export class ComponentExt {
     /**
      * @param {EditableComponent} com
      * @param {string} featureName
-     * @param {{ (): import("../advancedSearch.js").AdvancedSearch; (): import("../tabEditor.js").TabEditor; }} factory
+     * @param {{ (): EditableComponent }} factory
      */
     static OpenPopup(com, featureName, factory, anonymous = false, child = false) {
         const hashCode = () => {
@@ -315,6 +315,7 @@ export class ComponentExt {
             }
             return hash;
         };
+        // @ts-ignore
         return this.OpenTab(com, hashCode().toString(), featureName, factory, true, anonymous);
     };
 }

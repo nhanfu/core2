@@ -7,7 +7,6 @@ import EventType from "./models/eventType.js";
 import { KeyCodeEnum } from "./models/enum.js";
 import { Section } from "./section.js";
 import { Uuid7 } from "./structs/uuidv7.js";
-import { TabEditor } from "./tabEditor.js";
 import { Str } from "./utils/ext.js";
 import * as dayjs from './structs/dayjs.min.js';
 import { Textbox } from "./textbox.js";
@@ -18,7 +17,7 @@ import { Datepicker } from "./datepicker.js";
 /** @typedef {import("./gridView.js").GridView} GridView */
 /** @typedef {import("./listView.js").ListView} ListView */
 
-export class AdvancedSearch extends TabEditor {
+export class AdvancedSearch extends EditableComponent {
     /** @type {ListView} */
     // @ts-ignore
     Parent;
@@ -29,15 +28,11 @@ export class AdvancedSearch extends TabEditor {
      * @param {import("./listView.js").ListView} parent
      */
     constructor(parent) {
-        super("Component");
+        super(null);
         this.Name = "AdvancedSearch";
         this.Title = "Tìm kiếm nâng cao";
         this.Icon = "fa fa-search-plus";
         this.Parent = parent;
-    }
-
-    LoadFeatureAndRender() {
-        super.LoadFeatureAndRender(this.LocalRender.bind(this));
     }
 
     LocalRender() {
@@ -47,7 +42,6 @@ export class AdvancedSearch extends TabEditor {
         fp.CanRead = true;
         fp.CanWrite = true;
         fp.CanDelete = true;
-        this.Feature.FeaturePolicy.push(fp);
         this.Entity = this.Parent.AdvSearchVM;
         var orderby = this.Parent.Meta.OrderBy;
         this.Parent.OrderBy = !orderby ? this.Parent.OrderBy :
@@ -140,7 +134,7 @@ export class AdvancedSearch extends TabEditor {
                 LocalData: this._headers,
                 // @ts-ignore
                 LocalHeader: [
-                // @ts-ignore
+                    // @ts-ignore
                     {
                         FieldName: "ShortDesc",
                         Label: "Column",
@@ -366,12 +360,11 @@ export class AdvancedSearch extends TabEditor {
         super.Dispose();
     }
 
-    ApplyAdvSearch() {
-        this.IsFormValid().Done(isValid => {
-            if (!isValid) return;
-            this.CalcAdvSearchQuery();
-            this.Parent.ReloadData(false, 0).Done();
-        });
+    async ApplyAdvSearch() {
+        const isValid = await this.ValidateAsync();
+        if (!isValid) return;
+        this.CalcAdvSearchQuery();
+        this.Parent.ReloadData(false, 0).Done();
     }
 
     CalcAdvSearchQuery() {
@@ -396,7 +389,7 @@ export class AdvancedSearch extends TabEditor {
         }
         if (condition.Field.ComponentType.includes(ComponentType.Datepicker) && value) {
             value = value;
-        // @ts-ignore
+            // @ts-ignore
         } else if (condition.Field.ComponentType == nameof(Number)) {
             value = value + "";
         } else {
@@ -579,7 +572,7 @@ export class AdvancedSearch extends TabEditor {
     SetSearchId(compareCell, field) {
         compareCell.Meta.LocalData = AdvancedSearch.OperatorFactory(ComponentType.SearchEntry);
         compareCell.FieldVal = AdvSearchOperation.In;
-        compareCell.Entity.Display = compareCell.Entity.Display 
+        compareCell.Entity.Display = compareCell.Entity.Display
             ?? { OperationText: AdvSearchOperation.GetFieldNameByVal(AdvSearchOperation.In) };
 
         var comInfo = new Component();

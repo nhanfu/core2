@@ -1,7 +1,7 @@
-import { ListViewItem } from "listViewItem";
-import { ElementType } from "models/elementType";
-import EventType from "models/eventType";
-import { Html } from "utils/html";
+import { ListViewItem } from "./listViewItem.js";
+import { ElementType } from "./models/elementType.js";
+import EventType from "./models/eventType.js";
+import { Html } from "./utils/html.js";
 
 export class GridViewItem extends ListViewItem {
     constructor(tr) {

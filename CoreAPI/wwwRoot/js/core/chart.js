@@ -3,7 +3,7 @@ import { CanvasJS } from "./libs/canvasjs.min.js";
 import { Utils } from "./utils/utils.js";
 import { Html } from "./utils/html.js";
 import { Client } from "./clients/client.js";
-import { Component } from "models/component.js";
+import { Component } from "./models/component.js";
 
 /**
  * Represents a Chart component that can be rendered and updated.

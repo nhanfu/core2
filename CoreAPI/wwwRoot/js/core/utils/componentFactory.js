@@ -1,17 +1,13 @@
-import { GridView } from "../gridView.js";
-import { EditForm } from "../editForm.js";
-import EditableComponent from "../editableComponent.js";
 import { Component } from "../models/component.js";
 import { Utils } from "./utils.js";
-import { GroupGridView } from "groupGridView.js";
-import { ListView } from "listView.js";
-import { GroupListView } from "groupListView.js";
 
 /**
  * Factory class for creating UI components based on specific configurations.
  */
 export class ComponentFactory {
     /**
+     * @typedef {import('../editableComponent.js').default} EditableComponent
+     * @typedef {import('../editForm.js').EditForm} EditForm
      * Creates a component based on the UI configuration and edit form context.
      * @param {Component} ui - The UI configuration for the component.
      * @param {EditForm} form - The form in which the component will be used.
@@ -30,21 +26,11 @@ export class ComponentFactory {
         ui.ComponentType = ui.ComponentType.trim();
         /** @type {EditableComponent} */
         let childComponent;
-        switch (ui.ComponentType) {
-            case 'GridView':
-                childComponent = !ui.GroupBy ? new GridView(ui) : new GroupGridView(ui);
-                break;
-            case 'ListView':
-                childComponent = !ui.GroupBy ? new ListView(ui) : new GroupListView(ui);
-                break;
-            default:
-                const fullName = ui.ComponentType;
-                const args = "a, b";
-                const body = `return new ${fullName}(a, b)`;
-                const typeConstructor = new Function(args, body);
-                childComponent = typeConstructor.call(null, ui, ele);
-                break;
-        }
+        const fullName = ui.ComponentType;
+        const args = "a, b";
+        const body = `return new ${fullName}(a, b)`;
+        const typeConstructor = new Function(args, body);
+        childComponent = typeConstructor.call(null, ui, ele);
         childComponent[Utils.IdField] = `${ui.FieldName}${ui.Id.toString()}`;
         childComponent.Name = ui.FieldName;
         childComponent.ComponentType = ui.ComponentType;

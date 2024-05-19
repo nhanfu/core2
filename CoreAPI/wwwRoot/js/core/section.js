@@ -9,9 +9,7 @@ import EventType from "./models/eventType.js";
 import { PatchVM } from "./models/patch.js";
 import { Client } from "./clients/client.js";
 import { Component } from "./models/component.js";
-import { ListView } from "listView.js";
-import { ComponentBL } from "forms/componentBL.js";
-import { EditForm } from "editForm.js";
+import { ListView } from "./listView.js";
 
 export class Section extends EditableComponent {
     /**
@@ -675,7 +673,9 @@ export class Section extends EditableComponent {
         }
     }
 
-    ComponentProperties(component) {
+    async ComponentProperties(component) {
+        const { ComponentBL} = await import('./forms/componentBL.js');
+        const { EditForm} = await import('./editForm.js');
         // @ts-ignore
         var editor = new ComponentBL({
             Entity: component,

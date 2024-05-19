@@ -6,7 +6,7 @@ import { ListView } from './listView.js';
 import { Uuid7 } from './structs/uuidv7.js';
 import { ContextMenu } from './contextMenu.js';
 import { Client } from "./clients/client.js";
-import { SearchEntry } from 'searchEntry.js';
+import { SearchEntry } from './searchEntry.js';
 import EventType from './models/eventType.js';
 import { GridViewItem } from './gridViewItem.js';
 import { ConfirmDialog } from './confirmDialog.js';

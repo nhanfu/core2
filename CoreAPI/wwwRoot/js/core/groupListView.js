@@ -1,11 +1,11 @@
-import { GroupRowData } from "groupGridView";
-import { GroupViewItem } from "groupViewItem";
-import { ListView } from "listView";
-import { ListViewItem } from "listViewItem";
-import { ElementType } from "models/elementType";
-import EventType from "models/eventType";
-import { Html } from "utils/html";
-import { Utils } from "utils/utils";
+import { GroupRowData } from "./groupGridView.js";
+import { GroupViewItem } from "./groupViewItem.js";
+import { ListView } from "./listView.js";
+import { ListViewItem } from "./listViewItem.js";
+import { ElementType } from "./models/elementType.js";
+import EventType from "./models/eventType.js";
+import { Html } from "./utils/html.js";
+import { Utils } from "./utils/utils.js";
 
 export class GroupListView extends ListView {
     static _groupKey = "__groupkey__";
